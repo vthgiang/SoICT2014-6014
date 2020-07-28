@@ -497,6 +497,7 @@ class TaskReportCreateForm extends Component {
         const { translate, reports, tasktemplates, user, tasks } = this.props;
         const { errorOnNameTaskReport, errorOnDescriptiontTaskReport, newReport } = this.state;
         let listTaskTemplate, units, listTemplateReport;
+
         // Lấy ra list task template theo đơn vị
         if (tasktemplates.items && newReport.organizationalUnit) {
             listTaskTemplate = tasktemplates.items.filter(function (taskTemplate) {

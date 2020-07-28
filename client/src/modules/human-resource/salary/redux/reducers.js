@@ -53,6 +53,7 @@ export function salary(state = initState, action) {
                 isLoading: false,
                 importStatus: true,
                 importSalary: action.payload.content,
+                error:""
             };
         case SalaryConstants.GET_SALARY_FAILURE:
         case SalaryConstants.CREATE_SALARY_FAILURE:

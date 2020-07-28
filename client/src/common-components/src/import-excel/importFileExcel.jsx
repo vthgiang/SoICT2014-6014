@@ -51,7 +51,7 @@ class ImportFileExcel extends Component {
                                     if (key !== 'sheets' && key !== 'rowHeader' && key !== 'file' && Array.isArray(config.value)) {
                                         let arr = indexKeyImport[key];
                                         arr = arr.map(y => {
-                                            if (typeof y === 'string' && x.trim().toLowerCase() === y.trim().toLowerCase()) {
+                                            if (typeof y === 'string' && x.toString().trim().toLowerCase() === y.toString().trim().toLowerCase()) {
                                                 return index
                                             } else {
                                                 return y
@@ -60,8 +60,16 @@ class ImportFileExcel extends Component {
                                         indexKeyImport[key] = arr;
                                         break;
                                     } else if (key !== 'sheets' && key !== 'rowHeader' && key !== 'file') {
-                                        if (!Array.isArray(config.value) && x.trim().toLowerCase() === config.value.trim().toLowerCase()) {
-                                            indexKeyImport[key] = index;
+                                        if (!Array.isArray(config.value) && x.toString().trim().toLowerCase() === config.value.toString().trim().toLowerCase()) {
+                                            if (config.colspan) {
+                                                let arr = [];
+                                                for (let i = 0; i < Number(config.colspan); i++) {
+                                                    arr = [...arr, i + index];
+                                                }
+                                                indexKeyImport[key] = arr;
+                                            } else {
+                                                indexKeyImport[key] = index;
+                                            }
                                             break;
                                         }
                                     }
@@ -86,7 +94,16 @@ class ImportFileExcel extends Component {
                     })
                     importData = importData.concat(data);
                 })
-                this.props.handleImportExcel(importData);
+                let checkFileImport = true;
+                importData.forEach(x => {
+                    for (let n in x) {
+                        if (x[n] === undefined) {
+                            checkFileImport = false;
+                            break;
+                        }
+                    }
+                })
+                this.props.handleImportExcel(importData, checkFileImport);
             };
         }
     }

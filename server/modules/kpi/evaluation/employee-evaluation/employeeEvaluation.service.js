@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
  * Lấy tất cả tập KPI hiện tại
  * @param {*} data 
  */
+
 exports.getEmployeeKPISets = async (data) => {
     let department = await OrganizationalUnit.findOne({
         $or: [
@@ -24,7 +25,8 @@ exports.getEmployeeKPISets = async (data) => {
     let startdate = null;
     let enddate = null;
     let status = null;
-
+    let user = data.user? data.user: [0];
+    
     if (data.startDate) {
         startDate = data.startDate.split("-");
         startdate = new Date(startDate[1], startDate[0], 0);
@@ -40,15 +42,15 @@ exports.getEmployeeKPISets = async (data) => {
             $in: department._id
         }
     }
-    if (data.user) {
+    if ( user[0] != '0') {
         keySearch = {
             ...keySearch,
             creator: {
-                $in: data.user
+                $in: user
             }
         }
     }
-    if (status !== -1 && status !== null && status !== 5) {
+    if (status !== -1 && status && status !== 5) {
         keySearch = {
             ...keySearch,
             status: {
@@ -79,7 +81,13 @@ exports.getEmployeeKPISets = async (data) => {
         }
     }
     employeeKpiSets = await EmployeeKPISet.find(keySearch)
-        .skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
+        .skip(0).limit(12)
+        .populate("organizationalUnit creator approver")
+        .populate({ path: "kpis", populate: { path: 'parent' } })
+        .populate([
+            { path: 'comments.creator', model: User, select: 'name email avatar ' },
+            { path: 'comments.comments.creator', model: User, select: 'name email avatar' }
+        ]);
     return employeeKpiSets;
 }
 
@@ -88,12 +96,17 @@ exports.getEmployeeKPISets = async (data) => {
  * @param {*} data.userId : id nhân viên
  * @param {*} data.date : tháng
  */
+
 exports.getKpisByMonth = async (data) => {
     let date = data.date.split("-");
     let month = new Date(date[1], date[0], 0);
     let employeeKpiSets = await EmployeeKPISet.findOne({ creator: data.userId, date: month })
         .populate("organizationalUnit creator approver")
-        .populate({ path: "kpis", populate: { path: 'parent' } });
+        .populate({ path: "kpis", populate: { path: 'parent' } })
+        .populate([
+            { path: 'comments.creator', model: User, select: 'name email avatar ' },
+            { path: 'comments.comments.creator', model: User, select: 'name email avatar' }
+        ]);
     return employeeKpiSets;
 }
 
@@ -101,6 +114,7 @@ exports.getKpisByMonth = async (data) => {
  * Phê duyệt tất cả các kpi
  * @param {*} id id của kpi set
  */
+
 exports.approveAllKpis = async (id) => {
     let kpipersonal = await EmployeeKPISet.findByIdAndUpdate(id, { $set: { status: 2 } }, { new: true });
     let targets;
@@ -122,6 +136,7 @@ exports.approveAllKpis = async (id) => {
  * @param {*} data.id: id của kpi con
  * @param {*} status: trạng thái
  */
+
 exports.editStatusKpi = async (data, query) => {
     let target = await EmployeeKPI.findByIdAndUpdate(data.id, { $set: { status: query.status } }, { new: true });
     let kpipersonal = await EmployeeKPISet.findOne({ kpis: { $in: data.id } }).populate("kpis");
@@ -129,7 +144,7 @@ exports.editStatusKpi = async (data, query) => {
     let checkFullApprove = 2;
     await kpis.map(item => {
         if (!item.status) {
-            
+
             if (parseInt(query.status) === 1) {
                 checkFullApprove = 1;
             } else {
@@ -149,6 +164,7 @@ exports.editStatusKpi = async (data, query) => {
  * @param {*} id id kpi con
  * @param {*} data thông tin chỉnh sửa
  */
+
 exports.editKpi = async (id, data) => {
     let objUpdate = {
         name: data.name,
@@ -164,6 +180,7 @@ exports.editKpi = async (id, data) => {
  * Lấy kpi theo id của kpi set
  * @param {*} id id của kpi con
  */
+
 exports.getKpisByKpiSetId = async (id) => {
     let kpipersonal = await EmployeeKPISet.findById(id)
         .populate("organizationalUnit creator approver")
@@ -179,6 +196,7 @@ exports.getKpisByKpiSetId = async (id) => {
  * Lấy tất cả công việc theo Id của kpi
  * @param {*} data 
  */
+
 exports.getTasksByKpiId = async (data) => {
     let task = await getResultTaskByMonth(data);
 
@@ -198,12 +216,14 @@ exports.getTasksByKpiId = async (data) => {
     }
     return task;
 }
+
 /**
  * Chấm điểm độ quan trọng của công việc
  * @param {*} id id kpi con
  * @param {*} kpiType 
  * @param {*} data 
  */
+
 exports.setTaskImportanceLevel = async (id, kpiType, data) => {
 
     let date = new Date(data[0].date);

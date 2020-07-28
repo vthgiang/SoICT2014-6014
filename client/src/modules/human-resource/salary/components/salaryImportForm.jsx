@@ -12,6 +12,7 @@ class SalaryImportForm extends Component {
         super(props);
         this.state = {
             configData: configurationSalary,
+            checkFileImport: true,
             rowError: [],
             importData: [],
             month: null,
@@ -107,7 +108,6 @@ class SalaryImportForm extends Component {
             })
             return { ...x, month: month, bonus: bonus }
         });
-        console.log(importData)
         this.props.importSalary(importData);
         this.setState({
             changeMonth: false
@@ -123,37 +123,44 @@ class SalaryImportForm extends Component {
     }
 
     // Function thay đổi file import
-    handleImportExcel = (value) => {
-        let rowError = [];
-        // Check dữ liệu import có hợp lệ hay không
-        let checkImportData = value;
-        value = value.map((x, index) => {
-            let errorAlert = [];
-            if (x.employeeNumber === null || x.employeeName === null || checkImportData.filter(y => y.employeeNumber === x.employeeNumber).length > 1) {
-                rowError = [...rowError, index + 1]
-                x = { ...x, error: true }
-            }
-            if (x.employeeNumber === null) {
-                errorAlert = [...errorAlert, 'Mã nhân viên không được để trống'];
-            } else {
-                if (checkImportData.filter(y => y.employeeNumber === x.employeeNumber).length > 1)
-                    errorAlert = [...errorAlert, 'Mã nhân viên bị trùng lặp'];
-            };
-            if (x.employeeName === null)
-                errorAlert = [...errorAlert, 'Tên nhân viên không được để trống'];
+    handleImportExcel = (value, checkFileImport) => {
+        if (checkFileImport) {
+            let rowError = [];
+            // Check dữ liệu import có hợp lệ hay không
+            let checkImportData = value;
+            value = value.map((x, index) => {
+                let errorAlert = [];
+                if (x.employeeNumber === null || x.employeeName === null || checkImportData.filter(y => y.employeeNumber === x.employeeNumber).length > 1) {
+                    rowError = [...rowError, index + 1]
+                    x = { ...x, error: true }
+                }
+                if (x.employeeNumber === null) {
+                    errorAlert = [...errorAlert, 'Mã nhân viên không được để trống'];
+                } else {
+                    if (checkImportData.filter(y => y.employeeNumber === x.employeeNumber).length > 1)
+                        errorAlert = [...errorAlert, 'Mã nhân viên bị trùng lặp'];
+                };
+                if (x.employeeName === null)
+                    errorAlert = [...errorAlert, 'Tên nhân viên không được để trống'];
 
-            x = { ...x, errorAlert: errorAlert }
-            return x;
-        });
-        this.setState({
-            importData: value,
-            rowError: rowError,
-        })
+                x = { ...x, errorAlert: errorAlert }
+                return x;
+            });
+            this.setState({
+                importData: value,
+                rowError: rowError,
+                checkFileImport: checkFileImport,
+            })
+        } else {
+            this.setState({
+                checkFileImport: checkFileImport,
+            })
+        }
     }
     render() {
         // let formater = new Intl.NumberFormat();
         const { translate, salary } = this.props;
-        let { limit, page, importData, rowError, configData, changeMonth, month } = this.state;
+        let { limit, page, importData, rowError, configData, changeMonth, month, checkFileImport } = this.state;
         if (salary.error.rowError !== undefined && changeMonth === false) {
             rowError = salary.error.rowError;
             importData = salary.error.data
@@ -168,7 +175,6 @@ class SalaryImportForm extends Component {
                 return { ...x, bonus: bonus }
             })
         }
-        console.log(importData);
         return (
             <React.Fragment>
                 <DialogModal
@@ -182,7 +188,7 @@ class SalaryImportForm extends Component {
                 >
                     <form className="form-group" id={`form_import_file`}>
                         <ConFigImportFile
-                            id="import_employees_config"
+                            id="import_salary_config"
                             configData={configData}
                             scrollTableWidth={850}
                             handleChangeConfig={this.handleChangeConfig}
@@ -212,11 +218,12 @@ class SalaryImportForm extends Component {
                             </div>
                             <div className="form-group col-md-12 col-xs-12">
                                 <ShowImportData
-                                    id="import_employee_show_data"
+                                    id="import_salary_show_data"
                                     configData={configData}
                                     importData={importData}
                                     rowError={rowError}
                                     scrollTableWidth={1000}
+                                    checkFileImport={checkFileImport}
                                     limit={limit}
                                     page={page}
                                 />
