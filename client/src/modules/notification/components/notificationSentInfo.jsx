@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, DateTimeConverter } from '../../../common-components';
-import { DepartmentActions } from '../../super-admin/organizational-unit/redux/actions';
-import { UserActions } from '../../super-admin/user/redux/actions';
-import { NotificationActions } from '../redux/actions';
 
 class NotificationSentInfo extends Component {
     constructor(props) {
@@ -91,7 +88,10 @@ class NotificationSentInfo extends Component {
     }
 }
  
-const mapState = state => state;
+function mapState(state){
+    const { notifications } = state;
+    return {  notifications };
+}
 const actions = {
 }
 export default connect(mapState, actions)(withTranslate(NotificationSentInfo));

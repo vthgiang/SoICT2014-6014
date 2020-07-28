@@ -48,7 +48,7 @@ class TabNotificationSent extends Component {
                                     <DateTimeConverter dateTime={notification.createdAt} type={1}/>
                                     
                                     <div className="tools">
-                                        <a href='#' onClick={() => this.showNotificationInformation(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
+                                        <a href='#abc' onClick={() => this.showNotificationInformation(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
                                         <DeleteNotification 
                                             content={translate('notification.delete')}
                                             data={{ id: notification._id, info: notification.title }}
@@ -102,7 +102,10 @@ class TabNotificationSent extends Component {
     }
 }
  
-const mapState = state => state;
+function mapState(state) {
+    const { notifications } = state;
+    return { notifications };
+}
 const actions = {
     getAllManualNotifications: NotificationActions.getAllManualNotifications,
     paginateManualNotifications: NotificationActions.paginateManualNotifications,

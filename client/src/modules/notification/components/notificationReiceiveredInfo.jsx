@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, DateTimeConverter } from '../../../common-components';
-import { DepartmentActions } from '../../super-admin/organizational-unit/redux/actions';
-import { UserActions } from '../../super-admin/user/redux/actions';
-import { NotificationActions } from '../redux/actions';
+import parse from 'html-react-parser';
 
 class NotificationReiceiverdInfo extends Component {
     constructor(props) {
@@ -35,41 +33,37 @@ class NotificationReiceiverdInfo extends Component {
             <DialogModal
                 func={this.save} isLoading={notifications.isLoading}
                 modalID={`modal-notification-receivered`}
-                title={translate('notification.title')}
+                title={notificationTitle}
                 hasSaveButton={false} hasNote={false}
             >
                 <div className="qlcv">
-                    <div className="form-inline">
+                    {/* <div className="form-inline">
                         <div className="form-group" style={{fontSize: '18px'}}>
                             <div className="inline">{
-                                notificationLevel === 'info' ? <i className="fa fa-info-circle text-blue"> {notificationTitle} </i> :
-                                notificationLevel === 'general' ? <i className="fa fa-bell text-green"> {notificationTitle}</i> :
-                                notificationLevel === 'important' ? <i className="fa fa-warning text-orange"> {notificationTitle}</i> :
-                                <i className="fa fa-bomb text-red"> {notificationTitle}</i>
+                                notificationLevel === 'info' ? <i className="fa fa-info-circle text-blue"></i> :
+                                notificationLevel === 'general' ? <i className="fa fa-bell text-green"></i> :
+                                notificationLevel === 'important' ? <i className="fa fa-warning text-orange"></i> :
+                                <i className="fa fa-bomb text-red"></i>
                             }</div>
                         </div>
-                    </div>
+                    </div> */}
+                    <div style={{ margin: '20px 0px 20px 0px'}}>{parse(notificationContent)}</div>
                     <div className="form-inline">
                         <div className="form-group">
                             <div className="inline">{translate('notification.from')}</div>
-                            <div className="inline"><b> {notificationSender} </b></div>
+                            <div className="inline"><b> {notificationSender} - <DateTimeConverter dateTime={notificationCreatedAt}/></b></div>
                         </div>
                     </div>
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <div className="inline">{translate('notification.at')}</div>
-                            <div className="inline"><b> <DateTimeConverter dateTime={notificationCreatedAt}/> </b></div>
-                        </div>
-                    </div>
-                    
-                    <div style={{border: '1px solid lightgray', margin: '20px 0px 20px 0px', padding: '15px'}}>{notificationContent}</div>
                 </div>
             </DialogModal>
          );
     }
 }
  
-const mapState = state => state;
+function mapState(state){
+    const { notifications } = state;
+    return { notifications } ;
+}
 const actions = {
 }
 export default connect(mapState, actions)(withTranslate(NotificationReiceiverdInfo));
