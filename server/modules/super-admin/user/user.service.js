@@ -17,7 +17,7 @@ exports.getUsers = async (company, query) => {
 
     var keySearch = {company: company};
 
-    if (!page && !limit && !userRole && !departmentIds) {
+    if (!page && !limit && !userRole && !departmentIds) { 
         if(name){
             keySearch = {...keySearch, name: {$regex: name, $options: "i"}};
 

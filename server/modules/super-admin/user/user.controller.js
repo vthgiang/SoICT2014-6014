@@ -7,11 +7,13 @@ exports.getUsers = async (req, res) => {
         if(!req.query.ids){
             getAllEmployeeOfUnitByRole(req, res);
         }
-        else getAllEmployeeOfUnitByIds(req, res);
+        else {
+            getAllEmployeeOfUnitByIds(req, res);
+        }
     }
     else{
         try {
-            var users = await UserService.getAllUsers(req.user.company._id, req.query);
+            var users = await UserService.getUsers(req.user.company._id, req.query);
 
             LogInfo(req.user.email, 'GET_USERS', req.user.company);
             res.status(200).json({
