@@ -6,6 +6,7 @@ const {auth} = require('../../../../middleware/index');
 // get all kpi employee in department by month
 router.get('/employee-kpi-sets', auth, KPIPersonalController.getAllKPIEmployeeSetsInOrganizationByMonth);
 
+//Khởi tạo Kpi tháng mới từ kpi tháng này
 router.post('/employee-kpi-sets/copy', auth, KPIPersonalController.copyKPI);
 
 // Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại 

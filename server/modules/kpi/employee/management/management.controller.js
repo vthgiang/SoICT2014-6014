@@ -55,9 +55,6 @@ exports.copyKPI = async (req, res) => {
  * Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại 
  */
 exports.getAllEmployeeKpiInOrganizationalUnit = async (req, res) => {
-    if (req.query.child) {
-
-    }
     try {
         var employeeKpis = await overviewService.getAllEmployeeKpiInOrganizationalUnit(req.query);
         LogInfo(req.user.email, ' get all employee kpi in organizational unit ', req.user.company);

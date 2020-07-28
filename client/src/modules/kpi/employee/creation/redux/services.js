@@ -70,7 +70,7 @@ function createEmployeeKpi(newTarget) {
 /** Chỉnh sửa thông tin chung của KPI cá nhân*/ 
 function editEmployeeKpiSet(id, newTarget) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/${id}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/${id}/edit`,
         method: 'POST',
         data: newTarget
     }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
@@ -79,7 +79,7 @@ function editEmployeeKpiSet(id, newTarget) {
 /** Chỉnh sửa trạng thái của KPI cá nhân */ 
 function updateEmployeeKpiSetStatus(id, status) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/${id}/status`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/${id}/edit`,
         method: 'POST',
         params: {
             status: status
@@ -160,7 +160,7 @@ function editComment(id,data){
 function deleteComment(id,idKpi){
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/comment/${id}`,
-        param : {
+        params : {
             kpiId : idKpi
         },
         method:'DELETE',
@@ -181,7 +181,10 @@ function editCommentOfComment(id,data){
  */
 function deleteCommentOfComment(id,idKPI){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/comment-comment/${id}/${idKPI}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/comment-comment/${id}`,
+        params :{
+            kpiId: idKPI
+        },
         method: 'DELETE',
     },false,true)
 }

@@ -134,19 +134,6 @@ exports.createEmployeeKpi = async (data) => {
     return employeeKpiSet;
 }
 
-/** Chỉnh sửa mục tiêu của KPI cá nhân */ 
-// exports.editEmployeeKpi = async (nameId,parentId,weightId,criteriaId,id) => {
-//     //req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.params.id
-//     var objUpdate = {
-//         name: nameId,
-//         parent: parentId,
-//         weight: weightId,
-//         criteria: criteriaId
-//     }
-//     var employeeKpi = await EmployeeKpi.findByIdAndUpdate(id, { $set: objUpdate }, { new: true }).populate("parent");
-//     return employeeKpi;
-// }
-
 /** Xóa mục tiêu của KPI cá nhân */ 
 exports.deleteEmployeeKpi = async (id,employeeKpiSetId) => {
     //req.params.id,req.params.kpipersonal
@@ -262,12 +249,11 @@ exports.editComment = async (params,body) => {
  * Delete comment
  */
 exports.deleteComment = async (params,kpiId) => {
-    let idKPI = kpiId;
     let comments = await EmployeeKpiSet.update(
         { "comments._id": params.id },
         { $pull: { comments: { _id: params.id } } },
         { safe: true })  
-    let comment = await EmployeeKpiSet.findOne({ _id: idKPI})
+    let comment = await EmployeeKpiSet.findOne({ _id: kpiId})
     .populate([
         {path: 'comments.creator', model: User,select: 'name email avatar '},
         {path: 'comments.comments.creator',model: User,select: 'name email avatar'}
@@ -308,13 +294,13 @@ exports.editCommentOfComment = async (params,body) => {
 /**
  * Delete comment of comment
  */
-exports.deleteCommentOfComment = async (params) => {
+exports.deleteCommentOfComment = async (params,kpiId) => {
     let comment1 = await EmployeeKpiSet.update(
         { "comments.comments._id": params.id },
         { $pull: { "comments.$.comments" : {_id : params.id} } },
         { safe: true })
     
-    let comment = await EmployeeKpiSet.findOne({ _id: params.idKPI})
+    let comment = await EmployeeKpiSet.findOne({ _id: kpiId})
     .populate([
         {path: 'comments.creator', model: User,select: 'name email avatar '},
         {path: 'comments.comments.creator',model: User,select: 'name email avatar'}
