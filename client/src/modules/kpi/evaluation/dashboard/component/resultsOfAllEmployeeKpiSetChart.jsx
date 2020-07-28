@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
 import { createKpiSetActions } from '../../../employee/creation/redux/actions';
-
 import { DatePicker } from '../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual'
 import Swal from 'sweetalert2';
-
 import 'c3/c3.css';
-
 class ResultsOfAllEmployeeKpiSetChart extends Component {
 
     constructor(props) {
@@ -35,22 +31,6 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
         }
     }
 
-    componentDidMount = () => {
-
-    }
-
-    shouldComponentUpdate = (nextProps, nextState) => {
-
-    }
-
-    static getDerivedStateFromProps = (nextProps, prevState) => {
-
-    }
-
-    setDataMultiLineChart = () => {
-
-    }
-
     /** Select kind of point */
     handleSelectKindOfPoint = (value) => {
         if (Number(value) !== this.state.kindOfPoint) {
@@ -65,8 +45,7 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
 
     /** Select month start in box */
     handleSelectMonthStart = (value) => {
-        var month = value.slice(3, 7) + '-' + value.slice(0, 2);
-
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
         this.INFO_SEARCH.startDate = month;
     }
 
@@ -75,16 +54,15 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
         if (value.slice(0, 2) < 12) {
             var month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
         } else {
-            month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
+            var month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
         }
-
         this.INFO_SEARCH.endDate = month;
     }
 
     /** Search data */
     handleSearchData = async () => {
-        var startDate = new Date(this.INFO_SEARCH.startDate);
-        var endDate = new Date(this.INFO_SEARCH.endDate);
+        let startDate = new Date(this.INFO_SEARCH.startDate);
+        let endDate = new Date(this.INFO_SEARCH.endDate);
 
         if (startDate.getTime() >= endDate.getTime()) {
             const { translate } = this.props;
@@ -112,13 +90,9 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
         }
     }
 
-    multiLineChart = () => {
-
-    }
-
     render() {
         const { translate } = this.props;
-        var d = new Date(),
+        let d = new Date(),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -127,8 +101,8 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
-        var defaultEndDate = [month, year].join('-');
-        var defaultStartDate = ['01', year].join('-');
+        let defaultEndDate = [month, year].join('-');
+        let defaultStartDate = ['01', year].join('-');
 
         return (
             <React.Fragment>
@@ -181,6 +155,5 @@ function mapState(state) {
 const actions = {
     getAllEmployeeKpiSetByMonth: createKpiSetActions.getAllEmployeeKpiSetByMonth
 }
-
 const connectedResultsOfAllEmployeeKpiSetChart = connect(mapState, actions)(withTranslate(ResultsOfAllEmployeeKpiSetChart));
 export { connectedResultsOfAllEmployeeKpiSetChart as ResultsOfAllEmployeeKpiSetChart };

@@ -2,9 +2,7 @@ import React, { Component } from 'react';import { connect } from 'react-redux';
 
 import { CompanyActions } from '../redux/actions';
 
-import { CompanyFormValidator } from './companyFormValidator';
-
-import { ErrorLabel, PaginateBar, DataTableSetting, SearchBar} from '../../../../common-components';
+import { PaginateBar, DataTableSetting, SearchBar} from '../../../../common-components';
 
 import { withTranslate } from 'react-redux-multilingual';
 class CompanyManageComponent extends Component {
@@ -20,7 +18,7 @@ class CompanyManageComponent extends Component {
         }
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
+    static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.companyId !== prevState.companyId) {
             return {
                 ...prevState,
@@ -36,7 +34,7 @@ class CompanyManageComponent extends Component {
 
         for (let i = 0; i < companyComponents.length; i++) {
             const component = companyComponents[i];
-            if(componentName === component.name){
+            if (componentName === component.name) {
                 result = true;
                 break;
             }
@@ -47,7 +45,7 @@ class CompanyManageComponent extends Component {
 
     // Kiem tra thong tin da validated het chua?
     isFormCreateLinkValidated = () => {
-        const {componentName } = this.state;
+        const { componentName } = this.state;
 
         if (componentName !== undefined) {
             return true;
@@ -65,18 +63,18 @@ class CompanyManageComponent extends Component {
     }
 
     saveAndCloseComponentForm = async () => {
-        const {companyId, componentName, componentLink, componentDescription} = this.state;
+        const { companyId, componentName, componentLink, componentDescription } = this.state;
         
         await window.$("#add-new-component-default").slideUp();
-        return this.props.addNewComponent(companyId, {
+        return this.props.addCompanyComponent(companyId, {
             name: componentName,
             link: componentLink,
             description: componentDescription
         });
     }
 
-    deleteComponent = (companyId, componentId) => {
-        return this.props.deleteComponent(companyId, componentId);
+    deleteCompanyComponent = (companyId, componentId) => {
+        return this.props.deleteCompanyComponent(companyId, componentId);
     }
     
     handleName= (e, systemComponents) => {
@@ -109,7 +107,7 @@ class CompanyManageComponent extends Component {
             value: this.state.value
         };
 
-        await this.props.componentsList(this.state.companyId, data);
+        await this.props.getCompanyComponents(this.state.companyId, data);
     }
 
     setPage = (page) => {
@@ -121,7 +119,7 @@ class CompanyManageComponent extends Component {
             value: this.state.value
         };
 
-        this.props.componentsList(this.state.companyId, data);
+        this.props.getCompanyComponents(this.state.companyId, data);
     }
 
     setLimit = (number) => {
@@ -134,7 +132,7 @@ class CompanyManageComponent extends Component {
             value: this.state.value
         };
 
-        this.props.componentsList(this.state.companyId, data);
+        this.props.getCompanyComponents(this.state.companyId, data);
     }
 
     render() { 
@@ -209,7 +207,7 @@ class CompanyManageComponent extends Component {
                                     <td>{ component.link ? component.link.url : null}</td>
                                     <td>{ component.description }</td>
                                     <td>
-                                        <a className="delete" onClick={() => this.deleteComponent(companyId, component._id)}><i className="material-icons">delete</i></a>
+                                        <a className="delete" onClick={() => this.deleteCompanyComponent(companyId, component._id)}><i className="material-icons">delete</i></a>
                                     </td>
                                 </tr> 
                             ) : (
@@ -233,9 +231,9 @@ function mapState(state) {
     return { company, systemComponents };
 }
 const action = {
-    addNewComponent: CompanyActions.addNewComponent,
-    deleteComponent: CompanyActions.deleteComponent,
-    componentsList: CompanyActions.componentsList,
+    addCompanyComponent: CompanyActions.addCompanyComponent,
+    deleteCompanyComponent: CompanyActions.deleteCompanyComponent,
+    getCompanyComponents: CompanyActions.getCompanyComponents,
 }
 
 const connectedCompanyManageComponent = connect(mapState, action)(withTranslate(CompanyManageComponent))

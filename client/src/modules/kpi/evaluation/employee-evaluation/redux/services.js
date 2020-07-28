@@ -2,89 +2,97 @@ import { getStorage } from '../../../../../config';
 import { LOCAL_SERVER_API } from '../../../../../env';
 import { sendRequest } from '../../../../../helpers/requestHelper';
 export const kpiMemberServices = {
-    getAllKPIMemberOfUnit,
-    getAllKPIMemberByMember,
-    getKPIMemberByMonth,
-    getKPIMemberById,
-    approveKPIMember,
-    editTargetKPIMember,
-    editStatusTarget,
+    getEmployeeKPISets,
+    getKpisByMonth,
+    getKpisByKpiSetId,
+    approveAllKpis,
+    editKpi,
+    editStatusKpi,
     getTaskById,
     setPointKPI,
-    setkpiImportantLevel,
 };
 /**
  *  Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị
 */
-function getAllKPIMemberOfUnit(infosearch) {
+function getEmployeeKPISets(infosearch) {
+    console.log(infosearch);
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpimembers/all-member/${infosearch.role}/${infosearch.user}/${infosearch.status}/${infosearch.startDate}/${infosearch.endDate}`,
+        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets`,
         method: 'GET',
+        params: {
+            roleId: infosearch.role,
+            user: infosearch.user,
+            status: infosearch.status,
+            startDate: infosearch.startDate,
+            endDate: infosearch.endDate
+        }
     }, false, true, 'kpi.evaluation');
 }
 /**
-* Lấy tất cả kpi cá nhân 
+* Lấy KPI cá nhân của nhân vien theo id của kpi
 */
-function getAllKPIMemberByMember() {
-    let user_id = getStorage("userId");
+function getKpisByKpiSetId(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpimembers/user/${user_id}`,
-        method: 'GET',
-    }, false, true, 'kpi.evaluation');
-}
-/**
-* Lấy KPI cá nhân của nhân vien theo id 
-*/
-function getKPIMemberById(id) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpimembers/${id}`,
+        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets/${id}`,
         method: 'GET',
     }, false, true, 'kpi.evaluation');
 }
 /**
  *  Lấy KPI cá nhân của nhân vien theo tháng 
 */
-function getKPIMemberByMonth(id, date) {
+function getKpisByMonth(userId, date) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpimembers/member/${id}/${date}`,
+        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets`,
         method: 'GET',
+        params: {
+            userId: userId,
+            date: date,
+        }
     }, false, true, 'kpi.evaluation')
 }
 /**
 * Phê duyệt kpi cá nhân 
 */
-function approveKPIMember(id) {
+function approveAllKpis(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpimembers/approve/${id}`,
-        method: 'PUT',
+        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets/${id}/edit`,
+        method: 'POST',
     }, true, true, 'kpi.evaluation');
 }
 /**
  *  Chỉnh sửa mục tiêu KPI cá nhân
 */
-function editTargetKPIMember(id, newTarget) {
+function editKpi(id, newTarget) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpimembers/target/${id}`,
-        method: 'PUT',
+        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets/${id}/edit`,
+        method: 'POST',
         data: newTarget
     }, true, true, 'kpi.evaluation')
 }
 /**
  *  chỉnh sửa trạng thái của kpi cá nhân
 */
-function editStatusTarget(id, status) {
+function editStatusKpi(id, status) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpimembers/status-target/${id}/${status}`,
-        method: 'PUT',
+        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpis/${id}`,
+        method: 'POST',
+        params: {
+            status: status
+        }
     }, true, true, 'kpi.evaluation');
 }
 /**
- *  Lấy danh sách công việc theo id
+ *  Lấy danh sách công việc theo id của kpi con
 */
 function getTaskById(id, employeeId, date, kpiType) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpimembers/task/${id}/${employeeId}/${date}/${kpiType}`,
+        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpis/${id}/tasks`,
         method: 'GET',
+        params: {
+            employeeId: employeeId,
+            date: date,
+            kpiType: kpiType
+        }
     }, false, true, 'kpi.evaluation')
 }
 /**
@@ -92,18 +100,12 @@ function getTaskById(id, employeeId, date, kpiType) {
 */
 function setPointKPI(employeeId, kpiType, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpimembers/taskImportanceLevel/${employeeId}/${kpiType}`,
-        method: 'PUT',
-        data: data
-    }, true, true, 'kpi.evaluation')
-}
-/**
- * Tính điểm KPI 
-*/
-function setkpiImportantLevel(kpiId, kpiImportantLevel) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpimembers/importantlevel/${kpiId}`,
-        method: 'PUT',
-        data: kpiImportantLevel
+        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpis/${employeeId}/set-task-importance-level`,
+        method: 'POST',
+        data: data,
+        params: {
+            employeeId: employeeId,
+            kpiType: kpiType
+        }
     }, true, true, 'kpi.evaluation')
 }

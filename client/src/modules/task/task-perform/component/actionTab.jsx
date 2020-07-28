@@ -13,13 +13,14 @@ import { LOCAL_SERVER_API } from '../../../../env';
 import { performTaskAction } from '../redux/actions';
 import { taskManagementActions } from "../../task-management/redux/actions";
 import { SubTaskTab } from './subTaskTab';
-
+import { AuthActions } from '../../../auth/redux/actions'
 
 import Files from 'react-files'
 
 import './actionTab.css';
 
-class  ActionTab extends Component {
+
+class ActionTab extends Component {
     constructor(props) {
         var idUser = getStorage("userId");
         super(props);
@@ -275,7 +276,7 @@ class  ActionTab extends Component {
             data.append("files", x);
         })
         if (newCommentOfAction.description && newCommentOfAction.creator) {
-            this.props.addActionComment(taskId, actionId, data);
+            this.props.createActionComment(taskId, actionId, data);
         }
         await this.setState(state => {
             return {
@@ -291,7 +292,7 @@ class  ActionTab extends Component {
 
     //Thêm mới hoạt động
     submitAction = async (taskId) => {
-        var { newAction } = this.state;
+        let { newAction } = this.state;
         const data = new FormData();
         data.append("creator", newAction.creator);
         data.append("description", newAction.description);
@@ -300,9 +301,8 @@ class  ActionTab extends Component {
         })
 
         if (newAction.creator && newAction.description) {
-            this.props.addTaskAction(taskId, data);
+            this.props.createTaskAction(taskId, data);
         }
-
         // Reset state cho việc thêm mới action
         await this.setState(state => {
             return {
@@ -415,35 +415,7 @@ class  ActionTab extends Component {
             }
         })
     }
-    //Lưu hoạt động
-    handleSaveEditActionComment = async (e, taskId, actionId, commentId, description) => {
-        e.preventDefault();
-        let { newCommentOfActionEdited } = this.state;
-        let data = new FormData();
-        newCommentOfActionEdited.files.forEach(x => {
-            data.append("files", x)
-        })
-        if (newCommentOfActionEdited.description === "") {
-            data.append("description", description)
-        } else {
-            data.append("description", newCommentOfActionEdited.description)
-        }
-        data.append("creator", newCommentOfActionEdited.creator)
-        if (newCommentOfActionEdited.description || newCommentOfActionEdited.files) {
-            this.props.editActionComment(taskId, actionId, commentId, data);
-        }
-        await this.setState(state => {
-            return {
-                ...state,
-                newCommentOfActionEdited: {
-                    ...state.newCommentOfActionEdited,
-                    description: "",
-                    files: []
-                },
-                editComment: ""
-            }
-        })
-    }
+    
     handleSaveEditAction = async (e, id, description, taskId) => {
         e.preventDefault();
         let { newActionEdited } = this.state;
@@ -501,11 +473,40 @@ class  ActionTab extends Component {
             }
         })
     }
+    //Lưu hoạt động
+    handleSaveEditActionComment = async (e, taskId, actionId, commentId, description) => {
+        e.preventDefault();
+        let { newCommentOfActionEdited } = this.state;
+        let data = new FormData();
+        newCommentOfActionEdited.files.forEach(x => {
+            data.append("files", x)
+        })
+        if (newCommentOfActionEdited.description === "") {
+            data.append("description", description)
+        } else {
+            data.append("description", newCommentOfActionEdited.description)
+        }
+        data.append("creator", newCommentOfActionEdited.creator)
+        if (newCommentOfActionEdited.description || newCommentOfActionEdited.files) {
+            this.props.editActionComment(taskId, actionId, commentId, data);
+        }
+        await this.setState(state => {
+            return {
+                ...state,
+                newCommentOfActionEdited: {
+                    ...state.newCommentOfActionEdited,
+                    description: "",
+                    files: []
+                },
+                editComment: ""
+            }
+        })
+    }
     handleSaveEditCommentOfTaskComment = async (e, commentId, taskId, description) => {
         e.preventDefault();
+        console.log(description)
         let { newCommentOfTaskCommentEdited } = this.state;
         let data = new FormData();
-
         newCommentOfTaskCommentEdited.files.forEach(x => {
             data.append("files", x)
         })
@@ -738,6 +739,15 @@ class  ActionTab extends Component {
             this.props.deleteFileChildTaskComment(deleteFile.fileId, deleteFile.actionId, taskId, deleteFile.type);
         }
     }
+    pressEnter = (event, taskId) => {
+        let code = event.keyCode || event.which;
+        if (code === 13 && !event.shiftKey) {
+            this.submitAction(taskId)
+        }
+        if (code == 13 && !event.shiftKey) {
+            event.preventDefault();
+        }
+    }
     render() {
         const { role } = this.props;
         let type = ["actions", "commentofactions", "taskcomments", "commentoftaskcomments"];
@@ -797,7 +807,15 @@ class  ActionTab extends Component {
                                                         {item.creator ?
                                                             <a style={{ cursor: "pointer" }}>{item.creator.name} </a> :
                                                             item.name && <b>{item.name} </b>}
-                                                        {item.description}
+                                                        {item.description.split('\n').map((item, idx) => {
+                                                            return (
+                                                                <span key={idx}>
+                                                                    {item}
+                                                                    <br />
+                                                                </span>
+                                                            );
+                                                        })
+                                                        }
                                                         {(role === 'responsible' && item.creator) &&
                                                             <div className="btn-group pull-right">
                                                                 <span data-toggle="dropdown">
@@ -948,15 +966,16 @@ class  ActionTab extends Component {
                                                             </ul>}
                                                         {showModalDelete === item._id &&
                                                             <DialogModal
-                                                                size={75}
-                                                                maxWidth={200}
+                                                                marginTop = {"20vh"}
+                                                                size={50}
+                                                                maxWidth={100}
                                                                 modalID={`modal-confirm-deletefile`}
                                                                 formID={`from-confirm-deletefile`}
                                                                 isLoading={false}
                                                                 func={() => this.save(task._id)}
                                                             >
                                                                 {translate("task.task_perform.question_delete_file")} {deleteFile.fileName} ?
-                                                </DialogModal>
+                                                            </DialogModal>
                                                         }
                                                     </div>
                                                 </React.Fragment>
@@ -973,7 +992,14 @@ class  ActionTab extends Component {
                                                                 <div>
                                                                     <div className="content-level2">
                                                                         <a style={{ cursor: "pointer" }}>{child.creator.name} </a>
-                                                                        {child.description}
+                                                                        {child.description.split('\n').map((item, idx) => {
+                                                                            return (
+                                                                                <span key={idx}>
+                                                                                    {item}
+                                                                                    <br />
+                                                                                </span>
+                                                                            );
+                                                                        })}
 
                                                                         {child.creator._id === currentUser &&
                                                                             <div className="btn-group pull-right">
@@ -986,9 +1012,6 @@ class  ActionTab extends Component {
                                                                                 </ul>
                                                                             </div>}
                                                                     </div>
-                                                                    {/* <div className="tool-level2">
-                                                                <span className="text-sm">{moment(child.createdAt).fromNow()}</span>
-                                                            </div> */}
                                                                     <ul className="list-inline tool-level2">
                                                                         <li><span className="text-sm">{moment(child.createdAt).fromNow()}</span></li>
                                                                         <li style={{ display: "inline-table" }}>
@@ -1016,8 +1039,8 @@ class  ActionTab extends Component {
                                                                             files={newCommentOfActionEdited.files}
                                                                             defaultValue={child.description}
                                                                             styletext={{ marginLeft: "40px", width: "94%" }}
-                                                                            submitButtonText={"Gửi chỉnh sửa"}
-                                                                            cancelButtonText={"Hủy bỏ"}
+                                                                            submitButtonText={translate("task.task_perform.save_edit")}
+                                                                            cancelButtonText={translate("task.task_perform.cancel")}
                                                                             handleEdit={(e) => this.handleEditActionComment(e)}
                                                                             onTextChange={(e) => {
                                                                                 let value = e.target.value;
@@ -1039,9 +1062,9 @@ class  ActionTab extends Component {
                                                                         {/* modal confirm delete file */}
                                                                         {showModalDelete === item._id &&
                                                                             <DialogModal
-                                                                                marginTop
-                                                                                size={75}
-                                                                                maxWidth={200}
+                                                                                marginTop = {"20vh"}
+                                                                                size={50}
+                                                                                maxWidth={100}
                                                                                 modalID={`modal-confirm-deletefile`}
                                                                                 formID={`from-confirm-deletefile`}
                                                                                 isLoading={false}
@@ -1073,7 +1096,7 @@ class  ActionTab extends Component {
                                                             onTextChange={(e) => {
                                                                 let value = e.target.value;
                                                                 this.setState(state => {
-                                                                    return { ...state, newCommentOfAction: { ...state.newCommentOfAction, description: value } }
+                                                                    return { ...state, newCommentOfAction: { ...state.newCommentOfAction, description: `${value}` } }
                                                                 })
                                                             }}
                                                             onSubmit={(e) => { this.submitComment(item._id, task._id) }}
@@ -1096,6 +1119,7 @@ class  ActionTab extends Component {
                                         text={newAction.description}
                                         placeholder={translate("task.task_perform.enter_action")}
                                         submitButtonText={translate("task.task_perform.create_action")}
+                                        //onKeyPress = {this.pressEnter}
                                         onTextChange={(e) => {
                                             let value = e.target.value;
                                             this.setState(state => {
@@ -1109,16 +1133,23 @@ class  ActionTab extends Component {
                         {/* Chuyển qua tab trao đổi */}
                         <div className={selected === "taskComment" ? "active tab-pane" : "tab-pane"} id="taskComment">
                             {typeof taskComments !== 'undefined' && taskComments.length !== 0 ?
-                                taskComments.map((item,key) => {
+                                taskComments.map((item, key) => {
                                     return (
-                                        <div className="clearfix" key = {key}>
+                                        <div className="clearfix" key={key}>
                                             <img className="user-img-level1" src={(LOCAL_SERVER_API + item.creator.avatar)} alt="User Image" />
 
                                             {editTaskComment !== item._id && // Khi đang edit thì ẩn đi
                                                 <React.Fragment>
                                                     <div className="content-level1">
                                                         <a style={{ cursor: "pointer" }}>{item.creator.name} </a>
-                                                        {item.description}
+                                                        {item.description.split('\n').map((item, idx) => {
+                                                            return (
+                                                                <span key={idx}>
+                                                                    {item}
+                                                                    <br />
+                                                                </span>
+                                                            );
+                                                        })}
                                                         {item.creator._id === currentUser &&
                                                             <div className="btn-group pull-right">
                                                                 <span data-toggle="dropdown">
@@ -1184,9 +1215,9 @@ class  ActionTab extends Component {
                                                         {/* modal confirm delete file */}
                                                         {showModalDelete === item._id &&
                                                             <DialogModal
-                                                                marginTop
-                                                                size={75}
-                                                                maxWidth={200}
+                                                                marginTop = {"20vh"}
+                                                                size={50}
+                                                                maxWidth={100}
                                                                 modalID={`modal-confirm-deletefile`}
                                                                 formID={`from-confirm-deletefile`}
                                                                 isLoading={false}
@@ -1210,7 +1241,14 @@ class  ActionTab extends Component {
                                                                 <div>
                                                                     <div className="content-level2">
                                                                         <a style={{ cursor: "pointer" }}>{child.creator.name} </a>
-                                                                        {child.description}
+                                                                        {child.description.split('\n').map((item, idx) => {
+                                                                            return (
+                                                                                <span key={idx}>
+                                                                                    {item}
+                                                                                    <br />
+                                                                                </span>
+                                                                            );
+                                                                        })}
 
                                                                         {child.creator._id === currentUser &&
                                                                             <div className="btn-group pull-right">
@@ -1252,8 +1290,8 @@ class  ActionTab extends Component {
                                                                             styletext={{ marginLeft: "40px", width: "94%" }}
                                                                             files={newCommentOfTaskCommentEdited.files}
                                                                             defaultValue={child.description}
-                                                                            submitButtonText={"Gửi chỉnh sửa"}
-                                                                            cancelButtonText={"Hủy bỏ"}
+                                                                            submitButtonText={translate("task.task_perform.save_edit")}
+                                                                            cancelButtonText={translate("task.task_perform.cancel")}
                                                                             handleEdit={(e) => this.handleEditCommentOfTaskComment(e)}
                                                                             onTextChange={(e) => {
                                                                                 let value = e.target.value;
@@ -1261,7 +1299,7 @@ class  ActionTab extends Component {
                                                                                     return { ...state, newCommentOfTaskCommentEdited: { ...state.newCommentOfTaskCommentEdited, description: value } }
                                                                                 })
                                                                             }}
-                                                                            onSubmit={(e) => { this.handleSaveEditCommentOfTaskComment(e, child._id, child.description) }}
+                                                                            onSubmit={(e) => { this.handleSaveEditCommentOfTaskComment(e, child._id, task._id,child.description)}}
                                                                         />
                                                                         {/* Hiện file đã tải lên */}
                                                                         {child.files.length > 0 &&
@@ -1275,9 +1313,9 @@ class  ActionTab extends Component {
                                                                         {/* modal confirm delete file */}
                                                                         {showModalDelete === item._id &&
                                                                             <DialogModal
-                                                                                marginTop
-                                                                                size={75}
-                                                                                maxWidth={200}
+                                                                                marginTop = {"20vh"}
+                                                                                size={50}
+                                                                                maxWidth={100}
                                                                                 modalID={`modal-confirm-deletefile`}
                                                                                 formID={`from-confirm-deletefile`}
                                                                                 isLoading={false}
@@ -1347,7 +1385,7 @@ class  ActionTab extends Component {
                                 {files &&
                                     files.map((item, index) => {
                                         return (
-                                            <div style={{ marginBottom: 20 }}>
+                                            <div style={{ marginBottom: 20 }} key={index}>
                                                 <div><strong>{item.creator.name} - </strong>{item.description}</div>
                                                 <a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, item.url, item.name)} >{item.name}</a>
                                             </div>
@@ -1421,10 +1459,10 @@ function mapState(state) {
 
 const actionCreators = {
     getTaskById: taskManagementActions.getTaskById,
-    addActionComment: performTaskAction.addActionComment,
+    createActionComment: performTaskAction.createActionComment,
     editActionComment: performTaskAction.editActionComment,
     deleteActionComment: performTaskAction.deleteActionComment,
-    addTaskAction: performTaskAction.addTaskAction,
+    createTaskAction: performTaskAction.createTaskAction,
     editTaskAction: performTaskAction.editTaskAction,
     deleteTaskAction: performTaskAction.deleteTaskAction,
     startTimer: performTaskAction.startTimerTask,
@@ -1439,7 +1477,7 @@ const actionCreators = {
     deleteCommentOfTaskComment: performTaskAction.deleteCommentOfTaskComment,
     evaluationAction: performTaskAction.evaluationAction,
     confirmAction: performTaskAction.confirmAction,
-    downloadFile: performTaskAction.downloadFile,
+    downloadFile: AuthActions.downloadFile,
     getSubTask: taskManagementActions.getSubTask,
     uploadFile: performTaskAction.uploadFile,
     deleteFileAction: performTaskAction.deleteFileAction,

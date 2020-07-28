@@ -12,108 +12,150 @@ exports.getAllTasks = async () => {
 }
 
 /**
- * get task evaluations
+ * Lấy tất cả công việc theo id mẫu công việc thỏa mãn điều kiện
  * @param {*} data 
  */
 exports.getTaskEvaluations = async (data) => {
-    // Lấy keySearch tu client gui
+    // Lấy keySearch tu client gui trong body
+    let organizationalUnit = data.organizationalUnit;
     let idTemplate = data.taskTemplate;
     let taskStatus = Number(data.status);
-    let responsible = data.responsibleEmployees;
-    let accountable = data.accountableEmployees;
+    let responsible, accountable;
     let startDate = data.startDate;
     let endDate = data.endDate;
+    let calulator = Number(data.calulator);
+    let filterConditions = data.filterCondition;
 
-    let keySearch = {};
-    //mau cong viec
-    if (idTemplate !== undefined) {
-        keySearch = {
-            ...keySearch,
-            taskTemplate: idTemplate,
-        }
-    }
-    //Tinh trang cong viec
-    if (taskStatus === 0) {
-        keySearch = {
-            ...keySearch,
-            status: 'Finished'
-        }
-    } else {
-        keySearch = {
-            ...keySearch,
-            status: 'Inprocess'
-        }
+    let startTime = startDate.split("-");
+    let endTime = endDate.split("-");
+    let start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
+    let end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
+    let filterDate = {};
 
-    }
-    //Loc nguoi thuc hien
-
-    if (responsible) {
-        keySearch = {
-            ...keySearch,
-            responsibleEmployees: responsible,
-        }
-    } else {
-        keySearch = {
-            ...keySearch,
-        }
+    if (data.responsibleEmployees) {
+        responsible = data.responsibleEmployees;
     }
 
-    //Loc nguoi phee duyet
-    if (accountable) {
-        keySearch = {
-            ...keySearch,
-            accountableEmployees: accountable
-        }
+    if (data.accountableEmployees) {
+        accountable = data.accountableEmployees;
     }
 
-    //loc ngay thuc hien
+    (taskStatus === 1) ? taskStatus = "Finished" : (taskStatus === 2 ? taskStatus = "Inprocess" : "");
+
+    // Lọc nếu ngày bắt đầu và kết thức có giá trị
     if (startDate && endDate) {
-        let startTime = startDate.split("-");
-        let endTime = endDate.split("-");
-        let start = new Date(startTime[2], startTime[1], startTime[0]);
-        let end = new Date(endTime[2], endTime[1], endTime[0]);
-        console.log(start);
-        console.log(end);
-        keySearch = {
-            ...keySearch,
-            // evaluations: { $elemMatch: { date: { $gte: `"${start}"`, $lte: `"${end}"` } } },
-            evaluations: { $elemMatch: { date: { $gte: start, $lte: end } } }
-
-        }
-    } else {
-        keySearch = {
-            ...keySearch,
+        filterDate = {
+            $match: {
+                date: { $gte: start, $lt: end }
+            }
         }
     }
 
-    // loc neu co ngay bat dau khong co ngay ket thuc
-    if (startDate && endDate === null) {
-        let DateAfter = startDate.split("-");
-        let start = new Date(DateAfter[2], DateAfter[1], DateAfter[0]);
+    // Lọc nếu có ngày bắt đầu, không có ngày kết thúc 
+    if (startDate && !endDate) {
+        filterDate = {
+            $match: {
+                date: { $gte: start }
+            }
+        }
 
-        keySearch = {
-            ...keySearch,
-            // "evaluations.date": { $elemMatch: { $gte: start } }
+    }
+
+    //  Lọc nếu có ngày bắt đầu, không có ngày kết thúc 
+    if (!startDate && endDate) {
+        filterDate = {
+            $match: {
+                date: { $lte: end }
+            }
         }
     }
 
-    // loc nhuwngx coong viecj hoan thanh truowc ngay ket thuc
-    if (endDate !== 'null' && startDate === null) {
-        let DateBefore = endDate.split("-");
-        let end = new Date(DateBefore[2], DateBefore[1], DateBefore[0]);
-        keySearch = {
-            ...keySearch,
-            evaluations: { $elemMatch: { date: { $lte: end } } }
+    let condition = [
+        { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
+        { $match: { taskTemplate: mongoose.Types.ObjectId(idTemplate) } },
+        { $unwind: "$responsibleEmployees" },
+        { $unwind: "$accountableEmployees" },
+        { $unwind: "$evaluations" },
+        {
+            $replaceRoot: {
+                newRoot: {
+                    $mergeObjects: [{ name: "$name" }, { taskId: "$_id" }, { status: "$status" }, { responsibleEmployees: "$responsibleEmployees" },
+                    { accountableEmployees: "$accountableEmployees" },
+                    { startDate: "$startDate" }, { endDate: "$endDate" }, { priority: "$priority" }, "$evaluations"]
+                }
+            }
+        },
+    ];
+
+    if (taskStatus === 0) { // Lọc tất cả các coong việc không theo đặc thù
+        condition = [
+            ...condition,
+            filterDate
+        ]
+
+    } else
+        // nếu không lọc theo người thực hiện và người phê duyệt
+        if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
+            condition = [
+                { $match: { status: taskStatus } },
+                ...condition,
+                filterDate
+            ]
+
+        } else {
+            condition = [
+                { $match: { status: taskStatus } },
+                { $match: { responsibleEmployees: { $in: [...responsible.map(x => mongoose.Types.ObjectId(x.toString()))] } } },
+                { $match: { accountableEmployees: { $in: [...accountable.map(y => mongoose.Types.ObjectId(y.toString()))] } } },
+                ...condition,
+                filterDate
+            ]
         }
+
+    let result = await Task.aggregate(condition);
+
+    //test eval
+    filterConditions.map((element, index) => {
+        // filterC[index] = element.replace(/p1/g, 4000);
+        console.log(element)
+        if (element.includes("p1") === true) {
+            filterC = element.toString().replace(/p1/g, 4000);
+            let evalP1 = eval(filterC);
+            console.log('filterP1', evalP1);
+        } else
+            if (element.includes("p2") === true) {
+                filterD = element.toString().replace(/p2/g, 3333);
+                let evalP2 = eval(filterD);
+                console.log('filterp2', evalP2);
+            }
+    });
+
+    // tính trung bình cộng
+    let condition2;
+    if (calulator === 0) {
+        condition2 = [
+            { $match: { status: taskStatus } },
+            ...condition,
+            filterDate,
+            { $unwind: "$taskInformations" },
+            {
+                $replaceRoot: { newRoot: { $mergeObjects: ["$taskInformations"] } }
+            },
+            { $match: { type: "Number" } },
+            {
+                $group: {
+                    _id: { _id: "$_id", name: "$name" },
+                    moneyAvg: { $avg: { $sum: "$value" } }
+                }
+
+            },
+        ]
     }
 
+    let result2 = await Task.aggregate(condition2);
 
+    return { result, result2 };
 
-    //{"taskTemplate": ObjectId("5f107afff000733a180c1077"),"status": "Finished", "evaluations.taskInformations": { $elemMatch: { code: "p1" } }}
-
-    let result = await Task.find(keySearch);
-    console.log('result', result);
-    return result;
 }
 
 /**
@@ -142,7 +184,7 @@ exports.getTaskById = async (id, userId) => {
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "files.creator", model: User, select: 'name email avatar' },
     ])
-    if (!task){
+    if (!task) {
         return {
             "info": true
         }
@@ -932,31 +974,6 @@ exports.deleteTask = async (id) => {
 }
 
 /**
- * edit status of task
- */
-exports.editTaskStatus = async (taskID, status) => {
-    var task = await Task.findByIdAndUpdate(taskID,
-        { $set: { status: status } },
-        { new: true }
-    );
-    return task;
-}
-
-/**
- * Chinh sua trang thai luu kho cua cong viec
- */
-exports.editArchivedOfTask = async (taskID) => {
-    var t = await Task.findByIdAndUpdate(taskID);
-    var isArchived = t.isArchived;
-
-    var task = await Task.findByIdAndUpdate(taskID,
-        { $set: { isArchived: !isArchived } },
-        { new: true }
-    );
-
-    return task;
-}
-/**
  * get subtask
  */
 exports.getSubTask = async (taskId) => {
@@ -990,7 +1007,7 @@ exports.getTasksByUser = async (data) => {
         if (test < 0) {
             test = olddate - nowdate;
             var totalDays = Math.round(test / 1000 / 60 / 60 / 24);
-            if(totalDays <= 7) {
+            if (totalDays <= 7) {
                 var tasktest = {
                     task: tasks[i],
                     totalDays: totalDays
@@ -1011,4 +1028,67 @@ exports.getTasksByUser = async (data) => {
         deadlineincoming: deadlineincoming,
     }
     return tasksbyuser;
+}
+
+/**
+ * Lấy tất cả task của organizationalUnit theo tháng 
+ * @param {*} organizationalUnitId 
+ * @param {*} month 
+ */
+exports.getAllTaskOfOrganizationalUnit = async (query) => {
+    let organizationalUnit;
+    let now, currentYear, currentMonth, endOfCurrentMonth, endOfLastMonth;
+
+    if (query.month) {
+        now = new Date(query.month);
+        currentYear = now.getFullYear();
+        currentMonth = now.getMonth();
+        endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
+        endOfLastMonth = new Date(currentYear, currentMonth);
+    } else {
+        now = new Date();
+        currentYear = now.getFullYear();
+        currentMonth = now.getMonth();
+        endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
+        endOfLastMonth = new Date(currentYear, currentMonth);
+    }
+
+    if (!query.organizationalUnitId) {
+        organizationalUnit = await OrganizationalUnit.findOne({
+            $or: [
+                { 'deans': query.roleId },
+                { 'viceDeans': query.roleId },
+                { 'employees': query.roleId }
+            ]
+        });
+    } else {
+        organizationalUnit = await OrganizationalUnit.findOne({ '_id': query.organizationalUnitId });
+    }
+
+    let tasks = await Task.aggregate([
+        { $match: { 'organizationalUnit': organizationalUnit._id } },
+        {
+            $match: {
+                $or: [
+                    { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
+                    { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
+                    { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
+                ]
+            }
+        },
+
+        { $unwind: "$evaluations" },
+        {
+            $match: {
+                $or: [
+                    { 'evaluations.date': undefined },
+                    { 'evaluations.date': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } }
+                ]
+            }
+        },
+
+        { $project: { 'startDate': 1, 'endDate': 1, 'evaluations': 1, 'accountableEmployees': 1, 'consultedEmployees': 1, 'informedEmployees': 1, 'status': 1 } }
+    ])
+
+    return tasks;
 }

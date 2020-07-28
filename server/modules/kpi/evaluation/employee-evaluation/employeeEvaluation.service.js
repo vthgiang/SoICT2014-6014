@@ -1,69 +1,67 @@
-const KPIPersonal = require('../../../../models/kpi/employeeKpiSet.model');
-const Department = require('../../../../models/super-admin/organizationalUnit.model');
+const EmployeeKPISet = require('../../../../models/kpi/employeeKpiSet.model');
+const OrganizationalUnit = require('../../../../models/super-admin/organizationalUnit.model');
 const Task = require('../../../../models/task/task.model');
-const DetailKPIPersonal = require('../../../../models/kpi/employeeKpi.model');
+const EmployeeKPI = require('../../../../models/kpi/employeeKpi.model');
 const User = require('../../../../models/auth/user.model')
 const mongoose = require("mongoose");
 
 /**
- * Lấy tất cả KPI cá nhân hiện tại của một phòng ban
+ * Lấy tất cả tập KPI hiện tại
  * @param {*} data 
  */
-exports.getKPIAllMember = async (data) => {
-    let department = await Department.findOne({
+
+exports.getEmployeeKPISets = async (data) => {
+    let department = await OrganizationalUnit.findOne({
         $or: [
-            { 'deans': data.role },
-            { 'viceDeans': data.role },
-            { 'employees': data.role }
+            { 'deans': data.roleId },
+            { 'viceDeans': data.roleId },
+            { 'employees': data.roleId }
         ]
     });
 
-    let kpipersonals;
+    let employeeKpiSets;
     let startDate;
     let endDate;
     let startdate = null;
     let enddate = null;
     let status = null;
-
-    if (data.startDate !== 'null') {
+    let user = data.user? data.user: [0];
+    
+    if (data.startDate) {
         startDate = data.startDate.split("-");
         startdate = new Date(startDate[1], startDate[0], 0);
     }
-    if (data.endDate !== 'null') {
+    if (data.endDate) {
         endDate = data.endDate.split("-");
         enddate = new Date(endDate[1], endDate[0], 28);
     }
-    if (data.status !== 'null') status = parseInt(data.status);
+    if (data.status) status = parseInt(data.status);
 
     let keySearch = {
         organizationalUnit: {
             $in: department._id
         }
     }
-    if (data.user !== 'null') {
+    if ( user[0] != '0') {
         keySearch = {
             ...keySearch,
             creator: {
-                $in: data.user
+                $in: user
             }
-
         }
     }
-    if (status !== null && status !== 5) {
+    if (status !== -1 && status && status !== 5) {
         keySearch = {
             ...keySearch,
             status: {
                 $in: status
             }
-
         }
     }
     if (startdate !== null && enddate !== null) {
         keySearch = {
             ...keySearch,
-
             date: { "$gte": startdate, "$lt": enddate }
-
         }
     }
     if (startdate !== null && enddate === null) {
@@ -82,48 +80,48 @@ exports.getKPIAllMember = async (data) => {
             }
         }
     }
-    kpipersonals = await KPIPersonal.find(keySearch)
-        .skip(0).limit(12).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-    return kpipersonals;
-}
-
-/**
- * Lấy tất cả KPI cá nhân theo người thiết lập
- * @param {*} creatorID 
- */
-exports.getKpiByCreator = async (creatorID) => {
-
-    let kpipersonals = await KPIPersonal.find({ creator: { $in: creatorID.split(",") } })
-        .sort({ 'date': 'desc' })
+    employeeKpiSets = await EmployeeKPISet.find(keySearch)
+        .skip(0).limit(12)
         .populate("organizationalUnit creator approver")
-        .populate({ path: "kpis" });
-    return kpipersonals;
+        .populate({ path: "kpis", populate: { path: 'parent' } })
+        .populate([
+            { path: 'comments.creator', model: User, select: 'name email avatar ' },
+            { path: 'comments.comments.creator', model: User, select: 'name email avatar' }
+        ]);
+    return employeeKpiSets;
 }
 
 /**
- * Lấy tất cả kpi cá nhân theo tháng
- * @param {*} data 
+ * Lấy tất cả kpi theo tháng
+ * @param {*} data.userId : id nhân viên
+ * @param {*} data.date : tháng
  */
-exports.getKpiByMonth = async (data) => {
+
+exports.getKpisByMonth = async (data) => {
     let date = data.date.split("-");
     let month = new Date(date[1], date[0], 0);
-    let kpipersonals = await KPIPersonal.findOne({ creator: data.id, date: month })
+    let employeeKpiSets = await EmployeeKPISet.findOne({ creator: data.userId, date: month })
         .populate("organizationalUnit creator approver")
-        .populate({ path: "kpis", populate: { path: 'parent' } });
-    return kpipersonals;
+        .populate({ path: "kpis", populate: { path: 'parent' } })
+        .populate([
+            { path: 'comments.creator', model: User, select: 'name email avatar ' },
+            { path: 'comments.comments.creator', model: User, select: 'name email avatar' }
+        ]);
+    return employeeKpiSets;
 }
 
 /**
- * Phê duyệt tất cả các mục tiêu
- * @param {*} id 
+ * Phê duyệt tất cả các kpi
+ * @param {*} id id của kpi set
  */
-exports.approveAllTarget = async (id) => {
-    let kpipersonal = await KPIPersonal.findByIdAndUpdate(id, { $set: { status: 2 } }, { new: true });
+
+exports.approveAllKpis = async (id) => {
+    let kpipersonal = await EmployeeKPISet.findByIdAndUpdate(id, { $set: { status: 2 } }, { new: true });
     let targets;
     if (kpipersonal.kpis) targets = kpipersonal.kpis;
     if (targets !== []) {
-        let targets = await Promise.all(targets.map(async (item) => {
-            let defaultT = await DetailKPIPersonal.findByIdAndUpdate(item._id, { $set: { status: 1 } }, { new: true })
+        targets = await Promise.all(targets.map(async (item) => {
+            let defaultT = await EmployeeKPI.findByIdAndUpdate(item._id, { $set: { status: 1 } }, { new: true })
             return defaultT;
         }))
     }
@@ -134,18 +132,20 @@ exports.approveAllTarget = async (id) => {
 }
 
 /**
- * Phê duyệt từng mục tiêu
- * @param {*} data 
+ * Chỉnh sửa trạng thái cho mỗi kpi
+ * @param {*} data.id: id của kpi con
+ * @param {*} status: trạng thái
  */
-exports.editStatusTarget = async (data) => {
 
-    let target = await DetailKPIPersonal.findByIdAndUpdate(data.id, { $set: { status: data.status } }, { new: true });
-    let kpipersonal = await KPIPersonal.findOne({ kpis: { $in: data.id } }).populate("kpis");
+exports.editStatusKpi = async (data, query) => {
+    let target = await EmployeeKPI.findByIdAndUpdate(data.id, { $set: { status: query.status } }, { new: true });
+    let kpipersonal = await EmployeeKPISet.findOne({ kpis: { $in: data.id } }).populate("kpis");
     let kpis = kpipersonal.kpis;
     let checkFullApprove = 2;
     await kpis.map(item => {
-        if (item.status === null || item.status === 0) {
-            if (parseInt(data.status) === 1) {
+        if (!item.status) {
+
+            if (parseInt(query.status) === 1) {
                 checkFullApprove = 1;
             } else {
                 checkFullApprove = 0;
@@ -153,35 +153,36 @@ exports.editStatusTarget = async (data) => {
         }
         return true;
     })
-    kpipersonal = await KPIPersonal.findByIdAndUpdate(kpipersonal._id, { $set: { status: checkFullApprove } }, { new: true })
+    kpipersonal = await EmployeeKPISet.findByIdAndUpdate(kpipersonal._id, { $set: { status: checkFullApprove } }, { new: true })
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } });
     return kpipersonal;
-
 }
 
 /**
- * Chỉnh sửa mục tiêu của KPI cá nhân
- * @param {*} id 
- * @param {*} data 
+ * Chỉnh sửa thông tin kpi
+ * @param {*} id id kpi con
+ * @param {*} data thông tin chỉnh sửa
  */
-exports.editTarget = async (id, data) => {
+
+exports.editKpi = async (id, data) => {
     let objUpdate = {
         name: data.name,
         parent: data.parent,
         weight: data.weight,
         criteria: data.criteria
     }
-    let target = await DetailKPIPersonal.findByIdAndUpdate(id, { $set: objUpdate }, { new: true }).populate("parent");
+    let target = await EmployeeKPI.findByIdAndUpdate(id, { $set: objUpdate }, { new: true }).populate("parent");
     return target;
 }
 
 /**
- * Lấy kpi cá nhân theo id
- * @param {*} id 
+ * Lấy kpi theo id của kpi set
+ * @param {*} id id của kpi con
  */
-exports.getById = async (id) => {
-    let kpipersonal = await KPIPersonal.findById(id)
+
+exports.getKpisByKpiSetId = async (id) => {
+    let kpipersonal = await EmployeeKPISet.findById(id)
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
@@ -192,68 +193,37 @@ exports.getById = async (id) => {
 }
 
 /**
- * Lấy tất cả công việc theo Id
+ * Lấy tất cả công việc theo Id của kpi
  * @param {*} data 
  */
-exports.getTaskById = async (data) => {
+
+exports.getTasksByKpiId = async (data) => {
     let task = await getResultTaskByMonth(data);
 
     for (let i = 0; i < task.length; i++) {
         let date1 = await task[i].preEvaDate;
         let date2 = await task[i].date;
-        let Difference_In_Time = await date2.getTime() - date1.getTime();
-        let daykpi = await Math.ceil(Difference_In_Time / (1000 * 3600 * 24));
+        let difference_In_Time = await date2.getTime() - date1.getTime();
+        let daykpi = await Math.ceil(difference_In_Time / (1000 * 3600 * 24));
 
-        if (daykpi > 30) 
+        if (daykpi > 30)
             daykpi = 30;
         task[i].taskImportanceLevelCal = await Math.round(3 * (task[i].priority / 3) + 3 * (task[i].results.contribution / 100) + 4 * (daykpi / 30));
-        
+
         if (task[i].results.taskImportanceLevel === -1 || task[i].results.taskImportanceLevel === null)
             task[i].results.taskImportanceLevel = await task[i].taskImportanceLevelCal;
         task[i].daykpi = await daykpi;
     }
     return task;
 }
-/**
- * Lấy điểm hệ thống
- * @param {*} id 
- */
-exports.getSystemPoint = async (id) => {
-    let task = await Task.find({ kpi: id })
-        .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees results parent taskTemplate " });
-    let kpi = await DetailKPIPersonal.findById(id);
-
-    let sum = 0, i = 0;
-    for (i = 0; i < task.length; i++) {
-        sum += task[i].point;
-    }
-
-    let systempoint = sum / task.length * kpi.weight / 100;
-
-    let kpipersonal = await DetailKPIPersonal.findByIdAndUpdate(id, { $set: { systempoint: systempoint } }, { new: true });
-    return kpipersonal;
-}
-
-/**
- * Chấm điểm KPI
- * @param {*} id_kpi 
- * @param {*} id_target 
- * @param {*} data 
- */
-exports.setPointKPI = async (id_kpi, id_target, data) => {
-    let kpi = await DetailKPIPersonal.findByIdAndUpdate(id_target, { $set: { approverpoint: data.point } }, { new: true });
-    let kpipersonal = await KPIPersonal.findById(id_kpi)
-        .populate("organizationalUnit creator approver")
-        .populate({ path: "kpis", populate: { path: 'parent' } });
-    return kpipersonal;
-};
 
 /**
  * Chấm điểm độ quan trọng của công việc
- * @param {*} id 
+ * @param {*} id id kpi con
  * @param {*} kpiType 
  * @param {*} data 
  */
+
 exports.setTaskImportanceLevel = async (id, kpiType, data) => {
 
     let date = new Date(data[0].date);
@@ -271,7 +241,6 @@ exports.setTaskImportanceLevel = async (id, kpiType, data) => {
     let approvePoint = 0;
     let employPoint = 0;
     let sumTaskImportance = 0;
-
     for (element of task) {
 
         autoPoint += element.results.automaticPoint * element.results.taskImportanceLevel;
@@ -281,8 +250,8 @@ exports.setTaskImportanceLevel = async (id, kpiType, data) => {
 
         let date1 = element.preEvaDate;
         let date2 = element.date;
-        let Difference_In_Time = date2.getTime() - date1.getTime();
-        let daykpi = Math.ceil(Difference_In_Time / (1000 * 3600 * 24));
+        let difference_In_Time = date2.getTime() - date1.getTime();
+        let daykpi = Math.ceil(difference_In_Time / (1000 * 3600 * 24));
         if (daykpi > 30) daykpi = 30;
         element.taskImportanceLevelCal = Math.round(3 * (element.priority / 3) + 3 * (element.results.contribution / 100) + 4 * (daykpi / 30));
         if (element.results.taskImportanceLevel === -1 || element.results.taskImportanceLevel === null)
@@ -291,7 +260,7 @@ exports.setTaskImportanceLevel = async (id, kpiType, data) => {
 
     }
     let n = task.length;
-    let result = await DetailKPIPersonal.findByIdAndUpdate(id, {
+    let result = await EmployeeKPI.findByIdAndUpdate(id, {
         $set: {
             "automaticPoint": Math.round(autoPoint / sumTaskImportance),
             "employeePoint": Math.round(employPoint / sumTaskImportance),
@@ -302,10 +271,10 @@ exports.setTaskImportanceLevel = async (id, kpiType, data) => {
     let autoPointSet = 0;
     let employeePointSet = 0;
     let approvedPointSet = 0;
-    let kpiSet = await KPIPersonal.findOne({ kpis: result._id });
+    let kpiSet = await EmployeeKPISet.findOne({ kpis: result._id });
 
     for (let i = 0; i < kpiSet.kpis.length; i++) {
-        let kpi = await DetailKPIPersonal.findById(kpiSet.kpis[i]);
+        let kpi = await EmployeeKPI.findById(kpiSet.kpis[i]);
         if (kpi.automaticPoint !== 0 && kpi.automaticPoint !== null) {
             let weight = kpi.weight / 100;
             autoPointSet = kpi.automaticPoint * weight;
@@ -316,7 +285,7 @@ exports.setTaskImportanceLevel = async (id, kpiType, data) => {
         }
     };
     if (autoPointSet !== -1) {
-        let updateKpiSet = await KPIPersonal.findByIdAndUpdate(kpiSet._id, {
+        let updateKpiSet = await EmployeeKPISet.findByIdAndUpdate(kpiSet._id, {
             $set: {
                 "automaticPoint": Math.round(autoPointSet),
                 "employeePoint": Math.round(employeePointSet),
@@ -348,7 +317,7 @@ async function updateTaskImportanceLevel(taskId, employeeId, point, date) {
         { $match: { year: year } }
     ])
     if (task.length !== 0) {
-        let setPoint = await Task.findOneAndUpdate(
+        var setPoint = await Task.findOneAndUpdate(
             {
                 "evaluations._id": task[0]._id
             },

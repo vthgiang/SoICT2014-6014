@@ -5,12 +5,11 @@ const {OrganizationalUnit, Company, Role, RoleType, User, UserRole, Privilege} =
  * Lấy danh sách tất cả các role của 1 công ty
  * @company id công ty
  */
-exports.getAllRoles = async (company, query) => {
+exports.getRoles = async (company, query) => {
     var page = query.page;
     var limit = query.limit;
     
-    if(page === undefined && limit === undefined ){
-        
+    if (!page && !limit) {
         return await Role
             .find({company})
             .populate([
@@ -18,8 +17,7 @@ exports.getAllRoles = async (company, query) => {
                 { path: 'parents', model: Role },
                 { path: 'type', model: RoleType }
             ]);
-
-    }else{
+    } else {
         const option = (query.key !== undefined && query.value !== undefined)
             ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
             : {company};
@@ -42,7 +40,6 @@ exports.getAllRoles = async (company, query) => {
  * @roleId id role
  */
 exports.getRole = async (roleId) => {
-
     return await Role
         .findById(roleId)
         .populate([
@@ -60,7 +57,11 @@ exports.getRole = async (roleId) => {
  */
 exports.createRole = async(data, companyId) => {
     const checkRoleCreated = await Role.findOne({name: data.name, company: companyId});
-    if(checkRoleCreated !== null) throw ['role_name_exist'];
+
+    if (checkRoleCreated) {
+        throw ['role_name_exist'];
+    }
+
     const roleTuTao = await RoleType.findOne({ name: Terms.ROLE_TYPES.COMPANY_DEFINED });
     const role = await Role.create({
         name: data.name,
@@ -73,6 +74,26 @@ exports.createRole = async(data, companyId) => {
 }
 
 /**
+ * Lấy danh sách tất cả các role cùng phòng ban với role hiện tại
+ * @id id role hiện tại
+ */
+exports.getAllRolesInSameOrganizationalUnitWithRole = async (id) => {
+    const roles = await OrganizationalUnit.findOne({ 
+        $or:[
+            { 'deans':id }, 
+            { 'viceDeans':id }, 
+            { 'employees':id }
+        ]  
+    }).populate([
+        { path: 'deans' }, 
+        { path: 'viceDeans' }, 
+        { path: 'employees' }
+    ]);
+
+    return roles;
+}
+
+/**
  * Tạo root role cho công ty
  * @data dữ liệu tạo
  * @companyID id công ty
@@ -80,7 +101,11 @@ exports.createRole = async(data, companyId) => {
 exports.createRootRole = async(data, companyID) => {
     const rootRole = await RoleType.findOne({ name: Terms.ROLE_TYPES.ROOT });
     const check = await Role.findOne({name: data.name, company: companyID}); 
-    if(check !== null) throw ('role_name_exist');
+
+    if (check !== null) {
+        throw ('role_name_exist');
+    }
+
     const role = await Role.create({
         name: data.name,
         company: companyID,
@@ -100,15 +125,23 @@ exports.createRolesForOrganizationalUnit = async(data, companyID) => {
     console.log("Data: ", data)
     const filterValidRoleArray = async (array, companyId) => {
         let resArray= [];
-        if(array.length > 0){
+        if (array.length > 0) {
             let checkRoleValid = await Role.findOne({name: {$in: data.deans}, company: companyId });
-            if(checkRoleValid !== null) throw ['role_name_exist'];
+
+            if (checkRoleValid) {
+                throw ['role_name_exist'];
+            }
+
             for (let i = 0; i < array.length; i++) {
                 if(array[i]) resArray = [...resArray, array[i]];
             }
+
             return resArray;
-        }else return [];
+        } else {
+            return [];
+        }
     }
+
     const roleChucDanh = await RoleType.findOne({ name: Terms.ROLE_TYPES.POSITION });
     const deanAb = await Role.findOne({ name: Terms.ROOT_ROLES.DEAN.name });
     const viceDeanAb = await Role.findOne({ name: Terms.ROOT_ROLES.VICE_DEAN.name });
@@ -124,7 +157,7 @@ exports.createRolesForOrganizationalUnit = async(data, companyID) => {
             parents: [employeeAb._id]
         }
     }); 
-    const employees = dataEmployee.length > 0 ? await Role.insertMany(dataEmployee) : [];
+    const employees = dataEmployee.length > 0? await Role.insertMany(dataEmployee): [];
 
     const viceDeanArr = await filterValidRoleArray(data.viceDeans, companyID);
     console.log('viceDeanArr:', viceDeanArr)
@@ -148,11 +181,25 @@ exports.createRolesForOrganizationalUnit = async(data, companyID) => {
             parents: [...employees.map(em=>em._id), ...viceDeans.map(vice=>vice._id), deanAb._id]
         }
     }); 
-    const deans = dataDean.length > 0 ? await Role.insertMany(dataDean) : [];
+    const deans = dataDean.length > 0? await Role.insertMany(dataDean): [];
 
     return {
         deans, viceDeans, employees // danh sách các mảng các chức danh đã tạo
     }
+}
+
+/**
+ * Tạo mối quan hệ cho user và role
+ * @userId id user
+ * @roleId id role
+ */
+exports.createRelationshipUserRole = async (userId, roleId) => { 
+    const relationship = await UserRole.create({
+        userId,
+        roleId
+    });
+    
+    return relationship;
 }
 
 /**
@@ -162,13 +209,39 @@ exports.createRolesForOrganizationalUnit = async(data, companyID) => {
  */
 exports.editRole = async(id, data={}) => {
     const role = await Role.findById(id);
-    if(data.name !== undefined && data.name !== null && data.name !== '')
+
+    if(data.name && data.name !== ''){
         role.name = data.name;
-    if(data.parents !== undefined && data.parents !== null && data.parents !== '')
+    }
+
+    if(data.parents && data.parents !== ''){
         role.parents = data.parents;
+    }
+
     await role.save();
+
     return role;
 }
+
+/**
+ * Chỉnh sửa mối quan hệ giữa user và role
+ * @roleId id role
+ * @userArr mảng id các user
+ */
+exports.editRelationshipUserRole = async( roleId, userArr ) => {
+    await UserRole.deleteMany({
+        roleId: roleId
+    });
+    const ur1 = await UserRole.find();
+    const user_role = userArr.map( user => {
+        return {
+            roleId: roleId,
+            userId: user
+        };
+    })
+    return await UserRole.insertMany(user_role);
+}
+
 
 /**
  * Xóa role theo id
@@ -191,19 +264,19 @@ exports.deleteRole = async(id) => {
     await UserRole.deleteMany({roleId: id});
     await Privilege.deleteMany({roleId: id});
     const organD = await OrganizationalUnit.findOne({deans: id});
-    if(organD !== null){
+    if (organD) {
         organD.deans.splice(organD.deans.indexOf(id));
         await organD.save();
     }
 
     const organV = await OrganizationalUnit.findOne({viceDeans: id});
-    if(organV !== null){
+    if (organV) {
         organV.viceDeans.splice(organV.viceDeans.indexOf(id));
         await organV.save();
     }
 
     const organE = await OrganizationalUnit.findOne({employees: id});
-    if(organE !== null){
+    if (organE) {
         organE.employees.splice(organE.employees.indexOf(id));
         await organE.save();
     }
@@ -211,59 +284,5 @@ exports.deleteRole = async(id) => {
     return id; // trả về id của role vừa xóa
     
 }
-
-/**
- * Tạo mối quan hệ cho user và role
- * @userId id user
- * @roleId id role
- */
-exports.createRelationshipUserRole = async (userId, roleId) => { 
-    const relationship = await UserRole.create({
-        userId,
-        roleId
-    });
-    
-    return relationship;
-}
-
-/**
- * Chỉnh sửa mối quan hệ giữa user và role
- * @roleId id role
- * @userArr mảng id các user
- */
-exports.editRelationshipUserRole = async( roleId, userArr ) => {
-    await UserRole.deleteMany({
-        roleId: roleId
-    });
-    const ur1 = await UserRole.find();
-    const user_role = userArr.map( user => {
-        return {
-            roleId: roleId,
-            userId: user
-        };
-    })
-    return await UserRole.insertMany(user_role);
-}
-
-/**
- * Lấy danh sách tất cả các role cùng phòng ban với role hiện tại
- * @id id role hiện tại
- */
-exports.getAllRolesInSameOrganizationalUnitWithRole = async (id) => {
-    
-    const roles = await OrganizationalUnit.findOne({ 
-        $or:[
-            {'deans':id}, 
-            {'viceDeans':id}, 
-            {'employees':id}
-        ]  
-    }).populate([
-        {path:'deans'}, 
-        {path:'viceDeans'}, 
-        {path:'employees'}]
-    );
-    return roles;
-}
-
 
 

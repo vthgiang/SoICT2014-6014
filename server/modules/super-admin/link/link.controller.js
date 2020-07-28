@@ -5,10 +5,10 @@ const { LogInfo, LogError } = require('../../../logs');
  * Chú ý: tất cả các phương thức đều xét trong ngữ cảnh một công ty
  */
 
-exports.getAllLinks = async (req, res) => {
+exports.getLinks = async (req, res) => {
     try {
         console.log("getalllink", req.query)
-        var links = await LinkService.getAllLinks(req.user.company._id, req.query);
+        var links = await LinkService.getLinks(req.user.company._id, req.query);
         
         await LogInfo(req.user.email, 'GET_ALL_LINKS', req.user.company);
         res.status(200).json({
@@ -27,25 +27,22 @@ exports.getAllLinks = async (req, res) => {
     }
 };
 
-exports.getPaginatedLinks = async (req, res) => {
+exports.getLink = async (req, res) => {
     try {
-        var { limit, page } = req.body;
-        delete req.body.limit;
-        delete req.body.page;
-        var links = await LinkService.getPaginatedLinks(req.user.company._id, limit, page, req.body); //truyen vao id cua cong ty
-
-        await LogInfo(req.user.email, 'GET_PAGINATED_LINKS', req.user.company);
+        var link = await LinkService.getLink(req.params.id);
+        
+        await LogInfo(req.user.email, 'GET_LINK_BY_ID', req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['paginate_links_success'],
-            content: links
+            messages: ['show_link_success'],
+            content: link
         });
     } catch (error) {
         
-        await LogError(req.user.email, 'GET_PAGINATED_LINKS', req.user.company);
+        await LogError(req.user.email, 'GET_LINK_BY_ID', req.user.company);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['paginate_links_faile'],
+            messages: Array.isArray(error) ? error : ['show_link_faile'],
             content: error
         });
     }
@@ -69,27 +66,6 @@ exports.createLink = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['create_link_faile'],
-            content: error
-        });
-    }
-};
-
-exports.getLink = async (req, res) => {
-    try {
-        var link = await LinkService.getLink(req.params.id);
-        
-        await LogInfo(req.user.email, 'GET_LINK_BY_ID', req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['show_link_success'],
-            content: link
-        });
-    } catch (error) {
-        
-        await LogError(req.user.email, 'GET_LINK_BY_ID', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['show_link_faile'],
             content: error
         });
     }

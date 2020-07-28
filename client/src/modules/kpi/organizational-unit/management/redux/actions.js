@@ -3,18 +3,15 @@ import { managerServices } from "./services";
 
 export const managerActions = {
     getAllKPIUnit,
-    getKPIUnits,
     getChildTargetOfCurrentTarget,
-    evaluateKPIUnit,
     copyKPIUnit
 }
 
 // lấy tất cả các KPI của đơn vị
-function getAllKPIUnit(id) {
+function getAllKPIUnit(infosearch) {
     return dispatch => {
         dispatch({ type: managerConstants.GETALL_KPIUNIT_REQUEST })
-
-        managerServices.getAllKPIUnit(id)
+        managerServices.getAllKPIUnit(infosearch)
             .then(res => {
                 dispatch({
                     type: managerConstants.GETALL_KPIUNIT_SUCCESS,
@@ -30,33 +27,13 @@ function getAllKPIUnit(id) {
 
     };
 }
-function getKPIUnits(infosearch) {
-    return dispatch => {
-        dispatch({ type: managerConstants.GET_KPIUNITS_REQUEST });
-
-        managerServices.getKPIUnits(infosearch)
-            .then(res => {
-                dispatch({
-                    type: managerConstants.GET_KPIUNITS_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(error => {
-                dispatch({
-                    type: managerConstants.GET_KPIUNITS_FAILURE,
-                    payload: error
-                })
-            })
-    };
-}
-
 
 // lấy mục tiêu con của mục tiêu hiện tại
-function getChildTargetOfCurrentTarget(id, date) {
+function getChildTargetOfCurrentTarget(kpiId) {
     return dispatch => {
         dispatch({ type: managerConstants.GETCHILDTARGET_CURRENTTARGET_REQUEST });
 
-        managerServices.getChildTargetOfCurrentTarget(id, date)
+        managerServices.getChildTargetOfCurrentTarget(kpiId)
             .then(res => {
                 dispatch({
                     type: managerConstants.GETCHILDTARGET_CURRENTTARGET_SUCCESS,
@@ -72,31 +49,10 @@ function getChildTargetOfCurrentTarget(id, date) {
     }
 }
 
-// Cập nhật dữ liệu cho kpi đơn vị
-function evaluateKPIUnit(id) {
-    return dispatch => {
-        dispatch({ type: managerConstants.EVALUATE_KPIUNIT_REQUEST });
-        managerServices.evaluateKPIUnit(id)
-            .then(res => {
-                dispatch({
-                    type: managerConstants.EVALUATE_KPIUNIT_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(error => {
-                dispatch({
-                    type: managerConstants.EVALUATE_KPIUNIT_FAILURE,
-                    payload: error
-                })
-            })
-    }
-}
-
-function copyKPIUnit(id, idunit, dateold, datenew){
+function copyKPIUnit(kpiId, data) {
     return dispatch => {
         dispatch({ type: managerConstants.COPY_KPIUNIT_REQUEST });
-
-        managerServices.copyKPIUnit(id, idunit, dateold, datenew)
+        managerServices.copyKPIUnit(kpiId, data)
             .then(res => {
                 dispatch({
                     type: managerConstants.COPY_KPIUNIT_SUCCESS,

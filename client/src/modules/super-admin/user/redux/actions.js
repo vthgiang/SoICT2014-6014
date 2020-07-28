@@ -13,10 +13,15 @@ export const UserActions = {
     getDepartmentOfUser,
     getChildrenOfOrganizationalUnitsAsTree,
     getAllUserInAllUnitsOfCompany,
+    getAllEmployeeOfUnitByRole,
+    getAllEmployeeOfUnitByIds,
 };
 
+/**
+ * Lấy danh sách tất cả user trong 1 công ty
+ */
 function get(data){
-    if(data !== undefined){
+    if(data){
         return dispatch => {
             dispatch({ type: UserConstants.GET_USERS_PAGINATE_REQUEST});
             UserServices.get(data)
@@ -31,6 +36,7 @@ function get(data){
             })
         }
     }
+    
     return dispatch => {
         dispatch({ type: UserConstants.GET_USERS_REQUEST});
         UserServices.get()
@@ -46,7 +52,57 @@ function get(data){
         })
     }
 }
-
+/**
+ * Lấy tất cả nhân viên của đơn vị theo role
+ * @param {*} role 
+ */
+function getAllEmployeeOfUnitByRole(role) {
+    return dispatch => {
+        dispatch({type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_REQUEST});
+ 
+        UserServices.getAllEmployeeOfUnitByRole(role)
+            .then(res=>{ 
+                dispatch({
+                    type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_FAILURE,
+                    payload: error
+                })
+            })
+    };
+}
+/**
+ * Lấy tất cả nhân viên của đơn vị theo mảng id đơn vị
+ * @param {*} ids 
+ */
+function getAllEmployeeOfUnitByIds(ids) {
+    return dispatch => {
+        dispatch({type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_REQUEST});
+ 
+        UserServices.getAllEmployeeOfUnitByIds(ids)
+            .then(res=>{ 
+                dispatch({
+                    type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_FAILURE,
+                    payload: error
+                })
+            })
+    };
+}
+/**
+ * Chỉnh sửa thông tin tài khoản người dùng
+ * @id id tài khoản
+ * @data dữ liệu chỉnh sửa
+ */
 function edit(id, data){
     return dispatch => {
         dispatch({ type: UserConstants.EDIT_USER_REQUEST});
@@ -63,6 +119,10 @@ function edit(id, data){
     }
 }
 
+/**
+ * Tạo tài khoản cho user
+ * @data dữ liệu về user
+ */
 function create(data){
     return dispatch => {
         dispatch({ type: UserConstants.CREATE_USER_REQUEST});
@@ -79,6 +139,10 @@ function create(data){
     }
 }
 
+/**
+ * Xóa tài khoản người dùng
+ * @id id tài khoản người dùng
+ */
 function destroy(id){
     return dispatch => {
         dispatch({ type: UserConstants.DELETE_USER_REQUEST});
@@ -119,6 +183,7 @@ export const getRoles = () => {
     }
 }
 
+
 export const getLinkOfRole = () => {
     return dispatch => {
         dispatch({ type: UserConstants.GET_LINK_OF_ROLE_REQUEST});
@@ -136,83 +201,118 @@ export const getLinkOfRole = () => {
     }
 }
 
+/**
+ * Lấy tất cả các vai trò cùng phòng ban với người dùng
+ * @currentRole {*} Role hiện tại cuả người dùng 
+ */
 function getRoleSameDepartment(currentRole) {
     return dispatch => {
-        dispatch(request(currentRole));
-
+        dispatch({ type: UserConstants.GETROLE_SAMEDEPARTMENT_REQUEST });
         UserServices.getRoleSameDepartmentOfUser(currentRole)
-            .then(
-                roleDepartment => dispatch(success(roleDepartment)),
-                error => dispatch(failure(error.toString()))
-            );
+            .then(res => {
+                dispatch({
+                    type: UserConstants.GETROLE_SAMEDEPARTMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ 
+                    type: UserConstants.GETROLE_SAMEDEPARTMENT_FAILURE,
+                    error: err
+                });
+            })
     };
-
-    function request(currentRole) { return { type: UserConstants.GETROLE_SAMEDEPARTMENT_REQUEST, currentRole } }
-    function success(roleDepartment) { return { type: UserConstants.GETROLE_SAMEDEPARTMENT_SUCCESS, roleDepartment } }
-    function failure(error) { return { type: UserConstants.GETROLE_SAMEDEPARTMENT_FAILURE, error } }
 }
 
+/**
+ * Lấy danh sách tất cả user trong 1 công ty
+ */
 function getAllUserOfCompany() {
     return dispatch => {
         UserServices.getAllUserOfCompany()
-            .then(
-                users => dispatch(success(users)),
-                error => dispatch(failure(error.toString()))
-            );
+            .then(res => {
+                dispatch({
+                    type: UserConstants.GETALLUSER_OFCOMPANY_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ 
+                    type: UserConstants.GETALLUSER_OFCOMPANY_FAILURE,
+                    error: err
+                });
+            })
     };
-    function success(users) { return { type: UserConstants.GETALLUSER_OFCOMPANY_SUCCESS, users } }
-    function failure(error) { return { type: UserConstants.GETALLUSER_OFCOMPANY_FAILURE, error } }
 }
 
 /** Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ */
 function getAllUserOfDepartment(id) {
     return dispatch => {
-        dispatch(request(id));
+        dispatch({ type: UserConstants.GETALLUSER_OFDEPARTMENT_REQUEST });
         UserServices.getAllUserOfDepartment(id)
-            .then(
-                users => dispatch(success(users)),
-                error => dispatch(failure(error.toString()))
-            );
+            .then(res => {
+                dispatch({
+                    type: UserConstants.GETALLUSER_OFDEPARTMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ 
+                    type: UserConstants.GETALLUSER_OFDEPARTMENT_FAILURE,
+                    error: err
+                });
+            })
     };
-    function request(id) { return { type: UserConstants.GETALLUSER_OFDEPARTMENT_REQUEST, id } }
-    function success(users) { return { type: UserConstants.GETALLUSER_OFDEPARTMENT_SUCCESS, users } }
-    function failure(error) { return { type: UserConstants.GETALLUSER_OFDEPARTMENT_FAILURE, error } }
 }
 
+/** Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ */
 function getAllUserSameDepartment(currentRole) {
     return dispatch => {
-        dispatch(request(currentRole));
+        dispatch({ type: UserConstants.GETALLUSER_SAMEDEPARTMENT_REQUEST });
         UserServices.getAllUserSameDepartment(currentRole)
-            .then(
-                users => dispatch(success(users)),
-                error => dispatch(failure(error.toString()))
-            );
+            .then(res => {
+                dispatch({
+                    type: UserConstants.GETALLUSER_SAMEDEPARTMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ 
+                    type: UserConstants.GETALLUSER_SAMEDEPARTMENT_FAILURE,
+                    error: err
+                });
+            })
     };
-    function request(id) { return { type: UserConstants.GETALLUSER_SAMEDEPARTMENT_REQUEST, id } }
-    function success(users) { return { type: UserConstants.GETALLUSER_SAMEDEPARTMENT_SUCCESS, users } }
-    function failure(error) { return { type: UserConstants.GETALLUSER_SAMEDEPARTMENT_FAILURE, error } }
 }
 
+/**
+ * Lấy tất cả các đơn vị tổ chức một user thuộc về
+ */
 function getDepartmentOfUser() {
     return dispatch => {
-        dispatch(request());
-
+        dispatch({ type: UserConstants.GETDEPARTMENT_OFUSER_REQUEST });
         UserServices.getDepartmentOfUser()
-            .then(
-                departments => dispatch(success(departments)),
-                error => dispatch(failure(error.toString()))
-            );
+            .then(res => {
+                dispatch({
+                    type: UserConstants.GETDEPARTMENT_OFUSER_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ 
+                    type: UserConstants.GETDEPARTMENT_OFUSER_FAILURE,
+                    error: err
+                });
+            })
     };
-
-    function request() { return { type: UserConstants.GETDEPARTMENT_OFUSER_REQUEST} }
-    function success(departments) { return { type: UserConstants.GETDEPARTMENT_OFUSER_SUCCESS, departments } }
-    function failure(error) { return { type: UserConstants.GETDEPARTMENT_OFUSER_FAILURE, error } }
 }
-// Lấy người dùng các đơn vị con của một đơn vị và trong đơn vị đó
+
+/**
+ * Lấy người dùng các đơn vị con của một đơn vị và trong đơn vị đó
+ */
 function getChildrenOfOrganizationalUnitsAsTree(unitId) {
     return dispatch => {
         dispatch({type: UserConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_REQUEST});
- 
         UserServices.getChildrenOfOrganizationalUnitsAsTree(unitId)
             .then(res=>{ 
                 dispatch({
@@ -228,7 +328,10 @@ function getChildrenOfOrganizationalUnitsAsTree(unitId) {
             })
     };
 }
-// Lấy người dùng trong các đơn vị của 1 công ty
+
+/**
+ * Lấy người dùng trong các đơn vị của 1 công ty
+ */
 function getAllUserInAllUnitsOfCompany() {
     return dispatch => {
         dispatch({type: UserConstants.GET_ALL_USERS_IN_UNITS_OF_COMPANY_REQUEST});

@@ -3,9 +3,9 @@ const { LogInfo, LogError } = require('../../../logs');
 
 
 // TODO: Xóa bớt các phương thức không dùng???
-exports.getAllPriveleges = async (req, res) => {
+exports.getPriveleges = async (req, res) => {
     try {
-        var roles = await PrivilegeService.getAllPriveleges(req, res);
+        var roles = await PrivilegeService.getPriveleges(req, res);
         
         res.status(200).json(roles);
     } catch (error) {
@@ -14,10 +14,10 @@ exports.getAllPriveleges = async (req, res) => {
     }
 };
 
-exports.createPrivelege = async (req, res) => {
+exports.getPrivelege = async (req, res) => {
     try {
-        var role = await PrivilegeService.createPrivelege(req, res);
-
+        var role = await PrivilegeService.Privelege(req, res);
+        
         res.status(200).json(role);
     } catch (error) {
         
@@ -25,10 +25,32 @@ exports.createPrivelege = async (req, res) => {
     }
 };
 
-exports.getPrivelege = async (req, res) => {
+exports.getLinksThatRoleCanAccess = async (req, res) => {
     try {
-        var role = await PrivilegeService.Privelege(req, res);
+        var links = await PrivilegeService.getLinksThatRoleCanAccess(req.params.idRole);
         
+        res.status(200).json(links);
+    } catch (error) {
+        
+        res.status(400).json(error);
+    }
+};
+
+exports.addLinkThatRoleCanAccess = async (req, res) => {
+    try {
+        var role = await PrivilegeService.addLinkThatRoleCanAccess(req.body.idLink, req.body.idRole);
+        
+        res.status(200).json(role);
+    } catch (error) {
+        
+        res.status(400).json(error);
+    }
+};
+
+exports.createPrivelege = async (req, res) => {
+    try {
+        var role = await PrivilegeService.createPrivelege(req, res);
+
         res.status(200).json(role);
     } catch (error) {
         
@@ -58,24 +80,3 @@ exports.deletePrivelege = async (req, res) => {
     }
 };
 
-exports.addLinkThatRoleCanAccess = async (req, res) => {
-    try {
-        var role = await PrivilegeService.addLinkThatRoleCanAccess(req.body.idLink, req.body.idRole);
-        
-        res.status(200).json(role);
-    } catch (error) {
-        
-        res.status(400).json(error);
-    }
-};
-
-exports.getLinksThatRoleCanAccess = async (req, res) => {
-    try {
-        var links = await PrivilegeService.getLinksThatRoleCanAccess(req.params.idRole);
-        
-        res.status(200).json(links);
-    } catch (error) {
-        
-        res.status(400).json(error);
-    }
-};

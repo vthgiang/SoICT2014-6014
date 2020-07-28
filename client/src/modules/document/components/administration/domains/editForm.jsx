@@ -30,8 +30,9 @@ class EditForm extends Component {
 
     validateName = async(value, willUpdateState)=>{
         let msg = undefined;
-        if(value === ''){
-            msg = 'Tên không được để trống'
+        const {translate} = this.props;
+        if(!value){
+            msg = translate('document.no_blank_name');
         }
         if(willUpdateState){
            await this.setState(state=>{
@@ -70,7 +71,8 @@ class EditForm extends Component {
                 domainId: nextProps.domainId,
                 domainName: nextProps.domainName,
                 domainDescription: nextProps.domainDescription,
-                domainParent: nextProps.domainParent
+                domainParent: nextProps.domainParent,
+                errorName : undefined,
             } 
         } else {
             return null;
@@ -98,10 +100,10 @@ class EditForm extends Component {
                     <textarea style={{minHeight: '120px'}} type="text" className="form-control" onChange={this.handleDescription} value={domainDescription}/>
                 </div> 
                 <div className="form-group">
-                    <button className="btn btn-success pull-right" style={{marginLeft: '5px'}} onClick={this.save}>Lưu</button>
+                    <button className="btn btn-success pull-right" style={{marginLeft: '5px'}} onClick={this.save}>{ translate('form.save') }</button>
                     <button className="btn btn-danger" onClick={()=>{
                         window.$(`#edit-document-domain`).slideUp()
-                    }}>Đóng</button>
+                    }}>{ translate('form.close') }</button>
                 </div>         
             </div>
          );

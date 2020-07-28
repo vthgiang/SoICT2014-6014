@@ -4,50 +4,47 @@ import {
 import {
     getStorage
 } from '../../../../../config';
-import { sendRequest} from '../../../../../helpers/requestHelper'
+import { sendRequest } from '../../../../../helpers/requestHelper'
 export const managerServices = {
     getAllKPIUnit,
     getChildTargetOfCurrentTarget,
-    evaluateKPIUnit,
-    getKPIUnits,
     copyKPIUnit,
 }
 
 // Lấy tất cả KPI đơn vị
-function getAllKPIUnit(id) {
+function getAllKPIUnit(infosearch) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/unit/${id}`,
+        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/management/organizational-unit-kpi-sets`,
         method: 'GET',
-    }, false, true, 'kpi.organizational_unit');
-
-}
-
-function getKPIUnits(infosearch) {
-    return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpiunits/all-unit/${infosearch.role}/${infosearch.status}/${infosearch.startDate}/${infosearch.endDate}`,
-        method: 'GET',
+        params: {
+            roleId: infosearch.role,
+            status: infosearch.status,
+            startDate: infosearch.startDate,
+            endDate: infosearch.endDate
+        }
     }, false, true, 'kpi.organizational_unit');
 }
+
 // Lấy tất cả KPI đơn vị
-function getChildTargetOfCurrentTarget(id, date) {
+function getChildTargetOfCurrentTarget(kpiId, date) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/child-target/${id}/${date}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets`,
         method: 'GET',
+        params: {
+            organizationalUnitKpiSetId: kpiId,
+            date: date
+        }
     }, false, true, 'kpi.organizational_unit');
 }
 
-
-// Cập nhật dữ liệu cho KPI đơn vị
-function evaluateKPIUnit(id) {
+function copyKPIUnit(kpiId, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/evaluate/${id}`,
-        method: 'PUT',
-    }, false, true, 'kpi.organizational_unit');
-}
-
-function copyKPIUnit(id, idunit, dateold, datenew){
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpiunits/copykpi/${id}/${idunit}/${dateold}/${datenew}`,
+        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/management/organizational-unit-kpi-sets/${kpiId}/copy`,
         method: 'POST',
+        params: {
+            idunit: data.idunit,
+            datenew: data.datenew,
+            creator: data.creator,
+        }
     }, true, true, 'kpi.organizational_unit');
 }

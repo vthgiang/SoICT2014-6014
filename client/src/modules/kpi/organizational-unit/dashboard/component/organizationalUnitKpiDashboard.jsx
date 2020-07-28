@@ -19,11 +19,9 @@ class OrganizationalUnitKpiDashboard extends Component {
 
     constructor(props) {
         super(props);
-
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         this.today = new Date();
-
         this.state = {
             currentYear: new Date().getFullYear(),
             currentRole: null,
@@ -212,10 +210,10 @@ class OrganizationalUnitKpiDashboard extends Component {
                         <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.month')}</label>
                         <DatePicker
                             id="monthInOrganizationalUnitKpiDashboard"
-                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                            value={defaultDate}                 // giá trị mặc định cho datePicker    
+                            dateFormat="month-year"             
+                            value={defaultDate}                     
                             onChange={this.handleSelectMonth}
-                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                            disabled={false}                   
                         />
                     </span>
                 </div>
@@ -239,7 +237,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                         {childOrganizationalUnit &&
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div class="box-title">{translate('kpi.organizational_unit.dashboard.distributive')}{this.state.date}</div>
+                                    <div className="box-title">{translate('kpi.organizational_unit.dashboard.distributive')}{this.state.date}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) &&

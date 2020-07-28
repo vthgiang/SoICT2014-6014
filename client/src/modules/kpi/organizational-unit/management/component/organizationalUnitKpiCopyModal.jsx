@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { managerActions } from '../redux/actions';
-// import { kpiUnitActions } from '../../../../redux-actions/CombineActions';
+import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 import { ErrorLabel, DatePicker, DialogModal } from '../../../../../common-components';
 import {
@@ -16,13 +16,13 @@ class ModalCopyKPIUnit extends Component {
             kpiunit: {
                 unit: "",
                 date: this.formatDate(Date.now()),
-                creator: "",//localStorage.getItem("id")
+                creator: "",
             }
         };
     }
 
     formatDate(date) {
-        var d = new Date(date),
+        let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -34,22 +34,19 @@ class ModalCopyKPIUnit extends Component {
 
         return [month, year].join('-');
     }
+
     handleNewDateChange = (value) => {
-        // var value = e.target.value;
         this.setState(state => {
             return {
                 ...state,
-                //errorOnDate: this.validateDate(value),
                 NewDate: value,
             }
         });
 
     }
-    handleSubmit = async (oldkpiunit, listkpi, idunit) => {
-        // event.preventDefault();
-        var id = getStorage("userId");
-        var currentRole = getStorage("currentRole");
-        // kpiunit.creator = id;
+
+    handleSubmit = async (oldkpiunit, listkpi, idunit, kpiId) => {
+        let id = getStorage("userId");
         await this.setState(state => {
             return {
                 ...state,
@@ -61,29 +58,24 @@ class ModalCopyKPIUnit extends Component {
                 }
             }
         })
-        var { kpiunit } = this.state;
-        if (this.state.NewDate == undefined) {
-            Swal.fire({
-                title: `Chưa chọn tháng khởi tạo`,
-                type: 'warning',
-                icon: 'warning',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
-            })
-        } else {
+        const { kpiunit } = this.state;
+        const { translate } = this.props;
+        let checkNewDate = this.state.NewDate;
+        if (checkNewDate) {
             var date = this.state.NewDate.split("-");
-            var check = 1;
-            var nowDate = new Date();
+            let check = 1;
+            let nowDate = new Date();
 
             for (let i in listkpi) {
                 if (listkpi[i].organizationalUnit._id == idunit) {
-                    var checkDate = listkpi[i].date.split("-");
+                    let checkDate = listkpi[i].date.split("-");
                     if (checkDate[0] == date[1] && checkDate[1] == date[0]) {
                         check = 0;
                         break;
                     }
                 }
             }
+
             if (check != 0) {
                 if (date[1] < nowDate.getFullYear()) {
                     check = 2;
@@ -93,58 +85,76 @@ class ModalCopyKPIUnit extends Component {
                     }
                 }
             }
+
             if (check == 0) {
                 Swal.fire({
-                    title: `Đã tồn tại KPI của tháng ${date[0]}-${date[1]} `,
+                    title: translate('kpi.organizational_unit.management.copy_modal.alert.coincide_month')+`${date[0]}-${date[1]} `,
                     type: 'warning',
                     icon: 'warning',
                     confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Xác nhận'
+                    confirmButtonText: translate('kpi.organizational_unit.management.copy_modal.alert.confirm'),
                 })
             }
+
             if (check == 2) {
                 Swal.fire({
-                    title: `Tháng đã qua không thể tạo KPI`,
+                    title: translate('kpi.organizational_unit.management.copy_modal.alert.unable_kpi'),
                     type: 'warning',
                     icon: 'warning',
                     confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'Xác nhận'
+                    confirmButtonText: translate('kpi.organizational_unit.management.copy_modal.alert.confirm'),
                 })
             }
+
             if (check == 1) {
-                this.props.copyKPIUnit(id, idunit, oldkpiunit.date, this.state.NewDate);
-                if (kpiunit.unit && kpiunit.date) {//&& kpiunit.creater
+                let data = {  
+                    creator: id,
+                    idunit: idunit,
+                    datenew: this.state.NewDate
+                }
+                this.props.copyKPIUnit(kpiId, data);
+                if (kpiunit.unit && kpiunit.date) {
                     Swal.fire({
-                        title: "Hãy nhớ thay đổi liên kết đến mục tiêu cha để được tính KPI mới!",
+                        title: translate('kpi.organizational_unit.management.copy_modal.alert.change_link'),
                         type: 'warning',
                         confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'Xác nhận'
+                        confirmButtonText: translate('kpi.organizational_unit.management.copy_modal.alert.confirm'),
                     });
                 }
             }
+        } else {
+            Swal.fire({
+                title: translate('kpi.organizational_unit.management.copy_modal.alert.check_new_date'),
+                type: 'warning',
+                icon: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi.organizational_unit.management.copy_modal.alert.confirm'),
+            })
         }
     }
 
     save = () => {
-        let { listkpi, kpiunit, idunit } = this.props;
-        this.handleSubmit(kpiunit, listkpi, idunit)
+        let {kpiId, listkpi, kpiunit, idunit } = this.props;
+        this.handleSubmit(kpiunit, listkpi, idunit, kpiId)
     }
+
     render() {
         const { NewDate, errorOnDate } = this.state;
-        const { kpiunit, listkpi, idunit } = this.props;
+        const { kpiunit, listkpi, idunit, translate, kpiId } = this.props;
         return (
             <DialogModal
                 modalID={`copy-old-kpi-to-new-time-${kpiunit._id}`}
-                title={`Thiết lập KPI tháng mới từ KPI tháng ${this.formatDate(kpiunit.date)}`}
+                title={translate('kpi.organizational_unit.management.copy_modal.create')+ `${this.formatDate(kpiunit.date)}`}
                 size={10}
                 func={this.save}
             >
                 <div className="form-group">
-                    <label className="col-sm-4">Đơn vị:</label>
+                    <label className="col-sm-4">{translate('kpi.organizational_unit.management.copy_modal.organizational_unit')}</label>
                     <label className="col-sm-9" style={{ fontWeight: "400", marginLeft: "-14.5%" }}>{kpiunit && kpiunit.organizationalUnit.name}</label>
                 </div>
+                <br/>
                 <div className="form-group">
-                    <label className="col-sm-2">Tháng:</label>
+                    <label className="col-sm-2">{translate('kpi.organizational_unit.management.copy_modal.month')}</label>
                     <DatePicker
                         id="new_date"
                         value={NewDate}
@@ -154,20 +164,15 @@ class ModalCopyKPIUnit extends Component {
                     <ErrorLabel content={errorOnDate} />
                 </div>
                 <div className="form-group" >
-                    <label className="col-sm-12">Danh sách mục tiêu:</label>
+                    <label className="col-sm-12">{translate('kpi.organizational_unit.management.copy_modal.list_target')}</label>
                     <ul>
-                        {typeof kpiunit !== "undefined" && kpiunit.kpis.length !== 0 &&
+                        {typeof kpiunit && kpiunit.kpis.length &&
                             kpiunit.kpis.map(item => {
                                 return <li key={item._id}>{item.name + " (" + item.weight + ")"}</li>
                             })
                         }
                     </ul>
                 </div>
-                {/* </div> */}
-                {/* <div className="modal-footer">
-                    <button className="btn btn-success" onClick={(event) => this.handleSubmit(event, kpiunit, listkpi)}>Thiết lập</button>
-                    <button type="cancel" className="btn btn-primary" onClick={() => this.handleCloseModal(kpiunit._id)}>Hủy bỏ</button>
-                </div> */}
             </DialogModal >
         );
     }
@@ -181,5 +186,5 @@ function mapState(state) {
 const actionCreators = {
     copyKPIUnit: managerActions.copyKPIUnit
 };
-const connectedModalCopyKPIUnit = connect(mapState, actionCreators)(ModalCopyKPIUnit);
+const connectedModalCopyKPIUnit = connect(mapState, actionCreators)(withTranslate(ModalCopyKPIUnit));
 export { connectedModalCopyKPIUnit as ModalCopyKPIUnit };

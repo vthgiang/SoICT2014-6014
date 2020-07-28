@@ -14,7 +14,6 @@ class TaskAddModal extends Component {
 
     constructor(props) {
         super(props);
-        var { translate } = this.props;
         this.state = {
             newTask: {
                 name: "",
@@ -65,7 +64,8 @@ class TaskAddModal extends Component {
         this.validateTaskName(value, true);
     }
     validateTaskName = (value, willUpdateState = true) => {
-        let msg = TaskFormValidator.validateTaskName(value);
+        let { translate } = this.props;
+        let msg = TaskFormValidator.validateTaskName(value, translate);
 
         if (willUpdateState) {
             this.state.newTask.name = value;
@@ -86,7 +86,8 @@ class TaskAddModal extends Component {
         this.validateTaskDescription(value, true);
     }
     validateTaskDescription = (value, willUpdateState = true) => {
-        let msg = TaskFormValidator.validateTaskDescription(value);
+        let { translate } = this.props;
+        let msg = TaskFormValidator.validateTaskDescription(value, translate);
 
         if (willUpdateState) {
             this.state.newTask.description = value;
@@ -104,7 +105,8 @@ class TaskAddModal extends Component {
         this.validateTaskStartDate(value, true);
     }
     validateTaskStartDate = (value, willUpdateState = true) => {
-        let msg = TaskFormValidator.validateTaskStartDate(value, this.state.newTask.endDate);
+        let { translate } = this.props;
+        let msg = TaskFormValidator.validateTaskStartDate(value, this.state.newTask.endDate, translate);
 
         if (willUpdateState) {
             this.state.newTask.startDate = value;
@@ -122,7 +124,8 @@ class TaskAddModal extends Component {
         this.validateTaskEndDate(value, true);
     }
     validateTaskEndDate = (value, willUpdateState = true) => {
-        let msg = TaskFormValidator.validateTaskEndDate(this.state.newTask.startDate, value);
+        let { translate } = this.props;
+        let msg = TaskFormValidator.validateTaskEndDate(this.state.newTask.startDate, value, translate);
 
         if (willUpdateState) {
             this.state.newTask.endDate = value;
@@ -234,7 +237,8 @@ class TaskAddModal extends Component {
         this.validateTaskResponsibleEmployees(value, true);
     }
     validateTaskResponsibleEmployees = (value, willUpdateState = true) => {
-        let msg = TaskFormValidator.validateTaskResponsibleEmployees(value);
+        let { translate } = this.props;
+        let msg = TaskFormValidator.validateTaskResponsibleEmployees(value, translate);
 
         if (willUpdateState) {
             this.state.newTask.responsibleEmployees = value;
@@ -253,7 +257,8 @@ class TaskAddModal extends Component {
         this.validateTaskAccountableEmployees(value, true);
     }
     validateTaskAccountableEmployees = (value, willUpdateState = true) => {
-        let msg = TaskFormValidator.validateTaskAccountableEmployees(value);
+        let { translate } = this.props;
+        let msg = TaskFormValidator.validateTaskAccountableEmployees(value, translate);
 
         if (willUpdateState) {
             this.state.newTask.accountableEmployees = value;
@@ -375,7 +380,7 @@ class TaskAddModal extends Component {
                     formID="form-add-new-task"
                     disableSubmit={!this.isTaskFormValidated()}
                     func={this.handleSubmit}
-                    title="Thêm công việc mới"
+                    title={translate('task.task_management.add_new_task')}
                 >
 
                     <div className="col-sm-6">

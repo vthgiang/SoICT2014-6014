@@ -17,11 +17,10 @@ export const taskManagementService = {
     getCreatorTaskByUser,
     addNewTask,
     editTask,
-    editArchivedOfTask,
     deleteTaskById,
-    editStatusOfTask,
     getSubTask,
     getTasksByUser,
+    getTaskEvaluations,
 };
 
 /**
@@ -40,7 +39,7 @@ function getById(taskId) {
  */
 function getAll() {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task`,
+        url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
         params: {
             type: 'all',
@@ -57,7 +56,7 @@ function getAll() {
 
 function getAllTaskByRole(userId, roleId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task`,
+        url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
         params: {
             type: 'get_all_task_created_by_user',
@@ -85,7 +84,7 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
     var user = getStorage("userId");
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task`,
+        url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
         params: {
             type: 'responsible',
@@ -122,7 +121,7 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
 function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task`,
+        url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
         params: {
             type: 'accountable',
@@ -157,7 +156,7 @@ function getAccountableTaskByUser(unit, number, perPage, status, priority, speci
 function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task`,
+        url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
         params: {
             type: 'consulted',
@@ -192,7 +191,7 @@ function getConsultedTaskByUser(unit, number, perPage, status, priority, special
 function getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task`,
+        url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
         params: {
             type: 'informed',
@@ -227,7 +226,7 @@ function getInformedTaskByUser(unit, number, perPage, status, priority, special,
 function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task`,
+        url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
         params: {
             type: 'creator',
@@ -252,7 +251,7 @@ function getCreatorTaskByUser(unit, number, perPage, status, priority, special, 
 
 function addNewTask(newTask) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/create`,
+        url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'POST',
         data: newTask
     }, true, true, 'task.task_management');
@@ -285,38 +284,12 @@ function deleteTaskById(taskId) {
 }
 
 /**
- * edit status of task
- * @param {*} taskId id cua task
- * @param {*} status trang thai muon cap nhat
- */
-function editStatusOfTask(taskId, status) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks/${taskId}`,
-        method: 'PATCH',
-        data: status,
-    }, false, true, 'task.task_management');
-}
-
-/**
- * chỉnh sửa trạng thái lưu kho
- * @param {*} taskId id công việc
- */
-
-function editArchivedOfTask(taskId) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks/${taskId}/archived`,
-        method: 'PATCH',
-    }, false, true, 'task.task_management');
-}
-
-/**
  * lấy công việc con
  * @param {*} taskId id công việc cha
  */
-
 function getSubTask(taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks/${taskId}/sub-task`,
+        url: `${LOCAL_SERVER_API}/task/tasks/${taskId}/sub-tasks`,
         method: 'GET'
     }, false, true, 'task.task_management');
 }
@@ -328,10 +301,18 @@ function getTasksByUser() {
     var id = getStorage("userId")
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task`,
+        url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
         params: { userId: id, type: 'all' }
     }, false, true, 'task.task_management');
 }
 
+
+function getTaskEvaluations(data) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/task/task-evaluations`,
+        method: 'GET',
+        params: data,
+    }, false, true, 'task.task_management');
+}
 

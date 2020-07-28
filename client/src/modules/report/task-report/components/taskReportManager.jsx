@@ -9,7 +9,7 @@ import { DataTableSetting, PaginateBar, SelectBox } from '../../../../common-com
 import { TaskReportActions } from '../redux/actions';
 import { TaskReportCreateForm } from './taskReportCreateForm';
 import { TaskReportEditForm } from './taskReportEditForm';
-import TaskReportViewForm from './taskReportViewForm';
+import { TaskReportViewForm } from './taskReportViewForm';
 
 class TaskReportManager extends Component {
     constructor(props) {
@@ -135,7 +135,6 @@ class TaskReportManager extends Component {
 
     render() {
         const { reports, translate, deleteTaskReport, user } = this.props;
-        console.log('1minh', user);
         let pageTotal = (reports.totalList % this.state.limit === 0) ?
             parseInt(reports.totalList / this.state.limit) :
             parseInt((reports.totalList / this.state.limit) + 1);
@@ -158,7 +157,9 @@ class TaskReportManager extends Component {
                         <ButtonModal modalID="modal-create-task-report" button_name={translate('report_manager.add_report')} title={translate('report_manager.add_report')} />
                     </div>
                     <TaskReportCreateForm />
+
                     <TaskReportViewForm />
+
                     {/* search form */}
                     <div className="form-inline" style={{ marginBottom: '2px' }}>
                         <div className="form-group">
@@ -169,11 +170,14 @@ class TaskReportManager extends Component {
                             <label className="form-control-static">{translate('report_manager.creator')}</label>
                             <input className="form-control" type="text" onKeyUp={this.handleEnterLimitSetting} name="name" onChange={this.handleChangeInput} placeholder={translate('report_manager.search_by_creator')} />
                         </div>
+
+                    </div>
+
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label className="form-control-static">Sắp xếp theo</label>
                             <SelectBox
-
-                                id={`select-sort-date22`}
+                                id="select-sort-date22"
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={
@@ -186,9 +190,9 @@ class TaskReportManager extends Component {
                                 multiple={false}
                             />
                         </div>
-                    </div>
-                    <div className="form-inline">
-                        <div className="form-group" style={{ marginLeft: '110px', marginTop: '10px' }}>
+
+                        <div className="form-group" >
+                            <label></label>
                             <button type="button" className="btn btn-success" onClick={this.search} title={translate('form.search')}>{translate('form.search')}</button>
                         </div>
                     </div>

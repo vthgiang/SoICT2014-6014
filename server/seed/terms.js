@@ -112,7 +112,7 @@ const LINKS = [
             ROOT_ROLES.ADMIN.name
         ]
     },
-
+    
 
 
     {
@@ -367,6 +367,26 @@ const LINKS = [
             ROOT_ROLES.VICE_DEAN.name,
             ROOT_ROLES.EMPLOYEE.name,
         ]
+    },
+    {
+        url: '/task-management-process',
+        description: 'Quy trình công việc',
+        category: LINK_CATEGORY.TASK.name,
+        roles: [
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: [
+            {
+                name: 'create-task-process-button',
+                description: 'Button thêm mới quy trình công việc',
+                roles: [
+                    ROOT_ROLES.DEAN.name,
+                ]
+            }
+        ],
+
     },
     {
         url: '/task-management-dashboard',

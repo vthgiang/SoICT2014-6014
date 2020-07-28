@@ -3,17 +3,10 @@ const router = express.Router();
 const managerController = require("./management.controller");
 const {auth} = require('../../../../middleware/index');
 
-// get all kpi unit
-router.get('/unit/:id',auth, managerController.get);
-// Tìm kiếm kpi đơn vị
-router.get('/all-unit/:role/:status/:startDate/:endDate', auth, managerController.getKPIUnits);
+// Tìm kiếm KPI của đơn vị
+router.get('/organizational-unit-kpi-sets',auth, managerController.get);
 
-// Lấy tất cả mục tiêu con của mục tiêu hiện tại
-router.get('/child-target/:id/:date',auth, managerController.getChildTargetByParentId);
-
-// Cập nhật dữ liệu mới nhất cho kpi đơn vị
-router.put('/evaluate/:id',auth, managerController.evaluateKPI);
-
-router.post('/copykpi/:id/:idunit/:dateold/:datenew', auth, managerController.copyKPI);
+// Copy mục tiêu của KPI tháng được chọn sang tháng mới
+router.post('/organizational-unit-kpi-sets/:id/copy', auth, managerController.copyKPI);
 
 module.exports = router;

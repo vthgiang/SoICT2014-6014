@@ -20,13 +20,6 @@ import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper
 
 var translate = '';
 class CreateEmployeeKpiSet extends Component {
-    componentDidMount() {
-        this.props.getDepartment();
-        this.props.getEmployeeKpiSet()
-        this.props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
-        this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-    }
-
     constructor(props) {
         super(props);
         var idUser = getStorage("userId");
@@ -60,6 +53,12 @@ class CreateEmployeeKpiSet extends Component {
             }
         };
     }
+    componentDidMount() {
+        this.props.getDepartment();
+        this.props.getEmployeeKpiSet()
+        this.props.getCurrentKPIUnit(localStorage.getItem('currentRole'));
+        this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
+    }
 
     shouldComponentUpdate = (nextProps, nextState) => {
         const { user } = this.props;
@@ -82,7 +81,6 @@ class CreateEmployeeKpiSet extends Component {
                 }
             }
         }
-
         return true;
     }
 
@@ -117,33 +115,33 @@ class CreateEmployeeKpiSet extends Component {
                 title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_edit_kpi.approving'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
         } else {
             Swal.fire({
                 title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_edit_kpi.activated'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
         }
     }
 
     handleNotInitializeOrganizationalUnitKpi = async () => {
             Swal.fire({
-                title: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa thiết lập KPI. Liên hệ với trưởng đơn vị để hỏi thêm!',
+                title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_initialize_organiztional_unit_kpi'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
     }
 
     handleNotActivatedOrganizationalUnitKpi = async () => {
         Swal.fire({
-            title: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa kích hoạt KPI. Liên hệ với trưởng đơn vị để hỏi thêm!',
+            title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_activate_organiztional_unit_kpi'),
             type: 'warning',
             confirmButtonColor: '#3085d6',
-            confirmButtonText: 'Xác nhận'
+            confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
         })
     }
     
@@ -155,7 +153,7 @@ class CreateEmployeeKpiSet extends Component {
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             }).then((res) => {
                 if (res.value) {
                     // Xóa KPI
@@ -167,14 +165,14 @@ class CreateEmployeeKpiSet extends Component {
                 title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.delete_kpi.approving'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
         } else {
             Swal.fire({
                 title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.delete_kpi.activated'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
         }
     }
@@ -259,7 +257,7 @@ class CreateEmployeeKpiSet extends Component {
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             }).then((res) => {
                 if (res.value) {
                     this.props.deleteEmployeeKpi(id, employeeKpiSet);
@@ -270,14 +268,14 @@ class CreateEmployeeKpiSet extends Component {
                 title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.delete_kpi.approving'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
         } else {
             Swal.fire({
                 title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.delete_kpi.activated'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
         }
 
@@ -297,14 +295,14 @@ class CreateEmployeeKpiSet extends Component {
                 title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.approving'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
         } else {
             Swal.fire({
                 title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.edit_target.activated'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
         }
 
@@ -341,7 +339,7 @@ class CreateEmployeeKpiSet extends Component {
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             }).then((res) => {
                 if (res.value) {
                     this.props.updateEmployeeKpiSetStatus(kpipersonal._id, 1);
@@ -352,7 +350,7 @@ class CreateEmployeeKpiSet extends Component {
                 title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.request_approval_kpi.not_enough_weight'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
         }
     }
@@ -365,7 +363,7 @@ class CreateEmployeeKpiSet extends Component {
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             }).then((res) => {
                 if (res.value) {
                     this.props.updateEmployeeKpiSetStatus(kpipersonal._id, 0);
@@ -376,7 +374,7 @@ class CreateEmployeeKpiSet extends Component {
                 title: translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.cancel_approve.activated'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
         }
     }
@@ -576,7 +574,7 @@ class CreateEmployeeKpiSet extends Component {
 
                                 {editing === false &&
                                     <div>
-                                        <span>{currentKPI.kpis.length} mục tiêu - {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight_total')} </span>
+                                        <span>{currentKPI.kpis.length} {translate('kpi.evaluation.employee_evaluation.target')} - {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight_total')} </span>
                                         <span>{currentKPI.kpis.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0)}/100 - </span>
                                         {currentKPI.kpis.map(item => parseInt(item.weight)).reduce((sum, number) => sum + number, 0) !== 100 ?
                                             <span className="text-danger" style={{fontWeight: "bold"}}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_satisfied')}</span>
@@ -597,13 +595,13 @@ class CreateEmployeeKpiSet extends Component {
                                         <table className="table table-bordered table-striped table-hover" id="kpipersonal_table">
                                             <thead>
                                                 <tr>
-                                                    <th title="Số thứ tự" style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
-                                                    <th title="Tên mục tiêu" className="col-lg-3 col-sm-3">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_name')}</th>
-                                                    <th title="Mục tiêu cha" className="col-lg-3 col-sm-3">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.parents_target')}</th>
-                                                    <th title="Tiêu chí đánh giá" className="col-lg-2 col-sm-2">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.evaluation_criteria')}</th>
-                                                    <th title="Trọng số" className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight')}</th>
-                                                    <th title="Trạng thái" className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.status')}</th>
-                                                    <th title="Hành động" className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action')}</th>
+                                                    <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')} style={{ width: '40px' }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.no_')}</th>
+                                                    <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_name')} className="col-lg-3 col-sm-3">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_name')}</th>
+                                                    <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.parents_target')} className="col-lg-3 col-sm-3">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.parents_target')}</th>
+                                                    <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.evaluation_criteria')} className="col-lg-2 col-sm-2">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.evaluation_criteria')}</th>
+                                                    <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight')} className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight')}</th>
+                                                    <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.status')} className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.status')}</th>
+                                                    <th title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action')} className="col-lg-1 col-sm-1">{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action')}</th>
                                                 </tr>
                                             </thead>
                                             <tbody>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { DialogModal, ErrorLabel } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 
 class EditForm extends Component {
@@ -31,8 +31,10 @@ class EditForm extends Component {
 
     validateName = (value, willUpdateState)=>{
         let msg = undefined;
-        if(value === "")
-            msg = "Tên không được để trống";
+        const {translate} = this.props;
+        if(!value){
+            msg = translate('document.no_blank_name');
+        }
         if(willUpdateState){
             this.setState(state=>{
                 return{
@@ -52,8 +54,10 @@ class EditForm extends Component {
 
     validateDescription = (value, willUpdateState)=>{
         let msg = undefined;
-        if(value === '')
-            msg = 'Mô tả không được để trống';
+        const {translate} = this.props;
+        if(value === ''){
+            msg = translate('document.no_blank_description');
+        }
         if(willUpdateState){
             this.setState(state=>{
                 return{
@@ -71,7 +75,7 @@ class EditForm extends Component {
     }
     isValidateForm = ()=>{
         return this.validateDescription(this.state.categoryDescription, false) 
-                && this.validateName(this.state.validateName, false);
+            && this.validateName(this.state.validateName, false);
     }
     static getDerivedStateFromProps(nextProps, prevState){
         if (nextProps.categoryId !== prevState.categoryId) {
@@ -90,7 +94,7 @@ class EditForm extends Component {
     }
 
     save = () => {
-        const {categoryId, categoryName, categoryDescription} = this.state;
+        const { categoryId, categoryName, categoryDescription } = this.state;
         this.props.editDocumentCategory(categoryId, {
             name: categoryName,
             description: categoryDescription
@@ -98,8 +102,8 @@ class EditForm extends Component {
     }
 
     render() {
-        const {translate}=this.props;
-        const {categoryName, categoryDescription, errorName, errorDescription} = this.state;
+        const { translate }=this.props;
+        const { categoryName, categoryDescription, errorName, errorDescription } = this.state;
     
         return ( 
             <DialogModal

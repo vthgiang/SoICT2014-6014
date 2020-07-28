@@ -3,58 +3,38 @@ const { LogInfo, LogError } = require('../../../../logs');
 
 /**
  * lấy tất cả kpi nhân viên
- * @param {*} req 
- * @param {*} res 
  */
-exports.getKPIAllMember = async (req, res) => {
-    try {
-        const kpimembers = await KPIMemberService.getKPIAllMember(req.params);
-        await LogInfo(req.user.emai, `Get kpi all member`, req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['get_all_kpi_member_success'],
-            content: kpimembers
-        });
-    } catch (error) {
-        await LogError(req.user.emai, `Get kpi all  member`, req.user.company);
-        res.status(400).json({
-            messages: ['get_all_kpi_member_fail'],
-            content: error
-        });
-    }
-};
 
-/**
- * lấy kpi nhân viên theo người tạo
- * @param {*} req 
- * @param {*} res 
- */
-exports.getKpiByCreator = async (req, res) => {
-    try {
-        const kpimembers = await KPIMemberService.getKpiByCreator(req.params.member);
-        await LogInfo(req.user.email, `Get kpi member by creater`, req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['get_kpi_targets_success'],
-            content: kpimembers
-        });
-    } catch (error) {
-        await LogError(req.user.email, `Get kpi member by creater`, req.user.company);
-        res.status(400).json({
-            messages: ['get_kpi_targets_fail'],
-            message: error
-        });
+exports.getEmployeeKPISets = async (req, res) => {
+    if (req.query.userId && req.query.date) {
+        getKpisByMonth(req, res);
+    }
+    else {
+        try {
+            const kpimembers = await KPIMemberService.getEmployeeKPISets(req.query);
+            await LogInfo(req.user.emai, `Get kpi all member`, req.user.company);
+            res.status(200).json({
+                success: true,
+                messages: ['get_all_kpi_member_success'],
+                content: kpimembers
+            });
+        } catch (error) {
+            await LogError(req.user.emai, `Get kpi all  member`, req.user.company);
+            res.status(400).json({
+                messages: ['get_all_kpi_member_fail'],
+                content: error
+            });
+        }
     }
 };
 
 /**
  * Lấy kpi cá nhân theo id 
- * @param {*} req 
- * @param {*} res 
  */
-exports.getById = async (req, res) => {
+
+exports.getKpisByKpiSetId = async (req, res) => {
     try {
-        const kpimembers = await KPIMemberService.getById(req.params.id);
+        const kpimembers = await KPIMemberService.getKpisByKpiSetId(req.params.id);
         await LogInfo(req.user.email, `Get kpi member by id`, req.user.company);
         res.status(200).json({
             success: true,
@@ -72,12 +52,11 @@ exports.getById = async (req, res) => {
 
 /**
  * Lấy KPI cá nhân theo tháng 
- * @param {*} req 
- * @param {*} res 
  */
-exports.getKpiByMonth = async (req, res) => {
+
+getKpisByMonth = async (req, res) => {
     try {
-        const kpimembers = await KPIMemberService.getKpiByMonth(req.params);
+        const kpimembers = await KPIMemberService.getKpisByMonth(req.query);
         await LogInfo(req.user.email, `Get kpi member by month`, req.user.company);
         res.status(200).json({
             success: true,
@@ -95,12 +74,11 @@ exports.getKpiByMonth = async (req, res) => {
 
 /**
  * Phê duyệt tất cả mục tiêu của KPI req.params.id
- * @param {*} req 
- * @param {*} res 
  */
-exports.approveAllTarget = async (req, res) => {
+
+exports.approveAllKpis = async (req, res) => {
     try {
-        const kpimembers = await KPIMemberService.approveAllTarget(req.params.id);
+        const kpimembers = await KPIMemberService.approveAllKpis(req.params.id);
         await LogInfo(req.user.email, `Approve all target`, req.user.company);
         res.status(200).json({
             success: true,
@@ -118,35 +96,36 @@ exports.approveAllTarget = async (req, res) => {
 
 /**
  * Chỉnh sửa mục tiêu của kpi cá nhân
- * @param {*} req 
- * @param {*} res 
  */
-exports.editTarget = async (req, res) => {
-    try {
-        const kpimembers = await KPIMemberService.editTarget(req.params.id, req.body);
-        await LogInfo(req.user.email, `Edit target member`, req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['edit_kpi_target_member_success'],
-            content: kpimembers
-        });
-    } catch (error) {
-        await LogError(req.user.email, `Edit target member`, req.user.company);
-        res.status(400).json({
-            messages: ['edit_kpi_target_member_fail'],
-            message: error
-        });
+
+exports.editKpi = async (req, res) => {
+    if (Object.keys(req.body).length === 0) this.approveAllKpis(req, res);
+    else {
+        try {
+            const kpimembers = await KPIMemberService.editKpi(req.params.id, req.body);
+            await LogInfo(req.user.email, `Edit target member`, req.user.company);
+            res.status(200).json({
+                success: true,
+                messages: ['edit_kpi_target_member_success'],
+                content: kpimembers
+            });
+        } catch (error) {
+            await LogError(req.user.email, `Edit target member`, req.user.company);
+            res.status(400).json({
+                messages: ['edit_kpi_target_member_fail'],
+                message: error
+            });
+        }
     }
 }
 
 /**
- * Phê duyệt từng mục tiêu của KPI req.params.id  status: req.params.status
- * @param {*} req 
- * @param {*} res 
+ * Chỉnh sửa từng mục tiêu của KPI req.params.id  status: req.params.status
  */
-exports.editStatusTarget = async (req, res) => {
+
+exports.editStatusKpi = async (req, res) => {
     try {
-        const kpimembers = await KPIMemberService.editStatusTarget(req.params);
+        const kpimembers = await KPIMemberService.editStatusKpi(req.params, req.query);
         await LogInfo(req.user.email, `Edit status target`, req.user.company);
         res.status(200).json({
             success: true,
@@ -161,14 +140,14 @@ exports.editStatusTarget = async (req, res) => {
         });
     }
 }
+
 /**
  * Lấy danh sách công việc theo id
- * @param {*} req 
- * @param {*} res 
  */
-exports.getTaskById = async (req, res) => {
+
+exports.getTasksByKpiId = async (req, res) => {
     try {
-        const kpimembers = await KPIMemberService.getTaskById(req.params);
+        const kpimembers = await KPIMemberService.getTasksByKpiId(req.query);
         await LogInfo(req.user.email, `Get task by Id`, req.user.company);
         res.status(200).json({
             success: true,
@@ -183,60 +162,14 @@ exports.getTaskById = async (req, res) => {
         });
     }
 }
-/**
- * Lấy điểm hệ thống
- * @param {} req 
- * @param {*} res 
- */
-exports.getSystemPoint = async (req, res) => {
-    try {
-        const kpimembers = await KPIMemberService.getSystemPoint(req.params.id);
-        await LogInfo(req.user.email, `Get system point`, req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['get_system_point_success'],
-            content: kpimembers
-        });
-    } catch (error) {
-        await LogError(req.user.email, `Get system point`, req.user.company);
-        res.status(400).json({
-            messages: ['get_system_point_fail'],
-            message: error
-        });
-    }
-}
-
-/**
- * cập nhật điểm quản lí đánh giá
- * @param {*} req 
- * @param {*} res 
- */
-exports.setPointKPI = async (req, res) => {
-    try {
-        const kpimembers = await KPIMemberService.setPointKPI(req.params.id_kpi, req.params.id_target, req.body);
-        await LogInfo(req.user.email, `Set point for kpi`, req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['set_point_kpi_success'],
-            content: kpimembers
-        });
-    } catch (error) {
-        await LogInfo(req.user.email, `Set point for kpi`, req.user.company);
-        res.status(400).json({
-            messages: ['set_point_kpi_fail'],
-            message: error
-        });
-    }
-}
 
 /**
  * cập nhật điểm level
- * @param {*} req 
- * @param {*} res 
  */
+
 exports.setTaskImportanceLevel = async (req, res) => {
     try {
-        const kpimembers = await KPIMemberService.setTaskImportanceLevel(req.params.id, req.params.kpiType, req.body);
+        const kpimembers = await KPIMemberService.setTaskImportanceLevel(req.params.id, req.query.kpiType, req.body);
         await LogInfo(req.user.email, `Set task importance level`, req.user.company);
         res.status(200).json({
             success: true,

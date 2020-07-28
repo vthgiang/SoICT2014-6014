@@ -3,12 +3,29 @@ const Link = require('../../../models/super-admin/link.model');
 const Role = require('../../../models/auth/role.model');
 
 /**
+ * Lấy ra mảng links mà một role được quyền truy cập
+ */
+exports.getLinksThatRoleCanAccess = async (idRole) => {
+    const role = await Role.findById(idRole); //lay duoc role hien tai
+    var roles = [role._id];
+    roles = roles.concat(role.parents);
+    const privilege = await Privilege.find({ 
+        roleId: { $in: roles },
+        resourceType: 'Link'
+    }).populate({ path: 'resourceId', model: Link }); 
+    const links = await privilege.map( link => link.resourceId );
+
+    return links;
+}
+
+/**
  * Thêm quyền truy cập tới Link cho một Role truyền vào
  */
 exports.addLinkThatRoleCanAccess = async (idLink, arrRole) => {
     const check = await Privilege.findOne({ resource: idLink });
-    if(check === null){
-        //Chua co privilege cho link hien tai
+
+    if (!check) {
+        // Chua co privilege cho link hien tai
         const privilege = await Privilege.create({
             resource: idLink,
             resource_type: 'Link',
@@ -16,8 +33,8 @@ exports.addLinkThatRoleCanAccess = async (idLink, arrRole) => {
         });
 
         return privilege;
-    }else{
-        //Privilege cho link hien tai da ton tai
+    } else {
+        // Privilege cho link hien tai da ton tai
         check.role = check.role.concat(arrRole);
         check.save();
 
@@ -42,19 +59,4 @@ exports.addLinkThatRolesCanAccess = async (linkId, roleArr) => {
     return privilege;
 }
 
-/**
- * Lấy ra mảng links mà một role được quyền truy cập
- */
-exports.getLinksThatRoleCanAccess = async (idRole) => {
-    const role = await Role.findById(idRole); //lay duoc role hien tai
-    var roles = [role._id];
-    roles = roles.concat(role.parents);
-    const privilege = await Privilege.find({ 
-        roleId: { $in: roles },
-        resourceType: 'Link'
-    }).populate({ path: 'resourceId', model: Link }); 
-    const links = await privilege.map( link => link.resourceId );
-
-    return links;
-}
 

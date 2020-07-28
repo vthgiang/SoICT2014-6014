@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker,TreeSelect } from '../../../../../common-components';
+import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker,TreeSelect, ErrorLabel } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import moment from 'moment';
-import { LOCAL_SERVER_API } from '../../../../../env';
 
 class EditForm extends Component {
     constructor(props) {
@@ -13,16 +12,12 @@ class EditForm extends Component {
     }
 
     handleName = (e) => {
-        const value = e.target.value;
-        this.setState({
-            documentName: value
-        })
+        const value = e.target.value.trim();
+        this.validateName(value, true)
     }
 
     handleCategory = (value) => {
-        this.setState({
-            documentCategory: value[0]
-        })
+        this.validateCategory(value[0], true);
     }
 
     handleDomains = value => {
@@ -35,35 +30,35 @@ class EditForm extends Component {
     }
 
     handleIssuingBody = (e) => {
-        const {value} = e.target;
-        this.setState({ documentIssuingBody: value }); 
+        const value = e.target.value.trim();
+        this.validateIssuingBody(value, true);
     }
 
-    handleOfficialNumber = e => {
-        const {value} = e.target;
-        this.setState({documentOfficialNumber: value})
+    handleOfficialNumber = (e) => {
+        const value = e.target.value.trim();
+        this.validateOfficialNumber(value, true);
     }
 
-    handleSigner = e => {
-        const {value} = e.target;
-        this.setState({ documentSigner: value })
+    handleSigner = (e) => {
+        const value = e.target.value.trim();
+       this.validateSinger(value, true);
     }
 
-    handleRelationshipDescription = e => {
+    handleRelationshipDescription = (e) => {
         const {value} = e.target;
         this.setState({ documentRelationshipDescription: value });
     }
 
-    handleRelationshipDocuments = e => {
+    handleRelationshipDocuments = (e) => {
         const {value} = e.target;
         this.setState({ documentRelationshipDocuments: value });
     }
 
-    handleRoles= value => {
+    handleRoles = (value) => {
         this.setState({ documentRoles: value });
     }
 
-    handleArchivedRecordPlaceInformation = e => {
+    handleArchivedRecordPlaceInformation = (e) => {
         const {value} = e.target;
         this.setState(state => {
             return {
@@ -76,7 +71,7 @@ class EditForm extends Component {
         });
     }
 
-    handleArchivedRecordPlaceOrganizationalUnit = e => {
+    handleArchivedRecordPlaceOrganizationalUnit = (e) => {
         const {value} = e.target;
         this.setState(state => {
             return {
@@ -89,7 +84,7 @@ class EditForm extends Component {
         });
     }
 
-    handleArchivedRecordPlaceManager = e => {
+    handleArchivedRecordPlaceManager = (e) => {
         const {value} = e.target;
         this.setState(state => {
             return {
@@ -103,22 +98,236 @@ class EditForm extends Component {
     }
 
     handleVersionName = (e) => {
-        const {value} = e.target;
-        this.setState({documentVersionName: value});
+        const value = e.target.value.trim();
+        this.validateVersionName(value, true);
+     }
+
+     handleIssuingDate = (value) => {
+        this.validateIssuingDate(value, true);
     }
 
-    handleIssuingDate = value => {
-        this.setState({ documentIssuingDate: value})
+    handleEffectiveDate = (value) => {
+        this.validateEffectiveDate(value, true);
     }
 
-    handleEffectiveDate = value => {
-        this.setState({ documentEffectiveDate: value})
+    handleExpiredDate = (value) => {
+        this.validateExpiredDate(value, true);
+    }
+    handleUploadFile = (e) => {
+        this.setState({ documentFile: e.target.files[0] });
     }
 
-    handleExpiredDate = value => {
-        this.setState({ documentExpiredDate: value})
+    handleUploadFileScan = (e) => {
+        this.setState({ documentFileScan: e.target.files[0] });
     }
-    
+    validateName = (value, willUpdateState)=> {
+        let msg = undefined;
+        const {translate} = this.props;
+        if(!value){
+            msg = translate('document.no_blank_name');
+        }
+        if(willUpdateState){
+            this.setState(state=> {
+                return{
+                    ...state,
+                    documentName: value,
+                    errorName: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+
+    validateCategory = (value, willUpdateState)=>{
+        let msg = undefined;
+        const {translate} = this.props;
+        if(!value){
+            msg = translate('document.doc_version.no_blank_category');
+        }
+        if(willUpdateState){
+            this.setState(state=> {
+                return{
+                    ...state,
+                    documentCategory: value,
+                    errorCategory: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+
+   
+    validateIssuingBody = (value, willUpdateState)=>{
+        let msg = undefined;
+        const {translate} = this.props;
+        if(!value){
+            msg = translate('document.doc_version.no_blank_issuingbody');
+        }
+        if(willUpdateState){
+            this.setState(state=> {
+                return{
+                    ...state,
+                    documentIssuingBody: value,
+                    errorIssuingBody: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    validateVersionName = (value, willUpdateState)=>{
+        let msg = undefined;
+        const {translate} = this.props;
+        if(!value){
+            msg = translate('document.doc_version.no_blank_version_name');
+        }
+        if(willUpdateState){
+            this.setState(state=> {
+                return{
+                    ...state,
+                    documentVersionName: value,
+                    errorVersionName: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    validateOfficialNumber = (value, willUpdateState)=>{
+        const regex = /\d/g
+        let msg = undefined;
+        const {translate} = this.props;
+        if(!value){
+            msg = translate('document.doc_version.no_blank_official_number');
+        }
+        else if(!regex.test(value)){
+            msg = translate('document.doc_version.error_office_number');
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentOfficialNumber: value,
+                    errorOfficialNumber: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    validateIssuingDate = (value, willUpdateState)=>{
+        let msg = undefined;
+        const {translate} = this.props;
+        if(!value){
+            msg = translate('document.doc_version.no_blank_issuingdate');
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentIssuingDate: value,
+                    errorIssuingDate: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    validateEffectiveDate = (value, willUpdateState)=>{
+        let msg = undefined;
+        const {translate} = this.props;
+        if(!value){
+            msg = translate('document.doc_version.no_blank_effectivedate');
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentEffectiveDate: value,
+                    errorEffectiveDate: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    validateExpiredDate = (value, willUpdateState)=>{
+        let msg = undefined;
+        const {translate} = this.props;
+        if(!value){
+            msg = translate('document.doc_version.no_blank_expired_date');
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentExpiredDate: value,
+                    errorExpiredDate: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    validateSinger = (value, willUpdateState)=>{
+        let msg = undefined;
+        const {translate} = this.props;
+        if(!value){
+            msg = translate('document.doc_version.no_blank_signer');
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentSigner: value,
+                    errorSigner: msg,
+                }
+            })
+        }
+        return msg === undefined;
+    }
+    validateDocumentFile = (value, willUpdateState)=>{
+        let msg = undefined;
+        const {translate} = this.props;
+        if(!value){
+            msg = translate('document.doc_version.no_blank_file');
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentFile: value,
+                    errorDocumentFile: msg,
+                }
+            })
+        }
+        return this.state.documentFile === undefined;
+    }
+    validateDocumentFileScan = (value, willUpdateState)=>{
+        let msg = undefined;
+        const {translate} = this.props;
+        if(!value){
+            msg = translate('document.doc_version.no_blank_file_scan');
+        }
+        if(willUpdateState){
+            this.setState(state=>{
+                return{
+                    ...state,
+                    documentFileScan: value,
+                    errorDocumentFileScan: msg,
+                }
+            })
+        }
+        return this.state.documentFileScan === undefined;
+    }
+
+    isValidateForm = ()=>{
+        return this.validateName(this.state.documentName, false)
+        && this.validateCategory(this.state.documentCategory, false)
+        && this.validateVersionName(this.state.documentVersionName, false)
+        && this.validateOfficialNumber(this.state.documentOfficialNumber, false)
+        && this.validateIssuingDate(this.state.documentIssuingDate, false)
+        && this.validateEffectiveDate(this.state.documentEffectiveDate, false)
+        && this.validateExpiredDate(this.state.documentExpiredDate, false)
+        && this.validateSinger(this.state.documentSigner, false)
+        && this.validateDocumentFile(this.state.documentFile, false)
+        && this.validateDocumentFileScan(this.state.documentFileScan, false)
+        && this.validateIssuingBody(this.state.documentIssuingBody, false);
+    }
     save = () => {
         const {
             documentId,
@@ -129,12 +338,9 @@ class EditForm extends Component {
             documentIssuingBody,
             documentOfficialNumber,
             documentSigner,
-
             documentRelationshipDescription,
             documentRelationshipDocuments,
-
             documentRoles,
-
             documentArchivedRecordPlaceInfo,
             documentArchivedRecordPlaceOrganizationalUnit,
             documentArchivedRecordPlaceManager,
@@ -143,7 +349,7 @@ class EditForm extends Component {
         const formData = new FormData(); 
         formData.append('name', documentName);
         formData.append('category', documentCategory);
-        if(documentDomains !== undefined) for (var i = 0; i < documentDomains.length; i++) {
+        if(documentDomains) for (var i = 0; i < documentDomains.length; i++) {
             formData.append('domains[]', documentDomains[i]);
         }
         formData.append('description', documentDescription); 
@@ -152,10 +358,10 @@ class EditForm extends Component {
         formData.append('signer', documentSigner);
 
         formData.append('relationshipDescription', documentRelationshipDescription);
-        if(documentRelationshipDocuments !== undefined)for (var i = 0; i < documentRelationshipDocuments.length; i++) {
+        if(documentRelationshipDocuments)for (var i = 0; i < documentRelationshipDocuments.length; i++) {
             formData.append('relationshipDocuments[]', documentRelationshipDocuments[i]);
         }
-        if(documentRoles !== undefined) for (var i = 0; i < documentRoles.length; i++) {
+        if(documentRoles) for (var i = 0; i < documentRoles.length; i++) {
             formData.append('roles[]', documentRoles[i]);
         }
 
@@ -167,13 +373,7 @@ class EditForm extends Component {
     }
 
 
-    handleUploadFile = (e) => {
-        this.setState({ documentFile: e.target.files[0] });
-    }
-
-    handleUploadFileScan = (e) => {
-        this.setState({ documentFileScan: e.target.files[0] });
-    }
+    
 
     addNewVersion = id => {
         const {
@@ -219,6 +419,18 @@ class EditForm extends Component {
                 documentArchivedRecordPlaceInfo: nextProps.documentArchivedRecordPlaceInfo,
                 documentArchivedRecordPlaceOrganizationalUnit: nextProps.documentArchivedRecordPlaceOrganizationalUnit,
                 documentArchivedRecordPlaceManager: nextProps.documentArchivedRecordPlaceManager,
+
+                errorName: undefined,
+                errorIssuingBody: undefined,
+                errorOfficialNumber: undefined, 
+                errorSigner: undefined, 
+                errorVersionName: undefined, 
+                errorDocumentFile: undefined, 
+                errorDocumentFileScan: undefined, 
+                errorIssuingDate: undefined, 
+                errorEffectiveDate: undefined, 
+                errorExpiredDate: undefined,
+                errorCategory: undefined
             } 
         }else if(nextProps.documentVersions.length > prevState.documentVersions.length){
             return {
@@ -245,14 +457,14 @@ class EditForm extends Component {
             documentIssuingBody, documentOfficialNumber, documentSigner, documentVersions, 
             documentRelationshipDescription, documentRelationshipDocuments,
             documentRoles, 
-            documentArchivedRecordPlaceInfo, documentArchivedRecordPlaceOrganizationalUnit, documentArchivedRecordPlaceManager
+            documentArchivedRecordPlaceInfo, documentArchivedRecordPlaceOrganizationalUnit,
         } = this.state;
-        const {translate, role, documents, department, user}=this.props;
+        const { errorName,errorIssuingBody, errorOfficialNumber, errorSigner, errorVersionName, errorDocumentFile, errorDocumentFileScan,} = this.state;
+        const { translate, role, documents, department }=this.props;
         const categories = documents.administration.categories.list.map(category=>{return{value: category._id, text: category.name}});
-        const {tree, list} = documents.administration.domains;
+        const { list } = documents.administration.domains;
         const roleList = role.list.map( role => {return {value: role._id, text: role.name}});
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc=>{return {value: doc._id, text: doc.name}})
-        const userManage = documents.administration.data.user_manage.map(user=> {return {value: user._id, text: `${user.name} ${user.email}`}});
 
         console.log("STATE:", this.state);
 
@@ -264,32 +476,37 @@ class EditForm extends Component {
                     formID="form-edit-document"
                     title={translate('document.add')}
                     func={this.save}
+                    disableSubmit = {!this.isValidateForm()}
                 >
                     <form id="form-edit-document">
                     <div className="nav-tabs-custom">
                             <ul className="nav nav-tabs">
-                                <li className="active"><a href="#doc-edit-info" data-toggle="tab">Thông tin văn bản</a></li>
-                                <li><a href="#doc-edit-sub-info" data-toggle="tab">Liên kết, phân quyền và lưu trữ</a></li>
+                                <li className="active"><a href="#doc-edit-info" data-toggle="tab">{ translate('document.infomation_docs') }</a></li>
+                                <li><a href="#doc-edit-sub-info" data-toggle="tab">{ translate('document.relationship_role_store') }</a></li>
                             </ul>
                             <div className="tab-content">
                                 <div className="tab-pane active" id="doc-edit-info">
                                     <div className="row">
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <div className="form-group">
+                                            <div className={`form-group ${!errorName? "" : "has-error"}`}>
                                                 <label>{ translate('document.name') }<span className="text-red">*</span></label>
                                                 <input type="text" className="form-control" value={documentName} onChange={this.handleName}/>
+                                                <ErrorLabel content={errorName} />
                                             </div>
-                                            <div className="form-group">
+                                            <div className={`form-group ${!errorIssuingBody ? "" : "has-error"}`}>
                                                 <label>{ translate('document.doc_version.issuing_body') }<span className="text-red">*</span></label>
                                                 <input type="text" className="form-control" onChange={this.handleIssuingBody} value={documentIssuingBody}/>
+                                                <ErrorLabel content ={errorIssuingBody} />
                                             </div>
-                                            <div className="form-group">
+                                            <div className={`form-group ${!errorOfficialNumber ? "" : "has-error"}`}>
                                                 <label>{ translate('document.doc_version.official_number') }<span className="text-red">*</span></label>
                                                 <input type="text" className="form-control" onChange={this.handleOfficialNumber} value={documentOfficialNumber}/>
+                                                <ErrorLabel content ={errorOfficialNumber} />
                                             </div>
-                                            <div className="form-group">
+                                            <div className={`form-group ${!errorSigner ? "" : "has-error"}`}>
                                                 <label>{ translate('document.doc_version.signer') }<span className="text-red">*</span></label>
                                                 <input type="text" className="form-control" onChange={this.handleSigner} value={documentSigner}/>
+                                                <ErrorLabel content ={errorSigner} />
                                             </div>
                                         </div>
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
@@ -307,7 +524,7 @@ class EditForm extends Component {
                                                 />
                                             </div>
                                             <div className="form-group">
-                                                <label>{ translate('document.domain') }<span className="text-red">*</span></label>
+                                                <label>{ translate('document.domain') }</label>
                                                 <TreeSelect 
                                                     data={list} 
                                                     value={documentDomains}
@@ -316,8 +533,8 @@ class EditForm extends Component {
                                                 />
                                             </div>
                                             <div className="form-group">
-                                                <label>{ translate('document.description') }<span className="text-red">*</span></label>
-                                                <textarea type="text" className="form-control" onChange={this.handleDescription} value={documentDescription}/>
+                                                <label>{ translate('document.description') }</label>
+                                                <textarea type="text" className="form-control" onChange={this.handleDescription} value={documentDescription? documentDescription : ""}/>
                                             </div>
                                         </div>
                                     </div>
@@ -331,23 +548,25 @@ class EditForm extends Component {
                                                 func={()=>this.addNewVersion(documentId)}
                                             >
                                                 <React.Fragment>
-                                                <div className="form-group">
+                                                <div className={`form-group ${!errorVersionName ? "" : "has-error"}`}>
                                                         <label>{ translate('document.doc_version.name') }<span className="text-red">*</span></label>
                                                         <input type="text" className="form-control" onChange={this.handleVersionName}/>
+                                                        <ErrorLabel content ={errorVersionName} />
                                                     </div>
-                                                    <div className="form-group">
+                                                    <div className={`form-group ${!errorDocumentFile  ? "" : "has-error"}`}>
                                                         <label>{ translate('document.doc_version.file') }<span className="text-red">*</span></label>
                                                         <input type="file"  onChange={this.handleUploadFile}/>
+                                                        <ErrorLabel content ={errorDocumentFile} />
                                                     </div>
-                                                    <div className="form-group">
+                                                    <div className={`form-group ${!errorDocumentFileScan ? "" : "has-error"}`}>
                                                         <label>{ translate('document.doc_version.scanned_file_of_signed_document') }<span className="text-red">*</span></label>
                                                         <input type="file" onChange={this.handleUploadFileScan}/>
+                                                        <ErrorLabel content ={errorDocumentFileScan} />
                                                     </div>
                                                     <div className="form-group">
                                                         <label>{ translate('document.doc_version.issuing_date') }<span className="text-red">*</span></label>
                                                         <DatePicker
                                                             id={`document-edit-version-issuing-date-${documentId}`}
-                                                            // value={documentIssuingDate}
                                                             onChange={this.handleIssuingDate}
                                                         />
                                                     </div>
@@ -355,7 +574,6 @@ class EditForm extends Component {
                                                         <label>{ translate('document.doc_version.effective_date') }<span className="text-red">*</span></label>
                                                         <DatePicker
                                                             id={`document-edit-version-effective-date-${documentId}`}
-                                                            // value={documentEffectiveDate}
                                                             onChange={this.handleEffectiveDate}
                                                         />
                                                     </div>
@@ -363,7 +581,6 @@ class EditForm extends Component {
                                                         <label>{ translate('document.doc_version.expired_date') }<span className="text-red">*</span></label>
                                                         <DatePicker
                                                             id={`document-edit-version-expired-date-${documentId}`}
-                                                            // value={documentExpiredDate}
                                                             onChange={this.handleExpiredDate}
                                                         />
                                                     </div>
@@ -448,19 +665,6 @@ class EditForm extends Component {
                                                     multiple={false}
                                                 />
                                             </div>
-                                            {/* <div className="form-group">
-                                                <label>{ translate('document.store.user_manage') }<span className="text-red">*</span></label>
-                                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                                    id="select-edit-documents-user-manage"
-                                                    className="form-control select2"
-                                                    style={{width: "100%"}}
-                                                    items = {userManage}
-                                                    value={documentArchivedRecordPlaceManager}
-                                                    onChange={this.handleArchivedRecordPlaceManager}
-                                                    options={{placeholder: translate('document.store.select_user')}}
-                                                    multiple={false}
-                                                />
-                                            </div> */}
                                         </div>
                                     </div>
                                 </div>

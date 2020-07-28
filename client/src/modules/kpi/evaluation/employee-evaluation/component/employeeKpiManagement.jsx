@@ -15,14 +15,14 @@ class EmployeeKpiManagement extends Component {
         super(props);
         this.state = {
             commenting: false,
-            user:null,
-            status:null,
+            user:'',
+            status: -1,
             startDate: null,
             endDate: null,
             infosearch: {
                 role: localStorage.getItem("currentRole"),
-                user: null,
-                status: null,
+                user: '',
+                status: -1,
                 startDate: null,
                 endDate: null
             },
@@ -32,7 +32,7 @@ class EmployeeKpiManagement extends Component {
     }
     componentDidMount() {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        this.props.getAllKPIMemberOfUnit(this.state.infosearch);
+        this.props.getEmployeeKPISets(this.state.infosearch);
     }
     formatDateBack(date) {
         let d = new Date(date), month, day, year;
@@ -101,6 +101,7 @@ class EmployeeKpiManagement extends Component {
         });
     }
     handleStatusChange =(value) => {
+        if(value === -1) value = null;
         this.setState(state => {
             return {
                 ...state,
@@ -145,11 +146,11 @@ class EmployeeKpiManagement extends Component {
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'), 
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Xác nhận'
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
             })
         } 
         else {
-            this.props.getAllKPIMemberOfUnit(infosearch);
+            this.props.getEmployeeKPISets(infosearch);
         }
     }
     handleShowApproveModal = async (id) => {
@@ -179,7 +180,7 @@ class EmployeeKpiManagement extends Component {
         if (kpimembers.kpimembers) kpimember = kpimembers.kpimembers;
         if (userdepartments) {
             unitMembers = getEmployeeSelectBoxItems([userdepartments]);
-            unitMembers = [{text:translate('kpi.evaluation.employee_evaluation.choose_employee'), value: "null"}, ...unitMembers[0].value];
+            unitMembers = [{text:translate('kpi.evaluation.employee_evaluation.choose_employee'), value: 0}, ...unitMembers[0].value];
         }
         return (
             <React.Fragment>
@@ -206,7 +207,7 @@ class EmployeeKpiManagement extends Component {
                                     id={`status-kpi`}
                                     style={{width: "100%"}}
                                     items = {[
-                                        {value: "null", text: translate('kpi.evaluation.employee_evaluation.choose_status')},
+                                        {value: -1, text: translate('kpi.evaluation.employee_evaluation.choose_status')},
                                         {value: 0, text: translate('kpi.evaluation.employee_evaluation.establishing')},
                                         {value: 1, text: translate('kpi.evaluation.employee_evaluation.expecting')},
                                         {value: 2, text: translate('kpi.evaluation.employee_evaluation.activated')}
@@ -307,8 +308,7 @@ function mapState(state) {
  
 const actionCreators = {
     getAllUserSameDepartment : UserActions.getAllUserSameDepartment,
-    getAllKPIMemberOfUnit: kpiMemberActions.getAllKPIMemberOfUnit,
-    getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember
+    getEmployeeKPISets: kpiMemberActions.getEmployeeKPISets,
 };
 const connectedKPIMember = connect(mapState, actionCreators)(withTranslate(EmployeeKpiManagement));
 export { connectedKPIMember as EmployeeKpiManagement };

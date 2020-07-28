@@ -11,8 +11,6 @@ export const taskManagementActions = {
     getTaskById,
     addTask,
     editTask,
-    editStatusOfTask,
-    editArchivedOfTask,
     _delete,
     getSubTask,
 
@@ -24,6 +22,8 @@ export const taskManagementActions = {
     evaluateTaskByResponsibleEmployees,
 
     getTasksByUser,
+
+    getTaskEvaluations,
 };
 
 /**
@@ -365,48 +365,6 @@ function _delete(id) {
 }
 
 /**
- * edit Status Of Task
- * @param {*} id id task
- * @param {*} status trang thai muon cap nhat
- */
-function editStatusOfTask(id, status) {
-    return dispatch => {
-        dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_REQUEST, id });
-        taskManagementService.editStatusOfTask(id, status) //(taskid, { status: "dang thuc hien" })
-            .then(res => {
-                dispatch({
-                    type: taskManagementConstants.EDIT_STATUS_OF_TASK_SUCCESS,
-                    // payload: res.data.content.task
-                    payload: res.data.content
-                });
-            })
-            .catch(error => {
-                dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_FAILURE, error });
-            });
-    };
-}
-
-/**
- * edit archived of task
- * @param {*} id id of task
- */
-function editArchivedOfTask(id) {
-    return dispatch => {
-        dispatch({ type: taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_REQUEST, id });
-        taskManagementService.editArchivedOfTask(id) //(taskid, { status: "dang thuc hien" })
-            .then(res => {
-                dispatch({
-                    type: taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_SUCCESS,
-                    payload: res.data.content
-                });
-            })
-            .catch(error => {
-                dispatch({ type: taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_FAILURE, error });
-            });
-    };
-}
-
-/**
  * get sub task
  * @param {*} taskId id của task
  */
@@ -549,6 +507,23 @@ function getTasksByUser() {
             })
             .catch(error => {
                 dispatch({ type: taskManagementConstants.GET_TASK_BY_USER_FAILURE, error });
+            });
+    };
+}
+
+function getTaskEvaluations(data) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.GET_TASK_EVALUATION_REQUEST });
+        taskManagementService.getTaskEvaluations(data)
+            .then(res => {
+                console.log("res.data.content", res.data.content)
+                dispatch({
+                    type: taskManagementConstants.GET_TASK_EVALUATION_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GET_TASK_EVALUATION_FAILURE, error });
             });
     };
 }

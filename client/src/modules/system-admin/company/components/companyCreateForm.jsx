@@ -28,35 +28,36 @@ class CompanyCreateForm extends Component {
     }
 
     checkCheckBoxAll = (arr) => {
-        if(arr.length > 0 && arr.length === this.state.linkDefaultArr.length){
+        if (arr.length > 0 && arr.length === this.state.linkDefaultArr.length) {
             return true;
-        }
-        else{
+        } else {
             return false;
-        };
+        }
     }
 
     checkedCheckbox = (item, arr) => {
-        var index = arr.indexOf(item);
-        if(index !== -1){
+        let index = arr.indexOf(item);
+
+        if (index !== -1) {
             return true;
-        }
-        else{
+        } else {
             return false;
         }
     }
 
-    checkAll = (e) => {
+    checkAll = async (e) => {
         const {checked} = e.target;
-        if(checked){
-            this.setState({
-                linkDefaultArr: this.props.systemLinks.list.map(link => link._id)
+        const { systemLinks } = this.props;
+
+        if (checked) {
+            await this.setState({
+                linkDefaultArr: systemLinks.list.map(link => link._id)
             })
-        }else{
+        } else { 
             this.setState({
                 linkDefaultArr: []
             })
-        }
+        } 
     }
 
     handleCheckbox = (e) => {
@@ -79,7 +80,45 @@ class CompanyCreateForm extends Component {
         }
     }
 
+    /**
+     * Hàm xử lý khi chọn theo danh mục
+     */
+    handleCategoryCheckbox = async (e, link) => {
+        const { value, checked } = e.target;
+        const { systemLinks } = this.props;
+
+        if (checked) {
+            for (const element of systemLinks.list) {
+                if (element.category === link.category) {
+                    // Nếu phần tử đó chưa tồn tại thì mới thêm vào state
+                    if (this.state.linkDefaultArr.indexOf(element._id) === -1){
+                        await this.setState({
+                            linkDefaultArr: [
+                                ...this.state.linkDefaultArr,
+                                element._id
+                            ]
+                        });
+                    }
+                }
+            }
+        } else {
+            for (const element of systemLinks.list) {
+                if (element.category === link.category) {
+                    const arr = this.state.linkDefaultArr;
+                    const index = arr.indexOf(element._id);
+
+                    arr.splice(index,1);
+                    await this.setState({
+                        linkDefaultArr: arr
+                    })
+                }
+            }
+        }
+    }
+
     save = () => {
+        console.log(this.state.linkDefaultArr);
+        
         const company = {
             name: this.state.companyName, 
             shortName: this.state.companyShortName, 
@@ -88,7 +127,7 @@ class CompanyCreateForm extends Component {
             links: this.state.linkDefaultArr
         };
 
-        if(this.isFormValidated()) return this.props.create(company);
+        if (this.isFormValidated()) return this.props.createCompany(company);
     }
 
     // Xu ly thay doi va validate cho ten cong ty
@@ -99,7 +138,7 @@ class CompanyCreateForm extends Component {
 
     validateName = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateName(value);
-        const {translate} = this.props;
+        const { translate } = this.props;
 
         if (willUpdateState) {
             this.setState(state => {
@@ -122,7 +161,7 @@ class CompanyCreateForm extends Component {
 
     validateShortName = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateShortName(value);
-        const {translate} = this.props;
+        const { translate } = this.props;
 
         if (willUpdateState) {
             this.setState(state => {
@@ -145,7 +184,7 @@ class CompanyCreateForm extends Component {
 
     validateDescription = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateDescription(value);
-        const {translate} = this.props;
+        const { translate } = this.props;
 
         if (willUpdateState) {
             this.setState(state => {
@@ -168,7 +207,7 @@ class CompanyCreateForm extends Component {
 
     validateEmail = (value, willUpdateState=true) => {
         let msg = CompanyFormValidator.validateEmailSuperAdmin(value);
-        const {translate} = this.props;
+        const { translate } = this.props;
 
         if (willUpdateState) {
             this.setState(state => {
@@ -185,7 +224,7 @@ class CompanyCreateForm extends Component {
 
     // Kiem tra thong tin da validated het chua?
     isFormValidated = () => {
-        const {companyName, companyShortName, companyDescription, companyEmail} = this.state;
+        const { companyName, companyShortName, companyDescription, companyEmail } = this.state;
         let result = 
             this.validateName(companyName, false) &&
             this.validateShortName(companyShortName, false) &&
@@ -204,6 +243,26 @@ class CompanyCreateForm extends Component {
             descriptionError, 
             emailError,
         } = this.state;
+
+        let list = [];
+        let category;
+
+        for (let i = 0; i < systemLinks.list.length; i++) {
+            const element = systemLinks.list[i];
+            
+            if (element.category !== category){
+                const group = {
+                    _id: i,
+                    category: element.category,
+                    isGroup: true,
+                }
+
+                list.push(group);
+                category = element.category;
+            }
+
+            list.push(element);
+        }
 
         return ( 
             <React.Fragment>
@@ -251,7 +310,12 @@ class CompanyCreateForm extends Component {
                                     <table className="table table-hover table-striped table-bordered">
                                         <thead>
                                             <tr>
-                                                <th style={{width: '32px'}} className="col-fixed"></th>
+                                                <th style={{width: '32px'}} className="col-fixed">
+                                                    <input 
+                                                        type="checkbox" 
+                                                        onChange={this.checkAll} 
+                                                    />
+                                                </th>
                                                 <th>{ translate('system_admin.system_link.table.category') }</th>
                                                 <th>{ translate('system_admin.system_link.table.url') }</th>
                                                 <th>{ translate('system_admin.system_link.table.description') }</th>
@@ -260,20 +324,34 @@ class CompanyCreateForm extends Component {
                                         
                                         <tbody>
                                             {
-                                                systemLinks.list.length > 0 ? systemLinks.list.map( link => 
-                                                    <tr key={link._id}>
-                                                        <td>
-                                                            <input 
-                                                                type="checkbox" 
-                                                                value={link._id} 
-                                                                onChange={this.handleCheckbox} 
-                                                                checked={this.checkedCheckbox(link._id, this.state.linkDefaultArr)}
-                                                            />
-                                                        </td>
-                                                        <td>{ link.category }</td>
-                                                        <td>{ link.url }</td>
-                                                        <td>{ link.description }</td>
-                                                    </tr> 
+                                                list.length > 0 ? list.map( link => 
+                                                    link.isGroup ?
+                                                        <tr key={link._id}>
+                                                            <td>
+                                                                <input 
+                                                                    type="checkbox" 
+                                                                    value={link._id} 
+                                                                    onChange={ (e) => this.handleCategoryCheckbox(e, link) } 
+                                                                />
+                                                            </td>
+                                                            <th>{ link.category }</th>
+                                                            <td>{ link.url }</td>
+                                                            <td>{ link.description }</td>
+                                                        </tr>
+                                                    :
+                                                        <tr key={link._id}>
+                                                            <td>
+                                                                <input 
+                                                                    type="checkbox" 
+                                                                    value={link._id} 
+                                                                    onChange={this.handleCheckbox} 
+                                                                    checked={this.checkedCheckbox(link._id, this.state.linkDefaultArr)}
+                                                                />
+                                                            </td>
+                                                            <td>{ link.category }</td>
+                                                            <td>{ link.url }</td>
+                                                            <td>{ link.description }</td>
+                                                        </tr> 
                                                 ): systemLinks.isLoading ?
                                                 <tr><td colSpan={4}>{translate('general.loading')}</td></tr>:
                                                 <tr><td colSpan={4}>{translate('general.no_data')}</td></tr>
@@ -295,7 +373,7 @@ function mapState(state) {
     return { systemLinks, company };
 }
 const action = {
-    create: CompanyActions.create,
+    createCompany: CompanyActions.createCompany,
     getAllSystemLinks: SystemLinkActions.getAllSystemLinks
 }
 

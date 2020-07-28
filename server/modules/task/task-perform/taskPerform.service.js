@@ -15,7 +15,7 @@ const moment = require("moment");
  * Lấy tất cả lịch sử bấm giờ theo công việc
  */
 exports.getTaskTimesheetLogs = async (params) => {
-    var timesheetLogs = await Task.findById(params.task).populate("timesheetLogs.creator")
+    var timesheetLogs = await Task.findById(params.taskId).populate("timesheetLogs.creator")
     return timesheetLogs.timesheetLogs;
 }
 
@@ -23,9 +23,9 @@ exports.getTaskTimesheetLogs = async (params) => {
  * Lấy trạng thái bấm giờ hiện tại. Bảng TimesheetLog tìm hàng có endTime là rỗng 
  * Nếu có trả về startTimer: true, và time, startTime. Không có trả ver startTimer: false
  */
-exports.getActiveTimesheetLog = async (params) => {
+exports.getActiveTimesheetLog = async (query) => {
     var timerStatus = await Task.findOne(
-        { "timesheetLogs": { $elemMatch: { "creator": mongoose.Types.ObjectId(params.user), "stoppedAt": null } } },
+        { "timesheetLogs": { $elemMatch: { "creator": mongoose.Types.ObjectId(query.userId), "stoppedAt": null } } },
         { "timesheetLogs": 1, '_id': 1, 'name': 1 }
     );
     if (timerStatus !== null) {
@@ -39,12 +39,12 @@ exports.getActiveTimesheetLog = async (params) => {
 /**
  * Bắt đầu bấm giờ: Lưu thời gian bắt đầu
  */
-exports.startTimesheetLog = async (body) => {
+exports.startTimesheetLog = async (params, body) => {
     var timerUpdate = {
         startedAt: body.startedAt,
         creator: body.creator
     }
-    var timer = await Task.findByIdAndUpdate(body.task,
+    var timer = await Task.findByIdAndUpdate(params.taskId,
         { $push: { timesheetLogs: timerUpdate } },
         { new: true, "fields": { "timesheetLogs": 1, '_id': 1, 'name': 1 } }
     );
@@ -54,9 +54,9 @@ exports.startTimesheetLog = async (body) => {
 /**
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
-exports.stopTimesheetLog = async (body) => {
+exports.stopTimesheetLog = async (params, body) => {
     var timer = await Task.findOneAndUpdate(
-        { "_id": body.task, "timesheetLogs._id": body.timesheetLog },
+        { "_id": params.taskId, "timesheetLogs._id": body.timesheetLog },
         {
             $set:
             {
@@ -66,15 +66,13 @@ exports.stopTimesheetLog = async (body) => {
             }
         },
         { new: true }
-
     ).populate({ path: "timesheetLogs.creator", select: "name" });
     let time = 0;
-
     timer.timesheetLogs.length > 0 && timer.timesheetLogs.forEach(x => {
         time += x.duration;
     })
     var timer1 = await Task.findOneAndUpdate(
-        { "_id": body.task, "timesheetLogs._id": body.timesheetLog },
+        { "_id": params.taskId, "timesheetLogs._id": body.timesheetLog },
         {
             $set:
             {
@@ -82,7 +80,6 @@ exports.stopTimesheetLog = async (body) => {
             }
         }
     )
-
     return timer.timesheetLogs;
 }
 /**
@@ -115,7 +112,6 @@ exports.createCommentOfTaskAction = async (params, body, files) => {
  * Sửa nội dung bình luận hoạt động
  */
 exports.editCommentOfTaskAction = async (params, body, files) => {
-    console.log(params)
     const now = new Date()
     let action = await Task.updateOne(
         { "taskActions.comments._id": params.commentId },
@@ -762,8 +758,8 @@ exports.uploadFile = async (params, body, files) => {
 /**
  * Thêm nhật ký cho một công việc
  */
-exports.addTaskLog = async (data) => {
-    var { taskId, creator, title, description, createdAt } = data;
+exports.addTaskLog = async (params,body) => {
+    var {  creator, title, description, createdAt } = body;
 
     var log = {
         createdAt: createdAt,
@@ -773,7 +769,7 @@ exports.addTaskLog = async (data) => {
     }
 
     var task = await Task.findByIdAndUpdate(
-        taskId, { $push: { logs: log } }, { new: true }
+        params.taskId, { $push: { logs: log } }, { new: true }
     ).populate("logs.creator");
     var taskLog = task.logs.reverse();
 
@@ -1956,3 +1952,34 @@ exports.deleteFileChildTaskComment = async (params) => {
     return task.taskComments;
 }
 
+
+
+
+/**
+ * edit status of task 
+ * @param taskID id công việc
+ * @param status trang thai công việc
+ */
+exports.editTaskStatus = async (taskID, status) => {
+    var task = await Task.findByIdAndUpdate(taskID,
+        { $set: { status: status } },
+        { new: true }
+    );
+    return task;
+}
+
+/**
+ * Chinh sua trang thai luu kho cua cong viec
+ * @param taskID id công việc
+ */
+exports.editArchivedOfTask = async (taskID) => {
+    var t = await Task.findByIdAndUpdate(taskID);
+    var isArchived = t.isArchived;
+
+    var task = await Task.findByIdAndUpdate(taskID,
+        { $set: { isArchived: !isArchived } },
+        { new: true }
+    );
+
+    return task;
+}

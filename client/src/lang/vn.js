@@ -103,10 +103,13 @@ export default {
             search: 'Tìm kiếm',
             add: 'Thêm',
             edit: 'Sửa',
+            delete: 'Xóa',
             save: 'Lưu',
             close: 'Đóng',
             accept: 'Xác nhận',
             cancel: 'Hủy',
+            status: 'Trạng thái',
+            month:'Tháng',
             yes: 'Có',
             no: 'Không',
             loading: 'Đang tải dữ liệu',
@@ -420,6 +423,12 @@ export default {
             upload_file_scan: 'Upload File scan',
             download: 'Tải xuống',
             no_version: 'Không có phiên bản nào khác',
+            no_blank_description: 'Mô tả không được để trống',
+            no_blank_name: 'Tên không được để trống',
+            infomation_docs: "Thông tin văn bản",
+            relationship_role_store: "Liên kết, phân quyền và lưu trữ",
+            statistical_document: "Thống kê các loại văn bản tài liệu",
+            statistical_view_down: "Thống kê số lượng xem và download các loại tài liệu",
             doc_version: {
                 title: 'Phiên bản',
                 name: 'Tên phiên bản',
@@ -434,6 +443,21 @@ export default {
                 number_download: 'Số lần tải',
                 file: 'File upload',
                 scanned_file_of_signed_document: 'File scan',
+                exp_issuing_body: 'Ví dụ: Cơ quan hành chính',
+                exp_official_number:'Ví dụ: 05062020VN',
+                exp_signer: "Ví dụ: Nguyễn Việt Anh",
+                exp_version: "Phiên bản 1",
+                no_blank_issuingbody: "Cơ quan không được để trống",
+                no_blank_version_name: "Tên phiên bản không được để trống",
+                no_blank_official_number: "Số hiệu không được để trống",
+                error_office_number: "Số hiệu phải có kí tự số",
+                no_blank_issuingdate: "Ngày ban hành không được để trống",
+                no_blank_effectivedate: "Ngày áp dụng không được để trống",
+                no_blank_expired_date: "Ngày hết hạn không được để trống",
+                no_blank_signer: "Tên người đăng kí không được để trống",
+                no_blank_file: "File chưa được upload",
+                no_blank_file_scan: "File scan không được để trống",
+                no_blank_category: "Loại văn bản không được để trống",
             },
             relationship: {
                 title: 'Liên kết văn bản',
@@ -639,8 +663,9 @@ export default {
 
             tasks: 'Quản lý công việc',
             task: "Chi tiết công việc",
-            task_management: 'Xem danh sách công việc',
-            task_management_dashboard: 'Dashboard công việc',
+            task_management: 'Danh sách công việc',
+            task_management_dashboard: 'Biểu đồ công việc',
+            task_management_process: "Danh sách quy trình",
 
             //*******START */
             // Quản lý tài sản
@@ -1588,16 +1613,39 @@ export default {
             text: 'Văn bản',
             number: 'Số',
             date: 'Ngày tháng',
-            value_set: 'Tập giá trị'
+            value_set: 'Tập giá trị',
+            view_detail_of_this_task_template:'Xem chi tiết mẫu công việc này',
+            edit_this_task_template: 'Sửa mẫu công việc này',
+            delete_this_task_template: 'Xóa mẫu công việc này',
         },
 
         task: {
             task_management: {
+                get_subtask_success: 'Lấy công việc con thành công',
+                get_task_of_informed_employee_success: 'Lấy công việc theo vai trò người quan sát thành công',
+                get_task_of_creator_success: 'Lấy công việc theo vai trò người tạo thành công',
+                get_task_of_consulted_employee_success: 'Lấy công việc theo vai trò người hỗ trợ thành công',
+                get_task_of_accountable_employee_success: 'Lấy công việc theo vai trò người phê duyệt thành công',
+                get_task_of_responsible_employee_success: 'Lấy công việc theo vai trò người thực hiện',
+                get_tasks_by_role_success: 'Lấy công việc tảo bởi người dùng thành công',
+                get_task_by_id_success: 'Lấy công việc theo id thành công',
+                get_task_evaluation_success: 'Lấy thông tin đánh giá công việc thành công',
+                get_all_task_success: 'Lấy tất cả công việc thành công',
                 create_task_success: 'Tạo công việc mới thành công',
                 delete_success: 'Xóa công việc thành công',
                 edit_status_of_task_success: 'Chỉnh sửa trạng thái công việc thành công',
                 edit_status_archived_of_task_success: 'Chỉnh sửa trạng thái lưu kho của công việc thành công',
 
+                get_subtask_fail: 'Lấy công việc con thất bại',
+                get_task_of_informed_employee_fail: 'Lấy công việc theo vai trò người quan sát thất bại',
+                get_task_of_creator_fail: 'Lấy công việc theo vai trò người tạo thất bại',
+                get_task_of_consulted_employee_fail: 'Lấy công việc theo vai trò người hỗ trợ thất bại',
+                get_task_of_accountable_employee_fail: 'Lấy công việc theo vai trò người phê duyệt thất bại',
+                get_task_of_responsible_employee_fail: 'Lấy công việc theo vai trò người thực hiện thất bại',
+                get_tasks_by_role_fail: 'Lấy công việc tạo bởi người ',
+                get_task_by_id_fail: 'Lấy công việc theo id thất bại',
+                get_task_evaluation_fail: 'Lấy thông tin đánh giá công việc thất bại',
+                get_all_task_fail: 'Lấy tất cả công việc thất bại',
                 create_task_fail: 'không thể tạo công việc mới',
                 delete_fail: 'Không thể xóa công việc này',
                 edit_status_of_task_fail: 'Không thể thay đổi trạng thái công việc',
@@ -1667,6 +1715,7 @@ export default {
 
                 from: 'Từ tháng',
                 to: 'Đến tháng',
+                month: 'Tháng',
                 prev: 'Trước',
                 next:'Sau',
                 tasks_calendar:'Lịch công việc chi tiết',
@@ -1698,7 +1747,7 @@ export default {
                 detail_general_info: 'Thông tin chung',
                 detail_description: 'Mô tả',
                 detail_info: 'Thông tin công việc',
-                detail_progress: 'Thông tin công việc',
+                detail_progress: 'Mức độ hoàn thành công việc',
                 detail_value: 'Giá trị',
                 detail_not_hasinfo: 'Chưa có thông tin',
                 detail_eval: 'Đánh giá công việc',
@@ -1753,8 +1802,8 @@ export default {
                 edit_enter_progress: 'Nhập mức độ hoàn thành',
                 edit_enter_value: 'Nhập giá trị',
                 
-                add_tempalte: 'Mẫu công việc',
-                add_tempalte_notice: 'Hãy chọn mẫu công việc',
+                add_template: 'Mẫu công việc',
+                add_template_notice: 'Hãy chọn mẫu công việc',
                 add_parent_task: 'Công việc cha',
                 add_parent_task_notice: 'Hãy chọn công việc cha',
                 add_raci: 'Phân định trách nhiệm',
@@ -1796,6 +1845,19 @@ export default {
                 edit_task_fail: 'Chỉnh sửa công việc thất bại',
                 evaluate_task_fail: 'Đánh giá công việc thất bại',
 
+                add_new_task: 'Thêm công việc mới',
+                // add_err: 
+                add_err_empty_unit: 'Đơn vị không được để trống',
+                add_err_empty_name: 'Tên không được để trống',
+                add_err_empty_description: 'Mô tả công việc không được để trống',
+                add_err_empty_start_date: 'Hãy chọn ngày bắt đầu',
+                add_err_empty_end_date: 'Hãy chọn ngày kết thúc',
+                add_err_empty_responsible: 'Cần chọn người thực hiện',
+                add_err_empty_accountable: 'Cần chọn người phê duyệt',
+
+                add_err_special_character: 'Tên không được chứa kí tự đặc biệt',
+                add_err_end_date: 'Ngày kết thúc phải sau ngày bắt đầu',
+
             },
             task_perform: {
 
@@ -1831,34 +1893,7 @@ export default {
                 none_subtask: "Không có công việc con",
                 enter_comment_action: "Nhập bình luận cho hoạt động",
                 create_comment_action: "Thêm bình luận",
-
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                stop_timer: "Dừng bấm giờ",
 
 
                 // TODO: code_mesage_task_perform
@@ -1890,6 +1925,13 @@ export default {
                 delete_comment_of_task_comment_success: 'Xóa bình luận thành công',
                 evaluation_action_success: 'Đánh giá hoạt động thành công',
                 confirm_action_success: 'Xác nhận hoạt động thành công',
+                delete_file_child_task_comment_success: "Xóa file của bình luận thành công",
+                upload_file_success: "Upload file thành công",
+                delete_file_success: "Xóa file của hoạt động thành công",
+                delete_file_comment_of_action_success: "Xóa file của bình luận thành công",
+                delete_file_task_comment_success: "Xóa file của bình luận thành công",
+                create_task_log_success:" Tạo task log thành công",
+                get_task_log_success: "Lấy lịch sử chỉnh sửa thành công",
 
                 create_result_task_fail: 'Không đánh giá được kết quả thực hiện công việc',
                 edit_redult_task_fail: 'Chỉnh sửa thất bại kết quả đánh giá',
@@ -1919,6 +1961,13 @@ export default {
                 delete_comment_of_task_comment_fail: 'Xóa bình luận thất bại',
                 evaluation_action_fail: 'Đánh giá công việc thất bại',
                 confirm_action_fail: 'Xác nhận hoạt động thất bại',
+                delete_file_child_task_comment_fail: "Xóa file của bình luận thất bại",
+                upload_file_fail: "Upload file thất bại",
+                delete_file_fail: "Xóa file của hoạt động thất bại",
+                delete_file_comment_of_action_fail: "Xóa file của bình luận thất bại",
+                delete_file_task_comment_fail: "Xóa file của bình luận thất bại",
+                create_task_log_fail: "Tạo lịch sử chỉnh sử cộng việc thất bại",
+                get_task_log_fail: "Lấy tất cả lịch sử chỉnh sửa công việc thất bại",
 
                 // error label
                 err_require: 'Trường này phải có giá trị',
@@ -1970,6 +2019,9 @@ export default {
                 edit_task_template_fail: 'Sửa mẫu công việc thất bại !',
                 delete_task_template_success: 'Xóa mẫu công việc thành công !',
                 delete_task_template_fail: 'Xóa mẫu công việc thất bại !',
+                error_task_template_creator_null: 'Nguời tạo mẫu công việc này không tồn tại hoặc đã bị xóa !',
+                error_task_template_organizational_unit : 'Phòng ban của mẫu công việc này không tồn tại hoặc đã bị xóa !'
+
             }
         },
 
@@ -1999,7 +2051,8 @@ export default {
                         initialize_kpi_newmonth: 'Khởi tạo KPI tháng mới',
                         request_approval: 'Yêu cầu phê duyệt',
                         cancel_request_approval: 'Hủy yêu cầu phê duyệt',
-
+                        not_initialize_organiztional_unit_kpi: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa thiết lập KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
+                        not_initialize_organiztional_unit_kpi: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa kích hoạt KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
                         // Nhóm dành cho các trạng thái tập KPI
                         kpi_status: {
                             status: 'Trạng thái KPI',
@@ -2168,6 +2221,8 @@ export default {
                     auto_eva: 'Hệ thống đánh giá',
                     employee_eva: 'Cá nhân tự đánh giá',
                     approver_eva: 'Người phê duyệt đánh giá',
+                    result_kpi_personal:'Kết quả KPI cá nhân'
+
                 },
 
                 employee_evaluation:{
@@ -2180,8 +2235,17 @@ export default {
                     compare:'So sánh',
                     approve_all:'Phê duyệt tất cả',
                     choose_month_cmp:'Chọn tháng so sánh',
+                    kpi_this_month: 'KPI tháng này',
                     search:'Tìm kiếm',
                     index:'STT',
+                    number_of_targets:'Số lượng mục tiêu',
+                    system_evaluate: 'Hệ thống đánh giá',
+                    result_self_evaluate: 'Kết quả tự đánh giá',
+                    evaluation_management :'Quản lí đánh giá',
+                    not_evaluated_yet : 'Chưa đánh giá',
+                    target : 'mục tiêu',
+                    view_detail: "Xem chi tiết",
+                    clone_to_new_kpi: 'Tạo kpi tháng mới từ kpi tháng này',
                     name:'Tên',
                     target:'Mục tiêu đơn vị',
                     criteria:'Tiêu chí đánh giá',
@@ -2214,6 +2278,7 @@ export default {
                     KPI_info: 'Thông tin KPI',
                     point_field: 'Điểm (Tự động - Tự đánh giá - Người phê duyệt đánh giá)',
                     not_avaiable: 'Chưa đánh giá',
+                    no_point : 'Chưa có điểm',
                     lastest_evaluation: 'Đánh giá cuối',
                     task_list: 'Danh sách công việc',
                     work_duration_time: 'Thời gian làm việc',
@@ -2221,6 +2286,7 @@ export default {
                     contribution: 'Đóng góp',
                     importance_level: 'Độ quan trọng',
                     point: 'Điểm',
+                    evaluated_value:'Giá trị được duyệt',
                     new_value: 'Giá trị mới',
                     old_value: 'Giá trị cũ',
                     auto_value: 'Giá trị tự động',
@@ -2274,8 +2340,8 @@ export default {
                 get_task_by_id_fail: 'Lấy danh sách công việc theo Id lỗi',
                 get_system_point_success: 'Lấy điểm hệ thống cho KPI thành công',
                 get_system_point_fail: 'Lấy điểm hệ thống cho KPI lỗi',
-                set_point_kpi_success: 'Chấm điểm KPI nhân viên thành công',
-                set_point_kpi_fail: 'Chấm điểm KPI nhân viên lỗi',
+                set_task_importance_level_success: 'Thêm độ quan trọng cho công việc thành công',
+                set_task_importance_level_fail:'Thêm độ quan trọng cho công việc lỗi'
             },
             organizational_unit: {
                 // Module chính
@@ -2370,7 +2436,14 @@ export default {
                     kpi_status: 'Trạng thái KPI',
                     result: 'Kết quả',
                     approve: 'Phê duyệt',
-                    evaluate: 'Đánh giá'
+                    evaluate: 'Đánh giá',
+                    index: 'STT',
+                    target_name: 'Tên mục tiêu',
+                    creator: 'Người tạo',
+                    organization_unit: 'Đơn vị',
+                    criteria: 'Tiêu chí đánh giá',
+                    result: 'Kết quả',
+                    no_data: 'Không có dữ liệu'
                 },
 
                 create_organizational_unit_kpi_set_modal: { // Module con
@@ -2428,6 +2501,61 @@ export default {
                     }
                 },
 
+                management: {
+                    copy_modal:{
+                        alert: {
+                            check_new_date: 'Chưa chọn tháng khởi tạo',
+                            confirm: 'Xác nhận',
+                            coincide_month: 'Đã tồn tại KPI của tháng',
+                            unable_kpi: 'Không thể tạo KPI trong quá khứ',
+                            change_link: 'Hãy nhớ thay đổi liên kết đến mục tiêu cha để được tính KPI mới!'
+                        },
+                        create: 'Thiết lập KPI tháng mới từ tháng ',
+                        organizational_unit: 'Đơn vị',
+                        month: 'Tháng',
+                        list_target: 'Danh sách mục tiêu',
+                        setting: 'Thiết lập',
+                        cancel: 'Hủy bỏ'
+                    },
+                    detail_modal:{
+                        list_kpi_unit: 'Danh sách KPI đơn vị',
+                        title: 'Thông tin chi tiết KPI đơn vị tháng ',
+                        information_kpi: 'Thông tin KPI ',
+                        criteria: 'Tiêu chí:',
+                        weight: 'Trọng số:',
+                        export_file: 'Xuất file',
+                        point_field: 'Điểm (Tự động - Tự đánh giá - Quản lý đánh giá)',
+                        list_child_kpi: 'Danh sách KPI con',
+                        not_eval: 'Chưa đánh giá',
+                        index: 'STT',
+                        target_name: 'Tên mục tiêu',
+                        creator: 'Người tạo',
+                        organization_unit: 'Đơn vị',
+                        criteria: 'Tiêu chí đánh giá',
+                        result: 'Kết quả đánh giá',
+                        no_data: 'Không có dữ liệu'
+                    },
+                    over_view: {
+                        start_date: 'Từ tháng',
+                        end_date: 'Đến tháng',
+                        search: 'Tìm kiếm',
+                        status: 'Trạng thái',
+                        all_status: 'Tất cả trạng thái',
+                        setting_up: 'Đang thiết lập',
+                        activated: 'Đã kích hoạt',
+                        time: 'Thời gian',
+                        creator: 'Người tạo',
+                        number_target: 'Số lượng mục tiêu',
+                        result: 'Kết quả đánh giá',
+                        no_data: 'Không có dữ liệu',
+                        action: 'Hành động',
+                        not_eval: 'Chưa đánh giá',
+                        alert_search: {
+                            search: 'Thời gian bắt đầu phải trước hoặc bằng thời gian kết thúc!',
+                            confirm: 'Xác nhận'
+                        },
+                    }
+                },
                 //Thông điệp khác trả về từ server
                 get_parent_by_unit_success: 'Lấy KPI đơn vị của đơn vị cha thành công',
                 get_parent_by_unit_failure: 'Lấy KPI đơn vị của đơn vị cha không thành công',

@@ -21,7 +21,7 @@ class TreeTable extends Component {
      * Function thêm script cho tree table
      * showChildren = true : hiện thị nút con
      * showChildren = false : Ẩn nút con
-     */ 
+     */
     addScriptTreeTable = (showChildren = true) => {
         window.$(function () {
             var
@@ -35,7 +35,7 @@ class TreeTable extends Component {
                     id = $row.data('id'),
                     $columnName = $row.find('td[data-column="name"]'),
                     children = $table.find('tr[data-parent="' + id + '"]')
-                //var tagSpan = $columnName.find("span").length;
+                //  var tagSpan = $columnName.find("span").length;
 
 
                 var div = window.$("<div/>").attr({
@@ -45,7 +45,7 @@ class TreeTable extends Component {
                     var expander = window.$('<span />').attr('class', `treegrid-expander glyphicon ${showChildren ? "glyphicon-chevron-down" : "glyphicon-chevron-right"}`).html('');
                     div.prepend(expander);
 
-                    {showChildren? children.show() : children.hide() }
+                    { showChildren ? children.show() : children.hide() }
                     expander.on('click', function (e) {
                         var $target = window.$(e.target);
                         if ($target.hasClass('glyphicon-chevron-right')) {
@@ -112,7 +112,7 @@ class TreeTable extends Component {
         });
     }
 
-    // function thực hiện format dữ liệu truyền vào
+    // Function thực hiện format dữ liệu truyền vào
     dataTreetable = (column, data) => {
         var keyColumn = column.map(col => col.key);
         var newarr = [];
@@ -126,37 +126,37 @@ class TreeTable extends Component {
 
         //Thêm các công việc không tìm được cha vào mảng data
         var concatArray = [];
-        for(let i in list1){
+        for (let i in list1) {
             var flag = true;
-            for(let j in data){
-                if(list1[i]._id === data[j]._id){
+            for (let j in data) {
+                if (list1[i]._id === data[j]._id) {
                     flag = false;
                     break;
                 }
-                for(let k in data[j].children){
-                    if(list1[i]._id === data[j].children[k]._id){
+                for (let k in data[j].children) {
+                    if (list1[i]._id === data[j].children[k]._id) {
                         flag = false;
                         break;
                     }
                 }
             }
-            if(flag){
+            if (flag) {
                 concatArray.push(list1[i]);
             }
         }
-        data = data.concat(concatArray);        
+        data = data.concat(concatArray);
 
         // function đệ quy để thêm level tương ứng cho dữ liệu truyền vào đã được chuyển thành dạnh tree
         // trả vể mảng là dữ liệu trước khi thực hiện function listToTree và dữ liệu này đã được sắp xếp
         let convertData = (arr, level = 1) => {
-            if(arr !== undefined){
+            if (arr !== undefined) {
                 arr.map(item => {
                     newarr.push({ ...item, "level": level });
                     convertData(item.children, level + 1);
                     return true;
                 });
             }
-            
+
             return newarr;
         }
         // Gọi đệ quy để thêm level cho dữ liệu truyền vào
@@ -182,7 +182,7 @@ class TreeTable extends Component {
         return data;
     }
 
-    // function hiện thị các action tương ứng cho các dòng 
+    // Function hiện thị các action tương ứng cho các dòng 
     showActionColumn = (data, id) => {
         var { titleAction, performtasks } = this.props;
         switch (data) {
@@ -221,7 +221,7 @@ class TreeTable extends Component {
 
     render() {
         var { translate, column, data } = this.props;
-        
+
         return (
             <table id="tree-table" className="table table-striped table-hover table-bordered">
                 <thead>

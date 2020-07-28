@@ -49,9 +49,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
     shouldComponentUpdate = async (nextProps, nextState) => {
         // Call action again when this.props.organizationalUnitId changes
         if(nextProps.organizationalUnitId !== this.state.organizationalUnitId) {
-            // Cần đặt await, và phải đặt trước setState để kịp thiết lập createEmployeeKpiSet.employeeKpiSetByMonth là null khi gọi service
             await this.props.getAllOrganizationalUnitKpiSetByTime(nextProps.organizationalUnitId, this.state.startDate, this.state.endDate);
-            
             this.setState(state => {
                 return {
                     ...state,
@@ -65,7 +63,6 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
         // Call action again when this.state.startDate or this.state.endDate changes
         if(nextState.startDate !== this.state.startDate || nextState.endDate !== this.state.endDate) {
             await this.props.getAllOrganizationalUnitKpiSetByTime(this.state.organizationalUnitId, nextState.startDate, nextState.endDate);
-            
             this.setState(state => {
                 return {
                     ...state,
@@ -133,7 +130,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
                 employeePoint.push(x.employeePoint);
                 approvedPoint.push(x.approvedPoint);
 
-                var newDate = new Date(x.date);
+                let newDate = new Date(x.date);
                 newDate = newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-" + (newDate.getDate() - 1);
                 date.push(newDate);
             });
@@ -153,7 +150,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
 
     /** Select month end in box */
     handleSelectMonthEnd = async (value) => {
-        if(value.slice(0,2)<12) {
+        if(value.slice(0,2) < 12) {
             var month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
         } else {
             var month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
@@ -201,21 +198,21 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
         var dataMultiLineChart = this.setDataMultiLineChart();
 
         this.chart = c3.generate({
-            bindto: this.refs.chart,       // Đẩy chart vào thẻ div có id="multiLineChart"
+            bindto: this.refs.chart,       
 
-            padding: {                              // Căn lề biểu đồ
+            padding: {                              
                 top: 20,
                 bottom: 20,
                 right: 20
             },
 
-            data: {                                 // Dữ liệu biểu đồ
+            data: {                                 
                 x: 'x',
                 columns: dataMultiLineChart,
                 type: 'spline'
             },
 
-            axis : {                                // Config trục tọa độ
+            axis : {                               
                 x : {
                     type : 'timeseries',
                     tick: {
@@ -236,7 +233,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
                 }
             },
 
-            zoom: {                                 // Cho phép zoom biểu đồ
+            zoom: {                                 
                 enabled: false
             }
         });
@@ -244,7 +241,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
 
     render() {
         var {translate} = this.props;
-        var d = new Date(),
+        let d = new Date(),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
         year = d.getFullYear();
@@ -253,8 +250,8 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
-        var defaultEndDate = [month, year].join('-');
-        var defaultStartDate = ['01', year].join('-');
+        let defaultEndDate = [month, year].join('-');
+        let defaultStartDate = ['01', year].join('-');
 
         return(
             <React.Fragment>
@@ -263,10 +260,10 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
                         <label>{translate('kpi.organizational_unit.dashboard.start_date')}</label>
                         <DatePicker 
                             id="monthStartInResultsOfOrganizationalUnitKpiChart"      
-                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                            value={defaultStartDate}                 // giá trị mặc định cho datePicker    
+                            dateFormat="month-year"             
+                            value={defaultStartDate}                   
                             onChange={this.handleSelectMonthStart}
-                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                            disabled={false}                    
                         />
                     </div>
                 </section>
@@ -275,10 +272,10 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
                         <label>{translate('kpi.organizational_unit.dashboard.end_date')}</label>
                         <DatePicker 
                             id="monthEndInResultsOfOrganizationalUnitKpiChart"      
-                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                            value={defaultEndDate}                 // giá trị mặc định cho datePicker    
+                            dateFormat="month-year"             
+                            value={defaultEndDate}                    
                             onChange={this.handleSelectMonthEnd}
-                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                            disabled={false}                   
                         />
                     </div>
                     <div className="form-group">

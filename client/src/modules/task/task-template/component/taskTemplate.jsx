@@ -2,20 +2,16 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { ModalAddTaskTemplate } from './addTaskTemplateModal';
 import { UserActions } from '../../../super-admin/user/redux/actions';
-import {taskTemplateActions} from '../redux/actions'
+import { taskTemplateActions } from '../redux/actions'
 import { ModalViewTaskTemplate } from './viewTaskTemplateModal';
 import { ModalEditTaskTemplate } from './editTaskTemplateModal';
 import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
-import {TaskTemplateImportForm} from './taskTemplateImportForm';
+import { TaskTemplateImportForm } from './taskTemplateImportForm';
 import Swal from 'sweetalert2';
 
 class TaskTemplate extends Component {
-    componentDidMount() {
-        this.props.getDepartment();
-        //edit later
-        this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]", "");
-    }
+
     constructor(props) {
         super(props);
         this.state = {
@@ -26,6 +22,11 @@ class TaskTemplate extends Component {
             currentRole: localStorage.getItem("currentRole"),
         };
         this.handleUpdateData = this.handleUpdateData.bind(this);
+    }
+    componentDidMount() {
+        this.props.getDepartment();
+        //edit later
+        this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]", "");
     }
 
     setLimit = async (limit) => {
@@ -77,13 +78,13 @@ class TaskTemplate extends Component {
 
     handleUpdateData = () => {
         var test = window.$("#multiSelectUnit").val();
-        this.props.getTaskTemplateByUser( 1, this.state.perPage, test, this.name.value);
-                this.setState(state => {
-                    return {
-                        ...state,
-                        currentPage: 1
-                    }
-                })
+        this.props.getTaskTemplateByUser(1, this.state.perPage, test, this.name.value);
+        this.setState(state => {
+            return {
+                ...state,
+                currentPage: 1
+            }
+        })
     }
 
     //Xoa tasktemplate theo id
@@ -98,14 +99,14 @@ class TaskTemplate extends Component {
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: translate('task_template.confirm')
             }).then((res) => {
-                if (res.value){
+                if (res.value) {
                     this.props._delete(id);
 
                     var test = window.$("#multiSelectUnit").val();
                     this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test, "");
                 }
             });
-        } else { 
+        } else {
             Swal.fire({
                 title: translate('task_template.error_title'),
                 type: 'warning',
@@ -117,7 +118,7 @@ class TaskTemplate extends Component {
 
     handleSearchPage = async () => {
         var newCurrentPage = this.newCurrentPage.value;
-        
+
         if (newCurrentPage) {
             this.handleGetDataPagination(parseInt(newCurrentPage));
             var element = document.getElementById("search-page");
@@ -127,19 +128,19 @@ class TaskTemplate extends Component {
     }
     checkPermisson = (deanCurrentUnit) => {
         var currentRole = localStorage.getItem("currentRole");
-        for (let i in deanCurrentUnit){
-            if (currentRole === deanCurrentUnit[i]){
+        for (let i in deanCurrentUnit) {
+            if (currentRole === deanCurrentUnit[i]) {
                 return true;
             }
         }
         return false;
     }
-    
+
     checkHasComponent = (name) => {
         var { auth } = this.props;
         var result = false;
         auth.components.forEach(component => {
-            if(component.name === name) result=true;
+            if (component.name === name) result = true;
         });
         return result;
     }
@@ -150,7 +151,7 @@ class TaskTemplate extends Component {
         await this.setState(state => {
             return {
                 ...state,
-                currentPage : pageTotal
+                currentPage: pageTotal
             }
         })
         var newCurrentPage = this.state.currentPage;
@@ -160,8 +161,8 @@ class TaskTemplate extends Component {
 
 
     handleView = async (taskTemplateId) => {
-        await this.setState(state=>{
-            return{
+        await this.setState(state => {
+            return {
                 ...state,
                 currentViewRow: taskTemplateId
             }
@@ -172,18 +173,18 @@ class TaskTemplate extends Component {
         await this.setState(state => {
             return {
                 ...state,
-                currentEditRow : taskTemplateId,
+                currentEditRow: taskTemplateId,
             }
         })
         window.$('#modal-edit-task-template').modal('show');
     }
 
-    handImportFile = (event) =>{
+    handImportFile = (event) => {
         event.preventDefault();
         console.log('opennnnn')
         window.$('#modal_import_file').modal('show');
     }
-    handleAddTaskTemplate = (event)=>{
+    handleAddTaskTemplate = (event) => {
         event.preventDefault();
         console.log('oenene');
         window.$('#modal-add-task-template').modal('show');
@@ -196,9 +197,9 @@ class TaskTemplate extends Component {
 
         var list, pageTotal, units = [], currentUnit;
 
-        if (tasktemplates.pageTotal){
+        if (tasktemplates.pageTotal) {
             pageTotal = tasktemplates.pageTotal;
-        } 
+        }
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
             currentUnit = units.filter(item =>
@@ -206,53 +207,53 @@ class TaskTemplate extends Component {
                 || item.viceDeans.includes(localStorage.getItem("currentRole"))
                 || item.employees.includes(localStorage.getItem("currentRole")));
         }
-        
+
         if (tasktemplates.items) {
             list = tasktemplates.items;
         }
-        
-        return ( 
+
+        return (
             <div className="box">
                 <div className="box-body qlcv" id="table-task-template">
                     {<ModalViewTaskTemplate taskTemplateId={this.state.currentViewRow} />}
-                    {<ModalEditTaskTemplate taskTemplateId={this.state.currentEditRow}/>}
+                    {<ModalEditTaskTemplate taskTemplateId={this.state.currentEditRow} />}
                     {<TaskTemplateImportForm />}
-                    {this.checkHasComponent('create-task-template-button') && 
-                    <React.Fragment>
-                        <ModalAddTaskTemplate />
-                        <div class = "form-inline">
-                            <div class ="dropdown pull-right" style={{marginBottom: 15}}>
-                                <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
-                                <ul className="dropdown-menu pull-right">
-                                    <li><a href="#modal-add-task-template" title="ImportForm" onClick={(event)=>{this.handleAddTaskTemplate(event)}}>{translate('task_template.add')}</a></li>
-                                    <li><a href="#modal_import_file" title="ImportForm" onClick={(event)=>{this.handImportFile(event)}}>ImportFile</a></li>
-                                </ul>
+                    {this.checkHasComponent('create-task-template-button') &&
+                        <React.Fragment>
+                            <ModalAddTaskTemplate />
+                            <div className="form-inline">
+                                <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                                    <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
+                                    <ul className="dropdown-menu pull-right">
+                                        <li><a href="#modal-add-task-template" title="ImportForm" onClick={(event) => { this.handleAddTaskTemplate(event) }}>{translate('task_template.add')}</a></li>
+                                        <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                    </React.Fragment>
+                        </React.Fragment>
                     }
-                                        
+
                     <div className="form-inline">
-                        <div className = "form-group">
-                            <label className = "form-control-static">{translate('task_template.name')}</label>
-                            <input className="form-control" type="text" placeholder={translate('task_template.search_by_name')} ref={input => this.name = input}/>
+                        <div className="form-group">
+                            <label className="form-control-static">{translate('task_template.name')}</label>
+                            <input className="form-control" type="text" placeholder={translate('task_template.search_by_name')} ref={input => this.name = input} />
                         </div>
                     </div>
 
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className = "form-control-static">{translate('task_template.unit')}</label>
+                            <label className="form-control-static">{translate('task_template.unit')}</label>
                             {units &&
                                 <SelectMulti id="multiSelectUnit"
-                                    defaultValue = {units.map(item => {return item._id})}
-                                    items = {units.map(item => {return {value: item._id, text: item.name}})} 
-                                    options = {{nonSelectedText: translate('task_template.select_all_units'), allSelectedText: "Tất cả các đơn vị"}}>
+                                    defaultValue={units.map(item => { return item._id })}
+                                    items={units.map(item => { return { value: item._id, text: item.name } })}
+                                    options={{ nonSelectedText: translate('task_template.select_all_units'), allSelectedText: "Tất cả các đơn vị" }}>
                                 </SelectMulti>
                             }
                             <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
                         </div>
                     </div>
-                    <DataTableSetting 
+                    <DataTableSetting
                         tableId="table-task-template"
                         columnArr={[
                             'Tên mẫu công việc',
@@ -261,11 +262,11 @@ class TaskTemplate extends Component {
                             'Người tạo mẫu',
                             'Đơn vị'
                         ]}
-                        limit = {this.state.perPage}
-                        setLimit = {this.setLimit}
-                        hideColumnOption = {true}
+                        limit={this.state.perPage}
+                        setLimit={this.setLimit}
+                        hideColumnOption={true}
                     />
-                    
+
                     <table className="table table-bordered table-striped table-hover" id="table-task-template">
                         <thead>
                             <tr>
@@ -286,30 +287,30 @@ class TaskTemplate extends Component {
                                             <td title={item.name}>{item.name}</td>
                                             <td title={item.description}>{item.description}</td>
                                             <td title={item.numberOfUse}>{item.numberOfUse}</td>
-                                            <td title={item.creator.name}>{item.creator.name}</td>
-                                            <td title={item.organizationalUnit.name}>{item.organizationalUnit.name}</td>
+                                            <td title={item.creator && item.creator.name}>{item.creator ? item.creator.name : translate('task.task_template.error_task_template_creator_null')}</td>
+                                            <td title={item.organizationalUnit && item.organizationalUnit.name}>{item.organizationalUnit ? item.organizationalUnit.name : translate('task_template.error_task_template_organizational_unit_null')}</td>
                                             <td>
-                                                <a href="#abc" onClick={()=>this.handleView(item._id)} title="Xem chi tiết mẫu công việc này">
+                                                <a href="#abc" onClick={() => this.handleView(item._id)} title={translate('task.task_template.view_detail_of_this_task_template')}>
                                                     <i className="material-icons" style={!this.checkPermisson(currentUnit && currentUnit[0].deans) ? { paddingLeft: "35px" } : { paddingLeft: "0px" }}>view_list</i>
                                                 </a>
                                                 {this.checkPermisson(item.organizationalUnit.deans) &&
                                                     <React.Fragment>
-                                                        <a onClick={()=>this.handleEdit(item._id)} className="edit" title="Sửa mẫu công việc này">
+                                                        <a onClick={() => this.handleEdit(item._id)} className="edit" title={translate('task_template.edit_this_task_template')}>
                                                             <i className="material-icons">edit</i>
                                                         </a>
-                                                        <a onClick={()=>this.handleDelete(item._id, item.numberOfUse)} className="delete" title="Xóa mẫu công việc này">
+                                                        <a onClick={() => this.handleDelete(item._id, item.numberOfUse)} className="delete" title={translate('task_template.delete_this_task_template')}>
                                                             <i className="material-icons"></i>
                                                         </a>
                                                     </React.Fragment>
                                                 }
                                             </td>
                                         </tr>
-                                    ):
-                                <tr><td colSpan={6}><center>{translate('task_template.no_data')}</center></td></tr>
+                                    ) :
+                                    <tr><td colSpan={6}><center>{translate('task_template.no_data')}</center></td></tr>
                             }
                         </tbody>
                     </table>
-                    <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage}/>
+                    <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} />
                 </div>
             </div>
         );
@@ -326,5 +327,5 @@ const actionCreators = {
     getDepartment: UserActions.getDepartmentOfUser,
     _delete: taskTemplateActions._delete
 };
-const connectedTaskTemplate = connect(mapState, actionCreators)( withTranslate(TaskTemplate));
+const connectedTaskTemplate = connect(mapState, actionCreators)(withTranslate(TaskTemplate));
 export { connectedTaskTemplate as TaskTemplate };

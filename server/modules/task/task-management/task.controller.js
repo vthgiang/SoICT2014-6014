@@ -4,6 +4,12 @@ const { sendEmail } = require('../../../helpers/emailHelper');
 const { LogInfo, LogError } = require('../../../logs');
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module quản lý công việc
 
+
+/**
+ * Lấy công việc theo tùy chọn
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.getTasks = async (req, res) => {
     if (req.query.type === "all") {
         getAllTasks(req, res);
@@ -27,6 +33,9 @@ exports.getTasks = async (req, res) => {
 
     else if (req.query.type === "get_all_task_created_by_user") {
         getAllTasksCreatedByUser(req, res);
+    }
+    else if (req.query.type === "get_all_task_of_organizational_unit") {
+        getAllTaskOfOrganizationalUnit(req, res);
     }
 }
 
@@ -57,20 +66,24 @@ getAllTasks = async (req, res) => {
     }
 }
 
-
+/**
+ * Lấy task evaluation
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.getTaskEvaluations = async (req, res) => {
     try {
-        let taskEvaluation = await TaskManagementService.getTaskEvaluations(req.body);
+        let taskEvaluation = await TaskManagementService.getTaskEvaluations(req.query);
         res.status(200).json({
             success: true,
-            messages: ['get_all_task_success'],
+            messages: ['get_task_evaluation_success'],
             content: taskEvaluation,
         });
     } catch (error) {
         res.status(400).json({
             success: false,
-            messages: ['get_all_task_fail'],
-            content: error
+            messages: ['get_task_evaluation_fail'],
+            content: error,
         });
     }
 
@@ -381,49 +394,6 @@ exports.deleteTask = async (req, res) => {
 }
 
 /**
- * Chinh sua trang thai cua cong viec
- */
-exports.editTaskStatus = async (req, res) => {
-    try {
-        var task = await TaskManagementService.editTaskStatus(req.params.taskId, req.body.status);
-        await LogInfo(req.user.email, ` edit status of task  `, req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['edit_status_of_task_success'],
-            content: task
-        })
-    } catch (error) {
-        await LogError(req.user.email, ` edit status of task `, req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: ['edit_status_of_task_fail'],
-            content: error
-        });
-    }
-}
-
-/**
- * Chinh sua trang thai luu kho cua cong viec
- */
-exports.editArchivedOfTask = async (req, res) => {
-    // try {
-    var task = await TaskManagementService.editArchivedOfTask(req.params.taskId);
-    await LogInfo(req.user.email, ` edit status archived of task  `, req.user.company);
-    res.status(200).json({
-        success: true,
-        messages: ['edit_status_archived_of_task_success'],
-        content: task
-    })
-    // } catch (error) {
-    //     await LogError(req.user.email, ` edit status of task `, req.user.company);
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: ['edit_status_archived_of_task_fail'],
-    //         content: error
-    //     });
-    // }
-}
-/**
  * Lay ra cong viec con
  */
 exports.getSubTask = async (req, res) => {
@@ -561,8 +531,10 @@ exports.evaluateTaskByAccountableEmployees = async (req, res) => {
     }
 }
 
-//lấy các công việc sắp hết hạn và quá hạn của nhân viên 
-getTasksByUser = async (req, res) => {
+/**
+ * lấy các công việc sắp hết hạn và quá hạn của nhân viên 
+ */
+ getTasksByUser = async (req, res) => {
     try {
         const tasks = await TaskManagementService.getTasksByUser(req.query.userId);
 
@@ -580,5 +552,25 @@ getTasksByUser = async (req, res) => {
             messages: ['get_task_by_user_fail'],
             content: error
         });
+    }
+}
+
+/** Lấy tất cả task của organizationalUnit theo tháng hiện tại */
+getAllTaskOfOrganizationalUnit = async (req, res) => {
+    try {
+        var tasks = await TaskManagementService.getAllTaskOfOrganizationalUnit(req.query);
+        LogInfo(req.user.email, ' get all task of organizational unit ', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_task_of_organizational_unit_success'],
+            content: tasks
+        })
+    } catch (error) {
+        LogError(req.user.email, ' get all task of organizational unit ', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['get_all_task_of_organizational_unit_failure'],
+            content: error
+        })
     }
 }

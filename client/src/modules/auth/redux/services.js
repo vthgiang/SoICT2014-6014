@@ -13,7 +13,8 @@ export const AuthService = {
     resetPassword,
     getComponentOfUserInLink,
     changeInformation,
-    changePassword
+    changePassword,
+    downloadFile
 };
 
 async function login(user) {
@@ -42,7 +43,7 @@ function editProfile(data) {
     var id = getStorage("userId");
 
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/${id}`,
+        url: `${ LOCAL_SERVER_API }/user/users/${id}`,
         method: 'PATCH',
         data: data,
     }, true, true, 'auth');
@@ -108,7 +109,20 @@ function resetPassword(otp, email, password) {
 
 function getComponentOfUserInLink(currentRole, linkId) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/component/role/${currentRole}/link/${linkId}`,
+        url: `${ LOCAL_SERVER_API }/component/role/${currentRole}/link/${linkId}/components`,
         method: 'GET',
     }, false, true, 'auth');
+}
+
+/**
+ * Download file
+ * @param {*} path: đường dẫn file cần tải
+ */
+function downloadFile(path) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/auth/download-file/`,
+        method: 'GET',
+        responseType: 'blob',
+        params: { path: path }
+    }, false, false, 'auth');
 }

@@ -8,6 +8,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { performTaskAction } from '../../../../task/task-perform/redux/actions'
 import { createKpiSetActions } from '../../../employee/creation/redux/actions';
 import moment from 'moment'
+import { AuthActions } from '../../../../auth/redux/actions';
 class EmployeeKpiComment extends Component {
     constructor(props) {
         let idUser = getStorage("userId");
@@ -63,7 +64,6 @@ class EmployeeKpiComment extends Component {
                 }
             })
         }
-
     }
 
     handleShowFile = (id) => {
@@ -138,7 +138,7 @@ class EmployeeKpiComment extends Component {
                 ...state,
                 editComment: ""
             }
-        });
+        })
     }
     editCommentOfComment = async (e, index) => {
         e.preventDefault();
@@ -224,16 +224,23 @@ class EmployeeKpiComment extends Component {
         }
         return (
             <React.Fragment>
-                {comments ?
+                {comments?
                     comments.map(item => {
                         return (
                             <div className="clearfix" key={item._id}>
                                 <img className="user-img-level1" src={(LOCAL_SERVER_API + item.creator.avatar)} alt="User Image" />
                                 {editComment !== item._id &&
                                     <React.Fragment>
-                                        <p className="content-level1">
+                                        <div className="content-level1">
                                             <a style={{ cursor: 'pointer' }}>{item.creator.name} </a>
-                                            {item.description}
+                                            {item.description.split('\n').map((item, idx) => {
+                                                return (
+                                                    <span key={idx}>
+                                                        {item}
+                                                        <br />
+                                                    </span>
+                                                );
+                                            })}
                                             {item.creator._id === currentUser &&
                                                 <div className="btn-group pull-right">
                                                     <span data-toggle="dropdown">
@@ -244,7 +251,7 @@ class EmployeeKpiComment extends Component {
                                                         <li><a style={{ cursor: 'pointer' }} onClick={() => this.props.deleteComment(item._id, currentKPI._id)} >{translate('kpi.evaluation.employee_evaluation.delete_cmt')}</a></li>
                                                     </ul>
                                                 </div>}
-                                        </p>
+                                        </div>
                                         <ul className="list-inline tool-level1">
                                             <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
                                             <li><a style={{ cursor: 'pointer' }} className="link-black text-sm" onClick={() => this.handleShowChildComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate('kpi.evaluation.employee_evaluation.add_cmt')} ({item.comments.length}) &nbsp;</a></li>
@@ -290,9 +297,16 @@ class EmployeeKpiComment extends Component {
                                                 <img className="user-img-level2" src={(LOCAL_SERVER_API + item.creator.avatar)} alt="User Image" />
                                                 {editCommentOfComment !== child._id &&
                                                     <div>
-                                                        <p className="content-level2">
+                                                        <div className="content-level2">
                                                             <a style={{ cursor: 'pointer' }}>{child.creator.name} </a>
-                                                            {child.description}
+                                                            {child.description.split('\n').map((item, idx) => {
+                                                                return (
+                                                                    <span key={idx}>
+                                                                        {item}
+                                                                        <br />
+                                                                    </span>
+                                                                );
+                                                            })}
                                                             {child.creator._id === currentUser &&
                                                                 <div className="btn-group pull-right">
                                                                     <span data-toggle="dropdown">
@@ -303,7 +317,7 @@ class EmployeeKpiComment extends Component {
                                                                         <li><a style={{ cursor: 'pointer' }} onClick={() => this.props.deleteCommentOfComment(child._id, currentKPI._id)} >{translate('kpi.evaluation.employee_evaluation.delete_cmt')}</a></li>
                                                                     </ul>
                                                                 </div>}
-                                                        </p>
+                                                        </div>
                                                         <ul className="list-inline tool-level2">
                                                             <li><span className="text-sm">{moment(child.createdAt).fromNow()}</span></li>
                                                             {child.files.length > 0 &&
@@ -398,7 +412,7 @@ function mapState(state) {
 const actionCreators = {
     editComment: createKpiSetActions.editComment,
     deleteComment: createKpiSetActions.deleteComment,
-    downloadFile: performTaskAction.downloadFile,
+    downloadFile: AuthActions.downloadFile,
     createComment: createKpiSetActions.createComment,
     createCommentOfComment: createKpiSetActions.createCommentOfComment,
     editCommentOfComment: createKpiSetActions.editCommentOfComment,

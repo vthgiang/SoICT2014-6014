@@ -17,7 +17,7 @@ const HolidaySchema = new Schema({
         type: Date,
         required: true
     },
-    reason: {
+    description: {
         type: String,
         required: true
     },

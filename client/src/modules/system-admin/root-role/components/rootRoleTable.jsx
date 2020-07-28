@@ -13,7 +13,7 @@ class RootRoleTable extends Component {
         this.state = {}
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.props.getAllRootRoles();
     }
 
