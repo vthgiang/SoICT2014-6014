@@ -5,43 +5,56 @@ const { LogInfo, LogError } = require('../../../../logs');
  * Get organizational unit kpi set
  */
 exports.getOrganizationalUnitKpiSet = async (req, res) => {
-    try {
-        var kpiunit = await KPIUnitService.getOrganizationalUnitKpiSet(req.query);
-        LogInfo(req.user.email, `Get kpi unit by role `, req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['get_kpiunit_by_role_success'],
-            content: kpiunit
-        })
-    } catch (error) {
-        LogError(req.user.email, `Get kpi unit by role `, req.user.company)
-        res.status(400).json({
-            success: false,
-            messages: ['get_kpiunit_by_role_fail'],
-            content: error
-        })
+    if(req.query.parent){
+        getParentOrganizationalUnitKpiSet(req, res);
+    } else if(req.query.startDate && req.query.endDate){
+        getAllOrganizationalUnitKpiSetByTime(req, res);
+    } else if(req.query.child){
+        getAllOrganizationalUnitKpiSetByTimeOfChildUnit(req, res);
+    } else {
+        try {
+            var kpiunit = await KPIUnitService.getOrganizationalUnitKpiSet(req.query);
+            LogInfo(req.user.email, `Get kpi unit by role `, req.user.company);
+            res.status(200).json({
+                success: true,
+                messages: ['get_kpiunit_by_role_success'],
+                content: kpiunit
+            })
+        } catch (error) {
+            LogError(req.user.email, `Get kpi unit by role `, req.user.company)
+            res.status(400).json({
+                success: false,
+                messages: ['get_kpiunit_by_role_fail'],
+                content: error
+            })
+        }
     }
+    
 }
 
 /**
  * Chỉnh sửa thông tin chung của tập KPI đơn vị
  */
 exports.editOrganizationalUnitKpiSet = async (req, res) => {
-    try {
-        var organizationalUnitKpiSet = await KPIUnitService.editOrganizationalUnitKpiSet(req.body.date, req.params.id);
-        LogInfo(req.user.email, ' Edit kpi unit ', req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['edit_kpi_success'],
-            content: organizationalUnitKpiSet,
-        });
-    } catch (error) {
-        LogError(req.user.email, ' Edit kpi unit ', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: ['edit_kpi_failure'],
-            content: error
-        })
+    if (req.query.status) {
+        editOrganizationalUnitKpiSetStatus(req, res);
+    } else {
+        try {
+            var organizationalUnitKpiSet = await KPIUnitService.editOrganizationalUnitKpiSet(req.body.date, req.params.id);
+            LogInfo(req.user.email, ' Edit kpi unit ', req.user.company);
+            res.status(200).json({
+                success: true,
+                messages: ['edit_kpi_success'],
+                content: organizationalUnitKpiSet,
+            });
+        } catch (error) {
+            LogError(req.user.email, ' Edit kpi unit ', req.user.company);
+            res.status(400).json({
+                success: false,
+                messages: ['edit_kpi_failure'],
+                content: error
+            })
+        }
     }
 }
 
@@ -96,31 +109,9 @@ exports.deleteOrganizationalUnitKpi = async (req, res) => {
 }
 
 /**
- * Chỉnh sửa trạng thái của KPI đơn vị
- */
-exports.editOrganizationalUnitKpiSetStatus = async (req, res) => {
-    try {
-        var kpiunit = await KPIUnitService.editOrganizationalUnitKpiSetStatus(req.params.id, req.query);
-        LogInfo(req.user.email, 'edit status kpi unit', req.user.company)
-        res.status(200).json({
-            success: true,
-            messages: ['confirm_edit_status_success'],
-            content: kpiunit,
-        });
-    } catch (error) {
-        LogError(req.user.email, 'edit status kpi unit', req.user.company)
-        res.status(400).json({
-            success: false,
-            messages: ['confirm_edit_status_failure'],
-            content: error
-        })
-    }
-}
-
-/**
  * Lấy tập KPI đơn vị của đơn vị cha của đơn vị ứng với role người dùng
  */
-exports.getParentOrganizationalUnitKpiSet = async (req, res) => {
+getParentOrganizationalUnitKpiSet = async (req, res) => {
     try {
         var kpiunit = await KPIUnitService.getParentOrganizationalUnitKpiSet(req.query.roleId);
         LogInfo(req.user.email, 'get parent kpi unit', req.user.company)
@@ -166,6 +157,7 @@ exports.createOrganizationalUnitKpi = async (req, res) => {
  * Chỉnh sửa KPI đơn vị
  */
 exports.editOrganizationalUnitKpi = async (req, res) => {
+
     try {
         var target = await KPIUnitService.editOrganizationalUnitKpi(req.body, req.params.id);
         LogInfo(req.user.email, 'edit target kpi unit', req.user.company)
@@ -183,6 +175,28 @@ exports.editOrganizationalUnitKpi = async (req, res) => {
         })
     }
 
+}
+
+/**
+ * Chỉnh sửa trạng thái của KPI đơn vị
+ */
+editOrganizationalUnitKpiSetStatus = async (req, res) => {
+    try {
+        var kpiunit = await KPIUnitService.editOrganizationalUnitKpiSetStatus(req.params.id, req.query);
+        LogInfo(req.user.email, 'edit status kpi unit', req.user.company)
+        res.status(200).json({
+            success: true,
+            messages: ['confirm_edit_status_success'],
+            content: kpiunit,
+        });
+    } catch (error) {
+        LogError(req.user.email, 'edit status kpi unit', req.user.company)
+        res.status(400).json({
+            success: false,
+            messages: ['confirm_edit_status_failure'],
+            content: error
+        })
+    }
 }
 
 /**
@@ -205,5 +219,48 @@ exports.createOrganizationalUnitKpiSet = async (req, res) => {
             content: error
         })
     }
+}
 
+/** 
+ * Lấy danh sách các tập KPI đơn vị theo thời gian của từng đơn vị 
+ */
+getAllOrganizationalUnitKpiSetByTime = async (req, res) => {
+    try {
+        var organizationalUnitKpiSets = await KPIUnitService.getAllOrganizationalUnitKpiSetByTime(req.query);
+        LogInfo(req.user.email, ' get all organizational unit kpi set each year ', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_organizational_unit_kpi_set_each_year_success'],
+            content: organizationalUnitKpiSets
+        })
+    } catch (error) {
+        LogError(req.user.email, ' get all organizational unit kpi set each year ', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['get_all_organizational_unit_kpi_set_each_year_failure'],
+            content: error
+        })
+    }
+}
+
+/** 
+ * Lấy danh sách các tập KPI đơn vị theo thời gian của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại 
+ */
+getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (req, res) => { 
+    try {
+        var childOrganizationalUnitKpiSets = await KPIUnitService.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(req.user.company._id, req.query);
+        LogInfo(req.user.email, ' get all organizational unit kpi set each year of child unit ', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_organizational_unit_kpi_set_each_year_of_child_success'],
+            content: childOrganizationalUnitKpiSets
+        })
+    } catch (error) {
+        LogError(req.user.email, ' get all organizational unit kpi set each year of child unit ', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['get_all_organizational_unit_kpi_set_each_year_of_child_failure'],
+            content: error
+        })
+    }
 }

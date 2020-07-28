@@ -74,7 +74,7 @@ function getAllEmployeeOfUnitByIds(ids) {
  */
 function getChildrenOfOrganizationalUnitsAsTree(role) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/organizational-units/get-children-of-organizational-unit-as-tree`,
+        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/dashboard/organizational-units/get-children-of-organizational-unit-as-tree`,
         method: 'GET',
         params: {
             role: role
