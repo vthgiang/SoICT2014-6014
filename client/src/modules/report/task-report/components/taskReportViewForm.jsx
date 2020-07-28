@@ -55,7 +55,7 @@ class TaskReportViewForm extends Component {
                         <button id="exportButton" className="btn btn-sm btn-success " style={{ marginBottom: '10px' }}><span className="fa fa-file-excel-o"></span> Export to Excel</button>
                     </div>
                     <div className="row row-equal-height box" >
-                        <div col-md-12>
+                        <div className="col-md-12">
                             <table className="table table-hover table-striped table-bordered" id="report_manager" style={{ marginBottom: '0px !important' }}>
                                 <thead>
                                     <tr>

@@ -556,8 +556,7 @@ exports.evaluateTaskByAccountableEmployees = async (req, res) => {
 }
 
 /** Lấy tất cả task của organizationalUnit theo tháng hiện tại */
-exports.getAllTaskOfOrganizationalUnit = async (req, res) => {
-    console.log("====", req.query)
+getAllTaskOfOrganizationalUnit = async (req, res) => {
     try {
         var tasks = await TaskManagementService.getAllTaskOfOrganizationalUnit(req.query);
         LogInfo(req.user.email, ' get all task of organizational unit ', req.user.company);

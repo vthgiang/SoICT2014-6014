@@ -181,7 +181,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getEmployeeKpiSetByMember: managerKpiActions.getAllKPIPersonalByMember
+    // getEmployeeKpiSetByMember: managerKpiActions.getAllKPIPersonalByMember
 };
 const connectedDashBoardEmployeeKpiSet = connect(mapState, actionCreators)(withTranslate(DashBoardEmployeeKpiSet));
 export { connectedDashBoardEmployeeKpiSet as DashBoardEmployeeKpiSet };
