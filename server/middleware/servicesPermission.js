@@ -340,7 +340,7 @@ exports.data = [
     { path: '/taskprocess/diagrams', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/taskprocess/diagrams/:diagramId', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/taskprocess/diagrams', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/taskprocess/diagrams/:diagramId/edit', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/taskprocess/diagrams/:diagramId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
     // Module TaskTemplate
     { path: '/tasktemplates', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },

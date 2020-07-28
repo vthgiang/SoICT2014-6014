@@ -3,7 +3,9 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../common-components';
 import { ModalEditProcessTask } from './modalEditProcessTask'
+import {ModalCreateProcessTask} from './modalCreateProcessTask'
 import { TaskProcessActions } from '../redux/actions';
+import { ModalViewProcessTask } from './modalViewProcessTask';
 class TaskProcessManagement extends Component {
     constructor(props) {
         super(props);
@@ -15,9 +17,16 @@ class TaskProcessManagement extends Component {
     componentDidMount = () => {
         this.props.getAllXmlDiagram()
     }
-
+    checkHasComponent = (name) => {
+      var { auth } = this.props;
+      var result = false;
+      auth.components.forEach(component => {
+          if (component.name === name) result = true;
+      });
+      return result;
+  }
     showProcess = async (item) => {
-        await this.setState(state => {
+        this.setState(state => {
             return {
                 ...state,
                 currentRow: item,
@@ -25,24 +34,63 @@ class TaskProcessManagement extends Component {
         });
         window.$(`#modal-process`).modal("show");
     }
+    viewProcess = async (item) => {
+      this.setState(state => {
+        return {
+            ...state,
+            currentRow: item,
+        }
+    });
+    window.$(`#modal-view-process-task`).modal("show");
+    }
+    showModalCreateProcess = async () => {
+      await this.setState(state => {
+        return {
+          ...state,
+          showModalCreateProcess : 1
+        }
+      });
+      window.$(`#modal-create-process-task`).modal("show");
+    }
     render() {
         const { translate, taskProcess } = this.props
+        const { showModalCreateProcess,currentRow } = this.state
         let listDiagram = taskProcess && taskProcess.xmlDiagram;
         return (
             <div className="box">
                 <div className="box-body qlcv">
+                {<ModalViewProcessTask 
+                  title = {"Xem quy trình công việc"}
+                  modalID = {'modal-view-process-task'}
+                />}
                 { this.state.currentRow !== undefined &&
                     <ModalEditProcessTask
                         title={'Xem quy trình công việc'}
-                        data={this.state.currentRow}
-                        idProcess={this.state.currentRow._id}
-                        xmlDiagram={this.state.currentRow.xmlDiagram}
-                        nameProcess={this.state.currentRow.nameProcess}
-                        description={this.state.currentRow.description}
-                        infoTask={this.state.currentRow.infoTask}
-                        creator={this.state.currentRow.creator}
+                        data={currentRow}
+                        idProcess={currentRow._id}
+                        xmlDiagram={currentRow.xmlDiagram}
+                        nameProcess={currentRow.nameProcess}
+                        description={currentRow.description}
+                        infoTask={currentRow.infoTask}
+                        creator={currentRow.creator}
                     />
                 }
+            {this.checkHasComponent('create-task-process-button') &&
+            <React.Fragment>
+              <div className="pull-right">
+                <button className="btn btn-success" onClick= {()=> {this.showModalCreateProcess()}}>
+                  Thêm mới
+              </button>
+              </div>
+              {
+                showModalCreateProcess && 
+                <ModalCreateProcessTask 
+                  title= "Thêm mới quy trình công việc"
+                  rand = {Math.random()}
+                />
+              }
+            </React.Fragment>
+            }
                 <div className="form-inline">
                     <div className="form-group">
                         <label className="form-control-static">{translate('task_template.name')}</label>
@@ -94,7 +142,7 @@ class TaskProcessManagement extends Component {
                               <a href="#abc" onClick={() => { this.showProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>
                                 <i className="material-icons">view_list</i>
                               </a>
-                              <a className="edit" title={translate('task_template.edit_this_task_template')}>
+                              <a className="edit" title={translate('task_template.edit_this_task_template')} onClick = {() => {this.viewProcess(item)}}>
                                   <i className="material-icons">edit</i>
                               </a>
                               <a className="delete" title={translate('task_template.delete_this_task_template')}>
