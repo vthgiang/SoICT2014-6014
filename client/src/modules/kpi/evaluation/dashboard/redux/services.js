@@ -11,27 +11,12 @@ export const dashboardEmployeeKpiService = {
  * Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị theo role
  * @param {*} role 
  */
-function getAllEmployeeKpiSetOfUnitByRole(role) {    
+function getAllEmployeeKpiSetOfUnitByRole(role) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis`,
-        // url: `${LOCAL_SERVER_API}/kpimembers/employee-kpi-sets`,
+        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets`,
         method: 'GET',
         params: {
-            role: role
-        }
-    }, false, true, 'kpi.evaluation');
-}
-
-/**
- * Lấy tất cả nhân viên trong đơn vị theo role
- * @param {*} role 
- */
-function getAllEmployeeOfUnitByRole(role) {
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/users`,
-        method: 'GET',
-        params: {
-            role: role
+            roleId: role
         }
     }, false, true, 'kpi.evaluation');
 }
@@ -40,26 +25,10 @@ function getAllEmployeeOfUnitByRole(role) {
  *  Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị theo mảng id đơn vị
  * @param {*} ids 
  */
-function getAllEmployeeKpiSetOfUnitByIds(ids) {  
+function getAllEmployeeKpiSetOfUnitByIds(ids) {
     let role = getStorage("currentRole");
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis`,
-        method: 'GET',
-        params: {
-            role: role,
-            ids: ids
-        }
-    }, false, true, 'kpi.evaluation');
-}
-
-/**
- *  Lấy tất cả nhân viên trong đơn vị theo mảng id đơn vị
- * @param {*} ids 
- */
-function getAllEmployeeOfUnitByIds(ids) {   
-    let role = getStorage("currentRole"); 
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/users`,
+        url: `${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis`,
         method: 'GET',
         params: {
             role: role,
