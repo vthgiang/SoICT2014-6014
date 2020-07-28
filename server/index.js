@@ -146,11 +146,11 @@ app.use("/privilege", privilege);
 app.use("/role", role);
 app.use("/user", user);
 
-app.use("/company", company);
-app.use("/log", log);
-app.use("/components-default-management", systemComponent);
-app.use("/links-default-management", systemLink);
-app.use("/root-role", rootRole);
+app.use("/system-admin/company", company);
+app.use("/system-admin/log", log);
+app.use("/system-admin/system-component", systemComponent);
+app.use("/system-admin/system-link", systemLink);
+app.use("/system-admin/root-role", rootRole);
 
 app.use("/task", taskManagement);
 app.use("/performtask", taskPerform);
