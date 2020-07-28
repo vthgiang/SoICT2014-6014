@@ -157,7 +157,9 @@ class TaskReportManager extends Component {
                         <ButtonModal modalID="modal-create-task-report" button_name={translate('report_manager.add_report')} title={translate('report_manager.add_report')} />
                     </div>
                     <TaskReportCreateForm />
+
                     <TaskReportViewForm />
+
                     {/* search form */}
                     <div className="form-inline" style={{ marginBottom: '2px' }}>
                         <div className="form-group">
@@ -168,6 +170,10 @@ class TaskReportManager extends Component {
                             <label className="form-control-static">{translate('report_manager.creator')}</label>
                             <input className="form-control" type="text" onKeyUp={this.handleEnterLimitSetting} name="name" onChange={this.handleChangeInput} placeholder={translate('report_manager.search_by_creator')} />
                         </div>
+
+                    </div>
+
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label className="form-control-static">Sắp xếp theo</label>
                             <SelectBox
@@ -185,9 +191,8 @@ class TaskReportManager extends Component {
                                 multiple={false}
                             />
                         </div>
-                    </div>
-                    <div className="form-inline">
-                        <div className="form-group" style={{ marginLeft: '110px', marginTop: '10px' }}>
+                        <div className="form-group" >
+                            <label></label>
                             <button type="button" className="btn btn-success" onClick={this.search} title={translate('form.search')}>{translate('form.search')}</button>
                         </div>
                     </div>

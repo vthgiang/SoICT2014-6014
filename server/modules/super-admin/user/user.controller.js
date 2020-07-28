@@ -3,15 +3,17 @@ const { LogInfo, LogError } = require('../../../logs');
 const { Console } = require('winston/lib/winston/transports');
 
 exports.getUsers = async (req, res) => {
-    if(req.query.role){
-        if(!req.query.ids){
+    if (req.query.role) {
+        if (!req.query.ids) {
             getAllEmployeeOfUnitByRole(req, res);
         }
-        else getAllEmployeeOfUnitByIds(req, res);
+        else {
+            getAllEmployeeOfUnitByIds(req, res);
+        }
     }
-    else{
+    else {
         try {
-            var users = await UserService.getAllUsers(req.user.company._id, req.query);
+            var users = await UserService.getUsers(req.user.company._id, req.query);
 
             LogInfo(req.user.email, 'GET_USERS', req.user.company);
             res.status(200).json({
@@ -20,7 +22,7 @@ exports.getUsers = async (req, res) => {
                 content: users
             });
         } catch (error) {
-            
+
             LogError(req.user.email, 'GET_USERS', req.user.company);
             res.status(400).json({
                 success: false,
@@ -47,7 +49,7 @@ getAllEmployeeOfUnitByRole = async (req, res) => {
             content: error
         });
     }
-    
+
 };
 getAllEmployeeOfUnitByIds = async (req, res) => {
     try {
@@ -67,6 +69,68 @@ getAllEmployeeOfUnitByIds = async (req, res) => {
         });
     }
 };
+
+exports.getAllUserInUnitAndItsSubUnits = async (req, res) => {
+    try {
+        var users = await UserService.getAllUserInUnitAndItsSubUnits(req.user.company._id, req.params.id);
+        await LogInfo(req.user.email, `Get all user of this unit and its sub units ${req.body.name}`, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_user_of_this_unit_and_its_sub_units_success'],
+            content: users
+        });
+    } catch (error) {
+        await LogError(req.user.email, `Get all user of this unit and its sub units ${req.body.name}`, req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['get_all_user_of_this_unit_and_its_sub_units_failed'],
+            content: error
+        });
+    }
+}
+
+exports.getUser = async (req, res) => {
+    console.log("ádasdsadasdasdas")
+    try {
+        var user = await UserService.getUser(req.params.id);
+        LogInfo(req.user.email, 'SHOW_USER', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['show_user_success'],
+            content: user
+        });
+    } catch (error) {
+
+        LogError(req.user.email, 'SHOW_USER', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['show_user_faile'],
+            content: error
+        })
+    }
+};
+
+exports.getOrganizationalUnitsOfUser = async (req, res) => {
+    try {
+        const department = await UserService.getOrganizationalUnitsOfUser(req.params.id);
+
+        await LogInfo(req.user.email, 'GET_DEPARTMENT_OF_USER', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_department_of_user_success'],
+            content: department
+        });
+    } catch (error) {
+
+        await LogError(req.user.email, 'GET_DEPARTMENT_OF_USER', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_department_of_user_faile'],
+            content: error
+        });
+    }
+}
+
 
 exports.createUser = async (req, res) => {
     try {
@@ -91,33 +155,12 @@ exports.createUser = async (req, res) => {
     }
 };
 
-exports.getUser = async (req, res) => {
-    console.log("ádasdsadasdasdas")
-    try {
-        var user = await UserService.getUser(req.params.id);
-        LogInfo(req.user.email, 'SHOW_USER', req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['show_user_success'],
-            content: user
-        });
-    } catch (error) {
-        
-        LogError(req.user.email, 'SHOW_USER', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['show_user_faile'],
-            content: error
-        })
-    }
-};
-
 exports.editUser = async (req, res) => {
     try {
         var user = await UserService.editUser(req.params.id, req.body);
         await UserService.editRolesForUser(user._id, req.body.roles);
         var result = await UserService.getUser(user._id);
-        
+
         LogInfo(req.user.email, 'EDIT_USER', req.user.company);
         res.status(200).json({
             success: true,
@@ -156,88 +199,3 @@ exports.deleteUser = async (req, res) => {
     }
 };
 
-// exports.getAllUsersInSameOrganizationalUnitWithUserRole = async (req, res) => {
-//     try {
-//         const users = await UserService.getAllUsersInSameOrganizationalUnitWithUserRole(req.params.id);
-
-//         LogInfo(req.user.email, 'GET_USERS_SAME_DEPARTMENT', req.user.company);
-//         res.status(200).json({
-//             success: true,
-//             messages: ['get_users_same_department_success'],
-//             content: users
-//         })
-//     } catch (error) {
-        
-//         LogError(req.user.email, 'GET_USERS_SAME_DEPARTMENT', req.user.company);
-//         res.status(400).json({
-//             success: false,
-//             messages: Array.isArray(error) ? error : ['get_users_same_department_faile'],
-//             content: error
-//         })
-//     }
-// }
-
-// /** Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ */
-// exports.getAllUsersInOrganizationalUnit = async (req, res) => {
-//     try {
-//         const users = await UserService.getAllUsersInOrganizationalUnit(req.params.id);
-
-//         LogInfo(req.user.email, 'GET_USERS_OF_DEPARTMENT', req.user.company);
-//         res.status(200).json({
-//             success: true,
-//             messages: ['get_users_of_department_success'],
-//             content: users
-//         })
-//     } catch (error) {
-        
-//         LogError(req.user.email, 'GET_USERS_OF_DEPARTMENT', req.user.company);
-//         res.status(400).json({
-//             success: false,
-//             messages: Array.isArray(error) ? error : ['get_users_of_department_faile'],
-//             content: error
-//         })
-//     }
-// }
-
-exports.getOrganizationalUnitsOfUser = async (req, res) => {
-    try {
-        const department = await UserService.getOrganizationalUnitsOfUser(req.params.id);
-        
-        await LogInfo(req.user.email, 'GET_DEPARTMENT_OF_USER', req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['get_department_of_user_success'],
-            content: department
-        });
-    } catch (error) {
-
-        await LogError(req.user.email, 'GET_DEPARTMENT_OF_USER', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['get_department_of_user_faile'],
-            content: error
-        });
-    }
-}
-
-exports.getAllUserInUnitAndItsSubUnits = async (req, res) => {
-    try {
-        var users = await UserService.getAllUserInUnitAndItsSubUnits(req.user.company._id, req.params.id);
-        await LogInfo(req.user.email, `Get all user of this unit and its sub units ${req.body.name}`, req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['get_all_user_of_this_unit_and_its_sub_units_success'],
-            content: users
-        });
-    } catch (error) {
-        await LogError(req.user.email, `Get all user of this unit and its sub units ${req.body.name}`, req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: ['get_all_user_of_this_unit_and_its_sub_units_failed'],
-            content: error
-        });
-    }
-}
-
-
- 

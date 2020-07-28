@@ -102,7 +102,7 @@ class ManageUserTable extends Component {
                                         ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_user.enable')} </p>
                                         : <p><i className="fa fa-circle text-danger" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_user.disable')} </p>}</td>
                                     <td style={{textAlign: 'center'}}>
-                                        <a onClick={() => this.handleEdit(u)} className="edit text-yellow" style={{width: '5px'}} title={translate('manage_user.edit')}><i className="material-icons">edit</i></a>
+                                        <a onClick={() => this.handleEdit(u)} className="edit text-yellow" href={`#${u._id}`} style={{width: '5px'}} title={translate('manage_user.edit')}><i className="material-icons">edit</i></a>
                                         {
                                             !this.checkSuperRole(u.roles) && 
                                             <DeleteNotification 

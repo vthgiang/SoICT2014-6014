@@ -11,7 +11,7 @@ export const LinkServices = {
 
 function get(params) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/link`,
+        url: `${ LOCAL_SERVER_API }/link/links`,
         method: 'GET',
         params
     }, false, true, 'super_admin.link');
@@ -19,14 +19,14 @@ function get(params) {
 
 function show(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/link/${id}`,
+        url: `${ LOCAL_SERVER_API }/link/links/${id}`,
         method: 'GET',
     }, false, true, 'super_admin.link');
 }
 
 function create(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/link`,
+        url: `${ LOCAL_SERVER_API }/link/links`,
         method: 'POST',
         data,
     }, true, true, 'super_admin.link');
@@ -34,7 +34,7 @@ function create(data) {
 
 function edit(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/link/${id}`,
+        url: `${ LOCAL_SERVER_API }/link/links/${id}`,
         method: 'PATCH',
         data,
     }, true, true, 'super_admin.link');
@@ -42,7 +42,7 @@ function edit(id, data) {
 
 function destroy(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/link/${id}`,
+        url: `${ LOCAL_SERVER_API }/link/links/${id}`,
         method: 'DELETE',
     }, true, true, 'super_admin.link');
 }

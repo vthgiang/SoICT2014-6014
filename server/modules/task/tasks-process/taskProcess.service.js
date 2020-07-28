@@ -38,3 +38,19 @@ exports.createXmlDiagram = async (body) => {
   data =  await TaskProcess.findById(data._id).populate({ path: 'creator', model: User ,select: 'name'});
   return data;
 }
+exports.editXmlDiagram = async (params, body) => {
+  let info = [];
+  for (const x in body.infoTask) {
+    info.push(body.infoTask[x])
+  }
+  let data = await TaskProcess.findByIdAndUpdate(params.diagramId,
+    {
+      $set: {
+        xmlDiagram: body.createXmlDiagram,
+        infoTask: info
+      }
+    }
+  )
+  let data1 = await TaskProcess.findById(params.diagramId)
+  return data1;
+}

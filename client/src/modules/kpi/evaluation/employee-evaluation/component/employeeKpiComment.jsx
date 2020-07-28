@@ -8,6 +8,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { performTaskAction } from '../../../../task/task-perform/redux/actions'
 import { createKpiSetActions } from '../../../employee/creation/redux/actions';
 import moment from 'moment'
+import { AuthActions } from '../../../../auth/redux/actions';
 class EmployeeKpiComment extends Component {
     constructor(props) {
         let idUser = getStorage("userId");
@@ -296,7 +297,7 @@ class EmployeeKpiComment extends Component {
                                                 <img className="user-img-level2" src={(LOCAL_SERVER_API + item.creator.avatar)} alt="User Image" />
                                                 {editCommentOfComment !== child._id &&
                                                     <div>
-                                                        <p className="content-level2">
+                                                        <div className="content-level2">
                                                             <a style={{ cursor: 'pointer' }}>{child.creator.name} </a>
                                                             {child.description.split('\n').map((item, idx) => {
                                                                 return (
@@ -316,7 +317,7 @@ class EmployeeKpiComment extends Component {
                                                                         <li><a style={{ cursor: 'pointer' }} onClick={() => this.props.deleteCommentOfComment(child._id, currentKPI._id)} >{translate('kpi.evaluation.employee_evaluation.delete_cmt')}</a></li>
                                                                     </ul>
                                                                 </div>}
-                                                        </p>
+                                                        </div>
                                                         <ul className="list-inline tool-level2">
                                                             <li><span className="text-sm">{moment(child.createdAt).fromNow()}</span></li>
                                                             {child.files.length > 0 &&
@@ -411,7 +412,7 @@ function mapState(state) {
 const actionCreators = {
     editComment: createKpiSetActions.editComment,
     deleteComment: createKpiSetActions.deleteComment,
-    downloadFile: performTaskAction.downloadFile,
+    downloadFile: AuthActions.downloadFile,
     createComment: createKpiSetActions.createComment,
     createCommentOfComment: createKpiSetActions.createCommentOfComment,
     editCommentOfComment: createKpiSetActions.editCommentOfComment,

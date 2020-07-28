@@ -815,11 +815,11 @@ class ModalEditTaskByAccountableEmployee extends Component {
         if (title !== '' || description !== '') {
             this.props.addTaskLog({
                 createdAt: Date.now(),
-                taskId: currentTask._id,
+               
                 creator: getStorage("userId"),
                 title: title,
                 description: description,
-            })
+            }, currentTask._id)
         }
     }
 

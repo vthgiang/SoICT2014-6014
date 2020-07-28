@@ -5,9 +5,10 @@ const { auth } = require('../../../middleware');
 const TaskProcessController = require("./taskProcess.controller");
 
 
-router.get("/diagrams", auth, TaskProcessController.getAllXmlDiagram);
+router.get("/diagrams", auth, TaskProcessController.getAllXmlDiagrams);
 router.get("/diagrams/:diagramId", auth, TaskProcessController.getXmlDiagramById);
 router.post("/diagrams", auth, TaskProcessController.createXmlDiagram);
+router.patch("/diagrams/:diagramId/edit",auth,TaskProcessController.editXmlDiagram)
 
 
 

@@ -376,7 +376,7 @@ export function tasks(state = {}, action) {
             return {
                 ...state,
                 listTaskEvaluations: action.payload.result,
-                TotalTaskInfo: action.payload.result2,
+                totalTaskInfo: action.payload.result2,
                 isLoading: false,
             };
         case taskManagementConstants.GET_TASK_EVALUATION_FAILURE:

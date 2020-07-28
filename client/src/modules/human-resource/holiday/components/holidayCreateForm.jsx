@@ -12,7 +12,7 @@ class HolidayCreateForm extends Component {
         this.state = {
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(Date.now()),
-            reason: ""
+            description: ""
         };
     }
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
@@ -31,18 +31,18 @@ class HolidayCreateForm extends Component {
     }
 
     // Bắt sự kiện thay đổi lý do nghỉ
-    handleReasonChange = (e) => {
+    handleDescriptionChange = (e) => {
         const { value } = e.target;
-        this.validateReason(value, true);
+        this.validateDescription(value, true);
     }
-    validateReason = (value, willUpdateState = true) => {
-        let msg = HolidayFormValidator.validateReason(value, this.props.translate)
+    validateDescription = (value, willUpdateState = true) => {
+        let msg = HolidayFormValidator.validateDescription(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnReason: msg,
-                    reason: value,
+                    errorOnDescription: msg,
+                    description: value,
                 }
             });
         }
@@ -89,7 +89,7 @@ class HolidayCreateForm extends Component {
     isFormValidated = () => {
         let result =
             this.validateStartDate(this.state.startDate, false) && this.validateEndDate(this.state.endDate, false) &&
-            this.validateReason(this.state.reason, false);
+            this.validateDescription(this.state.description, false);
         return result;
     }
 
@@ -101,7 +101,7 @@ class HolidayCreateForm extends Component {
     }
     render() {
         const { translate, holiday } = this.props;
-        const { startDate, endDate, reason, errorOnStartDate, errorOnEndDate, errorOnReason } = this.state;
+        const { startDate, endDate, description, errorOnStartDate, errorOnEndDate, errorOnDescription } = this.state;
         return (
             <React.Fragment>
                 <ButtonModal modalID="modal-create-holiday" button_name="Thêm mới" title="Thêm mới lịch nghỉ" />
@@ -135,10 +135,10 @@ class HolidayCreateForm extends Component {
                                 <ErrorLabel content={errorOnEndDate} />
                             </div>
                         </div>
-                        <div className={`form-group ${errorOnReason === undefined ? "" : "has-error"}`}>
-                            <label htmlFor="reason">Mô tả lịch nghỉ<span className="text-red">&#42;</span></label>
-                            <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" value={reason} onChange={this.handleReasonChange}></textarea>
-                            <ErrorLabel content={errorOnReason} />
+                        <div className={`form-group ${errorOnDescription === undefined ? "" : "has-error"}`}>
+                            <label htmlFor="description">Mô tả lịch nghỉ<span className="text-red">&#42;</span></label>
+                            <textarea className="form-control" rows="3" style={{ height: 72 }} name="description" value={description} onChange={this.handleDescriptionChange}></textarea>
+                            <ErrorLabel content={errorOnDescription} />
                         </div>
                     </form>
                 </DialogModal>

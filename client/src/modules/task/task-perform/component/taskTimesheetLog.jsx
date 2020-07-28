@@ -76,11 +76,10 @@ class TaskTimesheetLog extends Component {
         const timer = {
             stoppedAt: Date.now(),
             duration: Date.now() - performtasks.currentTimer.timesheetLogs[0].startedAt,
-            task: performtasks.currentTimer._id,
             description: this.state.description,
             timesheetLog: performtasks.currentTimer.timesheetLogs[0]._id
         };
-        await this.props.stopTimer(timer);
+        await this.props.stopTimer(performtasks.currentTimer._id,timer);
         this.setState(state => {
             return {
                 ...state,
