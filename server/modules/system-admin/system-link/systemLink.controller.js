@@ -66,7 +66,7 @@ exports.createSystemLink = async (req, res) => {
 
 exports.getSystemLink = async (req, res) => {
     try {
-        const link = await SystemLinkServices.getSystemLink(req.params.id);
+        const link = await SystemLinkServices.getSystemLink(req.params.systemLinkId);
         
         LogInfo(req.user.email, 'SHOW_LINK_DEFAULT');
         res.status(200).json({
@@ -88,7 +88,7 @@ exports.editSystemLink = async (req, res) => {
     try {
         const { url, description, roles, category } = req.body;
 
-        const link = await SystemLinkServices.editSystemLink(req.params.id, url, description, roles, category);
+        const link = await SystemLinkServices.editSystemLink(req.params.systemLinkId, url, description, roles, category);
         const data = await SystemLinkServices.getSystemLink(link._id);
         
         LogInfo(req.user.email, 'EDIT_LINK_DEFAULT');
@@ -109,7 +109,7 @@ exports.editSystemLink = async (req, res) => {
 
 exports.deleteSystemLink = async (req, res) => {
     try {
-        const link = await SystemLinkServices.deleteSystemLink(req.params.id);
+        const link = await SystemLinkServices.deleteSystemLink(req.params.systemLinkId);
         
         LogInfo(req.user.email, 'DELETE_LINK_DEFAULT');
         res.status(200).json({
