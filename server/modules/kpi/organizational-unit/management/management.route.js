@@ -6,8 +6,6 @@ const {auth} = require('../../../../middleware/index');
 // Tìm kiếm KPI của đơn vị
 router.get('/organizational-unit-kpi-sets',auth, managerController.get);
 
-
-
 // Copy mục tiêu của KPI tháng được chọn sang tháng mới
 router.post('/organizational-unit-kpi-sets/:id/copy', auth, managerController.copyKPI);
 
