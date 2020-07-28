@@ -53,41 +53,6 @@ getOrganizationalUnitsThatUserIsDean = async (req, res) =>{
     }
 }
 
-exports.createOrganizationalUnit = async (req, res) => {
-    try {
-        let roles = await RoleService
-            .createRolesForOrganizationalUnit(
-                req.body, 
-                req.user.company._id
-            );
-        let organizationalUnit = await OrganizationalUnitService
-            .createOrganizationalUnit( 
-                req.body, req.user.company._id,
-                roles.deans.map(dean=>dean._id), 
-                roles.viceDeans.map(vice=>vice._id), 
-                roles.employees.map(em=>em._id)
-            );
-        
-        let tree = await OrganizationalUnitService
-            .getOrganizationalUnitsAsTree(req.user.company._id);
-
-        await LogInfo(req.user.email, 'CREATE_DEPARTMENT', req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['create_department_success'],
-            content: { department: organizationalUnit, tree }
-        });
-    } catch (error) {
-        console.log('eerrror:', error)
-        await LogError(req.user.email, 'CREATE_DEPARTMENT', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['create_department_faile'],
-            content: error
-        });
-    }
-};
-
 exports.getOrganizationalUnit = async (req, res) => {
     try {
         var department = await OrganizationalUnitService.getOrganizationalUnit(req.params.id);
@@ -132,6 +97,41 @@ exports.getChildrenOfOrganizationalUnitsAsTree = async (req, res) => {
             content: error
         });
     }  
+};
+
+exports.createOrganizationalUnit = async (req, res) => {
+    try {
+        let roles = await RoleService
+            .createRolesForOrganizationalUnit(
+                req.body, 
+                req.user.company._id
+            );
+        let organizationalUnit = await OrganizationalUnitService
+            .createOrganizationalUnit( 
+                req.body, req.user.company._id,
+                roles.deans.map(dean=>dean._id), 
+                roles.viceDeans.map(vice=>vice._id), 
+                roles.employees.map(em=>em._id)
+            );
+        
+        let tree = await OrganizationalUnitService
+            .getOrganizationalUnitsAsTree(req.user.company._id);
+
+        await LogInfo(req.user.email, 'CREATE_DEPARTMENT', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['create_department_success'],
+            content: { department: organizationalUnit, tree }
+        });
+    } catch (error) {
+        console.log('eerrror:', error)
+        await LogError(req.user.email, 'CREATE_DEPARTMENT', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['create_department_faile'],
+            content: error
+        });
+    }
 };
 
 exports.editOrganizationalUnit = async (req, res) => {

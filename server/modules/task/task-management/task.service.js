@@ -1045,7 +1045,6 @@ exports.getTasksByUser = async (data) => {
  * @param {*} month 
  */
 exports.getAllTaskOfOrganizationalUnit= async (query) => {
-    console.log("====", query)
     let organizationalUnit;
     let now, currentYear, currentMonth, endOfCurrentMonth, endOfLastMonth;
 

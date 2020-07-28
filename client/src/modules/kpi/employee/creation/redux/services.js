@@ -100,12 +100,13 @@ function deleteEmployeeKpi(id, kpipersonal) {
 }
 
 /** Chỉnh sửa mục tiêu KPI cá nhân */ 
+
 function editEmployeeKpi(id, newTarget) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets/${id}/edit`,
         method: 'POST',
-        data: JSON.stringify(newTarget)
-    }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
+        data: newTarget
+    }, true, true, 'kpi.evaluation')
 }
 
 /** Phê duyệt kpi cá nhân */ 

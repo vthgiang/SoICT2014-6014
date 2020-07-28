@@ -74,8 +74,6 @@ class FormInfoTask extends Component {
         }
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
-        console.log(usersOfChildrenOrganizationalUnit, unitMembers);
-
         return (
             <div>
                 <form>
