@@ -20,6 +20,9 @@ const TaskProcessSchema = new Schema({
     ref: User,
   },
   infoTask: [{
+    code: {
+      type: String,
+    },
     name: {
       type: String
     },

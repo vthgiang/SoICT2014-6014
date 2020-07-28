@@ -126,9 +126,9 @@ class DetailTaskTab extends Component {
         var timer = {
             startedAt: Date.now(),
             creator: userId,
-            task: taskId
+    
         };
-        this.props.startTimer(timer);
+        this.props.startTimer(taskId,timer);
     }
 
     formatPriority = (data) => {

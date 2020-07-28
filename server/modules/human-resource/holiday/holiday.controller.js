@@ -52,7 +52,7 @@ exports.createHoliday = async (req, res) => {
                     inputData: req.body
                 }
             });
-        } else if (req.body.reason.trim() === "") {
+        } else if (req.body.description.trim() === "") {
             await LogError(req.user.email, 'CREATE_HOLIDAY', req.user.company);
             res.status(400).json({
                 success: false,
@@ -131,7 +131,7 @@ exports.updateHoliday = async (req, res) => {
                     inputData: req.body
                 }
             });
-        } else if (req.body.reason.trim() === "") {
+        } else if (req.body.description.trim() === "") {
             await LogError(req.user.email, 'CREATE_HOLIDAY', req.user.company);
             res.status(400).json({
                 success: false,

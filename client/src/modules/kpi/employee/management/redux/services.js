@@ -18,7 +18,7 @@ export const managerKPIPerService = {
 function getAllKPIPersonalByMember() {//member
     var id = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/user/${id}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets/user/${id}`,
         method: 'GET',
     }, false, true, 'kpi.employee.manager')
 
@@ -27,7 +27,7 @@ function getAllKPIPersonalByMember() {//member
 // Lấy tất cả kpi cá nhân
 function getAllKPIPersonalByUserID(member) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/user/${member}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets/user/${member}`,
         method: 'GET',
     }, false, true, 'kpi.employee.manager' )
 }
@@ -35,7 +35,7 @@ function getAllKPIPersonalByUserID(member) {
 // Lấy tất cả kpi cá nhân
 function getAllKPIPersonalOfTask(member) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpipersonals/task/${member}`,
+        url:`${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets/task/${member}`,
         method: 'GET',
     }, false, true, 'kpi.employee.manager')
 }
@@ -48,14 +48,14 @@ function getAllKPIPersonalOfTask(member) {
  */
 function getAllKpiSetsOrganizationalUnitByMonth(user, department, date) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpipersonals/${user}/${department}/${date}`,
+        url:`${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets/${user}/${department}/${date}`,
         method: 'GET',
     }, false, true, 'kpi.employee.manager')
 }
 
 function copyEmployeeKPI(id, idunit, dateold, datenew){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/copykpi/${id}/${idunit}/${dateold}/${datenew}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets/copykpi/${id}/${idunit}/${dateold}/${datenew}`,
         method: 'POST',
     }, true, true, 'kpi.employee.manager');
 }

@@ -84,6 +84,7 @@ exports.getAllEmployeeOfUnitByRole = async (role) => {
     let employees = await UserRole.find({ roleId: { $in: organizationalUnit.employees } }).populate('userId roleId');
     return employees;
 }
+
 /**
  * Lấy tất cả nhân viên theo mảng id đơn vị
  * @id Mảng id các đơn vị
@@ -99,6 +100,66 @@ exports.getAllEmployeeOfUnitByIds = async (id) => {
 
     return data;
 }
+
+/**
+ * Lấy tất cả các người dùng trong  đơn vị và trong các đơn vị con của nó
+ * @getAllUserInCompany = true khi muốn lấy tất cả người dùng trong tất cả đơn vị của 1 công ty
+ * @id Id công ty
+ * @unitID Id của của đơn vị cần lấy đơn vị con
+ */
+exports.getAllUserInUnitAndItsSubUnits = async (id, unitId) => {
+    //Lấy tất cả các đơn vị con của 1 đơn vị
+    var data;
+
+    if (unitId !== "undefined") {
+
+        var organizationalUnit = await OrganizationalUnit.findById(unitId);
+        // TODO: tối ưu hóa OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree
+
+        data = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(id, organizationalUnit.deans[0]);
+
+        var queue = [];
+        var departments = [];
+        //BFS tìm tât cả đơn vị con-hàm của Đức
+        departments.push(data);
+        queue.push(data);
+
+        while (queue.length > 0) {
+            var v = queue.shift();
+            if (v.children) {
+                for (var i = 0; i < v.children.length; i++) {
+                    var u = v.children[i];
+                    queue.push(u);
+                    departments.push(u);
+
+                }
+            }
+        }
+        //Lấy tất cả user của từng đơn vị
+        var userArray = [];
+        userArray = await _getAllUsersInOrganizationalUnits(departments);
+        return userArray;
+
+    } else { //Lấy tất nhan vien trong moi đơn vị trong công ty
+
+        const allUnits = await OrganizationalUnit.find({ company: id });
+        const newData = allUnits.map(department => {
+            return {
+                id: department._id.toString(),
+                name: department.name,
+                description: department.description,
+                deans: department.deans.map(item => item.toString()),
+                viceDeans: department.viceDeans.map(item => item.toString()),
+                employees: department.employees.map(item => item.toString()),
+                parent_id: department.parent !== null ? department.parent.toString() : null
+            }
+        });
+
+        let tmp = await _getAllUsersInOrganizationalUnits(newData);
+        return tmp;
+    }
+}
+
 /**
  * Lấy thông tin user theo id
  * @id id của user
@@ -117,6 +178,24 @@ exports.getUser = async (id) => {
     }
 
     return user;
+}
+
+/**
+ * Lấy tất cả các đơn vị tổ chức một user thuộc về
+ * @userId id của user
+ */
+exports.getOrganizationalUnitsOfUser = async (userId) => {
+    const roles = await UserRole.find({ userId });
+    const newRoles = roles.map(role => role.roleId.toString());
+    const departments = await OrganizationalUnit.find({
+        $or: [
+            { 'deans': { $in: newRoles } },
+            { 'viceDeans': { $in: newRoles } },
+            { 'employees': { $in: newRoles } }
+        ]
+    });
+
+    return departments;
 }
 
 /**
@@ -214,6 +293,19 @@ exports.sendMailAboutChangeEmailOfUserAccount = async (oldEmail, newEmail) => {
 }
 
 /**
+ * Kiểm tra sự tồn tại của tài khoản
+ * @email : email người dung
+ */
+exports.checkUserExited = async (email) => {
+    var user = await User.findOne({ email: email }, { field1: 1 });
+    var checkUser = false;
+    if (user) {
+        checkUser = true
+    }
+    return checkUser;
+}
+
+/**
  * Chỉnh sửa thông tin tài khoản người dùng
  * @id id tài khoản
  * @data dữ liệu chỉnh sửa
@@ -259,6 +351,24 @@ exports.editUser = async (id, data) => {
 }
 
 /**
+ * Chỉnh sửa các role - phân quyền cho 1 user
+ * @userId id user
+ * @roleIdArr mảng id các role
+ */
+exports.editRolesForUser = async (userId, roleIdArr) => {
+    await UserRole.deleteMany({ userId });
+    var data = await roleIdArr.map(roleId => {
+        return {
+            userId,
+            roleId
+        }
+    });
+    var relationship = await UserRole.insertMany(data);
+
+    return relationship;
+}
+
+/**
  * Xóa tài khoản người dùng
  * @id id tài khoản người dùng
  */
@@ -275,24 +385,6 @@ exports.deleteUser = async (id) => {
  * @roleIdArr mảng id các role
  */
 exports.addRolesForUser = async (userId, roleIdArr) => {
-    var data = await roleIdArr.map(roleId => {
-        return {
-            userId,
-            roleId
-        }
-    });
-    var relationship = await UserRole.insertMany(data);
-
-    return relationship;
-}
-
-/**
- * Chỉnh sửa các role - phân quyền cho 1 user
- * @userId id user
- * @roleIdArr mảng id các role
- */
-exports.editRolesForUser = async (userId, roleIdArr) => {
-    await UserRole.deleteMany({ userId });
     var data = await roleIdArr.map(roleId => {
         return {
             userId,
@@ -340,97 +432,6 @@ _getAllUsersInOrganizationalUnit = async (department) => {
     });
 
     return users;
-}
-
-/**
- * Kiểm tra sự tồn tại của tài khoản
- * @email : email người dung
- */
-exports.checkUserExited = async (email) => {
-    var user = await User.findOne({ email: email }, { field1: 1 });
-    var checkUser = false;
-    if (user) {
-        checkUser = true
-    }
-    return checkUser;
-}
-
-
-/**
- * Lấy tất cả các đơn vị tổ chức một user thuộc về
- * @userId id của user
- */
-exports.getOrganizationalUnitsOfUser = async (userId) => {
-    const roles = await UserRole.find({ userId });
-    const newRoles = roles.map(role => role.roleId.toString());
-    const departments = await OrganizationalUnit.find({
-        $or: [
-            { 'deans': { $in: newRoles } },
-            { 'viceDeans': { $in: newRoles } },
-            { 'employees': { $in: newRoles } }
-        ]
-    });
-
-    return departments;
-}
-
-/**
- * Lấy tất cả các người dùng trong  đơn vị và trong các đơn vị con của nó
- * @getAllUserInCompany = true khi muốn lấy tất cả người dùng trong tất cả đơn vị của 1 công ty
- * @id Id công ty
- * @unitID Id của của đơn vị cần lấy đơn vị con
- */
-exports.getAllUserInUnitAndItsSubUnits = async (id, unitId) => {
-    //Lấy tất cả các đơn vị con của 1 đơn vị
-    var data;
-
-    if (unitId !== "undefined") {
-
-        var organizationalUnit = await OrganizationalUnit.findById(unitId);
-        // TODO: tối ưu hóa OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree
-
-        data = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(id, organizationalUnit.deans[0]);
-
-        var queue = [];
-        var departments = [];
-        //BFS tìm tât cả đơn vị con-hàm của Đức
-        departments.push(data);
-        queue.push(data);
-
-        while (queue.length > 0) {
-            var v = queue.shift();
-            if (v.children) {
-                for (var i = 0; i < v.children.length; i++) {
-                    var u = v.children[i];
-                    queue.push(u);
-                    departments.push(u);
-
-                }
-            }
-        }
-        //Lấy tất cả user của từng đơn vị
-        var userArray = [];
-        userArray = await _getAllUsersInOrganizationalUnits(departments);
-        return userArray;
-
-    } else { //Lấy tất nhan vien trong moi đơn vị trong công ty
-
-        const allUnits = await OrganizationalUnit.find({ company: id });
-        const newData = allUnits.map(department => {
-            return {
-                id: department._id.toString(),
-                name: department.name,
-                description: department.description,
-                deans: department.deans.map(item => item.toString()),
-                viceDeans: department.viceDeans.map(item => item.toString()),
-                employees: department.employees.map(item => item.toString()),
-                parent_id: department.parent !== null ? department.parent.toString() : null
-            }
-        });
-
-        let tmp = await _getAllUsersInOrganizationalUnits(newData);
-        return tmp;
-    }
 }
 
 /**

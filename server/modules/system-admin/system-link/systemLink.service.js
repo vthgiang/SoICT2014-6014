@@ -45,10 +45,10 @@ exports.getAllSystemLinkCategories = async () => {
  * Lấy 1 system link
  * @id id của system link
  */
-exports.getSystemLink = async (id) => {
-    console.log(id)
+exports.getSystemLink = async (systemLinkId) => {
+    console.log(systemLinkId)
     return await SystemLink
-        .findById(id)
+        .findById(systemLinkId)
         .populate({path: 'roles', model: RootRole});
 }
 
@@ -77,9 +77,9 @@ exports.createSystemLink = async (url, description, roles, category) => {
  * @roles mảng các role được truy cập
  * @category danh mục
  */
-exports.editSystemLink = async (id, url, description, roles, category) => {
+exports.editSystemLink = async (systemLinkId, url, description, roles, category) => {
 
-    let link = await SystemLink.findById(id)
+    let link = await SystemLink.findById(systemLinkId)
     
     link.url = url;
     link.description = description;
@@ -95,6 +95,6 @@ exports.editSystemLink = async (id, url, description, roles, category) => {
  * Xóa 1 system link
  * @id id của system link
  */
-exports.deleteSystemLink = async (id) => {
-    return await SystemLink.deleteOne({ _id: id });
+exports.deleteSystemLink = async (systemLinkId) => {
+    return await SystemLink.deleteOne({ _id: systemLinkId });
 }

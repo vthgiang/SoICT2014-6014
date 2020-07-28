@@ -46,6 +46,32 @@ exports.getComponent = async (id) => {
 }
 
 /**
+ * Lấy các component trên 1 trang mà user này có quyền
+ * @roleId id role của user
+ * @linkId id của trang user muốn lấy
+ */
+exports.getComponentsOfUserInLink = async (roleId, linkId) => {
+    const role = await Role.findById(roleId);
+    let roleArr = [role._id];
+    roleArr = roleArr.concat(role.parents);
+    
+    const link = await Link.findById(linkId)
+        .populate([
+            { path: 'components', model: Component }
+        ]);
+        
+    const data = await Privilege.find({
+        roleId: { $in: roleArr },
+        resourceType: 'Component',
+        resourceId: { $in: link.components }
+    }).distinct('resourceId');
+
+    const components = await Component.find({ _id: { $in: data } });
+
+    return components;
+}
+
+/**
  * Tạo component
  * @data dữ liệu component
  */
@@ -119,30 +145,4 @@ exports.relationshipComponentRole = async(componentId, roleArr) => {
     const privilege = await Privilege.insertMany(data);
 
     return privilege;
-}
-
-/**
- * Lấy các component trên 1 trang mà user này có quyền
- * @roleId id role của user
- * @linkId id của trang user muốn lấy
- */
-exports.getComponentsOfUserInLink = async(roleId, linkId) => {
-    const role = await Role.findById(roleId);
-    let roleArr = [role._id];
-    roleArr = roleArr.concat(role.parents);
-    
-    const link = await Link.findById(linkId)
-        .populate([
-            { path: 'components', model: Component }
-        ]);
-        
-    const data = await Privilege.find({
-        roleId: { $in: roleArr },
-        resourceType: 'Component',
-        resourceId: { $in: link.components }
-    }).distinct('resourceId');
-
-    const components = await Component.find({ _id: { $in: data } });
-
-    return components;
 }

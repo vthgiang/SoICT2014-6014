@@ -86,3 +86,97 @@ exports.copyKPI= async (req, res) => {
     }
 
 };
+
+/** 
+ * Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại 
+ */
+exports.getAllEmployeeKpiInOrganizationalUnit = async (req, res) => {
+    if(req.query.child){
+
+    }
+    try {
+        var employeeKpis = await overviewService.getAllEmployeeKpiInOrganizationalUnit(req.query);
+        LogInfo(req.user.email, ' get all employee kpi in organizational unit ', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_employee_kpi_in_organizational_unit_success'],
+            content: employeeKpis
+        });
+    } catch (error) {
+        LogError(req.user.email, ' get all employee kpi in organizational unit ', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['get_all_employee_kpi_in_organizational_unit_failure'],
+            content: error
+        })
+    }
+}
+
+
+/** 
+ * Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
+ */
+exports.getAllEmployeeKpiSetInOrganizationalUnit = async (req, res) => {
+    try {
+        var employeeKpiSets = await overviewService.getAllEmployeeKpiSetInOrganizationalUnit(req.query);
+        LogInfo(req.user.email, ' get all employee kpi set in organizational unit ', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_employee_kpi_set_in_organizational_unit_success'],
+            content: employeeKpiSets
+        })
+    } catch (error) {
+        LogError(req.user.email, ' get all employee kpi set in organizational unit ', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['get_all_employee_kpi_set_in_organizational_unit_failure'],
+            content: error
+        })
+    }
+} 
+
+/** 
+ * Lấy tất cả EmployeeKpis thuộc các đơn vị con của đơn vị hiện tại 
+ */
+exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (req, res) => {
+    try {
+        var employeeKpisInChildrenOrganizationalUnit = await overviewService.getAllEmployeeKpiInChildrenOrganizationalUnit(req.user.company._id, req.query.roleId);
+        LogInfo(req.user.email, ' get all employee kpi set in organizational unit ', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_employee_kpi_set_in_organizational_unit_success'],
+            content: employeeKpisInChildrenOrganizationalUnit
+        })
+    } catch (error) {
+        LogError(req.user.email, ' get all employee kpi set in organizational unit ', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['get_all_employee_kpi_set_in_organizational_unit_failure'],
+            content: error
+        })
+    }
+}
+
+
+/* 
+ *Lấy tất cả các mục tiêu con của mục tiêu hiện tại
+ */
+exports.getChildTargetByParentId =async (req, res) => {
+    try {
+        var childTarget = await overviewService.getChildTargetByParentId(req.query);
+        LogInfo(req.user.email, ' get child target by parent id ',req.user.company)
+        res.status(200).json({
+            success: true,
+            messages: ['get_child_target_by_parent_id_success'],
+            content: childTarget
+        });
+    } catch (error) {
+        LogError(req.user.email, ' get child target by parent id ',req.user.company)
+        res.status(400).json({
+            success: false,
+            messages: ['get_child_target_by_parent_id_fail'],
+            content: error
+        })
+    }
+
+}

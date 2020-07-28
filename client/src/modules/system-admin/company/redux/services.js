@@ -22,7 +22,7 @@ export const CompanyServices = {
  */
 function getAllCompanies(params) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/company/companies/companies`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/companies`,
         method: 'GET',
         params
     }, false, true, 'system_admin.company');
@@ -34,7 +34,7 @@ function getAllCompanies(params) {
  */
 function createCompany(company) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/company/companies/companies/create`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/companies/create`,
         method: 'POST',
         data: company,
     }, true, true, 'system_admin.company');
@@ -47,7 +47,7 @@ function createCompany(company) {
  */
 function editCompany(companyId, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/company/companies/companies/${companyId}`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/companies/${companyId}`,
         method: 'PATCH',
         data,
     }, true, true, 'system_admin.company');
@@ -62,7 +62,7 @@ function editCompany(companyId, data) {
  */
 function addCompanyLink(companyId, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/company/links/company-links/${companyId}/add`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/links/company-links/${companyId}/add`,
         method: 'POST',
         data,
     }, true, true, 'system_admin.company');
@@ -75,7 +75,7 @@ function addCompanyLink(companyId, data) {
  */
 function deleteCompanyLink(companyId, linkId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/company/links/company-links/${companyId}/${linkId}`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/links/company-links/${companyId}/${linkId}`,
         method: 'DELETE',
     }, true, true, 'system_admin.company');
 }
@@ -90,7 +90,7 @@ function deleteCompanyLink(companyId, linkId) {
  */
 function addCompanyComponent(companyId, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/company/components/company-components/${companyId}/add`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/components/company-components/${companyId}/add`,
         method: 'POST',
         data,
     }, true, true, 'system_admin.company');
@@ -103,7 +103,7 @@ function addCompanyComponent(companyId, data) {
  */
 function deleteCompanyComponent(companyId, componentId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/company/components/company-components/${companyId}/${componentId}`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/components/company-components/${companyId}/${componentId}`,
         method: 'DELETE',
     }, true, true, 'system_admin.company');
 }
@@ -114,7 +114,7 @@ function deleteCompanyComponent(companyId, componentId) {
  */
 function getCompanyLinks(companyId, params) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/company/links/company-links/${companyId}`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/links/company-links/${companyId}`,
         method: 'GET',
         params
     }, false, true, 'system_admin.company');
@@ -126,7 +126,7 @@ function getCompanyLinks(companyId, params) {
  */
 function getCompanyComponents(companyId, params) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/company/components/company-components/${companyId}`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/components/company-components/${companyId}`,
         method: 'GET',
         params
     }, false, true, 'system_admin.company');
@@ -139,7 +139,7 @@ function getCompanyComponents(companyId, params) {
  */
 function getImportConfiguration(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/company/import-configuraions/import-file/${data.type}`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/import-configuraions/import-file/${data.type}`,
         method: 'GET',
     }, false, false, 'system_admin.company');
 }
@@ -150,7 +150,7 @@ function getImportConfiguration(data) {
  */
 function createImportConfiguration(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/company/import-configuraions/import-file/create`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/import-configuraions/import-file/create`,
         method: 'POST',
         data,
     }, true, true, 'system_admin.company');
@@ -162,7 +162,7 @@ function createImportConfiguration(data) {
  */
 function editImportConfiguration(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/company/import-configuraions/import-file/${data.id}`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/import-configuraions/import-file/${data.id}`,
         method: 'PATCH',
         data,
     }, true, true, 'system_admin.company');

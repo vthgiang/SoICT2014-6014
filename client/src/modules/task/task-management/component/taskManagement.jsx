@@ -745,7 +745,7 @@ const actionCreators = {
     getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
-    editArchivedOfTask: taskManagementActions.editArchivedOfTask,
+    editArchivedOfTask: performTaskAction.editArchivedOfTask,
     getDepartment: UserActions.getDepartmentOfUser,
     getSubTask: taskManagementActions.getSubTask,
     startTimer: performTaskAction.startTimerTask,

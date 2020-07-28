@@ -36,7 +36,7 @@ class EmployeeKpiApproveModal extends Component {
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.id !== this.state.id){
             if (nextProps.id){
-                this.props.getKPIMemberById(nextProps.id);
+                this.props.getKpisByKpiSetId(nextProps.id);
             }
             return false;
         }
@@ -105,7 +105,7 @@ class EmployeeKpiApproveModal extends Component {
             }
         })
         if (id) {
-            this.props.getKPIMemberByMonth(id, this.formatDateBack(Date.now()));
+            this.props.getKpisByMonth(id, this.formatDateBack(Date.now()));
         }
     }
 
@@ -145,17 +145,17 @@ class EmployeeKpiApproveModal extends Component {
     searchKPIMemberByMonth = async (id) => {
         let { date } = this.state;
         if (date === undefined || date == this.formatDateBack(Date.now())) {
-            this.props.getKPIMemberByMonth(id, this.formatDateBack(Date.now()));
+            this.props.getKpisByMonth(id, this.formatDateBack(Date.now()));
         }
         else {
-            this.props.getKPIMemberByMonth(id, date);
+            this.props.getKpisByMonth(id, date);
         }
     }
 
     handleEditStatusTarget = (event, id, status) => {
         event.preventDefault();
         if (id) {
-            this.props.editStatusTarget(id, status);
+            this.props.editStatusKpi(id, status);
         }
     }
 
@@ -169,7 +169,7 @@ class EmployeeKpiApproveModal extends Component {
                 }
             })
         } else {
-            this.props.approveKPIMember(id);
+            this.props.approveAllKpis(id);
         }
     }
 
@@ -346,11 +346,11 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getKPIMemberById: kpiMemberActions.getKPIMemberById,
-    getKPIMemberByMonth: kpiMemberActions.getKPIMemberByMonth,
-    editStatusTarget: kpiMemberActions.editStatusTarget,
-    approveKPIMember: kpiMemberActions.approveKPIMember,
-    editTarget: kpiMemberActions.editTargetKPIMember
+    getKpisByKpiSetId: kpiMemberActions.getKpisByKpiSetId,
+    getKpisByMonth: kpiMemberActions.getKpisByMonth,
+    editStatusKpi: kpiMemberActions.editStatusKpi,
+    approveAllKpis: kpiMemberActions.approveAllKpis,
+    editTarget: kpiMemberActions.editKpi
 };
 const connectedEmployeeKpiApproveModal = connect(mapState, actionCreators)(withTranslate(EmployeeKpiApproveModal));
 export { connectedEmployeeKpiApproveModal as EmployeeKpiApproveModal };
