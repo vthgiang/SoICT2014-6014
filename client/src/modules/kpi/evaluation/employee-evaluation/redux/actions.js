@@ -1,13 +1,12 @@
 import { kpiMemberConstants } from "./constants";
 import { kpiMemberServices } from "./services";
 export const kpiMemberActions = {
-    getAllKPIMemberOfUnit,
-    getAllKPIMemberByMember,
-    getKPIMemberByMonth,
-    getKPIMemberById,
-    approveKPIMember,
-    editTargetKPIMember,
-    editStatusTarget,
+    getEmployeeKPISets,
+    getKpisByMonth,
+    getKpisByKpiSetId,
+    approveAllKpis,
+    editKpi,
+    editStatusKpi,
     getTaskById,
     setPointKPI,
     setkpiImportantLevel,
@@ -16,10 +15,10 @@ export const kpiMemberActions = {
  * Lấy tất cả KPI cá nhân
  */
 
-function getAllKPIMemberOfUnit(infosearch) {
+function getEmployeeKPISets(infosearch) {
     return dispatch => {
         dispatch({ type: kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_REQUEST });
-        kpiMemberServices.getAllKPIMemberOfUnit(infosearch)
+        kpiMemberServices.getEmployeeKPISets(infosearch)
             .then(res => {
                 dispatch({
                     type: kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_SUCCESS,
@@ -34,34 +33,14 @@ function getAllKPIMemberOfUnit(infosearch) {
             })
     };
 }
-/**
- *  Lấy tất cả KPI cá nhân 
- */
-function getAllKPIMemberByMember(member) {
-    return dispatch => {
-        dispatch({ type: kpiMemberConstants.GETALL_KPIMEMBER_REQUEST });
-        kpiMemberServices.getAllKPIMemberByMember(member)
-            .then(res => {
-                dispatch({
-                    type: kpiMemberConstants.GETALL_KPIMEMBER_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(error => {
-                dispatch({
-                    type: kpiMemberConstants.GETALL_KPIMEMBER_FAILURE,
-                    payload: error
-                })
-            })
-    };
-}
+
 /**
  *Lấy KPI cá nhân theo id  
  */
-function getKPIMemberById(id) {
+function getKpisByKpiSetId(id) {
     return dispatch => {
         dispatch({ type: kpiMemberConstants.GET_KPIMEMBER_BYID_REQUEST });
-        kpiMemberServices.getKPIMemberById(id)
+        kpiMemberServices.getKpisByKpiSetId(id)
             .then(res => {
                 dispatch({
                     type: kpiMemberConstants.GET_KPIMEMBER_BYID_SUCCESS,
@@ -80,11 +59,11 @@ function getKPIMemberById(id) {
 /**
  * Lấy KPI cá nhân theo id 
  */
-function getKPIMemberByMonth(id, time) {
+function getKpisByMonth(id, time) {
     return dispatch => {
         dispatch({ type: kpiMemberConstants.GET_KPIMEMBER_BYMONTH_REQUEST });
 
-        kpiMemberServices.getKPIMemberByMonth(id, time)
+        kpiMemberServices.getKpisByMonth(id, time)
             .then(res => {
                 dispatch({
                     type: kpiMemberConstants.GET_KPIMEMBER_BYMONTH_SUCCESS,
@@ -102,11 +81,11 @@ function getKPIMemberByMonth(id, time) {
 /**
  *  Phê duyệt toàn bộ KPI cá nhân
  */
-function approveKPIMember(id) {
+function approveAllKpis(id) {
     return dispatch => {
         dispatch({ type: kpiMemberConstants.APPROVE_KPIMEMBER_REQUEST });
 
-        kpiMemberServices.approveKPIMember(id)
+        kpiMemberServices.approveAllKpis(id)
             .then(res => {
                 dispatch({
                     type: kpiMemberConstants.APPROVE_KPIMEMBER_SUCCESS,
@@ -124,11 +103,11 @@ function approveKPIMember(id) {
 /**
  * Chỉnh sửa mục tiêu KPI cá nhân
  */
-function editTargetKPIMember(id, newTarget) {
+function editKpi(id, newTarget) {
     return dispatch => {
         dispatch({ type: kpiMemberConstants.EDITTARGET_KPIMEMBER_REQUEST, id });
 
-        kpiMemberServices.editTargetKPIMember(id, newTarget)
+        kpiMemberServices.editKpi(id, newTarget)
             .then(res => {
                 dispatch({
                     type: kpiMemberConstants.EDITTARGET_KPIMEMBER_SUCCESS,
@@ -147,11 +126,11 @@ function editTargetKPIMember(id, newTarget) {
 /**
  * Chỉnh sửa trạng thái mục tiêu KPI cá nhân 
  * */
-function editStatusTarget(id, status) {
+function editStatusKpi(id, status) {
     return dispatch => {
         dispatch({ type: kpiMemberConstants.EDITSTATUS_TARGET_KPIMEMBER_REQUEST });
 
-        kpiMemberServices.editStatusTarget(id, status)
+        kpiMemberServices.editStatusKpi(id, status)
             .then(res => {
                 dispatch({
                     type: kpiMemberConstants.EDITSTATUS_TARGET_KPIMEMBER_SUCCESS,

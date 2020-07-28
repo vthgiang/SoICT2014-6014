@@ -958,31 +958,6 @@ exports.deleteTask = async (id) => {
 }
 
 /**
- * edit status of task
- */
-exports.editTaskStatus = async (taskID, status) => {
-    var task = await Task.findByIdAndUpdate(taskID,
-        { $set: { status: status } },
-        { new: true }
-    );
-    return task;
-}
-
-/**
- * Chinh sua trang thai luu kho cua cong viec
- */
-exports.editArchivedOfTask = async (taskID) => {
-    var t = await Task.findByIdAndUpdate(taskID);
-    var isArchived = t.isArchived;
-
-    var task = await Task.findByIdAndUpdate(taskID,
-        { $set: { isArchived: !isArchived } },
-        { new: true }
-    );
-
-    return task;
-}
-/**
  * get subtask
  */
 exports.getSubTask = async (taskId) => {
@@ -1045,7 +1020,6 @@ exports.getTasksByUser = async (data) => {
  * @param {*} month 
  */
 exports.getAllTaskOfOrganizationalUnit= async (query) => {
-    console.log("====", query)
     let organizationalUnit;
     let now, currentYear, currentMonth, endOfCurrentMonth, endOfLastMonth;
 

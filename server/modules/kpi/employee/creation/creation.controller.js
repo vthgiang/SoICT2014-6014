@@ -171,24 +171,24 @@ exports.deleteEmployeeKpi = async (req, res) => {
 }
 
 /** Chỉnh sửa mục tiêu của KPI cá nhân */ 
-exports.editEmployeeKpi = async (req, res) => {
-    try {
-        var employeeKpi = await EmployeeKpiSetService.editEmployeeKpi(req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.params.id);
-        await LogInfo(req.user.email, ` edit employee kpi `, req.user.company)
-        res.status(200).json({
-            success: true,
-            messages: ['edit_employee_kpi_success'],
-            content: employeeKpi
-        })
-    } catch (error) {
-        await LogError(req.user.email, ` edit employee kpi `, req.user.company)
-        res.status(400).json({
-            success: false,
-            messages: ['edit_employee_kpi_failure'],
-            content: error
-        })
-    }
-}
+// exports.editEmployeeKpi = async (req, res) => {
+//     try {
+//         var employeeKpi = await EmployeeKpiSetService.editEmployeeKpi(req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.params.id);
+//         await LogInfo(req.user.email, ` edit employee kpi `, req.user.company)
+//         res.status(200).json({
+//             success: true,
+//             messages: ['edit_employee_kpi_success'],
+//             content: employeeKpi
+//         })
+//     } catch (error) {
+//         await LogError(req.user.email, ` edit employee kpi `, req.user.company)
+//         res.status(400).json({
+//             success: false,
+//             messages: ['edit_employee_kpi_failure'],
+//             content: error
+//         })
+//     }
+// }
 /**
  * Tạo comment trong trang create KPI employee
  */

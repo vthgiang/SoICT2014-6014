@@ -31,7 +31,7 @@ function getEmployeeKpiSet(month) {
     const role = getStorage("currentRole");
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/current/${id}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/current/${id}`,
         method: 'GET',
         params: {role: role, month: month}
     }, false, true);
@@ -40,7 +40,7 @@ function getEmployeeKpiSet(month) {
 /** Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
 function getAllEmployeeKpiSetByMonth(userId, startDate, endDate) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/kpi-set-by-month/${userId}/${startDate}/${endDate}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/kpi-sets-by-month/${userId}/${startDate}/${endDate}`,
         method: 'GET'
     }, false, false)
 }
@@ -51,7 +51,7 @@ function createEmployeeKpiSet(newKPI) {
     newKPI = {...newKPI, creator: id};
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/create`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/create`,
         method: 'POST',
         data: JSON.stringify(newKPI)
     }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
@@ -60,7 +60,7 @@ function createEmployeeKpiSet(newKPI) {
 /** Tạo 1 mục tiêu KPI cá nhân mới */  
 function createEmployeeKpi(newTarget) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/create-target`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpis/create-target`,
         method: 'POST',
         data: JSON.stringify(newTarget)
     }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
@@ -69,7 +69,7 @@ function createEmployeeKpi(newTarget) {
 /** Chỉnh sửa thông tin chung của KPI cá nhân*/ 
 function editEmployeeKpiSet(id, newTarget) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/${id}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/${id}`,
         method: 'PUT',
         data: newTarget
     }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
@@ -78,7 +78,7 @@ function editEmployeeKpiSet(id, newTarget) {
 /** Chỉnh sửa trạng thái của KPI cá nhân */ 
 function updateEmployeeKpiSetStatus(id, status) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/status/${id}/${status}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/status/${id}/${status}`,
         method: 'PUT'
     }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }
@@ -86,7 +86,7 @@ function updateEmployeeKpiSetStatus(id, status) {
 /** Xóa KPI cá nhân */
 function deleteEmployeeKpiSet(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/${id}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/${id}`,
         method: 'DELETE'
     }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }
@@ -94,18 +94,19 @@ function deleteEmployeeKpiSet(id) {
 /** Xóa 1 mục tiêu KPI cá nhân */ 
 function deleteEmployeeKpi(id, kpipersonal) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/target/${kpipersonal}/${id}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpis/target/${kpipersonal}/${id}`,
         method: 'DELETE'
     }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
 }
 
 /** Chỉnh sửa mục tiêu KPI cá nhân */ 
+
 function editEmployeeKpi(id, newTarget) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/target/${id}`,
-        method: 'PUT',
-        data: JSON.stringify(newTarget)
-    }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');
+        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets/${id}/edit`,
+        method: 'POST',
+        data: newTarget
+    }, true, true, 'kpi.evaluation')
 }
 
 /** Phê duyệt kpi cá nhân */ 
@@ -120,7 +121,7 @@ function approveEmployeeKpiSet(id) {
  */
 function createComment(data){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/comment`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/comment`,
         method:'POST',
         data : data
     },false,true)
@@ -130,7 +131,7 @@ function createComment(data){
  */
 function createCommentOfComment(data){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/comment-comment`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/comment-comment`,
         method:'POST',
         data : data
     },false,true)
@@ -141,7 +142,7 @@ function createCommentOfComment(data){
  */
 function editComment(id,data){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/comment/${id}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/comment/${id}`,
         method:'PATCH',
         data : data
     },false,true)
@@ -151,7 +152,7 @@ function editComment(id,data){
  */
 function deleteComment(id,idKPI){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/comment/${id}/${idKPI}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/comment/${id}/${idKPI}`,
         method:'DELETE',
     },false,true)
 }
@@ -160,7 +161,7 @@ function deleteComment(id,idKPI){
  */
 function editCommentOfComment(id,data){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/comment-comment/${id}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/comment-comment/${id}`,
         method: 'PATCH',
         data: data
     },false,true)
@@ -170,7 +171,7 @@ function editCommentOfComment(id,data){
  */
 function deleteCommentOfComment(id,idKPI){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/comment-comment/${id}/${idKPI}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/comment-comment/${id}/${idKPI}`,
         method: 'DELETE',
     },false,true)
 }

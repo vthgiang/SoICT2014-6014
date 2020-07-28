@@ -14,18 +14,18 @@ class HolidayEditForm extends Component {
     }
 
     // Bắt sự kiện thay đổi lý do nghỉ
-    handleReasonChange = (e) => {
+    handleDescriptionChange = (e) => {
         const { value } = e.target;
-        this.validateReason(value, true);
+        this.validateDescription(value, true);
     }
-    validateReason = (value, willUpdateState = true) => {
-        let msg = HolidayFormValidator.validateReason(value, this.props.translate)
+    validateDescription = (value, willUpdateState = true) => {
+        let msg = HolidayFormValidator.validateDescription(value, this.props.translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnReason: msg,
-                    reason: value,
+                    errorOnDescription: msg,
+                    description: value,
                 }
             });
         }
@@ -72,7 +72,7 @@ class HolidayEditForm extends Component {
     isFormValidated = () => {
         let result =
             this.validateStartDate(this.state.startDate, false) && this.validateEndDate(this.state.endDate, false) &&
-            this.validateReason(this.state.reason, false);
+            this.validateDescription(this.state.description, false);
         return result;
     }
 
@@ -90,11 +90,11 @@ class HolidayEditForm extends Component {
                 _id: nextProps._id,
                 startDate: nextProps.startDate,
                 endDate: nextProps.endDate,
-                reason: nextProps.reason,
+                description: nextProps.description,
 
                 errorOnStartDate: undefined,
                 errorOnEndDate: undefined,
-                errorOnReason: undefined,
+                errorOnDescription: undefined,
 
             }
         } else {
@@ -104,7 +104,7 @@ class HolidayEditForm extends Component {
 
     render() {
         const { translate, holiday } = this.props;
-        const { startDate, endDate, reason, errorOnStartDate, errorOnEndDate, errorOnReason, _id } = this.state;
+        const { startDate, endDate, description, errorOnStartDate, errorOnEndDate, errorOnDescription, _id } = this.state;
         return (
             <React.Fragment>
                 <DialogModal
@@ -136,10 +136,10 @@ class HolidayEditForm extends Component {
                                 <ErrorLabel content={errorOnEndDate} />
                             </div>
                         </div>
-                        <div className={`form-group ${errorOnReason === undefined ? "" : "has-error"}`}>
-                            <label htmlFor="reason">Mô tả lịch nghỉ<span className="text-red">&#42;</span></label>
-                            <textarea className="form-control" rows="3" style={{ height: 72 }} name="reason" value={reason} onChange={this.handleReasonChange}></textarea>
-                            <ErrorLabel content={errorOnReason} />
+                        <div className={`form-group ${errorOnDescription === undefined ? "" : "has-error"}`}>
+                            <label htmlFor="description">Mô tả lịch nghỉ<span className="text-red">&#42;</span></label>
+                            <textarea className="form-control" rows="3" style={{ height: 72 }} name="description" value={description} onChange={this.handleDescriptionChange}></textarea>
+                            <ErrorLabel content={errorOnDescription} />
                         </div>
                     </form>
                 </DialogModal>

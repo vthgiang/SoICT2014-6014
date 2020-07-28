@@ -64,7 +64,7 @@ class DashBoardKPIMember extends Component {
         }
 
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        this.props.getAllKPIMemberOfUnit(infosearch);
+        this.props.getEmployeeKPISets(infosearch);
         this.props.getAllEmployeeKpiSetOfUnitByRole(localStorage.getItem("currentRole"));
         this.props.getAllEmployeeOfUnitByRole(localStorage.getItem("currentRole"));
         this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
@@ -540,10 +540,7 @@ function mapState(state) {
 const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
-
-    getAllKPIMemberOfUnit: kpiMemberActions.getAllKPIMemberOfUnit,
-    getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember,
-
+    getEmployeeKPISets: kpiMemberActions.getEmployeeKPISets,
     getAllEmployeeKpiSetOfUnitByRole: DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByRole,
     getAllEmployeeOfUnitByRole: UserActions.getAllEmployeeOfUnitByRole,
     getAllEmployeeKpiSetOfUnitByIds: DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByIds,
