@@ -8,6 +8,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { performTaskAction } from '../../../../task/task-perform/redux/actions'
 import { createKpiSetActions } from '../../../employee/creation/redux/actions';
 import moment from 'moment'
+import { AuthActions } from '../../../../auth/redux/actions';
 class EmployeeKpiComment extends Component {
     constructor(props) {
         let idUser = getStorage("userId");
@@ -411,7 +412,7 @@ function mapState(state) {
 const actionCreators = {
     editComment: createKpiSetActions.editComment,
     deleteComment: createKpiSetActions.deleteComment,
-    downloadFile: performTaskAction.downloadFile,
+    downloadFile: AuthActions.downloadFile,
     createComment: createKpiSetActions.createComment,
     createCommentOfComment: createKpiSetActions.createCommentOfComment,
     editCommentOfComment: createKpiSetActions.editCommentOfComment,

@@ -54,7 +54,6 @@ class ConFigImportFile extends Component {
                 data = data.substring(0, data.length - 1);
             }
             data = JSON.parse(`{${data}}`);
-            // console.log(data);
             let obj = {};
             for (let key in config) {
                 for (let index in data) {

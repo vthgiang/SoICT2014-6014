@@ -28,7 +28,7 @@ class ShowImportData extends Component {
     }
 
     render() {
-        const { id, importData = [], rowError = [], configData, scrollTableWidth = 1000 } = this.props;
+        const { id, importData = [], rowError = [], configData, scrollTableWidth = 1000, checkFileImport = true } = this.props;
         const { limit, page } = this.state;
         let config = { ...configData }, headerTable = [];
         delete config.sheets;
@@ -55,6 +55,9 @@ class ShowImportData extends Component {
         let importDataCurrentPage = importData.slice(page, page + limit);
         return (
             <React.Fragment>
+                {
+                    !checkFileImport && <span style={{ fontWeight: "bold", color: "red" }}>File import không đúng định dạng </span>
+                }
                 {
                     importDataCurrentPage.length !== 0 && (
                         <React.Fragment>

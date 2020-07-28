@@ -276,7 +276,7 @@ class ActionTab extends Component {
             data.append("files", x);
         })
         if (newCommentOfAction.description && newCommentOfAction.creator) {
-            this.props.addActionComment(taskId, actionId, data);
+            this.props.createActionComment(taskId, actionId, data);
         }
         await this.setState(state => {
             return {
@@ -301,7 +301,7 @@ class ActionTab extends Component {
         })
 
         if (newAction.creator && newAction.description) {
-            this.props.addTaskAction(taskId, data);
+            this.props.createTaskAction(taskId, data);
         }
         // Reset state cho việc thêm mới action
         await this.setState(state => {
@@ -415,35 +415,7 @@ class ActionTab extends Component {
             }
         })
     }
-    //Lưu hoạt động
-    handleSaveEditActionComment = async (e, taskId, actionId, commentId, description) => {
-        e.preventDefault();
-        let { newCommentOfActionEdited } = this.state;
-        let data = new FormData();
-        newCommentOfActionEdited.files.forEach(x => {
-            data.append("files", x)
-        })
-        if (newCommentOfActionEdited.description === "") {
-            data.append("description", description)
-        } else {
-            data.append("description", newCommentOfActionEdited.description)
-        }
-        data.append("creator", newCommentOfActionEdited.creator)
-        if (newCommentOfActionEdited.description || newCommentOfActionEdited.files) {
-            this.props.editActionComment(taskId, actionId, commentId, data);
-        }
-        await this.setState(state => {
-            return {
-                ...state,
-                newCommentOfActionEdited: {
-                    ...state.newCommentOfActionEdited,
-                    description: "",
-                    files: []
-                },
-                editComment: ""
-            }
-        })
-    }
+    
     handleSaveEditAction = async (e, id, description, taskId) => {
         e.preventDefault();
         let { newActionEdited } = this.state;
@@ -501,11 +473,40 @@ class ActionTab extends Component {
             }
         })
     }
+    //Lưu hoạt động
+    handleSaveEditActionComment = async (e, taskId, actionId, commentId, description) => {
+        e.preventDefault();
+        let { newCommentOfActionEdited } = this.state;
+        let data = new FormData();
+        newCommentOfActionEdited.files.forEach(x => {
+            data.append("files", x)
+        })
+        if (newCommentOfActionEdited.description === "") {
+            data.append("description", description)
+        } else {
+            data.append("description", newCommentOfActionEdited.description)
+        }
+        data.append("creator", newCommentOfActionEdited.creator)
+        if (newCommentOfActionEdited.description || newCommentOfActionEdited.files) {
+            this.props.editActionComment(taskId, actionId, commentId, data);
+        }
+        await this.setState(state => {
+            return {
+                ...state,
+                newCommentOfActionEdited: {
+                    ...state.newCommentOfActionEdited,
+                    description: "",
+                    files: []
+                },
+                editComment: ""
+            }
+        })
+    }
     handleSaveEditCommentOfTaskComment = async (e, commentId, taskId, description) => {
         e.preventDefault();
+        console.log(description)
         let { newCommentOfTaskCommentEdited } = this.state;
         let data = new FormData();
-
         newCommentOfTaskCommentEdited.files.forEach(x => {
             data.append("files", x)
         })
@@ -965,15 +966,16 @@ class ActionTab extends Component {
                                                             </ul>}
                                                         {showModalDelete === item._id &&
                                                             <DialogModal
-                                                                size={75}
-                                                                maxWidth={200}
+                                                                marginTop = {"20vh"}
+                                                                size={50}
+                                                                maxWidth={100}
                                                                 modalID={`modal-confirm-deletefile`}
                                                                 formID={`from-confirm-deletefile`}
                                                                 isLoading={false}
                                                                 func={() => this.save(task._id)}
                                                             >
                                                                 {translate("task.task_perform.question_delete_file")} {deleteFile.fileName} ?
-                                                </DialogModal>
+                                                            </DialogModal>
                                                         }
                                                     </div>
                                                 </React.Fragment>
@@ -1010,9 +1012,6 @@ class ActionTab extends Component {
                                                                                 </ul>
                                                                             </div>}
                                                                     </div>
-                                                                    {/* <div className="tool-level2">
-                                                                <span className="text-sm">{moment(child.createdAt).fromNow()}</span>
-                                                            </div> */}
                                                                     <ul className="list-inline tool-level2">
                                                                         <li><span className="text-sm">{moment(child.createdAt).fromNow()}</span></li>
                                                                         <li style={{ display: "inline-table" }}>
@@ -1063,9 +1062,9 @@ class ActionTab extends Component {
                                                                         {/* modal confirm delete file */}
                                                                         {showModalDelete === item._id &&
                                                                             <DialogModal
-                                                                                marginTop
-                                                                                size={75}
-                                                                                maxWidth={200}
+                                                                                marginTop = {"20vh"}
+                                                                                size={50}
+                                                                                maxWidth={100}
                                                                                 modalID={`modal-confirm-deletefile`}
                                                                                 formID={`from-confirm-deletefile`}
                                                                                 isLoading={false}
@@ -1216,9 +1215,9 @@ class ActionTab extends Component {
                                                         {/* modal confirm delete file */}
                                                         {showModalDelete === item._id &&
                                                             <DialogModal
-                                                                marginTop
-                                                                size={75}
-                                                                maxWidth={200}
+                                                                marginTop = {"20vh"}
+                                                                size={50}
+                                                                maxWidth={100}
                                                                 modalID={`modal-confirm-deletefile`}
                                                                 formID={`from-confirm-deletefile`}
                                                                 isLoading={false}
@@ -1300,7 +1299,7 @@ class ActionTab extends Component {
                                                                                     return { ...state, newCommentOfTaskCommentEdited: { ...state.newCommentOfTaskCommentEdited, description: value } }
                                                                                 })
                                                                             }}
-                                                                            onSubmit={(e) => { this.handleSaveEditCommentOfTaskComment(e, child._id, child.description) }}
+                                                                            onSubmit={(e) => { this.handleSaveEditCommentOfTaskComment(e, child._id, task._id,child.description)}}
                                                                         />
                                                                         {/* Hiện file đã tải lên */}
                                                                         {child.files.length > 0 &&
@@ -1314,9 +1313,9 @@ class ActionTab extends Component {
                                                                         {/* modal confirm delete file */}
                                                                         {showModalDelete === item._id &&
                                                                             <DialogModal
-                                                                                marginTop
-                                                                                size={75}
-                                                                                maxWidth={200}
+                                                                                marginTop = {"20vh"}
+                                                                                size={50}
+                                                                                maxWidth={100}
                                                                                 modalID={`modal-confirm-deletefile`}
                                                                                 formID={`from-confirm-deletefile`}
                                                                                 isLoading={false}
@@ -1460,10 +1459,10 @@ function mapState(state) {
 
 const actionCreators = {
     getTaskById: taskManagementActions.getTaskById,
-    addActionComment: performTaskAction.addActionComment,
+    createActionComment: performTaskAction.createActionComment,
     editActionComment: performTaskAction.editActionComment,
     deleteActionComment: performTaskAction.deleteActionComment,
-    addTaskAction: performTaskAction.addTaskAction,
+    createTaskAction: performTaskAction.createTaskAction,
     editTaskAction: performTaskAction.editTaskAction,
     deleteTaskAction: performTaskAction.deleteTaskAction,
     startTimer: performTaskAction.startTimerTask,

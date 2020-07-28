@@ -32,7 +32,7 @@ exports.getTaskTimesheetLogs = async (req, res) => {
  */
 exports.getActiveTimesheetLog = async (req, res) => {
     try {
-        var timerStatus = await PerformTaskService.getActiveTimesheetLog(req.params);
+        var timerStatus = await PerformTaskService.getActiveTimesheetLog(req.query);
         await LogInfo(req.user.email, `get timer status`, req.user.company)
         res.status(200).json({
             success: true,
@@ -53,7 +53,7 @@ exports.getActiveTimesheetLog = async (req, res) => {
  */
 exports.startTimesheetLog = async (req, res) => {
     try {
-        var timerStatus = await PerformTaskService.startTimesheetLog(req.body);
+        var timerStatus = await PerformTaskService.startTimesheetLog(req.params, req.body);
         //await LogInfo(req.user.email, ` start timer `,req.user.company)
         res.status(200).json({
             success: true,
@@ -75,7 +75,7 @@ exports.startTimesheetLog = async (req, res) => {
  */
 exports.stopTimesheetLog = async (req, res) => {
     try {
-        var timer = await PerformTaskService.stopTimesheetLog(req.body);
+        var timer = await PerformTaskService.stopTimesheetLog(req.params, req.body);
         await LogInfo(req.user.email, ` stop timer `,req.user.company)
         res.status(200).json({
             success: true,
@@ -586,7 +586,7 @@ exports.deleteFileTaskComment = async (req, res) => {
  */
 exports.addTaskLog = async (req, res) => {
     try {
-        var task = await PerformTaskService.addTaskLog(req.body);
+        var task = await PerformTaskService.addTaskLog(req.params,req.body);
         await LogInfo(req.user.email, ` CREATE_TASK_LOG  `, req.user.company);
         res.status(200).json({
             success: true,

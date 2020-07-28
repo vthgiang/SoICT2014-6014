@@ -1,12 +1,30 @@
 export const configurationTimesheets = {
-    rowHeader: 2,
-    sheets: ["Sheet1"],
-    employeeNumber: "Mã số nhân viên",
-    employeeName: "Họ và tên",
-    dateOfMonth: "Các ngày trong tháng",
+    rowHeader: {
+        description: "Số dòng tiêu đề của bảng",
+        value: 2
+    },
+    sheets: {
+        description: "Tên các sheet",
+        value: ["Sheet1"]
+    },
+    employeeNumber: {
+        columnName: "Mã số nhân viên",
+        description: "Tên tiêu đề ứng với mã số nhân viên",
+        value: "Mã số nhân viên"
+    },
+    employeeName: {
+        columnName: "Họ và tên",
+        description: "Tên tiêu để ứng với họ và tên",
+        value: "Họ và tên"
+    },
+    dateOfMonth: {
+        columnName: "Các ngày trong tháng",
+        description: "Tên tiêu để ứng với các ngày trong tháng",
+        value: "Các ngày trong tháng",
+        colspan: 31
+    },
     file: {
         fileName: 'templateImportSalary',
         fileUrl: '/upload/human-resource/templateImport/templateImportTimesheets.xlsx'
     }
-
 }
