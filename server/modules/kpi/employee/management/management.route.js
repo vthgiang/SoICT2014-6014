@@ -11,7 +11,7 @@ router.get('/employee-kpi-sets/task/:member',auth, KPIPersonalController.getAllF
 // get all kpi employee in department by month
 router.get('/employee-kpi-sets/:user/:department/:date', auth, KPIPersonalController.getAllKPIEmployeeSetsInOrganizationByMonth);
 
-router.post('/copykpi/:id/:idunit/:dateold/:datenew', auth, KPIPersonalController.copyKPI);
+router.post('/employee-kpi-sets/copykpi/:id/:idunit/:dateold/:datenew', auth, KPIPersonalController.copyKPI);
 
 // Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại 
 router.get('/employee-kpis', auth, KPIPersonalController.getAllEmployeeKpiInOrganizationalUnit);
