@@ -27,7 +27,7 @@ export const DocumentServices = {
 
 function getDocuments(params) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents`,
+        url: `${ LOCAL_SERVER_API }/documents/documents`,
         method: 'GET',
         params,
     }, false, true, 'document');
@@ -35,7 +35,7 @@ function getDocuments(params) {
 
 function createDocument(data) {  
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents`,
+        url: `${ LOCAL_SERVER_API }/documents/documents`,
         method: 'POST',
         data,
     }, true, true, 'document');
@@ -43,21 +43,21 @@ function createDocument(data) {
 
 function deleteDocument(id) {  
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents/${id}`,
+        url: `${ LOCAL_SERVER_API }/documents/documents/${id}`,
         method: 'DELETE'
     }, true, true, 'document');
 }
 
 function increaseNumberView(id) {  
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents/${id}/increase-number-view`,
+        url: `${ LOCAL_SERVER_API }/documents/documents/${id}/increase-number-view`,
         method: 'PATCH',
     }, false, false, 'document');
 }
 
 function editDocument(id, data, option=undefined) {  
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents/${id}`,
+        url: `${ LOCAL_SERVER_API }/documents/documents/${id}`,
         method: 'PATCH',
         data,
         params: { option },
@@ -66,17 +66,23 @@ function editDocument(id, data, option=undefined) {
 
 function downloadDocumentFile(id, numberVersion) {  
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents/download-file/${id}/${numberVersion}`,
+        url: `${ LOCAL_SERVER_API }/documents/documents/${id}/download-file`,
         method: 'GET',
         responseType: 'blob',
+        params:{
+            numberVersion: numberVersion
+        }
     }, false, true, 'document');
 }
 
 function downloadDocumentFileScan(id, numberVersion) {  
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents/download-file-scan/${id}/${numberVersion}`,
+        url: `${ LOCAL_SERVER_API }/documents/documents/${id}/download-file-scan`,
         method: 'GET',
         responseType: 'blob',
+        params:{
+            numberVersion: numberVersion
+        }
     }, false, true, 'document');
 }
 
@@ -119,7 +125,7 @@ function getDocumentDomains() {
     }, false, true, 'document');
 }
 
-function createDocumentDomain(data) {  
+function createDocumentDomain(data) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/documents/domains`,
         method: 'POST',
@@ -153,9 +159,12 @@ function deleteManyDocumentDomain(array) {
 
 function getDocumentsUserCanView(roleId, params) {  
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents/permission-view/${roleId}`,
+        url: `${ LOCAL_SERVER_API }/documents/documents/permission-view`,
         method: 'GET',
-        params,
+        params:{
+            ...params,
+            roleId: roleId,
+        },
     }, false, true, 'document');
 }
 

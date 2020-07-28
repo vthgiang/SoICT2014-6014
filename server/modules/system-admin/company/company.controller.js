@@ -27,11 +27,11 @@ exports.getAllCompanies = async (req, res) => {
 
 /**
  * Lấy thông tin về 1 công ty theo id
- * @id id của công ty
+ * @companyId id của công ty
  */
 exports.getCompany = async (req, res) => {
     try {
-        const company = await CompanyServices.getCompany(req.params.id);
+        const company = await CompanyServices.getCompany(req.params.companyId);
         
         LogInfo(req.user.email, 'SHOW_COMPANY_INFORMATION');
         res.status(200).json({
@@ -134,11 +134,11 @@ exports.deleteCompany = async (req, res) => {
 
 /**
  * Lấy danh sách tất cả các link của công ty
- * @id id của công ty muốn lấy danh sách các link
+ * @companyId id của công ty muốn lấy danh sách các link
  */
 exports.getCompanyLinks = async (req, res) => {
     try {
-        const links = await CompanyServices.getCompanyLinks(req.params.id, req.query);
+        const links = await CompanyServices.getCompanyLinks(req.params.companyId, req.query);
         
         LogInfo(req.user.email, 'GET_LINKS_OF_COMPANY');
         res.status(200).json({
@@ -158,14 +158,14 @@ exports.getCompanyLinks = async (req, res) => {
 
 /**
  * Thêm link mới cho công ty
- * @id id của công ty
+ * @companyId id của công ty
  * @body
     * @linkUrl đường dẫn cho link muốn tạo
     * @linkDescription mô tả về link
  */
 exports.addCompanyLink = async (req, res) => {
     try {
-        const link = await CompanyServices.addCompanyLink(req.params.id, req.body);
+        const link = await CompanyServices.addCompanyLink(req.params.companyId, req.body);
         
         LogInfo(req.user.email, 'ADD_NEW_LINK_FOR_COMPANY');
         res.status(200).json({
@@ -186,12 +186,12 @@ exports.addCompanyLink = async (req, res) => {
 
 /**
  * Xóa 1 link của công ty
- * @id id của công ty
+ * @companyId id của công ty
  * @linkId id của link muốn xóa
  */
 exports.deleteCompanyLink = async (req, res) => {
     try {
-        const link = await CompanyServices.deleteCompanyLink(req.params.id, req.params.linkId);
+        const link = await CompanyServices.deleteCompanyLink(req.params.companyId, req.params.linkId);
         
         LogInfo(req.user.email, 'DELETE_LINK_FOR_COMPANY');
         res.status(200).json({
@@ -240,12 +240,12 @@ exports.addCompanyComponent = async (req, res) => {
 
 /**
  * Xóa một của component của công ty
- * @id id của công ty
+ * @companyId id của công ty
  * @componentId id của component muốn xóa
  */
 exports.deleteCompanyComponent = async (req, res) => {
     try {
-        const component = await CompanyServices.deleteCompanyComponent(req.params.id, req.params.componentId);
+        const component = await CompanyServices.deleteCompanyComponent(req.params.companyId, req.params.componentId);
         
         LogInfo(req.user.email, 'DELETE_COMPONENT_FOR_COMPANY');
         res.status(200).json({
@@ -270,7 +270,7 @@ exports.deleteCompanyComponent = async (req, res) => {
  */
 exports.getCompanyLinks = async (req, res) => {
     try {
-        const links = await CompanyServices.getCompanyLinks(req.params.id, req.query);
+        const links = await CompanyServices.getCompanyLinks(req.params.companyId, req.query);
         
         LogInfo(req.user.email, 'GET_LINKS_LIST_OF_COMPANY');
         res.status(200).json({
@@ -290,11 +290,11 @@ exports.getCompanyLinks = async (req, res) => {
 
 /**
  * Lấy danh sách các component của công ty
- * @id id của công ty
+ * @companyId id của công ty
  */
 exports.getCompanyComponents = async (req, res) => {
     try {
-        const components = await CompanyServices.getCompanyComponents(req.params.id, req.query);
+        const components = await CompanyServices.getCompanyComponents(req.params.companyId, req.query);
         
         LogInfo(req.user.email, 'GET_COMPONENTS_LIST_OF_COMPANIES');
         res.status(200).json({

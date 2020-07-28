@@ -309,7 +309,7 @@ function mapState(state) {
 const actionCreators = {
     getAllUserSameDepartment : UserActions.getAllUserSameDepartment,
     getAllKPIMemberOfUnit: kpiMemberActions.getAllKPIMemberOfUnit,
-    getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember
+    // getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember
 };
 const connectedKPIMember = connect(mapState, actionCreators)(withTranslate(EmployeeKpiManagement));
 export { connectedKPIMember as EmployeeKpiManagement };

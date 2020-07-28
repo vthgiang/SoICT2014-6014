@@ -5,14 +5,51 @@ import {
 import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const TaskProcessService = {
-  exportXmlDiagram
+  createXmlDiagram,
+  getAllXmlDiagram,
+  getXmlDiagramById,
+  editXmlDiagram
 };
 
-// get all task template
-function exportXmlDiagram(data) {
+
+/**
+ * Lấy tất cả xml diagram
+ */
+function getAllXmlDiagram() {
   return sendRequest({
-      url: `${LOCAL_SERVER_API}/taskprocess`,
+      url: `${LOCAL_SERVER_API}/taskprocess/diagrams`,
+      method: 'GET',
+  }, false, true, 'task.task_template');
+}
+
+/**
+ * Lấy diagram theo id
+ */
+function getXmlDiagramById(diagramId) {
+  return sendRequest({
+    url: `${LOCAL_SERVER_API}/taskprocess/diagrams/${diagramId}`,
+    method: 'GET',
+}, false, true, 'task.task_template');
+}
+/**
+ * Lưu xml diagram
+ * @param {Object} data 
+ */
+function createXmlDiagram(data) {
+  return sendRequest({
+      url: `${LOCAL_SERVER_API}/taskprocess/diagrams`,
       method: 'POST',
+      data: data
+  }, false, true, 'task.task_template');
+}
+/**
+ * Sửa xml diagram
+ * @param {Object} data 
+ */
+function editXmlDiagram(diagramId,data) {
+  return sendRequest({
+      url: `${LOCAL_SERVER_API}/taskprocess/diagrams/${diagramId}/edit`,
+      method: 'PATCH',
       data: data
   }, false, true, 'task.task_template');
 }

@@ -5,10 +5,10 @@ const { OrganizationalUnitKpi, OrganizationalUnit, OrganizationalUnitKpiSet } = 
  * @param {*} organizationalUnitId 
  * @param {*} month 
  */
-exports.getOrganizationalUnitKpiSet = async (roleId, organizationalUnitId, month) => {  
+exports.getOrganizationalUnitKpiSet = async (query) => {  
     let now, currentYear, currentMonth, endOfCurrentMonth, endOfLastMonth;
-    if(month) {
-        now = new Date(month);
+    if(query.month) {
+        now = new Date(query.month);
         currentYear = now.getFullYear();
         currentMonth = now.getMonth();
         endOfCurrentMonth = new Date(currentYear, currentMonth+1);
@@ -21,16 +21,16 @@ exports.getOrganizationalUnitKpiSet = async (roleId, organizationalUnitId, month
         endOfLastMonth = new Date(currentYear, currentMonth);
     }
 
-    if(!organizationalUnitId) {
+    if(!query.organizationalUnitId) {
         var department = await OrganizationalUnit.findOne({
             $or: [
-                { 'deans': roleId },
-                { 'viceDeans': roleId },
-                { 'employees': roleId }
+                { 'deans': query.roleId },
+                { 'viceDeans': query.roleId },
+                { 'employees': query.roleId }
             ]
         });
     } else {
-        var department = { '_id': organizationalUnitId };
+        var department = { '_id': query.organizationalUnitId };
     }
 
     // Status khác 2 --> chưa kết thúc
@@ -47,7 +47,6 @@ exports.getOrganizationalUnitKpiSet = async (roleId, organizationalUnitId, month
  * @id Id của tập KPI đơn vị
  */
 exports.editOrganizationalUnitKpiSet = async (dateString, id) => {
-    //req.body.time,req.params.id
     var time = dateString.split("-");
     var date = new Date(time[1], time[0], 0)
     var organizationalUnitKpiSet = await OrganizationalUnitKpiSet.findByIdAndUpdate(id, { $set: { date: date } }, { new: true });
@@ -209,11 +208,11 @@ exports.deleteOrganizationalUnitKpi = async (id, organizationalUnitKpiSetId) => 
 
 /**
  * Chỉnh sửa trạng thái của tập KPI đơn vị
- * @kpiId Id của tập KPI đơn vị
+ * @id Id của tập KPI đơn vị
  * @statusId trạng thái mới của tập KPI đơn vị
  */
-exports.editOrganizationalUnitKpiSetStatus = async (kpiId, query) => {
-    var kpiunit = await OrganizationalUnitKpiSet.findByIdAndUpdate(kpiId, { $set: { status: query.status } }, { new: true });
+exports.editOrganizationalUnitKpiSetStatus = async (id, query) => {
+    var kpiunit = await OrganizationalUnitKpiSet.findByIdAndUpdate(id, { $set: { status: query.status } }, { new: true });
     kpiunit = await kpiunit.populate("organizationalUnit creator").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
     return kpiunit;     
 }
@@ -222,16 +221,15 @@ exports.editOrganizationalUnitKpiSetStatus = async (kpiId, query) => {
  * Xóa tập KPI đơn vị
  * @id Id của tập KPI đơn vị
  */
-exports.deleteOrganizationalUnitKpiSet = async (kpiId) => {
-    //req.params.id
+exports.deleteOrganizationalUnitKpiSet = async (id) => {
     var kpis = [];
-        var kpiunit = await OrganizationalUnitKpiSet.findById(kpiId);
+        var kpiunit = await OrganizationalUnitKpiSet.findById(id);
         if (kpiunit.kpis) kpis = kpiunit.kpis;
         if (kpis !== []) {
             kpis = await Promise.all(kpis.map(async (item) => {
                 return OrganizationalUnitKpi.findByIdAndDelete(item._id);
             }))
         }
-        kpiunit = await OrganizationalUnitKpiSet.findByIdAndDelete(kpiId);
+        kpiunit = await OrganizationalUnitKpiSet.findByIdAndDelete(id);
         return [kpiunit,kpis];      
 }

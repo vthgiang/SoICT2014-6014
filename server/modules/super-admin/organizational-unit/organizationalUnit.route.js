@@ -3,14 +3,14 @@ const router = express.Router();
 const OrganizationalUnitController = require('./organizationalUnit.controller');
 const { auth } = require('../../../middleware');
 
-router.get("/", auth, OrganizationalUnitController.getOrganizationalUnits);
-router.get("/:id", auth, OrganizationalUnitController.getOrganizationalUnit);
-router.get('/:role/get-as-tree', auth, OrganizationalUnitController.getChildrenOfOrganizationalUnitsAsTree);
+router.get("/organizational-units", auth, OrganizationalUnitController.getOrganizationalUnits);
+router.get("/organizational-units/:id", auth, OrganizationalUnitController.getOrganizationalUnit);
+router.get('/organizational-units/:role/get-as-tree', auth, OrganizationalUnitController.getChildrenOfOrganizationalUnitsAsTree);
 
-router.post("/", auth, OrganizationalUnitController.createOrganizationalUnit);
+router.post("/organizational-units", auth, OrganizationalUnitController.createOrganizationalUnit);
 
-router.patch("/:id", auth, OrganizationalUnitController.editOrganizationalUnit);
+router.patch("/organizational-units/:id", auth, OrganizationalUnitController.editOrganizationalUnit);
 
-router.delete("/:id", auth, OrganizationalUnitController.deleteOrganizationalUnit);
+router.delete("/organizational-units/:id", auth, OrganizationalUnitController.deleteOrganizationalUnit);
 
 module.exports = router;

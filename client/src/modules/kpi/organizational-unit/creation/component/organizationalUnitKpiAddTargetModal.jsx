@@ -49,7 +49,6 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
                 items = parentKPI.kpis.filter(item => item.type === 0).map(x => {
                     return {value: x._id, text: x.name}
                 });
-
                 parent = items[0].value;
             }    
         } else {

@@ -3,23 +3,70 @@ const { LogInfo, LogError } = require('../../../logs');
 const { Console } = require('winston/lib/winston/transports');
 
 exports.getUsers = async (req, res) => {
-    try {
-        var users = await UserService.getUsers(req.user.company._id, req.query);
+    if (req.query.role) {
+        if (!req.query.ids) {
+            getAllEmployeeOfUnitByRole(req, res);
+        }
+        else {
+            getAllEmployeeOfUnitByIds(req, res);
+        }
+    }
+    else {
+        try {
+            var users = await UserService.getUsers(req.user.company._id, req.query);
 
-        LogInfo(req.user.email, 'GET_USERS', req.user.company);
+            LogInfo(req.user.email, 'GET_USERS', req.user.company);
+            res.status(200).json({
+                success: true,
+                messages: ['get_users_success'],
+                content: users
+            });
+        } catch (error) {
+
+            LogError(req.user.email, 'GET_USERS', req.user.company);
+            res.status(400).json({
+                success: false,
+                messages: Array.isArray(error) ? error : ['get_users_faile'],
+                content: error
+            })
+        }
+    }
+};
+
+getAllEmployeeOfUnitByRole = async (req, res) => {
+    try {
+        const employees = await UserService.getAllEmployeeOfUnitByRole(req.query.role);
+        await LogInfo(req.user.email, `GET_ALL_EMPLOYEE`, req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['get_users_success'],
-            content: users
+            messages: ['get_all_employee_success'],
+            content: employees
         });
     } catch (error) {
-        
-        LogError(req.user.email, 'GET_USERS', req.user.company);
+        await LogError(req.user.email, `GET_ALL_EMPLOYEE`, req.user.company);
         res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['get_users_faile'],
+            messages: ['get_all_employee_fail'],
             content: error
-        })
+        });
+    }
+
+};
+getAllEmployeeOfUnitByIds = async (req, res) => {
+    try {
+        console.log(req.query.ids);
+        const employees = await UserService.getAllEmployeeOfUnitByIds(req.query.ids);
+        await LogInfo(req.user.email, `GET_ALL_EMPLOYEE`, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_employee_success'],
+            content: employees
+        });
+    } catch (error) {
+        await LogError(req.user.email, `GET_ALL_EMPLOYEE`, req.user.company);
+        res.status(400).json({
+            messages: ['get_all_employee_fail'],
+            content: error
+        });
     }
 };
 
@@ -57,7 +104,7 @@ exports.getUser = async (req, res) => {
             content: user
         });
     } catch (error) {
-        
+
         LogError(req.user.email, 'SHOW_USER', req.user.company);
         res.status(400).json({
             success: false,
@@ -72,7 +119,7 @@ exports.editUser = async (req, res) => {
         var user = await UserService.editUser(req.params.id, req.body);
         await UserService.editRolesForUser(user._id, req.body.roles);
         var result = await UserService.getUser(user._id);
-        
+
         LogInfo(req.user.email, 'EDIT_USER', req.user.company);
         res.status(200).json({
             success: true,
@@ -122,7 +169,7 @@ exports.deleteUser = async (req, res) => {
 //             content: users
 //         })
 //     } catch (error) {
-        
+
 //         LogError(req.user.email, 'GET_USERS_SAME_DEPARTMENT', req.user.company);
 //         res.status(400).json({
 //             success: false,
@@ -144,7 +191,7 @@ exports.deleteUser = async (req, res) => {
 //             content: users
 //         })
 //     } catch (error) {
-        
+
 //         LogError(req.user.email, 'GET_USERS_OF_DEPARTMENT', req.user.company);
 //         res.status(400).json({
 //             success: false,
@@ -157,7 +204,7 @@ exports.deleteUser = async (req, res) => {
 exports.getOrganizationalUnitsOfUser = async (req, res) => {
     try {
         const department = await UserService.getOrganizationalUnitsOfUser(req.params.id);
-        
+
         await LogInfo(req.user.email, 'GET_DEPARTMENT_OF_USER', req.user.company);
         res.status(200).json({
             success: true,
@@ -195,4 +242,3 @@ exports.getAllUserInUnitAndItsSubUnits = async (req, res) => {
 }
 
 
- 

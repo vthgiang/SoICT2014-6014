@@ -23,9 +23,9 @@ exports.getTaskTimesheetLogs = async (params) => {
  * Lấy trạng thái bấm giờ hiện tại. Bảng TimesheetLog tìm hàng có endTime là rỗng 
  * Nếu có trả về startTimer: true, và time, startTime. Không có trả ver startTimer: false
  */
-exports.getActiveTimesheetLog = async (params) => {
+exports.getActiveTimesheetLog = async (query) => {
     var timerStatus = await Task.findOne(
-        { "timesheetLogs": { $elemMatch: { "creator": mongoose.Types.ObjectId(params.userId), "stoppedAt": null } } },
+        { "timesheetLogs": { $elemMatch: { "creator": mongoose.Types.ObjectId(query.userId), "stoppedAt": null } } },
         { "timesheetLogs": 1, '_id': 1, 'name': 1 }
     );
     if (timerStatus !== null) {
@@ -39,12 +39,12 @@ exports.getActiveTimesheetLog = async (params) => {
 /**
  * Bắt đầu bấm giờ: Lưu thời gian bắt đầu
  */
-exports.startTimesheetLog = async (body) => {
+exports.startTimesheetLog = async (params, body) => {
     var timerUpdate = {
         startedAt: body.startedAt,
         creator: body.creator
     }
-    var timer = await Task.findByIdAndUpdate(body.task,
+    var timer = await Task.findByIdAndUpdate(params.taskId,
         { $push: { timesheetLogs: timerUpdate } },
         { new: true, "fields": { "timesheetLogs": 1, '_id': 1, 'name': 1 } }
     );
@@ -54,9 +54,9 @@ exports.startTimesheetLog = async (body) => {
 /**
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
-exports.stopTimesheetLog = async (body) => {
+exports.stopTimesheetLog = async (params, body) => {
     var timer = await Task.findOneAndUpdate(
-        { "_id": body.task, "timesheetLogs._id": body.timesheetLog },
+        { "_id": params.taskId, "timesheetLogs._id": body.timesheetLog },
         {
             $set:
             {
@@ -66,15 +66,13 @@ exports.stopTimesheetLog = async (body) => {
             }
         },
         { new: true }
-
     ).populate({ path: "timesheetLogs.creator", select: "name" });
     let time = 0;
-
     timer.timesheetLogs.length > 0 && timer.timesheetLogs.forEach(x => {
         time += x.duration;
     })
     var timer1 = await Task.findOneAndUpdate(
-        { "_id": body.task, "timesheetLogs._id": body.timesheetLog },
+        { "_id": params.taskId, "timesheetLogs._id": body.timesheetLog },
         {
             $set:
             {
@@ -82,7 +80,6 @@ exports.stopTimesheetLog = async (body) => {
             }
         }
     )
-
     return timer.timesheetLogs;
 }
 /**
@@ -761,8 +758,8 @@ exports.uploadFile = async (params, body, files) => {
 /**
  * Thêm nhật ký cho một công việc
  */
-exports.addTaskLog = async (data) => {
-    var { taskId, creator, title, description, createdAt } = data;
+exports.addTaskLog = async (params,body) => {
+    var {  creator, title, description, createdAt } = body;
 
     var log = {
         createdAt: createdAt,
@@ -772,7 +769,7 @@ exports.addTaskLog = async (data) => {
     }
 
     var task = await Task.findByIdAndUpdate(
-        taskId, { $push: { logs: log } }, { new: true }
+        params.taskId, { $push: { logs: log } }, { new: true }
     ).populate("logs.creator");
     var taskLog = task.logs.reverse();
 

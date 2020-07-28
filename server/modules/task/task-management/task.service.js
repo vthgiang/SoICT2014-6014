@@ -24,6 +24,8 @@ exports.getTaskEvaluations = async (data) => {
     let startDate = data.startDate;
     let endDate = data.endDate;
     let calulator = Number(data.calulator);
+    let filterConditions = data.filterCondition;
+
     let startTime = startDate.split("-");
     let endTime = endDate.split("-");
     let start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
@@ -33,11 +35,12 @@ exports.getTaskEvaluations = async (data) => {
     if (data.responsibleEmployees) {
         responsible = data.responsibleEmployees.toString();
     }
+
     if (data.accountableEmployees) {
         accountable = data.accountableEmployees.toString();
     }
     (taskStatus === 1) ? taskStatus = "Finished" : (taskStatus === 2 ? taskStatus = "Inprocess" : "");
-    console.log(taskStatus)
+
     // Lọc nếu ngày bắt đầu và kết thức có giá trị
     if (startDate && endDate) {
         filterDate = {
@@ -65,7 +68,6 @@ exports.getTaskEvaluations = async (data) => {
             }
         }
     }
-
     let condition = [
         { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
         { $match: { taskTemplate: mongoose.Types.ObjectId(idTemplate) } },
@@ -83,22 +85,33 @@ exports.getTaskEvaluations = async (data) => {
         },
     ];
 
-    // nếu không lọc theo người thực hiện và người phê duyệt
-    if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
+    if (taskStatus === 0) { // Lọc tất cả các coong việc không theo đặc thù
         condition = [
-            { $match: { status: taskStatus } },
             ...condition,
             filterDate
         ]
+    } else
+        // nếu không lọc theo người thực hiện và người phê duyệt
+        if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
+            condition = [
+                { $match: { status: taskStatus } },
+                ...condition,
+                filterDate
+            ]
 
-    } else {
-        condition = [
-            { $match: { status: taskStatus } },
-            ...condition,
-            filterDate
-        ]
-    }
+        } else {
+            condition = [
+                { $match: { status: taskStatus } },
+                { $match: { responsibleEmployees: { $all: [[mongoose.Types.ObjectId(responsible),]] } } },
+                { $match: { accountableEmployees: { $all: [[mongoose.Types.ObjectId(accountable),]] } } },
+                ...condition,
+                filterDate
+            ]
+        }
+
     let result = await Task.aggregate(condition);
+
+
     // tính trung bình cộng
     let condition2;
     if (calulator === 0) {
@@ -120,8 +133,13 @@ exports.getTaskEvaluations = async (data) => {
             },
         ]
     }
+
     let result2 = await Task.aggregate(condition2);
+
+    // if (a === 5) {
     return { result, result2 };
+
+    // }
 }
 
 /**
@@ -1021,3 +1039,66 @@ exports.getTasksByUser = async (data) => {
     return tasksbyuser;
 }
 
+/**
+ * Lấy tất cả task của organizationalUnit theo tháng 
+ * @param {*} organizationalUnitId 
+ * @param {*} month 
+ */
+exports.getAllTaskOfOrganizationalUnit= async (query) => {
+    console.log("====", query)
+    let organizationalUnit;
+    let now, currentYear, currentMonth, endOfCurrentMonth, endOfLastMonth;
+
+    if (query.month) {
+        now = new Date(query.month);
+        currentYear = now.getFullYear();
+        currentMonth = now.getMonth();
+        endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
+        endOfLastMonth = new Date(currentYear, currentMonth);
+    } else {
+        now = new Date();
+        currentYear = now.getFullYear();
+        currentMonth = now.getMonth();
+        endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
+        endOfLastMonth = new Date(currentYear, currentMonth);
+    }
+
+    if (!query.organizationalUnitId) {
+        organizationalUnit = await OrganizationalUnit.findOne({
+            $or: [
+                { 'deans': query.roleId },
+                { 'viceDeans': query.roleId },
+                { 'employees': query.roleId }
+            ]
+        });
+    } else {
+        organizationalUnit = await OrganizationalUnit.findOne({ '_id': query.organizationalUnitId });
+    }
+
+    let tasks = await Task.aggregate([
+        { $match: { 'organizationalUnit': organizationalUnit._id } },
+        {
+            $match: {
+                $or: [
+                    { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
+                    { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
+                    { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
+                ]
+            }
+        },
+
+        { $unwind: "$evaluations" },
+        {
+            $match: {
+                $or: [
+                    { 'evaluations.date': undefined },
+                    { 'evaluations.date': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } }
+                ]
+            }
+        },
+
+        { $project: { 'startDate': 1, 'endDate': 1, 'evaluations': 1, 'accountableEmployees': 1, 'consultedEmployees': 1, 'informedEmployees': 1, 'status': 1 } }
+    ])
+
+    return tasks;
+}
