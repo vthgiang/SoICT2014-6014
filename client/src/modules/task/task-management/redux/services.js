@@ -337,7 +337,6 @@ function getTasksByUser() {
 
 
 function getTaskEvaluations(data) {
-    console.log('printData::::', data)
     return sendRequest({
         url: `${LOCAL_SERVER_API}/task/task-evaluations`,
         method: 'GET',

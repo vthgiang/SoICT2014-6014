@@ -22,7 +22,7 @@ export const CompanyServices = {
  */
 function getAllCompanies(params) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company`,
+        url: `${LOCAL_SERVER_API}/company/company/companies/companies`,
         method: 'GET',
         params
     }, false, true, 'system_admin.company');
@@ -34,7 +34,7 @@ function getAllCompanies(params) {
  */
 function createCompany(company) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company`,
+        url: `${LOCAL_SERVER_API}/company/company/companies/companies/create`,
         method: 'POST',
         data: company,
     }, true, true, 'system_admin.company');
@@ -42,12 +42,12 @@ function createCompany(company) {
 
 /**
  * Chỉnh sửa thông tin 1 công ty
- * @id id của công ty trong database
+ * @companyId id của công ty trong database
  * @data dữ liệu muốn chỉnh sửa (tên, mô tả, tên ngắn, log, active)
  */
-function editCompany(id, data) {
+function editCompany(companyId, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/${id}`,
+        url: `${LOCAL_SERVER_API}/company/company/companies/companies/${companyId}`,
         method: 'PATCH',
         data,
     }, true, true, 'system_admin.company');
@@ -55,14 +55,14 @@ function editCompany(id, data) {
 
 /**
  * Thêm link mới cho công ty
- * @id id của công ty
+ * @companyId id của công ty
  * @data
     * @linkUrl đường dẫn cho link muốn tạo
     * @linkDescription mô tả về link
  */
-function addCompanyLink(id, data) {
+function addCompanyLink(companyId, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/${id}/add-new-link`,
+        url: `${LOCAL_SERVER_API}/company/company/links/company-links/${companyId}/add`,
         method: 'POST',
         data,
     }, true, true, 'system_admin.company');
@@ -75,22 +75,22 @@ function addCompanyLink(id, data) {
  */
 function deleteCompanyLink(companyId, linkId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/${companyId}/delete-link/${linkId}`,
+        url: `${LOCAL_SERVER_API}/company/company/links/company-links/${companyId}/${linkId}`,
         method: 'DELETE',
     }, true, true, 'system_admin.company');
 }
 
 /**
  * Thêm mới 1 component cho công ty
- * @id id của công ty
+ * @companyId id của công ty
  * @data
     * @componentname tên của component
     * @componentDescription mô tả về component
     * @linkId id của link được chứa component này
  */
-function addCompanyComponent(id, data) {
+function addCompanyComponent(companyId, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/${id}/add-new-component`,
+        url: `${LOCAL_SERVER_API}/company/company/components/company-components/${companyId}/add`,
         method: 'POST',
         data,
     }, true, true, 'system_admin.company');
@@ -103,7 +103,7 @@ function addCompanyComponent(id, data) {
  */
 function deleteCompanyComponent(companyId, componentId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/${companyId}/delete-component/${componentId}`,
+        url: `${LOCAL_SERVER_API}/company/company/components/company-components/${companyId}/${componentId}`,
         method: 'DELETE',
     }, true, true, 'system_admin.company');
 }
@@ -114,7 +114,7 @@ function deleteCompanyComponent(companyId, componentId) {
  */
 function getCompanyLinks(companyId, params) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/${companyId}/links-list`,
+        url: `${LOCAL_SERVER_API}/company/company/links/company-links/${companyId}`,
         method: 'GET',
         params
     }, false, true, 'system_admin.company');
@@ -126,7 +126,7 @@ function getCompanyLinks(companyId, params) {
  */
 function getCompanyComponents(companyId, params) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/${companyId}/components-list`,
+        url: `${LOCAL_SERVER_API}/company/company/components/company-components/${companyId}`,
         method: 'GET',
         params
     }, false, true, 'system_admin.company');
@@ -139,7 +139,7 @@ function getCompanyComponents(companyId, params) {
  */
 function getImportConfiguration(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/import-file/${data.type}`,
+        url: `${LOCAL_SERVER_API}/company/company/import-configuraions/import-file/${data.type}`,
         method: 'GET',
     }, false, false, 'system_admin.company');
 }
@@ -150,7 +150,7 @@ function getImportConfiguration(data) {
  */
 function createImportConfiguration(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/import-file/`,
+        url: `${LOCAL_SERVER_API}/company/company/import-configuraions/import-file/create`,
         method: 'POST',
         data,
     }, true, true, 'system_admin.company');
@@ -162,7 +162,7 @@ function createImportConfiguration(data) {
  */
 function editImportConfiguration(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/company/import-file/${data.id}`,
+        url: `${LOCAL_SERVER_API}/company/company/import-configuraions/import-file/${data.id}`,
         method: 'PATCH',
         data,
     }, true, true, 'system_admin.company');

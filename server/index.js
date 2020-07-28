@@ -150,7 +150,7 @@ app.use("/company", company);
 app.use("/log", log);
 app.use("/components-default-management", systemComponent);
 app.use("/links-default-management", systemLink);
-app.use("/roles-default-management", rootRole);
+app.use("/root-role", rootRole);
 
 app.use("/task", taskManagement);
 app.use("/performtask", taskPerform);

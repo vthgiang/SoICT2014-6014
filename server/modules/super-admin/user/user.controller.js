@@ -3,15 +3,17 @@ const { LogInfo, LogError } = require('../../../logs');
 const { Console } = require('winston/lib/winston/transports');
 
 exports.getUsers = async (req, res) => {
-    if(req.query.role){
-        if(!req.query.ids){
+    if (req.query.role) {
+        if (!req.query.ids) {
             getAllEmployeeOfUnitByRole(req, res);
         }
-        else getAllEmployeeOfUnitByIds(req, res);
+        else {
+            getAllEmployeeOfUnitByIds(req, res);
+        }
     }
-    else{
+    else {
         try {
-            var users = await UserService.getAllUsers(req.user.company._id, req.query);
+            var users = await UserService.getUsers(req.user.company._id, req.query);
 
             LogInfo(req.user.email, 'GET_USERS', req.user.company);
             res.status(200).json({
@@ -20,7 +22,7 @@ exports.getUsers = async (req, res) => {
                 content: users
             });
         } catch (error) {
-            
+
             LogError(req.user.email, 'GET_USERS', req.user.company);
             res.status(400).json({
                 success: false,
@@ -47,7 +49,7 @@ getAllEmployeeOfUnitByRole = async (req, res) => {
             content: error
         });
     }
-    
+
 };
 getAllEmployeeOfUnitByIds = async (req, res) => {
     try {
@@ -102,7 +104,7 @@ exports.getUser = async (req, res) => {
             content: user
         });
     } catch (error) {
-        
+
         LogError(req.user.email, 'SHOW_USER', req.user.company);
         res.status(400).json({
             success: false,
@@ -117,7 +119,7 @@ exports.editUser = async (req, res) => {
         var user = await UserService.editUser(req.params.id, req.body);
         await UserService.editRolesForUser(user._id, req.body.roles);
         var result = await UserService.getUser(user._id);
-        
+
         LogInfo(req.user.email, 'EDIT_USER', req.user.company);
         res.status(200).json({
             success: true,
@@ -167,7 +169,7 @@ exports.deleteUser = async (req, res) => {
 //             content: users
 //         })
 //     } catch (error) {
-        
+
 //         LogError(req.user.email, 'GET_USERS_SAME_DEPARTMENT', req.user.company);
 //         res.status(400).json({
 //             success: false,
@@ -189,7 +191,7 @@ exports.deleteUser = async (req, res) => {
 //             content: users
 //         })
 //     } catch (error) {
-        
+
 //         LogError(req.user.email, 'GET_USERS_OF_DEPARTMENT', req.user.company);
 //         res.status(400).json({
 //             success: false,
@@ -202,7 +204,7 @@ exports.deleteUser = async (req, res) => {
 exports.getOrganizationalUnitsOfUser = async (req, res) => {
     try {
         const department = await UserService.getOrganizationalUnitsOfUser(req.params.id);
-        
+
         await LogInfo(req.user.email, 'GET_DEPARTMENT_OF_USER', req.user.company);
         res.status(200).json({
             success: true,
@@ -240,4 +242,3 @@ exports.getAllUserInUnitAndItsSubUnits = async (req, res) => {
 }
 
 
- 

@@ -126,7 +126,7 @@ exports.relationshipComponentRole = async(componentId, roleArr) => {
  * @roleId id role của user
  * @linkId id của trang user muốn lấy
  */
-exports.getComponentsOfUserInLink = async(roleId, linkId) => {
+exports.getComponentsOfUserInLink = async (roleId, linkId) => {
     const role = await Role.findById(roleId);
     let roleArr = [role._id];
     roleArr = roleArr.concat(role.parents);

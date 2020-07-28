@@ -28,7 +28,7 @@ function getAllEmployeeKpiSetOfUnitByRole(role) {
  */
 function getAllEmployeeOfUnitByRole(role) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user`,
+        url: `${ LOCAL_SERVER_API }/user/users`,
         method: 'GET',
         params: {
             role: role
@@ -59,7 +59,7 @@ function getAllEmployeeKpiSetOfUnitByIds(ids) {
 function getAllEmployeeOfUnitByIds(ids) {   
     let role = getStorage("currentRole"); 
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user`,
+        url: `${ LOCAL_SERVER_API }/user/users`,
         method: 'GET',
         params: {
             role: role,
