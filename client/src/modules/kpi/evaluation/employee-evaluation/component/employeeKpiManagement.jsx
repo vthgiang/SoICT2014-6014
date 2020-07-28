@@ -15,13 +15,13 @@ class EmployeeKpiManagement extends Component {
         super(props);
         this.state = {
             commenting: false,
-            user:null,
+            user:'',
             status: -1,
             startDate: null,
             endDate: null,
             infosearch: {
                 role: localStorage.getItem("currentRole"),
-                user: null,
+                user: '',
                 status: -1,
                 startDate: null,
                 endDate: null
@@ -180,7 +180,7 @@ class EmployeeKpiManagement extends Component {
         if (kpimembers.kpimembers) kpimember = kpimembers.kpimembers;
         if (userdepartments) {
             unitMembers = getEmployeeSelectBoxItems([userdepartments]);
-            unitMembers = [{text:translate('kpi.evaluation.employee_evaluation.choose_employee'), value: "null"}, ...unitMembers[0].value];
+            unitMembers = [{text:translate('kpi.evaluation.employee_evaluation.choose_employee'), value: 0}, ...unitMembers[0].value];
         }
         return (
             <React.Fragment>

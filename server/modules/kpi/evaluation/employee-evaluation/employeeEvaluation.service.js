@@ -25,7 +25,8 @@ exports.getEmployeeKPISets = async (data) => {
     let startdate = null;
     let enddate = null;
     let status = null;
-
+    let user = data.user? data.user: [0];
+    
     if (data.startDate) {
         startDate = data.startDate.split("-");
         startdate = new Date(startDate[1], startDate[0], 0);
@@ -41,15 +42,15 @@ exports.getEmployeeKPISets = async (data) => {
             $in: department._id
         }
     }
-    if (data.user) {
+    if ( user[0] != '0') {
         keySearch = {
             ...keySearch,
             creator: {
-                $in: data.user
+                $in: user
             }
         }
     }
-    if (status !== -1 && status !== null && status !== 5) {
+    if (status !== -1 && status && status !== 5) {
         keySearch = {
             ...keySearch,
             status: {

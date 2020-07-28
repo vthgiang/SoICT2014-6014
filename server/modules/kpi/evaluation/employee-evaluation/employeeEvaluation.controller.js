@@ -10,7 +10,7 @@ exports.getEmployeeKPISets = async (req, res) => {
         getKpisByMonth(req, res);
     }
     else {
-        try {
+        // try {
             const kpimembers = await KPIMemberService.getEmployeeKPISets(req.query);
             await LogInfo(req.user.emai, `Get kpi all member`, req.user.company);
             res.status(200).json({
@@ -18,13 +18,13 @@ exports.getEmployeeKPISets = async (req, res) => {
                 messages: ['get_all_kpi_member_success'],
                 content: kpimembers
             });
-        } catch (error) {
-            await LogError(req.user.emai, `Get kpi all  member`, req.user.company);
-            res.status(400).json({
-                messages: ['get_all_kpi_member_fail'],
-                content: error
-            });
-        }
+        // } catch (error) {
+        //     await LogError(req.user.emai, `Get kpi all  member`, req.user.company);
+        //     res.status(400).json({
+        //         messages: ['get_all_kpi_member_fail'],
+        //         content: error
+        //     });
+        // }
     }
 };
 
