@@ -120,7 +120,7 @@ exports.editKpi = async (req, res) => {
 }
 
 /**
- * Phê duyệt từng mục tiêu của KPI req.params.id  status: req.params.status
+ * Chỉnh sửa từng mục tiêu của KPI req.params.id  status: req.params.status
  */
 
 exports.editStatusKpi = async (req, res) => {

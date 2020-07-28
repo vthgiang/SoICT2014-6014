@@ -261,12 +261,13 @@ exports.editComment = async (params,body) => {
 /**
  * Delete comment
  */
-exports.deleteComment = async (params) => {
+exports.deleteComment = async (params,kpiId) => {
+    let idKPI = kpiId;
     let comments = await EmployeeKpiSet.update(
         { "comments._id": params.id },
         { $pull: { comments: { _id: params.id } } },
         { safe: true })  
-    let comment = await EmployeeKpiSet.findOne({ _id: params.idKPI})
+    let comment = await EmployeeKpiSet.findOne({ _id: idKPI})
     .populate([
         {path: 'comments.creator', model: User,select: 'name email avatar '},
         {path: 'comments.comments.creator',model: User,select: 'name email avatar'}

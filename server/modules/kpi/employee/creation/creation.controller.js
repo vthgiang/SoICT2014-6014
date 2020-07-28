@@ -4,8 +4,12 @@ const {  LogInfo,  LogError } = require('../../../../logs');
 
 /** Lấy tập KPI cá hiện hiện tại */  
 exports.getEmployeeKpiSet = async (req, res) => {
+    if(!req.query.month&&!req.query.role)
+    {
+        this.AllEmployeeKpiSetByMonth(req,res);
+    }
     try {
-        var employeeKpiSet = await EmployeeKpiSetService.getEmployeeKpiSet(req.params.id, req.query.role, req.query.month);
+        var employeeKpiSet = await EmployeeKpiSetService.getEmployeeKpiSet(req.query.userId, req.query.role, req.query.month);
         await LogInfo(req.user.email, ` get employee kpi set by user id `, req.user.company);
         res.status(200).json({
             success: true,
@@ -25,7 +29,7 @@ exports.getEmployeeKpiSet = async (req, res) => {
 /** Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
 exports.getAllEmployeeKpiSetByMonth = async (req, res) => {
     try {
-        var employeeKpiSetByMonth = await EmployeeKpiSetService.getAllEmployeeKpiSetByMonth(req.params.id, req.query.startDate, req.query.endDate);
+        var employeeKpiSetByMonth = await EmployeeKpiSetService.getAllEmployeeKpiSetByMonth(req.query.userId, req.query.startDate, req.query.endDate);
         await LogInfo(req.user.email, ` get all employee kpi set by month `, req.user.company);
         res.status(200).json({
             success: true,
@@ -109,7 +113,7 @@ exports.editEmployeeKpiSet = async (req, res) => {
 exports.updateEmployeeKpiSetStatus = async (req, res) => {
     try{
         
-        var employeeKpiSet = await EmployeeKpiSetService.updateEmployeeKpiSetStatus(req.params.id,req.params.status);
+        var employeeKpiSet = await EmployeeKpiSetService.updateEmployeeKpiSetStatus(req.params.id,req.query.status);
         await LogInfo(req.user.email, ` edit employee kpi set status `, req.user.company)
         res.status(200).json({
             success: true,
@@ -153,7 +157,7 @@ exports.deleteEmployeeKpiSet = async (req, res) => {
 /** Xóa 1 mục tiêu KPI cá nhân */ 
 exports.deleteEmployeeKpi = async (req, res) => {
     try {
-        var employeeKpiSet = await EmployeeKpiSetService.deleteEmployeeKpi(req.params.id,req.params.kpipersonal);
+        var employeeKpiSet = await EmployeeKpiSetService.deleteEmployeeKpi(req.params.id,req.query.employeeKpiSetId);
         await LogInfo(req.user.email, ` delete employee kpi `, req.user.company)
         res.status(200).json({
             success: true,
@@ -270,7 +274,7 @@ exports.editComment = async (req,res)=> {
  */
 exports.deleteComment = async (req,res)=> {
     try {
-        var comments = await EmployeeKpiSetService.deleteComment(req.params);
+        var comments = await EmployeeKpiSetService.deleteComment(req.params,req.query.kpiId);
         await LogInfo(req.user.email, ` delete comment `,req.user.company)
         res.status(200).json({
             success: false,
