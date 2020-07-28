@@ -7,14 +7,12 @@ router.get('/employee-kpi-sets', auth, KPIPersonalController.getEmployeeKPISets)
 
 router.get('/employee-kpi-sets/:id', auth, KPIPersonalController.getKpisByKpiSetId);
 
-router.patch('/employee-kpi-sets/:id/approve', auth, KPIPersonalController.approveAllKpis);
+router.post('/employee-kpi-sets/:id/edit', auth, KPIPersonalController.editKpi);
 
-router.patch('/employee-kpi-sets/:id', auth, KPIPersonalController.editKpi);
+router.post('/employee-kpis/:id', auth, KPIPersonalController.editStatusKpi);
 
-router.patch('/employee-kpis/:id', auth, KPIPersonalController.editStatusKpi);
+router.get('/employee-kpis/:id/tasks', auth, KPIPersonalController.getTasksByKpiId);
 
-router.get('/employee-kpis/:id/task', auth, KPIPersonalController.getTasksByKpiId); 
-
-router.patch('/employee-kpis/:id/task-importance-level', auth, KPIPersonalController.setTaskImportanceLevel); 
+router.post('/employee-kpis/:id/set-task-importance-level', auth, KPIPersonalController.setTaskImportanceLevel);
 
 module.exports = router;

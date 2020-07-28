@@ -25,7 +25,8 @@ router.delete('/:id',auth, EmployeeKpiSetController.deleteEmployeeKpiSet);
 router.post('/create-target',auth, EmployeeKpiSetController.createEmployeeKpi);
 
 // Chỉnh sửa mục tiêu của KPI cá nhân
-router.put('/target/:id',auth, EmployeeKpiSetController.editEmployeeKpi);
+// router.put('/target/:id',auth, EmployeeKpiSetController.editEmployeeKpi);
+//(==========Chuyển sang employee-evaluation do trùng service=============)
 
 // Xóa 1 mục tiêu KPI cá nhân
 router.delete('/target/:kpipersonal/:id',auth, EmployeeKpiSetController.deleteEmployeeKpi);

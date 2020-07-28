@@ -32,7 +32,7 @@ class EmployeeKpiManagement extends Component {
     }
     componentDidMount() {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        this.props.getAllKPIMemberOfUnit(this.state.infosearch);
+        this.props.getEmployeeKPISets(this.state.infosearch);
     }
     formatDateBack(date) {
         let d = new Date(date), month, day, year;
@@ -150,7 +150,7 @@ class EmployeeKpiManagement extends Component {
             })
         } 
         else {
-            this.props.getAllKPIMemberOfUnit(infosearch);
+            this.props.getEmployeeKPISets(infosearch);
         }
     }
     handleShowApproveModal = async (id) => {
@@ -308,8 +308,7 @@ function mapState(state) {
  
 const actionCreators = {
     getAllUserSameDepartment : UserActions.getAllUserSameDepartment,
-    getAllKPIMemberOfUnit: kpiMemberActions.getAllKPIMemberOfUnit,
-    // getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember
+    getEmployeeKPISets: kpiMemberActions.getEmployeeKPISets,
 };
 const connectedKPIMember = connect(mapState, actionCreators)(withTranslate(EmployeeKpiManagement));
 export { connectedKPIMember as EmployeeKpiManagement };
