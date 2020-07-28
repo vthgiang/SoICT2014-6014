@@ -25,7 +25,7 @@ exports.getEmployeeKpiSet = async (req, res) => {
 /** Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
 exports.getAllEmployeeKpiSetByMonth = async (req, res) => {
     try {
-        var employeeKpiSetByMonth = await EmployeeKpiSetService.getAllEmployeeKpiSetByMonth(req.params.id, req.params.startDate, req.params.endDate);
+        var employeeKpiSetByMonth = await EmployeeKpiSetService.getAllEmployeeKpiSetByMonth(req.params.id, req.query.startDate, req.query.endDate);
         await LogInfo(req.user.email, ` get all employee kpi set by month `, req.user.company);
         res.status(200).json({
             success: true,
@@ -45,7 +45,7 @@ exports.getAllEmployeeKpiSetByMonth = async (req, res) => {
 /** Khởi tạo KPI cá nhân */ 
 exports.createEmployeeKpiSet =async (req, res) => {
     try {
-        var employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpiSet(req.body.creator,req.body.approver,req.body.organizationalUnit,req.body.date);
+        var employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpiSet(req.body);
 
         await LogInfo(req.user.email, ` create employee kpi set `, req.user.company)
         res.status(200).json({
@@ -67,7 +67,8 @@ exports.createEmployeeKpiSet =async (req, res) => {
 /** Tạo 1 mục tiêu KPI mới */ 
 exports.createEmployeeKpi = async (req, res) => {
     try {
-        var employeeKpi = await EmployeeKpiSetService.createEmployeeKpi(req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.body.employeeKpiSet);
+        
+        var employeeKpi = await EmployeeKpiSetService.createEmployeeKpi(req.body);
         await LogInfo(req.user.email, ` create employee kpi `, req.user.company)
         res.status(200).json({
             success: true,
@@ -189,6 +190,7 @@ exports.deleteEmployeeKpi = async (req, res) => {
 //         })
 //     }
 // }
+
 /**
  * Tạo comment trong trang create KPI employee
  */

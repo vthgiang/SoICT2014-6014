@@ -31,7 +31,7 @@ function getEmployeeKpiSet(month) {
     const role = getStorage("currentRole");
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/current/${id}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/${id}`,
         method: 'GET',
         params: {role: role, month: month}
     }, false, true);
@@ -40,8 +40,9 @@ function getEmployeeKpiSet(month) {
 /** Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
 function getAllEmployeeKpiSetByMonth(userId, startDate, endDate) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/kpi-sets-by-month/${userId}/${startDate}/${endDate}`,
-        method: 'GET'
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/kpi-sets-by-month/${userId}`,
+        method: 'GET',
+        params : {startDate: startDate, endDate :endDate}
     }, false, false)
 }
 

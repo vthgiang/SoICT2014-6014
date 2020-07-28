@@ -4,10 +4,10 @@ const EmployeeKpiSetController = require("./creation.controller");
 const {auth,uploadFile} = require('../../../../middleware/index');
 
 // Lấy tập KPI cá nhân hiện tại
-router.get('/employee-kpi-sets/current/:id',auth, EmployeeKpiSetController.getEmployeeKpiSet);
+router.get('/employee-kpi-sets/:id',auth, EmployeeKpiSetController.getEmployeeKpiSet);
 
 // Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước
-router.get('/employee-kpi-sets/kpi-sets-by-month/:id/:startDate/:endDate', auth, EmployeeKpiSetController.getAllEmployeeKpiSetByMonth);
+router.get('/employee-kpi-sets/kpi-sets-by-month/:id', auth, EmployeeKpiSetController.getAllEmployeeKpiSetByMonth);
 
 // Khởi tạo KPI cá nhân
 router.post('/employee-kpi-sets/create',auth, EmployeeKpiSetController.createEmployeeKpiSet);
