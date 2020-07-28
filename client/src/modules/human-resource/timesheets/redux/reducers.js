@@ -60,6 +60,7 @@ export function timesheets(state = initState, action) {
                     isLoading: false,
                     importStatus: true,
                     importTimesheets: action.payload.content,
+                    error:""
                 };
         case TimesheetsConstants.GET_TIMESHEETS_FAILURE:
         case TimesheetsConstants.CREATE_TIMESHEETS_FAILURE:

@@ -1,7 +1,7 @@
 export const HolidayFormValidator = {
     validateStartDate,
     validateEndDate,
-    validateReason,
+    validateDescription,
 }
 
 // Function kiểm tra thới gian bắt đầu nhập vào
@@ -22,7 +22,7 @@ function validateEndDate(value, translate) {
 }
 
 // Function kiểm tra lý do nghỉ
-function validateReason(value, translate) {
+function validateDescription(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = translate('human_resource.holiday.reason_required');

@@ -132,17 +132,17 @@ exports.createEmployeeKpi = async (nameId,parentId,weightId,criteriaId,employeeK
 }
 
 /** Chỉnh sửa mục tiêu của KPI cá nhân */ 
-exports.editEmployeeKpi = async (nameId,parentId,weightId,criteriaId,id) => {
-    //req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.params.id
-    var objUpdate = {
-        name: nameId,
-        parent: parentId,
-        weight: weightId,
-        criteria: criteriaId
-    }
-    var employeeKpi = await EmployeeKpi.findByIdAndUpdate(id, { $set: objUpdate }, { new: true }).populate("parent");
-    return employeeKpi;
-}
+// exports.editEmployeeKpi = async (nameId,parentId,weightId,criteriaId,id) => {
+//     //req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.params.id
+//     var objUpdate = {
+//         name: nameId,
+//         parent: parentId,
+//         weight: weightId,
+//         criteria: criteriaId
+//     }
+//     var employeeKpi = await EmployeeKpi.findByIdAndUpdate(id, { $set: objUpdate }, { new: true }).populate("parent");
+//     return employeeKpi;
+// }
 
 /** Xóa mục tiêu của KPI cá nhân */ 
 exports.deleteEmployeeKpi = async (id,employeeKpiSetId) => {

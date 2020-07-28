@@ -36,7 +36,7 @@ class KPIPersonalManager extends Component {
     }
     componentDidMount() {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        this.props.getAllKPIMemberOfUnit(this.state.infosearch);
+        this.props.getEmployeeKPISets(this.state.infosearch);
     }
     
     formatDateBack(date) {
@@ -160,7 +160,7 @@ class KPIPersonalManager extends Component {
                 })
             } 
             else {
-                this.props.getAllKPIMemberOfUnit(infosearch);
+                this.props.getEmployeeKPISets(infosearch);
             }
     }
     showDetailKpiPersonal = async (item) => {
@@ -325,8 +325,7 @@ function mapState(state) {
 const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getAllKPIPersonal: managerKpiActions .getAllKPIPersonalByMember,
-    getAllKPIMemberOfUnit: kpiMemberActions.getAllKPIMemberOfUnit,
-    // getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember
+    getEmployeeKPISets: kpiMemberActions.getEmployeeKPISets,
 };
 const connectedKPIPersonalManager = connect(mapState, actionCreators)(withTranslate(KPIPersonalManager));
 export { connectedKPIPersonalManager as KPIPersonalManager };
