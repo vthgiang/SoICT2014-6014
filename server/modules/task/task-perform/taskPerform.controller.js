@@ -625,17 +625,33 @@ exports.getTaskLog = async (req, res) => {
     }
 }
 
-
+/**
+ * chỉnh sửa công việc
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.editTask = async (req, res) => {
-    if(req.query.role === 'responsible') {
-        editTaskByResponsibleEmployees(req, res);
+    if(req.query.type === 'all') {
+        if(req.query.role === 'responsible') {
+            editTaskByResponsibleEmployees(req, res);
+        }
+        else if(req.query.role === 'accountable'){
+            editTaskByAccountableEmployees(req, res);
+        }
     }
-    else if(req.query.role === 'accountable'){
-        editTaskByAccountableEmployees(req, res);
+    else if(req.query.type === 'edit_archived') {
+        editArchivedOfTask(req, res);
+    }
+    else if(req.query.type === 'edit_status') {
+        editTaskStatus(req, res);
     }
 }
 
-
+/**
+ * đánh giá công việc
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.evaluateTask = async (req, res) => {
     if(req.query.role === 'responsible'){
         evaluateTaskByResponsibleEmployees(req, res);
@@ -758,6 +774,51 @@ evaluateTaskByAccountableEmployees = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['evaluate_task_fail'],
+            content: error
+        });
+    }
+}
+
+
+/**
+ * Chinh sua trang thai luu kho cua cong viec
+ */
+editArchivedOfTask = async (req, res) => {
+    try {
+    var task = await PerformTaskService.editArchivedOfTask(req.params.taskId);
+    await LogInfo(req.user.email, ` edit status archived of task  `, req.user.company);
+    res.status(200).json({
+        success: true,
+        messages: ['edit_status_archived_of_task_success'],
+        content: task
+    })
+    } catch (error) {
+        await LogError(req.user.email, ` edit status of task `, req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_status_archived_of_task_fail'],
+            content: error
+        });
+    }
+}
+
+/**
+ * Chinh sua trang thai cua cong viec
+ */
+editTaskStatus = async (req, res) => {
+    try {
+        var task = await PerformTaskService.editTaskStatus(req.params.taskId, req.body.status);
+        await LogInfo(req.user.email, ` edit status of task  `, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_status_of_task_success'],
+            content: task
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` edit status of task `, req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_status_of_task_fail'],
             content: error
         });
     }

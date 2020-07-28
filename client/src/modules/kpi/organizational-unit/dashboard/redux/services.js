@@ -27,9 +27,10 @@ function getAllEmployeeKpiInOrganizationalUnit(roleId, organizationalUnitId, mon
 /** Lấy tất cả task của organizationalUnit theo tháng hiện tại */
 function getAllTaskOfOrganizationalUnit(roleId, organizationalUnitId, month) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks/organizational-unit/tasks-by-month`,
+        url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
         params: {
+            type: 'get_all_task_of_organizational_unit',
             roleId: roleId,
             organizationalUnitId: organizationalUnitId,
             month: month

@@ -1952,3 +1952,34 @@ exports.deleteFileChildTaskComment = async (params) => {
     return task.taskComments;
 }
 
+
+
+
+/**
+ * edit status of task 
+ * @param taskID id công việc
+ * @param status trang thai công việc
+ */
+exports.editTaskStatus = async (taskID, status) => {
+    var task = await Task.findByIdAndUpdate(taskID,
+        { $set: { status: status } },
+        { new: true }
+    );
+    return task;
+}
+
+/**
+ * Chinh sua trang thai luu kho cua cong viec
+ * @param taskID id công việc
+ */
+exports.editArchivedOfTask = async (taskID) => {
+    var t = await Task.findByIdAndUpdate(taskID);
+    var isArchived = t.isArchived;
+
+    var task = await Task.findByIdAndUpdate(taskID,
+        { $set: { isArchived: !isArchived } },
+        { new: true }
+    );
+
+    return task;
+}

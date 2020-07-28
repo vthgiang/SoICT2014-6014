@@ -34,6 +34,8 @@ export const performTaskAction = {
 
     editTaskByAccountableEmployees,
     editTaskByResponsibleEmployees,
+    editStatusOfTask,
+    editArchivedOfTask,
 
     evaluateTaskByAccountableEmployees,
     evaluateTaskByConsultedEmployees,
@@ -487,6 +489,49 @@ function evaluateTaskByResponsibleEmployees(data, taskId) {
             })
             .catch(error => {
                 dispatch({ type: performTaskConstants.EVALUATE_TASK_BY_RESPONSIBLE_FAILURE, error });
+            });
+    };
+}
+
+
+/**
+ * edit Status Of Task
+ * @param {*} id id task
+ * @param {*} status trang thai muon cap nhat
+ */
+function editStatusOfTask(id, status) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_REQUEST, id });
+        performTaskService.editStatusOfTask(id, status) //(taskid, { status: "dang thuc hien" })
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.EDIT_STATUS_OF_TASK_SUCCESS,
+                    // payload: res.data.content.task
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_FAILURE, error });
+            });
+    };
+}
+
+/**
+ * edit archived of task
+ * @param {*} id id of task
+ */
+function editArchivedOfTask(id) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_REQUEST, id });
+        performTaskService.editArchivedOfTask(id)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_FAILURE, error });
             });
     };
 }
