@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+
 import {ContentMaker} from '../../../../../common-components'
 import {LOCAL_SERVER_API} from '../../../../../env'
 import {getStorage} from '../../../../../config'
-import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import TextareaAutosize from 'react-textarea-autosize';
-import {performTaskAction} from '../../../../task/task-perform/redux/actions'
+
 import { createKpiSetActions } from '../redux/actions';
+import { AuthActions } from '../../../../auth/redux/actions';
+
 import moment from 'moment';
+import TextareaAutosize from 'react-textarea-autosize';
  
 class Comment extends Component {
     constructor(props) {
@@ -421,7 +424,7 @@ function mapState(state) {
 const actionCreators = {
     editComment : createKpiSetActions.editComment,
     deleteComment : createKpiSetActions.deleteComment,
-    downloadFile: performTaskAction.downloadFile,
+    downloadFile: AuthActions.downloadFile,
     createComment : createKpiSetActions.createComment,
     createCommentOfComment: createKpiSetActions.createCommentOfComment,
     editCommentOfComment: createKpiSetActions.editCommentOfComment,

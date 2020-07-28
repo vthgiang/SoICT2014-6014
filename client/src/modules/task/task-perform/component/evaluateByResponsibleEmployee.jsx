@@ -553,11 +553,11 @@ class EvaluateByResponsibleEmployee extends Component {
         if (title !== '' || description !== '') {
             this.props.addTaskLog({
                 createdAt: Date.now(),
-                taskId: this.props.id,
+                
                 creator: getStorage("userId"),
                 title: title,
                 description: description,
-            })
+            }, this.props.id)
         }
     }
 

@@ -295,27 +295,25 @@ exports.data = [
     
 
     // Perform-task
-    { path: '/performtask/tasks/:taskId/log-timer', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/log-timer/currentTimer/user/:userId', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/log-timer/start-timer', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/log-timer/pause-timer/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/log-timer/continue-timer/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/log-timer/stop-timer/:id', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/timesheet-logs', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/task-timesheet-logs', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/timesheet-logs/start-timer', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/timesheet-logs/stop-timer', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/:task', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/tasks/:taskId/upload-files', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/files', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     
     //task action
     { path: '/performtask/tasks/:taskId/task-actions', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/tasks/:taskId/task-actions', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/tasks/:taskId/task-actions/:actionId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/tasks/:taskId/task-actions/:actionId/delete', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-actions/:actionId', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/tasks/:taskId/task-actions/:actionId/files/:fileId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
    
 
     //comment of task action
     { path: '/performtask/tasks/:taskId/task-actions/:actionId/comments', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/tasks/:taskId/task-actions/:actionId/comments/:commentId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/tasks/:taskId/task-actions/:actionId/comments/:commentId/delete', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-actions/:actionId/comments/:commentId', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/tasks/:taskId/task-actions/:actionId/comments/files/:fileId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
     
 
@@ -323,7 +321,7 @@ exports.data = [
     //task comment
     { path: '/performtask/tasks/:taskId/task-comments', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/tasks/:taskId/task-comments/:commentId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/tasks/:taskId/task-comments/:commentId/delete', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-comments/:commentId', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/tasks/:taskId/task-comments/:commentId/files/:fileId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
     
     
@@ -331,7 +329,7 @@ exports.data = [
     //comment of task comment
     { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/tasks/:taskId/task-comments/comments/:commentId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments/:childCommentId/delete', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments/:childCommentId', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/tasks/:taskId/task-comments/:commentId/comments/files/:fileId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
 
@@ -342,7 +340,7 @@ exports.data = [
     { path: '/performtask/result-task', method: 'PUT', roles: ['Dean', 'Vice Dean', 'Employee'] },
     
     // add task log
-    { path: '/performtask/logs', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/performtask/tasks/:taskId/logs', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/tasks/:taskId/logs', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
     // edit task - evaluate task
     { path: '/performtask/tasks/:taskId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
