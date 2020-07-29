@@ -19,6 +19,7 @@ export function kpimembers(state = {}, action) {
         error: action.payload,
         isLoading: false
       };
+      
     case  kpiMemberConstants.GETALL_KPIMEMBER_REQUEST:
       return {
         ...state,

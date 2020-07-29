@@ -21,28 +21,7 @@ export function dashboardEvaluationEmployeeKpiSet(state = {}, action) {
         error: action.payload,
         isLoading: false
       };
-
-    case  dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_REQUEST:
-      return {
-        loading: true,
-        isLoading: true
-      };
-
-    case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_SUCCESS:      
-      return {
-        ...state,
-        loading: false,
-        employees: action.payload,
-        isLoading: false
-      };
-
-    case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_FAILURE:
-      return { 
-        error: action.payload,
-        isLoading: false
-      };
-
-    
+      
     case  dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_OF_UNIT_BY_ID_REQUEST:
       return {
         loading: true,
@@ -62,27 +41,6 @@ export function dashboardEvaluationEmployeeKpiSet(state = {}, action) {
         error: action.payload,
         isLoading: false
       };
-
-    case  dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_REQUEST:
-      return {
-        loading: true,
-        isLoading: true
-      };
-
-    case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_SUCCESS:      
-      return {
-        ...state,
-        loading: false,
-        employees: action.payload,
-        isLoading: false
-      };
-
-    case dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_FAILURE:
-      return { 
-        error: action.payload,
-        isLoading: false
-      };
-
 
     case  dashboardEmployeeKpiConstants.GET_ALL_CHILDREN_OF_UNIT_REQUEST:
       return {
