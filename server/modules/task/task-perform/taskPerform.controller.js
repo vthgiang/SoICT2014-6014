@@ -107,13 +107,13 @@ exports.createTaskAction = async (req, res) => {
             })
         }
 
-        let task = await PerformTaskService.createTaskAction(req.params, req.body, files);
-        let taskAction = task.taskActions;
-        let tasks = task.tasks;
-        let user = task.user;
-        let data = { "organizationalUnits": [tasks.organizationalUnit], "title": "Phê duyệt hoạt động", "level": "general", "content": `${user.name} đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a>`, "sender": tasks.name, "users": [tasks.accountableEmployees] };
+        var task = await PerformTaskService.createTaskAction(req.params, req.body, files);
+        var taskAction = task.taskActions;
+        var tasks = task.tasks;
+        var user = task.user;
+        var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Phê duyệt hoạt động", "level": "general", "content": `<p><strong>${user.name}</strong> đã thêm mới hoạt động cho công việc <strong>${tasks.name}</strong>, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`, "sender": user.name, "users": [tasks.accountableEmployees] };
         NotificationServices.createNotification(tasks.organizationalUnit, data,);
-        sendEmail("vnist.qlcv@gmail.com", task.email, "Phê duyệt hoạt động", '', `<p>${user.name} đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`);
+        sendEmail("vnist.qlcv@gmail.com", task.email, "Phê duyệt hoạt động", '', `<p><strong>${user.name}</strong> đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`);
         await LogInfo(req.user.email, ` create task action  `, req.user.company)
         res.status(200).json({
             success: true,
@@ -668,12 +668,19 @@ exports.evaluateTask = async (req, res) => {
  */
 editTaskByResponsibleEmployees = async (req, res) => {
     try {
+<<<<<<< HEAD
         let task = await PerformTaskService.editTaskByResponsibleEmployees(req.body.data, req.params.taskId);
         let user = task.user;
         let tasks = task.tasks;
         let data = { "organizationalUnits": [tasks.organizationalUnit], "title": "Cập nhật thông tin công việc", "level": "general", "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <strong>${tasks.name}</strong> với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`, "sender": user.name, "users": tasks.accountableEmployees };
+=======
+        var task = await PerformTaskService.editTaskByResponsibleEmployees(req.body.data, req.params.taskId);
+        var user = task.user;
+        var tasks = task.tasks;
+        var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Cập nhật thông tin công việc", "level": "general", "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <strong>${tasks.name}</strong> với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`, "sender": user.name, "users": tasks.accountableEmployees };
+>>>>>>> a8f077afc4c28a1f267ad392136a9a32ccf0cfc2
         NotificationServices.createNotification(tasks.organizationalUnit, data,);
-        sendEmail("vnist.qlcv@gmail.com", task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
+        sendEmail("vnist.qlcv@gmail.com", task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}" target="_blank">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -694,10 +701,17 @@ editTaskByResponsibleEmployees = async (req, res) => {
  */
 editTaskByAccountableEmployees = async (req, res) => {
     try {
+<<<<<<< HEAD
         let task = await PerformTaskService.editTaskByAccountableEmployees(req.body.data, req.params.taskId);
         let user = task.user;
         let tasks = task.tasks;
         let data = { "organizationalUnits": [tasks.organizationalUnit], "title": "Cập nhật thông tin công việc", "level": "general", "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <strong>${tasks.name}</strong> với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`, "sender": user.name, "users": tasks.responsibleEmployees };
+=======
+        var task = await PerformTaskService.editTaskByAccountableEmployees(req.body.data, req.params.taskId);
+        var user = task.user;
+        var tasks = task.tasks;
+        var data = { "organizationalUnits": tasks.organizationalUnit, "title": "Cập nhật thông tin công việc", "level": "general", "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <strong>${tasks.name}</strong> với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`, "sender": user.name, "users": tasks.responsibleEmployees };
+>>>>>>> a8f077afc4c28a1f267ad392136a9a32ccf0cfc2
         NotificationServices.createNotification(tasks.organizationalUnit, data,);
         sendEmail("vnist.qlcv@gmail.com", task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);

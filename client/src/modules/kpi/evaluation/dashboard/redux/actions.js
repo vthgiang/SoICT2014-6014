@@ -3,9 +3,7 @@ import {  dashboardEmployeeKpiService } from "./services";
 
 export const DashboardEvaluationEmployeeKpiSetAction = {
     getAllEmployeeKpiSetOfUnitByRole,
-    // getAllEmployeeOfUnitByRole,
     getAllEmployeeKpiSetOfUnitByIds,
-    // getAllEmployeeOfUnitByIds,
     getChildrenOfOrganizationalUnitsAsTree
 };
 
@@ -32,31 +30,6 @@ function getAllEmployeeKpiSetOfUnitByRole(role) {
             })
     };
 }
-
-/**
- * Lấy tất cả nhân viên của đơn vị theo role
- * @param {*} role 
- */
-function getAllEmployeeOfUnitByRole(role) {
-    return dispatch => {
-        dispatch({type: dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_REQUEST});
- 
-        dashboardEmployeeKpiService.getAllEmployeeOfUnitByRole(role)
-            .then(res=>{ 
-                dispatch({
-                    type: dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(error => {
-                dispatch({
-                    type: dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_FAILURE,
-                    payload: error
-                })
-            })
-    };
-}
-
 /**
  * Lấy tất cả KPI cá nhân theo mảng id đơn vị
  * @param {*} ids 
@@ -81,29 +54,7 @@ function getAllEmployeeKpiSetOfUnitByIds(ids) {
     };
 }
 
-/**
- * Lấy tất cả nhân viên của đơn vị theo mảng id đơn vị
- * @param {*} ids 
- */
-function getAllEmployeeOfUnitByIds(ids) {
-    return dispatch => {
-        dispatch({type: dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_REQUEST});
- 
-        dashboardEmployeeKpiService.getAllEmployeeOfUnitByIds(ids)
-            .then(res=>{ 
-                dispatch({
-                    type: dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(error => {
-                dispatch({
-                    type: dashboardEmployeeKpiConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_FAILURE,
-                    payload: error
-                })
-            })
-    };
-}
+
 /**
  * Lấy các đơn vị con của một đơn vị và đơn vị đó
  * @param {*} role 
