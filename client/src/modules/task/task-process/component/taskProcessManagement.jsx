@@ -155,7 +155,6 @@ class TaskProcessManagement extends Component {
                           </tr>
                       })
                     }
-
                     </tbody>
                 </table>
                 {/* <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} /> */}
