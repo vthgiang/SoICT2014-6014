@@ -84,12 +84,12 @@ class ModalEditProcessTask extends Component {
 
     render() {
         const { translate } = this.props;
-        const { id, info, showInfo, processDescription, processName } = this.state;
+        const { name, id, idProcess, info, showInfo, processDescription, processName } = this.state;
         let x = (info && info[`${id}`]) && info[`${id}`]
         return (
             <React.Fragment>
                 <DialogModal
-                    size='100' modalID={`modal-process`} isLoading={false}
+                    size='100' modalID={`modal-edit-process`} isLoading={false}
                     formID="form-task-process"
                     // disableSubmit={!this.isTaskFormValidated()}
                     title={this.props.title}
@@ -120,14 +120,14 @@ class ModalEditProcessTask extends Component {
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">Quy trình công việc</legend>
                             <div className='row'>
-                                <div id={this.generateId} className={this.state.showInfo ? 'col-md-8' : 'col-md-12'}></div>
-                                <div className={this.state.showInfo ? 'col-md-4' : undefined}>
+                                <div id={this.generateId} className={showInfo ? 'col-md-8' : 'col-md-12'}></div>
+                                <div className={showInfo ? 'col-md-4' : undefined}>
 
                                     {
                                         (showInfo) &&
                                         <div>
                                             <div>
-                                                <h1>Option {this.state.name}</h1>
+                                                <h1>Option {name}</h1>
                                             </div>
                                             <FormInfoTask
                                                 id={id}
@@ -145,10 +145,10 @@ class ModalEditProcessTask extends Component {
                             </div>
                             <div>
                                 {/* <div id={this.generateId}></div> */}
-                                <button onClick={this.exportDiagram}>Export XML</button>
+                                {/* <button onClick={this.exportDiagram}>Export XML</button>
                                 <button onClick={this.downloadAsSVG}>Save SVG</button>
                                 <button onClick={this.downloadAsImage}>Save Image</button>
-                                <button onClick={this.downloadAsBpmn}>Download BPMN</button>
+                                <button onClick={this.downloadAsBpmn}>Download BPMN</button> */}
                             </div>
                         </fieldset>
 
@@ -270,10 +270,14 @@ class ModalEditProcessTask extends Component {
 
     interactPopup = (event) => {
         var element = event.element;
+        console.log('==========', this.state);
         let nameStr = element.type.split(':');
         this.setState(state => {
-            if (element.type !== 'bpmn:Collaboration') {
-                return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: element.businessObject.id, }
+            if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' ||
+                element.type === 'bpmn:EndEvent' || element.type === "bpmn:SequenceFlow" ||
+                element.type === "bpmn:StartEvent" || element.type === "bpmn:IntermediateThrowEvent"
+            ) {
+                return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}_${state.idProcess}`, }
             }
             else {
                 return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
@@ -284,6 +288,15 @@ class ModalEditProcessTask extends Component {
 
     deleteElements = (event) => {
         var element = event.element;
+        console.log(element);
+        this.setState(state => {
+            delete state.info[`${state.id}`];
+            return {
+                ...state,
+                showInfo: false,
+            }
+        })
+        console.log(this.state);
     }
 
     handleUndoDeleteElement = (event) => {
@@ -296,6 +309,7 @@ class ModalEditProcessTask extends Component {
     save = async () => {
         let xmlStr;
         this.modeler.saveXML({ format: true }, function (err, xml) {
+            console.log(xml);
             xmlStr = xml;
         });
         await this.setState(state => {
@@ -311,7 +325,8 @@ class ModalEditProcessTask extends Component {
             xmlDiagram: this.state.xmlDiagram,
             infoTask: this.state.info
         }
-        this.props.createXmlDiagram(data)
+
+        this.props.editXmlDiagram(this.state.idProcess, data)
     }
 
     downloadAsSVG = () => {
@@ -403,6 +418,7 @@ const actionCreators = {
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     createXmlDiagram: TaskProcessActions.createXmlDiagram,
     getXmlDiagramById: TaskProcessActions.getXmlDiagramById,
+    editXmlDiagram: TaskProcessActions.editXmlDiagram,
 };
 const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalEditProcessTask));
 export { connectedModalAddProcess as ModalEditProcessTask };

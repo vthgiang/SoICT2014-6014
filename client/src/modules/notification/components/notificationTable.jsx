@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { NotificationActions } from '../redux/actions';
 import TabNotificationSent from './tabNotificationSent';
 import TabNotificationReceivered from './tabNotificationReceivered';
 
@@ -38,5 +37,8 @@ class NotificationTable extends Component {
     }
 }
 
-const mapState = state => state;
+function mapState(state) {
+    const { auth } = state;
+    return { auth};
+}
 export default connect(mapState)(withTranslate(NotificationTable));
