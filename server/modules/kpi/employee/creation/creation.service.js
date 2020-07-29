@@ -66,7 +66,11 @@ exports.getAllEmployeeKpiSetByMonth = async (userId, startDate, endDate) => {
 }
 
 /** Khởi tạo tập KPI cá nhân */ 
-exports.createEmployeeKpiSet = async (creatorId,approverId,organizationalUnitId,dateId) => {
+exports.createEmployeeKpiSet = async (data) => {
+         var organizationalUnitId =data.organizationalUnit;
+         var creatorId =data.creator;
+         var approverId=data.approver;
+         var dateId =data.date;
         // Tìm kiếm danh sách các mục tiêu mặc định của phòng ban
         var organizationalUnitKpiSet = await OrganizationalUnitKpiSet.findOne({ organizationalUnit: organizationalUnitId, status: 1 }).populate("kpis");//status = 1 là kpi đã đc phê duyệt
         
@@ -107,16 +111,15 @@ exports.createEmployeeKpiSet = async (creatorId,approverId,organizationalUnitId,
 }
 
 /** Thêm mục tiêu cho KPI cá nhân */ 
-exports.createEmployeeKpi = async (nameId,parentId,weightId,criteriaId,employeeKpiSetId) => {
-    //req.body.name,req.body.parent,req.body.weight,req.body.criteria
+exports.createEmployeeKpi = async (data) => {
     // Thiết lập mục tiêu cho KPI cá nhân
     var employeeKpi = await EmployeeKpi.create({
-        name: nameId,
-        parent: parentId,
-        weight: weightId,
-        criteria: criteriaId
+        name: data.name,
+        parent: data.parent,
+        weight: data.weight,
+        criteria: data.criteria
     })
-
+    const employeeKpiSetId =data.employeeKpiSet;
     var employeeKpiSet = await EmployeeKpiSet.findByIdAndUpdate(
         employeeKpiSetId, { $push: { kpis: employeeKpi._id } }, { new: true }
     );
@@ -127,22 +130,9 @@ exports.createEmployeeKpi = async (nameId,parentId,weightId,criteriaId,employeeK
         {path: 'comments.creator', model: User,select: 'name email avatar '},
         {path: 'comments.comments.creator',model: User,select: 'name email avatar'}
     ])
-    .execPopulate();
+    
     return employeeKpiSet;
 }
-
-/** Chỉnh sửa mục tiêu của KPI cá nhân */ 
-// exports.editEmployeeKpi = async (nameId,parentId,weightId,criteriaId,id) => {
-//     //req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.params.id
-//     var objUpdate = {
-//         name: nameId,
-//         parent: parentId,
-//         weight: weightId,
-//         criteria: criteriaId
-//     }
-//     var employeeKpi = await EmployeeKpi.findByIdAndUpdate(id, { $set: objUpdate }, { new: true }).populate("parent");
-//     return employeeKpi;
-// }
 
 /** Xóa mục tiêu của KPI cá nhân */ 
 exports.deleteEmployeeKpi = async (id,employeeKpiSetId) => {
@@ -258,12 +248,12 @@ exports.editComment = async (params,body) => {
 /**
  * Delete comment
  */
-exports.deleteComment = async (params) => {
+exports.deleteComment = async (params,kpiId) => {
     let comments = await EmployeeKpiSet.update(
         { "comments._id": params.id },
         { $pull: { comments: { _id: params.id } } },
         { safe: true })  
-    let comment = await EmployeeKpiSet.findOne({ _id: params.idKPI})
+    let comment = await EmployeeKpiSet.findOne({ _id: kpiId})
     .populate([
         {path: 'comments.creator', model: User,select: 'name email avatar '},
         {path: 'comments.comments.creator',model: User,select: 'name email avatar'}
@@ -304,13 +294,13 @@ exports.editCommentOfComment = async (params,body) => {
 /**
  * Delete comment of comment
  */
-exports.deleteCommentOfComment = async (params) => {
+exports.deleteCommentOfComment = async (params,kpiId) => {
     let comment1 = await EmployeeKpiSet.update(
         { "comments.comments._id": params.id },
         { $pull: { "comments.$.comments" : {_id : params.id} } },
         { safe: true })
     
-    let comment = await EmployeeKpiSet.findOne({ _id: params.idKPI})
+    let comment = await EmployeeKpiSet.findOne({ _id: kpiId})
     .populate([
         {path: 'comments.creator', model: User,select: 'name email avatar '},
         {path: 'comments.comments.creator',model: User,select: 'name email avatar'}

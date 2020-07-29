@@ -63,8 +63,8 @@ class NotificationMenu extends Component {
                 {this.checkHasComponent('create-notification') &&
                 <div className="box box-solid"><div className="box-body no-padding">
                         <ul className="nav nav-pills nav-stacked">
-                            <li onClick={this.showTabReceivered} className={this.state.showReceived ? "active-notification-button" : null}><a href="#"><i className="fa fa-fw fa-inbox"/>{translate('notification.receivered')}</a></li>
-                            <li onClick={this.showTabSent} className={!this.state.showReceived ? "active-notification-button" : null}><a href="#"><i className="fa fa-fw fa-envelope-o"/>{translate('notification.sent')}</a></li>
+                            <li onClick={this.showTabReceivered} className={this.state.showReceived ? "active-notification-button" : null}><a href="#abc"><i className="fa fa-fw fa-inbox"/>{translate('notification.receivered')}</a></li>
+                            <li onClick={this.showTabSent} className={!this.state.showReceived ? "active-notification-button" : null}><a href="#abc"><i className="fa fa-fw fa-envelope-o"/>{translate('notification.sent')}</a></li>
                         </ul>
                     </div>
                 </div> 
@@ -77,7 +77,7 @@ class NotificationMenu extends Component {
                             (sentLevel === 'info' ? "active-notification-button" : null ):
                             (receiveredLevel === 'info' ? "active-notification-button" : null )
                         }>
-                            <a href="#" className="text-blue">
+                            <a href="#abc" className="text-blue">
                                 <i className="fa fa-fw fa-info-circle text-blue" /> 
                                 {translate('notification.type.info')}
                             </a>
@@ -87,7 +87,7 @@ class NotificationMenu extends Component {
                             (sentLevel === 'general' ? "active-notification-button" : null ):
                             (receiveredLevel === 'general' ? "active-notification-button" : null )
                         }>
-                            <a href="#" className="text-green">
+                            <a href="#abc" className="text-green">
                                 <i className="fa fa-fw fa-bell" /> 
                                 {translate('notification.type.general')}
                             </a>
@@ -97,7 +97,7 @@ class NotificationMenu extends Component {
                             (sentLevel === 'important' ? "active-notification-button" : null ):
                             (receiveredLevel === 'important' ? "active-notification-button" : null )
                         }>
-                            <a href="#" className="text-orange">
+                            <a href="#abc" className="text-orange">
                                 <i className="fa fa-fw fa-warning" /> 
                                 {translate('notification.type.important')}
                             </a>
@@ -107,7 +107,7 @@ class NotificationMenu extends Component {
                             (sentLevel === 'emergency' ? "active-notification-button" : null ):
                             (receiveredLevel === 'emergency' ? "active-notification-button" : null )
                         }>
-                            <a href="#" className="text-red">
+                            <a href="#abc" className="text-red">
                                 <i className="fa fa-fw fa-bomb" /> 
                                 {translate('notification.type.emergency')}
                             </a>
@@ -129,7 +129,10 @@ class NotificationMenu extends Component {
     }
 }
  
-const mapState = state => state;
+function mapState(state){
+    const { notifications, auth } = state;
+    return { notifications, auth };
+}
 const action = {
     setLevelNotificationReceivered: NotificationActions.setLevelNotificationReceivered,
     setLevelNotificationSent: NotificationActions.setLevelNotificationSent,

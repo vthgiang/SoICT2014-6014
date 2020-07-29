@@ -28,7 +28,7 @@ function getAllKPIUnit(infosearch) {
 // Lấy tất cả KPI đơn vị
 function getChildTargetOfCurrentTarget(kpiId, date) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/employee-kpi-sets`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets`,
         method: 'GET',
         params: {
             organizationalUnitKpiSetId: kpiId,

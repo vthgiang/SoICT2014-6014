@@ -2,16 +2,12 @@ const express = require("express");
 const router = express.Router();
 const KPIPersonalController = require("./management.controller");
 const {auth} = require('../../../../middleware/index');
-// get all kpi personal
-router.get('/employee-kpi-sets/user/:member',auth, KPIPersonalController.getAllEmployeeKpiSets);
-
-// get all kpi personal
-router.get('/employee-kpi-sets/task/:member',auth, KPIPersonalController.getAllFinishedEmployeeKpiSets);
 
 // get all kpi employee in department by month
-router.get('/employee-kpi-sets/:user/:department/:date', auth, KPIPersonalController.getAllKPIEmployeeSetsInOrganizationByMonth);
+router.get('/employee-kpi-sets', auth, KPIPersonalController.getAllKPIEmployeeSetsInOrganizationByMonth);
 
-router.post('/employee-kpi-sets/copykpi/:id/:idunit/:dateold/:datenew', auth, KPIPersonalController.copyKPI);
+//Khởi tạo Kpi tháng mới từ kpi tháng này
+router.post('/employee-kpi-sets/copy', auth, KPIPersonalController.copyKPI);
 
 // Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại 
 router.get('/employee-kpis', auth, KPIPersonalController.getAllEmployeeKpiInOrganizationalUnit);
@@ -21,8 +17,5 @@ router.get('/employee-kpi-sets/all-employee-kpi-sets-by-month', auth, KPIPersona
 
 // Lấy tất cả employeeKpi thuộc các đơn vị con của đơn vị hiện tại
 router.get('/employee-kpis/all-employee-kpis-children-by-month', auth, KPIPersonalController.getAllEmployeeKpiInChildrenOrganizationalUnit);
-
-// Lấy tất cả mục tiêu nhân viên của một mục tiêu KPI đơn vị hiện tại
-router.get('/employee-kpi-sets',auth, KPIPersonalController.getChildTargetByParentId);
 
 module.exports = router;

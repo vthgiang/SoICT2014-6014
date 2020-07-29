@@ -14,7 +14,7 @@ export const dashboardOrganizationalUnitKpiServices = {
 /** Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại */
 function getAllEmployeeKpiInOrganizationalUnit(roleId, organizationalUnitId, month) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/employee-kpis`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/management/employee-kpis`,
         method: 'GET',
         params: {
             roleId: roleId,
@@ -68,7 +68,7 @@ function getAllOrganizationalUnitKpiSetByTimeOfChildUnit(roleId, startDate, endD
 /** Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng */
 function getAllEmployeeKpiSetInOrganizationalUnit(organizationalUnitId, month) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpipersonals/employee-kpi-sets/all-employee-kpi-sets-by-month`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets/all-employee-kpi-sets-by-month`,
         method: 'GET',
         params: {
             month: month,

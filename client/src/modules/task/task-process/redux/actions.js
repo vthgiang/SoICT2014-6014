@@ -33,10 +33,10 @@ function getXmlDiagramById(diagramId) {
 }
 
 
-function createXmlDiagram(diagramId, data) {
+function createXmlDiagram(data) {
   return dispatch => {
     dispatch({ type: TaskProcessConstants.CREATE_XML_DIAGRAM_REQUEST });
-    TaskProcessService.createXmlDiagram(diagramId, data)
+    TaskProcessService.createXmlDiagram(data)
       .then(
         res => dispatch({ type: TaskProcessConstants.CREATE_XML_DIAGRAM_SUCCESS, payload: res.data }),
         error => dispatch({ type: TaskProcessConstants.CREATE_XML_DIAGRAM_FAIL })

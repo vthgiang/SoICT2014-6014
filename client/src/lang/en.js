@@ -388,6 +388,7 @@ export default {
             note: 'Not',
             info: 'Information',
             delete: 'Delete',
+            new: 'new',
 
             // Thông điệp trả về từ server
             create_notification_success: 'Create notification successfully',

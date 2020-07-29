@@ -19,6 +19,11 @@ class FormInfoTask extends Component {
     }
     
     shouldComponentUpdate(nextProps, nextState) {
+        console.log(nextProps.info)
+        console.log(this.props.info)
+        if(nextProps.info !== this.props.info) {
+            return true;
+        }
         if (nextProps.id !== this.state.id) {
             let { info } = nextProps;
             this.setState(state => {
@@ -64,7 +69,7 @@ class FormInfoTask extends Component {
     }
 
     render() {
-        const { user, translate } = this.props;
+        const { user, translate, disabled} = this.props;
         const { id, info } = this.props;
         let { nameTask, description, responsible, accountable } = this.state;
 
@@ -80,6 +85,7 @@ class FormInfoTask extends Component {
                     <div className="form-group" >
                         <label style={{ float: 'left' }}>Tên công việc</label>
                         <input type="text"
+                            disabled = {disabled}
                             value={nameTask}
                             className="form-control" placeholder="Nhập tên công việc"
                             onChange={this.handleChangeName}
@@ -88,6 +94,7 @@ class FormInfoTask extends Component {
                     <div className="form-group">
                         <label style={{ float: 'left' }}>Mô tả</label>
                         <input type="text"
+                            disabled = {disabled}
                             value={description}
                             className="form-control" placeholder="Mô tả công việc"
                             onChange={this.handleChangeDescription}

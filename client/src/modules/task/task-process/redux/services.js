@@ -52,7 +52,7 @@ function createXmlDiagram(data) {
  */
 function editXmlDiagram(diagramId,data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/taskprocess/diagrams/${diagramId}/edit`,
+        url: `${LOCAL_SERVER_API}/taskprocess/diagrams/${diagramId}`,
         method: 'PATCH',
         data: data
     }, false, true, 'task.task_process');

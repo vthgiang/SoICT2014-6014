@@ -43,7 +43,6 @@ function paginateNotifications(data) {
 }
 
 function create(data) {
-    console.log("Data: ", data)
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/notifications/create`,
         method: 'POST',
