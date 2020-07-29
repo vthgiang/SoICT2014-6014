@@ -257,7 +257,7 @@ class ModalCreateProcessTask extends Component {
       let nameStr = element.type.split(':');
       this.setState(state => {
          if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process') {
-            return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}_${state.idProcess}`, }
+            return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}`, }
          }
          else {
             return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
