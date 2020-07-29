@@ -130,6 +130,7 @@ class ModalEditProcessTask extends Component {
                                                 <h1>Option {name}</h1>
                                             </div>
                                             <FormInfoTask
+                                                action='edit'
                                                 id={id}
                                                 info={(info && info[`${id}`]) && info[`${id}`]}
                                                 handleChangeName={this.handleChangeName}

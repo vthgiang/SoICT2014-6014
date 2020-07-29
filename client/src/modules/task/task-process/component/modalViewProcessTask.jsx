@@ -123,6 +123,7 @@ class ModalViewProcessTask extends Component {
                                             </div>
                                             <FormInfoTask
                                                 disabled = {true}
+                                                action='view'
                                                 id={id}
                                                 info={(info && info[`${id}`]) && info[`${id}`]}
                                             />
