@@ -631,18 +631,18 @@ exports.getTaskLog = async (req, res) => {
  * @param {*} res 
  */
 exports.editTask = async (req, res) => {
-    if(req.query.type === 'all') {
-        if(req.query.role === 'responsible') {
+    if(req.body.type === 'all') {
+        if(req.body.role === 'responsible') {
             editTaskByResponsibleEmployees(req, res);
         }
-        else if(req.query.role === 'accountable'){
+        else if(req.body.role === 'accountable'){
             editTaskByAccountableEmployees(req, res);
         }
     }
-    else if(req.query.type === 'edit_archived') {
+    else if(req.body.type === 'edit_archived') {
         editArchivedOfTask(req, res);
     }
-    else if(req.query.type === 'edit_status') {
+    else if(req.body.type === 'edit_status') {
         editTaskStatus(req, res);
     }
 }
@@ -653,13 +653,13 @@ exports.editTask = async (req, res) => {
  * @param {*} res 
  */
 exports.evaluateTask = async (req, res) => {
-    if(req.query.role === 'responsible'){
+    if(req.body.role === 'responsible'){
         evaluateTaskByResponsibleEmployees(req, res);
     }
-    else if(req.query.role === 'consulted') {
+    else if(req.body.role === 'consulted') {
         evaluateTaskByConsultedEmployees(req, res);
     }
-    else if(req.query.role === 'accountable') {
+    else if(req.body.role === 'accountable') {
         evaluateTaskByAccountableEmployees(req, res);
     }
 }
@@ -668,7 +668,7 @@ exports.evaluateTask = async (req, res) => {
  */
 editTaskByResponsibleEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.editTaskByResponsibleEmployees(req.body, req.params.taskId);
+        var task = await PerformTaskService.editTaskByResponsibleEmployees(req.body.data, req.params.taskId);
         var user = task.user;
         var tasks = task.tasks;
         var data = { "organizationalUnits": [tasks.organizationalUnit], "title": "Cập nhật thông tin công việc", "level": "general", "content": `${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`, "sender": tasks.name, "users": tasks.accountableEmployees };
@@ -694,7 +694,7 @@ editTaskByResponsibleEmployees = async (req, res) => {
  */
 editTaskByAccountableEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.editTaskByAccountableEmployees(req.body, req.params.taskId);
+        var task = await PerformTaskService.editTaskByAccountableEmployees(req.body.data, req.params.taskId);
         var user = task.user;
         var tasks = task.tasks;
         var data = { "organizationalUnits": [tasks.organizationalUnit], "title": "Cập nhật thông tin công việc", "level": "general", "content": `${user.name} đã cập nhật thông tin công việc với vai trò người phê duyệt`, "sender": tasks.name, "users": tasks.responsibleEmployees };
@@ -720,7 +720,7 @@ editTaskByAccountableEmployees = async (req, res) => {
  */
 evaluateTaskByConsultedEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.evaluateTaskByConsultedEmployees(req.body, req.params.taskId);
+        var task = await PerformTaskService.evaluateTaskByConsultedEmployees(req.body.data, req.params.taskId);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -741,7 +741,7 @@ evaluateTaskByConsultedEmployees = async (req, res) => {
  */
 evaluateTaskByResponsibleEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.evaluateTaskByResponsibleEmployees(req.body, req.params.taskId);
+        var task = await PerformTaskService.evaluateTaskByResponsibleEmployees(req.body.data, req.params.taskId);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -762,7 +762,7 @@ evaluateTaskByResponsibleEmployees = async (req, res) => {
  */
 evaluateTaskByAccountableEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.evaluateTaskByAccountableEmployees(req.body, req.params.taskId);
+        var task = await PerformTaskService.evaluateTaskByAccountableEmployees(req.body.data, req.params.taskId);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
         res.status(200).json({
             success: true,

@@ -19,11 +19,11 @@ class FormInfoTask extends Component {
     }
     
     shouldComponentUpdate(nextProps, nextState) {
-        console.log(nextProps.info)
-        console.log(this.props.info)
-        if(nextProps.info !== this.props.info) {
-            return true;
-        }
+        // console.log(nextProps.info)
+        // console.log(this.props.info)
+        // if(nextProps.info !== this.props.info) {
+        //     return true;
+        // }
         if (nextProps.id !== this.state.id) {
             let { info } = nextProps;
             this.setState(state => {
