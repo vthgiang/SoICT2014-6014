@@ -48,8 +48,9 @@ class EmployeeKpiComment extends Component {
     }
 
     handleShowChildComment = async (id) => {
-        let showChildComment = this.state.showChildComment;
-        if (showChildComment === id) {
+        const { showChildComment } = this.state;
+        let show = showChildComment;
+        if (show === id) {
             await this.setState(state => {
                 return {
                     ...state,
@@ -67,9 +68,10 @@ class EmployeeKpiComment extends Component {
     }
 
     handleShowFile = (id) => {
+        const { showfile } = this.state;
         let a;
-        if (this.state.showfile.some(obj => obj === id)) {
-            a = this.state.showfile.filter(x => x !== id);
+        if (showfile.some(obj => obj === id)) {
+            a = showfile.filter(x => x !== id);
             this.setState(state => {
                 return {
                     ...state,
@@ -80,7 +82,7 @@ class EmployeeKpiComment extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    showfile: [...this.state.showfile, id]
+                    showfile: [...showfile, id]
                 }
             })
         }
@@ -214,7 +216,7 @@ class EmployeeKpiComment extends Component {
     render() {
         const { kpimembers, auth } = this.props;
         const { translate } = this.props;
-        const { editComment, editCommentOfComment, showChildComment, currentUser } = this.state;
+        const { editComment, editCommentOfComment, showChildComment, currentUser, showfile, commentOfComment, comment } = this.state;
         let comments, currentKPI;
         let minRows = 3, maxRows = 20;
 
@@ -224,7 +226,7 @@ class EmployeeKpiComment extends Component {
         }
         return (
             <React.Fragment>
-                {comments?
+                {comments ?
                     comments.map(item => {
                         return (
                             <div className="clearfix" key={item._id}>
@@ -259,7 +261,7 @@ class EmployeeKpiComment extends Component {
                                                 <React.Fragment>
                                                     <li style={{ display: "inline-table" }}>
                                                         <div><a style={{ cursor: 'pointer' }} className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i class="fa fa-paperclip" aria-hidden="true"> {translate('kpi.evaluation.employee_evaluation.attached_file')} ({item.files && item.files.length})</i></b></a> </div></li>
-                                                    {this.state.showfile.some(obj => obj === item._id) &&
+                                                    {showfile.some(obj => obj === item._id) &&
                                                         <li style={{ display: "inline-table" }}>{item.files.map(elem => {
                                                             return <div><a style={{ cursor: 'pointer' }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a></div>
                                                         })}</li>
@@ -329,7 +331,7 @@ class EmployeeKpiComment extends Component {
                                                                             </a>
                                                                         </div>
                                                                     </li>
-                                                                    {this.state.showfile.some(obj => obj === child._id) &&
+                                                                    {showfile.some(obj => obj === child._id) &&
                                                                         <li style={{ display: "inline-table" }}>
                                                                             {child.files.map(elem => {
                                                                                 return <div><a style={{ cursor: 'pointer' }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a></div>
@@ -364,8 +366,8 @@ class EmployeeKpiComment extends Component {
                                                 inputCssClass="text-input-level2" controlCssClass="tool-level2"
                                                 onFilesChange={this.onCommentFilesChange}
                                                 onFilesError={this.onFilesError}
-                                                files={this.state.commentOfComment.files}
-                                                text={this.state.commentOfComment.description}
+                                                files={commentOfComment.files}
+                                                text={commentOfComment.description}
                                                 placeholder={translate('kpi.evaluation.employee_evaluation.comment')}
                                                 submitButtonText={translate('kpi.evaluation.employee_evaluation.add_cmt')}
                                                 onTextChange={(e) => {
@@ -388,8 +390,8 @@ class EmployeeKpiComment extends Component {
                     inputCssClass="text-input-level1" controlCssClass="tool-level1"
                     onFilesChange={this.onFilesChange}
                     onFilesError={this.onFilesError}
-                    files={this.state.comment.files}
-                    text={this.state.comment.description}
+                    files={comment.files}
+                    text={comment.description}
                     placeholder={translate('kpi.evaluation.employee_evaluation.commment')}
                     submitButtonText={translate('kpi.evaluation.employee_evaluation.add_cmt')}
                     onTextChange={(e) => {

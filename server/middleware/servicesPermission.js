@@ -250,28 +250,26 @@ exports.data = [
     { path: '/kpi/employee/creation/employee-kpis/target/:id', method: 'PUT', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpi/employee/creation/employee-kpis/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpi/employee/creation/employee-kpi-sets/approve/:id', method: 'PUT', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/kpi/employee/management/employee-kpi-sets', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpi/employee/creation/employee-kpi-sets/comment', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpi/employee/creation/employee-kpi-sets/comment/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpi/employee/creation/employee-kpi-sets/comment/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpi/employee/creation/employee-kpi-sets/comment-comment', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpi/employee/creation/employee-kpi-sets/comment-comment/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpi/employee/creation/employee-kpi-sets/comment-comment/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    
+    // Employee KPI management dashboard
     { path: '/kpi/employee/management/employee-kpi-sets/copy', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/kpi/employee/management/employee-kpis', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/kpi/employee/management/employee-kpi-sets/all-employee-kpi-sets-by-month', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/kpi/employee/management/employee-kpis/all-employee-kpis-children-by-month', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-
+    
+    // Employee KPI evaluate 
     { path: '/kpi/evaluation/employee-evaluation/employee-kpi-sets', method: 'GET', roles: ['Dean', 'Vice Dean','Employee'] },
     { path: '/kpi/evaluation/employee-evaluation/employee-kpi-sets/:id', method: 'GET', roles: ['Dean', 'Vice Dean','Employee'] },
-    { path: '/kpi/evaluation/employee-evaluation/employee-kpi-sets/:id/edit', method: 'POST', roles: ['Dean', 'Vice Dean'] },
-    { path: '/kpi/evaluation/employee-evaluation/employee-kpis/:id', method: 'POST', roles: ['Dean'] },
+    { path: '/kpi/evaluation/employee-evaluation/employee-kpi-sets/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean'] },
+    { path: '/kpi/evaluation/employee-evaluation/employee-kpis/:id', method: 'PATCH', roles: ['Dean'] },
     { path: '/kpi/evaluation/employee-evaluation/employee-kpis/:id/tasks', method: 'GET', roles: ['Dean','Vice Dean'] },
     { path: '/kpi/evaluation/employee-evaluation/employee-kpis/:id/set-task-importance-level', method: 'POST', roles: ['Dean'] },
-
-    // Module DashboardEvaluationEmployeeKpiSet
+    
+    // Employee KPI evaluate dashboard
     { path: '/kpi/evaluation/dashboard/employee-kpis', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/kpi/evaluation/dashboard/organizational-units', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
     // Task-management
     { path: '/task/tasks', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },

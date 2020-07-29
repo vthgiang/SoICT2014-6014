@@ -4,8 +4,9 @@ const { LogInfo, LogError } = require('../../../../logs');
 
 /** Lấy tất cả tập kpi cá nhân của một nhân viên có trạng thái đã kết thúc */
 exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (req, res) => {
-    if (!req.query.user && req.query.department && req.query.date)
+    if (!req.query.user && req.query.department && req.query.date){
         this.getChildTargetByParentId(req, res);
+    }
     else {
         try {
             var kpipersonals = await overviewService.getAllKPIEmployeeSetsInOrganizationByMonth(req.query);
@@ -24,8 +25,6 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (req, res) => {
             })
         }
     }
-
-
 };
 
 /**
@@ -139,5 +138,4 @@ exports.getChildTargetByParentId = async (req, res) => {
             content: error
         })
     }
-
 }

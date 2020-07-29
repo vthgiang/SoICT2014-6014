@@ -33,7 +33,11 @@ function getEmployeeKpiSet(month) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets`,
         method: 'GET',
-        params: {userId:id, role: role, month: month}
+        params: {
+            userId: id,
+            role: role,
+            month: month,
+        }
     }, false, true);
 }
 
@@ -110,8 +114,8 @@ function deleteEmployeeKpi(id, kpipersonal) {
 
 function editEmployeeKpi(id, newTarget) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets/${id}/edit`,
-        method: 'POST',
+        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets/${id}`,
+        method: 'PATCH',
         data: newTarget
     }, true, true, 'kpi.evaluation')
 }

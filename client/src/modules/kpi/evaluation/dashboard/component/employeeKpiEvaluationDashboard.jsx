@@ -226,24 +226,21 @@ class DashBoardKPIMember extends Component {
     }
 
     render() {
-        let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee, userdepartments, kpimember;
-        let { dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids } = this.state;
-        const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = this.props;
+        const { user, kpimembers } = this.props;
         const { translate } = this.props;
+        let { dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids } = this.state;
+        
+        let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee, userdepartments, kpimember;
         let currentDate = new Date();
         let currentYear = currentDate.getFullYear();
         let currentMonth = currentDate.getMonth();
-        console.log(kpimembers, dashboardEvaluationEmployeeKpiSet)
+
         if (this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets) {
             employeeKpiSets = this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
-
             lastMonthEmployeeKpiSets = employeeKpiSets.filter(item => this.formatDate(item.date) == dateOfExcellentEmployees);
-
             lastMonthEmployeeKpiSets.sort((a, b) => b.approvedPoint - a.approvedPoint);
-
             lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets.slice(0, numberOfExcellentEmployees);
         }
-
 
         if (employeeKpiSets) {
             currentMonthEmployeeKpiSets = employeeKpiSets.filter(item => this.formatDate(item.date) == this.formatDate(new Date(currentYear, currentMonth, 1)));
@@ -547,5 +544,6 @@ const actionCreators = {
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
 };
+
 const connectedKPIMember = connect(mapState, actionCreators)(withTranslate(DashBoardKPIMember));
 export { connectedKPIMember as DashBoardKPIMember };

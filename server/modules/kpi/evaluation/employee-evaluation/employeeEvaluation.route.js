@@ -7,9 +7,9 @@ router.get('/employee-kpi-sets', auth, KPIPersonalController.getEmployeeKPISets)
 
 router.get('/employee-kpi-sets/:id', auth, KPIPersonalController.getKpisByKpiSetId);
 
-router.post('/employee-kpi-sets/:id/edit', auth, KPIPersonalController.editKpi);
+router.patch('/employee-kpi-sets/:id', auth, KPIPersonalController.editKpi);
 
-router.post('/employee-kpis/:id', auth, KPIPersonalController.editStatusKpi);
+router.patch('/employee-kpis/:id', auth, KPIPersonalController.editStatusKpi);
 
 router.get('/employee-kpis/:id/tasks', auth, KPIPersonalController.getTasksByKpiId);
 
