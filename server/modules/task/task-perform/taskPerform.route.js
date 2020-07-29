@@ -5,7 +5,7 @@ const PerformTaskController = require("./taskPerform.controller");
 
 router.get('/tasks/:taskId/timesheet-logs', auth, PerformTaskController.getTaskTimesheetLogs);
 router.get('/task-timesheet-logs', auth, PerformTaskController.getActiveTimesheetLog);
-router.post('/tasks/:taskId/timesheet-logs/start-timer', PerformTaskController.startTimesheetLog);
+router.post('/tasks/:taskId/timesheet-logs/start-timer',auth, PerformTaskController.startTimesheetLog);
 router.post('/tasks/:taskId/timesheet-logs/stop-timer', auth, PerformTaskController.stopTimesheetLog);
 router.post('/tasks/:taskId/logs', auth, PerformTaskController.addTaskLog);
 router.get('/tasks/:taskId/logs', auth, PerformTaskController.getTaskLog);

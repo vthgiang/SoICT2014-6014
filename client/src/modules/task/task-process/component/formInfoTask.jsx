@@ -112,6 +112,7 @@ class FormInfoTask extends Component {
                                 onChange={this.handleChangeResponsible}
                                 multiple={true}
                                 value={responsible}
+                                disabled = {disabled}
                             />
                         }
                     </div>
@@ -121,6 +122,7 @@ class FormInfoTask extends Component {
                         { 
                         // unitMembers &&
                             <SelectBox
+
                                 id={`select-accountable-employee-${id}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
@@ -128,6 +130,7 @@ class FormInfoTask extends Component {
                                 onChange={this.handleChangeAccountable}
                                 multiple={true}
                                 value={accountable}
+                                disabled = {disabled}
                             />
                     }
                     </div>

@@ -142,11 +142,9 @@ class TaskManagement extends Component {
     startTimer = async (taskId) => {
         let userId = getStorage("userId");
         let timer = {
-            startedAt: Date.now(),
             creator: userId,
-            task: taskId
         };
-        this.props.startTimer(timer);
+        this.props.startTimer(taskId,timer);
     }
 
     // Hàm xử lý trạng thái lưu kho

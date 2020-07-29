@@ -11,7 +11,7 @@ const { sendEmail } = require('../../../helpers/emailHelper');
  */
 exports.getTaskTimesheetLogs = async (req, res) => {
     try {
-        var logTimer = await PerformTaskService.getTaskTimesheetLogs(req.params);
+        let logTimer = await PerformTaskService.getTaskTimesheetLogs(req.params);
         await LogInfo(req.user.email, ` get log timer  `, req.user.company)
         res.status(200).json({
             success: true,
@@ -32,7 +32,7 @@ exports.getTaskTimesheetLogs = async (req, res) => {
  */
 exports.getActiveTimesheetLog = async (req, res) => {
     try {
-        var timerStatus = await PerformTaskService.getActiveTimesheetLog(req.query);
+        let timerStatus = await PerformTaskService.getActiveTimesheetLog(req.query);
         await LogInfo(req.user.email, `get timer status`, req.user.company)
         res.status(200).json({
             success: true,
@@ -53,15 +53,15 @@ exports.getActiveTimesheetLog = async (req, res) => {
  */
 exports.startTimesheetLog = async (req, res) => {
     try {
-        var timerStatus = await PerformTaskService.startTimesheetLog(req.params, req.body);
-        //await LogInfo(req.user.email, ` start timer `,req.user.company)
+        let timerStatus = await PerformTaskService.startTimesheetLog(req.params, req.body);
+        await LogInfo(req.user.email, ` start timer `,req.user.company)
         res.status(200).json({
             success: true,
             messages: ['start_timer_success'],
             content: timerStatus
         })
     } catch (error) {
-        //await LogError(req.user.email, ` start timer `,req.user.company)
+        await LogError(req.user.email, ` start timer `,req.user.company)
         res.status(400).json({
             success: false,
             messages: ['start_timer_fail'],
@@ -75,7 +75,7 @@ exports.startTimesheetLog = async (req, res) => {
  */
 exports.stopTimesheetLog = async (req, res) => {
     try {
-        var timer = await PerformTaskService.stopTimesheetLog(req.params, req.body);
+        let timer = await PerformTaskService.stopTimesheetLog(req.params, req.body);
         await LogInfo(req.user.email, ` stop timer `,req.user.company)
         res.status(200).json({
             success: true,
@@ -98,21 +98,20 @@ exports.stopTimesheetLog = async (req, res) => {
  */
 exports.createTaskAction = async (req, res) => {
     try {
-        var files = [];
+        let files = [];
         if (req.files !== undefined) {
             req.files.forEach((elem, index) => {
-                var path = elem.destination + '/' + elem.filename;
+                let path = elem.destination + '/' + elem.filename;
                 files.push({ name: elem.originalname, url: path })
 
             })
         }
 
-        var task = await PerformTaskService.createTaskAction(req.params, req.body, files);
-        var taskAction = task.taskActions;
-        var tasks = task.tasks;
-        console.log(tasks._id);
-        var user = task.user;
-        var data = { "organizationalUnits": [tasks.organizationalUnit], "title": "Phê duyệt hoạt động", "level": "general", "content": `${user.name} đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a>`, "sender": tasks.name, "users": [tasks.accountableEmployees] };
+        let task = await PerformTaskService.createTaskAction(req.params, req.body, files);
+        let taskAction = task.taskActions;
+        let tasks = task.tasks;
+        let user = task.user;
+        let data = { "organizationalUnits": [tasks.organizationalUnit], "title": "Phê duyệt hoạt động", "level": "general", "content": `${user.name} đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a>`, "sender": tasks.name, "users": [tasks.accountableEmployees] };
         NotificationServices.createNotification(tasks.organizationalUnit, data,);
         sendEmail("vnist.qlcv@gmail.com", task.email, "Phê duyệt hoạt động", '', `<p>${user.name} đã thêm mới hoạt động, bạn có thể vào để phê duyệt hoạt động này <a href="${process.env.WEBSITE}/task?taskId=${tasks._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${tasks._id}</a></p>`);
         await LogInfo(req.user.email, ` create task action  `, req.user.company)
@@ -141,15 +140,15 @@ exports.editTaskAction = async (req, res) => {
 
     } else
         try {
-            var files = [];
+            let files = [];
             if (req.files !== undefined) {
                 req.files.forEach((elem, index) => {
-                    var path = elem.destination + '/' + elem.filename;
+                    let path = elem.destination + '/' + elem.filename;
                     files.push({ name: elem.originalname, url: path })
 
                 })
             }
-            var taskAction = await PerformTaskService.editTaskAction(req.params, req.body, files);
+            let taskAction = await PerformTaskService.editTaskAction(req.params, req.body, files);
             await LogInfo(req.user.email, ` edit task action  `, req.user.company)
             res.status(200).json({
                 success: true,
@@ -170,7 +169,7 @@ exports.editTaskAction = async (req, res) => {
  */
 exports.deleteTaskAction = async (req, res) => {
     try {
-        var taskAction = await PerformTaskService.deleteTaskAction(req.params);
+        let taskAction = await PerformTaskService.deleteTaskAction(req.params);
         await LogInfo(req.user.email, ` delete task action  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -191,15 +190,15 @@ exports.deleteTaskAction = async (req, res) => {
  */
 exports.createCommentOfTaskAction = async (req, res) => {
     try {
-        var files = [];
+        let files = [];
         if (req.files !== undefined) {
             req.files.forEach((elem, index) => {
-                var path = elem.destination + '/' + elem.filename;
+                let path = elem.destination + '/' + elem.filename;
                 files.push({ name: elem.originalname, url: path })
 
             })
         }
-        var actionComment = await PerformTaskService.createCommentOfTaskAction(req.params, req.body, files);
+        let actionComment = await PerformTaskService.createCommentOfTaskAction(req.params, req.body, files);
         await LogInfo(req.user.email, ` create  action comment  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -220,15 +219,15 @@ exports.createCommentOfTaskAction = async (req, res) => {
  */
 exports.editCommentOfTaskAction = async (req, res) => {
     try {
-        var files = [];
+        let files = [];
         if (req.files !== undefined) {
             req.files.forEach((elem, index) => {
-                var path = elem.destination + '/' + elem.filename;
+                let path = elem.destination + '/' + elem.filename;
                 files.push({ name: elem.originalname, url: path })
 
             })
         }
-        var actionComment = await PerformTaskService.editCommentOfTaskAction(req.params, req.body, files);
+        let actionComment = await PerformTaskService.editCommentOfTaskAction(req.params, req.body, files);
         await LogInfo(req.user.email, ` edit action comment  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -250,7 +249,7 @@ exports.editCommentOfTaskAction = async (req, res) => {
  */
 exports.deleteCommentOfTaskAction = async (req, res) => {
     try {
-        var task = await PerformTaskService.deleteCommentOfTaskAction(req.params);
+        let task = await PerformTaskService.deleteCommentOfTaskAction(req.params);
         await LogInfo(req.user.email, ` delete action comment  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -273,15 +272,15 @@ exports.deleteCommentOfTaskAction = async (req, res) => {
  */
 exports.createTaskComment = async (req, res) => {
     try {
-        var files = [];
+        let files = [];
         if (req.files !== undefined) {
             req.files.forEach((elem, index) => {
-                var path = elem.destination + '/' + elem.filename;
+                let path = elem.destination + '/' + elem.filename;
                 files.push({ name: elem.originalname, url: path })
 
             })
         }
-        var taskComment = await PerformTaskService.createTaskComment(req.params, req.body, files);
+        let taskComment = await PerformTaskService.createTaskComment(req.params, req.body, files);
         await LogInfo(req.user.email, ` create task comment  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -305,7 +304,7 @@ exports.editTaskComment = async (req, res) => {
         let files = [];
         if (req.files !== undefined) {
             req.files.forEach((elem, index) => {
-                var path = elem.destination + '/' + elem.filename;
+                let path = elem.destination + '/' + elem.filename;
                 files.push({ name: elem.originalname, url: path })
 
             })
@@ -373,15 +372,15 @@ exports.deleteFileChildTaskComment = async (req, res) => {
  */
 exports.createCommentOfTaskComment = async (req, res) => {
     try {
-        var files = [];
+        let files = [];
         if (req.files !== undefined) {
             req.files.forEach((elem, index) => {
-                var path = elem.destination + '/' + elem.filename;
+                let path = elem.destination + '/' + elem.filename;
                 files.push({ name: elem.originalname, url: path })
 
             })
         }
-        var comment = await PerformTaskService.createCommentOfTaskComment(req.params, req.body, files);
+        let comment = await PerformTaskService.createCommentOfTaskComment(req.params, req.body, files);
         await LogInfo(req.user.email, ` create comment of task comment  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -405,7 +404,7 @@ exports.editCommentOfTaskComment = async (req, res) => {
         let files = [];
         if (req.files !== undefined) {
             req.files.forEach((elem, index) => {
-                var path = elem.destination + '/' + elem.filename;
+                let path = elem.destination + '/' + elem.filename;
                 files.push({ name: elem.originalname, url: path })
 
             })
@@ -431,7 +430,7 @@ exports.editCommentOfTaskComment = async (req, res) => {
  */
 exports.deleteCommentOfTaskComment = async (req, res) => {
     try {
-        var comment = await PerformTaskService.deleteCommentOfTaskComment(req.params);
+        let comment = await PerformTaskService.deleteCommentOfTaskComment(req.params);
         await LogInfo(req.user.email, ` delete comment of task comment  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -451,29 +450,29 @@ exports.deleteCommentOfTaskComment = async (req, res) => {
  * Đánh giá hoạt động
  */
 evaluationAction = async (req, res) => {
-    // try {
-        var taskAction = await PerformTaskService.evaluationAction(req.params, req.body);
+    try {
+        let taskAction = await PerformTaskService.evaluationAction(req.params, req.body);
         await LogInfo(req.user.email, ` evaluation action  `, req.user.company)
         res.status(200).json({
             success: true,
             messages: ['evaluation_action_success'],
             content: taskAction
         })
-    // } catch (error) {
-    //     await LogError(req.user.email, ` evaluation action  `, req.user.company)
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: ['evaluation_action_fail'],
-    //         content: error
-    //     })
-    // }
+    } catch (error) {
+        await LogError(req.user.email, ` evaluation action  `, req.user.company)
+        res.status(400).json({
+            success: false,
+            messages: ['evaluation_action_fail'],
+            content: error
+        })
+    }
 }
 /**
  * Xác nhận hành động
  */
 exports.confirmAction = async (req, res) => {
     try {
-        var abc = await PerformTaskService.confirmAction(req.params,req.body);
+        let abc = await PerformTaskService.confirmAction(req.params,req.body);
         await LogInfo(req.user.email, ` confirm action  `, req.user.company)
         res.status(200).json({
             success: true,
@@ -494,15 +493,15 @@ exports.confirmAction = async (req, res) => {
  */
 exports.uploadFile = async (req, res) => {
     try {
-        var files = [];
+        let files = [];
         if (req.files !== undefined) {
             req.files.forEach((elem, index) => {
-                var path = elem.destination + '/' + elem.filename;
+                let path = elem.destination + '/' + elem.filename;
                 files.push({ name: elem.originalname, url: path, description: req.body.description, creator: req.body.creator })
 
             })
         }
-        var comment = await PerformTaskService.uploadFile(req.params, req.body, files);
+        let comment = await PerformTaskService.uploadFile(req.params, req.body, files);
         await LogInfo(req.user.email, ` upload file of task  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -587,7 +586,7 @@ exports.deleteFileTaskComment = async (req, res) => {
  */
 exports.addTaskLog = async (req, res) => {
     try {
-        var task = await PerformTaskService.addTaskLog(req.params,req.body);
+        let task = await PerformTaskService.addTaskLog(req.params,req.body);
         await LogInfo(req.user.email, ` CREATE_TASK_LOG  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -609,7 +608,7 @@ exports.addTaskLog = async (req, res) => {
  */
 exports.getTaskLog = async (req, res) => {
     try {
-        var taskLog = await PerformTaskService.getTaskLog(req.params);
+        let taskLog = await PerformTaskService.getTaskLog(req.params);
         await LogInfo(req.user.email, ` GET_TASK_LOG  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -669,10 +668,10 @@ exports.evaluateTask = async (req, res) => {
  */
 editTaskByResponsibleEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.editTaskByResponsibleEmployees(req.body.data, req.params.taskId);
-        var user = task.user;
-        var tasks = task.tasks;
-        var data = { "organizationalUnits": [tasks.organizationalUnit], "title": "Cập nhật thông tin công việc", "level": "general", "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <strong>${tasks.name}</strong> với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`, "sender": user.name, "users": tasks.accountableEmployees };
+        let task = await PerformTaskService.editTaskByResponsibleEmployees(req.body.data, req.params.taskId);
+        let user = task.user;
+        let tasks = task.tasks;
+        let data = { "organizationalUnits": [tasks.organizationalUnit], "title": "Cập nhật thông tin công việc", "level": "general", "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <strong>${tasks.name}</strong> với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`, "sender": user.name, "users": tasks.accountableEmployees };
         NotificationServices.createNotification(tasks.organizationalUnit, data,);
         sendEmail("vnist.qlcv@gmail.com", task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
@@ -695,10 +694,10 @@ editTaskByResponsibleEmployees = async (req, res) => {
  */
 editTaskByAccountableEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.editTaskByAccountableEmployees(req.body.data, req.params.taskId);
-        var user = task.user;
-        var tasks = task.tasks;
-        var data = { "organizationalUnits": [tasks.organizationalUnit], "title": "Cập nhật thông tin công việc", "level": "general", "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <strong>${tasks.name}</strong> với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`, "sender": user.name, "users": tasks.responsibleEmployees };
+        let task = await PerformTaskService.editTaskByAccountableEmployees(req.body.data, req.params.taskId);
+        let user = task.user;
+        let tasks = task.tasks;
+        let data = { "organizationalUnits": [tasks.organizationalUnit], "title": "Cập nhật thông tin công việc", "level": "general", "content": `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc <strong>${tasks.name}</strong> với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`, "sender": user.name, "users": tasks.responsibleEmployees };
         NotificationServices.createNotification(tasks.organizationalUnit, data,);
         sendEmail("vnist.qlcv@gmail.com", task.email, "Cập nhật thông tin công việc", '', `<p><strong>${user.name}</strong> đã cập nhật thông tin công việc với vai trò người phê duyệt <a href="${process.env.WEBSITE}/task?taskId=${req.params.taskId}">${process.env.WEBSITE}/task?taskId=${req.params.taskId}</a></p>`);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
@@ -721,7 +720,7 @@ editTaskByAccountableEmployees = async (req, res) => {
  */
 evaluateTaskByConsultedEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.evaluateTaskByConsultedEmployees(req.body.data, req.params.taskId);
+        let task = await PerformTaskService.evaluateTaskByConsultedEmployees(req.body.data, req.params.taskId);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -742,7 +741,7 @@ evaluateTaskByConsultedEmployees = async (req, res) => {
  */
 evaluateTaskByResponsibleEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.evaluateTaskByResponsibleEmployees(req.body.data, req.params.taskId);
+        let task = await PerformTaskService.evaluateTaskByResponsibleEmployees(req.body.data, req.params.taskId);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -763,7 +762,7 @@ evaluateTaskByResponsibleEmployees = async (req, res) => {
  */
 evaluateTaskByAccountableEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.evaluateTaskByAccountableEmployees(req.body.data, req.params.taskId);
+        let task = await PerformTaskService.evaluateTaskByAccountableEmployees(req.body.data, req.params.taskId);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -786,7 +785,7 @@ evaluateTaskByAccountableEmployees = async (req, res) => {
  */
 editArchivedOfTask = async (req, res) => {
     try {
-    var task = await PerformTaskService.editArchivedOfTask(req.params.taskId);
+    let task = await PerformTaskService.editArchivedOfTask(req.params.taskId);
     await LogInfo(req.user.email, ` edit status archived of task  `, req.user.company);
     res.status(200).json({
         success: true,
@@ -808,7 +807,7 @@ editArchivedOfTask = async (req, res) => {
  */
 editTaskStatus = async (req, res) => {
     try {
-        var task = await PerformTaskService.editTaskStatus(req.params.taskId, req.body.status);
+        let task = await PerformTaskService.editTaskStatus(req.params.taskId, req.body.status);
         await LogInfo(req.user.email, ` edit status of task  `, req.user.company);
         res.status(200).json({
             success: true,

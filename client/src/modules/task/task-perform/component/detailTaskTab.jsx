@@ -124,9 +124,7 @@ class DetailTaskTab extends Component {
 
     startTimer = async (taskId, userId) => {
         var timer = {
-            startedAt: Date.now(),
             creator: userId,
-    
         };
         this.props.startTimer(taskId,timer);
     }

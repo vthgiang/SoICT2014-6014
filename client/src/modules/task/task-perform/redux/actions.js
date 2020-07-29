@@ -101,10 +101,10 @@ function getTimerStatusTask() { //param -- , user
 }
 
 // start timer task
-function startTimerTask(timer) {
+function startTimerTask(taskId,timer) {
     return dispatch => {
         dispatch({ type: performTaskConstants.START_TIMER_REQUEST });
-        performTaskService.startTimerTask(timer)
+        performTaskService.startTimerTask(taskId,timer)
             .then(
                 payload => {
                     dispatch({ type: performTaskConstants.START_TIMER_SUCCESS, payload });

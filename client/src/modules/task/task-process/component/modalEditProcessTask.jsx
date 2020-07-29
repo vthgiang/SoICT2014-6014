@@ -270,7 +270,6 @@ class ModalEditProcessTask extends Component {
 
     interactPopup = (event) => {
         var element = event.element;
-        console.log('==========', this.state);
         let nameStr = element.type.split(':');
         this.setState(state => {
             if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' ||
