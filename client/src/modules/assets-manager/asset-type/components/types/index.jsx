@@ -64,14 +64,17 @@ class AdministrationAssetTypes extends Component {
         const {domainParent, deleteNode} = this.state;
         const {translate} = this.props;
         const {list} = this.props.assetType.administration.types;
-        const dataTree = list.map(node=>{
-            return {
-                ...node,
-                text: node.typeName,
-                state : {"opened" : true },
-                parent: node.parent !== undefined ? node.parent.toString() : "#"
-            }
-        })
+        let dataTree;
+        if (list && list.length>0) {
+            dataTree = list.map(node=>{
+                return {
+                    ...node,
+                    text: node.typeName,
+                    state : {"opened" : true },
+                    parent: node.parent? node.parent.toString() : "#"
+                }
+            })
+        }
 
         return ( 
             <React.Fragment>
