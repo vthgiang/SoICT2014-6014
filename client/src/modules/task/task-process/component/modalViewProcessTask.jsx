@@ -65,9 +65,10 @@ class ModalViewProcessTask extends Component {
    interactPopup = (event) => {
       var element = event.element;
       let nameStr = element.type.split(':');
+      console.log(element.id)
       this.setState(state => {
           if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process') {
-              return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}_${state.idProcess}`, }
+              return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}_undefined`, }
           }
           else {
               return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
@@ -78,7 +79,7 @@ class ModalViewProcessTask extends Component {
    render() {
       const { translate } = this.props;
       const { name, id, idProcess, info, showInfo, processDescription, processName } = this.state;
-      let x = (info && info[`${id}`]) && info[`${id}`]
+      console.log(info)
       return (
          <React.Fragment>
                 <DialogModal
