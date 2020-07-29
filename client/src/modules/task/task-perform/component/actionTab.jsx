@@ -22,7 +22,7 @@ import './actionTab.css';
 
 class ActionTab extends Component {
     constructor(props) {
-        var idUser = getStorage("userId");
+        let idUser = getStorage("userId");
         super(props);
         this.state = {
             currentUser: idUser,
@@ -137,20 +137,6 @@ class ActionTab extends Component {
 
         return true;
     }
-    showEdit(event) {
-        event.preventDefault();
-        this.setState({ showEdit: true }, () => {
-            document.addEventListener('click', this.closeEdit);
-        });
-    }
-    closeEdit(event) {
-        if (!this.dropdownEdit.contains(event.target)) {
-            this.setState({ showEdit: false }, () => {
-                document.removeEventListener('click', this.closeEdit);
-            });
-
-        }
-    }
     setHover = async (id, value) => {
         if (isNaN(value)) {
             this.hover[id] = 0;
@@ -180,7 +166,7 @@ class ActionTab extends Component {
                 }
             }
         })
-        var { evaluations } = this.state;
+        let { evaluations } = this.state;
         this.props.evaluationAction(actionId,taskId, evaluations)
         await this.setState(state => {
             return {
@@ -268,7 +254,7 @@ class ActionTab extends Component {
         modal.style = "display: none;";
     }
     submitComment = async (actionId, taskId) => {
-        var { newCommentOfAction } = this.state;
+        let { newCommentOfAction } = this.state;
         const data = new FormData();
         data.append("creator", newCommentOfAction.creator);
         data.append("description", newCommentOfAction.description);
@@ -318,7 +304,7 @@ class ActionTab extends Component {
 
     //Thêm mới bình luận của công việc
     submitTaskComment = async (taskId) => {
-        var { newTaskComment } = this.state;
+        let { newTaskComment } = this.state;
 
         const data = new FormData();
         data.append("creator", newTaskComment.creator);
@@ -749,12 +735,9 @@ class ActionTab extends Component {
         }
     }
     render() {
-        const { role } = this.props;
         let type = ["actions", "commentofactions", "taskcomments", "commentoftaskcomments"];
-        let task, informations;
-        let statusTask, files;
-        let actionComments, taskActions, taskComments, actions, logTimer, logs;
-        const { tasks, performtasks, user, auth, translate } = this.props;
+        let task, informations, statusTask, files, actionComments, taskActions, taskComments, actions, logTimer, logs;
+        const { tasks, performtasks, user, auth, translate, role } = this.props;
         const subtasks = tasks.subtasks;
         const {
             showEvaluations, selected, comment, editComment, showChildComment, editAction, action,

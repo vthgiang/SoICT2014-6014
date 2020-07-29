@@ -11,7 +11,6 @@ class AssetTypeCreateForm extends Component {
         this.state = {
             typeNumber: "",
             typeName: "",
-            timeDepreciation: "",
             parent: null,
             description: ""
         };
@@ -64,28 +63,6 @@ class AssetTypeCreateForm extends Component {
     }
 
     /**
-     * Bắt sự kiện thay đổi thời gian trích khấu hao
-     */
-    handleTimeDepreciationChange = (e) => {
-        let value = e.target.value;
-        this.setState({
-            ...this.state,
-            timeDepreciation: value
-        })
-    }
-
-    // /**
-    //  * Bắt sự kiện thay đổi loại tài sản cha
-    //  */
-    // handleParentChange = (e) => {
-    //     let value = e.target.value;
-    //     this.setState({
-    //         ...this.state,
-    //         parent: value
-    //     })
-    // }
-
-    /**
      * Bắt sự kiện thay đổi loại tài sản cha
      */
     handleParentChange = (value) => {
@@ -127,10 +104,7 @@ class AssetTypeCreateForm extends Component {
 
     render() {
         const { id, translate, assetType } = this.props;
-        const {
-            typeNumber, typeName, timeDepreciation, parent, description,
-            errorOnTypeNumber, errorOnTypeName
-        } = this.state;
+        const { typeNumber, typeName, parent, description, errorOnTypeNumber, errorOnTypeName } = this.state;
         var assettypelist = assetType.listAssetTypes;
         return (
             <React.Fragment>
@@ -154,20 +128,6 @@ class AssetTypeCreateForm extends Component {
                             <input type="text" className="form-control" name="typeName" value={typeName} onChange={this.handleTypeNameChange} autoComplete="off" placeholder="Tên loại tài sản" />
                             <ErrorLabel content={errorOnTypeName} />
                         </div>
-                        <div className="form-group">
-                            <label>Thời gian khấu hao (Tháng)</label>
-                            <input type="number" className="form-control" name="timeDepreciation" value={timeDepreciation} onChange={this.handleTimeDepreciationChange} autoComplete="off" placeholder="Thời gian khấu hao" />
-                            {/* <label style={{height: 34, display: "inline", width: "5%"}}> &nbsp; Tháng</label> */}
-                        </div>
-                        {/* <div className="form-group">
-                            <label>Loại tài sản cha</label>
-                            <select id="drops" className="form-control" name="parent" onChange={(e) => this.setState({ parent: e.target.value })}>
-                                {assetType.listAssetTypes.length ? assetType.listAssetTypes.map((item, index) => (
-                                    <option key={index} value={item._id}>{item.typeNumber + " - " + item.typeName}</option>
-                                )) : null}
-
-                            </select>
-                        </div> */}
                         <div className={`form-group`}>
                             <label>Loại tài sản cha</label>
                             <div>

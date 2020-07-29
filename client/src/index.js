@@ -14,7 +14,7 @@ ReactDOM.render(
         <IntlProvider translations={translations}>
             <AuthAlert />
             <ToastContainer enableMultiContainer containerId={'toast-notification'} position={toast.POSITION.TOP_RIGHT} />
-            <App />
+            <App />          
         </IntlProvider>
     </Provider>
 , document.getElementById('root'));

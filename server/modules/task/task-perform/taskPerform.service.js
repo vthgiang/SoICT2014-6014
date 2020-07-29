@@ -15,7 +15,7 @@ const moment = require("moment");
  * Lấy tất cả lịch sử bấm giờ theo công việc
  */
 exports.getTaskTimesheetLogs = async (params) => {
-    var timesheetLogs = await Task.findById(params.taskId).populate("timesheetLogs.creator")
+    let timesheetLogs = await Task.findById(params.taskId).populate("timesheetLogs.creator")
     return timesheetLogs.timesheetLogs;
 }
 
@@ -24,7 +24,7 @@ exports.getTaskTimesheetLogs = async (params) => {
  * Nếu có trả về startTimer: true, và time, startTime. Không có trả ver startTimer: false
  */
 exports.getActiveTimesheetLog = async (query) => {
-    var timerStatus = await Task.findOne(
+    let timerStatus = await Task.findOne(
         { "timesheetLogs": { $elemMatch: { "creator": mongoose.Types.ObjectId(query.userId), "stoppedAt": null } } },
         { "timesheetLogs": 1, '_id': 1, 'name': 1 }
     );
@@ -40,11 +40,12 @@ exports.getActiveTimesheetLog = async (query) => {
  * Bắt đầu bấm giờ: Lưu thời gian bắt đầu
  */
 exports.startTimesheetLog = async (params, body) => {
-    var timerUpdate = {
-        startedAt: body.startedAt,
-        creator: body.creator
+    const now = new Date()
+    let timerUpdate = {
+        startedAt: now,
+        creator: body.creator,
     }
-    var timer = await Task.findByIdAndUpdate(params.taskId,
+    let timer = await Task.findByIdAndUpdate(params.taskId,
         { $push: { timesheetLogs: timerUpdate } },
         { new: true, "fields": { "timesheetLogs": 1, '_id': 1, 'name': 1 } }
     );
@@ -55,13 +56,15 @@ exports.startTimesheetLog = async (params, body) => {
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
 exports.stopTimesheetLog = async (params, body) => {
-    var timer = await Task.findOneAndUpdate(
+    const now = new Date()
+    let duration = now - body.startedAt
+    let timer = await Task.findOneAndUpdate(
         { "_id": params.taskId, "timesheetLogs._id": body.timesheetLog },
         {
             $set:
             {
-                "timesheetLogs.$.stoppedAt": body.stoppedAt,
-                "timesheetLogs.$.duration": body.duration,
+                "timesheetLogs.$.stoppedAt": now,
+                "timesheetLogs.$.duration": duration,
                 "timesheetLogs.$.description": body.description,
             }
         },
@@ -71,7 +74,7 @@ exports.stopTimesheetLog = async (params, body) => {
     timer.timesheetLogs.length > 0 && timer.timesheetLogs.forEach(x => {
         time += x.duration;
     })
-    var timer1 = await Task.findOneAndUpdate(
+    let timer1 = await Task.findOneAndUpdate(
         { "_id": params.taskId, "timesheetLogs._id": body.timesheetLog },
         {
             $set:
@@ -87,7 +90,7 @@ exports.stopTimesheetLog = async (params, body) => {
  */
 exports.createCommentOfTaskAction = async (params, body, files) => {
 
-    var commenttasks = await Task.updateOne(
+    let commenttasks = await Task.updateOne(
         { "_id": params.taskId, "taskActions._id": params.actionId },
         {
             "$push":
@@ -101,7 +104,7 @@ exports.createCommentOfTaskAction = async (params, body, files) => {
             }
         }
     )
-    var task = await Task.findOne({ "_id": params.taskId, "taskActions._id": params.actionId }).populate([
+    let task = await Task.findOne({ "_id": params.taskId, "taskActions._id": params.actionId }).populate([
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar' }
@@ -172,7 +175,7 @@ exports.deleteCommentOfTaskAction = async (params) => {
         { $replaceRoot: { newRoot: "$files" } }
     ])
 
-    var action = await Task.update(
+    let action = await Task.update(
         { "_id": params.taskId, "taskActions._id": params.actionId, "taskActions.comments._id": params.commentId },
         { $pull: { "taskActions.$.comments": { _id: params.commentId } } },
         { safe: true })
@@ -180,7 +183,7 @@ exports.deleteCommentOfTaskAction = async (params) => {
     for (i = 0; i < files.length; i++) {
         fs.unlinkSync(files[i].url)
     }
-    var task = await Task.findOne({ _id: params.taskId }).populate([
+    let task = await Task.findOne({ _id: params.taskId }).populate([
         { path: "taskActions.creator", model: User, select: 'name email avatar ' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar ' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar' }
@@ -192,12 +195,12 @@ exports.deleteCommentOfTaskAction = async (params) => {
  */
 
 exports.createTaskAction = async (params, body, files) => {
-    var actionInformation = {
+    let actionInformation = {
         creator: body.creator,
         description: body.description,
         files: files
     }
-    var taskAction1 = await Task.findByIdAndUpdate(params.taskId,
+    let taskAction1 = await Task.findByIdAndUpdate(params.taskId,
         {
             $push:
             {
@@ -205,17 +208,17 @@ exports.createTaskAction = async (params, body, files) => {
             }
         },
         { new: true }
-    )
+    ).populate([{ path: "taskActions.creator", model: User, select: 'name email avatar' },])
 
-    var task = await Task.findOne({ _id: params.taskId }).populate([
+    let task = await Task.findOne({ _id: params.taskId }).populate([
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' }])
 
-    var user = await User.findOne({ _id: body.creator });
-    var tasks = await Task.findOne({ _id: params.taskId });
-    var userEmail = await User.find({ _id: { $in: tasks.accountableEmployees } });
-    var email = userEmail.map(item => item.email);
+    let user = await User.findOne({ _id: body.creator });
+    let tasks = await Task.findOne({ _id: params.taskId });
+    let userEmail = await User.find({ _id: { $in: tasks.accountableEmployees } });
+    let email = userEmail.map(item => item.email);
 
     return { taskActions: task.taskActions, tasks: tasks, user: user, email: email };
 }
@@ -223,7 +226,7 @@ exports.createTaskAction = async (params, body, files) => {
  * Sửa hoạt động của cộng việc
  */
 exports.editTaskAction = async (params, body, files) => {
-    var action = await Task.updateOne(
+    let action = await Task.updateOne(
         { "_id": params.taskId, "taskActions._id": params.actionId },
         {
             $set:
@@ -241,7 +244,7 @@ exports.editTaskAction = async (params, body, files) => {
             }
         }
     )
-    var task = await Task.findOne({ "_id": params.taskId, "taskActions._id": params.actionId }).populate([
+    let task = await Task.findOne({ "_id": params.taskId, "taskActions._id": params.actionId }).populate([
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' }])
@@ -291,11 +294,11 @@ exports.deleteTaskAction = async (params) => {
  */
 exports.createResultInformationTask = async (req, res) => {
     try {
-        var listResultInfoTask = req.body.listResultInfoTask;
+        let listResultInfoTask = req.body.listResultInfoTask;
         if (listResultInfoTask !== []) {
             // Lưu thông tin kết quả 
-            var listResultInfoTask = await Promise.all(listResultInfoTask.map(async (item) => {
-                var result = await TaskResultInformation.create({
+            let listResultInfoTask = await Promise.all(listResultInfoTask.map(async (item) => {
+                let result = await TaskResultInformation.create({
                     member: item.user,
                     infotask: item.infotask,
                     value: item.value
@@ -324,11 +327,11 @@ exports.createResultInformationTask = async (req, res) => {
  */
 exports.editResultInformationTask = async (req, res) => {
     try {
-        var listResultInfoTask = req.body.listResultInfoTask;
+        let listResultInfoTask = req.body.listResultInfoTask;
         if (listResultInfoTask !== []) {
             // Lưu thông tin kết quả 
-            var listResultInfoTask = await Promise.all(listResultInfoTask.map(async (item) => {
-                var result = await TaskResultInformation.findByIdAndUpdate(item._id, {
+            let listResultInfoTask = await Promise.all(listResultInfoTask.map(async (item) => {
+                let result = await TaskResultInformation.findByIdAndUpdate(item._id, {
                     member: item.user,
                     infotask: item.infotask,
                     value: item.value
@@ -349,11 +352,11 @@ exports.editResultInformationTask = async (req, res) => {
  * Thêm thông tin kết quả của đánh giá từng nhân viên
  */
 exports.createTaskResult = async (result, taskID, evaluateID, date) => {
-    var item = result;
+    let item = result;
 
     if (item !== null) {
         // Lưu thông tin kết quả 
-        var resultTask = {
+        let resultTask = {
             employee: item.employee,
             role: item.role,
             automaticPoint: item.automaticPoint,
@@ -361,7 +364,7 @@ exports.createTaskResult = async (result, taskID, evaluateID, date) => {
             approvedPoint: item.approvedPoint
         }
         // Cập nhật thông tin công việc
-        var addResult = await Task.updateOne(
+        let addResult = await Task.updateOne(
             {
                 _id: taskID,
                 "evaluations._id": evaluateID
@@ -388,7 +391,7 @@ exports.editTaskResult = async (listResult, taskid) => {
     if (listResult !== []) {
         // Lưu thông tin kết quả 
         listResult.forEach(async (item) => {
-            var newTask = await Task.updateOne(
+            let newTask = await Task.updateOne(
                 {
                     "evaluations.results._id": item._id,
                     // k can xet dieu kien ngay danh gia vi _id cua result la duy nhat
@@ -417,12 +420,12 @@ exports.editTaskResult = async (listResult, taskid) => {
  * Tạo bình luận công việc
  */
 exports.createTaskComment = async (params, body, files) => {
-    var commentInformation = {
+    let commentInformation = {
         creator: body.creator,
         description: body.description,
         files: files
     }
-    var taskComment1 = await Task.findByIdAndUpdate(params.taskId,
+    let taskComment1 = await Task.findByIdAndUpdate(params.taskId,
         {
             $push:
             {
@@ -431,7 +434,7 @@ exports.createTaskComment = async (params, body, files) => {
         },
         { new: true }
     );
-    var task = await Task.findOne({ _id: params.taskId }).populate([
+    let task = await Task.findOne({ _id: params.taskId }).populate([
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar' }])
@@ -442,7 +445,7 @@ exports.createTaskComment = async (params, body, files) => {
  * Sửa bình luận công việc
  */
 exports.editTaskComment = async (params, body, files) => {
-    var taskComment = await Task.updateOne(
+    let taskComment = await Task.updateOne(
         { "_id": params.taskId, "taskComments._id": params.commentId },
         {
             $set:
@@ -462,7 +465,7 @@ exports.editTaskComment = async (params, body, files) => {
         }
     )
 
-    var task = await Task.findOne({ "_id": params.taskId, "taskComments._id": params.commentId }).populate([
+    let task = await Task.findOne({ "_id": params.taskId, "taskComments._id": params.commentId }).populate([
         { path: "taskComments.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' }])
@@ -486,22 +489,21 @@ exports.deleteTaskComment = async (params) => {
     for (i = 0; i < files.length; i++) {
         fs.unlinkSync(files[i].url)
     }
-    var comment = await Task.update(
+    let comment = await Task.update(
         { "_id": params.taskId, "taskComments._id": params.commentId },
         { $pull: { taskComments: { _id: params.commentId } } },
         { safe: true })
-    var task = await Task.findOne({ "_id": params.taskId }).populate([
+    let task = await Task.findOne({ "_id": params.taskId }).populate([
         { path: "taskComments.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar ' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' }])
-    console.log(task)
     return task.taskComments;
 }
 /**
  * Thêm bình luận của bình luận công việc
  */
 exports.createCommentOfTaskComment = async (params, body, files) => {
-    var taskcomment = await Task.updateOne(
+    let taskcomment = await Task.updateOne(
         { "_id": params.taskId, "taskComments._id": params.commentId },
         {
             "$push":
@@ -517,7 +519,7 @@ exports.createCommentOfTaskComment = async (params, body, files) => {
     )
 
 
-    var taskComment = await Task.findOne({ "_id": params.taskId, "taskComments._id": params.commentId }).populate([
+    let taskComment = await Task.findOne({ "_id": params.taskId, "taskComments._id": params.commentId }).populate([
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' }])
@@ -567,7 +569,7 @@ exports.editCommentOfTaskComment = async (params, body, files) => {
         }
     )
 
-    var taskComment = await Task.findOne({ "_id": params.taskId, "taskComments.comments._id": params.commentId }).populate([
+    let taskComment = await Task.findOne({ "_id": params.taskId, "taskComments.comments._id": params.commentId }).populate([
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' }])
@@ -620,7 +622,7 @@ exports.evaluationAction = async (params, body) => {
     if (body.firstTime === 1) {
         //cập nhật điểm người đánh giá
         let evaluationAction = await Task.updateOne(
-            {"_id":params.taskId, "taskActions._id": params.actionId },
+            { "_id": params.taskId, "taskActions._id": params.actionId },
             {
                 $push:
                 {
@@ -637,7 +639,7 @@ exports.evaluationAction = async (params, body) => {
 
 
         //danh sách người phê duyệt
-        let task1 = await Task.findOne({"_id":params.taskId, "taskActions._id": params.actionId })
+        let task1 = await Task.findOne({ "_id": params.taskId, "taskActions._id": params.actionId })
         let accountableEmployees = task1.accountableEmployees
 
 
@@ -670,7 +672,7 @@ exports.evaluationAction = async (params, body) => {
         let idAccountableEmployee = task1.accountableEmployees.some(elem => body.creator === elem.toString())
         if (idAccountableEmployee) {
             let evaluationActionRating = await Task.updateOne(
-                {"_id":params.taskId, "taskActions._id": params.actionId },
+                { "_id": params.taskId, "taskActions._id": params.actionId },
                 {
                     $set:
                     {
@@ -685,7 +687,7 @@ exports.evaluationAction = async (params, body) => {
         // đánh giá lại
     } else if (body.firstTime === 0) {
         let taskAction = await Task.update(
-            { $and: [{"_id":params.taskId, "taskActions._id": params.actionId }, { "taskActions.evaluations.creator": body.creator }] },
+            { $and: [{ "_id": params.taskId, "taskActions._id": params.actionId }, { "taskActions.evaluations.creator": body.creator }] },
             {
                 $set:
                 {
@@ -706,7 +708,7 @@ exports.evaluationAction = async (params, body) => {
         )
     }
 
-    var task = await Task.findOne({"_id":params.taskId, "taskActions._id": params.actionId }).populate([
+    let task = await Task.findOne({ "_id": params.taskId, "taskActions._id": params.actionId }).populate([
         { path: "taskActions.creator", model: User, select: 'name email avatar avatar ' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' }
@@ -719,7 +721,7 @@ exports.evaluationAction = async (params, body) => {
  */
 exports.confirmAction = async (params, body) => {
 
-    var evaluationActionRating = await Task.updateOne(
+    let evaluationActionRating = await Task.updateOne(
         { "_id": params.taskId, "taskActions._id": params.actionId },
         {
             $set: {
@@ -763,19 +765,19 @@ exports.uploadFile = async (params, body, files) => {
  * Thêm nhật ký cho một công việc
  */
 exports.addTaskLog = async (params, body) => {
-    var { creator, title, description, createdAt } = body;
+    let { creator, title, description, createdAt } = body;
 
-    var log = {
+    let log = {
         createdAt: createdAt,
         creator: creator,
         title: title,
         description: description,
     }
 
-    var task = await Task.findByIdAndUpdate(
+    let task = await Task.findByIdAndUpdate(
         params.taskId, { $push: { logs: log } }, { new: true }
     ).populate("logs.creator");
-    var taskLog = task.logs.reverse();
+    let taskLog = task.logs.reverse();
 
     return taskLog;
 }
@@ -784,7 +786,7 @@ exports.addTaskLog = async (params, body) => {
  * Lấy tất cả nhật ký của một công việc
  */
 exports.getTaskLog = async (params) => {
-    var task = await Task.findById(params.taskId).populate("logs.creator")
+    let task = await Task.findById(params.taskId).populate("logs.creator")
 
     return task.logs.reverse();
 }
@@ -793,7 +795,7 @@ exports.getTaskLog = async (params) => {
  * hàm convert dateISO sang string
  */
 formatDate = (date) => {
-    var d = new Date(date),
+    let d = new Date(date),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
         year = d.getFullYear();
@@ -811,21 +813,21 @@ formatDate = (date) => {
  * hàm check điều kiện evaluate tồn tại
  */
 async function checkEvaluations(date, taskId, storeDate) {
-    var evaluateId;
+    let evaluateId;
 
-    var splitterStoreDate = storeDate.split("-");
-    var storeDateISO = new Date(splitterStoreDate[2], splitterStoreDate[1] - 1, splitterStoreDate[0]);
+    let splitterStoreDate = storeDate.split("-");
+    let storeDateISO = new Date(splitterStoreDate[2], splitterStoreDate[1] - 1, splitterStoreDate[0]);
 
-    var splitterDate = date.split("-");
-    var dateISO = new Date(splitterDate[2], splitterDate[1] - 1, splitterDate[0]);
-    var monthOfParams = dateISO.getMonth();
-    var yearOfParams = dateISO.getFullYear();
-    var testCase;
+    let splitterDate = date.split("-");
+    let dateISO = new Date(splitterDate[2], splitterDate[1] - 1, splitterDate[0]);
+    let monthOfParams = dateISO.getMonth();
+    let yearOfParams = dateISO.getFullYear();
+    let testCase;
 
     // kiểm tra evaluations
-    var initTask = await Task.findById(taskId);
+    let initTask = await Task.findById(taskId);
 
-    var cloneTaskInfo = [];
+    let cloneTaskInfo = [];
     for (let i in initTask.taskInformations) {
         cloneTaskInfo[i] = {
             _id: initTask.taskInformations[i]._id,
@@ -842,7 +844,7 @@ async function checkEvaluations(date, taskId, storeDate) {
         testCase = "TH1";
     }
     else {
-        var chk = initTask.evaluations.find(e => (monthOfParams === e.date.getMonth() && yearOfParams === e.date.getFullYear()));
+        let chk = initTask.evaluations.find(e => (monthOfParams === e.date.getMonth() && yearOfParams === e.date.getFullYear()));
         if (!chk) { // có evaluate nhưng k có tháng này
             testCase = "TH2";
         } else { // có evaluate đúng tháng này
@@ -853,13 +855,13 @@ async function checkEvaluations(date, taskId, storeDate) {
     // TH1: chưa có evaluations => tạo mới
     if (testCase === "TH1") {
 
-        var evaluationsVer1 = {
+        let evaluationsVer1 = {
             date: storeDateISO,
             kpi: [],
             result: [],
             taskInformations: cloneTaskInfo
         }
-        var taskV1 = await Task.updateOne({ _id: taskId },
+        let taskV1 = await Task.updateOne({ _id: taskId },
             {
                 $push: {
                     evaluations: evaluationsVer1
@@ -869,15 +871,15 @@ async function checkEvaluations(date, taskId, storeDate) {
                 $new: true
             }
         );
-        var taskV1 = await Task.findById(taskId);
-        evaluateId = taskV1.evaluations[0]._id;
+        let taskV2 = await Task.findById(taskId);
+        evaluateId = taskV2.evaluations[0]._id;
 
     }
 
     // TH2: Có evaluation nhưng chưa có tháng giống với date => tạo mới
     else if (testCase === "TH2") {
 
-        var evaluationsVer2 = {
+        let evaluationsVer2 = {
             date: storeDateISO,
             kpi: [],
             result: [],
@@ -894,14 +896,14 @@ async function checkEvaluations(date, taskId, storeDate) {
             }
         );
 
-        var taskV2 = await Task.findById(taskId);
+        let taskV2 = await Task.findById(taskId);
         evaluateId = taskV2.evaluations.find(e => (monthOfParams === e.date.getMonth() && yearOfParams === e.date.getFullYear()))._id;
     }
 
     // TH3: Có evaluations của tháng giống date => cập nhật evaluations
     else if (testCase === "TH3") {
 
-        var taskV3 = initTask;
+        let taskV3 = initTask;
         evaluateId = taskV3.evaluations.find(e => (monthOfParams === e.date.getMonth() && yearOfParams === e.date.getFullYear()))._id;
 
     }
@@ -913,18 +915,18 @@ async function checkEvaluations(date, taskId, storeDate) {
  * edit task by responsible employee---PATCH
  */
 exports.editTaskByResponsibleEmployees = async (data, taskId) => {
-    var description = data.description;
-    var name = data.name;
-    var kpi = data.kpi;
-    var user = data.user;
-    var progress = data.progress;
-    var info = data.info;
-    var kpisItem = {
+    let description = data.description;
+    let name = data.name;
+    let kpi = data.kpi;
+    let user = data.user;
+    let progress = data.progress;
+    let info = data.info;
+    let kpisItem = {
         employee: user,
         kpis: kpi
     };
-    var date = data.date;
-    var evaluateId;
+    let date = data.date;
+    let evaluateId;
 
     const endOfMonth = moment().endOf("month").format('DD-MM-YYYY')
 
@@ -932,8 +934,8 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
     evaluateId = await checkEvaluations(date, taskId, endOfMonth);
     let task = await Task.findById(taskId);
     // cập nhật thông tin kpi
-    var listKpi = task.evaluations.find(e => String(e._id) === String(evaluateId)).kpis
-    var check_kpi = listKpi.find(kpi => String(kpi.employee) === user);
+    let listKpi = task.evaluations.find(e => String(e._id) === String(evaluateId)).kpis
+    let check_kpi = listKpi.find(kpi => String(kpi.employee) === user);
     if (check_kpi === undefined) {
         await Task.updateOne(
             {
@@ -976,8 +978,8 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
             if (info[i].type === "Number") info[i].value = parseInt(info[i].value);
             else if (info[i].type === "SetOfValues") info[i].value = info[i].value[0];
             else if (info[i].type === "Date") {
-                var splitter = info[i].value.split("-");
-                var infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+                let splitter = info[i].value.split("-");
+                let infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
                 info[i].value = infoDate;
             }
         }
@@ -995,7 +997,7 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
         { $new: true }
     );
 
-    // var task = await Task.findById(taskId);
+    // let task = await Task.findById(taskId);
     for (let item in info) {
         for (let i in task.taskInformations) {
             if (info[item].code === task.taskInformations[i].code) {
@@ -1028,8 +1030,8 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
         }
     }
 
-    // var newTask = await this.getTask(taskId).info;
-    var newTask = await Task.findById(taskId).populate([
+    // let newTask = await this.getTask(taskId).info;
+    let newTask = await Task.findById(taskId).populate([
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
@@ -1045,10 +1047,10 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
     ]);
 
     //xu ly gui email
-    var tasks = await Task.findById(taskId);
-    var userId = tasks.accountableEmployees;
-    var user = await User.find({ _id: { $in: userId } });
-    var email = user.map(item => item.email);
+    let tasks = await Task.findById(taskId);
+    let userId = tasks.accountableEmployees;
+    let user1 = await User.find({ _id: { $in: userId } });
+    let email = user.map(item => item.email);
     user = await User.findById(data.user);
     newTask.evaluations.reverse();
 
@@ -1059,33 +1061,33 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
  * edit task by responsible employee---PATCH
  */
 exports.editTaskByAccountableEmployees = async (data, taskId) => {
-    var description = data.description;
-    var name = data.name;
-    var priority = data.priority;
-    var status = data.status;
+    let description = data.description;
+    let name = data.name;
+    let priority = data.priority;
+    let status = data.status;
 
-    var startDate = data.startDate;
-    var endDate = data.endDate;
+    let startDate = data.startDate;
+    let endDate = data.endDate;
 
-    // var user = data.user;
-    var progress = data.progress;
-    var info = data.info;
-    // var evaluateId = data.evaluateId;
-    var accountableEmployees = data.accountableEmployees;
-    var consultedEmployees = data.consultedEmployees;
-    var responsibleEmployees = data.responsibleEmployees;
-    var informedEmployees = data.informedEmployees;
-    var inactiveEmployees = data.inactiveEmployees;
+    // let user = data.user;
+    let progress = data.progress;
+    let info = data.info;
+    // let evaluateId = data.evaluateId;
+    let accountableEmployees = data.accountableEmployees;
+    let consultedEmployees = data.consultedEmployees;
+    let responsibleEmployees = data.responsibleEmployees;
+    let informedEmployees = data.informedEmployees;
+    let inactiveEmployees = data.inactiveEmployees;
 
-    // var date = Date.now();
-    var date = data.date;
+    // let date = Date.now();
+    let date = data.date;
 
     // Chuẩn hóa ngày bắt đầu và ngày kết thúc
-    var splitStartDate = startDate.split("-");
-    var startOfTask = new Date(splitStartDate[2], splitStartDate[1] - 1, splitStartDate[0]);
+    let splitStartDate = startDate.split("-");
+    let startOfTask = new Date(splitStartDate[2], splitStartDate[1] - 1, splitStartDate[0]);
 
-    var splitEndDate = endDate.split("-");
-    var endOfTask = new Date(splitEndDate[2], splitEndDate[1] - 1, splitEndDate[0]);
+    let splitEndDate = endDate.split("-");
+    let endOfTask = new Date(splitEndDate[2], splitEndDate[1] - 1, splitEndDate[0]);
 
     // chuẩn hóa dữ liệu info
     for (let i in info) {
@@ -1093,8 +1095,8 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
             if (info[i].type === "Number") info[i].value = parseInt(info[i].value);
             else if (info[i].type === "SetOfValues") info[i].value = info[i].value[0];
             else if (info[i].type === "Date") {
-                var splitter = info[i].value.split("-");
-                var infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+                let splitter = info[i].value.split("-");
+                let infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
                 info[i].value = infoDate;
             }
         }
@@ -1125,7 +1127,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
         },
         { $new: true }
     );
-    var task = await Task.findById(taskId);
+    let task = await Task.findById(taskId);
 
 
     for (let item in info) {
@@ -1161,8 +1163,8 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
 
 
 
-    // var newTask = await Task.findById(taskId);
-    var newTask = await Task.findById(taskId).populate([
+    // let newTask = await Task.findById(taskId);
+    let newTask = await Task.findById(taskId).populate([
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
@@ -1178,10 +1180,10 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     ]);
 
     //xu ly gui email
-    var tasks = await Task.findById(taskId);
-    var userId = tasks.responsibleEmployees;
-    var user = await User.find({ _id: { $in: userId } });
-    var email = user.map(item => item.email);
+    let tasks = await Task.findById(taskId);
+    let userId = tasks.responsibleEmployees;
+    let user = await User.find({ _id: { $in: userId } });
+    let email = user.map(item => item.email);
     user = await User.findById(data.user);
     newTask.evaluations.reverse();
 
@@ -1193,28 +1195,28 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
  * evaluate task by consulted
  */
 exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
-    var user = data.user;
-    // var evaluateId = data.evaluateId;
-    var automaticPoint = data.automaticPoint;
-    var employeePoint = data.employeePoint;
-    var role = data.role;
-    var date = data.date;
-    var evaluateId = await checkEvaluations(date, taskId, date);
+    let user = data.user;
+    // let evaluateId = data.evaluateId;
+    let automaticPoint = data.automaticPoint;
+    let employeePoint = data.employeePoint;
+    let role = data.role;
+    let date = data.date;
+    let evaluateId = await checkEvaluations(date, taskId, date);
 
-    var resultItem = {
+    let resultItem = {
         employee: user,
         employeePoint: employeePoint,
         automaticPoint: automaticPoint,
         role: role
     }
-    var task = await Task.findById(taskId);
+    let task = await Task.findById(taskId);
 
     // cập nhật thông tin result
 
-    var listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results
+    let listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results
 
 
-    var check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "Consulted"));
+    let check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "Consulted"));
     if (check_results === undefined) {
         await Task.updateOne(
             {
@@ -1251,8 +1253,8 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
             }
         );
     }
-    // var newTask = await Task.findById(taskId);
-    var newTask = await Task.findById(taskId).populate([
+    // let newTask = await Task.findById(taskId);
+    let newTask = await Task.findById(taskId).populate([
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
@@ -1275,35 +1277,35 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
  * evaluate task by Responsible
  */
 exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
-    var user = data.user;
-    // var evaluateId = data.evaluateId;
-    var progress = data.progress;
-    var automaticPoint = data.automaticPoint;
-    var employeePoint = data.employeePoint;
+    let user = data.user;
+    // let evaluateId = data.evaluateId;
+    let progress = data.progress;
+    let automaticPoint = data.automaticPoint;
+    let employeePoint = data.employeePoint;
 
-    var role = data.role;
+    let role = data.role;
 
-    var date = data.date;
-    var kpi = data.kpi;
-    var info = data.info;
+    let date = data.date;
+    let kpi = data.kpi;
+    let info = data.info;
 
-    var splitter = date.split("-");
-    var evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-    var dateFormat = evaluateDate;
+    let splitter = date.split("-");
+    let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    let dateFormat = evaluateDate;
 
-    var kpisItem = {
+    let kpisItem = {
         employee: user,
         kpis: kpi
     }
 
-    var resultItem = {
+    let resultItem = {
         employee: user,
         employeePoint: employeePoint,
         automaticPoint: automaticPoint,
         role: role
     }
 
-    var evaluateId = await checkEvaluations(date, taskId, date);
+    let evaluateId = await checkEvaluations(date, taskId, date);
 
     // chuẩn hóa dữ liệu info
     for (let i in info) {
@@ -1311,8 +1313,8 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
             if (info[i].type === "Number") info[i].value = parseInt(info[i].value);
             else if (info[i].type === "SetOfValues") info[i].value = info[i].value[0];
             else if (info[i].type === "Date") {
-                var splitter = info[i].value.split("-");
-                var infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+                let splitter = info[i].value.split("-");
+                let infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
                 info[i].value = infoDate;
             }
         }
@@ -1335,11 +1337,11 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
         }
     );
 
-    var task = await Task.findById(taskId);
+    let task = await Task.findById(taskId);
 
-    var listKpi = task.evaluations.find(e => String(e._id) === String(evaluateId)).kpis
+    let listKpi = task.evaluations.find(e => String(e._id) === String(evaluateId)).kpis
 
-    var check_kpi = listKpi.find(kpi => String(kpi.employee) === user);
+    let check_kpi = listKpi.find(kpi => String(kpi.employee) === user);
     if (check_kpi === undefined) {
         await Task.updateOne(
             {
@@ -1377,10 +1379,10 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
 
     // cập nhật thông tin result
 
-    // var listResult = task.evaluations[task.evaluations.length-1].results;
-    var listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results;
+    // let listResult = task.evaluations[task.evaluations.length-1].results;
+    let listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results;
 
-    var check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "Responsible"));
+    let check_results = listResult.find(r => (String(r.employee) === user && String(r.role) === "Responsible"));
     if (check_results === undefined) {
         await Task.updateOne(
             {
@@ -1433,13 +1435,13 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
     )
 
     // update Info task
-    var splitterDate = date.split("-");
-    var dateISO = new Date(splitterDate[2], splitterDate[1] - 1, splitterDate[0]);
-    var monthOfParams = dateISO.getMonth();
-    var yearOfParams = dateISO.getFullYear();
-    var now = new Date();
+    let splitterDate = date.split("-");
+    let dateISO = new Date(splitterDate[2], splitterDate[1] - 1, splitterDate[0]);
+    let monthOfParams = dateISO.getMonth();
+    let yearOfParams = dateISO.getFullYear();
+    let now = new Date();
 
-    var cloneInfo = task.taskInformations;
+    let cloneInfo = task.taskInformations;
     for (let item in info) {
         for (let i in cloneInfo) {
             if (info[item].code === cloneInfo[i].code) {
@@ -1511,7 +1513,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
         }
     )
 
-    var newTask = await Task.findById(taskId).populate([
+    let newTask = await Task.findById(taskId).populate([
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
@@ -1534,26 +1536,26 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
  * evaluate task by Accountable
  */
 exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
-    var user = data.user;
-    // var evaluateId = data.evaluateId;
-    var progress = data.progress;
+    let user = data.user;
+    // let evaluateId = data.evaluateId;
+    let progress = data.progress;
 
-    var automaticPoint = data.automaticPoint === undefined ? 0 : data.automaticPoint;
-    var role = data.role;
+    let automaticPoint = data.automaticPoint === undefined ? 0 : data.automaticPoint;
+    let role = data.role;
 
-    var date = data.date;
-    var status = data.status; // neu ket thuc thi moi thay doi, con neu la danh gia thi k doi
-    var info = data.info;
-    var results = data.results;
+    let date = data.date;
+    let status = data.status; // neu ket thuc thi moi thay doi, con neu la danh gia thi k doi
+    let info = data.info;
+    let results = data.results;
 
-    var splitter = date.split("-");
-    var evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-    var dateFormat = evaluateDate;
+    let splitter = date.split("-");
+    let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    let dateFormat = evaluateDate;
 
-    var evaluateId = await checkEvaluations(date, taskId, date);
+    let evaluateId = await checkEvaluations(date, taskId, date);
 
     // lấy info có value khác undefined
-    var filterInfo = [];
+    let filterInfo = [];
     for (let i in info) {
         if (info[i].value !== undefined) {
             filterInfo.push(info[i]);
@@ -1566,21 +1568,21 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
             if (info[i].type === "Number") info[i].value = parseInt(info[i].value);
             else if (info[i].type === "SetOfValues") info[i].value = info[i].value[0];
             else if (info[i].type === "Date") {
-                var splitter = info[i].value.split("-");
-                var infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+                let splitter = info[i].value.split("-");
+                let infoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
                 info[i].value = infoDate;
             }
         }
     }
     // Chuan hoa du lieu approved results
 
-    var cloneResult = [];
+    let cloneResult = [];
     for (let i in results) {
         for (let j in results) {
             if (i < j) {
                 // client bắt buộc phải điền contribution khi chấm điểm phê duyệt để chuẩn hóa được dữ liệu ==> fixed
                 if (results[i].employee === results[j].employee && results[i].role === results[j].role) {
-                    var point, contribute;
+                    let point, contribute;
 
                     // do i hoặc j có thể là point hoặc contribute nên phải kiểm tra cả 2 để tính đc point và contribute
                     if (String(results[i].target) === "Point") point = results[i].value;
@@ -1589,7 +1591,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
                     if (String(results[j].target) === "Point") point = results[j].value;
                     else if (String(results[j].target) === "Contribution") contribute = results[j].value;
 
-                    var cloneItem = {
+                    let cloneItem = {
                         employee: results[i].employee,
                         role: results[i].role,
                         point: point,
@@ -1605,16 +1607,16 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     }
 
     await Task.updateOne({ _id: taskId }, { $set: { status: status[0], progress: progress } });
-    var task = await Task.findById(taskId);
+    let task = await Task.findById(taskId);
 
     // cập nhật thông tin result================================================================BEGIN=====================================================
 
-    var listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results;
+    let listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results;
 
 
     for (let item in cloneResult) {
 
-        var check_data = listResult.find(r => (String(r.employee) === cloneResult[item].employee && r.role === cloneResult[item].role))
+        let check_data = listResult.find(r => (String(r.employee) === cloneResult[item].employee && r.role === cloneResult[item].role))
         // TH nguoi nay da danh gia ket qua --> thi chi can cap nhat lai ket qua thoi
 
         if (check_data !== undefined) {
@@ -1684,15 +1686,15 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         }
     )
 
-    var task2 = await Task.findById(taskId);
+    let task2 = await Task.findById(taskId);
 
     // cập nhật thông tin result================================================================BEGIN=====================================================
 
-    var listResult2 = task2.evaluations.find(e => String(e._id) === String(evaluateId)).results;
+    let listResult2 = task2.evaluations.find(e => String(e._id) === String(evaluateId)).results;
 
     // cập nhật điểm cá nhân cho ng phe duyet
 
-    var check_approve = listResult2.find(r => (String(r.employee) === user && String(r.role) === "Accountable"));
+    let check_approve = listResult2.find(r => (String(r.employee) === user && String(r.role) === "Accountable"));
 
 
     for (let i in cloneResult) {
@@ -1723,13 +1725,13 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
 
     // update Info task
-    var splitterDate = date.split("-");
-    var dateISO = new Date(splitterDate[2], splitterDate[1] - 1, splitterDate[0]);
-    var monthOfParams = dateISO.getMonth();
-    var yearOfParams = dateISO.getFullYear();
-    var now = new Date();
+    let splitterDate = date.split("-");
+    let dateISO = new Date(splitterDate[2], splitterDate[1] - 1, splitterDate[0]);
+    let monthOfParams = dateISO.getMonth();
+    let yearOfParams = dateISO.getFullYear();
+    let now = new Date();
 
-    var cloneInfo = task.taskInformations;
+    let cloneInfo = task.taskInformations;
     for (let item in info) {
         for (let i in cloneInfo) {
             if (info[item].code === cloneInfo[i].code) {
@@ -1821,8 +1823,8 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         }
     );
 
-    // var newTask = await Task.findById(taskId);
-    var newTask = await Task.findById(taskId).populate([
+    // let newTask = await Task.findById(taskId);
+    let newTask = await Task.findById(taskId).populate([
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
@@ -1845,10 +1847,10 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
  */
 exports.deleteFileOfAction = async (params) => {
     let file = await Task.aggregate([
-        { $match: { "taskActions.files._id": mongoose.Types.ObjectId(params.fileId) } },
+        { $match: { "_id": mongoose.Types.ObjectId(params.taskId) } },
         { $unwind: "$taskActions" },
         { $replaceRoot: { newRoot: "$taskActions" } },
-        { $match: { "files._id": mongoose.Types.ObjectId(params.fileId) } },
+        { $match: { "_id": mongoose.Types.ObjectId(params.actionId) } },
         { $unwind: "$files" },
         { $replaceRoot: { newRoot: "$files" } },
         { $match: { "_id": mongoose.Types.ObjectId(params.fileId) } }
@@ -1857,11 +1859,11 @@ exports.deleteFileOfAction = async (params) => {
     fs.unlinkSync(file[0].url)
 
     let action = await Task.update(
-        { "taskActions._id": params.actionId },
+        { "_id":params.taskId, "taskActions._id": params.actionId },
         { $pull: { "taskActions.$.files": { _id: params.fileId } } },
         { safe: true }
     )
-    let task = await Task.findOne({ "taskActions._id": params.actionId }).populate([
+    let task = await Task.findOne({ "_id":params.taskId, "taskActions._id": params.actionId }).populate([
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar' }])
@@ -1872,9 +1874,10 @@ exports.deleteFileOfAction = async (params) => {
  */
 exports.deleteFileCommentOfAction = async (params) => {
     let file = await Task.aggregate([
-        { $match: { "taskActions.comments.files._id": mongoose.Types.ObjectId(params.fileId) } },
+        { $match: { "_id": mongoose.Types.ObjectId(params.taskId) } },
         { $unwind: "$taskActions" },
         { $replaceRoot: { newRoot: "$taskActions" } },
+        { $match: { "_id": mongoose.Types.ObjectId(params.actionId) } },
         { $unwind: "$comments" },
         { $replaceRoot: { newRoot: "$comments" } },
         { $match: { "files._id": mongoose.Types.ObjectId(params.fileId) } },
@@ -1885,12 +1888,12 @@ exports.deleteFileCommentOfAction = async (params) => {
     fs.unlinkSync(file[0].url)
 
     let action = await Task.update(
-        { "taskActions._id": params.actionId },
+        {"_id": params.taskId, "taskActions._id": params.actionId },
         { $pull: { "taskActions.$.comments.$[].files": { _id: params.fileId } } },
         { safe: true }
     )
 
-    let task = await Task.findOne({ "taskActions._id": params.actionId }).populate([
+    let task = await Task.findOne({"_id": params.taskId, "taskActions._id": params.actionId }).populate([
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar' }])
@@ -1902,10 +1905,10 @@ exports.deleteFileCommentOfAction = async (params) => {
 exports.deleteFileTaskComment = async (params) => {
 
     let file = await Task.aggregate([
-        { $match: { "taskComments.files._id": mongoose.Types.ObjectId(params.fileId) } },
+        { $match: { "_id": mongoose.Types.ObjectId(params.taskId) } },
         { $unwind: "$taskComments" },
         { $replaceRoot: { newRoot: "$taskComments" } },
-        { $match: { "files._id": mongoose.Types.ObjectId(params.fileId) } },
+        { $match: { "_id": mongoose.Types.ObjectId(params.commentId) } },
         { $unwind: "$files" },
         { $replaceRoot: { newRoot: "$files" } },
         { $match: { "_id": mongoose.Types.ObjectId(params.fileId) } }
@@ -1914,11 +1917,11 @@ exports.deleteFileTaskComment = async (params) => {
     fs.unlinkSync(file[0].url)
 
     let action = await Task.update(
-        { "taskComments._id": params.commentId },
+        { "_id": params.taskId, "taskComments._id": params.commentId },
         { $pull: { "taskComments.$.files": { _id: params.fileId } } },
         { safe: true }
     )
-    let task = await Task.findOne({ "taskComments._id": params.commentId }).populate([
+    let task = await Task.findOne({ "_id": params.taskId, "taskComments._id": params.commentId }).populate([
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.evaluations.creator", model: User, select: 'name email avatar' }])
@@ -1929,10 +1932,10 @@ exports.deleteFileTaskComment = async (params) => {
  */
 exports.deleteFileChildTaskComment = async (params) => {
     let file = await Task.aggregate([
-        { $match: { "taskComments.comments.files._id": mongoose.Types.ObjectId(params.fileId) } },
+        { $match: { "_id": mongoose.Types.ObjectId(params.taskId) } },
         { $unwind: "$taskComments" },
         { $replaceRoot: { newRoot: "$taskComments" } },
-        { $match: { "comments.files._id": mongoose.Types.ObjectId(params.fileId) } },
+        { $match: { "_id": mongoose.Types.ObjectId(params.commentId) } },
         { $unwind: "$comments" },
         { $replaceRoot: { newRoot: "$comments" } },
         { $match: { "files._id": mongoose.Types.ObjectId(params.fileId) } },
@@ -1944,12 +1947,12 @@ exports.deleteFileChildTaskComment = async (params) => {
     fs.unlinkSync(file[0].url)
 
     let action = await Task.update(
-        { "taskComments._id": params.commentId },
+        { "_id": params.taskId, "taskComments._id": params.commentId },
         { $pull: { "taskComments.$.comments.$[].files": { _id: params.fileId } } },
         { safe: true }
     )
 
-    let task = await Task.findOne({ "taskComments._id": params.commentId }).populate([
+    let task = await Task.findOne({ "_id": params.taskId, "taskComments._id": params.commentId }).populate([
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.evaluations.creator", model: User, select: 'name email avatar' }])
@@ -1965,7 +1968,7 @@ exports.deleteFileChildTaskComment = async (params) => {
  * @param status trang thai công việc
  */
 exports.editTaskStatus = async (taskID, status) => {
-    var task = await Task.findByIdAndUpdate(taskID,
+    let task = await Task.findByIdAndUpdate(taskID,
         { $set: { status: status } },
         { new: true }
     );
@@ -1977,10 +1980,10 @@ exports.editTaskStatus = async (taskID, status) => {
  * @param taskID id công việc
  */
 exports.editArchivedOfTask = async (taskID) => {
-    var t = await Task.findByIdAndUpdate(taskID);
-    var isArchived = t.isArchived;
+    let t = await Task.findByIdAndUpdate(taskID);
+    let isArchived = t.isArchived;
 
-    var task = await Task.findByIdAndUpdate(taskID,
+    let task = await Task.findByIdAndUpdate(taskID,
         { $set: { isArchived: !isArchived } },
         { new: true }
     );

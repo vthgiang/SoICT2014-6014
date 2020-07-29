@@ -45,37 +45,56 @@ exports.data = [
 
     // Service của riêng Systemadmin
     { path: '/system-admin/company/companies', method: 'GET', roles: ['System Admin'] },
-    { path: '/system-admin/company/:id/links', method: 'GET', roles: ['System Admin'] },
-    { path: '/system-admin/company/companies/create', method: 'POST', roles: ['System Admin'] },
+    { path: '/system-admin/company/companies', method: 'POST', roles: ['System Admin'] },
     { path: '/system-admin/company/paginate', method: 'POST', roles: ['System Admin'] },
     { path: '/system-admin/company/companies/:companyId', method: 'GET', roles: ['System Admin'] },
     { path: '/system-admin/company/companies/:companyId', method: 'PATCH', roles: ['System Admin'] },
-    { path: '/system-admin/company/links/company-links/:companyId/add', method: 'POST', roles: ['System Admin'] },
-    { path: '/system-admin/company/links/company-links/:companyId/:linkId', method: 'DELETE', roles: ['System Admin'] },
-    { path: '/system-admin/company/components/company-components/:companyId/add', method: 'POST', roles: ['System Admin'] },
-    { path: '/system-admin/company/components/company-components/:companyId/:componentId', method: 'DELETE', roles: ['System Admin'] },
     { path: '/system-admin/company/companies/:companyId', method: 'DELETE', roles: ['System Admin'] },
-    { path: '/system-admin/company/links/company-links/:companyId', method: 'GET', roles: ['System Admin'] },
+
+    { path: '/system-admin/company/companies/:companyId/links', method: 'POST', roles: ['System Admin'] },
+    { path: '/system-admin/company/companies/:companyId/links', method: 'GET', roles: ['System Admin'] },
+    { path: '/system-admin/company/companies/:companyId/links/:linkId', method: 'DELETE', roles: ['System Admin'] },
+    
+    { path: '/system-admin/company/companies/:companyId/components', method: 'GET', roles: ['System Admin'] },
+    { path: '/system-admin/company/companies/:companyId/components', method: 'POST', roles: ['System Admin'] },
+    { path: '/system-admin/company/companies/:companyId/components/:componentId', method: 'DELETE', roles: ['System Admin'] },
+    
     { path: '/system-admin/company/:id/links-paginate/:page/:limit', method: 'POST', roles: ['System Admin'] },
-    { path: '/system-admin/company/components/company-components/:companyId', method: 'GET', roles: ['System Admin'] },
     { path: '/system-admin/company/:id/components-paginate/:page/:limit', method: 'POST', roles: ['System Admin'] },
 
-    { path: '/system-admin/company/import-configuraions/import-file/:type', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/system-admin/company/import-configuraions/import-file/create', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/system-admin/company/import-configuraions/import-file/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/system-admin/company/data-import-configurations', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/system-admin/company/data-import-configurations', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/system-admin/company/data-import-configurations/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
     { path: '/system-admin/root-role/root-roles', method: 'GET', roles: ['System Admin'] },
-    { path: '/system-admin/system-link/system-links/categories', method: 'GET', roles: ['System Admin'] },
+    
+    { path: '/system-admin/system-link/system-links-categories', method: 'GET', roles: ['System Admin'] },
     { path: '/system-admin/system-link/system-links', method: 'GET', roles: ['System Admin'] },
-    { path: '/system-admin/system-link/system-links/create', method: 'POST', roles: ['System Admin'] },
+    { path: '/system-admin/system-link/system-links', method: 'POST', roles: ['System Admin'] },
+    
     { path: '/links-default-management/paginate', method: 'POST', roles: ['System Admin'] },
     { path: '/system-admin/system-link/system-links/:systemLinkId', method: 'GET', roles: ['System Admin'] },
     { path: '/system-admin/system-link/system-links/:systemLinkId', method: 'PATCH', roles: ['System Admin'] },
     { path: '/system-admin/system-link/system-links/:systemLinkId', method: 'DELETE', roles: ['System Admin'] },
+    
     { path: '/system-admin/log/logs', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/system-admin/log/logs', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
-
+    { path: '/links-default-management', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/links-default-management', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/links-default-management/paginate', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/links-default-management/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/links-default-management/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/links-default-management/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    
+    { path: '/system-admin/system-component/system-components', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/system-admin/system-component/system-components', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/components-default-management/paginate', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/system-admin/system-component/system-components/:systemComponentId', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/system-admin/system-component/system-components/:systemComponentId', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/system-admin/system-component/system-components/:systemComponentId', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/components-default-management/role/:roleId/link/:linkId', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    
     { path: '/user/users', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
     { path: '/user/users', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
@@ -85,22 +104,7 @@ exports.data = [
     { path: '/user/users/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/user/users/:id/organizational-units', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/user/organizational-units/:id/users', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-
-
-    { path: '/links-default-management', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/links-default-management', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/links-default-management/paginate', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/links-default-management/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/links-default-management/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/links-default-management/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/system-admin/system-component/system-components', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/system-admin/system-component/system-components/create', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/components-default-management/paginate', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/system-admin/system-component/system-components/:systemComponentId', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/system-admin/system-component/system-components/:systemComponentId', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/system-admin/system-component/system-components/:systemComponentId', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/components-default-management/role/:roleId/link/:linkId', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-
+   
     { path: '/role/roles', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/role/roles', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/role/roles/paginate', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
@@ -108,7 +112,6 @@ exports.data = [
     { path: '/role/roles/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/role/roles/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/role/roles/test/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/role/organizational-units/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
     { path: '/link/links', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/link/links', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
@@ -227,7 +230,6 @@ exports.data = [
     { path: '/component/components/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/component/components/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/component/components/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/component/role/:roleId/link/:linkId/components', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
     { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpi/organizational-unit/creation/organizational-unit-kpi-sets', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
@@ -342,14 +344,12 @@ exports.data = [
     { path: '/taskprocess/diagrams/:diagramId', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
     // Module TaskTemplate
-    { path: '/tasktemplates', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasktemplates/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasktemplates/role/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasktemplates/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasktemplates/user', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasktemplates/:id', method: 'DELETE', roles: ['Dean'] },
-    { path: '/tasktemplates/edit/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasktemplates/importTaskTemplate', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/task-templates', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/task-templates/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/task-templates', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/task-templates/:id', method: 'DELETE', roles: ['Dean'] },
+    { path: '/task/task-templates/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/task-templates/import', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
 
     //asset-type

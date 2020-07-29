@@ -43,27 +43,6 @@ exports.getRole = async (req, res) => {
     }
 };
 
-exports.getAllRolesInSameOrganizationalUnitWithRole = async (req, res) => {
-    try {
-        const roles = await RoleService.getAllRolesInSameOrganizationalUnitWithRole(req.params.id);
-
-        LogInfo(req.user.email, 'GET_ROLES_SAME_DEPARTMENT', req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['get_roles_same_department_success'],
-            content: roles
-        });
-    } catch (error) {
-
-        LogError(req.user.email, 'GET_ROLES_SAME_DEPARTMENT', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['get_roles_same_department_faile'],
-            content: error
-        });
-    }
-};
-
 exports.createRole = async (req, res) => {
     try {
         var role = await RoleService.createRole(req.body, req.user.company._id);

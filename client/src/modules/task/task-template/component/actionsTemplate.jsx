@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import  {taskTemplateActions} from '../redux/actions';
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
 import Sortable from 'sortablejs';
-import {SelectBox, ErrorLabel} from '../../../../common-components';
+import {ErrorLabel} from '../../../../common-components';
 import './tasktemplate.css';
 import { withTranslate } from 'react-redux-multilingual';
 

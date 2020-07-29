@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, SelectBox, TreeSelect } from '../../../../../common-components';
+
+import { DialogModal, ErrorLabel, TreeSelect } from '../../../../../common-components';
 import { AssetTypeActions } from '../../redux/actions';
-// import TreeSelect from 'rc-tree-select';
 
 class CreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            typeParent: []
+            domainParent: "",
         }
     }
 
@@ -35,26 +35,26 @@ class CreateForm extends Component {
     }
 
     handleParent = (value) => {
-        this.setState({ typeParent: value[0] });
+        this.setState({ domainParent: value[0] });
     };
 
     save = () => {
-        const { documentCode, documentName, documentDescription, typeParent } = this.state;
-        console.log(this.state, 'this.state')
+        const { documentCode, documentName, documentDescription, domainParent } = this.state;
         this.props.createAssetTypes({
             typeNumber: documentCode,
             typeName: documentName,
             description: documentDescription,
-            parent: typeParent
+            parent: domainParent ? domainParent : ""
         });
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.typeParent !== prevState.typeParent && nextProps.typeParent !== undefined) {
+    static getDerivedStateFromProps(nextProps, prevState){
+        if (nextProps.domainParent !== prevState.domainParent && nextProps.domainParent.length) {
+            let dm = prevState.domainParent;
             return {
                 ...prevState,
-                typeParent: nextProps.typeParent
-            }
+                domainParent: dm,
+            } 
         } else {
             return null;
         }
@@ -62,8 +62,8 @@ class CreateForm extends Component {
 
     render() {
         const { translate, assetType } = this.props;
-        const { tree, list } = assetType.administration.types;
-        const { typeParent } = this.state;
+        const { list } = assetType.administration.types;
+        const { domainParent } = this.state;
 
         return (
             <React.Fragment>
@@ -84,7 +84,7 @@ class CreateForm extends Component {
                         </div>
                         <div className="form-group">
                             <label>Loại tài sản cha</label>
-                            <TreeSelect data={list} value={typeParent.length > 0 ? [] : typeParent} handleChange={this.handleParent} mode="radioSelect" />
+                            <TreeSelect data={list} value={!domainParent ? "" : domainParent} handleChange={this.handleParent} mode="radioSelect"/>
                         </div>
                         <div className="form-group">
                             <label>Mô tả</label>

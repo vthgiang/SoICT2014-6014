@@ -110,6 +110,7 @@ class ModalCreateProcessTask extends Component {
                                        <h1>Option {this.state.name}</h1>
                                     </div>
                                     <FormInfoTask
+                                       action='create'
                                        id={id}
                                        info={(info && info[`${id}`]) && info[`${id}`]}
                                        handleChangeName={this.handleChangeName}
@@ -256,7 +257,7 @@ class ModalCreateProcessTask extends Component {
       let nameStr = element.type.split(':');
       this.setState(state => {
          if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process') {
-            return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: element.businessObject.id, }
+            return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}`, }
          }
          else {
             return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }

@@ -70,7 +70,7 @@ class FormInfoTask extends Component {
 
     render() {
         const { user, translate, disabled} = this.props;
-        const { id, info } = this.props;
+        const { id, info, action } = this.props;
         let { nameTask, description, responsible, accountable } = this.state;
 
         let usersOfChildrenOrganizationalUnit;
@@ -105,13 +105,14 @@ class FormInfoTask extends Component {
                         {
                         // unitMembers &&
                             <SelectBox
-                                id={`select-responsible-employee-${id}`}
+                                id={`select-responsible-employee-${id}-${action}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={unitMembers}
                                 onChange={this.handleChangeResponsible}
                                 multiple={true}
                                 value={responsible}
+                                disabled = {disabled}
                             />
                         }
                     </div>
@@ -121,13 +122,15 @@ class FormInfoTask extends Component {
                         { 
                         // unitMembers &&
                             <SelectBox
-                                id={`select-accountable-employee-${id}`}
+
+                                id={`select-accountable-employee-${id}-${action}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={unitMembers}
                                 onChange={this.handleChangeAccountable}
                                 multiple={true}
                                 value={accountable}
+                                disabled = {disabled}
                             />
                     }
                     </div>

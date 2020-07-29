@@ -11,7 +11,7 @@ const { sendEmail } = require('../../../helpers/emailHelper');
  */
 exports.getTaskTimesheetLogs = async (req, res) => {
     try {
-        var logTimer = await PerformTaskService.getTaskTimesheetLogs(req.params);
+        let logTimer = await PerformTaskService.getTaskTimesheetLogs(req.params);
         await LogInfo(req.user.email, ` get log timer  `, req.user.company)
         res.status(200).json({
             success: true,
@@ -32,7 +32,7 @@ exports.getTaskTimesheetLogs = async (req, res) => {
  */
 exports.getActiveTimesheetLog = async (req, res) => {
     try {
-        var timerStatus = await PerformTaskService.getActiveTimesheetLog(req.query);
+        let timerStatus = await PerformTaskService.getActiveTimesheetLog(req.query);
         await LogInfo(req.user.email, `get timer status`, req.user.company)
         res.status(200).json({
             success: true,
@@ -53,15 +53,15 @@ exports.getActiveTimesheetLog = async (req, res) => {
  */
 exports.startTimesheetLog = async (req, res) => {
     try {
-        var timerStatus = await PerformTaskService.startTimesheetLog(req.params, req.body);
-        //await LogInfo(req.user.email, ` start timer `,req.user.company)
+        let timerStatus = await PerformTaskService.startTimesheetLog(req.params, req.body);
+        await LogInfo(req.user.email, ` start timer `,req.user.company)
         res.status(200).json({
             success: true,
             messages: ['start_timer_success'],
             content: timerStatus
         })
     } catch (error) {
-        //await LogError(req.user.email, ` start timer `,req.user.company)
+        await LogError(req.user.email, ` start timer `,req.user.company)
         res.status(400).json({
             success: false,
             messages: ['start_timer_fail'],
@@ -75,7 +75,7 @@ exports.startTimesheetLog = async (req, res) => {
  */
 exports.stopTimesheetLog = async (req, res) => {
     try {
-        var timer = await PerformTaskService.stopTimesheetLog(req.params, req.body);
+        let timer = await PerformTaskService.stopTimesheetLog(req.params, req.body);
         await LogInfo(req.user.email, ` stop timer `,req.user.company)
         res.status(200).json({
             success: true,
@@ -98,10 +98,10 @@ exports.stopTimesheetLog = async (req, res) => {
  */
 exports.createTaskAction = async (req, res) => {
     try {
-        var files = [];
+        let files = [];
         if (req.files !== undefined) {
             req.files.forEach((elem, index) => {
-                var path = elem.destination + '/' + elem.filename;
+                let path = elem.destination + '/' + elem.filename;
                 files.push({ name: elem.originalname, url: path })
 
             })
@@ -140,15 +140,15 @@ exports.editTaskAction = async (req, res) => {
 
     } else
         try {
-            var files = [];
+            let files = [];
             if (req.files !== undefined) {
                 req.files.forEach((elem, index) => {
-                    var path = elem.destination + '/' + elem.filename;
+                    let path = elem.destination + '/' + elem.filename;
                     files.push({ name: elem.originalname, url: path })
 
                 })
             }
-            var taskAction = await PerformTaskService.editTaskAction(req.params, req.body, files);
+            let taskAction = await PerformTaskService.editTaskAction(req.params, req.body, files);
             await LogInfo(req.user.email, ` edit task action  `, req.user.company)
             res.status(200).json({
                 success: true,
@@ -169,7 +169,7 @@ exports.editTaskAction = async (req, res) => {
  */
 exports.deleteTaskAction = async (req, res) => {
     try {
-        var taskAction = await PerformTaskService.deleteTaskAction(req.params);
+        let taskAction = await PerformTaskService.deleteTaskAction(req.params);
         await LogInfo(req.user.email, ` delete task action  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -190,15 +190,15 @@ exports.deleteTaskAction = async (req, res) => {
  */
 exports.createCommentOfTaskAction = async (req, res) => {
     try {
-        var files = [];
+        let files = [];
         if (req.files !== undefined) {
             req.files.forEach((elem, index) => {
-                var path = elem.destination + '/' + elem.filename;
+                let path = elem.destination + '/' + elem.filename;
                 files.push({ name: elem.originalname, url: path })
 
             })
         }
-        var actionComment = await PerformTaskService.createCommentOfTaskAction(req.params, req.body, files);
+        let actionComment = await PerformTaskService.createCommentOfTaskAction(req.params, req.body, files);
         await LogInfo(req.user.email, ` create  action comment  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -219,15 +219,15 @@ exports.createCommentOfTaskAction = async (req, res) => {
  */
 exports.editCommentOfTaskAction = async (req, res) => {
     try {
-        var files = [];
+        let files = [];
         if (req.files !== undefined) {
             req.files.forEach((elem, index) => {
-                var path = elem.destination + '/' + elem.filename;
+                let path = elem.destination + '/' + elem.filename;
                 files.push({ name: elem.originalname, url: path })
 
             })
         }
-        var actionComment = await PerformTaskService.editCommentOfTaskAction(req.params, req.body, files);
+        let actionComment = await PerformTaskService.editCommentOfTaskAction(req.params, req.body, files);
         await LogInfo(req.user.email, ` edit action comment  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -249,7 +249,7 @@ exports.editCommentOfTaskAction = async (req, res) => {
  */
 exports.deleteCommentOfTaskAction = async (req, res) => {
     try {
-        var task = await PerformTaskService.deleteCommentOfTaskAction(req.params);
+        let task = await PerformTaskService.deleteCommentOfTaskAction(req.params);
         await LogInfo(req.user.email, ` delete action comment  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -272,15 +272,15 @@ exports.deleteCommentOfTaskAction = async (req, res) => {
  */
 exports.createTaskComment = async (req, res) => {
     try {
-        var files = [];
+        let files = [];
         if (req.files !== undefined) {
             req.files.forEach((elem, index) => {
-                var path = elem.destination + '/' + elem.filename;
+                let path = elem.destination + '/' + elem.filename;
                 files.push({ name: elem.originalname, url: path })
 
             })
         }
-        var taskComment = await PerformTaskService.createTaskComment(req.params, req.body, files);
+        let taskComment = await PerformTaskService.createTaskComment(req.params, req.body, files);
         await LogInfo(req.user.email, ` create task comment  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -304,7 +304,7 @@ exports.editTaskComment = async (req, res) => {
         let files = [];
         if (req.files !== undefined) {
             req.files.forEach((elem, index) => {
-                var path = elem.destination + '/' + elem.filename;
+                let path = elem.destination + '/' + elem.filename;
                 files.push({ name: elem.originalname, url: path })
 
             })
@@ -372,15 +372,15 @@ exports.deleteFileChildTaskComment = async (req, res) => {
  */
 exports.createCommentOfTaskComment = async (req, res) => {
     try {
-        var files = [];
+        let files = [];
         if (req.files !== undefined) {
             req.files.forEach((elem, index) => {
-                var path = elem.destination + '/' + elem.filename;
+                let path = elem.destination + '/' + elem.filename;
                 files.push({ name: elem.originalname, url: path })
 
             })
         }
-        var comment = await PerformTaskService.createCommentOfTaskComment(req.params, req.body, files);
+        let comment = await PerformTaskService.createCommentOfTaskComment(req.params, req.body, files);
         await LogInfo(req.user.email, ` create comment of task comment  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -404,7 +404,7 @@ exports.editCommentOfTaskComment = async (req, res) => {
         let files = [];
         if (req.files !== undefined) {
             req.files.forEach((elem, index) => {
-                var path = elem.destination + '/' + elem.filename;
+                let path = elem.destination + '/' + elem.filename;
                 files.push({ name: elem.originalname, url: path })
 
             })
@@ -430,7 +430,7 @@ exports.editCommentOfTaskComment = async (req, res) => {
  */
 exports.deleteCommentOfTaskComment = async (req, res) => {
     try {
-        var comment = await PerformTaskService.deleteCommentOfTaskComment(req.params);
+        let comment = await PerformTaskService.deleteCommentOfTaskComment(req.params);
         await LogInfo(req.user.email, ` delete comment of task comment  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -450,29 +450,29 @@ exports.deleteCommentOfTaskComment = async (req, res) => {
  * Đánh giá hoạt động
  */
 evaluationAction = async (req, res) => {
-    // try {
-        var taskAction = await PerformTaskService.evaluationAction(req.params, req.body);
+    try {
+        let taskAction = await PerformTaskService.evaluationAction(req.params, req.body);
         await LogInfo(req.user.email, ` evaluation action  `, req.user.company)
         res.status(200).json({
             success: true,
             messages: ['evaluation_action_success'],
             content: taskAction
         })
-    // } catch (error) {
-    //     await LogError(req.user.email, ` evaluation action  `, req.user.company)
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: ['evaluation_action_fail'],
-    //         content: error
-    //     })
-    // }
+    } catch (error) {
+        await LogError(req.user.email, ` evaluation action  `, req.user.company)
+        res.status(400).json({
+            success: false,
+            messages: ['evaluation_action_fail'],
+            content: error
+        })
+    }
 }
 /**
  * Xác nhận hành động
  */
 exports.confirmAction = async (req, res) => {
     try {
-        var abc = await PerformTaskService.confirmAction(req.params,req.body);
+        let abc = await PerformTaskService.confirmAction(req.params,req.body);
         await LogInfo(req.user.email, ` confirm action  `, req.user.company)
         res.status(200).json({
             success: true,
@@ -493,15 +493,15 @@ exports.confirmAction = async (req, res) => {
  */
 exports.uploadFile = async (req, res) => {
     try {
-        var files = [];
+        let files = [];
         if (req.files !== undefined) {
             req.files.forEach((elem, index) => {
-                var path = elem.destination + '/' + elem.filename;
+                let path = elem.destination + '/' + elem.filename;
                 files.push({ name: elem.originalname, url: path, description: req.body.description, creator: req.body.creator })
 
             })
         }
-        var comment = await PerformTaskService.uploadFile(req.params, req.body, files);
+        let comment = await PerformTaskService.uploadFile(req.params, req.body, files);
         await LogInfo(req.user.email, ` upload file of task  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -586,7 +586,7 @@ exports.deleteFileTaskComment = async (req, res) => {
  */
 exports.addTaskLog = async (req, res) => {
     try {
-        var task = await PerformTaskService.addTaskLog(req.params,req.body);
+        let task = await PerformTaskService.addTaskLog(req.params,req.body);
         await LogInfo(req.user.email, ` CREATE_TASK_LOG  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -608,7 +608,7 @@ exports.addTaskLog = async (req, res) => {
  */
 exports.getTaskLog = async (req, res) => {
     try {
-        var taskLog = await PerformTaskService.getTaskLog(req.params);
+        let taskLog = await PerformTaskService.getTaskLog(req.params);
         await LogInfo(req.user.email, ` GET_TASK_LOG  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -720,7 +720,7 @@ editTaskByAccountableEmployees = async (req, res) => {
  */
 evaluateTaskByConsultedEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.evaluateTaskByConsultedEmployees(req.body.data, req.params.taskId);
+        let task = await PerformTaskService.evaluateTaskByConsultedEmployees(req.body.data, req.params.taskId);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -741,7 +741,7 @@ evaluateTaskByConsultedEmployees = async (req, res) => {
  */
 evaluateTaskByResponsibleEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.evaluateTaskByResponsibleEmployees(req.body.data, req.params.taskId);
+        let task = await PerformTaskService.evaluateTaskByResponsibleEmployees(req.body.data, req.params.taskId);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -762,7 +762,7 @@ evaluateTaskByResponsibleEmployees = async (req, res) => {
  */
 evaluateTaskByAccountableEmployees = async (req, res) => {
     try {
-        var task = await PerformTaskService.evaluateTaskByAccountableEmployees(req.body.data, req.params.taskId);
+        let task = await PerformTaskService.evaluateTaskByAccountableEmployees(req.body.data, req.params.taskId);
         await LogInfo(req.user.email, ` edit task  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -785,7 +785,7 @@ evaluateTaskByAccountableEmployees = async (req, res) => {
  */
 editArchivedOfTask = async (req, res) => {
     try {
-    var task = await PerformTaskService.editArchivedOfTask(req.params.taskId);
+    let task = await PerformTaskService.editArchivedOfTask(req.params.taskId);
     await LogInfo(req.user.email, ` edit status archived of task  `, req.user.company);
     res.status(200).json({
         success: true,
@@ -807,7 +807,7 @@ editArchivedOfTask = async (req, res) => {
  */
 editTaskStatus = async (req, res) => {
     try {
-        var task = await PerformTaskService.editTaskStatus(req.params.taskId, req.body.status);
+        let task = await PerformTaskService.editTaskStatus(req.params.taskId, req.body.status);
         await LogInfo(req.user.email, ` edit status of task  `, req.user.company);
         res.status(200).json({
             success: true,

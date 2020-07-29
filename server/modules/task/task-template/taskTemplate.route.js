@@ -6,12 +6,10 @@ const TaskTemplateController = require("./taskTemplate.controller");
 
 router.get('/', auth, TaskTemplateController.getAllTaskTemplates);
 router.get('/:id', auth, TaskTemplateController.getTaskTemplate);
-router.get('/role/:id', auth, TaskTemplateController.getTaskTemplatesOfUserRole);
-router.post('/user', auth, TaskTemplateController.searchTaskTemplates);
-router.post('/create', auth, TaskTemplateController.createTaskTemplate);
+router.post('/', auth, TaskTemplateController.createTaskTemplate);
 router.delete('/:id', auth, TaskTemplateController.deleteTaskTemplate);
-router.patch('/edit/:id', auth,TaskTemplateController.editTaskTemplate);
-router.post('/importTaskTemplate', auth, TaskTemplateController.importTaskTemplate);
+router.patch('/:id', auth,TaskTemplateController.editTaskTemplate);
+router.post('/import', auth, TaskTemplateController.importTaskTemplate);
 
 
 
