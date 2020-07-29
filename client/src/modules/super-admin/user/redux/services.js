@@ -4,9 +4,6 @@ import { getStorage } from '../../../../config';
 
 export const UserServices = {
     get,
-    edit,
-    create,
-    destroy,
     getRoles,
     getLinkOfRole,
     getAllUserOfCompany,
@@ -17,8 +14,10 @@ export const UserServices = {
     getChildrenOfOrganizationalUnitsAsTree,
     getAllUserInAllUnitsOfCompany,
     getAllEmployeeOfUnitByRole,
-    getAllEmployeeOfUnitByIds
-    
+    getAllEmployeeOfUnitByIds,
+    edit,
+    create,
+    destroy,
 };
 
 function get(params) {
@@ -57,29 +56,6 @@ function getAllEmployeeOfUnitByRole(role) {
             role: role
         }
     }, false, true, 'kpi.evaluation');
-}
-
-function edit(id, data) {
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/users/${id}`,
-        method: 'PATCH',
-        data,
-    }, true, true, 'super_admin.user');
-}
-
-function create(data) {
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/users`,
-        method: 'POST',
-        data,
-    }, true, true, 'super_admin.user');
-}
-
-function destroy(id) {
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/users/${id}`,
-        method: 'DELETE',
-    }, true, true, 'super_admin.user');
 }
 
 function getRoles() {
@@ -163,4 +139,27 @@ function getAllUserInAllUnitsOfCompany(){
         url: `${LOCAL_SERVER_API}/user/organizational-units/${undefined}/users`,
         method: 'GET',
     }, false, true, 'super_admin.user');
+}
+
+function edit(id, data) {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/user/users/${id}`,
+        method: 'PATCH',
+        data,
+    }, true, true, 'super_admin.user');
+}
+
+function create(data) {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/user/users`,
+        method: 'POST',
+        data,
+    }, true, true, 'super_admin.user');
+}
+
+function destroy(id) {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/user/users/${id}`,
+        method: 'DELETE',
+    }, true, true, 'super_admin.user');
 }

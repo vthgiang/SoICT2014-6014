@@ -6,7 +6,7 @@ const {  LogInfo,  LogError } = require('../../../../logs');
 exports.getEmployeeKpiSet = async (req, res) => {
     if(!req.query.month&&!req.query.role)
     {
-        this.AllEmployeeKpiSetByMonth(req,res);
+        this.getAllEmployeeKpiSetByMonth(req,res);
     }
     else{
         try {

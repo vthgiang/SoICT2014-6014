@@ -11,21 +11,21 @@ const mongoose = require("mongoose");
  * @data : dữ liệu lấy từ params {userId, department, date}
  */
 exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (data) => {
-    var userId = data.user;
-    var departmentId = data.department;
-    var date = data.date;
+    let userId = data.user;
+    let departmentId = data.department;
+    let date = data.date;
 
-    var splitterDate = date.split("-");
-    var dateISO = new Date(splitterDate[2], splitterDate[1] - 1, splitterDate[0]);
-    var monthOfParams = dateISO.getMonth();
-    var yearOfParams = dateISO.getFullYear();
+    let splitterDate = date.split("-");
+    let dateISO = new Date(splitterDate[2], splitterDate[1] - 1, splitterDate[0]);
+    let monthOfParams = dateISO.getMonth();
+    let yearOfParams = dateISO.getFullYear();
 
-    var kpiSets = await EmployeeKpiSet.find({
+    let kpiSets = await EmployeeKpiSet.find({
         creator: userId,
         organizationalUnit: departmentId
     }).populate({ path: 'kpis', select: 'name' });
 
-    var kpiSetsByMonth = kpiSets.find(e => (e.date.getMonth() === monthOfParams && e.date.getFullYear() === yearOfParams));
+    let kpiSetsByMonth = kpiSets.find(e => (e.date.getMonth() === monthOfParams && e.date.getFullYear() === yearOfParams));
 
     return kpiSetsByMonth;
 
@@ -35,15 +35,15 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (data) => {
  * service Khởi tạo KPI tháng mới từ KPI tháng này
  */
 exports.copyKPI = async (data) => {
-    var date = data.dateOld.split("-");
-    var dateOld = new Date(date[0], date[1], 0);
-    var date = data.dateNew.split("-");
-    var dateNewEmployeeKPI = new Date(date[1], date[0], 0);
-    var monthOldKPI = dateOld.getMonth();
-    var yearOldKPI = dateOld.getFullYear();
-    var monthNewKPI = dateNewEmployeeKPI.getMonth();
-    var yearNewKPI = dateNewEmployeeKPI.getFullYear();
-    var OldEmployeeKPI = await EmployeeKpiSet.find({ creator: mongoose.Types.ObjectId(data.id), organizationalUnit: data.unitId })
+    let date = data.dateOld.split("-");
+    let dateOld = new Date(date[0], date[1], 0);
+    date = data.dateNew.split("-");
+    let dateNewEmployeeKPI = new Date(date[1], date[0], 0);
+    let monthOldKPI = dateOld.getMonth();
+    let yearOldKPI = dateOld.getFullYear();
+    let monthNewKPI = dateNewEmployeeKPI.getMonth();
+    let yearNewKPI = dateNewEmployeeKPI.getFullYear();
+    let OldEmployeeKPI = await EmployeeKpiSet.find({ creator: mongoose.Types.ObjectId(data.id), organizationalUnit: data.unitId })
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
     var check = OldEmployeeKPI.find(e => (e.date.getMonth() === monthNewKPI && e.date.getFullYear() === yearNewKPI));
