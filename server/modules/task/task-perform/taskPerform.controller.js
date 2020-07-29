@@ -450,29 +450,29 @@ exports.deleteCommentOfTaskComment = async (req, res) => {
  * Đánh giá hoạt động
  */
 evaluationAction = async (req, res) => {
-    try {
-        var taskAction = await PerformTaskService.evaluationAction(req.params.id, req.body);
+    // try {
+        var taskAction = await PerformTaskService.evaluationAction(req.params, req.body);
         await LogInfo(req.user.email, ` evaluation action  `, req.user.company)
         res.status(200).json({
             success: true,
             messages: ['evaluation_action_success'],
             content: taskAction
         })
-    } catch (error) {
-        await LogError(req.user.email, ` evaluation action  `, req.user.company)
-        res.status(400).json({
-            success: false,
-            messages: ['evaluation_action_fail'],
-            content: error
-        })
-    }
+    // } catch (error) {
+    //     await LogError(req.user.email, ` evaluation action  `, req.user.company)
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['evaluation_action_fail'],
+    //         content: error
+    //     })
+    // }
 }
 /**
  * Xác nhận hành động
  */
 exports.confirmAction = async (req, res) => {
     try {
-        var abc = await PerformTaskService.confirmAction(req.query);
+        var abc = await PerformTaskService.confirmAction(req.params,req.body);
         await LogInfo(req.user.email, ` confirm action  `, req.user.company)
         res.status(200).json({
             success: true,

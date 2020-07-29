@@ -281,12 +281,12 @@ class ModalCreateProcessTask extends Component {
       this.modeler.saveXML({ format: true }, function (err, xml) {
          xmlStr = xml;
       });
-      this.setState(state => {
+      await this.setState(state => {
          return {
             ...state,
             xmlDiagram: xmlStr,
          }
-      })
+      },()=>console.log(this.state))
       let data = {
          nameProcess: this.state.processName,
          description: this.state.processDescription,
@@ -303,7 +303,7 @@ class ModalCreateProcessTask extends Component {
             save : true,
             showInfo: false
          }
-      },()=>console.log(this.state));
+      });
    }
 
    downloadAsSVG = () => {
