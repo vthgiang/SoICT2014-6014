@@ -1,32 +1,110 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
+import { withTranslate } from "react-redux-multilingual";
 import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../common-components';
-import { ModalProcessTask } from './modalProcessTask'
+import { ModalEditProcessTask } from './modalEditProcessTask'
+import { ModalCreateProcessTask } from './modalCreateProcessTask'
 import { TaskProcessActions } from '../redux/actions';
+import { ModalViewProcessTask } from './modalViewProcessTask';
 class TaskProcessManagement extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      currentRow: {},
+    };
 
-  }
-  showProcess = () => {
-    window.$(`#modal-process`).modal("show");
   }
   componentDidMount = () => {
     this.props.getAllXmlDiagram()
   }
+  checkHasComponent = (name) => {
+    var { auth } = this.props;
+    var result = false;
+    auth.components.forEach(component => {
+      if (component.name === name) result = true;
+    });
+    return result;
+  }
+  showEditProcess = async (item) => {
+    this.setState(state => {
+      return {
+        ...state,
+        currentRow: item,
+      }
+    });
+    window.$(`#modal-edit-process`).modal("show");
+  }
+
+  deleteDiagram = async (xmlId) => {
+    this.props.deleteXmlDiagram(xmlId)
+  }
+
+  viewProcess = async (item) => {
+    this.setState(state => {
+      return {
+        ...state,
+        currentRow: item,
+      }
+    },()=>console.log(this.state.currentRow));
+    window.$(`#modal-view-process-task`).modal("show");
+  }
+  showModalCreateProcess = async () => {
+    await this.setState(state => {
+      return {
+        ...state,
+        showModalCreateProcess: 1
+      }
+    });
+    window.$(`#modal-create-process-task`).modal("show");
+  }
   render() {
     const { translate, taskProcess } = this.props
+    const { showModalCreateProcess, currentRow } = this.state
     let listDiagram = taskProcess && taskProcess.xmlDiagram;
     return (
       <div className="box">
         <div className="box-body qlcv">
           {
-            <ModalProcessTask
+            <ModalViewProcessTask
               title={'Xem quy trình công việc'}
-
+              data={currentRow}
+              idProcess={currentRow._id}
+              xmlDiagram={currentRow.xmlDiagram}
+              nameProcess={currentRow.nameProcess}
+              description={currentRow.description}
+              infoTask={currentRow.infoTask}
+              creator={currentRow.creator}
+            >
+            </ModalViewProcessTask>
+          }
+          {
+            // this.state.currentRow !== undefined &&
+            <ModalEditProcessTask
+              title={'Xem quy trình công việc'}
+              data={currentRow}
+              idProcess={currentRow._id}
+              xmlDiagram={currentRow.xmlDiagram}
+              nameProcess={currentRow.nameProcess}
+              description={currentRow.description}
+              infoTask={currentRow.infoTask}
+              creator={currentRow.creator}
             />
+          }
+          {this.checkHasComponent('create-task-process-button') &&
+            <React.Fragment>
+              <div className="pull-right">
+                <button className="btn btn-success" onClick={() => { this.showModalCreateProcess() }}>
+                  Thêm mới
+              </button>
+              </div>
+              {
+                showModalCreateProcess &&
+                <ModalCreateProcessTask
+                  title="Thêm mới quy trình công việc"
+                  rand={Math.random()}
+                />
+              }
+            </React.Fragment>
           }
           <div className="form-inline">
             <div className="form-group">
@@ -39,12 +117,12 @@ class TaskProcessManagement extends Component {
             <div className="form-group">
               <label className="form-control-static">{translate('task_template.unit')}</label>
               {/* {units &&
-              <SelectMulti id="multiSelectUnit"
-                defaultValue={units.map(item => { return item._id })}
-                items={units.map(item => { return { value: item._id, text: item.name } })}
-                options={{ nonSelectedText: translate('task_template.select_all_units'), allSelectedText: "Tất cả các đơn vị" }}>
-              </SelectMulti>
-            } */}
+                      <SelectMulti id="multiSelectUnit"
+                          defaultValue={units.map(item => { return item._id })}
+                          items={units.map(item => { return { value: item._id, text: item.name } })}
+                          options={{ nonSelectedText: translate('task_template.select_all_units'), allSelectedText: "Tất cả các đơn vị" }}>
+                      </SelectMulti>
+                    } */}
               <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
             </div>
           </div>
@@ -59,7 +137,6 @@ class TaskProcessManagement extends Component {
             // setLimit={t}
             hideColumnOption={true}
           />
-
           <table className="table table-bordered table-striped table-hover" id="table-task-template">
             <thead>
               <tr>
@@ -72,24 +149,24 @@ class TaskProcessManagement extends Component {
             <tbody className="task-table">
               {
                 listDiagram && listDiagram.map((item, key) => {
-                    return <tr key={key} >
-                      <td>{item.nameProcess}</td>
-                      <td>{item.description}</td>
-                      <td>{item.creator.name}</td>
-                      <td><a href="#abc" onClick={() => { this.showProcess() }} title={translate('task.task_template.view_detail_of_this_task_template')}>
+                  return <tr key={key} >
+                    <td>{item.nameProcess}</td>
+                    <td>{item.description}</td>
+                    <td>{item.creator?.name}</td>
+                    <td>
+                      <a href="#abc" onClick={() => { this.viewProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>
                         <i className="material-icons">view_list</i>
                       </a>
-                        <a className="edit" title={translate('task_template.edit_this_task_template')}>
-                          <i className="material-icons">edit</i>
-                        </a>
-                        <a className="delete" title={translate('task_template.delete_this_task_template')}>
-                          <i className="material-icons"></i>
-                        </a>
-                      </td>
-                    </tr>
+                      <a className="edit" onClick={() => { this.showEditProcess(item) }} title={translate('task_template.edit_this_task_template')}>
+                        <i className="material-icons">edit</i>
+                      </a>
+                      <a className="delete" onClick={() => { this.deleteDiagram(item._id) }} title={translate('task_template.delete_this_task_template')}>
+                        <i className="material-icons"></i>
+                      </a>
+                    </td>
+                  </tr>
                 })
               }
-
             </tbody>
           </table>
           {/* <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} /> */}
@@ -107,7 +184,8 @@ function mapState(state) {
 }
 
 const actionCreators = {
-  getAllXmlDiagram: TaskProcessActions.getAllXmlDiagram
+  getAllXmlDiagram: TaskProcessActions.getAllXmlDiagram,
+  deleteXmlDiagram: TaskProcessActions.deleteXmlDiagram,
 };
 const connectedTaskProcessManagement = connect(mapState, actionCreators)(withTranslate(TaskProcessManagement));
 export { connectedTaskProcessManagement as TaskProcessManagement };

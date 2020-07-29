@@ -294,7 +294,7 @@ class KPIUnitManager extends Component {
                                                         data-backdrop="static" data-keyboard="false" title="Thiết lập kpi tháng mới từ kpi tháng
                                         này"><i className="material-icons">content_copy</i></a>}
                                                     {this.state.showModalCopy === item._id ?
-                                                        <ModalCopyKPIUnit idunit={item.organizationalUnit._id} listkpi={listkpi} kpiunit={item} /> : null}
+                                                        <ModalCopyKPIUnit kpiId={item._id} idunit={item.organizationalUnit._id} listkpi={listkpi} kpiunit={item} /> : null}
 
                                                 </td>
                                             </tr>) : <tr>

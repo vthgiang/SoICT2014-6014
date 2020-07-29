@@ -21,6 +21,14 @@ exports.getOrganizationalUnits = async (id) => {
 }
 
 /**
+ * Lấy thông tin đơn vị theo id
+ * @id đơn vị
+ */
+exports.getOrganizationalUnit = async (id) => {
+    return await OrganizationalUnit.findById(id);
+}
+
+/**
  * Lấy thông tin các đơn vị của công ty theo dạng CÂY 
  * @id id công ty
  */
@@ -43,14 +51,6 @@ exports.getOrganizationalUnitsAsTree = async (id) => {
     const tree = await arrayToTree(newData);
 
     return tree;
-}
-
-/**
- * Lấy thông tin đơn vị theo id
- * @id đơn vị
- */
-exports.getOrganizationalUnit = async (id) => {
-    return await OrganizationalUnit.findById(id);
 }
 
 /**
@@ -105,16 +105,61 @@ exports.getChildrenOfOrganizationalUnitsAsTree = async (id, role) => {
     return null;
 }
 
-exports.getIndex = async(node, array) => {
-    var result = -1;
-    
-    array.forEach((value, index) => {
-        if(node._id && value._id && value._id.toString() === node._id.toString()){
-            result = index;
-        }
+/**
+ * SERVICE: Lấy thông tin của đơn vị và các role trong đơn vị đó của user
+ * Chi tiết dữ liệu trả về:
+ * 1. Thông tin về đơn vị
+ * 2. Thông tin về các vai trò trong đơn vị (Trưởng dv, Phó dv, Nhân viên dv)
+ * 3. Id của các user tương ứng với từng vai trò của đơn vị
+ * --------------------------------------
+ * Thông tin xác định dựa trên 3 tham số
+ * 1. companyId - tìm kiếm trong phạm vi công ty của người dùng
+ * 2. userId - id của người dùng
+ * 3. roleId - xác định vai trò truy cập hiện tại của người dùng trên website (vd: đang truy cập với quyền là Nhân viên phòng hành chính,...)
+ */
+exports.getOrganizationalUnitByUserRole = async (companyId, roleId) => {
+    const department = await OrganizationalUnit.findOne({
+        $or: [
+            {'deans': roleId, company: companyId }, 
+            {'viceDeans': roleId, company: companyId }, 
+            {'employees': roleId, company: companyId }
+        ]
+    }).populate([
+        { path: 'deans', model: Role, populate: { path: 'users', model: UserRole} },
+        { path: 'viceDeans', model: Role, populate: { path: 'users', model: UserRole}  },
+        { path: 'employees', model: Role, populate: { path: 'users', model: UserRole}  }
+    ]);
+
+    return department;
+}
+
+/**
+ * Lấy thông tin đơn vị của user
+ * @userId id của user
+ */
+exports.getOrganizationalUnitsOfUser = async (userId) => {
+    const roles = await UserRole.find({ userId });
+    const newRoles = roles.map(role => role.roleId.toString());
+    const departments = await OrganizationalUnit.find({
+        $or: [
+            { 'deans': { $in: newRoles } },
+            { 'viceDeans': { $in: newRoles } },
+            { 'employees': { $in: newRoles } }
+        ]
     });
 
-    return result;
+    return departments;
+}
+
+/**
+ * Lấy thông tin đơn vị mà user làm trưởng
+ * @userId id của user
+ */
+exports.getOrganizationalUnitsThatUserIsDean = async (userId) => {
+    const roles = await UserRole.find({ 'userId': userId });
+    const newRoles = roles.map( role => role.roleId);
+    const departments = await OrganizationalUnit.find({'deans': { $in: newRoles } });
+    return departments;
 }
 
 /**
@@ -151,6 +196,18 @@ exports.getDiffRolesInOrganizationalUnit = async (oldArr, newArr) => {
         editRoles,
         deleteRoles
     }
+}
+
+exports.getIndex = async(node, array) => {
+    var result = -1;
+    
+    array.forEach((value, index) => {
+        if(node._id && value._id && value._id.toString() === node._id.toString()){
+            result = index;
+        }
+    });
+
+    return result;
 }
 
 /**
@@ -347,44 +404,4 @@ exports.deleteOrganizationalUnit = async (departmentId) => {
         throw ['department_has_user'];
     }
     console.log(departmentId);
-}
-
-
-/**
- * SERVICE: Lấy thông tin của đơn vị và các role trong đơn vị đó của user
- * Chi tiết dữ liệu trả về:
- * 1. Thông tin về đơn vị
- * 2. Thông tin về các vai trò trong đơn vị (Trưởng dv, Phó dv, Nhân viên dv)
- * 3. Id của các user tương ứng với từng vai trò của đơn vị
- * --------------------------------------
- * Thông tin xác định dựa trên 3 tham số
- * 1. companyId - tìm kiếm trong phạm vi công ty của người dùng
- * 2. userId - id của người dùng
- * 3. roleId - xác định vai trò truy cập hiện tại của người dùng trên website (vd: đang truy cập với quyền là Nhân viên phòng hành chính,...)
- */
-exports.getOrganizationalUnitByUserRole = async (companyId, roleId) => {
-    const department = await OrganizationalUnit.findOne({
-        $or: [
-            {'deans': roleId, company: companyId }, 
-            {'viceDeans': roleId, company: companyId }, 
-            {'employees': roleId, company: companyId }
-        ]
-    }).populate([
-        { path: 'deans', model: Role, populate: { path: 'users', model: UserRole} },
-        { path: 'viceDeans', model: Role, populate: { path: 'users', model: UserRole}  },
-        { path: 'employees', model: Role, populate: { path: 'users', model: UserRole}  }
-    ]);
-
-    return department;
-}
-
-/**
- * Lấy thông tin đơn vị mà user làm trưởng
- * @userId id của user
- */
-exports.getOrganizationalUnitsThatUserIsDean = async (userId) => {
-    const roles = await UserRole.find({ 'userId': userId });
-    const newRoles = roles.map( role => role.roleId);
-    const departments = await OrganizationalUnit.find({'deans': { $in: newRoles } });
-    return departments;
 }

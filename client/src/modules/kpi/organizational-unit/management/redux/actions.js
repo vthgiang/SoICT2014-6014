@@ -4,7 +4,6 @@ import { managerServices } from "./services";
 export const managerActions = {
     getAllKPIUnit,
     getChildTargetOfCurrentTarget,
-    evaluateKPIUnit,
     copyKPIUnit
 }
 
@@ -30,11 +29,11 @@ function getAllKPIUnit(infosearch) {
 }
 
 // lấy mục tiêu con của mục tiêu hiện tại
-function getChildTargetOfCurrentTarget(kpiId, date) {
+function getChildTargetOfCurrentTarget(kpiId) {
     return dispatch => {
         dispatch({ type: managerConstants.GETCHILDTARGET_CURRENTTARGET_REQUEST });
 
-        managerServices.getChildTargetOfCurrentTarget(kpiId, date)
+        managerServices.getChildTargetOfCurrentTarget(kpiId)
             .then(res => {
                 dispatch({
                     type: managerConstants.GETCHILDTARGET_CURRENTTARGET_SUCCESS,
@@ -50,27 +49,7 @@ function getChildTargetOfCurrentTarget(kpiId, date) {
     }
 }
 
-// Cập nhật dữ liệu cho kpi đơn vị
-function evaluateKPIUnit(id) {
-    return dispatch => {
-        dispatch({ type: managerConstants.EVALUATE_KPIUNIT_REQUEST });
-        managerServices.evaluateKPIUnit(id)
-            .then(res => {
-                dispatch({
-                    type: managerConstants.EVALUATE_KPIUNIT_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(error => {
-                dispatch({
-                    type: managerConstants.EVALUATE_KPIUNIT_FAILURE,
-                    payload: error
-                })
-            })
-    }
-}
-
-function copyKPIUnit(kpiId, data){
+function copyKPIUnit(kpiId, data) {
     return dispatch => {
         dispatch({ type: managerConstants.COPY_KPIUNIT_REQUEST });
         managerServices.copyKPIUnit(kpiId, data)

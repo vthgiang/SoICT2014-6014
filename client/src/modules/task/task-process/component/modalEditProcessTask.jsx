@@ -14,56 +14,82 @@ import { TaskProcessActions } from "../redux/actions";
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
-PaletteProvider.prototype.getPaletteEntries = function(element) {
-	 var entries = _getPaletteEntries.apply(this);
-	 delete entries['create.subprocess-expanded'];
-     delete entries['create.data-store'];
-     delete entries['create.data-object'];
-     delete entries['create.group'];
-     delete entries['create.participant-expanded'];
-     return entries; 
+PaletteProvider.prototype.getPaletteEntries = function (element) {
+    var entries = _getPaletteEntries.apply(this);
+    delete entries['create.subprocess-expanded'];
+    delete entries['create.data-store'];
+    delete entries['create.data-object'];
+    delete entries['create.group'];
+    delete entries['create.participant-expanded'];
+    return entries;
 }
-class ModalProcessTask extends Component {
+class ModalEditProcessTask extends Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+        let { data } = this.props;
+        // const { id, info, showInfo, processDescription, processName } = this.state;
         this.state = {
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
             showInfo: false,
-            info: {},
+            info: data.infoTask,
+            xmlDiagram: data.xmlDiagram,
         }
         this.modeler = new BpmnModeler();
-        this.generateId = 'createprocess';
-        this.initialDiagram =
-            '<?xml version="1.0" encoding="UTF-8"?>' +
-            '<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-            'xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" ' +
-            'xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" ' +
-            'xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" ' +
-            'targetNamespace="http://bpmn.io/schema/bpmn" ' +
-            'id="Definitions_1">' +
-            '<bpmn:process id="Process_1" isExecutable="false">' +
-            // '<bpmn:startEvent id="StartEvent_1"/>' +
-            '</bpmn:process>' +
-            '<bpmndi:BPMNDiagram id="BPMNDiagram_1">' +
-            '<bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">' +
-            '<bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">' +
-            '<dc:Bounds height="36.0" width="36.0" x="173.0" y="102.0"/>' +
-            '</bpmndi:BPMNShape>' +
-            '</bpmndi:BPMNPlane>' +
-            '</bpmndi:BPMNDiagram>' +
-            '</bpmn:definitions>';
+        this.generateId = 'editprocess';
+        this.initialDiagram = data.xmlDiagram;
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.idProcess !== prevState.idProcess) {
+            let info = {};
+            let infoTask = nextProps.data.infoTask;
+            for (let i in infoTask) {
+                info[`${infoTask[i].code}`] = infoTask[i];
+            }
+
+            // let xmlString = '<?xml version="1.0" encoding="UTF-8"?>' +
+            //     '<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+            //     'xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" ' +
+            //     'xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" ' +
+            //     'xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" ' +
+            //     'targetNamespace="http://bpmn.io/schema/bpmn" ' +
+            //     'id="Definitions_1">' +
+            //     '<bpmn:process id="Process_1" isExecutable="false">' +
+            //     // '<bpmn:startEvent id="StartEvent_1"/>' +
+            //     '</bpmn:process>' +
+            //     '<bpmndi:BPMNDiagram id="BPMNDiagram_1">' +
+            //     '<bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">' +
+            //     '<bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">' +
+            //     '<dc:Bounds height="36.0" width="36.0" x="173.0" y="102.0"/>' +
+            //     '</bpmndi:BPMNShape>' +
+            //     '</bpmndi:BPMNPlane>' +
+            //     '</bpmndi:BPMNDiagram>' +
+            //     '</bpmn:definitions>';
+
+            return {
+                ...prevState,
+                idProcess: nextProps.idProcess,
+                showInfo: false,
+                info: info,
+                processDescription: nextProps.data.description ? nextProps.data.description : '',
+                processName: nextProps.data.nameProcess ? nextProps.data.nameProcess : '',
+                xmlDiagram: nextProps.data.xmlDiagram,
+            }
+        } else {
+            return null;
+        }
     }
 
     render() {
         const { translate } = this.props;
-        const { id, info, showInfo, processDescription, processName } = this.state;
-
+        const { name, id, idProcess, info, showInfo, processDescription, processName } = this.state;
+        let x = (info && info[`${id}`]) && info[`${id}`]
         return (
             <React.Fragment>
                 <DialogModal
-                    size='100' modalID={`modal-process`} isLoading={false}
+                    size='100' modalID={`modal-edit-process`} isLoading={false}
                     formID="form-task-process"
                     // disableSubmit={!this.isTaskFormValidated()}
                     title={this.props.title}
@@ -94,16 +120,17 @@ class ModalProcessTask extends Component {
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">Quy trình công việc</legend>
                             <div className='row'>
-                                <div id={this.generateId} className={this.state.showInfo ? 'col-md-8' : 'col-md-12'}></div>
-                                <div className={this.state.showInfo ? 'col-md-4' : undefined}>
+                                <div id={this.generateId} className={showInfo ? 'col-md-8' : 'col-md-12'}></div>
+                                <div className={showInfo ? 'col-md-4' : undefined}>
 
                                     {
                                         (showInfo) &&
                                         <div>
                                             <div>
-                                                <h1>Option {this.state.name}</h1>
+                                                <h1>Option {name}</h1>
                                             </div>
                                             <FormInfoTask
+                                                action='edit'
                                                 id={id}
                                                 info={(info && info[`${id}`]) && info[`${id}`]}
                                                 handleChangeName={this.handleChangeName}
@@ -119,10 +146,10 @@ class ModalProcessTask extends Component {
                             </div>
                             <div>
                                 {/* <div id={this.generateId}></div> */}
-                                <button onClick={this.exportDiagram}>Export XML</button>
+                                {/* <button onClick={this.exportDiagram}>Export XML</button>
                                 <button onClick={this.downloadAsSVG}>Save SVG</button>
                                 <button onClick={this.downloadAsImage}>Save Image</button>
-                                <button onClick={this.downloadAsBpmn}>Download BPMN</button>
+                                <button onClick={this.downloadAsBpmn}>Download BPMN</button> */}
                             </div>
                         </fieldset>
 
@@ -194,7 +221,6 @@ class ModalProcessTask extends Component {
                 ...state,
             }
         })
-        console.log(this.state.info);
     }
 
     handleChangeAccountable = async (value) => {
@@ -208,7 +234,14 @@ class ModalProcessTask extends Component {
                 ...state,
             }
         })
-        console.log(this.state.info);
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextProps.idProcess !== this.state.idProcess) {
+            this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
+            return true;
+        }
+        return true;
     }
 
     componentDidMount() {
@@ -221,15 +254,12 @@ class ModalProcessTask extends Component {
         if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
             defaultUnit = user.organizationalUnitsOfUser[0]
         }
-        this.props.getChildrenOfOrganizationalUnits( defaultUnit && defaultUnit._id);
+        this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
 
         this.modeler.attachTo('#' + this.generateId);
-        this.modeler.importXML(this.initialDiagram, function (err) {
-
-        });
+        // this.modeler.importXML(this.initialDiagram, function (err) {})
 
         var eventBus = this.modeler.get('eventBus');
-        console.log(eventBus);
         this.modeler.on('element.click', 1, (e) => this.interactPopup(e));
 
         this.modeler.on('shape.remove', 1000, (e) => this.deleteElements(e));
@@ -240,11 +270,16 @@ class ModalProcessTask extends Component {
     }
 
     interactPopup = (event) => {
+        // _${state.idProcess}
         var element = event.element;
+        console.log("element||state",element, this.state);
         let nameStr = element.type.split(':');
         this.setState(state => {
-            if (element.type !== 'bpmn:Collaboration') {
-                return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: element.businessObject.id, }
+            if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' ||
+                element.type === 'bpmn:EndEvent' || element.type === "bpmn:SequenceFlow" ||
+                element.type === "bpmn:StartEvent" || element.type === "bpmn:IntermediateThrowEvent"
+            ) {
+                return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}`, }
             }
             else {
                 return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
@@ -255,6 +290,15 @@ class ModalProcessTask extends Component {
 
     deleteElements = (event) => {
         var element = event.element;
+        console.log(element);
+        this.setState(state => {
+            delete state.info[`${state.id}`];
+            return {
+                ...state,
+                showInfo: false,
+            }
+        })
+        console.log(this.state);
     }
 
     handleUndoDeleteElement = (event) => {
@@ -267,6 +311,7 @@ class ModalProcessTask extends Component {
     save = async () => {
         let xmlStr;
         this.modeler.saveXML({ format: true }, function (err, xml) {
+            console.log(xml);
             xmlStr = xml;
         });
         await this.setState(state => {
@@ -275,7 +320,6 @@ class ModalProcessTask extends Component {
                 xmlDiagram: xmlStr,
             }
         })
-        console.log(this.state)
         let data = {
             nameProcess: this.state.processName,
             description: this.state.processDescription,
@@ -283,7 +327,8 @@ class ModalProcessTask extends Component {
             xmlDiagram: this.state.xmlDiagram,
             infoTask: this.state.info
         }
-        this.props.createXmlDiagram(data)
+
+        this.props.editXmlDiagram(this.state.idProcess, data)
     }
 
     downloadAsSVG = () => {
@@ -373,8 +418,9 @@ function mapState(state) {
 const actionCreators = {
     getDepartment: UserActions.getDepartmentOfUser,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
-    createXmlDiagram : TaskProcessActions.createXmlDiagram,
-    getXmlDiagramById : TaskProcessActions.getXmlDiagramById,
+    createXmlDiagram: TaskProcessActions.createXmlDiagram,
+    getXmlDiagramById: TaskProcessActions.getXmlDiagramById,
+    editXmlDiagram: TaskProcessActions.editXmlDiagram,
 };
-const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalProcessTask));
-export { connectedModalAddProcess as ModalProcessTask };
+const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalEditProcessTask));
+export { connectedModalAddProcess as ModalEditProcessTask };

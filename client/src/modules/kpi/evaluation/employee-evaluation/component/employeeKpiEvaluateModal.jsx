@@ -39,7 +39,7 @@ class EmployeeKpiEvaluateModal extends Component {
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.employeeKpiSet && nextProps.employeeKpiSet._id !== this.state.id) {
             if (nextProps.employeeKpiSet._id) {
-                this.props.getKPIMemberById(nextProps.employeeKpiSet._id);
+                this.props.getKpisByKpiSetId(nextProps.employeeKpiSet._id);
             }
             return false;
         }
@@ -317,7 +317,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getKPIMemberById: kpiMemberActions.getKPIMemberById,
+    getKpisByKpiSetId: kpiMemberActions.getKpisByKpiSetId,
     getTaskById: kpiMemberActions.getTaskById,
     setPointKPI: kpiMemberActions.setPointKPI,
 };

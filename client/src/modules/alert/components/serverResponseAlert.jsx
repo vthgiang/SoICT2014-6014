@@ -13,16 +13,20 @@ class ServerResponseAlert extends Component {
         const {translate} = this.props;
         const subCode = code.split('.');
         
-        if(subCode.length === 1 ){
-            return translate(code) !== undefined ? true : false;
-        }else if(subCode.length > 1){
+        if (subCode.length === 1 ) {
+            return translate(code) ? true : false;
+        } else if (subCode.length > 1) {
             let codeData = subCode[0];
-            if(translate(codeData) === undefined){
+            
+            if (!translate(codeData)) {
                 return false;
-            }else{
+            } else {
                 for (let i = 1; i < subCode.length; i++) {
-                    codeData = codeData +'.'+subCode[i];
-                    if(translate(codeData) === undefined) return false;
+                    codeData = codeData + '.' + subCode[i];
+
+                    if (!translate(codeData)) {
+                        return false;
+                    }
                 }
             }
 

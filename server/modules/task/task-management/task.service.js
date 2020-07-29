@@ -24,6 +24,8 @@ exports.getTaskEvaluations = async (data) => {
     let startDate = data.startDate;
     let endDate = data.endDate;
     let calulator = Number(data.calulator);
+    let filterConditions = data.filterCondition;
+
     let startTime = startDate.split("-");
     let endTime = endDate.split("-");
     let start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
@@ -31,13 +33,15 @@ exports.getTaskEvaluations = async (data) => {
     let filterDate = {};
 
     if (data.responsibleEmployees) {
-        responsible = data.responsibleEmployees.toString();
+        responsible = data.responsibleEmployees;
     }
+
     if (data.accountableEmployees) {
-        accountable = data.accountableEmployees.toString();
+        accountable = data.accountableEmployees;
     }
+
     (taskStatus === 1) ? taskStatus = "Finished" : (taskStatus === 2 ? taskStatus = "Inprocess" : "");
-    console.log(taskStatus)
+
     // Lọc nếu ngày bắt đầu và kết thức có giá trị
     if (startDate && endDate) {
         filterDate = {
@@ -83,22 +87,49 @@ exports.getTaskEvaluations = async (data) => {
         },
     ];
 
-    // nếu không lọc theo người thực hiện và người phê duyệt
-    if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
+    if (taskStatus === 0) { // Lọc tất cả các coong việc không theo đặc thù
         condition = [
-            { $match: { status: taskStatus } },
             ...condition,
             filterDate
         ]
 
-    } else {
-        condition = [
-            { $match: { status: taskStatus } },
-            ...condition,
-            filterDate
-        ]
-    }
+    } else
+        // nếu không lọc theo người thực hiện và người phê duyệt
+        if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
+            condition = [
+                { $match: { status: taskStatus } },
+                ...condition,
+                filterDate
+            ]
+
+        } else {
+            condition = [
+                { $match: { status: taskStatus } },
+                { $match: { responsibleEmployees: { $in: [...responsible.map(x => mongoose.Types.ObjectId(x.toString()))] } } },
+                { $match: { accountableEmployees: { $in: [...accountable.map(y => mongoose.Types.ObjectId(y.toString()))] } } },
+                ...condition,
+                filterDate
+            ]
+        }
+
     let result = await Task.aggregate(condition);
+
+    //test eval
+    filterConditions.map((element, index) => {
+        // filterC[index] = element.replace(/p1/g, 4000);
+        console.log(element)
+        if (element.includes("p1") === true) {
+            filterC = element.toString().replace(/p1/g, 4000);
+            let evalP1 = eval(filterC);
+            console.log('filterP1', evalP1);
+        } else
+            if (element.includes("p2") === true) {
+                filterD = element.toString().replace(/p2/g, 3333);
+                let evalP2 = eval(filterD);
+                console.log('filterp2', evalP2);
+            }
+    });
+
     // tính trung bình cộng
     let condition2;
     if (calulator === 0) {
@@ -120,8 +151,11 @@ exports.getTaskEvaluations = async (data) => {
             },
         ]
     }
+
     let result2 = await Task.aggregate(condition2);
+
     return { result, result2 };
+
 }
 
 /**
@@ -901,8 +935,8 @@ exports.createTask = async (task) => {
 
     email = user.map(item => item.email); // Lấy ra tất cả email của người dùng
     email.push("trinhhong102@gmail.com");
-    var html = `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p> ` +
-        `<h3>Thông tin công viêc</h3>` +
+    var html = `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${task._id} </a></p> ` +
+        `<h3>Thông tin công việc</h3>` +
         `<p>Tên công việc : ${task.name}</p>` +
         `<p>Mô tả : ${task.description}</p>` +
         `<p>Người thực hiện</p> ` +
@@ -939,31 +973,6 @@ exports.deleteTask = async (id) => {
     return task;
 }
 
-/**
- * edit status of task
- */
-exports.editTaskStatus = async (taskID, status) => {
-    var task = await Task.findByIdAndUpdate(taskID,
-        { $set: { status: status } },
-        { new: true }
-    );
-    return task;
-}
-
-/**
- * Chinh sua trang thai luu kho cua cong viec
- */
-exports.editArchivedOfTask = async (taskID) => {
-    var t = await Task.findByIdAndUpdate(taskID);
-    var isArchived = t.isArchived;
-
-    var task = await Task.findByIdAndUpdate(taskID,
-        { $set: { isArchived: !isArchived } },
-        { new: true }
-    );
-
-    return task;
-}
 /**
  * get subtask
  */
@@ -1021,3 +1030,65 @@ exports.getTasksByUser = async (data) => {
     return tasksbyuser;
 }
 
+/**
+ * Lấy tất cả task của organizationalUnit theo tháng 
+ * @param {*} organizationalUnitId 
+ * @param {*} month 
+ */
+exports.getAllTaskOfOrganizationalUnit = async (query) => {
+    let organizationalUnit;
+    let now, currentYear, currentMonth, endOfCurrentMonth, endOfLastMonth;
+
+    if (query.month) {
+        now = new Date(query.month);
+        currentYear = now.getFullYear();
+        currentMonth = now.getMonth();
+        endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
+        endOfLastMonth = new Date(currentYear, currentMonth);
+    } else {
+        now = new Date();
+        currentYear = now.getFullYear();
+        currentMonth = now.getMonth();
+        endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
+        endOfLastMonth = new Date(currentYear, currentMonth);
+    }
+
+    if (!query.organizationalUnitId) {
+        organizationalUnit = await OrganizationalUnit.findOne({
+            $or: [
+                { 'deans': query.roleId },
+                { 'viceDeans': query.roleId },
+                { 'employees': query.roleId }
+            ]
+        });
+    } else {
+        organizationalUnit = await OrganizationalUnit.findOne({ '_id': query.organizationalUnitId });
+    }
+
+    let tasks = await Task.aggregate([
+        { $match: { 'organizationalUnit': organizationalUnit._id } },
+        {
+            $match: {
+                $or: [
+                    { 'endDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
+                    { 'startDate': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } },
+                    { $and: [{ 'endDate': { $gte: endOfCurrentMonth } }, { 'startDate': { $lte: endOfLastMonth } }] }
+                ]
+            }
+        },
+
+        { $unwind: "$evaluations" },
+        {
+            $match: {
+                $or: [
+                    { 'evaluations.date': undefined },
+                    { 'evaluations.date': { $lte: endOfCurrentMonth, $gt: endOfLastMonth } }
+                ]
+            }
+        },
+
+        { $project: { 'startDate': 1, 'endDate': 1, 'evaluations': 1, 'accountableEmployees': 1, 'consultedEmployees': 1, 'informedEmployees': 1, 'status': 1 } }
+    ])
+
+    return tasks;
+}

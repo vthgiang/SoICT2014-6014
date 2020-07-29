@@ -29,7 +29,7 @@ exports.createHoliday = async (data, company) => {
         company: company,
         startDate: startDate,
         endDate: endDate,
-        reason: data.reason,
+        description: data.description,
     });
 }
 
@@ -57,7 +57,7 @@ exports.updateHoliday = async (id, data) => {
     var holidayChange = {
         startDate: startDate,
         endDate: endDate,
-        reason: data.reason,
+        description: data.description,
     };
     await Holiday.findOneAndUpdate({
         _id: id

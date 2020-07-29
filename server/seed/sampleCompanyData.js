@@ -15,7 +15,7 @@ const {
     EducationProgram,
     Course,
 
-    
+
     Asset,
     AssetType,
     RecommendProcure,
@@ -63,7 +63,7 @@ const sampleCompanyData = async () => {
         description: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam'
     });
     console.log(`Xong! Công ty [${vnist.name}] đã được tạo.`);
-    
+
 
 
 
@@ -76,8 +76,7 @@ const sampleCompanyData = async () => {
     const salt = await bcrypt.genSaltSync(10);
     const hash = await bcrypt.hashSync('123456', salt);
 
-    const users = await User.insertMany([
-        {
+    const users = await User.insertMany([{
             name: 'Super Admin VNIST',
             email: 'super.admin.vnist@gmail.com',
             password: hash,
@@ -169,7 +168,7 @@ const sampleCompanyData = async () => {
         }
     ]);
     console.log("Xong! Đã thêm tài khoản:", users);
-    
+
 
 
 
@@ -249,7 +248,7 @@ const sampleCompanyData = async () => {
     });
 
     console.log("Đã tạo xong các role mặc định của công ty!");
-    
+
 
 
 
@@ -297,9 +296,9 @@ const sampleCompanyData = async () => {
     ]);
 
 
-    
-    
-    
+
+
+
 
 
     // Step 5: TẠO PHÒNG BAN CỦA CỦA CÔNG TY
@@ -335,28 +334,28 @@ const sampleCompanyData = async () => {
     // Step 6: TẠO LINK CHO CÁC TRANG WEB CỦA CÔNG TY
     console.log("Tạo link cho các trang web của công ty...");
     let links = Terms.LINKS;
-    for (let i=0; i<links.length; ++i){
+    for (let i = 0; i < links.length; ++i) {
         links[i].company = vnist._id;
     }
     let convertRoleNameToRoleId = (roleName) => { // Tạo nhanh hàm tiện ích chuyển đổi tên role thành id role
-        if (roleName === Terms.ROOT_ROLES.SUPER_ADMIN.name){
+        if (roleName === Terms.ROOT_ROLES.SUPER_ADMIN.name) {
             return roleSuperAdmin._id;
-        } else if (roleName === Terms.ROOT_ROLES.ADMIN.name){
+        } else if (roleName === Terms.ROOT_ROLES.ADMIN.name) {
             return roleAdmin._id;
-        } else if (roleName === Terms.ROOT_ROLES.DEAN.name){
+        } else if (roleName === Terms.ROOT_ROLES.DEAN.name) {
             return roleDean._id;
-        } else if (roleName === Terms.ROOT_ROLES.VICE_DEAN.name){
+        } else if (roleName === Terms.ROOT_ROLES.VICE_DEAN.name) {
             return roleViceDean._id;
-        } else if (roleName === Terms.ROOT_ROLES.EMPLOYEE.name){
+        } else if (roleName === Terms.ROOT_ROLES.EMPLOYEE.name) {
             return roleEmployee._id;
         }
     }
 
     let componentLinkMap = {};
 
-    for (let i=0; i<links.length; ++i) {
+    for (let i = 0; i < links.length; ++i) {
         let components = links[i].components;
-        if (components && components.length>0) { // Tạo các components
+        if (components && components.length > 0) { // Tạo các components
             components = components.map(component => { // Liên kết với role
                 component.roles = component.roles.map(role => convertRoleNameToRoleId(role));
                 component.company = vnist._id;
@@ -385,13 +384,13 @@ const sampleCompanyData = async () => {
         }
 
         let roles = links[i].roles;
-        if (roles){
+        if (roles) {
             links[i].roles = roles.map(role => convertRoleNameToRoleId(role));
         }
     }
 
     const mongodbLinks = await Link.insertMany(links); // Tạo các links
-    
+
     for (let id in componentLinkMap) { // Thêm liên kết tới link trong bảng component
         let component = await Component.findById(id);
         component.link = mongodbLinks[componentLinkMap[id]]._id;
@@ -402,7 +401,7 @@ const sampleCompanyData = async () => {
 
 
 
-    
+
     // Step 7: Phân quyền cho các trang
     let privileges_links = [];
     mongodbLinks.forEach(mongodbSystemLink => {
@@ -759,23 +758,24 @@ const sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu khen thưởng!");
     await Commendation.insertMany([{
-        employee: employee._id,
-        company: vnist._id,
-        decisionNumber: "123",
-        organizationalUnit: departments[0]._id,
-        startDate: "2020-02-02",
-        type: "Thưởng tiền",
-        reason: "Vượt doanh số",
-    }, 
-    {
-        employee: employee._id,
-        company: vnist._id,
-        decisionNumber: "1234",
-        organizationalUnit: departments[0]._id,
-        startDate: "2020-02-02",
-        type: "Thưởng tiền",
-        reason: "Vượt doanh số 500 triệu",
-    }])
+            employee: employee._id,
+            company: vnist._id,
+            decisionNumber: "123",
+            organizationalUnit: departments[0]._id,
+            startDate: "2020-02-02",
+            type: "Thưởng tiền",
+            reason: "Vượt doanh số",
+        },
+        {
+            employee: employee._id,
+            company: vnist._id,
+            decisionNumber: "1234",
+            organizationalUnit: departments[0]._id,
+            startDate: "2020-02-02",
+            type: "Thưởng tiền",
+            reason: "Vượt doanh số 500 triệu",
+        }
+    ])
     console.log(`Xong! Thông tin khen thưởng đã được tạo`);
 
     /*---------------------------------------------------------------------------------------------
@@ -850,9 +850,9 @@ const sampleCompanyData = async () => {
         coursePlace: "P9.01",
         startDate: "2020-02-16",
         endDate: "2020-03-21",
-        cost:{
-            number:"1200000",
-            unit:'VND'
+        cost: {
+            number: "1200000",
+            unit: 'VND'
         },
         lecturer: "Nguyễn B",
         type: "external",
@@ -866,9 +866,9 @@ const sampleCompanyData = async () => {
         coursePlace: "P9.01",
         startDate: "2020-02-16",
         endDate: "2020-03-21",
-        cost:{
-            number:"1200000",
-            unit:'VND'
+        cost: {
+            number: "1200000",
+            unit: 'VND'
         },
         lecturer: "Nguyễn Văn B",
         type: "internal",
@@ -878,17 +878,15 @@ const sampleCompanyData = async () => {
     console.log(`Xong! Thông tin khoá đào tạo  đã được tạo`);
 
 
-    const domains = await DocumentDomain.insertMany([ 
-        {
-            name: "Tài liệu lữu trữ bắt buộc",
-            company: vnist,
-            description: 'Tài liệu lữu trữ bắt buộc'
-        },{
-            name: "Hồ sơ lữu trữ bắt buộc",
-            company: vnist,
-            description: 'Hồ sơ lữu trữ bắt buộc'
-        },
-    ]);
+    const domains = await DocumentDomain.insertMany([{
+        name: "Tài liệu lữu trữ bắt buộc",
+        company: vnist,
+        description: 'Tài liệu lữu trữ bắt buộc'
+    }, {
+        name: "Hồ sơ lữu trữ bắt buộc",
+        company: vnist,
+        description: 'Hồ sơ lữu trữ bắt buộc'
+    }, ]);
 
     const domanins2 = await DocumentDomain.insertMany([
         //tài liệu bắt buộc
@@ -897,52 +895,52 @@ const sampleCompanyData = async () => {
             company: vnist,
             description: 'Điều lệ công ty',
             parent: domains[0]._id
-        },{
+        }, {
             name: "Quy chế quản lý nội bộ công ty",
             company: vnist,
             description: 'Quy chế quản lý nội bộ công ty',
             parent: domains[0]._id
-        },{
+        }, {
             name: "Sổ đăng ký thành viên hoặc sổ đăng ký cổ đông",
             company: vnist,
             description: 'Sổ đăng ký thành viên hoặc sổ đăng ký cổ đông',
             parent: domains[0]._id
-        },{
+        }, {
             name: "Văn bằng bảo hộ quyền sở hữu công nghiệp",
             company: vnist,
             description: 'Văn bằng bảo hộ quyền sở hữu công nghiệp',
             parent: domains[0]._id
-        },{
+        }, {
             name: "Giấy chứng nhận đăng ký chất lượng sản phẩm",
             company: vnist,
             description: 'Giấy chứng nhận đăng ký chất lượng sản phẩm',
             parent: domains[0]._id
-        },{
+        }, {
             name: "Giấy phép và giấy chứng nhận khác",
             company: vnist,
             description: 'Giấy phép và giấy chứng nhận khác',
             parent: domains[0]._id
-        },{
+        }, {
             name: "Tài liệu, giấy tờ xác nhận quyền sở hữu tài sản của công ty",
             company: vnist,
             description: 'Tài liệu, giấy tờ xác nhận quyền sở hữu tài sản của công ty',
             parent: domains[0]._id
-        },{
+        }, {
             name: "Biên bản họp hội đồng thành viên",
             company: vnist,
             description: 'Biên bản họp hội đồng thành viên, đại hội đồng cổ đông, hội đồng quản trị, các quyết định của doanh nghiệp',
             parent: domains[0]._id
-        },{
+        }, {
             name: "Bản cáo bạch để phát hành chứng khoán",
             company: vnist,
             description: 'Bản cáo bạch để phát hành chứng khoán',
             parent: domains[0]._id
-        },{
+        }, {
             name: "Báo cáo của ban kiểm soát",
             company: vnist,
             description: 'Báo cáo của ban kiểm soát, kết luận của cơ quan thanh tra, kết luận của tổ chức kiểm toán',
             parent: domains[0]._id
-        },{
+        }, {
             name: "Sổ kế toán, chứng từ kế toán, báo cáo tài chính hằng năm",
             company: vnist,
             description: 'Sổ kế toán, chứng từ kế toán, báo cáo tài chính hằng năm',
@@ -961,12 +959,12 @@ const sampleCompanyData = async () => {
             company: vnist,
             description: 'Hồ sơ xem xét của lãnh đạo',
             parent: domains[1]._id
-        },{
+        }, {
             name: "Hồ sơ về các hoạt động giáo dục, đào tạo, huấn luyện kỹ năng",
             company: vnist,
             description: 'Hồ sơ về các hoạt động giáo dục, đào tạo, huấn luyện kỹ năng',
             parent: domains[1]._id
-        },{
+        }, {
             name: "Hồ sơ về kinh nghiệm làm việc của nhân viên",
             company: vnist,
             description: 'Hồ sơ về kinh nghiệm làm việc của nhân viên',
@@ -983,12 +981,12 @@ const sampleCompanyData = async () => {
             company: vnist,
             description: 'Các hồ sơ cung cấp thông tin đầu vào phục vụ cho thiết kế sản phẩm',
             parent: domains[1]._id
-        },{
+        }, {
             name: "Hồ sơ tài liệu quản lý chất lượng ISO 9001",
             company: vnist,
             description: 'Hồ sơ tài liệu quản lý chất lượng ISO 9001',
             parent: domains[1]._id
-        },{
+        }, {
             name: "Hồ sơ ghi nhận hoạt động xem xét thiết kế sản phẩm",
             company: vnist,
             description: 'Hồ sơ ghi nhận hoạt động xem xét thiết kế sản phẩm',
@@ -1002,33 +1000,31 @@ const sampleCompanyData = async () => {
         },
     ]);
 
-    const categories = await DocumentCategory.insertMany([
-        {
-            company: vnist._id,
-            name: "Văn bản",
-            description: 'Văn bản'
-        },{
-            company: vnist._id,
-            name: "Biểu mẫu",
-            description: 'Biểu mẫu'
-        },{
-            company: vnist._id,
-            name: "Công văn",
-            description: 'Công văn'
-        },{
-            company: vnist._id,
-            name: "Tài liệu",
-            description: 'Tài liệu'
-        },{
-            company: vnist._id,
-            name: "Hồ sơ",
-            description: 'Hồ sơ'
-        },{
-            company: vnist._id,
-            name: "Biên bản",
-            description: 'Biên bản'
-        },
-    ]);
+    const categories = await DocumentCategory.insertMany([{
+        company: vnist._id,
+        name: "Văn bản",
+        description: 'Văn bản'
+    }, {
+        company: vnist._id,
+        name: "Biểu mẫu",
+        description: 'Biểu mẫu'
+    }, {
+        company: vnist._id,
+        name: "Công văn",
+        description: 'Công văn'
+    }, {
+        company: vnist._id,
+        name: "Tài liệu",
+        description: 'Tài liệu'
+    }, {
+        company: vnist._id,
+        name: "Hồ sơ",
+        description: 'Hồ sơ'
+    }, {
+        company: vnist._id,
+        name: "Biên bản",
+        description: 'Biên bản'
+    }, ]);
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
@@ -1198,61 +1194,59 @@ const sampleCompanyData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu phiếu đăng ký mua sắm tài sản");
-    var listRecommendProcure = await RecommendProcure.insertMany([
-        {
-            company: vnist._id,
-            recommendNumber: "MS0001",
-            dateCreate: "20-04-2020",
-            proponent: users[4]._id,
-            equipment: "đề nghị mua Laptop DELL 5559",
-            supplier: "HanoiComputer",
-            total: "1",
-            unit: "cái",
-            estimatePrice: "30000000",
-            note: "",
-            approver: null,
-            status: "Chờ phê duyệt"
-        }, {
-            company: vnist._id,
-            recommendNumber: "MS0002",
-            dateCreate: "20-06-2020",
-            proponent: users[5]._id,
-            equipment: "đề nghị mua Laptop DELL XPS",
-            supplier: "Phong Vũ",
-            total: "1",
-            unit: "cái",
-            estimatePrice: "50000000",
-            note: "",
-            approver: null,
-            status: "Chờ phê duyệt"
-        }, {
-            company: vnist._id,
-            recommendNumber: "MS0003",
-            dateCreate: "20-04-2020",
-            proponent: users[7]._id,
-            equipment: "đề nghị mua máy photocopy",
-            supplier: "HanoiComputer",
-            total: "1",
-            unit: "cái",
-            estimatePrice: "25000000",
-            note: "",
-            approver: null,
-            status: "Chờ phê duyệt"
-        }, {
-            company: vnist._id,
-            recommendNumber: "MS0004",
-            dateCreate: "20-05-2020",
-            proponent: users[4]._id,
-            equipment: "đề nghị mua ô tô",
-            supplier: "Toyota Thanh Xuân",
-            total: "1",
-            unit: "cái",
-            estimatePrice: "500000000",
-            note: "",
-            approver: null,
-            status: "Chờ phê duyệt"
-        }
-    ])
+    var listRecommendProcure = await RecommendProcure.insertMany([{
+        company: vnist._id,
+        recommendNumber: "MS0001",
+        dateCreate: "20-04-2020",
+        proponent: users[4]._id,
+        equipment: "đề nghị mua Laptop DELL 5559",
+        supplier: "HanoiComputer",
+        total: "1",
+        unit: "cái",
+        estimatePrice: "30000000",
+        note: "",
+        approver: null,
+        status: "Chờ phê duyệt"
+    }, {
+        company: vnist._id,
+        recommendNumber: "MS0002",
+        dateCreate: "20-06-2020",
+        proponent: users[5]._id,
+        equipment: "đề nghị mua Laptop DELL XPS",
+        supplier: "Phong Vũ",
+        total: "1",
+        unit: "cái",
+        estimatePrice: "50000000",
+        note: "",
+        approver: null,
+        status: "Chờ phê duyệt"
+    }, {
+        company: vnist._id,
+        recommendNumber: "MS0003",
+        dateCreate: "20-04-2020",
+        proponent: users[7]._id,
+        equipment: "đề nghị mua máy photocopy",
+        supplier: "HanoiComputer",
+        total: "1",
+        unit: "cái",
+        estimatePrice: "25000000",
+        note: "",
+        approver: null,
+        status: "Chờ phê duyệt"
+    }, {
+        company: vnist._id,
+        recommendNumber: "MS0004",
+        dateCreate: "20-05-2020",
+        proponent: users[4]._id,
+        equipment: "đề nghị mua ô tô",
+        supplier: "Toyota Thanh Xuân",
+        total: "1",
+        unit: "cái",
+        estimatePrice: "500000000",
+        note: "",
+        approver: null,
+        status: "Chờ phê duyệt"
+    }])
     console.log(`Xong! Thông tin phiếu đăng ký mua sắm tài sản đã được tạo`);
 
     /*---------------------------------------------------------------------------------------------
@@ -1262,467 +1256,467 @@ const sampleCompanyData = async () => {
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu tài sản");
     var listAsset = await Asset.insertMany([{
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "Laptop Sony Vaio",
-        code: "VVTM02.001",
-        company: vnist._id,
-        serial: "00001",
-        assetType: listAssetType[19]._id,
-        purchaseDate: new Date("2020-06-20"),
-        warrantyExpirationDate: new Date("2022-06-20"),
-        managedBy: users[1]._id,
-        assignedTo: null,
-        handoverFromDate: null,
-        handoverToDate: null,
-        location: "PKD",
-        status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
-        description: "Laptop Sony Vaio",
-        detailInfo: [],
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "Laptop Sony Vaio",
+            code: "VVTM02.001",
+            company: vnist._id,
+            serial: "00001",
+            assetType: listAssetType[19]._id,
+            purchaseDate: new Date("2020-06-20"),
+            warrantyExpirationDate: new Date("2022-06-20"),
+            managedBy: users[1]._id,
+            assignedTo: null,
+            handoverFromDate: null,
+            handoverToDate: null,
+            location: "PKD",
+            status: "Sẵn sàng sử dụng",
+            canRegisterForUse: true,
+            description: "Laptop Sony Vaio",
+            detailInfo: [],
 
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 50000000,
-        residualValue: 10000000,
-        startDepreciation: new Date("2020-06-20"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 20, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: null,
-        disposalType: '',
-        disposalCost: null,
-        disposalDesc: '',
-        //tài liệu đính kèm
-        archivedRecordNumber: "PKD001",
-        files: [],
-    }, {
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "Điều hòa Panasonic 9.000BTU",
-        code: "VVDH01.017",
-        company: vnist._id,
-        serial: "00002",
-        assetType: listAssetType[8]._id,
-        purchaseDate: new Date("2020-05-20"),
-        warrantyExpirationDate: new Date("2022-05-20"),
-        managedBy: users[1]._id,
-        assignedTo: null,
-        handoverFromDate: null,
-        handoverToDate: null,
-        location: "PKD",
-        status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
-        description: "Điều hòa Panasonic 9.000BTU",
-        detailInfo: [],
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 50000000,
+            residualValue: 10000000,
+            startDepreciation: new Date("2020-06-20"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 20, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: null,
+            disposalType: '',
+            disposalCost: null,
+            disposalDesc: '',
+            //tài liệu đính kèm
+            archivedRecordNumber: "PKD001",
+            files: [],
+        }, {
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "Điều hòa Panasonic 9.000BTU",
+            code: "VVDH01.017",
+            company: vnist._id,
+            serial: "00002",
+            assetType: listAssetType[8]._id,
+            purchaseDate: new Date("2020-05-20"),
+            warrantyExpirationDate: new Date("2022-05-20"),
+            managedBy: users[1]._id,
+            assignedTo: null,
+            handoverFromDate: null,
+            handoverToDate: null,
+            location: "PKD",
+            status: "Sẵn sàng sử dụng",
+            canRegisterForUse: true,
+            description: "Điều hòa Panasonic 9.000BTU",
+            detailInfo: [],
 
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 40000000,
-        residualValue: 5000000,
-        startDepreciation: new Date("2020-05-20"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 18, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: null,
-        disposalType: "",
-        disposalCost: null,
-        disposalDesc: "",
-        //tài liệu đính kèm
-        archivedRecordNumber: "PKD002",
-        files: [],
-    }, {
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "Máy tính cây",
-        code: "VVMV18.001",
-        company: vnist._id,
-        serial: "00003",
-        assetType: listAssetType[16]._id,
-        purchaseDate: new Date("2020-05-25"),
-        warrantyExpirationDate: new Date("2022-05-25"),
-        managedBy: users[1]._id,
-        assignedTo: null,
-        handoverFromDate: null,
-        handoverToDate: null,
-        location: "PCN",
-        status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
-        description: "Máy tính cây",
-        detailInfo: [],
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 40000000,
+            residualValue: 5000000,
+            startDepreciation: new Date("2020-05-20"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 18, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: null,
+            disposalType: "",
+            disposalCost: null,
+            disposalDesc: "",
+            //tài liệu đính kèm
+            archivedRecordNumber: "PKD002",
+            files: [],
+        }, {
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "Máy tính cây",
+            code: "VVMV18.001",
+            company: vnist._id,
+            serial: "00003",
+            assetType: listAssetType[16]._id,
+            purchaseDate: new Date("2020-05-25"),
+            warrantyExpirationDate: new Date("2022-05-25"),
+            managedBy: users[1]._id,
+            assignedTo: null,
+            handoverFromDate: null,
+            handoverToDate: null,
+            location: "PCN",
+            status: "Sẵn sàng sử dụng",
+            canRegisterForUse: true,
+            description: "Máy tính cây",
+            detailInfo: [],
 
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 30000000,
-        residualValue: 5000000,
-        startDepreciation: new Date("2020-05-25"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 16, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: null,
-        disposalType: "",
-        disposalCost: null,
-        disposalDesc: "",
-        //tài liệu đính kèm
-        archivedRecordNumber: "PCN003",
-        files: [],
-    }, {
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "Máy in HP M402D",
-        code: "VVMV18.002",
-        company: vnist._id,
-        serial: "00004",
-        assetType: listAssetType[16]._id,
-        purchaseDate: new Date("2020-05-26"),
-        warrantyExpirationDate: new Date("2022-05-26"),
-        managedBy: users[1]._id,
-        assignedTo: null,
-        handoverFromDate: null,
-        handoverToDate: null,
-        location: "PCN",
-        status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
-        description: "Máy in HP M402D",
-        detailInfo: [],
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 30000000,
+            residualValue: 5000000,
+            startDepreciation: new Date("2020-05-25"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 16, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: null,
+            disposalType: "",
+            disposalCost: null,
+            disposalDesc: "",
+            //tài liệu đính kèm
+            archivedRecordNumber: "PCN003",
+            files: [],
+        }, {
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "Máy in HP M402D",
+            code: "VVMV18.002",
+            company: vnist._id,
+            serial: "00004",
+            assetType: listAssetType[16]._id,
+            purchaseDate: new Date("2020-05-26"),
+            warrantyExpirationDate: new Date("2022-05-26"),
+            managedBy: users[1]._id,
+            assignedTo: null,
+            handoverFromDate: null,
+            handoverToDate: null,
+            location: "PCN",
+            status: "Sẵn sàng sử dụng",
+            canRegisterForUse: true,
+            description: "Máy in HP M402D",
+            detailInfo: [],
 
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 35000000,
-        residualValue: 4000000,
-        startDepreciation: new Date("2020-05-26"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 18, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: null,
-        disposalType: "",
-        disposalCost: null,
-        disposalDesc: "",
-        //tài liệu đính kèm
-        archivedRecordNumber: "PCN004",
-        files: [],
-    }, {
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "Máy in màu epson L805",
-        code: "VVMV13.001",
-        company: vnist._id,
-        serial: "00005",
-        assetType: listAssetType[16]._id,
-        purchaseDate: new Date("2020-05-25"),
-        warrantyExpirationDate: new Date("2022-05-25"),
-        managedBy: users[1]._id,
-        assignedTo: null,
-        handoverFromDate: null,
-        handoverToDate: null,
-        location: "PCN",
-        status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
-        description: "Máy in màu epson L805",
-        detailInfo: [],
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 35000000,
+            residualValue: 4000000,
+            startDepreciation: new Date("2020-05-26"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 18, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: null,
+            disposalType: "",
+            disposalCost: null,
+            disposalDesc: "",
+            //tài liệu đính kèm
+            archivedRecordNumber: "PCN004",
+            files: [],
+        }, {
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "Máy in màu epson L805",
+            code: "VVMV13.001",
+            company: vnist._id,
+            serial: "00005",
+            assetType: listAssetType[16]._id,
+            purchaseDate: new Date("2020-05-25"),
+            warrantyExpirationDate: new Date("2022-05-25"),
+            managedBy: users[1]._id,
+            assignedTo: null,
+            handoverFromDate: null,
+            handoverToDate: null,
+            location: "PCN",
+            status: "Sẵn sàng sử dụng",
+            canRegisterForUse: true,
+            description: "Máy in màu epson L805",
+            detailInfo: [],
 
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 30000000,
-        residualValue: 5000000,
-        startDepreciation: new Date("2020-05-25"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 18, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: null,
-        disposalType: "",
-        disposalCost: null,
-        disposalDesc: "",
-        //tài liệu đính kèm
-        archivedRecordNumber: "PCN005",
-        files: [],
-    }, {
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "Lap top DELL Vostro 3568",
-        code: "VVTM02.004",
-        company: vnist._id,
-        serial: "00006",
-        assetType: listAssetType[19]._id,
-        purchaseDate: new Date("2020-05-20"),
-        warrantyExpirationDate: new Date("2022-05-20"),
-        managedBy: users[1]._id,
-        assignedTo: null,
-        handoverFromDate: null,
-        handoverToDate: null,
-        location: "PCN",
-        status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
-        description: "Lap top DELL Vostro 3568",
-        detailInfo: [],
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 30000000,
+            residualValue: 5000000,
+            startDepreciation: new Date("2020-05-25"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 18, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: null,
+            disposalType: "",
+            disposalCost: null,
+            disposalDesc: "",
+            //tài liệu đính kèm
+            archivedRecordNumber: "PCN005",
+            files: [],
+        }, {
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "Lap top DELL Vostro 3568",
+            code: "VVTM02.004",
+            company: vnist._id,
+            serial: "00006",
+            assetType: listAssetType[19]._id,
+            purchaseDate: new Date("2020-05-20"),
+            warrantyExpirationDate: new Date("2022-05-20"),
+            managedBy: users[1]._id,
+            assignedTo: null,
+            handoverFromDate: null,
+            handoverToDate: null,
+            location: "PCN",
+            status: "Sẵn sàng sử dụng",
+            canRegisterForUse: true,
+            description: "Lap top DELL Vostro 3568",
+            detailInfo: [],
 
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 35000000,
-        residualValue: 5000000,
-        startDepreciation: new Date("2020-05-20"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 20, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: null,
-        disposalType: "",
-        disposalCost: null,
-        disposalDesc: "",
-        //tài liệu đính kèm
-        archivedRecordNumber: "PCN006",
-        files: [],
-    }, {
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "Máy chủ IBM (01 máy chủ + 01 bàn phím + 01 chuột)",
-        code: "VVTM04.001",
-        company: vnist._id,
-        serial: "00007",
-        assetType: listAssetType[19]._id,
-        purchaseDate: new Date("2020-04-20"),
-        warrantyExpirationDate: new Date("2022-04-20"),
-        managedBy: users[1]._id,
-        assignedTo: null,
-        handoverFromDate: null,
-        handoverToDate: null,
-        location: "PKT",
-        status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
-        description: "Máy chủ IBM (01 máy chủ + 01 bàn phím + 01 chuột)",
-        detailInfo: [],
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 35000000,
+            residualValue: 5000000,
+            startDepreciation: new Date("2020-05-20"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 20, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: null,
+            disposalType: "",
+            disposalCost: null,
+            disposalDesc: "",
+            //tài liệu đính kèm
+            archivedRecordNumber: "PCN006",
+            files: [],
+        }, {
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "Máy chủ IBM (01 máy chủ + 01 bàn phím + 01 chuột)",
+            code: "VVTM04.001",
+            company: vnist._id,
+            serial: "00007",
+            assetType: listAssetType[19]._id,
+            purchaseDate: new Date("2020-04-20"),
+            warrantyExpirationDate: new Date("2022-04-20"),
+            managedBy: users[1]._id,
+            assignedTo: null,
+            handoverFromDate: null,
+            handoverToDate: null,
+            location: "PKT",
+            status: "Sẵn sàng sử dụng",
+            canRegisterForUse: true,
+            description: "Máy chủ IBM (01 máy chủ + 01 bàn phím + 01 chuột)",
+            detailInfo: [],
 
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 60000000,
-        residualValue: 15000000,
-        startDepreciation: new Date("2020-04-20"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 30, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: null,
-        disposalType: "",
-        disposalCost: null,
-        disposalDesc: "",
-        //tài liệu đính kèm
-        archivedRecordNumber: "PKT007",
-        files: [],
-    },
-    {
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "Máy bơm áp",
-        code: "VVMK02.003",
-        company: vnist._id,
-        serial: "00008",
-        assetType: listAssetType[18]._id,
-        purchaseDate: new Date("2020-04-25"),
-        warrantyExpirationDate: new Date("2022-04-25"),
-        managedBy: users[1]._id,
-        assignedTo: null,
-        handoverFromDate: null,
-        handoverToDate: null,
-        location: "VP xưởng",
-        status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
-        description: "Máy bơm áp",
-        detailInfo: [],
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 60000000,
+            residualValue: 15000000,
+            startDepreciation: new Date("2020-04-20"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 30, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: null,
+            disposalType: "",
+            disposalCost: null,
+            disposalDesc: "",
+            //tài liệu đính kèm
+            archivedRecordNumber: "PKT007",
+            files: [],
+        },
+        {
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "Máy bơm áp",
+            code: "VVMK02.003",
+            company: vnist._id,
+            serial: "00008",
+            assetType: listAssetType[18]._id,
+            purchaseDate: new Date("2020-04-25"),
+            warrantyExpirationDate: new Date("2022-04-25"),
+            managedBy: users[1]._id,
+            assignedTo: null,
+            handoverFromDate: null,
+            handoverToDate: null,
+            location: "VP xưởng",
+            status: "Sẵn sàng sử dụng",
+            canRegisterForUse: true,
+            description: "Máy bơm áp",
+            detailInfo: [],
 
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 40000000,
-        residualValue: 15000000,
-        startDepreciation: new Date("2020-04-25"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 15, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: null,
-        disposalType: "",
-        disposalCost: null,
-        disposalDesc: "",
-        //tài liệu đính kèm
-        archivedRecordNumber: "VPX008",
-        files: [],
-    },
-    {
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "Máy nén khí công nghiệp 22kw",
-        code: "VVMK09.001",
-        company: vnist._id,
-        serial: "00009",
-        assetType: listAssetType[18]._id,
-        purchaseDate: new Date("2020-04-30"),
-        warrantyExpirationDate: new Date("2022-04-30"),
-        managedBy: users[1]._id,
-        assignedTo: null,
-        handoverFromDate: null,
-        handoverToDate: null,
-        location: "VP xưởng",
-        status: "Sẵn sàng sử dụng",
-        canRegisterForUse: true,
-        description: "Máy nén khí công nghiệp 22kw",
-        detailInfo: [],
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 40000000,
+            residualValue: 15000000,
+            startDepreciation: new Date("2020-04-25"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 15, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: null,
+            disposalType: "",
+            disposalCost: null,
+            disposalDesc: "",
+            //tài liệu đính kèm
+            archivedRecordNumber: "VPX008",
+            files: [],
+        },
+        {
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "Máy nén khí công nghiệp 22kw",
+            code: "VVMK09.001",
+            company: vnist._id,
+            serial: "00009",
+            assetType: listAssetType[18]._id,
+            purchaseDate: new Date("2020-04-30"),
+            warrantyExpirationDate: new Date("2022-04-30"),
+            managedBy: users[1]._id,
+            assignedTo: null,
+            handoverFromDate: null,
+            handoverToDate: null,
+            location: "VP xưởng",
+            status: "Sẵn sàng sử dụng",
+            canRegisterForUse: true,
+            description: "Máy nén khí công nghiệp 22kw",
+            detailInfo: [],
 
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 60000000,
-        residualValue: 20000000,
-        startDepreciation: new Date("2020-04-30"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 30, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: null,
-        disposalType: "",
-        disposalCost: null,
-        disposalDesc: "",
-        //tài liệu đính kèm
-        archivedRecordNumber: "VPX009",
-        files: [],
-    },
-    {
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "Máy phát điện Misumisi 25kw",
-        code: "VVMK10.001",
-        company: vnist._id,
-        serial: "00009",
-        assetType: listAssetType[18]._id,
-        purchaseDate: new Date("2020-03-30"),
-        warrantyExpirationDate: new Date("2022-03-30"),
-        managedBy: users[1]._id,
-        assignedTo: null,
-        handoverFromDate: null,
-        handoverToDate: null,
-        location: "VP xưởng",
-        status: "Sẵn sàng sử dụng",
-        canRegisterForUse: false,
-        description: "Máy phát điện Misumisi 25kw",
-        detailInfo: [],
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 60000000,
+            residualValue: 20000000,
+            startDepreciation: new Date("2020-04-30"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 30, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: null,
+            disposalType: "",
+            disposalCost: null,
+            disposalDesc: "",
+            //tài liệu đính kèm
+            archivedRecordNumber: "VPX009",
+            files: [],
+        },
+        {
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "Máy phát điện Misumisi 25kw",
+            code: "VVMK10.001",
+            company: vnist._id,
+            serial: "00009",
+            assetType: listAssetType[18]._id,
+            purchaseDate: new Date("2020-03-30"),
+            warrantyExpirationDate: new Date("2022-03-30"),
+            managedBy: users[1]._id,
+            assignedTo: null,
+            handoverFromDate: null,
+            handoverToDate: null,
+            location: "VP xưởng",
+            status: "Sẵn sàng sử dụng",
+            canRegisterForUse: false,
+            description: "Máy phát điện Misumisi 25kw",
+            detailInfo: [],
 
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 60000000,
-        residualValue: 25000000,
-        startDepreciation: new Date("2020-03-30"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 30, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: null,
-        disposalType: "",
-        disposalCost: null,
-        disposalDesc: "",
-        //tài liệu đính kèm
-        archivedRecordNumber: "VPX010",
-        files: [],
-    },
-    {
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "Laptop Dell XPS",
-        code: "VVTM02.004",
-        company: vnist._id,
-        serial: "00010",
-        assetType: listAssetType[19]._id,
-        purchaseDate: new Date("2020-05-30"),
-        warrantyExpirationDate: new Date("2022-05-30"),
-        managedBy: users[1]._id,
-        assignedTo: null,
-        handoverFromDate: null,
-        handoverToDate: null,
-        location: "VPGĐ",
-        status: "Sẵn sàng sử dụng",
-        canRegisterForUse: false,
-        description: "Laptop Dell XPS",
-        detailInfo: [],
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 60000000,
+            residualValue: 25000000,
+            startDepreciation: new Date("2020-03-30"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 30, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: null,
+            disposalType: "",
+            disposalCost: null,
+            disposalDesc: "",
+            //tài liệu đính kèm
+            archivedRecordNumber: "VPX010",
+            files: [],
+        },
+        {
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "Laptop Dell XPS",
+            code: "VVTM02.004",
+            company: vnist._id,
+            serial: "00010",
+            assetType: listAssetType[19]._id,
+            purchaseDate: new Date("2020-05-30"),
+            warrantyExpirationDate: new Date("2022-05-30"),
+            managedBy: users[1]._id,
+            assignedTo: null,
+            handoverFromDate: null,
+            handoverToDate: null,
+            location: "VPGĐ",
+            status: "Sẵn sàng sử dụng",
+            canRegisterForUse: false,
+            description: "Laptop Dell XPS",
+            detailInfo: [],
 
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 60000000,
-        residualValue: 25000000,
-        startDepreciation: new Date("2020-05-30"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 30, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: null,
-        disposalType: "",
-        disposalCost: null,
-        disposalDesc: "",
-        //tài liệu đính kèm
-        archivedRecordNumber: "VPX011",
-        files: [],
-    },
-    {
-        avatar: "/upload/asset/pictures/picture5.png",
-        assetName: "Hệ thống báo cháy AED Đèn + chuông",
-        code: "VVPC04.002",
-        company: vnist._id,
-        serial: "00011",
-        assetType: listAssetType[22]._id,
-        purchaseDate: new Date("2020-04-30"),
-        warrantyExpirationDate: new Date("2022-04-30"),
-        managedBy: users[1]._id,
-        assignedTo: null,
-        handoverFromDate: null,
-        handoverToDate: null,
-        location: "Xưởng TN",
-        status: "Sẵn sàng sử dụng",
-        canRegisterForUse: false,
-        description: "Hệ thống báo cháy AED Đèn + chuông",
-        detailInfo: [],
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 60000000,
+            residualValue: 25000000,
+            startDepreciation: new Date("2020-05-30"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 30, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: null,
+            disposalType: "",
+            disposalCost: null,
+            disposalDesc: "",
+            //tài liệu đính kèm
+            archivedRecordNumber: "VPX011",
+            files: [],
+        },
+        {
+            avatar: "/upload/asset/pictures/picture5.png",
+            assetName: "Hệ thống báo cháy AED Đèn + chuông",
+            code: "VVPC04.002",
+            company: vnist._id,
+            serial: "00011",
+            assetType: listAssetType[22]._id,
+            purchaseDate: new Date("2020-04-30"),
+            warrantyExpirationDate: new Date("2022-04-30"),
+            managedBy: users[1]._id,
+            assignedTo: null,
+            handoverFromDate: null,
+            handoverToDate: null,
+            location: "Xưởng TN",
+            status: "Sẵn sàng sử dụng",
+            canRegisterForUse: false,
+            description: "Hệ thống báo cháy AED Đèn + chuông",
+            detailInfo: [],
 
-        usageLogs: [],
-        // bảo trì thiết bị
-        maintainanceLogs: [],
-        //sự cố
-        incidentLogs: [],
-        //khấu hao
-        cost: 60000000,
-        residualValue: 25000000,
-        startDepreciation: new Date("2020-04-30"), // thời gian bắt đầu trích khấu hao
-        usefulLife: 25, // thời gian trích khấu hao
-        depreciationType: "Đường thẳng", // thời gian trích khấu hao
-        //thanh lý
-        disposalDate: null,
-        disposalType: "",
-        disposalCost: null,
-        disposalDesc: "",
-        //tài liệu đính kèm
-        archivedRecordNumber: "XTN012",
-        files: [],
-    }
+            usageLogs: [],
+            // bảo trì thiết bị
+            maintainanceLogs: [],
+            //sự cố
+            incidentLogs: [],
+            //khấu hao
+            cost: 60000000,
+            residualValue: 25000000,
+            startDepreciation: new Date("2020-04-30"), // thời gian bắt đầu trích khấu hao
+            usefulLife: 25, // thời gian trích khấu hao
+            depreciationType: "Đường thẳng", // thời gian trích khấu hao
+            //thanh lý
+            disposalDate: null,
+            disposalType: "",
+            disposalCost: null,
+            disposalDesc: "",
+            //tài liệu đính kèm
+            archivedRecordNumber: "XTN012",
+            files: [],
+        }
 
 
     ])

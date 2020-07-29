@@ -379,7 +379,7 @@ export default {
             sender: 'Gửi từ',
             departments: 'Thông báo tới đơn vị/phòng ban',
             users: 'Thông báo đến người dùng cụ thể',
-            from: 'từ',
+            from: 'Từ',
             at: 'lúc',
 
             add: 'Tạo thông báo',
@@ -388,6 +388,7 @@ export default {
             note: 'Chú thích',
             info: 'Thông tin thông báo',
             delete: 'Xóa thông báo',
+            new: 'Mới',
 
             // Thông điệp trả về từ server
             create_notification_success: 'Tạo thông báo thành công',
@@ -663,7 +664,7 @@ export default {
             tasks: 'Quản lý công việc',
             task: "Chi tiết công việc",
             task_management: 'Danh sách công việc',
-            task_management_dashboard: 'Biểu đồ công việc',
+            task_management_dashboard: 'Dashboard công việc',
             task_management_process: "Danh sách quy trình",
 
             //*******START */
@@ -2474,6 +2475,7 @@ export default {
                     distributive: 'Phân phối KPI đơn vị tháng ',
                     statiscial: 'Thống kê kết quả KPI đơn vị tháng ',
                     result_kpi_unit: 'Kết quả KPI đơn vị',
+                    result_kpi_units: 'Kết quả KPI các đơn vị',
                     start_date: 'Từ tháng',
                     end_date: 'Đến tháng',
                     search: 'Tìm kiếm',

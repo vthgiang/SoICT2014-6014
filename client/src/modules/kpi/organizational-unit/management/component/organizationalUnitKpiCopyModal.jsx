@@ -45,7 +45,7 @@ class ModalCopyKPIUnit extends Component {
 
     }
 
-    handleSubmit = async (oldkpiunit, listkpi, idunit) => {
+    handleSubmit = async (oldkpiunit, listkpi, idunit, kpiId) => {
         let id = getStorage("userId");
         await this.setState(state => {
             return {
@@ -108,11 +108,11 @@ class ModalCopyKPIUnit extends Component {
 
             if (check == 1) {
                 let data = {  
+                    creator: id,
                     idunit: idunit,
-                    dateold: oldkpiunit.date,
-                    datenew:  this.state.NewDate
+                    datenew: this.state.NewDate
                 }
-                this.props.copyKPIUnit(id, data);
+                this.props.copyKPIUnit(kpiId, data);
                 if (kpiunit.unit && kpiunit.date) {
                     Swal.fire({
                         title: translate('kpi.organizational_unit.management.copy_modal.alert.change_link'),
@@ -134,13 +134,13 @@ class ModalCopyKPIUnit extends Component {
     }
 
     save = () => {
-        let { listkpi, kpiunit, idunit } = this.props;
-        this.handleSubmit(kpiunit, listkpi, idunit)
+        let {kpiId, listkpi, kpiunit, idunit } = this.props;
+        this.handleSubmit(kpiunit, listkpi, idunit, kpiId)
     }
 
     render() {
         const { NewDate, errorOnDate } = this.state;
-        const { kpiunit, listkpi, idunit, translate } = this.props;
+        const { kpiunit, listkpi, idunit, translate, kpiId } = this.props;
         return (
             <DialogModal
                 modalID={`copy-old-kpi-to-new-time-${kpiunit._id}`}

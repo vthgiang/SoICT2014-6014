@@ -3,9 +3,9 @@ import { ComponentConstants } from "./constants";
 
 export const ComponentActions = {
     get,
+    show,
     edit,
     create,
-    show,
     destroy,
 }
 

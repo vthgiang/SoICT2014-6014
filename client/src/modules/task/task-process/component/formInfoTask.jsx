@@ -19,6 +19,11 @@ class FormInfoTask extends Component {
     }
     
     shouldComponentUpdate(nextProps, nextState) {
+        // console.log(nextProps.info)
+        // console.log(this.props.info)
+        // if(nextProps.info !== this.props.info) {
+        //     return true;
+        // }
         if (nextProps.id !== this.state.id) {
             let { info } = nextProps;
             this.setState(state => {
@@ -64,8 +69,8 @@ class FormInfoTask extends Component {
     }
 
     render() {
-        const { user, translate } = this.props;
-        const { id, info } = this.props;
+        const { user, translate, disabled} = this.props;
+        const { id, info, action } = this.props;
         let { nameTask, description, responsible, accountable } = this.state;
 
         let usersOfChildrenOrganizationalUnit;
@@ -74,14 +79,13 @@ class FormInfoTask extends Component {
         }
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
-        console.log(usersOfChildrenOrganizationalUnit, unitMembers);
-
         return (
             <div>
                 <form>
                     <div className="form-group" >
                         <label style={{ float: 'left' }}>Tên công việc</label>
                         <input type="text"
+                            disabled = {disabled}
                             value={nameTask}
                             className="form-control" placeholder="Nhập tên công việc"
                             onChange={this.handleChangeName}
@@ -90,6 +94,7 @@ class FormInfoTask extends Component {
                     <div className="form-group">
                         <label style={{ float: 'left' }}>Mô tả</label>
                         <input type="text"
+                            disabled = {disabled}
                             value={description}
                             className="form-control" placeholder="Mô tả công việc"
                             onChange={this.handleChangeDescription}
@@ -100,13 +105,14 @@ class FormInfoTask extends Component {
                         {
                         // unitMembers &&
                             <SelectBox
-                                id={`select-responsible-employee-${id}`}
+                                id={`select-responsible-employee-${id}-${action}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={unitMembers}
                                 onChange={this.handleChangeResponsible}
                                 multiple={true}
                                 value={responsible}
+                                disabled = {disabled}
                             />
                         }
                     </div>
@@ -116,13 +122,15 @@ class FormInfoTask extends Component {
                         { 
                         // unitMembers &&
                             <SelectBox
-                                id={`select-accountable-employee-${id}`}
+
+                                id={`select-accountable-employee-${id}-${action}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={unitMembers}
                                 onChange={this.handleChangeAccountable}
                                 multiple={true}
                                 value={accountable}
+                                disabled = {disabled}
                             />
                     }
                     </div>

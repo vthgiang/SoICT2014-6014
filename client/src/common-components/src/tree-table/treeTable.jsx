@@ -114,8 +114,6 @@ class TreeTable extends Component {
 
     // Function thực hiện format dữ liệu truyền vào
     dataTreetable = (column, data) => {
-        console.log('column', column)
-        console.log('data', data)
         var keyColumn = column.map(col => col.key);
         var newarr = [];
         // function chuyển đổi list thành tree 

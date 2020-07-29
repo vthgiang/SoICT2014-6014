@@ -13,10 +13,10 @@ export const performTaskService = {
     getTimerStatusTask,
     startTimerTask,
     stopTimerTask,
-    addActionComment,
+    createActionComment,
     deleteActionComment,
     editActionComment,
-    addTaskAction,
+    createTaskAction,
     editTaskAction,
     deleteTaskAction,
     createTaskComment,
@@ -37,25 +37,13 @@ export const performTaskService = {
 
     editTaskByAccountableEmployees,
     editTaskByResponsibleEmployees,
+    editStatusOfTask,
+    editArchivedOfTask,
 
     evaluateTaskByAccountableEmployees,
     evaluateTaskByConsultedEmployees,
     evaluateTaskByResponsibleEmployees,
 };
-/**
- * // example for axios
- * 
- * function edit(id, data) {
-    const requestOptions = {
-        url: `${ LOCAL_SERVER_API }/user/${id}`,
-        method: 'PATCH',
-        data: data,
-        headers: AuthenticateHeader()
-    };
-
-    return axios(requestOptions);
-}
-*/
 
 
 /**
@@ -64,19 +52,20 @@ export const performTaskService = {
  */
 function getTimesheetLogs(taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/log-timer`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/timesheet-logs`,
         method: 'GET',
     }, false, false, 'task.task_perform');
 };
 
 /**
  * Lấy lịch sử bấm giờ ?????
- */ 
+ */
 function getTimerStatusTask() {
     var userId = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/log-timer/currentTimer/user/${userId}`,
+        url: `${LOCAL_SERVER_API}/performtask/task-timesheet-logs`,
         method: 'GET',
+        params: { userId: userId }
     }, false, false, 'task.task_perform');
 };
 
@@ -84,9 +73,9 @@ function getTimerStatusTask() {
  * Bắt đầu bấm giờ
  * @param {*} newTimer dữ liệu gửi lên
  */
-function startTimerTask(newTimer) {
+function startTimerTask(taskId, newTimer) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/log-timer/start-timer`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/timesheet-logs/start-timer`,
         method: 'POST',
         data: newTimer,
     }, false, true, 'task.task_perform');
@@ -96,9 +85,9 @@ function startTimerTask(newTimer) {
  * Dừng bấm giờ
  * @param {*} newTimer dữ liệu gửi lên
  */
-function stopTimerTask(newTimer) {
+function stopTimerTask(taskId, newTimer) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/log-timer/stop-timer`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/timesheet-logs/stop-timer`,
         method: 'POST',
         data: newTimer
     }, false, true, 'task.task_perform');
@@ -111,7 +100,7 @@ function stopTimerTask(newTimer) {
  * @param {*} actionId id của hoạt động cha
  * @param {*} newComment nội dung bình luận
  */
-function addActionComment(taskId, actionId, newComment) {
+function createActionComment(taskId, actionId, newComment) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}/comments`,
         method: 'POST',
@@ -124,7 +113,7 @@ function addActionComment(taskId, actionId, newComment) {
  * @param {*} taskId id của task
  * @param {*} newAction nội dung hành động
  */
-function addTaskAction(taskId, newAction) {
+function createTaskAction(taskId, newAction) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions`,
         method: 'POST',
@@ -168,8 +157,8 @@ function editTaskAction(actionId, newAction, taskId) {
  */
 function deleteActionComment(taskId, actionId, commentId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}/comments/${commentId}/delete`,
-        method: 'PATCH'
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}/comments/${commentId}`,
+        method: 'DELETE'
     }, false, true, 'task.task_perform')
 }
 
@@ -180,8 +169,8 @@ function deleteActionComment(taskId, actionId, commentId) {
  */
 function deleteTaskAction(actionId, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}/delete`,
-        method: 'PATCH'
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}`,
+        method: 'DELETE'
     }, false, true, 'task.task_perform');
 }
 
@@ -219,8 +208,8 @@ function editTaskComment(taskId, commentId, newComment) {
  */
 function deleteTaskComment(commentId, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/${commentId}/delete`,
-        method: 'PATCH'
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/${commentId}`,
+        method: 'DELETE'
     }, false, true, 'task.task_perform')
 }
 
@@ -259,8 +248,8 @@ function editCommentOfTaskComment(commentId, taskId, newComment) {
  */
 function deleteCommentOfTaskComment(commentId, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/comments/${commentId}/delete`,
-        method: 'PATCH',
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/comments/${commentId}`,
+        method: 'DELETE',
     }, false, true, 'task.task_perform')
 }
 
@@ -269,9 +258,9 @@ function deleteCommentOfTaskComment(commentId, taskId) {
  * @param {*} actionId id của action
  * @param {*} evaluation điểm rating người khác chấm
  */
-function evaluationAction(actionId, evaluation) {
+function evaluationAction(actionId, taskId, evaluation) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/task-actions/${actionId}`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}`,
         method: 'PATCH',
         data: evaluation,
     }, false, true, 'task.task_perform')
@@ -283,11 +272,13 @@ function evaluationAction(actionId, evaluation) {
  * @param {*} idUser id của người xác nhận
  * @param {*} taskId id của task
  */
-function confirmAction(actionId, idUser, taskId) {
+function confirmAction(userId, actionId, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions`,
-        method: 'GET',
-        params: { actionId: actionId, idUser: idUser }
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}`,
+        method: 'POST',
+        data: {
+            userId: userId,
+        }
     }, false, true, 'task.task_perform');
 };
 
@@ -299,7 +290,7 @@ function confirmAction(actionId, idUser, taskId) {
  */
 function uploadFile(taskId, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/upload-files`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/files`,
         method: 'POST',
         data: data
     }, false, true, 'task.task_perform');
@@ -365,9 +356,9 @@ function deleteFileChildTaskComment(fileId, commentId, taskId, type) {
 /**
  *  Thêm nhật kí cho cộng việc
  */
-function addTaskLog(log) {
+function addTaskLog(log, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/logs`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/logs`,
         method: 'POST',
         data: log
     }, false, false, 'task.task_perform');
@@ -382,6 +373,37 @@ function getTaskLog(taskId) {
 };
 
 /**
+ * chỉnh sửa trạng thái lưu kho
+ * @param {*} taskId id công việc
+ */
+
+function editArchivedOfTask(taskId) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}`,
+        method: 'POST',
+        data: {
+            type: 'edit_archived'
+        }
+    }, false, true, 'task.task_management');
+}
+
+/**
+* edit status of task
+* @param {*} taskId id cua task
+* @param {*} status trang thai muon cap nhat
+*/
+function editStatusOfTask(taskId, status) {
+   return sendRequest({
+       url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}`,
+       method: 'POST',
+       data: {
+           status: status,
+           type: 'edit_status'
+       }
+   }, false, true, 'task.task_management');
+}
+
+/**
  * edit Task By Responsible Employees
  * @param {*} data du lieu cap nhat
  * @param {*} taskId id cua task muon cap nhat
@@ -389,9 +411,10 @@ function getTaskLog(taskId) {
 function editTaskByResponsibleEmployees(data, taskId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}`,
-        method: 'PATCH',
-        data: data,
-        params: {
+        method: 'POST',
+        data: {
+            data: data,
+            type: 'all',
             role: 'responsible',
         }
     }, true, true, 'task.task_management');
@@ -405,9 +428,10 @@ function editTaskByResponsibleEmployees(data, taskId) {
 function editTaskByAccountableEmployees(data, taskId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}`,
-        method: 'PATCH',
-        data: data,
-        params: {
+        method: 'POST',
+        data: {
+            data: data,
+            type: 'all',
             role: 'accountable',
         }
     }, true, true, 'task.task_management');
@@ -421,9 +445,9 @@ function editTaskByAccountableEmployees(data, taskId) {
 function evaluateTaskByResponsibleEmployees(data, taskId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/evaluate`,
-        method: 'PATCH',
-        data: data,
-        params: {
+        method: 'POST',
+        data: {
+            data: data,
             role: 'responsible',
         }
     }, true, true, 'task.task_management');
@@ -437,9 +461,9 @@ function evaluateTaskByResponsibleEmployees(data, taskId) {
 function evaluateTaskByConsultedEmployees(data, taskId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/evaluate`,
-        method: 'PATCH',
-        data: data,
-        params: {
+        method: 'POST',
+        data: {
+            data: data,
             role: 'consulted',
         }
     }, true, true, 'task.task_management');
@@ -453,9 +477,9 @@ function evaluateTaskByConsultedEmployees(data, taskId) {
 function evaluateTaskByAccountableEmployees(data, taskId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/evaluate`,
-        method: 'PATCH',
-        data: data,
-        params: {
+        method: 'POST',
+        data: {
+            data: data,
             role: 'accountable',
         }
     }, true, true, 'task.task_management');

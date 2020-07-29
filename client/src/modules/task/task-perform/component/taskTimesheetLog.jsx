@@ -74,13 +74,11 @@ class TaskTimesheetLog extends Component {
         const { performtasks, auth } = this.props;
 
         const timer = {
-            stoppedAt: Date.now(),
-            duration: Date.now() - performtasks.currentTimer.timesheetLogs[0].startedAt,
-            task: performtasks.currentTimer._id,
+            startedAt: performtasks.currentTimer.timesheetLogs[0].startedAt,
             description: this.state.description,
             timesheetLog: performtasks.currentTimer.timesheetLogs[0]._id
         };
-        await this.props.stopTimer(timer);
+        await this.props.stopTimer(performtasks.currentTimer._id,timer);
         this.setState(state => {
             return {
                 ...state,
@@ -163,7 +161,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = {
     getStatusTimer: performTaskAction.getTimerStatusTask,
     stopTimer: performTaskAction.stopTimerTask,
-    ABC: performTaskAction.ABC
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(TaskTimesheetLog));
