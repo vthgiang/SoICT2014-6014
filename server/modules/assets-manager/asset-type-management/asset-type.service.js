@@ -36,7 +36,6 @@ exports.createAssetType = async (data, company) => {
         company: company,
         typeNumber: data.typeNumber,
         typeName: data.typeName,
-        timeDepreciation: data.timeDepreciation,
         // parent: data.parent,
         parent: data.parent ? data.parent : null,
         description: data.description,
@@ -62,7 +61,6 @@ exports.updateAssetType = async (id, data) => {
     var assetTypeChange = {
         typeNumber: data.typeNumber,
         typeName: data.typeName,
-        timeDepreciation: data.timeDepreciation,
         // parent: data.parent,
         parent: data.parent ? data.parent : null,
         description: data.description,
@@ -99,7 +97,6 @@ exports.checkAssetTypeExisted = async (typeNumber, company) => {
  */
 exports.getAssetTypes = async (company) => {
     const list = await AssetType.find({ company });
-    console.log(list, 'list')
     const dataConverted = list.map( type => {
         return {
             id: type._id.toString(),
@@ -107,31 +104,30 @@ exports.getAssetTypes = async (company) => {
             value: type._id.toString(),
             label: type.typeName,
             title: type.typeName,
-            parent_id: type.parent? type.parent.toString() : null
+            parent_id: type.parent !== undefined ? type.parent.toString() : null
         }
     });
     const tree = await arrayToTree(dataConverted, {});
-    console.log(tree, 'tree')
     
     return {list, tree};
 }
 
 exports.createAssetTypes = async (company, data) => {
-    console.log(data, 'data')
-    await AssetType.create({
+    let query = {
         company,
         typeNumber: data.typeNumber,
         typeName: data.typeName,
         description: data.description,
-        parent: data.parent
-        // parent: data.parent ? data.parent : null,
-    });
+    }
+    if(data.parent.length){
+        query.parent = data.parent
+    }
+    await AssetType.create(query);
 
     return await this.getAssetTypes(company);
 }
 
 exports.editAssetType = async (id, data) => {
-    console.log(data, 'data')
     const type = await AssetType.findById(id);
     type.typeNumber = data.typeNumber,
     type.typeName = data.typeName,
