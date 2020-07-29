@@ -77,8 +77,11 @@ function getLinkOfRole() {
 // Lấy tất cả các vai trò cùng phòng ban với người dùng
 function getRoleSameDepartmentOfUser(currentRole) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/role/organizational-units/${currentRole}`,
+        url: `${LOCAL_SERVER_API}/role/roles`,
         method: 'GET',
+        params: {
+            roleId: currentRole,
+        }
     }, false, true, 'super_admin.user');
 }
 
@@ -120,24 +123,33 @@ function getDepartmentOfUser() {
     const id = getStorage("userId");
     
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/users/${id}/organizational-units`,
+        url: `${ LOCAL_SERVER_API }/organizational-units/organizational-units`,
         method: 'GET',
+        params: {
+            userId: id,
+        }
     }, false, true, 'super_admin.organization_unit');
 }
 
 // Get all children of an organizational unit and that organizational unit
 function getChildrenOfOrganizationalUnitsAsTree(id){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/user/organizational-units/${id}/users`,
+        url: `${LOCAL_SERVER_API}/user/users`,
         method: 'GET',
+        params: {
+            unitId: id
+        }
     }, false, true, 'super_admin.user');
 }
 
 // Get all user in organizational unit of company
 function getAllUserInAllUnitsOfCompany(){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/user/organizational-units/${undefined}/users`,
+        url: `${LOCAL_SERVER_API}/user/users`,
         method: 'GET',
+        params: {
+            unitId: -1,
+        }
     }, false, true, 'super_admin.user');
 }
 

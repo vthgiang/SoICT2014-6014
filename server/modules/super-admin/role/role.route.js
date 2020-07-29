@@ -5,7 +5,6 @@ const { auth } = require('../../../middleware');
 
 router.get("/roles", auth, RoleController.getRoles);
 router.get("/roles/:id", auth, RoleController.getRole);
-router.get('/organizational-units/:id', auth, RoleController.getAllRolesInSameOrganizationalUnitWithRole);
 
 router.post("/roles", auth, RoleController.createRole);
 

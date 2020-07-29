@@ -109,8 +109,12 @@ function resetPassword(otp, email, password) {
 
 function getComponentOfUserInLink(currentRole, linkId) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/component/role/${currentRole}/link/${linkId}/components`,
+        url: `${ LOCAL_SERVER_API }/component/components`,
         method: 'GET',
+        params: {
+            currentRole: currentRole,
+            linkId: linkId,
+        }
     }, false, true, 'auth');
 }
 

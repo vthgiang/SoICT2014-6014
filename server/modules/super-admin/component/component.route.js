@@ -5,8 +5,6 @@ const { auth, authFunc } = require('../../../middleware');
 
 router.get("/components", auth, ComponentController.getComponents);
 router.get("/components/:id", auth, ComponentController.getComponent);
-// Lấy tất cả các component của user trên trang web tương ứng với role hiện tại của user
-router.get("/role/:roleId/link/:linkId/components", authFunc(false), ComponentController.getComponentsOfUserInLink);
 
 router.post("/components", auth, ComponentController.createComponent);
 

@@ -7,8 +7,10 @@ const { LogInfo, LogError } = require('../../../logs');
  */
 
 exports.getOrganizationalUnits = async (req, res) => {
-    if (req.query.deanOfOrganizationalUnit !== undefined){
+    if (req.query.deanOfOrganizationalUnit){
         getOrganizationalUnitsThatUserIsDean(req, res);
+    } else if(req.query.userId){
+        getOrganizationalUnitsOfUser(req, res);
     } else {
         try {
             var list = await OrganizationalUnitService.getOrganizationalUnits(req.user.company._id); 
@@ -31,6 +33,27 @@ exports.getOrganizationalUnits = async (req, res) => {
         }
     }
 };
+
+getOrganizationalUnitsOfUser = async (req, res) =>{
+    try {
+        const department = await OrganizationalUnitService.getOrganizationalUnitsOfUser(req.query.userId);
+        
+        await LogInfo(req.user.email, 'GET_DEPARTMENT_THAT_USER_IS_DEAN', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_departments_success'],
+            content: department
+        });
+    }
+    catch (error) {
+        await LogError(req.user.email, 'GET_DEPARTMENT_THAT_USER_IS_DEAN', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_departments_faile'],
+            content: error
+        });
+    }
+}
 
 getOrganizationalUnitsThatUserIsDean = async (req, res) =>{
     try {

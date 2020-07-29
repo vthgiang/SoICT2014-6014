@@ -134,6 +134,24 @@ exports.getOrganizationalUnitByUserRole = async (companyId, roleId) => {
 }
 
 /**
+ * Lấy thông tin đơn vị của user
+ * @userId id của user
+ */
+exports.getOrganizationalUnitsOfUser = async (userId) => {
+    const roles = await UserRole.find({ userId });
+    const newRoles = roles.map(role => role.roleId.toString());
+    const departments = await OrganizationalUnit.find({
+        $or: [
+            { 'deans': { $in: newRoles } },
+            { 'viceDeans': { $in: newRoles } },
+            { 'employees': { $in: newRoles } }
+        ]
+    });
+
+    return departments;
+}
+
+/**
  * Lấy thông tin đơn vị mà user làm trưởng
  * @userId id của user
  */

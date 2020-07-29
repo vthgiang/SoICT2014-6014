@@ -8,16 +8,18 @@ const OrganizationalUnitService = require('../organizational-unit/organizational
  * Lấy danh sách tất cả user trong 1 công ty
  * @company id của công ty
  */
-exports.getUsers = async (company, query) => {
+exports.getUsers = async (company, query) => { 
     var page = query.page;
     var limit = query.limit;
     var name = query.name;
     var userRole = query.userRole;
     var departmentIds = query.departmentIds;
+    var departmentIds = query.departmentIds;
+    var unitId = query.unitId;
 
     var keySearch = { company: company };
 
-    if (!page && !limit && !userRole && !departmentIds) {
+    if (!page && !limit && !userRole && !departmentIds && !unitId) {
         if (name) {
             keySearch = { ...keySearch, name: { $regex: name, $options: "i" } };
 
@@ -37,7 +39,7 @@ exports.getUsers = async (company, query) => {
                     { path: 'company' }
                 ]);
         }
-    } else if (page && limit && !userRole && !departmentIds) {
+    } else if (page && limit && !userRole && !departmentIds && !unitId) {
         const option = (query.key && query.value)
             ? Object.assign({ company }, { [`${query.key}`]: new RegExp(query.value, "i") })
             : { company };
@@ -51,7 +53,7 @@ exports.getUsers = async (company, query) => {
                 { path: 'company' }
             ]
         });
-    } else if (!page && !limit && (userRole || departmentIds)) {
+    } else if (!page && !limit && (userRole || departmentIds) && !unitId) {
         if (userRole) {
             let department = await OrganizationalUnit.findOne({
                 $or: [
@@ -70,6 +72,8 @@ exports.getUsers = async (company, query) => {
 
             return users;
         }
+    } else if (unitId){
+        return getAllUserInUnitAndItsSubUnits(company, unitId);
     }
 }
 
@@ -107,11 +111,13 @@ exports.getAllEmployeeOfUnitByIds = async (id) => {
  * @id Id công ty
  * @unitID Id của của đơn vị cần lấy đơn vị con
  */
-exports.getAllUserInUnitAndItsSubUnits = async (id, unitId) => {
+getAllUserInUnitAndItsSubUnits = async (id, unitId) => {console.log("############################");
     //Lấy tất cả các đơn vị con của 1 đơn vị
     var data;
 
-    if (unitId !== "undefined") {
+    console.log("**", typeof unitId);
+
+    if (unitId !== '-1') {
 
         var organizationalUnit = await OrganizationalUnit.findById(unitId);
         // TODO: tối ưu hóa OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree
