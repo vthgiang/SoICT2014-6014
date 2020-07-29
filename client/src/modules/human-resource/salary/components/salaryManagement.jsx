@@ -168,6 +168,7 @@ class SalaryManagement extends Component {
                             }
                         })
                     };
+
                     total = total + parseInt(x.mainSalary);
                 }
 
@@ -374,7 +375,7 @@ class SalaryManagement extends Component {
                     </table>
                     {salary.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listSalarys === 'undefined' || listSalarys.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (typeof listSalarys === 'undefined' || listSalarys.length === 0) && <div className="--info-panel">{translate('confirm.no_data')}</div>
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
