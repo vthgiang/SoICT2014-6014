@@ -3,9 +3,6 @@ import { UserConstants } from "./constants";
 
 export const UserActions = {
     get,
-    edit,
-    create,
-    destroy,
     getRoleSameDepartment,
     getAllUserOfCompany,
     getAllUserOfDepartment,
@@ -15,6 +12,9 @@ export const UserActions = {
     getAllUserInAllUnitsOfCompany,
     getAllEmployeeOfUnitByRole,
     getAllEmployeeOfUnitByIds,
+    edit,
+    create,
+    destroy,
 };
 
 /**
@@ -97,66 +97,6 @@ function getAllEmployeeOfUnitByIds(ids) {
                 })
             })
     };
-}
-/**
- * Chỉnh sửa thông tin tài khoản người dùng
- * @id id tài khoản
- * @data dữ liệu chỉnh sửa
- */
-function edit(id, data){
-    return dispatch => {
-        dispatch({ type: UserConstants.EDIT_USER_REQUEST});
-        UserServices.edit(id, data)
-            .then(res => {
-                dispatch({
-                    type: UserConstants.EDIT_USER_SUCCESS,
-                    payload: res.data.content
-                });
-            })
-            .catch(err => {
-                dispatch({ type: UserConstants.EDIT_USER_FAILE});
-            })
-    }
-}
-
-/**
- * Tạo tài khoản cho user
- * @data dữ liệu về user
- */
-function create(data){
-    return dispatch => {
-        dispatch({ type: UserConstants.CREATE_USER_REQUEST});
-        UserServices.create(data)
-            .then(res => {
-                dispatch({
-                    type: UserConstants.CREATE_USER_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({ type: UserConstants.CREATE_USER_FAILE});
-            })
-    }
-}
-
-/**
- * Xóa tài khoản người dùng
- * @id id tài khoản người dùng
- */
-function destroy(id){
-    return dispatch => {
-        dispatch({ type: UserConstants.DELETE_USER_REQUEST});
-        UserServices.destroy(id)
-            .then(res => {
-                dispatch({
-                    type: UserConstants.DELETE_USER_SUCCESS,
-                    payload: id
-                })
-            })
-            .catch(err => {
-                dispatch({ type: UserConstants.DELETE_USER_FAILE});
-            })
-    }
 }
 
 export const getRoles = () => {
@@ -350,4 +290,65 @@ function getAllUserInAllUnitsOfCompany() {
                 })
             })
     };
+}
+
+/**
+ * Chỉnh sửa thông tin tài khoản người dùng
+ * @id id tài khoản
+ * @data dữ liệu chỉnh sửa
+ */
+function edit(id, data){
+    return dispatch => {
+        dispatch({ type: UserConstants.EDIT_USER_REQUEST});
+        UserServices.edit(id, data)
+            .then(res => {
+                dispatch({
+                    type: UserConstants.EDIT_USER_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(err => {
+                dispatch({ type: UserConstants.EDIT_USER_FAILE});
+            })
+    }
+}
+
+/**
+ * Tạo tài khoản cho user
+ * @data dữ liệu về user
+ */
+function create(data){
+    return dispatch => {
+        dispatch({ type: UserConstants.CREATE_USER_REQUEST});
+        UserServices.create(data)
+            .then(res => {
+                dispatch({
+                    type: UserConstants.CREATE_USER_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: UserConstants.CREATE_USER_FAILE});
+            })
+    }
+}
+
+/**
+ * Xóa tài khoản người dùng
+ * @id id tài khoản người dùng
+ */
+function destroy(id){
+    return dispatch => {
+        dispatch({ type: UserConstants.DELETE_USER_REQUEST});
+        UserServices.destroy(id)
+            .then(res => {
+                dispatch({
+                    type: UserConstants.DELETE_USER_SUCCESS,
+                    payload: id
+                })
+            })
+            .catch(err => {
+                dispatch({ type: UserConstants.DELETE_USER_FAILE});
+            })
+    }
 }

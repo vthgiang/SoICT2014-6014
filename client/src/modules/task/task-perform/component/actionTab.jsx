@@ -167,7 +167,7 @@ class ActionTab extends Component {
             }
         })
     }
-    setValueRating = async (id, newValue, firstTime) => {
+    setValueRating = async (actionId,taskId, newValue, firstTime) => {
         await this.setState(state => {
             return {
                 ...state,
@@ -181,11 +181,11 @@ class ActionTab extends Component {
             }
         })
         var { evaluations } = this.state;
-        this.props.evaluationAction(id, evaluations)
+        this.props.evaluationAction(actionId,taskId, evaluations)
         await this.setState(state => {
             return {
                 ...state,
-                showEvaluations: [...this.state.showEvaluations, id]
+                showEvaluations: [...this.state.showEvaluations, actionId]
             }
         })
     }
@@ -538,7 +538,7 @@ class ActionTab extends Component {
     }
     handleConfirmAction = async (e, actionId, userId, taskId) => {
         e.preventDefault();
-        this.props.confirmAction(actionId, userId, taskId)
+        this.props.confirmAction(userId, actionId, taskId)
     }
     handleChange = (event) => {
 
@@ -852,7 +852,7 @@ class ActionTab extends Component {
                                                                                     fullSymbol="fa fa-star fa-2x high"
                                                                                     initialRating={0}
                                                                                     onClick={(value) => {
-                                                                                        this.setValueRating(item._id, value, 1);
+                                                                                        this.setValueRating(item._id,task._id, value, 1);
                                                                                     }}
                                                                                     onHover={(value) => {
                                                                                         this.setHover(item._id, value)
@@ -910,7 +910,7 @@ class ActionTab extends Component {
                                                                                         fullSymbol="fa fa-star fa-2x high"
                                                                                         initialRating={0}
                                                                                         onClick={(value) => {
-                                                                                            this.setValueRating(item._id, value, 0);
+                                                                                            this.setValueRating(item._id,task._id, value, 0);
                                                                                         }}
                                                                                         onHover={(value) => {
                                                                                             this.setHover(item._id, value)

@@ -23,7 +23,7 @@ const TaskProcessSchema = new Schema({
     code: {
       type: String,
     },
-    name: {
+    nameTask: {
       type: String
     },
     description: {

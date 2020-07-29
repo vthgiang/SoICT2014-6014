@@ -4,16 +4,26 @@ import { getStorage } from '../../../../config';
 
 export const DepartmentServices = {
     get,
+    getDepartmentsThatUserIsDean,
     create,
     edit,
     destroy,
-    getDepartmentsThatUserIsDean,
 };
 
 function get() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/organizational-units/organizational-units`,
         method: 'GET',
+    }, false, true, 'super_admin.organization_unit');
+}
+
+function getDepartmentsThatUserIsDean(currentRole) {
+    var id = getStorage("userId");
+
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/organizational-units/organizational-units`,
+        method: 'GET',
+        params: {deanOfOrganizationalUnit: id}
     }, false, true, 'super_admin.organization_unit');
 }
 
@@ -40,14 +50,4 @@ function destroy(departmentId) {
     }, true, true, 'super_admin.organization_unit');
 }
 
-
-function getDepartmentsThatUserIsDean(currentRole) {
-    var id = getStorage("userId");
-
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/organizational-units/organizational-units`,
-        method: 'GET',
-        params: {deanOfOrganizationalUnit: id}
-    }, false, true, 'super_admin.organization_unit');
-}
 

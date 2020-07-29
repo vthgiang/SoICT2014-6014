@@ -3,9 +3,9 @@ import { RoleConstants } from "./constants";
 
 export const RoleActions = {
     get,
+    show,
     edit,
     create,
-    show,
     destroy,
 }
 
