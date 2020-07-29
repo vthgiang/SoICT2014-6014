@@ -258,9 +258,9 @@ function deleteCommentOfTaskComment(commentId, taskId) {
  * @param {*} actionId id của action
  * @param {*} evaluation điểm rating người khác chấm
  */
-function evaluationAction(actionId, evaluation) {
+function evaluationAction(actionId, taskId, evaluation) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/task-actions/${actionId}`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}`,
         method: 'PATCH',
         data: evaluation,
     }, false, true, 'task.task_perform')
@@ -272,11 +272,13 @@ function evaluationAction(actionId, evaluation) {
  * @param {*} idUser id của người xác nhận
  * @param {*} taskId id của task
  */
-function confirmAction(actionId, idUser, taskId) {
+function confirmAction(userId, actionId, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions`,
-        method: 'GET',
-        params: { actionId: actionId, idUser: idUser }
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}`,
+        method: 'POST',
+        data: {
+            userId: userId,
+        }
     }, false, true, 'task.task_perform');
 };
 
@@ -391,14 +393,14 @@ function editArchivedOfTask(taskId) {
 * @param {*} status trang thai muon cap nhat
 */
 function editStatusOfTask(taskId, status) {
-   return sendRequest({
-       url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}`,
-       method: 'POST',
-       data: status,
-       params: {
-           type: 'edit_status'
-       }
-   }, false, true, 'task.task_management');
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}`,
+        method: 'POST',
+        data: status,
+        params: {
+            type: 'edit_status'
+        }
+    }, false, true, 'task.task_management');
 }
 
 /**
