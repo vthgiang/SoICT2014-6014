@@ -346,14 +346,12 @@ exports.data = [
     { path: '/taskprocess/diagrams/:diagramId', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
     // Module TaskTemplate
-    { path: '/tasktemplates', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasktemplates/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasktemplates/role/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasktemplates/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasktemplates/user', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasktemplates/:id', method: 'DELETE', roles: ['Dean'] },
-    { path: '/tasktemplates/edit/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasktemplates/importTaskTemplate', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/task-templates', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/task-templates/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/task-templates', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/task-templates/:id', method: 'DELETE', roles: ['Dean'] },
+    { path: '/task/task-templates/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/task-templates/import', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
 
     //asset-type
