@@ -33,12 +33,13 @@ exports.getTaskEvaluations = async (data) => {
     let filterDate = {};
 
     if (data.responsibleEmployees) {
-        responsible = data.responsibleEmployees.toString();
+        responsible = data.responsibleEmployees;
     }
 
     if (data.accountableEmployees) {
-        accountable = data.accountableEmployees.toString();
+        accountable = data.accountableEmployees;
     }
+
     (taskStatus === 1) ? taskStatus = "Finished" : (taskStatus === 2 ? taskStatus = "Inprocess" : "");
 
     // Lọc nếu ngày bắt đầu và kết thức có giá trị
@@ -68,6 +69,7 @@ exports.getTaskEvaluations = async (data) => {
             }
         }
     }
+
     let condition = [
         { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
         { $match: { taskTemplate: mongoose.Types.ObjectId(idTemplate) } },
@@ -90,6 +92,7 @@ exports.getTaskEvaluations = async (data) => {
             ...condition,
             filterDate
         ]
+
     } else
         // nếu không lọc theo người thực hiện và người phê duyệt
         if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
@@ -102,8 +105,8 @@ exports.getTaskEvaluations = async (data) => {
         } else {
             condition = [
                 { $match: { status: taskStatus } },
-                { $match: { responsibleEmployees: { $all: [[mongoose.Types.ObjectId(responsible),]] } } },
-                { $match: { accountableEmployees: { $all: [[mongoose.Types.ObjectId(accountable),]] } } },
+                { $match: { responsibleEmployees: { $in: [...responsible.map(x => mongoose.Types.ObjectId(x.toString()))] } } },
+                { $match: { accountableEmployees: { $in: [...accountable.map(y => mongoose.Types.ObjectId(y.toString()))] } } },
                 ...condition,
                 filterDate
             ]
@@ -111,6 +114,21 @@ exports.getTaskEvaluations = async (data) => {
 
     let result = await Task.aggregate(condition);
 
+    //test eval
+    filterConditions.map((element, index) => {
+        // filterC[index] = element.replace(/p1/g, 4000);
+        console.log(element)
+        if (element.includes("p1") === true) {
+            filterC = element.toString().replace(/p1/g, 4000);
+            let evalP1 = eval(filterC);
+            console.log('filterP1', evalP1);
+        } else
+            if (element.includes("p2") === true) {
+                filterD = element.toString().replace(/p2/g, 3333);
+                let evalP2 = eval(filterD);
+                console.log('filterp2', evalP2);
+            }
+    });
 
     // tính trung bình cộng
     let condition2;
@@ -136,10 +154,8 @@ exports.getTaskEvaluations = async (data) => {
 
     let result2 = await Task.aggregate(condition2);
 
-    // if (a === 5) {
     return { result, result2 };
 
-    // }
 }
 
 /**
@@ -919,8 +935,8 @@ exports.createTask = async (task) => {
 
     email = user.map(item => item.email); // Lấy ra tất cả email của người dùng
     email.push("trinhhong102@gmail.com");
-    var html = `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}">${process.env.WEBSITE}/task?taskId=${task._id}</a></p> ` +
-        `<h3>Thông tin công viêc</h3>` +
+    var html = `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${task._id} </a></p> ` +
+        `<h3>Thông tin công việc</h3>` +
         `<p>Tên công việc : ${task.name}</p>` +
         `<p>Mô tả : ${task.description}</p>` +
         `<p>Người thực hiện</p> ` +
@@ -957,31 +973,6 @@ exports.deleteTask = async (id) => {
     return task;
 }
 
-/**
- * edit status of task
- */
-exports.editTaskStatus = async (taskID, status) => {
-    var task = await Task.findByIdAndUpdate(taskID,
-        { $set: { status: status } },
-        { new: true }
-    );
-    return task;
-}
-
-/**
- * Chinh sua trang thai luu kho cua cong viec
- */
-exports.editArchivedOfTask = async (taskID) => {
-    var t = await Task.findByIdAndUpdate(taskID);
-    var isArchived = t.isArchived;
-
-    var task = await Task.findByIdAndUpdate(taskID,
-        { $set: { isArchived: !isArchived } },
-        { new: true }
-    );
-
-    return task;
-}
 /**
  * get subtask
  */
@@ -1044,8 +1035,7 @@ exports.getTasksByUser = async (data) => {
  * @param {*} organizationalUnitId 
  * @param {*} month 
  */
-exports.getAllTaskOfOrganizationalUnit= async (query) => {
-    console.log("====", query)
+exports.getAllTaskOfOrganizationalUnit = async (query) => {
     let organizationalUnit;
     let now, currentYear, currentMonth, endOfCurrentMonth, endOfLastMonth;
 

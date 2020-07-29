@@ -379,7 +379,7 @@ export default {
             sender: 'Gửi từ',
             departments: 'Thông báo tới đơn vị/phòng ban',
             users: 'Thông báo đến người dùng cụ thể',
-            from: 'từ',
+            from: 'Từ',
             at: 'lúc',
 
             add: 'Tạo thông báo',
@@ -388,6 +388,7 @@ export default {
             note: 'Chú thích',
             info: 'Thông tin thông báo',
             delete: 'Xóa thông báo',
+            new: 'Mới',
 
             // Thông điệp trả về từ server
             create_notification_success: 'Tạo thông báo thành công',

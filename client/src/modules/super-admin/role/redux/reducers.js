@@ -32,8 +32,8 @@ export function role(state = initState, action) {
     var indexPaginate = -1;
     switch (action.type) {
         case RoleConstants.GET_ROLES_REQUEST:
-        case RoleConstants.CREATE_ROLE_REQUEST:
         case RoleConstants.SHOW_ROLE_REQUEST:
+        case RoleConstants.CREATE_ROLE_REQUEST:
         case RoleConstants.EDIT_ROLE_REQUEST:
         case RoleConstants.GET_ROLES_PAGINATE_REQUEST:
         case RoleConstants.DELETE_ROLE_REQUEST:

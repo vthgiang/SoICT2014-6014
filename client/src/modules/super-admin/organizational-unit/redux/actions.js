@@ -3,10 +3,10 @@ import { DepartmentConstants } from "./constants";
 
 export const DepartmentActions = {
     get,
+    getDepartmentsThatUserIsDean,
     create,
     edit,
     destroy,
-    getDepartmentsThatUserIsDean,
 }
 
 /**
@@ -26,6 +26,30 @@ function get(){
                 dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_FAILE});
             })
     }
+}
+
+/**
+ * Lấy thông tin đơn vị mà user làm trưởng
+ */
+function getDepartmentsThatUserIsDean(){
+    return dispatch => {
+        dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_REQUEST});
+        DepartmentServices.getDepartmentsThatUserIsDean()
+            .then(res => {
+                dispatch({
+                    type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_SUCCESS,
+                    payload: {
+                        data: res.data.content
+                    }
+                });
+            })
+            .catch(err => {
+                dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_FAILURE});
+            })
+    }
+    function request(currentRole) { return { type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_REQUEST, currentRole } }
+    function success(Department) { return { type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_SUCCESS, Department } }
+    function failure(error) { return { type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_FAILURE, error } }
 }
 
 /**
@@ -91,28 +115,4 @@ function destroy(departmentId){
                 dispatch({ type: DepartmentConstants.DELETE_DEPARTMENT_FAILE});
             })
     }
-}
-
-/**
- * Lấy thông tin đơn vị mà user làm trưởng
- */
-function getDepartmentsThatUserIsDean(){
-    return dispatch => {
-        dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_REQUEST});
-        DepartmentServices.getDepartmentsThatUserIsDean()
-            .then(res => {
-                dispatch({
-                    type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_SUCCESS,
-                    payload: {
-                        data: res.data.content
-                    }
-                });
-            })
-            .catch(err => {
-                dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_FAILURE});
-            })
-    }
-    function request(currentRole) { return { type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_REQUEST, currentRole } }
-    function success(Department) { return { type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_SUCCESS, Department } }
-    function failure(error) { return { type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_FAILURE, error } }
 }

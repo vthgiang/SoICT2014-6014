@@ -34,6 +34,8 @@ export const performTaskAction = {
 
     editTaskByAccountableEmployees,
     editTaskByResponsibleEmployees,
+    editStatusOfTask,
+    editArchivedOfTask,
 
     evaluateTaskByAccountableEmployees,
     evaluateTaskByConsultedEmployees,
@@ -280,20 +282,20 @@ function deleteCommentOfTaskComment(task, id) {
             );
     }
 }
-function evaluationAction(id, evaluations) {
+function evaluationAction(actionId, taskId, evaluation) {
     return dispatch => {
         dispatch({ type: performTaskConstants.EVALUATION_ACTION_REQUEST });
-        performTaskService.evaluationAction(id, evaluations)
+        performTaskService.evaluationAction(actionId, taskId, evaluation)
             .then(
                 payload => dispatch({ type: performTaskConstants.EVALUATION_ACTION_SUCCESS, payload }),
                 error => dispatch({ type: performTaskConstants.EVALUATION_ACTION_FAILURE, error })
             );
     }
 }
-function confirmAction(id, idUser, taskId) {
+function confirmAction(userId, actionId, taskId) {
     return dispatch => {
         dispatch({ type: performTaskConstants.CONFIRM_ACTION_REQUEST });
-        performTaskService.confirmAction(id, idUser, taskId)
+        performTaskService.confirmAction(userId, actionId, taskId)
             .then(
                 payload => dispatch({ type: performTaskConstants.CONFIRM_ACTION_SUCCESS, payload }),
                 error => dispatch({ type: performTaskConstants.CONFIRM_ACTION_FAILURE, error })
@@ -487,6 +489,49 @@ function evaluateTaskByResponsibleEmployees(data, taskId) {
             })
             .catch(error => {
                 dispatch({ type: performTaskConstants.EVALUATE_TASK_BY_RESPONSIBLE_FAILURE, error });
+            });
+    };
+}
+
+
+/**
+ * edit Status Of Task
+ * @param {*} id id task
+ * @param {*} status trang thai muon cap nhat
+ */
+function editStatusOfTask(id, status) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_REQUEST, id });
+        performTaskService.editStatusOfTask(id, status) //(taskid, { status: "dang thuc hien" })
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.EDIT_STATUS_OF_TASK_SUCCESS,
+                    // payload: res.data.content.task
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_FAILURE, error });
+            });
+    };
+}
+
+/**
+ * edit archived of task
+ * @param {*} id id of task
+ */
+function editArchivedOfTask(id) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_REQUEST, id });
+        performTaskService.editArchivedOfTask(id)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_FAILURE, error });
             });
     };
 }

@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DeleteNotification, PaginateBar, DateTimeConverter } from '../../../common-components';
 import { NotificationActions } from '../redux/actions';
 import NotificationSentInfo from './notificationSentInfo';
+import parse from 'html-react-parser';
 
 class TabNotificationSent extends Component {
     constructor(props) {
@@ -48,7 +49,7 @@ class TabNotificationSent extends Component {
                                     <DateTimeConverter dateTime={notification.createdAt} type={1}/>
                                     
                                     <div className="tools">
-                                        <a href='#' onClick={() => this.showNotificationInformation(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
+                                        <a href='#abc' onClick={() => this.showNotificationInformation(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
                                         <DeleteNotification 
                                             content={translate('notification.delete')}
                                             data={{ id: notification._id, info: notification.title }}
@@ -56,7 +57,7 @@ class TabNotificationSent extends Component {
                                         />
                                     </div>
                                 </div>
-                                <span className="threedots" style={{maxWidth: "100%", display: "inline-block"}}><b>{notification.title}</b> - {notification.content}</span>
+                                <span className="threedots" style={{maxWidth: "100%", display: "inline-block"}}><b>{notification.title}</b>  {parse(notification.content)}</span>
                                 
                             </li>
                         ): notifications.isLoading ?
@@ -102,7 +103,10 @@ class TabNotificationSent extends Component {
     }
 }
  
-const mapState = state => state;
+function mapState(state) {
+    const { notifications } = state;
+    return { notifications };
+}
 const actions = {
     getAllManualNotifications: NotificationActions.getAllManualNotifications,
     paginateManualNotifications: NotificationActions.paginateManualNotifications,

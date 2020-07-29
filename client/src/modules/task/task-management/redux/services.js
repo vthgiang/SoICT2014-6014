@@ -17,9 +17,7 @@ export const taskManagementService = {
     getCreatorTaskByUser,
     addNewTask,
     editTask,
-    editArchivedOfTask,
     deleteTaskById,
-    editStatusOfTask,
     getSubTask,
     getTasksByUser,
     getTaskEvaluations,
@@ -286,38 +284,12 @@ function deleteTaskById(taskId) {
 }
 
 /**
- * edit status of task
- * @param {*} taskId id cua task
- * @param {*} status trang thai muon cap nhat
- */
-function editStatusOfTask(taskId, status) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks/${taskId}`,
-        method: 'PATCH',
-        data: status,
-    }, false, true, 'task.task_management');
-}
-
-/**
- * chỉnh sửa trạng thái lưu kho
- * @param {*} taskId id công việc
- */
-
-function editArchivedOfTask(taskId) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks/${taskId}/archived`,
-        method: 'PATCH',
-    }, false, true, 'task.task_management');
-}
-
-/**
  * lấy công việc con
  * @param {*} taskId id công việc cha
  */
-
 function getSubTask(taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks/${taskId}/sub-task`,
+        url: `${LOCAL_SERVER_API}/task/tasks/${taskId}/sub-tasks`,
         method: 'GET'
     }, false, true, 'task.task_management');
 }

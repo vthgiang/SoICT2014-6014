@@ -177,8 +177,7 @@ class TaskReportManager extends Component {
                         <div className="form-group">
                             <label className="form-control-static">Sắp xếp theo</label>
                             <SelectBox
-
-                                id={`select-sort-date22`}
+                                id="select-sort-date22"
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={
@@ -191,6 +190,7 @@ class TaskReportManager extends Component {
                                 multiple={false}
                             />
                         </div>
+
                         <div className="form-group" >
                             <label></label>
                             <button type="button" className="btn btn-success" onClick={this.search} title={translate('form.search')}>{translate('form.search')}</button>

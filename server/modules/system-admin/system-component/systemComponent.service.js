@@ -29,10 +29,10 @@ exports.getAllSystemComponents = async (query) => {
     }
 }
 
-exports.getSystemComponent = async (id) => {
+exports.getSystemComponent = async (systemComponentId) => {
 
     return await SystemComponent
-        .findById(id)
+        .findById(systemComponentId)
         .populate([
             { path: 'roles', model: RootRole },
             { path: 'link', model: SystemLink }
@@ -47,9 +47,9 @@ exports.createSystemComponent = async (name, description, link, roles) => {
     return await SystemComponent.create({ name, description, link, roles });
 }
 
-exports.editSystemComponent = async (id, name, description, link, roles) => {
+exports.editSystemComponent = async (systemComponentId, name, description, link, roles) => {
     
-    const component = await SystemComponent.findById(id);
+    const component = await SystemComponent.findById(systemComponentId);
     const checkComponent = await SystemComponent.findOne({ name });
     if(checkComponent) throw ['system_component_name_invalid', 'system_component_name_exist'];
     
@@ -62,10 +62,10 @@ exports.editSystemComponent = async (id, name, description, link, roles) => {
     return component;
 }
 
-exports.deleteSystemComponent = async (id) => {
+exports.deleteSystemComponent = async (systemComponentId) => {
 
-    let component = await SystemComponent.findById(id);
-    await SystemComponent.deleteOne({ _id: id });
+    let component = await SystemComponent.findById(systemComponentId);
+    await SystemComponent.deleteOne({ _id: systemComponentId });
     
     return component;
 }

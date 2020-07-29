@@ -46,11 +46,25 @@ exports.editXmlDiagram = async (params, body) => {
   let data = await TaskProcess.findByIdAndUpdate(params.diagramId,
     {
       $set: {
-        xmlDiagram: body.createXmlDiagram,
-        infoTask: info
+        xmlDiagram: body.xmlDiagram,
+        infoTask: info,
+        description: body.description,
+        nameProcess: body.nameProcess,
+        creator: body.creator,
       }
     }
   )
-  let data1 = await TaskProcess.findById(params.diagramId)
+  let data1 = await TaskProcess.find().populate({ path: 'creator', model: User ,select: 'name'});
   return data1;
+}
+/**
+ * Xóa diagram theo id
+ * @param {ObjectId} diagramId 
+ */
+exports.deleteXmlDiagram = async (diagramId) => {
+  await TaskProcess.findOneAndDelete({
+      _id: diagramId,
+  });
+  let data = await TaskProcess.find().populate({ path: 'creator', model: User ,select: 'name'});
+  return data;
 }

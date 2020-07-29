@@ -12,7 +12,7 @@ export const SystemLinkServices = {
 
 function getAllSystemLinks(params) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/links-default-management`,
+        url: `${ LOCAL_SERVER_API }/system-admin/system-link/system-links`,
         method: 'GET',
         params
     }, false, true, 'system_admin.system_link')
@@ -20,7 +20,7 @@ function getAllSystemLinks(params) {
 
 function getAllSystemLinkCategories() {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/links-default-management/categories`,
+        url: `${ LOCAL_SERVER_API }/system-admin/system-link/system-links/categories`,
         method: 'GET'
     }, false, true, 'system_admin.system_link');
 }
@@ -33,32 +33,32 @@ function getPaginate(data) {
     }, false, true, 'system_admin.system_link');
 }
 
-function getSystemLink(id) {
+function getSystemLink(systemLinkId) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
+        url: `${ LOCAL_SERVER_API }/system-admin/system-link/system-links/${systemLinkId}`,
         method: 'GET'
     }, false, true, 'system_admin.system_link');
 }
 
 function createSystemLink(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/links-default-management`,
+        url: `${ LOCAL_SERVER_API }/system-admin/system-link/system-links/create`,
         method: 'POST',
         data
     }, true, true, 'system_admin.system_link');
 }
 
-function editSystemLink(id, data) {
+function editSystemLink(systemLinkId, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
+        url: `${ LOCAL_SERVER_API }/system-admin/system-link/system-links/${systemLinkId}`,
         method: 'PATCH',
         data
     }, true, true, 'system_admin.system_link');
 }
 
-function deleteSystemLink(id) {
+function deleteSystemLink(systemLinkId) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/links-default-management/${id}`,
+        url: `${ LOCAL_SERVER_API }/system-admin/system-link/system-links/${systemLinkId}`,
         method: 'DELETE'
     }, true, true, 'system_admin.system_link');
 }

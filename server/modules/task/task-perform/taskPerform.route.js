@@ -17,7 +17,7 @@ router.post('/tasks/:taskId/files', auth, uploadFile([{ name: 'files', path: '/f
 
 
 //Task Action
-router.get('/tasks/:taskId/task-actions', auth, PerformTaskController.confirmAction);
+router.post('/tasks/:taskId/task-actions/:actionId', auth, PerformTaskController.confirmAction);
 router.post('/tasks/:taskId/task-actions', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.createTaskAction);
 router.patch('/tasks/:taskId/task-actions/:actionId', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.editTaskAction);
 router.delete('/tasks/:taskId/task-actions/:actionId', auth, PerformTaskController.deleteTaskAction);
@@ -46,8 +46,8 @@ router.patch('/tasks/:taskId/task-comments/:commentId/comments/files/:fileId', a
 
 
 
-router.patch('/tasks/:taskId', auth, PerformTaskController.editTask);
-router.patch('/tasks/:taskId/evaluate', auth, PerformTaskController.evaluateTask);
+router.post('/tasks/:taskId', auth, PerformTaskController.editTask);
+router.post('/tasks/:taskId/evaluate', auth, PerformTaskController.evaluateTask);
 
 
 module.exports = router;

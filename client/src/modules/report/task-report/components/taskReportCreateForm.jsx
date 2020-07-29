@@ -536,9 +536,14 @@ class TaskReportCreateForm extends Component {
                     disableSubmit={!this.isFormValidated()}
                 >
                     <TaskReportViewForm passState={newReport.listCheckBox} />
-                    <div className="row">
-                        <div className="col-md-12">
-                            <a className="d-flex justify-content-end" onClick={() => this.handleView()} style={{ cursor: 'pointer' }} title="Xem chi tiết"><i className="material-icons">visibility</i></a>
+                    <div className="row" >
+                        {/* <div className="col-md-12 d-flex justify-content-end">
+                            <a className="" onClick={() => this.handleView()} style={{ cursor: 'pointer' }} title="Xem chi tiết"><i className="material-icons">visibility</i></a>
+                        </div> */}
+                        <div className="col-md-12 col-lg-12" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                            <div className="form-inline d-flex justify-content-end">
+                                <button id="exportButton" className="btn btn-sm btn-success " title="Xem chi tiết" style={{ marginBottom: '10px' }} onClick={() => this.handleView()} ><span className="fa fa-eye" style={{ color: '#4e4e4e' }}></span> Xem</button>
+                            </div>
                         </div>
                     </div>
                     <div className="row">

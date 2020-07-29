@@ -9,7 +9,7 @@ export const LogServices = {
 
 function getLogState() {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/log/log/logs/logs`,
+        url: `${ LOCAL_SERVER_API }/system-admin/log/logs`,
         method: 'GET',
         headers: AuthenticateHeader()
     }, false, false)
@@ -17,7 +17,7 @@ function getLogState() {
 
 function toggleLogState() {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/log/log/logs/logs`,
+        url: `${ LOCAL_SERVER_API }/system-admin/log/logs`,
         method: 'PATCH',
         headers: AuthenticateHeader()
     }, false, false)
