@@ -5,7 +5,6 @@ const { auth } = require('../../../middleware');
 
 router.get("/privileges", auth, PrivilegeController.getPriveleges);
 router.get("/privileges/:id", auth, PrivilegeController.getPrivelege);
-router.get("/roles/:idRole/privileges", auth, PrivilegeController.getLinksThatRoleCanAccess);
 
 router.post("/privileges", auth, PrivilegeController.createPrivelege);
 
