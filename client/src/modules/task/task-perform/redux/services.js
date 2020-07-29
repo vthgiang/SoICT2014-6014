@@ -381,7 +381,7 @@ function editArchivedOfTask(taskId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}`,
         method: 'POST',
-        params: {
+        data: {
             type: 'edit_archived'
         }
     }, false, true, 'task.task_management');
@@ -393,14 +393,14 @@ function editArchivedOfTask(taskId) {
 * @param {*} status trang thai muon cap nhat
 */
 function editStatusOfTask(taskId, status) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}`,
-        method: 'POST',
-        data: status,
-        params: {
-            type: 'edit_status'
-        }
-    }, false, true, 'task.task_management');
+   return sendRequest({
+       url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}`,
+       method: 'POST',
+       data: {
+           status: status,
+           type: 'edit_status'
+       }
+   }, false, true, 'task.task_management');
 }
 
 /**
@@ -412,8 +412,8 @@ function editTaskByResponsibleEmployees(data, taskId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}`,
         method: 'POST',
-        data: data,
-        params: {
+        data: {
+            data: data,
             type: 'all',
             role: 'responsible',
         }
@@ -429,8 +429,8 @@ function editTaskByAccountableEmployees(data, taskId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}`,
         method: 'POST',
-        data: data,
-        params: {
+        data: {
+            data: data,
             type: 'all',
             role: 'accountable',
         }
@@ -446,8 +446,8 @@ function evaluateTaskByResponsibleEmployees(data, taskId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/evaluate`,
         method: 'POST',
-        data: data,
-        params: {
+        data: {
+            data: data,
             role: 'responsible',
         }
     }, true, true, 'task.task_management');
@@ -462,8 +462,8 @@ function evaluateTaskByConsultedEmployees(data, taskId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/evaluate`,
         method: 'POST',
-        data: data,
-        params: {
+        data: {
+            data: data,
             role: 'consulted',
         }
     }, true, true, 'task.task_management');
@@ -478,8 +478,8 @@ function evaluateTaskByAccountableEmployees(data, taskId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/evaluate`,
         method: 'POST',
-        data: data,
-        params: {
+        data: {
+            data: data,
             role: 'accountable',
         }
     }, true, true, 'task.task_management');
