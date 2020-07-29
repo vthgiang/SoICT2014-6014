@@ -5,10 +5,11 @@ import {
 import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const TaskProcessService = {
-  createXmlDiagram,
-  getAllXmlDiagram,
-  getXmlDiagramById,
-  editXmlDiagram
+    createXmlDiagram,
+    getAllXmlDiagram,
+    getXmlDiagramById,
+    editXmlDiagram,
+    deleteXmlDiagram,
 };
 
 
@@ -16,40 +17,54 @@ export const TaskProcessService = {
  * Lấy tất cả xml diagram
  */
 function getAllXmlDiagram() {
-  return sendRequest({
-      url: `${LOCAL_SERVER_API}/taskprocess/diagrams`,
-      method: 'GET',
-  }, false, true, 'task.task_template');
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/taskprocess/diagrams`,
+        method: 'GET',
+    }, false, true, 'task.task_process');
 }
 
 /**
  * Lấy diagram theo id
  */
 function getXmlDiagramById(diagramId) {
-  return sendRequest({
-    url: `${LOCAL_SERVER_API}/taskprocess/diagrams/${diagramId}`,
-    method: 'GET',
-}, false, true, 'task.task_template');
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/taskprocess/diagrams/${diagramId}`,
+        method: 'GET',
+    }, false, true, 'task.task_process');
 }
+
 /**
  * Lưu xml diagram
  * @param {Object} data 
  */
 function createXmlDiagram(data) {
-  return sendRequest({
-      url: `${LOCAL_SERVER_API}/taskprocess/diagrams`,
-      method: 'POST',
-      data: data
-  }, false, true, 'task.task_template');
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/taskprocess/diagrams`,
+        method: 'POST',
+        data: data
+    }, false, true, 'task.task_process');
 }
+
 /**
  * Sửa xml diagram
+ * @param {Object} diagramId id của diagram 
  * @param {Object} data 
  */
 function editXmlDiagram(diagramId,data) {
-  return sendRequest({
-      url: `${LOCAL_SERVER_API}/taskprocess/diagrams/${diagramId}/edit`,
-      method: 'PATCH',
-      data: data
-  }, false, true, 'task.task_template');
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/taskprocess/diagrams/${diagramId}/edit`,
+        method: 'PATCH',
+        data: data
+    }, false, true, 'task.task_process');
+}
+
+/**
+ * Sửa xml diagram
+ * @param {Object} diagramId id của diagram 
+ */
+function deleteXmlDiagram(diagramId) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/taskprocess/diagrams/${diagramId}`,
+        method: 'DELETE',
+    }, false, true, 'task.task_process');
 }

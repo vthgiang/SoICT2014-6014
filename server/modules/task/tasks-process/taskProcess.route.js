@@ -10,6 +10,6 @@ router.get("/diagrams/:diagramId", auth, TaskProcessController.getXmlDiagramById
 router.post("/diagrams", auth, TaskProcessController.createXmlDiagram);
 router.patch("/diagrams/:diagramId/edit",auth,TaskProcessController.editXmlDiagram)
 
-
+router.delete("/diagrams/:diagramId", auth, TaskProcessController.deleteXmlDiagram);
 
 module.exports = router;

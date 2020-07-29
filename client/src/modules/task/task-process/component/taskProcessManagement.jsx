@@ -23,15 +23,21 @@ class TaskProcessManagement extends Component {
                 currentRow: item,
             }
         });
-        window.$(`#modal-process`).modal("show");
+        window.$(`#modal-edit-process`).modal("show");
     }
+
+    deleteDiagram = async (xmlId) => {
+        this.props.deleteXmlDiagram(xmlId)
+    }
+
     render() {
         const { translate, taskProcess } = this.props
         let listDiagram = taskProcess && taskProcess.xmlDiagram;
         return (
             <div className="box">
                 <div className="box-body qlcv">
-                { this.state.currentRow !== undefined &&
+                { 
+                // this.state.currentRow !== undefined &&
                     <ModalEditProcessTask
                         title={'Xem quy trình công việc'}
                         data={this.state.currentRow}
@@ -91,13 +97,13 @@ class TaskProcessManagement extends Component {
                             <td>{item.description}</td>
                             <td>{item.creator?.name}</td>
                             <td>
-                              <a href="#abc" onClick={() => { this.showProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>
+                              <a href="#abc"  title={translate('task.task_template.view_detail_of_this_task_template')}>
                                 <i className="material-icons">view_list</i>
                               </a>
-                              <a className="edit" title={translate('task_template.edit_this_task_template')}>
+                              <a className="edit" onClick={() => { this.showProcess(item) }} title={translate('task_template.edit_this_task_template')}>
                                   <i className="material-icons">edit</i>
                               </a>
-                              <a className="delete" title={translate('task_template.delete_this_task_template')}>
+                              <a className="delete" onClick={() => { this.deleteDiagram(item._id) }}  title={translate('task_template.delete_this_task_template')}>
                                   <i className="material-icons"></i>
                               </a>
                             </td>
@@ -122,7 +128,8 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getAllXmlDiagram: TaskProcessActions.getAllXmlDiagram
+    getAllXmlDiagram: TaskProcessActions.getAllXmlDiagram,
+    deleteXmlDiagram: TaskProcessActions.deleteXmlDiagram,
 };
 const connectedTaskProcessManagement = connect(mapState, actionCreators)(withTranslate(TaskProcessManagement));
 export { connectedTaskProcessManagement as TaskProcessManagement };
