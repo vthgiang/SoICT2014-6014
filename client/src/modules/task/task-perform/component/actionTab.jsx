@@ -22,7 +22,7 @@ import './actionTab.css';
 
 class ActionTab extends Component {
     constructor(props) {
-        var idUser = getStorage("userId");
+        let idUser = getStorage("userId");
         super(props);
         this.state = {
             currentUser: idUser,
@@ -167,7 +167,7 @@ class ActionTab extends Component {
             }
         })
     }
-    setValueRating = async (id, newValue, firstTime) => {
+    setValueRating = async (actionId,taskId, newValue, firstTime) => {
         await this.setState(state => {
             return {
                 ...state,
@@ -180,12 +180,12 @@ class ActionTab extends Component {
                 }
             }
         })
-        var { evaluations } = this.state;
-        this.props.evaluationAction(id, evaluations)
+        let { evaluations } = this.state;
+        this.props.evaluationAction(actionId,taskId, evaluations)
         await this.setState(state => {
             return {
                 ...state,
-                showEvaluations: [...this.state.showEvaluations, id]
+                showEvaluations: [...this.state.showEvaluations, actionId]
             }
         })
     }
@@ -268,7 +268,7 @@ class ActionTab extends Component {
         modal.style = "display: none;";
     }
     submitComment = async (actionId, taskId) => {
-        var { newCommentOfAction } = this.state;
+        let { newCommentOfAction } = this.state;
         const data = new FormData();
         data.append("creator", newCommentOfAction.creator);
         data.append("description", newCommentOfAction.description);
@@ -318,7 +318,7 @@ class ActionTab extends Component {
 
     //Thêm mới bình luận của công việc
     submitTaskComment = async (taskId) => {
-        var { newTaskComment } = this.state;
+        let { newTaskComment } = this.state;
 
         const data = new FormData();
         data.append("creator", newTaskComment.creator);
@@ -538,7 +538,7 @@ class ActionTab extends Component {
     }
     handleConfirmAction = async (e, actionId, userId, taskId) => {
         e.preventDefault();
-        this.props.confirmAction(actionId, userId, taskId)
+        this.props.confirmAction(userId, actionId, taskId)
     }
     handleChange = (event) => {
 
@@ -852,7 +852,7 @@ class ActionTab extends Component {
                                                                                     fullSymbol="fa fa-star fa-2x high"
                                                                                     initialRating={0}
                                                                                     onClick={(value) => {
-                                                                                        this.setValueRating(item._id, value, 1);
+                                                                                        this.setValueRating(item._id,task._id, value, 1);
                                                                                     }}
                                                                                     onHover={(value) => {
                                                                                         this.setHover(item._id, value)
@@ -910,7 +910,7 @@ class ActionTab extends Component {
                                                                                         fullSymbol="fa fa-star fa-2x high"
                                                                                         initialRating={0}
                                                                                         onClick={(value) => {
-                                                                                            this.setValueRating(item._id, value, 0);
+                                                                                            this.setValueRating(item._id,task._id, value, 0);
                                                                                         }}
                                                                                         onHover={(value) => {
                                                                                             this.setHover(item._id, value)
