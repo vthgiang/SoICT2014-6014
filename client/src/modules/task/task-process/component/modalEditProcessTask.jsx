@@ -270,14 +270,16 @@ class ModalEditProcessTask extends Component {
     }
 
     interactPopup = (event) => {
+        // _${state.idProcess}
         var element = event.element;
+        console.log("element||state",element, this.state);
         let nameStr = element.type.split(':');
         this.setState(state => {
             if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' ||
                 element.type === 'bpmn:EndEvent' || element.type === "bpmn:SequenceFlow" ||
                 element.type === "bpmn:StartEvent" || element.type === "bpmn:IntermediateThrowEvent"
             ) {
-                return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}_${state.idProcess}`, }
+                return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}`, }
             }
             else {
                 return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }

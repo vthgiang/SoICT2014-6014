@@ -24,6 +24,33 @@ class EditForm extends Component {
         })
     }
 
+    validateName = async(value, willUpdateState)=>{
+        let msg = undefined;
+        const {translate} = this.props;
+        if(!value){
+            msg = "hello world";
+        }
+        if(willUpdateState){
+           await this.setState(state=>{
+                return{
+                    ...state,
+                    domainName:value,
+                    errorName: msg
+                }
+            })
+        }
+        
+        return msg === undefined;
+    }
+
+    handleValidateName = (e)=>{
+        const value = e.target.value.trim();
+        this.validateName(value, true);
+    }
+    isValidateForm =() =>{
+        return this.validateName(this.state.domainName, false);
+    }
+
     handleDescription = (e) => {
         const value = e.target.value;
         this.setState({
@@ -53,7 +80,8 @@ class EditForm extends Component {
                 domainCode: nextProps.domainCode,
                 domainName: nextProps.domainName,
                 domainDescription: nextProps.domainDescription,
-                domainParent: nextProps.domainParent
+                domainParent: nextProps.domainParent,
+                errorName : undefined,
             } 
         } else {
             return null;
@@ -63,7 +91,7 @@ class EditForm extends Component {
     render() {
         const { translate, assetType}=this.props;
         const {tree,list} = assetType.administration.types;
-        const {_id, domainId, domainCode, domainName, domainDescription, domainParent} = this.state;
+        const { domainId, domainCode, domainName, domainDescription, domainParent, errorName} = this.state;
         console.log("edit domain: ",this.state)
         
         return ( 
