@@ -9,7 +9,7 @@ export function convertArrayToTree(array, id="id", title="title") {
             value: node._id.toString(),
             label: node.name,
             [title]: node.name,
-            parent_id: node.parent !== undefined ? node.parent.toString() : null
+            parent_id: node.parent ? node.parent.toString() : null
         }
     });
     const tree = arrayToTree(dataConverted, {});

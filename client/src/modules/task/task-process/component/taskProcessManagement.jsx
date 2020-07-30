@@ -47,7 +47,7 @@ class TaskProcessManagement extends Component {
         ...state,
         currentRow: item,
       }
-    },()=>console.log(this.state.currentRow));
+    });
     window.$(`#modal-view-process-task`).modal("show");
   }
   showModalCreateProcess = async () => {

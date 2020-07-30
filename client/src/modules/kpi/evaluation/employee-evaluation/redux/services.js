@@ -55,8 +55,8 @@ function getKpisByMonth(userId, date) {
 */
 function approveAllKpis(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets/${id}/edit`,
-        method: 'POST',
+        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets/${id}`,
+        method: 'PATCH',
     }, true, true, 'kpi.evaluation');
 }
 /**
@@ -64,8 +64,8 @@ function approveAllKpis(id) {
 */
 function editKpi(id, newTarget) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets/${id}/edit`,
-        method: 'POST',
+        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets/${id}`,
+        method: 'PATCH',
         data: newTarget
     }, true, true, 'kpi.evaluation')
 }
@@ -75,7 +75,7 @@ function editKpi(id, newTarget) {
 function editStatusKpi(id, status) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpis/${id}`,
-        method: 'POST',
+        method: 'PATCH',
         params: {
             status: status
         }

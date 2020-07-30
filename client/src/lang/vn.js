@@ -2475,6 +2475,7 @@ export default {
                     distributive: 'Phân phối KPI đơn vị tháng ',
                     statiscial: 'Thống kê kết quả KPI đơn vị tháng ',
                     result_kpi_unit: 'Kết quả KPI đơn vị',
+                    result_kpi_units: 'Kết quả KPI các đơn vị',
                     start_date: 'Từ tháng',
                     end_date: 'Đến tháng',
                     search: 'Tìm kiếm',

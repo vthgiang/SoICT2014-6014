@@ -6,23 +6,23 @@ const ObjectId = require('mongoose').Types.ObjectId;
  * Lấy danh sách loại tài sản
  */
 exports.searchAssetTypes = async (data, company) => {
-    var keySearch = {company: company};
+    var keySearch = { company: company };
 
     // Bắt sựu kiện mã loại tài sản tìm kiếm khác ""
     if (data.typeNumber !== "") {
-        keySearch = {...keySearch, typeNumber: {$regex: data.typeNumber, $options: "i"}}
+        keySearch = { ...keySearch, typeNumber: { $regex: data.typeNumber, $options: "i" } }
     }
 
     // Bắt sựu kiện tên loại tài sản tìm kiếm khác ""
     if (data.typeName !== "") {
-        keySearch = {...keySearch, typeName: {$regex: data.typeName, $options: "i"}}
+        keySearch = { ...keySearch, typeName: { $regex: data.typeName, $options: "i" } }
     };
 
     var totalList = await AssetType.count(keySearch);
-    var listAssetTypes = await AssetType.find(keySearch).sort({'createDate': 'desc'}).skip(data.page).limit(data.limit).populate('parent');
+    var listAssetTypes = await AssetType.find(keySearch).sort({ 'createDate': 'desc' }).skip(data.page).limit(data.limit).populate('parent');
 
-    return {totalList, listAssetTypes};
-//
+    return { totalList, listAssetTypes };
+    //
 }
 
 /**
@@ -36,7 +36,6 @@ exports.createAssetType = async (data, company) => {
         company: company,
         typeNumber: data.typeNumber,
         typeName: data.typeName,
-        timeDepreciation: data.timeDepreciation,
         // parent: data.parent,
         parent: data.parent ? data.parent : null,
         description: data.description,
@@ -62,7 +61,6 @@ exports.updateAssetType = async (id, data) => {
     var assetTypeChange = {
         typeNumber: data.typeNumber,
         typeName: data.typeName,
-        timeDepreciation: data.timeDepreciation,
         // parent: data.parent,
         parent: data.parent ? data.parent : null,
         description: data.description,
@@ -99,44 +97,42 @@ exports.checkAssetTypeExisted = async (typeNumber, company) => {
  */
 exports.getAssetTypes = async (company) => {
     const list = await AssetType.find({ company });
-    console.log(list, 'list')
-    const dataConverted = list.map( type => {
+    const dataConverted = list.map(type => {
         return {
             id: type._id.toString(),
             key: type._id.toString(),
             value: type._id.toString(),
             label: type.typeName,
             title: type.typeName,
-            parent_id: type.parent? type.parent.toString() : null
+            parent_id: type.parent ? type.parent.toString() : null
         }
     });
     const tree = await arrayToTree(dataConverted, {});
-    console.log(tree, 'tree')
-    
-    return {list, tree};
+
+    return { list, tree };
 }
 
 exports.createAssetTypes = async (company, data) => {
-    console.log(data, 'data')
-    await AssetType.create({
+    let query = {
         company,
         typeNumber: data.typeNumber,
         typeName: data.typeName,
         description: data.description,
-        parent: data.parent
-        // parent: data.parent ? data.parent : null,
-    });
+    }
+    if (data.parent.length) {
+        query.parent = data.parent
+    }
+    await AssetType.create(query);
 
     return await this.getAssetTypes(company);
 }
 
 exports.editAssetType = async (id, data) => {
-    console.log(data, 'data')
     const type = await AssetType.findById(id);
     type.typeNumber = data.typeNumber,
-    type.typeName = data.typeName,
-    type.description = data.description,
-    type.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
+        type.typeName = data.typeName,
+        type.description = data.description,
+        type.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
     await type.save();
 
     return type;
@@ -144,15 +140,15 @@ exports.editAssetType = async (id, data) => {
 
 exports.deleteAssetTypes = async (id) => {
     const type = await AssetType.findById(id);
-    if(type === null) throw ['document_domain_not_found']
-    await AssetType.deleteOne({_id: id});
+    if (type === null) throw ['document_domain_not_found']
+    await AssetType.deleteOne({ _id: id });
 
     return await this.getAssetTypes(type.company);
 }
 
 
 exports.deleteManyAssetType = async (array, company) => {
-    await AssetType.deleteMany({_id: {$in: array}});
+    await AssetType.deleteMany({ _id: { $in: array } });
 
     return await this.getAssetTypes(company);
 }
