@@ -3,9 +3,8 @@ const router = express.Router();
 const OrganizationalUnitController = require('./organizationalUnit.controller');
 const { auth } = require('../../../middleware');
 
-router.get("/organizational-units", auth, OrganizationalUnitController.getOrganizationalUnits);
-router.get('/organizational-units/:role/get-as-tree', auth, OrganizationalUnitController.getChildrenOfOrganizationalUnitsAsTree);
 
+router.get("/organizational-units", auth, OrganizationalUnitController.getOrganizationalUnits);
 
 router.post("/organizational-units", auth, OrganizationalUnitController.createOrganizationalUnit);
 router.get("/organizational-units/:id", auth, OrganizationalUnitController.getOrganizationalUnit);

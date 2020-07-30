@@ -1,5 +1,9 @@
-import { DepartmentServices } from "./services";
-import { DepartmentConstants } from "./constants";
+import {
+    DepartmentServices
+} from "./services";
+import {
+    DepartmentConstants
+} from "./constants";
 
 export const DepartmentActions = {
     get,
@@ -12,9 +16,11 @@ export const DepartmentActions = {
 /**
  * Lấy danh sách các đơn vị trong công ty
  */
-function get(){
+function get() {
     return dispatch => {
-        dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_REQUEST});
+        dispatch({
+            type: DepartmentConstants.GET_DEPARTMENTS_REQUEST
+        });
         DepartmentServices.get()
             .then(res => {
                 dispatch({
@@ -23,7 +29,9 @@ function get(){
                 });
             })
             .catch(err => {
-                dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_FAILE});
+                dispatch({
+                    type: DepartmentConstants.GET_DEPARTMENTS_FAILE
+                });
             })
     }
 }
@@ -31,9 +39,11 @@ function get(){
 /**
  * Lấy thông tin đơn vị mà user làm trưởng
  */
-function getDepartmentsThatUserIsDean(){
+function getDepartmentsThatUserIsDean() {
     return dispatch => {
-        dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_REQUEST});
+        dispatch({
+            type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_REQUEST
+        });
         DepartmentServices.getDepartmentsThatUserIsDean()
             .then(res => {
                 dispatch({
@@ -44,21 +54,43 @@ function getDepartmentsThatUserIsDean(){
                 });
             })
             .catch(err => {
-                dispatch({ type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_FAILURE});
+                dispatch({
+                    type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_FAILURE
+                });
             })
     }
-    function request(currentRole) { return { type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_REQUEST, currentRole } }
-    function success(Department) { return { type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_SUCCESS, Department } }
-    function failure(error) { return { type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_FAILURE, error } }
+
+    function request(currentRole) {
+        return {
+            type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_REQUEST,
+            currentRole
+        }
+    }
+
+    function success(Department) {
+        return {
+            type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_SUCCESS,
+            Department
+        }
+    }
+
+    function failure(error) {
+        return {
+            type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_FAILURE,
+            error
+        }
+    }
 }
 
 /**
  * Tạo đơn vị 
  * @data thông tin về đơn vị
  */
-function create(data){
+function create(data) {
     return dispatch => {
-        dispatch({ type: DepartmentConstants.CREATE_DEPARTMENT_REQUEST});
+        dispatch({
+            type: DepartmentConstants.CREATE_DEPARTMENT_REQUEST
+        });
         DepartmentServices
             .create(data)
             .then(res => {
@@ -68,7 +100,9 @@ function create(data){
                 });
             })
             .catch(err => {
-                dispatch({ type: DepartmentConstants.CREATE_DEPARTMENT_FAILE});
+                dispatch({
+                    type: DepartmentConstants.CREATE_DEPARTMENT_FAILE
+                });
             })
     }
 }
@@ -77,9 +111,11 @@ function create(data){
  * Chỉnh sửa thông tin đơn vị
  * @data dữ liệu sửa
  */
-function edit(data){
+function edit(data) {
     return dispatch => {
-        dispatch({ type: DepartmentConstants.EDIT_DEPARTMENT_REQUEST});
+        dispatch({
+            type: DepartmentConstants.EDIT_DEPARTMENT_REQUEST
+        });
         DepartmentServices
             .edit(data)
             .then(res => {
@@ -89,7 +125,9 @@ function edit(data){
                 });
             })
             .catch(err => {
-                dispatch({ type: DepartmentConstants.EDIT_DEPARTMENT_FAILE});
+                dispatch({
+                    type: DepartmentConstants.EDIT_DEPARTMENT_FAILE
+                });
             })
     }
 }
@@ -98,9 +136,11 @@ function edit(data){
  * Xóa đơn vị
  * @departmentId id của đơn vị
  */
-function destroy(departmentId){
+function destroy(departmentId) {
     return dispatch => {
-        dispatch({ type: DepartmentConstants.DELETE_DEPARTMENT_REQUEST});
+        dispatch({
+            type: DepartmentConstants.DELETE_DEPARTMENT_REQUEST
+        });
         DepartmentServices.destroy(departmentId)
             .then(res => {
                 dispatch({
@@ -112,7 +152,9 @@ function destroy(departmentId){
                 });
             })
             .catch(err => {
-                dispatch({ type: DepartmentConstants.DELETE_DEPARTMENT_FAILE});
+                dispatch({
+                    type: DepartmentConstants.DELETE_DEPARTMENT_FAILE
+                });
             })
     }
 }

@@ -1,4 +1,6 @@
-import { VALIDATOR } from '../../../../helpers/validator';
+import {
+    VALIDATOR
+} from '../../../../helpers/validator';
 
 export const DepartmentValidator = {
     validateName
@@ -6,13 +8,13 @@ export const DepartmentValidator = {
 
 function validateName(value) {
     let msg = undefined;
-    if (value.trim() === ""){
+    if (value.trim() === "") {
         msg = "Tên không được để trống";
-    } else if(value.length < 4){
+    } else if (value.length < 4) {
         msg = "Tên không ít hơn 4 ký tự";
-    } else if(value.length > 255){
+    } else if (value.length > 255) {
         msg = "Tên không nhiều hơn 255 ký tự";
-    } else if (!VALIDATOR.isValidName(value)){
+    } else if (!VALIDATOR.isValidName(value)) {
         msg = "Tên không chứa ký tự đặc biệt";
     }
     return msg;
