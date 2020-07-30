@@ -194,7 +194,10 @@ class ManageUserTable extends Component {
 
 }
 
-const mapStateToProps = state => state;
+function mapStateToProps(state) {
+    const { user } = state;
+    return { user };
+}
 
 const mapDispatchToProps = {
     getUser: UserActions.get,

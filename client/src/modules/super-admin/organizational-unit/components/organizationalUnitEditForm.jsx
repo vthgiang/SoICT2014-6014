@@ -340,7 +340,11 @@ class DepartmentEditForm extends Component {
     }
 }
 
-const mapState = state => state;
+function mapState(state) {
+    const { department } = state;
+    return { department };
+}
+
 const getState = {
     edit: DepartmentActions.edit
 }

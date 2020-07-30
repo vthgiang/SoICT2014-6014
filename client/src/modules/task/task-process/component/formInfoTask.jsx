@@ -13,11 +13,12 @@ class FormInfoTask extends Component {
             id: id,
             nameTask: (info && info.nameTask) ? info.nameTask : '',
             description: (info && info.description) ? info.description : '',
+            organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : "",
             responsible: (info && info.responsible) ? info.responsible : [],
             accountable: (info && info.accountable) ? info.accountable : [],
         }
     }
-    
+
     shouldComponentUpdate(nextProps, nextState) {
         // console.log(nextProps.info)
         // console.log(this.props.info)
@@ -31,6 +32,7 @@ class FormInfoTask extends Component {
                     id: nextProps.id,
                     nameTask: (info && info.nameTask) ? info.nameTask : '',
                     description: (info && info.description) ? info.description : '',
+                    organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
                     responsible: (info && info.responsible) ? info.responsible : [],
                     accountable: (info && info.accountable) ? info.accountable : [],
                 }
@@ -55,6 +57,13 @@ class FormInfoTask extends Component {
         })
         this.props.handleChangeDescription(value);
     }
+    handleChangeOrganizationalUnit = (value) => {
+        console.log(value)
+        this.setState({
+            organizationalUnit: value
+        });
+        this.props.handleChangeOrganizationalUnit(value)
+    }
     handleChangeResponsible = (value) => {
         this.setState({
             responsible: value,
@@ -69,9 +78,9 @@ class FormInfoTask extends Component {
     }
 
     render() {
-        const { user, translate, disabled} = this.props;
-        const { id, info, action } = this.props;
-        let { nameTask, description, responsible, accountable } = this.state;
+        const { user, translate, role } = this.props;
+        const { nameTask, description, responsible, accountable, organizationalUnit } = this.state;
+        const { id, info, action, listOrganizationalUnit, disabled } = this.props;
 
         let usersOfChildrenOrganizationalUnit;
         if (user && user.usersOfChildrenOrganizationalUnit) {
@@ -79,13 +88,19 @@ class FormInfoTask extends Component {
         }
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
+
+        let listRole = [];
+        if (role && role.list.length !== 0) listRole = role.list;
+        let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
+            .map(item => { return { text: item.name, value: item._id } });
+        let listOrganizationalUnit1 = listOrganizationalUnit.map(x => { return { text: x.name, value: x._id } })
         return (
             <div>
                 <form>
                     <div className="form-group" >
                         <label style={{ float: 'left' }}>Tên công việc</label>
                         <input type="text"
-                            disabled = {disabled}
+                            disabled={disabled}
                             value={nameTask}
                             className="form-control" placeholder="Nhập tên công việc"
                             onChange={this.handleChangeName}
@@ -94,45 +109,62 @@ class FormInfoTask extends Component {
                     <div className="form-group">
                         <label style={{ float: 'left' }}>Mô tả</label>
                         <input type="text"
-                            disabled = {disabled}
+                            disabled={disabled}
                             value={description}
                             className="form-control" placeholder="Mô tả công việc"
                             onChange={this.handleChangeDescription}
                         />
                     </div>
                     <div className="form-group">
+                        <label htmlFor="exampleFormControlSelect1" style={{ float: 'left' }} >Đơn vị</label>
+                        {
+                            <SelectBox
+                                id={`select-organizationalUnit-employee-${id}-${action}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                // items={unitMembers}
+                                multiple={false}
+                                items={listOrganizationalUnit1}
+                                onChange={this.handleChangeOrganizationalUnit}
+                                value={organizationalUnit}
+                                disabled={disabled}
+                            />
+                        }
+                    </div>
+                    <div className="form-group">
                         <label htmlFor="exampleFormControlSelect1" style={{ float: 'left' }} >Người thực hiện</label>
                         {
-                        // unitMembers &&
+                            // unitMembers &&
                             <SelectBox
                                 id={`select-responsible-employee-${id}-${action}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                items={unitMembers}
+                                // items={unitMembers}
+                                items={listItem}
                                 onChange={this.handleChangeResponsible}
                                 multiple={true}
                                 value={responsible}
-                                disabled = {disabled}
+                                disabled={disabled}
                             />
                         }
                     </div>
 
                     <div className="form-group">
                         <label htmlFor="exampleFormControlSelect2" style={{ float: 'left' }} >Người phê duyệt</label>
-                        { 
-                        // unitMembers &&
+                        {
+                            // unitMembers &&
                             <SelectBox
-
                                 id={`select-accountable-employee-${id}-${action}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                items={unitMembers}
+                                // items={unitMembers}
+                                items={listItem}
                                 onChange={this.handleChangeAccountable}
                                 multiple={true}
                                 value={accountable}
-                                disabled = {disabled}
+                                disabled={disabled}
                             />
-                    }
+                        }
                     </div>
 
 
@@ -145,8 +177,8 @@ class FormInfoTask extends Component {
 
 
 function mapState(state) {
-    const { user, auth } = state;
-    return { user, auth };
+    const { user, auth, role } = state;
+    return { user, auth, role };
 }
 
 const actionCreators = {

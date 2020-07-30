@@ -70,7 +70,7 @@ class DepartmentCreateForm extends Component {
 
     render() {
         const { translate, department } = this.props;
-        const { departmentNameError, departmentDescriptionError, departmentDeanError, departmentViceDeanError, departmentEmployeeError } = this.state;
+        const { departmentNameError, departmentDescriptionError } = this.state;
         console.log("state deans:", this.state);
 
         return (
@@ -315,7 +315,11 @@ class DepartmentCreateForm extends Component {
 
 }
 
-const mapState = state => state;
+function mapState(state) {
+    const { department } = state;
+    return { department };
+}
+
 const getState = {
     create: DepartmentActions.create
 }

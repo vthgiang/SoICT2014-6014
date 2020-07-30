@@ -42,7 +42,7 @@ class TableComponent extends Component {
                         componentName={currentRow.name}
                         componentLink={currentRow.link ? currentRow.link._id : null}
                         componentDescription={currentRow.description}
-                        componentRoles={currentRow.roles ? currentRow.roles.map(role => role.roleId._id) : []}
+                        componentRoles={currentRow.roles.map(role => role ? role.roleId._id : null)}
                     />
                 }
 
@@ -89,7 +89,7 @@ class TableComponent extends Component {
                                         <td>{component.name}</td>
                                         <td>{component.link ? component.link.url : "Link is deleted"}</td>
                                         <td>{component.description}</td>
-                                        <td><ToolTip dataTooltip={component.roles ? component.roles.map(role => role.roleId.name) : ["Role is deleted"]} /></td>
+                                        <td><ToolTip dataTooltip={component.roles.map(role => role ? role.roleId.name : "Role is deleted")} /></td>
                                         <td style={{ textAlign: 'center' }}>
                                             <a className="edit" onClick={() => this.handleEdit(component)}><i className="material-icons">edit</i></a>
                                         </td>
@@ -159,7 +159,10 @@ class TableComponent extends Component {
     }
 }
 
-const mapState = state => state;
+function mapState(state) {
+    const { component } = state;
+    return { component };
+}
 
 const getState = {
     get: ComponentActions.get,

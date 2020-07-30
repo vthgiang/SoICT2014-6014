@@ -28,6 +28,7 @@ exports.createXmlDiagram = async (body) => {
   for (const x in body.infoTask) {
     info.push(body.infoTask[x])
   }
+  console.log(info)
   let data = await TaskProcess.create({
     creator: body.creator,
     nameProcess: body.nameProcess,
@@ -51,6 +52,8 @@ exports.editXmlDiagram = async (params, body) => {
         description: body.description,
         nameProcess: body.nameProcess,
         creator: body.creator,
+        viewer: body.viewer,
+        manager: body.manager,
       }
     }
   )

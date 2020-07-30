@@ -157,7 +157,10 @@ class ManageLink extends Component {
     }
 }
 
-const mapState = state => state;
+function mapState(state) {
+    const { link } = state;
+    return { link };
+}
 
 const getState = {
     getLinks: LinkActions.get,

@@ -148,7 +148,10 @@ class UserCreateForm extends Component {
     }
 }
 
-const mapStateToProps = state => state;
+function mapStateToProps(state) {
+    const { user, role } = state;
+    return { user, role };
+}
 
 const mapDispatchToProps = {
     create: UserActions.create,

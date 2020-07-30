@@ -153,7 +153,11 @@ class RoleCreateForm extends Component {
 
 }
 
-const mapStateToProps = state => state;
+function mapStateToProps(state) {
+    const { role, user } = state;
+    return { role, user };
+}
+
 
 const mapDispatchToProps = {
     get: RoleActions.get,

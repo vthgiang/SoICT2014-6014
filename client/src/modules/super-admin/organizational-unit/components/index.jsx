@@ -33,7 +33,10 @@ class ManageDepartment extends Component {
     }
 }
 
-const mapState = state => state;
+function mapState(state) {
+    const { } = state;
+    return {};
+}
 
 const getState = {
     get: DepartmentActions.get,
