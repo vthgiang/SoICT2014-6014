@@ -8,7 +8,7 @@ const { LogInfo, LogError } = require('../../../logs');
 
 exports.getComponents = async (req, res) => {
     try {
-        const components = await ComponentService.getComponents(req.user.company._id, req.query);
+        const components = await ComponentService.getComponents(req.user.company? req.user.company._id: null, req.query);
         
         await LogInfo(req.user.email, 'GET_ALL_COMPONENTS', req.user.company);
         res.status(200).json({

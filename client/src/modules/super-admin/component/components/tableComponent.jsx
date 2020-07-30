@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { PaginateBar, DataTableSetting, SearchBar, ToolTip } from '../../../../common-components';
@@ -13,7 +13,7 @@ import ComponentInfoForm from './componentInfoForm';
 class TableComponent extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
+        this.state = {
             limit: 5,
             page: 1,
             option: 'name', // Mặc định tìm kiếm theo tên
@@ -21,53 +21,53 @@ class TableComponent extends Component {
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.props.getLinks();
         this.props.get();
-        this.props.get({page: this.state.page, limit: this.state.limit});
+        this.props.get({ page: this.state.page, limit: this.state.limit });
         this.props.getRoles();
     }
 
-    render() { 
+    render() {
         const { component, translate } = this.props;
         const { currentRow } = this.state;
 
-        return ( 
+        return (
             <React.Fragment>
                 {/* Form chỉnh sửa thông tin về component */}
                 {
                     currentRow &&
-                    <ComponentInfoForm 
-                        componentId={ currentRow._id }
-                        componentName={ currentRow.name }
-                        componentLink={ currentRow.link ? currentRow.link._id : null }
-                        componentDescription={ currentRow.description }
-                        componentRoles={ currentRow.roles? currentRow.roles.map(role => role.roleId._id): [] }
+                    <ComponentInfoForm
+                        componentId={currentRow._id}
+                        componentName={currentRow.name}
+                        componentLink={currentRow.link ? currentRow.link._id : null}
+                        componentDescription={currentRow.description}
+                        componentRoles={currentRow.roles ? currentRow.roles.map(role => role.roleId._id) : []}
                     />
                 }
 
                 {/* Thanh tìm kiếm */}
-                <SearchBar 
+                <SearchBar
                     columns={[
-                        { title: translate('manage_component.name'), value:'name' },
-                        { title: translate('manage_component.description'), value:'description' },
+                        { title: translate('manage_component.name'), value: 'name' },
+                        { title: translate('manage_component.description'), value: 'description' },
                     ]}
                     option={this.state.option}
                     setOption={this.setOption}
                     search={this.searchWithOption}
                 />
-                
+
                 {/* Bảng dữ liệu các components */}
                 <table className="table table-hover table-striped table-bordered" id="table-manage-component">
                     <thead>
                         <tr>
-                            <th>{ translate('manage_component.name') }</th>
-                            <th>{ translate('manage_component.link') }</th>
-                            <th>{ translate('manage_component.description') }</th>
-                            <th>{ translate('manage_component.roles') }</th>
-                            <th style={{width: "120px"}}>
-                                { translate('table.action') }
-                                <DataTableSetting 
+                            <th>{translate('manage_component.name')}</th>
+                            <th>{translate('manage_component.link')}</th>
+                            <th>{translate('manage_component.description')}</th>
+                            <th>{translate('manage_component.roles')}</th>
+                            <th style={{ width: "120px" }}>
+                                {translate('table.action')}
+                                <DataTableSetting
                                     columnArr={[
                                         translate('manage_component.name'),
                                         translate('manage_component.link'),
@@ -84,28 +84,28 @@ class TableComponent extends Component {
                     <tbody>
                         {
                             component.listPaginate && component.listPaginate.length > 0 ?
-                            component.listPaginate.map( component => 
-                                <tr key={component._id}>
-                                    <td>{ component.name }</td>
-                                    <td>{ component.link? component.link.url: "Link is deleted" }</td>
-                                    <td>{ component.description }</td>
-                                    <td><ToolTip dataTooltip={component.roles? component.roles.map(role => role.roleId.name): ["Role is deleted"]}/></td>
-                                    <td style={{ textAlign: 'center'}}>
-                                        <a className="edit" onClick={() => this.handleEdit(component)}><i className="material-icons">edit</i></a>
-                                    </td>
-                                </tr>
-                            ): component.isLoading?
-                            <tr><td colSpan={"5"}>{translate('confirm.loading')}</td></tr>:
-                            <tr><td colSpan={"5"}>{translate('confirm.no_data')}</td></tr>
+                                component.listPaginate.map(component =>
+                                    <tr key={component._id}>
+                                        <td>{component.name}</td>
+                                        <td>{component.link ? component.link.url : "Link is deleted"}</td>
+                                        <td>{component.description}</td>
+                                        <td><ToolTip dataTooltip={component.roles ? component.roles.map(role => role.roleId.name) : ["Role is deleted"]} /></td>
+                                        <td style={{ textAlign: 'center' }}>
+                                            <a className="edit" onClick={() => this.handleEdit(component)}><i className="material-icons">edit</i></a>
+                                        </td>
+                                    </tr>
+                                ) : component.isLoading ?
+                                    <tr><td colSpan={"5"}>{translate('confirm.loading')}</td></tr> :
+                                    <tr><td colSpan={"5"}>{translate('confirm.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>
 
                 {/* PaginateBar */}
-                <PaginateBar pageTotal={component.totalPages} currentPage={component.page} func={this.setPage}/>
+                <PaginateBar pageTotal={component.totalPages} currentPage={component.page} func={this.setPage} />
 
             </React.Fragment>
-         );
+        );
     }
 
     setOption = (title, option) => {
@@ -114,7 +114,7 @@ class TableComponent extends Component {
         });
     }
 
-    searchWithOption = async() => {
+    searchWithOption = async () => {
         const data = {
             limit: this.state.limit,
             page: 1,
@@ -137,8 +137,8 @@ class TableComponent extends Component {
 
     setLimit = (number) => {
         this.setState({ limit: number });
-        const data = { 
-            limit: number, 
+        const data = {
+            limit: number,
             page: this.state.page,
             key: this.state.option,
             value: this.state.value
@@ -158,7 +158,7 @@ class TableComponent extends Component {
         window.$('#modal-edit-component').modal('show');
     }
 }
- 
+
 const mapState = state => state;
 
 const getState = {
@@ -167,5 +167,5 @@ const getState = {
     getLinks: LinkActions.get,
     getRoles: RoleActions.get,
 }
- 
-export default connect(mapState, getState) (withTranslate(TableComponent));
+
+export default connect(mapState, getState)(withTranslate(TableComponent));

@@ -1,4 +1,6 @@
-import { VALIDATOR } from '../../../../helpers/validator';
+import {
+    VALIDATOR
+} from '../../../../helpers/validator';
 
 export const UserFormValidator = {
     validateName: validateUserName,
@@ -7,23 +9,23 @@ export const UserFormValidator = {
 
 function validateUserName(value) {
     let msg = undefined;
-    if (value.trim() === ""){
+    if (value.trim() === "") {
         msg = "Tên không được để trống";
-    } else if(value.length < 4){
+    } else if (value.length < 4) {
         msg = "Tên không ít hơn 4 ký tự";
-    } else if(value.length > 50){
+    } else if (value.length > 50) {
         msg = "Tên không nhiều hơn 50 ký tự";
-    } else if (!VALIDATOR.isValidName(value)){
+    } else if (!VALIDATOR.isValidName(value)) {
         msg = "Tên không chứa ký tự đặc biệt";
     }
     return msg;
 }
 
-function validateEmail(value){
+function validateEmail(value) {
     let msg = undefined;
-    if (value.trim() === ""){
+    if (value.trim() === "") {
         msg = "Email không được để trống";
-    } else if(!VALIDATOR.isValidEmail(value))
+    } else if (!VALIDATOR.isValidEmail(value))
         msg = "Email không hợp lệ";
     return msg;
 }
