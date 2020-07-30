@@ -15,9 +15,8 @@ import { LOCAL_SERVER_API } from '../../../../../env';
 import { withTranslate } from 'react-redux-multilingual';
 
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
-import { kpiMemberServices } from '../../employee-evaluation/redux/services';
 
-class DashBoardKPIMember extends Component {
+class EmployeeKpiEvaluationDashboard extends Component {
     constructor(props) {
         super(props);
 
@@ -545,5 +544,5 @@ const actionCreators = {
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
 };
 
-const connectedKPIMember = connect(mapState, actionCreators)(withTranslate(DashBoardKPIMember));
-export { connectedKPIMember as DashBoardKPIMember };
+const connectedKPIMember = connect(mapState, actionCreators)(withTranslate(EmployeeKpiEvaluationDashboard));
+export { connectedKPIMember as EmployeeKpiEvaluationDashboard };

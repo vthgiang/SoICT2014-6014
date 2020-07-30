@@ -17,24 +17,24 @@ export const createKpiSetActions = {
     deleteComment,
     createCommentOfComment,
     editCommentOfComment,
-    deleteCommentOfComment    
+    deleteCommentOfComment
 };
 
 
 // Lấy tập KPI cá nhân hiện tại
-function getEmployeeKpiSet(month=undefined) {
+function getEmployeeKpiSet(month = undefined) {
     return dispatch => {
         dispatch({ type: createKpiSetConstants.GET_EMPLOYEE_KPI_SET_REQUEST });
 
         createKpiSetService.getEmployeeKpiSet(month)
             .then(res => {
-                dispatch({ 
+                dispatch({
                     type: createKpiSetConstants.GET_EMPLOYEE_KPI_SET_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
-                dispatch({ 
+                dispatch({
                     type: createKpiSetConstants.GET_EMPLOYEE_KPI_SET_FAILURE,
                     payload: error
                 })
@@ -80,7 +80,7 @@ function editEmployeeKpiSet(id, kpipersonal) {
                     type: createKpiSetConstants.EDIT_EMPLOYEE_KPI_SET_FAILURE,
                     payload: error
                 })
-            }) 
+            })
     };
 }
 
@@ -173,7 +173,7 @@ function createEmployeeKpi(newTarget) {
 // Chỉnh sửa mục tiêu KPI cá nhân
 function editEmployeeKpi(id, newTarget) {
     return dispatch => {
-        dispatch({ 
+        dispatch({
             type: createKpiSetConstants.EDIT_EMPLOYEE_KPI_REQUEST,
             payload: id
         });
@@ -228,7 +228,7 @@ function approveEmployeeKpiSet(id) {
                 })
             })
             .catch(error => {
-                dispatch({ 
+                dispatch({
                     type: createKpiSetConstants.APPROVE_KPIPERSONAL_FAILURE,
                     payload: error
                 })
@@ -236,11 +236,11 @@ function approveEmployeeKpiSet(id) {
     };
 }
 
-function createComment(data) {
+function createComment(setKpiId, data) {
     return dispatch => {
-        dispatch({type: createKpiSetConstants.CREATE_COMMENT_REQUEST});
-        createKpiSetService.createComment(data)
-            .then(res=>{
+        dispatch({ type: createKpiSetConstants.CREATE_COMMENT_REQUEST });
+        createKpiSetService.createComment(setKpiId, data)
+            .then(res => {
                 dispatch({
                     type: createKpiSetConstants.CREATE_COMMENT_SUCCESS,
                     payload: res.data.content
@@ -249,17 +249,17 @@ function createComment(data) {
             .catch(error => {
                 dispatch({
                     type: createKpiSetConstants.CREATE_COMMENT_FAILURE,
-                    payload : error
+                    payload: error
                 })
             })
     }
 }
 
-function editComment(id,data) {
+function editComment(setKpiId, commentId, data) {
     return dispatch => {
-        dispatch({type: createKpiSetConstants.EDIT_COMMENT_REQUEST});
-        createKpiSetService.editComment(id,data)
-            .then(res=>{
+        dispatch({ type: createKpiSetConstants.EDIT_COMMENT_REQUEST });
+        createKpiSetService.editComment(setKpiId, commentId, data)
+            .then(res => {
                 dispatch({
                     type: createKpiSetConstants.EDIT_COMMENT_SUCCESS,
                     payload: res.data.content
@@ -268,16 +268,16 @@ function editComment(id,data) {
             .catch(error => {
                 dispatch({
                     type: createKpiSetConstants.EDIT_COMMENT_FAILURE,
-                    payload : error
+                    payload: error
                 })
             })
     }
 }
-function deleteComment(id,idKPI) {
+function deleteComment(setKpiId, commentId) {
     return dispatch => {
-        dispatch({type: createKpiSetConstants.DELETE_COMMENT_REQUEST});
-        createKpiSetService.deleteComment(id,idKPI)
-            .then(res=>{
+        dispatch({ type: createKpiSetConstants.DELETE_COMMENT_REQUEST });
+        createKpiSetService.deleteComment(setKpiId, commentId)
+            .then(res => {
                 dispatch({
                     type: createKpiSetConstants.DELETE_COMMENT_SUCCESS,
                     payload: res.data.content
@@ -286,18 +286,18 @@ function deleteComment(id,idKPI) {
             .catch(error => {
                 dispatch({
                     type: createKpiSetConstants.DELETE_COMMENT_FAILURE,
-                    payload : error
+                    payload: error
                 })
             })
     }
 }
 
 
-function createCommentOfComment(data) {
+function createCommentOfComment(setKpiId, commentId, data) {
     return dispatch => {
-        dispatch({type: createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_REQUEST});
-        createKpiSetService.createCommentOfComment(data)
-            .then(res=>{
+        dispatch({ type: createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_REQUEST });
+        createKpiSetService.createCommentOfComment(setKpiId, commentId, data)
+            .then(res => {
                 dispatch({
                     type: createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_SUCCESS,
                     payload: res.data.content
@@ -306,17 +306,17 @@ function createCommentOfComment(data) {
             .catch(error => {
                 dispatch({
                     type: createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_FAILURE,
-                    payload : error
+                    payload: error
                 })
             })
     }
 }
 
-function editCommentOfComment(id,data) {
+function editCommentOfComment(setKpiId, commentId, childCommentId, data) {
     return dispatch => {
-        dispatch({type: createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_REQUEST});
-        createKpiSetService.editCommentOfComment(id,data)
-            .then(res=>{
+        dispatch({ type: createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_REQUEST });
+        createKpiSetService.editCommentOfComment(setKpiId, commentId, childCommentId, data)
+            .then(res => {
                 dispatch({
                     type: createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_SUCCESS,
                     payload: res.data.content
@@ -325,17 +325,17 @@ function editCommentOfComment(id,data) {
             .catch(error => {
                 dispatch({
                     type: createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_FAILURE,
-                    payload : error
+                    payload: error
                 })
             })
     }
 }
 
-function deleteCommentOfComment(id,idKPI) {
+function deleteCommentOfComment(setKpiId, commentId, childCommentId) {
     return dispatch => {
-        dispatch({type: createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_REQUEST});
-        createKpiSetService.deleteCommentOfComment(id,idKPI)
-            .then(res=>{
+        dispatch({ type: createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_REQUEST });
+        createKpiSetService.deleteCommentOfComment(setKpiId, commentId, childCommentId)
+            .then(res => {
                 dispatch({
                     type: createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_SUCCESS,
                     payload: res.data.content
@@ -344,7 +344,7 @@ function deleteCommentOfComment(id,idKPI) {
             .catch(error => {
                 dispatch({
                     type: createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_FAILURE,
-                    payload : error
+                    payload: error
                 })
             })
     }

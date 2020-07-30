@@ -58,87 +58,6 @@ class ModalCreateProcessTask extends Component {
       this.modeler = new BpmnModeler();
       this.generateId= "createprocess"
    }
-
-   render() {
-      const { translate } = this.props;
-      const { id, info, showInfo, processDescription, processName } = this.state;
-      return (
-         <React.Fragment>
-            <DialogModal
-               size='100'
-               modalID="modal-create-process-task"
-               isLoading={false}
-               formID="form-create-process-task"
-               resetOnSave={true}
-               resetOnClose={true}
-               title={this.props.title}
-               func={this.save}
-            >
-               <form id="form-create-process-task">
-                  <div>
-                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">Thông tin quy trình</legend>
-                        <div className='row'>
-                           <div className="form-group">
-                              <label>Tên quy trình</label>
-                              <input type="text"
-                                 value={processName}
-                                 className="form-control" placeholder="Mô tả công việc"
-                                 onChange={this.handleChangeBpmnName}
-                              />
-                           </div>
-                           <div className="form-group">
-                              <label>Mô tả quy trình</label>
-                              <input type="text"
-                                 value={processDescription}
-                                 className="form-control" placeholder="Mô tả công việc"
-                                 onChange={this.handleChangeBpmnDescription}
-                              />
-                           </div>
-                        </div>
-                     </fieldset>
-                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">Quy trình công việc</legend>
-                        <div className='row'>
-                           <div id={this.generateId} className={this.state.showInfo ? 'col-md-8' : 'col-md-12'}></div>
-                           <div className={this.state.showInfo ? 'col-md-4' : undefined}>
-
-                              {
-                                 (showInfo) &&
-                                 <div>
-                                    <div>
-                                       <h1>Option {this.state.name}</h1>
-                                    </div>
-                                    <FormInfoTask
-                                       action='create'
-                                       id={id}
-                                       info={(info && info[`${id}`]) && info[`${id}`]}
-                                       handleChangeName={this.handleChangeName}
-                                       handleChangeDescription={this.handleChangeDescription}
-                                       handleChangeResponsible={this.handleChangeResponsible}
-                                       handleChangeAccountable={this.handleChangeAccountable}
-
-                                       save={this.save}
-                                    />
-                                 </div>
-                              }
-                           </div>
-                        </div>
-                        <div>
-                           <button onClick={this.exportDiagram}>Export XML</button>
-                           <button onClick={this.downloadAsSVG}>Save SVG</button>
-                           <button onClick={this.downloadAsImage}>Save Image</button>
-                           <button onClick={this.downloadAsBpmn}>Download BPMN</button>
-                        </div>
-                     </fieldset>
-
-                  </div>
-               </form>
-            </DialogModal>
-         </React.Fragment>
-      )
-   }
-
    handleChangeBpmnName = async (e) => {
       let { value } = e.target;
       await this.setState(state => {
@@ -382,6 +301,85 @@ class ModalCreateProcessTask extends Component {
 
          img.src = url;
       });
+   }
+   render() {
+      const { translate } = this.props;
+      const { id, info, showInfo, processDescription, processName } = this.state;
+      return (
+         <React.Fragment>
+            <DialogModal
+               size='100'
+               modalID="modal-create-process-task"
+               isLoading={false}
+               formID="form-create-process-task"
+               resetOnSave={true}
+               resetOnClose={true}
+               title={this.props.title}
+               func={this.save}
+            >
+               <form id="form-create-process-task">
+                  <div>
+                     <fieldset className="scheduler-border">
+                        <legend className="scheduler-border">Thông tin quy trình</legend>
+                        <div className='row'>
+                           <div className="form-group">
+                              <label>Tên quy trình</label>
+                              <input type="text"
+                                 value={processName}
+                                 className="form-control" placeholder="Mô tả công việc"
+                                 onChange={this.handleChangeBpmnName}
+                              />
+                           </div>
+                           <div className="form-group">
+                              <label>Mô tả quy trình</label>
+                              <input type="text"
+                                 value={processDescription}
+                                 className="form-control" placeholder="Mô tả công việc"
+                                 onChange={this.handleChangeBpmnDescription}
+                              />
+                           </div>
+                        </div>
+                     </fieldset>
+                     <fieldset className="scheduler-border">
+                        <legend className="scheduler-border">Quy trình công việc</legend>
+                        <div className='row'>
+                           <div id={this.generateId} className={this.state.showInfo ? 'col-md-8' : 'col-md-12'}></div>
+                           <div className={this.state.showInfo ? 'col-md-4' : undefined}>
+
+                              {
+                                 (showInfo) &&
+                                 <div>
+                                    <div>
+                                       <h1>Option {this.state.name}</h1>
+                                    </div>
+                                    <FormInfoTask
+                                       action='create'
+                                       id={id}
+                                       info={(info && info[`${id}`]) && info[`${id}`]}
+                                       handleChangeName={this.handleChangeName}
+                                       handleChangeDescription={this.handleChangeDescription}
+                                       handleChangeResponsible={this.handleChangeResponsible}
+                                       handleChangeAccountable={this.handleChangeAccountable}
+
+                                       save={this.save}
+                                    />
+                                 </div>
+                              }
+                           </div>
+                        </div>
+                        <div>
+                           <button onClick={this.exportDiagram}>Export XML</button>
+                           <button onClick={this.downloadAsSVG}>Save SVG</button>
+                           <button onClick={this.downloadAsImage}>Save Image</button>
+                           <button onClick={this.downloadAsBpmn}>Download BPMN</button>
+                        </div>
+                     </fieldset>
+
+                  </div>
+               </form>
+            </DialogModal>
+         </React.Fragment>
+      )
    }
 }
 

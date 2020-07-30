@@ -65,7 +65,6 @@ class ModalViewProcessTask extends Component {
    interactPopup = (event) => {
       var element = event.element;
       let nameStr = element.type.split(':');
-      console.log(element.id)
       this.setState(state => {
           if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process') {
               return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}`, }
