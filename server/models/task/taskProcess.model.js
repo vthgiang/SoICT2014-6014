@@ -14,6 +14,14 @@ const TaskProcessSchema = new Schema({
   description: {
     type: String
   },
+  viewer: [{
+    type: Schema.Types.ObjectId,
+    ref: Role,
+  }],
+  manager: [{
+    type: Schema.Types.ObjectId,
+    ref: Role,
+  }],
   creator: {
     type: Schema.Types.ObjectId,
     required: true,

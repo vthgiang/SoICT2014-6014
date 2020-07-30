@@ -52,6 +52,8 @@ exports.editXmlDiagram = async (params, body) => {
         description: body.description,
         nameProcess: body.nameProcess,
         creator: body.creator,
+        viewer: body.viewer,
+        manager: body.manager,
       }
     }
   )
