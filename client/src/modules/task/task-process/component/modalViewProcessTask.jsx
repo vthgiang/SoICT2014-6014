@@ -68,7 +68,7 @@ class ModalViewProcessTask extends Component {
       console.log(element.id)
       this.setState(state => {
           if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process') {
-              return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}_undefined`, }
+              return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}`, }
           }
           else {
               return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }

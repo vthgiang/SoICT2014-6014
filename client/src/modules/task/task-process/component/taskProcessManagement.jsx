@@ -6,6 +6,7 @@ import { ModalEditProcessTask } from './modalEditProcessTask'
 import { ModalCreateProcessTask } from './modalCreateProcessTask'
 import { TaskProcessActions } from '../redux/actions';
 import { ModalViewProcessTask } from './modalViewProcessTask';
+import { RoleActions } from '../../../super-admin/role/redux/actions';
 class TaskProcessManagement extends Component {
   constructor(props) {
     super(props);
@@ -15,7 +16,8 @@ class TaskProcessManagement extends Component {
 
   }
   componentDidMount = () => {
-    this.props.getAllXmlDiagram()
+    this.props.getAllXmlDiagram();
+    this.props.getRoles();
   }
   checkHasComponent = (name) => {
     var { auth } = this.props;
@@ -52,7 +54,7 @@ class TaskProcessManagement extends Component {
     await this.setState(state => {
       return {
         ...state,
-        showModalCreateProcess: 1
+        showModalCreateProcess: true
       }
     });
     window.$(`#modal-create-process-task`).modal("show");
@@ -65,6 +67,7 @@ class TaskProcessManagement extends Component {
       <div className="box">
         <div className="box-body qlcv">
           {
+            this.state.currentRow !== undefined &&
             <ModalViewProcessTask
               title={'Xem quy trình công việc'}
               data={currentRow}
@@ -74,13 +77,12 @@ class TaskProcessManagement extends Component {
               description={currentRow.description}
               infoTask={currentRow.infoTask}
               creator={currentRow.creator}
-            >
-            </ModalViewProcessTask>
+            />
           }
           {
-            // this.state.currentRow !== undefined &&
+            this.state.currentRow !== undefined &&
             <ModalEditProcessTask
-              title={'Xem quy trình công việc'}
+              title={'Sửa quy trình công việc'}
               data={currentRow}
               idProcess={currentRow._id}
               xmlDiagram={currentRow.xmlDiagram}
@@ -184,6 +186,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
+  getRoles: RoleActions.get,
   getAllXmlDiagram: TaskProcessActions.getAllXmlDiagram,
   deleteXmlDiagram: TaskProcessActions.deleteXmlDiagram,
 };
