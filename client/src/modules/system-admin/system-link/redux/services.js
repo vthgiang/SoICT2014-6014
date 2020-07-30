@@ -18,21 +18,6 @@ function getAllSystemLinks(params) {
     }, false, true, 'system_admin.system_link')
 }
 
-function getAllSystemLinkCategories() {
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/system-admin/system-link/system-links/categories`,
-        method: 'GET'
-    }, false, true, 'system_admin.system_link');
-}
-
-function getPaginate(data) {  
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/links-default-management/paginate`,
-        method: 'POST',
-        data
-    }, false, true, 'system_admin.system_link');
-}
-
 function getSystemLink(systemLinkId) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/system-admin/system-link/system-links/${systemLinkId}`,
@@ -42,7 +27,7 @@ function getSystemLink(systemLinkId) {
 
 function createSystemLink(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/system-admin/system-link/system-links/create`,
+        url: `${ LOCAL_SERVER_API }/system-admin/system-link/system-links`,
         method: 'POST',
         data
     }, true, true, 'system_admin.system_link');
@@ -61,4 +46,19 @@ function deleteSystemLink(systemLinkId) {
         url: `${ LOCAL_SERVER_API }/system-admin/system-link/system-links/${systemLinkId}`,
         method: 'DELETE'
     }, true, true, 'system_admin.system_link');
+}
+
+function getAllSystemLinkCategories() {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/system-admin/system-link/system-links-categories`,
+        method: 'GET'
+    }, false, true, 'system_admin.system_link');
+}
+
+function getPaginate(data) {  
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/links-default-management/paginate`,
+        method: 'POST',
+        data
+    }, false, true, 'system_admin.system_link');
 }

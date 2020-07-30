@@ -1,12 +1,15 @@
-import { LOCAL_SERVER_API } from '../../../../env';
-import { sendRequest } from '../../../../helpers/requestHelper';
-import { getStorage } from '../../../../config';
+import {
+    LOCAL_SERVER_API
+} from '../../../../env';
+import {
+    sendRequest
+} from '../../../../helpers/requestHelper';
+import {
+    getStorage
+} from '../../../../config';
 
 export const UserServices = {
     get,
-    edit,
-    create,
-    destroy,
     getRoles,
     getLinkOfRole,
     getAllUserOfCompany,
@@ -17,8 +20,10 @@ export const UserServices = {
     getChildrenOfOrganizationalUnitsAsTree,
     getAllUserInAllUnitsOfCompany,
     getAllEmployeeOfUnitByRole,
-    getAllEmployeeOfUnitByIds
-    
+    getAllEmployeeOfUnitByIds,
+    edit,
+    create,
+    destroy,
 };
 
 function get(params) {
@@ -33,8 +38,8 @@ function get(params) {
  *  Lấy tất cả nhân viên trong đơn vị theo mảng id đơn vị
  * @param {*} ids 
  */
-function getAllEmployeeOfUnitByIds(ids) {   
-    let role = getStorage("currentRole"); 
+function getAllEmployeeOfUnitByIds(ids) {
+    let role = getStorage("currentRole");
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/user/users`,
         method: 'GET',
@@ -59,29 +64,6 @@ function getAllEmployeeOfUnitByRole(role) {
     }, false, true, 'kpi.evaluation');
 }
 
-function edit(id, data) {
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/users/${id}`,
-        method: 'PATCH',
-        data,
-    }, true, true, 'super_admin.user');
-}
-
-function create(data) {
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/users`,
-        method: 'POST',
-        data,
-    }, true, true, 'super_admin.user');
-}
-
-function destroy(id) {
-    return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/users/${id}`,
-        method: 'DELETE',
-    }, true, true, 'super_admin.user');
-}
-
 function getRoles() {
     const id = getStorage("userId");
     return sendRequest({
@@ -101,8 +83,11 @@ function getLinkOfRole() {
 // Lấy tất cả các vai trò cùng phòng ban với người dùng
 function getRoleSameDepartmentOfUser(currentRole) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/role/organizational-units/${currentRole}`,
+        url: `${LOCAL_SERVER_API}/role/roles`,
         method: 'GET',
+        params: {
+            roleId: currentRole,
+        }
     }, false, true, 'super_admin.user');
 }
 
@@ -114,10 +99,10 @@ function getAllUserOfCompany() {
     }, false, true, 'super_admin.user');
 }
 
-/** Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ */ 
+/** Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ */
 function getAllUserOfDepartment(id) {
     let params = id;
-    
+
     return sendRequest({
         url: `${LOCAL_SERVER_API}/user/users`,
         method: 'GET',
@@ -142,25 +127,57 @@ function getAllUserSameDepartment(id) {
 
 function getDepartmentOfUser() {
     const id = getStorage("userId");
-    
+
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/users/${id}/organizational-units`,
+        url: `${ LOCAL_SERVER_API }/organizational-units/organizational-units`,
         method: 'GET',
+        params: {
+            userId: id,
+        }
     }, false, true, 'super_admin.organization_unit');
 }
 
 // Get all children of an organizational unit and that organizational unit
-function getChildrenOfOrganizationalUnitsAsTree(id){
+function getChildrenOfOrganizationalUnitsAsTree(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/user/organizational-units/${id}/users`,
+        url: `${LOCAL_SERVER_API}/user/users`,
         method: 'GET',
+        params: {
+            unitId: id
+        }
     }, false, true, 'super_admin.user');
 }
 
 // Get all user in organizational unit of company
-function getAllUserInAllUnitsOfCompany(){
+function getAllUserInAllUnitsOfCompany() {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/user/organizational-units/${undefined}/users`,
+        url: `${LOCAL_SERVER_API}/user/users`,
         method: 'GET',
+        params: {
+            unitId: -1,
+        }
     }, false, true, 'super_admin.user');
+}
+
+function edit(id, data) {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/user/users/${id}`,
+        method: 'PATCH',
+        data,
+    }, true, true, 'super_admin.user');
+}
+
+function create(data) {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/user/users`,
+        method: 'POST',
+        data,
+    }, true, true, 'super_admin.user');
+}
+
+function destroy(id) {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/user/users/${id}`,
+        method: 'DELETE',
+    }, true, true, 'super_admin.user');
 }

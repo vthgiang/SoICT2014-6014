@@ -57,7 +57,7 @@ import {DashBoardEmployeeKpiSet} from "../modules/kpi/employee/dashboard/compone
 import {KPIPersonalEvaluate} from "../modules/kpi/employee/management/component/employeeKpiData";
 
 import {EmployeeKpiManagement} from "../modules/kpi/evaluation/employee-evaluation/component/employeeKpiManagement";
-import {DashBoardKPIMember} from "../modules/kpi/evaluation/dashboard/component/employeeKpiEvaluationDashboard";
+import {EmployeeKpiEvaluationDashboard} from "../modules/kpi/evaluation/dashboard/component/employeeKpiEvaluationDashboard";
 
 
 import { TaskManagement } from "../modules/task/task-management/component/taskManagement";
@@ -662,7 +662,7 @@ class Routes extends Component {
                         path={ '/kpi-member/dashboard' }
                         pageName= "kpi_member_dashboard"
                         layout={ Layout }
-                        component={ DashBoardKPIMember }
+                        component={ EmployeeKpiEvaluationDashboard }
                     />
                      {/* Task Management */}
                      <PrivateRoute 

@@ -1,12 +1,19 @@
 const EmployeeKpiSetService = require('./creation.service');
+const KPIPersonalController = require("../../employee/management/management.controller");
 const {  LogInfo,  LogError } = require('../../../../logs');
+
 // Điều phối đến các hàm thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 
 /** Lấy tập KPI cá hiện hiện tại */  
 exports.getEmployeeKpiSet = async (req, res) => {
-    if(!req.query.month&&!req.query.role)
-    {
-        this.AllEmployeeKpiSetByMonth(req,res);
+    if(!req.query.month && !req.query.role){
+        this.getAllEmployeeKpiSetByMonth(req,res);
+    }
+    else if(req.query.unitKpiSetByMonth) {
+        KPIPersonalController.getAllEmployeeKpiSetInOrganizationalUnit(req, res);
+    }
+    else if(req.query.unitKpiSetByEmployeeKpiSetDate) {
+        KPIPersonalController.getAllKPIEmployeeSetsInOrganizationByMonth(req, res);
     }
     else{
         try {
@@ -183,26 +190,6 @@ exports.deleteEmployeeKpi = async (req, res) => {
     return EmployeeKpiSetService.deleteEmployeeKpi(req.params.id,req.params.kpipersonal);
 }
 
-/** Chỉnh sửa mục tiêu của KPI cá nhân */ 
-// exports.editEmployeeKpi = async (req, res) => {
-//     try {
-//         var employeeKpi = await EmployeeKpiSetService.editEmployeeKpi(req.body.name,req.body.parent,req.body.weight,req.body.criteria,req.params.id);
-//         await LogInfo(req.user.email, ` edit employee kpi `, req.user.company)
-//         res.status(200).json({
-//             success: true,
-//             messages: ['edit_employee_kpi_success'],
-//             content: employeeKpi
-//         })
-//     } catch (error) {
-//         await LogError(req.user.email, ` edit employee kpi `, req.user.company)
-//         res.status(400).json({
-//             success: false,
-//             messages: ['edit_employee_kpi_failure'],
-//             content: error
-//         })
-//     }
-// }
-
 /**
  * Tạo comment trong trang create KPI employee
  */
@@ -216,7 +203,7 @@ exports.createComment = async (req,res)=> {
                 
             })
         }
-        var comments = await EmployeeKpiSetService.createComment(req.body,files);
+        var comments = await EmployeeKpiSetService.createComment(req.params,req.body,files);
         await LogInfo(req.user.email, ` create comment `,req.user.company)
         res.status(200).json({
             success: true,
@@ -242,7 +229,7 @@ exports.createCommentOfComment = async (req,res)=> {
                 
             })
         }
-        var comments = await EmployeeKpiSetService.createCommentOfComment(req.body,files);
+        var comments = await EmployeeKpiSetService.createCommentOfComment(req.params,req.body,files);
         await LogInfo(req.user.email, ` create comment `,req.user.company)
         res.status(200).json({
             success: true,
@@ -282,7 +269,7 @@ exports.editComment = async (req,res)=> {
  */
 exports.deleteComment = async (req,res)=> {
     try {
-        var comments = await EmployeeKpiSetService.deleteComment(req.params,req.query.kpiId);
+        var comments = await EmployeeKpiSetService.deleteComment(req.params);
         await LogInfo(req.user.email, ` delete comment `,req.user.company)
         res.status(200).json({
             success: false,
@@ -323,7 +310,7 @@ exports.editCommentOfComment = async (req,res)=> {
  */
 exports.deleteCommentOfComment = async (req,res)=> {
     try {
-        var comments = await EmployeeKpiSetService.deleteCommentOfComment(req.params,req.query.kpiId);
+        var comments = await EmployeeKpiSetService.deleteCommentOfComment(req.params);
         await LogInfo(req.user.email, ` delete comment of comment `,req.user.company)
         res.status(200).json({
             success: true,

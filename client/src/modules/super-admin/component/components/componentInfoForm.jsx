@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { ComponentActions } from '../redux/actions';
 
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
 
-import { ComponentValidator} from './componentValidator';
+import { ComponentValidator } from './componentValidator';
 
 class ComponentInfoForm extends Component {
     constructor(props) {
@@ -14,11 +14,11 @@ class ComponentInfoForm extends Component {
         this.state = {}
     }
 
-    render() { 
+    render() {
         const { translate, role, link } = this.props;
-        const {componentId, componentName, componentDescription, componentLink, componentRoles, componentDescriptionError} = this.state;
-        
-        return ( 
+        const { componentId, componentName, componentDescription, componentLink, componentRoles, componentDescriptionError } = this.state;
+
+        return (
             <React.Fragment>
                 <DialogModal
                     size='50' func={this.save}
@@ -30,28 +30,28 @@ class ComponentInfoForm extends Component {
 
                     {/* Form chỉnh sửa thông tin về component */}
                     <form id="form-edit-component">
-                        
+
                         {/* Tên của component */}
                         <div className="form-group">
-                            <label>{ translate('table.name') }<span className="text-red"> * </span></label>
-                            <input type="text" className="form-control" value={componentName} disabled/>
+                            <label>{translate('table.name')}<span className="text-red"> * </span></label>
+                            <input type="text" className="form-control" value={componentName} disabled />
                         </div>
 
                         {/* Mô tả về component	 */}
-                        <div className={`form-group ${!componentDescriptionError? "": "has-error"}`}>
-                            <label>{ translate('table.description') }</label>
+                        <div className={`form-group ${!componentDescriptionError ? "" : "has-error"}`}>
+                            <label>{translate('table.description')}</label>
                             <input type="text" className="form-control" value={componentDescription} onChange={this.handleDescription} />
-                            <ErrorLabel content={componentDescriptionError}/>
+                            <ErrorLabel content={componentDescriptionError} />
                         </div>
 
                         {/* Thuộc về trang nào */}
                         <div className="form-group">
-                            <label>{ translate('manage_component.link') }</label>
+                            <label>{translate('manage_component.link')}</label>
                             <SelectBox
                                 id={`component-link-${componentId}`}
                                 className="form-control select2"
-                                style={{width: "100%"}}
-                                items = {link.list? link.list.map( link => {return {value: link._id, text: link.url}}): null}
+                                style={{ width: "100%" }}
+                                items={link.list.map(link => { return { value: link ? link._id : null, text: link ? link.url : "Link is deleted" } })}
                                 onChange={this.handleComponentLink}
                                 value={componentLink}
                                 multiple={false}
@@ -60,12 +60,12 @@ class ComponentInfoForm extends Component {
 
                         {/* Những role có component này */}
                         <div className="form-group">
-                            <label>{ translate('manage_component.roles') }</label>
+                            <label>{translate('manage_component.roles')}</label>
                             <SelectBox
                                 id={`component-roles-${componentId}`}
                                 className="form-control select2"
-                                style={{width: "100%"}}
-                                items = {role.list? role.list.map( role => {return {value: role._id, text: role.name}}): []}
+                                style={{ width: "100%" }}
+                                items={role.list ? role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "Link is deleted" } }) : []}
                                 onChange={this.handleComponentRoles}
                                 value={componentRoles}
                                 multiple={true}
@@ -74,17 +74,17 @@ class ComponentInfoForm extends Component {
                     </form>
                 </DialogModal>
             </React.Fragment>
-         );
+        );
     }
 
     // Xy ly va validate role name
     handleDescription = (e) => {
-        const {value} = e.target;
+        const { value } = e.target;
         this.validateDescription(value, true);
     }
-    validateDescription = (value, willUpdateState=true) => {
+    validateDescription = (value, willUpdateState = true) => {
         let msg = ComponentValidator.validateDescription(value);
-        if (willUpdateState){
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -116,7 +116,7 @@ class ComponentInfoForm extends Component {
             roles: this.state.componentRoles
         };
 
-        if (this.isFormValidated()){ 
+        if (this.isFormValidated()) {
             return this.props.editComponent(this.state.componentId, component);
         }
     }
@@ -127,9 +127,9 @@ class ComponentInfoForm extends Component {
         return result;
     }
 
-    
+
     // Thiet lap cac gia tri tu props vao state
-    static getDerivedStateFromProps(nextProps, prevState){
+    static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.componentId !== prevState.componentId) {
             return {
                 ...prevState,
@@ -139,16 +139,20 @@ class ComponentInfoForm extends Component {
                 componentDescription: nextProps.componentDescription,
                 componentRoles: nextProps.componentRoles,
                 componentDescriptionError: undefined,
-            } 
+            }
         } else {
             return null;
         }
     }
 }
- 
-const mapState = state => state;
+
+function mapState(state) {
+    const { role, link } = state;
+    return { role, link };
+}
+
 const getState = {
     editComponent: ComponentActions.edit,
 }
- 
-export default connect(mapState, getState) (withTranslate(ComponentInfoForm));
+
+export default connect(mapState, getState)(withTranslate(ComponentInfoForm));

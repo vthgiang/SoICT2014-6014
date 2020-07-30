@@ -1,6 +1,4 @@
-import {
-    LOCAL_SERVER_API
-} from '../../../../../env';
+import { LOCAL_SERVER_API } from '../../../../../env';
 import { sendRequest } from '../../../../../helpers/requestHelper';
 
 export const dashboardOrganizationalUnitKpiServices = {
@@ -13,12 +11,13 @@ export const dashboardOrganizationalUnitKpiServices = {
 /** Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại */
 function getAllEmployeeKpiInOrganizationalUnit(roleId, organizationalUnitId, month) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/employee/management/employee-kpis`,
+        url: `${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis`,
         method: 'GET',
         params: {
             roleId: roleId,
             organizationalUnitId: organizationalUnitId,
-            month: month
+            month: month,
+            employeeKpiCurrent: true
         }
     }, false, false)
 }
@@ -41,11 +40,13 @@ function getAllTaskOfOrganizationalUnit(roleId, organizationalUnitId, month) {
 /** Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng */
 function getAllEmployeeKpiSetInOrganizationalUnit(organizationalUnitId, month) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets/all-employee-kpi-sets-by-month`,
+        // url: `${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets`,
         method: 'GET',
         params: {
             month: month,
             organizationalUnitId: organizationalUnitId,
+            unitKpiSetByMonth: true,
         }
     }, false, false)
 }

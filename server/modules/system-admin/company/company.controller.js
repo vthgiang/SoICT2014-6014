@@ -337,7 +337,7 @@ exports.getAllLinkCategories = async (req, res) => {
  */
 exports.getImportConfiguraion =  async (req, res) => {
     try {
-        const data = await CompanyServices.getImportConfiguraion(req.params.type, req.user.company._id);
+        const data = await CompanyServices.getImportConfiguraion(req.query.type, req.user.company._id);
 
         await LogInfo(req.user.email, 'GET_IMPORT_CONFIGURATION', req.user.company);
         res.status(200).json({ 

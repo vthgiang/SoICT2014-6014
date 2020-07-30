@@ -101,10 +101,10 @@ function getTimerStatusTask() { //param -- , user
 }
 
 // start timer task
-function startTimerTask(timer) {
+function startTimerTask(taskId,timer) {
     return dispatch => {
         dispatch({ type: performTaskConstants.START_TIMER_REQUEST });
-        performTaskService.startTimerTask(timer)
+        performTaskService.startTimerTask(taskId,timer)
             .then(
                 payload => {
                     dispatch({ type: performTaskConstants.START_TIMER_SUCCESS, payload });
@@ -282,20 +282,20 @@ function deleteCommentOfTaskComment(task, id) {
             );
     }
 }
-function evaluationAction(id, evaluations) {
+function evaluationAction(actionId, taskId, evaluation) {
     return dispatch => {
         dispatch({ type: performTaskConstants.EVALUATION_ACTION_REQUEST });
-        performTaskService.evaluationAction(id, evaluations)
+        performTaskService.evaluationAction(actionId, taskId, evaluation)
             .then(
                 payload => dispatch({ type: performTaskConstants.EVALUATION_ACTION_SUCCESS, payload }),
                 error => dispatch({ type: performTaskConstants.EVALUATION_ACTION_FAILURE, error })
             );
     }
 }
-function confirmAction(id, idUser, taskId) {
+function confirmAction(userId, actionId, taskId) {
     return dispatch => {
         dispatch({ type: performTaskConstants.CONFIRM_ACTION_REQUEST });
-        performTaskService.confirmAction(id, idUser, taskId)
+        performTaskService.confirmAction(userId, actionId, taskId)
             .then(
                 payload => dispatch({ type: performTaskConstants.CONFIRM_ACTION_SUCCESS, payload }),
                 error => dispatch({ type: performTaskConstants.CONFIRM_ACTION_FAILURE, error })

@@ -1,5 +1,5 @@
 const {OrganizationalUnit, UserRole, Notification, ManualNotification, Role, User} = require('../../models').schema;
-const UserService = require('../super-admin/user/user.service');
+
 /**
  * Lấy tất cả thông báo mà admin, giám đốc... đã tạo - get manual notification
  */
@@ -15,7 +15,7 @@ exports.getAllManualNotifications = async (creator) => { //id cua cong ty do
  * Phân trang danh sách các thông báo đã được tạo bởi admin, giám đốc ..
  */
 exports.paginateManualNotifications = async (creator, data) => {
-    let info = Object.assign({creator}, data.content);
+    var info = Object.assign({creator}, data.content);
     
     return await ManualNotification
         .paginate( info , { 
@@ -53,30 +53,44 @@ exports.createManualNotification = async (data) => {
 }
 
 /**
- * Tạo thông báo và gửi đến cho người dùng
+ * Lấy danh sách các user của organizationalUnit để gửi thông báo
+ * @return trả về một mảng các id các user
+ */
+exports.getAllUsersInOrganizationalUnit = async (departmentId) => {
+    var department = await OrganizationalUnit.findById(departmentId)
+        .populate([
+            { path: 'deans', model: Role, populate: { path: 'users', model: UserRole}},
+            { path: 'viceDeans', model: Role, populate: { path: 'users', model: UserRole}},
+            { path: 'employees', model: Role, populate: { path: 'users', model: UserRole}}
+        ]);
+    var users = [];
+    for (let i = 0; i < department.deans.length; i++) {
+        users = [...users, ...department.deans[i].users.map(user=>user.userId)]
+    }
+    for (let j = 0; j < department.viceDeans.length; j++) {
+        users = [...users, ...department.viceDeans[j].users.map(user=>user.userId)]
+    }
+    for (let k = 0; k < department.employees.length; k++) {
+        users = [...users, ...department.employees[k].users.map(user=>user.userId)]
+    }
+
+    return users;
+}
+
+/**
+ * Taọ thông báo gửi đến cho các user
  * @param {*} company 
  * @param {*} data 
  * @param {*} manualNotification 
  */
 exports.createNotification = async (company, data, manualNotification=undefined) => {
     let usersArr = data.users;
-    let or = ""+data.organizationalUnits[0];
-    for (let i = 1; i < data.organizationalUnits.length; i++){
-        or = or + "," + data.organizationalUnits[i];
+    for (let i = 0; i < data.organizationalUnits.length; i++) {
+        let organizationalUnit = data.organizationalUnits[i]; // id đơn vị hiện tại
+        let userArr = await this.getAllUsersInOrganizationalUnit(organizationalUnit);
+        usersArr = await usersArr.concat(userArr);
     }
-    let userArr = await UserService.getAllUsersInOrganizationalUnit(or);
-    let u = [], us = [];
-    userArr.map(item => {
-        u = item.deans[(Object.keys(item.deans))]["members"];
-        us = us.concat(u);
-        u = item.viceDeans[(Object.keys(item.viceDeans))]["members"];
-        us = us.concat(u);
-        u = item.employees[(Object.keys(item.employees))]["members"];
-        us = us.concat(u);
-    })
-    userArr = us.map(item => item._id);
-    usersArr = usersArr.concat(userArr);
- 
+
     // Loại bỏ các giá trị trùng nhau
     usersArr = usersArr.map(user => user.toString());
     for(let i = 0, max = usersArr.length; i < max; i++) {
@@ -115,7 +129,7 @@ exports.getAllNotifications = async (user) => {
  * Phân trang danh sách các thông báo của người dùng nhận được
  */
 exports.paginateNotifications = async (user, data) => {
-    let info = Object.assign({user}, data.content);
+    var info = Object.assign({user}, data.content);
     
     return await Notification
         .paginate( info , { 

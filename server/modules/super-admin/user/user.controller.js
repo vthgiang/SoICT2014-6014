@@ -16,6 +16,7 @@ exports.getUsers = async (req, res) => {
             var users = await UserService.getUsers(req.user.company._id, req.query);
 
             LogInfo(req.user.email, 'GET_USERS', req.user.company);
+
             res.status(200).json({
                 success: true,
                 messages: ['get_users_success'],
@@ -69,25 +70,6 @@ getAllEmployeeOfUnitByIds = async (req, res) => {
         });
     }
 };
-
-exports.getAllUserInUnitAndItsSubUnits = async (req, res) => {
-    try {
-        var users = await UserService.getAllUserInUnitAndItsSubUnits(req.user.company._id, req.params.id);
-        await LogInfo(req.user.email, `Get all user of this unit and its sub units ${req.body.name}`, req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['get_all_user_of_this_unit_and_its_sub_units_success'],
-            content: users
-        });
-    } catch (error) {
-        await LogError(req.user.email, `Get all user of this unit and its sub units ${req.body.name}`, req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: ['get_all_user_of_this_unit_and_its_sub_units_failed'],
-            content: error
-        });
-    }
-}
 
 exports.getUser = async (req, res) => {
     console.log("ádasdsadasdasdas")

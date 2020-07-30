@@ -1032,182 +1032,159 @@ const sampleCompanyData = async () => {
     -----------------------------------------------------------------------------------------------
     ----------------------------------------------------------------------------------------------- */
     console.log("Khởi tạo dữ liệu loại tài sản");
-    var listAssetType = await AssetType.insertMany([{ //0
-        company: vnist._id,
-        typeNumber: "BA",
-        typeName: "Bàn",
-        timeDepreciation: null,
-        parent: null,
-        description: "Các loại bàn"
-    }, { //1
-        company: vnist._id,
-        typeNumber: "BC",
-        typeName: "Băng chuyền",
-        timeDepreciation: null,
-        parent: null,
-        description: "Các loại băng chuyền"
-    }, { //2
-        company: vnist._id,
-        typeNumber: "BG",
-        typeName: "Bảng",
-        timeDepreciation: null,
-        parent: null,
-        description: "Các loại bảng, viết, bảng từ, bảng chỉ dẫn"
-    }, { //3
-        company: vnist._id,
-        typeNumber: "BI",
-        typeName: "Bình",
-        timeDepreciation: null,
-        parent: null,
-        description: "Các loại bình chứa: bình nước,..."
-    }, { //4
-        company: vnist._id,
-        typeNumber: "BN",
-        typeName: "Bồn",
-        timeDepreciation: null,
-        parent: null,
-        description: "Các loại bồn rửa tay, bồn đựng nước"
-    }, { //5
-        company: vnist._id,
-        typeNumber: "BU",
-        typeName: "Bục",
-        timeDepreciation: null,
-        parent: null,
-        description: "Các loại bục để giày dép, để chân, để tượng"
-    }, { //6
-        company: vnist._id,
-        typeNumber: "CA",
-        typeName: "Cân",
-        timeDepreciation: null,
-        parent: null,
-        description: "Các loại cân"
-    }, { //7
-        company: vnist._id,
-        typeNumber: "Đèn",
-        typeName: "DE",
-        timeDepreciation: null,
-        parent: null,
-        description: "Đèn các loại"
-    }, { //8
-        company: vnist._id,
-        typeNumber: "DH",
-        typeName: "Điều hòa",
-        timeDepreciation: null,
-        parent: null,
-        description: "Điều hòa các loại"
-    }, { //9
-        company: vnist._id,
-        typeNumber: "DO",
-        typeName: "Đồng hồ",
-        timeDepreciation: null,
-        parent: null,
-        description: "Các loại đồng hồ"
-    }, { //10
-        company: vnist._id,
-        typeNumber: "GH",
-        typeName: "Ghế",
-        timeDepreciation: null,
-        parent: null,
-        description: "Ghế các loại"
-    }, { //11
-        company: vnist._id,
-        typeNumber: "GI",
-        typeName: "Giá",
-        timeDepreciation: null,
-        parent: null,
-        description: "Giá các chất liệu để tài liệu, trei, vật dụng nhỏ"
-    }, { //12
-        company: vnist._id,
-        typeNumber: "HT",
-        typeName: "Hệ thống",
-        timeDepreciation: null,
-        parent: null,
-        description: "Các thiết bị hệ thống"
-    }, { //13
-        company: vnist._id,
-        typeNumber: "KE",
-        typeName: "Kệ hòm",
-        timeDepreciation: null,
-        parent: null,
-        description: "Hòm, Kệ các chất liệu để tài liệu, có thể di động, có mặt phẳng"
-    }, { //14
-        company: vnist._id,
-        typeNumber: "QU",
-        typeName: "Quạt",
-        timeDepreciation: null,
-        parent: null,
-        description: "Quạt các loại"
-    }, { //15
-        company: vnist._id,
-        typeNumber: "TU",
-        typeName: "Tủ đựng tài liệu và chứa các vật phẩm, TB",
-        timeDepreciation: null,
-        parent: null,
-        description: ""
-    }, { //16
-        company: vnist._id,
-        typeNumber: "MV",
-        typeName: "Thiết bị máy văn phòng",
-        timeDepreciation: null,
-        parent: null,
-        description: "Tất cả các máy liên quan tới làm việc tại VP, Máy hút bụi, máy giặt, máy hút mùi"
-    }, { //17
-        company: vnist._id,
-        typeNumber: "DX",
-        typeName: "Dụng cụ SX",
-        timeDepreciation: null,
-        parent: null,
-        description: "Các vật dụng như thùng các chất liệu để đựng, chứa, pha chế, chia liều cột"
-    }, { //18
-        company: vnist._id,
-        typeNumber: "MK",
-        typeName: "Máy cơ khí",
-        timeDepreciation: null,
-        parent: null,
-        description: "Các máy liên quan tới hỗ trọ SX trực tiếp, sửa chữa, xây dựng"
-    }, { //19
-        company: vnist._id,
-        typeNumber: "TM",
-        typeName: "Máy vi tính và thiết bị mạng",
-        timeDepreciation: null,
-        parent: null,
-        description: "Máy vi tính các loại + phụ kiện + các thiết bị mạng"
-    }, { //20
-        company: vnist._id,
-        typeNumber: "AA",
-        typeName: "Thiết bị âm thanh, hình ảnh",
-        timeDepreciation: null,
-        parent: null,
-        description: "Các thiết bị điện tử riêng biệt liên quan tới âm thanh, hình ảnh"
-    }, { //21
-        company: vnist._id,
-        typeNumber: "NB",
-        typeName: "Các vật dụng liên quan tới nhà bếp",
-        timeDepreciation: null,
-        parent: null,
-        description: "Bếp, bình ga, nồi, chảo..."
-    }, { //22
-        company: vnist._id,
-        typeNumber: "PC",
-        typeName: "Các thiết bị PCCC",
-        timeDepreciation: null,
-        parent: null,
-        description: ""
-    }, { //23
-        company: vnist._id,
-        typeNumber: "XE",
-        typeName: "Xe các loại",
-        timeDepreciation: null,
-        parent: null,
-        description: ""
-    }, { //24
-        company: vnist._id,
-        typeNumber: "KH",
-        typeName: "Khác",
-        timeDepreciation: null,
-        parent: null,
-        description: ""
-    }])
+    var listAssetType = await AssetType.insertMany([
+        { //0
+            company: vnist._id,
+            typeNumber: "BA",
+            typeName: "Bàn",
+            parent: null,
+            description: "Các loại bàn"
+        }, { //1
+            company: vnist._id,
+            typeNumber: "BC",
+            typeName: "Băng chuyền",
+            parent: null,
+            description: "Các loại băng chuyền"
+        }, { //2
+            company: vnist._id,
+            typeNumber: "BG",
+            typeName: "Bảng",
+            parent: null,
+            description: "Các loại bảng, viết, bảng từ, bảng chỉ dẫn"
+        }, { //3
+            company: vnist._id,
+            typeNumber: "BI",
+            typeName: "Bình",
+            parent: null,
+            description: "Các loại bình chứa: bình nước,..."
+        }, { //4
+            company: vnist._id,
+            typeNumber: "BN",
+            typeName: "Bồn",
+            parent: null,
+            description: "Các loại bồn rửa tay, bồn đựng nước"
+        }, { //5
+            company: vnist._id,
+            typeNumber: "BU",
+            typeName: "Bục",
+            parent: null,
+            description: "Các loại bục để giày dép, để chân, để tượng"
+        }, { //6
+            company: vnist._id,
+            typeNumber: "CA",
+            typeName: "Cân",
+            parent: null,
+            description: "Các loại cân"
+        }, { //7
+            company: vnist._id,
+            typeNumber: "Đèn",
+            typeName: "DE",
+            parent: null,
+            description: "Đèn các loại"
+        }, { //8
+            company: vnist._id,
+            typeNumber: "DH",
+            typeName: "Điều hòa",
+            parent: null,
+            description: "Điều hòa các loại"
+        }, { //9
+            company: vnist._id,
+            typeNumber: "DO",
+            typeName: "Đồng hồ",
+            parent: null,
+            description: "Các loại đồng hồ"
+        }, { //10
+            company: vnist._id,
+            typeNumber: "GH",
+            typeName: "Ghế",
+            parent: null,
+            description: "Ghế các loại"
+        }, { //11
+            company: vnist._id,
+            typeNumber: "GI",
+            typeName: "Giá",
+            parent: null,
+            description: "Giá các chất liệu để tài liệu, trei, vật dụng nhỏ"
+        }, { //12
+            company: vnist._id,
+            typeNumber: "HT",
+            typeName: "Hệ thống",
+            parent: null,
+            description: "Các thiết bị hệ thống"
+        }, { //13
+            company: vnist._id,
+            typeNumber: "KE",
+            typeName: "Kệ hòm",
+            parent: null,
+            description: "Hòm, Kệ các chất liệu để tài liệu, có thể di động, có mặt phẳng"
+        }, { //14
+            company: vnist._id,
+            typeNumber: "QU",
+            typeName: "Quạt",
+            parent: null,
+            description: "Quạt các loại"
+        }, { //15
+            company: vnist._id,
+            typeNumber: "TU",
+            typeName: "Tủ đựng tài liệu và chứa các vật phẩm, TB",
+            parent: null,
+            description: ""
+        }, { //16
+            company: vnist._id,
+            typeNumber: "MV",
+            typeName: "Thiết bị máy văn phòng",
+            parent: null,
+            description: "Tất cả các máy liên quan tới làm việc tại VP, Máy hút bụi, máy giặt, máy hút mùi"
+        }, { //17
+            company: vnist._id,
+            typeNumber: "DX",
+            typeName: "Dụng cụ SX",
+            parent: null,
+            description: "Các vật dụng như thùng các chất liệu để đựng, chứa, pha chế, chia liều cột"
+        }, { //18
+            company: vnist._id,
+            typeNumber: "MK",
+            typeName: "Máy cơ khí",
+            parent: null,
+            description: "Các máy liên quan tới hỗ trọ SX trực tiếp, sửa chữa, xây dựng"
+        }, { //19
+            company: vnist._id,
+            typeNumber: "TM",
+            typeName: "Máy vi tính và thiết bị mạng",
+            parent: null,
+            description: "Máy vi tính các loại + phụ kiện + các thiết bị mạng"
+        }, { //20
+            company: vnist._id,
+            typeNumber: "AA",
+            typeName: "Thiết bị âm thanh, hình ảnh",
+            parent: null,
+            description: "Các thiết bị điện tử riêng biệt liên quan tới âm thanh, hình ảnh"
+        }, { //21
+            company: vnist._id,
+            typeNumber: "NB",
+            typeName: "Các vật dụng liên quan tới nhà bếp",
+            parent: null,
+            description: "Bếp, bình ga, nồi, chảo..."
+        }, { //22
+            company: vnist._id,
+            typeNumber: "PC",
+            typeName: "Các thiết bị PCCC",
+            parent: null,
+            description: ""
+        }, { //23
+            company: vnist._id,
+            typeNumber: "XE",
+            typeName: "Xe các loại",
+            parent: null,
+            description: ""
+        }, { //24
+            company: vnist._id,
+            typeNumber: "KH",
+            typeName: "Khác",
+            parent: null,
+            description: ""
+        }
+    ])
     console.log(`Xong! Thông tin loại tài sản đã được tạo`);
 
 

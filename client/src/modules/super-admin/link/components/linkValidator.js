@@ -1,4 +1,6 @@
-import { VALIDATOR } from '../../../../helpers/validator';
+import {
+    VALIDATOR
+} from '../../../../helpers/validator';
 
 export const LinkValidator = {
     validateDescription
@@ -6,11 +8,11 @@ export const LinkValidator = {
 
 function validateDescription(value) {
     let msg = undefined;
-    if (value.trim() === ""){
+    if (value.trim() === "") {
         msg = "Mô tả không được để trống";
-    } else if(value.length > 255){
+    } else if (value.length > 255) {
         msg = "Mô tả không được nhiều hơn 255 ký tự";
-    } else if (!VALIDATOR.isValidName(value)){
+    } else if (!VALIDATOR.isValidName(value)) {
         msg = "Mô tả không được chứa ký tự đặc biệt";
     }
     return msg;
