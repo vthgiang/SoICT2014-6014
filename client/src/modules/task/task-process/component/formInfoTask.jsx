@@ -69,15 +69,21 @@ class FormInfoTask extends Component {
     }
 
     render() {
-        const { user, translate, disabled} = this.props;
+        const { user, translate, disabled, role} = this.props;
+        const { nameTask, description, responsible, accountable } = this.state;
         const { id, info, action } = this.props;
-        let { nameTask, description, responsible, accountable } = this.state;
 
         let usersOfChildrenOrganizationalUnit;
         if (user && user.usersOfChildrenOrganizationalUnit) {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+
+
+        let listRole = [];
+        if(role && role.list.length !== 0) listRole = role.list;
+        let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
+                                .map(item => {return {text: item.name, value: item._id}});
 
         return (
             <div>
@@ -108,7 +114,8 @@ class FormInfoTask extends Component {
                                 id={`select-responsible-employee-${id}-${action}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                items={unitMembers}
+                                // items={unitMembers}
+                                items={listItem}
                                 onChange={this.handleChangeResponsible}
                                 multiple={true}
                                 value={responsible}
@@ -122,11 +129,11 @@ class FormInfoTask extends Component {
                         { 
                         // unitMembers &&
                             <SelectBox
-
                                 id={`select-accountable-employee-${id}-${action}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                items={unitMembers}
+                                // items={unitMembers}
+                                items={listItem}
                                 onChange={this.handleChangeAccountable}
                                 multiple={true}
                                 value={accountable}
@@ -145,8 +152,8 @@ class FormInfoTask extends Component {
 
 
 function mapState(state) {
-    const { user, auth } = state;
-    return { user, auth };
+    const { user, auth, role } = state;
+    return { user, auth, role };
 }
 
 const actionCreators = {

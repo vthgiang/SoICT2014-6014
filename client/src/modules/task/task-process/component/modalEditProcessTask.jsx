@@ -28,13 +28,13 @@ class ModalEditProcessTask extends Component {
     constructor(props) {
         super(props);
         let { data } = this.props;
-        // const { id, info, showInfo, processDescription, processName } = this.state;
         this.state = {
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
             showInfo: false,
             info: data.infoTask,
             xmlDiagram: data.xmlDiagram,
+            selected: 'info',
         }
         this.modeler = new BpmnModeler();
         this.generateId = 'editprocess';
@@ -53,6 +53,7 @@ class ModalEditProcessTask extends Component {
                 ...prevState,
                 idProcess: nextProps.idProcess,
                 showInfo: false,
+                // selected: 'info',
                 info: info,
                 processDescription: nextProps.data.description ? nextProps.data.description : '',
                 processName: nextProps.data.nameProcess ? nextProps.data.nameProcess : '',
@@ -62,10 +63,17 @@ class ModalEditProcessTask extends Component {
             return null;
         }
     }
-
+    handleChangeContent = async (content) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                selected: content
+            }
+        })
+    }
     render() {
         const { translate } = this.props;
-        const { name, id, idProcess, info, showInfo, processDescription, processName } = this.state;
+        const { name, id, idProcess, info, showInfo, processDescription, processName, selected } = this.state;
         let x = (info && info[`${id}`]) && info[`${id}`]
         return (
             <React.Fragment>
@@ -77,63 +85,77 @@ class ModalEditProcessTask extends Component {
                     func={this.save}
                 >
                     <div>
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Thông tin quy trình</legend>
-                            <div className='row'>
-                                <div className="form-group">
-                                    <label>Tên quy trình</label>
-                                    <input type="text"
-                                        value={processName}
-                                        className="form-control" placeholder="Mô tả công việc"
-                                        onChange={this.handleChangeBpmnName}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Mô tả quy trình</label>
-                                    <input type="text"
-                                        value={processDescription}
-                                        className="form-control" placeholder="Mô tả công việc"
-                                        onChange={this.handleChangeBpmnDescription}
-                                    />
-                                </div>
-                            </div>
-                        </fieldset>
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Quy trình công việc</legend>
-                            <div className='row'>
-                                <div id={this.generateId} className={showInfo ? 'col-md-8' : 'col-md-12'}></div>
-                                <div className={showInfo ? 'col-md-4' : undefined}>
 
-                                    {
-                                        (showInfo) &&
-                                        <div>
-                                            <div>
-                                                <h1>Option {name}</h1>
+                        <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
+                            <ul className="nav nav-tabs">
+                                <li className="active"><a href="#info" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
+                                <li><a href="#process" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
+                            </ul>
+                            <div className="tab-content">
+                                <div className={selected === "info" ? "active tab-pane" : "tab-pane"} id="info">
+                                    <fieldset className="scheduler-border">
+                                        <legend className="scheduler-border">Thông tin quy trình</legend>
+                                        <div className='row'>
+                                            <div className="form-group">
+                                                <label>Tên quy trình</label>
+                                                <input type="text"
+                                                    value={processName}
+                                                    className="form-control" placeholder="Mô tả công việc"
+                                                    onChange={this.handleChangeBpmnName}
+                                                />
                                             </div>
-                                            <FormInfoTask
-                                                action='edit'
-                                                id={id}
-                                                info={(info && info[`${id}`]) && info[`${id}`]}
-                                                handleChangeName={this.handleChangeName}
-                                                handleChangeDescription={this.handleChangeDescription}
-                                                handleChangeResponsible={this.handleChangeResponsible}
-                                                handleChangeAccountable={this.handleChangeAccountable}
-
-                                                save={this.save}
-                                            />
+                                            <div className="form-group">
+                                                <label>Mô tả quy trình</label>
+                                                <input type="text"
+                                                    value={processDescription}
+                                                    className="form-control" placeholder="Mô tả công việc"
+                                                    onChange={this.handleChangeBpmnDescription}
+                                                />
+                                            </div>
                                         </div>
-                                    }
+                                    </fieldset>
                                 </div>
                             </div>
-                            <div>
-                                {/* <div id={this.generateId}></div> */}
-                                {/* <button onClick={this.exportDiagram}>Export XML</button>
-                                <button onClick={this.downloadAsSVG}>Save SVG</button>
-                                <button onClick={this.downloadAsImage}>Save Image</button>
-                                <button onClick={this.downloadAsBpmn}>Download BPMN</button> */}
-                            </div>
-                        </fieldset>
+                            <div className="tab-content">
+                                <div className={selected === "process" ? "active tab-pane" : "tab-pane"} id="process">
+                                    <fieldset className="scheduler-border">
+                                        {/* <legend className="scheduler-border">Quy trình công việc</legend> */}
+                                        <div className='row'>
+                                            <div id={this.generateId} className={showInfo ? 'col-md-8' : 'col-md-12'}></div>
+                                            <div className={showInfo ? 'col-md-4' : undefined}>
 
+                                                {
+                                                    (showInfo) &&
+                                                    <div>
+                                                        <div>
+                                                            <h1>Option {name}</h1>
+                                                        </div>
+                                                        <FormInfoTask
+                                                            action='edit'
+                                                            id={id}
+                                                            info={(info && info[`${id}`]) && info[`${id}`]}
+                                                            handleChangeName={this.handleChangeName}
+                                                            handleChangeDescription={this.handleChangeDescription}
+                                                            handleChangeResponsible={this.handleChangeResponsible}
+                                                            handleChangeAccountable={this.handleChangeAccountable}
+
+                                                            save={this.save}
+                                                        />
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div>
+                                            {/* <div id={this.generateId}></div> */}
+                                            {/* <button onClick={this.exportDiagram}>Export XML</button>
+                                                <button onClick={this.downloadAsSVG}>Save SVG</button>
+                                                <button onClick={this.downloadAsImage}>Save Image</button>
+                                                <button onClick={this.downloadAsBpmn}>Download BPMN</button> */}
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </DialogModal>
             </React.Fragment>
@@ -219,17 +241,17 @@ class ModalEditProcessTask extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.idProcess !== this.state.idProcess) {
-            this.props.getDepartment();
-            let { user } = this.props;
-            let defaultUnit;
-            if(user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
-                item.dean === this.state.currentRole
-                || item.viceDean === this.state.currentRole
-                || item.employee === this.state.currentRole);
-            if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
-                defaultUnit = user.organizationalUnitsOfUser[0]
-            }
-            this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
+            // this.props.getDepartment();
+            // let { user } = this.props;
+            // let defaultUnit;
+            // if(user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
+            //     item.dean === this.state.currentRole
+            //     || item.viceDean === this.state.currentRole
+            //     || item.employee === this.state.currentRole);
+            // if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+            //     defaultUnit = user.organizationalUnitsOfUser[0]
+            // }
+            // this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
             return true;
         }
@@ -237,16 +259,16 @@ class ModalEditProcessTask extends Component {
     }
 
     componentDidMount() {
-        this.props.getDepartment();
-        let { user } = this.props;
-        let defaultUnit = user && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.find(item =>
-            item.dean === this.state.currentRole
-            || item.viceDean === this.state.currentRole
-            || item.employee === this.state.currentRole);
-        if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
-            defaultUnit = user.organizationalUnitsOfUser[0]
-        }
-        this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
+        // this.props.getDepartment();
+        // let { user } = this.props;
+        // let defaultUnit = user && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.find(item =>
+        //     item.dean === this.state.currentRole
+        //     || item.viceDean === this.state.currentRole
+        //     || item.employee === this.state.currentRole);
+        // if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+        //     defaultUnit = user.organizationalUnitsOfUser[0]
+        // }
+        // this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
 
         this.modeler.attachTo('#' + this.generateId);
         // this.modeler.importXML(this.initialDiagram, function (err) {})

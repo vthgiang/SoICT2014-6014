@@ -181,8 +181,8 @@ class TaskProcessManagement extends Component {
 
 
 function mapState(state) {
-  const { user, auth, taskProcess } = state;
-  return { user, auth, taskProcess };
+  const { user, auth, taskProcess, role } = state;
+  return { user, auth, taskProcess, role };
 }
 
 const actionCreators = {
