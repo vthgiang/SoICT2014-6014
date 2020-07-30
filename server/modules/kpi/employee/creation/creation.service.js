@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const taskCommentModel = require('../../../../models/task/taskComment.model');
 
 const { EmployeeKpi, EmployeeKpiSet, OrganizationalUnit, OrganizationalUnitKpiSet, User } = require('../../../../models/index').schema;
@@ -54,10 +56,11 @@ exports.getEmployeeKpiSet = async (id, role, month) => {
 
 /** Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
 exports.getAllEmployeeKpiSetByMonth = async (userId, startDate, endDate) => {
+
     let employeeKpiSetByMonth = await EmployeeKpiSet.find(
         {
-            creator: userId,
-            date: { $gte: startDate, $lte: endDate }
+            creator: new mongoose.Types.ObjectId(userId),
+            date: { $gt: new Date(startDate), $lte: new Date(endDate) }
         },
         { 'automaticPoint': 1, 'employeePoint': 1, 'approvedPoint': 1, 'date': 1 }
     )
@@ -65,7 +68,42 @@ exports.getAllEmployeeKpiSetByMonth = async (userId, startDate, endDate) => {
     return employeeKpiSetByMonth;
 }
 
-/** Khởi tạo tập KPI cá nhân */
+/** Lấy tất cả các tập KPI của tất cả nhân viên trong mảng đơn vị cho trước theo thời gian */
+exports.getAllEmployeeKpiSetOfAllEmployeeInOrganizationalUnitByMonth = async (organizationalUnitIds, startDate, endDate) => {
+
+    let organizationalUnitIdsArray = organizationalUnitIds.map(item => { return new mongoose.Types.ObjectId(item) });
+    
+    const employeeKpiSetsInOrganizationalUnitByMonth = await EmployeeKpiSet.aggregate([
+        { $match: { 'organizationalUnit': { $in: [...organizationalUnitIdsArray] } } },
+
+        // Thời gian lấy chưa tính tháng hiện tại(ví dụ endDate là 2020-8 thì service trả về k bao gồm kpi tháng 8)
+        { $match: { 'date': { $gt: new Date(startDate), $lte: new Date(endDate) } } },
+
+        { 
+            $lookup: { 
+                from: "users",
+                localField: "creator",
+                foreignField: "_id",
+                as: "employee"
+            } 
+        },
+
+        { $unwind: "$employee" },
+
+        { 
+            $group: { 
+                '_id': "$employee.name",  
+                'employeeKpi': { $push: "$$ROOT" }
+            } 
+        },
+        
+        { $project: { 'employeeKpi.automaticPoint': 1, 'employeeKpi.employeePoint': 1, 'employeeKpi.approvedPoint': 1, 'employeeKpi.date': 1 } }
+    ])
+
+    return employeeKpiSetsInOrganizationalUnitByMonth;
+}
+
+/** Khởi tạo tập KPI cá nhân */ 
 exports.createEmployeeKpiSet = async (data) => {
     let organizationalUnitId = data.organizationalUnit;
     let creatorId = data.creator;

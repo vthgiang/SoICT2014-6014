@@ -13,7 +13,7 @@ class FormInfoTask extends Component {
             id: id,
             nameTask: (info && info.nameTask) ? info.nameTask : '',
             description: (info && info.description) ? info.description : '',
-            organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
+            organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : "",
             responsible: (info && info.responsible) ? info.responsible : [],
             accountable: (info && info.accountable) ? info.accountable : [],
         }

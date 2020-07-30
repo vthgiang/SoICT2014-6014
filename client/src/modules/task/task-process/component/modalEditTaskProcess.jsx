@@ -453,8 +453,9 @@ class ModalEditTaskProcess extends Component {
 
     render() {
         const { translate, role } = this.props;
+        const { listOrganizationalUnit } = this.props
         const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selected } = this.state;
-
+        console.log(listOrganizationalUnit)
         let listRole = [];
         if (role && role.list.length !== 0) listRole = role.list;
         let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
