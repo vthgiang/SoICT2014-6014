@@ -5,11 +5,11 @@ const { LogInfo, LogError } = require('../../../../logs');
  * Get organizational unit kpi set
  */
 exports.getOrganizationalUnitKpiSet = async (req, res) => {
-    if(req.query.parent){
+    if (req.query.parent) {
         getParentOrganizationalUnitKpiSet(req, res);
-    } else if(req.query.startDate && req.query.endDate){
+    } else if (req.query.startDate && req.query.endDate) {
         getAllOrganizationalUnitKpiSetByTime(req, res);
-    } else if(req.query.child){
+    } else if (req.query.child) {
         getAllOrganizationalUnitKpiSetByTimeOfChildUnit(req, res);
     } else {
         try {
@@ -29,7 +29,7 @@ exports.getOrganizationalUnitKpiSet = async (req, res) => {
             })
         }
     }
-    
+
 }
 
 /**
@@ -246,7 +246,7 @@ getAllOrganizationalUnitKpiSetByTime = async (req, res) => {
 /** 
  * Lấy danh sách các tập KPI đơn vị theo thời gian của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại 
  */
-getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (req, res) => { 
+getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (req, res) => {
     try {
         var childOrganizationalUnitKpiSets = await KPIUnitService.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(req.user.company._id, req.query);
         LogInfo(req.user.email, ' get all organizational unit kpi set each year of child unit ', req.user.company);

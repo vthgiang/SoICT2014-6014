@@ -5,7 +5,7 @@ import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../common-c
 import { ModalEditProcessTask } from './modalEditProcessTask'
 import {ModalCreateProcessTask} from './modalCreateProcessTask'
 import { TaskProcessActions } from '../redux/actions';
-import { ModalViewProcessTask } from './modalViewProcessTask';
+// import { ModalViewProcessTask } from './modalViewProcessTask';
 class TaskProcessManagement extends Component {
     constructor(props) {
         super(props);
@@ -59,10 +59,10 @@ class TaskProcessManagement extends Component {
         return (
             <div className="box">
                 <div className="box-body qlcv">
-                {<ModalViewProcessTask 
+                {/* {<ModalViewProcessTask 
                   title = {"Xem quy trình công việc"}
                   modalID = {'modal-view-process-task'}
-                />}
+                />} */}
                 { this.state.currentRow !== undefined &&
                     <ModalEditProcessTask
                         title={'Xem quy trình công việc'}

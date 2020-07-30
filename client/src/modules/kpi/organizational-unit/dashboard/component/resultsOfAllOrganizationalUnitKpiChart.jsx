@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
-
+import {createUnitKpiActions} from '../../creation/redux/actions' 
 import { DatePicker } from '../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
@@ -77,7 +76,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
             })
             return false;
         } else if(nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if(!nextProps.dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsOfChildUnit) {
+            if(!nextProps.createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
                 return false
             }
 
@@ -183,11 +182,11 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     }
 
     setDataMultiLineChart = () => {
-        const { dashboardOrganizationalUnitKpi } = this.props;
+        const { createKpiUnit } = this.props;
         var organizationalUnitKpiSetsOfChildUnit, point = [];
 
-        if(dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsOfChildUnit) {
-            organizationalUnitKpiSetsOfChildUnit = dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsOfChildUnit;
+        if(createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
+            organizationalUnitKpiSetsOfChildUnit = createKpiUnit.organizationalUnitKpiSetsOfChildUnit;
         }
 
         if(organizationalUnitKpiSetsOfChildUnit) {
@@ -259,11 +258,11 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     }
 
     render() {
-        const { dashboardOrganizationalUnitKpi, translate } = this.props;
+        const { createKpiUnit, translate } = this.props;
         var organizationalUnitKpiSetsOfChildUnit;
 
-        if(dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsOfChildUnit) {
-            organizationalUnitKpiSetsOfChildUnit = dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsOfChildUnit;
+        if(createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
+            organizationalUnitKpiSetsOfChildUnit = createKpiUnit.organizationalUnitKpiSetsOfChildUnit;
         }
 
         let d = new Date(),
@@ -323,11 +322,11 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 }
 
 function mapState(state) {
-    const { dashboardOrganizationalUnitKpi } = state;
-    return { dashboardOrganizationalUnitKpi }
+    const { createKpiUnit } = state;
+    return { createKpiUnit }
 }
 const actions = {
-    getAllOrganizationalUnitKpiSetByTimeOfChildUnit: dashboardOrganizationalUnitKpiActions.getAllOrganizationalUnitKpiSetByTimeOfChildUnit
+    getAllOrganizationalUnitKpiSetByTimeOfChildUnit: createUnitKpiActions.getAllOrganizationalUnitKpiSetByTimeOfChildUnit
 }
 
 const connectedResultsOfAllOrganizationalUnitKpiChart = connect(mapState, actions)(withTranslate(ResultsOfAllOrganizationalUnitKpiChart));

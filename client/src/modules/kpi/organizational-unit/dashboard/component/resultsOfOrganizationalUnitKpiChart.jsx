@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
-
+import { createKpiUnitActions } from '../redux/actions';
+import {createUnitKpiActions} from '../../creation/redux/actions' 
 import { DatePicker } from '../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
@@ -74,7 +74,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
         }
         
         if(nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if(!nextProps.dashboardOrganizationalUnitKpi.organizationalUnitKpiSets) {
+            if(!nextProps.createKpiUnit.organizationalUnitKpiSets) {
                 return false
             }
 
@@ -112,11 +112,11 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
 
     // Thiết lập dữ liệu biểu đồ
     setDataMultiLineChart = () => {
-        const { dashboardOrganizationalUnitKpi, translate } = this.props;
+        const { createKpiUnit, translate } = this.props;
         var listOrganizationalUnitKpiSetEachYear, automaticPoint, employeePoint, approvedPoint, date, dataMultiLineChart;
 
-        if(dashboardOrganizationalUnitKpi.organizationalUnitKpiSets) {
-            listOrganizationalUnitKpiSetEachYear = dashboardOrganizationalUnitKpi.organizationalUnitKpiSets
+        if(createKpiUnit.organizationalUnitKpiSets) {
+            listOrganizationalUnitKpiSetEachYear = createKpiUnit.organizationalUnitKpiSets
         }
 
         if(listOrganizationalUnitKpiSetEachYear) {
@@ -290,12 +290,12 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
 }
 
 function mapState(state) {
-    const { dashboardOrganizationalUnitKpi } = state;
-    return { dashboardOrganizationalUnitKpi };
+    const { createKpiUnit } = state;
+    return { createKpiUnit };
 }
 
 const actions = {
-    getAllOrganizationalUnitKpiSetByTime: dashboardOrganizationalUnitKpiActions.getAllOrganizationalUnitKpiSetByTime
+    getAllOrganizationalUnitKpiSetByTime: createUnitKpiActions.getAllOrganizationalUnitKpiSetByTime
 }
 
 const connectedResultsOfOrganizationalUnitKpiChart = connect(mapState, actions)(withTranslate(ResultsOfOrganizationalUnitKpiChart));
