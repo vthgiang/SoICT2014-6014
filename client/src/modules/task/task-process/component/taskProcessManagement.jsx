@@ -94,6 +94,7 @@ class TaskProcessManagement extends Component {
             <ModalEditTaskProcess
               title={'Sửa quy trình công việc'}
               data={currentRow}
+              listOrganizationalUnit= {listOrganizationalUnit}
               idProcess={currentRow._id}
               xmlDiagram={currentRow.xmlDiagram}
               nameProcess={currentRow.nameProcess}
