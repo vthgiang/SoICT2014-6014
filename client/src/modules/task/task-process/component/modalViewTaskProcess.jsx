@@ -9,7 +9,7 @@ import { TaskProcessActions } from "../redux/actions";
 import { withTranslate } from "react-redux-multilingual";
 
 
-class ModalViewProcessTask extends Component {
+class ModalViewTaskProcess extends Component {
 
    constructor(props) {
       super(props);
@@ -66,7 +66,7 @@ class ModalViewProcessTask extends Component {
       var element = event.element;
       let nameStr = element.type.split(':');
       this.setState(state => {
-          if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process') {
+          if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process' && element.type !== 'bpmn:StartEvent' && element.type !== 'bpmn:EndEvent') {
               return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}`, }
           }
           else {
@@ -77,8 +77,8 @@ class ModalViewProcessTask extends Component {
   }
    render() {
       const { translate } = this.props;
+      const { listOrganizationalUnit } = this.props
       const { name, id, idProcess, info, showInfo, processDescription, processName } = this.state;
-      let x = (info && info[`${id}`]) && info[`${id}`]
       return (
          <React.Fragment>
                 <DialogModal
@@ -123,6 +123,7 @@ class ModalViewProcessTask extends Component {
                                             </div>
                                             <FormInfoTask
                                                 disabled = {true}
+                                                listOrganizationalUnit = {listOrganizationalUnit}
                                                 action='view'
                                                 id={id}
                                                 info={(info && info[`${id}`]) && info[`${id}`]}
@@ -159,5 +160,5 @@ const actionCreators = {
    getXmlDiagramById: TaskProcessActions.getXmlDiagramById,
    editXmlDiagram: TaskProcessActions.editXmlDiagram,
 };
-const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalViewProcessTask));
-export { connectedModalAddProcess as ModalViewProcessTask };
+const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalViewTaskProcess));
+export { connectedModalAddProcess as ModalViewTaskProcess };

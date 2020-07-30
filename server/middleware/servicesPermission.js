@@ -122,7 +122,6 @@ exports.data = [
     { path: '/link/links/company/:idCompany', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
     { path: '/organizational-units/organizational-units', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/organizational-units/organizational-units/:role/get-as-tree', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/organizational-units/organizational-units', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/organizational-units/organizational-units/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/organizational-units/organizational-units/:id', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
@@ -252,28 +251,26 @@ exports.data = [
     { path: '/kpi/employee/creation/employee-kpis/target/:id', method: 'PUT', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpi/employee/creation/employee-kpis/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/kpi/employee/creation/employee-kpi-sets/approve/:id', method: 'PUT', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/kpi/employee/management/employee-kpi-sets', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/kpi/employee/creation/employee-kpi-sets/comment', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/kpi/employee/creation/employee-kpi-sets/comment/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/kpi/employee/creation/employee-kpi-sets/comment/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/kpi/employee/creation/employee-kpi-sets/comment-comment', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/kpi/employee/creation/employee-kpi-sets/comment-comment/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/kpi/employee/creation/employee-kpi-sets/comment-comment/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/kpi/employee/creation/employee-kpi-sets/:kpiId/comments', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/kpi/employee/creation/employee-kpi-sets/:kpiId/comments/:commentId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/kpi/employee/creation/employee-kpi-sets/:kpiId/comments/:commentId', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/kpi/employee/creation/employee-kpi-sets/:kpiId/comments/:commentId/child-comments', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/kpi/employee/creation/employee-kpi-sets/:kpiId/comments/:commentId/child-comments/childCommentId', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/kpi/employee/creation/employee-kpi-sets/:kpiId/comments/:commentId/child-comments/childCommentId', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    
+    // Employee KPI management dashboard
     { path: '/kpi/employee/management/employee-kpi-sets/copy', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/kpi/employee/management/employee-kpis', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/kpi/employee/management/employee-kpi-sets/all-employee-kpi-sets-by-month', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/kpi/employee/management/employee-kpis/all-employee-kpis-children-by-month', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-
+    
+    // Employee KPI evaluate 
     { path: '/kpi/evaluation/employee-evaluation/employee-kpi-sets', method: 'GET', roles: ['Dean', 'Vice Dean','Employee'] },
     { path: '/kpi/evaluation/employee-evaluation/employee-kpi-sets/:id', method: 'GET', roles: ['Dean', 'Vice Dean','Employee'] },
-    { path: '/kpi/evaluation/employee-evaluation/employee-kpi-sets/:id/edit', method: 'POST', roles: ['Dean', 'Vice Dean'] },
-    { path: '/kpi/evaluation/employee-evaluation/employee-kpis/:id', method: 'POST', roles: ['Dean'] },
+    { path: '/kpi/evaluation/employee-evaluation/employee-kpi-sets/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean'] },
+    { path: '/kpi/evaluation/employee-evaluation/employee-kpis/:id', method: 'PATCH', roles: ['Dean'] },
     { path: '/kpi/evaluation/employee-evaluation/employee-kpis/:id/tasks', method: 'GET', roles: ['Dean','Vice Dean'] },
     { path: '/kpi/evaluation/employee-evaluation/employee-kpis/:id/set-task-importance-level', method: 'POST', roles: ['Dean'] },
-
-    // Module DashboardEvaluationEmployeeKpiSet
+    
+    // Employee KPI evaluate dashboard
     { path: '/kpi/evaluation/dashboard/employee-kpis', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/kpi/evaluation/dashboard/organizational-units', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
     // Task-management
     { path: '/task/tasks', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
@@ -346,14 +343,12 @@ exports.data = [
     { path: '/taskprocess/diagrams/:diagramId', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
     // Module TaskTemplate
-    { path: '/tasktemplates', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasktemplates/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasktemplates/role/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasktemplates/create', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasktemplates/user', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasktemplates/:id', method: 'DELETE', roles: ['Dean'] },
-    { path: '/tasktemplates/edit/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/tasktemplates/importTaskTemplate', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/task-templates', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/task-templates/:id', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/task-templates', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/task-templates/:id', method: 'DELETE', roles: ['Dean'] },
+    { path: '/task/task-templates/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/task-templates/import', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
 
     //asset-type

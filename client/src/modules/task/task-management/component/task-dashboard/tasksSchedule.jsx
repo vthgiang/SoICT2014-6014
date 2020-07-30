@@ -6,9 +6,10 @@ import { taskManagementActions } from '../../../task-management/redux/actions'
 import { ModalDetailTask } from './modalDetailTask'
 import Swal from 'sweetalert2'
 import moment from 'moment'
-import Timeline from "react-calendar-timeline"
-import './calendar.css'
+import Timeline, {TodayMarker} from "react-calendar-timeline"
 import 'react-calendar-timeline/lib/Timeline.css'
+import './calendar.css'
+
 
 class TasksSchedule extends Component {
   constructor(props) {
@@ -44,6 +45,7 @@ class TasksSchedule extends Component {
       taskId: null
     };
   }
+
   componentDidMount() {
     let { infoSearch } = this.state;
     let { organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = infoSearch;
@@ -163,13 +165,12 @@ class TasksSchedule extends Component {
               borderRadius: 3
             }
           }
-        }
-        )
+        })
       }
     }
     return durations;
-
   }
+
   handleItemClick = async (itemId) => {
     let { tasks } = this.props;
     let { taskId } = this.state;
@@ -183,6 +184,7 @@ class TasksSchedule extends Component {
     await this.props.getTaskById(id);
     window.$(`#modal-detail-task`).modal('show')
   }
+
   animateScroll = invert => {
     const width = (invert ? -1 : 1) * parseFloat(this.scrollRef.style.width);
     const duration = 1200;
@@ -216,6 +218,7 @@ class TasksSchedule extends Component {
     const { startDateAfter, endDateBefore } = infoSearch;
     let { tasks, translate } = this.props;
     let task = tasks && tasks.task;
+    let today = new Date();
     return (
       <React.Fragment>
         <div className="box-body qlcv">
@@ -258,7 +261,20 @@ class TasksSchedule extends Component {
             canResize={false}
             defaultTimeStart={defaultTimeStart}
             defaultTimeEnd={defaultTimeEnd}
-          />
+            >
+            <TodayMarker date={today}>
+              {
+                ({styles, date}) => {
+                  const customStyles ={
+                    ...styles,
+                    backgroundColor: '#d73925',
+                    width: '3px'
+                  }
+                  return <div style={customStyles}></div>
+                }
+              }
+            </TodayMarker>
+          </Timeline>
           <div className="form-inline pull-right" style={{ marginTop: "5px" }}>
             <button className='btn btn-danger' onClick={this.onPrevClick}><i className="fa fa-angle-left"></i> {translate('task.task_management.prev')}</button>
             <button className='btn btn-danger' onClick={this.onNextClick}>{translate('task.task_management.next')} <i className="fa fa-angle-right"></i></button>

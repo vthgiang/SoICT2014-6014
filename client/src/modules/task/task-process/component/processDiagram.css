@@ -18,5 +18,10 @@
 }
 
 svg{
-    height: 750px;
+    height: 600px;
+}
+
+
+#bpmnContainer > div > a, #editprocess > div > a, #createprocess > div > a {
+    visibility: hidden;
 }

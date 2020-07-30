@@ -28,7 +28,8 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextProps.userId !== this.state.userId || nextProps.startMonth !== this.state.startMonth || nextProps.endMonth !== this.state.endMonth) {
+        const { userId, startMonth, endMonth, willUpdate } = this.state;
+        if (nextProps.userId !== userId || nextProps.startMonth !== startMonth || nextProps.endMonth !== endMonth) {
             await this.props.getAllEmployeeKpiSetByMonth(nextProps.userId, nextProps.startMonth, nextProps.endMonth);
             this.setState(state => {
                 return {
@@ -50,7 +51,7 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
                 };
             });
             return false;
-        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && this.state.willUpdate) {
+        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && willUpdate) {
 
             this.multiLineChart();
             this.setState(state => {
@@ -79,8 +80,10 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
 
     setDataMultiLineChart = () => {
         const { createEmployeeKpiSet, translate } = this.props;
-        var listEmployeeKpiSet, dataMultiLineChart, automaticPoint, employeePoint, approvedPoint, date;
-        if (createEmployeeKpiSet && this.state.willUpdate) {
+        const { willUpdate } = this.state;
+        let listEmployeeKpiSet, dataMultiLineChart, automaticPoint, employeePoint, approvedPoint, date;
+
+        if (createEmployeeKpiSet && willUpdate) {
             listEmployeeKpiSet = createEmployeeKpiSet.employeeKpiSetByMonth
         }
         if (listEmployeeKpiSet !== null) {

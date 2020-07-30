@@ -14,7 +14,7 @@ import UserCreateForm from './userCreateForm';
 class ManageUserTable extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
+        this.state = {
             limit: 5,
             page: 1,
             option: 'name', // Mặc định tìm kiếm theo tên
@@ -33,16 +33,16 @@ class ManageUserTable extends Component {
         window.$('#modal-edit-user').modal('show');
     }
 
-    render() { 
+    render() {
         const { user, translate } = this.props;
-        
+
         return (
             <React.Fragment>
                 {/* Button thêm tài khoản người dùng mới */}
                 <UserCreateForm />
 
                 {/* Thanh tìm kiếm */}
-                <SearchBar 
+                <SearchBar
                     columns={[
                         { title: translate('manage_user.name'), value: 'name' },
                         { title: translate('manage_user.email'), value: 'email' }
@@ -60,7 +60,7 @@ class ManageUserTable extends Component {
                         userEmail={this.state.currentRow.email}
                         userName={this.state.currentRow.name}
                         userActive={this.state.currentRow.active}
-                        userRoles={this.state.currentRow.roles? this.state.currentRow.roles.map(role => role.roleId._id): []}
+                        userRoles={this.state.currentRow.roles ? this.state.currentRow.roles.map(role => role.roleId._id) : []}
                     />
                 }
 
@@ -83,7 +83,7 @@ class ManageUserTable extends Component {
                                     ]}
                                     limit={this.state.limit}
                                     setLimit={this.setLimit}
-                                    hideColumnOption = {true}
+                                    hideColumnOption={true}
                                     tableId="table-manage-user"
                                 />
                             </th>
@@ -97,15 +97,15 @@ class ManageUserTable extends Component {
                                 >
                                     <td>{parse(u.name)}</td>
                                     <td>{u.email}</td>
-                                    <td><ToolTip dataTooltip={u.roles.map(role => role.roleId.name)}/></td>
-                                    <td>{u.active 
-                                        ? <p><i className="fa fa-circle text-success" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_user.enable')} </p>
-                                        : <p><i className="fa fa-circle text-danger" style={{fontSize: "1em", marginRight: "0.25em"}} /> {translate('manage_user.disable')} </p>}</td>
-                                    <td style={{textAlign: 'center'}}>
-                                        <a onClick={() => this.handleEdit(u)} className="edit text-yellow" href={`#${u._id}`} style={{width: '5px'}} title={translate('manage_user.edit')}><i className="material-icons">edit</i></a>
+                                    <td><ToolTip dataTooltip={u.roles.map(role => role.roleId.name)} /></td>
+                                    <td>{u.active
+                                        ? <p><i className="fa fa-circle text-success" style={{ fontSize: "1em", marginRight: "0.25em" }} /> {translate('manage_user.enable')} </p>
+                                        : <p><i className="fa fa-circle text-danger" style={{ fontSize: "1em", marginRight: "0.25em" }} /> {translate('manage_user.disable')} </p>}</td>
+                                    <td style={{ textAlign: 'center' }}>
+                                        <a onClick={() => this.handleEdit(u)} className="edit text-yellow" href={`#${u._id}`} style={{ width: '5px' }} title={translate('manage_user.edit')}><i className="material-icons">edit</i></a>
                                         {
-                                            !this.checkSuperRole(u.roles) && 
-                                            <DeleteNotification 
+                                            !this.checkSuperRole(u.roles) &&
+                                            <DeleteNotification
                                                 content={translate('manage_user.delete')}
                                                 data={{ id: u._id, info: u.email }}
                                                 func={this.props.destroy}
@@ -117,14 +117,14 @@ class ManageUserTable extends Component {
                         }
                     </tbody>
                 </table>
-                
-                {user.isLoading?
-                    <div className="table-info-panel">{translate('confirm.loading')}</div>:
-                    user.listPaginate.length===0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+
+                {user.isLoading ?
+                    <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                    user.listPaginate.length === 0 && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                 }
-                
+
                 {/* PaginateBar */}
-                <PaginateBar pageTotal={user.totalPages} currentPage={user.page} func={this.setPage}/>  
+                <PaginateBar pageTotal={user.totalPages} currentPage={user.page} func={this.setPage} />
             </React.Fragment>
         );
     }
@@ -132,14 +132,14 @@ class ManageUserTable extends Component {
     checkSuperRole = (roles) => {
         var result = false;
         if (roles !== undefined) {
-            roles.map( role => {
+            roles.map(role => {
                 if (role.roleId.name === 'Super Admin') {
                     result = true;
                 }
                 return true;
             });
         }
-        
+
         return result;
     }
 
@@ -160,8 +160,8 @@ class ManageUserTable extends Component {
         if (this.state.limit !== number) {
             this.setState({ limit: number });
 
-            const data = { 
-                limit: number, 
+            const data = {
+                limit: number,
                 page: this.state.page,
                 key: this.state.option,
                 value: this.state.value
@@ -176,8 +176,8 @@ class ManageUserTable extends Component {
             [title]: option
         });
     }
-    
-    searchWithOption = async() => {
+
+    searchWithOption = async () => {
         const data = {
             limit: this.state.limit,
             page: 1,
@@ -187,14 +187,17 @@ class ManageUserTable extends Component {
         await this.props.getUser(data);
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.props.getUser();
-        this.props.getUser({limit: this.state.limit, page: this.state.page});
+        this.props.getUser({ limit: this.state.limit, page: this.state.page });
     }
 
 }
 
-const mapStateToProps = state => state;
+function mapStateToProps(state) {
+    const { user } = state;
+    return { user };
+}
 
 const mapDispatchToProps = {
     getUser: UserActions.get,

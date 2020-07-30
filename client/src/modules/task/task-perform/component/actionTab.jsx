@@ -137,20 +137,6 @@ class ActionTab extends Component {
 
         return true;
     }
-    showEdit(event) {
-        event.preventDefault();
-        this.setState({ showEdit: true }, () => {
-            document.addEventListener('click', this.closeEdit);
-        });
-    }
-    closeEdit(event) {
-        if (!this.dropdownEdit.contains(event.target)) {
-            this.setState({ showEdit: false }, () => {
-                document.removeEventListener('click', this.closeEdit);
-            });
-
-        }
-    }
     setHover = async (id, value) => {
         if (isNaN(value)) {
             this.hover[id] = 0;
@@ -749,12 +735,9 @@ class ActionTab extends Component {
         }
     }
     render() {
-        const { role } = this.props;
         let type = ["actions", "commentofactions", "taskcomments", "commentoftaskcomments"];
-        let task, informations;
-        let statusTask, files;
-        let actionComments, taskActions, taskComments, actions, logTimer, logs;
-        const { tasks, performtasks, user, auth, translate } = this.props;
+        let task, informations, statusTask, files, actionComments, taskActions, taskComments, actions, logTimer, logs;
+        const { tasks, performtasks, user, auth, translate, role } = this.props;
         const subtasks = tasks.subtasks;
         const {
             showEvaluations, selected, comment, editComment, showChildComment, editAction, action,

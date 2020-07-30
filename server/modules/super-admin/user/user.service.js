@@ -111,7 +111,7 @@ exports.getAllEmployeeOfUnitByIds = async (id) => {
  * @id Id công ty
  * @unitID Id của của đơn vị cần lấy đơn vị con
  */
-getAllUserInUnitAndItsSubUnits = async (id, unitId) => {console.log("############################");
+getAllUserInUnitAndItsSubUnits = async (id, unitId) => {
     //Lấy tất cả các đơn vị con của 1 đơn vị
     var data;
 
