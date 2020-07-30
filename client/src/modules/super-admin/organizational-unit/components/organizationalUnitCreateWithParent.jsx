@@ -70,7 +70,7 @@ class DepartmentCreateWithParent extends Component {
 
     render() {
         const { translate, department } = this.props;
-        const { departmentParent, departmentNameError, departmentDescriptionError, departmentDeanError, departmentViceDeanError, departmentEmployeeError } = this.state;
+        const { departmentParent, departmentNameError, departmentDescriptionError } = this.state;
         console.log("state create organ:", this.state)
 
         return (
@@ -324,7 +324,10 @@ class DepartmentCreateWithParent extends Component {
     }
 }
 
-const mapState = state => state;
+function mapState(state) {
+    const { department } = state;
+    return { department };
+}
 
 const getState = {
     create: DepartmentActions.create

@@ -59,27 +59,6 @@ function getDepartmentsThatUserIsDean() {
                 });
             })
     }
-
-    function request(currentRole) {
-        return {
-            type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_REQUEST,
-            currentRole
-        }
-    }
-
-    function success(Department) {
-        return {
-            type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_SUCCESS,
-            Department
-        }
-    }
-
-    function failure(error) {
-        return {
-            type: DepartmentConstants.GET_DEPARTMENTS_THAT_USER_IS_DEAN_FAILURE,
-            error
-        }
-    }
 }
 
 /**

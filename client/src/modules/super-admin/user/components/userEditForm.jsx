@@ -226,7 +226,10 @@ class UserEditForm extends Component {
     }
 }
 
-const mapStateToProps = state => state;
+function mapStateToProps(state) {
+    const { user, role, auth } = state;
+    return { user, role, auth };
+}
 
 const action = {
     edit: UserActions.edit

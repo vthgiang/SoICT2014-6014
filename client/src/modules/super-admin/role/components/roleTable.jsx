@@ -87,7 +87,7 @@ class RoleTable extends Component {
                                         <td><ToolTip dataTooltip={role.parents ? role.parents.map(parent => parent.name) : ["Parents role is deleted"]} /></td>
                                         <td><ToolTip dataTooltip={role.users ? role.users.map(user => user.userId !== null ? user.userId.name : null) : ["User account is deleted"]} /></td>
                                         <td style={{ textAlign: 'center' }}>
-                                            <a className="edit" onClick={() => this.handleEdit(role)}><i className="material-icons">edit</i></a>
+                                            <a className="edit" href={`#${role._id}`} onClick={() => this.handleEdit(role)}><i className="material-icons">edit</i></a>
                                             {
                                                 role.type && role.type.name === ROLE_TYPE.COMPANY_DEFINED &&
                                                 <DeleteNotification
@@ -174,7 +174,10 @@ class RoleTable extends Component {
 
 }
 
-const mapStateToProps = state => state;
+function mapStateToProps(state) {
+    const { role } = state;
+    return { role };
+}
 
 const mapDispatchToProps = {
     get: RoleActions.get,

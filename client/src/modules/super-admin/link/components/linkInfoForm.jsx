@@ -135,7 +135,10 @@ class LinkInfoForm extends Component {
     }
 }
 
-const mapState = state => state;
+function mapState(state) {
+    const { role, link } = state;
+    return { role, link };
+}
 
 const getState = {
     getRole: RoleActions.get,

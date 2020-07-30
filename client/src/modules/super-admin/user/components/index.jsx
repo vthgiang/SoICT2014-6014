@@ -22,6 +22,4 @@ class ManageUser extends Component {
     }
 }
 
-const mapStateToProps = state => state;
-
-export default connect(mapStateToProps, null)(withTranslate(ManageUser));
+export default ManageUser;

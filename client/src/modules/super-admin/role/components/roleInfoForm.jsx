@@ -166,7 +166,10 @@ class RoleInfoForm extends Component {
     }
 }
 
-const mapState = state => state;
+function mapState(state) {
+    const { role, user } = state;
+    return { role, user };
+}
 
 const dispatchStateToProps = {
     edit: RoleActions.edit
