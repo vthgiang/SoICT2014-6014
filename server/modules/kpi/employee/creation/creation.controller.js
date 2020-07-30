@@ -203,7 +203,7 @@ exports.createComment = async (req,res)=> {
                 
             })
         }
-        var comments = await EmployeeKpiSetService.createComment(req.body,files);
+        var comments = await EmployeeKpiSetService.createComment(req.params,req.body,files);
         await LogInfo(req.user.email, ` create comment `,req.user.company)
         res.status(200).json({
             success: true,
@@ -229,7 +229,7 @@ exports.createCommentOfComment = async (req,res)=> {
                 
             })
         }
-        var comments = await EmployeeKpiSetService.createCommentOfComment(req.body,files);
+        var comments = await EmployeeKpiSetService.createCommentOfComment(req.params,req.body,files);
         await LogInfo(req.user.email, ` create comment `,req.user.company)
         res.status(200).json({
             success: true,
@@ -247,7 +247,7 @@ exports.createCommentOfComment = async (req,res)=> {
  */
 exports.editComment = async (req,res)=> {
     try {
-        var comments = await EmployeeKpiSetService.editComment(req.params,req.body);
+        var comments = await EmployeeKpiSetService.editComment(req.params,req.params,req.body);
         console.log(comments)
         await LogInfo(req.user.email, ` edit comment `,req.user.company)
         res.status(200).json({
@@ -269,7 +269,7 @@ exports.editComment = async (req,res)=> {
  */
 exports.deleteComment = async (req,res)=> {
     try {
-        var comments = await EmployeeKpiSetService.deleteComment(req.params,req.query.kpiId);
+        var comments = await EmployeeKpiSetService.deleteComment(req.params);
         await LogInfo(req.user.email, ` delete comment `,req.user.company)
         res.status(200).json({
             success: false,
@@ -310,7 +310,7 @@ exports.editCommentOfComment = async (req,res)=> {
  */
 exports.deleteCommentOfComment = async (req,res)=> {
     try {
-        var comments = await EmployeeKpiSetService.deleteCommentOfComment(req.params,req.query.kpiId);
+        var comments = await EmployeeKpiSetService.deleteCommentOfComment(req.params);
         await LogInfo(req.user.email, ` delete comment of comment `,req.user.company)
         res.status(200).json({
             success: true,
