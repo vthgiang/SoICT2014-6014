@@ -1,39 +1,5 @@
-const { OrganizationalUnit, EmployeeKpiSet, UserRole } = require('../../../../models').schema;
-const arrayToTree = require('array-to-tree');
+const { OrganizationalUnit, EmployeeKpiSet } = require('../../../../models').schema;
 
-/**
- * Lấy tất cả KPI của nhân viên theo vai trò
- * @role id của role
- */
-exports.getAllEmployeeKpiSetOfUnitByRole = async (role) => {
-    let organizationalUnit = await OrganizationalUnit.findOne({
-        $or: [
-            {'deans': { $in: role }}, 
-            {'viceDeans':{ $in: role }}, 
-            {'employees':{ $in: role }}
-        ]
-    });
-    let employeekpis = await EmployeeKpiSet.find({
-        organizationalUnit: organizationalUnit._id
-    }).skip(0).limit(50).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
-    return employeekpis;
-}
-
-/**
- * Lấy tất cả nhân viên theo vai trò
- * @role id của role
- */
-exports.getAllEmployeeOfUnitByRole = async (role) => {
-        let organizationalUnit = await OrganizationalUnit.findOne({
-            $or: [
-                {'deans': { $in: role }}, 
-                {'viceDeans':{ $in: role }}, 
-                {'employees':{ $in: role }}
-            ]
-        });
-        let employees = await UserRole.find({ roleId: {$in: organizationalUnit.employees} }).populate('userId roleId');
-        return employees;
-}
 
 /**
  * Lấy tất cả KPI của nhân viên theo mảng id đơn vị
@@ -41,79 +7,16 @@ exports.getAllEmployeeOfUnitByRole = async (role) => {
  */
 exports.getAllEmployeeKpiSetOfUnitByIds = async (ids) => {
     let data = [];
-    for(let i = 0; i < ids.length; i++) {
+    for (let i = 0; i < ids.length; i++) {
+
         let employeekpis = await EmployeeKpiSet.find({
             organizationalUnit: ids[i]
-        }).skip(0).limit(50).populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } });
+        })
+            .skip(0).limit(50)
+            .populate("organizationalUnit creator approver")
+            .populate({ path: "kpis", populate: { path: 'parent' } });
         data = data.concat(employeekpis);
+
     };
     return data;
-}
-
-/**
- * Lấy tất cả nhân viên theo mảng id đơn vị
- * @id Mảng id các đơn vị
- */
-exports.getAllEmployeeOfUnitByIds = async (id) => {
-    let data = [];
-
-    for(let i = 0; i < id.length; i++) {
-        let organizationalUnit = await OrganizationalUnit.findById(id[i]);
-        let employees = await UserRole.find({ roleId: {$in: organizationalUnit.employees} }).populate('userId roleId');
-        data = data.concat(employees);
-    };
-    
-    return data;
-}
-
-/**
- * Lấy các đơn vị con của một đơn vị và đơn vị đó
- * @id Id công ty
- * @role Id của role ứng với đơn vị cần lấy đơn vị con
- */
-exports.getChildrenOfOrganizationalUnitsAsTree = async (id, role) => {
-    let organizationalUnit = await OrganizationalUnit.findOne({
-        $or: [
-            {'deans': { $in: role }}, 
-            {'viceDeans':{ $in: role }}, 
-            {'employees':{ $in: role }}
-        ]
-    });
-    const data = await OrganizationalUnit.find({ company: id });
-    
-    const newData = data.map( department => {return {
-            id: department._id.toString(),
-            name: department.name,
-            description: department.description,
-            deans: department.deans.map(item => item.toString()),
-            viceDeans: department.viceDeans.map(item => item.toString()),
-            employees: department.employees.map(item => item.toString()),
-            parent_id: department.parent !== null ? department.parent.toString() : null
-        }
-    });
-    
-    const tree = await arrayToTree(newData);
-    for(let j = 0; j < tree.length; j++){
-        let queue = [];
-        if(organizationalUnit.name === tree[j].name){
-            return tree[j];
-        }
-        queue.push(tree[j]);
-        while(queue.length > 0){
-            v = queue.shift();
-            if(v.children !== undefined){
-                for(let i = 0; i < v.children.length; i++){
-                    let u = v.children[i];
-                    if(organizationalUnit.name === u.name){                        
-                        return u;
-                    }
-                    else{
-                        queue.push(u);
-                    }
-                }
-            }
-        }
-    }
-
-    return null;
 }

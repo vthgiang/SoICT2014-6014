@@ -1,6 +1,5 @@
 
 #bpmnContainer {
-    border: 1px solid;
     height: 100%;
     padding: 0;
     margin: 0;
@@ -19,5 +18,5 @@
 }
 
 svg{
-    height: 500px;
+    height: 750px;
 }

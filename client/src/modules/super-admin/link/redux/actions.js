@@ -1,5 +1,9 @@
-import { LinkServices } from "./services";
-import { LinkConstants } from "./constants";
+import {
+    LinkServices
+} from "./services";
+import {
+    LinkConstants
+} from "./constants";
 
 export const LinkActions = {
     get,
@@ -12,10 +16,12 @@ export const LinkActions = {
 /**
  * Lấy danh sách tất cả các link của 1 công ty
  */
-function get(data){
-    if(data){
+function get(data) {
+    if (data) {
         return dispatch => {
-            dispatch({ type: LinkConstants.GET_LINKS_PAGINATE_REQUEST});
+            dispatch({
+                type: LinkConstants.GET_LINKS_PAGINATE_REQUEST
+            });
             LinkServices.get(data)
                 .then(res => {
                     dispatch({
@@ -26,7 +32,9 @@ function get(data){
         }
     }
     return dispatch => {
-        dispatch({ type: LinkConstants.GET_LINKS_REQUEST});
+        dispatch({
+            type: LinkConstants.GET_LINKS_REQUEST
+        });
         LinkServices.get()
             .then(res => {
                 dispatch({
@@ -41,9 +49,11 @@ function get(data){
  * Lấy thông tin link theo id
  * @id id link
  */
-function show(id){
+function show(id) {
     return dispatch => {
-        dispatch({ type: LinkConstants.SHOW_LINK_REQUEST});
+        dispatch({
+            type: LinkConstants.SHOW_LINK_REQUEST
+        });
         LinkServices.show(id)
             .then(res => {
                 dispatch({
@@ -58,17 +68,19 @@ function show(id){
  * Tạo link mới
  * @link dữ liệu về link
  */
-function create(link){
+function create(link) {
     return dispatch => {
-        dispatch({ type: LinkConstants.CREATE_LINK_REQUEST});
+        dispatch({
+            type: LinkConstants.CREATE_LINK_REQUEST
+        });
         LinkServices
-                .create(link)
-                .then(res => {
-                    dispatch({
-                        type: LinkConstants.CREATE_LINK_SUCCESS,
-                        payload: res.data.content
-                    });
-                })
+            .create(link)
+            .then(res => {
+                dispatch({
+                    type: LinkConstants.CREATE_LINK_SUCCESS,
+                    payload: res.data.content
+                });
+            })
     }
 }
 
@@ -77,9 +89,11 @@ function create(link){
  * @id id link
  * @link dữ liệu về link
  */
-function edit(id, link){
+function edit(id, link) {
     return dispatch => {
-        dispatch({ type: LinkConstants.EDIT_LINK_REQUEST});
+        dispatch({
+            type: LinkConstants.EDIT_LINK_REQUEST
+        });
         LinkServices.edit(id, link)
             .then(res => {
                 dispatch({
@@ -94,9 +108,11 @@ function edit(id, link){
  * Xóa link
  * @id id link
  */
-function destroy(id, link){
+function destroy(id, link) {
     return dispatch => {
-        dispatch({ type: LinkConstants.DELETE_LINK_REQUEST});
+        dispatch({
+            type: LinkConstants.DELETE_LINK_REQUEST
+        });
         LinkServices.destroy(id, link)
             .then(res => {
                 dispatch({
@@ -106,5 +122,3 @@ function destroy(id, link){
             })
     }
 }
-
-

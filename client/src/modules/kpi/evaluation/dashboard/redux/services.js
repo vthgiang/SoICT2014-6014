@@ -3,9 +3,7 @@ import { getStorage } from '../../../../../config';
 import { sendRequest } from '../../../../../helpers/requestHelper';
 export const dashboardEmployeeKpiService = {
     getAllEmployeeKpiSetOfUnitByRole,
-    getAllEmployeeOfUnitByRole,
     getAllEmployeeKpiSetOfUnitByIds,
-    getAllEmployeeOfUnitByIds,
     getChildrenOfOrganizationalUnitsAsTree
 };
 
@@ -13,23 +11,13 @@ export const dashboardEmployeeKpiService = {
  * Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị theo role
  * @param {*} role 
  */
-function getAllEmployeeKpiSetOfUnitByRole(role) {    
+function getAllEmployeeKpiSetOfUnitByRole(role) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis/${role}`,
-        // url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis/roles/${role}`,
+        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets`,
         method: 'GET',
-        
-    }, false, true, 'kpi.evaluation');
-}
-
-/**
- * Lấy tất cả nhân viên trong đơn vị theo role
- * @param {*} role 
- */
-function getAllEmployeeOfUnitByRole(role) {
-    return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/users/${role}`,
-        method: 'GET',
+        params: {
+            roleId: role
+        }
     }, false, true, 'kpi.evaluation');
 }
 
@@ -37,29 +25,14 @@ function getAllEmployeeOfUnitByRole(role) {
  *  Lấy tất cả kpi cá nhân của các cá nhân trong đơn vị theo mảng id đơn vị
  * @param {*} ids 
  */
-function getAllEmployeeKpiSetOfUnitByIds(ids) {  
+function getAllEmployeeKpiSetOfUnitByIds(ids) {
     let role = getStorage("currentRole");
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis/${role}`,
-        // url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis/organizational-units/${ids}`,
+        url: `${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis`,
         method: 'GET',
         params: {
-            ids: ids,
-        }
-    }, false, true, 'kpi.evaluation');
-}
-
-/**
- *  Lấy tất cả nhân viên trong đơn vị theo mảng id đơn vị
- * @param {*} ids 
- */
-function getAllEmployeeOfUnitByIds(ids) {   
-    let role = getStorage("currentRole"); 
-    return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpi/evaluation/dashboard/users/${role}`,
-        method: 'GET',
-        params: {
-            ids: ids,
+            role: role,
+            ids: ids
         }
     }, false, true, 'kpi.evaluation');
 }
@@ -70,7 +43,10 @@ function getAllEmployeeOfUnitByIds(ids) {
  */
 function getChildrenOfOrganizationalUnitsAsTree(role) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/organizational-units/${role}/get-as-tree`,
+        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/dashboard/organizational-units/get-children-of-organizational-unit-as-tree`,
         method: 'GET',
+        params: {
+            role: role
+        }
     }, false, true, 'kpi.evaluation');
 }

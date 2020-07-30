@@ -12,7 +12,7 @@ export function taskProcess(state = {}, action) {
         ...state,
         xmlDiagram: [
           ...state.xmlDiagram,
-          action.payload
+          action.payload.content
         ],
       };
     case TaskProcessConstants.CREATE_XML_DIAGRAM_FAIL:
@@ -50,6 +50,37 @@ export function taskProcess(state = {}, action) {
         error: action.error,
         isLoading: false
       };
+    case TaskProcessConstants.EDIT_XML_DIAGRAM_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      };
+    case TaskProcessConstants.EDIT_XML_DIAGRAM_SUCCESS:
+      return {
+        ...state,
+        xmlDiagram: action.payload.content
+      };
+    case TaskProcessConstants.EDIT_XML_DIAGRAM_FAIL:
+      return {
+        error: action.error,
+        isLoading: false
+      };
+    case TaskProcessConstants.DELETE_XML_DIAGRAM_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      };
+    case TaskProcessConstants.DELETE_XML_DIAGRAM_SUCCESS:
+      return {
+        ...state,
+        xmlDiagram: action.payload.content
+      };
+    case TaskProcessConstants.DELETE_XML_DIAGRAM_FAIL:
+      return {
+        error: action.error,
+        isLoading: false
+      };
+
     default:
       return state
   }

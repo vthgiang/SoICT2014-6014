@@ -7,15 +7,17 @@ const { Privilege, Role, Link, Component } = require('../../../models').schema;
 exports.getComponents = async (company, query) => {
     var page = query.page;
     var limit = query.limit;
+    var currentRole = query.currentRole;
+    var linkId = query.linkId;
     
-    if (!page && limit){
+    if (!page && !limit && !currentRole && !linkId){
         return await Component
             .find({ company })
             .populate([
                 { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } },
                 { path: 'link', model: Link },
             ]);
-    } else{
+    } else if (page && limit && !currentRole && !linkId) {
         const option = (query.key && query.value)
             ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
             : {company};
@@ -29,6 +31,25 @@ exports.getComponents = async (company, query) => {
                     { path: 'link', model: Link },
                 ]
             });
+    } else if (!page && !limit && currentRole && linkId) {
+        const role = await Role.findById(currentRole);
+        let roleArr = [role._id];
+        roleArr = roleArr.concat(role.parents);
+        
+        const link = await Link.findById(linkId)
+            .populate([
+                { path: 'components', model: Component }
+            ]);
+            
+        const data = await Privilege.find({
+            roleId: { $in: roleArr },
+            resourceType: 'Component',
+            resourceId: { $in: link.components }
+        }).distinct('resourceId');
+
+        const components = await Component.find({ _id: { $in: data } });
+
+        return components;
     }
 }
 
@@ -119,30 +140,4 @@ exports.relationshipComponentRole = async(componentId, roleArr) => {
     const privilege = await Privilege.insertMany(data);
 
     return privilege;
-}
-
-/**
- * Lấy các component trên 1 trang mà user này có quyền
- * @roleId id role của user
- * @linkId id của trang user muốn lấy
- */
-exports.getComponentsOfUserInLink = async(roleId, linkId) => {
-    const role = await Role.findById(roleId);
-    let roleArr = [role._id];
-    roleArr = roleArr.concat(role.parents);
-    
-    const link = await Link.findById(linkId)
-        .populate([
-            { path: 'components', model: Component }
-        ]);
-        
-    const data = await Privilege.find({
-        roleId: { $in: roleArr },
-        resourceType: 'Component',
-        resourceId: { $in: link.components }
-    }).distinct('resourceId');
-
-    const components = await Component.find({ _id: { $in: data } });
-
-    return components;
 }

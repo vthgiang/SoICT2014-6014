@@ -112,7 +112,6 @@ class AssetTypeEditForm extends Component {
                 _id: nextProps._id,
                 typeNumber: nextProps.typeNumber,
                 typeName: nextProps.typeName,
-                timeDepreciation: nextProps.timeDepreciation,
                 parent: nextProps.parent,
                 description: nextProps.description,
                 errorOnTypeName: undefined,
@@ -125,7 +124,7 @@ class AssetTypeEditForm extends Component {
     render() {
         const {_id, translate, assetType } = this.props;
         const {
-            typeNumber, typeName, timeDepreciation, parent, description, errorOnTypeNumber,
+            typeNumber, typeName, parent, description, errorOnTypeNumber,
             errorOnTypeName
         } = this.state;
         var assettypelist = assetType.listAssetTypes;
@@ -151,10 +150,6 @@ class AssetTypeEditForm extends Component {
                             <label>Tên loại tài sản<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="typeName" value={typeName} onChange={this.handleTypeNameChange} />
                             <ErrorLabel content={errorOnTypeName} />
-                        </div>
-                        <div className="form-group">
-                            <label>Thời gian khấu hao (Tháng)</label>
-                            <input type="number" className="form-control" name="timeDepreciation" value={timeDepreciation} onChange={this.handleTimeDepreciationChange} />
                         </div>
                         <div className={`form-group`}>
                             <label>Loại tài sản cha</label>

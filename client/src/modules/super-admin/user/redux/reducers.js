@@ -60,7 +60,45 @@ export function user(state = initState, action) {
                 list: action.payload,
                 isLoading: false
             };
-
+        case  UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_REQUEST:
+            return {
+                loading: true,
+                isLoading: true
+            };
+        
+        case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_SUCCESS:      
+        return {
+            ...state,
+            loading: false,
+            employees: action.payload,
+            isLoading: false
+        };
+    
+        case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_FAILURE:
+        return { 
+            error: action.payload,
+            isLoading: false
+        };
+        case  UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_REQUEST:
+            return {
+                loading: true,
+                isLoading: true
+            };
+        
+        case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_SUCCESS:      
+        return {
+            ...state,
+            loading: false,
+            employees: action.payload,
+            isLoading: false
+        };
+    
+        case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_FAILURE:
+        return { 
+            error: action.payload,
+            isLoading: false
+        };
+        
         case UserConstants.GET_USERS_PAGINATE_SUCCESS:
             if (action.payload.searchUses) {
                 return {

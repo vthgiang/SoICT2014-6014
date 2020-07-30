@@ -16,7 +16,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 
-class DashBoardKPIMember extends Component {
+class EmployeeKpiEvaluationDashboard extends Component {
     constructor(props) {
         super(props);
 
@@ -63,9 +63,7 @@ class DashBoardKPIMember extends Component {
         }
 
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        this.props.getAllKPIMemberOfUnit(infosearch);
-        this.props.getAllKPIMember();
-
+        this.props.getEmployeeKPISets(infosearch);
         this.props.getAllEmployeeKpiSetOfUnitByRole(localStorage.getItem("currentRole"));
         this.props.getAllEmployeeOfUnitByRole(localStorage.getItem("currentRole"));
         this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
@@ -227,24 +225,21 @@ class DashBoardKPIMember extends Component {
     }
 
     render() {
-        let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee, userdepartments, kpimember;
-        let { dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids } = this.state;
         const { user, kpimembers } = this.props;
         const { translate } = this.props;
+        let { dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids } = this.state;
+        
+        let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee, userdepartments, kpimember;
         let currentDate = new Date();
         let currentYear = currentDate.getFullYear();
         let currentMonth = currentDate.getMonth();
 
         if (this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets) {
             employeeKpiSets = this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
-
             lastMonthEmployeeKpiSets = employeeKpiSets.filter(item => this.formatDate(item.date) == dateOfExcellentEmployees);
-
             lastMonthEmployeeKpiSets.sort((a, b) => b.approvedPoint - a.approvedPoint);
-
             lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets.slice(0, numberOfExcellentEmployees);
         }
-
 
         if (employeeKpiSets) {
             currentMonthEmployeeKpiSets = employeeKpiSets.filter(item => this.formatDate(item.date) == this.formatDate(new Date(currentYear, currentMonth, 1)));
@@ -541,15 +536,13 @@ function mapState(state) {
 const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
-
-    getAllKPIMemberOfUnit: kpiMemberActions.getAllKPIMemberOfUnit,
-    getAllKPIMember: kpiMemberActions.getAllKPIMemberByMember,
-
+    getEmployeeKPISets: kpiMemberActions.getEmployeeKPISets,
     getAllEmployeeKpiSetOfUnitByRole: DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByRole,
-    getAllEmployeeOfUnitByRole: DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeOfUnitByRole,
+    getAllEmployeeOfUnitByRole: UserActions.getAllEmployeeOfUnitByRole,
     getAllEmployeeKpiSetOfUnitByIds: DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByIds,
-    getAllEmployeeOfUnitByIds: DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeOfUnitByIds,
+    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
 };
-const connectedKPIMember = connect(mapState, actionCreators)(withTranslate(DashBoardKPIMember));
-export { connectedKPIMember as DashBoardKPIMember };
+
+const connectedKPIMember = connect(mapState, actionCreators)(withTranslate(EmployeeKpiEvaluationDashboard));
+export { connectedKPIMember as EmployeeKpiEvaluationDashboard };

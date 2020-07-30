@@ -3,15 +3,13 @@ const router = express.Router();
 const UserController = require('./user.controller');
 const { auth } = require('../../../middleware');
 
-router.get("/", auth, UserController.getUsers);
-router.get("/:id", auth, UserController.getUser);
-router.get('/:id/organizational-units', auth, UserController.getOrganizationalUnitsOfUser);
-router.get('/organizational-units/:id/users', auth, UserController.getAllUserInUnitAndItsSubUnits);
 
-router.post("/", auth, UserController.createUser);
+router.get("/users", auth, UserController.getUsers);
 
-router.patch("/:id", auth, UserController.editUser);
 
-router.delete("/:id", auth, UserController.deleteUser);
+router.post("/users", auth, UserController.createUser);
+router.get("/users/:id", auth, UserController.getUser);
+router.patch("/users/:id", auth, UserController.editUser);
+router.delete("/users/:id", auth, UserController.deleteUser);
 
 module.exports = router;

@@ -80,7 +80,7 @@ class ManageHoliday extends Component {
                                     <tr key={index}>
                                         <td>{index + 1}</td>
                                         <td>{(this.formatDate(x.startDate) === this.formatDate(x.endDate)) ? this.formatDate(x.startDate) : this.formatDate(x.startDate) + " - " + this.formatDate(x.endDate)}</td>
-                                        <td>{x.reason}</td>
+                                        <td>{x.description}</td>
                                         <td>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa nghỉ phép"><i className="material-icons">edit</i></a>
                                             <DeleteNotification
@@ -103,7 +103,7 @@ class ManageHoliday extends Component {
                         _id={this.state.currentRow._id}
                         startDate={this.formatDate2(this.state.currentRow.startDate)}
                         endDate={this.formatDate2(this.state.currentRow.endDate)}
-                        reason={this.state.currentRow.reason}
+                        description={this.state.currentRow.description}
                     />
                 }
             </div>

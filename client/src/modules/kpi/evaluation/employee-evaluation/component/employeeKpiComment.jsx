@@ -8,6 +8,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 import { performTaskAction } from '../../../../task/task-perform/redux/actions'
 import { createKpiSetActions } from '../../../employee/creation/redux/actions';
 import moment from 'moment'
+import { AuthActions } from '../../../../auth/redux/actions';
 class EmployeeKpiComment extends Component {
     constructor(props) {
         let idUser = getStorage("userId");
@@ -47,8 +48,9 @@ class EmployeeKpiComment extends Component {
     }
 
     handleShowChildComment = async (id) => {
-        let showChildComment = this.state.showChildComment;
-        if (showChildComment === id) {
+        const { showChildComment } = this.state;
+        let show = showChildComment;
+        if (show === id) {
             await this.setState(state => {
                 return {
                     ...state,
@@ -66,9 +68,10 @@ class EmployeeKpiComment extends Component {
     }
 
     handleShowFile = (id) => {
+        const { showfile } = this.state;
         let a;
-        if (this.state.showfile.some(obj => obj === id)) {
-            a = this.state.showfile.filter(x => x !== id);
+        if (showfile.some(obj => obj === id)) {
+            a = showfile.filter(x => x !== id);
             this.setState(state => {
                 return {
                     ...state,
@@ -79,7 +82,7 @@ class EmployeeKpiComment extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    showfile: [...this.state.showfile, id]
+                    showfile: [...showfile, id]
                 }
             })
         }
@@ -213,7 +216,7 @@ class EmployeeKpiComment extends Component {
     render() {
         const { kpimembers, auth } = this.props;
         const { translate } = this.props;
-        const { editComment, editCommentOfComment, showChildComment, currentUser } = this.state;
+        const { editComment, editCommentOfComment, showChildComment, currentUser, showfile, commentOfComment, comment } = this.state;
         let comments, currentKPI;
         let minRows = 3, maxRows = 20;
 
@@ -223,7 +226,7 @@ class EmployeeKpiComment extends Component {
         }
         return (
             <React.Fragment>
-                {comments?
+                {comments ?
                     comments.map(item => {
                         return (
                             <div className="clearfix" key={item._id}>
@@ -258,7 +261,7 @@ class EmployeeKpiComment extends Component {
                                                 <React.Fragment>
                                                     <li style={{ display: "inline-table" }}>
                                                         <div><a style={{ cursor: 'pointer' }} className="link-black text-sm" onClick={() => this.handleShowFile(item._id)}><b><i class="fa fa-paperclip" aria-hidden="true"> {translate('kpi.evaluation.employee_evaluation.attached_file')} ({item.files && item.files.length})</i></b></a> </div></li>
-                                                    {this.state.showfile.some(obj => obj === item._id) &&
+                                                    {showfile.some(obj => obj === item._id) &&
                                                         <li style={{ display: "inline-table" }}>{item.files.map(elem => {
                                                             return <div><a style={{ cursor: 'pointer' }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a></div>
                                                         })}</li>
@@ -296,7 +299,7 @@ class EmployeeKpiComment extends Component {
                                                 <img className="user-img-level2" src={(LOCAL_SERVER_API + item.creator.avatar)} alt="User Image" />
                                                 {editCommentOfComment !== child._id &&
                                                     <div>
-                                                        <p className="content-level2">
+                                                        <div className="content-level2">
                                                             <a style={{ cursor: 'pointer' }}>{child.creator.name} </a>
                                                             {child.description.split('\n').map((item, idx) => {
                                                                 return (
@@ -316,7 +319,7 @@ class EmployeeKpiComment extends Component {
                                                                         <li><a style={{ cursor: 'pointer' }} onClick={() => this.props.deleteCommentOfComment(child._id, currentKPI._id)} >{translate('kpi.evaluation.employee_evaluation.delete_cmt')}</a></li>
                                                                     </ul>
                                                                 </div>}
-                                                        </p>
+                                                        </div>
                                                         <ul className="list-inline tool-level2">
                                                             <li><span className="text-sm">{moment(child.createdAt).fromNow()}</span></li>
                                                             {child.files.length > 0 &&
@@ -328,7 +331,7 @@ class EmployeeKpiComment extends Component {
                                                                             </a>
                                                                         </div>
                                                                     </li>
-                                                                    {this.state.showfile.some(obj => obj === child._id) &&
+                                                                    {showfile.some(obj => obj === child._id) &&
                                                                         <li style={{ display: "inline-table" }}>
                                                                             {child.files.map(elem => {
                                                                                 return <div><a style={{ cursor: 'pointer' }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a></div>
@@ -363,8 +366,8 @@ class EmployeeKpiComment extends Component {
                                                 inputCssClass="text-input-level2" controlCssClass="tool-level2"
                                                 onFilesChange={this.onCommentFilesChange}
                                                 onFilesError={this.onFilesError}
-                                                files={this.state.commentOfComment.files}
-                                                text={this.state.commentOfComment.description}
+                                                files={commentOfComment.files}
+                                                text={commentOfComment.description}
                                                 placeholder={translate('kpi.evaluation.employee_evaluation.comment')}
                                                 submitButtonText={translate('kpi.evaluation.employee_evaluation.add_cmt')}
                                                 onTextChange={(e) => {
@@ -387,8 +390,8 @@ class EmployeeKpiComment extends Component {
                     inputCssClass="text-input-level1" controlCssClass="tool-level1"
                     onFilesChange={this.onFilesChange}
                     onFilesError={this.onFilesError}
-                    files={this.state.comment.files}
-                    text={this.state.comment.description}
+                    files={comment.files}
+                    text={comment.description}
                     placeholder={translate('kpi.evaluation.employee_evaluation.commment')}
                     submitButtonText={translate('kpi.evaluation.employee_evaluation.add_cmt')}
                     onTextChange={(e) => {
@@ -411,7 +414,7 @@ function mapState(state) {
 const actionCreators = {
     editComment: createKpiSetActions.editComment,
     deleteComment: createKpiSetActions.deleteComment,
-    downloadFile: performTaskAction.downloadFile,
+    downloadFile: AuthActions.downloadFile,
     createComment: createKpiSetActions.createComment,
     createCommentOfComment: createKpiSetActions.createCommentOfComment,
     editCommentOfComment: createKpiSetActions.editCommentOfComment,

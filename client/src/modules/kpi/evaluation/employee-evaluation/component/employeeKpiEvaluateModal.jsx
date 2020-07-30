@@ -37,14 +37,15 @@ class EmployeeKpiEvaluateModal extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextProps.employeeKpiSet && nextProps.employeeKpiSet._id !== this.state.id) {
+        const { id, dataStatus } = this.state;
+        if (nextProps.employeeKpiSet && nextProps.employeeKpiSet._id !== id) {
             if (nextProps.employeeKpiSet._id) {
-                this.props.getKPIMemberById(nextProps.employeeKpiSet._id);
+                this.props.getKpisByKpiSetId(nextProps.employeeKpiSet._id);
             }
             return false;
         }
 
-        if (this.state.dataStatus === this.DATA_STATUS.QUERYING) {
+        if (dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.kpimembers.tasks) {
                 return false;
             } else {
@@ -109,9 +110,10 @@ class EmployeeKpiEvaluateModal extends Component {
     handleSetPointKPI = () => {
         let date = this.props.employeeKpiSet.date;
         let employeeId = this.props.employeeKpiSet.creator._id;
-        let tasks = this.state.tasks;
-        let points = this.state.points;
-        let kpiType = this.state.type;
+        // let tasks = this.state.tasks;
+        // let points = this.state.points;
+        // let kpiType = this.state.type;
+        let { tasks, points, type, content } = this.state;
         if (tasks && tasks.length > 0) {
             let data = [];
             tasks.forEach(element => {
@@ -119,12 +121,12 @@ class EmployeeKpiEvaluateModal extends Component {
                     taskId: element.taskId,
                     date: date,
                     point: points[element.taskId],
-                    type: this.state.type,
+                    type: type,
                     employeeId: employeeId
                 })
             });
 
-            this.props.setPointKPI(this.state.content, kpiType, data);
+            this.props.setPointKPI(content, type, data);
         }
     }
 
@@ -164,9 +166,10 @@ class EmployeeKpiEvaluateModal extends Component {
     render() {
         const { kpimembers } = this.props;
         const { translate, employeeKpiSet } = this.props;
-        const { taskId } = this.state;
+        const { taskId, content, perPage, points, tasks, taskImportanceDetail } = this.state;
         let list, myTask;
-        if (kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
+
+        if (kpimembers.tasks) myTask = kpimembers.tasks;
         if (kpimembers.currentKPI) {
             list = kpimembers.currentKPI.kpis;
         }
@@ -184,7 +187,7 @@ class EmployeeKpiEvaluateModal extends Component {
                         <div className="box-body no-padding">
                             <ul className="nav nav-pills nav-stacked">
                                 {list && list.map((item, index) =>
-                                    <li key={index} className={this.state.content === item._id? "active": undefined}>
+                                    <li key={index} className={content === item._id ? "active" : undefined}>
                                         <a style={{ cursor: 'pointer' }} onClick={() => this.handleChangeContent(item._id, employeeKpiSet.creator._id, item.type)}>
                                             {item.name}
                                         &nbsp;
@@ -201,7 +204,7 @@ class EmployeeKpiEvaluateModal extends Component {
                         <button className="btn btn-primary">{translate('kpi.evaluation.employee_evaluation.export_file')}</button>
                     </div>
                     {list && list.map(item => {
-                        if (item._id === this.state.content) return <React.Fragment key={item._id}>
+                        if (item._id === content) return <React.Fragment key={item._id}>
                             <h4>{`${translate('kpi.evaluation.employee_evaluation.KPI_info')} "${item.name}"`}</h4>
                             <div style={{ lineHeight: 2 }}>
                                 <div>
@@ -237,7 +240,7 @@ class EmployeeKpiEvaluateModal extends Component {
                                     'Đóng góp (%)',
                                     'Điểm',
                                     'Độ quan trọng']}
-                                limit={this.state.perPage}
+                                limit={perPage}
                                 setLimit={this.setLimit}
                                 hideColumnOption={true} />
                             <table id="employeeKpiEvaluate" className="table table-hover table-bordered">
@@ -267,17 +270,17 @@ class EmployeeKpiEvaluateModal extends Component {
                                                     <td>{itemTask.results.contribution}%</td>
                                                     <td>{itemTask.results.automaticPoint + '-' + itemTask.results.employeePoint + '-' + itemTask.results.approvedPoint}</td>
                                                     <td>
-                                                        {this.state.points && this.state.tasks &&
+                                                        {points && tasks &&
                                                             <React.Fragment>
                                                                 <input type="range"
                                                                     min='0'
                                                                     max='10'
                                                                     name={`taskImportanceLevel${itemTask.taskId}`}
-                                                                    value={this.state.points[itemTask.taskId]}
+                                                                    value={points[itemTask.taskId]}
                                                                     onChange={(e) => this.setValueSlider(e, itemTask.taskId)}
                                                                 />
                                                                 <div>
-                                                                    {translate('kpi.evaluation.employee_evaluation.new_value')}: {this.state.points[itemTask.taskId]}
+                                                                    {translate('kpi.evaluation.employee_evaluation.new_value')}: {points[itemTask.taskId]}
                                                                 </div>
                                                                 <div>
                                                                     {translate('kpi.evaluation.employee_evaluation.old_value')}: {itemTask.results.taskImportanceLevel}
@@ -295,9 +298,9 @@ class EmployeeKpiEvaluateModal extends Component {
                                 </tbody>
                             </table>
                             {
-                                this.state.taskImportanceDetail !== undefined &&
+                                taskImportanceDetail &&
                                 <TaskDialog
-                                    task={this.state.taskImportanceDetail}
+                                    task={taskImportanceDetail}
                                 />
 
                             }
@@ -317,7 +320,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getKPIMemberById: kpiMemberActions.getKPIMemberById,
+    getKpisByKpiSetId: kpiMemberActions.getKpisByKpiSetId,
     getTaskById: kpiMemberActions.getTaskById,
     setPointKPI: kpiMemberActions.setPointKPI,
 };

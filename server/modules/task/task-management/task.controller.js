@@ -34,6 +34,9 @@ exports.getTasks = async (req, res) => {
     else if (req.query.type === "get_all_task_created_by_user") {
         getAllTasksCreatedByUser(req, res);
     }
+    else if (req.query.type === "get_all_task_of_organizational_unit") {
+        getAllTaskOfOrganizationalUnit(req, res);
+    }
 }
 
 /**
@@ -70,7 +73,6 @@ getAllTasks = async (req, res) => {
  */
 exports.getTaskEvaluations = async (req, res) => {
     try {
-        console.log(req.query);
         let taskEvaluation = await TaskManagementService.getTaskEvaluations(req.query);
         res.status(200).json({
             success: true,
@@ -352,7 +354,7 @@ exports.createTask = async (req, res) => {
         var user = tasks.user;
         var email = tasks.email;
         var html = tasks.html;
-        var data = { "organizationalUnits": [task.organizationalUnit._id], "title": "Tạo mới công việc", "level": "general", "content": "Bạn được giao nhiệm vụ mới trong công việc", "sender": task.organizationalUnit.name, "users": user };
+        var data = { "organizationalUnits": task.organizationalUnit._id, "title": "Tạo mới công việc", "level": "general", "content": html, "sender": task.organizationalUnit.name, "users": user };
         NotificationServices.createNotification(task.organizationalUnit.company, data,);
         sendEmail("vnist.qlcv@gmail.com", email, "Tạo mới công việc hành công", '', html);
         await LogInfo(req.user.email, ` create task `, req.user.company)
@@ -391,49 +393,6 @@ exports.deleteTask = async (req, res) => {
     }
 }
 
-/**
- * Chinh sua trang thai cua cong viec
- */
-exports.editTaskStatus = async (req, res) => {
-    try {
-        var task = await TaskManagementService.editTaskStatus(req.params.taskId, req.body.status);
-        await LogInfo(req.user.email, ` edit status of task  `, req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['edit_status_of_task_success'],
-            content: task
-        })
-    } catch (error) {
-        await LogError(req.user.email, ` edit status of task `, req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: ['edit_status_of_task_fail'],
-            content: error
-        });
-    }
-}
-
-/**
- * Chinh sua trang thai luu kho cua cong viec
- */
-exports.editArchivedOfTask = async (req, res) => {
-    // try {
-    var task = await TaskManagementService.editArchivedOfTask(req.params.taskId);
-    await LogInfo(req.user.email, ` edit status archived of task  `, req.user.company);
-    res.status(200).json({
-        success: true,
-        messages: ['edit_status_archived_of_task_success'],
-        content: task
-    })
-    // } catch (error) {
-    //     await LogError(req.user.email, ` edit status of task `, req.user.company);
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: ['edit_status_archived_of_task_fail'],
-    //         content: error
-    //     });
-    // }
-}
 /**
  * Lay ra cong viec con
  */
@@ -593,5 +552,25 @@ exports.evaluateTaskByAccountableEmployees = async (req, res) => {
             messages: ['get_task_by_user_fail'],
             content: error
         });
+    }
+}
+
+/** Lấy tất cả task của organizationalUnit theo tháng hiện tại */
+getAllTaskOfOrganizationalUnit = async (req, res) => {
+    try {
+        var tasks = await TaskManagementService.getAllTaskOfOrganizationalUnit(req.query);
+        LogInfo(req.user.email, ' get all task of organizational unit ', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_task_of_organizational_unit_success'],
+            content: tasks
+        })
+    } catch (error) {
+        LogError(req.user.email, ' get all task of organizational unit ', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['get_all_task_of_organizational_unit_failure'],
+            content: error
+        })
     }
 }

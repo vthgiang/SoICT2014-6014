@@ -113,176 +113,176 @@ export function performtasks(state = {}, action) {
                 currentTimer: null,
                 loading: true
             }
-        case performTaskConstants.ADDNEW_ACTIONCOMMENT_SUCCESS:
+        case performTaskConstants.CREATE_ACTION_COMMENT_SUCCESS:
             var taskactions = { ...state.task, taskActions: action.payload.data.content }
             return {
                 ...state,
                 task: taskactions
             }
-        case performTaskConstants.ADDNEW_ACTIONCOMMENT_FAILURE:
+        case performTaskConstants.CREATE_ACTION_COMMENT_FAILURE:
             return {
                 error: action.error
             };
-        case performTaskConstants.ADDNEW_TASKACTION_REQUEST:
+        case performTaskConstants.CREATE_TASK_ACTION_REQUEST:
             return {
                 ...state,
                 adding: true
             };
-        case performTaskConstants.ADDNEW_TASKACTION_SUCCESS:
+        case performTaskConstants.CREATE_TASK_ACTION_SUCCESS:
             var taskactions = { ...state.task, taskActions: action.payload.data.content }
             return {
                 ...state,
                 task: taskactions
             }
-        case performTaskConstants.ADDNEW_TASKACTION_FAILURE:
+        case performTaskConstants.CREATE_TASK_ACTION_FAILURE:
             return {
                 error: action.error
             };
-        case performTaskConstants.EDIT_ACTIONCOMMENT_REQUEST:
+        case performTaskConstants.EDIT_ACTION_COMMENT_REQUEST:
             return {
                 ...state,
                 editing: true
             };
-        case performTaskConstants.EDIT_ACTIONCOMMENT_SUCCESS:
+        case performTaskConstants.EDIT_ACTION_COMMENT_SUCCESS:
             var taskactions = { ...state.task, taskActions: action.payload.data.content }
             return {
                 ...state,
                 task: taskactions
             }
-        case performTaskConstants.EDIT_ACTIONCOMMENT_FAILURE:
+        case performTaskConstants.EDIT_ACTION_COMMENT_FAILURE:
             return {
                 error: action.error
             };
-        case performTaskConstants.EDIT_TASKACTION_REQUEST:
+        case performTaskConstants.EDIT_TASK_ACTION_REQUEST:
             return {
                 ...state,
                 editing: true
             };
-        case performTaskConstants.EDIT_TASKACTION_SUCCESS:
+        case performTaskConstants.EDIT_TASK_ACTION_SUCCESS:
             var taskactions = { ...state.task, taskActions: action.payload.data.content }
             return {
                 ...state,
                 task: taskactions
             }
-        case performTaskConstants.EDIT_TASKACTION_FAILURE:
+        case performTaskConstants.EDIT_TASK_ACTION_FAILURE:
             return {
                 error: action.error
             };
-        case performTaskConstants.DELETE_ACTIONCOMMENT_REQUEST:
+        case performTaskConstants.DELETE_ACTION_COMMENT_REQUEST:
             return {
                 ...state,
                 deleting: true
             };
-        case performTaskConstants.DELETE_ACTIONCOMMENT_SUCCESS:
+        case performTaskConstants.DELETE_ACTION_COMMENT_SUCCESS:
             var taskactions = { ...state.task, taskActions: action.payload.data.content }
             return {
                 ...state,
                 task: taskactions
             }
-        case performTaskConstants.DELETE_TASKACTION_REQUEST:
+        case performTaskConstants.DELETE_TASK_ACTION_REQUEST:
             return {
                 ...state,
                 deleting: true
             }
-        case performTaskConstants.DELETE_TASKACTION_SUCCESS:
+        case performTaskConstants.DELETE_TASK_ACTION_SUCCESS:
             var taskactions = { ...state.task, taskActions: action.payload.data.content }
             return {
                 ...state,
                 task: taskactions
             }
-        case performTaskConstants.DELETE_TASKACTION_FAILURE:
+        case performTaskConstants.DELETE_TASK_ACTION_FAILURE:
             return {
                 error: action.error
             }
-        case performTaskConstants.CREATE_TASKCOMMENT_REQUEST:
+        case performTaskConstants.CREATE_TASK_COMMENT_REQUEST:
             return {
                 ...state,
                 adding: true
             }
-        case performTaskConstants.CREATE_TASKCOMMENT_SUCCESS:
+        case performTaskConstants.CREATE_TASK_COMMENT_SUCCESS:
             var taskcomments = { ...state.task, taskComments: action.payload.data.content }
             return {
                 ...state,
                 task: taskcomments
             }
-        case performTaskConstants.CREATE_TASKCOMMENT_FAILURE:
+        case performTaskConstants.CREATE_TASK_COMMENT_FAILURE:
             return {
                 error: action.error
             }
-        case performTaskConstants.EDIT_TASKCOMMENT_REQUEST:
+        case performTaskConstants.EDIT_TASK_COMMENT_REQUEST:
             return {
                 ...state,
                 editing: true
             }
-        case performTaskConstants.EDIT_TASKCOMMENT_SUCCESS:
+        case performTaskConstants.EDIT_TASK_COMMENT_SUCCESS:
             var taskcomments = { ...state.task, taskComments: action.payload.data.content }
             return {
                 ...state,
                 task: taskcomments
             }
-        case performTaskConstants.EDIT_TASKCOMMENT_FAILURE:
+        case performTaskConstants.EDIT_TASK_COMMENT_FAILURE:
             return {
                 error: action.error
             }
-        case performTaskConstants.DELETE_TASKCOMMENT_REQUEST:
+        case performTaskConstants.DELETE_TASK_COMMENT_REQUEST:
             return {
                 ...state,
                 deleting: true
             }
-        case performTaskConstants.DELETE_TASKCOMMENT_SUCCESS:
+        case performTaskConstants.DELETE_TASK_COMMENT_SUCCESS:
             var taskcomments = { ...state.task, taskComments: action.payload.data.content }
             return {
                 ...state,
                 task: taskcomments
             }
-        case performTaskConstants.DELETE_TASKCOMMENT_FAILURE:
+        case performTaskConstants.DELETE_TASK_COMMENT_FAILURE:
             return {
                 error: action.error
             }
-        case performTaskConstants.CREATE_COMMENT_OF_TASKCOMMENT_REQUEST:
+        case performTaskConstants.CREATE_COMMENT_OF_TASK_COMMENT_REQUEST:
             return {
                 ...state,
                 adding: true
             }
-        case performTaskConstants.CREATE_COMMENT_OF_TASKCOMMENT_SUCCESS:
+        case performTaskConstants.CREATE_COMMENT_OF_TASK_COMMENT_SUCCESS:
             var taskcomments = { ...state.task, taskComments: action.payload.data.content }
             return {
                 ...state,
                 task: taskcomments
             }
-        case performTaskConstants.CREATE_COMMENT_OF_TASKCOMMENT_FAILURE:
+        case performTaskConstants.CREATE_COMMENT_OF_TASK_COMMENT_FAILURE:
             return {
                 ...state,
                 error: action.error
             }
-        case performTaskConstants.EDIT_COMMENT_OF_TASKCOMMENT_REQUEST:
+        case performTaskConstants.EDIT_COMMENT_OF_TASK_COMMENT_REQUEST:
             return {
                 ...state,
                 editing: true
             }
-        case performTaskConstants.EDIT_COMMENT_OF_TASKCOMMENT_SUCCESS:
+        case performTaskConstants.EDIT_COMMENT_OF_TASK_COMMENT_SUCCESS:
             var taskcomments = { ...state.task, taskComments: action.payload.data.content }
             return {
                 ...state,
                 task: taskcomments
             }
-        case performTaskConstants.EDIT_COMMENT_OF_TASKCOMMENT_FAILURE:
+        case performTaskConstants.EDIT_COMMENT_OF_TASK_COMMENT_FAILURE:
             return {
                 ...state,
                 error: action.error
             }
-        case performTaskConstants.DELETE_COMMENT_OF_TASKCOMMENT_REQUEST:
+        case performTaskConstants.DELETE_COMMENT_OF_TASK_COMMENT_REQUEST:
             return {
                 ...state,
                 deleting: true
             }
-        case performTaskConstants.DELETE_COMMENT_OF_TASKCOMMENT_SUCCESS:
+        case performTaskConstants.DELETE_COMMENT_OF_TASK_COMMENT_SUCCESS:
             var taskcomments = { ...state.task, taskComments: action.payload.data.content }
             return {
                 ...state,
                 task: taskcomments
             }
-        case performTaskConstants.DELETE_COMMENT_OF_TASKCOMMENT_FAILURE:
+        case performTaskConstants.DELETE_COMMENT_OF_TASK_COMMENT_FAILURE:
             return {
                 ...state,
                 error: action.error

@@ -2,31 +2,17 @@ const express = require("express");
 const router = express.Router();
 const KPIPersonalController = require("./employeeEvaluation.controller");
 const { auth } = require('../../../../middleware');
-// Tìm kiếm KPI nhân viên
-router.get('/', auth, KPIPersonalController.getKPIAllMember);
 
-// Lấy kpi nhân viên theo người khởi tạo
-router.get('/employee-kpis/:userId/user', auth, KPIPersonalController.getKpiByCreator);
+router.get('/employee-kpi-sets', auth, KPIPersonalController.getEmployeeKPISets);
 
-// Lấy kpi cá nhân theo id của kpi
-router.get('/employee-kpis/:kpiId', auth, KPIPersonalController.getKpiByEmployeeKpiId);
+router.get('/employee-kpi-sets/:id', auth, KPIPersonalController.getKpisByKpiSetId);
 
-// phê duyệt tất cả mục tiêu của kpi 
-router.put('/employee-kpis/:kpiId/approve', auth, KPIPersonalController.approveAllTarget);
+router.patch('/employee-kpi-sets/:id', auth, KPIPersonalController.editKpi);
 
-// Chỉnh sửa kpi 
-router.put('/employee-kpis/:kpiId/target', auth, KPIPersonalController.editTarget);
+router.patch('/employee-kpis/:id', auth, KPIPersonalController.editStatusKpi);
 
-// chỉnh sửa trạng thái từng mục tiêu của kpi
-router.put('/employee-kpis/:kpiId/status-target', auth, KPIPersonalController.editStatusTarget);
+router.get('/employee-kpis/:id/tasks', auth, KPIPersonalController.getTasksByKpiId);
 
-// lấy task cho kpi
-router.get('/employee-kpis/:kpiId/task', auth, KPIPersonalController.getTaskByKpiId);
-
-// lấy điểm hệ thống
-router.get('/employee-kpis/:kpiId/detailkpi', auth, KPIPersonalController.getSystemPoint);
-
-// đánh giá độ quan trọng của công việc
-router.put('/employee-kpis/:kpiId/taskImportanceLevel', auth, KPIPersonalController.setTaskImportanceLevel);
+router.post('/employee-kpis/:id/set-task-importance-level', auth, KPIPersonalController.setTaskImportanceLevel);
 
 module.exports = router;

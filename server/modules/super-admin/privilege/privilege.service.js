@@ -43,19 +43,4 @@ exports.addLinkThatRolesCanAccess = async (linkId, roleArr) => {
     return privilege;
 }
 
-/**
- * Lấy ra mảng links mà một role được quyền truy cập
- */
-exports.getLinksThatRoleCanAccess = async (idRole) => {
-    const role = await Role.findById(idRole); //lay duoc role hien tai
-    var roles = [role._id];
-    roles = roles.concat(role.parents);
-    const privilege = await Privilege.find({ 
-        roleId: { $in: roles },
-        resourceType: 'Link'
-    }).populate({ path: 'resourceId', model: Link }); 
-    const links = await privilege.map( link => link.resourceId );
-
-    return links;
-}
 

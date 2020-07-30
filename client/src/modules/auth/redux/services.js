@@ -43,7 +43,7 @@ function editProfile(data) {
     var id = getStorage("userId");
 
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/${id}`,
+        url: `${ LOCAL_SERVER_API }/user/users/${id}`,
         method: 'PATCH',
         data: data,
     }, true, true, 'auth');
@@ -109,8 +109,12 @@ function resetPassword(otp, email, password) {
 
 function getComponentOfUserInLink(currentRole, linkId) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/component/role/${currentRole}/link/${linkId}`,
+        url: `${ LOCAL_SERVER_API }/component/components`,
         method: 'GET',
+        params: {
+            currentRole: currentRole,
+            linkId: linkId,
+        }
     }, false, true, 'auth');
 }
 

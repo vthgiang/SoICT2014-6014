@@ -7,21 +7,21 @@ import ManageUserTable from './manageUserTable';
 class ManageUser extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
+        this.state = {
         }
     }
 
-    render() { 
-        return ( 
+    render() {
+        return (
             <div className="box" style={{ minHeight: '450px' }}>
                 <div className="box-body">
-                    <ManageUserTable/>
+                    <ManageUserTable />
                 </div>
             </div>
         );
-    }     
+    }
 }
- 
+
 const mapStateToProps = state => state;
 
-export default connect( mapStateToProps, null )( withTranslate(ManageUser) );
+export default connect(mapStateToProps, null)(withTranslate(ManageUser));
