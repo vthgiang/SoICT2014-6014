@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { createKpiSetActions } from '../../../employee/creation/redux/actions';
+
 import { DatePicker } from '../../../../../common-components';
+
 import { withTranslate } from 'react-redux-multilingual'
+
 import Swal from 'sweetalert2';
+import c3 from 'c3';
 import 'c3/c3.css';
 class ResultsOfAllEmployeeKpiSetChart extends Component {
 
@@ -15,8 +20,8 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
         let currentMonth = currentDate.getMonth();
 
         this.INFO_SEARCH = {
-            startDate: currentYear + '-' + 1,
-            endDate: currentYear + '-' + (currentMonth + 2)
+            startMonth: currentYear + '-' + 1,
+            endMonth: currentYear + '-' + (currentMonth + 2)
         }
 
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
@@ -24,10 +29,86 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
 
         this.state = {
             userRoleId: localStorage.getItem("currentRole"),
-            startDate: this.INFO_SEARCH.startDate,
-            endDate: this.INFO_SEARCH.endDate,
-            dataStatus: this.DATA_STATUS.QUERYING,
-            kindOfPoint: this.KIND_OF_POINT.AUTOMATIC
+
+            startMonth: this.INFO_SEARCH.startMonth,
+            endMonth: this.INFO_SEARCH.endMonth,
+
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
+            kindOfPoint: this.KIND_OF_POINT.AUTOMATIC,
+        }
+    }
+
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        if (nextState.kindOfPoint !== this.state.kindOfPoint) {
+            await this.setState(state =>{
+                return {
+                    ...state,
+                    kindOfPoint: nextState.kindOfPoint,
+                };
+            });
+            
+            this.multiLineChart();
+        }
+
+        if (nextProps.organizationalUnitIds !== this.state.organizationalUnitIds || nextState.startMonth !== this.state.startMonth || nextState.endMonth !== this.state.endMonth) {
+            await this.props.getAllEmployeeKpiSetInOrganizationalUnitsByMonth(nextProps.organizationalUnitIds, nextState.startMonth, nextState.endMonth);
+            
+            await this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.QUERYING
+                }
+            });
+
+            return false;
+        }
+
+        if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
+            this.props.getAllEmployeeKpiSetInOrganizationalUnitsByMonth(this.state.organizationalUnitIds, this.state.startMonth, this.state.endMonth);
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.QUERYING,
+                };
+            });
+
+            return false;
+        } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+            if (!nextProps.createEmployeeKpiSet.employeeKpiSetsInOrganizationalUnitByMonth)
+                return false;
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.AVAILABLE
+                };
+            });
+
+            return false;
+        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
+
+            this.multiLineChart();
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.FINISHED,
+                };
+            });
+        }
+
+        return false;
+    }
+
+    static getDerivedStateFromProps = (nextProps, prevState) => {
+        
+        if (nextProps.organizationalUnitIds !== prevState.organizationalUnitIds) {
+            return {
+                ...prevState,
+                organizationalUnitIds: nextProps.organizationalUnitIds
+            }
+        } else {
+            return null;
         }
     }
 
@@ -46,7 +127,7 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
     /** Select month start in box */
     handleSelectMonthStart = (value) => {
         let month = value.slice(3, 7) + '-' + value.slice(0, 2);
-        this.INFO_SEARCH.startDate = month;
+        this.INFO_SEARCH.startMonth = month;
     }
 
     /** Select month end in box */
@@ -56,15 +137,15 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
         } else {
             var month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
         }
-        this.INFO_SEARCH.endDate = month;
+        this.INFO_SEARCH.endMonth = month;
     }
 
     /** Search data */
     handleSearchData = async () => {
-        let startDate = new Date(this.INFO_SEARCH.startDate);
-        let endDate = new Date(this.INFO_SEARCH.endDate);
+        let startMonth = new Date(this.INFO_SEARCH.startMonth);
+        let endMonth = new Date(this.INFO_SEARCH.endMonth);
 
-        if (startDate.getTime() >= endDate.getTime()) {
+        if (startMonth.getTime() >= endMonth.getTime()) {
             const { translate } = this.props;
             Swal.fire({
                 title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
@@ -76,18 +157,113 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
             await this.setState(state => {
                 return {
                     ...state,
-                    startDate: this.INFO_SEARCH.startDate,
-                    endDate: this.INFO_SEARCH.endDate
+                    startMonth: this.INFO_SEARCH.startMonth,
+                    endMonth: this.INFO_SEARCH.endMonth
                 }
             })
         }
     }
 
-    removePreviosChart = () => {
+    filterAndSetDataPoint = (name, arrayPoint) => {
+        let dateAxisX = [], point = [];
+
+        dateAxisX.push('date-' + name);
+        point.push(name);
+
+        for(let i=0; i<arrayPoint.length; i++) {
+            let newDate = new Date(arrayPoint[i].date);
+            newDate = newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-" + (newDate.getDate() - 1);
+
+            dateAxisX.push(newDate);
+
+            if(this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC) {
+                point.push(arrayPoint[i].automaticPoint);
+            } else if(this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE) {
+                point.push(arrayPoint[i].employeePoint);
+            } else if(this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED) {
+                point.push(arrayPoint[i].approvedPoint);
+            }
+        }
+
+        return [
+            dateAxisX,
+            point
+        ]
+    }
+
+    setDataMultiLineChart = () => {
+        const { createEmployeeKpiSet } = this.props;
+        let employeeKpiSetsInOrganizationalUnitByMonth, point = [];
+
+        if (createEmployeeKpiSet.employeeKpiSetsInOrganizationalUnitByMonth) {
+            employeeKpiSetsInOrganizationalUnitByMonth = createEmployeeKpiSet.employeeKpiSetsInOrganizationalUnitByMonth
+        }
+        
+        if(employeeKpiSetsInOrganizationalUnitByMonth) {
+            for(let i=0; i<employeeKpiSetsInOrganizationalUnitByMonth.length; i++) {
+                point = point.concat(this.filterAndSetDataPoint(employeeKpiSetsInOrganizationalUnitByMonth[i]._id, employeeKpiSetsInOrganizationalUnitByMonth[i].employeeKpi));
+            }
+        }
+
+        return point
+    }
+
+    removePreviousChart = () => {
         const chart = this.refs.chart;
         while (chart.hasChildNodes()) {
             chart.removeChild(chart.lastChild);
         }
+    }
+
+    multiLineChart = () => {
+        this.removePreviousChart();
+
+        let dataChart, xs = {};
+        const {translate}= this.props;
+        dataChart = this.setDataMultiLineChart();
+        
+        for(let i=0; i<dataChart.length; i=i+2) {
+            let temporary = {};
+            temporary[dataChart[i+1][0]] = dataChart[i][0]; 
+            xs = Object.assign(xs, temporary);
+        }
+
+        this.chart = c3.generate({
+            bindto: this.refs.chart,
+
+            padding: {                              
+                top: 20,
+                bottom: 20,
+                right: 20
+            },
+
+            data: {                                 
+                xs: xs,
+                columns: dataChart,
+                type: 'spline'
+            },
+
+            axis: {                                
+                x: {
+                    type : 'timeseries',
+                    tick: {
+                        format: function (x) { return (x.getMonth() + 1) + "-" + x.getFullYear(); }
+                    }
+                },
+                y: {
+                    max: 100,
+                    min: 0,
+                    label: {
+                        text: translate('kpi.organizational_unit.dashboard.point'),
+                        position: 'outer-right'
+                    },
+                    padding: {
+                        top: 10,
+                        bottom: 10
+                    }
+                }
+            },
+        })
     }
 
     render() {
@@ -101,8 +277,8 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
-        let defaultEndDate = [month, year].join('-');
-        let defaultStartDate = ['01', year].join('-');
+        let defaultEndMonth = [month, year].join('-');
+        let defaultStartMonth = ['01', year].join('-');
 
         return (
             <React.Fragment>
@@ -112,7 +288,7 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
                         <DatePicker
                             id="monthStartInResultsOfAllEmployeeKpiSetChart"
                             dateFormat="month-year"          
-                            value={defaultStartDate}  
+                            value={defaultStartMonth}  
                             onChange={this.handleSelectMonthStart}
                             disabled={false}            
                         />
@@ -124,7 +300,7 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
                         <DatePicker
                             id="monthEndInResultsOfAllEmployeeKpiSetChart"
                             dateFormat="month-year"      
-                            value={defaultEndDate}     
+                            value={defaultEndMonth}     
                             onChange={this.handleSelectMonthEnd}
                             disabled={false}            
                         />
@@ -153,7 +329,9 @@ function mapState(state) {
     return { createEmployeeKpiSet };
 }
 const actions = {
-    getAllEmployeeKpiSetByMonth: createKpiSetActions.getAllEmployeeKpiSetByMonth
+    getAllEmployeeKpiSetInOrganizationalUnitsByMonth: createKpiSetActions.getAllEmployeeKpiSetInOrganizationalUnitsByMonth
 }
+
 const connectedResultsOfAllEmployeeKpiSetChart = connect(mapState, actions)(withTranslate(ResultsOfAllEmployeeKpiSetChart));
+
 export { connectedResultsOfAllEmployeeKpiSetChart as ResultsOfAllEmployeeKpiSetChart };

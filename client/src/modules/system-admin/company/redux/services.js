@@ -5,11 +5,13 @@ export const CompanyServices = {
     getAllCompanies,
     createCompany,
     editCompany,
+
     addCompanyLink,
-    deleteCompanyLink,    
+    deleteCompanyLink,  
+    getCompanyLinks,
+
     addCompanyComponent,
     deleteCompanyComponent,
-    getCompanyLinks,
     getCompanyComponents,
 
     getImportConfiguration,
@@ -34,7 +36,7 @@ function getAllCompanies(params) {
  */
 function createCompany(company) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/companies/create`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/companies`,
         method: 'POST',
         data: company,
     }, true, true, 'system_admin.company');
@@ -62,7 +64,7 @@ function editCompany(companyId, data) {
  */
 function addCompanyLink(companyId, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/links/company-links/${companyId}/add`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/companies/${companyId}/links`,
         method: 'POST',
         data,
     }, true, true, 'system_admin.company');
@@ -75,9 +77,21 @@ function addCompanyLink(companyId, data) {
  */
 function deleteCompanyLink(companyId, linkId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/links/company-links/${companyId}/${linkId}`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/companies/${companyId}/links/${linkId}`,
         method: 'DELETE',
     }, true, true, 'system_admin.company');
+}
+
+/**
+ * Lấy danh sách tất cả các link của công ty
+ * @companyId id của công ty muốn lấy danh sách các link
+ */
+function getCompanyLinks(companyId, params) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/system-admin/company/companies/${companyId}/links`,
+        method: 'GET',
+        params
+    }, false, true, 'system_admin.company');
 }
 
 /**
@@ -90,7 +104,7 @@ function deleteCompanyLink(companyId, linkId) {
  */
 function addCompanyComponent(companyId, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/components/company-components/${companyId}/add`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/companies/${companyId}/components`,
         method: 'POST',
         data,
     }, true, true, 'system_admin.company');
@@ -103,21 +117,9 @@ function addCompanyComponent(companyId, data) {
  */
 function deleteCompanyComponent(companyId, componentId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/components/company-components/${companyId}/${componentId}`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/companies/${companyId}/components/${componentId}`,
         method: 'DELETE',
     }, true, true, 'system_admin.company');
-}
-
-/**
- * Lấy danh sách tất cả các link của công ty
- * @companyId id của công ty muốn lấy danh sách các link
- */
-function getCompanyLinks(companyId, params) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/links/company-links/${companyId}`,
-        method: 'GET',
-        params
-    }, false, true, 'system_admin.company');
 }
 
 /**
@@ -126,7 +128,7 @@ function getCompanyLinks(companyId, params) {
  */
 function getCompanyComponents(companyId, params) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/components/company-components/${companyId}`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/companies/${companyId}/components`,
         method: 'GET',
         params
     }, false, true, 'system_admin.company');
@@ -139,8 +141,9 @@ function getCompanyComponents(companyId, params) {
  */
 function getImportConfiguration(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/import-configuraions/import-file/${data.type}`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/data-import-configurations`,
         method: 'GET',
+        params: { type: data.type }
     }, false, false, 'system_admin.company');
 }
 
@@ -150,7 +153,7 @@ function getImportConfiguration(data) {
  */
 function createImportConfiguration(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/import-configuraions/import-file/create`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/data-import-configurations`,
         method: 'POST',
         data,
     }, true, true, 'system_admin.company');
@@ -162,7 +165,7 @@ function createImportConfiguration(data) {
  */
 function editImportConfiguration(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/import-configuraions/import-file/${data.id}`,
+        url: `${LOCAL_SERVER_API}/system-admin/company/data-import-configurations/${data.id}`,
         method: 'PATCH',
         data,
     }, true, true, 'system_admin.company');

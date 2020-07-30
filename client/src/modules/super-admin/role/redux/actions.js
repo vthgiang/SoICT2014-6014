@@ -1,36 +1,46 @@
-import { RoleServices } from "./services";
-import { RoleConstants } from "./constants";
+import {
+    RoleServices
+} from "./services";
+import {
+    RoleConstants
+} from "./constants";
 
 export const RoleActions = {
     get,
+    show,
     edit,
     create,
-    show,
     destroy,
 }
 
 /**
  * Lấy danh sách tất cả các role của 1 công ty
  */
-function get(data){
+function get(data) {
     if (data) {
         return dispatch => {
-            dispatch({ type: RoleConstants.GET_ROLES_PAGINATE_REQUEST});
+            dispatch({
+                type: RoleConstants.GET_ROLES_PAGINATE_REQUEST
+            });
             RoleServices.get(data)
-            .then(res => {
-                dispatch({
-                    type: RoleConstants.GET_ROLES_PAGINATE_SUCCESS,
-                    payload: res.data.content
+                .then(res => {
+                    dispatch({
+                        type: RoleConstants.GET_ROLES_PAGINATE_SUCCESS,
+                        payload: res.data.content
+                    })
                 })
-            })
-            .catch(err => {
-                dispatch({ type: RoleConstants.GET_ROLES_PAGINATE_FAILE});
-            })
+                .catch(err => {
+                    dispatch({
+                        type: RoleConstants.GET_ROLES_PAGINATE_FAILE
+                    });
+                })
         }
     }
 
     return dispatch => {
-        dispatch({ type: RoleConstants.GET_ROLES_REQUEST});
+        dispatch({
+            type: RoleConstants.GET_ROLES_REQUEST
+        });
         RoleServices.get()
             .then(res => {
                 dispatch({
@@ -39,8 +49,10 @@ function get(data){
                 })
             })
             .catch(err => {
-                
-                dispatch({ type: RoleConstants.GET_ROLES_FAILE});
+
+                dispatch({
+                    type: RoleConstants.GET_ROLES_FAILE
+                });
             })
     }
 }
@@ -49,9 +61,11 @@ function get(data){
  * Lấy thông tin của 1 role
  * @id id role
  */
-function show(id){
+function show(id) {
     return dispatch => {
-        dispatch({ type: RoleConstants.SHOW_ROLE_REQUEST});
+        dispatch({
+            type: RoleConstants.SHOW_ROLE_REQUEST
+        });
         RoleServices.show(id)
             .then(res => {
                 dispatch({
@@ -60,8 +74,10 @@ function show(id){
                 })
             })
             .catch(err => {
-                dispatch({ type: RoleConstants.SHOW_ROLE_FAILE});
-                
+                dispatch({
+                    type: RoleConstants.SHOW_ROLE_FAILE
+                });
+
             })
     }
 }
@@ -70,9 +86,11 @@ function show(id){
  * Tạo role do công ty tự định nghĩa
  * @role dữ liệu tạo
  */
-function create(role){
+function create(role) {
     return dispatch => {
-        dispatch({ type: RoleConstants.CREATE_ROLE_REQUEST});
+        dispatch({
+            type: RoleConstants.CREATE_ROLE_REQUEST
+        });
         RoleServices
             .create(role)
             .then(res => {
@@ -82,7 +100,9 @@ function create(role){
                 });
             })
             .catch(err => {
-                dispatch({ type: RoleConstants.CREATE_ROLE_FAILE});
+                dispatch({
+                    type: RoleConstants.CREATE_ROLE_FAILE
+                });
             })
     }
 }
@@ -91,9 +111,11 @@ function create(role){
  * Chỉnh sửa thông tin role
  * @role dữ liệu chỉnh sửa
  */
-function edit(role){
+function edit(role) {
     return dispatch => {
-        dispatch({ type: RoleConstants.EDIT_ROLE_REQUEST});
+        dispatch({
+            type: RoleConstants.EDIT_ROLE_REQUEST
+        });
         RoleServices.edit(role)
             .then(res => {
                 dispatch({
@@ -102,7 +124,9 @@ function edit(role){
                 });
             })
             .catch(err => {
-                dispatch({ type: RoleConstants.EDIT_ROLE_FAILE});
+                dispatch({
+                    type: RoleConstants.EDIT_ROLE_FAILE
+                });
             })
     }
 }
@@ -111,9 +135,11 @@ function edit(role){
  * Xóa role theo id
  * @roleId id role
  */
-function destroy(roleId){
+function destroy(roleId) {
     return dispatch => {
-        dispatch({ type: RoleConstants.DELETE_ROLE_REQUEST});
+        dispatch({
+            type: RoleConstants.DELETE_ROLE_REQUEST
+        });
         RoleServices.destroy(roleId)
             .then(res => {
                 dispatch({
@@ -122,7 +148,9 @@ function destroy(roleId){
                 })
             })
             .catch(err => {
-                dispatch({ type: RoleConstants.DELETE_ROLE_FAILE});
+                dispatch({
+                    type: RoleConstants.DELETE_ROLE_FAILE
+                });
             })
     }
 }

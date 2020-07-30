@@ -18,18 +18,18 @@ class RoleCreateForm extends Component {
         }
     }
 
-    render() { 
-        const{ translate, role, user } = this.props;
-        const {roleNameError} = this.state;
+    render() {
+        const { translate, role, user } = this.props;
+        const { roleNameError } = this.state;
 
-        return ( 
+        return (
             <React.Fragment>
                 {/* Button thêm phân quyền mới */}
-                <ButtonModal modalID="modal-create-role" button_name={translate('manage_role.add')} title={translate('manage_role.add_title')}/>
+                <ButtonModal modalID="modal-create-role" button_name={translate('manage_role.add')} title={translate('manage_role.add_title')} />
 
                 <DialogModal
                     modalID="modal-create-role" isLoading={role.isLoading}
-                    formID="form-create-role" 
+                    formID="form-create-role"
                     title={translate('manage_role.add_title')}
                     msg_success={translate('manage_role.add_success')}
                     msg_faile={translate('manage_role.add_faile')}
@@ -39,24 +39,24 @@ class RoleCreateForm extends Component {
                     <form id="form-create-role">
 
                         {/* Tên phân quyền */}
-                        <div className={`form-group ${!roleNameError? "": "has-error"}`}>
-                            <label>{ translate('manage_role.name') }<span className="text-red">*</span></label>
-                            <input className="form-control" onChange={ this.handleRoleName }/>
-                            <ErrorLabel content={roleNameError}/>
+                        <div className={`form-group ${!roleNameError ? "" : "has-error"}`}>
+                            <label>{translate('manage_role.name')}<span className="text-red">*</span></label>
+                            <input className="form-control" onChange={this.handleRoleName} />
+                            <ErrorLabel content={roleNameError} />
                         </div>
 
                         {/* Kế thừa phân quyền */}
                         <div className="form-group">
-                            <label>{ translate('manage_role.extends') }</label>
+                            <label>{translate('manage_role.extends')}</label>
                             <SelectBox
                                 id="select-role-parents-create"
                                 className="form-control select2"
-                                style={{width: "100%"}}
-                                items = {
-                                    role.list?
-                                    role.list.filter( role => (role.name !== 'Super Admin'))
-                                    .map( role => {return {value: role._id, text: role.name}}):
-                                    []
+                                style={{ width: "100%" }}
+                                items={
+                                    role.list ?
+                                        role.list.filter(role => (role.name !== 'Super Admin'))
+                                            .map(role => { return { value: role._id, text: role.name } }) :
+                                        []
                                 }
                                 onChange={this.handleParents}
                                 multiple={true}
@@ -65,13 +65,13 @@ class RoleCreateForm extends Component {
 
                         {/* Những người dùng có phân quyền */}
                         <div className="form-group">
-                            <label>{ translate('manage_role.users') }</label>
+                            <label>{translate('manage_role.users')}</label>
                             <SelectBox
                                 id="select-role-users-create"
                                 className="form-control select2"
-                                style={{width: "100%"}}
-                                items = {
-                                    user.list? user.list.map( user => {return {value: user._id, text: `${user.name} - ${user.email}`}}): []
+                                style={{ width: "100%" }}
+                                items={
+                                    user.list ? user.list.map(user => { return { value: user._id, text: `${user.name} - ${user.email}` } }) : []
                                 }
                                 onChange={this.handleUsers}
                                 multiple={true}
@@ -80,21 +80,21 @@ class RoleCreateForm extends Component {
                     </form>
                 </DialogModal>
             </React.Fragment>
-         );
+        );
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.props.get();
     }
 
     // Xy ly va validate role name
     handleRoleName = (e) => {
-        const {value} = e.target;
+        const { value } = e.target;
         this.validateRoleName(value, true);
     }
-    validateRoleName = (value, willUpdateState=true) => {
+    validateRoleName = (value, willUpdateState = true) => {
         let msg = RoleValidator.validateName(value);
-        if (willUpdateState){
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -125,7 +125,7 @@ class RoleCreateForm extends Component {
     }
 
     handleRoleUser = (e) => {
-        const {value} = e.target;
+        const { value } = e.target;
         this.setState(state => {
             return {
                 ...state,
@@ -146,18 +146,22 @@ class RoleCreateForm extends Component {
             users: this.state.roleUsers
         }
 
-        if (this.isFormValidated()){
+        if (this.isFormValidated()) {
             return this.props.create(data);
         }
     }
 
 }
- 
-const mapStateToProps = state => state;
 
-const mapDispatchToProps =  {
+function mapStateToProps(state) {
+    const { role, user } = state;
+    return { role, user };
+}
+
+
+const mapDispatchToProps = {
     get: RoleActions.get,
     create: RoleActions.create
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(RoleCreateForm) );
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(RoleCreateForm));

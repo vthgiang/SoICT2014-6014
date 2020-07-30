@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DeleteNotification, PaginateBar, DateTimeConverter } from '../../../common-components';
 import { NotificationActions } from '../redux/actions';
 import NotificationReceiveredInfo from './notificationReiceiveredInfo';
-
+import parse from 'html-react-parser';
 class TabNotificationReceivered extends Component {
     constructor(props) {
         super(props);
@@ -46,10 +46,10 @@ class TabNotificationReceivered extends Component {
                                     <DateTimeConverter dateTime={notification.createdAt} type={1}/>
                                     {notification.readed?
                                         <div className="label" style={{width: 30, display:"inline-block", margin: "0 0 0 5px"}}></div>:
-                                        <div className="label label-danger" style={{width: 30, display:"inline-block", margin: "0 0 0 5px"}}>Mới</div>
+                                    <div className="label label-danger" style={{width: 30, display:"inline-block", margin: "0 0 0 5px"}}>{translate('notification.new')}</div>
                                     }
                                     <div className="tools">
-                                        <a href="#" onClick={() => this.handleEdit(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
+                                        <a href="#abc" onClick={() => this.handleEdit(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
                                         <DeleteNotification 
                                             content={translate('notification.delete')}
                                             data={{ id: notification._id, info: notification.title }}
@@ -57,7 +57,7 @@ class TabNotificationReceivered extends Component {
                                         />
                                     </div>
                                 </div>
-                                <span className="threedots" style={{maxWidth: "100%", display: "inline-block"}}><b>{notification.title}</b> - {notification.content}</span>
+                                <span className="threedots" style={{maxWidth: "100%", display: "inline-block"}}><b>{notification.title}</b>  {parse(notification.content)}</span>
                                 
                             </li>
                         ): notifications.isLoading ?
@@ -102,7 +102,10 @@ class TabNotificationReceivered extends Component {
     }
 }
  
-const mapState = state => state;
+function mapState(state) {
+    const { notifications } = state ;
+    return { notifications };
+}
 const actions = {
     getAllNotifications: NotificationActions.getAllNotifications,
     paginateNotifications: NotificationActions.paginateNotifications,

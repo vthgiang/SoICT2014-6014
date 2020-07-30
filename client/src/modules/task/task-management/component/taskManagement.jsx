@@ -61,15 +61,6 @@ class TaskManagement extends Component {
         return true;
     }
 
-
-    UNSAFE_componentWillUpdate() {
-        let script = document.createElement('script');
-        script.src = '../lib/main/js/GridTableVers1.js';
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-    }
-
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.tasks.tasks && this.props.tasks.tasks && prevProps.tasks.tasks.length !== this.props.tasks.tasks.length) {
             this.handleUpdateData();
@@ -142,11 +133,9 @@ class TaskManagement extends Component {
     startTimer = async (taskId) => {
         let userId = getStorage("userId");
         let timer = {
-            startedAt: Date.now(),
             creator: userId,
-            task: taskId
         };
-        this.props.startTimer(timer);
+        this.props.startTimer(taskId,timer);
     }
 
     // Hàm xử lý trạng thái lưu kho
@@ -305,7 +294,6 @@ class TaskManagement extends Component {
                 currentPage: 1
             }
         })
-        // this.loadJS();
     }
     convertTime = (duration) => {
         let seconds = Math.floor((duration / 1000) % 60),

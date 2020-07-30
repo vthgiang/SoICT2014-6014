@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import  {taskTemplateActions} from '../redux/actions';
 import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
 import Sortable from 'sortablejs';
 import { withTranslate } from 'react-redux-multilingual';
-import {SelectBox, ErrorLabel} from '../../../../common-components';
+import {ErrorLabel} from '../../../../common-components';
 import './tasktemplate.css';
-import { translate } from 'react-redux-multilingual/lib/utils';
 
 class InformationForm extends Component{
     constructor(props){

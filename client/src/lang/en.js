@@ -388,6 +388,7 @@ export default {
             note: 'Not',
             info: 'Information',
             delete: 'Delete',
+            new: 'new',
 
             // Thông điệp trả về từ server
             create_notification_success: 'Create notification successfully',
@@ -664,6 +665,7 @@ export default {
             task: "Detailed Task",
             task_management: 'Task list',
             task_management_dashboard: 'Task dashboard',
+            task_organization_management_dashboard: 'Task in organization unit dashboard',
             task_management_process: "Process list",
             //*******START */
             // Quản lý tài sản

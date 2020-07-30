@@ -6,6 +6,8 @@ import { DepartmentActions } from '../../super-admin/organizational-unit/redux/a
 import { UserActions } from '../../super-admin/user/redux/actions';
 import { NotificationActions } from '../redux/actions';
 import { NotificationValidator } from './notificationValidator';
+import CKEditor from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 class NotificationCreate extends Component {
     constructor(props) {
@@ -61,9 +63,9 @@ class NotificationCreate extends Component {
         return msg === undefined;
     }
 
-    handleContent = (e) => {
-        let value = e.target.value;
-        this.validateContent(value, true);
+    handleContent = (data) => {
+        // let value = e.target.value;
+        this.validateContent(data, true);
     }
     validateContent = (value, willUpdateState=true) => {
         let msg = NotificationValidator.validateContent(value)
@@ -115,9 +117,9 @@ class NotificationCreate extends Component {
             notificationUsers,
             notificationOrganizationalUnits
         } = this.state;
-        
+        let { auth } = this.props;
         return this.props.create({
-            creator: this.props.auth.user._id,
+            creator: auth.user._id,
             title: notificationTitle,
             level: notificationLevel,
             content: notificationContent,
@@ -168,7 +170,14 @@ class NotificationCreate extends Component {
                         </div>
                         <div className="form-group">
                             <label>{translate('notification.content')}<span className="text-red">*</span></label>
-                            <textarea type="text" className="form-control" onChange={this.handleContent}/>
+                            {/* <textarea type="text" className="form-control" onChange={this.handleContent}/> */}
+                            <CKEditor
+                                editor={ ClassicEditor }
+                                onChange={ ( event, editor ) => {
+                                    const data = editor.getData();
+                                    this.handleContent(data);
+                                } }
+                            />
                         </div>
                         <div className="form-group">
                             <label>{ translate('notification.departments') }</label>
@@ -207,11 +216,14 @@ class NotificationCreate extends Component {
     }
 }
  
-const mapStateToProps = state => state;
+function mapState(state){
+    const { department, user, auth } = state ;
+    return { department, user, auth };
+}
 const actions = {
     getDepartment: DepartmentActions.get,
     getUser: UserActions.get,
     create: NotificationActions.create,
 }
 
-export default connect( mapStateToProps, actions )( withTranslate(NotificationCreate) );
+export default connect( mapState, actions )( withTranslate(NotificationCreate) );

@@ -57,7 +57,7 @@ import {DashBoardEmployeeKpiSet} from "../modules/kpi/employee/dashboard/compone
 import {KPIPersonalEvaluate} from "../modules/kpi/employee/management/component/employeeKpiData";
 
 import {EmployeeKpiManagement} from "../modules/kpi/evaluation/employee-evaluation/component/employeeKpiManagement";
-import {DashBoardKPIMember} from "../modules/kpi/evaluation/dashboard/component/employeeKpiEvaluationDashboard";
+import {EmployeeKpiEvaluationDashboard} from "../modules/kpi/evaluation/dashboard/component/employeeKpiEvaluationDashboard";
 
 
 import { TaskManagement } from "../modules/task/task-management/component/taskManagement";
@@ -65,6 +65,7 @@ import {TaskComponent} from '../modules/task/task-perform/component/taskComponen
 import { TaskDashboard } from "../modules/task/task-management/component/task-dashboard/taskDashboard";
 import {TaskTemplate} from '../modules/task/task-template/component/taskTemplate';
 import { TaskProcessManagement } from '../modules/task/task-process/component/taskProcessManagement'
+import { TaskOrganizationUnitDashboard } from '../modules/task/task-management/component/task-organization-dashboard/taskOrganizationUnitDashboard'
 
 //asset
 import RecommendProcure from "../modules/assets-manager/recommend-procure/components";
@@ -662,7 +663,7 @@ class Routes extends Component {
                         path={ '/kpi-member/dashboard' }
                         pageName= "kpi_member_dashboard"
                         layout={ Layout }
-                        component={ DashBoardKPIMember }
+                        component={ EmployeeKpiEvaluationDashboard }
                     />
                      {/* Task Management */}
                      <PrivateRoute 
@@ -709,6 +710,21 @@ class Routes extends Component {
                         pageName={ 'task_management_dashboard' }
                         layout={ Layout }
                         component={ TaskDashboard }
+                    />
+                    <PrivateRoute 
+                        isLoading={ false }
+                        key={ 'task-organization-management-dashboard' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/task-organization-management-dashboard', name: 'task_organization_management_dashboard', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/task-organization-management-dashboard' }
+                        path={ '/task-organization-management-dashboard' }
+                        pageName={ 'task_organization_management_dashboard' }
+                        layout={ Layout }
+                        component={ TaskOrganizationUnitDashboard }
                     />
                     <PrivateRoute
                         isLoading={ false }

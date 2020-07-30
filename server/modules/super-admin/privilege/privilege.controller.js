@@ -25,17 +25,6 @@ exports.getPrivelege = async (req, res) => {
     }
 };
 
-exports.getLinksThatRoleCanAccess = async (req, res) => {
-    try {
-        var links = await PrivilegeService.getLinksThatRoleCanAccess(req.params.idRole);
-        
-        res.status(200).json(links);
-    } catch (error) {
-        
-        res.status(400).json(error);
-    }
-};
-
 exports.addLinkThatRoleCanAccess = async (req, res) => {
     try {
         var role = await PrivilegeService.addLinkThatRoleCanAccess(req.body.idLink, req.body.idRole);

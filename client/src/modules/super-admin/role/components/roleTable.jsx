@@ -4,18 +4,18 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { SearchBar, DeleteNotification, PaginateBar, DataTableSetting, ToolTip } from '../../../../common-components';
 
-import { RoleActions} from '../redux/actions';
+import { RoleActions } from '../redux/actions';
 import { UserActions } from '../../user/redux/actions';
 
 import RoleCreateForm from './roleCreateForm';
 import RoleInfoForm from './roleInfoForm';
 
-import {ROLE_TYPE} from '../../../../helpers/constants';
+import { ROLE_TYPE } from '../../../../helpers/constants';
 
 class RoleTable extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
+        this.state = {
             limit: 5,
             page: 1,
             option: 'name', // Mặc định tìm kiếm theo tên
@@ -23,11 +23,11 @@ class RoleTable extends Component {
         }
     }
 
-    render() { 
+    render() {
         const { role, translate } = this.props;
         const { currentRow, option } = this.state;
-        
-        return ( 
+
+        return (
             <React.Fragment>
 
                 {/* Button thêm phân quyền mới */}
@@ -39,33 +39,33 @@ class RoleTable extends Component {
                     <RoleInfoForm
                         roleId={currentRow._id}
                         roleName={currentRow.name}
-                        roleType={currentRow.type? currentRow.type.name: null}
-                        roleParents={currentRow.parents? currentRow.parents.map(parent => parent._id): []}
-                        roleUsers={currentRow.users? currentRow.users.map(user => user.userId? user.userId._id: null): []}
+                        roleType={currentRow.type ? currentRow.type.name : null}
+                        roleParents={currentRow.parents ? currentRow.parents.map(parent => parent._id) : []}
+                        roleUsers={currentRow.users ? currentRow.users.map(user => user.userId ? user.userId._id : null) : []}
                     />
                 }
 
                 {/* Thanh tìm kiếm */}
-                <SearchBar 
+                <SearchBar
                     columns={[
-                        { title: translate('manage_role.name'), value:'name' }
+                        { title: translate('manage_role.name'), value: 'name' }
                     ]}
                     option={option}
                     setOption={this.setOption}
                     search={this.searchWithOption}
                 />
-                    
+
                 {/* Bảng dữ liệu phân quyền */}
                 <table className="table table-hover table-striped table-bordered" id="table-manage-role">
                     <thead>
                         <tr>
-                            <th>{ translate('manage_role.name') }</th>
-                            <th>{ translate('manage_role.extends') }</th>
-                            <th>{ translate('manage_role.users') }</th>
+                            <th>{translate('manage_role.name')}</th>
+                            <th>{translate('manage_role.extends')}</th>
+                            <th>{translate('manage_role.users')}</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
-                                { translate('table.action') }
-                                <DataTableSetting 
-                                    columnName={translate('table.action')} 
+                                {translate('table.action')}
+                                <DataTableSetting
+                                    columnName={translate('table.action')}
                                     columnArr={[
                                         translate('manage_role.name'),
                                         translate('manage_role.extends'),
@@ -80,35 +80,35 @@ class RoleTable extends Component {
                     </thead>
                     <tbody>
                         {
-                            role.listPaginate && role.listPaginate.length > 0 ? 
-                            role.listPaginate.map( role => 
-                                <tr key={ `roleList${role._id}` }>
-                                    <td> { role.name } </td>
-                                    <td><ToolTip dataTooltip={role.parents? role.parents.map(parent => parent.name): ["Parents role is deleted"]}/></td>
-                                    <td><ToolTip dataTooltip={role.users? role.users.map(user => user.userId !== null ? user.userId.name : null): ["User account is deleted"]}/></td>
-                                    <td style={{ textAlign: 'center' }}>
-                                        <a className="edit" onClick={() => this.handleEdit(role)}><i className="material-icons">edit</i></a>
-                                        {
-                                            role.type && role.type.name === ROLE_TYPE.COMPANY_DEFINED && 
-                                            <DeleteNotification 
-                                                content={translate('manage_role.delete')}
-                                                data={{id: role._id, info: role.name}}
-                                                func={this.props.destroy}
-                                            />
-                                        }
-                                    </td>
-                                </tr>       
-                            ): role.isLoading ?
-                            <tr><td colSpan={'4'}>{translate('confirm.loading')}</td></tr>:
-                            <tr><td colSpan={'4'}>{translate('confirm.no_data')}</td></tr>
+                            role.listPaginate && role.listPaginate.length > 0 ?
+                                role.listPaginate.map(role =>
+                                    <tr key={`roleList${role._id}`}>
+                                        <td> {role.name} </td>
+                                        <td><ToolTip dataTooltip={role.parents ? role.parents.map(parent => parent.name) : ["Parents role is deleted"]} /></td>
+                                        <td><ToolTip dataTooltip={role.users ? role.users.map(user => user.userId !== null ? user.userId.name : null) : ["User account is deleted"]} /></td>
+                                        <td style={{ textAlign: 'center' }}>
+                                            <a className="edit" href={`#${role._id}`} onClick={() => this.handleEdit(role)}><i className="material-icons">edit</i></a>
+                                            {
+                                                role.type && role.type.name === ROLE_TYPE.COMPANY_DEFINED &&
+                                                <DeleteNotification
+                                                    content={translate('manage_role.delete')}
+                                                    data={{ id: role._id, info: role.name }}
+                                                    func={this.props.destroy}
+                                                />
+                                            }
+                                        </td>
+                                    </tr>
+                                ) : role.isLoading ?
+                                    <tr><td colSpan={'4'}>{translate('confirm.loading')}</td></tr> :
+                                    <tr><td colSpan={'4'}>{translate('confirm.no_data')}</td></tr>
                         }
                     </tbody>
                 </table>
-                
+
                 {/* PaginateBar */}
-                <PaginateBar pageTotal={role.totalPages} currentPage={role.page} func={this.setPage}/>
+                <PaginateBar pageTotal={role.totalPages} currentPage={role.page} func={this.setPage} />
             </React.Fragment>
-         );
+        );
     }
 
     // Cac ham xu ly du lieu voi modal
@@ -130,7 +130,7 @@ class RoleTable extends Component {
         });
     }
 
-    searchWithOption = async() => {
+    searchWithOption = async () => {
         const data = {
             limit: this.state.limit,
             page: 1,
@@ -153,8 +153,8 @@ class RoleTable extends Component {
 
     setLimit = (number) => {
         this.setState({ limit: number });
-        const data = { 
-            limit: number, 
+        const data = {
+            limit: number,
             page: this.state.page,
             key: this.state.option,
             value: this.state.value
@@ -162,9 +162,9 @@ class RoleTable extends Component {
         this.props.get(data);
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.props.get();
-        this.props.get({page: this.state.page, limit: this.state.limit});
+        this.props.get({ page: this.state.page, limit: this.state.limit });
         this.props.getUser();
     }
 
@@ -173,13 +173,16 @@ class RoleTable extends Component {
     }
 
 }
- 
-const mapStateToProps = state => state;
 
-const mapDispatchToProps =  {
+function mapStateToProps(state) {
+    const { role } = state;
+    return { role };
+}
+
+const mapDispatchToProps = {
     get: RoleActions.get,
     getUser: UserActions.get,
     destroy: RoleActions.destroy
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(RoleTable) );
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(RoleTable));

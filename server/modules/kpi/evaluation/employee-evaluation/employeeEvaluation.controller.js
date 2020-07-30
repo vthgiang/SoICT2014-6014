@@ -10,7 +10,7 @@ exports.getEmployeeKPISets = async (req, res) => {
         getKpisByMonth(req, res);
     }
     else {
-        // try {
+        try {
             const kpimembers = await KPIMemberService.getEmployeeKPISets(req.query);
             await LogInfo(req.user.emai, `Get kpi all member`, req.user.company);
             res.status(200).json({
@@ -18,13 +18,13 @@ exports.getEmployeeKPISets = async (req, res) => {
                 messages: ['get_all_kpi_member_success'],
                 content: kpimembers
             });
-        // } catch (error) {
-        //     await LogError(req.user.emai, `Get kpi all  member`, req.user.company);
-        //     res.status(400).json({
-        //         messages: ['get_all_kpi_member_fail'],
-        //         content: error
-        //     });
-        // }
+        } catch (error) {
+            await LogError(req.user.emai, `Get kpi all  member`, req.user.company);
+            res.status(400).json({
+                messages: ['get_all_kpi_member_fail'],
+                content: error
+            });
+        }
     }
 };
 
@@ -120,7 +120,7 @@ exports.editKpi = async (req, res) => {
 }
 
 /**
- * Phê duyệt từng mục tiêu của KPI req.params.id  status: req.params.status
+ * Chỉnh sửa từng mục tiêu của KPI req.params.id  status: req.params.status
  */
 
 exports.editStatusKpi = async (req, res) => {

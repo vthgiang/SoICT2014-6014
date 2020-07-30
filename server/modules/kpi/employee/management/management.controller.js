@@ -1,75 +1,40 @@
 const overviewService = require('./management.service');
 const { LogInfo, LogError } = require('../../../../logs');
 
-/** Lấy tất cả tập kpi cá nhân của một nhân viên */ 
-exports.getAllEmployeeKpiSets = async (req, res) => {
-    try {
-        
-        var kpipersonals = await overviewService.getAllEmployeeKpiSets(req.params.member);
-        LogInfo(req.user.email, ` get all target of personal kpi `, req.user.company)
-        res.status(200).json({
-            success: true,
-            messages: ['get_kpi_by_member_success'],
-            content: kpipersonals
-        })
-    } catch (error) {
-        LogError(req.user.email, ` get all target of personal kpi `, req.user.company)
-        res.status(400).json({
-            success: false,
-            messages : ['get_kpi_by_member_fail'],
-            content: error
-        })
-    }
-};
 
-/** Lấy tất cả tập kpi cá nhân của một nhân viên trong phòng ban theo tháng */ 
-exports.getAllFinishedEmployeeKpiSets = async (req, res) => {
-    try {
-        var kpipersonals = await overviewService.getAllFinishedEmployeeKpiSets(req.params.member);
-        LogInfo(req.user.email, ` get all kpi personal `, req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['get_kpi_responsible_success'],
-            content: kpipersonals
-        });
-    } catch (error) {
-        LogError(req.user.email, ` get all kpi personal `, req.user.company);
-        res.status(400).json({
-            success : false,
-            messages: ['get_kpi_responsible_fail'],
-            content: error
-        })
-    }
-
-};
-
-/** Lấy tất cả tập kpi cá nhân của một nhân viên có trạng thái đã kết thúc */ 
+/** Lấy tất cả tập kpi cá nhân của một nhân viên có trạng thái đã kết thúc */
 exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (req, res) => {
-    try {
-        var kpipersonals = await overviewService.getAllKPIEmployeeSetsInOrganizationByMonth(req.params);
-        LogInfo(req.user.email, ` get all kpi personal `, req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['get_kpi_employee_in_department_by_month_success'],
-            content: kpipersonals
-        });
-    } catch (error) {
-        LogError(req.user.email, ` get all kpi personal `, req.user.company);
-        res.status(400).json({
-            success : false,
-            messages: ['get_kpi_responsible_fail'],
-            content: error
-        })
+    if (!req.query.user && req.query.department && req.query.date){
+        this.getChildTargetByParentId(req, res);
     }
-
+    else {
+        try {
+            let kpipersonals = await overviewService.getAllKPIEmployeeSetsInOrganizationByMonth(req.query);
+            
+            LogInfo(req.user.email, ` get all kpi personal `, req.user.company);
+            res.status(200).json({
+                success: true,
+                messages: ['get_kpi_employee_in_department_by_month_success'],
+                content: kpipersonals
+            });
+        } catch (error) {
+            LogError(req.user.email, ` get all kpi personal `, req.user.company);
+            res.status(400).json({
+                success: false,
+                messages: ['get_kpi_responsible_fail'],
+                content: error
+            })
+        }
+    }
 };
 
 /**
  * Khởi tạo KPI tháng mới từ KPI tháng này trong trang quản lý KPI cá nhân
  */
-exports.copyKPI= async (req, res) => {
+exports.copyKPI = async (req, res) => {
     try {
-        var kpipersonals = await overviewService.copyKPI(req.params);
+        let kpipersonals = await overviewService.copyKPI(req.query);
+        
         LogInfo(req.user.email, ` get all kpi personal `, req.user.company);
         res.status(200).json({
             success: true,
@@ -79,7 +44,7 @@ exports.copyKPI= async (req, res) => {
     } catch (error) {
         LogError(req.user.email, ` get all kpi personal `, req.user.company);
         res.status(400).json({
-            success : false,
+            success: false,
             messages: ['copy_KPI_fail'],
             content: error
         })
@@ -91,11 +56,9 @@ exports.copyKPI= async (req, res) => {
  * Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại 
  */
 exports.getAllEmployeeKpiInOrganizationalUnit = async (req, res) => {
-    if(req.query.child){
-
-    }
     try {
-        var employeeKpis = await overviewService.getAllEmployeeKpiInOrganizationalUnit(req.query);
+        let employeeKpis = await overviewService.getAllEmployeeKpiInOrganizationalUnit(req.query.roleId, req.query.organizationalUnitId, req.query.month);
+        
         LogInfo(req.user.email, ' get all employee kpi in organizational unit ', req.user.company);
         res.status(200).json({
             success: true,
@@ -118,7 +81,8 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (req, res) => {
  */
 exports.getAllEmployeeKpiSetInOrganizationalUnit = async (req, res) => {
     try {
-        var employeeKpiSets = await overviewService.getAllEmployeeKpiSetInOrganizationalUnit(req.query);
+        let employeeKpiSets = await overviewService.getAllEmployeeKpiSetInOrganizationalUnit(req.query);
+        
         LogInfo(req.user.email, ' get all employee kpi set in organizational unit ', req.user.company);
         res.status(200).json({
             success: true,
@@ -133,14 +97,15 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (req, res) => {
             content: error
         })
     }
-} 
+}
 
 /** 
  * Lấy tất cả EmployeeKpis thuộc các đơn vị con của đơn vị hiện tại 
  */
 exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (req, res) => {
     try {
-        var employeeKpisInChildrenOrganizationalUnit = await overviewService.getAllEmployeeKpiInChildrenOrganizationalUnit(req.user.company._id, req.query.roleId);
+        let employeeKpisInChildrenOrganizationalUnit = await overviewService.getAllEmployeeKpiInChildrenOrganizationalUnit(req.user.company._id, req.query.roleId);
+        
         LogInfo(req.user.email, ' get all employee kpi set in organizational unit ', req.user.company);
         res.status(200).json({
             success: true,
@@ -161,22 +126,22 @@ exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (req, res) => {
 /* 
  *Lấy tất cả các mục tiêu con của mục tiêu hiện tại
  */
-exports.getChildTargetByParentId =async (req, res) => {
+exports.getChildTargetByParentId = async (req, res) => {
     try {
-        var childTarget = await overviewService.getChildTargetByParentId(req.query);
-        LogInfo(req.user.email, ' get child target by parent id ',req.user.company)
+        let childTarget = await overviewService.getChildTargetByParentId(req.query);
+        
+        LogInfo(req.user.email, ' get child target by parent id ', req.user.company)
         res.status(200).json({
             success: true,
             messages: ['get_child_target_by_parent_id_success'],
             content: childTarget
         });
     } catch (error) {
-        LogError(req.user.email, ' get child target by parent id ',req.user.company)
+        LogError(req.user.email, ' get child target by parent id ', req.user.company)
         res.status(400).json({
             success: false,
             messages: ['get_child_target_by_parent_id_fail'],
             content: error
         })
     }
-
 }

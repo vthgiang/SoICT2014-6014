@@ -324,7 +324,7 @@ function mapState(state) {
 
 const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
-    getAllKPIPersonal: managerKpiActions .getAllKPIPersonalByMember,
+    // getAllKPIPersonal: managerKpiActions .getAllKPIPersonalByMember,
     getEmployeeKPISets: kpiMemberActions.getEmployeeKPISets,
 };
 const connectedKPIPersonalManager = connect(mapState, actionCreators)(withTranslate(KPIPersonalManager));

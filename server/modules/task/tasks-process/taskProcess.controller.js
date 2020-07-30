@@ -70,18 +70,41 @@ exports.createXmlDiagram = async (req, res) => {
  */
 exports.editXmlDiagram = async (req, res) => {
   try {
-    var data = await TaskProcessService.editXmlDiagram(req.body);
+    var data = await TaskProcessService.editXmlDiagram(req.params, req.body);
     await LogInfo(req.user.email, `edit xml diagram `, req.user.company);
     res.status(200).json({
       success: true,
-      messages: ['export thanh công'],
+      messages: ['edit_success'],
       content: data
     });
   } catch (error) {
     await LogError(req.user.email, `edit xml diagram `, req.user.company);
     res.status(400).json({
       success: false,
-      messages: ['abc'],
+      messages: ['edit_fail'],
+      content: error
+    });
+  }
+}
+
+/**
+ * xóa diagram
+ */
+exports.deleteXmlDiagram = async (req, res) => {
+  try {
+    var data = await TaskProcessService.deleteXmlDiagram(req.params.diagramId);
+    
+    await LogInfo(req.user.email, `delete xml diagram `, req.user.company);
+    res.status(200).json({
+      success: true,
+      messages: ['delete_success'],
+      content: data
+    });
+  } catch (error) {
+    await LogError(req.user.email, `edit xml diagram `, req.user.company);
+    res.status(400).json({
+      success: false,
+      messages: ['delete_fail'],
       content: error
     });
   }

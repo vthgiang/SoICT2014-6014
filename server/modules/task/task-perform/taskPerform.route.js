@@ -3,13 +3,16 @@ const router = express.Router();
 const { auth, uploadFile } = require('../../../middleware');
 const PerformTaskController = require("./taskPerform.controller");
 
+
 router.get('/tasks/:taskId/timesheet-logs', auth, PerformTaskController.getTaskTimesheetLogs);
 router.get('/task-timesheet-logs', auth, PerformTaskController.getActiveTimesheetLog);
-router.post('/tasks/:taskId/timesheet-logs/start-timer', PerformTaskController.startTimesheetLog);
+router.post('/tasks/:taskId/timesheet-logs/start-timer',auth, PerformTaskController.startTimesheetLog);
 router.post('/tasks/:taskId/timesheet-logs/stop-timer', auth, PerformTaskController.stopTimesheetLog);
-router.post('/tasks/:taskId/logs', auth, PerformTaskController.addTaskLog);
-router.get('/tasks/:taskId/logs', auth, PerformTaskController.getTaskLog);
 
+
+//task log
+router.get('/tasks/:taskId/logs', auth, PerformTaskController.getTaskLog);
+router.post('/tasks/:taskId/logs', auth, PerformTaskController.addTaskLog);
 
 //upload file
 router.post('/tasks/:taskId/files', auth, uploadFile([{ name: 'files', path: '/files' }], 'array'), PerformTaskController.uploadFile)
@@ -17,7 +20,7 @@ router.post('/tasks/:taskId/files', auth, uploadFile([{ name: 'files', path: '/f
 
 
 //Task Action
-router.get('/tasks/:taskId/task-actions', auth, PerformTaskController.confirmAction);
+router.post('/tasks/:taskId/task-actions/:actionId', auth, PerformTaskController.confirmAction);
 router.post('/tasks/:taskId/task-actions', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.createTaskAction);
 router.patch('/tasks/:taskId/task-actions/:actionId', auth, uploadFile([{ name: 'files', path: '/files/actions' }], 'array'), PerformTaskController.editTaskAction);
 router.delete('/tasks/:taskId/task-actions/:actionId', auth, PerformTaskController.deleteTaskAction);

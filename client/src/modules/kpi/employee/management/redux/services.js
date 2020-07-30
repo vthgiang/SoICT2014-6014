@@ -1,44 +1,10 @@
-import {
-    LOCAL_SERVER_API
-} from '../../../../../env';
-import {
-    getStorage
-} from '../../../../../config';
-
+import { LOCAL_SERVER_API } from '../../../../../env';
 import { sendRequest } from '../../../../../helpers/requestHelper';
+
 export const managerKPIPerService = {
-    getAllKPIPersonalByMember,
-    getAllKPIPersonalOfTask,
-    getAllKPIPersonalByUserID,
     getAllKpiSetsOrganizationalUnitByMonth,
     copyEmployeeKPI
 };
-
-// Lấy tất cả kpi cá nhân
-function getAllKPIPersonalByMember() {//member
-    var id = getStorage("userId");
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets/user/${id}`,
-        method: 'GET',
-    }, false, true, 'kpi.employee.manager')
-
-}
-
-// Lấy tất cả kpi cá nhân
-function getAllKPIPersonalByUserID(member) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets/user/${member}`,
-        method: 'GET',
-    }, false, true, 'kpi.employee.manager' )
-}
-
-// Lấy tất cả kpi cá nhân
-function getAllKPIPersonalOfTask(member) {
-    return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets/task/${member}`,
-        method: 'GET',
-    }, false, true, 'kpi.employee.manager')
-}
 
 /**
  * get all kpi sets in organizational unit by month
@@ -48,14 +14,32 @@ function getAllKPIPersonalOfTask(member) {
  */
 function getAllKpiSetsOrganizationalUnitByMonth(user, department, date) {
     return sendRequest({
-        url:`${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets/${user}/${department}/${date}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets`,
         method: 'GET',
+        params: {
+            user: user,
+            department: department,
+            date: date,
+            unitKpiSetByEmployeeKpiSetDate: true
+        }
     }, false, true, 'kpi.employee.manager')
 }
-
-function copyEmployeeKPI(id, idunit, dateold, datenew){
+/**
+ * Tạo kpi tháng mới từ kpi tháng hiện tại
+ * @param {*} id 
+ * @param {*} unitId 
+ * @param {*} dateOld 
+ * @param {*} dateNew 
+ */
+function copyEmployeeKPI(id, unitId, dateOld, dateNew){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets/copykpi/${id}/${idunit}/${dateold}/${datenew}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets/copy`,
         method: 'POST',
+        params: {
+            user: id,
+            unitId: unitId,
+            dateOld: dateOld,
+            dateNew: dateNew
+        }
     }, true, true, 'kpi.employee.manager');
 }

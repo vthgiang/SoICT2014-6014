@@ -8,8 +8,9 @@ const {OrganizationalUnit, Company, Role, RoleType, User, UserRole, Privilege} =
 exports.getRoles = async (company, query) => {
     var page = query.page;
     var limit = query.limit;
+    var roleId = query.roleId;
     
-    if (!page && !limit) {
+    if (!page && !limit && !roleId) {
         return await Role
             .find({company})
             .populate([
@@ -17,7 +18,7 @@ exports.getRoles = async (company, query) => {
                 { path: 'parents', model: Role },
                 { path: 'type', model: RoleType }
             ]);
-    } else {
+    } else if (page && limit && !roleId) {
         const option = (query.key !== undefined && query.value !== undefined)
             ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
             : {company};
@@ -31,6 +32,20 @@ exports.getRoles = async (company, query) => {
                 { path: 'type', model: RoleType }
             ]
         });
+    } else if (!page && !limit && roleId) {
+        const roles = await OrganizationalUnit.findOne({ 
+            $or:[
+                { 'deans': roleId }, 
+                { 'viceDeans': roleId }, 
+                { 'employees': roleId }
+            ]  
+        }).populate([
+            { path: 'deans' }, 
+            { path: 'viceDeans' }, 
+            { path: 'employees' },
+        ]);
+    
+        return roles;
     }
 }
 
@@ -71,26 +86,6 @@ exports.createRole = async(data, companyId) => {
     });
 
     return role;
-}
-
-/**
- * Lấy danh sách tất cả các role cùng phòng ban với role hiện tại
- * @id id role hiện tại
- */
-exports.getAllRolesInSameOrganizationalUnitWithRole = async (id) => {
-    const roles = await OrganizationalUnit.findOne({ 
-        $or:[
-            { 'deans':id }, 
-            { 'viceDeans':id }, 
-            { 'employees':id }
-        ]  
-    }).populate([
-        { path: 'deans' }, 
-        { path: 'viceDeans' }, 
-        { path: 'employees' }
-    ]);
-
-    return roles;
 }
 
 /**
