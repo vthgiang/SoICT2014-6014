@@ -144,7 +144,7 @@ class DocumentInformation extends Component {
         const formData = new FormData();
         formData.append('name', documentName);
         formData.append('category', documentCategory);
-        if (documentDomains !== undefined) for (var i = 0; i < documentDomains.length; i++) {
+        if (documentDomains !== undefined) for (let i = 0; i < documentDomains.length; i++) {
             formData.append('domains[]', documentDomains[i]);
         }
         formData.append('description', documentDescription);
@@ -153,10 +153,10 @@ class DocumentInformation extends Component {
         formData.append('signer', documentSigner);
 
         formData.append('relationshipDescription', documentRelationshipDescription);
-        if (documentRelationshipDocuments !== undefined) for (var i = 0; i < documentRelationshipDocuments.length; i++) {
+        if (documentRelationshipDocuments !== undefined) for (let i = 0; i < documentRelationshipDocuments.length; i++) {
             formData.append('relationshipDocuments[]', documentRelationshipDocuments[i]);
         }
-        if (documentRoles !== undefined) for (var i = 0; i < documentRoles.length; i++) {
+        if (documentRoles !== undefined) for (let i = 0; i < documentRoles.length; i++) {
             formData.append('roles[]', documentRoles[i]);
         }
 
@@ -253,7 +253,6 @@ class DocumentInformation extends Component {
         const domains = documents.administration.domains.list.map(domain => { return { value: domain._id, text: domain.name } });
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
-        const userManage = documents.administration.data.user_manage.map(user => { return { value: user._id, text: `${user.name} ${user.email}` } });
         console.log('domains', documentDomains)
         return (
             <React.Fragment>
@@ -265,7 +264,7 @@ class DocumentInformation extends Component {
                 >
                     <form id="form-information-user-document">
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Thông tin văn bản</legend>
+                            <legend className="scheduler-border">{translate('documents.infomation_docs')}</legend>
                             <div className="row">
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">
