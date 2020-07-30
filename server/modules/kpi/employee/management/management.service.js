@@ -111,7 +111,7 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (query) => {
             ]
         });
     } else {
-        organizationalUnit = await OrganizationalUnit.findOne({ '_id': query.organizationalUnitId });
+        organizationalUnit = { '_id': new mongoose.Types.ObjectId(organizationalUnitId) }
     }
 
     let employeeKpis = await OrganizationalUnitKpiSet.aggregate([
@@ -178,10 +178,10 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (query) => {
     let beginOfCurrentMonth = new Date(query.month);
     let endOfCurrentMonth = new Date(beginOfCurrentMonth.getFullYear(), beginOfCurrentMonth.getMonth() + 1);
 
-    let organizationalUnit = await OrganizationalUnit.findOne({ '_id': query.organizationalUnitId });
+    let organizationalUnitId = new mongoose.Types.ObjectId(query.organizationalUnitId);
 
     let employeeKpiSets = await OrganizationalUnit.aggregate([
-        { $match: { '_id': organizationalUnit._id } },
+        { $match: { '_id': organizationalUnitId } },
 
         {
             $lookup: {
