@@ -247,7 +247,7 @@ exports.createCommentOfComment = async (req,res)=> {
  */
 exports.editComment = async (req,res)=> {
     try {
-        var comments = await EmployeeKpiSetService.editComment(req.params,req.params,req.body);
+        var comments = await EmployeeKpiSetService.editComment(req.params,req.body);
         console.log(comments)
         await LogInfo(req.user.email, ` edit comment `,req.user.company)
         res.status(200).json({

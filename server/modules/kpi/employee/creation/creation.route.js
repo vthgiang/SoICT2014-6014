@@ -21,12 +21,12 @@ router.post('/employee-kpis', auth, EmployeeKpiSetController.createEmployeeKpi);
 // Xóa 1 mục tiêu KPI cá nhân
 router.delete('/employee-kpis/:id', auth, EmployeeKpiSetController.deleteEmployeeKpi);
 
-//tạo comment
+//comments
 router.post('/creation/employee-kpi-sets/:kpiId/comments', auth, uploadFile([{ name: 'files', path: '/files/kpisets' }], 'array'), EmployeeKpiSetController.createComment)
 router.patch('/employee-kpi-sets/:kpiId/comments/:commentId', auth, EmployeeKpiSetController.editComment)
 router.delete('/employee-kpi-sets/:kpiId/comments/:commentId', auth, EmployeeKpiSetController.deleteComment)
 
-//tao comment cua comment
+//child comments
 router.post('/employee-kpi-sets/:kpiId/comments/:commentId/child-comments', auth, uploadFile([{ name: 'files', path: '/files/kpisets' }], 'array'), EmployeeKpiSetController.createCommentOfComment)
 router.patch('/employee-kpi-sets/:kpiId/comments/:commentId/child-comments/childCommentId', auth, EmployeeKpiSetController.editCommentOfComment)
 router.delete('/employee-kpi-sets/:kpiId/comments/:commentId/child-comments/childCommentId', auth, EmployeeKpiSetController.deleteCommentOfComment)

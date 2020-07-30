@@ -23,7 +23,7 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
     delete entries['create.participant-expanded'];
     return entries;
 }
-class ModalEditProcessTask extends Component {
+class ModalEditTaskProcess extends Component {
 
     constructor(props) {
         super(props);
@@ -135,6 +135,7 @@ class ModalEditProcessTask extends Component {
                                                             id={id}
                                                             info={(info && info[`${id}`]) && info[`${id}`]}
                                                             handleChangeName={this.handleChangeName}
+                                                            handleChangeDescription={this.handleChangeDescription}
                                                             handleChangeDescription={this.handleChangeDescription}
                                                             handleChangeResponsible={this.handleChangeResponsible}
                                                             handleChangeAccountable={this.handleChangeAccountable}
@@ -436,5 +437,5 @@ const actionCreators = {
     getXmlDiagramById: TaskProcessActions.getXmlDiagramById,
     editXmlDiagram: TaskProcessActions.editXmlDiagram,
 };
-const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalEditProcessTask));
-export { connectedModalAddProcess as ModalEditProcessTask };
+const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalEditTaskProcess));
+export { connectedModalAddProcess as ModalEditTaskProcess };

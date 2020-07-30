@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from "react-redux-multilingual";
+
+
 import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../common-components';
-import { ModalEditProcessTask } from './modalEditProcessTask'
-import { ModalCreateProcessTask } from './modalCreateProcessTask'
+
+
+import { ModalEditTaskProcess } from './modalEditTaskProcess'
+import { ModalCreateTaskProcess } from './modalCreateTaskProcess'
+import { ModalViewTaskProcess } from './modalViewTaskProcess';
+
 import { TaskProcessActions } from '../redux/actions';
-import { ModalViewProcessTask } from './modalViewProcessTask';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 class TaskProcessManagement extends Component {
   constructor(props) {
     super(props);
@@ -16,6 +22,7 @@ class TaskProcessManagement extends Component {
 
   }
   componentDidMount = () => {
+    this.props.getAllDepartments()
     this.props.getAllXmlDiagram();
     this.props.getRoles();
   }
@@ -60,16 +67,19 @@ class TaskProcessManagement extends Component {
     window.$(`#modal-create-process-task`).modal("show");
   }
   render() {
-    const { translate, taskProcess } = this.props
+    const { translate, taskProcess,department } = this.props
     const { showModalCreateProcess, currentRow } = this.state
     let listDiagram = taskProcess && taskProcess.xmlDiagram;
+    console.log(department)
+    let listOrganizationalUnit = department?.list
     return (
       <div className="box">
         <div className="box-body qlcv">
           {
             this.state.currentRow !== undefined &&
-            <ModalViewProcessTask
+            <ModalViewTaskProcess
               title={'Xem quy trình công việc'}
+              listOrganizationalUnit= {listOrganizationalUnit}
               data={currentRow}
               idProcess={currentRow._id}
               xmlDiagram={currentRow.xmlDiagram}
@@ -81,7 +91,7 @@ class TaskProcessManagement extends Component {
           }
           {
             this.state.currentRow !== undefined &&
-            <ModalEditProcessTask
+            <ModalEditTaskProcess
               title={'Sửa quy trình công việc'}
               data={currentRow}
               idProcess={currentRow._id}
@@ -101,9 +111,9 @@ class TaskProcessManagement extends Component {
               </div>
               {
                 showModalCreateProcess &&
-                <ModalCreateProcessTask
+                <ModalCreateTaskProcess
+                  listOrganizationalUnit={listOrganizationalUnit}
                   title="Thêm mới quy trình công việc"
-                  rand={Math.random()}
                 />
               }
             </React.Fragment>
@@ -181,11 +191,12 @@ class TaskProcessManagement extends Component {
 
 
 function mapState(state) {
-  const { user, auth, taskProcess, role } = state;
-  return { user, auth, taskProcess, role };
+  const { user, auth, taskProcess, role, department } = state;
+  return { user, auth, taskProcess, role, department };
 }
 
 const actionCreators = {
+  getAllDepartments: DepartmentActions.get,
   getRoles: RoleActions.get,
   getAllXmlDiagram: TaskProcessActions.getAllXmlDiagram,
   deleteXmlDiagram: TaskProcessActions.deleteXmlDiagram,

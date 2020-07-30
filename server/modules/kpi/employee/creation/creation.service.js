@@ -203,6 +203,41 @@ exports.createComment = async (params, body, files) => {
     return comment.comments;
 }
 
+
+/**
+ * Sửa bình luận
+ */
+exports.editComment = async (params, body) => {
+    let commentss = await EmployeeKpiSet.updateOne(
+        { "_id": params.kpiId, "comments._id": params.commentId },
+        {
+            $set: { "comments.$.description": body.description }
+        }
+    )
+    let comment = await EmployeeKpiSet.findOne({ "_id": params.kpiId, "comments._id": params.commentId })
+        .populate([
+            { path: 'comments.creator', model: User, select: 'name email avatar ' },
+            { path: 'comments.comments.creator', model: User, select: 'name email avatar' }
+        ])
+    return comment.comments;
+}
+
+/**
+ * Delete comment
+ */
+exports.deleteComment = async (params) => {
+    let comments = await EmployeeKpiSet.update(
+        { "_id": params.kpiId, "comments._id": params.commentId },
+        { $pull: { comments: { _id: params.commentId } } },
+        { safe: true })
+    let comment = await EmployeeKpiSet.findOne({ "_id": params.kpiId, "comments._id": params.commentId })
+        .populate([
+            { path: 'comments.creator', model: User, select: 'name email avatar ' },
+            { path: 'comments.comments.creator', model: User, select: 'name email avatar' }
+        ])
+    return comment.comments
+}
+
 /**
  *  thêm bình luận cua binh luan
  */
@@ -226,39 +261,6 @@ exports.createCommentOfComment = async (params, body, files) => {
             { path: 'comments.comments.creator', model: User, select: 'name email avatar' }
         ])
     return comment.comments;
-}
-/**
- * Sửa bình luận
- */
-exports.editComment = async (params, body) => {
-    let commentss = await EmployeeKpiSet.updateOne(
-        { "_id": params.kpiId, "comments._id": params.commentId },
-        {
-            $set: { "comments.$.description": body.description }
-        }
-    )
-    let comment = await EmployeeKpiSet.findOne({ "_id": params.kpiId, "comments._id": params.commentId })
-        .populate([
-            { path: 'comments.creator', model: User, select: 'name email avatar ' },
-            { path: 'comments.comments.creator', model: User, select: 'name email avatar' }
-        ])
-    return comment.comments;
-}
-
-/**
- * Delete comment
- */
-exports.deleteComment = async (params, kpiId) => {
-    let comments = await EmployeeKpiSet.update(
-        { "_id": params.kpiId, "comments._id": params.commentId },
-        { $pull: { comments: { _id: params.commentId } } },
-        { safe: true })
-    let comment = await EmployeeKpiSet.findOne({ "_id": params.kpiId, "comments._id": params.commentId })
-        .populate([
-            { path: 'comments.creator', model: User, select: 'name email avatar ' },
-            { path: 'comments.comments.creator', model: User, select: 'name email avatar' }
-        ])
-    return comment.comments
 }
 /**
  * Edit comment of comment
@@ -294,7 +296,7 @@ exports.editCommentOfComment = async (params, body) => {
 /**
  * Delete comment of comment
  */
-exports.deleteCommentOfComment = async (params, kpiId) => {
+exports.deleteCommentOfComment = async (params) => {
     let comment1 = await EmployeeKpiSet.update(
         { "_id": params.kpiId, "comments._id": params.commentId, "comments.comments._id": params.childCommentId },
         { $pull: { "comments.$.comments": { _id: params.childCommentId } } },
