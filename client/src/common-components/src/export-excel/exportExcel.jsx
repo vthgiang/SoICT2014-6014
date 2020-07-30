@@ -24,9 +24,8 @@ class ExportExcel extends Component {
             font: { sz: "12", name: 'Times New Roman' },
             alignment: { vertical: "center", horizontal: 'left', wrapText: true }
         }
-        const styleBodyofNumbert = {
-            font: { sz: "12", name: 'Times New Roman' },
-            alignment: { vertical: "center", horizontal: 'left', wrapText: true, },
+        const styleBodyofNumber = {
+            ...styleBodyofText,
             numFmt: "0"
         }
 
@@ -35,7 +34,7 @@ class ExportExcel extends Component {
                 let data = y.data.map(row => {
                     let result = [];
                     y.columns.forEach(col => {
-                        result = [...result, { value: row[col.key] ? row[col.key] : "", style: typeof row[col.key] === "string" ? styleBodyofText : styleBodyofNumbert }];
+                        result = [...result, { value: row[col.key] ? row[col.key] : "", style: (col.type === "Number") ? styleBodyofNumber : styleBodyofText }];
                     })
                     return result;
                 });
@@ -60,14 +59,14 @@ class ExportExcel extends Component {
     render() {
         const ExcelFile = ReactExport.ExcelFile;
         const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-        let { buttonName = "Xuất Báo cáo", exportData } = this.state;
+        let { buttonName = "Xuất Báo cáo", exportData, style = { marginTop: 10 }, className = "btn btn-primary pull-right", title = "" } = this.state;
 
         if (exportData) {
             exportData = this.convertData(exportData);
         }
         return (
             <React.Fragment>
-                <ExcelFile filename={exportData.fileName} element={<button type="button" style={{ marginTop: 10 }} className="btn btn-primary pull-right" title="" >{buttonName}</button>}>
+                <ExcelFile filename={exportData.fileName} element={<button type="button" style={style} className={className} title={title} >{buttonName}</button>}>
                     {exportData.dataSheets.map((x, key) =>
                         <ExcelSheet key={key} dataSet={x.tables} name={x.sheetName} />
                     )}
