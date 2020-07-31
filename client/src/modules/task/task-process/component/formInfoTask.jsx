@@ -8,14 +8,15 @@ class FormInfoTask extends Component {
 
     constructor(props) {
         super(props);
-        let { info, id } = this.props;
+        let { info, id, listOrganizationalUnit } = this.props;
         this.state = {
             id: id,
             nameTask: (info && info.nameTask) ? info.nameTask : '',
             description: (info && info.description) ? info.description : '',
-            organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : "",
+            organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : listOrganizationalUnit[0]._id,
             responsible: (info && info.responsible) ? info.responsible : [],
             accountable: (info && info.accountable) ? info.accountable : [],
+            listRoles: [...listOrganizationalUnit[0]?.deans, ...listOrganizationalUnit[0]?.viceDeans, ...listOrganizationalUnit[0]?.employees]
         }
     }
 
@@ -26,15 +27,25 @@ class FormInfoTask extends Component {
         //     return true;
         // }
         if (nextProps.id !== this.state.id) {
-            let { info } = nextProps;
+            let { info, listOrganizationalUnit } = nextProps;
+            let listRoles = [...listOrganizationalUnit[0].deans, ...listOrganizationalUnit[0].viceDeans, ...listOrganizationalUnit[0].employees];
             this.setState(state => {
+                if(info && info.organizationalUnit) {
+                    let { listOrganizationalUnit } = this.props
+                    listOrganizationalUnit.forEach(x => {
+                        if(x._id === info.organizationalUnit) {
+                            listRoles = [...x.deans, ...x.viceDeans, ...x.employees];
+                        }
+                    })
+                }
                 return {
                     id: nextProps.id,
                     nameTask: (info && info.nameTask) ? info.nameTask : '',
                     description: (info && info.description) ? info.description : '',
-                    organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
+                    organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : listOrganizationalUnit[0]._id,
                     responsible: (info && info.responsible) ? info.responsible : [],
                     accountable: (info && info.accountable) ? info.accountable : [],
+                    listRoles: listRoles,
                 }
             })
             return false;
@@ -58,10 +69,16 @@ class FormInfoTask extends Component {
         this.props.handleChangeDescription(value);
     }
     handleChangeOrganizationalUnit = (value) => {
-        console.log(value)
-        this.setState({
-            organizationalUnit: value
-        });
+        let { listOrganizationalUnit } = this.props
+        listOrganizationalUnit.forEach(x => {
+            if(x._id === value[0]) {
+                this.setState({
+                    organizationalUnit: value,
+                    listRoles: [...x.deans, ...x.viceDeans, ...x.employees]
+                });
+            }
+        })
+        
         this.props.handleChangeOrganizationalUnit(value)
     }
     handleChangeResponsible = (value) => {
@@ -79,9 +96,9 @@ class FormInfoTask extends Component {
 
     render() {
         const { user, translate, role } = this.props;
-        const { nameTask, description, responsible, accountable, organizationalUnit } = this.state;
+        const { nameTask, description, responsible, accountable, organizationalUnit, listRoles } = this.state;
         const { id, info, action, listOrganizationalUnit, disabled } = this.props;
-
+        console.log(this.state)
         let usersOfChildrenOrganizationalUnit;
         if (user && user.usersOfChildrenOrganizationalUnit) {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
@@ -91,9 +108,9 @@ class FormInfoTask extends Component {
 
         let listRole = [];
         if (role && role.list.length !== 0) listRole = role.list;
-        let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
-            .map(item => { return { text: item.name, value: item._id } });
+        let listItem = listRoles.map(item => { return { text: item.name, value: item._id } });
         let listOrganizationalUnit1 = listOrganizationalUnit.map(x => { return { text: x.name, value: x._id } })
+
         return (
             <div>
                 <form>

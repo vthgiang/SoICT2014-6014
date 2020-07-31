@@ -56,7 +56,7 @@ function getAllOrganizationalUnitKpiSetByTimeOfChildUnit(roleId, startDate, endD
         url: `${LOCAL_SERVER_API}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
         method: 'GET',
         params: {
-            child: 1,
+            child: true,
             roleId: roleId,
             startDate: startDate,
             endDate: endDate,

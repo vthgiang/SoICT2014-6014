@@ -1,5 +1,7 @@
 const { OrganizationalUnitKpi, OrganizationalUnit, OrganizationalUnitKpiSet } = require('../../../../models/index').schema;
 
+const overviewService = require('../../employee/management/management.service');
+
 /**
  * Get organizational unit kpi set
  * @param {*} organizationalUnitId 
@@ -80,13 +82,13 @@ exports.getParentOrganizationalUnitKpiSet = async (id) => {
  * @query {*} startDate
  * @query {*} endDate
  */
-exports.getAllOrganizationalUnitKpiSetByTime = async (query) => {
+exports.getAllOrganizationalUnitKpiSetByTime = async (organizationalUnitId, startDate, endDate) => {
     let organizationalUnitKpiSets = await OrganizationalUnitKpiSet.find(
         {
-            'organizationalUnit': query.organizationalUnitId,
+            'organizationalUnit': organizationalUnitId,
             'date': {
-                $gte: query.startDate,
-                $lt: query.endDate
+                $gte: startDate,
+                $lt: endDate
             }
         },
         { automaticPoint: 1, employeePoint: 1, approvedPoint: 1, date: 1 }
@@ -101,11 +103,11 @@ exports.getAllOrganizationalUnitKpiSetByTime = async (query) => {
  * @query {*} endDate
  */
 exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (companyId, query) => {
-
+   
     let childOrganizationalUnitKpiSets = [], childrenOrganizationalUnits;
 
-    childrenOrganizationalUnits = await getAllChildrenOrganizational(companyId, query.roleId);
-
+    childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(companyId, query.roleId);
+    
     for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
         childOrganizationalUnitKpiSets.push(await this.getAllOrganizationalUnitKpiSetByTime(childrenOrganizationalUnits[i].id, query.startDate, query.endDate));
         childOrganizationalUnitKpiSets[i].unshift({ 'name': childrenOrganizationalUnits[i].name })

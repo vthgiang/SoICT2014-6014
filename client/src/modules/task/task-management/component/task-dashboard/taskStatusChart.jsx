@@ -80,7 +80,7 @@ class TaskStatusChart extends Component {
         this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.currentMonth, this.state.nextMonth);
         this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.currentMonth, this.state.nextMonth);
         this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.currentMonth, this.state.nextMonth);
-        
+
         this.setState(state => {
             return {
                 ...state,
@@ -136,7 +136,7 @@ class TaskStatusChart extends Component {
             if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks) {
                 /** Sao lưu để sử dụng khi dữ liệu bị thay đổi
                  *  (Lý do: khi đổi role task, muốn sử dụng dữ liệu cũ nhưng trước đó dữ liệu trong kho redux đã bị thay đổi vì service được gọi ở 1 nơi khác)
-                 */ 
+                 */
                 if (this.state.willUpdate) {
                     this.TASK_PROPS = {
                         responsibleTasks: nextProps.tasks.responsibleTasks,
@@ -288,14 +288,14 @@ class TaskStatusChart extends Component {
                 left: 20
             },
 
-            legend: {                               // Ẩn chú thích biểu đồ
+            legend: {                             // Ẩn chú thích biểu đồ
                 show: true
             }
         });
     }
 
     render() {
-        const { translate } = this.props;
+        const { translate, taskOrganizationUnit } = this.props;
 
         let d = new Date(),
             month = '' + (d.getMonth() + 1),
@@ -316,27 +316,29 @@ class TaskStatusChart extends Component {
                             <label>{translate('task.task_management.month')}</label>
                             <DatePicker
                                 id="monthInStatusTask"
-                                dateFormat="month-year"             
-                                value={defaultMonth}                    
+                                dateFormat="month-year"
+                                value={defaultMonth}
                                 onChange={this.handleSelectMonth}
-                                disabled={false}                   
+                                disabled={false}
                             />
                         </div>
                     </section>
 
                     <section className="form-inline">
-                        <div className="form-group">
-                            <label>{translate('task.task_management.role')}</label>
-                            <SelectBox
-                                id={`roleOfStatusTaskSelectBox`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={this.ROLE_SELECTBOX}
-                                multiple={false}
-                                onChange={this.handleSelectRole}
-                                value={this.ROLE_SELECTBOX[0].value}
-                            />
-                        </div>
+                        {!taskOrganizationUnit &&
+                            <div className="form-group">
+                                <label>{translate('task.task_management.role')}</label>
+                                <SelectBox
+                                    id={`roleOfStatusTaskSelectBox`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={this.ROLE_SELECTBOX}
+                                    multiple={false}
+                                    onChange={this.handleSelectRole}
+                                    value={this.ROLE_SELECTBOX[0].value}
+                                />
+                            </div>
+                        }
                         <div className="form-group">
                             <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                         </div>

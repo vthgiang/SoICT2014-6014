@@ -23,12 +23,11 @@ exports.getTaskEvaluations = async (data) => {
     let responsible, accountable;
     let startDate = data.startDate;
     let endDate = data.endDate;
-    let calulator = Number(data.calulator);
-    let filterConditions = data.filterCondition;
 
     let startTime = startDate.split("-");
-    let endTime = endDate.split("-");
     let start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
+
+    let endTime = endDate.split("-");
     let end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
     let filterDate = {};
 
@@ -113,48 +112,12 @@ exports.getTaskEvaluations = async (data) => {
         }
 
     let result = await Task.aggregate(condition);
+    console.log('result', result);
+    data.taskInformations.map(item => {
+        console.log('data', JSON.parse(item));
+    })
 
-    //test eval
-    filterConditions.map((element, index) => {
-        // filterC[index] = element.replace(/p1/g, 4000);
-        console.log(element)
-        if (element.includes("p1") === true) {
-            filterC = element.toString().replace(/p1/g, 4000);
-            let evalP1 = eval(filterC);
-            console.log('filterP1', evalP1);
-        } else
-            if (element.includes("p2") === true) {
-                filterD = element.toString().replace(/p2/g, 3333);
-                let evalP2 = eval(filterD);
-                console.log('filterp2', evalP2);
-            }
-    });
-
-    // tính trung bình cộng
-    let condition2;
-    if (calulator === 0) {
-        condition2 = [
-            { $match: { status: taskStatus } },
-            ...condition,
-            filterDate,
-            { $unwind: "$taskInformations" },
-            {
-                $replaceRoot: { newRoot: { $mergeObjects: ["$taskInformations"] } }
-            },
-            { $match: { type: "Number" } },
-            {
-                $group: {
-                    _id: { _id: "$_id", name: "$name" },
-                    moneyAvg: { $avg: { $sum: "$value" } }
-                }
-
-            },
-        ]
-    }
-
-    let result2 = await Task.aggregate(condition2);
-
-    return { result, result2 };
+    return result;
 
 }
 

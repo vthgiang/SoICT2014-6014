@@ -7,7 +7,7 @@ const { LogInfo, LogError } = require('../../../../logs');
 exports.getOrganizationalUnitKpiSet = async (req, res) => {
     if(req.query.parent){
         getParentOrganizationalUnitKpiSet(req, res);
-    } else if(req.query.startDate && req.query.endDate){
+    } else if(req.query.organizationalUnitId && req.query.startDate && req.query.endDate){
         getAllOrganizationalUnitKpiSetByTime(req, res);
     } else if(req.query.child){
         getAllOrganizationalUnitKpiSetByTimeOfChildUnit(req, res);
@@ -226,7 +226,7 @@ exports.createOrganizationalUnitKpiSet = async (req, res) => {
  */
 getAllOrganizationalUnitKpiSetByTime = async (req, res) => {
     try {
-        var organizationalUnitKpiSets = await KPIUnitService.getAllOrganizationalUnitKpiSetByTime(req.query);
+        var organizationalUnitKpiSets = await KPIUnitService.getAllOrganizationalUnitKpiSetByTime(req.query.organizationalUnitId, req.query.startDate, req.query.endDate);
         LogInfo(req.user.email, ' get all organizational unit kpi set each year ', req.user.company);
         res.status(200).json({
             success: true,

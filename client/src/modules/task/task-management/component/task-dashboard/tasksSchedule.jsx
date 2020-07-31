@@ -173,7 +173,6 @@ class TasksSchedule extends Component {
 
   handleItemClick = async (itemId) => {
     let { tasks } = this.props;
-    let { taskId } = this.state;
     let id = tasks.responsibleTasks[itemId - 1]._id;
     await this.setState(state => {
       return {
@@ -219,6 +218,7 @@ class TasksSchedule extends Component {
     let { tasks, translate } = this.props;
     let task = tasks && tasks.task;
     let today = new Date();
+
     return (
       <React.Fragment>
         <div className="box-body qlcv">
@@ -268,7 +268,9 @@ class TasksSchedule extends Component {
                   const customStyles ={
                     ...styles,
                     backgroundColor: '#d73925',
-                    width: '3px'
+                    width: '3px',
+                    marginLeft:'-4px'
+
                   }
                   return <div style={customStyles}></div>
                 }

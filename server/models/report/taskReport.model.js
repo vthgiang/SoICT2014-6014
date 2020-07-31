@@ -13,13 +13,15 @@ const TaskReportSchema = new Schema({
     taskTemplate: {
         type: Schema.Types.ObjectId,
         ref: TaskTemplate,
+        required: true
     },
     name: {
         type: String,
         required: true
     },
     description: {
-        type: String
+        type: String,
+        required: true
     },
     creator: {
         type: Schema.Types.ObjectId,
@@ -28,18 +30,16 @@ const TaskReportSchema = new Schema({
     responsibleEmployees: [{ //Người thực hiện
         type: Schema.Types.ObjectId,
         ref: User,
-        required: true
     }],
     accountableEmployees: [{// Người phê duyệt
         type: Schema.Types.ObjectId,
         ref: User,
-        required: true
     }],
     status: {// 0: tất cả, 1: Finished, 2: Inprocess.
-        type: String,
+        type: Number,
     },
     frequency: {
-        type: String
+        type: String,
     },
     startDate: {
         type: Date,
@@ -52,7 +52,6 @@ const TaskReportSchema = new Schema({
     configurations: [{
         code: { // Mã thuộc tính công việc dùng trong công thức
             type: String,
-            required: true
         },
         name: { // Tên thuộc tính công việc
             type: String,
@@ -63,7 +62,6 @@ const TaskReportSchema = new Schema({
         },
         type: {
             type: String,
-            required: true,
             enum: ['Text', 'Boolean', 'Date', 'Number', 'SetOfValues'],
         },
         filter: {
