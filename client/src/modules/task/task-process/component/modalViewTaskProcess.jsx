@@ -18,7 +18,7 @@ class ModalViewTaskProcess extends Component {
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
             showInfo: false,
-            selected: 'info',
+            selectedView: 'info',
             info: data.infoTask,
             xmlDiagram: data.xmlDiagram,
         }
@@ -84,7 +84,7 @@ class ModalViewTaskProcess extends Component {
         await this.setState(state => {
             return {
                 ...state,
-                selected: content
+                selectedView: content
             }
         })
     }
@@ -92,7 +92,7 @@ class ModalViewTaskProcess extends Component {
     render() {
         const { translate, role } = this.props;
         const { listOrganizationalUnit } = this.props
-        const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selected } = this.state;
+        const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedView } = this.state;
 
         let listRole = [];
         if (role && role.list.length !== 0) listRole = role.list;
@@ -114,7 +114,7 @@ class ModalViewTaskProcess extends Component {
                                 <li><a href="#process" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
                             </ul>
                             <div className="tab-content">
-                                <div className={selected === "info" ? "active tab-pane" : "tab-pane"} id="info">
+                                <div className={selectedView === "info" ? "active tab-pane" : "tab-pane"} id="info">
 
                                     <div className='row'>
                                         <div className='col-md-6'>
@@ -172,7 +172,7 @@ class ModalViewTaskProcess extends Component {
 
 
                             <div className="tab-content">
-                                <div className={selected === "process" ? "active tab-pane" : "tab-pane"} id="process">
+                                <div className={selectedView === "process" ? "active tab-pane" : "tab-pane"} id="process">
                                     <fieldset className="scheduler-border">
                                         {/* <legend className="scheduler-border">Quy trình công việc</legend> */}
                                         <div className='row'>
