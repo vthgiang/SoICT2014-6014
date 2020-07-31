@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
 import { FormInfoTask } from "./formInfoTask";
-import { DialogModal } from "../../../../common-components";
+import { DialogModal, SelectBox } from "../../../../common-components";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { getStorage } from '../../../../config';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
@@ -55,6 +55,7 @@ class ModalCreateTaskProcess extends Component {
          userId: getStorage("userId"),
          currentRole: getStorage('currentRole'),
          showInfo: false,
+         selectedCreate: 'info',
          info: {},
          save: false
       }
@@ -89,7 +90,6 @@ class ModalCreateTaskProcess extends Component {
             ...state.info[`${state.id}`],
             code: state.id,
             nameTask: value,
-            organizationalUnit: listOrganizationalUnit[0]._id
          }
          return {
             ...state,
@@ -103,15 +103,12 @@ class ModalCreateTaskProcess extends Component {
    }
 
    handleChangeDescription = async (value) => {
-      // handleChangeDescription = async (e) => {
-      // let { value } = e.target;
       let { listOrganizationalUnit } = this.props
       await this.setState(state => {
          state.info[`${state.id}`] = {
             ...state.info[`${state.id}`],
             code: state.id,
             description: value,
-            organizationalUnit: listOrganizationalUnit[0]._id
          }
          return {
             ...state,
@@ -119,8 +116,6 @@ class ModalCreateTaskProcess extends Component {
       })
    }
    handleChangeOrganizationalUnit = async (value) => {
-      // handleChangeDescription = async (e) => {
-      // let { value } = e.target;
       await this.setState(state => {
          state.info[`${state.id}`] = {
             ...state.info[`${state.id}`],
@@ -192,6 +187,14 @@ class ModalCreateTaskProcess extends Component {
       let nameStr = element.type.split(':');
       this.setState(state => {
          if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process' && element.type !== 'bpmn:StartEvent' && element.type !== 'bpmn:EndEvent' && element.type !== 'bpmn:SequenceFlow') {
+
+            if (!state.info[`${element.businessObject.id}`] ||
+               (state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
+               state.info[`${element.businessObject.id}`] = {
+                  ...state.info[`${element.businessObject.id}`],
+                  organizationalUnit: this.props.listOrganizationalUnit[0]?._id,
+               }
+            }
             return {
                ...state,
                showInfo: true,
@@ -205,7 +208,7 @@ class ModalCreateTaskProcess extends Component {
             return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
          }
 
-      })
+      }, () => console.log(this.state))
    }
 
    deleteElements = (event) => {
@@ -256,8 +259,11 @@ class ModalCreateTaskProcess extends Component {
          return {
             ...state,
             processName: null,
-            processDescription: null,
+            processDescription: '',
+            viewer: undefined,
+            manager: undefined,
             save: true,
+            selectedCreate: 'info',
             showInfo: false
          }
       });
@@ -339,10 +345,49 @@ class ModalCreateTaskProcess extends Component {
          img.src = url;
       });
    }
+
+   // Các hàm xử lý sự kiện của form 
+   handleChangeContent = async (content) => {
+      await this.setState(state => {
+         return {
+            ...state,
+            selectedCreate: content
+         }
+      })
+   }
+
+
+   handleChangeViewer = async (value) => {
+      await this.setState(state => {
+
+         return {
+            ...state,
+            viewer: value,
+         }
+      })
+      console.log('state', this.state);
+   }
+
+   handleChangeManager = async (value) => {
+      await this.setState(state => {
+
+         return {
+            ...state,
+            manager: value,
+         }
+      })
+      console.log('state', this.state);
+   }
+
    render() {
-      const { translate, department } = this.props;
-      const { id, info, showInfo, processDescription, processName } = this.state;
-      const { listOrganizationalUnit } = this.props
+      const { translate, department, role } = this.props;
+      const { id, info, showInfo, processDescription, processName, viewer, manager, selectedCreate } = this.state;
+      const { listOrganizationalUnit } = this.props;
+
+      let listRole = [];
+      if (role && role.list.length !== 0) listRole = role.list;
+      let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
+         .map(item => { return { text: item.name, value: item._id } });
       return (
          <React.Fragment>
             <DialogModal
@@ -357,62 +402,106 @@ class ModalCreateTaskProcess extends Component {
             >
                <form id="form-create-process-task">
                   <div>
-                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">Thông tin quy trình</legend>
-                        <div className='row'>
-                           <div className="form-group">
-                              <label>Tên quy trình</label>
-                              <input type="text"
-                                 value={processName}
-                                 className="form-control" placeholder="Mô tả công việc"
-                                 onChange={this.handleChangeBpmnName}
-                              />
-                           </div>
-                           <div className="form-group">
-                              <label>Mô tả quy trình</label>
-                              <input type="text"
-                                 value={processDescription}
-                                 className="form-control" placeholder="Mô tả công việc"
-                                 onChange={this.handleChangeBpmnDescription}
-                              />
-                           </div>
-                        </div>
-                     </fieldset>
-                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">Quy trình công việc</legend>
-                        <div className='row'>
-                           <div id={this.generateId} className={this.state.showInfo ? 'col-md-8' : 'col-md-12'}></div>
-                           <div className={this.state.showInfo ? 'col-md-4' : undefined}>
-
-                              {
-                                 (showInfo) &&
-                                 <div>
-                                    <div>
-                                       <h1>Option {this.state.name}</h1>
+                     <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
+                        <ul className="nav nav-tabs">
+                           <li className="active"><a href="#info" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
+                           <li><a href="#process" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
+                        </ul>
+                        <div className="tab-content">
+                           <div className={selectedCreate === "info" ? "active tab-pane" : "tab-pane"} id="info">
+                              <div className='row'>
+                                 <div className='col-md-6'>
+                                    <div className="form-group">
+                                       <label>Tên quy trình</label>
+                                       <input type="text"
+                                          value={processName}
+                                          className="form-control" placeholder="Mô tả công việc"
+                                          onChange={this.handleChangeBpmnName}
+                                       />
                                     </div>
-                                    <FormInfoTask
-                                       listOrganizationalUnit={listOrganizationalUnit}
-                                       action='create'
-                                       id={id}
-                                       info={(info && info[`${id}`]) && info[`${id}`]}
-                                       handleChangeName={this.handleChangeName}
-                                       handleChangeDescription={this.handleChangeDescription}
-                                       handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
-                                       handleChangeResponsible={this.handleChangeResponsible}
-                                       handleChangeAccountable={this.handleChangeAccountable}
-                                       save={this.save}
-                                    />
+                                    <div className="form-group">
+                                       <label htmlFor="" >Người được phép xem</label>
+                                       {
+                                          <SelectBox
+                                             id={`select-viewer-employee-create`}
+                                             className="form-control select2"
+                                             style={{ width: "100%" }}
+                                             items={listItem}
+                                             onChange={this.handleChangeViewer}
+                                             multiple={true}
+                                             value={viewer}
+                                          />
+                                       }
+                                    </div>
+                                    <div className="form-group">
+                                       <label htmlFor="" >Người quản lý quy trình</label>
+                                       {
+                                          <SelectBox
+                                             id={`select-manager-employee-create`}
+                                             className="form-control select2"
+                                             style={{ width: "100%" }}
+                                             items={listItem}
+                                             onChange={this.handleChangeManager}
+                                             multiple={true}
+                                             value={manager}
+                                          />
+                                       }
+                                    </div>
                                  </div>
-                              }
+                                 <div className='col-md-6'>
+                                    <div className="form-group">
+                                       <label>Mô tả quy trình</label>
+                                       <textarea type="text" rows={8}
+                                          value={processDescription}
+                                          className="form-control" placeholder="Mô tả công việc"
+                                          onChange={this.handleChangeBpmnDescription}
+                                       />
+                                    </div>
+                                 </div>
+                              </div>
                            </div>
                         </div>
-                        <div>
-                           <button onClick={this.exportDiagram}>Export XML</button>
-                           <button onClick={this.downloadAsSVG}>Save SVG</button>
-                           <button onClick={this.downloadAsImage}>Save Image</button>
-                           <button onClick={this.downloadAsBpmn}>Download BPMN</button>
+                        <div className="tab-content">
+                           <div className={selectedCreate === "process" ? "active tab-pane" : "tab-pane"} id="process">
+                              <fieldset className="scheduler-border">
+                                 {/* <legend className="scheduler-border">Quy trình công việc</legend> */}
+                                 <div className='row'>
+                                    <div id={this.generateId} className={this.state.showInfo ? 'col-md-8' : 'col-md-12'}></div>
+                                    <div className={this.state.showInfo ? 'col-md-4' : undefined}>
+
+                                       {
+                                          (showInfo) &&
+                                          <div>
+                                             <div>
+                                                <h1>Option {this.state.name}</h1>
+                                             </div>
+                                             <FormInfoTask
+                                                listOrganizationalUnit={listOrganizationalUnit}
+                                                action='create'
+                                                id={id}
+                                                info={(info && info[`${id}`]) && info[`${id}`]}
+                                                handleChangeName={this.handleChangeName}
+                                                handleChangeDescription={this.handleChangeDescription}
+                                                handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
+                                                handleChangeResponsible={this.handleChangeResponsible}
+                                                handleChangeAccountable={this.handleChangeAccountable}
+                                                save={this.save}
+                                             />
+                                          </div>
+                                       }
+                                    </div>
+                                 </div>
+                                 <div>
+                                    <button onClick={this.exportDiagram}>Export XML</button>
+                                    <button onClick={this.downloadAsSVG}>Save SVG</button>
+                                    <button onClick={this.downloadAsImage}>Save Image</button>
+                                    <button onClick={this.downloadAsBpmn}>Download BPMN</button>
+                                 </div>
+                              </fieldset>
+                           </div>
                         </div>
-                     </fieldset>
+
+                     </div>
 
                   </div>
                </form>
@@ -424,8 +513,8 @@ class ModalCreateTaskProcess extends Component {
 
 
 function mapState(state) {
-   const { user, auth, department } = state;
-   return { user, auth, department };
+   const { user, auth, department, role } = state;
+   return { user, auth, department, role };
 }
 
 const actionCreators = {
