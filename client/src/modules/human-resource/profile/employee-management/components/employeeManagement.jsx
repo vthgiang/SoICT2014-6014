@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { EmployeeManagerActions } from '../redux/actions';
-import { EmployeeCreateForm, EmployeeDetailForm, EmployeeEditFrom, EmployeeImportForm } from './combinedContent';
 import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti } from '../../../../../common-components';
+
+import { EmployeeCreateForm, EmployeeDetailForm, EmployeeEditFrom, EmployeeImportForm } from './combinedContent';
+
+import { EmployeeManagerActions } from '../redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 
 class EmployeeManagement extends Component {

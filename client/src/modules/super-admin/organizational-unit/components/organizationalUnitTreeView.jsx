@@ -25,8 +25,8 @@ class DepartmentTreeView extends Component {
     }
 
     render() {
-        const { tree } = this.props.department;
         const { translate, department } = this.props;
+        const { tree } = this.props.department;
         const { currentRow } = this.state;
 
         return (

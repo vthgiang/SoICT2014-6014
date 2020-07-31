@@ -148,12 +148,12 @@ class ConFigImportFile extends Component {
                                         </tr>
                                     </tbody>
                                 </table>
-
                             </div>
+                            {scrollTable && <SlimScroll outerComponentId={`croll-table-${id}`} innerComponentId={`importConfig-${id}`} innerComponentWidth={scrollTableWidth} activate={true} />}
                         </div>
                     </div>
                 </div>
-                {scrollTable && <SlimScroll outerComponentId={`croll-table-${id}`} innerComponentId={`importConfig-${id}`} innerComponentWidth={scrollTableWidth} activate={true} />}
+
             </React.Fragment>
         )
     }
