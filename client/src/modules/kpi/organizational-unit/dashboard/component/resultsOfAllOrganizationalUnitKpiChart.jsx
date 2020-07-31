@@ -134,8 +134,8 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
     /** Search data */
     handleSearchData = async () => {
-        var startDate = new Date(this.INFO_SEARCH.startDate);
-        var endDate = new Date(this.INFO_SEARCH.endDate);
+        let startDate = new Date(this.INFO_SEARCH.startDate);
+        let endDate = new Date(this.INFO_SEARCH.endDate);
         const {translate} = this.props;
         if (startDate.getTime() >= endDate.getTime()) {
             Swal.fire({
@@ -156,7 +156,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     }
 
     filterAndSetDataPoint = (arrayPoint) => {
-        var dateAxisX = [], point = [];
+        let dateAxisX = [], point = [];
 
         dateAxisX.push('date-' + arrayPoint[0].name);
         point.push(arrayPoint[0].name);
@@ -172,7 +172,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
             } else if(this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE) {
                 point.push(arrayPoint[i].employeePoint);
             } else if(this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED) {
-                point.push(arrayPoint[i].automaticPoint);
+                point.push(arrayPoint[i].approvedPoint);
             }
         }
 
@@ -184,7 +184,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
     setDataMultiLineChart = () => {
         const { dashboardOrganizationalUnitKpi } = this.props;
-        var organizationalUnitKpiSetsOfChildUnit, point = [];
+        let organizationalUnitKpiSetsOfChildUnit, point = [];
 
         if(dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsOfChildUnit) {
             organizationalUnitKpiSetsOfChildUnit = dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsOfChildUnit;
@@ -209,7 +209,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     multiLineChart = () => {
         this.removePreviosChart();
         
-        var dataChart, xs = {};
+        let dataChart, xs = {};
         const {translate}= this.props;
         dataChart = this.setDataMultiLineChart();
         

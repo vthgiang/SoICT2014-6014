@@ -70,7 +70,6 @@ class TaskProcessManagement extends Component {
     const { translate, taskProcess,department } = this.props
     const { showModalCreateProcess, currentRow } = this.state
     let listDiagram = taskProcess && taskProcess.xmlDiagram;
-    console.log(department)
     let listOrganizationalUnit = department?.list
     return (
       <div className="box">

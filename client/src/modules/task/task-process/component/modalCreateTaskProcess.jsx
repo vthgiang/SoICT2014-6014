@@ -122,7 +122,6 @@ class ModalCreateTaskProcess extends Component {
             ...state,
          }
       })
-      console.log(value)
    }
    handleChangeResponsible = async (value) => {
       // let { value } = e.target;
@@ -136,7 +135,6 @@ class ModalCreateTaskProcess extends Component {
             ...state,
          }
       })
-      console.log(this.state.info);
    }
 
    handleChangeAccountable = async (value) => {
@@ -150,7 +148,6 @@ class ModalCreateTaskProcess extends Component {
             ...state,
          }
       })
-      console.log(this.state.info);
    }
    shouldComponentUpdate(nextProps, nextState) {
       if(nextState.save === true) {
@@ -180,16 +177,27 @@ class ModalCreateTaskProcess extends Component {
    }
 
    interactPopup = (event) => {
-      var element = event.element;
+      let element = event.element;
+      let { department } = this.props
       let nameStr = element.type.split(':');
       this.setState(state => {
          if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process' && element.type !== 'bpmn:StartEvent' && element.type !== 'bpmn:EndEvent') {
-            return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}`, }
+            // state.info[`${element.businessObject.id}`] = {
+            //    ...state.info[`${element.businessObject.id}`],
+            //    organizationalUnit: department.list[0]._id
+            // }
+            return { ...state, 
+               showInfo: true, 
+               type: element.type, 
+               name: nameStr[1], 
+               taskName: element.businessObject.name, 
+               id: `${element.businessObject.id}`,
+            }
          }
          else {
             return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
          }
-
+        
       })
    }
 
@@ -205,6 +213,7 @@ class ModalCreateTaskProcess extends Component {
       var element = event.element;
    }
    save = async () => {
+      let { department } = this.props
       let xmlStr;
       this.modeler.saveXML({ format: true }, function (err, xml) {
          xmlStr = xml;
@@ -214,13 +223,18 @@ class ModalCreateTaskProcess extends Component {
             ...state,
             xmlDiagram: xmlStr,
          }
-      },()=>console.log(this.state))
+      })
       let data = {
          nameProcess: this.state.processName,
          description: this.state.processDescription,
          creator: this.state.userId,
          xmlDiagram: this.state.xmlDiagram,
          infoTask: this.state.info
+      }
+      for (const i in data.infoTask) {
+         if(!data.infoTask[i].organizationalUnit) {
+            data.infoTask[i].organizationalUnit = department.list[0]._id
+         }
       }
       await this.props.createXmlDiagram(data)
       this.setState(state => {
@@ -314,7 +328,6 @@ class ModalCreateTaskProcess extends Component {
       const { translate, department} = this.props;
       const { id, info, showInfo, processDescription, processName } = this.state;
       const { listOrganizationalUnit } = this.props
-      console.log(listOrganizationalUnit)
       return (
          <React.Fragment>
             <DialogModal

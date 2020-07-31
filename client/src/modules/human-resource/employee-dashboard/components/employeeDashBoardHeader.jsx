@@ -117,7 +117,7 @@ class EmployeeDashBoardHeader extends Component {
                                 <span className="info-box-number">
                                     {employeesManager.totalEmployeeOfOrganizationalUnits === 0 ? employeesManager.totalAllEmployee : employeesManager.totalEmployeeOfOrganizationalUnits}
                                 </span>
-                                <a href={`/hr-list-employee?organizationalUnits=${organizationalUnits}`} >Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
+                                <a href={`/hr-list-employee?organizationalUnits=${organizationalUnits}`} target="_blank" >Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -128,7 +128,7 @@ class EmployeeDashBoardHeader extends Component {
                             <div className="info-box-content" >
                                 <span className="info-box-text">Số khen thưởng</span>
                                 <span className="info-box-number">{discipline.totalListCommendation}/{discipline.totalListCommendationOfYear}</span>
-                                <a href={`/hr-discipline?page=commendation?organizationalUnits=${organizationalUnits}?month=${month}`} >Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
+                                <a href={`/hr-discipline?page=commendation?organizationalUnits=${organizationalUnits}?month=${month}`} target="_blank" >Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -139,7 +139,7 @@ class EmployeeDashBoardHeader extends Component {
                             <div className="info-box-content" style={{ paddingBottom: 0 }}>
                                 <span className="info-box-text">Số kỷ luật</span>
                                 <span className="info-box-number">{discipline.totalListDiscipline}/{discipline.totalListDisciplineOfYear}</span>
-                                <a href={`/hr-discipline?page=discipline?organizationalUnits=${organizationalUnits}?month=${month}`} >Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
+                                <a href={`/hr-discipline?page=discipline?organizationalUnits=${organizationalUnits}?month=${month}`} target="_blank" >Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
                     </div>
@@ -149,7 +149,7 @@ class EmployeeDashBoardHeader extends Component {
                             <div className="info-box-content" style={{ paddingBottom: 0 }}>
                                 <span className="info-box-text">Số nghỉ phép</span>
                                 <span className="info-box-number">{annualLeave.totalList}/{annualLeave.totalListAnnualLeavesOfYear}</span>
-                                <a href={`hr-annual-leave?organizationalUnits=${organizationalUnits}?month=${month}`} >Xem thêm <i className="fa  fa-arrow-circle-o-right"></i></a>
+                                <a href={`hr-annual-leave?organizationalUnits=${organizationalUnits}?month=${month}`} target="_blank" >Xem thêm <i className="fa  fa-arrow-circle-o-right"></i></a>
                             </div>
                         </div>
                     </div>

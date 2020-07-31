@@ -6,12 +6,14 @@ export const createKpiSetActions = {
     editEmployeeKpiSet,
     updateEmployeeKpiSetStatus,
     deleteEmployeeKpiSet,
+    getAllEmployeeKpiSetInOrganizationalUnitsByMonth,
+    
     deleteEmployeeKpi,
-
     createEmployeeKpi,
     editEmployeeKpi,
     createEmployeeKpiSet,
     approveEmployeeKpiSet,
+
     createComment,
     editComment,
     deleteComment,
@@ -62,6 +64,28 @@ function getAllEmployeeKpiSetByMonth(userId, startDate, endDate) {
             })
     }
 }
+
+/** Lấy tát cả tập KPI của tất cả nhân viên trong 1 mảng đơn vị */
+function getAllEmployeeKpiSetInOrganizationalUnitsByMonth(organizationalUnitIds, startDate, endDate) {
+    return dispatch => {
+        dispatch({ type: createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNITS_BY_MONTH_REQUEST });
+
+        createKpiSetService.getAllEmployeeKpiSetInOrganizationalUnitsByMonth(organizationalUnitIds, startDate, endDate)
+            .then(res => {
+                dispatch({
+                    type: createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNITS_BY_MONTH_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNITS_BY_MONTH_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
+
 
 // Chỉnh sửa thông tin chung của KPI cá nhân
 function editEmployeeKpiSet(id, kpipersonal) {

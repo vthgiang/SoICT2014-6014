@@ -97,7 +97,25 @@ export function createEmployeeKpiSet(state = {}, action) {
         error: action.payload,
         isLoading: false
       };
-      case  createKpiSetConstants.DELETE_EMPLOYEE_KPI_REQUEST:
+    case createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNITS_BY_MONTH_REQUEST:
+      return {
+        loading: true,
+        isLoading: false,
+        employeeKpiSetsInOrganizationalUnitByMonth: null
+      };
+    case createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNITS_BY_MONTH_SUCCESS:
+      return {
+        loading: false,
+        isLoading: false,
+        employeeKpiSetsInOrganizationalUnitByMonth: action.payload
+      }
+    case createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNITS_BY_MONTH_FAILURE:
+      return {
+        loading: false,
+        isLoading: false,
+        error: action.payload
+      }
+    case createKpiSetConstants.DELETE_EMPLOYEE_KPI_REQUEST:
       return {
         ...state,
         currentKPI: {

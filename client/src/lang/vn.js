@@ -665,6 +665,7 @@ export default {
             task: "Chi tiết công việc",
             task_management: 'Danh sách công việc',
             task_management_dashboard: 'Dashboard công việc',
+            task_organization_management_dashboard: 'Dashboard công việc của đơn vị',
             task_management_process: "Danh sách quy trình",
 
             //*******START */
