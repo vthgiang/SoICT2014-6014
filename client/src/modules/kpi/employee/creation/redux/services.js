@@ -11,12 +11,14 @@ export const createKpiSetService = {
     editEmployeeKpiSet,
     updateEmployeeKpiSetStatus,
     deleteEmployeeKpiSet,
+    getAllEmployeeKpiSetInOrganizationalUnitsByMonth,
+    
     deleteEmployeeKpi,
-
     createEmployeeKpi,
     editEmployeeKpi,
     createEmployeeKpiSet,
     approveEmployeeKpiSet,
+
     createComment,
     editComment,
     deleteComment,
@@ -46,11 +48,28 @@ function getAllEmployeeKpiSetByMonth(userId, startDate, endDate) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets`,
         method: 'GET',
-        params: { userId: userId, startDate: startDate, endDate: endDate }
+        params: {
+            userId: userId,
+            startDate: startDate,
+            endDate: endDate
+        }
     }, false, false)
 }
 
-/** Khởi tạo KPI cá nhân */
+/** Lấy tát cả tập KPI của tất cả nhân viên trong 1 mảng đơn vị */
+function getAllEmployeeKpiSetInOrganizationalUnitsByMonth(organizationalUnitIds, startDate, endDate) {    
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets`,
+        method: 'GET',
+        params: {
+            organizationalUnitIds: organizationalUnitIds,
+            startDate: startDate,
+            endDate: endDate
+        }
+    }, false, false)
+}
+
+/** Khởi tạo KPI cá nhân */  
 function createEmployeeKpiSet(newKPI) {
     var id = getStorage("userId");
     newKPI = { ...newKPI, creator: id };

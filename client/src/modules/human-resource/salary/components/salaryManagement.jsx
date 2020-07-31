@@ -192,7 +192,7 @@ class SalaryManagement extends Component {
         }
 
         let columns = otherSalary.map((x, index) => {
-            return { key: `bonus${index}`, value: x }
+            return { key: `bonus${index}`, value: x, type: "Number" }
         })
         let exportData = {
             fileName: "Bảng theo dõi lương thưởng",
@@ -212,9 +212,9 @@ class SalaryManagement extends Component {
                                 { key: "gender", value: "Giới tính" },
                                 { key: "birthdate", value: "Ngày sinh" },
                                 { key: "status", value: "Tình trạng lao động" },
-                                { key: "mainSalary", value: "Tiền lương chính" },
+                                { key: "mainSalary", value: "Tiền lương chính", type: "Number" },
                                 ...columns,
-                                { key: "total", value: "Tổng lương" },
+                                { key: "total", value: "Tổng lương", type: "Number" },
                             ],
                             data: data
                         }

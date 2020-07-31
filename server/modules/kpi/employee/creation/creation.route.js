@@ -3,7 +3,13 @@ const router = express.Router();
 const EmployeeKpiSetController = require("./creation.controller");
 const { auth, uploadFile } = require('../../../../middleware/index');
 
-// Lấy tập KPI cá nhân hiện tại
+/** 
+ * Lấy tập KPI cá hiện hiện tại
+ * Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước
+ * Lấy tất cả các tập KPI của tất cả nhân viên trong mảng đơn vị cho trước theo thời gian
+ * Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
+ * Lấy tất cả tập kpi cá nhân của một nhân viên có trạng thái đã kết thúc
+ */
 router.get('/employee-kpi-sets', auth, EmployeeKpiSetController.getEmployeeKpiSet);
 
 // Khởi tạo KPI cá nhân
@@ -21,12 +27,12 @@ router.post('/employee-kpis', auth, EmployeeKpiSetController.createEmployeeKpi);
 // Xóa 1 mục tiêu KPI cá nhân
 router.delete('/employee-kpis/:id', auth, EmployeeKpiSetController.deleteEmployeeKpi);
 
-//tạo comment
+//comments
 router.post('/creation/employee-kpi-sets/:kpiId/comments', auth, uploadFile([{ name: 'files', path: '/files/kpisets' }], 'array'), EmployeeKpiSetController.createComment)
 router.patch('/employee-kpi-sets/:kpiId/comments/:commentId', auth, EmployeeKpiSetController.editComment)
 router.delete('/employee-kpi-sets/:kpiId/comments/:commentId', auth, EmployeeKpiSetController.deleteComment)
 
-//tao comment cua comment
+//child comments
 router.post('/employee-kpi-sets/:kpiId/comments/:commentId/child-comments', auth, uploadFile([{ name: 'files', path: '/files/kpisets' }], 'array'), EmployeeKpiSetController.createCommentOfComment)
 router.patch('/employee-kpi-sets/:kpiId/comments/:commentId/child-comments/childCommentId', auth, EmployeeKpiSetController.editCommentOfComment)
 router.delete('/employee-kpi-sets/:kpiId/comments/:commentId/child-comments/childCommentId', auth, EmployeeKpiSetController.deleteCommentOfComment)

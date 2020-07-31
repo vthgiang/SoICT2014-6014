@@ -76,19 +76,23 @@ class DomainOfTaskResultsChart extends Component {
     }
 
     componentDidMount = () => {
-        this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth, null, null);
-        this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth);
-        this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth);
-        this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth);
-        this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth);
+        let {taskOrganizationUnit} = this.props;
+        if(!taskOrganizationUnit){
+            this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth, null, null);
+            this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth);
+            this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth);
+            this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth);
+            this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth);
+            
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.QUERYING,
+                    willUpdate: true       // Khi true sẽ cập nhật dữ liệu vào props từ redux
+                };
+            }); 
+        }
         
-        this.setState(state => {
-            return {
-                ...state,
-                dataStatus: this.DATA_STATUS.QUERYING,
-                willUpdate: true       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-            };
-        });
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
@@ -369,8 +373,8 @@ class DomainOfTaskResultsChart extends Component {
     }
 
     render() {
-        const { translate } = this.props;
-
+        const { translate, taskOrganizationUnit } = this.props;
+        
         let d = new Date(),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -409,7 +413,8 @@ class DomainOfTaskResultsChart extends Component {
                 </section>
 
                 <section className="form-inline">
-                    <div className="col-sm-6 col-xs-12 form-group">
+                    { !taskOrganizationUnit && 
+                        <div className="col-sm-6 col-xs-12 form-group">
                         <label>{translate('task.task_management.role')}</label>
                         <SelectBox
                             id={`roleOfResultsTaskSelectBox`}
@@ -420,7 +425,8 @@ class DomainOfTaskResultsChart extends Component {
                             onChange={this.handleSelectRole}
                             value={this.ROLE_SELECTBOX[0].value}
                         />
-                    </div>
+                        </div>
+                    }
                     <div className="col-sm-6 col-xs-12 form-group">
                         <label></label>
                         <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>

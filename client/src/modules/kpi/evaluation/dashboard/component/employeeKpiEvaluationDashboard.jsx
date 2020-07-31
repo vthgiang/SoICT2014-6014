@@ -46,6 +46,8 @@ class EmployeeKpiEvaluationDashboard extends Component {
             numberOfExcellentEmployees: 5,
             ids: null,
             editing: false,
+
+            organizationalUnitIds: null
         };
     }
 
@@ -78,7 +80,8 @@ class EmployeeKpiEvaluationDashboard extends Component {
                     infosearch: {
                         ...state.infosearch,
                         userId: null
-                    }
+                    },
+                    organizationalUnitIds: null
                 }
             });
             return false;
@@ -148,7 +151,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
     }
 
     handleSelectOrganizationalUnit = (value) => {
-        this.setState(state => {
+        this.setState((state) => {
             return {
                 ...state,
                 ids: value
@@ -158,7 +161,6 @@ class EmployeeKpiEvaluationDashboard extends Component {
 
     handleUpdateData = () => {
         let { ids } = this.state;
-
         if (ids.length > 0) {
             this.props.getAllEmployeeKpiSetOfUnitByIds(ids);
             this.props.getAllEmployeeOfUnitByIds(ids);
@@ -171,7 +173,8 @@ class EmployeeKpiEvaluationDashboard extends Component {
                     infosearch: {
                         ...state.infosearch,
                         userId: null
-                    }
+                    },
+                    organizationalUnitIds: null
                 }
             });
         }
@@ -227,20 +230,24 @@ class EmployeeKpiEvaluationDashboard extends Component {
     render() {
         const { user, kpimembers } = this.props;
         const { translate } = this.props;
-        let { dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids } = this.state;
-        
-        let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee, userdepartments, kpimember;
+        let { dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids, organizationalUnitIds } = this.state;
+
+        let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee;
+        let queue = [], childrenOrganizationalUnit = [];
+        let userdepartments, unitMembers;
+        let listkpi, kpiApproved, kpimember;
+
         let currentDate = new Date();
         let currentYear = currentDate.getFullYear();
         let currentMonth = currentDate.getMonth();
 
+        
         if (this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets) {
             employeeKpiSets = this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
             lastMonthEmployeeKpiSets = employeeKpiSets.filter(item => this.formatDate(item.date) == dateOfExcellentEmployees);
             lastMonthEmployeeKpiSets.sort((a, b) => b.approvedPoint - a.approvedPoint);
             lastMonthEmployeeKpiSets = lastMonthEmployeeKpiSets.slice(0, numberOfExcellentEmployees);
         }
-
         if (employeeKpiSets) {
             currentMonthEmployeeKpiSets = employeeKpiSets.filter(item => this.formatDate(item.date) == this.formatDate(new Date(currentYear, currentMonth, 1)));
             totalKpi = currentMonthEmployeeKpiSets.length;
@@ -251,13 +258,11 @@ class EmployeeKpiEvaluationDashboard extends Component {
             activatedKpi = currentMonthEmployeeKpiSets.filter(item => item.status == 2);
             activatedKpi = activatedKpi.length;
         }
-
         if (this.props.dashboardEvaluationEmployeeKpiSet.employees) {
             numberOfEmployee = this.props.dashboardEvaluationEmployeeKpiSet.employees.length;
         }
 
-        let queue = [];
-        let childrenOrganizationalUnit = [];
+
         if (this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
             let currentOrganizationalUnit = this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
 
@@ -275,8 +280,8 @@ class EmployeeKpiEvaluationDashboard extends Component {
             }
         }
 
+
         if (user.userdepartments) userdepartments = user.userdepartments;
-        let unitMembers;
         if (userdepartments) {
             if (!Array.isArray(userdepartments)) {
                 userdepartments = [userdepartments]
@@ -291,15 +296,17 @@ class EmployeeKpiEvaluationDashboard extends Component {
                         infosearch: {
                             ...state.infosearch,
                             userId: unitMembers[0].value[2].value
-                        }
+                        },
+                        organizationalUnitIds: this.state.ids
                     }
                 })
             }
         }
 
-        if (kpimembers.kpimembers) kpimember = kpimembers.kpimembers;
-        let listkpi;
-        let kpiApproved;
+
+        if (kpimembers.kpimembers) {
+            kpimember = kpimembers.kpimembers;
+        }
         if (kpimembers.kpimembers) {
             listkpi = kpimembers.kpimembers;
             kpiApproved = listkpi.filter(item => item.status === 3);
@@ -445,11 +452,13 @@ class EmployeeKpiEvaluationDashboard extends Component {
                             <div className="box-header with-border">
                                 <h3 className="box-title">{translate('kpi.evaluation.dashboard.statistics_chart_title')}</h3>
                                 <div className="box-tools pull-right">
-                                    <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" />
+                                    <button type="button" className="btn btn-box-tool" data-widget="collapse" data-target="#statisticsOfEmployeeKpiSetChart"><i className="fa fa-minus" />
                                     </button>
                                 </div>
                             </div>
-                            <div className="box-body qlcv">
+                            {/* /.box-header */}
+
+                            <div className="box-body qlcv" id="statisticsOfEmployeeKpiSetChart">
                                 <div className="form-inline">
                                     <div className="col-sm-6 col-xs-12 form-group" >
                                         <label>{translate('kpi.evaluation.employee_evaluation.from')}</label>
@@ -512,13 +521,13 @@ class EmployeeKpiEvaluationDashboard extends Component {
                         <div className="box">
                             <div className="box-header with-border">
                                 <h3 className="box-title">{translate('kpi.evaluation.dashboard.result_kpi_titile')}</h3>
-                                <div className="box-tools pull-right">
-                                    <button type="button" className="btn btn-box-tool" data-widget="collapse"><i className="fa fa-minus" />
-                                    </button>
-                                </div>
                             </div>
+                            {/* /.box-header */}
+
                             <div className="box-body qlcv">
-                                <ResultsOfAllEmployeeKpiSetChart />
+                                <ResultsOfAllEmployeeKpiSetChart
+                                    organizationalUnitIds={organizationalUnitIds}
+                                />
                             </div>
                         </div>
                     </div>

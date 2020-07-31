@@ -11,6 +11,7 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
 import { TaskProcessActions } from "../redux/actions";
+import { DepartmentActions } from "../../../super-admin/organizational-unit/redux/actions";
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -21,6 +22,7 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
    delete entries['create.data-object'];
    delete entries['create.group'];
    delete entries['create.participant-expanded'];
+   delete entries['create.intermediate-event'];
    return entries;
 }
 const initialDiagram =
@@ -43,7 +45,7 @@ const initialDiagram =
 '</bpmndi:BPMNDiagram>' +
 '</bpmn:definitions>';
 
-class ModalCreateProcessTask extends Component {
+class ModalCreateTaskProcess extends Component {
 
    constructor() {
       super();
@@ -107,7 +109,20 @@ class ModalCreateProcessTask extends Component {
          }
       })
    }
-
+   handleChangeOrganizationalUnit = async (value) => {
+      // handleChangeDescription = async (e) => {
+      // let { value } = e.target;
+      await this.setState(state => {
+         state.info[`${state.id}`] = {
+            ...state.info[`${state.id}`],
+            code: state.id,
+            organizationalUnit: value,
+         }
+         return {
+            ...state,
+         }
+      })
+   }
    handleChangeResponsible = async (value) => {
       // let { value } = e.target;
       await this.setState(state => {
@@ -120,7 +135,6 @@ class ModalCreateProcessTask extends Component {
             ...state,
          }
       })
-      console.log(this.state.info);
    }
 
    handleChangeAccountable = async (value) => {
@@ -134,10 +148,10 @@ class ModalCreateProcessTask extends Component {
             ...state,
          }
       })
-      console.log(this.state.info);
    }
    shouldComponentUpdate(nextProps, nextState) {
       if(nextState.save === true) {
+         this.props.getAllDepartments()
          this.modeler.importXML(this.initialDiagram);
          this.setState({
             save: false,
@@ -147,17 +161,8 @@ class ModalCreateProcessTask extends Component {
       return true
    }
    componentDidMount() {
-      this.props.getDepartment();
-      let { user } = this.props;
-      let defaultUnit = user && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.find(item =>
-         item.dean === this.state.currentRole
-         || item.viceDean === this.state.currentRole
-         || item.employee === this.state.currentRole);
-      if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) { // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
-         defaultUnit = user.organizationalUnitsOfUser[0]
-      }
-      this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
 
+      this.props.getAllDepartments();
       this.modeler.attachTo('#' + this.generateId);
       this.modeler.importXML(this.initialDiagram);
       var eventBus = this.modeler.get('eventBus');
@@ -172,16 +177,27 @@ class ModalCreateProcessTask extends Component {
    }
 
    interactPopup = (event) => {
-      var element = event.element;
+      let element = event.element;
+      let { department } = this.props
       let nameStr = element.type.split(':');
       this.setState(state => {
-         if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process') {
-            return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}`, }
+         if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process' && element.type !== 'bpmn:StartEvent' && element.type !== 'bpmn:EndEvent') {
+            // state.info[`${element.businessObject.id}`] = {
+            //    ...state.info[`${element.businessObject.id}`],
+            //    organizationalUnit: department.list[0]._id
+            // }
+            return { ...state, 
+               showInfo: true, 
+               type: element.type, 
+               name: nameStr[1], 
+               taskName: element.businessObject.name, 
+               id: `${element.businessObject.id}`,
+            }
          }
          else {
             return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
          }
-
+        
       })
    }
 
@@ -197,6 +213,7 @@ class ModalCreateProcessTask extends Component {
       var element = event.element;
    }
    save = async () => {
+      let { department } = this.props
       let xmlStr;
       this.modeler.saveXML({ format: true }, function (err, xml) {
          xmlStr = xml;
@@ -206,13 +223,18 @@ class ModalCreateProcessTask extends Component {
             ...state,
             xmlDiagram: xmlStr,
          }
-      },()=>console.log(this.state))
+      })
       let data = {
          nameProcess: this.state.processName,
          description: this.state.processDescription,
          creator: this.state.userId,
          xmlDiagram: this.state.xmlDiagram,
          infoTask: this.state.info
+      }
+      for (const i in data.infoTask) {
+         if(!data.infoTask[i].organizationalUnit) {
+            data.infoTask[i].organizationalUnit = department.list[0]._id
+         }
       }
       await this.props.createXmlDiagram(data)
       this.setState(state => {
@@ -303,8 +325,9 @@ class ModalCreateProcessTask extends Component {
       });
    }
    render() {
-      const { translate } = this.props;
+      const { translate, department} = this.props;
       const { id, info, showInfo, processDescription, processName } = this.state;
+      const { listOrganizationalUnit } = this.props
       return (
          <React.Fragment>
             <DialogModal
@@ -353,11 +376,13 @@ class ModalCreateProcessTask extends Component {
                                        <h1>Option {this.state.name}</h1>
                                     </div>
                                     <FormInfoTask
+                                       listOrganizationalUnit = {listOrganizationalUnit}
                                        action='create'
                                        id={id}
                                        info={(info && info[`${id}`]) && info[`${id}`]}
                                        handleChangeName={this.handleChangeName}
                                        handleChangeDescription={this.handleChangeDescription}
+                                       handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
                                        handleChangeResponsible={this.handleChangeResponsible}
                                        handleChangeAccountable={this.handleChangeAccountable}
 
@@ -385,15 +410,16 @@ class ModalCreateProcessTask extends Component {
 
 
 function mapState(state) {
-   const { user, auth } = state;
-   return { user, auth };
+   const { user, auth, department } = state;
+   return { user, auth, department };
 }
 
 const actionCreators = {
+   getAllDepartments: DepartmentActions.get,
    getDepartment: UserActions.getDepartmentOfUser,
    getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
    createXmlDiagram: TaskProcessActions.createXmlDiagram,
    getXmlDiagramById: TaskProcessActions.getXmlDiagramById,
 };
-const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalCreateProcessTask));
-export { connectedModalAddProcess as ModalCreateProcessTask };
+const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalCreateTaskProcess));
+export { connectedModalAddProcess as ModalCreateTaskProcess };

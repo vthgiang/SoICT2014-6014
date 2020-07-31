@@ -3,7 +3,8 @@ const EmployeeKpi = require('../../../../models/kpi/employeeKpi.model');
 const OrganizationalUnit = require('../../../../models/super-admin/organizationalUnit.model');
 const OrganizationalUnitKpiSet = require('../../../../models/kpi/organizationalUnitKpiSet.model');
 const OrganizationalUnitKpi = require('../../../../models/kpi/organizationalUnitKpi.model');
-const DashboardOrganizationalUnit = require('../dashboard/dashboard.service')
+
+const OrganizationalUnitService = require('../../../super-admin/organizational-unit/organizationalUnit.service');
 const mongoose = require("mongoose");
 
 /**
@@ -83,13 +84,13 @@ exports.copyKPI = async (data) => {
  * @query {*} organizationalUnitId 
  * @query {*} month 
  */
-exports.getAllEmployeeKpiInOrganizationalUnit = async (query) => {
+exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUnitId, month) => {
 
     let organizationalUnit;
     let now, currentYear, currentMonth, endOfCurrentMonth, endOfLastMonth;
 
-    if (query.month) {
-        now = new Date(query.month);
+    if (month) {
+        now = new Date(month);
         currentYear = now.getFullYear();
         currentMonth = now.getMonth();
         endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
@@ -101,17 +102,17 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (query) => {
         endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
         endOfLastMonth = new Date(currentYear, currentMonth);
     }
-
-    if (!query.organizationalUnitId) {
+    
+    if (!organizationalUnitId) {
         organizationalUnit = await OrganizationalUnit.findOne({
             $or: [
-                { 'deans': query.roleId },
-                { 'viceDeans': query.roleId },
-                { 'employees': query.roleId }
+                { 'deans': roleId },
+                { 'viceDeans': roleId },
+                { 'employees': roleId }
             ]
         });
     } else {
-        organizationalUnit = await OrganizationalUnit.findOne({ '_id': query.organizationalUnitId });
+        organizationalUnit = { '_id': new mongoose.Types.ObjectId(organizationalUnitId) }
     }
 
     let employeeKpis = await OrganizationalUnitKpiSet.aggregate([
@@ -178,10 +179,10 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (query) => {
     let beginOfCurrentMonth = new Date(query.month);
     let endOfCurrentMonth = new Date(beginOfCurrentMonth.getFullYear(), beginOfCurrentMonth.getMonth() + 1);
 
-    let organizationalUnit = await OrganizationalUnit.findOne({ '_id': query.organizationalUnitId });
+    let organizationalUnitId = new mongoose.Types.ObjectId(query.organizationalUnitId);
 
     let employeeKpiSets = await OrganizationalUnit.aggregate([
-        { $match: { '_id': organizationalUnit._id } },
+        { $match: { '_id': organizationalUnitId } },
 
         {
             $lookup: {
@@ -235,10 +236,10 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (query) => {
 /** 
  * Lấy tất cả các đơn vị con của 1 đơn vị xếp vào 1 mảng 
  */
-getAllChildrenOrganizational = async (companyId, roleId) => {
+exports.getAllChildrenOrganizational = async (companyId, roleId) => {
 
-    let arrayTreeOranizationalUnit = DashboardOrganizationalUnit.getChildrenOfOrganizationalUnitsAsTree(companyId, roleId);
-
+    let arrayTreeOranizationalUnit = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(companyId, roleId);
+    
     let childrenOrganizationalUnits, temporaryChild, deg = 0;
 
     temporaryChild = arrayTreeOranizationalUnit.children;
