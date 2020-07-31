@@ -592,6 +592,12 @@ class SideBar extends Component {
                                     </a>
                                     <ul className="treeview-menu">
                                         {
+                                            this.checkURL('/task-organization-management-dashboard', links) === true &&
+                                            <li className={window.location.pathname === "/task-organization-management-dashboard" ? "active" : ""}>
+                                                <Link to="/task-organization-management-dashboard">{translate(`menu.task_organization_management_dashboard`)}</Link>
+                                            </li>
+                                        }
+                                        {
                                             this.checkURL('/task-management-dashboard', links) === true &&
                                             <li className={window.location.pathname === "/task-management-dashboard" ? "active" : ""}>
                                                 <Link to="/task-management-dashboard">{translate(`menu.task_management_dashboard`)}</Link>

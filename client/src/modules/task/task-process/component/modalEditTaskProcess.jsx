@@ -34,7 +34,7 @@ class ModalEditTaskProcess extends Component {
             showInfo: false,
             info: data.infoTask,
             xmlDiagram: data.xmlDiagram,
-            selected: 'info',
+            selectedEdit: 'info',
         }
         this.modeler = new BpmnModeler();
         this.generateId = 'editprocess';
@@ -72,9 +72,12 @@ class ModalEditTaskProcess extends Component {
             let info = {};
             let infoTask = nextProps.data.infoTask;
             for (let i in infoTask) {
+                if (!infoTask[i].organizationalUnit) {
+                    infoTask[i].organizationalUnit = nextProps.listOrganizationalUnit[0]?._id;
+                }
                 info[`${infoTask[i].code}`] = infoTask[i];
             }
-
+            console.log('info', info);
             return {
                 ...prevState,
                 idProcess: nextProps.idProcess,
@@ -93,18 +96,18 @@ class ModalEditTaskProcess extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.idProcess !== this.state.idProcess) {
-            this.props.getDepartment();
-            let { user } = this.props;
-            let defaultUnit;
-            if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
-                item.dean === this.state.currentRole
-                || item.viceDean === this.state.currentRole
-                || item.employee === this.state.currentRole);
-            if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) { 
-                // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
-                defaultUnit = user.organizationalUnitsOfUser[0]
-            }
-            this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
+            // this.props.getDepartment();
+            // let { user } = this.props;
+            // let defaultUnit;
+            // if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
+            //     item.dean === this.state.currentRole
+            //     || item.viceDean === this.state.currentRole
+            //     || item.employee === this.state.currentRole);
+            // if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
+            //     // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+            //     defaultUnit = user.organizationalUnitsOfUser[0]
+            // }
+            // this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
             return true;
         }
@@ -116,100 +119,9 @@ class ModalEditTaskProcess extends Component {
         await this.setState(state => {
             return {
                 ...state,
-                selected: content
+                selectedEdit: content
             }
         })
-    }
-    render() {
-        const { translate } = this.props;
-        const { name, id, idProcess, info, showInfo, processDescription, processName, selected } = this.state;
-        let x = (info && info[`${id}`]) && info[`${id}`]
-        return (
-            <React.Fragment>
-                <DialogModal
-                    size='100' modalID={`modal-edit-process`} isLoading={false}
-                    formID="form-task-process"
-                    // disableSubmit={!this.isTaskFormValidated()}
-                    title={this.props.title}
-                    func={this.save}
-                >
-                    <div>
-
-                        <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
-                            <ul className="nav nav-tabs">
-                                <li className="active"><a href="#info" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
-                                <li><a href="#process" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
-                            </ul>
-                            <div className="tab-content">
-                                <div className={selected === "info" ? "active tab-pane" : "tab-pane"} id="info">
-                                    <fieldset className="scheduler-border">
-                                        <legend className="scheduler-border">Thông tin quy trình</legend>
-                                        <div className='row'>
-                                            <div className="form-group">
-                                                <label>Tên quy trình</label>
-                                                <input type="text"
-                                                    value={processName}
-                                                    className="form-control" placeholder="Mô tả công việc"
-                                                    onChange={this.handleChangeBpmnName}
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label>Mô tả quy trình</label>
-                                                <input type="text"
-                                                    value={processDescription}
-                                                    className="form-control" placeholder="Mô tả công việc"
-                                                    onChange={this.handleChangeBpmnDescription}
-                                                />
-                                            </div>
-                                        </div>
-                                    </fieldset>
-                                </div>
-                            </div>
-                            <div className="tab-content">
-                                <div className={selected === "process" ? "active tab-pane" : "tab-pane"} id="process">
-                                    <fieldset className="scheduler-border">
-                                        {/* <legend className="scheduler-border">Quy trình công việc</legend> */}
-                                        <div className='row'>
-                                            <div id={this.generateId} className={showInfo ? 'col-md-8' : 'col-md-12'}></div>
-                                            <div className={showInfo ? 'col-md-4' : undefined}>
-
-                                                {
-                                                    (showInfo) &&
-                                                    <div>
-                                                        <div>
-                                                            <h1>Option {name}</h1>
-                                                        </div>
-                                                        <FormInfoTask
-                                                            action='edit'
-                                                            id={id}
-                                                            info={(info && info[`${id}`]) && info[`${id}`]}
-                                                            handleChangeName={this.handleChangeName}
-                                                            handleChangeDescription={this.handleChangeDescription}
-                                                            handleChangeDescription={this.handleChangeDescription}
-                                                            handleChangeResponsible={this.handleChangeResponsible}
-                                                            handleChangeAccountable={this.handleChangeAccountable}
-
-                                                            save={this.save}
-                                                        />
-                                                    </div>
-                                                }
-                                            </div>
-                                        </div>
-                                        <div>
-                                            {/* <div id={this.generateId}></div> */}
-                                            {/* <button onClick={this.exportDiagram}>Export XML</button>
-                                                <button onClick={this.downloadAsSVG}>Save SVG</button>
-                                                <button onClick={this.downloadAsImage}>Save Image</button>
-                                                <button onClick={this.downloadAsBpmn}>Download BPMN</button> */}
-                                        </div>
-                                    </fieldset>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </DialogModal>
-            </React.Fragment>
-        )
     }
 
     handleChangeBpmnName = async (e) => {
@@ -284,9 +196,22 @@ class ModalEditTaskProcess extends Component {
         })
     }
 
+    handleChangeOrganizationalUnit = async (value) => {
+        await this.setState(state => {
+            state.info[`${state.id}`] = {
+                ...state.info[`${state.id}`],
+                code: state.id,
+                organizationalUnit: value,
+            }
+            return {
+                ...state,
+            }
+        })
+    }
+
     handleChangeViewer = async (value) => {
         await this.setState(state => {
-            
+
             return {
                 ...state,
                 viewer: value,
@@ -297,7 +222,7 @@ class ModalEditTaskProcess extends Component {
 
     handleChangeManager = async (value) => {
         await this.setState(state => {
-            
+
             return {
                 ...state,
                 manager: value,
@@ -318,7 +243,21 @@ class ModalEditTaskProcess extends Component {
                 element.type === 'bpmn:EndEvent' || element.type === "bpmn:SequenceFlow" ||
                 element.type === "bpmn:StartEvent" || element.type === "bpmn:IntermediateThrowEvent"
             ) {
-                return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}`, }
+                if (!state.info[`${element.businessObject.id}`] ||
+                    (state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
+                    state.info[`${element.businessObject.id}`] = {
+                        ...state.info[`${element.businessObject.id}`],
+                        organizationalUnit: this.props.listOrganizationalUnit[0]?._id,
+                    }
+                }
+                return {
+                    ...state,
+                    showInfo: true,
+                    type: element.type,
+                    name: nameStr[1],
+                    taskName: element.businessObject.name,
+                    id: `${element.businessObject.id}`,
+                }
             }
             else {
                 return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
@@ -453,9 +392,9 @@ class ModalEditTaskProcess extends Component {
 
     render() {
         const { translate, role } = this.props;
+        const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedEdit } = this.state;
         const { listOrganizationalUnit } = this.props
-        const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selected } = this.state;
-        console.log(listOrganizationalUnit)
+
         let listRole = [];
         if (role && role.list.length !== 0) listRole = role.list;
         let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
@@ -478,7 +417,7 @@ class ModalEditTaskProcess extends Component {
                                 <li><a href="#process" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
                             </ul>
                             <div className="tab-content">
-                                <div className={selected === "info" ? "active tab-pane" : "tab-pane"} id="info">
+                                <div className={selectedEdit === "info" ? "active tab-pane" : "tab-pane"} id="info">
                                     {/* <fieldset className="scheduler-border">
                                         <legend className="scheduler-border">Thông tin quy trình</legend> */}
 
@@ -538,7 +477,7 @@ class ModalEditTaskProcess extends Component {
                                 </div>
                             </div>
                             <div className="tab-content">
-                                <div className={selected === "process" ? "active tab-pane" : "tab-pane"} id="process">
+                                <div className={selectedEdit === "process" ? "active tab-pane" : "tab-pane"} id="process">
                                     <fieldset className="scheduler-border">
                                         {/* <legend className="scheduler-border">Quy trình công việc</legend> */}
                                         <div className='row'>
@@ -552,6 +491,7 @@ class ModalEditTaskProcess extends Component {
                                                             <h1>Option {name}</h1>
                                                         </div>
                                                         <FormInfoTask
+                                                            listOrganizationalUnit={listOrganizationalUnit}
                                                             action='edit'
                                                             id={id}
                                                             info={(info && info[`${id}`]) && info[`${id}`]}
@@ -559,6 +499,7 @@ class ModalEditTaskProcess extends Component {
                                                             handleChangeDescription={this.handleChangeDescription}
                                                             handleChangeResponsible={this.handleChangeResponsible}
                                                             handleChangeAccountable={this.handleChangeAccountable}
+                                                            handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
 
                                                             save={this.save}
                                                         />

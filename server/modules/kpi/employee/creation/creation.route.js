@@ -3,7 +3,13 @@ const router = express.Router();
 const EmployeeKpiSetController = require("./creation.controller");
 const { auth, uploadFile } = require('../../../../middleware/index');
 
-// Lấy tập KPI cá nhân hiện tại
+/** 
+ * Lấy tập KPI cá hiện hiện tại
+ * Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước
+ * Lấy tất cả các tập KPI của tất cả nhân viên trong mảng đơn vị cho trước theo thời gian
+ * Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
+ * Lấy tất cả tập kpi cá nhân của một nhân viên có trạng thái đã kết thúc
+ */
 router.get('/employee-kpi-sets', auth, EmployeeKpiSetController.getEmployeeKpiSet);
 
 // Khởi tạo KPI cá nhân

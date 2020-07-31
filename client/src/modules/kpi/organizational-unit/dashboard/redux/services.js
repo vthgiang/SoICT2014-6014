@@ -4,7 +4,6 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 export const dashboardOrganizationalUnitKpiServices = {
     getAllEmployeeKpiInOrganizationalUnit,
     getAllTaskOfOrganizationalUnit,
-
     getAllEmployeeKpiSetInOrganizationalUnit
 }
 
@@ -40,7 +39,6 @@ function getAllTaskOfOrganizationalUnit(roleId, organizationalUnitId, month) {
 /** Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng */
 function getAllEmployeeKpiSetInOrganizationalUnit(organizationalUnitId, month) {
     return sendRequest({
-        // url: `${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets`,
         url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets`,
         method: 'GET',
         params: {

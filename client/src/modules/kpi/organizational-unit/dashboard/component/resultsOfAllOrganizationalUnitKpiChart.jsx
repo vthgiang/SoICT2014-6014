@@ -149,7 +149,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     }
 
     filterAndSetDataPoint = (arrayPoint) => {
-        var dateAxisX = [], point = [];
+        let dateAxisX = [], point = [];
 
         dateAxisX.push('date-' + arrayPoint[0].name);
         point.push(arrayPoint[0].name);
@@ -165,7 +165,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
             } else if(this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE) {
                 point.push(arrayPoint[i].employeePoint);
             } else if(this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED) {
-                point.push(arrayPoint[i].automaticPoint);
+                point.push(arrayPoint[i].approvedPoint);
             }
         }
 
@@ -177,7 +177,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
     setDataMultiLineChart = () => {
         const { createKpiUnit } = this.props;
-        var organizationalUnitKpiSetsOfChildUnit, point = [];
+        let organizationalUnitKpiSetsOfChildUnit, point = [];
 
         if(createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
             organizationalUnitKpiSetsOfChildUnit = createKpiUnit.organizationalUnitKpiSetsOfChildUnit;
@@ -202,7 +202,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     multiLineChart = () => {
         this.removePreviosChart();
         
-        var dataChart, xs = {};
+        let dataChart, xs = {};
         const {translate}= this.props;
         dataChart = this.setDataMultiLineChart();
         

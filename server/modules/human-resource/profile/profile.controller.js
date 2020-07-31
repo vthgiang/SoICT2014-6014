@@ -517,3 +517,54 @@ exports.deleteEmployee = async (req, res) => {
         });
     }
 }
+
+/**
+ * import thông tin nhân viên
+ */
+exports.importEmployees = async (req, res) => {
+    try {
+        let data;
+        if (req.body.importType === 'Employee_Infor') {
+            data = await EmployeeService.importEmployeeInfor(req.user.company._id, req.body.importData);
+        }
+        if (data.errorStatus === true) {
+            await LogError(req.user.email, 'IMPORT_EMPLOYEE', req.user.company);
+            res.status(400).json({
+                success: false,
+                messages: ["import_employee_faile"],
+                content: data
+            });
+        } else {
+            if (req.body.importType === 'Employee_Infor') {
+                let users = await UserService.getUsers(req.user.company._id, req.query);
+                let newUsers = data;
+                newUsers = newUsers.filter(x => !users.some(y => y.email === x.emailInCompany));
+                for (let x of newUsers) {
+                    let checkUser = await UserService.checkUserExited(x.emailInCompany);
+                    if (checkUser === false) {
+                        let userInfo = {
+                            email: x.emailInCompany,
+                            name: x.fullName
+                        }
+                        await UserService.createUser(userInfo, req.user.company._id);
+                    }
+                }
+            }
+            await LogInfo(req.user.email, 'IMPORT_EMPLOYEE', req.user.company);
+            res.status(200).json({
+                success: true,
+                messages: ["import_employee_success"],
+                content: data
+            });
+        }
+    } catch (error) {
+        await LogError(req.user.email, 'IMPORT_EMPLOYEE', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ["import_employee_faile"],
+            content: {
+                error: error
+            }
+        });
+    }
+}

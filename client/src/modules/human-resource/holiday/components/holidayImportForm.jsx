@@ -48,90 +48,6 @@ class HolidayImportForm extends Component {
         return [day, month, date_info.getFullYear()].join('-');
     }
 
-    // Bắt xự kiện chọn file import
-    handleChangeFileImport = (e) => {
-        const { importConfiguration } = this.state;
-        let configData = importConfiguration !== null ? importConfiguration : configurationHoliday;
-        let sheets = configData.sheets;
-        let file = e.target.files[0];
-
-        if (file !== undefined) {
-            const reader = new FileReader();
-            reader.readAsBinaryString(file);
-            reader.onload = (evt) => {
-                let sheet_lists = [];
-                const fileImport = evt.target.result;
-                const workbook = XLSX.read(fileImport, { type: 'binary' });
-                // Lấy danh sách các sheet của file import
-                let sheet_name_list = workbook.SheetNames;
-
-                // Kiểm tra lọc lấy các sheet tồn tại mà người dùng muốn import
-                for (let n in sheets) {
-                    sheet_lists = sheet_lists.concat(sheet_name_list.filter(x => x.trim().toLowerCase() === sheets[n].trim().toLowerCase()));
-                }
-
-                let importData = [], rowError = [];
-                sheet_lists.length !== 0 && sheet_lists.forEach(x => {
-                    let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: false, defval: null });
-                    let indexStartDate, indexEndDate, indexDescription;
-
-                    // Lấy index của các tiều đề cột mà người dùng muốn import
-                    for (let i = 0; i < Number(configData.rowHeader); i++) {
-                        data[i].forEach((x, index) => {
-                            if (x !== null) {
-                                if (x.trim().toLowerCase() === configData.startDate.trim().toLowerCase())
-                                    indexStartDate = index;
-                                if (x.trim().toLowerCase() === configData.endDate.trim().toLowerCase())
-                                    indexEndDate = index;
-                                if (x.trim().toLowerCase() === configData.description.trim().toLowerCase()) {
-                                    indexDescription = index;
-                                }
-                            }
-                        })
-                    }
-
-                    // Convert dữ liệu thành dạng array json mong muốn để gửi lên server
-                    data.splice(0, Number(configData.rowHeader));
-                    let dataConvert = [];
-                    data.forEach(x => {
-                        if (x[indexStartDate] !== null) {
-                            let startDate = typeof (x[indexStartDate]) === 'String' ? x[indexStartDate] : this.convertExcelDateToJSDate(x[indexStartDate]);
-                            let endDate = typeof (x[indexEndDate]) === 'String' ? x[indexEndDate] : this.convertExcelDateToJSDate(x[indexEndDate]);
-                            let reason = x[indexDescription];
-                            dataConvert = [...dataConvert, { startDate, endDate, reason }]
-                        }
-                    })
-                    importData = importData.concat(dataConvert);
-                })
-
-                // Check dữ liệu import có hợp lệ hay không
-                importData = importData.map((x, index) => {
-                    let errorAlert = [];
-                    if (x.startDate === null || x.endDate === null || x.reason === null) {
-                        rowError = [...rowError, index + 1]
-                        x = { ...x, error: true }
-                    };
-                    if (x.startDate === null) {
-                        errorAlert = [...errorAlert, 'Ngày bắt đầu không được để trống'];
-                    };
-                    if (x.endDate === null) {
-                        errorAlert = [...errorAlert, 'Ngày kết thúc không được để trống'];
-                    };
-                    if (x.reason === null) {
-                        errorAlert = [...errorAlert, 'Mô tả lịch nghỉ không được để trống'];
-                    };
-                    x = { ...x, errorAlert: errorAlert }
-                    return x;
-                })
-
-                this.setState({
-                    importData: importData,
-                    rowError: rowError
-                })
-            };
-        }
-    }
-
     // Function thay đổi file import
     handleImportExcel = (value, checkFileImport) => {
         value = value.map(x => {
@@ -140,7 +56,6 @@ class HolidayImportForm extends Component {
             return { startDate: startDate, endDate: endDate, description: x.description };
         })
 
-        console.log(value);
         if (checkFileImport) {
             let rowError = [];
             // Check dữ liệu import có hợp lệ hay không
