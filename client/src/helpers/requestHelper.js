@@ -71,15 +71,14 @@ export function sendRequest(options, showSuccessAlert = false, showFailAlert = t
     return axios(requestOptions).then(res => {
         const messages = Array.isArray(res.data.messages) ? res.data.messages : [res.data.messages];
 
-        showSuccessAlert && notification.notice({
-            content: <span>Thành công</span>,
-            duration: 5,
-            closable: true,
-            style: { color: 'green' },
-            onClose() {
-              console.log('simple close');
-            },
-          });
+        showSuccessAlert && toast.success(
+            <ServerResponseAlert
+                type='success'
+                title = {successTitle}
+                content={messages.map(message => `${module}.${message}`)}
+            />,
+            { containerId: 'toast-notification' }
+        );
         return Promise.resolve(res);
     }).catch(err => {
         const messages = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];

@@ -51,10 +51,8 @@ class RoleInfoForm extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={
-                                    role.list ?
-                                        role.list.filter(role => (role.name !== 'Super Admin' && role.name !== roleName))
-                                            .map(role => { return { value: role._id, text: role.name } }) :
-                                        []
+                                    role.list.filter(role => (role && role.name !== 'Super Admin' && role.name !== roleName))
+                                        .map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } })
                                 }
                                 onChange={this.handleParents}
                                 value={roleParents}
@@ -70,7 +68,7 @@ class RoleInfoForm extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={
-                                    user.list ? user.list.map(user => { return { value: user._id, text: `${user.name} - ${user.email}` } }) : []
+                                    user.list.map(user => { return { value: user ? user._id : null, text: user ? `${user.name} - ${user.email}` : "User is deleted" } })
                                 }
                                 onChange={this.handleUsers}
                                 value={roleUsers}

@@ -65,7 +65,7 @@ class ComponentInfoForm extends Component {
                                 id={`component-roles-${componentId}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                items={role.list ? role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "Link is deleted" } }) : []}
+                                items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } })}
                                 onChange={this.handleComponentRoles}
                                 value={componentRoles}
                                 multiple={true}
