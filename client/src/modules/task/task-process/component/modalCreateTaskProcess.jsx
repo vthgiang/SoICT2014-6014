@@ -83,11 +83,13 @@ class ModalCreateTaskProcess extends Component {
    handleChangeName = async (value) => {
       // handleChangeName = async (e) => {
       // let { value } = e.target;
+      let {listOrganizationalUnit } = this.props
       await this.setState(state => {
          state.info[`${state.id}`] = {
             ...state.info[`${state.id}`],
             code: state.id,
             nameTask: value,
+            organizationalUnit: listOrganizationalUnit[0]._id
          }
          return {
             ...state,
@@ -98,11 +100,13 @@ class ModalCreateTaskProcess extends Component {
    handleChangeDescription = async (value) => {
       // handleChangeDescription = async (e) => {
       // let { value } = e.target;
+      let {listOrganizationalUnit } = this.props
       await this.setState(state => {
          state.info[`${state.id}`] = {
             ...state.info[`${state.id}`],
             code: state.id,
             description: value,
+            organizationalUnit: listOrganizationalUnit[0]._id
          }
          return {
             ...state,
@@ -181,11 +185,7 @@ class ModalCreateTaskProcess extends Component {
       let { department } = this.props
       let nameStr = element.type.split(':');
       this.setState(state => {
-         if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process' && element.type !== 'bpmn:StartEvent' && element.type !== 'bpmn:EndEvent') {
-            // state.info[`${element.businessObject.id}`] = {
-            //    ...state.info[`${element.businessObject.id}`],
-            //    organizationalUnit: department.list[0]._id
-            // }
+         if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process' && element.type !== 'bpmn:StartEvent' && element.type !== 'bpmn:EndEvent' && element.type !== 'bpmn:SequenceFlow') {
             return { ...state, 
                showInfo: true, 
                type: element.type, 
@@ -198,7 +198,7 @@ class ModalCreateTaskProcess extends Component {
             return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
          }
         
-      })
+      },()=>console.log(this.state))
    }
 
    deleteElements = (event) => {
@@ -385,7 +385,6 @@ class ModalCreateTaskProcess extends Component {
                                        handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
                                        handleChangeResponsible={this.handleChangeResponsible}
                                        handleChangeAccountable={this.handleChangeAccountable}
-
                                        save={this.save}
                                     />
                                  </div>
