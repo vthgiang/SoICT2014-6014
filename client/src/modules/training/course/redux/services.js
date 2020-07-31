@@ -16,7 +16,6 @@ export const CourseService = {
  * @data : dữ liệu key tìm kiếm
  */
 function getListCourse(data) {
-    console.log(data);
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/courses`,
         method: 'GET',
