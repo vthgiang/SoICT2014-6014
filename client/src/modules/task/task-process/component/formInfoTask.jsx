@@ -9,7 +9,6 @@ class FormInfoTask extends Component {
     constructor(props) {
         super(props);
         let { info, id, listOrganizationalUnit } = this.props;
-        console.log(listOrganizationalUnit)
         this.state = {
             id: id,
             nameTask: (info && info.nameTask) ? info.nameTask : '',
@@ -38,7 +37,6 @@ class FormInfoTask extends Component {
                             listRoles = [...x.deans, ...x.viceDeans, ...x.employees];
                         }
                     })
-
                 }
                 return {
                     id: nextProps.id,
