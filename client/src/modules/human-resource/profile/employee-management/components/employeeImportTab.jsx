@@ -67,7 +67,7 @@ class EmployeeImportTab extends Component {
                                 handleChangeConfig={this.handleChangeConfig}
                             />
                         </div>
-                        <div className="form-group" style={{ marginBottom: 0 }}>
+                        <div className="form-group row col-md-12" style={{ marginBottom: 0 }}>
                             <div className="form-group col-md-4 col-xs-12">
                                 <ImportFileExcel
                                     configData={configData}
@@ -80,7 +80,7 @@ class EmployeeImportTab extends Component {
                             </div>
                         </div>
                         {importData && importData.length !== 0 &&
-                            <div className="form-group col-md-12" style={{ marginBottom: 0 }}>
+                            <div className="form-group col-md-12">
                                 <button type="button" className="btn btn-primary pull-left" onClick={handleImport} disabled={!this.isFormValidated()}>Import excel</button>
                             </div>
                         }
