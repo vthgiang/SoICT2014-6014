@@ -99,7 +99,6 @@ class OrganizationalUnitKpiDashboard extends Component {
 
     }
 
-    /** Select organizational unit in box*/
     handleSelectOrganizationalUnitId = (value) => {
         this.setState(state => {
             return {
@@ -109,7 +108,6 @@ class OrganizationalUnitKpiDashboard extends Component {
         })
     }
 
-    /** Select month in box*/
     handleSelectMonth = async (value) => {
         let month = value.slice(3, 7) + '-' + value.slice(0, 2);
         this.setState(state => {
@@ -123,7 +121,8 @@ class OrganizationalUnitKpiDashboard extends Component {
 
     render() {
         let childOrganizationalUnit, childrenOrganizationalUnit, organizationalUnitSelectBox;
-        const { user, dashboardEvaluationEmployeeKpiSet, translate } = this.props;
+        const { user, translate } = this.props;
+        const { dashboardEvaluationEmployeeKpiSet } = this.props;
 
         if (dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
             childrenOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;

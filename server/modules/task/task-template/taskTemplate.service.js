@@ -158,8 +158,6 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
  * @body dữ liệu tạo mới mẫu công việc
  */
 exports.createTaskTemplate = async (body) => {
-    console.log('body', body);
-    console.log(typeof body.readByEmployees[0]);
     var tasktemplate = await TaskTemplate.create({ //Tạo dữ liệu mẫu công việc       
         organizationalUnit: body.organizationalUnit,
         name: body.name,

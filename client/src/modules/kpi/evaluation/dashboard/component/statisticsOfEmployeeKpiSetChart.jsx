@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { createKpiSetActions } from '../../../employee/creation/redux/actions';
+
 import { withTranslate } from 'react-redux-multilingual';
+
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -9,32 +12,23 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
 
     constructor(props) {
         super(props);
+
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+
         this.state = {
             dataStatus: this.DATA_STATUS.QUERYING,
-            willUpdate: false
         };
     }
 
-    componentDidMount = () => {
-        this.props.getAllEmployeeKpiSetByMonth(this.props.userId, this.props.startMonth, this.props.endMonth);
-        this.setState(state => {
-            return {
-                ...state,
-                dataStatus: this.DATA_STATUS.QUERYING,
-                willUpdate: true
-            }
-        });
-    }
-
     shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextProps.userId !== this.state.userId || nextProps.startMonth !== this.state.startMonth || nextProps.endMonth !== this.state.endMonth) {
+        const { userId, startMonth, endMonth } = this.state;
+        if (nextProps.userId !== userId || nextProps.startMonth !== startMonth || nextProps.endMonth !== endMonth) {
             await this.props.getAllEmployeeKpiSetByMonth(nextProps.userId, nextProps.startMonth, nextProps.endMonth);
+            
             this.setState(state => {
                 return {
                     ...state,
-                    dataStatus: this.DATA_STATUS.QUERYING,
-                    willUpdate: true,
+                    dataStatus: this.DATA_STATUS.QUERYING
                 }
             });
             return false;
@@ -50,14 +44,13 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
                 };
             });
             return false;
-        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && this.state.willUpdate) {
+        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
 
             this.multiLineChart();
             this.setState(state => {
                 return {
                     ...state,
-                    dataStatus: this.DATA_STATUS.FINISHED,
-                    willUpdate: false
+                    dataStatus: this.DATA_STATUS.FINISHED
                 };
             });
         }
@@ -79,11 +72,13 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
 
     setDataMultiLineChart = () => {
         const { createEmployeeKpiSet, translate } = this.props;
-        var listEmployeeKpiSet, dataMultiLineChart, automaticPoint, employeePoint, approvedPoint, date;
-        if (createEmployeeKpiSet && this.state.willUpdate) {
+        let listEmployeeKpiSet, dataMultiLineChart, automaticPoint, employeePoint, approvedPoint, date;
+        
+        if (createEmployeeKpiSet) {
             listEmployeeKpiSet = createEmployeeKpiSet.employeeKpiSetByMonth
         }
-        if (listEmployeeKpiSet !== null) {
+
+        if (listEmployeeKpiSet) {
             automaticPoint = [translate('kpi.evaluation.dashboard.auto_eva')].concat(listEmployeeKpiSet.map(x => x.automaticPoint));
             employeePoint = [translate('kpi.evaluation.dashboard.employee_eva')].concat(listEmployeeKpiSet.map(x => x.employeePoint));
             approvedPoint = [translate('kpi.evaluation.dashboard.approver_eva')].concat(listEmployeeKpiSet.map(x => x.approvedPoint));
@@ -104,9 +99,11 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
     }
 
     multiLineChart = () => {
-        const { translate } = this.props;
         this.removePreviousChart();
+
+        const { translate } = this.props;
         let dataMultiLineChart = this.setDataMultiLineChart();
+
         this.chart = c3.generate({
             bindto: this.refs.chart,
             padding: {
@@ -161,5 +158,6 @@ function mapState(state) {
 const actions = {
     getAllEmployeeKpiSetByMonth: createKpiSetActions.getAllEmployeeKpiSetByMonth
 }
+
 const connectedStatisticsOfEmployeeKpiSetChart = connect(mapState, actions)(withTranslate(StatisticsOfEmployeeKpiSetChart));
 export { connectedStatisticsOfEmployeeKpiSetChart as StatisticsOfEmployeeKpiSetChart };

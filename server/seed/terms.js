@@ -399,6 +399,14 @@ const LINKS = [
         ]
     },
     {
+        url: '/task-organization-management-dashboard',
+        description: 'Dashboard công việc của đơn vị',
+        category: LINK_CATEGORY.TASK.name,
+        roles: [
+            ROOT_ROLES.DEAN.name,
+        ]
+    },
+    {
         url: '/task',
         description: 'Chi tiết công việc',
         category: LINK_CATEGORY.TASK.name,

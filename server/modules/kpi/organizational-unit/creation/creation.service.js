@@ -1,5 +1,7 @@
 const { OrganizationalUnitKpi, OrganizationalUnit, OrganizationalUnitKpiSet } = require('../../../../models/index').schema;
 
+const overviewService = require('../../employee/management/management.service');
+
 /**
  * Get organizational unit kpi set
  * @param {*} organizationalUnitId 
@@ -80,13 +82,13 @@ exports.getParentOrganizationalUnitKpiSet = async (id) => {
  * @query {*} startDate
  * @query {*} endDate
  */
-exports.getAllOrganizationalUnitKpiSetByTime = async (query) => {
+exports.getAllOrganizationalUnitKpiSetByTime = async (organizationalUnitId, startDate, endDate) => {
     let organizationalUnitKpiSets = await OrganizationalUnitKpiSet.find(
         {
-            'organizationalUnit': query.organizationalUnitId,
+            'organizationalUnit': organizationalUnitId,
             'date': {
-                $gte: query.startDate,
-                $lt: query.endDate
+                $gte: startDate,
+                $lt: endDate
             }
         },
         { automaticPoint: 1, employeePoint: 1, approvedPoint: 1, date: 1 }
@@ -101,17 +103,81 @@ exports.getAllOrganizationalUnitKpiSetByTime = async (query) => {
  * @query {*} endDate
  */
 exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (companyId, query) => {
-
+   
     let childOrganizationalUnitKpiSets = [], childrenOrganizationalUnits;
 
-    childrenOrganizationalUnits = await getAllChildrenOrganizational(companyId, query.roleId);
-
+    childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(companyId, query.roleId);
+    
     for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
         childOrganizationalUnitKpiSets.push(await this.getAllOrganizationalUnitKpiSetByTime(childrenOrganizationalUnits[i].id, query.startDate, query.endDate));
         childOrganizationalUnitKpiSets[i].unshift({ 'name': childrenOrganizationalUnits[i].name })
     }
 
     return childOrganizationalUnitKpiSets;
+}
+
+
+
+/**
+ * Lấy tất cả KPI của đơn vị 
+ * @query {*} roleId id chức danh 
+ * @query {*} startDate
+ * @query {*} endDate 
+ * @query {*} status trạng thái của OrganizationalUnitKPISet
+ */
+exports.getAllOrganizationalUnitKpiSet = async (data) => {
+    var organizationalUnit = await OrganizationalUnit.findOne({
+        $or: [
+            { 'deans': data.roleId },
+            { 'viceDeans': data.roleId },
+            { 'employees': data.roleId }
+        ]
+    });
+    let status = Number(data.status);
+    if (data.startDate) {
+        let startDate = data.startDate.split("-");
+        var startdate = new Date(startDate[1] + "-" + startDate[0] + "-" + "01");
+    }
+    if (data.endDate) {
+        var endDate = data.endDate.split("-");
+        if (endDate[0] === "12") {
+            endDate[1] = String(parseInt(endDate[1]) + 1);
+            endDate[0] = "1";
+        }
+        endDate[0] = String(parseInt(endDate[0]) + 1);
+        var enddate = new Date(endDate[2] + "-" + endDate[1] + "-" + endDate[0]);
+    }
+    let keySearch = {
+        organizationalUnit: organizationalUnit._id
+    };
+    if (status !== -1) {
+        keySearch = {
+            ...keySearch,
+            status: status
+        };
+    }
+    if (data.startDate && data.endDate) {
+        keySearch = {
+            ...keySearch,
+            date: { "$gte": startdate, "$lt": enddate }
+        }
+    }
+    else if (data.startDate) {
+        keySearch = {
+            ...keySearch,
+            date: { "$gte": startdate }
+        }
+    }
+    else if (data.endDate) {
+        keySearch = {
+            ...keySearch,
+            date: { "$lt": enddate }
+        }
+    }
+    var kpiunits = await OrganizationalUnitKpiSet.find(keySearch)
+        .skip(0).limit(12).populate("organizationalUnit creator")
+        .populate({ path: "kpis", populate: { path: 'parent' } });
+    return kpiunits;
 }
 
 /**

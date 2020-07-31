@@ -11,7 +11,6 @@ import { UserFormValidator} from '../../../../super-admin/user/components/userFo
 
 class OrganizationalUnitKpiEditTargetModal extends Component {
     componentDidMount() {
-        // Get all parent target of unit
         this.props.getParentTarget(localStorage.getItem("currentRole"));
     }
 
@@ -55,7 +54,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
                 weight: nextProps.target.weight,
                 criteria: nextProps.target.criteria,
 
-                errorOnName: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
+                errorOnName: undefined, 
                 errorOnCriteria: undefined,
                 errorOnWeight: undefined,
             } 
@@ -149,9 +148,9 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
 
 
     render() {
-        const { createKpiUnit } = this.props; // Redux
-        const { target, organizationalUnit } = this.props; // Truyền từ component cha
-        const { translate } = this.props; // Hàm để chuyển sang song ngữ
+        const { createKpiUnit } = this.props; 
+        const { target, organizationalUnit } = this.props;
+        const { translate } = this.props; 
         const { editing, newTarget, _id, name, parent, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight } = this.state;
         
         let parentKPI;
@@ -163,7 +162,7 @@ class OrganizationalUnitKpiEditTargetModal extends Component {
         if (!parentKPI) {
             items = [];
         } else {    
-            items = parentKPI.kpis.map(x => {//default !==0 thì đc. cái này để loại những mục tiêu mặc định?
+            items = parentKPI.kpis.map(x => {
                 return {value: x._id, text: x.name} });
         }
 

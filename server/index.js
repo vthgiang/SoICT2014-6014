@@ -154,7 +154,7 @@ app.use("/system-admin/root-role", rootRole);
 
 app.use("/task", taskManagement);
 app.use("/performtask", taskPerform);
-app.use("/tasktemplates", tasktemplate);
+app.use("/task/task-templates", tasktemplate);
 app.use("/taskprocess", taskProcess);
 app.use("/educationPrograms", educationPrograms);
 app.use("/courses", courses);

@@ -34,13 +34,19 @@ exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany)
         let newRoles = roles.map(role => role.roleId._id);
         organizationalUnits = await OrganizationalUnit.find({
             $or: [{
-                    'deans': {$in: newRoles}
+                    'deans': {
+                        $in: newRoles
+                    }
                 },
                 {
-                    'viceDeans': {$in: newRoles}
+                    'viceDeans': {
+                        $in: newRoles
+                    }
                 },
                 {
-                    'employees': {$in: newRoles}
+                    'employees': {
+                        $in: newRoles
+                    }
                 }
             ]
         });
@@ -89,7 +95,9 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (organization
 
     // Lấy email của người dùng theo phòng ban và chức danh
     let emailUsers = await User.find({
-        _id: {$in: userId}
+        _id: {
+            $in: userId
+        }
     }, {
         email: 1
     });
@@ -581,7 +589,6 @@ exports.createEmployee = async (data, company, fileInfo) => {
 }
 
 
-
 /**
  * Cập nhât thông tin nhân viên theo id
  */
@@ -722,15 +729,21 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
         let queryDelete = arrDelete !== undefined ? arrDelete.map(x => {
             return {
                 deleteOne: {
-                    "filter": {"_id": x._id}
+                    "filter": {
+                        "_id": x._id
+                    }
                 }
             }
         }) : [];
         let queryEdit = arrEdit !== undefined ? arrEdit.map(x => {
             return {
                 updateOne: {
-                    "filter": {"_id": x._id},
-                    "update": {$set: x}
+                    "filter": {
+                        "_id": x._id
+                    },
+                    "update": {
+                        $set: x
+                    }
                 }
             }
         }) : [];
@@ -787,6 +800,7 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
         courses
     };
 }
+
 /**
  * Xoá thông tin nhân viên
  * @id : Id nhân viên cần xoá
@@ -866,6 +880,7 @@ exports.formatDate = (date, monthDay = true) => {
     }
 
 }
+
 /**
  * Tạo thông báo cho các nhân viên có ngày sinh trùng với ngày hiện tại
  */
@@ -1018,4 +1033,66 @@ exports.createNotificationEndOfContract = async () => {
     }
     await Notification.insertMany(notifications);
 
+}
+
+/**
+ * Import thông tin nhân viên
+ */
+exports.importEmployeeInfor = async (company, data) => {
+    let employeeInfo = await Employee.find({
+        company: company
+    }, {
+        employeeNumber: 1,
+        _id: 1,
+        emailInCompany: 1,
+        employeeTimesheetId: 1
+    });
+
+    let rowError = [];
+    data = data.map((x, index) => {
+        let checkEmployeeNumber = employeeInfo.some(y => y.employeeNumber === x.employeeNumber);
+        let checkEmailInCompany = employeeInfo.some(y => y.emailInCompany === x.emailInCompany);
+        let checkEmployeeTimesheetId = employeeInfo.some(y => y.employeeTimesheetId.toString() === x.employeeTimesheetId.toString());
+        if (checkEmployeeNumber) {
+            x = {
+                ...x,
+                errorAlert: [...x.errorAlert, "employee_number_have_exist"],
+                error: true
+            };
+        }
+        if (checkEmailInCompany) {
+            x = {
+                ...x,
+                errorAlert: [...x.errorAlert, "email_in_company_required"],
+                error: true
+            };
+        }
+        if (checkEmployeeTimesheetId) {
+            x = {
+                ...x,
+                errorAlert: [...x.errorAlert, "employee_timesheet_id_have_exist"],
+                error: true
+            };
+        }
+        if (checkEmployeeNumber || checkEmailInCompany || checkEmployeeTimesheetId) {
+            rowError = [...rowError, index + 1];
+        }
+        return x;
+    })
+
+    if (rowError.length !== 0) {
+        return {
+            errorStatus: true,
+            employeeInfor: data,
+            rowErrorOfEmployeeInfor: rowError
+        }
+    } else {
+        data = data.map(x => {
+            return {
+                ...x,
+                company: company,
+            }
+        })
+        return await Employee.insertMany(data);
+    }
 }

@@ -69,7 +69,7 @@ class AdministrationAssetTypes extends Component {
                 ...node,
                 text: node.typeName,
                 state : {"opened" : true },
-                parent: node.parent !== undefined ? node.parent.toString() : "#"
+                parent: node.parent ? node.parent.toString() : "#"
             }
         })
 
@@ -97,12 +97,12 @@ class AdministrationAssetTypes extends Component {
                     </div>
                     <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
                         {
-                            this.state.currentDomain !== undefined &&
+                            this.state.currentDomain &&
                             <EditForm
                                 domainId={this.state.currentDomain.id}
-                                domainCode={this.state.currentDomain.typeNumber}
-                                domainName={this.state.currentDomain.typeName}
-                                domainDescription={this.state.currentDomain.original.description}
+                                domainCode={this.state.currentDomain.original.typeNumber}
+                                domainName={this.state.currentDomain.text}
+                                domainDescription={this.state.currentDomain.original.description ? this.state.currentDomain.original.description: "" }
                                 domainParent={this.state.currentDomain.parent}
                             />
                         }
@@ -122,4 +122,3 @@ const mapDispatchToProps = {
 }
 
 export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(AdministrationAssetTypes) );
-// export { AdministrationAssetTypes };

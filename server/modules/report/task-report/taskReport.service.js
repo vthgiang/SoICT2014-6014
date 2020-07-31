@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const { TaskReport, Task, TaskTemplate, Role, OrganizationalUnit, User } = require('../../../models').schema;
 
 
@@ -39,12 +40,47 @@ exports.getTaskReportById = async (id) => {
  * @param {*} user id người tạo
  */
 exports.createTaskReport = async (data, user) => {
+    // convert startDate từ string sang Date
+    console.log('daaaaa', data);
+    let startTime = data.startDate.split("-");
+    let start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
+
+    // convert endDate từ string sang Date
+    let endTime = data.endDate.split("-");
+    let end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
+
+    let statusConvert = Number(data.status);
+    let frequencyConvert = data.frequency.toString();
+
+    let configurations = [];
+    for (let [index, value] of data.taskInformations.entries()) {
+        configurations[index] = {
+            code: value.code,
+            name: value.name,
+            type: value.type,
+            filter: value.filter,
+            newName: value.newName,
+            charType: value.charType,
+            aggregationType: value.aggregationType,
+            showInReport: value.showInReport,
+        }
+    }
+
     let newTaskReport = await TaskReport.create({
+        organizationalUnit: data.organizationalUnit,
         name: data.nameTaskReport,
         description: data.descriptionTaskReport,
         creator: user,
-    })
+        startDate: start,
+        endDate: end,
+        taskTemplate: data.taskTemplate,
+        status: statusConvert,
+        frequency: frequencyConvert,
+        responsibleEmployees: data.responsibleEmployees,
+        accountableEmployees: data.accountableEmployees,
+        configurations: configurations,
 
+    })
     let getNewTaskReport = await TaskReport.findById(newTaskReport._id).populate({ path: 'creator', select: "_id name" });
     return getNewTaskReport;
 }

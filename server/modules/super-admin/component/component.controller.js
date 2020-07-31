@@ -8,7 +8,7 @@ const { LogInfo, LogError } = require('../../../logs');
 
 exports.getComponents = async (req, res) => {
     try {
-        const components = await ComponentService.getComponents(req.user.company._id, req.query);
+        const components = await ComponentService.getComponents(req.user.company? req.user.company._id: null, req.query);
         
         await LogInfo(req.user.email, 'GET_ALL_COMPONENTS', req.user.company);
         res.status(200).json({
@@ -43,28 +43,6 @@ exports.getComponent = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error)? error: ['show_component_faile'],
-            content: error
-        });
-    }
-};
-
-//Lấy tất cả các component của user với trang web hiện tại
-exports.getComponentsOfUserInLink = async (req, res) => {
-    try {
-        const components  = await ComponentService.getComponentsOfUserInLink(req.params.roleId, req.params.linkId);
-        
-        await LogInfo(req.user.email, 'GET_COMPONENTS_OF_USER_IN_LINK', req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['get_components_of_user_in_link_success'],
-            content: components
-        });
-    } catch (error) {
-        
-        await LogError(req.user.email, 'GET_COMPONENTS_OF_USER_IN_LINK', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error)? error: ['get_components_of_user_in_link_faile'],
             content: error
         });
     }

@@ -664,7 +664,8 @@ export default {
             tasks: 'Quản lý công việc',
             task: "Chi tiết công việc",
             task_management: 'Danh sách công việc',
-            task_management_dashboard: 'Biểu đồ công việc',
+            task_management_dashboard: 'Dashboard công việc',
+            task_organization_management_dashboard: 'Dashboard công việc của đơn vị',
             task_management_process: "Danh sách quy trình",
 
             //*******START */
@@ -2475,6 +2476,7 @@ export default {
                     distributive: 'Phân phối KPI đơn vị tháng ',
                     statiscial: 'Thống kê kết quả KPI đơn vị tháng ',
                     result_kpi_unit: 'Kết quả KPI đơn vị',
+                    result_kpi_units: 'Kết quả KPI các đơn vị',
                     start_date: 'Từ tháng',
                     end_date: 'Đến tháng',
                     search: 'Tìm kiếm',

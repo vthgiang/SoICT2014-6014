@@ -22,7 +22,7 @@ class EmployeeKpiApproveModal extends Component {
         this.newWeight = [];
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
+    static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
@@ -34,8 +34,9 @@ class EmployeeKpiApproveModal extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextProps.id !== this.state.id){
-            if (nextProps.id){
+        const { id } = this.state;
+        if (nextProps.id !== id) {
+            if (nextProps.id) {
                 this.props.getKpisByKpiSetId(nextProps.id);
             }
             return false;
@@ -64,7 +65,7 @@ class EmployeeKpiApproveModal extends Component {
             }
         })
         const { newTarget } = this.state;
-        if (this.newWeight[target._id].value !== ""){
+        if (this.newWeight[target._id].value !== "") {
             this.props.editTarget(target._id, newTarget);
             await this.setState(state => {
                 return {
@@ -109,7 +110,7 @@ class EmployeeKpiApproveModal extends Component {
         }
     }
 
-    formatDate(date){
+    formatDate(date) {
         let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -189,7 +190,7 @@ class EmployeeKpiApproveModal extends Component {
     render() {
         const { kpimembers } = this.props;
         const { translate } = this.props;
-        const { errorOnDate, date } = this.state;
+        const { errorOnDate, date, compare, edit, checkWeight, perPage } = this.state;
         let kpimember, kpimembercmp, month;
 
         if (kpimembers.currentKPI) {
@@ -217,25 +218,25 @@ class EmployeeKpiApproveModal extends Component {
                     size={100}>
                     <div className="qlcv">
                         <div className="form-inline pull-right">
-                            {this.state.compare?
-                                <button className=" btn btn-primary" onClick={() => this.handleCompare()}>{translate('kpi.evaluation.employee_evaluation.end_compare')}</button>:
+                            {compare ?
+                                <button className=" btn btn-primary" onClick={() => this.handleCompare()}>{translate('kpi.evaluation.employee_evaluation.end_compare')}</button> :
                                 <button className=" btn btn-primary" onClick={() => this.handleCompare(kpimember.creator._id)}>{translate('kpi.evaluation.employee_evaluation.compare')}</button>
                             }
                             <button className=" btn btn-success" onClick={() => this.handleApproveKPI(kpimember._id, kpimember.kpis)}>{translate('kpi.evaluation.employee_evaluation.approve_all')}</button>
                         </div>
                         <br />
-                        {this.state.compare &&
+                        {compare &&
                             <div>
                                 <div className="form-inline">
                                     <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
-                                        <label style={{ minWidth : "160px", marginLeft: "-40px" }}>{translate('kpi.evaluation.employee_evaluation.choose_month_cmp')}</label>
+                                        <label style={{ minWidth: "160px", marginLeft: "-40px" }}>{translate('kpi.evaluation.employee_evaluation.choose_month_cmp')}</label>
                                         <DatePicker
-                                            id = "create_date"
-                                            dateFormat = "month-year"
-                                            value = {date}
-                                            onChange = {this.handleDateChange}
+                                            id="create_date"
+                                            dateFormat="month-year"
+                                            value={date}
+                                            onChange={this.handleDateChange}
                                         />
-                                        <ErrorLabel content = {errorOnDate} />
+                                        <ErrorLabel content={errorOnDate} />
                                     </div>
                                     <div className="form-group" >
                                         <button className="btn btn-success" onClick={() => this.searchKPIMemberByMonth(kpimember && kpimember.creator._id)}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
@@ -253,17 +254,17 @@ class EmployeeKpiApproveModal extends Component {
                                         </tr>
                                     </thead>
                                     <tbody >
-                                        {kpimembercmp?
+                                        {kpimembercmp ?
                                             kpimembercmp.kpis.map((item, index) =>
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
                                                     <td>{item ? item.name : "Deleted"}</td>
                                                     <td>{item.parent ? item.parent.name : "Deleted"}</td>
                                                     <td>{item ? item.criteria : "Deleted"}</td>
-                                                    <td>{this.state.edit === item._id? <input min="0" max="100" defaultValue={item.weight} style={{ width: "60px" }} />: item.weight}</td>
+                                                    <td>{edit === item._id ? <input min="0" max="100" defaultValue={item.weight} style={{ width: "60px" }} /> : item.weight}</td>
                                                     <td>{item ? item.approvedPoint : "Deleted"}</td>
                                                 </tr>
-                                            ): <tr><td colSpan={6}>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</td></tr>
+                                            ) : <tr><td colSpan={6}>{translate('kpi.evaluation.employee_evaluation.data_not_found')}</td></tr>
                                         }
                                     </tbody>
                                 </table>
@@ -272,7 +273,7 @@ class EmployeeKpiApproveModal extends Component {
                         <br></br>
                         <br></br>
                         <label>{translate('kpi.evaluation.employee_evaluation.kpi_this_month')}</label>
-                        {this.state.checkWeight && <p className="text-danger" style={{ fontWeight: 900 }}>{translate('kpi.evaluation.employee_evaluation.unsuitable_weight')}</p>}
+                        {checkWeight && <p className="text-danger" style={{ fontWeight: 900 }}>{translate('kpi.evaluation.employee_evaluation.unsuitable_weight')}</p>}
                         <table id="kpi-approve-table" className="table table-bordered table-striped table-hover">
                             <thead>
                                 <tr>
@@ -286,7 +287,7 @@ class EmployeeKpiApproveModal extends Component {
                                     <th className="col-fixed" style={{ width: 130 }}>
                                         {translate('kpi.evaluation.employee_evaluation.action')}
                                         <DataTableSetting class="pull-right" tableId="kpi-approve-table"
-                                            columnArr = {[
+                                            columnArr={[
                                                 'STT',
                                                 'Tên mục tiêu'
                                                 , 'Mục tiêu đơn vị',
@@ -295,9 +296,9 @@ class EmployeeKpiApproveModal extends Component {
                                                 'Trạng thái',
                                                 'Kết quả đánh giá',
                                                 'Hành động']}
-                                            limit = {this.state.perPage}
-                                            setLimit = {this.setLimit}
-                                            hideColumnOption = {true}
+                                            limit={perPage}
+                                            setLimit={this.setLimit}
+                                            hideColumnOption={true}
                                         />
                                     </th>
                                 </tr>
@@ -306,20 +307,20 @@ class EmployeeKpiApproveModal extends Component {
                                 {kpimember && kpimember.kpis.map((item, index) =>
                                     <tr key={index}>
                                         <td>{index + 1}</td>
-                                        <td>{item? item.name: "Deleted"}</td>
-                                        <td>{item.parent? item.parent.name: "Deleted"}</td>
-                                        <td>{item? item.criteria: "Deleted"}</td>
-                                        <td>{this.state.edit === item._id? 
-                                            <input min="0" max="100" 
-                                            ref = {input => this.newWeight[item._id]=input} 
-                                            defaultValue = {item.weight} 
-                                            style = {{ width: "60px" }} 
-                                            />: item.weight}
+                                        <td>{item ? item.name : "Deleted"}</td>
+                                        <td>{item.parent ? item.parent.name : "Deleted"}</td>
+                                        <td>{item ? item.criteria : "Deleted"}</td>
+                                        <td>{edit === item._id ?
+                                            <input min="0" max="100"
+                                                ref={input => this.newWeight[item._id] = input}
+                                                defaultValue={item.weight}
+                                                style={{ width: "60px" }}
+                                            /> : item.weight}
                                         </td>
                                         <td>{this.handleCheckEmployeeKpiStatus(item.status)}</td>
-                                        <td>{item? item.approvedPoint: "Deleted"}</td>
+                                        <td>{item ? item.approvedPoint : "Deleted"}</td>
                                         <td>
-                                            {this.state.edit === item._id? <a style={{ cursor: 'pointer' }} className="approve" title={translate('kpi.evaluation.employee_evaluation.save_result')} onClick={() => this.handleSaveEdit(item)}><i className="material-icons">save</i></a>
+                                            {edit === item._id ? <a style={{ cursor: 'pointer' }} className="approve" title={translate('kpi.evaluation.employee_evaluation.save_result')} onClick={() => this.handleSaveEdit(item)}><i className="material-icons">save</i></a>
                                                 : <a style={{ cursor: 'pointer' }} className="edit" title={translate('kpi.evaluation.employee_evaluation.edit_target')} onClick={() => this.handleEdit(item._id)}><i className="material-icons">edit</i></a>}
                                             <a style={{ cursor: 'pointer' }} className="add_circle" title={translate('kpi.evaluation.employee_evaluation.pass')} onClick={(event) => this.handleEditStatusTarget(event, item._id, 1)}><i className="material-icons">check</i></a>
                                             <a style={{ cursor: 'pointer' }} className="delete" title={translate('kpi.evaluation.employee_evaluation.fail')} onClick={(event) => this.handleEditStatusTarget(event, item._id, 0)}><i className="material-icons">clear</i></a>
@@ -331,7 +332,7 @@ class EmployeeKpiApproveModal extends Component {
                     </div>
                     <div className="row" style={{ display: 'flex', flex: 'no-wrap', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                         <div className="col-xs-12 col-sm-12 col-md-6">
-                            <EmployeeKpiComment currentKPI = {kpimembers.currentKPI} />
+                            <EmployeeKpiComment currentKPI={kpimembers.currentKPI} />
                         </div>
                     </div>
                 </DialogModal>

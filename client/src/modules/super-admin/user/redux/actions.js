@@ -1,5 +1,9 @@
-import { UserServices } from "./services";
-import { UserConstants } from "./constants";
+import {
+    UserServices
+} from "./services";
+import {
+    UserConstants
+} from "./constants";
 
 export const UserActions = {
     get,
@@ -20,36 +24,44 @@ export const UserActions = {
 /**
  * Lấy danh sách tất cả user trong 1 công ty
  */
-function get(data){
-    if(data){
+function get(data) {
+    if (data) {
         return dispatch => {
-            dispatch({ type: UserConstants.GET_USERS_PAGINATE_REQUEST});
+            dispatch({
+                type: UserConstants.GET_USERS_PAGINATE_REQUEST
+            });
             UserServices.get(data)
+                .then(res => {
+                    dispatch({
+                        type: UserConstants.GET_USERS_PAGINATE_SUCCESS,
+                        payload: res.data.content
+                    })
+                })
+                .catch(err => {
+                    dispatch({
+                        type: UserConstants.GET_USERS_PAGINATE_FAILE
+                    });
+                })
+        }
+    }
+
+    return dispatch => {
+        dispatch({
+            type: UserConstants.GET_USERS_REQUEST
+        });
+        UserServices.get()
             .then(res => {
                 dispatch({
-                    type: UserConstants.GET_USERS_PAGINATE_SUCCESS,
+                    type: UserConstants.GET_USERS_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
-                dispatch({ type: UserConstants.GET_USERS_PAGINATE_FAILE});
+                dispatch({
+                    type: UserConstants.GET_USERS_FAILE
+                });
+
             })
-        }
-    }
-    
-    return dispatch => {
-        dispatch({ type: UserConstants.GET_USERS_REQUEST});
-        UserServices.get()
-        .then(res => {
-            dispatch({
-                type: UserConstants.GET_USERS_SUCCESS,
-                payload: res.data.content
-            })
-        })
-        .catch(err => {
-            dispatch({ type: UserConstants.GET_USERS_FAILE});
-            
-        })
     }
 }
 /**
@@ -58,10 +70,12 @@ function get(data){
  */
 function getAllEmployeeOfUnitByRole(role) {
     return dispatch => {
-        dispatch({type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_REQUEST});
- 
+        dispatch({
+            type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_REQUEST
+        });
+
         UserServices.getAllEmployeeOfUnitByRole(role)
-            .then(res=>{ 
+            .then(res => {
                 dispatch({
                     type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_SUCCESS,
                     payload: res.data.content
@@ -81,10 +95,12 @@ function getAllEmployeeOfUnitByRole(role) {
  */
 function getAllEmployeeOfUnitByIds(ids) {
     return dispatch => {
-        dispatch({type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_REQUEST});
- 
+        dispatch({
+            type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_REQUEST
+        });
+
         UserServices.getAllEmployeeOfUnitByIds(ids)
-            .then(res=>{ 
+            .then(res => {
                 dispatch({
                     type: UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_SUCCESS,
                     payload: res.data.content
@@ -101,7 +117,9 @@ function getAllEmployeeOfUnitByIds(ids) {
 
 export const getRoles = () => {
     return dispatch => {
-        dispatch({ type: UserConstants.GET_USER_ROLES_REQUEST});
+        dispatch({
+            type: UserConstants.GET_USER_ROLES_REQUEST
+        });
         UserServices.getRoles()
             .then(res => {
                 let roles = [];
@@ -117,8 +135,10 @@ export const getRoles = () => {
                 })
             })
             .catch(err => {
-                dispatch({ type: UserConstants.GET_USER_ROLES_FAILE});
-                
+                dispatch({
+                    type: UserConstants.GET_USER_ROLES_FAILE
+                });
+
             })
     }
 }
@@ -126,7 +146,9 @@ export const getRoles = () => {
 
 export const getLinkOfRole = () => {
     return dispatch => {
-        dispatch({ type: UserConstants.GET_LINK_OF_ROLE_REQUEST});
+        dispatch({
+            type: UserConstants.GET_LINK_OF_ROLE_REQUEST
+        });
         UserServices.getLinkOfRole()
             .then(res => {
                 dispatch({
@@ -135,8 +157,10 @@ export const getLinkOfRole = () => {
                 })
             })
             .catch(err => {
-                dispatch({ type: UserConstants.GET_LINK_OF_ROLE_FAILE});
-                
+                dispatch({
+                    type: UserConstants.GET_LINK_OF_ROLE_FAILE
+                });
+
             })
     }
 }
@@ -147,7 +171,9 @@ export const getLinkOfRole = () => {
  */
 function getRoleSameDepartment(currentRole) {
     return dispatch => {
-        dispatch({ type: UserConstants.GETROLE_SAMEDEPARTMENT_REQUEST });
+        dispatch({
+            type: UserConstants.GETROLE_SAMEDEPARTMENT_REQUEST
+        });
         UserServices.getRoleSameDepartmentOfUser(currentRole)
             .then(res => {
                 dispatch({
@@ -156,7 +182,7 @@ function getRoleSameDepartment(currentRole) {
                 })
             })
             .catch(err => {
-                dispatch({ 
+                dispatch({
                     type: UserConstants.GETROLE_SAMEDEPARTMENT_FAILURE,
                     error: err
                 });
@@ -177,7 +203,7 @@ function getAllUserOfCompany() {
                 })
             })
             .catch(err => {
-                dispatch({ 
+                dispatch({
                     type: UserConstants.GETALLUSER_OFCOMPANY_FAILURE,
                     error: err
                 });
@@ -188,7 +214,9 @@ function getAllUserOfCompany() {
 /** Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ */
 function getAllUserOfDepartment(id) {
     return dispatch => {
-        dispatch({ type: UserConstants.GETALLUSER_OFDEPARTMENT_REQUEST });
+        dispatch({
+            type: UserConstants.GETALLUSER_OFDEPARTMENT_REQUEST
+        });
         UserServices.getAllUserOfDepartment(id)
             .then(res => {
                 dispatch({
@@ -197,7 +225,7 @@ function getAllUserOfDepartment(id) {
                 })
             })
             .catch(err => {
-                dispatch({ 
+                dispatch({
                     type: UserConstants.GETALLUSER_OFDEPARTMENT_FAILURE,
                     error: err
                 });
@@ -208,7 +236,9 @@ function getAllUserOfDepartment(id) {
 /** Lấy tất cả nhân viên của một phòng ban hoặc 1 mảng phòng ban kèm theo vai trò của họ */
 function getAllUserSameDepartment(currentRole) {
     return dispatch => {
-        dispatch({ type: UserConstants.GETALLUSER_SAMEDEPARTMENT_REQUEST });
+        dispatch({
+            type: UserConstants.GETALLUSER_SAMEDEPARTMENT_REQUEST
+        });
         UserServices.getAllUserSameDepartment(currentRole)
             .then(res => {
                 dispatch({
@@ -217,7 +247,7 @@ function getAllUserSameDepartment(currentRole) {
                 })
             })
             .catch(err => {
-                dispatch({ 
+                dispatch({
                     type: UserConstants.GETALLUSER_SAMEDEPARTMENT_FAILURE,
                     error: err
                 });
@@ -230,7 +260,9 @@ function getAllUserSameDepartment(currentRole) {
  */
 function getDepartmentOfUser() {
     return dispatch => {
-        dispatch({ type: UserConstants.GETDEPARTMENT_OFUSER_REQUEST });
+        dispatch({
+            type: UserConstants.GETDEPARTMENT_OFUSER_REQUEST
+        });
         UserServices.getDepartmentOfUser()
             .then(res => {
                 dispatch({
@@ -239,7 +271,7 @@ function getDepartmentOfUser() {
                 })
             })
             .catch(err => {
-                dispatch({ 
+                dispatch({
                     type: UserConstants.GETDEPARTMENT_OFUSER_FAILURE,
                     error: err
                 });
@@ -252,9 +284,11 @@ function getDepartmentOfUser() {
  */
 function getChildrenOfOrganizationalUnitsAsTree(unitId) {
     return dispatch => {
-        dispatch({type: UserConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_REQUEST});
+        dispatch({
+            type: UserConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_REQUEST
+        });
         UserServices.getChildrenOfOrganizationalUnitsAsTree(unitId)
-            .then(res=>{ 
+            .then(res => {
                 dispatch({
                     type: UserConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_SUCCESS,
                     payload: res.data.content
@@ -274,10 +308,12 @@ function getChildrenOfOrganizationalUnitsAsTree(unitId) {
  */
 function getAllUserInAllUnitsOfCompany() {
     return dispatch => {
-        dispatch({type: UserConstants.GET_ALL_USERS_IN_UNITS_OF_COMPANY_REQUEST});
- 
+        dispatch({
+            type: UserConstants.GET_ALL_USERS_IN_UNITS_OF_COMPANY_REQUEST
+        });
+
         UserServices.getAllUserInAllUnitsOfCompany()
-            .then(res=>{ 
+            .then(res => {
                 dispatch({
                     type: UserConstants.GET_ALL_USERS_IN_UNITS_OF_COMPANY_SUCCESS,
                     payload: res.data.content
@@ -297,9 +333,11 @@ function getAllUserInAllUnitsOfCompany() {
  * @id id tài khoản
  * @data dữ liệu chỉnh sửa
  */
-function edit(id, data){
+function edit(id, data) {
     return dispatch => {
-        dispatch({ type: UserConstants.EDIT_USER_REQUEST});
+        dispatch({
+            type: UserConstants.EDIT_USER_REQUEST
+        });
         UserServices.edit(id, data)
             .then(res => {
                 dispatch({
@@ -308,7 +346,9 @@ function edit(id, data){
                 });
             })
             .catch(err => {
-                dispatch({ type: UserConstants.EDIT_USER_FAILE});
+                dispatch({
+                    type: UserConstants.EDIT_USER_FAILE
+                });
             })
     }
 }
@@ -317,9 +357,11 @@ function edit(id, data){
  * Tạo tài khoản cho user
  * @data dữ liệu về user
  */
-function create(data){
+function create(data) {
     return dispatch => {
-        dispatch({ type: UserConstants.CREATE_USER_REQUEST});
+        dispatch({
+            type: UserConstants.CREATE_USER_REQUEST
+        });
         UserServices.create(data)
             .then(res => {
                 dispatch({
@@ -328,7 +370,9 @@ function create(data){
                 })
             })
             .catch(err => {
-                dispatch({ type: UserConstants.CREATE_USER_FAILE});
+                dispatch({
+                    type: UserConstants.CREATE_USER_FAILE
+                });
             })
     }
 }
@@ -337,9 +381,11 @@ function create(data){
  * Xóa tài khoản người dùng
  * @id id tài khoản người dùng
  */
-function destroy(id){
+function destroy(id) {
     return dispatch => {
-        dispatch({ type: UserConstants.DELETE_USER_REQUEST});
+        dispatch({
+            type: UserConstants.DELETE_USER_REQUEST
+        });
         UserServices.destroy(id)
             .then(res => {
                 dispatch({
@@ -348,7 +394,9 @@ function destroy(id){
                 })
             })
             .catch(err => {
-                dispatch({ type: UserConstants.DELETE_USER_FAILE});
+                dispatch({
+                    type: UserConstants.DELETE_USER_FAILE
+                });
             })
     }
 }

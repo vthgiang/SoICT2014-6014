@@ -26,7 +26,7 @@ function getSystemComponent(systemComponentId) {
 
 function createSystemComponent(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/system-admin/system-component/system-components/create`,
+        url: `${ LOCAL_SERVER_API }/system-admin/system-component/system-components`,
         method: 'POST',
         data,
     }, true, true, 'system_admin.system_component');

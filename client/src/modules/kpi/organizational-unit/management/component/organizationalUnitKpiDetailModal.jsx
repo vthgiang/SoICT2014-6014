@@ -69,7 +69,7 @@ class ModalDetailKPI extends Component {
                 title={translate('kpi.organizational_unit.management.detail_modal.title') + `${this.formatMonth(this.props.date)}`}
                 hasSaveButton={false}
                 size={100}>
-
+                {/* Danh sách mục tiêu của KPI đơn vị tháng được chọn */}
                 <div className="col-xs-12 col-sm-4">
                     <div className="box box-solid" style={{ border: "1px solid #ecf0f6", borderBottom: "none" }}>
                         <div className="box-header with-border">
@@ -92,7 +92,8 @@ class ModalDetailKPI extends Component {
                 </div>
 
                 <div className="col-xs-12 col-sm-8">
-                    {
+                    {/* Thông tin chi tiết mục tiêu KPI đơn vị được chọn */}
+                    {   
                         listchildtarget && listchildtarget.map(item => {
                             if (item._id === this.state.content) return <React.Fragment key={item._id}>
                                 <h4>{translate('kpi.organizational_unit.management.detail_modal.information_kpi') + `"${item.name}"`}</h4>
@@ -113,7 +114,7 @@ class ModalDetailKPI extends Component {
                                 </div>
                                 <br />
                                 <br />
-
+                                {/* Danh sách các mục tiêu con của mục tiêu KPI đơn vị được chọn */}
                                 <h4>{translate('kpi.organizational_unit.management.detail_modal.list_child_kpi')}</h4>
                                 <table id="example1" className="table table-bordered table-striped">
                                     <thead>

@@ -61,7 +61,6 @@ exports.getTaskReportById = async (req, res) => {
  */
 exports.createTaskReport = async (req, res) => {
     try {
-        console.log(req.body)
         let data = await TaskReportService.createTaskReport(req.body, req.user._id);
         LogInfo(req.user.email, ' create_task_report ', req.user.company);
 

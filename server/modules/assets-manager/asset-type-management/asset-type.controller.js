@@ -127,7 +127,7 @@ exports.getAssetTypes = async (req, res) => {
 };
 
 exports.createAssetTypes = async (req, res) => {
-    try {
+    // try {
         const type = await AssetTypeService.createAssetTypes(req.user.company._id, req.body);
         
         await LogInfo(req.user.email, 'CREATE_ASSET_TYPE', req.user.company);
@@ -136,15 +136,15 @@ exports.createAssetTypes = async (req, res) => {
             messages: ['create_asset_type_success'],
             content: type
         });
-    } catch (error) {
+    // } catch (error) {
         
-        await LogError(req.user.email, 'CREATE_ASSET_TYPE', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['create_asset_type_faile'],
-            content: error
-        });
-    }
+    //     await LogError(req.user.email, 'CREATE_ASSET_TYPE', req.user.company);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: Array.isArray(error) ? error : ['create_asset_type_faile'],
+    //         content: error
+    //     });
+    // }
 };
 
 exports.showAssetType = (req, res) => {

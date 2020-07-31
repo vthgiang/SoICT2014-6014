@@ -90,7 +90,7 @@ class ConFigImportFile extends Component {
 
     render() {
         const { textareaValue, configData } = this.state;
-        const { id, scrollTableWidth = 1000, scrollTable = true } = this.props;
+        const { id, scrollTableWidth = 1000, scrollTable = true, textareaRow = 10 } = this.props;
         let config = [];
         for (let key in configData) {
             if (key !== "file" && key != "rowHeader" && key !== "sheets") {
@@ -112,7 +112,7 @@ class ConFigImportFile extends Component {
                     </div>
                     <div className="box-body row">
                         <div className="form-group col-sm-12 col-xs-12">
-                            <textarea className="form-control" rows="8" name="reason"
+                            <textarea className="form-control" rows={textareaRow} name="reason"
                                 value={textareaValue} onChange={this.handleChange}></textarea>
                         </div>
 
@@ -148,12 +148,12 @@ class ConFigImportFile extends Component {
                                         </tr>
                                     </tbody>
                                 </table>
-
                             </div>
+                            {scrollTable && <SlimScroll outerComponentId={`croll-table-${id}`} innerComponentId={`importConfig-${id}`} innerComponentWidth={scrollTableWidth} activate={true} />}
                         </div>
                     </div>
                 </div>
-                {scrollTable && <SlimScroll outerComponentId={`croll-table-${id}`} innerComponentId={`importConfig-${id}`} innerComponentWidth={scrollTableWidth} activate={true} />}
+
             </React.Fragment>
         )
     }

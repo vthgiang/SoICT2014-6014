@@ -14,9 +14,10 @@ export const managerServices = {
 // Lấy tất cả KPI đơn vị
 function getAllKPIUnit(infosearch) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/management/organizational-unit-kpi-sets`,
+        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
         method: 'GET',
         params: {
+            allOrganizationalUnitKpiSet: 1,
             roleId: infosearch.role,
             status: infosearch.status,
             startDate: infosearch.startDate,
@@ -28,7 +29,7 @@ function getAllKPIUnit(infosearch) {
 // Lấy tất cả KPI đơn vị
 function getChildTargetOfCurrentTarget(kpiId, date) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets`,
         method: 'GET',
         params: {
             organizationalUnitKpiSetId: kpiId,

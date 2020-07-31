@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { connect} from 'react-redux';
+import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { RoleActions } from '../redux/actions';
@@ -14,11 +14,11 @@ class RoleInfoForm extends Component {
         this.state = {}
     }
 
-    render() { 
+    render() {
         const { role, user, translate } = this.props;
         const { roleId, roleType, roleName, roleParents, roleUsers, roleNameError } = this.state;
 
-        return ( 
+        return (
             <React.Fragment>
                 <DialogModal
                     size='50' func={this.save} isLoading={role.isLoading}
@@ -33,28 +33,26 @@ class RoleInfoForm extends Component {
                     <form id="form-edit-role">
 
                         {/* Tên phân quyền */}
-                        <div className={`form-group ${!roleNameError? "": "has-error"}`}>
-                            <label>{ translate('manage_role.name') }<span className="text-red">*</span></label>
+                        <div className={`form-group ${!roleNameError ? "" : "has-error"}`}>
+                            <label>{translate('manage_role.name')}<span className="text-red">*</span></label>
                             {
                                 roleType === 'Abstract' ?
-                                <input className="form-control" value={ roleName } disabled={true}/> :
-                                <input className="form-control" value={ roleName } onChange={ this.handleRoleName }/>
+                                    <input className="form-control" value={roleName} disabled={true} /> :
+                                    <input className="form-control" value={roleName} onChange={this.handleRoleName} />
                             }
-                            <ErrorLabel content={roleNameError}/>
+                            <ErrorLabel content={roleNameError} />
                         </div>
 
                         {/* Kế thừa phân quyền */}
                         <div className="form-group">
-                            <label>{ translate('manage_role.extends') }</label>
+                            <label>{translate('manage_role.extends')}</label>
                             <SelectBox
                                 id={`role-parents-${roleId}`}
                                 className="form-control select2"
-                                style={{width: "100%"}}
-                                items = {
-                                    role.list?
-                                    role.list.filter( role => (role.name !== 'Super Admin' && role.name !== roleName))
-                                    .map( role => {return {value: role._id, text: role.name}}):
-                                    []
+                                style={{ width: "100%" }}
+                                items={
+                                    role.list.filter(role => (role && role.name !== 'Super Admin' && role.name !== roleName))
+                                        .map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } })
                                 }
                                 onChange={this.handleParents}
                                 value={roleParents}
@@ -64,13 +62,13 @@ class RoleInfoForm extends Component {
 
                         {/* Những người dùng có phân quyền */}
                         <div className="form-group">
-                            <label>{ translate('manage_role.users') } { roleName }</label>
+                            <label>{translate('manage_role.users')} {roleName}</label>
                             <SelectBox
                                 id={`role-users-${roleId}`}
                                 className="form-control select2"
-                                style={{width: "100%"}}
-                                items = {
-                                    user.list? user.list.map( user => {return {value: user._id, text: `${user.name} - ${user.email}`}}): []
+                                style={{ width: "100%" }}
+                                items={
+                                    user.list.map(user => { return { value: user ? user._id : null, text: user ? `${user.name} - ${user.email}` : "User is deleted" } })
                                 }
                                 onChange={this.handleUsers}
                                 value={roleUsers}
@@ -80,11 +78,11 @@ class RoleInfoForm extends Component {
                     </form>
                 </DialogModal>
             </React.Fragment>
-         );
+        );
     }
 
     // Thiet lap cac gia tri tu props vao state
-    static getDerivedStateFromProps(nextProps, prevState){
+    static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.roleId !== prevState.roleId) {
             return {
                 ...prevState,
@@ -94,7 +92,7 @@ class RoleInfoForm extends Component {
                 roleParents: nextProps.roleParents,
                 roleUsers: nextProps.roleUsers,
                 roleNameError: undefined,
-            } 
+            }
         } else {
             return null;
         }
@@ -102,12 +100,12 @@ class RoleInfoForm extends Component {
 
     // Xy ly va validate role name
     handleRoleName = (e) => {
-        const {value} = e.target;
+        const { value } = e.target;
         this.validateRoleName(value, true);
     }
-    validateRoleName = (value, willUpdateState=true) => {
+    validateRoleName = (value, willUpdateState = true) => {
         let msg = RoleValidator.validateName(value);
-        if (willUpdateState){
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -138,7 +136,7 @@ class RoleInfoForm extends Component {
     }
 
     handleRoleUser = (e) => {
-        const {value} = e.target;
+        const { value } = e.target;
         this.setState(state => {
             return {
                 ...state,
@@ -159,17 +157,20 @@ class RoleInfoForm extends Component {
             parents: this.state.roleParents,
             users: this.state.roleUsers
         };
-        
-        if (this.isFormValidated()){ 
+
+        if (this.isFormValidated()) {
             return this.props.edit(role);
         }
     }
 }
- 
-const mapState = state => state;
 
-const dispatchStateToProps =  {
+function mapState(state) {
+    const { role, user } = state;
+    return { role, user };
+}
+
+const dispatchStateToProps = {
     edit: RoleActions.edit
 }
 
-export default connect(mapState, dispatchStateToProps)(withTranslate( RoleInfoForm ));
+export default connect(mapState, dispatchStateToProps)(withTranslate(RoleInfoForm));

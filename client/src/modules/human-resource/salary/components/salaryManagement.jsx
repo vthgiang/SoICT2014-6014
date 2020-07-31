@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { SalaryCreateForm, SalaryEditForm, SalaryImportForm } from './combinedContent';
-import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMulti } from '../../../../common-components';
+import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMulti, ExportExcel } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { SalaryActions } from '../redux/actions';
 
@@ -25,7 +25,7 @@ class SalaryManagement extends Component {
 
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
-        var d = new Date(date),
+        let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -118,7 +118,6 @@ class SalaryManagement extends Component {
                 month: ""
             })
         }
-        console.log(this.state);
         this.props.searchSalary(this.state);
     }
 
@@ -138,11 +137,101 @@ class SalaryManagement extends Component {
         });
         this.props.searchSalary(this.state);
     }
+
+    // Function chyển đổi dữ liệu bảng lương thành dạng dữ liệu dùng export
+    convertDataToExportData = (data) => {
+        let otherSalary = [];
+        if (data) {
+            data.forEach(x => {
+                if (x.bonus.length !== 0) {
+                    for (let count in x.bonus) {
+                        if (!otherSalary.includes(x.bonus[count].nameBonus)) {
+                            otherSalary = [...otherSalary, x.bonus[count].nameBonus]
+                        }
+                    };
+                }
+            })
+
+            data = data.map((x, index) => {
+                let organizationalUnits = x.organizationalUnits.map(y => y.name);
+                let position = x.roles.map(y => y.roleId.name);
+                let total = 0, bonus = {};
+                let d = new Date(x.month),
+                    month = '' + (d.getMonth() + 1),
+                    year = d.getFullYear();
+                if (x.bonus.length !== 0) {
+                    for (let count in x.bonus) {
+                        total = total + parseInt(x.bonus[count].number);
+                        otherSalary.forEach((y, key) => {
+                            if (y === x.bonus[count].nameBonus) {
+                                bonus = { ...bonus, [`bonus${key}`]: parseInt(x.bonus[count].number) }
+                            }
+                        })
+                    };
+
+                    total = total + parseInt(x.mainSalary);
+                }
+
+                return {
+                    STT: index + 1,
+                    employeeNumber: x.employee.employeeNumber,
+                    fullName: x.employee.fullName,
+                    mainSalary: parseInt(x.mainSalary),
+                    birthdate: this.formatDate(x.employee.birthdate, false),
+                    status: x.employee.status === 'active' ? "Đang làm việc" : "Đã nghỉ làm",
+                    gender: x.employee.gender === 'male' ? "Nam" : "Nữ",
+                    organizationalUnits: organizationalUnits.join(', '),
+                    position: position.join(', '),
+                    total: total,
+                    month: month,
+                    year: year,
+                    ...bonus
+                };
+
+            })
+        }
+
+        let columns = otherSalary.map((x, index) => {
+            return { key: `bonus${index}`, value: x, type: "Number" }
+        })
+        let exportData = {
+            fileName: "Bảng theo dõi lương thưởng",
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "month", value: "Tháng" },
+                                { key: "year", value: "Năm" },
+                                { key: "employeeNumber", value: "Mã số nhân viên" },
+                                { key: "fullName", value: "Họ và tên" },
+                                { key: "organizationalUnits", value: "Phòng ban" },
+                                { key: "position", value: "chức vụ" },
+                                { key: "gender", value: "Giới tính" },
+                                { key: "birthdate", value: "Ngày sinh" },
+                                { key: "status", value: "Tình trạng lao động" },
+                                { key: "mainSalary", value: "Tiền lương chính", type: "Number" },
+                                ...columns,
+                                { key: "total", value: "Tổng lương", type: "Number" },
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData
+    }
+
     render() {
         const { list } = this.props.department;
         const { translate, salary } = this.props;
-        var formater = new Intl.NumberFormat();
-        var listSalarys = "", listPosition = [];
+        const { limit, page } = this.state;
+        let formater = new Intl.NumberFormat();
+        let listSalarys = [], listPosition = [];
+
         if (this.state.organizationalUnit !== null) {
             let organizationalUnit = this.state.organizationalUnit;
             organizationalUnit.forEach(u => {
@@ -156,13 +245,16 @@ class SalaryManagement extends Component {
                 })
             })
         }
+
         if (salary.isLoading === false) {
             listSalarys = salary.listSalarys;
         }
-        var pageTotal = (salary.totalList % this.state.limit === 0) ?
-            parseInt(salary.totalList / this.state.limit) :
-            parseInt((salary.totalList / this.state.limit) + 1);
-        var page = parseInt((this.state.page / this.state.limit) + 1);
+        let exportData = this.convertDataToExportData(listSalarys);
+
+        let pageTotal = (salary.totalList % limit === 0) ?
+            parseInt(salary.totalList / limit) :
+            parseInt((salary.totalList / limit) + 1);
+        let currentPage = parseInt((page / limit) + 1);
         return (
             <div className="box">
                 <div className="box-body qlcv">
@@ -283,9 +375,9 @@ class SalaryManagement extends Component {
                     </table>
                     {salary.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listSalarys === 'undefined' || listSalarys.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (typeof listSalarys === 'undefined' || listSalarys.length === 0) && <div className="--info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
                 <SalaryCreateForm />
                 {this.state.importSalary && <SalaryImportForm />}
@@ -300,6 +392,7 @@ class SalaryManagement extends Component {
                         bonus={this.state.currentRow.bonus}
                     />
                 }
+                <ExportExcel id="export-salary" exportData={exportData} />
             </div>
         );
     }

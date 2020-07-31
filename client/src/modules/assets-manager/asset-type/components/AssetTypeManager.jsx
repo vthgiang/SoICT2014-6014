@@ -88,16 +88,7 @@ class AssetTypeManager extends Component {
         if (this.props.assetType.isLoading === false) {
             listAssetTypes = this.props.assetType.listAssetTypes;
         }
-        // if(this.props.assetType.listAssetTypes.length ){
-        //     listAssetTypes = this.props.assetType.listAssetTypes.map(assetType =>{
-        //         this.props.assetType.listAssetTypes.forEach(item=>{
-        //             if(assetType.parent === item._id){
-        //                 assetType.parent= item.typeName
-        //             }
-        //         })
-        //         return assetType;
-        //     })
-        // }
+
         var pageTotal = ((this.props.assetType.totalList % this.state.limit) === 0) ?
             parseInt(this.props.assetType.totalList / this.state.limit) :
             parseInt((this.props.assetType.totalList / this.state.limit) + 1);
@@ -126,7 +117,6 @@ class AssetTypeManager extends Component {
                             <tr>
                                 <th style={{ width: "15%" }}>Mã loại tài sản</th>
                                 <th style={{ width: "25%" }}>Tên loại tài sản</th>
-                                <th style={{ width: "15%" }}>Thời gian khấu hao</th>
                                 <th style={{ width: "25%" }}>Loại tài sản cha</th>
                                 <th style={{ width: "20%" }}>Mô tả</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>Hành động
@@ -135,7 +125,6 @@ class AssetTypeManager extends Component {
                                         columnArr={[
                                             "Mã loại tài sản",
                                             "Tên loại tài sản",
-                                            "Thời gian khấu hao",
                                             "Loại tài sản cha",
                                             "Mô tả",
                                         ]}
@@ -152,7 +141,6 @@ class AssetTypeManager extends Component {
                                     <tr key={index}>
                                         <td>{x.typeNumber}</td>
                                         <td>{x.typeName}</td>
-                                        <td>{x.timeDepreciation}</td>
                                         <td>{x.parent ? x.parent.typeNumber + " - " + x.parent.typeName : ''}</td>
                                         <td>{x.description}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -183,7 +171,6 @@ class AssetTypeManager extends Component {
                         _id={this.state.currentRow._id}
                         typeNumber={this.state.currentRow.typeNumber}
                         typeName={this.state.currentRow.typeName}
-                        timeDepreciation={this.state.currentRow.timeDepreciation}
                         parent={this.state.currentRow.parent}
                         description={this.state.currentRow.description}
                     />

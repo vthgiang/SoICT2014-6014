@@ -18,7 +18,7 @@ export const taskTemplateService = {
 // get all task template
 function getAll() {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasktemplates`,
+        url: `${LOCAL_SERVER_API}/task/task-templates`,
         method: 'GET',
     }, false, true, 'task.task_template');
 }
@@ -26,7 +26,7 @@ function getAll() {
 // get a task template by id 
 function getById(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasktemplates/${id}`,
+        url: `${LOCAL_SERVER_API}/task/task-templates/${id}`,
         method: 'GET',
     }, false, true, 'task.task_template');
 }
@@ -34,27 +34,29 @@ function getById(id) {
 // get all task template by Role
 function getAllTaskTemplateByRole(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasktemplates/role/${id}`,
+        url: `${LOCAL_SERVER_API}/task/task-templates`,
+        params:{
+            roleId:id
+        },
         method: 'GET',
     }, false, true, 'task.task_template');
 }
 
 // get all task template by User
 // Để lấy tất cả kết quả: cho pageNumber=1, noResultsPerPage = 0
-function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name="") {
+function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit="[]", name="") {
     var id = getStorage("userId");
-    const data = {
-        id:id,
-        pageNumber: pageNumber,
-        noResultsPerPage: noResultsPerPage,
-        arrayUnit: arrayUnit,
-        name: name
-    };
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasktemplates/user`,
-        method: 'POST',
-        data: data
+        url: `${LOCAL_SERVER_API}/task/task-templates`,
+        method: 'GET',
+        params:{
+            userId:id,
+            pageNumber: pageNumber,
+            noResultsPerPage: noResultsPerPage,
+            arrayUnit: arrayUnit,
+            name: name        
+        }
     }, false, true, 'task.task_template');
 }
 
@@ -64,7 +66,7 @@ function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name=
     newTaskTemplate = {...newTaskTemplate, creator: id};
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasktemplates/create`,
+        url: `${LOCAL_SERVER_API}/task/task-templates`,
         method: 'POST',
         data: newTaskTemplate
     }, true, true, 'task.task_template');
@@ -73,7 +75,7 @@ function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit, name=
 
 function editTaskTemplate(id, newTaskTemplate) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasktemplates/edit/${id}`,
+        url: `${LOCAL_SERVER_API}/task/task-templates/${id}`,
         method: 'PATCH',
         data: newTaskTemplate
     }, true, true, 'task.task_template');
@@ -83,7 +85,7 @@ function editTaskTemplate(id, newTaskTemplate) {
 // delete a task template
 function deleteTaskTemplateById(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasktemplates/${id}`,
+        url: `${LOCAL_SERVER_API}/task/task-templates/${id}`,
         method: 'DELETE',
     }, true, true, 'task.task_template');
 }
@@ -91,9 +93,8 @@ function deleteTaskTemplateById(id) {
 // import a task Task Template 
 
 function importTaskTemplate(data){
-    console.log('reer', data);
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/tasktemplates/importTaskTemplate`,
+        url: `${LOCAL_SERVER_API}/task/task-templates/import`,
         method: 'POST',
         data: data,
     },true, true, 'task.task_template');

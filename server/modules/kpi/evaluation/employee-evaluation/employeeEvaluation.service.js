@@ -116,19 +116,19 @@ exports.getKpisByMonth = async (data) => {
  */
 
 exports.approveAllKpis = async (id) => {
-    let kpipersonal = await EmployeeKPISet.findByIdAndUpdate(id, { $set: { status: 2 } }, { new: true });
+    let employee_kpi_set = await EmployeeKPISet.findByIdAndUpdate(id, { $set: { status: 2 } }, { new: true });
     let targets;
-    if (kpipersonal.kpis) targets = kpipersonal.kpis;
+    if (employee_kpi_set.kpis) targets = employee_kpi_set.kpis;
     if (targets !== []) {
         targets = await Promise.all(targets.map(async (item) => {
             let defaultT = await EmployeeKPI.findByIdAndUpdate(item._id, { $set: { status: 1 } }, { new: true })
             return defaultT;
         }))
     }
-    kpipersonal = await kpipersonal.populate("organizationalUnit creator approver")
+    employee_kpi_set = await employee_kpi_set.populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .execPopulate();
-    return kpipersonal;
+    return employee_kpi_set;
 }
 
 /**
@@ -139,8 +139,8 @@ exports.approveAllKpis = async (id) => {
 
 exports.editStatusKpi = async (data, query) => {
     let target = await EmployeeKPI.findByIdAndUpdate(data.id, { $set: { status: query.status } }, { new: true });
-    let kpipersonal = await EmployeeKPISet.findOne({ kpis: { $in: data.id } }).populate("kpis");
-    let kpis = kpipersonal.kpis;
+    let employee_kpi_set = await EmployeeKPISet.findOne({ kpis: { $in: data.id } }).populate("kpis");
+    let kpis = employee_kpi_set.kpis;
     let checkFullApprove = 2;
     await kpis.map(item => {
         if (!item.status) {
@@ -153,10 +153,10 @@ exports.editStatusKpi = async (data, query) => {
         }
         return true;
     })
-    kpipersonal = await EmployeeKPISet.findByIdAndUpdate(kpipersonal._id, { $set: { status: checkFullApprove } }, { new: true })
+    employee_kpi_set = await EmployeeKPISet.findByIdAndUpdate(employee_kpi_set._id, { $set: { status: checkFullApprove } }, { new: true })
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } });
-    return kpipersonal;
+    return employee_kpi_set;
 }
 
 /**
@@ -182,14 +182,14 @@ exports.editKpi = async (id, data) => {
  */
 
 exports.getKpisByKpiSetId = async (id) => {
-    let kpipersonal = await EmployeeKPISet.findById(id)
+    let employee_kpi_set = await EmployeeKPISet.findById(id)
         .populate("organizationalUnit creator approver")
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
             { path: 'comments.creator', model: User, select: 'name email avatar ' },
             { path: 'comments.comments.creator', model: User, select: 'name email avatar' }
         ])
-    return kpipersonal;
+    return employee_kpi_set;
 }
 
 /**

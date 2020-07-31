@@ -40,7 +40,7 @@ class CertificateTab extends Component {
         await this.setState(state => {
             return {
                 ...state,
-                currentRowcertificates: { ...value, index: index }
+                currentRowCertificates: { ...value, index: index }
             }
         });
         window.$(`#modal-edit-certificateShort-editCertificateShort${index}`).modal('show');
@@ -227,18 +227,18 @@ class CertificateTab extends Component {
                     />
                 }
                 {
-                    this.state.currentRowcertificates !== undefined &&
+                    this.state.currentRowCertificates !== undefined &&
                     <CertificateEditModal
-                        id={`editCertificateShort${this.state.currentRowcertificates.index}`}
-                        _id={this.state.currentRowcertificates._id}
-                        index={this.state.currentRowcertificates.index}
-                        name={this.state.currentRowcertificates.name}
-                        issuedBy={this.state.currentRowcertificates.issuedBy}
-                        startDate={this.formatDate(this.state.currentRowcertificates.startDate)}
-                        endDate={this.formatDate(this.state.currentRowcertificates.endDate)}
-                        file={this.state.currentRowcertificates.file}
-                        urlFile={this.state.currentRowcertificates.urlFile}
-                        fileUpload={this.state.currentRowcertificates.fileUpload}
+                        id={`editCertificateShort${this.state.currentRowCertificates.index}`}
+                        _id={this.state.currentRowCertificates._id}
+                        index={this.state.currentRowCertificates.index}
+                        name={this.state.currentRowCertificates.name}
+                        issuedBy={this.state.currentRowCertificates.issuedBy}
+                        startDate={this.formatDate(this.state.currentRowCertificates.startDate)}
+                        endDate={this.formatDate(this.state.currentRowCertificates.endDate)}
+                        file={this.state.currentRowCertificates.file}
+                        urlFile={this.state.currentRowCertificates.urlFile}
+                        fileUpload={this.state.currentRowCertificates.fileUpload}
                         handleChange={this.handleEditCertificate}
                     />
                 }

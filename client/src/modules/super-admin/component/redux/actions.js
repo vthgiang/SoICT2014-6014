@@ -1,5 +1,9 @@
-import { ComponentServices } from "./services";
-import { ComponentConstants } from "./constants";
+import {
+    ComponentServices
+} from "./services";
+import {
+    ComponentConstants
+} from "./constants";
 
 export const ComponentActions = {
     get,
@@ -12,10 +16,12 @@ export const ComponentActions = {
 /**
  * Lấy danh sách các component của công ty
  */
-function get(data){
-    if (data){
+function get(data) {
+    if (data) {
         return dispatch => {
-            dispatch({ type: ComponentConstants.GET_COMPONENTS_PAGINATE_REQUEST});
+            dispatch({
+                type: ComponentConstants.GET_COMPONENTS_PAGINATE_REQUEST
+            });
             ComponentServices.get(data)
                 .then(res => {
                     dispatch({
@@ -25,9 +31,11 @@ function get(data){
                 })
         }
     }
-    
+
     return dispatch => {
-        dispatch({ type: ComponentConstants.GET_COMPONENTS_REQUEST});
+        dispatch({
+            type: ComponentConstants.GET_COMPONENTS_REQUEST
+        });
         ComponentServices.get()
             .then(res => {
                 dispatch({
@@ -42,9 +50,11 @@ function get(data){
  * Lấy component theo id
  * @id id component
  */
-function show(id){
+function show(id) {
     return dispatch => {
-        dispatch({ type: ComponentConstants.SHOW_COMPONENT_REQUEST});
+        dispatch({
+            type: ComponentConstants.SHOW_COMPONENT_REQUEST
+        });
         ComponentServices.show(id)
             .then(res => {
                 dispatch({
@@ -53,7 +63,7 @@ function show(id){
                 })
             })
             .catch(err => {
-                
+
             })
     }
 }
@@ -62,9 +72,11 @@ function show(id){
  * Tạo component
  * @component dữ liệu component
  */
-function create(component){
+function create(component) {
     return dispatch => {
-        dispatch({ type: ComponentConstants.CREATE_COMPONENT_REQUEST});
+        dispatch({
+            type: ComponentConstants.CREATE_COMPONENT_REQUEST
+        });
         ComponentServices.create(component)
             .then(res => {
                 dispatch({
@@ -72,9 +84,8 @@ function create(component){
                     payload: res.data.content
                 })
             })
-            .catch(err => {
-            })
-        
+            .catch(err => {})
+
     }
 }
 
@@ -83,9 +94,11 @@ function create(component){
  * @id id component
  * @component dữ liệu
  */
-function edit(id, component){
+function edit(id, component) {
     return dispatch => {
-        dispatch({ type: ComponentConstants.EDIT_COMPONENT_REQUEST});
+        dispatch({
+            type: ComponentConstants.EDIT_COMPONENT_REQUEST
+        });
         ComponentServices.edit(id, component)
             .then(res => {
                 dispatch({
@@ -93,8 +106,7 @@ function edit(id, component){
                     payload: res.data.content
                 });
             })
-            .catch(err => {
-            })
+            .catch(err => {})
     }
 }
 
@@ -102,9 +114,11 @@ function edit(id, component){
  * Xóa component
  * @id id component
  */
-function destroy(id, component){
+function destroy(id, component) {
     return dispatch => {
-        dispatch({ type: ComponentConstants.DELETE_COMPONENT_REQUEST});
+        dispatch({
+            type: ComponentConstants.DELETE_COMPONENT_REQUEST
+        });
         ComponentServices.destroy(id, component)
             .then(res => {
                 dispatch({
@@ -112,9 +126,6 @@ function destroy(id, component){
                     payload: id
                 })
             })
-            .catch(err => {
-            })
+            .catch(err => {})
     }
 }
-
-

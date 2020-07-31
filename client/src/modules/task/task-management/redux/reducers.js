@@ -375,8 +375,7 @@ export function tasks(state = {}, action) {
             console.log('action.payload', action.payload)
             return {
                 ...state,
-                listTaskEvaluations: action.payload.result,
-                totalTaskInfo: action.payload.result2,
+                listTaskEvaluations: action.payload,
                 isLoading: false,
             };
         case taskManagementConstants.GET_TASK_EVALUATION_FAILURE:

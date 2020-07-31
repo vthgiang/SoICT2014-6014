@@ -5,8 +5,7 @@ import { dashboardOrganizationalUnitKpiServices } from "./services";
 export const dashboardOrganizationalUnitKpiActions = {
     getAllEmployeeKpiInOrganizationalUnit,
     getAllTaskOfOrganizationalUnit,
-    getAllOrganizationalUnitKpiSetByTime,
-    getAllOrganizationalUnitKpiSetByTimeOfChildUnit,
+
     getAllEmployeeKpiSetInOrganizationalUnit
 }
 
@@ -52,47 +51,7 @@ function getAllTaskOfOrganizationalUnit(roleId, organizationalUnitId = undefined
     }
 }
 
-// Lấy danh sách các tập KPI đơn vị theo từng năm của từng đơn vị 
-function getAllOrganizationalUnitKpiSetByTime(organizationalUnitId, startDate, endDate) {
-    return dispatch => {
-        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_REQUEST });
 
-        dashboardOrganizationalUnitKpiServices.getAllOrganizationalUnitKpiSetByTime(organizationalUnitId, startDate, endDate)
-            .then(res => {
-                dispatch({
-                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(error => {
-                dispatch({
-                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_FAILURE,
-                    payload: error
-                })
-            })
-    }
-}
-
-// Lấy danh sách các tập KPI đơn vị theo từng năm của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại
-function getAllOrganizationalUnitKpiSetByTimeOfChildUnit(roleId, startDate, endDate) {
-    return dispatch => {
-        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_REQUEST });
-
-        dashboardOrganizationalUnitKpiServices.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(roleId, startDate, endDate)
-            .then(res => {
-                dispatch({
-                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(error => {
-                dispatch({
-                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_FAILURE,
-                    payload: error
-                })
-            })
-    }
-}
 
 // Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
 function getAllEmployeeKpiSetInOrganizationalUnit(organizationalUnitId, month) {

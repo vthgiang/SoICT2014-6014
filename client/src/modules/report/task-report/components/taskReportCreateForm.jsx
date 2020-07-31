@@ -27,11 +27,7 @@ class TaskReportCreateForm extends Component {
                 startDate: '',
                 endDate: '',
                 frequency: '',
-                filterCondition: [],
                 coefficient: 1,
-                newName: [],
-                calulator: '',
-                chartType: '',
                 listCheckBox: [],
 
             },
@@ -148,6 +144,7 @@ class TaskReportCreateForm extends Component {
      */
     handleChangeTaskTemplate = async (e) => {
         let { value } = e.target;
+
         if (value === '') {
             this.setState(state => {
                 return {
@@ -166,9 +163,9 @@ class TaskReportCreateForm extends Component {
                 }
             });
         } else {
-            let taskTemplate = this.props.tasktemplates.items.find(function (taskTemplate) {
-                return taskTemplate._id === value;
-            })
+            let taskTemplate = this.props.tasktemplates.items.find((taskTemplate) =>
+                taskTemplate._id === value
+            );
             this.setState(state => {
                 return {
                     ...state,
@@ -179,6 +176,7 @@ class TaskReportCreateForm extends Component {
                         taskTemplate: taskTemplate._id,
                         responsibleEmployees: taskTemplate.responsibleEmployees,
                         accountableEmployees: taskTemplate.accountableEmployees,
+                        taskInformations: taskTemplate.taskInformations,
                     }
                 }
             })
@@ -226,7 +224,6 @@ class TaskReportCreateForm extends Component {
         })
     }
 
-
     /**
      * Hàm xử lý ngày kết thúc thay đổi
      * @param {*} value 
@@ -258,7 +255,6 @@ class TaskReportCreateForm extends Component {
             }
         })
     }
-
 
     /**
      * Hàm xử lý khi chọn tần suất
@@ -307,14 +303,15 @@ class TaskReportCreateForm extends Component {
      * hàm xử lý khi chọn cách tính
      * @param {*} value 
      */
-    handleChangeCalulator = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                newReport: {
-                    ...this.state.newReport,
-                    calulator: value,
-                }
+    handleChangeAggregationType = (index, value) => {
+        let { newReport } = this.state;
+        let taskInformations = newReport.taskInformations;
+        taskInformations[index] = { ...taskInformations[index], aggregationType: value.toString() }
+
+        this.setState({
+            newReport: {
+                ...newReport,
+                taskInformations: taskInformations,
             }
         })
     }
@@ -323,47 +320,34 @@ class TaskReportCreateForm extends Component {
      * Hàm xử lý khi chọn dạng biểu đồ
      * @param {*} e 
      */
-    handleChangeChart = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                newReport: {
-                    ...this.state.newReport,
-                    chartType: value,
-                }
+    handleChangeChart = (index, value) => {
+        let { newReport } = this.state;
+        let taskInformations = newReport.taskInformations;
+        taskInformations[index] = { ...taskInformations[index], charType: value.toString() };
+        this.setState({
+            newReport: {
+                ...newReport,
+                taskInformations: taskInformations,
             }
         })
     }
 
     /**
-         * Hàm xử lý khi nhập điều kiện lọc
-         * @param {*} e 
-         */
+     * Hàm xử lý khi nhập điều kiện lọc
+     * @param {*} e 
+    */
     handleChangeFilter = (index, e) => {
         let { value } = e.target;
-        const updatedArr = [...this.state.newReport.filterCondition]
-        if (value === '') {
-            this.setState(state => {
-                return {
-                    ...state,
-                    newReport: {
-                        ...this.state.newReport,
-                    }
-                }
+        let { newReport } = this.state;
+        let taskInformations = newReport.taskInformations;
+        taskInformations[index] = { ...taskInformations[index], filter: value };
 
-            })
-        } else {
-            updatedArr[index] = value;
-            this.setState(state => {
-                return {
-                    ...state,
-                    newReport: {
-                        ...this.state.newReport,
-                        filterCondition: updatedArr,
-                    }
-                }
-            });
-        }
+        this.setState({
+            newReport: {
+                ...newReport,
+                taskInformations: taskInformations,
+            }
+        })
     }
 
     /**
@@ -372,29 +356,22 @@ class TaskReportCreateForm extends Component {
      */
     handleChangeNewName = (index, e) => {
         let { value } = e.target;
-        const newNameArr = [...this.state.newReport.newName]
-        if (value === '') {
-            this.setState(state => {
-                return {
-                    ...state,
-                    newReport: {
-                        ...this.state.newReport,
-                    }
-                }
-            })
-        } else {
-            newNameArr[index] = value;
-            this.setState(state => {
-                return {
-                    ...state,
-                    newReport: {
-                        ...this.state.newReport,
-                        newName: newNameArr,
-                    }
-                }
-            })
-        }
+        let { newReport } = this.state;
+        let taskInformations = newReport.taskInformations;
+        taskInformations[index] = { ...taskInformations[index], newName: value }
+
+        this.setState({
+            newReport: {
+                ...newReport,
+                taskInformations: taskInformations,
+            }
+        })
     }
+
+    /**
+     * Hàm xử lý khi người tạo báo cáo thay đổi
+     * @param {*} value : tên người tạo
+     */
     handleChangeReportResponsibleEmployees = (value) => {
 
         this.setState(state => {
@@ -407,6 +384,11 @@ class TaskReportCreateForm extends Component {
             }
         })
     }
+
+    /**
+     * Hàm xử lý khi người phê duyệt báo cáo thay đổi
+     * @param {*} value 
+     */
     handleChangeReportAccountableEmployees = (value) => {
 
         this.setState(state => {
@@ -421,7 +403,23 @@ class TaskReportCreateForm extends Component {
 
     }
 
-    handleChangeChecked = (item) => {
+    /**
+     * Hàm xử lý khi click vào checkbox
+     * @param {*} item 
+     */
+    handleChangeChecked = (index, item) => {
+        let { newReport } = this.state;
+        let value = item.target.checked;
+
+
+        let taskInformations = newReport.taskInformations;
+        taskInformations[index] = { ...taskInformations[index], showInReport: value };
+        this.setState({
+            newReport: {
+                ...newReport,
+                taskInformations: taskInformations,
+            }
+        })
 
         if (this.checkedCheckbox.has(item)) {
             this.checkedCheckbox.delete(item);
@@ -433,33 +431,35 @@ class TaskReportCreateForm extends Component {
         })
 
     }
+
     /**
      * Xử lý hiện form view
      */
     handleView = () => {
-        // if (this.isFormValidated()) {
-        // }
+
         console.log('state', this.state.newReport)
-
+        const { newReport } = this.state;
         let data = {
-            accountableEmployees: this.state.newReport.accountableEmployees,
-            responsibleEmployees: this.state.newReport.responsibleEmployees,
-            calulator: this.state.newReport.calulator,
-            chartType: this.state.newReport.chartType,
-            coefficient: this.state.newReport.coefficient,
-            descriptionTaskReport: this.state.newReport.descriptionTaskReport,
-            endDate: this.state.newReport.endDate,
-            filterCondition: this.state.newReport.filterCondition,
-            frequency: this.state.newReport.frequency,
-            nameTaskReport: this.state.newReport.nameTaskReport,
-            newName: this.state.newReport.newName,
-            organizationalUnit: this.state.newReport.organizationalUnit,
+            accountableEmployees: newReport.accountableEmployees,
+            responsibleEmployees: newReport.responsibleEmployees,
+            aggregationType: newReport.aggregationType,
+            chartType: newReport.chartType,
+            coefficient: newReport.coefficient,
+            descriptionTaskReport: newReport.descriptionTaskReport,
+            endDate: newReport.endDate,
+            // filterCondition: newReport.filterCondition,
+            frequency: newReport.frequency,
+            nameTaskReport: newReport.nameTaskReport,
+            // newName: newReport.newName,
+            organizationalUnit: newReport.organizationalUnit,
 
-            startDate: this.state.newReport.startDate,
-            status: this.state.newReport.status,
-            taskTemplate: this.state.newReport.taskTemplate,
-            showInReport: this.state.showInReport,
+            startDate: newReport.startDate,
+            status: newReport.status,
+            taskTemplate: newReport.taskTemplate,
+            // showInReport: this.state.showInReport,
+            taskInformations: newReport.taskInformations,
         }
+
         let listCheck = [];
         for (const i of this.state.showInReport) {
             listCheck = [...listCheck, i]
@@ -493,10 +493,12 @@ class TaskReportCreateForm extends Component {
         this.props.getAllUserInAllUnitsOfCompany();
         this.props.getAllTask();
     }
+
     render() {
         const { translate, reports, tasktemplates, user, tasks } = this.props;
-        const { errorOnNameTaskReport, errorOnDescriptiontTaskReport, newReport } = this.state;
-        let listTaskTemplate, units, listTemplateReport;
+        const { errorOnNameTaskReport, errorOnDescriptiontTaskReport, newReport, } = this.state;
+        let listTaskTemplate, units, taskInformations = newReport.taskInformations;
+        console.log("taskInformations", taskInformations);
 
         // Lấy ra list task template theo đơn vị
         if (tasktemplates.items && newReport.organizationalUnit) {
@@ -513,17 +515,8 @@ class TaskReportCreateForm extends Component {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
 
-
         // Lấy thông tin nhân viên của đơn vị
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
-
-        // Lấy ra thong tin tasktemplate theo id cuar taskTemplate trong select box
-        if (tasktemplates && tasktemplates.items) {
-            listTemplateReport = tasktemplates.items.filter(item1 => {
-                return item1._id === newReport.taskTemplate;
-            });
-        }
-
 
         return (
             <React.Fragment>
@@ -532,20 +525,18 @@ class TaskReportCreateForm extends Component {
                     formID="form-create-task-report"
                     title="Thêm mới báo cáo"
                     func={this.save}
-                    size={75}
+                    size={100}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <TaskReportViewForm passState={newReport.listCheckBox} />
                     <div className="row" >
-                        {/* <div className="col-md-12 d-flex justify-content-end">
-                            <a className="" onClick={() => this.handleView()} style={{ cursor: 'pointer' }} title="Xem chi tiết"><i className="material-icons">visibility</i></a>
-                        </div> */}
                         <div className="col-md-12 col-lg-12" style={{ display: 'flex', justifyContent: 'flex-end' }}>
                             <div className="form-inline d-flex justify-content-end">
                                 <button id="exportButton" className="btn btn-sm btn-success " title="Xem chi tiết" style={{ marginBottom: '10px' }} onClick={() => this.handleView()} ><span className="fa fa-eye" style={{ color: '#4e4e4e' }}></span> Xem</button>
                             </div>
                         </div>
                     </div>
+
                     <div className="row">
                         <div className="col-md-6">
                             {/* Chọn đơn vị */}
@@ -560,6 +551,7 @@ class TaskReportCreateForm extends Component {
                                 }
                             </div>
                         </div>
+
                         <div className="col-md-6">
                             {/* Chọn mẫu công việc */}
                             <div className="form-group">
@@ -622,6 +614,7 @@ class TaskReportCreateForm extends Component {
                                 />
                             </div>
                         </div>
+
                         <div className="col-md-6">
                             {/* Tần suất */}
                             <div className={`form-group`}>
@@ -664,6 +657,7 @@ class TaskReportCreateForm extends Component {
                                 }
                             </div>
                         </div>
+
                         <div className="col-md-6">
                             {/* Chọn người phê duyệt */}
                             <div className="form-group">
@@ -683,6 +677,7 @@ class TaskReportCreateForm extends Component {
                             </div>
                         </div>
                     </div>
+
                     <div className="row">
                         <div className="col-md-6">
                             {/* Thống kê từ ngày */}
@@ -695,9 +690,8 @@ class TaskReportCreateForm extends Component {
                                     disabled={false}
                                 />
                             </div>
-
-
                         </div>
+
                         <div className="col-md-6">
                             {/* Thống kê đến ngày */}
                             <div className="form-group">
@@ -711,7 +705,6 @@ class TaskReportCreateForm extends Component {
                             </div>
                         </div>
                     </div>
-
 
                     {/* Form show thông tin mẫu công việc */}
                     {
@@ -734,65 +727,70 @@ class TaskReportCreateForm extends Component {
                                     </thead>
                                     <tbody>
                                         {
-                                            (listTemplateReport) ? listTemplateReport.map((item1) => (
-                                                item1.taskInformations.map((item2, index) => (
-                                                    <tr key={index}>
-                                                        <td>{item2.code}</td>
-                                                        <td>{item2.name}</td>
-                                                        <td>{(item2.type === 'SetOfValues' ? 'Tập dữ liệu' : (item2.type))}</td>
-                                                        <td><input style={{ width: '100%' }} type="text" onChange={(e) => this.handleChangeFilter(index, e)} placeholder={(item2.type === 'Number' ? `p${index + 1} > 3000` : (item2.type === 'SetOfValues' ? `p${index + 1} = 3000` : ''))} /></td>
-                                                        <td>
-                                                            {(item2.type === 'Number') ?
-                                                                <div className="checkbox" style={{ paddingLeft: "20%" }}>
-                                                                    <label>
-                                                                        <input name="showInReport" type="checkbox" value={item2.name} onChange={() => this.handleChangeChecked(item2.name)} />
-                                                                    </label>
-                                                                </div>
-                                                                : ''
-                                                            }
-                                                        </td>
-                                                        <td>
-                                                            {(item2.type === 'Number') ?
-                                                                <input style={{ width: '100%' }} type="text" onChange={(e) => this.handleChangeNewName(index, e)} /> : ''
-                                                            }
+                                            taskInformations ? taskInformations.map((item2, index) => (
+                                                <tr key={index}>
+                                                    <td>{item2.code}</td>
+                                                    <td>{item2.name}</td>
+                                                    <td>{(item2.type === 'SetOfValues' ? 'Tập dữ liệu' : (item2.type))}</td>
+                                                    <td><input className="form-control" style={{ width: '100%' }} type="text" onChange={(e) => this.handleChangeFilter(index, e)} placeholder={(item2.type === 'Number' ? `p${index + 1} > 3000` : (item2.type === 'SetOfValues' ? `p${index + 1} = 3000` : ''))} /></td>
+                                                    <td>
+                                                        {(item2.type === 'Number') ?
+                                                            <div className="checkbox" style={{ paddingLeft: "20%" }}>
+                                                                <label>
+                                                                    <input name="showInReport" type="checkbox" value={item2.name} onChange={(e) => this.handleChangeChecked(index, e)} />
+                                                                </label>
+                                                            </div>
+                                                            : ''
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        {(item2.type === 'Number') ?
+                                                            <input className="form-control" style={{ width: '100%' }} type="text" onChange={(e) => this.handleChangeNewName(index, e)} /> : ''
+                                                        }
 
-                                                        </td>
-                                                        <td>
-                                                            {(item2.type === 'Number') ?
+                                                    </td>
+                                                    <td>
+                                                        {(item2.type === 'Number') ?
+                                                            <SelectBox
+                                                                id={`select-box-calulator-${item2.code}`}
+                                                                className="form-control select2"
+                                                                style={{ width: "100%" }}
+                                                                onChange={(e) => this.handleChangeAggregationType(index, e)}
+                                                                items={
+                                                                    [
+                                                                        { text: '-chọn-' },
+                                                                        { value: '0', text: 'Trung bình cộng' },
+                                                                        { value: '1', text: 'Tổng' },
+                                                                    ]
+                                                                }
+                                                                multiple={false}
+                                                            />
+                                                            : ''
+                                                        }
+                                                    </td>
+                                                    <td data-select2-id="1111">
+                                                        {
+                                                            (item2.type === 'Number') ?
                                                                 <SelectBox
-                                                                    id="select-box-calulator"
+                                                                    id={`select-box-chart-${item2.code}`}
                                                                     className="form-control select2"
                                                                     style={{ width: "100%" }}
-                                                                    onChange={this.handleChangeCalulator}
+                                                                    onChange={(e) => this.handleChangeChart(index, e)}
                                                                     items={
                                                                         [
-                                                                            { value: '1', text: 'Trung bình cộng' },
+                                                                            { text: '-chọn-' },
+                                                                            { value: '0', text: 'Đường' },
+                                                                            { value: '1', text: 'Cột' },
+                                                                            { value: '2', text: 'Tròn' },
                                                                         ]
                                                                     }
                                                                     multiple={false}
                                                                 />
                                                                 : ''
-                                                            }
-                                                        </td>
-                                                        <td data-select2-id="1111">
-                                                            <SelectBox
-                                                                id="select-box-chart"
-                                                                className="form-control select2"
-                                                                style={{ width: "100%" }}
-                                                                onChange={this.handleChangeChart}
-                                                                items={
-                                                                    [
-                                                                        { text: '-chọn-' },
-                                                                        { value: '0', text: 'Đường' },
-                                                                        { value: '1', text: 'Cột' },
-                                                                        { value: '2', text: 'Tròn' },
-                                                                    ]
-                                                                }
-                                                                multiple={false}
-                                                            />
-                                                        </td>
-                                                    </tr>
-                                                ))
+                                                        }
+                                                    </td>
+                                                </tr>
+
                                                 // Khong dung colSpan
                                             )) : <tr><td colSpan={8}><center>{translate('report_manager.no_data')}</center></td></tr>
                                         }
