@@ -8,7 +8,7 @@ class FormInfoTask extends Component {
 
     constructor(props) {
         super(props);
-        let { info, id } = this.props;
+        let { info, id, listOrganizationalUnit } = this.props;
         this.state = {
             id: id,
             nameTask: (info && info.nameTask) ? info.nameTask : '',
@@ -16,6 +16,7 @@ class FormInfoTask extends Component {
             organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : "",
             responsible: (info && info.responsible) ? info.responsible : [],
             accountable: (info && info.accountable) ? info.accountable : [],
+            organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : listOrganizationalUnit[0]?._id,
         }
     }
 
@@ -26,7 +27,7 @@ class FormInfoTask extends Component {
         //     return true;
         // }
         if (nextProps.id !== this.state.id) {
-            let { info } = nextProps;
+            let { info, listOrganizationalUnit } = nextProps;
             this.setState(state => {
                 return {
                     id: nextProps.id,
@@ -35,6 +36,7 @@ class FormInfoTask extends Component {
                     organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
                     responsible: (info && info.responsible) ? info.responsible : [],
                     accountable: (info && info.accountable) ? info.accountable : [],
+                    organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : listOrganizationalUnit[0]?._id,
                 }
             })
             return false;
