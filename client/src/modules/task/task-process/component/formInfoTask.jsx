@@ -8,29 +8,46 @@ class FormInfoTask extends Component {
 
     constructor(props) {
         super(props);
-        let { info, id,listOrganizationalUnit } = this.props;
+        let { info, id, listOrganizationalUnit } = this.props;
+        console.log(listOrganizationalUnit)
         this.state = {
             id: id,
-            listRoles: [...listOrganizationalUnit[0].deans, ...listOrganizationalUnit[0].viceDeans, ...listOrganizationalUnit[0].employees],
             nameTask: (info && info.nameTask) ? info.nameTask : '',
             description: (info && info.description) ? info.description : '',
-            organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : {},
+            organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : listOrganizationalUnit[0]._id,
             responsible: (info && info.responsible) ? info.responsible : [],
             accountable: (info && info.accountable) ? info.accountable : [],
+            listRoles: [...listOrganizationalUnit[0]?.deans, ...listOrganizationalUnit[0]?.viceDeans, ...listOrganizationalUnit[0]?.employees]
         }
     }
 
     shouldComponentUpdate(nextProps, nextState) {
+        // console.log(nextProps.info)
+        // console.log(this.props.info)
+        // if(nextProps.info !== this.props.info) {
+        //     return true;
+        // }
         if (nextProps.id !== this.state.id) {
-            let { info } = nextProps;
+            let { info, listOrganizationalUnit } = nextProps;
+            let listRoles = [...listOrganizationalUnit[0].deans, ...listOrganizationalUnit[0].viceDeans, ...listOrganizationalUnit[0].employees];
             this.setState(state => {
+                if(info && info.organizationalUnit) {
+                    let { listOrganizationalUnit } = this.props
+                    listOrganizationalUnit.forEach(x => {
+                        if(x._id === info.organizationalUnit) {
+                            listRoles = [...x.deans, ...x.viceDeans, ...x.employees];
+                        }
+                    })
+
+                }
                 return {
                     id: nextProps.id,
                     nameTask: (info && info.nameTask) ? info.nameTask : '',
                     description: (info && info.description) ? info.description : '',
-                    organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
+                    organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : listOrganizationalUnit[0]._id,
                     responsible: (info && info.responsible) ? info.responsible : [],
                     accountable: (info && info.accountable) ? info.accountable : [],
+                    listRoles: listRoles,
                 }
             })
             return false;
@@ -55,19 +72,15 @@ class FormInfoTask extends Component {
     }
     handleChangeOrganizationalUnit = (value) => {
         let { listOrganizationalUnit } = this.props
-            listOrganizationalUnit.forEach(x => {
-                
-                if(x._id === value[0]) {
-                   
-                    this.setState(state => {
-                        return {
-                            ...state,
-                            organizationalUnit: value,
-                            listRoles : [...x.deans, ...x.viceDeans, ...x.employees]
-                        }
-                    });
-                }
-            })
+        listOrganizationalUnit.forEach(x => {
+            if(x._id === value[0]) {
+                this.setState({
+                    organizationalUnit: value,
+                    listRoles: [...x.deans, ...x.viceDeans, ...x.employees]
+                });
+            }
+        })
+        
         this.props.handleChangeOrganizationalUnit(value)
     }
     handleChangeResponsible = (value) => {
@@ -87,25 +100,19 @@ class FormInfoTask extends Component {
         const { user, translate, role } = this.props;
         const { nameTask, description, responsible, accountable, organizationalUnit, listRoles } = this.state;
         const { id, info, action, listOrganizationalUnit, disabled } = this.props;
-
+        console.log(this.state)
         let usersOfChildrenOrganizationalUnit;
         if (user && user.usersOfChildrenOrganizationalUnit) {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
-        // if (role && role.list.length !== 0) listRole = role.list;
-        // let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
-        //     .map(item => { return { text: item.name, value: item._id } });
-        let listItems = listRoles.map(x => {
-            return {text: x.name, value: x._id}
-        })
-        // listOrganizationalUnit.forEach(x => {
-        //     if(x._id === this.state.organizationalUnit) {
-        //         listRoles = [...listOrganizationalUnit.deans,...listOrganizationalUnit.viceDeans,...listOrganizationalUnit.employees]
-        //     }
-        // })
+
+
+        let listRole = [];
+        if (role && role.list.length !== 0) listRole = role.list;
+        let listItem = listRoles.map(item => { return { text: item.name, value: item._id } });
         let listOrganizationalUnit1 = listOrganizationalUnit.map(x => { return { text: x.name, value: x._id } })
-        // listOrganizationalUnit1.unshift({text: "", value: 0 })
+
         return (
             <div>
                 <form>
@@ -152,7 +159,7 @@ class FormInfoTask extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 // items={unitMembers}
-                                items={listItems}
+                                items={listItem}
                                 onChange={this.handleChangeResponsible}
                                 multiple={true}
                                 value={responsible}
@@ -170,7 +177,7 @@ class FormInfoTask extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 // items={unitMembers}
-                                items={listItems}
+                                items={listItem}
                                 onChange={this.handleChangeAccountable}
                                 multiple={true}
                                 value={accountable}
