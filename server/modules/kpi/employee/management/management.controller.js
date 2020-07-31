@@ -32,7 +32,7 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (req, res) => {
  */
 exports.copyKPI = async (req, res) => {
     try {
-        var kpipersonals = await overviewService.copyKPI(req.query);
+        var kpipersonals = await overviewService.copyKPI(req.params.id, req.query);
         LogInfo(req.user.email, ` get all kpi personal `, req.user.company);
         res.status(200).json({
             success: true,

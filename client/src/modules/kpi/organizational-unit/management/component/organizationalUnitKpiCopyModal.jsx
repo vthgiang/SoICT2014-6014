@@ -139,8 +139,9 @@ class ModalCopyKPIUnit extends Component {
     }
 
     render() {
-        const { NewDate, errorOnDate } = this.state;
         const { kpiunit, listkpi, idunit, translate, kpiId } = this.props;
+        const { NewDate, errorOnDate } = this.state;
+        
         return (
             <DialogModal
                 modalID={`copy-old-kpi-to-new-time-${kpiunit._id}`}

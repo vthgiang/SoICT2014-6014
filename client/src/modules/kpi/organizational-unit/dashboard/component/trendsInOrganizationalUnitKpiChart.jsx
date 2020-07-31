@@ -109,7 +109,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
     }
 
-    // Lấy danh sách công việc theo từng Kpi đơn vị
     getListTaskByOrganizationUnitKpi = () => {
         const { createKpiUnit, dashboardOrganizationalUnitKpi } = this.props;
         var listOrganizationalUnitKpi, listChildTarget, listTask, listTaskByOrganizationUnitKpi;
@@ -150,7 +149,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         return listTaskByOrganizationUnitKpi;
     }
 
-    // Thiết lập data thời gian thực hiện TB của các công việc theo từng Kpi đơn vị
     setExecutionTimeData = () => {
         const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = this.props;
         var listOrganizationalUnitKpi, listChildTarget, listTask, listTaskByOrganizationUnitKpi;
@@ -171,7 +169,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             listTask = dashboardOrganizationalUnitKpi.tasks
         }
 
-        // Lấy danh sách công việc theo từng Kpi đơn vị
         listTaskByOrganizationUnitKpi = this.getListTaskByOrganizationUnitKpi();
 
         if(listOrganizationalUnitKpi && listChildTarget !== [] && listChildTarget  && listTask && listTask !== []) {
@@ -206,7 +203,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         return executionTimes;
     }
 
-    // Thiết lập data số công việc thực hiện theo từng Kpi đơn vị
     setNumberOfTaskData = () => {
         const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = this.props;
         var listOrganizationalUnitKpi, listChildTarget, listTask, listTaskByOrganizationUnitKpi;
@@ -222,7 +218,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             listTask = dashboardOrganizationalUnitKpi.tasks
         }
 
-        // Lấy danh sách công việc theo từng Kpi đơn vị
         listTaskByOrganizationUnitKpi = this.getListTaskByOrganizationUnitKpi();
 
         if(listOrganizationalUnitKpi && listChildTarget !== [] && listChildTarget && listTask && listTask !== []) {
@@ -245,7 +240,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         return numberOfTasks; 
     }
 
-    // Thiết lập data số người tham gia theo từng Kpi đơn vị
     setNumberOfParticipantData = () => {
         const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = this.props;
         var listOrganizationalUnitKpi, listChildTarget, listTaskByOrganizationUnitKpi;
@@ -258,7 +252,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             listChildTarget = dashboardOrganizationalUnitKpi.employeeKpis
         }
 
-        // Lấy danh sách công việc theo từng Kpi đơn vị
         listTaskByOrganizationUnitKpi = this.getListTaskByOrganizationUnitKpi();
 
         if(!listOrganizationalUnitKpi && listChildTarget){
@@ -296,7 +289,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         return numberOfParticipants;
     }
 
-    // Thiết lập data số Kpi con của từng Kpi đơn vị
     setNumberOfChildKpiData = () => {
         const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = this.props;
         var listOrganizationalUnitKpi, listChildTarget;
@@ -360,7 +352,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         return weight;
     }
 
-    // Xóa các chart đã render trước khi đủ dữ liệu
     removePreviousBarChart = () => {
         const chart = this.refs.chart;
         while(chart.hasChildNodes()){
@@ -368,7 +359,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
     } 
 
-    // Khởi tạo Bar Chart bằng D3
     barChart = () => {
         this.removePreviousBarChart();
        
@@ -385,7 +375,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         numberOfTasks = this.setNumberOfTaskData();
         weight = this.setWeightData();
         
-        // Dữ liệu dạng mảng theo từng chỉ số
         data = [               
             executionTimes,
             numberOfParticipants,
@@ -394,13 +383,11 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             weight
         ]
 
-        // Giá trị các thanh bar(trục y)
         if(data) {
             titleX = data.map(x => x.name);
             titleX = ['x'].concat(titleX);
         }
 
-        // Dữ liệu dạng mảng theo từng KPI để vẽ biểu đồ
         if(listOrganizationalUnitKpi) {
             dataChart = listOrganizationalUnitKpi.map(kpis => {
                 var temporary;
@@ -415,7 +402,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
         dataChart.unshift(titleX);
 
-        // Khởi tạo biểu đồ
         this.chart = c3.generate({
             bindto: this.refs.chart,                
 

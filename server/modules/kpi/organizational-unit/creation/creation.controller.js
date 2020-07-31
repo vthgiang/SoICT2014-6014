@@ -7,10 +7,12 @@ const { LogInfo, LogError } = require('../../../../logs');
 exports.getOrganizationalUnitKpiSet = async (req, res) => {
     if (req.query.parent) {
         getParentOrganizationalUnitKpiSet(req, res);
-    } else if (req.query.startDate && req.query.endDate) {
-        getAllOrganizationalUnitKpiSetByTime(req, res);
+    } else if (req.query.allOrganizationalUnitKpiSet) {
+        getAllOrganizationalUnitKpiSet(req, res);
     } else if (req.query.child) {
         getAllOrganizationalUnitKpiSetByTimeOfChildUnit(req, res);
+    } else if (req.query.startDate && req.query.endDate) {
+        getAllOrganizationalUnitKpiSetByTime(req, res);
     } else {
         try {
             var kpiunit = await KPIUnitService.getOrganizationalUnitKpiSet(req.query);
@@ -264,3 +266,23 @@ getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (req, res) => {
         })
     }
 }
+
+getAllOrganizationalUnitKpiSet = async (req, res) => {
+    try {
+        var kpiunits = await KPIUnitService.getAllOrganizationalUnitKpiSet(req.query);
+        LogInfo(req.user.email, ' get kpi unit ', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_kpi_unit_success'],
+            content: kpiunits
+        })
+    } catch (error) {
+        LogError(req.user.email, ' get kpi unit ', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['get_kpi_unit_fail'],
+            content: error
+        })
+    }
+
+};

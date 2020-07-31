@@ -39,7 +39,6 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        // Call action again when this.state.startDate or this.state.endDate changes
         if(nextState.startDate !== this.state.startDate || nextState.endDate !== this.state.endDate) {
             await this.props.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(this.state.userRoleId, nextState.startDate, nextState.endDate);
             
@@ -65,7 +64,6 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         }
 
         if(nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-            // Lấy tập KPI đơn vị theo từng năm
             this.props.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(this.state.userRoleId, this.state.startDate, this.state.endDate)
 
             this.setState(state => {
@@ -101,7 +99,6 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         return false;
     }
 
-    /** Select kind of point */
     handleSelectKindOfPoint = (value) => {
         if(Number(value) !== this.state.kindOfPoint) {
             this.setState(state => {
@@ -113,14 +110,12 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         }
     }
 
-    /** Select month start in box */
     handleSelectMonthStart = (value) => {
         let month = value.slice(3,7) + '-' + value.slice(0,2);
 
         this.INFO_SEARCH.startDate = month;
     }
 
-    /** Select month end in box */
     handleSelectMonthEnd = async (value) => {
         if(value.slice(0,2)<12) {
             var month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
@@ -131,10 +126,9 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         this.INFO_SEARCH.endDate = month;
     }
 
-    /** Search data */
     handleSearchData = async () => {
-        var startDate = new Date(this.INFO_SEARCH.startDate);
-        var endDate = new Date(this.INFO_SEARCH.endDate);
+        let startDate = new Date(this.INFO_SEARCH.startDate);
+        let endDate = new Date(this.INFO_SEARCH.endDate);
         const {translate} = this.props;
         if (startDate.getTime() >= endDate.getTime()) {
             Swal.fire({
@@ -279,6 +273,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
         return (
             <React.Fragment>
+                {/* Search data trong một khoảng thời gian */}
                 <section className="form-inline">
                     <div className="form-group">
                         <label>{translate('kpi.organizational_unit.dashboard.start_date')}</label>

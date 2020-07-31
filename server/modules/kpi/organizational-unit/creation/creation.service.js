@@ -114,6 +114,70 @@ exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (companyId, quer
     return childOrganizationalUnitKpiSets;
 }
 
+
+
+/**
+ * Lấy tất cả KPI của đơn vị 
+ * @query {*} roleId id chức danh 
+ * @query {*} startDate
+ * @query {*} endDate 
+ * @query {*} status trạng thái của OrganizationalUnitKPISet
+ */
+exports.getAllOrganizationalUnitKpiSet = async (data) => {
+    var organizationalUnit = await OrganizationalUnit.findOne({
+        $or: [
+            { 'deans': data.roleId },
+            { 'viceDeans': data.roleId },
+            { 'employees': data.roleId }
+        ]
+    });
+    let status = Number(data.status);
+    if (data.startDate) {
+        let startDate = data.startDate.split("-");
+        var startdate = new Date(startDate[1] + "-" + startDate[0] + "-" + "01");
+    }
+    if (data.endDate) {
+        var endDate = data.endDate.split("-");
+        if (endDate[0] === "12") {
+            endDate[1] = String(parseInt(endDate[1]) + 1);
+            endDate[0] = "1";
+        }
+        endDate[0] = String(parseInt(endDate[0]) + 1);
+        var enddate = new Date(endDate[2] + "-" + endDate[1] + "-" + endDate[0]);
+    }
+    let keySearch = {
+        organizationalUnit: organizationalUnit._id
+    };
+    if (status !== -1) {
+        keySearch = {
+            ...keySearch,
+            status: status
+        };
+    }
+    if (data.startDate && data.endDate) {
+        keySearch = {
+            ...keySearch,
+            date: { "$gte": startdate, "$lt": enddate }
+        }
+    }
+    else if (data.startDate) {
+        keySearch = {
+            ...keySearch,
+            date: { "$gte": startdate }
+        }
+    }
+    else if (data.endDate) {
+        keySearch = {
+            ...keySearch,
+            date: { "$lt": enddate }
+        }
+    }
+    var kpiunits = await OrganizationalUnitKpiSet.find(keySearch)
+        .skip(0).limit(12).populate("organizationalUnit creator")
+        .populate({ path: "kpis", populate: { path: 'parent' } });
+    return kpiunits;
+}
+
 /**
  * Chỉnh sửa thông tin chung của tập KPI đơn vị
  * @dateString thời gian mới 
