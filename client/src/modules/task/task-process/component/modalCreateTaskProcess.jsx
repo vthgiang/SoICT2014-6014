@@ -6,6 +6,8 @@ import { DialogModal } from "../../../../common-components";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { getStorage } from '../../../../config';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
+// import Modeling from 'bpmn-js/lib/features/Modeling'
+// import elementRegistry from ''
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
@@ -26,24 +28,24 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
    return entries;
 }
 const initialDiagram =
-'<?xml version="1.0" encoding="UTF-8"?>' +
-'<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-'xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" ' +
-'xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" ' +
-'xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" ' +
-'targetNamespace="http://bpmn.io/schema/bpmn" ' +
-'id="Definitions_1">' +
-'<bpmn:process id="Process_1" isExecutable="false">' +
-// '<bpmn:startEvent id="StartEvent_1"/>' +
-'</bpmn:process>' +
-'<bpmndi:BPMNDiagram id="BPMNDiagram_1">' +
-'<bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">' +
-'<bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">' +
-'<dc:Bounds height="36.0" width="36.0" x="173.0" y="102.0"/>' +
-'</bpmndi:BPMNShape>' +
-'</bpmndi:BPMNPlane>' +
-'</bpmndi:BPMNDiagram>' +
-'</bpmn:definitions>';
+   '<?xml version="1.0" encoding="UTF-8"?>' +
+   '<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+   'xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" ' +
+   'xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" ' +
+   'xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" ' +
+   'targetNamespace="http://bpmn.io/schema/bpmn" ' +
+   'id="Definitions_1">' +
+   '<bpmn:process id="Process_1" isExecutable="false">' +
+   // '<bpmn:startEvent id="StartEvent_1"/>' +
+   '</bpmn:process>' +
+   '<bpmndi:BPMNDiagram id="BPMNDiagram_1">' +
+   '<bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">' +
+   '<bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">' +
+   '<dc:Bounds height="36.0" width="36.0" x="173.0" y="102.0"/>' +
+   '</bpmndi:BPMNShape>' +
+   '</bpmndi:BPMNPlane>' +
+   '</bpmndi:BPMNDiagram>' +
+   '</bpmn:definitions>';
 
 class ModalCreateTaskProcess extends Component {
 
@@ -58,7 +60,7 @@ class ModalCreateTaskProcess extends Component {
       }
       this.initialDiagram = initialDiagram
       this.modeler = new BpmnModeler();
-      this.generateId= "createprocess"
+      this.generateId = "createprocess"
    }
    handleChangeBpmnName = async (e) => {
       let { value } = e.target;
@@ -81,9 +83,7 @@ class ModalCreateTaskProcess extends Component {
    }
 
    handleChangeName = async (value) => {
-      // handleChangeName = async (e) => {
-      // let { value } = e.target;
-      let {listOrganizationalUnit } = this.props
+      let { listOrganizationalUnit } = this.props
       await this.setState(state => {
          state.info[`${state.id}`] = {
             ...state.info[`${state.id}`],
@@ -95,12 +95,17 @@ class ModalCreateTaskProcess extends Component {
             ...state,
          }
       })
+      const modeling = this.modeler.get('modeling');
+      let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+      modeling.updateProperties(element1, {
+         name: value
+      });
    }
 
    handleChangeDescription = async (value) => {
       // handleChangeDescription = async (e) => {
       // let { value } = e.target;
-      let {listOrganizationalUnit } = this.props
+      let { listOrganizationalUnit } = this.props
       await this.setState(state => {
          state.info[`${state.id}`] = {
             ...state.info[`${state.id}`],
@@ -154,7 +159,7 @@ class ModalCreateTaskProcess extends Component {
       })
    }
    shouldComponentUpdate(nextProps, nextState) {
-      if(nextState.save === true) {
+      if (nextState.save === true) {
          this.props.getAllDepartments()
          this.modeler.importXML(this.initialDiagram);
          this.setState({
@@ -182,23 +187,25 @@ class ModalCreateTaskProcess extends Component {
 
    interactPopup = (event) => {
       let element = event.element;
+      console.log(element)
       let { department } = this.props
       let nameStr = element.type.split(':');
       this.setState(state => {
          if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process' && element.type !== 'bpmn:StartEvent' && element.type !== 'bpmn:EndEvent' && element.type !== 'bpmn:SequenceFlow') {
-            return { ...state, 
-               showInfo: true, 
-               type: element.type, 
-               name: nameStr[1], 
-               taskName: element.businessObject.name, 
+            return {
+               ...state,
+               showInfo: true,
+               type: element.type,
+               name: nameStr[1],
+               taskName: element.businessObject.name,
                id: `${element.businessObject.id}`,
             }
          }
          else {
             return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
          }
-        
-      },()=>console.log(this.state))
+
+      })
    }
 
    deleteElements = (event) => {
@@ -210,7 +217,15 @@ class ModalCreateTaskProcess extends Component {
    }
 
    changeNameElement = (event) => {
-      var element = event.element;
+      this.setState(state => {
+         state.info[`${state.id}`] = {
+            ...state.info[`${state.id}`],
+            nameTask: event.element.businessObject.name,
+         }
+         return {
+            ...state,
+         }
+      })
    }
    save = async () => {
       let { department } = this.props
@@ -232,17 +247,17 @@ class ModalCreateTaskProcess extends Component {
          infoTask: this.state.info
       }
       for (const i in data.infoTask) {
-         if(!data.infoTask[i].organizationalUnit) {
+         if (!data.infoTask[i].organizationalUnit) {
             data.infoTask[i].organizationalUnit = department.list[0]._id
          }
       }
       await this.props.createXmlDiagram(data)
       this.setState(state => {
-         return  {
+         return {
             ...state,
             processName: null,
             processDescription: null,
-            save : true,
+            save: true,
             showInfo: false
          }
       });
@@ -325,7 +340,7 @@ class ModalCreateTaskProcess extends Component {
       });
    }
    render() {
-      const { translate, department} = this.props;
+      const { translate, department } = this.props;
       const { id, info, showInfo, processDescription, processName } = this.state;
       const { listOrganizationalUnit } = this.props
       return (
@@ -376,7 +391,7 @@ class ModalCreateTaskProcess extends Component {
                                        <h1>Option {this.state.name}</h1>
                                     </div>
                                     <FormInfoTask
-                                       listOrganizationalUnit = {listOrganizationalUnit}
+                                       listOrganizationalUnit={listOrganizationalUnit}
                                        action='create'
                                        id={id}
                                        info={(info && info[`${id}`]) && info[`${id}`]}

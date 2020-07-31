@@ -21,11 +21,6 @@ class FormInfoTask extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        // console.log(nextProps.info)
-        // console.log(this.props.info)
-        // if(nextProps.info !== this.props.info) {
-        //     return true;
-        // }
         if (nextProps.id !== this.state.id) {
             let { info, listOrganizationalUnit } = nextProps;
             // let listRoles = [...listOrganizationalUnit[0].deans, ...listOrganizationalUnit[0].viceDeans, ...listOrganizationalUnit[0].employees];

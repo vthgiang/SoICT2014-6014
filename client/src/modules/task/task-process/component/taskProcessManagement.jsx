@@ -18,6 +18,7 @@ class TaskProcessManagement extends Component {
     super(props);
     this.state = {
       currentRow: {},
+      currentPage: 1
     };
 
   }
@@ -66,6 +67,18 @@ class TaskProcessManagement extends Component {
     });
     window.$(`#modal-create-process-task`).modal("show");
   }
+  setPage = async (pageTotal) => {
+    var test = window.$("#multiSelectUnit").val();
+    var oldCurrentPage = this.state.currentPage;
+    await this.setState(state => {
+        return {
+            ...state,
+            currentPage: pageTotal
+        }
+    })
+    var newCurrentPage = this.state.currentPage;
+    // if (oldCurrentPage !== newCurrentPage) this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test, this.name.value);
+}
   render() {
     const { translate, taskProcess,department } = this.props
     const { showModalCreateProcess, currentRow } = this.state
@@ -181,7 +194,7 @@ class TaskProcessManagement extends Component {
               }
             </tbody>
           </table>
-          {/* <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} /> */}
+          <PaginateBar pageTotal={4} currentPage={this.state.currentPage} func={this.setPage} />
         </div>
       </div>
     );
