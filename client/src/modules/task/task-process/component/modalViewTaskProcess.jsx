@@ -28,7 +28,6 @@ class ModalViewTaskProcess extends Component {
 
    interactPopup = async (event) => {
       let element = event.element;
-      console.log(element)
    }
    static getDerivedStateFromProps(nextProps, prevState) {
       if (nextProps.idProcess !== prevState.idProcess) {
