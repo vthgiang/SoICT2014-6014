@@ -80,7 +80,7 @@ function getAllTaskByRole(userId, roleId) {
  * @param {*} endDate kết thúc công việc
  */
 
-function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore) {//param -- user,
+function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime) {//param -- user,
     var user = getStorage("userId");
 
     return sendRequest({
@@ -100,6 +100,7 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
             endDate: endDate,
             startDateAfter: startDateAfter,
             endDateBefore: endDateBefore,
+            aPeriodOfTime: aPeriodOfTime
         }
     }, false, true, 'task.task_management');
 }
@@ -118,7 +119,7 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
  * @param {*} endDate kết thúc công việc
  */
 
-function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
+function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime) {
     var user = getStorage("userId");
     return sendRequest({
         url: `${LOCAL_SERVER_API}/task/tasks`,
@@ -135,6 +136,7 @@ function getAccountableTaskByUser(unit, number, perPage, status, priority, speci
             name: name,
             startDate: startDate,
             endDate: endDate,
+            aPeriodOfTime: aPeriodOfTime
         }
     }, false, true, 'task.task_management');
 }
@@ -153,7 +155,7 @@ function getAccountableTaskByUser(unit, number, perPage, status, priority, speci
  * @param {*} endDate kết thúc công việc
  */
 
-function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
+function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime) {
     var user = getStorage("userId");
     return sendRequest({
         url: `${LOCAL_SERVER_API}/task/tasks`,
@@ -170,6 +172,7 @@ function getConsultedTaskByUser(unit, number, perPage, status, priority, special
             name: name,
             startDate: startDate,
             endDate: endDate,
+            aPeriodOfTime: aPeriodOfTime
         }
     }, false, true, 'task.task_management');
 }
@@ -188,7 +191,7 @@ function getConsultedTaskByUser(unit, number, perPage, status, priority, special
  * @param {*} endDate kết thúc công việc
  */
 
-function getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
+function getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime) {
     var user = getStorage("userId");
     return sendRequest({
         url: `${LOCAL_SERVER_API}/task/tasks`,
@@ -205,6 +208,7 @@ function getInformedTaskByUser(unit, number, perPage, status, priority, special,
             name: name,
             startDate: startDate,
             endDate: endDate,
+            aPeriodOfTime: aPeriodOfTime
         }
     }, false, true, 'task.task_management');
 }
@@ -223,7 +227,7 @@ function getInformedTaskByUser(unit, number, perPage, status, priority, special,
  * @param {*} endDate kết thúc công việc
  */
 
-function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
+function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime) {
     var user = getStorage("userId");
     return sendRequest({
         url: `${LOCAL_SERVER_API}/task/tasks`,
@@ -240,6 +244,7 @@ function getCreatorTaskByUser(unit, number, perPage, status, priority, special, 
             name: name,
             startDate: startDate,
             endDate: endDate,
+            aPeriodOfTime: aPeriodOfTime
         }
     }, false, true, 'task.task_management');
 }

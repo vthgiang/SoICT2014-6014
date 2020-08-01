@@ -12,6 +12,8 @@ import { sendRequest } from '../../../../../helpers/requestHelper';
 export const createUnitKpiServices = {
     getCurrentKPIUnit,
     getKPIParent,
+    getAllOrganizationalUnitKpiSetByTime,
+    getAllOrganizationalUnitKpiSetByTimeOfChildUnit,
     addKPIUnit,
     editStatusKPIUnit,
     editKPIUnit,
@@ -38,7 +40,9 @@ function getCurrentKPIUnit(roleId, organizationalUnitId, month) {
     }, false, true, 'kpi.organizational_unit');
 }
 
-// Lấy KPI đơn vị cha
+/*
+ *Lấy KPI đơn vị cha
+ */
 function getKPIParent(parentUnit) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
@@ -48,6 +52,37 @@ function getKPIParent(parentUnit) {
             roleId: parentUnit
         }
     }, false, true, 'kpi.organizational_unit');
+}
+
+/** 
+ * Lấy danh sách các tập KPI đơn vị theo thời gian của từng đơn vị 
+ */
+function getAllOrganizationalUnitKpiSetByTime(organizationalUnitId, startDate, endDate) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
+        method: 'GET',
+        params: {
+            organizationalUnitId: organizationalUnitId,
+            startDate: startDate,
+            endDate: endDate,
+        }
+    }, false, false)
+}
+
+/** 
+ * Lấy danh sách các tập KPI đơn vị theo thời gian của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại 
+ */
+function getAllOrganizationalUnitKpiSetByTimeOfChildUnit(roleId, startDate, endDate) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
+        method: 'GET',
+        params: {
+            child: true,
+            roleId: roleId,
+            startDate: startDate,
+            endDate: endDate,
+        }
+    }, false, false)
 }
 
 // Khởi tạo KPI đơn vị 

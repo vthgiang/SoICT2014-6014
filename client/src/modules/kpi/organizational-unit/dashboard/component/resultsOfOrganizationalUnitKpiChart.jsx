@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
-
+import { createKpiUnitActions } from '../redux/actions';
+import {createUnitKpiActions} from '../../creation/redux/actions' 
 import { DatePicker } from '../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
 import c3 from 'c3';
 import 'c3/c3.css';
-import * as d3 from "d3";
 
 class ResultsOfOrganizationalUnitKpiChart extends Component {
     
@@ -47,7 +46,6 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        // Call action again when this.props.organizationalUnitId changes
         if(nextProps.organizationalUnitId !== this.state.organizationalUnitId) {
             await this.props.getAllOrganizationalUnitKpiSetByTime(nextProps.organizationalUnitId, this.state.startDate, this.state.endDate);
             this.setState(state => {
@@ -60,7 +58,6 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
             return false;
         }
 
-        // Call action again when this.state.startDate or this.state.endDate changes
         if(nextState.startDate !== this.state.startDate || nextState.endDate !== this.state.endDate) {
             await this.props.getAllOrganizationalUnitKpiSetByTime(this.state.organizationalUnitId, nextState.startDate, nextState.endDate);
             this.setState(state => {
@@ -74,7 +71,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
         }
         
         if(nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if(!nextProps.dashboardOrganizationalUnitKpi.organizationalUnitKpiSets) {
+            if(!nextProps.createKpiUnit.organizationalUnitKpiSets) {
                 return false
             }
 
@@ -110,13 +107,12 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
         }
     }
 
-    // Thiết lập dữ liệu biểu đồ
     setDataMultiLineChart = () => {
-        const { dashboardOrganizationalUnitKpi, translate } = this.props;
+        const { createKpiUnit, translate } = this.props;
         var listOrganizationalUnitKpiSetEachYear, automaticPoint, employeePoint, approvedPoint, date, dataMultiLineChart;
 
-        if(dashboardOrganizationalUnitKpi.organizationalUnitKpiSets) {
-            listOrganizationalUnitKpiSetEachYear = dashboardOrganizationalUnitKpi.organizationalUnitKpiSets
+        if(createKpiUnit.organizationalUnitKpiSets) {
+            listOrganizationalUnitKpiSetEachYear = createKpiUnit.organizationalUnitKpiSets
         }
 
         if(listOrganizationalUnitKpiSetEachYear) {
@@ -141,14 +137,12 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
         return dataMultiLineChart;
     };
 
-    /** Select month start in box */
     handleSelectMonthStart = (value) => {
         var month = value.slice(3,7) + '-' + value.slice(0,2);
 
         this.INFO_SEARCH.startDate = month;
     }
 
-    /** Select month end in box */
     handleSelectMonthEnd = async (value) => {
         if(value.slice(0,2) < 12) {
             var month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
@@ -159,7 +153,6 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
         this.INFO_SEARCH.endDate = month;
     }
 
-    /** Search data */
     handleSearchData = async () => {
         var startDate = new Date(this.INFO_SEARCH.startDate);
         var endDate = new Date(this.INFO_SEARCH.endDate);
@@ -182,7 +175,6 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
         }
     }
 
-    // Xóa các chart đã render trước khi đủ dữ liệu
     removePreviosMultiLineChart = () => {
         const chart =  this.refs.chart;
         while(chart.hasChildNodes()) {
@@ -190,11 +182,10 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
         }
     }
 
-    // Khởi tạo MultiLineChart bằng C3
     multiLineChart = () => {
         this.removePreviosMultiLineChart();
         const {translate} = this.props;
-        // Tạo mảng dữ liệu
+
         var dataMultiLineChart = this.setDataMultiLineChart();
 
         this.chart = c3.generate({
@@ -255,6 +246,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
 
         return(
             <React.Fragment>
+                {/* Search data trong một khoảng thời gian */}
                 <section className="form-inline">
                     <div className="form-group">
                         <label>{translate('kpi.organizational_unit.dashboard.start_date')}</label>
@@ -290,12 +282,12 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
 }
 
 function mapState(state) {
-    const { dashboardOrganizationalUnitKpi } = state;
-    return { dashboardOrganizationalUnitKpi };
+    const { createKpiUnit } = state;
+    return { createKpiUnit };
 }
 
 const actions = {
-    getAllOrganizationalUnitKpiSetByTime: dashboardOrganizationalUnitKpiActions.getAllOrganizationalUnitKpiSetByTime
+    getAllOrganizationalUnitKpiSetByTime: createUnitKpiActions.getAllOrganizationalUnitKpiSetByTime
 }
 
 const connectedResultsOfOrganizationalUnitKpiChart = connect(mapState, actions)(withTranslate(ResultsOfOrganizationalUnitKpiChart));

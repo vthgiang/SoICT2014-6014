@@ -80,7 +80,7 @@ class OrganizationalUnitKpiCreateModal extends Component {
     
     render() {
         const { organizationalUnit } = this.props;
-        const { translate } = this.props; // Hàm để chuyển sang song ngữ
+        const { translate } = this.props; 
 
         let d = new Date(),
             month = '' + (d.getMonth() + 1),
@@ -106,7 +106,6 @@ class OrganizationalUnitKpiCreateModal extends Component {
                     msg_success={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success')}
                     msg_faile={translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.failure')}
                     func={this.handleSubmit}
-                    // disableSubmit={!this.isFormValidated()}
                 >
                     {/* Form khởi tạo KPI đơn vị */}
                     <form id="formStartKPIUnit" onSubmit={() => this.handleSubmit(translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.success'))}>
@@ -122,10 +121,10 @@ class OrganizationalUnitKpiCreateModal extends Component {
                             <label className="col-sm-2">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set_modal.month')}</label>
                             <DatePicker
                                 id="month"      
-                                dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                value={defaultTime}                            // giá trị mặc định cho datePicker    
+                                dateFormat="month-year"            
+                                value={defaultTime}                            
                                 onChange={this.formatDate}
-                                disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
+                                disabled={false}                     
                             />
                         </div>
 

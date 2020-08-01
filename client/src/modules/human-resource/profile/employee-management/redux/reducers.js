@@ -18,6 +18,7 @@ export function employeesManager(state = initState, action) {
         case EmployeeConstants.ADDEMPLOYEE_REQUEST:
         case EmployeeConstants.UPDATE_INFOR_EMPLOYEE_REQUEST:
         case EmployeeConstants.DELETE_EMPLOYEE_REQUEST:
+        case EmployeeConstants.IMPORT_EMPLOYEE_REQUEST:
             return {
                 ...state,
                 isLoading: true
@@ -30,22 +31,21 @@ export function employeesManager(state = initState, action) {
                     totalList: action.payload.totalList,
                     isLoading: false
                 };
-                
             } else {
                 return {
                     ...state,
-                    totalEmployeeOfOrganizationalUnits: action.payload.totalEmployee !== undefined ? 
+                    totalEmployeeOfOrganizationalUnits: action.payload.totalEmployee !== undefined ?
                         action.payload.totalEmployee : state.totalEmployeeOfOrganizationalUnits,
-                        
-                    listEmployeesOfOrganizationalUnits: action.payload.listEmployeesOfOrganizationalUnits !== undefined ? 
-                        action.payload.listEmployeesOfOrganizationalUnits: state.listEmployeesOfOrganizationalUnits,
-                    
-                    totalAllEmployee: action.payload.totalAllEmployee !== undefined ? 
+
+                    listEmployeesOfOrganizationalUnits: action.payload.listEmployeesOfOrganizationalUnits !== undefined ?
+                        action.payload.listEmployeesOfOrganizationalUnits : state.listEmployeesOfOrganizationalUnits,
+
+                    totalAllEmployee: action.payload.totalAllEmployee !== undefined ?
                         action.payload.totalAllEmployee : state.totalAllEmployee,
 
-                    listAllEmployees: action.payload.listAllEmployees !== undefined ? 
-                        action.payload.listAllEmployees : state.listAllEmployees ,
-                    
+                    listAllEmployees: action.payload.listAllEmployees !== undefined ?
+                        action.payload.listAllEmployees : state.listAllEmployees,
+
                     isLoading: false
                 }
             }
@@ -74,17 +74,24 @@ export function employeesManager(state = initState, action) {
                     listEmployees: state.listEmployees.filter(x => (x.employees[0]._id !== action.payload._id)),
                         isLoading: false,
                 };
-
-            case EmployeeConstants.GETALL_FAILURE:
-            case EmployeeConstants.ADDEMPLOYEE_FAILURE:
-            case EmployeeConstants.UPDATE_INFOR_EMPLOYEE_FAILURE:
-            case EmployeeConstants.DELETE_EMPLOYEE_FAILURE:
+            case EmployeeConstants.IMPORT_EMPLOYEE_SUCCESS:
                 return {
                     ...state,
                     isLoading: false,
-                        error: action.error
-                };
-            default:
-                return state
+                        importEmployees: action.payload.content,
+                        error: ""
+                }
+                case EmployeeConstants.GETALL_FAILURE:
+                case EmployeeConstants.ADDEMPLOYEE_FAILURE:
+                case EmployeeConstants.UPDATE_INFOR_EMPLOYEE_FAILURE:
+                case EmployeeConstants.DELETE_EMPLOYEE_FAILURE:
+                case EmployeeConstants.IMPORT_EMPLOYEE_FAILURE:
+                    return {
+                        ...state,
+                        isLoading: false,
+                            error: action.error
+                    };
+                default:
+                    return state
     }
 }

@@ -18,6 +18,9 @@ exports.getEmployeeKpiSet = async (req, res) => {
     else if (req.query.organizationalUnitIds && req.query.startDate && req.query.endDate) {
         this.getAllEmployeeKpiSetOfAllEmployeeInOrganizationalUnitByMonth(req, res);
     }
+    else if (req.query.roleId && req.query.month) {
+        KPIPersonalController.getAllEmployeeKpiInChildrenOrganizationalUnit(req, res)
+    }
     else {
         try {
             var employeeKpiSet = await EmployeeKpiSetService.getEmployeeKpiSet(req.query.userId, req.query.role, req.query.month);

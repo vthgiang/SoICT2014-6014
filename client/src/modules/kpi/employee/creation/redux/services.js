@@ -75,7 +75,7 @@ function createEmployeeKpiSet(newKPI) {
     newKPI = { ...newKPI, creator: id };
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/create`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets`,
         method: 'POST',
         data: JSON.stringify(newKPI)
     }, true, true, 'kpi.employee.employee_kpi_set.messages_from_server');

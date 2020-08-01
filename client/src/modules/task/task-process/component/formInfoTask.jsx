@@ -13,10 +13,10 @@ class FormInfoTask extends Component {
             id: id,
             nameTask: (info && info.nameTask) ? info.nameTask : '',
             description: (info && info.description) ? info.description : '',
-            organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : listOrganizationalUnit[0]._id,
+            organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
             responsible: (info && info.responsible) ? info.responsible : [],
             accountable: (info && info.accountable) ? info.accountable : [],
-            listRoles: [...listOrganizationalUnit[0]?.deans, ...listOrganizationalUnit[0]?.viceDeans, ...listOrganizationalUnit[0]?.employees]
+            // listRoles: [...listOrganizationalUnit[0]?.deans, ...listOrganizationalUnit[0]?.viceDeans, ...listOrganizationalUnit[0]?.employees]
         }
     }
 
@@ -28,29 +28,27 @@ class FormInfoTask extends Component {
         // }
         if (nextProps.id !== this.state.id) {
             let { info, listOrganizationalUnit } = nextProps;
-            let listRoles = [...listOrganizationalUnit[0].deans, ...listOrganizationalUnit[0].viceDeans, ...listOrganizationalUnit[0].employees];
+            // let listRoles = [...listOrganizationalUnit[0].deans, ...listOrganizationalUnit[0].viceDeans, ...listOrganizationalUnit[0].employees];
             this.setState(state => {
-                if(info && info.organizationalUnit) {
-                    let { listOrganizationalUnit } = this.props
-                    listOrganizationalUnit.forEach(x => {
-                        if(x._id === info.organizationalUnit) {
-                            listRoles = [...x.deans, ...x.viceDeans, ...x.employees];
-                        }
-                    })
-                }
-                return {
-                    id: nextProps.id,
-                    nameTask: (info && info.nameTask) ? info.nameTask : '',
-                    description: (info && info.description) ? info.description : '',
-                    organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : listOrganizationalUnit[0]._id,
-                    responsible: (info && info.responsible) ? info.responsible : [],
-                    accountable: (info && info.accountable) ? info.accountable : [],
-                    listRoles: listRoles,
-                }
-            })
-            return false;
-        }
-        else return true;
+            //     if(info && info.organizationalUnit) {
+            //         let { listOrganizationalUnit } = this.props
+            //         listOrganizationalUnit.forEach(x => {
+            //             if(x._id === info.organizationalUnit) {
+            //                 listRoles = [...x.deans, ...x.viceDeans, ...x.employees];
+            //             }
+            //         })
+            // }
+            return {
+                id: nextProps.id,
+                nameTask: (info && info.nameTask) ? info.nameTask : '',
+                description: (info && info.description) ? info.description : '',
+                organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
+                responsible: (info && info.responsible) ? info.responsible : [],
+                accountable: (info && info.accountable) ? info.accountable : [],
+            }
+        })
+        return false;
+        } else return true;
     }
 
 
@@ -69,17 +67,10 @@ class FormInfoTask extends Component {
         this.props.handleChangeDescription(value);
     }
     handleChangeOrganizationalUnit = (value) => {
-        let { listOrganizationalUnit } = this.props
-        listOrganizationalUnit.forEach(x => {
-            if(x._id === value[0]) {
-                this.setState({
-                    organizationalUnit: value,
-                    listRoles: [...x.deans, ...x.viceDeans, ...x.employees]
-                });
-            }
-        })
-        
-        this.props.handleChangeOrganizationalUnit(value)
+        this.setState({
+            organizationalUnit: value[0],
+        });
+        this.props.handleChangeOrganizationalUnit(value[0])
     }
     handleChangeResponsible = (value) => {
         this.setState({
@@ -96,21 +87,23 @@ class FormInfoTask extends Component {
 
     render() {
         const { user, translate, role } = this.props;
-        const { nameTask, description, responsible, accountable, organizationalUnit, listRoles } = this.state;
+        const { nameTask, description, responsible, accountable, organizationalUnit, } = this.state;
         const { id, info, action, listOrganizationalUnit, disabled } = this.props;
-        console.log(this.state)
         let usersOfChildrenOrganizationalUnit;
         if (user && user.usersOfChildrenOrganizationalUnit) {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
+        // console.log(info)
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
-
-
-        let listRole = [];
-        if (role && role.list.length !== 0) listRole = role.list;
-        let listItem = listRoles.map(item => { return { text: item.name, value: item._id } });
-        let listOrganizationalUnit1 = listOrganizationalUnit.map(x => { return { text: x.name, value: x._id } })
-
+        let listRoles = [];
+        listOrganizationalUnit.forEach(x => {
+            if (x._id === info?.organizationalUnit) {
+                listRoles = [...x.deans, ...x.viceDeans, ...x.employees]
+            }
+        })
+        let listItem = listRoles.map(x => {
+            return { text: x.name, value: x._id }
+        })
         return (
             <div>
                 <form>
@@ -141,7 +134,7 @@ class FormInfoTask extends Component {
                                 style={{ width: "100%" }}
                                 // items={unitMembers}
                                 multiple={false}
-                                items={listOrganizationalUnit1}
+                                items={listOrganizationalUnit.map(x => { return { text: x.name, value: x._id } })}
                                 onChange={this.handleChangeOrganizationalUnit}
                                 value={organizationalUnit}
                                 disabled={disabled}
