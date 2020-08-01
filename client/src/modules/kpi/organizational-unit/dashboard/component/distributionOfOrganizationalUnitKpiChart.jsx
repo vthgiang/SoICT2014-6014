@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { createUnitKpiActions } from '../../creation/redux/actions';
+
 import { withTranslate } from 'react-redux-multilingual';
+
 import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";

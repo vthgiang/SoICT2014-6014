@@ -121,7 +121,7 @@ class UsageLogTab extends Component {
 
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
+        if (nextProps.id !== prevState.id || nextProps.usageLogs !== prevState.usageLogs) {
             return {
                 ...prevState,
                 id: nextProps.id,
