@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User, UserRole } = require('../../../models/index').schema;
 const moment = require("moment");
 const nodemailer = require("nodemailer");
-const OrganizationalUnitService  = require('../../super-admin/organizational-unit/organizationalUnit.service');
+const OrganizationalUnitService = require('../../super-admin/organizational-unit/organizationalUnit.service');
 
 /**
  * Lấy tất cả các công việc
@@ -192,40 +192,40 @@ exports.getTaskById = async (id, userId) => {
     if (!flag) {    // Trưởng đơn vị được phép xem thông tin công việc
 
         // Tìm danh sách các role mà user kế thừa phân quyền
-        let role = await UserRole.find({ userId: userId});
+        let role = await UserRole.find({ userId: userId });
         let listRole = role.map(item => item.roleId);
 
         let company = [];
 
         // Tìm ra các đơn vị có role là dean
-        for (let i in listRole){
+        for (let i in listRole) {
             let roles = await Role.findById(listRole[i]);
             company[i] = roles.company;
         }
         let tree = [];
         let k = 0;
-        for (let i = 0; i < listRole.length; i++){
+        for (let i = 0; i < listRole.length; i++) {
             let com = company[i];
             let r = listRole[i];
-            let tr = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(com,r);
+            let tr = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(com, r);
             if (tr) {
                 tree[k] = tr;
                 k++;
             }
         }
-        for (let i = 0; i < listRole.length; i++){
+        for (let i = 0; i < listRole.length; i++) {
             let rol = listRole[i];
-            if (!flag){
-                for (let j =0; j < tree.length; j++){
-                    if (tree[j].deans.indexOf(rol) !== -1){
+            if (!flag) {
+                for (let j = 0; j < tree.length; j++) {
+                    if (tree[j].deans.indexOf(rol) !== -1) {
                         let v = tree[j];
                         let f = await _checkDeans(v, task.organizationalUnit._id);
-                        if (f === 1){
+                        if (f === 1) {
                             flag = 1;
                         }
                     }
                 }
-            }   
+            }
         }
     }
     if (task.creator._id.equals(userId)) {
@@ -245,12 +245,12 @@ exports.getTaskById = async (id, userId) => {
  * Hàm duyệt cây đơn vị - kiểm tra trong cây có đơn vị của công việc được lấy ra hay không (đệ quy)
  */
 _checkDeans = async (v, id) => {
-    if (v){
-        if (JSON.stringify(v.id) === JSON.stringify(id)){
+    if (v) {
+        if (JSON.stringify(v.id) === JSON.stringify(id)) {
             return 1;
         }
-        if (v.children){
-            for (let k = 0; k < v.children.length; k++){
+        if (v.children) {
+            for (let k = 0; k < v.children.length; k++) {
                 return _checkDeans(v.children[k], id);
             }
         }
@@ -851,22 +851,22 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
  * @task dữ liệu từ params
  */
 exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
-    var { organizationalUnit, startDateAfter, endDateBefore } = task;
+    var { organizationalUnitId, startDateAfter, endDateBefore } = task;
     var organizationUnitTasks;
     var keySearch = {};
 
-    if (organizationalUnit !== '[]') {
+    if (organizationalUnitId !== '[]') {
         keySearch = {
             ...keySearch,
             organizationalUnit: {
-                $in: organizationalUnit,
+                $in: organizationalUnitId,
             }
         };
     }
 
     if (startDateAfter) {
         let startTimeAfter = startDateAfter.split("-");
-        let start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
+        let start = new Date(startTimeAfter[0] - 1, startTimeAfter[1], 1);
 
         keySearch = {
             ...keySearch,
@@ -878,7 +878,7 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
 
     if (endDateBefore) {
         let endTimeBefore = endDateBefore.split("-");
-        let end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
+        let end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
 
         keySearch = {
             ...keySearch,
@@ -890,7 +890,6 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
 
     organizationUnitTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
         .populate({ path: "organizationalUnit creator parent" });
-
     return {
         "tasks": organizationUnitTasks
     };
