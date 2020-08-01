@@ -63,48 +63,30 @@ class DomainOfTaskResultsChart extends Component {
         }
 
         this.state = {
+            aPeriodOfTime: true,
             userId: localStorage.getItem("userId"),
 
-            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
+            dataStatus: this.DATA_STATUS.QUERYING,
 
             role: this.INFO_SEARCH.role,
             startMonth: this.INFO_SEARCH.startMonth,
             endMonth: this.INFO_SEARCH.endMonth,
 
-            willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
+            willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
+            callAction: false,
         };
-    }
-
-    componentDidMount = () => {
-        let {taskOrganizationUnit} = this.props;
-        if(!taskOrganizationUnit){
-            this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth, null, null);
-            this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth);
-            this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth);
-            this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth);
-            this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth);
-            
-            this.setState(state => {
-                return {
-                    ...state,
-                    dataStatus: this.DATA_STATUS.QUERYING,
-                    willUpdate: true       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-                };
-            }); 
-        }
-        
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
         
-        if (nextState.startMonth !== this.state.startMonth || nextState.endMonth !== this.state.endMonth) {
-            this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.startMonth, nextState.endMonth, null, null);
-            this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.startMonth, nextState.endMonth);
-            this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.startMonth, nextState.endMonth);
-            this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.startMonth, nextState.endMonth);
-            this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.startMonth, nextState.endMonth);
+        if (nextProps.callAction !== this.state.callAction || nextState.startMonth !== this.state.startMonth || nextState.endMonth !== this.state.endMonth) {
+            await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.startMonth, nextState.endMonth, null, null, this.state.aPeriodOfTime);
+            await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.startMonth, nextState.endMonth, this.state.aPeriodOfTime);
+            await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.startMonth, nextState.endMonth, this.state.aPeriodOfTime);
+            await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.startMonth, nextState.endMonth, this.state.aPeriodOfTime);
+            await this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.startMonth, nextState.endMonth, this.state.aPeriodOfTime);
 
-            this.setState(state => {
+            await this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.QUERYING,
@@ -116,18 +98,24 @@ class DomainOfTaskResultsChart extends Component {
         }
 
         if (nextState.role !== this.state.role) {
+            await this.setState(state => {
+                return {
+                    ...state,
+                    role: nextState.role
+                }
+            })
             
             this.domainChart();
         }
         
         if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-            this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth, null, null);
-            this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth);
-            this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth);
-            this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth);
-            this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth);
+            await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth, null, null, this.state.aPeriodOfTime);
+            await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth, this.state.aPeriodOfTime);
+            await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth, this.state.aPeriodOfTime);
+            await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMont, this.state.aPeriodOfTimeh);
+            await this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth, this.state.aPeriodOfTime);
 
-            this.setState(state => {
+            await this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.QUERYING,
@@ -139,21 +127,20 @@ class DomainOfTaskResultsChart extends Component {
         } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             // Kiểm tra tasks đã được bind vào props hay chưa
             if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks) {
-                /** Sao lưu để sử dụng khi dữ liệu bị thay đổi
-                 *  (Lý do: khi đổi role task, muốn sử dụng dữ liệu cũ nhưng trước đó dữ liệu trong kho redux đã bị thay đổi vì service được gọi ở 1 nơi khác)
-                 */ 
-                if (this.state.willUpdate) {
-                    this.TASK_PROPS = {
-                        responsibleTasks: nextProps.tasks.responsibleTasks,
-                        accountableTasks: nextProps.tasks.accountableTasks,
-                        consultedTasks: nextProps.tasks.consultedTasks,
-                        informedTasks: nextProps.tasks.informedTasks,
-                        creatorTasks: nextProps.tasks.creatorTasks
-                    }
-                }
-
                 return false;           // Đang lấy dữ liệu, ko cần render lại
             };
+            /** Sao lưu để sử dụng khi dữ liệu bị thay đổi
+             *  (Lý do: khi đổi role task, muốn sử dụng dữ liệu cũ nhưng trước đó dữ liệu trong kho redux đã bị thay đổi vì service được gọi ở 1 nơi khác)
+             */ 
+            if (nextState.willUpdate) {
+                this.TASK_PROPS = {
+                    responsibleTasks: nextProps.tasks.responsibleTasks,
+                    accountableTasks: nextProps.tasks.accountableTasks,
+                    consultedTasks: nextProps.tasks.consultedTasks,
+                    informedTasks: nextProps.tasks.informedTasks,
+                    creatorTasks: nextProps.tasks.creatorTasks
+                }
+            }
 
             this.setState(state => {
                 return {
@@ -162,8 +149,8 @@ class DomainOfTaskResultsChart extends Component {
                 }
             });
 
-            return false
-        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && this.state.willUpdate) {
+            return false;
+        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
             this.domainChart();
 
             this.setState(state => {
@@ -178,12 +165,24 @@ class DomainOfTaskResultsChart extends Component {
         return false;
     }
 
+    static getDerivedStateFromProps = (nextProps, prevState) => {
+
+        if (nextProps.callAction !== prevState.callAction) {
+            return {
+                ...prevState,
+                callAction: nextProps.callAction
+            }
+        } else {
+            return null
+        }
+    }
+
     handleSelectRole = (value) => {
         this.INFO_SEARCH.role = Number(value[0]);
     }
 
     handleSelectMonthStart = (value) => {
-        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
+        let month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
 
         this.INFO_SEARCH.startMonth = month;
     }
@@ -229,17 +228,6 @@ class DomainOfTaskResultsChart extends Component {
         let maxResults = [], minResults = [], maxResult, minResult;
         let listTask;
 
-        let now = new Date();
-        let currentYear = now.getFullYear();
-        let beginningOfMonth = new Date(currentYear, currentMonth - 1);
-        let beginnigOfNextMonth;
-
-        if (nextMonth === 13) {
-            beginnigOfNextMonth = new Date(currentYear + 1, 0);
-        } else {
-            beginnigOfNextMonth = new Date(currentYear, nextMonth);
-        }
-
         if (this.TASK_PROPS.responsibleTasks && this.TASK_PROPS.accountableTasks && this.TASK_PROPS.consultedTasks && this.TASK_PROPS.informedTasks && this.TASK_PROPS.creatorTasks) {
             if (this.state.role === this.ROLE.RESPONSIBLE) {
                 listTask = this.TASK_PROPS.responsibleTasks;
@@ -254,12 +242,10 @@ class DomainOfTaskResultsChart extends Component {
             }
         };
 
-        
-
-        if (listTask && listTask.evaluations && listTask.evaluations) {
+        if (listTask) {
             listTask.map(task => {
                 task.evaluations.filter(evaluation => {
-                    if (new Date(evaluation.date) < beginnigOfNextMonth && new Date(evaluation.date) >= beginningOfMonth) {
+                    if (new Date(evaluation.date) < new Date(nextMonth) && new Date(evaluation.date) >= new Date(currentMonth)) {
                         return 1;
                     }
 
@@ -292,7 +278,7 @@ class DomainOfTaskResultsChart extends Component {
         }
 
         return {
-            'month': beginningOfMonth,
+            'month': new Date(currentMonth),
             'max': maxResult,
             'min': minResult
         }
@@ -300,18 +286,28 @@ class DomainOfTaskResultsChart extends Component {
 
     setDataDomainChart = () => {
         const { translate } = this.props;
+        const { startMonth, endMonth } = this.state;
+
         let month = ['x'], maxResults = [translate('task.task_management.dashboard_max')], minResults = [translate('task.task_management.dashboard_min')];
+        let monthIndex = startMonth;
 
-        let now = new Date();
-        let currentMonth = now.getMonth();
+        while (new Date(monthIndex) <= new Date(endMonth)) {
+            let nextMonthIndex, data;
 
-        for (let i=1; i<=currentMonth+1; i++) {
-            let data = this.filterTasksByMonth(i, i+1);
+            if (new Number(monthIndex.slice(5, 7)) < 12) {
+                nextMonthIndex = monthIndex.slice(0, 4) + '-' + (new Number(monthIndex.slice(5, 7)) + 1);
+            } else {
+                nextMonthIndex = (new Number(monthIndex.slice(0, 4)) + 1) + '-' + '1';
+            }
+
+            data = this.filterTasksByMonth(monthIndex, nextMonthIndex);
             if (data.max) {
                 month.push(data.month);
                 maxResults.push(data.max);
                 minResults.push(data.min)
             }
+
+            monthIndex = nextMonthIndex;
         }
 
         return [
@@ -332,7 +328,7 @@ class DomainOfTaskResultsChart extends Component {
         this.removePreviosChart();
 
         let dataChart = this.setDataDomainChart();
-
+        
         this.chart = c3.generate({
             bindto: this.refs.chart,             // Đẩy chart vào thẻ div có id="chart"
 
