@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User, UserRole } = require('../../../models/index').schema;
 const moment = require("moment");
 const nodemailer = require("nodemailer");
+const OrganizationalUnitService  = require('../../super-admin/organizational-unit/organizationalUnit.service');
 
 /**
  * Lấy tất cả các công việc
@@ -189,16 +190,42 @@ exports.getTaskById = async (id, userId) => {
         }
     }
     if (!flag) {    // Trưởng đơn vị được phép xem thông tin công việc
-        let roleId = task.organizationalUnit.deans;
-        let user = await UserRole.find({ roleId: roleId });
-        userList = user.map(item => item.userId);
-        if (!flag) {
-            for (let n in userList) {
-                if (userList[n].equals(userId)) {
-                    flag = 1;
-                    break;
-                }
+
+        // Tìm danh sách các role mà user kế thừa phân quyền
+        let role = await UserRole.find({ userId: userId});
+        let listRole = role.map(item => item.roleId);
+
+        let company = [];
+
+        // Tìm ra các đơn vị có role là dean
+        for (let i in listRole){
+            let roles = await Role.findById(listRole[i]);
+            company[i] = roles.company;
+        }
+        let tree = [];
+        let k = 0;
+        for (let i = 0; i < listRole.length; i++){
+            let com = company[i];
+            let r = listRole[i];
+            let tr = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(com,r);
+            if (tr) {
+                tree[k] = tr;
+                k++;
             }
+        }
+        for (let i = 0; i < listRole.length; i++){
+            let rol = listRole[i];
+            if (!flag){
+                for (let j =0; j < tree.length; j++){
+                    if (tree[j].deans.indexOf(rol) !== -1){
+                        let v = tree[j];
+                        let f = await _checkDeans(v, task.organizationalUnit._id);
+                        if (f === 1){
+                            flag = 1;
+                        }
+                    }
+                }
+            }   
         }
     }
     if (task.creator._id.equals(userId)) {
@@ -212,6 +239,22 @@ exports.getTaskById = async (id, userId) => {
     task.evaluations.reverse();
     return task;
 
+}
+
+/**
+ * Hàm duyệt cây đơn vị - kiểm tra trong cây có đơn vị của công việc được lấy ra hay không (đệ quy)
+ */
+_checkDeans = async (v, id) => {
+    if (v){
+        if (JSON.stringify(v.id) === JSON.stringify(id)){
+            return 1;
+        }
+        if (v.children){
+            for (let k = 0; k < v.children.length; k++){
+                return _checkDeans(v.children[k], id);
+            }
+        }
+    }
 }
 
 /**

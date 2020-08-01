@@ -66,7 +66,7 @@ export function KPIPersonalManager(state = {}, action) {
         return {
           ...state,
           adding: false,
-          currentKPI: action.payload,
+          kpipersonals: action.payload,
           isLoading: false
         };
       case managerKPIConstants.COPY_KPIPERSONALS_FAILURE:

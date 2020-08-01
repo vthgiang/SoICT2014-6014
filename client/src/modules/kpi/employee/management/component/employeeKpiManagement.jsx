@@ -304,7 +304,7 @@ class KPIPersonalManager extends Component {
                                         title={translate('kpi.evaluation.employee_evaluation.view_detail')}><i className="material-icons">view_list</i></a>
                                         <a href="#abc" onClick={() => this.showModalCopy(item._id)} data-toggle="modal" 
                                         className="copy" title={translate('kpi.evaluation.employee_evaluation.clone_to_new_kpi')}><i className="material-icons">content_copy</i></a>
-                                        {this.state.showModalCopy === item._id  && <ModalCopyKPIPersonal idunit={item.organizationalUnit._id} listkpipersonal={kpipersonal} kpipersonal={item} />}
+                                        {this.state.showModalCopy === item._id  && <ModalCopyKPIPersonal id={item._id} idunit={item.organizationalUnit._id} listkpipersonal={kpipersonal} kpipersonal={item} />}
                                     </td>
                                 </tr>)
                             }

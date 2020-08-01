@@ -52,46 +52,7 @@ export function dashboardOrganizationalUnitKpi(state = initState, action) {
                 isLoading: false,
                 error: action.payload
             }
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_REQUEST:
-            return {
-                ...state,
-                organizationalUnitKpiSets: null,
-                loading: true,
-                isLoading: false
-            }
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_SUCCESS:
-            return {
-                ...state,
-                loading: false,
-                isLoading: false,
-                organizationalUnitKpiSets: action.payload
-            }
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_FAILURE:
-            return {
-                ...state,
-                loading: false,
-                error: action.payload
-            }
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_REQUEST:
-            return {
-                ...state,
-                organizationalUnitKpiSetsOfChildUnit: null,
-                loading: true,
-                isLoading: false
-            }
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_SUCCESS:
-            return {
-                ...state,
-                loading: false,
-                isLoading: false,
-                organizationalUnitKpiSetsOfChildUnit: action.payload
-            }
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_FAILURE:
-            return {
-                ...state,
-                loading: false,
-                error: action.payload
-            }
+        
         case dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNIT_REQUEST:
             return {
                 ...state,
@@ -106,12 +67,7 @@ export function dashboardOrganizationalUnitKpi(state = initState, action) {
                 isLoading: false,
                 employeeKpiSets: action.payload
             }
-        case dashboardOrganizationalUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_FAILURE:
-            return {
-                ...state,
-                loading: false,
-                error: action.payload
-            }
+        
         default:
             return state
     }

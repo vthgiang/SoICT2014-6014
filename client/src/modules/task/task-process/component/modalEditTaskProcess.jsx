@@ -34,7 +34,7 @@ class ModalEditTaskProcess extends Component {
             showInfo: false,
             info: data.infoTask,
             xmlDiagram: data.xmlDiagram,
-            selected: 'info',
+            selectedEdit: 'info',
         }
         this.modeler = new BpmnModeler();
         this.generateId = 'editprocess';
@@ -119,7 +119,7 @@ class ModalEditTaskProcess extends Component {
         await this.setState(state => {
             return {
                 ...state,
-                selected: content
+                selectedEdit: content
             }
         })
     }
@@ -392,7 +392,7 @@ class ModalEditTaskProcess extends Component {
 
     render() {
         const { translate, role } = this.props;
-        const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selected } = this.state;
+        const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedEdit } = this.state;
         const { listOrganizationalUnit } = this.props
 
         let listRole = [];
@@ -417,7 +417,7 @@ class ModalEditTaskProcess extends Component {
                                 <li><a href="#process" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
                             </ul>
                             <div className="tab-content">
-                                <div className={selected === "info" ? "active tab-pane" : "tab-pane"} id="info">
+                                <div className={selectedEdit === "info" ? "active tab-pane" : "tab-pane"} id="info">
                                     {/* <fieldset className="scheduler-border">
                                         <legend className="scheduler-border">Thông tin quy trình</legend> */}
 
@@ -477,7 +477,7 @@ class ModalEditTaskProcess extends Component {
                                 </div>
                             </div>
                             <div className="tab-content">
-                                <div className={selected === "process" ? "active tab-pane" : "tab-pane"} id="process">
+                                <div className={selectedEdit === "process" ? "active tab-pane" : "tab-pane"} id="process">
                                     <fieldset className="scheduler-border">
                                         {/* <legend className="scheduler-border">Quy trình công việc</legend> */}
                                         <div className='row'>

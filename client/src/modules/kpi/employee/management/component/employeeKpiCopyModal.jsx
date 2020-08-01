@@ -47,9 +47,9 @@ class ModalCopyKPIPersonal extends Component {
         });
 
     }
-    handleSubmit = async (oldkpipersonal, listkpipersonal, idunit) => {
+    handleSubmit = async (id, oldkpipersonal, listkpipersonal, idunit) => {
         // event.preventDefault();
-        var id = getStorage("userId");
+        var idcreator = getStorage("userId");
         await this.setState(state => {
             return {
                 ...state,
@@ -113,7 +113,7 @@ class ModalCopyKPIPersonal extends Component {
             }
 
             if (check == 1) {
-                this.props.copyEmployeeKPI(id, idunit, oldkpipersonal.date, this.state.NewDate);
+                this.props.copyEmployeeKPI(id, idcreator, idunit, this.state.NewDate);
                 if (kpipersonal.unit && kpipersonal.time) {//&& kpiunit.creater
                     Swal.fire({
                         title: translate('kpi.organizational_unit.management.copy_modal.alert.change_link'),
@@ -126,12 +126,12 @@ class ModalCopyKPIPersonal extends Component {
         }
     }
     save = () => {
-        let { listkpipersonal, kpipersonal, idunit } = this.props;
-        this.handleSubmit(kpipersonal, listkpipersonal, idunit)
+        let { listkpipersonal, kpipersonal, idunit , id} = this.props;
+        this.handleSubmit(id, kpipersonal, listkpipersonal, idunit)
     }
     render() {
         const { NewDate, errorOnDate } = this.state;
-        var { listkpipersonal, kpipersonal, idunit } = this.props;
+        var { listkpipersonal, kpipersonal } = this.props;
         return (
             <DialogModal
                 modalID={`copy-old-kpi-to-new-time-${kpipersonal._id}`}
