@@ -3,7 +3,9 @@ import { connect } from 'react-redux';
 
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 import { createUnitKpiActions } from '../../creation/redux/actions';
+
 import { withTranslate } from 'react-redux-multilingual';
+
 import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
@@ -339,8 +341,8 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     // Thiết lập data trọng số của từng Kpi đơn vị
     setWeightData = () => {
         const { createKpiUnit, translate } = this.props;
-        var listOrganizationalUnitKpi;
-        var weight = {};
+        let listOrganizationalUnitKpi;
+        let weight = {};
 
         if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis
@@ -348,7 +350,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
         if(listOrganizationalUnitKpi) {
             listOrganizationalUnitKpi.map(parent => {
-                var temporary = {};
+                let temporary = {};
 
                 temporary[parent.name] = parent.weight;
                 weight = Object.assign(weight, temporary)
@@ -374,7 +376,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         this.removePreviousBarChart();
        
         const { createKpiUnit } = this.props;
-        var numberOfParticipants, numberOfChildKpis, executionTimes, numberOfTasks, weight, data, dataChart, listOrganizationalUnitKpi, titleX;
+        let numberOfParticipants, numberOfChildKpis, executionTimes, numberOfTasks, weight, data, dataChart, listOrganizationalUnitKpi, titleX;
            
         if(createKpiUnit.currentKPI) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis;
@@ -401,7 +403,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
         if(listOrganizationalUnitKpi) {
             dataChart = listOrganizationalUnitKpi.map(kpis => {
-                var temporary;
+                let temporary;
                 temporary = data.map(x => {
                     return x[kpis.name];
                 })
@@ -411,6 +413,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                 return temporary;
             })
         }
+
         dataChart.unshift(titleX);
 
         this.chart = c3.generate({
@@ -459,7 +462,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     
     render() {
         const { createKpiUnit, translate } = this.props;
-        var currentKpi;
+        let currentKpi;
 
         if(createKpiUnit) {
             currentKpi = createKpiUnit.currentKPI
@@ -469,7 +472,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             <React.Fragment>
                 {currentKpi ?
                     <section ref="chart"></section>
-                : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
+                    : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
                 }
             </React.Fragment>
         )
