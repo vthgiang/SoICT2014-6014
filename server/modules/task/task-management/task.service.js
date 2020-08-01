@@ -273,7 +273,7 @@ exports.getTasksCreatedByUser = async (id) => {
  * @task dữ liệu trong params
  */
 exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
 
     var responsibleTasks;
     var perPage = Number(perPage);
@@ -339,35 +339,46 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
             }
         }
     };
-
-    if (startDate) {
-        let startTime = startDate.split("-");
-        let start = new Date(startTime[1], startTime[0] - 1, 1);
-        let end = new Date(startTime[1], startTime[0], 1);
+    
+    if (JSON.parse(aPeriodOfTime)) {
 
         keySearch = {
             ...keySearch,
-            startDate: {
-                $gt: start,
-                $lte: end
+            $or: [
+                { 'endDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
+                { 'startDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lte: new Date(startDate) } }] }
+            ]
+        }
+    } else {
+        if (startDate) {
+            let startTime = startDate.split("-");
+            let start = new Date(startTime[1], startTime[0] - 1, 1);
+            let end = new Date(startTime[1], startTime[0], 1);
+
+            keySearch = {
+                ...keySearch,
+                startDate: {
+                    $gt: start,
+                    $lte: end
+                }
+            }
+        }
+        if (endDate) {
+            let endTime = endDate.split("-");
+            let start = new Date(endTime[1], endTime[0] - 1, 1);
+            let end = new Date(endTime[1], endTime[0], 1);
+
+            keySearch = {
+                ...keySearch,
+                endDate: {
+                    $gt: start,
+                    $lte: end
+                }
             }
         }
     }
-
-    if (endDate) {
-        let endTime = endDate.split("-");
-        let start = new Date(endTime[1], endTime[0] - 1, 1);
-        let end = new Date(endTime[1], endTime[0], 1);
-
-        keySearch = {
-            ...keySearch,
-            endDate: {
-                $gt: start,
-                $lte: end
-            }
-        }
-    }
-
+    
     if (startDateAfter) {
         let startTimeAfter = startDateAfter.split("-");
         let start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
@@ -409,7 +420,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
  * @task dữ liệu từ params
  */
 exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, aPeriodOfTime } = task;
 
     var accountableTasks;
     var perPage = Number(perPage);
@@ -476,30 +487,42 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
         }
     };
 
-    if (startDate) {
-        let startTime = startDate.split("-");
-        let start = new Date(startTime[1], startTime[0] - 1, 1);
-        let end = new Date(startTime[1], startTime[0], 1);
-
+    if (JSON.parse(aPeriodOfTime)) {
+        
         keySearch = {
             ...keySearch,
-            startDate: {
-                $gt: start,
-                $lte: end
+            $or: [
+                { 'endDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
+                { 'startDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lte: new Date(startDate) } }] }
+            ]
+        }
+    } else {
+        if (startDate) {
+            let startTime = startDate.split("-");
+            let start = new Date(startTime[1], startTime[0] - 1, 1);
+            let end = new Date(startTime[1], startTime[0], 1);
+
+            keySearch = {
+                ...keySearch,
+                startDate: {
+                    $gt: start,
+                    $lte: end
+                }
             }
         }
-    }
 
-    if (endDate) {
-        let endTime = endDate.split("-");
-        let start = new Date(endTime[1], endTime[0] - 1, 1);
-        let end = new Date(endTime[1], endTime[0], 1);
+        if (endDate) {
+            let endTime = endDate.split("-");
+            let start = new Date(endTime[1], endTime[0] - 1, 1);
+            let end = new Date(endTime[1], endTime[0], 1);
 
-        keySearch = {
-            ...keySearch,
-            endDate: {
-                $gt: start,
-                $lte: end
+            keySearch = {
+                ...keySearch,
+                endDate: {
+                    $gt: start,
+                    $lte: end
+                }
             }
         }
     }
@@ -519,7 +542,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
  * Lấy công việc hỗ trợ theo id người dùng
  */
 exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, aPeriodOfTime } = task;
 
     var consultedTasks;
     var perPage = Number(perPage);
@@ -586,30 +609,42 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
         }
     };
 
-    if (startDate) {
-        let startTime = startDate.split("-");
-        let start = new Date(startTime[1], startTime[0] - 1, 1);
-        let end = new Date(startTime[1], startTime[0], 1);
-
+    if (JSON.parse(aPeriodOfTime)) {
+        
         keySearch = {
             ...keySearch,
-            startDate: {
-                $gt: start,
-                $lte: end
+            $or: [
+                { 'endDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
+                { 'startDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lte: new Date(startDate) } }] }
+            ]
+        }
+    } else {
+        if (startDate) {
+            let startTime = startDate.split("-");
+            let start = new Date(startTime[1], startTime[0] - 1, 1);
+            let end = new Date(startTime[1], startTime[0], 1);
+
+            keySearch = {
+                ...keySearch,
+                startDate: {
+                    $gt: start,
+                    $lte: end
+                }
             }
         }
-    }
 
-    if (endDate) {
-        let endTime = endDate.split("-");
-        let start = new Date(endTime[1], endTime[0] - 1, 1);
-        let end = new Date(endTime[1], endTime[0], 1);
+        if (endDate) {
+            let endTime = endDate.split("-");
+            let start = new Date(endTime[1], endTime[0] - 1, 1);
+            let end = new Date(endTime[1], endTime[0], 1);
 
-        keySearch = {
-            ...keySearch,
-            endDate: {
-                $gt: start,
-                $lte: end
+            keySearch = {
+                ...keySearch,
+                endDate: {
+                    $gt: start,
+                    $lte: end
+                }
             }
         }
     }
@@ -629,7 +664,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
  * Lấy công việc thiết lập theo id người dùng
  */
 exports.getPaginatedTasksCreatedByUser = async (task) => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, aPeriodOfTime } = task;
 
     var creatorTasks;
     var perPage = Number(perPage);
@@ -696,30 +731,42 @@ exports.getPaginatedTasksCreatedByUser = async (task) => {
         }
     };
 
-    if (startDate) {
-        let startTime = startDate.split("-");
-        let start = new Date(startTime[1], startTime[0] - 1, 1);
-        let end = new Date(startTime[1], startTime[0], 1);
-
+    if (JSON.parse(aPeriodOfTime)) {
+        
         keySearch = {
             ...keySearch,
-            startDate: {
-                $gt: start,
-                $lte: end
+            $or: [
+                { 'endDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
+                { 'startDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lte: new Date(startDate) } }] }
+            ]
+        }
+    } else {
+        if (startDate) {
+            let startTime = startDate.split("-");
+            let start = new Date(startTime[1], startTime[0] - 1, 1);
+            let end = new Date(startTime[1], startTime[0], 1);
+
+            keySearch = {
+                ...keySearch,
+                startDate: {
+                    $gt: start,
+                    $lte: end
+                }
             }
         }
-    }
 
-    if (endDate) {
-        let endTime = endDate.split("-");
-        let start = new Date(endTime[1], endTime[0] - 1, 1);
-        let end = new Date(endTime[1], endTime[0], 1);
+        if (endDate) {
+            let endTime = endDate.split("-");
+            let start = new Date(endTime[1], endTime[0] - 1, 1);
+            let end = new Date(endTime[1], endTime[0], 1);
 
-        keySearch = {
-            ...keySearch,
-            endDate: {
-                $gt: start,
-                $lte: end
+            keySearch = {
+                ...keySearch,
+                endDate: {
+                    $gt: start,
+                    $lte: end
+                }
             }
         }
     }
@@ -739,7 +786,7 @@ exports.getPaginatedTasksCreatedByUser = async (task) => {
  * Lấy công việc quan sát theo id người dùng
  */
 exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, aPeriodOfTime } = task;
 
     var informedTasks;
     var perPage = Number(perPage);
@@ -806,30 +853,42 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
         }
     };
 
-    if (startDate) {
-        let startTime = startDate.split("-");
-        let start = new Date(startTime[1], startTime[0] - 1, 1);
-        let end = new Date(startTime[1], startTime[0], 1);
-
+    if (JSON.parse(aPeriodOfTime)) {
+        
         keySearch = {
             ...keySearch,
-            startDate: {
-                $gt: start,
-                $lte: end
+            $or: [
+                { 'endDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
+                { 'startDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lte: new Date(startDate) } }] }
+            ]
+        }
+    } else {
+        if (startDate) {
+            let startTime = startDate.split("-");
+            let start = new Date(startTime[1], startTime[0] - 1, 1);
+            let end = new Date(startTime[1], startTime[0], 1);
+
+            keySearch = {
+                ...keySearch,
+                startDate: {
+                    $gt: start,
+                    $lte: end
+                }
             }
         }
-    }
 
-    if (endDate) {
-        let endTime = endDate.split("-");
-        let start = new Date(endTime[1], endTime[0] - 1, 1);
-        let end = new Date(endTime[1], endTime[0], 1);
+        if (endDate) {
+            let endTime = endDate.split("-");
+            let start = new Date(endTime[1], endTime[0] - 1, 1);
+            let end = new Date(endTime[1], endTime[0], 1);
 
-        keySearch = {
-            ...keySearch,
-            endDate: {
-                $gt: start,
-                $lte: end
+            keySearch = {
+                ...keySearch,
+                endDate: {
+                    $gt: start,
+                    $lte: end
+                }
             }
         }
     }
@@ -1089,12 +1148,12 @@ exports.getTasksByUser = async (data) => {
  * @param {*} organizationalUnitId 
  * @param {*} month 
  */
-exports.getAllTaskOfOrganizationalUnit = async (query) => {
+exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId, month) => {
     let organizationalUnit;
     let now, currentYear, currentMonth, endOfCurrentMonth, endOfLastMonth;
 
-    if (query.month) {
-        now = new Date(query.month);
+    if (month) {
+        now = new Date(month);
         currentYear = now.getFullYear();
         currentMonth = now.getMonth();
         endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
@@ -1107,16 +1166,16 @@ exports.getAllTaskOfOrganizationalUnit = async (query) => {
         endOfLastMonth = new Date(currentYear, currentMonth);
     }
 
-    if (!query.organizationalUnitId) {
+    if (!organizationalUnitId) {
         organizationalUnit = await OrganizationalUnit.findOne({
             $or: [
-                { 'deans': query.roleId },
-                { 'viceDeans': query.roleId },
-                { 'employees': query.roleId }
+                { 'deans': roleId },
+                { 'viceDeans': roleId },
+                { 'employees': roleId }
             ]
         });
     } else {
-        organizationalUnit = await OrganizationalUnit.findOne({ '_id': query.organizationalUnitId });
+        organizationalUnit = await OrganizationalUnit.findOne({ '_id': organizationalUnitId });
     }
 
     let tasks = await Task.aggregate([
@@ -1140,7 +1199,7 @@ exports.getAllTaskOfOrganizationalUnit = async (query) => {
                 ]
             }
         },
-
+        // { $replaceRoot: { newRoot: '$evaluations' } }
         { $project: { 'startDate': 1, 'endDate': 1, 'evaluations': 1, 'accountableEmployees': 1, 'consultedEmployees': 1, 'informedEmployees': 1, 'status': 1 } }
     ])
 

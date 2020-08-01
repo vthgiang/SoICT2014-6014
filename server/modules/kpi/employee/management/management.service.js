@@ -137,6 +137,11 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
             }
         },
         { $unwind: "$employeeKpis" },
+        {
+            $addFields: {
+                'employeeKpis.parentName': "$organizationalUnitKpis.name"
+            }
+        },
 
         {
             $lookup: {
@@ -150,12 +155,18 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
 
         {
             $addFields: {
-                "employeeKpis.organizationalUnitKpiParent": "$organizationalUnitKpis.parent",
                 "employeeKpis.creator": "$employeeKpiSet.creator"
             }
         },
 
-        { $replaceRoot: { newRoot: "$employeeKpis" } }
+        { $replaceRoot: { newRoot: "$employeeKpis" } },
+
+        {
+            $group: { 
+                '_id': "$parentName",
+                'employeeKpi': { $push: "$$ROOT" }
+            }
+        },
     ])
 
     return employeeKpis;
@@ -272,17 +283,18 @@ exports.getAllChildrenOrganizational = async (companyId, roleId) => {
 /** 
  * Lấy tất cả EmployeeKpi thuộc các đơn vị con của đơn vị hiện tại 
  */
-exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (companyId, roleId) => {
+exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (companyId, roleId, month) => {
 
     let employeeKpisInChildrenOrganizationalUnit = [], childrenOrganizationalUnits;
 
-    childrenOrganizationalUnits = await getAllChildrenOrganizational(companyId, roleId);
+    childrenOrganizationalUnits = await this.getAllChildrenOrganizational(companyId, roleId);
+    console.log(childrenOrganizationalUnits)
 
     for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
-        employeeKpisInChildrenOrganizationalUnit.push(await this.getAllEmployeeKpiInOrganizationalUnit("null", childrenOrganizationalUnits[i].id));
+        employeeKpisInChildrenOrganizationalUnit.push(await this.getAllEmployeeKpiInOrganizationalUnit(null, childrenOrganizationalUnits[i].id, month));
         employeeKpisInChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })
     }
-
+    console.log(employeeKpisInChildrenOrganizationalUnit)
     return employeeKpisInChildrenOrganizationalUnit;
 }
 
