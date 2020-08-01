@@ -804,6 +804,55 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
 }
 
 /**
+ * Lấy công việc theo id đơn vị
+ * @task dữ liệu từ params
+ */
+exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
+    var { organizationalUnit, startDateAfter, endDateBefore } = task;
+    var organizationUnitTasks;
+    var keySearch = {};
+
+    if (organizationalUnit !== '[]') {
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: {
+                $in: organizationalUnit,
+            }
+        };
+    }
+
+    if (startDateAfter) {
+        let startTimeAfter = startDateAfter.split("-");
+        let start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
+
+        keySearch = {
+            ...keySearch,
+            startDate: {
+                $gte: start,
+            }
+        }
+    }
+
+    if (endDateBefore) {
+        let endTimeBefore = endDateBefore.split("-");
+        let end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            endDate: {
+                $lte: end
+            }
+        }
+    }
+
+    organizationUnitTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
+        .populate({ path: "organizationalUnit creator parent" });
+
+    return {
+        "tasks": organizationUnitTasks
+    };
+}
+/**
  * Tạo công việc mới
  */
 exports.createTask = async (task) => {
