@@ -366,3 +366,112 @@ input[type=range]:focus::-ms-fill-upper {
 .chart-display {
     overflow-x: scroll;
 }
+
+
+
+
+/* React-Toastify */
+.Toastify__progress-bar {
+    height: 3px;
+    background-color: rgb(255, 255, 255);
+}
+
+.notification-title {
+    font-size: 14px;
+    margin: 0px 0px 5px;
+    padding: 0px;
+    font-weight: bold;
+}
+.Toastify__toast--info .notification-title {
+    color: rgb(54, 156, 199);
+}
+.Toastify__toast--success .notification-title {
+    color: rgb(94, 164, 0);
+}
+.Toastify__toast--warning .notification-title {
+    color: rgb(235, 173, 26);
+}
+.Toastify__toast--error .notification-title {
+    color: rgb(236, 61, 61);
+}
+
+.Toastify__toast-container {
+    width: 320px;
+}
+.Toastify__toast {
+    padding: 5px !important;
+    position: relative;
+    width: 100%;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 13px;
+    margin: 10px 0px 0px;
+    padding: 10px;
+    display: block;
+    box-sizing: border-box;
+    opacity: 1;
+    transition: all 0.3s ease-in-out 0s;
+    transform: translate3d(0px, 0px, 0px);
+    will-change: transform, opacity;
+    right: 0px;
+}
+.Toastify__toast--info {
+    border-top: 2px solid rgb(54, 156, 199);
+    background-color: rgb(232, 240, 244);
+    color: rgb(65, 85, 93);
+    box-shadow: rgba(54, 156, 199, 0.9) 0px 0px 1px;
+}
+.Toastify__toast--success {
+    border-top: 2px solid rgb(94, 164, 0);
+    background: rgb(240, 245, 234);
+    color: rgb(75, 88, 58);
+    box-shadow: rgba(94, 164, 0, 0.9) 0px 0px 1px;
+}
+.Toastify__toast--warning {
+    border-top: 2px solid rgb(235, 173, 26);
+    background-color: rgb(249, 246, 240);
+    color: rgb(90, 83, 67);
+    box-shadow: rgba(235, 173, 23, 0.9) 0px 0px 1px;
+}
+.Toastify__toast--error {
+    border-top: 2px solid rgb(236, 61, 61);
+    background-color: rgb(244, 233, 233);
+    color: rgb(65, 47, 47);
+    box-shadow: rgba(236, 61, 61, 0.9) 0px 0px 1px;
+}
+  
+.Toastify__close-button {
+    font-family: Arial;
+    font-size: 11px;
+    position: absolute;
+    top: 4px;
+    right: 5px;
+    line-height: 15px;
+    background-color: rgb(176, 202, 146);
+    color: rgb(240, 245, 234);
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    font-weight: bold;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+.Toastify__toast--info .Toastify__close-button {
+    background-color: rgb(164, 190, 203);
+    color: rgb(232, 240, 244);
+}
+.Toastify__toast--success .Toastify__close-button {
+    background-color: rgb(176, 202, 146);
+    color: rgb(240, 245, 234);
+}
+.Toastify__toast--warning .Toastify__close-button {
+    background-color: rgb(225, 207, 172);
+    color: rgb(249, 246, 240);
+}
+.Toastify__toast--error .Toastify__close-button {
+    background-color: rgb(228, 190, 190);
+    color: rgb(244, 233, 233);
+}
+ 
