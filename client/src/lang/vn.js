@@ -2054,7 +2054,7 @@ export default {
                         request_approval: 'Yêu cầu phê duyệt',
                         cancel_request_approval: 'Hủy yêu cầu phê duyệt',
                         not_initialize_organiztional_unit_kpi: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa thiết lập KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
-                        not_initialize_organiztional_unit_kpi: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa kích hoạt KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
+                        not_activate_organiztional_unit_kpi: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa kích hoạt KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
                         // Nhóm dành cho các trạng thái tập KPI
                         kpi_status: {
                             status: 'Trạng thái KPI',
@@ -2223,7 +2223,8 @@ export default {
                     auto_eva: 'Hệ thống đánh giá',
                     employee_eva: 'Cá nhân tự đánh giá',
                     approver_eva: 'Người phê duyệt đánh giá',
-                    result_kpi_personal:'Kết quả KPI cá nhân'
+                    result_kpi_personal:'Kết quả KPI cá nhân',
+                    distribution_kpi_personal: 'Đóng góp KPI cá nhân'
 
                 },
 

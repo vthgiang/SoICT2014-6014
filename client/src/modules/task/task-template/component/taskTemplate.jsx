@@ -99,7 +99,7 @@ class TaskTemplate extends Component {
     /**Xoa tasktemplate theo id */
     handleDelete = (id, numberOfUse) => {
         const { translate } = this.props;
-        if (numberOfUse == 0) {
+        if (numberOfUse === 0) {
             Swal.fire({
                 title: translate('task_template.confirm_title'),
                 type: 'success',
@@ -314,10 +314,10 @@ class TaskTemplate extends Component {
                                                 {/**Check quyền xem có được xóa hay sửa mẫu công việc không */}
                                                 {this.checkPermisson(item.organizationalUnit.deans) &&
                                                     <React.Fragment>
-                                                        <a onClick={() => this.handleEdit(item._id)} className="edit" title={translate('task_template.edit_this_task_template')}>
+                                                        <a href ="cursor:{'pointer'}" onClick={() => this.handleEdit(item._id)} className="edit" title={translate('task_template.edit_this_task_template')}>
                                                             <i className="material-icons">edit</i>
                                                         </a>
-                                                        <a onClick={() => this.handleDelete(item._id, item.numberOfUse)} className="delete" title={translate('task_template.delete_this_task_template')}>
+                                                        <a href ="cursor:{'pointer'}" onClick={() => this.handleDelete(item._id, item.numberOfUse)} className="delete" title={translate('task_template.delete_this_task_template')}>
                                                             <i className="material-icons"></i>
                                                         </a>
                                                     </React.Fragment>
