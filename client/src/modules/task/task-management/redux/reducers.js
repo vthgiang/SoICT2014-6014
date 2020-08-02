@@ -375,11 +375,28 @@ export function tasks(state = {}, action) {
             console.log('action.payload', action.payload)
             return {
                 ...state,
-                listTaskEvaluations: action.payload.result,
-                totalTaskInfo: action.payload.result2,
+                listTaskEvaluations: action.payload,
                 isLoading: false,
             };
         case taskManagementConstants.GET_TASK_EVALUATION_FAILURE:
+            return {
+                isLoading: false,
+                error: action.error,
+
+            }
+
+        case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_SUCCESS:
+            return {
+                ...state,
+                listTaskEvaluations: action.payload,
+                isLoading: false,
+            };
+        case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_FAILURE:
             return {
                 isLoading: false,
                 error: action.error,

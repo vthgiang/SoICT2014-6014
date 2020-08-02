@@ -9,7 +9,8 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (req, res) => {
     }
     else {
         try {
-            var kpipersonals = await overviewService.getAllKPIEmployeeSetsInOrganizationByMonth(req.query);
+            let kpipersonals = await overviewService.getAllKPIEmployeeSetsInOrganizationByMonth(req.query);
+            
             LogInfo(req.user.email, ` get all kpi personal `, req.user.company);
             res.status(200).json({
                 success: true,
@@ -32,7 +33,7 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (req, res) => {
  */
 exports.copyKPI = async (req, res) => {
     try {
-        var kpipersonals = await overviewService.copyKPI(req.query);
+        let kpipersonals = await overviewService.copyKPI(req.params.id, req.query);
         LogInfo(req.user.email, ` get all kpi personal `, req.user.company);
         res.status(200).json({
             success: true,
@@ -55,7 +56,8 @@ exports.copyKPI = async (req, res) => {
  */
 exports.getAllEmployeeKpiInOrganizationalUnit = async (req, res) => {
     try {
-        var employeeKpis = await overviewService.getAllEmployeeKpiInOrganizationalUnit(req.query);
+        let employeeKpis = await overviewService.getAllEmployeeKpiInOrganizationalUnit(req.query.roleId, req.query.organizationalUnitId, req.query.month);
+        
         LogInfo(req.user.email, ' get all employee kpi in organizational unit ', req.user.company);
         res.status(200).json({
             success: true,
@@ -78,7 +80,8 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (req, res) => {
  */
 exports.getAllEmployeeKpiSetInOrganizationalUnit = async (req, res) => {
     try {
-        var employeeKpiSets = await overviewService.getAllEmployeeKpiSetInOrganizationalUnit(req.query);
+        let employeeKpiSets = await overviewService.getAllEmployeeKpiSetInOrganizationalUnit(req.query);
+        
         LogInfo(req.user.email, ' get all employee kpi set in organizational unit ', req.user.company);
         res.status(200).json({
             success: true,
@@ -100,7 +103,8 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (req, res) => {
  */
 exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (req, res) => {
     try {
-        var employeeKpisInChildrenOrganizationalUnit = await overviewService.getAllEmployeeKpiInChildrenOrganizationalUnit(req.user.company._id, req.query.roleId);
+        let employeeKpisInChildrenOrganizationalUnit = await overviewService.getAllEmployeeKpiInChildrenOrganizationalUnit(req.user.company._id, req.query.roleId, req.query.month);
+        
         LogInfo(req.user.email, ' get all employee kpi set in organizational unit ', req.user.company);
         res.status(200).json({
             success: true,
@@ -123,7 +127,8 @@ exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (req, res) => {
  */
 exports.getChildTargetByParentId = async (req, res) => {
     try {
-        var childTarget = await overviewService.getChildTargetByParentId(req.query);
+        let childTarget = await overviewService.getChildTargetByParentId(req.query);
+        
         LogInfo(req.user.email, ' get child target by parent id ', req.user.company)
         res.status(200).json({
             success: true,

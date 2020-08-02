@@ -30,12 +30,14 @@ exports.getTasks = async (req, res) => {
     else if (req.query.type === "accountable") {
         getPaginatedTasksThatUserHasAccountableRole(req, res);
     }
-
     else if (req.query.type === "get_all_task_created_by_user") {
         getAllTasksCreatedByUser(req, res);
     }
     else if (req.query.type === "get_all_task_of_organizational_unit") {
         getAllTaskOfOrganizationalUnit(req, res);
+    }
+    else if (req.query.type === "task_in_unit") {
+        getAllTaskOfOrganizationalUnitByMonth(req, res);
     }
 }
 
@@ -139,7 +141,7 @@ getAllTasksCreatedByUser = async (req, res) => {
  */
 getPaginatedTasksThatUserHasResponsibleRole = async (req, res) => {
     try {
-        var task = {
+        let task = {
             perPage: req.query.perPage,
             number: req.query.number,
             user: req.query.user,
@@ -152,8 +154,9 @@ getPaginatedTasksThatUserHasResponsibleRole = async (req, res) => {
             endDate: req.query.endDate,
             startDateAfter: req.query.startDateAfter,
             endDateBefore: req.query.endDateBefore,
+            aPeriodOfTime: req.query.aPeriodOfTime
         };
-        var responsibleTasks = await TaskManagementService.getPaginatedTasksThatUserHasResponsibleRole(task);
+        let responsibleTasks = await TaskManagementService.getPaginatedTasksThatUserHasResponsibleRole(task);
 
         await await LogInfo(req.user.email, ` get task responsible by user `, req.user.company)
         res.status(200).json({
@@ -187,6 +190,7 @@ getPaginatedTasksThatUserHasAccountableRole = async (req, res) => {
             name: req.query.name,
             startDate: req.query.startDate,
             endDate: req.query.endDate,
+            aPeriodOfTime: req.query.aPeriodOfTime
         };
 
         var accountableTasks = await TaskManagementService.getPaginatedTasksThatUserHasAccountableRole(task);
@@ -222,6 +226,7 @@ getPaginatedTasksThatUserHasConsultedRole = async (req, res) => {
             name: req.query.name,
             startDate: req.query.startDate,
             endDate: req.query.endDate,
+            aPeriodOfTime: req.query.aPeriodOfTime
         };
 
         var consultedTasks = await TaskManagementService.getPaginatedTasksThatUserHasConsultedRole(task);
@@ -257,6 +262,7 @@ getPaginatedTasksCreatedByUser = async (req, res) => {
             name: req.query.name,
             startDate: req.query.startDate,
             endDate: req.query.endDate,
+            aPeriodOfTime: req.query.aPeriodOfTime
         };
         var creatorTasks = await TaskManagementService.getPaginatedTasksCreatedByUser(task);
         await LogInfo(req.user.email, ` get task creator by user `, req.user.company)
@@ -291,6 +297,7 @@ getPaginatedTasksThatUserHasInformedRole = async (req, res) => {
             name: req.query.name,
             startDate: req.query.startDate,
             endDate: req.query.endDate,
+            aPeriodOfTime: req.query.aPeriodOfTime
         };
 
         var informedTasks = await TaskManagementService.getPaginatedTasksThatUserHasInformedRole(task);
@@ -325,6 +332,7 @@ getTasksThatUserHasResponsibleRoleByDate = async (req, res) => {
             name: req.query.name,
             startDate: req.query.startDate,
             endDate: req.query.endDate,
+            aPeriodOfTime: req.query.aPeriodOfTime
         };
         var responsibleTasks = await TaskManagementService.getTasksThatUserHasResponsibleRoleByDate(task);
 
@@ -534,7 +542,7 @@ exports.evaluateTaskByAccountableEmployees = async (req, res) => {
 /**
  * lấy các công việc sắp hết hạn và quá hạn của nhân viên 
  */
- getTasksByUser = async (req, res) => {
+getTasksByUser = async (req, res) => {
     try {
         const tasks = await TaskManagementService.getTasksByUser(req.query.userId);
 
@@ -558,7 +566,7 @@ exports.evaluateTaskByAccountableEmployees = async (req, res) => {
 /** Lấy tất cả task của organizationalUnit theo tháng hiện tại */
 getAllTaskOfOrganizationalUnit = async (req, res) => {
     try {
-        var tasks = await TaskManagementService.getAllTaskOfOrganizationalUnit(req.query);
+        var tasks = await TaskManagementService.getAllTaskOfOrganizationalUnit(req.query.roleId, req.query.organizationalUnitId, req.query.month);
         LogInfo(req.user.email, ' get all task of organizational unit ', req.user.company);
         res.status(200).json({
             success: true,
@@ -567,6 +575,31 @@ getAllTaskOfOrganizationalUnit = async (req, res) => {
         })
     } catch (error) {
         LogError(req.user.email, ' get all task of organizational unit ', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['get_all_task_of_organizational_unit_failure'],
+            content: error
+        })
+    }
+}
+/** Lấy tất cả task của organizationalUnit trong một khoảng thời gian */
+getAllTaskOfOrganizationalUnitByMonth = async (req, res) => {
+    try {
+        var task = {
+            organizationalUnitId: req.query.organizationUnitId,
+            startDateAfter: req.query.startDateAfter,
+            endDateBefore: req.query.endDateBefore,
+        };
+        var responsibleTasks = await TaskManagementService.getAllTaskOfOrganizationalUnitByMonth(task);
+
+        await await LogInfo(req.user.email, ` get task responsible by user `, req.user.company)
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_task_of_organizational_unit_success'],
+            content: responsibleTasks
+        })
+    } catch (error) {
+        await await LogError(req.user.email, ` get task responsible by user `, req.user.company)
         res.status(400).json({
             success: false,
             messages: ['get_all_task_of_organizational_unit_failure'],

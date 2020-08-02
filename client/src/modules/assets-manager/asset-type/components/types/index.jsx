@@ -21,7 +21,9 @@ class AdministrationAssetTypes extends Component {
     }
 
     onChanged = async (e, data) => {
-        await this.setState({currentDomain: data.node})
+        await this.setState({ currentDomain: data.node })
+        
+        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", data);
         window.$(`#edit-asset-type`).slideDown();;
     }
 

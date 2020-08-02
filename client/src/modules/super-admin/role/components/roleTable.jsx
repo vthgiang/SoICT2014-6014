@@ -40,8 +40,8 @@ class RoleTable extends Component {
                         roleId={currentRow._id}
                         roleName={currentRow.name}
                         roleType={currentRow.type ? currentRow.type.name : null}
-                        roleParents={currentRow.parents ? currentRow.parents.map(parent => parent._id) : []}
-                        roleUsers={currentRow.users ? currentRow.users.map(user => user.userId ? user.userId._id : null) : []}
+                        roleParents={currentRow.parents.map(parent => parent ? parent._id : null)}
+                        roleUsers={currentRow.users.map(user => user && user.userId ? user.userId._id : null)}
                     />
                 }
 
@@ -84,8 +84,8 @@ class RoleTable extends Component {
                                 role.listPaginate.map(role =>
                                     <tr key={`roleList${role._id}`}>
                                         <td> {role.name} </td>
-                                        <td><ToolTip dataTooltip={role.parents ? role.parents.map(parent => parent.name) : ["Parents role is deleted"]} /></td>
-                                        <td><ToolTip dataTooltip={role.users ? role.users.map(user => user.userId !== null ? user.userId.name : null) : ["User account is deleted"]} /></td>
+                                        <td><ToolTip dataTooltip={role.parents.map(parent => parent ? parent.name : "Parent role is deleted")} /></td>
+                                        <td><ToolTip dataTooltip={role.users.map(user => user && user.userId ? user.userId.name : "Role is deleted")} /></td>
                                         <td style={{ textAlign: 'center' }}>
                                             <a className="edit" href={`#${role._id}`} onClick={() => this.handleEdit(role)}><i className="material-icons">edit</i></a>
                                             {

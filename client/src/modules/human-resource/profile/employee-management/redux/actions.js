@@ -9,6 +9,7 @@ export const EmployeeManagerActions = {
     addNewEmployee,
     updateInformationEmployee,
     deleteEmployee,
+    importEmployees
 };
 
 /**
@@ -110,6 +111,32 @@ function deleteEmployee(id) {
                 dispatch({
                     type: EmployeeConstants.DELETE_EMPLOYEE_FAILURE,
                     error: err
+                });
+            })
+    }
+}
+
+/**
+ * Import thông tin nhân viên
+ * @id : id thông tin nhân viên cần xoá
+ */
+function importEmployees(data) {
+    return dispatch => {
+        dispatch({
+            type: EmployeeConstants.IMPORT_EMPLOYEE_REQUEST
+        });
+
+        EmployeeService.importEmployees(data)
+            .then(res => {
+                dispatch({
+                    type: EmployeeConstants.IMPORT_EMPLOYEE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: EmployeeConstants.IMPORT_EMPLOYEE_FAILURE,
+                    error: err.response.data.content
                 });
             })
     }

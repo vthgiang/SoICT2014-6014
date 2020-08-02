@@ -211,7 +211,6 @@ class EmployeeCreateForm extends Component {
         this.props.addNewEmployee(formData);
     }
     render() {
-        console.log(this.state);
         const { translate, employeesManager } = this.props;
         return (
             <React.Fragment>

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
+import { createUnitKpiActions } from '../../creation/redux/actions';
 
 import { DatePicker } from '../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
@@ -40,7 +40,6 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        // Call action again when this.state.startDate or this.state.endDate changes
         if(nextState.startDate !== this.state.startDate || nextState.endDate !== this.state.endDate) {
             await this.props.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(this.state.userRoleId, nextState.startDate, nextState.endDate);
             
@@ -66,7 +65,6 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         }
 
         if(nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-            // Lấy tập KPI đơn vị theo từng năm
             this.props.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(this.state.userRoleId, this.state.startDate, this.state.endDate)
 
             this.setState(state => {
@@ -77,7 +75,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
             })
             return false;
         } else if(nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if(!nextProps.dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsOfChildUnit) {
+            if(!nextProps.createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
                 return false
             }
 
@@ -102,7 +100,6 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         return false;
     }
 
-    /** Select kind of point */
     handleSelectKindOfPoint = (value) => {
         if(Number(value) !== this.state.kindOfPoint) {
             this.setState(state => {
@@ -114,25 +111,24 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         }
     }
 
-    /** Select month start in box */
     handleSelectMonthStart = (value) => {
         let month = value.slice(3,7) + '-' + value.slice(0,2);
 
         this.INFO_SEARCH.startDate = month;
     }
 
-    /** Select month end in box */
     handleSelectMonthEnd = async (value) => {
+        let month;
+
         if(value.slice(0,2)<12) {
-            var month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
+            month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
         } else {
-            var month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
+            month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
         }
 
         this.INFO_SEARCH.endDate = month;
     }
 
-    /** Search data */
     handleSearchData = async () => {
         let startDate = new Date(this.INFO_SEARCH.startDate);
         let endDate = new Date(this.INFO_SEARCH.endDate);
@@ -183,11 +179,11 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     }
 
     setDataMultiLineChart = () => {
-        const { dashboardOrganizationalUnitKpi } = this.props;
+        const { createKpiUnit } = this.props;
         let organizationalUnitKpiSetsOfChildUnit, point = [];
 
-        if(dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsOfChildUnit) {
-            organizationalUnitKpiSetsOfChildUnit = dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsOfChildUnit;
+        if(createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
+            organizationalUnitKpiSetsOfChildUnit = createKpiUnit.organizationalUnitKpiSetsOfChildUnit;
         }
 
         if(organizationalUnitKpiSetsOfChildUnit) {
@@ -259,11 +255,11 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     }
 
     render() {
-        const { dashboardOrganizationalUnitKpi, translate } = this.props;
-        var organizationalUnitKpiSetsOfChildUnit;
+        const { createKpiUnit, translate } = this.props;
+        let organizationalUnitKpiSetsOfChildUnit;
 
-        if(dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsOfChildUnit) {
-            organizationalUnitKpiSetsOfChildUnit = dashboardOrganizationalUnitKpi.organizationalUnitKpiSetsOfChildUnit;
+        if(createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
+            organizationalUnitKpiSetsOfChildUnit = createKpiUnit.organizationalUnitKpiSetsOfChildUnit;
         }
 
         let d = new Date(),
@@ -280,6 +276,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
         return (
             <React.Fragment>
+                {/* Search data trong một khoảng thời gian */}
                 <section className="form-inline">
                     <div className="form-group">
                         <label>{translate('kpi.organizational_unit.dashboard.start_date')}</label>
@@ -323,11 +320,11 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 }
 
 function mapState(state) {
-    const { dashboardOrganizationalUnitKpi } = state;
-    return { dashboardOrganizationalUnitKpi }
+    const { createKpiUnit } = state;
+    return { createKpiUnit }
 }
 const actions = {
-    getAllOrganizationalUnitKpiSetByTimeOfChildUnit: dashboardOrganizationalUnitKpiActions.getAllOrganizationalUnitKpiSetByTimeOfChildUnit
+    getAllOrganizationalUnitKpiSetByTimeOfChildUnit: createUnitKpiActions.getAllOrganizationalUnitKpiSetByTimeOfChildUnit
 }
 
 const connectedResultsOfAllOrganizationalUnitKpiChart = connect(mapState, actions)(withTranslate(ResultsOfAllOrganizationalUnitKpiChart));

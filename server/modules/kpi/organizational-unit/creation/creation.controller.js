@@ -5,12 +5,14 @@ const { LogInfo, LogError } = require('../../../../logs');
  * Get organizational unit kpi set
  */
 exports.getOrganizationalUnitKpiSet = async (req, res) => {
-    if(req.query.parent){
+    if (req.query.parent) {
         getParentOrganizationalUnitKpiSet(req, res);
-    } else if(req.query.startDate && req.query.endDate){
-        getAllOrganizationalUnitKpiSetByTime(req, res);
-    } else if(req.query.child){
+    } else if (req.query.allOrganizationalUnitKpiSet) {
+        getAllOrganizationalUnitKpiSet(req, res);
+    } else if (req.query.child) {
         getAllOrganizationalUnitKpiSetByTimeOfChildUnit(req, res);
+    } else if (req.query.organizationalUnitId && req.query.startDate && req.query.endDate) {
+        getAllOrganizationalUnitKpiSetByTime(req, res);
     } else {
         try {
             var kpiunit = await KPIUnitService.getOrganizationalUnitKpiSet(req.query);
@@ -29,7 +31,7 @@ exports.getOrganizationalUnitKpiSet = async (req, res) => {
             })
         }
     }
-    
+
 }
 
 /**
@@ -226,7 +228,7 @@ exports.createOrganizationalUnitKpiSet = async (req, res) => {
  */
 getAllOrganizationalUnitKpiSetByTime = async (req, res) => {
     try {
-        var organizationalUnitKpiSets = await KPIUnitService.getAllOrganizationalUnitKpiSetByTime(req.query);
+        var organizationalUnitKpiSets = await KPIUnitService.getAllOrganizationalUnitKpiSetByTime(req.query.organizationalUnitId, req.query.startDate, req.query.endDate);
         LogInfo(req.user.email, ' get all organizational unit kpi set each year ', req.user.company);
         res.status(200).json({
             success: true,
@@ -246,7 +248,7 @@ getAllOrganizationalUnitKpiSetByTime = async (req, res) => {
 /** 
  * Lấy danh sách các tập KPI đơn vị theo thời gian của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại 
  */
-getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (req, res) => { 
+getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (req, res) => {
     try {
         var childOrganizationalUnitKpiSets = await KPIUnitService.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(req.user.company._id, req.query);
         LogInfo(req.user.email, ' get all organizational unit kpi set each year of child unit ', req.user.company);
@@ -264,3 +266,23 @@ getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (req, res) => {
         })
     }
 }
+
+getAllOrganizationalUnitKpiSet = async (req, res) => {
+    try {
+        var kpiunits = await KPIUnitService.getAllOrganizationalUnitKpiSet(req.query);
+        LogInfo(req.user.email, ' get kpi unit ', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_kpi_unit_success'],
+            content: kpiunits
+        })
+    } catch (error) {
+        LogError(req.user.email, ' get kpi unit ', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['get_kpi_unit_fail'],
+            content: error
+        })
+    }
+
+};
