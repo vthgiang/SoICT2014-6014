@@ -30,12 +30,14 @@ exports.getTasks = async (req, res) => {
     else if (req.query.type === "accountable") {
         getPaginatedTasksThatUserHasAccountableRole(req, res);
     }
-
     else if (req.query.type === "get_all_task_created_by_user") {
         getAllTasksCreatedByUser(req, res);
     }
     else if (req.query.type === "get_all_task_of_organizational_unit") {
         getAllTaskOfOrganizationalUnit(req, res);
+    }
+    else if (req.query.type === "task_in_unit") {
+        getAllTaskOfOrganizationalUnitByMonth(req, res);
     }
 }
 
@@ -540,7 +542,7 @@ exports.evaluateTaskByAccountableEmployees = async (req, res) => {
 /**
  * lấy các công việc sắp hết hạn và quá hạn của nhân viên 
  */
- getTasksByUser = async (req, res) => {
+getTasksByUser = async (req, res) => {
     try {
         const tasks = await TaskManagementService.getTasksByUser(req.query.userId);
 
@@ -573,6 +575,31 @@ getAllTaskOfOrganizationalUnit = async (req, res) => {
         })
     } catch (error) {
         LogError(req.user.email, ' get all task of organizational unit ', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['get_all_task_of_organizational_unit_failure'],
+            content: error
+        })
+    }
+}
+/** Lấy tất cả task của organizationalUnit trong một khoảng thời gian */
+getAllTaskOfOrganizationalUnitByMonth = async (req, res) => {
+    try {
+        var task = {
+            organizationalUnitId: req.query.organizationUnitId,
+            startDateAfter: req.query.startDateAfter,
+            endDateBefore: req.query.endDateBefore,
+        };
+        var responsibleTasks = await TaskManagementService.getAllTaskOfOrganizationalUnitByMonth(task);
+
+        await await LogInfo(req.user.email, ` get task responsible by user `, req.user.company)
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_task_of_organizational_unit_success'],
+            content: responsibleTasks
+        })
+    } catch (error) {
+        await await LogError(req.user.email, ` get task responsible by user `, req.user.company)
         res.status(400).json({
             success: false,
             messages: ['get_all_task_of_organizational_unit_failure'],

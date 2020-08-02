@@ -78,7 +78,7 @@ class DomainOfTaskResultsChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        
+
         if (nextProps.callAction !== this.state.callAction || nextState.startMonth !== this.state.startMonth || nextState.endMonth !== this.state.endMonth) {
             await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.startMonth, nextState.endMonth, null, null, this.state.aPeriodOfTime);
             await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.startMonth, nextState.endMonth, this.state.aPeriodOfTime);
@@ -104,10 +104,10 @@ class DomainOfTaskResultsChart extends Component {
                     role: nextState.role
                 }
             })
-            
+
             this.domainChart();
         }
-        
+
         if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
             await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth, null, null, this.state.aPeriodOfTime);
             await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth, this.state.aPeriodOfTime);
@@ -131,7 +131,7 @@ class DomainOfTaskResultsChart extends Component {
             };
             /** Sao lưu để sử dụng khi dữ liệu bị thay đổi
              *  (Lý do: khi đổi role task, muốn sử dụng dữ liệu cũ nhưng trước đó dữ liệu trong kho redux đã bị thay đổi vì service được gọi ở 1 nơi khác)
-             */ 
+             */
             if (nextState.willUpdate) {
                 this.TASK_PROPS = {
                     responsibleTasks: nextProps.tasks.responsibleTasks,
@@ -328,7 +328,7 @@ class DomainOfTaskResultsChart extends Component {
         this.removePreviosChart();
 
         let dataChart = this.setDataDomainChart();
-        
+
         this.chart = c3.generate({
             bindto: this.refs.chart,             // Đẩy chart vào thẻ div có id="chart"
 
@@ -370,7 +370,7 @@ class DomainOfTaskResultsChart extends Component {
 
     render() {
         const { translate, taskOrganizationUnit } = this.props;
-        
+
         let d = new Date(),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -390,37 +390,37 @@ class DomainOfTaskResultsChart extends Component {
                         <label>{translate('task.task_management.from')}</label>
                         <DatePicker
                             id="monthStartInDomainOfTaskResults"
-                            dateFormat="month-year"             
-                            value={defaultStartMonth}                    
+                            dateFormat="month-year"
+                            value={defaultStartMonth}
                             onChange={this.handleSelectMonthStart}
-                            disabled={false}                   
+                            disabled={false}
                         />
                     </div>
                     <div className="col-sm-6 col-xs-12 form-group">
                         <label>{translate('task.task_management.to')}</label>
                         <DatePicker
                             id="monthEndInDomainOfTaskResults"
-                            dateFormat="month-year"             
-                            value={defaultEndMonth}                    
+                            dateFormat="month-year"
+                            value={defaultEndMonth}
                             onChange={this.handleSelectMonthEnd}
-                            disabled={false}                   
+                            disabled={false}
                         />
                     </div>
                 </section>
 
                 <section className="form-inline">
-                    { !taskOrganizationUnit && 
+                    {!taskOrganizationUnit &&
                         <div className="col-sm-6 col-xs-12 form-group">
-                        <label>{translate('task.task_management.role')}</label>
-                        <SelectBox
-                            id={`roleOfResultsTaskSelectBox`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            items={this.ROLE_SELECTBOX}
-                            multiple={false}
-                            onChange={this.handleSelectRole}
-                            value={this.ROLE_SELECTBOX[0].value}
-                        />
+                            <label>{translate('task.task_management.role')}</label>
+                            <SelectBox
+                                id={`roleOfResultsTaskSelectBox`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={this.ROLE_SELECTBOX}
+                                multiple={false}
+                                onChange={this.handleSelectRole}
+                                value={this.ROLE_SELECTBOX[0].value}
+                            />
                         </div>
                     }
                     <div className="col-sm-6 col-xs-12 form-group">

@@ -22,7 +22,7 @@ export const taskManagementActions = {
     evaluateTaskByResponsibleEmployees,
 
     getTasksByUser,
-
+    getTaskInOrganizationUnitByMonth,
     getTaskEvaluations,
 };
 
@@ -524,6 +524,22 @@ function getTaskEvaluations(data) {
             })
             .catch(error => {
                 dispatch({ type: taskManagementConstants.GET_TASK_EVALUATION_FAILURE, error });
+            });
+    };
+}
+
+function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, endDateBefore) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_REQUEST });
+        taskManagementService.getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, endDateBefore)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_FAILURE, error });
             });
     };
 }

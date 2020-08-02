@@ -21,6 +21,7 @@ export const taskManagementService = {
     getSubTask,
     getTasksByUser,
     getTaskEvaluations,
+    getTaskInOrganizationUnitByMonth,
 };
 
 /**
@@ -321,3 +322,15 @@ function getTaskEvaluations(data) {
     }, false, true, 'task.task_management');
 }
 
+function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, endDateBefore) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/task/tasks`,
+        method: 'GET',
+        params: {
+            type: 'task_in_unit',
+            organizationUnitId: organizationUnitId,
+            startDateAfter: startDateAfter,
+            endDateBefore: endDateBefore,
+        }
+    }, false, true, 'task.task_management');
+}
