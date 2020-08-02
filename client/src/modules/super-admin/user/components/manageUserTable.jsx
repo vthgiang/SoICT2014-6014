@@ -60,7 +60,7 @@ class ManageUserTable extends Component {
                         userEmail={this.state.currentRow.email}
                         userName={this.state.currentRow.name}
                         userActive={this.state.currentRow.active}
-                        userRoles={this.state.currentRow.roles ? this.state.currentRow.roles.map(role => role.roleId._id) : []}
+                        userRoles={this.state.currentRow.roles.map(role => role && role.roleId ? role.roleId._id : null)}
                     />
                 }
 
@@ -97,7 +97,7 @@ class ManageUserTable extends Component {
                                 >
                                     <td>{parse(u.name)}</td>
                                     <td>{u.email}</td>
-                                    <td><ToolTip dataTooltip={u.roles.map(role => role.roleId.name)} /></td>
+                                    <td><ToolTip dataTooltip={u.roles.map(role => role && role.roleId ? role.roleId.name : "Role is deleted")} /></td>
                                     <td>{u.active
                                         ? <p><i className="fa fa-circle text-success" style={{ fontSize: "1em", marginRight: "0.25em" }} /> {translate('manage_user.enable')} </p>
                                         : <p><i className="fa fa-circle text-danger" style={{ fontSize: "1em", marginRight: "0.25em" }} /> {translate('manage_user.disable')} </p>}</td>
@@ -194,7 +194,10 @@ class ManageUserTable extends Component {
 
 }
 
-const mapStateToProps = state => state;
+function mapStateToProps(state) {
+    const { user } = state;
+    return { user };
+}
 
 const mapDispatchToProps = {
     getUser: UserActions.get,

@@ -107,21 +107,31 @@ class UsageLogAddModal extends Component {
 
     // Bắt sự kiện submit form
     save = async () => {
+        const { user } = this.props;
+        let userlist = user.list;
+
         var partStart = this.state.startDate.split('-');
         var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
         var partEnd = this.state.endDate.split('-');
         var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+
+        if (this.state.usedBy === '') {
+            await this.setState({
+                ...this.state,
+                usedBy: userlist[0]._id,
+            });
+        }
+
         if (this.isFormValidated()) {
-            return this.props.handleChange({...this.state, startDate: startDate, endDate: endDate});
+            return this.props.handleChange({ ...this.state, startDate: startDate, endDate: endDate });
         }
     }
-    
+
     render() {
         const { translate, id, user } = this.props;
         var userlist = user.list;
-        const {
-            usedBy, startDate, endDate, description, errorOnDescription } = this.state;
-            console.log(this.state, 'this.state')
+        const { usedBy, startDate, endDate, description, errorOnDescription } = this.state;
+        console.log(this.state, 'this.state')
         return (
             <React.Fragment>
                 <ButtonModal modalID={`modal-create-usage-${id}`} button_name="Thêm mới" title="Thêm mới thông tin cấp phát sử dụng" />

@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 
 import { createKpiSetActions } from '../../creation/redux/actions';
 
 import c3 from 'c3';
 import 'c3/c3.css';
-import * as d3 from "d3";
-import { withTranslate } from 'react-redux-multilingual';
+
 
 var translate ='';
 class ResultsOfEmployeeKpiChart extends Component {
-
     constructor(props) {
         super(props);
         translate = this.props.translate;
@@ -88,7 +87,7 @@ class ResultsOfEmployeeKpiChart extends Component {
         }
     }
 
-    // Thiết lập dữ liệu biểu đồ
+    /**Thiết lập dữ liệu biểu đồ */
     setDataMultiLineChart = () => {
         const { createEmployeeKpiSet } = this.props;
         var listEmployeeKpiSetEachYear, automaticPoint, employeePoint, approvedPoint, date, dataMultiLineChart;
@@ -120,7 +119,7 @@ class ResultsOfEmployeeKpiChart extends Component {
         return dataMultiLineChart;
     };
 
-    // Xóa các chart đã render trước khi đủ dữ liệu
+    /**Xóa các chart đã render trước khi đủ dữ liệu */
     removePreviosMultiLineChart = () => {
         const chart =  this.refs.chart;
         while(chart.hasChildNodes()) {
@@ -128,7 +127,7 @@ class ResultsOfEmployeeKpiChart extends Component {
         }
     }
 
-    // Khởi tạo MultiLineChart bằng C3
+    /**Khởi tạo MultiLineChart bằng C3 */
     multiLineChart = () => {
         this.removePreviosMultiLineChart();
         
@@ -170,7 +169,6 @@ class ResultsOfEmployeeKpiChart extends Component {
                     }
                 }
             },
-
             zoom: {                                 // Cho phép zoom biểu đồ
                 enabled: false
             }

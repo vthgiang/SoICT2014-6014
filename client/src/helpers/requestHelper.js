@@ -5,12 +5,6 @@ import { toast } from 'react-toastify';
 import React from 'react';
 import getBrowserFingerprint from 'get-browser-fingerprint';
 
-import 'rc-notification/assets/index.css';
-import Notification from 'rc-notification';
-
-let notification = null;
-Notification.newInstance({ style: {'top': 65, right: '3%',} }, (n) => notification = n);
-
 const AuthenticateHeader = (name = 'jwt',) => {
     const token = getStorage(name);
     const currentRole = getStorage("currentRole");
@@ -72,13 +66,13 @@ export function sendRequest(options, showSuccessAlert = false, showFailAlert = t
         const messages = Array.isArray(res.data.messages) ? res.data.messages : [res.data.messages];
 
         showSuccessAlert && toast.success(
-            <ServerResponseAlert
-                type='success'
-                title={successTitle}
-                content={messages.map(message => `${module}.${message}`)}
-            />,
-            { containerId: 'toast-notification' }
-          );
+                    <ServerResponseAlert
+                        type='success'
+                        title = {successTitle}
+                        content={messages.map(message => `${module}.${message}`)}
+                    />,
+                    { containerId: 'toast-notification' }
+                );
         return Promise.resolve(res);
     }).catch(err => {
         const messages = Array.isArray(err.response.data.messages) ? err.response.data.messages : [err.response.data.messages];

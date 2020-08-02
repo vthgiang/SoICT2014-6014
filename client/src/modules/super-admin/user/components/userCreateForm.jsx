@@ -90,14 +90,14 @@ class UserCreateForm extends Component {
         const { translate, role, user } = this.props;
         const { userName, userEmail, errorOnUserName, errorOnUserEmail } = this.state;
 
-        const items = role.list ? role.list.filter(role => {
-            return role.name !== 'Super Admin'
-        }).map(role => { return { value: role._id, text: role.name } }) : []
+        const items = role.list.filter(role => {
+            return role && role.name !== 'Super Admin'
+        }).map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } })
 
         return (
             <React.Fragment>
                 {/* Button thêm tài khoản người dùng mới */}
-                <ButtonModal modalID="modal-create-user" button_name={translate('manage_user.add')} title={translate('manage_user.add_title')} />.
+                <ButtonModal modalID="modal-create-user" button_name={translate('manage_user.add')} title={translate('manage_user.add_title')} />
 
                 <DialogModal
                     modalID="modal-create-user" isLoading={user.isLoading}
@@ -148,7 +148,10 @@ class UserCreateForm extends Component {
     }
 }
 
-const mapStateToProps = state => state;
+function mapStateToProps(state) {
+    const { user, role } = state;
+    return { user, role };
+}
 
 const mapDispatchToProps = {
     create: UserActions.create,

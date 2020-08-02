@@ -70,7 +70,7 @@ class DepartmentCreateWithParent extends Component {
 
     render() {
         const { translate, department } = this.props;
-        const { departmentParent, departmentNameError, departmentDescriptionError, departmentDeanError, departmentViceDeanError, departmentEmployeeError } = this.state;
+        const { departmentParent, departmentNameError, departmentDescriptionError } = this.state;
         console.log("state create organ:", this.state)
 
         return (
@@ -112,7 +112,7 @@ class DepartmentCreateWithParent extends Component {
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={[
-                                        { text: "Không có phòng ban cha" }, ...department.list ? department.list.map(department => { return { value: department._id, text: department.name } }) : null
+                                        { text: "Không có phòng ban cha" }, ...department.list.map(department => { return { value: department ? department._id : null, text: department ? department.name : "Organizational unit is deleted" } })
                                     ]}
                                     onChange={this.handleParent}
                                     value={departmentParent}
@@ -324,7 +324,10 @@ class DepartmentCreateWithParent extends Component {
     }
 }
 
-const mapState = state => state;
+function mapState(state) {
+    const { department } = state;
+    return { department };
+}
 
 const getState = {
     create: DepartmentActions.create

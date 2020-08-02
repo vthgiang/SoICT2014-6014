@@ -208,10 +208,10 @@ class UserEditForm extends Component {
                                         style={{ width: "100%" }}
                                         items={
                                             this.checkSuperAdmin(userRoles) ? // Neu tai khoan nay hien tai khong co role la Super Admin
-                                                role.list.map(role => { return { value: role._id, text: role.name } }) :
+                                                role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } }) :
                                                 role.list.filter(role => {
-                                                    return role.name !== 'Super Admin'
-                                                }).map(role => { return { value: role._id, text: role.name } })
+                                                    return role && role.name !== 'Super Admin'
+                                                }).map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } })
                                         }
                                         onChange={this.handleRolesChange}
                                         value={userRoles}
@@ -226,7 +226,10 @@ class UserEditForm extends Component {
     }
 }
 
-const mapStateToProps = state => state;
+function mapStateToProps(state) {
+    const { user, role, auth } = state;
+    return { user, role, auth };
+}
 
 const action = {
     edit: UserActions.edit

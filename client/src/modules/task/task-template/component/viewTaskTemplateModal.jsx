@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { taskTemplateActions } from '../redux/actions';
-import { DialogModal } from '../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
+
+import { DialogModal } from '../../../../common-components';
+
+import { taskTemplateActions } from '../redux/actions';
 
 class ModalViewTaskTemplate extends Component {
     constructor(props) {
@@ -31,16 +33,18 @@ class ModalViewTaskTemplate extends Component {
     }
 
     render() {
-        var taskTemplate = {};
-        var priority ="";
         const { tasktemplates, translate } = this.props;
+
+        let taskTemplate = {};
+        let priority ="";
+       
         if (tasktemplates.taskTemplate) {
             taskTemplate = tasktemplates.taskTemplate;
             switch(taskTemplate.priority)
             {
-                case 1: priority="Thấp"; break;
-                case 2: priority="Trung bình";break;
-                case 3: priority='Cao'; break;
+                case 1: priority=translate('task_template.low'); break;
+                case 2: priority=translate('task_template.medium');break;
+                case 3: priority=translate('task_template.high'); break;
             }
         }
         
@@ -61,6 +65,7 @@ class ModalViewTaskTemplate extends Component {
                                     </div>
                                     <div className="box-body">
 
+                                        {/**Các thông tin của mẫu công việc */}
                                         <dt>{translate('task_template.unit')}</dt>
                                         <dd>{taskTemplate.organizationalUnit && taskTemplate.organizationalUnit.name}</dd>
 
@@ -93,6 +98,8 @@ class ModalViewTaskTemplate extends Component {
                                     </div>
                                     <div className="box-body">
                                         <dl>
+
+                                            {/**Người được xem mẫu công việc */}
                                             <dt>{translate('task_template.permission_view')}</dt>
                                             <dd>
                                                  <ul>
@@ -101,6 +108,8 @@ class ModalViewTaskTemplate extends Component {
                                                     })}
                                                 </ul>
                                             </dd>
+
+                                            {/**Người thực hiện mẫu công việc */}
                                             {taskTemplate.responsibleEmployees && taskTemplate.responsibleEmployees.length > 0 &&
                                                 <React.Fragment>
                                                     <dt>{translate('task_template.performer')}</dt>
@@ -113,7 +122,8 @@ class ModalViewTaskTemplate extends Component {
                                                     </dd>
                                                 </React.Fragment>
                                             }
-
+                                            
+                                            {/**Người phê duyệt mẫu công việc */}
                                             {taskTemplate.accountableEmployees && taskTemplate.accountableEmployees.length > 0 &&
                                                 <React.Fragment>
                                                     <dt>{translate('task_template.approver')}</dt>
@@ -127,6 +137,7 @@ class ModalViewTaskTemplate extends Component {
                                                 </React.Fragment>
                                             }
 
+                                            {/**Người quan sát mẫu công việc */}
                                             {taskTemplate.consultedEmployees && taskTemplate.consultedEmployees.length > 0 &&
                                                 <React.Fragment>
                                                     <dt>{translate('task_template.observer')}</dt>
@@ -139,7 +150,8 @@ class ModalViewTaskTemplate extends Component {
                                                     </dd>
                                                 </React.Fragment>
                                             }
-
+                                            
+                                            {/**Người quan sát mẫu công việc */}
                                             {taskTemplate.informedEmployees && taskTemplate.informedEmployees.length > 0 &&
                                                 <React.Fragment>
                                                     <dt>{translate('task_template.supporter')}</dt>
@@ -164,6 +176,8 @@ class ModalViewTaskTemplate extends Component {
                                     <div className="box-header with-border">
                                         {translate('task_template.activity_list')}
                                     </div>
+
+                                    {/**Các hoạt động mẫu công việc */}
                                     <div className="box-body">
                                         {
                                             (!taskTemplate.taskActions || taskTemplate.taskActions.length === 0)?
@@ -183,6 +197,8 @@ class ModalViewTaskTemplate extends Component {
                                     <div className="box-header with-border">
                                         {translate('task_template.information_list')}
                                     </div>
+
+                                    {/**Các trường thông tin mẫu công việc */}
                                     <div className="box-body">
                                         {
                                             (!taskTemplate.taskInformations || taskTemplate.taskInformations.length === 0)? 
@@ -212,5 +228,6 @@ function mapState(state) {
 const actionCreators = {
     getTaskTemplate: taskTemplateActions.getTaskTemplateById,
 };
+
 const connectedModalViewTaskTemplate = connect(mapState, actionCreators)(withTranslate(ModalViewTaskTemplate));
 export { connectedModalViewTaskTemplate as ModalViewTaskTemplate };

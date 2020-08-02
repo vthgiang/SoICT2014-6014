@@ -122,7 +122,7 @@ class LinkInfoForm extends Component {
                                 id={`link-roles-${linkId}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                items={role.list ? role.list.map(role => { return { value: role._id, text: role.name } }) : []}
+                                items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } })}
                                 onChange={this.handleLinkRoles}
                                 value={linkRoles}
                                 multiple={true}
@@ -135,7 +135,10 @@ class LinkInfoForm extends Component {
     }
 }
 
-const mapState = state => state;
+function mapState(state) {
+    const { role, link } = state;
+    return { role, link };
+}
 
 const getState = {
     getRole: RoleActions.get,

@@ -70,7 +70,7 @@ class DepartmentCreateForm extends Component {
 
     render() {
         const { translate, department } = this.props;
-        const { departmentNameError, departmentDescriptionError, departmentDeanError, departmentViceDeanError, departmentEmployeeError } = this.state;
+        const { departmentNameError, departmentDescriptionError } = this.state;
         console.log("state deans:", this.state);
 
         return (
@@ -115,7 +115,7 @@ class DepartmentCreateForm extends Component {
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={[
-                                        { text: "Không có phòng ban cha" }, ...department.list.map(department => { return { value: department._id, text: department.name } })
+                                        { text: "Không có phòng ban cha" }, ...department.list.map(department => { return { value: department ? department._id : null, text: department ? department.name : "Organizational unit is deleted" } })
                                     ]}
                                     onChange={this.handleParent}
                                     multiple={false}
@@ -315,7 +315,11 @@ class DepartmentCreateForm extends Component {
 
 }
 
-const mapState = state => state;
+function mapState(state) {
+    const { department } = state;
+    return { department };
+}
+
 const getState = {
     create: DepartmentActions.create
 }

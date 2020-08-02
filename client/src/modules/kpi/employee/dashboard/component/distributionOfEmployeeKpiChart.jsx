@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 
 import { createKpiSetActions } from '../../creation/redux/actions';
 
@@ -7,12 +8,10 @@ import { DatePicker } from '../../../../../common-components';
 
 import c3 from 'c3';
 import 'c3/c3.css';
-import * as d3 from "d3";
-import { withTranslate } from 'react-redux-multilingual';
+
 
 var translate ='';
 class DistributionOfEmployeeKpiChart extends Component {
-
     constructor(props) {
         super(props);
         translate = this.props.translate;
@@ -66,7 +65,7 @@ class DistributionOfEmployeeKpiChart extends Component {
         return false;
     }
 
-    // Thiết lập dữ liệu biểu đồ
+    /**Thiết lập dữ liệu biểu đồ */
     setDataPieChart = () => {
         const { createEmployeeKpiSet } = this.props;
         var listEmployeeKpi, dataPieChart;
@@ -83,7 +82,7 @@ class DistributionOfEmployeeKpiChart extends Component {
         return dataPieChart;
     }
 
-     // Xóa các chart đã render khi chưa đủ dữ liệu
+     /**Xóa các chart đã render khi chưa đủ dữ liệu */
     removePreviousChart(){
         const chart = this.refs.chart;
         while(chart.hasChildNodes()){
@@ -91,7 +90,7 @@ class DistributionOfEmployeeKpiChart extends Component {
         }
     } 
 
-    // Khởi tạo PieChart bằng C3
+    /**Khởi tạo PieChart bằng C3 */
     pieChart = () => {
         this.removePreviousChart();
 

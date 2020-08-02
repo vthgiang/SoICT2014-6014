@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, SlimScroll } from '../../../../common-components';
-import { configTaskTempalte } from './fileConfigurationImportTaskTemplate';
 import XLSX from 'xlsx';
+
 import { LOCAL_SERVER_API } from '../../../../env';
 import {taskTemplateActions} from '../redux/actions'
+
+import { DialogModal, SlimScroll } from '../../../../common-components';
+import { configTaskTempalte } from './fileConfigurationImportTaskTemplate';
+
 class TaskTemplateImportForm extends Component {
     constructor(props) {
         super(props);
@@ -18,17 +21,13 @@ class TaskTemplateImportForm extends Component {
         };
     }
 
-    // Chuyển đổi dữ liệu file cấu hình để truyền vào state (rồi truyền vào textarea);
+    /**Chuyển đổi dữ liệu file cấu hình để truyền vào state (rồi truyền vào textarea); */
     convertConfigurationToString = (data) => {
         let sheets = data.sheets, bonus = data.bonus;
         if (sheets.length > 1) {
             sheets = sheets.map(x => `"${x}"`);
             sheets = sheets.join(', ');
         } else sheets = `"${sheets}"`
-        // if (bonus.length > 1) {
-        //     bonus = bonus.map(x => `"${x}"`);
-        //     bonus = bonus.join(', ');
-        // } else bonus = `"${bonus}"`
         let stringData = `{
             "${'Số dòng tiêu đề của bảng'}": ${data.rowHeader},
             "${"Tên các sheet"}": [${sheets}],
@@ -51,22 +50,19 @@ class TaskTemplateImportForm extends Component {
             "${"Tên tiêu để ứng với kiểu dữ liệu"}": "${data.type}",
             "${"Tên tiêu để ứng với chỉ quản lí được điền"}": "${data.filledByAccountableEmployeesOnly}",
         }`
-        console.log('ssss', stringData);
         return stringData;
     }
+
     convertStringToObject = (data) => {
         try {
-            console.log(data);
             data = data.substring(1, data.length - 1); // xoá dấu "{" và "}"" ở đầu và cuối String
             data = data.split(',').map(x => x.trim()); // xoá các space dư thừa
             data = data.join(',');
             if (data[data.length - 1] === ',') {    // xoá dấu "," nếu tồn tại ở cuối chuỗi để chuyển đổi dc về dạng string
                 data = data.substring(0, data.length - 1);
             }
-            console.log(data);
             data = JSON.parse(`{${data}}`);
             let obj = {};
-            console.log(obj);
             for (let index in data) {
                 if (index === "Số dòng tiêu đề của bảng") obj = { ...obj, rowHeader: data[index] };
                 if (index === "Tên các sheet") obj = { ...obj, sheets: data[index] };
@@ -94,7 +90,7 @@ class TaskTemplateImportForm extends Component {
             return null
         }
     }
-    // bắt sự kiện thay đổi trong text area
+    /**bắt sự kiện thay đổi trong text area */
     handleChange = (e) => {
         const { value } = e.target;
         this.setState({
@@ -103,7 +99,8 @@ class TaskTemplateImportForm extends Component {
                 this.convertStringToObject(value) : this.state.importConfiguration,
         })
     }
-
+    
+    /**Khi người dùng thay đổi file excel */
     handleChangeFile = (e) => {
         const { importConfiguration } = this.state;
         let configData = importConfiguration !== null ? importConfiguration : configTaskTempalte;
@@ -194,16 +191,15 @@ class TaskTemplateImportForm extends Component {
                         }
                         )
                     }
-                    // convert dữ liệu thành dạng array json mong muốn để gửi lên server
 
+                    // convert dữ liệu thành dạng array json mong muốn để gửi lên server
                     data.splice(0, Number(configData.rowHeader));
-                    console.log("eer", data);
                     let dataConvert = [];
                     let organizationalUnit, name, priority, description, formula;
                     let readByEmployees = [], responsibleEmployees = [], consultedEmployees = [], informedEmployees = [],
                         accountableEmployees = [], taskActions = [], nameTaskAction, descriptionTaskAction, mandatory, taskInformations = [],
                         nameTaskInformation, descriptionTaskInformation, type, filledByAccountableEmployeesOnly;
-                    let taskActionChange = false, taskInforChange = false;
+                        let taskActionChange = false, taskInforChange = false;
                     for (let i = 0; i < data.length; i++) {
 
                         if (data[i][indexName] !== null) {
@@ -262,9 +258,6 @@ class TaskTemplateImportForm extends Component {
                             }
 
                         }
-                        // console.log('conee', dataConvert);
-                        // console.log('action',taskActions);
-                        //console.log(data[i + 1][indexName]);
                         if (i + 1 < data.length) {
                             console.log('rer',data[i + 1][indexName]);
                             if (data[i + 1][indexName] !== null) {
@@ -277,21 +270,17 @@ class TaskTemplateImportForm extends Component {
                         }
                     }
                     dataConvert = [...dataConvert, { organizationalUnit, readByEmployees, name, priority, description, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, formula, taskActions, taskInformations }]
-                            
-                    console.log('eee',dataConvert);
-                    // console.log('view', readByEmployees);
-                    // console.log('tee',taskActions)
                     importData = importData.concat(dataConvert);
                 })
-                console.log(importData);
                 
                 this.setState({
                     importData: importData,
-                   // rowError: rowError
                 })
             }
         }
     }
+
+    /**Gửi req thêm mới 1 mẫu công việc */
     save = ()=>{
         let {importData} = this.state;
         this.props.importTaskTemplate(importData);
@@ -299,7 +288,6 @@ class TaskTemplateImportForm extends Component {
 
     render() {
         let { importConfiguration, configData } = this.state;
-        console.log(this.state);
         return (
             <React.Fragment>
                 <DialogModal
@@ -408,67 +396,8 @@ class TaskTemplateImportForm extends Component {
                                     <a className='pull-right' href={LOCAL_SERVER_API + configTaskTempalte.file.fileUrl} target="_blank" style={{ paddingTop: 15 }}
                                         download={configTaskTempalte.file.fileName}><i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
                                 </div>
-
-                                {/* <div className="form-group col-md-12 col-xs-12">
-                                {
-                                    importDataCurrentPage.length !== 0 && (
-                                        <React.Fragment>
-                                            {rowError.length !== 0 && (
-                                                <React.Fragment>
-                                                    <span style={{ fontWeight: "bold", color: "red" }}>Có lỗi xảy ra ở các dòng: {rowError.join(', ')}</span>
-                                                </React.Fragment>
-                                            )}
-                                            <div id="croll-table-import">
-                                                <table id="importData" className="table table-striped table-bordered table-hover">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>STT</th>
-                                                            <th>Mã số nhân viên</th>
-                                                            <th>Tên nhân viên</th>
-                                                            <th>Tiền lương chính</th>
-                                                            {otherSalary.length !== 0 &&
-                                                                otherSalary.map((x, index) => (
-                                                                    <React.Fragment key={index}>
-                                                                        <th>{x}</th>
-                                                                    </React.Fragment>
-                                                                ))
-                                                            }
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {
-                                                            importDataCurrentPage.map((x, index) => {
-                                                                return (
-                                                                    <tr key={index} style={x.error ? { color: "#dd4b39" } : { color: '' }} title={x.errorAlert.join(', ')}>
-                                                                        <td>{page + index + 1}</td>
-                                                                        <td>{x.employeeNumber}</td>
-                                                                        <td>{x.employeeName}</td>
-                                                                        <td>{formater.format(parseInt(x.mainSalary))}</td>
-                                                                        {otherSalary.length !== 0 &&
-                                                                            otherSalary.map((y, index) => {
-                                                                                let number = null;
-                                                                                x.bonus.forEach(b => {
-                                                                                    if (y.trim().toLowerCase() === b.nameBonus.trim().toLowerCase()) {
-                                                                                        number = formater.format(parseInt(b.number))
-                                                                                    }
-                                                                                })
-                                                                                return <td>{number}</td>
-                                                                            })
-                                                                        }
-                                                                    </tr>
-                                                                )
-                                                            })
-                                                        }
-
-                                                    </tbody>
-                                                </table>
-                                            </div>
-
-                                        </React.Fragment>
-                                    )}
-                            </div> */}
                                 <SlimScroll outerComponentId="croll-table-import" innerComponentId="importData" innerComponentWidth={1000} activate={true} />
-                                {/* <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} /> */}
+                                
                             </div>
                         </div>
                     </form>

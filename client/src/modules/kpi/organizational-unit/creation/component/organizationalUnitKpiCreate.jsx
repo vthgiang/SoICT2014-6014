@@ -12,7 +12,6 @@ import { OrganizationalUnitKpiEditTargetModal } from './organizationalUnitKpiEdi
 import { createUnitKpiActions } from '../redux/actions.js';
 import { UserActions} from '../../../../super-admin/user/redux/actions';
 
-// Hàm để chuyển sang song ngữ
 var translate = '';
 
 class OrganizationalUnitKpiCreate extends Component {
@@ -25,7 +24,7 @@ class OrganizationalUnitKpiCreate extends Component {
             organizationalUnitKpiSet: {
                 organizationalUnit: "",
                 date: this.formatDate(Date.now()),
-                creator: "" // localStorage.getItem("id")
+                creator: "" 
             },
 
             adding: false,
@@ -78,7 +77,7 @@ class OrganizationalUnitKpiCreate extends Component {
         })
         let { organizationalUnitKpiSet } = this.state;
         
-        if (organizationalUnitKpiSet.organizationalUnit && organizationalUnitKpiSet.date) {//&& kpiunit.creater
+        if (organizationalUnitKpiSet.organizationalUnit && organizationalUnitKpiSet.date) {
             this.props.editKPIUnit(id, organizationalUnitKpiSet);
         }
     }
@@ -269,8 +268,8 @@ class OrganizationalUnitKpiCreate extends Component {
     
     render() {
         const { user, createKpiUnit } = this.props; 
+        const { translate } = this.props;
         const { editing, currentRole, organizationalUnitKpiSet } = this.state;
-        const { translate } = this.props; 
 
         var unitList, currentUnit, currentKPI;
 
@@ -293,6 +292,7 @@ class OrganizationalUnitKpiCreate extends Component {
                         <div>
                             {this.checkPermisson(currentUnit && currentUnit[0].deans) &&
                                <div style={{marginLeft: "-10px"}}>
+                                   {/* Form sửa KPI tháng */}
                                     {editing ?
                                         <React.Fragment>
                                             <a className="btn btn-app" onClick={() => this.saveEdit(currentKPI._id, currentUnit && currentUnit[0]._id)} title="Lưu thông tin chỉnh sửa">
@@ -306,9 +306,11 @@ class OrganizationalUnitKpiCreate extends Component {
                                             <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.edit')}
                                         </a>
                                     }
+                                    {/* Xóa KPI tháng */}
                                     <a className="btn btn-app" onClick={() => this.deleteKPI(currentKPI.status, currentKPI._id)} title="Xóa KPI tháng">
                                         <i className="fa fa-trash" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.delete')}
                                     </a>
+                                    {/* Kich hoạt KPI tháng */}
                                     {currentKPI.status === 0 ?
                                         <a className="btn btn-app" onClick={(event) => this.approveKPIUnit(event,currentKPI.status, currentKPI, 1)}>
                                             <i className="fa fa-rocket" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.approve')}
@@ -333,10 +335,10 @@ class OrganizationalUnitKpiCreate extends Component {
                                     <div className='input-group form-group'>
                                         <DatePicker
                                             id="month"      
-                                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
-                                            value={organizationalUnitKpiSet.date} // giá trị mặc định cho datePicker    
+                                            dateFormat="month-year"             
+                                            value={organizationalUnitKpiSet.date}    
                                             onChange={this.handleChangeDate}
-                                            disabled={false}                     // sử dụng khi muốn disabled, mặc định là false
+                                            disabled={false}                     
                                         />
                                     </div>
                                 }

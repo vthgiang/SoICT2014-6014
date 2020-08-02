@@ -51,7 +51,7 @@ class ComponentInfoForm extends Component {
                                 id={`component-link-${componentId}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                items={link.list ? link.list.map(link => { return { value: link._id, text: link.url } }) : null}
+                                items={link.list.map(link => { return { value: link ? link._id : null, text: link ? link.url : "Link is deleted" } })}
                                 onChange={this.handleComponentLink}
                                 value={componentLink}
                                 multiple={false}
@@ -65,7 +65,7 @@ class ComponentInfoForm extends Component {
                                 id={`component-roles-${componentId}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                items={role.list ? role.list.map(role => { return { value: role._id, text: role.name } }) : []}
+                                items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } })}
                                 onChange={this.handleComponentRoles}
                                 value={componentRoles}
                                 multiple={true}
@@ -146,7 +146,11 @@ class ComponentInfoForm extends Component {
     }
 }
 
-const mapState = state => state;
+function mapState(state) {
+    const { role, link } = state;
+    return { role, link };
+}
+
 const getState = {
     editComponent: ComponentActions.edit,
 }

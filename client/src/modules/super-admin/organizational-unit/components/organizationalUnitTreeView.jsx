@@ -25,8 +25,8 @@ class DepartmentTreeView extends Component {
     }
 
     render() {
-        const { tree } = this.props.department;
         const { translate, department } = this.props;
+        const { tree } = this.props.department;
         const { currentRow } = this.state;
 
         return (
@@ -190,7 +190,10 @@ class DepartmentTreeView extends Component {
 
 }
 
-const mapState = state => state;
+function mapState(state) {
+    const { department } = state;
+    return { department };
+}
 
 const getState = {
     destroy: DepartmentActions.destroy

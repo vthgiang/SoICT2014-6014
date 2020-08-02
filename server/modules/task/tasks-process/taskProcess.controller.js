@@ -7,7 +7,7 @@ const { LogInfo, LogError } = require('../../../logs');
  */
 exports.getAllXmlDiagrams = async (req, res) => {
   try {
-    var data = await TaskProcessService.getAllXmlDiagram(req.body);
+    var data = await TaskProcessService.getAllXmlDiagram(req.query, req.body);
     await LogInfo(req.user.email, `get all xml diagram `, req.user.company);
     res.status(200).json({
       success: true,
@@ -71,7 +71,6 @@ exports.createXmlDiagram = async (req, res) => {
 exports.editXmlDiagram = async (req, res) => {
   try {
     var data = await TaskProcessService.editXmlDiagram(req.params, req.body);
-    
     await LogInfo(req.user.email, `edit xml diagram `, req.user.company);
     res.status(200).json({
       success: true,
@@ -92,8 +91,7 @@ exports.editXmlDiagram = async (req, res) => {
  * xóa diagram
  */
 exports.deleteXmlDiagram = async (req, res) => {
-  // try {
-    console.log(req.body);
+  try {
     var data = await TaskProcessService.deleteXmlDiagram(req.params.diagramId);
     
     await LogInfo(req.user.email, `delete xml diagram `, req.user.company);
@@ -102,13 +100,13 @@ exports.deleteXmlDiagram = async (req, res) => {
       messages: ['delete_success'],
       content: data
     });
-  // } catch (error) {
-  //   await LogError(req.user.email, `edit xml diagram `, req.user.company);
-  //   res.status(400).json({
-  //     success: false,
-  //     messages: ['delete_fail'],
-  //     content: error
-  //   });
-  // }
+  } catch (error) {
+    await LogError(req.user.email, `edit xml diagram `, req.user.company);
+    res.status(400).json({
+      success: false,
+      messages: ['delete_fail'],
+      content: error
+    });
+  }
 }
 

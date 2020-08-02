@@ -122,7 +122,7 @@ class DepartmentEditForm extends Component {
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={[
-                                        { text: "Không có phòng ban cha" }, ...department.list.filter(department => department._id !== departmentId).map(department => { return { value: department._id, text: department.name } })
+                                        { text: "Không có phòng ban cha" }, ...department.list.filter(department => department && department._id !== departmentId).map(department => { return { value: department ? department._id : null, text: department ? department.name : "Organizational unit is deleted" } })
                                     ]}
                                     onChange={this.handleParent}
                                     value={departmentParent}
@@ -154,7 +154,7 @@ class DepartmentEditForm extends Component {
                                                             className="form-control"
                                                             name={`dean${index}`}
                                                             placeholder={translate('manage_department.dean_example')}
-                                                            value={dean.name}
+                                                            value={dean ? dean.name : "Dean is deleted"}
                                                             onChange={(e) => this.handleChangeDean(e, index)}
                                                         />
                                                     </td>
@@ -191,7 +191,7 @@ class DepartmentEditForm extends Component {
                                                             className="form-control"
                                                             name={`vicedean${index}`}
                                                             placeholder={translate('manage_department.vice_dean_example')}
-                                                            value={vicedean.name}
+                                                            value={vicedean ? vicedean.name : "Vicedean is deleted"}
                                                             onChange={(e) => this.handleChangeViceDean(e, index)}
                                                         />
                                                     </td>
@@ -227,7 +227,7 @@ class DepartmentEditForm extends Component {
                                                         className="form-control"
                                                         name={`employee${index}`}
                                                         placeholder={translate('manage_department.employee_example')}
-                                                        value={employee.name}
+                                                        value={employee ? employee.name : "Employee is deleted"}
                                                         onChange={(e) => this.handleChangeEmployee(e, index)}
                                                     /></td>
                                                     <td><a href="#delete-employee"
@@ -340,7 +340,11 @@ class DepartmentEditForm extends Component {
     }
 }
 
-const mapState = state => state;
+function mapState(state) {
+    const { department } = state;
+    return { department };
+}
+
 const getState = {
     edit: DepartmentActions.edit
 }

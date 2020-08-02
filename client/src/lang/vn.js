@@ -665,6 +665,7 @@ export default {
             task: "Chi tiết công việc",
             task_management: 'Danh sách công việc',
             task_management_dashboard: 'Dashboard công việc',
+            task_organization_management_dashboard: 'Dashboard công việc của đơn vị',
             task_management_process: "Danh sách quy trình",
 
             //*******START */
@@ -1614,6 +1615,7 @@ export default {
             number: 'Số',
             date: 'Ngày tháng',
             value_set: 'Tập giá trị',
+            code: 'Mã',
             view_detail_of_this_task_template:'Xem chi tiết mẫu công việc này',
             edit_this_task_template: 'Sửa mẫu công việc này',
             delete_this_task_template: 'Xóa mẫu công việc này',
@@ -2052,7 +2054,7 @@ export default {
                         request_approval: 'Yêu cầu phê duyệt',
                         cancel_request_approval: 'Hủy yêu cầu phê duyệt',
                         not_initialize_organiztional_unit_kpi: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa thiết lập KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
-                        not_initialize_organiztional_unit_kpi: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa kích hoạt KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
+                        not_activate_organiztional_unit_kpi: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa kích hoạt KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
                         // Nhóm dành cho các trạng thái tập KPI
                         kpi_status: {
                             status: 'Trạng thái KPI',
@@ -2117,6 +2119,12 @@ export default {
                             approving: 'KPI đang được phê duyệt, bạn không thể xóa!',
                             activated: 'KPI đã được kích hoạt, bạn không thể xóa!'
                         },
+                        handle_populate_info_null: {
+                            error_kpi_approver_null: 'Người phê duyệt tập KPI này không tồn tại hoặc đã bị xóa',
+                            error_kpi_organizational_unit_null: 'Đơn vị của tập KPI này không tồn tại hoặc đã bị xóa',
+                            error_kpi_parent_target_null :'Mục tiêu cha của mục tiêu này đã bị xóa hoặc không tồn tại',
+                            error_kpi_targets_list_null :'Danh sách mục tiêu của tập KPI đã bị xóa hoặc không tồn tại',
+                        }
                     },
 
                     create_employee_kpi_modal: { // Module con
@@ -2221,7 +2229,8 @@ export default {
                     auto_eva: 'Hệ thống đánh giá',
                     employee_eva: 'Cá nhân tự đánh giá',
                     approver_eva: 'Người phê duyệt đánh giá',
-                    result_kpi_personal:'Kết quả KPI cá nhân'
+                    result_kpi_personal:'Kết quả KPI cá nhân',
+                    distribution_kpi_personal: 'Đóng góp KPI cá nhân'
 
                 },
 

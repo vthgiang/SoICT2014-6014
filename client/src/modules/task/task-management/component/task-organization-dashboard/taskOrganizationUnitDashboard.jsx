@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { taskManagementActions } from '../../redux/actions';
+import { DomainOfTaskResultsChart } from '../task-dashboard/domainOfTaskResultsChart';
+import { TaskStatusChart } from '../task-dashboard/taskStatusChart';
+import { TasksSchedule } from '../task-dashboard/tasksSchedule';
 
-import { TaskStatusChart } from './taskStatusChart';
-import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
-import { TasksSchedule } from './tasksSchedule';
+import { taskManagementActions } from '../../redux/actions';
 
 import { withTranslate } from 'react-redux-multilingual';
 
-class TaskDashboard extends Component {
-
+class TaskOrganizationUnitDashboard extends Component {
     constructor(props) {
         super(props);
 
@@ -27,12 +26,13 @@ class TaskDashboard extends Component {
     }
 
     componentDidMount = async () => {
-        await this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
-        await this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
-        await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
-        await this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
-        await this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
-        await this.props.getTaskByUser();
+        // await this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
+        // await this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
+        // await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
+        // await this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
+        // await this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
+        // await this.props.getTaskByUser();
+        await this.props.getTaskInOrganizationUnitByMonth("[]", null, null);
 
         await this.setState(state => {
             return {
@@ -42,10 +42,10 @@ class TaskDashboard extends Component {
             };
         });
     }
-    
+
     shouldComponentUpdate = async (nextProps, nextState) => {
         if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks || !nextProps.tasks.tasksbyuser) {
+            if (!nextProps.tasks.organizationUnitTasks) {
                 return false;
             }
 
@@ -70,91 +70,79 @@ class TaskDashboard extends Component {
 
         return false;
     }
-
-    generateDataPoints(noOfDps) {
-        let xVal = 1, yVal = 100;
-        let dps = [];
-        for (let i = 0; i < noOfDps; i++) {
-            yVal = yVal + Math.round(5 + Math.random() * (-5 - 5));
-            dps.push({ x: xVal, y: yVal });
-            xVal++;
-        }
-        return dps;
-    }
-
     render() {
         const { tasks, translate } = this.props;
 
-        let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
+        // let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
         let numTask = [];
         let totalTasks = 0;
 
         // Tinh so luong tat ca cac task 
-        if (tasks && tasks.responsibleTasks) {
-            let task = tasks.responsibleTasks;
-            let i;
-            for (i in task) {
-                if (task[i].status === "Inprocess")
-                    amountResponsibleTask++;
+        // if (tasks && tasks.responsibleTasks) {
+        //     let task = tasks.responsibleTasks;
+        //     let i;
+        //     for (i in task) {
+        //         if (task[i].status === "Inprocess")
+        //             amountResponsibleTask++;
 
-            }
-        }
+        //     }
+        // }
 
         // tính số lượng task mà người này là creator
-        if (tasks && tasks.creatorTasks) {
-            let task = tasks.creatorTasks;
-            let i;
-            for (i in task) {
-                if (task[i].status === "Inprocess")
-                    amountTaskCreated++;
+        // if (tasks && tasks.creatorTasks) {
+        //     let task = tasks.creatorTasks;
+        //     let i;
+        //     for (i in task) {
+        //         if (task[i].status === "Inprocess")
+        //             amountTaskCreated++;
 
-            }
-        }
+        //     }
+        // }
 
         // tính số lượng task mà người này cần phê duyệt
-        if (tasks && tasks.accountableTasks) {
-            let task = tasks.accountableTasks;
-            let i;
-            for (i in task) {
-                if (task[i].status === "Inprocess")
-                    amountAccountableTasks++;
-            }
-        }
+        // if (tasks && tasks.accountableTasks) {
+        //     let task = tasks.accountableTasks;
+        //     let i;
+        //     for (i in task) {
+        //         if (task[i].status === "Inprocess")
+        //             amountAccountableTasks++;
+        //     }
+        // }
 
         // tính số lượng task mà người này là người hỗ trợ
-        if (tasks && tasks.consultedTasks) {
-            let task = tasks.consultedTasks;
-            let i;
-            for (i in task) {
-                if (task[i].status === "Inprocess")
-                    amountConsultedTasks++;
-            }
-        }
+        // if (tasks && tasks.consultedTasks) {
+        //     let task = tasks.consultedTasks;
+        //     let i;
+        //     for (i in task) {
+        //         if (task[i].status === "Inprocess")
+        //             amountConsultedTasks++;
+        //     }
+        // }
 
         // Tinh tong so luong cong viec co trang thai Inprogess
-        if (tasks) {
-            let tempObj = {};
-            if (tasks.responsibleTasks)
-                numTask = numTask.concat(tasks.responsibleTasks);
-            if (tasks.creatorTasks)
-                numTask = numTask.concat(tasks.creatorTasks);
-            if (tasks.accountableTasks)
-                numTask = numTask.concat(tasks.accountableTasks);
-            if (tasks.consultedTasks)
-                numTask = numTask.concat(tasks.consultedTasks);
-            let i;
-            for (i in numTask) {
-                if (numTask[i].status === "Inprocess")
-                    tempObj[numTask[i]._id] = numTask[i].name;
-            }
+        // if (tasks) {
+        //     let tempObj = {};
+        //     if (tasks.responsibleTasks)
+        //         numTask = numTask.concat(tasks.responsibleTasks);
+        //     if (tasks.creatorTasks)
+        //         numTask = numTask.concat(tasks.creatorTasks);
+        //     if (tasks.accountableTasks)
+        //         numTask = numTask.concat(tasks.accountableTasks);
+        //     if (tasks.consultedTasks)
+        //         numTask = numTask.concat(tasks.consultedTasks);
+        //     let i;
+        //     for (i in numTask) {
+        //         if (numTask[i].status === "Inprocess")
+        //             tempObj[numTask[i]._id] = numTask[i].name;
+        //     }
 
-            totalTasks = Object.keys(tempObj).length;
+        //     totalTasks = Object.keys(tempObj).length;
 
-        }
-
+        // }
         return (
+
             <React.Fragment>
-                <div className="row">
+                {/* <div className="row">
                     <div className="col-md-3 col-sm-6 col-xs-12">
                         <div className="info-box">
                             <span className="info-box-icon bg-aqua"><i className="fa fa-plus" /></span>
@@ -192,7 +180,7 @@ class TaskDashboard extends Component {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
                 <div className="row">
                     <div className="col-xs-12">
                         <div className="box box-primary">
@@ -203,6 +191,7 @@ class TaskDashboard extends Component {
                                 {this.state.callAction &&
                                     <DomainOfTaskResultsChart
                                         callAction={!this.state.willUpdate}
+                                        TaskOrganizationUnitDashboard={true}
                                     />
                                 }
                             </div>
@@ -217,6 +206,7 @@ class TaskDashboard extends Component {
                                 {this.state.callAction &&
                                     <TaskStatusChart
                                         callAction={!this.state.willUpdate}
+                                        TaskOrganizationUnitDashboard={true}
                                     />
                                 }
                             </div>
@@ -236,17 +226,17 @@ class TaskDashboard extends Component {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
                                             {
-                                                (tasks.tasksbyuser.expire.length !== 0)?
-                                                tasks.tasksbyuser.expire.map((item, key) =>
-                                                    <li key={key}>
-                                                        <span className="handle">
-                                                            <i className="fa fa-ellipsis-v" />
-                                                            <i className="fa fa-ellipsis-v" />
-                                                        </span>
-                                                        <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
-                                                        <small className="label label-warning"><i className="fa fa-clock-o" />{item.totalDays} {translate('task.task_management.calc_days')}</small>
-                                                    </li>
-                                                ): "Không có công việc quá hạn"
+                                                (tasks.tasksbyuser.expire.length !== 0) ?
+                                                    tasks.tasksbyuser.expire.map((item, key) =>
+                                                        <li key={key}>
+                                                            <span className="handle">
+                                                                <i className="fa fa-ellipsis-v" />
+                                                                <i className="fa fa-ellipsis-v" />
+                                                            </span>
+                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
+                                                            <small className="label label-warning"><i className="fa fa-clock-o" />{item.totalDays} {translate('task.task_management.calc_days')}</small>
+                                                        </li>
+                                                    ) : "Không có công việc quá hạn"
                                             }
                                         </ul> : "Đang tải dữ liệu"
                                 }
@@ -263,17 +253,17 @@ class TaskDashboard extends Component {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
                                             {
-                                                (tasks.tasksbyuser.deadlineincoming.length !== 0)?
-                                                tasks.tasksbyuser.deadlineincoming.map((item, key) =>
-                                                    <li key={key}>
-                                                        <span className="handle">
-                                                            <i className="fa fa-ellipsis-v" />
-                                                            <i className="fa fa-ellipsis-v" />
-                                                        </span>
-                                                        <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" />{item.task.name}</span>
-                                                        <small className="label label-info"><i className="fa fa-clock-o" />{item.totalDays} {translate('task.task_management.calc_days')}</small>
-                                                    </li>
-                                                ):"Không có công việc nào sắp hết hạn"
+                                                (tasks.tasksbyuser.deadlineincoming.length !== 0) ?
+                                                    tasks.tasksbyuser.deadlineincoming.map((item, key) =>
+                                                        <li key={key}>
+                                                            <span className="handle">
+                                                                <i className="fa fa-ellipsis-v" />
+                                                                <i className="fa fa-ellipsis-v" />
+                                                            </span>
+                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" />{item.task.name}</span>
+                                                            <small className="label label-info"><i className="fa fa-clock-o" />{item.totalDays} {translate('task.task_management.calc_days')}</small>
+                                                        </li>
+                                                    ) : "Không có công việc nào sắp hết hạn"
                                             }
                                         </ul> : "Đang tải dữ liệu"
                                 }
@@ -295,24 +285,26 @@ class TaskDashboard extends Component {
                     </div>
                 </div>
             </React.Fragment>
-        );
+        )
     }
 }
 
+// export { TaskOrganizationUnitDashboard };
 function mapState(state) {
     const { tasks } = state;
     return { tasks };
 }
 const actionCreators = {
-    getAllTaskByRole: taskManagementActions.getAllTaskByRole,
-    getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
-    getAccountableTaskByUser: taskManagementActions.getAccountableTaskByUser,
-    getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
-    getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
-    getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
-    getTaskByUser: taskManagementActions.getTasksByUser,
+    // getAllTaskByRole: taskManagementActions.getAllTaskByRole,
+    // getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
+    // getAccountableTaskByUser: taskManagementActions.getAccountableTaskByUser,
+    // getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
+    // getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
+    // getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
+    // getTaskByUser: taskManagementActions.getTasksByUser,
+    getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
 
 };
 
-const connectedTaskDashboard = connect(mapState, actionCreators)(withTranslate(TaskDashboard));
-export { connectedTaskDashboard as TaskDashboard };
+const connectedTaskDashboardUnit = connect(mapState, actionCreators)(withTranslate(TaskOrganizationUnitDashboard));
+export { connectedTaskDashboardUnit as TaskOrganizationUnitDashboard };
