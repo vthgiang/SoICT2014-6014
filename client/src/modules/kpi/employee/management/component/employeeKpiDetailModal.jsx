@@ -1,21 +1,13 @@
-//import { Slider, Tooltip} from '@material-ui/core';
-//import React, { useState } from 'react';
-// import 'rc-slider/assets/index.css';
-
-// import 'rc-tooltip/assets/bootstrap.css';
-
-import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
-
-import React, { Component, useState } from 'react';
-
-import ReactSlider from 'react-slider';
-
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components/index';
 import { withTranslate } from 'react-redux-multilingual';
 
+import { DialogModal} from '../../../../../common-components/index';
+import { DataTableSetting } from '../../../../../common-components';
+
 import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions';
-import { PaginateBar, DataTableSetting } from '../../../../../common-components';
+
+import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
 
 class ModalDetailKPIPersonal extends Component {
     constructor(props) {
@@ -83,6 +75,7 @@ class ModalDetailKPIPersonal extends Component {
 
         return [day, month, year].join('-');
     }
+
     formatMonth(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -96,6 +89,8 @@ class ModalDetailKPIPersonal extends Component {
 
         return [month, year].join('-');
     }
+
+    /**Hiển thị nội dung 1 mục tiêu KPI mới khi click vào tên mục tiêu đó */
     handleChangeContent =(id, employeeId, kpiType) => {
         let date = this.props.employeeKpiSet.date;
         this.props.getTaskById(id, employeeId, date, kpiType);
@@ -107,36 +102,19 @@ class ModalDetailKPIPersonal extends Component {
                }
            });
     }
-
-    handleSetPointKPI = () => {
-        var date = new Date();
-        let data = this.state.tasks !== undefined ? this.state.tasks: this.props.kpimembers.tasks;
-        for (let n in data) {
-            data[n]={
-                taskId: data[n].taskId,
-                date: date.toISOString(),
-                point: data[n].taskImportanceLevel,
-                employeeId: this.props.employeeId,
-            }
-        }
-        console.log(data);
-        this.props.setPointKPI(this.state.content, data);
-        this.setState({
-            editing: true,
-        })
-    }
     
     render() {
         var kpimember;
         var list, myTask = [], thisKPI = null;
         const { kpimembers ,translate} = this.props;
+        let {employeeKpiSet} = this.props;
+
         if (kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
         kpimember = kpimembers && kpimembers.kpimembers;
+
         if (kpimembers.currentKPI) {
             list = kpimembers.currentKPI.kpis;
-        }
-        
-        let {employeeKpiSet} = this.props;
+        } 
 
         return (
             <React.Fragment>
@@ -147,9 +125,12 @@ class ModalDetailKPIPersonal extends Component {
                 size={100}>
                     <div className="col-xs-12 col-sm-4">
                         <div className="box box-solid" style={{border: "1px solid #ecf0f6", borderBottom: "none"}}>
+                            {/**Danh sách các mục tiêu của tập KPI đang xem */}
                             <div className="box-header with-border">
                                 <h3 className="box-title" style={{fontWeight: 800}}>{translate('kpi.evaluation.employee_evaluation.KPI_list')}</h3>
                             </div>
+
+                            {/**Xử lí khi người dùng muốn xem chi tiết mục tiêu */}
                             <div className="box-body no-padding">
                                 <ul className="nav nav-pills nav-stacked">
                                     {list && list.map((item, index) =>
@@ -163,7 +144,8 @@ class ModalDetailKPIPersonal extends Component {
                             </div>
                         </div>
                     </div>
-
+                    
+                    {/**Nội dung chi tiết của 1 mục tiêu */}
                     <div className="col-xs-12 col-sm-8 qlcv">
                         {list && list.map(item => {
                             if (item._id === this.state.content) return (
@@ -213,7 +195,7 @@ class ModalDetailKPIPersonal extends Component {
                                 setLimit={this.setLimit}
                                 hideColumnOption={true} />
 
-
+                                {/**Table danh sách công việc của mục tiêu */}
                                 <table id="employeeKpiEvaluate" className="table table-hover table-bordered">
                                     <thead>
                                         <tr>
@@ -250,7 +232,6 @@ class ModalDetailKPIPersonal extends Component {
                                                         </td>
                                                     </tr>)) : <tr><td colSpan={8}>{translate('general.no_data')}</td></tr>
                                         }
-
                                     </tbody>
                                 </table>
                             </React.Fragment>);

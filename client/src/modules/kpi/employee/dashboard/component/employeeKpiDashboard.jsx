@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 
-import { ModalDetailEmployeeKpiSet } from './employeeKpiDetailModal';
-import { ModalCopyEmployeeKpiSet } from './employeeKpiCopyModal';
 import { DistributionOfEmployeeKpiChart } from './distributionOfEmployeeKpiChart';
 import { ResultsOfEmployeeKpiChart } from './resultsOfEmployeeKpiChart';
-
-import { dashboardEmployeeKpiSetActions } from '../redux/actions';
-import { managerKpiActions } from '../../management/redux/actions';
-import { withTranslate } from 'react-redux-multilingual';
 
 import { DatePicker } from '../../../../../common-components';
 import Swal from 'sweetalert2';
@@ -29,7 +24,6 @@ class DashBoardEmployeeKpiSet extends Component {
         }
 
         this.state = {
-            showModalCopy: "",
             currentMonth: new Date().getMonth() + 1,
             startDate: this.INFO_SEARCH.startDate,
             endDate: this.INFO_SEARCH.endDate
@@ -50,19 +44,10 @@ class DashBoardEmployeeKpiSet extends Component {
         return [month, year].join('-');
     }
 
-    showModalCopy = async (id) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                showModalCopy: id
-            }
-        })
-        var element = document.getElementsByTagName("BODY")[0];
-        element.classList.add("modal-open");
-        var modal = document.getElementById(`copyOldKPIToNewTime${id}`);
-        modal.classList.add("in");
-        modal.style = "display: block; padding-right: 17px;";
-    }
+    /**
+     * 
+     * Chọn các thông tin để vẽ biểu đồ
+     */
 
     handleSelectMonthStart = (value) => {
         var month = value.slice(3,7) + '-' + value.slice(0,2);
@@ -80,6 +65,7 @@ class DashBoardEmployeeKpiSet extends Component {
         this.INFO_SEARCH.endDate = month;
     }
 
+    /**Gửi req và vẽ biểu đồ */
     handleSearchData = async () => {
         var startDate = new Date(this.INFO_SEARCH.startDate);
         var endDate = new Date(this.INFO_SEARCH.endDate);
@@ -124,6 +110,8 @@ class DashBoardEmployeeKpiSet extends Component {
                             <div className="box-title">{translate('kpi.evaluation.dashboard.result_kpi_personal')}</div>
                             </div>
                             <div className="box-body qlcv">
+
+                                {/**Chọn ngày bắt đầu */}
                                 <div className="form-inline">
                                     <div className="form-group">
                                     <label>{translate('kpi.evaluation.employee_evaluation.from')}</label>
@@ -136,6 +124,8 @@ class DashBoardEmployeeKpiSet extends Component {
                                         />
                                     </div>
                                 </div>
+
+                                {/**Chọn ngày kết thúc */}
                                 <div className="form-inline">
                                     <div className="form-group">
                                     <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
@@ -147,11 +137,14 @@ class DashBoardEmployeeKpiSet extends Component {
                                             disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
                                         />
                                     </div>
+
+                                    {/**button tìm kiếm data để vẽ biểu đồ */}
                                     <div className="form-group">
                                         <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                                     </div>
                                 </div>
                                 
+                                {/**Biểu đồ kết quả */}
                                 <ResultsOfEmployeeKpiChart
                                     startDate={this.state.startDate}
                                     endDate={this.state.endDate}
@@ -161,6 +154,8 @@ class DashBoardEmployeeKpiSet extends Component {
                     </div>
                     <div className="col-xs-12">
                         <div className=" box box-primary">
+
+                            {/**Biểu đồ đóng góp */}
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('kpi.evaluation.dashboard.distribution_kpi_personal')}</div>
                             </div>
@@ -181,7 +176,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    // getEmployeeKpiSetByMember: managerKpiActions.getAllKPIPersonalByMember
+   
 };
 const connectedDashBoardEmployeeKpiSet = connect(mapState, actionCreators)(withTranslate(DashBoardEmployeeKpiSet));
 export { connectedDashBoardEmployeeKpiSet as DashBoardEmployeeKpiSet };

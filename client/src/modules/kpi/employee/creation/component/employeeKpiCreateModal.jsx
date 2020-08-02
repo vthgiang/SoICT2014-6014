@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+
+import { DatePicker, DialogModal, SelectBox } from '../../../../../../src/common-components';
+
 import { UserActions } from "../../../../super-admin/user/redux/actions"
 import { createKpiSetActions  } from '../redux/actions';
-import { DatePicker, DialogModal, SelectBox } from '../../../../../../src/common-components';
-import { withTranslate } from 'react-redux-multilingual';
 
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 
+
 var translate='';
 class ModalCreateEmployeeKpiSet extends Component {
-    componentDidMount() {
-        this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-    }
-
     constructor(props) {
         super(props);
         translate = this.props.translate;
@@ -26,6 +25,10 @@ class ModalCreateEmployeeKpiSet extends Component {
             },
             adding: false
         };
+    }
+
+    componentDidMount() {
+        this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
@@ -65,6 +68,7 @@ class ModalCreateEmployeeKpiSet extends Component {
         })
     }
 
+    /**Thay đổi người phê duyệt */
     handleApproverChange = (value) => {
         this.setState(state => {
             return {
@@ -76,7 +80,8 @@ class ModalCreateEmployeeKpiSet extends Component {
             }
         });
     }
-    
+
+    /**Gửi request khởi tạo tập KPI cá nhân mới */
     handleCreateEmployeeKpiSet = async () => {
         var d = new Date(),
             month = '' + (d.getMonth() + 1),
@@ -119,6 +124,7 @@ class ModalCreateEmployeeKpiSet extends Component {
         let deans;
         const { organizationalUnit, user, translate } = this.props;
         const { _id } = this.state;
+
         if (user.userdepartments) {
             deans = getEmployeeSelectBoxItems([user.userdepartments], true, false, false);
         }
@@ -143,15 +149,18 @@ class ModalCreateEmployeeKpiSet extends Component {
                     msg_success={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.success')}
                     msg_faile={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.failure')}
                     func={this.handleCreateEmployeeKpiSet}
-                    // disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id="formCreateEmployeeKpiSet" onSubmit={() => this.handleCreateEmployeeKpiSet(translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.success'))}>
                         <div className="form-group">
+
+                            {/**Tên đơn vị */}
                             <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.organizational_unit')}</label>
                             <label style={{ fontWeight: "400", marginLeft: "+2.5%" }}>{organizationalUnit && organizationalUnit.name}</label>
                         </div>
-
+                        
                         <div className="row">
+
+                            {/**Tháng của tập KPI này */}
                             <div className="col-sm-6 col-xs-12 form-group">
                                 <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.month')}</label>
                                 <DatePicker 
@@ -162,7 +171,8 @@ class ModalCreateEmployeeKpiSet extends Component {
                                     disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
                                 />
                             </div>
-
+                            
+                            {/**Chọn người phê duyệt tập KPI này */}
                             {deans &&
                                 <div className="col-sm-6 col-xs-12 form-group">
                                     <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.approver')}</label>
