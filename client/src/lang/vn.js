@@ -1615,6 +1615,7 @@ export default {
             number: 'Số',
             date: 'Ngày tháng',
             value_set: 'Tập giá trị',
+            code: 'Mã',
             view_detail_of_this_task_template:'Xem chi tiết mẫu công việc này',
             edit_this_task_template: 'Sửa mẫu công việc này',
             delete_this_task_template: 'Xóa mẫu công việc này',

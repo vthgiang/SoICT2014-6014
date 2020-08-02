@@ -1465,6 +1465,7 @@ export default {
             number: 'Number',
             date: 'Date',
             value_set: 'Value set',
+            code : 'Code',
             view_detail_of_this_task_template: 'View detail of this task',
             edit_this_task_template: 'Edit this task template',
             delete_this_task_template: 'Delete this task template',
