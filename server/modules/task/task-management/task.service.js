@@ -339,7 +339,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
             }
         }
     };
-    
+
     if (JSON.parse(aPeriodOfTime)) {
 
         keySearch = {
@@ -378,7 +378,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
             }
         }
     }
-    
+
     if (startDateAfter) {
         let startTimeAfter = startDateAfter.split("-");
         let start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
@@ -488,7 +488,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
     };
 
     if (JSON.parse(aPeriodOfTime)) {
-        
+
         keySearch = {
             ...keySearch,
             $or: [
@@ -610,7 +610,7 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
     };
 
     if (JSON.parse(aPeriodOfTime)) {
-        
+
         keySearch = {
             ...keySearch,
             $or: [
@@ -732,7 +732,7 @@ exports.getPaginatedTasksCreatedByUser = async (task) => {
     };
 
     if (JSON.parse(aPeriodOfTime)) {
-        
+
         keySearch = {
             ...keySearch,
             $or: [
@@ -854,7 +854,7 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
     };
 
     if (JSON.parse(aPeriodOfTime)) {
-        
+
         keySearch = {
             ...keySearch,
             $or: [
@@ -949,6 +949,7 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
 
     organizationUnitTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
         .populate({ path: "organizationalUnit creator parent" });
+
     return {
         "tasks": organizationUnitTasks
     };

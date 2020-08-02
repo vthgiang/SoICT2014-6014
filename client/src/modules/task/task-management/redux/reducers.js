@@ -393,7 +393,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_SUCCESS:
             return {
                 ...state,
-                listTaskEvaluations: action.payload,
+                organizationUnitTasks: action.payload,
                 isLoading: false,
             };
         case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_FAILURE:
