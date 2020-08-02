@@ -7,7 +7,9 @@ import store from './redux/store';
 import translations from './lang';
 import { IntlProvider } from 'react-redux-multilingual';
 import AuthAlert from './modules/alert/components/authAlert';
+
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 ReactDOM.render(
     <Provider store={store}>
