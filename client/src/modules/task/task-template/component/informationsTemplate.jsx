@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
-import Sortable from 'sortablejs';
 import { withTranslate } from 'react-redux-multilingual';
+
 import {ErrorLabel} from '../../../../common-components';
+
+import Sortable from 'sortablejs';
+
+import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
 import './tasktemplate.css';
 
 class InformationForm extends Component{
@@ -35,7 +38,7 @@ class InformationForm extends Component{
         this.handleSortable();
     }
 
-    // Drag and drop item in action table
+    /**Sắp xếp các item trong bảng */
     handleSortable = () => {
         
         var el2 = document.getElementById('informations');
@@ -71,7 +74,7 @@ class InformationForm extends Component{
         });
     }
 
-    // Edit information in information table
+    /**Sửa thông tin trong bảng danh sách các thông tin */
     handleEditInformation = async (information, index) => {
         this.setState((state)=> {
             return {
@@ -83,7 +86,7 @@ class InformationForm extends Component{
         });
     }
 
-    // Save new data after edit information in information table
+    /**Lưu chỉnh sửa */
     handleSaveEditedInformation = async (event) => {
         event.preventDefault(); // Ngăn không submit
         const { indexInfo } = this.state;
@@ -117,7 +120,7 @@ class InformationForm extends Component{
         });        
     }
     
-    // function: reset all data fields of information table
+    /**Xóa trắng các ô input */
     handleClearInformation = (event) => {
         event.preventDefault(); // Ngăn không submit
         this.setState(state => {
@@ -128,7 +131,7 @@ class InformationForm extends Component{
         })
     }
 
-    // delete item in information table
+    /**Xóa 1 trường thông tin trong danh sách */
     handleDeleteInformation = async (index) => {
         let  taskInformations  = this.state.taskInformations;
         var newTaskInformations;
@@ -145,7 +148,7 @@ class InformationForm extends Component{
         this.props.onDataChange(this.state.taskInformations);
     }
 
-    // add new information in information table
+    /**Thêm 1 trường thông tin */
     handleAddInformation = async (event) => {
         event.preventDefault(); // Ngăn không submit
         
@@ -254,12 +257,14 @@ class InformationForm extends Component{
 
     render(){
         const { translate } = this.props;
-        var taskInformations =this.state.taskInformations;
-        var information  =this.state.information;
+        let { taskInformations, information } =this.state;
         return(
+
+            /**Form chứa các danh sách thông tin của mẫu công việc */
             <fieldset className="scheduler-border">
                 <legend className="scheduler-border">{translate('task_template.information_list')}</legend>
                 
+                {/**Tên trường thông tin*/}
                 <div className={`form-group ${this.state.information.errorOnName===undefined?"":"has-error"}`} >
                     <label className="control-label">{translate('task_template.infor_name')}</label>
                     <div>
@@ -267,6 +272,8 @@ class InformationForm extends Component{
                         <ErrorLabel content={this.state.information.errorOnName}/>
                     </div>
                 </div>
+
+                {/**Mô tả của trường thông tin */}
                 <div className={`form-group ${this.state.information.errorOnDescription===undefined?"":"has-error"}`} >
                     <label className="control-label" htmlFor="inputDescriptionInfo">{translate('task_template.description')}</label>
                     <div>
@@ -275,6 +282,8 @@ class InformationForm extends Component{
                     </div>
                 </div>
                 <div className="form-group" >
+
+                    {/**Kiểu dữ liệu trường thông tin */}
                     <label className=" control-label">{translate('task_template.datatypes')}:</label>
                     <div style={{ width: '100%' }}>
                         <select onChange={this.handleChangeInfoType} className="form-control" id="seltype" value={information.type} name="type" >
@@ -296,13 +305,17 @@ class InformationForm extends Component{
                     </div>
                     : null
                 }
-
+                
                 <div className="form-group" >
+
+                    {/**Chỉ quản lí được điền? */}
                     <label className="control-label">
                     {translate('task_template.manager_fill')} &nbsp;
                         <input type="checkbox" className="" checked={information.filledByAccountableEmployeesOnly} onChange={this.handleChangeInfoFilledByAccountableEmployeesOnly} />
                     </label>
                 </div>
+
+                {/**Các button lưu chỉnh sửa khi chỉnh sửa 1 trường thông tin, thêm một trường thông tin, xóa trắng các ô input  */}
                 <div className="pull-right" style={{marginBottom: "10px"}}>
                     {this.state.editInfo ?
                         <React.Fragment>
@@ -313,10 +326,12 @@ class InformationForm extends Component{
                     }
                     <button className="btn btn-primary" style={{ marginLeft: "10px" }} onClick={this.handleClearInformation}>{translate('task_template.delete')}</button>
                 </div>
+
+                {/**table chứa danh sách các thông tin của mẫu công việc */}
                 <table className="table table-bordered">
                     <thead>
                         <tr>
-                            <th style={{ width: '50px' }} className="col-fixed">Mã</th>
+                            <th style={{ width: '50px' }} className="col-fixed">{translate('task_template.code')}</th>
                             <th title="Tên trường thông tin">{translate('task_template.infor_name')}</th>
                             <th title="Mô tả">{translate('task_template.description')}</th>
                             <th title="Kiểu dữ liệu">{translate('task_template.datatypes')}</th>

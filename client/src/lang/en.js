@@ -1465,6 +1465,7 @@ export default {
             number: 'Number',
             date: 'Date',
             value_set: 'Value set',
+            code : 'Code',
             view_detail_of_this_task_template: 'View detail of this task',
             edit_this_task_template: 'Edit this task template',
             delete_this_task_template: 'Delete this task template',
@@ -1899,7 +1900,7 @@ export default {
                         request_approval: 'Request for approval',
                         cancel_request_approval: 'Cancel request for approval',
                         not_initialize_organiztional_unit_kpi :'Cannot initialize kpi on this month bacause your unit has not initialized kpi on this month yet, please contact the manager of your unit', 
-                        not_initialize_organiztional_unit_kpi :'Cannot initialize kpi on this month bacause your unit has not activated kpi on this month yet, please contact the manager of your unit',
+                        not_activate_organiztional_unit_kpi :'Cannot initialize kpi on this month bacause your unit has not activated kpi on this month yet, please contact the manager of your unit',
 
                         // Nhóm dành cho các trạng thái tập KPI
                         kpi_status: {
