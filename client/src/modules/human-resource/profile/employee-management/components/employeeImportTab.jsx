@@ -25,7 +25,6 @@ class EmployeeImportTab extends Component {
 
     // Function thay đổi file import
     handleImportExcel = (value, checkFileImport) => {
-        console.log(checkFileImport);
         if (checkFileImport) {
             let result = this.props.handleCheckImportData(value);
             this.setState({
