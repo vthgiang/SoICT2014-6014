@@ -88,7 +88,7 @@ function downloadDocumentFileScan(id, numberVersion) {
 
 function getDocumentCategories(params) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents/categories`,
+        url: `${ LOCAL_SERVER_API }/documents/document-categories`,
         method: 'GET',
         params
     }, false, true, 'document');
@@ -96,7 +96,7 @@ function getDocumentCategories(params) {
 
 function createDocumentCategory(data) {  
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents/categories`,
+        url: `${ LOCAL_SERVER_API }/documents/document-categories`,
         method: 'POST',
         data,
     }, true, true, 'document');
@@ -104,7 +104,7 @@ function createDocumentCategory(data) {
 
 function editDocumentCategory(id, data) {  
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents/categories/${id}`,
+        url: `${ LOCAL_SERVER_API }/documents/document-categories/${id}`,
         method: 'PATCH',
         data,
     }, true, true, 'document');
@@ -112,7 +112,7 @@ function editDocumentCategory(id, data) {
 
 function deleteDocumentCategory(id) {  
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents/categories/${id}`,
+        url: `${ LOCAL_SERVER_API }/documents/document-categories/${id}`,
         method: 'DELETE'
     }, true, true, 'document');
 }
@@ -120,14 +120,14 @@ function deleteDocumentCategory(id) {
 // Danh mục văn bản - domain
 function getDocumentDomains() {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents/domains`,
+        url: `${ LOCAL_SERVER_API }/documents/document-domains`,
         method: 'GET',
     }, false, true, 'document');
 }
 
 function createDocumentDomain(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents/domains`,
+        url: `${ LOCAL_SERVER_API }/documents/document-domains`,
         method: 'POST',
         data,
     }, true, true, 'document');
@@ -136,7 +136,7 @@ function createDocumentDomain(data) {
 function editDocumentDomain(id, data) { 
     
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents/domains/${id}`,
+        url: `${ LOCAL_SERVER_API }/documents/document-domains/${id}`,
         method: 'PATCH',
         data,
     }, true, true, 'document');
@@ -144,20 +144,21 @@ function editDocumentDomain(id, data) {
 
 function deleteDocumentDomain(id) {  
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents/domains/${id}`,
+        url: `${ LOCAL_SERVER_API }/documents/document-domains/${id}`,
         method: 'DELETE',
     }, true, true, 'document');
 }
 
 function deleteManyDocumentDomain(array) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents/domains/delete-many`,
+        url: `${ LOCAL_SERVER_API }/documents/document-domains/delete-many`,
         method: 'POST',
         data: {array}
     }, true, true, 'document');
 }
 
-function getDocumentsUserCanView(roleId, params) {  
+function getDocumentsUserCanView(roleId, params) {
+    console.log('ttt',params)
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/documents/documents/permission-view`,
         method: 'GET',
@@ -170,7 +171,7 @@ function getDocumentsUserCanView(roleId, params) {
 
 function getUserDocumentStatistics(params) {  
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/documents/user-statistical`,
+        url: `${ LOCAL_SERVER_API }/documents/documents/user-statistical`,
         method: 'GET',
         params,
     }, false, true, 'document');
