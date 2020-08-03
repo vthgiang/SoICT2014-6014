@@ -62,7 +62,7 @@ class ManageHoliday extends Component {
         window.$('#modal-edit-holiday').modal('show');
     }
 
-    // Function chyển đổi dữ liệu chấm công thành dạng dữ liệu dùng export
+    // Function chyển đổi dữ liệu kế hoạch làm việc thành dạng dữ liệu dùng export
     convertDataToExportData = (data) => {
 
         let exportData = {
@@ -110,7 +110,7 @@ class ManageHoliday extends Component {
                         </ul>
                     </div>
 
-                    <ExportExcel id="export-timesheets" exportData={exportData} style={{ marginRight: 15 }} />
+                    <ExportExcel id="export-holiday" exportData={exportData} style={{ marginRight: 15 }} />
                     <table className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
