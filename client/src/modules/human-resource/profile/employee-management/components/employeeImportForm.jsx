@@ -188,10 +188,14 @@ class EmployeeImportForm extends Component {
      */
     handleCheckImportDataOfExperience = (value) => {
         value = value.map(x => {
-            let startDate = this.convertStringToDate(x.startDate, true);
-            let endDate = this.convertStringToDate(x.endDate, true);
-            return { ...x, startDate: startDate, endDate: endDate }
-        })
+            let startDate = typeof x.startDate === 'string' ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
+            let endDate = typeof x.endDate === 'string' ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
+            return {
+                ...x,
+                startDate: this.convertStringToDate(startDate, true),
+                endDate: this.convertStringToDate(endDate, true),
+            }
+        });
 
         // Check dữ liệu import có hợp lệ hay không
         let rowError = [];
@@ -410,7 +414,7 @@ class EmployeeImportForm extends Component {
     */
     handleImportExperience = () => {
         let { importDataOfExperience } = this.state;
-        this.props.importEmployees(importDataOfExperience);
+        this.props.importEmployees({ importType: "Experience", importData: importDataOfExperience });
     }
 
     /**
@@ -418,7 +422,7 @@ class EmployeeImportForm extends Component {
     */
     handleImportDegree = () => {
         let { importDataOfDegree } = this.state;
-        this.props.importEmployees(importDataOfDegree);
+        this.props.importEmployees({ importType: "Degree", importData: importDataOfDegree });
     }
 
     /**
@@ -426,7 +430,7 @@ class EmployeeImportForm extends Component {
     */
     handleImportCertificate = () => {
         let { importDataOfCertificate } = this.state;
-        this.props.importEmployees(importDataOfCertificate);
+        this.props.importEmployees({ importType: "Certificate", importData: importDataOfCertificate });
     }
 
     /**
@@ -434,7 +438,7 @@ class EmployeeImportForm extends Component {
     */
     handleImportConstract = () => {
         let { importDataOfContract } = this.state;
-        this.props.importEmployees(importDataOfContract);
+        this.props.importEmployees({ importType: "Contract", importData: importDataOfContract });
     }
 
     /**
@@ -442,7 +446,7 @@ class EmployeeImportForm extends Component {
     */
     handleImportFile = () => {
         let { importDataOfFile } = this.state;
-        this.props.importEmployees(importDataOfFile);
+        this.props.importEmployees({ importType: "File", importData: importDataOfFile });
     }
 
 

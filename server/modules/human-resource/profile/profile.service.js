@@ -1037,6 +1037,8 @@ exports.createNotificationEndOfContract = async () => {
 
 /**
  * Import thông tin nhân viên
+ * @param {*} company : Id công ty
+ * @param {*} data : Dữ liệu thông tin nhân viên cần import
  */
 exports.importEmployeeInfor = async (company, data) => {
     let employeeInfo = await Employee.find({
@@ -1095,4 +1097,73 @@ exports.importEmployeeInfor = async (company, data) => {
         })
         return await Employee.insertMany(data);
     }
+}
+
+/**
+ * Import kinh nghiệm làm việc
+ * @param {*} company : Id công ty
+ * @param {*} data : Dữ liệu kinh nghiệm làm việc cần import
+ */
+exports.importExperience = async (company, data) => {
+    let employeeInfo = await Employee.find({
+        company: company
+    }, {
+        employeeNumber: 1,
+        _id: 1
+    });
+
+    let rowError = [];
+    data = data.map((x, index) => {
+        let employee = employeeInfo.filter(y => y.employeeNumber === x.employeeNumber);
+        if (employee.length === 0) {
+            x = {
+                ...x,
+                errorAlert: [...x.errorAlert, "staff_code_not_find"],
+                error: true
+            };
+            rowError = [...rowError, index + 1];
+        } else {
+            x = {
+                ...x,
+                _id: employee[0]._id,
+            };
+        }
+        return x;
+    })
+
+    if (rowError.length !== 0) {
+        return {
+            data,
+            rowError
+        }
+    } else {
+        let importData = [];
+        for (let x of data) {
+            if (!importData.includes(x._id)) {
+                importData = [...importData, x._id]
+            }
+        }
+        importData = importData.map(x => {
+            let result = {
+                _id: x,
+                experiences: []
+            }
+            data.forEach(y => {
+                if (y._id === x) {
+                    result.experiences.push(y);
+                }
+            })
+            return result;
+        })
+
+        for (let x of importData) {
+            let editEmployee = await Employee.findOne({
+                _id: x._id
+            });
+            editEmployee.experiences = editEmployee.experiences.concat(x.experiences);
+            console.log(editEmployee);
+            editEmployee.save();
+        }
+    }
+    return data;
 }
