@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { PraiseCreateForm, PraiseEditForm } from './combinedContent';
-import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
+import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti, ExportExcel } from '../../../../common-components';
 
 import { DisciplineActions } from '../redux/actions';
 
@@ -26,7 +26,7 @@ class PraiseManager extends Component {
             position: null,
             decisionNumber: "",
             employeeNumber: "",
-            organizationalUnits: organizationalUnits,
+            organizationalUnits: organizationalUnits ? organizationalUnits : [],
             page: 0,
             limit: 5,
         }
@@ -114,12 +114,63 @@ class PraiseManager extends Component {
         this.props.getListPraise(this.state);
     }
 
+    // Function chyển đổi dữ liệu khen thưởng thành dạng dữ liệu dùng export
+    convertDataToExportData = (data) => {
+        const { list } = this.props.department;
+        if (data) {
+            data = data.map((x, index) => {
+                let organizationalUnits = x.organizationalUnits.map(y => y.name);
+                let position = x.roles.map(y => y.roleId.name);
+                let decisionUnit = list.find(y => y._id === x.organizationalUnit);
+                return {
+                    STT: index + 1,
+                    employeeNumber: x.employee.employeeNumber,
+                    fullName: x.employee.fullName,
+                    organizationalUnits: organizationalUnits.join(', '),
+                    position: position.join(', '),
+                    decisionNumber: x.decisionNumber,
+                    decisionUnit: decisionUnit ? decisionUnit.name : "",
+                    startDate: this.formatDate(x.startDate),
+                    type: x.type,
+                    reason: x.reason,
+                };
+
+            })
+        }
+        let exportData = {
+            fileName: "Bảng thống kê khen thưởng",
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "employeeNumber", value: "Mã số nhân viên" },
+                                { key: "fullName", value: "Họ và tên" },
+                                { key: "organizationalUnits", value: "Đơn vị" },
+                                { key: "position", value: "Chức vụ" },
+                                { key: "decisionNumber", value: "Số ra quyết định" },
+                                { key: "decisionUnit", value: "Cấp ra quyết định" },
+                                { key: "startDate", value: "Ngày ra quyết định" },
+                                { key: "type", value: "Hình thức khen thưởng" },
+                                { key: "reason", value: "Lý do khen thưởng" },
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData
+    }
+
     render() {
         const { limit, page, organizationalUnits } = this.state
         const { list } = this.props.department;
         const { translate, discipline, pageActive } = this.props;
-        var listCommendations = "", listPosition = [];
-        if (organizationalUnits !== null) {
+        var listCommendations = [], listPosition = [];
+        if (organizationalUnits.length !== 0) {
             organizationalUnits.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
@@ -134,14 +185,17 @@ class PraiseManager extends Component {
         if (discipline.isLoading === false) {
             listCommendations = discipline.listCommendations;
         }
-        var pageTotal = (discipline.totalListCommendation % limit === 0) ?
+        let exportData = this.convertDataToExportData(listCommendations);
+
+        let pageTotal = (discipline.totalListCommendation % limit === 0) ?
             parseInt(discipline.totalListCommendation / limit) :
             parseInt((discipline.totalListCommendation / limit) + 1);
-        var currentPage = parseInt((page / limit) + 1);
+        let currentPage = parseInt((page / limit) + 1);
         return (
             <div id="khenthuong" className={`tab-pane ${pageActive === 'commendation' ? 'active' : null}`}>
                 <div className="box-body qlcv">
                     <PraiseCreateForm />
+                    <ExportExcel id="export-commendation" exportData={exportData} style={{ marginRight: 15, marginTop: 2 }} />
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.unit')}</label>

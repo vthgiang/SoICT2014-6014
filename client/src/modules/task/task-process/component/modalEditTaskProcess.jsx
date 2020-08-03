@@ -413,11 +413,11 @@ class ModalEditTaskProcess extends Component {
 
                         <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
                             <ul className="nav nav-tabs">
-                                <li className="active"><a href="#info" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
-                                <li><a href="#process" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
+                                <li className="active"><a href="#info-edit" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
+                                <li><a href="#process-edit" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
                             </ul>
                             <div className="tab-content">
-                                <div className={selectedEdit === "info" ? "active tab-pane" : "tab-pane"} id="info">
+                                <div className={selectedEdit === "info" ? "active tab-pane" : "tab-pane"} id="info-edit">
                                     {/* <fieldset className="scheduler-border">
                                         <legend className="scheduler-border">Thông tin quy trình</legend> */}
 
@@ -477,7 +477,7 @@ class ModalEditTaskProcess extends Component {
                                 </div>
                             </div>
                             <div className="tab-content">
-                                <div className={selectedEdit === "process" ? "active tab-pane" : "tab-pane"} id="process">
+                                <div className={selectedEdit === "process" ? "active tab-pane" : "tab-pane"} id="process-edit">
                                     <fieldset className="scheduler-border">
                                         {/* <legend className="scheduler-border">Quy trình công việc</legend> */}
                                         <div className='row'>

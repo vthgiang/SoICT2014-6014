@@ -7,8 +7,9 @@ import { DocumentActions } from '../../../redux/actions';
 class CreateForm extends Component {
     constructor(props) {
         super(props);
+        console.log('cons', this.props.domainParent);
         this.state = {
-            domainParent: "",
+            domainParent: this.props.domainParent,
         }
     }
 
@@ -66,7 +67,7 @@ class CreateForm extends Component {
 
     static getDerivedStateFromProps(nextProps, prevState){
         if (nextProps.domainParent !== prevState.domainParent && nextProps.domainParent.length) {
-            let dm = prevState.domainParent;
+            let dm = nextProps.domainParent;
             return {
                 ...prevState,
                 domainParent: dm,
@@ -80,7 +81,6 @@ class CreateForm extends Component {
         const { translate, documents } = this.props;
         const { list } = documents.administration.domains;
         const { domainParent, errorName } = this.state;
-      
         return ( 
             <React.Fragment>
                 <DialogModal
@@ -97,7 +97,7 @@ class CreateForm extends Component {
                             <ErrorLabel content ={errorName}/>
                         </div>
                         <div className="form-group">
-                            <label>{ translate('document.administration.domains.domainParent') }</label>
+                            <label>{ translate('document.administration.domains.parent') }</label>
                             <TreeSelect data={list} value={!domainParent ? "" : domainParent} handleChange={this.handleParent} mode="radioSelect"/>
                         </div>
                         <div className="form-group">
