@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DeleteNotification } from '../../../../common-components';
+import { DeleteNotification, ExportExcel } from '../../../../common-components';
 import { HolidayEditForm, HolidayCreateForm, HolidayImportForm } from './combinedContent'
 
 import { HolidayActions } from '../redux/actions';
@@ -20,6 +20,14 @@ class ManageHoliday extends Component {
         })
         window.$('#modal_import_file').modal('show');
     }
+
+    createHoliday = async () => {
+        await this.setState({
+            createHoliday: true
+        })
+        window.$('#modal-create-holiday').modal('show');
+    }
+
     formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -53,18 +61,56 @@ class ManageHoliday extends Component {
         })
         window.$('#modal-edit-holiday').modal('show');
     }
-    render() {
-        if (this.props.holiday.listHoliday.length !== 0) {
-            var listHoliday = this.props.holiday.listHoliday;
+
+    // Function chyển đổi dữ liệu chấm công thành dạng dữ liệu dùng export
+    convertDataToExportData = (data) => {
+
+        let exportData = {
+            fileName: "Bảng chấm công",
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "employeeNumber", value: "Mã số nhân viên" },
+                                { key: "fullName", value: "Họ và tên" },
+                                { key: "total", value: "Tổng số công", type: "Number" },
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
         }
-        let { translate } = this.props;
-        let { importHoliday } = this.state;
+        return exportData
+    }
+
+
+    render() {
+        const { translate } = this.props;
+        const { holiday } = this.props;
+
+        let { importHoliday, createHoliday } = this.state;
+
+        let listHoliday = [];
+        if (holiday.listHoliday.length !== 0) {
+            listHoliday = holiday.listHoliday;
+        }
+        let exportData = this.convertDataToExportData(listHoliday);
         return (
             <div className="box">
                 <div className="box-body qlcv">
-                    <button type="button" className="btn btn-primary pull-right" style={{ marginTop: 2, marginBottom: 10, marginLeft: 15 }} id="" title="Chọn tệp để Import" onClick={() => this.handleImport()}>Import File</button>
-                    {importHoliday && <HolidayImportForm />}
-                    <HolidayCreateForm />
+                    <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                        <button type="button" className="btn btn-success pull-right dropdown-toggle" data-toggle="dropdown" aria-expanded="true" title="Thêm mới kế hoạch làm việc" >Thêm mới</button>
+                        <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }} >
+                            <li><a title={'Thêm mới thông tin chấm công từ file excel'} onClick={this.handleImport}>Import file Excel</a></li>
+                            <li><a title={'Thêm mới thông tin chấm công'} onClick={this.createHoliday}>Thêm bằng tay</a></li>
+                        </ul>
+                    </div>
+
+                    <ExportExcel id="export-timesheets" exportData={exportData} style={{ marginRight: 15 }} />
                     <table className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
@@ -97,6 +143,9 @@ class ManageHoliday extends Component {
                         </tbody>
                     </table>
                 </div>
+
+                {importHoliday && <HolidayImportForm />}
+                {createHoliday && <HolidayCreateForm />}
                 {
                     this.state.currentRow !== undefined &&
                     <HolidayEditForm
