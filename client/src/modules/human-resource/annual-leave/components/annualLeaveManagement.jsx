@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AnnualLeaveCreateForm, AnnualLeaveEditForm } from './combinedContent';
-import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
+import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti, ExportExcel } from '../../../../common-components';
 
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { AnnualLeaveActions } from '../redux/actions';
@@ -31,7 +31,7 @@ class AnnualLeaveManagement extends Component {
             }
         }
         this.state = {
-            organizationalUnits: organizationalUnits,
+            organizationalUnits: organizationalUnits ? organizationalUnits : [],
             position: null,
             employeeNumber: "",
             month: month,
@@ -159,12 +159,59 @@ class AnnualLeaveManagement extends Component {
         this.props.searchAnnualLeaves(this.state);
     }
 
+    // Function chyển đổi dữ liệu nghỉ phép thành dạng dữ liệu dùng export
+    convertDataToExportData = (data) => {
+        if (data) {
+            data = data.map((x, index) => {
+                let organizationalUnits = x.organizationalUnits.map(y => y.name);
+                let position = x.roles.map(y => y.roleId.name);
+                return {
+                    STT: index + 1,
+                    employeeNumber: x.employee.employeeNumber,
+                    fullName: x.employee.fullName,
+                    organizationalUnits: organizationalUnits.join(', '),
+                    position: position.join(', '),
+                    startDate: this.formatDate(x.startDate),
+                    endDate: this.formatDate(x.endDate),
+                    reason: x.reason,
+                    status: x.status === "pass" ? "Đã chấp nhận" : (x.status === "process" ? "Chờ phê duyệt" : "Không cấp nhận")
+                };
+
+            })
+        }
+        let exportData = {
+            fileName: "Bảng thống kê nghỉ phép",
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "employeeNumber", value: "Mã số nhân viên" },
+                                { key: "fullName", value: "Họ và tên" },
+                                { key: "organizationalUnits", value: "Phòng ban" },
+                                { key: "position", value: "Chức vụ" },
+                                { key: "startDate", value: "Ngày bắt đầu" },
+                                { key: "endDate", value: "Ngày kết thúc" },
+                                { key: "reason", value: "Lý do" },
+                                { key: "status", value: "Trạng thái" },
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData
+    }
+
     render() {
         const { month, limit, page, organizationalUnits } = this.state;
         const { list } = this.props.department;
         const { translate, annualLeave } = this.props;
-        var listAnnualLeaves = "", listPosition = [];
-        if (organizationalUnits !== null) {
+        let listAnnualLeaves = [], listPosition = [];
+        if (organizationalUnits.length !== 0) {
             organizationalUnits.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
@@ -179,6 +226,9 @@ class AnnualLeaveManagement extends Component {
         if (annualLeave.isLoading === false) {
             listAnnualLeaves = annualLeave.listAnnualLeaves;
         }
+
+        let exportData = this.convertDataToExportData(listAnnualLeaves);
+
         var pageTotal = ((annualLeave.totalList % limit) === 0) ?
             parseInt(annualLeave.totalList / limit) :
             parseInt((annualLeave.totalList / limit) + 1);
@@ -187,6 +237,7 @@ class AnnualLeaveManagement extends Component {
             <div className="box" >
                 <div className="box-body qlcv">
                     <AnnualLeaveCreateForm />
+                    <ExportExcel id="export-annual_leave" exportData={exportData} style={{ marginRight: 15, marginTop: 2 }} />
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.unit')}</label>

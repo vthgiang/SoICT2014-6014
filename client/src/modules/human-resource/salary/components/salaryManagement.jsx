@@ -266,6 +266,7 @@ class SalaryManagement extends Component {
                                 <li><a title={translate('human_resource.salary.add_by_hand_title')} onClick={this.createSalary}>{translate('human_resource.salary.add_by_hand')}</a></li>
                             </ul>
                         </div>
+                        <ExportExcel id="export-salary" exportData={exportData} style={{ marginRight: 15 }} />
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
@@ -392,7 +393,6 @@ class SalaryManagement extends Component {
                         bonus={this.state.currentRow.bonus}
                     />
                 }
-                <ExportExcel id="export-salary" exportData={exportData} />
             </div>
         );
     }

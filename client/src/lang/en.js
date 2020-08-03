@@ -1966,6 +1966,12 @@ export default {
                             content: 'This is the default target (if necessary, weights can be corrected)',
                             delete: 'Delete'
                         },
+                        handle_populate_info_null: {
+                            error_kpi_approver_null: 'Error! The approver of this KPI set is not exist or was deleted',
+                            error_kpi_organizational_unit_null: 'Error! The organizational unit of this KPI set is not exist or was deleted',
+                            error_kpi_parent_target_null :'Error! The parent target of this KPI set is not exist or was deleted',
+                            error_kpi_targets_list_null :'Error! The list targets of this KPI set is not exist or was deleted',
+                        }
                     },
 
                     create_employee_kpi_modal: { // Module con

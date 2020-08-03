@@ -472,7 +472,8 @@ class CreateEmployeeKpiSet extends Component {
 
                                 <div className="" style={{ marginBottom: "10px" }}>
                                     <h4 style={{ display: "inline", fontWeight: "600" }}>
-                                        {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(currentKPI.date)} ({currentKPI.organizationalUnit.name})
+                                        {/**Tên đơn vị */}
+                                        {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.general_information.general_information')} {this.formatDate(currentKPI.date)} ({currentKPI.organizationalUnit.name?currentKPI.organizationalUnit.name:translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_organizational_unit_null')})
                                     </h4>
                                 </div>
                                 
@@ -491,11 +492,13 @@ class CreateEmployeeKpiSet extends Component {
                                         />
                                     </div> 
                                     : <div className="form-group">
+                                        {/**Tên người phê duyệt */}
                                         <span style={{ fontWeight: "600" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.approver')}: </span>
-                                        <span>{currentKPI.approver.name}</span>
+                                        <span>{currentKPI.approver.name?currentKPI.approver.name:translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_approver_null')}</span>
                                     </div>
                                 }
 
+                                {/*Tháng của tập KPI */}
                                 {editing &&
                                    <div className="col-sm-6 col-xs-12 form-group">
                                         <label>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set_modal.month')}</label>
@@ -509,7 +512,8 @@ class CreateEmployeeKpiSet extends Component {
                                         />
                                     </div>
                                 }
-
+                                
+                                {/*Tổng trọng số */}
                                 {editing === false &&
                                     <div>
                                         <span>{currentKPI.kpis.length} {translate('kpi.evaluation.employee_evaluation.target')} - {translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.weight_total')} </span>
@@ -523,7 +527,7 @@ class CreateEmployeeKpiSet extends Component {
                                     </div>
                                 }
                                 
-                                {/**Table chứa các mục tiêu của tập KPI */}
+                                {/**Danh sách các mục tiêu */}
                                 <div>
                                     {(typeof currentKPI !== 'undefined' && currentKPI !== null) &&
                                         <h4 style={{ display: "inline-block", fontWeight: "600", marginTop: "20px" }}>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.target_list')}</h4>
@@ -546,7 +550,7 @@ class CreateEmployeeKpiSet extends Component {
                                                 {
                                                     (typeof currentKPI === 'undefined' || currentKPI === null) ? 
                                                         <tr><td colSpan={7}><center>{translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.not_initialize')} {this.formatDate(Date.now())}</center></td></tr> 
-                                                        : (currentKPI.kpis.map((item, index) =>
+                                                        : (currentKPI.kpis.map((item, index) => item?
                                                             <tr key={index + 1}>
                                                                 <td title={index + 1}>{index + 1}</td>
                                                                 <td title={item.name}>{item.name}</td>
@@ -562,7 +566,7 @@ class CreateEmployeeKpiSet extends Component {
                                                                         : <a style={{ color: "#E34724", fontSize: "16px" }} title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.delete')} onClick={() => this.handleDeleteEmployeeKpi(currentKPI.status, item._id, currentKPI._id)}><i className="fa fa-trash"></i></a> 
                                                                     }
                                                                 </td>
-                                                            </tr>
+                                                            </tr>:null
                                                         ))
                                                 }
                                             </tbody>

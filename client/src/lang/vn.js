@@ -2119,6 +2119,12 @@ export default {
                             approving: 'KPI đang được phê duyệt, bạn không thể xóa!',
                             activated: 'KPI đã được kích hoạt, bạn không thể xóa!'
                         },
+                        handle_populate_info_null: {
+                            error_kpi_approver_null: 'Người phê duyệt tập KPI này không tồn tại hoặc đã bị xóa',
+                            error_kpi_organizational_unit_null: 'Đơn vị của tập KPI này không tồn tại hoặc đã bị xóa',
+                            error_kpi_parent_target_null :'Mục tiêu cha của mục tiêu này đã bị xóa hoặc không tồn tại',
+                            error_kpi_targets_list_null :'Danh sách mục tiêu của tập KPI đã bị xóa hoặc không tồn tại',
+                        }
                     },
 
                     create_employee_kpi_modal: { // Module con

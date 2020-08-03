@@ -6,8 +6,11 @@ import { TaskStatusChart } from '../task-dashboard/taskStatusChart';
 import { TasksSchedule } from '../task-dashboard/tasksSchedule';
 
 import { taskManagementActions } from '../../redux/actions';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { DashboardEvaluationEmployeeKpiSetAction } from '../../../../kpi/evaluation/dashboard/redux/actions';
 
 import { withTranslate } from 'react-redux-multilingual';
+import { SelectBox, SelectMulti } from '../../../../../common-components/index';
 
 class TaskOrganizationUnitDashboard extends Component {
     constructor(props) {
@@ -17,12 +20,14 @@ class TaskOrganizationUnitDashboard extends Component {
 
         this.state = {
             userID: "",
-
+            idsUnit: [],
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
 
             willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
             callAction: false
         };
+
+
     }
 
     componentDidMount = async () => {
@@ -33,6 +38,11 @@ class TaskOrganizationUnitDashboard extends Component {
         // await this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
         let organizationUnit = "organizationUnit"
         await this.props.getTaskByUser(organizationUnit);
+
+        await this.props.getDepartment();
+        console.log('\n\n\n\n\n\n\n\n', this.props)
+        await this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
+        await this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         await this.props.getTaskInOrganizationUnitByMonth("[]", null, null);
 
         await this.setState(state => {
@@ -68,121 +78,64 @@ class TaskOrganizationUnitDashboard extends Component {
 
             return true;
         }
-
         return false;
     }
+
+    handleChangeOrganizationUnit = async (value) => {
+        console.log('Valueeeeeeeeeeeeeeeeeeeeeeeeeee', value);
+        await this.setState(state => {
+            return {
+                ...state,
+                idsUnit: value
+            }
+        })
+    }
+
     render() {
-        const { tasks, translate } = this.props;
-
+        const { tasks, translate, user } = this.props;
+        let { idsUnit } = this.state;
+        console.log(idsUnit)
         // let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
-        let numTask = [];
+        let numTask, units, queue = [];
         let totalTasks = 0;
-
-        // Tinh so luong tat ca cac task 
-        // if (tasks && tasks.responsibleTasks) {
-        //     let task = tasks.responsibleTasks;
-        //     let i;
-        //     for (i in task) {
-        //         if (task[i].status === "Inprocess")
-        //             amountResponsibleTask++;
-
-        //     }
-        // }
-
-        // tính số lượng task mà người này là creator
-        // if (tasks && tasks.creatorTasks) {
-        //     let task = tasks.creatorTasks;
-        //     let i;
-        //     for (i in task) {
-        //         if (task[i].status === "Inprocess")
-        //             amountTaskCreated++;
-
-        //     }
-        // }
-
-        // tính số lượng task mà người này cần phê duyệt
-        // if (tasks && tasks.accountableTasks) {
-        //     let task = tasks.accountableTasks;
-        //     let i;
-        //     for (i in task) {
-        //         if (task[i].status === "Inprocess")
-        //             amountAccountableTasks++;
-        //     }
-        // }
-
-        // tính số lượng task mà người này là người hỗ trợ
-        // if (tasks && tasks.consultedTasks) {
-        //     let task = tasks.consultedTasks;
-        //     let i;
-        //     for (i in task) {
-        //         if (task[i].status === "Inprocess")
-        //             amountConsultedTasks++;
-        //     }
-        // }
-
-        // Tinh tong so luong cong viec co trang thai Inprogess
-        // if (tasks) {
-        //     let tempObj = {};
-        //     if (tasks.responsibleTasks)
-        //         numTask = numTask.concat(tasks.responsibleTasks);
-        //     if (tasks.creatorTasks)
-        //         numTask = numTask.concat(tasks.creatorTasks);
-        //     if (tasks.accountableTasks)
-        //         numTask = numTask.concat(tasks.accountableTasks);
-        //     if (tasks.consultedTasks)
-        //         numTask = numTask.concat(tasks.consultedTasks);
-        //     let i;
-        //     for (i in numTask) {
-        //         if (numTask[i].status === "Inprocess")
-        //             tempObj[numTask[i]._id] = numTask[i].name;
-        //     }
-
-        //     totalTasks = Object.keys(tempObj).length;
-
-        // }
+        let childrenOrganizationalUnit = [];
+        if (this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+            let currentOrganizationalUnit = this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
+            childrenOrganizationalUnit.push(currentOrganizationalUnit);
+            queue.push(currentOrganizationalUnit);
+            while (queue.length > 0) {
+                let v = queue.shift();
+                if (v.children) {
+                    for (let i = 0; i < v.children.length; i++) {
+                        let u = v.children[i];
+                        queue.push(u);
+                        childrenOrganizationalUnit.push(u);
+                    }
+                }
+            }
+        }
         return (
 
             <React.Fragment>
-                {/* <div className="row">
-                    <div className="col-md-3 col-sm-6 col-xs-12">
-                        <div className="info-box">
-                            <span className="info-box-icon bg-aqua"><i className="fa fa-plus" /></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">{translate('task.task_management.dashboard_created')}</span>
-                                <span className="info-box-number">{amountTaskCreated}/{totalTasks}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-3 col-sm-6 col-xs-12">
-                        <div className="info-box">
-                            <span className="info-box-icon bg-green"><i className="fa fa-spinner" /></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">{translate('task.task_management.dashboard_need_perform')}</span>
-                                <span className="info-box-number">{amountResponsibleTask}/{totalTasks}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-md-3 col-sm-6 col-xs-12">
-                        <div className="info-box">
-                            <span className="info-box-icon bg-red"><i className="fa fa-check-square-o" /></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">{translate('task.task_management.dashboard_need_approve')}</span>
-                                <span className="info-box-number">{amountAccountableTasks}/{totalTasks}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="clearfix visible-sm-block" />
-                    <div className="col-md-3 col-sm-6 col-xs-12">
-                        <div className="info-box">
-                            <span className="info-box-icon bg-yellow"><i className="fa fa-comments-o" /></span>
-                            <div className="info-box-content">
-                                <span className="info-box-text">{translate('task.task_management.dashboard_need_consult')}</span>
-                                <span className="info-box-number">{amountConsultedTasks}/{totalTasks}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div> */}
+
                 <div className="row">
+                    <div className="qlcv" style={{ textAlign: "right", marginBottom: 15, marginRight: 10 }}>
+                        <div className="form-inline">
+                            <div className="form-group">
+                                <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
+                                {childrenOrganizationalUnit &&
+                                    <SelectMulti id="multiSelectOrganizationalUnitInTaskUnit"
+                                        items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
+                                        options={{ nonSelectedText: translate('kpi.evaluation.dashboard.select_units'), allSelectedText: translate('kpi.evaluation.dashboard.all_unit') }}
+                                        onChange={this.handleChangeOrganizationUnit}
+                                        value={idsUnit}
+                                    >
+                                    </SelectMulti>
+                                }
+                                {/* <button type="button" className="btn btn-success" onClick={this.handleUpdateData}>{translate('kpi.evaluation.dashboard.analyze')}</button> */}
+                            </div>
+                        </div>
+                    </div>
                     <div className="col-xs-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
@@ -193,6 +146,8 @@ class TaskOrganizationUnitDashboard extends Component {
                                     <DomainOfTaskResultsChart
                                         callAction={!this.state.willUpdate}
                                         TaskOrganizationUnitDashboard={true}
+                                        // tasks={tasks.organizationUnitTasks}
+                                        units={idsUnit}
                                     />
                                 }
                             </div>
@@ -208,6 +163,8 @@ class TaskOrganizationUnitDashboard extends Component {
                                     <TaskStatusChart
                                         callAction={!this.state.willUpdate}
                                         TaskOrganizationUnitDashboard={true}
+                                        // tasksInUnit={tasks.organizationUnitTasks && tasks.organizationUnitTasks}
+                                        units={idsUnit}
                                     />
                                 }
                             </div>
@@ -292,8 +249,8 @@ class TaskOrganizationUnitDashboard extends Component {
 
 // export { TaskOrganizationUnitDashboard };
 function mapState(state) {
-    const { tasks } = state;
-    return { tasks };
+    const { tasks, user, dashboardEvaluationEmployeeKpiSet } = state;
+    return { tasks, user, dashboardEvaluationEmployeeKpiSet };
 }
 const actionCreators = {
     // getAllTaskByRole: taskManagementActions.getAllTaskByRole,
@@ -304,6 +261,10 @@ const actionCreators = {
     // getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
     getTaskByUser: taskManagementActions.getTasksByUser,
     getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
+    getDepartment: UserActions.getDepartmentOfUser,
+    getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
+    getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
+
 
 };
 

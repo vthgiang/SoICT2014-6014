@@ -95,14 +95,19 @@ class ImportFileExcel extends Component {
                     importData = importData.concat(data);
                 })
                 let checkFileImport = true;
-                importData.forEach(x => {
-                    for (let n in x) {
-                        if (x[n] === undefined) {
-                            checkFileImport = false;
-                            break;
+                if (importData.length !== 0) {
+                    importData.forEach(x => {
+                        for (let n in x) {
+                            if (x[n] === undefined || x[n] === "") {
+                                checkFileImport = false;
+                                break;
+                            }
                         }
-                    }
-                })
+                    })
+                } else {
+                    checkFileImport = false
+                }
+
                 this.props.handleImportExcel(importData, checkFileImport);
             };
         }
