@@ -23,7 +23,7 @@ class ModalViewTaskProcess extends Component {
             xmlDiagram: data.xmlDiagram,
         }
         this.viewer = new BpmnViewer();
-        this.generateId = 'bpmnContainer';
+        this.generateId = 'viewprocess';
         this.viewer.importXML(this.props.xmlDiagram)
     }
 
@@ -106,15 +106,16 @@ class ModalViewTaskProcess extends Component {
                     formID="form-task-process"
                     title={this.props.title}
                     hasSaveButton={false}
+                    bodyStyle={{paddingTop: 0, paddingBottom: 0}}
                 >
                     <div>
-                        <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
+                        <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
                             <ul className="nav nav-tabs">
-                                <li className="active"><a href="#info" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
-                                <li><a href="#process" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
+                                <li className="active"><a href="#info-view" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
+                                <li><a href="#process-view" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
                             </ul>
                             <div className="tab-content">
-                                <div className={selectedView === "info" ? "active tab-pane" : "tab-pane"} id="info">
+                                <div className={selectedView === "info" ? "active tab-pane" : "tab-pane"} id="info-view">
 
                                     <div className='row'>
                                         <div className='col-md-6'>
@@ -171,12 +172,19 @@ class ModalViewTaskProcess extends Component {
                             </div>
 
 
-                            <div className="tab-content">
-                                <div className={selectedView === "process" ? "active tab-pane" : "tab-pane"} id="process">
-                                    <fieldset className="scheduler-border">
-                                        {/* <legend className="scheduler-border">Quy trình công việc</legend> */}
-                                        <div className='row'>
-                                            <div id={this.generateId} className={showInfo ? 'col-md-8' : 'col-md-12'}></div>
+                            <div className="tab-content" style={{padding: 0, marginTop: -15}}>
+                                <div className={selectedView === "process" ? "active tab-pane" : "tab-pane"} id="process-view">
+                                    
+                                        {/* Quy trình công việc */}
+                                        <div>
+                                            <div id={this.generateId} className={showInfo ? 'col-md-8' : 'col-md-12'}>
+                                                <div style={{position: "absolute", right: 5, top: 5}}>
+                                                    <button onClick={this.exportDiagram}>Export XML</button>
+                                                    <button onClick={this.downloadAsSVG}>Save SVG</button>
+                                                    <button onClick={this.downloadAsImage}>Save Image</button>
+                                                    <button onClick={this.downloadAsBpmn}>Download BPMN</button>
+                                                </div>
+                                            </div>
                                             <div className={showInfo ? 'col-md-4' : undefined}>
 
                                                 {
@@ -196,15 +204,6 @@ class ModalViewTaskProcess extends Component {
                                                 }
                                             </div>
                                         </div>
-                                        <div>
-                                            <div id={this.generateId}></div>
-                                            <button onClick={this.exportDiagram}>Export XML</button>
-                                            <button onClick={this.downloadAsSVG}>Save SVG</button>
-                                            <button onClick={this.downloadAsImage}>Save Image</button>
-                                            <button onClick={this.downloadAsBpmn}>Download BPMN</button>
-                                        </div>
-                                    </fieldset>
-
                                 </div>
                             </div>
                         </div>

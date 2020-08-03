@@ -4,13 +4,14 @@ const { LogInfo, LogError } = require('../../../../logs');
 
 /** Lấy tất cả tập kpi cá nhân của một nhân viên có trạng thái đã kết thúc */
 exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (req, res) => {
-    if (!req.query.user && req.query.department && req.query.date){
+
+    if (req.query.type === "getChildTargetOfCurrentTarget") {
         this.getChildTargetByParentId(req, res);
     }
     else {
         try {
             let kpipersonals = await overviewService.getAllKPIEmployeeSetsInOrganizationByMonth(req.query);
-            
+
             LogInfo(req.user.email, ` get all kpi personal `, req.user.company);
             res.status(200).json({
                 success: true,
@@ -57,7 +58,7 @@ exports.copyKPI = async (req, res) => {
 exports.getAllEmployeeKpiInOrganizationalUnit = async (req, res) => {
     try {
         let employeeKpis = await overviewService.getAllEmployeeKpiInOrganizationalUnit(req.query.roleId, req.query.organizationalUnitId, req.query.month);
-        
+
         LogInfo(req.user.email, ' get all employee kpi in organizational unit ', req.user.company);
         res.status(200).json({
             success: true,
@@ -81,7 +82,7 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (req, res) => {
 exports.getAllEmployeeKpiSetInOrganizationalUnit = async (req, res) => {
     try {
         let employeeKpiSets = await overviewService.getAllEmployeeKpiSetInOrganizationalUnit(req.query);
-        
+
         LogInfo(req.user.email, ' get all employee kpi set in organizational unit ', req.user.company);
         res.status(200).json({
             success: true,
@@ -104,7 +105,7 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (req, res) => {
 exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (req, res) => {
     try {
         let employeeKpisInChildrenOrganizationalUnit = await overviewService.getAllEmployeeKpiInChildrenOrganizationalUnit(req.user.company._id, req.query.roleId, req.query.month);
-        
+
         LogInfo(req.user.email, ' get all employee kpi set in organizational unit ', req.user.company);
         res.status(200).json({
             success: true,
@@ -128,7 +129,7 @@ exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (req, res) => {
 exports.getChildTargetByParentId = async (req, res) => {
     try {
         let childTarget = await overviewService.getChildTargetByParentId(req.query);
-        
+
         LogInfo(req.user.email, ' get child target by parent id ', req.user.company)
         res.status(200).json({
             success: true,

@@ -145,7 +145,7 @@ class EmployeeKpiApproveModal extends Component {
 
     searchKPIMemberByMonth = async (id) => {
         let { date } = this.state;
-        if (date === undefined || date == this.formatDateBack(Date.now())) {
+        if (date === undefined || date === this.formatDateBack(Date.now())) {
             this.props.getKpisByMonth(id, this.formatDateBack(Date.now()));
         }
         else {
@@ -272,7 +272,7 @@ class EmployeeKpiApproveModal extends Component {
                         }
                         <br></br>
                         <br></br>
-                        <label>{translate('kpi.evaluation.employee_evaluation.kpi_this_month')}</label>
+                        <label>{`${translate('kpi.evaluation.employee_evaluation.kpi_this_month')} ${kpimember && month[1]}`}</label>
                         {checkWeight && <p className="text-danger" style={{ fontWeight: 900 }}>{translate('kpi.evaluation.employee_evaluation.unsuitable_weight')}</p>}
                         <table id="kpi-approve-table" className="table table-bordered table-striped table-hover">
                             <thead>

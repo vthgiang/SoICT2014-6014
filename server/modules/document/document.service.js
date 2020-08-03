@@ -306,7 +306,9 @@ exports.createDocumentDomain = async (company, data) => {
 exports.getDocumentsThatRoleCanView = async(company, query) => {
     var page = query.page;
     var limit = query.limit;
-    var role = await Role.findById(query.id);
+    console.log(query);
+    var role = await Role.findById(query.roleId);
+    console.log(role);
     var roleArr = [role._id].concat(role.parents);
     
     if(page === undefined && limit === undefined ){
