@@ -105,7 +105,7 @@ class UsageLogTab extends Component {
         await this.setState({
             usageLogs: usageLogs,
         })
-        
+
         await this.props.handleEditUsage(this.state.usageLogs, data)
     }
 
@@ -161,7 +161,7 @@ class UsageLogTab extends Component {
                                     usageLogs.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.usedBy !== null && userlist.length ? userlist.filter(item => item._id === x.usedBy).pop().name : ''}</td>
-                                            <td>{x.startDate ? this.formatDate(x.startDate): ''}</td>
+                                            <td>{x.startDate ? this.formatDate(x.startDate) : ''}</td>
                                             <td>{x.endDate ? this.formatDate(x.endDate) : ''}</td>
                                             <td>{x.description}</td>
                                             <td>

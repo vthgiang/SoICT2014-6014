@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, TreeSelect } from '../../../../../common-components';
-import { AssetTypeActions } from '../../redux/actions';
+import { DialogModal, ErrorLabel, TreeSelect } from '../../../../common-components';
+import { AssetTypeActions } from '../redux/actions';
 
 class CreateForm extends Component {
     constructor(props) {
@@ -48,13 +48,13 @@ class CreateForm extends Component {
         });
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
+    static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.domainParent !== prevState.domainParent && nextProps.domainParent.length) {
             let dm = prevState.domainParent;
             return {
                 ...prevState,
                 domainParent: dm,
-            } 
+            }
         } else {
             return null;
         }
@@ -64,6 +64,14 @@ class CreateForm extends Component {
         const { translate, assetType } = this.props;
         const { list } = assetType.administration.types;
         const { domainParent } = this.state;
+
+        let dataList = list.map(node => {
+            return {
+                ...node,
+                id: node._id,
+                name: node.typeName,
+            }
+        })
 
         return (
             <React.Fragment>
@@ -84,7 +92,7 @@ class CreateForm extends Component {
                         </div>
                         <div className="form-group">
                             <label>Loại tài sản cha</label>
-                            <TreeSelect data={list} value={!domainParent ? "" : domainParent} handleChange={this.handleParent} mode="radioSelect"/>
+                            <TreeSelect data={dataList} value={!domainParent ? "" : domainParent} handleChange={this.handleParent} mode="radioSelect" />
                         </div>
                         <div className="form-group">
                             <label>Mô tả</label>
