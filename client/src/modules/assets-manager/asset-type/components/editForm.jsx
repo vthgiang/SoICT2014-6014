@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, TreeSelect } from '../../../../../common-components';
-import { AssetTypeActions } from '../../redux/actions';
+import { DialogModal, ButtonModal, ErrorLabel, TreeSelect } from '../../../../common-components';
+import { AssetTypeActions } from '../redux/actions';
 
 class EditForm extends Component {
     constructor(props) {
@@ -91,8 +91,15 @@ class EditForm extends Component {
     render() {
         const { translate, assetType}=this.props;
         const {tree,list} = assetType.administration.types;
-        const { domainId, domainCode, domainName, domainDescription, domainParent, errorName} = this.state;
-        console.log("edit domain: ",this.state)
+        const { domainId, domainCode, domainName, domainDescription, domainParent, errorName } = this.state;
+
+        let dataList = list.map(node => {
+            return {
+                ...node,
+                id: node._id,
+                name: node.typeName,
+            }
+        })
         
         return ( 
             <div id="edit-asset-type">
@@ -106,7 +113,7 @@ class EditForm extends Component {
                 </div>
                 <div className="form-group">
                     <label>Loại tài sản cha<span className="text-red">*</span></label>
-                    <TreeSelect data={list} value={[domainParent]} handleChange={this.handleParent} mode="radioSelect"/>
+                    <TreeSelect data={dataList} value={[domainParent]} handleChange={this.handleParent} mode="radioSelect"/>
                 </div>
                 <div className="form-group">
                     <label>Mô tả<span className="text-red">*</span></label>
