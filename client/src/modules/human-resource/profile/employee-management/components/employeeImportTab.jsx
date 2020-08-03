@@ -10,6 +10,7 @@ class EmployeeImportTab extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            checkFileImport: true,
             limit: 100,
             page: 0
         };
@@ -23,12 +24,21 @@ class EmployeeImportTab extends Component {
     }
 
     // Function thay đổi file import
-    handleImportExcel = (value) => {
-        let result = this.props.handleCheckImportData(value);
-        this.setState({
-            importData: result.importData,
-            rowError: result.rowError,
-        })
+    handleImportExcel = (value, checkFileImport) => {
+        console.log(checkFileImport);
+        if (checkFileImport) {
+            let result = this.props.handleCheckImportData(value);
+            this.setState({
+                importData: result.importData,
+                rowError: result.rowError,
+                checkFileImport: checkFileImport
+            })
+        } else {
+            this.setState({
+                checkFileImport: checkFileImport
+            })
+        }
+
     }
 
     isFormValidated = () => {
@@ -46,7 +56,7 @@ class EmployeeImportTab extends Component {
     render() {
         const { id, className = "tab-pane", configuration, rowErrorOfReducer, dataOfReducer, configTableWidth, showTableWidth, handleImport, textareaRow } = this.props;
 
-        let { limit, page, importData, rowError, configData } = this.state;
+        let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
 
         if (rowErrorOfReducer !== undefined) {
             rowError = rowErrorOfReducer;
@@ -91,6 +101,7 @@ class EmployeeImportTab extends Component {
                                 importData={importData}
                                 rowError={rowError}
                                 scrollTableWidth={showTableWidth}
+                                checkFileImport={checkFileImport}
                                 limit={limit}
                                 page={page}
                             />

@@ -359,6 +359,16 @@ class EmployeeImportForm extends Component {
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfContract = (value) => {
+        value = value.map(x => {
+            let startDate = typeof x.startDate === 'string' ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
+            let endDate = typeof x.endDate === 'string' ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
+            return {
+                ...x,
+                startDate: this.convertStringToDate(startDate, false),
+                endDate: this.convertStringToDate(endDate, false),
+            }
+        });
+
         let rowError = [];
         // Check dữ liệu import có hợp lệ hay không
         value = value.map((x, index) => {
@@ -400,6 +410,23 @@ class EmployeeImportForm extends Component {
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfFile = (value) => {
+        value = value.map(x => {
+            let status;
+            switch (x.status) {
+                case "Đã nộp":
+                    status = 'submitted';
+                    break;
+                case "Chưa nộp":
+                    status = 'no_submitted';
+                    break;
+                case "Đã trả lại":
+                    status = 'returned';
+                    break;
+                default:
+                    status = null;
+            };
+            return { ...x, status: status };
+        })
         let rowError = [];
         // Check dữ liệu import có hợp lệ hay không
         value = value.map((x, index) => {
@@ -561,8 +588,8 @@ class EmployeeImportForm extends Component {
                                     textareaRow={10}
                                     configTableWidth={1000}
                                     showTableWidth={1000}
-                                    rowErrorOfReducer={employeesManager.error.rowError}
-                                    dataOfReducer={employeesManager.error.data}
+                                    rowErrorOfReducer={employeesManager.error.rowErrorOfContract}
+                                    dataOfReducer={employeesManager.error.contracts}
                                     configuration={configurationContract}
                                     handleCheckImportData={this.handleCheckImportDataOfContract}
                                     handleImport={this.handleImportConstract}
@@ -572,8 +599,8 @@ class EmployeeImportForm extends Component {
                                     textareaRow={10}
                                     configTableWidth={1000}
                                     showTableWidth={1000}
-                                    rowErrorOfReducer={employeesManager.error.rowError}
-                                    dataOfReducer={employeesManager.error.data}
+                                    rowErrorOfReducer={employeesManager.error.rowErrorOfFile}
+                                    dataOfReducer={employeesManager.error.files}
                                     configuration={configurationFile}
                                     handleCheckImportData={this.handleCheckImportDataOfFile}
                                     handleImport={this.handleImportFile}

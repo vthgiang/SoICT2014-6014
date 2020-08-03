@@ -1277,3 +1277,95 @@ exports.importCertificate = async (company, data) => {
         return data;
     }
 }
+
+/**
+ * Import hợp đồng lao động
+ * @param {*} company : Id công ty
+ * @param {*} data : Dữ liệu hợp đồng lao động cần import
+ */
+exports.importContract = async (company, data) => {
+    let result = await this.checkImportData(company, data);
+    data = result.data;
+    let rowError = result.rowError;
+
+    if (rowError.length !== 0) {
+        return {
+            errorStatus: true,
+            contracts: data,
+            rowErrorOfContract: rowError
+        }
+    } else {
+        let importData = [];
+        for (let x of data) {
+            if (!importData.includes(x._id)) {
+                importData = [...importData, x._id]
+            }
+        }
+        importData = importData.map(x => {
+            let result = {
+                _id: x,
+                contracts: []
+            }
+            data.forEach(y => {
+                if (y._id === x) {
+                    result.contracts.push(y);
+                }
+            })
+            return result;
+        })
+        for (let x of importData) {
+            let editEmployee = await Employee.findOne({
+                _id: x._id
+            });
+            editEmployee.contracts = editEmployee.contracts.concat(x.contracts);
+            editEmployee.save();
+        }
+        return data;
+    }
+}
+
+/**
+ * Import thông tin tài liệu đính kèm
+ * @param {*} company : Id công ty
+ * @param {*} data : Dữ liệu tài liệu đính kèm cần import
+ */
+exports.importFile = async (company, data) => {
+    let result = await this.checkImportData(company, data);
+    data = result.data;
+    let rowError = result.rowError;
+
+    if (rowError.length !== 0) {
+        return {
+            errorStatus: true,
+            files: data,
+            rowErrorOfFile: rowError
+        }
+    } else {
+        let importData = [];
+        for (let x of data) {
+            if (!importData.includes(x._id)) {
+                importData = [...importData, x._id]
+            }
+        }
+        importData = importData.map(x => {
+            let result = {
+                _id: x,
+                files: []
+            }
+            data.forEach(y => {
+                if (y._id === x) {
+                    result.files.push(y);
+                }
+            })
+            return result;
+        })
+        for (let x of importData) {
+            let editEmployee = await Employee.findOne({
+                _id: x._id
+            });
+            editEmployee.files = editEmployee.files.concat(x.files);
+            editEmployee.save();
+        }
+        return data;
+    }
+}
