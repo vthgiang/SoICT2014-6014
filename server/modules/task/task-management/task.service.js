@@ -86,7 +86,27 @@ exports.getTaskEvaluations = async (data) => {
         },
     ];
 
+    // if (data.taskInformations) {
+    //     console.log('a');
+    //     data.taskInformations.forEach(item => {
+    //         let filter = JSON.parse(item).filter; // p1> 90000
+    //         // if (JSON.parse(item).type === "Number" && JSON.parse(item).code === "p1") {
+    //         condition = [
+    //             ...condition,
+    //             filterDate,
+    //             { $unwind: "$taskInformations" },
+    //             // { $match: { "taskInformations.type": "Number" } },
+    //             // { $match: { "taskInformations.code": "p1" } },
+    //             { $match: { "taskInformations.value": { $gte: 90000 } } }
+
+    //         ]
+    //         // }
+    //     })
+    // }
+    // console.log('asd', condition);
+
     if (taskStatus === 0) { // Lọc tất cả các coong việc không theo đặc thù
+        console.log('b');
         condition = [
             ...condition,
             filterDate
@@ -95,6 +115,7 @@ exports.getTaskEvaluations = async (data) => {
     } else
         // nếu không lọc theo người thực hiện và người phê duyệt
         if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
+            console.log('c');
             condition = [
                 { $match: { status: taskStatus } },
                 ...condition,
@@ -102,6 +123,7 @@ exports.getTaskEvaluations = async (data) => {
             ]
 
         } else {
+            console.log('d');
             condition = [
                 { $match: { status: taskStatus } },
                 { $match: { responsibleEmployees: { $in: [...responsible.map(x => mongoose.Types.ObjectId(x.toString()))] } } },
@@ -111,12 +133,9 @@ exports.getTaskEvaluations = async (data) => {
             ]
         }
 
-    let result = await Task.aggregate(condition);
-    console.log('result', result);
-    data.taskInformations.map(item => {
-        console.log('data', JSON.parse(item));
-    })
 
+    let result = await Task.aggregate(condition);
+    console.log('result', result)
     return result;
 
 }
