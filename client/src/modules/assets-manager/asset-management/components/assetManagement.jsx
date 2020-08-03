@@ -180,6 +180,7 @@ class AssetManagement extends Component {
             parseInt(assetsManager.totalList / this.state.limit) :
             parseInt((assetsManager.totalList / this.state.limit) + 1);
         var page = parseInt((this.state.page / this.state.limit) + 1);
+        
         return (
             <div className="box">
                 <div className="box-body qlcv">

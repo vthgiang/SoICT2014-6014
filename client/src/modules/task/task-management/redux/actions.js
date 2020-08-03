@@ -22,7 +22,7 @@ export const taskManagementActions = {
     evaluateTaskByResponsibleEmployees,
 
     getTasksByUser,
-
+    getTaskInOrganizationUnitByMonth,
     getTaskEvaluations,
 };
 
@@ -95,13 +95,13 @@ function getAllTaskByRole(id, role) {
  * @param {*} endDate kết thúc công việc
  */
 
-function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore) { //user, -- param
+function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime=false) { //user, -- param
     return dispatch => {
         dispatch({
             type: taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_REQUEST
         });
 
-        taskManagementService.getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore)
+        taskManagementService.getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_SUCCESS,
@@ -131,12 +131,12 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
  * @param {*} endDate kết thúc công việc
  */
 
-function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
+function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime=false) {
     return dispatch => {
         dispatch({
             type: taskManagementConstants.GETTASK_ACCOUNTABLE_BYUSER_REQUEST
         });
-        taskManagementService.getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate)
+        taskManagementService.getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_ACCOUNTABLE_BYUSER_SUCCESS,
@@ -167,13 +167,13 @@ function getAccountableTaskByUser(unit, number, perPage, status, priority, speci
  */
 
 
-function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
+function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime=false) {
     return dispatch => {
         dispatch({
             type: taskManagementConstants.GETTASK_CONSULTED_BYUSER_REQUEST
         });
 
-        taskManagementService.getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate)
+        taskManagementService.getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_CONSULTED_BYUSER_SUCCESS,
@@ -204,13 +204,13 @@ function getConsultedTaskByUser(unit, number, perPage, status, priority, special
  */
 
 
-function getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
+function getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime=false) {
     return dispatch => {
         dispatch({
             type: taskManagementConstants.GETTASK_INFORMED_BYUSER_REQUEST
         });
 
-        taskManagementService.getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate)
+        taskManagementService.getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_INFORMED_BYUSER_SUCCESS,
@@ -239,13 +239,13 @@ function getInformedTaskByUser(unit, number, perPage, status, priority, special,
  * @param {*} endDate kết thúc công việc
  */
 
-function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate) {
+function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime=false) {
     return dispatch => {
         dispatch({
             type: taskManagementConstants.GETTASK_CREATOR_BYUSER_REQUEST
         });
 
-        taskManagementService.getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate)
+        taskManagementService.getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_CREATOR_BYUSER_SUCCESS,
@@ -524,6 +524,22 @@ function getTaskEvaluations(data) {
             })
             .catch(error => {
                 dispatch({ type: taskManagementConstants.GET_TASK_EVALUATION_FAILURE, error });
+            });
+    };
+}
+
+function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, endDateBefore) {
+    return dispatch => {
+        dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_REQUEST });
+        taskManagementService.getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, endDateBefore)
+            .then(res => {
+                dispatch({
+                    type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_FAILURE, error });
             });
     };
 }

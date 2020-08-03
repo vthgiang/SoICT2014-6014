@@ -39,6 +39,52 @@ export function createKpiUnit (state = {}, action){
             error: action.payload,
             isLoading: false
           };
+          case createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_REQUEST:
+            return {
+                ...state,
+                organizationalUnitKpiSets: null,
+                loading: true,
+                isLoading: false
+            }
+        case createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                isLoading: false,
+                organizationalUnitKpiSets: action.payload
+            }
+        case createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+        case createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_REQUEST:
+            return {
+                ...state,
+                organizationalUnitKpiSetsOfChildUnit: null,
+                loading: true,
+                isLoading: false
+            }
+        case createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                isLoading: false,
+                organizationalUnitKpiSetsOfChildUnit: action.payload
+            }
+        case createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            }
+            case createUnitKpiConstants.GET_ALL_CHILDTARGET_OF_ORGANIZATIONALUNITKPIS_FAILURE:
+              return {
+                  ...state,
+                  loading: false,
+                  error: action.payload
+              }
         case createUnitKpiConstants.ADD_KPIUNIT_REQUEST:
           return {
             ...state,

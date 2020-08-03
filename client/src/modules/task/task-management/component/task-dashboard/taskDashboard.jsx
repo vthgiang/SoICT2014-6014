@@ -14,20 +14,63 @@ class TaskDashboard extends Component {
     constructor(props) {
         super(props);
 
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+
         this.state = {
             userID: "",
+
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
+
+            willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
+            callAction: false
         };
     }
 
-    componentDidMount() {
-        this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
-        this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
-        this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
-        this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
-        this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
-        this.props.getTaskByUser();
+    componentDidMount = async () => {
+        await this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
+        await this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
+        await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
+        await this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
+        await this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
+        await this.props.getTaskByUser();
+
+        await this.setState(state => {
+            return {
+                ...state,
+                dataStatus: this.DATA_STATUS.QUERYING,
+                willUpdate: true       // Khi true sẽ cập nhật dữ liệu vào props từ redux
+            };
+        });
     }
     
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+            if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks || !nextProps.tasks.tasksbyuser) {
+                return false;
+            }
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.AVAILABLE,
+                    callAction: true
+                }
+            });
+        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.FINISHED,
+                    willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
+                }
+            });
+
+            return true;
+        }
+
+        return false;
+    }
+
     generateDataPoints(noOfDps) {
         let xVal = 1, yVal = 100;
         let dps = [];
@@ -157,7 +200,11 @@ class TaskDashboard extends Component {
                                 <div className="box-title">{translate('task.task_management.dashboard_area_result')}</div>
                             </div>
                             <div className="box-body qlcv">
-                                <DomainOfTaskResultsChart/>
+                                {this.state.callAction &&
+                                    <DomainOfTaskResultsChart
+                                        callAction={!this.state.willUpdate}
+                                    />
+                                }
                             </div>
                         </div>
                     </div>
@@ -167,7 +214,11 @@ class TaskDashboard extends Component {
                                 <div className="box-title">{translate('task.task_management.detail_status')}</div>
                             </div>
                             <div className="box-body qlcv">
-                                <TaskStatusChart/>
+                                {this.state.callAction &&
+                                    <TaskStatusChart
+                                        callAction={!this.state.willUpdate}
+                                    />
+                                }
                             </div>
                         </div>
                     </div>

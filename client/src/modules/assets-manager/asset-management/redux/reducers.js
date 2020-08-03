@@ -16,10 +16,12 @@ export function assetsManager(state = initState, action) {
         case AssetConstants.ADDASSET_REQUEST:
         case AssetConstants.UPDATE_INFOR_ASSET_REQUEST:
         case AssetConstants.DELETE_ASSET_REQUEST:
+        case AssetConstants.CREATE_USAGE_REQUEST:
             return {
                 ...state,
                 isLoading: true
             };
+        
         case AssetConstants.GETALL_SUCCESS:
             if (action.payload.totalList !== undefined) {
                 return {
@@ -42,6 +44,24 @@ export function assetsManager(state = initState, action) {
                     isLoading: false
                 }
             }
+
+        case AssetConstants.CREATE_USAGE_SUCCESS:            
+            let assets = [];
+
+            for (let i = 0; i < state.listAssets.length; i++){
+                if (state.listAssets[i]._id === action.payload._id) {
+                    assets.push(action.payload);
+                } else {
+                    assets.push(state.listAssets[i]);
+                }
+            }
+
+            return {
+                ...state,
+                listAssets: assets,
+                isLoading: false
+            };
+
 
         case AssetConstants.ADDASSET_SUCCESS:
             console.log('action.payload', action.payload);
@@ -73,6 +93,7 @@ export function assetsManager(state = initState, action) {
         case AssetConstants.ADDASSET_FAILURE:
         case AssetConstants.UPDATE_INFOR_ASSET_FAILURE:
         case AssetConstants.DELETE_ASSET_FAILURE:
+        case AssetConstants.CREATE_USAGE_FAILURE:
             return {
                 ...state,
                 isLoading: false,

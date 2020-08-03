@@ -110,11 +110,11 @@ class ModalViewTaskProcess extends Component {
                     <div>
                         <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
                             <ul className="nav nav-tabs">
-                                <li className="active"><a href="#info" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
-                                <li><a href="#process" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
+                                <li className="active"><a href="#info-view" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
+                                <li><a href="#process-view" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
                             </ul>
                             <div className="tab-content">
-                                <div className={selectedView === "info" ? "active tab-pane" : "tab-pane"} id="info">
+                                <div className={selectedView === "info" ? "active tab-pane" : "tab-pane"} id="info-view">
 
                                     <div className='row'>
                                         <div className='col-md-6'>
@@ -172,7 +172,7 @@ class ModalViewTaskProcess extends Component {
 
 
                             <div className="tab-content">
-                                <div className={selectedView === "process" ? "active tab-pane" : "tab-pane"} id="process">
+                                <div className={selectedView === "process" ? "active tab-pane" : "tab-pane"} id="process-view">
                                     <fieldset className="scheduler-border">
                                         {/* <legend className="scheduler-border">Quy trình công việc</legend> */}
                                         <div className='row'>

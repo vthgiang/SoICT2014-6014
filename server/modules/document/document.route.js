@@ -10,22 +10,22 @@ router.get("/documents/permission-view", auth, DocumentController.getDocumentsTh
 router.get("/documents/user-statistical", auth, DocumentController.getDocumentsUserStatistical);
 
 // Danh mục văn bản - domain
-router.get("/domains", auth, DocumentController.getDocumentDomains);
+router.get("/document-domains", auth, DocumentController.getDocumentDomains);
 //router.get("/domains/:id", auth, DocumentController.showDocumentDomain);
-router.post("/domains", auth, DocumentController.createDocumentDomain);
-router.post("/domains/delete-many", auth, DocumentController.deleteManyDocumentDomain);
-router.patch("/domains/:id", auth, DocumentController.editDocumentDomain);
-router.delete("/domains/:id", auth, DocumentController.deleteDocumentDomain);
+router.post("/document-domains", auth, DocumentController.createDocumentDomain);
+router.post("/document-domains/delete-many", auth, DocumentController.deleteManyDocumentDomain);
+router.patch("/document-domains/:id", auth, DocumentController.editDocumentDomain);
+router.delete("/document-domains/:id", auth, DocumentController.deleteDocumentDomain);
 
 // Loại văn bản - category
-router.get("/categories", auth, DocumentController.getDocumentCategories);
-router.get("/categories/:id", auth, DocumentController.showDocumentCategory);
-router.post("/categories", auth, DocumentController.createDocumentCategory);
-router.patch("/categories/:id", auth, DocumentController.editDocumentCategory);
-router.delete("/categories/:id", auth, DocumentController.deleteDocumentCategory);
+router.get("/document-categories", auth, DocumentController.getDocumentCategories);
+router.get("/document-categories/:id", auth, DocumentController.showDocumentCategory);
+router.post("/document-categories", auth, DocumentController.createDocumentCategory);
+router.patch("/document-categories/:id", auth, DocumentController.editDocumentCategory);
+router.delete("/document-categories/:id", auth, DocumentController.deleteDocumentCategory);
 
 // Văn bản tài liệu
-router.get("/documents/", auth, DocumentController.getDocuments);
+router.get("/documents", auth, DocumentController.getDocuments);
 router.get("/documents/:id", auth, DocumentController.showDocument);
 router.post("/documents", auth, uploadFile([{name:'file', path:'/files'}, {name:'fileScan', path:'/files'}], 'fields'), DocumentController.createDocument);
 router.patch("documents/:id", auth, uploadFile([{name:'file', path:'/files'}, {name:'fileScan', path:'/files'}], 'fields'), DocumentController.editDocument);

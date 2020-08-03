@@ -89,11 +89,12 @@ class UsageLogTab extends Component {
     // Function thêm thông tin phiếu
     handleAddUsage = async (data) => {
         const { usageLogs } = this.state;
+        usageLogs.push(data);
+
         await this.setState({
-            usageLogs: [...usageLogs, {
-                ...data
-            }]
+            usageLogs: usageLogs,
         })
+
         this.props.handleAddUsage(this.state.usageLogs, data)
     }
 
@@ -104,7 +105,8 @@ class UsageLogTab extends Component {
         await this.setState({
             usageLogs: usageLogs,
         })
-        this.props.handleEditUsage(this.state.usageLogs, data)
+        
+        await this.props.handleEditUsage(this.state.usageLogs, data)
     }
 
     // Function bắt sự kiện xoá thông tin phiếu
@@ -121,7 +123,7 @@ class UsageLogTab extends Component {
 
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
+        if (nextProps.id !== prevState.id || nextProps.usageLogs !== prevState.usageLogs) {
             return {
                 ...prevState,
                 id: nextProps.id,

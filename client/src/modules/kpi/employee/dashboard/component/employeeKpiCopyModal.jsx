@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+
 import Swal from 'sweetalert2';
+
 import {
     getStorage
 } from '../../../../../config';
-import { withTranslate } from 'react-redux-multilingual';
 
-var translate =';'
+
+var translate ='';
 class ModalCopyEmployeeKpiSet extends Component {
     constructor(props) {
         super(props);
@@ -15,7 +18,7 @@ class ModalCopyEmployeeKpiSet extends Component {
             employeeKpiSet: {
                 organizationalUnit: "",
                 time: this.formatDate(Date.now()),
-                creator: "" //localStorage.getItem("id")
+                creator: "" 
                 
             },
         };
@@ -40,6 +43,8 @@ class ModalCopyEmployeeKpiSet extends Component {
 
         return [month, year].join('-');
     }
+
+    /**Gửi req khởi tạo KPI tháng mới từ KPI tháng này */
     handleSubmit = async (event, oldemployeeKpiSet) => {
         event.preventDefault();
         var id = getStorage("userId");
@@ -69,6 +74,8 @@ class ModalCopyEmployeeKpiSet extends Component {
             });
         }
     }
+
+
     handleCloseModal = (id) => {
         var element = document.getElementsByTagName("BODY")[0];
         element.classList.remove("modal-open");
@@ -76,22 +83,32 @@ class ModalCopyEmployeeKpiSet extends Component {
         modal.classList.remove("in");
         modal.style = "display: none;";
     }
+
+
     render() {
         var {employeeKpiSet} = this.props;
+
         return (
+            /**Khởi tạo KPI tháng mới từ KPI tháng này */
             <div className="modal fade" id={`copyOldKPIToNewTime${employeeKpiSet._id}`}>
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
+
+                            {/**Button close modal */}
                             <button type="button" className="close" data-dismiss="modal" onClick={() => this.handleCloseModal(employeeKpiSet._id)} aria-hidden="true">×</button>
                             <h3 className="modal-title">{translate('kpi.evaluation.organizational_unit.management.copy_modal.create')}+' '+ {this.formatDate(employeeKpiSet.time)}</h3>
                         </div>
                         <div className="modal-body">
                             <div className="form-group">
+
+                                {/**Đơn vị của tập KPI tháng mới */}
                                 <label className="col-sm-5">{translate('kpi.evaluation.organizational_unit.management.copy_modal.organizational_unit')}:</label>
                                 <label className="col-sm-8" style={{ fontWeight: "400", marginLeft: "-14.5%" }}>{employeeKpiSet && employeeKpiSet.organizationalUnit.name}</label>
                             </div>
                             <div className="form-group">
+
+                                {/**Chọn tháng mới để khởi tạo */}
                                 <label className="col-sm-2">{translate('kpi.evaluation.organizational_unit.management.copy_modal.month')}:</label>
                                 <div className='input-group col-sm-9 date has-feedback' style={{ marginLeft: "11px" }}>
                                     <div className="input-group-addon">
@@ -101,6 +118,8 @@ class ModalCopyEmployeeKpiSet extends Component {
                                 </div>
                             </div>
                             <div className="form-group" >
+
+                                {/**Danh sách mục tiêu */}
                                 <label className="col-sm-12">{translate('kpi.evaluation.organizational_unit.management.copy_modal.list_target')}:</label>
                                 <ul>
                                     {typeof employeeKpiSet !== "undefined" && employeeKpiSet.kpis.length !== 0 &&
@@ -111,6 +130,8 @@ class ModalCopyEmployeeKpiSet extends Component {
                                 </ul>
                             </div>
                         </div>
+
+                        {/**Các button lưu và đóng */}
                         <div className="modal-footer">
                                 <button className="btn btn-success" onClick={(event) => this.handleSubmit(event, employeeKpiSet)}>{translate('kpi.evaluation.organizational_unit.management.copy_modal.setting')}</button>
                             <button type="cancel" className="btn btn-primary" onClick={() => this.handleCloseModal(employeeKpiSet._id)}>{translate('kpi.evaluation.organizational_unit.management.copy_modal.cancel')}</button>

@@ -35,48 +35,40 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (data) => {
 /**
  * service Khởi tạo KPI tháng mới từ KPI tháng này
  */
-exports.copyKPI = async (data) => {
-    let date = data.dateOld.split("-");
-    let dateOld = new Date(date[0], date[1], 0);
-    date = data.dateNew.split("-");
-    let dateNewEmployeeKPI = new Date(date[1], date[0], 0);
-    let monthOldKPI = dateOld.getMonth();
-    let yearOldKPI = dateOld.getFullYear();
-    let monthNewKPI = dateNewEmployeeKPI.getMonth();
-    let yearNewKPI = dateNewEmployeeKPI.getFullYear();
-    let OldEmployeeKPI = await EmployeeKpiSet.find({ creator: mongoose.Types.ObjectId(data.id), organizationalUnit: data.unitId })
+exports.copyKPI = async (id, data) => {
+    let OldEmployeeKpiSet = await EmployeeKpiSet.findById(id)
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
-    var check = OldEmployeeKPI.find(e => (e.date.getMonth() === monthNewKPI && e.date.getFullYear() === yearNewKPI));
-    if (check == undefined) {
-        var list = OldEmployeeKPI.find(e => (e.date.getMonth() === monthOldKPI && e.date.getFullYear() === yearOldKPI));
-        if(list) {
-            var NewEmployeeKpi = await EmployeeKpiSet.create({
-            organizationalUnit: list.organizationalUnit._id,
-            creator: list.creator._id,
-            date: dateNewEmployeeKPI,
-            kpis: [],
-            approver: list.approver,
-            })
-            for (let i in list.kpis) {
-                var target = await EmployeeKpi.create({
-                    name: list.kpis[i].name,
-                    weight: list.kpis[i].weight,
-                    criteria: list.kpis[i].criteria,
-                    type: list.kpis[i].type,
-                    parent: null,
-                });
-                EmployeeKpis = await EmployeeKpiSet.findByIdAndUpdate(
-                    NewEmployeeKpi, { $push: { kpis: target._id } }, { new: true }
-                );
-            }
-        }
-        EmployeeKpis = await EmployeeKpiSet.find({ creator: mongoose.Types.ObjectId(data.id) })
-            .populate("organizationalUnit creator")
-            .populate({ path: "kpis", populate: { path: 'parent' } });
+    let date, dateNewEmployeeKPI, employeeKpiSet;
+    date = data.dateNew.split("-");
+    dateNewEmployeeKPI = new Date(date[1], date[0], 0);
+
+    var NewEmployeeKpiSet = await EmployeeKpiSet.create({
+        organizationalUnit: OldEmployeeKpiSet.organizationalUnit._id,
+        creator: data.creator,
+        date: dateNewEmployeeKPI,
+        kpis: [],
+        approver: OldEmployeeKpiSet.approver,
+    })
+
+    for (let i in OldEmployeeKpiSet.kpis) {
+        var target = await EmployeeKpi.create({
+            name: OldEmployeeKpiSet.kpis[i].name,
+            weight: OldEmployeeKpiSet.kpis[i].weight,
+            criteria: OldEmployeeKpiSet.kpis[i].criteria,
+            type: OldEmployeeKpiSet.kpis[i].type,
+            parent: null,
+        });
+        employeeKpiSet = await EmployeeKpiSet.findByIdAndUpdate(
+            NewEmployeeKpiSet, { $push: { kpis: target._id } }, { new: true }
+        );
     }
 
-    return EmployeeKpis;
+    employeeKpiSet = await EmployeeKpiSet.find({ creator: mongoose.Types.ObjectId(data.creator) })
+        .populate("organizationalUnit creator")
+        .populate({ path: "kpis", populate: { path: 'parent' } });
+
+return employeeKpiSet;
 }
 
 /**
@@ -145,6 +137,11 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
             }
         },
         { $unwind: "$employeeKpis" },
+        {
+            $addFields: {
+                'employeeKpis.parentName': "$organizationalUnitKpis.name"
+            }
+        },
 
         {
             $lookup: {
@@ -158,12 +155,18 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
 
         {
             $addFields: {
-                "employeeKpis.organizationalUnitKpiParent": "$organizationalUnitKpis.parent",
                 "employeeKpis.creator": "$employeeKpiSet.creator"
             }
         },
 
-        { $replaceRoot: { newRoot: "$employeeKpis" } }
+        { $replaceRoot: { newRoot: "$employeeKpis" } },
+
+        {
+            $group: { 
+                '_id': "$parentName",
+                'employeeKpi': { $push: "$$ROOT" }
+            }
+        },
     ])
 
     return employeeKpis;
@@ -280,17 +283,18 @@ exports.getAllChildrenOrganizational = async (companyId, roleId) => {
 /** 
  * Lấy tất cả EmployeeKpi thuộc các đơn vị con của đơn vị hiện tại 
  */
-exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (companyId, roleId) => {
+exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (companyId, roleId, month) => {
 
     let employeeKpisInChildrenOrganizationalUnit = [], childrenOrganizationalUnits;
 
-    childrenOrganizationalUnits = await getAllChildrenOrganizational(companyId, roleId);
+    childrenOrganizationalUnits = await this.getAllChildrenOrganizational(companyId, roleId);
+    console.log(childrenOrganizationalUnits)
 
     for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
-        employeeKpisInChildrenOrganizationalUnit.push(await this.getAllEmployeeKpiInOrganizationalUnit("null", childrenOrganizationalUnits[i].id));
+        employeeKpisInChildrenOrganizationalUnit.push(await this.getAllEmployeeKpiInOrganizationalUnit(null, childrenOrganizationalUnits[i].id, month));
         employeeKpisInChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })
     }
-
+    console.log(employeeKpisInChildrenOrganizationalUnit)
     return employeeKpisInChildrenOrganizationalUnit;
 }
 

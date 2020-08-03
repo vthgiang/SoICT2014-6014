@@ -28,7 +28,8 @@ export function taskProcess(state = {}, action) {
     case TaskProcessConstants.GET_ALL_XML_DIAGRAM_SUCCESS:
       return {
         ...state,
-        xmlDiagram: action.payload.content
+        xmlDiagram: action.payload.content.data,
+        totalPage: action.payload.content.pageTotal
       };
     case TaskProcessConstants.GET_ALL_XML_DIAGRAM_FAIL:
       return {
