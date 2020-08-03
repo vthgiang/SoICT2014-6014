@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DisciplineCreateForm, DisciplineEditForm } from './combinedContent';
-import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
+import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti, ExportExcel } from '../../../../common-components';
 
 import { DisciplineActions } from '../redux/actions';
 
@@ -26,7 +26,7 @@ class DisciplineManager extends Component {
             position: null,
             decisionNumber: "",
             employeeNumber: "",
-            organizationalUnits: organizationalUnits,
+            organizationalUnits: organizationalUnits ? organizationalUnits : [],
             page: 0,
             limit: 5,
         }
@@ -115,12 +115,65 @@ class DisciplineManager extends Component {
         });
         this.props.getListDiscipline(this.state);
     }
+
+    // Function chyển đổi dữ liệu nghỉ phép thành dạng dữ liệu dùng export
+    convertDataToExportData = (data) => {
+        const { list } = this.props.department;
+        if (data) {
+            data = data.map((x, index) => {
+                let organizationalUnits = x.organizationalUnits.map(y => y.name);
+                let position = x.roles.map(y => y.roleId.name);
+                let decisionUnit = list.find(y => y._id === x.organizationalUnit);
+                return {
+                    STT: index + 1,
+                    employeeNumber: x.employee.employeeNumber,
+                    fullName: x.employee.fullName,
+                    organizationalUnits: organizationalUnits.join(', '),
+                    position: position.join(', '),
+                    decisionNumber: x.decisionNumber,
+                    decisionUnit: decisionUnit ? decisionUnit.name : "",
+                    startDate: this.formatDate(x.startDate),
+                    endDate: this.formatDate(x.endDate),
+                    type: x.type,
+                    reason: x.reason,
+                };
+            })
+        }
+        let exportData = {
+            fileName: "Bảng thống kê kỷ luật",
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "employeeNumber", value: "Mã số nhân viên" },
+                                { key: "fullName", value: "Họ và tên" },
+                                { key: "organizationalUnits", value: "Đơn vị" },
+                                { key: "position", value: "Chức vụ" },
+                                { key: "decisionNumber", value: "Số ra quyết định" },
+                                { key: "decisionUnit", value: "Cấp ra quyết định" },
+                                { key: "startDate", value: "Ngày có hiệu lực" },
+                                { key: "endDate", value: "Ngày có hiệu lực" },
+                                { key: "type", value: "Hình thức kỷ luật" },
+                                { key: "reason", value: "Lý do kỷ luật" },
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData
+    }
+
     render() {
         const { limit, page, organizationalUnits } = this.state;
         const { list } = this.props.department;
         const { translate, discipline, pageActive } = this.props;
-        var listDisciplines = "", listPosition = [];
-        if (organizationalUnits !== null) {
+        var listDisciplines = [], listPosition = [];
+        if (organizationalUnits.length !== 0) {
             organizationalUnits.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
@@ -135,14 +188,17 @@ class DisciplineManager extends Component {
         if (discipline.isLoading === false) {
             listDisciplines = discipline.listDisciplines;
         }
-        var pageTotal = (discipline.totalListDiscipline % limit === 0) ?
+        let exportData = this.convertDataToExportData(listDisciplines);
+
+        let pageTotal = (discipline.totalListDiscipline % limit === 0) ?
             parseInt(discipline.totalListDiscipline / limit) :
             parseInt((discipline.totalListDiscipline / limit) + 1);
-        var currentPage = parseInt((page / limit) + 1);
+        let currentPage = parseInt((page / limit) + 1);
         return (
             <div id="kyluat" className={`tab-pane ${pageActive === 'discipline' ? 'active' : null}`}>
                 <div className="box-body qlcv">
                     <DisciplineCreateForm />
+                    <ExportExcel id="export-discipline" exportData={exportData} style={{ marginRight: 15, marginTop: 2 }} />
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.unit')}</label>

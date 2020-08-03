@@ -159,7 +159,7 @@ class AnnualLeaveManagement extends Component {
         this.props.searchAnnualLeaves(this.state);
     }
 
-    // Function chyển đổi dữ liệu bảng lương thành dạng dữ liệu dùng export
+    // Function chyển đổi dữ liệu nghỉ phép thành dạng dữ liệu dùng export
     convertDataToExportData = (data) => {
         if (data) {
             data = data.map((x, index) => {
@@ -237,7 +237,7 @@ class AnnualLeaveManagement extends Component {
             <div className="box" >
                 <div className="box-body qlcv">
                     <AnnualLeaveCreateForm />
-                    <ExportExcel id="export-annual_leave" exportData={exportData} style={{ marginRight: 15 }} />
+                    <ExportExcel id="export-annual_leave" exportData={exportData} style={{ marginRight: 15, marginTop: 2 }} />
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.unit')}</label>
