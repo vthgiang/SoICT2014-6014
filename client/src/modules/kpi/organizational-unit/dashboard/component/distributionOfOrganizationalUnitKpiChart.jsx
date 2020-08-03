@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { createUnitKpiActions } from '../../creation/redux/actions';
+
 import { withTranslate } from 'react-redux-multilingual';
+
 import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
 
 class DistributionOfOrganizationalUnitKpiChart extends Component {
-
     constructor(props) {
         super(props);
 
@@ -32,7 +33,6 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        // Call action again when currentRole changes
         if (this.state.currentRole !== localStorage.getItem("currentRole")) {
             await this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"));
 
@@ -46,7 +46,6 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
             return false;
         }
 
-        // Call action again when this.state.organizationalUnitId or this.state.month changes
         if (nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
             await this.props.getCurrentKPIUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
 
@@ -98,7 +97,6 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         }
     }
 
-    // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
         const { createKpiUnit } = this.props;
         let listOrganizationalUnitKpi, dataPieChart;
@@ -114,7 +112,6 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         return dataPieChart;
     }
 
-    // Xóa các chart đã render khi chưa đủ dữ liệu
     removePreviousChart() {
         const chart = this.refs.chart;
         while (chart.hasChildNodes()) {
@@ -122,30 +119,26 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         }
     }
 
-    // Khởi tạo PieChart bằng C3
     pieChart = () => {
         this.removePreviousChart();
 
-        // Tạo mảng dữ liệu
-        var dataPieChart;
+        let dataPieChart;
         dataPieChart = this.setDataPieChart();
 
         this.chart = c3.generate({
-            // Đẩy chart vào thẻ div có id="pieChart"
             bindto: this.refs.chart,
-            // Căn lề biểu đồ
             padding: {
                 top: 20,
                 bottom: 20,
                 right: 20,
                 left: 20
             },
-            // Dữ liệu biểu đồ
+
             data: {
                 columns: dataPieChart,
                 type: 'pie',
             },
-            // Ẩn chú thích biểu đồ
+
             legend: {
                 show: true
             }
@@ -154,7 +147,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
 
     render() {
         const { createKpiUnit, translate } = this.props;
-        var currentKpi;
+        let currentKpi;
         if (createKpiUnit) {
             currentKpi = createKpiUnit.currentKPI
         }

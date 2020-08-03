@@ -31,14 +31,13 @@ function getAllKpiSetsOrganizationalUnitByMonth(user, department, date) {
  * @param {*} dateOld 
  * @param {*} dateNew 
  */
-function copyEmployeeKPI(id, unitId, dateOld, dateNew){
+function copyEmployeeKPI( id, idcreator, unitId,  dateNew){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets/copy`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets/${id}/copy`,
         method: 'POST',
         params: {
-            user: id,
+            creator: idcreator,
             unitId: unitId,
-            dateOld: dateOld,
             dateNew: dateNew
         }
     }, true, true, 'kpi.employee.manager');

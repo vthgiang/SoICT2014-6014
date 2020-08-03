@@ -51,7 +51,7 @@ class AttachmentTab extends Component {
                                             <td>{x.name}</td>
                                             <td>{x.description}</td>
                                             <td>{x.number}</td>
-                                            <td>{(typeof x.urlFile === 'undefined' || x.urlFile === 0) ? translate('manage_employee.no_files') :
+                                            <td>{!x.urlFile ? translate('manage_employee.no_files') :
                                                 <a className='intable'
                                                     href={LOCAL_SERVER_API + x.urlFile} target="_blank"
                                                     download={x.name}>

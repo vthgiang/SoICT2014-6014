@@ -6,7 +6,7 @@ const { EmployeeKpi, EmployeeKpiSet, OrganizationalUnit, OrganizationalUnitKpiSe
 
 // File này làm nhiệm vụ thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 
-/** Lấy tập KPI cá nhân hiện tại theo người dùng */
+/*Lấy tập KPI cá nhân hiện tại theo người dùng */
 exports.getEmployeeKpiSet = async (id, role, month) => {
 
     let now = new Date(month);
@@ -54,7 +54,7 @@ exports.getEmployeeKpiSet = async (id, role, month) => {
     return employeeKpiSet;
 }
 
-/** Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
+/* Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
 exports.getAllEmployeeKpiSetByMonth = async (userId, startDate, endDate) => {
 
     let employeeKpiSetByMonth = await EmployeeKpiSet.find(
@@ -68,7 +68,7 @@ exports.getAllEmployeeKpiSetByMonth = async (userId, startDate, endDate) => {
     return employeeKpiSetByMonth;
 }
 
-/** Lấy tất cả các tập KPI của tất cả nhân viên trong mảng đơn vị cho trước theo thời gian */
+/* Lấy tất cả các tập KPI của tất cả nhân viên trong mảng đơn vị cho trước theo thời gian */
 exports.getAllEmployeeKpiSetOfAllEmployeeInOrganizationalUnitByMonth = async (organizationalUnitIds, startDate, endDate) => {
 
     let organizationalUnitIdsArray = organizationalUnitIds.map(item => { return new mongoose.Types.ObjectId(item) });
@@ -103,7 +103,7 @@ exports.getAllEmployeeKpiSetOfAllEmployeeInOrganizationalUnitByMonth = async (or
     return employeeKpiSetsInOrganizationalUnitByMonth;
 }
 
-/** Khởi tạo tập KPI cá nhân */ 
+/* Khởi tạo tập KPI cá nhân */ 
 exports.createEmployeeKpiSet = async (data) => {
     let organizationalUnitId = data.organizationalUnit;
     let creatorId = data.creator;
@@ -148,7 +148,7 @@ exports.createEmployeeKpiSet = async (data) => {
     }
 }
 
-/** Thêm mục tiêu cho KPI cá nhân */
+/* Thêm mục tiêu cho KPI cá nhân */
 exports.createEmployeeKpi = async (data) => {
     // Thiết lập mục tiêu cho KPI cá nhân
     let employeeKpi = await EmployeeKpi.create({
@@ -172,18 +172,16 @@ exports.createEmployeeKpi = async (data) => {
     return employeeKpiSet;
 }
 
-/** Xóa mục tiêu của KPI cá nhân */
+/* Xóa mục tiêu của KPI cá nhân */
 exports.deleteEmployeeKpi = async (id, employeeKpiSetId) => {
-    //req.params.id,req.params.kpipersonal
     let employeeKpi = await EmployeeKpi.findByIdAndDelete(id);
     let employeeKpiSet = await EmployeeKpiSet.findByIdAndUpdate(employeeKpiSetId, { $pull: { kpis: id } }, { new: true });
     employeeKpiSet = await employeeKpiSet.populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
     return employeeKpiSet;
 }
 
-/** Chỉnh sửa trạng thái KPI: yêu cầu phê duyệt, hủy bỏ yêu cầu phê duyệt, khóa KPI */
+/* Chỉnh sửa trạng thái KPI: yêu cầu phê duyệt, hủy bỏ yêu cầu phê duyệt, khóa KPI */
 exports.updateEmployeeKpiSetStatus = async (id, statusId) => {
-    //req.params.id,req.params.status
 
     let employeeKpiSet = await EmployeeKpiSet.findByIdAndUpdate(id, { $set: { status: statusId } }, { new: true });
     employeeKpiSet = await employeeKpiSet.populate("organizationalUnit creator approver").populate({ path: "kpis", populate: { path: 'parent' } }).execPopulate();
@@ -191,12 +189,11 @@ exports.updateEmployeeKpiSetStatus = async (id, statusId) => {
     return employeeKpiSet;
 }
 
-/** Chỉnh sửa thông tin chung của KPI cá nhân */
+/* Chỉnh sửa thông tin chung của KPI cá nhân */
 exports.editEmployeeKpiSet = async (strDate, id) => {
     let arr = strDate.split("-");
     let date = new Date(arr[1], arr[0], 0)
-    let employeeKpiSet1 = await EmployeeKpiSet.findByIdAndUpdate(id, { $set: { date: date } }, { new: true });
-    employeeKpiSet = await EmployeeKpiSet.findById(id)
+    let employeeKpiSet = await EmployeeKpiSet.findByIdAndUpdate(id, { $set: { date: date } }, { new: true })
         .populate("organizationalUnit creator approver ")
         .populate({ path: "kpis", populate: { path: 'parent' } })
         .populate([
@@ -206,9 +203,8 @@ exports.editEmployeeKpiSet = async (strDate, id) => {
     return employeeKpiSet;
 }
 
-/** Xóa toàn bộ KPI cá nhân */
+/* Xóa toàn bộ KPI cá nhân */
 exports.deleteEmployeeKpiSet = async (id) => {
-    //req.params.id
     let kpis = [];
     let employeeKpiSet = await EmployeeKpiSet.findById(id);
     if (employeeKpiSet.kpis) kpis = employeeKpiSet.kpis;

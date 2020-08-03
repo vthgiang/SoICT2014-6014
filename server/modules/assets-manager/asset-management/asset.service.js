@@ -345,13 +345,17 @@ exports.searchUsages = async (id, data, company) => {
  * Thêm mới thông tin sử dụng
  */
 exports.createUsage = async (id, data) => {
-    return await Asset.update({_id: id}, {
+    await Asset.update({_id: id}, {
         $addToSet: {usageLogs: data},
         assignedTo: data.assignedTo,
         handoverFromDate: data.handoverFromDate,
         handoverToDate: data.handoverToDate,
         status: data.status
     });
+
+    let asset = await Asset.findById(id);
+
+    return asset;
 }
 
 /**

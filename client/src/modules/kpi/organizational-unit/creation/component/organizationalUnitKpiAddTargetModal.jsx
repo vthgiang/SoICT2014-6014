@@ -28,7 +28,6 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
     }
 
     componentDidMount() {
-        // Get all parent target of unit
         this.props.getParentTarget(localStorage.getItem("currentRole"));
     }
 
@@ -152,11 +151,11 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
     }
 
     render() {
-        const { name, adding, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight } = this.state;
         const { createKpiUnit } = this.props; 
         const { organizationalUnit } = this.props; 
         const { translate } = this.props; 
-
+        const { name, adding, weight, criteria, errorOnName, errorOnCriteria, errorOnWeight } = this.state;
+        
         let parentKPI;
         if (createKpiUnit.parent) {
             parentKPI = createKpiUnit.parent;
@@ -166,7 +165,7 @@ class OrganizationalUnitKpiAddTargetModal extends Component {
         if(!parentKPI){
             items = [];
         } else {    
-            items = parentKPI.kpis.filter(item => item.type === 0).map(x => {//type !==0 thì đc. cái này để loại những mục tiêu mặc định?
+            items = parentKPI.kpis.filter(item => item.type === 0).map(x => {
                 return {value: x._id, text: x.name};
             });
         }

@@ -112,7 +112,7 @@ class DepartmentCreateWithParent extends Component {
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={[
-                                        { text: "Không có phòng ban cha" }, ...department.list ? department.list.map(department => { return { value: department._id, text: department.name } }) : null
+                                        { text: "Không có phòng ban cha" }, ...department.list.map(department => { return { value: department ? department._id : null, text: department ? department.name : "Organizational unit is deleted" } })
                                     ]}
                                     onChange={this.handleParent}
                                     value={departmentParent}

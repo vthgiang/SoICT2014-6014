@@ -1,15 +1,19 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
+
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import  {taskTemplateActions} from '../redux/actions';
-import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
+
 import {InformationForm} from '../component/informationsTemplate';
 import {ActionForm} from '../component/actionsTemplate';
-import {DialogModal, ButtonModal, SelectBox, ErrorLabel} from '../../../../common-components';
-import './tasktemplate.css';
+
+import {DialogModal, SelectBox, ErrorLabel} from '../../../../common-components';
+
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
+import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
+import './tasktemplate.css';
 
 class ModalAddTaskTemplate extends Component {
     constructor(props) {
@@ -35,22 +39,22 @@ class ModalAddTaskTemplate extends Component {
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    
+    }    
 
     componentDidMount() {
-        // get department of current user 
         this.props.getDepartment();
-        // lấy tất cả nhân viên của công ty
         this.props.getAllUserOfCompany();
-        // Lấy tất cả vai trò cùng phòng ban
         this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
-        // Lấy tất cả các role là dean 
         this.props.getDepartmentsThatUserIsDean();
         this.props.getAllUserInAllUnitsOfCompany();
+    }    
+
+    /**Submit new template in data */
+    handleSubmit = async (event) => {
+        const { newTemplate } = this.state;
+        this.props.addNewTemplate(newTemplate);
+        window.$("#addTaskTemplate").modal("hide");
     }
-    
     
     
     /**
@@ -61,7 +65,7 @@ class ModalAddTaskTemplate extends Component {
             this.validateTaskTemplateUnit(this.state.newTemplate.organizationalUnit, false) &&
             this.validateTaskTemplateRead(this.state.newTemplate.readByEmployees, false) &&
             this.validateTaskTemplateName(this.state.newTemplate.name, false) &&
-            this.validateTaskTemplateDesc(this.state.newTemplate.description, false) &&
+            this.validateTaskTemplateDescription(this.state.newTemplate.description, false) &&
             this.validateTaskTemplateFormula(this.state.newTemplate.formula, false);
         return result;
     }
@@ -69,6 +73,7 @@ class ModalAddTaskTemplate extends Component {
         let value = event.target.value;
         this.validateTaskTemplateName(value, true);
     }
+
     validateTaskTemplateName = (value, willUpdateState=true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateName(value);
 
@@ -86,9 +91,10 @@ class ModalAddTaskTemplate extends Component {
 
     handleTaskTemplateDesc = (event) => {
         let value = event.target.value;
-        this.validateTaskTemplateDesc(value, true);
+        this.validateTaskTemplateDescription(value, true);
     }
-    validateTaskTemplateDesc = (value, willUpdateState=true) => {
+
+    validateTaskTemplateDescription = (value, willUpdateState=true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateDescription(value);
 
         if (willUpdateState){
@@ -107,6 +113,7 @@ class ModalAddTaskTemplate extends Component {
         let value = event.target.value;
         this.validateTaskTemplateFormula(value, true);
     }
+
     validateTaskTemplateFormula = (value, willUpdateState=true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value);
 
@@ -121,6 +128,7 @@ class ModalAddTaskTemplate extends Component {
         }
         return msg === undefined;
     }
+
     handleChangeTaskPriority = (event) => {
         this.state.newTemplate.priority = event.target.value;
         this.setState(state =>{
@@ -129,6 +137,7 @@ class ModalAddTaskTemplate extends Component {
             };
         });
     }
+
     handleTaskTemplateUnit = (value) => {
         let singleValue = value[0]; // SelectBox một lựa chọn
         if (this.validateTaskTemplateUnit(singleValue, true)) { 
@@ -144,6 +153,7 @@ class ModalAddTaskTemplate extends Component {
             }
         }
     }
+
     validateTaskTemplateUnit = (value, willUpdateState=true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateUnit(value);
 
@@ -170,6 +180,7 @@ class ModalAddTaskTemplate extends Component {
     handleTaskTemplateRead = (value) => {
         this.validateTaskTemplateRead(value, true);
     }
+    
     validateTaskTemplateRead = (value, willUpdateState=true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
 
@@ -193,6 +204,7 @@ class ModalAddTaskTemplate extends Component {
             };
         });
     }
+
     handleTaskTemplateAccountable = (value) => {
         this.state.newTemplate.accountableEmployees = value;
         this.setState(state =>{
@@ -201,6 +213,7 @@ class ModalAddTaskTemplate extends Component {
             };
         });
     }
+
     handleTaskTemplateConsult = (value) => {
         this.state.newTemplate.consultedEmployees = value;
         this.setState(state =>{
@@ -209,6 +222,7 @@ class ModalAddTaskTemplate extends Component {
             };
         });
     }
+
     handleTaskTemplateInform = (value) => {
         this.state.newTemplate.informedEmployees = value;
         this.setState(state =>{
@@ -217,13 +231,6 @@ class ModalAddTaskTemplate extends Component {
             };
         });
     }  
-
-    // Submit new template in data
-    handleSubmit = async (event) => {
-        const { newTemplate } = this.state;
-        this.props.addNewTemplate(newTemplate);
-    }
-
     
     handleTaskActionsChange =(data) =>{
         let { newTemplate } = this.state;
@@ -238,6 +245,7 @@ class ModalAddTaskTemplate extends Component {
         })
     
     }
+
     handleTaskInformationsChange =(data)=>{
         let { newTemplate } = this.state;
         this.setState(state => {
@@ -283,6 +291,7 @@ class ModalAddTaskTemplate extends Component {
     }
     
     render() {
+
         var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean, listRoles=[];
         const { newTemplate } = this.state;
         const { department, user, translate, tasktemplates } = this.props;
@@ -321,7 +330,6 @@ class ModalAddTaskTemplate extends Component {
 
         return (
             <React.Fragment>
-                {/* <ButtonModal modalID="modal-add-task-template" button_name={translate('task_template.add')} title="Thêm mới mẫu công việc"/> */}
                 <DialogModal
                     modalID="modal-add-task-template" isLoading={user.isLoading}
                     formID="form-add-task-template"
@@ -330,8 +338,12 @@ class ModalAddTaskTemplate extends Component {
                     disableSubmit={!this.isTaskTemplateFormValidated()}
                     size={100}
                 >
+                    {/**Form chứa các thông tin của 1 task template */}
+
                     <div className="row">
                         <div className="col-sm-6">
+
+                            {/**Đơn vị(phòng ban) của Task template*/}
                             <div className={`form-group ${this.state.newTemplate.errorOnUnit===undefined?"":"has-error"}`}  style={{marginLeft: 0, marginRight: 0}}>
                                 <label className="control-label">{translate('task_template.unit')}*:</label>
                                 {departmentsThatUserIsDean !== undefined && newTemplate.organizationalUnit !== "" &&
@@ -352,6 +364,8 @@ class ModalAddTaskTemplate extends Component {
                                 <ErrorLabel content={this.state.newTemplate.errorOnUnit}/>
                             </div>
                         </div>
+
+                        {/**Những Role có quyền xem mẫu công việc này*/}
                         <div className="col-sm-6">
                             <div className={`form-group ${this.state.newTemplate.errorOnRead===undefined?"":"has-error"}`} >
                                 <label className="control-label">{translate('task_template.permission_view')}*</label>
@@ -372,15 +386,16 @@ class ModalAddTaskTemplate extends Component {
                             </div>
                         </div>
                     </div>
-
+                    
                     <div className="row">
+                        {/**Tên mẫu công việc */}
                         <div className="col-sm-6">
                             <div className={`form-group ${this.state.newTemplate.errorOnName===undefined?"":"has-error"}`} >
                                 <label className="control-label">{translate('task_template.name')}*</label>
                                 <input type="Name" className="form-control" placeholder={translate('task_template.name')} value={newTemplate.name} onChange={this.handleTaskTemplateName} />
                                 <ErrorLabel content={this.state.newTemplate.errorOnName}/>
                             </div>
-
+                            {/**Độ ưu tiên mẫu công việc */}
                             <div className="form-group" >
                                 <label className="control-label">{translate('task_template.priority')}</label>
                                 <select className="form-control" value={newTemplate.priority} onChange={this.handleChangeTaskPriority}>
@@ -390,7 +405,7 @@ class ModalAddTaskTemplate extends Component {
                                 </select>
                             </div>
                         </div>
-
+                        {/**Mô tả mẫu công việc */}
                         <div className="col-sm-6">
                             <div className={`form-group ${this.state.newTemplate.errorOnDescription===undefined?"":"has-error"}`} >
                                 <label className="control-label" htmlFor="inputDescriptionTaskTemplate" style={{ width: '100%', textAlign: 'left' }}>{translate('task_template.description')}*</label>
@@ -402,6 +417,7 @@ class ModalAddTaskTemplate extends Component {
                     
                     <div className="row">
                         <div className="col-sm-6">
+                            {/**Người chịu trách nhiệm mẫu công việc */}
                             <div className='form-group' >
                                 <label className="control-label">{translate('task_template.performer')}</label>
                                 
@@ -417,6 +433,7 @@ class ModalAddTaskTemplate extends Component {
                                     />
                                 }
                             </div>
+                            {/**Người phê duyệt mẫu công việc */}
                             <div className='form-group' >
                                 <label className="control-label">{translate('task_template.approver')}</label>
                                 {unitMembers &&
@@ -431,6 +448,7 @@ class ModalAddTaskTemplate extends Component {
                                     />
                                 }
                             </div>
+                            {/**Người hỗ trợ mẫu công việc */}
                             <div className='form-group' >
                                 <label className="ontrol-label">{translate('task_template.supporter')}</label>
                                 {allUnitsMember &&
@@ -445,6 +463,7 @@ class ModalAddTaskTemplate extends Component {
                                     />
                                 }
                             </div>
+                            {/**Người quan sát mẫu công việc */}
                             <div className='form-group' >
                                 <label className="control-label">{translate('task_template.observer')}</label>
                                 {allUnitsMember &&
@@ -462,6 +481,7 @@ class ModalAddTaskTemplate extends Component {
                         </div>
 
                         <div className="col-sm-6">
+                            {/**Công thức tính của mẫu công việc */}
                             <div className={`form-group ${this.state.newTemplate.errorOnFormula===undefined?"":"has-error"}`} >
                                 <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}*</label>
                                 <input type="text" className="form-control" id="inputFormula" placeholder="progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100*(1-p1/p2)" value={newTemplate.formula} onChange={this.handleTaskTemplateFormula} />
@@ -482,9 +502,11 @@ class ModalAddTaskTemplate extends Component {
                     </div>
 
                     <div className="row">
+                        {/**Các hoạt động trong mẫu công việc */}
                         <div className="col-sm-6">
                             <ActionForm  initialData ={taskActions} onDataChange={this.handleTaskActionsChange} />
                         </div>
+                        {/**Các thông tin cần có mẫu công việc */}
                         <div className="col-sm-6">
                             <InformationForm initialData ={taskInformations} onDataChange={this.handleTaskInformationsChange}/>
                         </div>

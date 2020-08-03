@@ -59,7 +59,7 @@ class ExportExcel extends Component {
     render() {
         const ExcelFile = ReactExport.ExcelFile;
         const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-        let { buttonName = "Xuất Báo cáo", exportData, style = { marginTop: 10 }, className = "btn btn-primary pull-right", title = "" } = this.state;
+        let { buttonName = "Xuất Báo cáo", exportData, style = {}, className = "btn btn-primary pull-right", title = "" } = this.props;
 
         if (exportData) {
             exportData = this.convertData(exportData);

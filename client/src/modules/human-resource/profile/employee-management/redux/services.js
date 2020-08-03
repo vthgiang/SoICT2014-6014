@@ -10,6 +10,7 @@ export const EmployeeService = {
     addNewEmployee,
     updateInformationEmployee,
     deleteEmployee,
+    importEmployees,
 }
 /**
  * Lấy danh sách nhân viên
@@ -64,5 +65,17 @@ function deleteEmployee(id) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/employees/${id}`,
         method: 'DELETE',
+    }, true, true, 'human_resource.profile.employee_management');
+}
+
+/**
+ * Import thông tin nhân viên
+ * @param {*} data : dữ liệu thông tin nhân viên cần import
+ */
+function importEmployees(data) {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/employees/import`,
+        method: 'POST',
+        data: data,
     }, true, true, 'human_resource.profile.employee_management');
 }

@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
+
 import { withTranslate } from 'react-redux-multilingual';
 
 import c3 from 'c3';
@@ -106,7 +107,6 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         }
     }
 
-    /** Select kind of point */
     handleSelectKindOfPoint = (value) => {
         if (Number(value) !== this.state.kindOfPoint) {
             this.setState(state => {
@@ -118,7 +118,6 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         }
     }
 
-    // Lọc và đếm số người có cùng điểm
     filterAndCountEmployeeWithTheSamePoint = (arrayPoint) => {
         let point = Array.from(new Set(arrayPoint));
         let employeeWithTheSamePoints, countEmployeeWithTheSamePoint = [];
@@ -128,8 +127,8 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         });
 
         point.map(x => {
-            var index = arrayPoint.indexOf(x);
-            var theSamePoints = [];
+            let index = arrayPoint.indexOf(x);
+            let theSamePoints = [];
 
             while (index !== -1) {
                 theSamePoints.push(index);
@@ -150,7 +149,6 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         return employeeWithTheSamePoints;
     }
 
-    // Thiết lập dataChart
     setDataColumnChart = () => {
         const { dashboardOrganizationalUnitKpi, translate } = this.props;
         let listEmployeeKpiSet, automaticPoint = [], employeePoint = [], approvedPoint = [];
@@ -167,7 +165,6 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
             })
         }
 
-        // Lấy dữ liệu các loại điểm mà this.state.kindOfPoint có
         if (this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC) {
             employeeWithTheSamePoints = this.filterAndCountEmployeeWithTheSamePoint(automaticPoint);
             textLabel = translate('kpi.organizational_unit.dashboard.statistic_kpi_unit.automatic_point');
@@ -255,7 +252,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
 
     render() {
         const { dashboardOrganizationalUnitKpi, translate } = this.props;
-        var listEmployeeKpiSet;
+        let listEmployeeKpiSet;
 
         if (dashboardOrganizationalUnitKpi.employeeKpiSets) {
             listEmployeeKpiSet = dashboardOrganizationalUnitKpi.employeeKpiSets

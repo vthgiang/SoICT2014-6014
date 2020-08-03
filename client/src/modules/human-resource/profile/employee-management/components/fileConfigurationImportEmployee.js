@@ -1,3 +1,4 @@
+// Cấu hình file import thông tin cơ bản của nhân viên
 export const configurationEmployeeInfo = {
     rowHeader: {
         description: "Số dòng tiêu đề của bảng",
@@ -5,11 +6,11 @@ export const configurationEmployeeInfo = {
     },
     sheets: {
         description: "Tên các sheet",
-        value: ["Sheet1"]
+        value: ["1.Nhân viên"]
     },
     employeeNumber: {
         columnName: "Mã số nhân viên",
-        description: "Tên tiêu đề ứng với mã số nhân viên",
+        description: "Tên tiêu đề ứng với 'Mã số nhân viên' ",
         value: "Mã số nhân viên"
     },
     fullName: {
@@ -233,7 +234,237 @@ export const configurationEmployeeInfo = {
         value: "Nơi lưu trữ hồ sơ"
     },
     file: {
-        fileName: 'templateImportEmployeeGeneralInfor',
-        fileUrl: '/upload/human-resource/templateImport/templateImportSalary.xlsx'
+        fileName: 'templateImportEmployeeInfor',
+        fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
+    }
+}
+
+// Cấu hình file import kinh nghiệm làm việc của nhân viên
+export const configurationExperience = {
+    rowHeader: {
+        description: "Số dòng tiêu đề của bảng",
+        value: 1
+    },
+    sheets: {
+        description: "Tên các sheet",
+        value: ["2.HS Nhân viên - Kinh nghiệm"]
+    },
+    employeeNumber: {
+        columnName: "Mã số nhân viên",
+        description: "Tên tiêu đề ứng với 'Mã số nhân viên' ",
+        value: "Mã số nhân viên"
+    },
+    fullName: {
+        columnName: "Họ và tên",
+        description: "Tên tiêu để ứng với họ và tên",
+        value: "Họ và tên"
+    },
+    startDate: {
+        columnName: "Từ tháng/năm",
+        description: "Tên tiêu để ứng với từ tháng/năm",
+        value: "Từ tháng/năm"
+    },
+    endDate: {
+        columnName: "Đến tháng/năm",
+        description: "Tên tiêu để ứng với đến tháng/năm",
+        value: "Đến tháng/năm"
+    },
+    company: {
+        columnName: "Đơn vị công tác",
+        description: "Tên tiêu để ứng với đơn vị công tác",
+        value: "Đơn vị công tác"
+    },
+    position: {
+        columnName: "Chức vụ",
+        description: "Tên tiêu để ứng với chức vụ",
+        value: "Chức vụ"
+    },
+    file: {
+        fileName: 'templateImportEmployeeInfor',
+        fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
+    }
+}
+
+// Cấu hình file import thông tin bằng cấp
+export const configurationDegree = {
+    rowHeader: {
+        description: "Số dòng tiêu đề của bảng",
+        value: 1
+    },
+    sheets: {
+        description: "Tên các sheet",
+        value: ["3.HS Nhân viên - Bằng cấp"]
+    },
+    employeeNumber: {
+        columnName: "Mã số nhân viên",
+        description: "Tên tiêu đề ứng với 'Mã số nhân viên' ",
+        value: "Mã số nhân viên"
+    },
+    fullName: {
+        columnName: "Họ và tên",
+        description: "Tên tiêu để ứng với họ và tên",
+        value: "Họ và tên"
+    },
+    name: {
+        columnName: "Tên bằng cấp",
+        description: "Tên tiêu để ứng với tên bằng cấp",
+        value: "Tên bằng cấp"
+    },
+    issuedBy: {
+        columnName: "Nơi đào tạo",
+        description: "Tên tiêu để ứng với nơi đào tạo",
+        value: "Nơi đào tạo"
+    },
+    year: {
+        columnName: "Năm tốt nghiệp",
+        description: "Tên tiêu để ứng với năm tốt nghiệp",
+        value: "Năm tốt nghiệp"
+    },
+    degreeType: {
+        columnName: "Xếp loại",
+        description: "Tên tiêu để ứng với xếp loại",
+        value: "Xếp loại"
+    },
+    file: {
+        fileName: 'templateImportEmployeeInfor',
+        fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
+    }
+}
+
+// Cấu hình file import thông tin chứng chỉ
+export const configurationCertificate = {
+    rowHeader: {
+        description: "Số dòng tiêu đề của bảng",
+        value: 1
+    },
+    sheets: {
+        description: "Tên các sheet",
+        value: ["4.HS Nhân viên - Chứng chỉ"]
+    },
+    employeeNumber: {
+        columnName: "Mã số nhân viên",
+        description: "Tên tiêu đề ứng với 'Mã số nhân viên' ",
+        value: "Mã số nhân viên"
+    },
+    fullName: {
+        columnName: "Họ và tên",
+        description: "Tên tiêu để ứng với họ và tên",
+        value: "Họ và tên"
+    },
+    name: {
+        columnName: "Tên chứng chỉ",
+        description: "Tên tiêu để ứng với tên chứng chỉ",
+        value: "Tên chứng chỉ"
+    },
+    issuedBy: {
+        columnName: "Nơi cấp",
+        description: "Tên tiêu để ứng với nơi cấp",
+        value: "Nơi cấp"
+    },
+    startDate: {
+        columnName: "Ngày cấp",
+        description: "Tên tiêu để ứng với ngày cấp",
+        value: "Ngày cấp"
+    },
+    endDate: {
+        columnName: "Ngày hết hạn",
+        description: "Tên tiêu để ứng với ngày hết hạn",
+        value: "Ngày hết hạn"
+    },
+    file: {
+        fileName: 'templateImportEmployeeInfor',
+        fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
+    }
+}
+
+// Cấu hình file import hợp đồng lao động
+export const configurationContract = {
+    rowHeader: {
+        description: "Số dòng tiêu đề của bảng",
+        value: 1
+    },
+    sheets: {
+        description: "Tên các sheet",
+        value: ["5.HS Nhân viên - Hợp đồng"]
+    },
+    employeeNumber: {
+        columnName: "Mã số nhân viên",
+        description: "Tên tiêu đề ứng với 'Mã số nhân viên' ",
+        value: "Mã số nhân viên"
+    },
+    fullName: {
+        columnName: "Họ và tên",
+        description: "Tên tiêu để ứng với họ và tên",
+        value: "Họ và tên"
+    },
+    name: {
+        columnName: "Tên hợp đồng",
+        description: "Tên tiêu để ứng với tên hợp đồng",
+        value: "Tên hợp đồng"
+    },
+    contractType: {
+        columnName: "Loại hợp đồng",
+        description: "Tên tiêu để ứng với loại hợp đồng",
+        value: "Loại hợp đồng"
+    },
+    startDate: {
+        columnName: "Ngày có hiệu lực",
+        description: "Tên tiêu để ứng với ngày có hiệu lực",
+        value: "Ngày có hiệu lực"
+    },
+    endDate: {
+        columnName: "Ngày hết hạn",
+        description: "Tên tiêu để ứng với ngày hết hạn",
+        value: "Ngày hết hạn"
+    },
+    file: {
+        fileName: 'templateImportEmployeeInfor',
+        fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
+    }
+}
+
+// Cấu hình file import tài liệu đính kèm
+export const configurationFile = {
+    rowHeader: {
+        description: "Số dòng tiêu đề của bảng",
+        value: 1
+    },
+    sheets: {
+        description: "Tên các sheet",
+        value: ["6.HS Nhân viên - Tài liệu"]
+    },
+    employeeNumber: {
+        columnName: "Mã số nhân viên",
+        description: "Tên tiêu đề ứng với 'Mã số nhân viên' ",
+        value: "Mã số nhân viên"
+    },
+    fullName: {
+        columnName: "Họ và tên",
+        description: "Tên tiêu để ứng với họ và tên",
+        value: "Họ và tên"
+    },
+    name: {
+        columnName: "Tên tài liệu",
+        description: "Tên tiêu để ứng với tên tài liệu",
+        value: "Tên tài liệu"
+    },
+    description: {
+        columnName: "Mô tả",
+        description: "Tên tiêu để ứng với mô tả",
+        value: "Mô tả"
+    },
+    number: {
+        columnName: "Số lượng",
+        description: "Tên tiêu để ứng với số lượng",
+        value: "Số lượng"
+    },
+    status: {
+        columnName: "Trạng thái",
+        description: "Tên tiêu để ứng với trạng thái",
+        value: "Trạng thái"
+    },
+    file: {
+        fileName: 'templateImportEmployeeInfor',
+        fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
     }
 }

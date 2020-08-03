@@ -151,7 +151,8 @@ exports.showAssetType = (req, res) => {
     console.log("FSDKFJSDLKFJDS")
 };
 
-exports.editAssetType = async(req, res) => {
+exports.editAssetType = async (req, res) => {
+    console.log(req.params.id, req.body);
     try {
         const type = await AssetTypeService.editAssetType(req.params.id, req.body);
         

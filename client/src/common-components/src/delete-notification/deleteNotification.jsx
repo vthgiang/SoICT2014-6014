@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 import Swal from 'sweetalert2';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
