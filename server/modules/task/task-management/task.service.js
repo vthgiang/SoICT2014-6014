@@ -189,7 +189,11 @@ exports.getTaskById = async (id, userId) => {
             }
         }
     }
-    if (!flag) {    // Trưởng đơn vị được phép xem thông tin công việc
+    if (task.creator._id.equals(userId)) {
+        flag = 1;
+    }
+
+    if (!flag) {// Trưởng đơn vị được phép xem thông tin công việc
 
         // Tìm danh sách các role mà user kế thừa phân quyền
         let role = await UserRole.find({ userId: userId});
@@ -202,6 +206,8 @@ exports.getTaskById = async (id, userId) => {
             let roles = await Role.findById(listRole[i]);
             company[i] = roles.company;
         }
+
+        // Tìm cây đơn vị mà đơn vị gốc có userId có role deans
         let tree = [];
         let k = 0;
         for (let i = 0; i < listRole.length; i++){
@@ -213,6 +219,8 @@ exports.getTaskById = async (id, userId) => {
                 k++;
             }
         }
+
+        // Duyệt cây đơn vị, kiểm tra xem mỗi đơn vị có id trùng với id của phòng ban công việc
         for (let i = 0; i < listRole.length; i++){
             let rol = listRole[i];
             if (!flag){
@@ -228,9 +236,7 @@ exports.getTaskById = async (id, userId) => {
             }   
         }
     }
-    if (task.creator._id.equals(userId)) {
-        flag = 1;
-    }
+    
     if (flag === 0) {
         return {
             "info": true
