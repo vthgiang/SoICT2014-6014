@@ -9,7 +9,7 @@ import { DataTableSetting, PaginateBar, SelectBox } from '../../../../common-com
 import { TaskReportActions } from '../redux/actions';
 import { TaskReportCreateForm } from './taskReportCreateForm';
 import { TaskReportEditForm } from './taskReportEditForm';
-import { TaskReportViewForm } from './taskReportViewForm';
+import { TaskReportDetailForm } from './taskReportDetailForm';
 
 class TaskReportManager extends Component {
     constructor(props) {
@@ -30,11 +30,12 @@ class TaskReportManager extends Component {
      * Bắt sự kiện click nút Edit
      * @param {*} report 
      */
-    handleEdit = async (report) => {
+    handleEdit = async (idReport) => {
+        console.log('idTaskReport=>', idReport);
         await this.setState(state => {
             return {
                 ...state,
-                currentRow: report
+                currentEditRow: idReport
             }
         });
         await window.$('#modal-edit-report').modal('show'); // hiển thị modal edit
@@ -119,7 +120,7 @@ class TaskReportManager extends Component {
                 currentViewRow: taskReportId
             }
         })
-        window.$('#modal-view-taskreport').modal('show');
+        await window.$('#modal-detail-taskreport').modal('show');
     }
     /**
      * Bắt sự kiện setting số dòng hiện thị trên một trang
@@ -144,12 +145,8 @@ class TaskReportManager extends Component {
             <div className="box">
                 <div className="box-body qlcv" >
                     {
-                        this.state.currentRow !== undefined &&
-                        <TaskReportEditForm
-                            _id={this.state.currentRow._id}
-                            nameTaskReport={this.state.currentRow.name}
-                            descriptionTaskReport={this.state.currentRow.description}
-                        />
+                        this.state.currentEditRow !== undefined &&
+                        <TaskReportEditForm taskReportId={this.state.currentEditRow} />
                     }
 
                     {/* Thêm mới bao cáo */}
@@ -158,7 +155,8 @@ class TaskReportManager extends Component {
                     </div>
                     <TaskReportCreateForm />
 
-                    <TaskReportViewForm />
+                    {/* <TaskReportViewForm taskReportId={this.state.currentViewRow} /> */}
+                    <TaskReportDetailForm taskReportId={this.state.currentViewRow} />
 
                     {/* search form */}
                     <div className="form-inline" style={{ marginBottom: '2px' }}>
@@ -177,7 +175,7 @@ class TaskReportManager extends Component {
                         <div className="form-group">
                             <label className="form-control-static">Sắp xếp theo</label>
                             <SelectBox
-                                id="select-sort-date22"
+                                id={`sort-date33333`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 items={
@@ -224,7 +222,7 @@ class TaskReportManager extends Component {
                         </thead>
                         <tbody>
                             {
-                                (reports.listTaskReport.length !== 0 && typeof reports.listTaskReport !== 'undefined') ? reports.listTaskReport.map(item => (
+                                (reports && reports.listTaskReport && reports.listTaskReport.length !== 0 && typeof reports.listTaskReport !== 'undefined') ? reports.listTaskReport.map(item => (
 
                                     <tr key={item._id}>
                                         <td>{item.name}</td>
@@ -233,7 +231,7 @@ class TaskReportManager extends Component {
                                         <td>{item.createdAt.slice(0, 10)}</td>
                                         <td style={{ textAlign: 'center' }}>
                                             <a onClick={() => this.handleView(item._id)}><i className="material-icons">visibility</i></a>
-                                            <a onClick={() => this.handleEdit(item)} className="edit text-yellow" style={{ width: '5px' }} title={translate('report_manager.edit')}><i className="material-icons">edit</i></a>
+                                            <a onClick={() => this.handleEdit(item._id)} className="edit text-yellow" style={{ width: '5px' }} title={translate('report_manager.edit')}><i className="material-icons">edit</i></a>
                                             <a onClick={() => this.handleDelete(item._id, item.name)} className="delete" title={translate('report_manager.title_delete')}>
                                                 <i className="material-icons">delete</i>
                                             </a>
@@ -262,6 +260,7 @@ const actionCreators = {
     getTaskReports: TaskReportActions.getTaskReports,
     deleteTaskReport: TaskReportActions.deleteTaskReport,
     getDepartment: UserActions.getDepartmentOfUser,
+    getTaskReportById: TaskReportActions.getTaskReportById,
 
 }
 

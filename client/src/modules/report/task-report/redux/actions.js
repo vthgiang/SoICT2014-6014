@@ -1,8 +1,8 @@
-import {TaskReportConstants} from './constants';
-import {TaskReportServices} from './services';
+import { TaskReportConstants } from './constants';
+import { TaskReportServices } from './services';
 
 export const TaskReportActions = {
-    getTaskReports,   
+    getTaskReports,
     getTaskReportById,
     deleteTaskReport,
     createTaskReport,
@@ -57,17 +57,17 @@ function deleteTaskReport(id) {
             type: TaskReportConstants.DELETE_TASK_REPORT_REQUEST
         });
         TaskReportServices.deleteTaskReport(id)
-        .then(res => {
-            dispatch({
-                type: TaskReportConstants.DELETE_TASK_REPORT_SUCCESS,
-                payload: res.data.content,
+            .then(res => {
+                dispatch({
+                    type: TaskReportConstants.DELETE_TASK_REPORT_SUCCESS,
+                    payload: res.data.content,
+                })
             })
-        })
-        .catch(err => {
-            dispatch({
-                type: TaskReportConstants.DELETE_TASK_REPORT_FAILURE,
+            .catch(err => {
+                dispatch({
+                    type: TaskReportConstants.DELETE_TASK_REPORT_FAILURE,
+                })
             })
-        })
     }
 }
 
@@ -78,18 +78,18 @@ function createTaskReport(data) {
             type: TaskReportConstants.CREATE_TASK_REPORT_REQUEST
         });
         TaskReportServices.createTaskReport(data)
-        .then(res => {
-            dispatch({
-                type: TaskReportConstants.CREATE_TASK_REPORT_SUCCESS,
-                payload: res.data.content
+            .then(res => {
+                dispatch({
+                    type: TaskReportConstants.CREATE_TASK_REPORT_SUCCESS,
+                    payload: res.data.content
+                })
             })
-        })
-        .catch(err => {
-            dispatch({
-                type: TaskReportConstants.CREATE_TASK_REPORT_FAILURE,
-                error: err
-            });
-        })
+            .catch(err => {
+                dispatch({
+                    type: TaskReportConstants.CREATE_TASK_REPORT_FAILURE,
+                    error: err
+                });
+            })
     }
 }
 
@@ -100,17 +100,17 @@ function editTaskReport(id, data) {
             type: TaskReportConstants.EDIT_TASK_REPORT_REQUEST
         });
         TaskReportServices.editTaskReport(id, data)
-        .then(res => {
-            dispatch({
-                type: TaskReportConstants.EDIT_TASK_REPORT_SUCCESS,
-                payload: res.data.content
-            });
-        })
-        .catch(err => {
-            dispatch({
-                type: TaskReportConstants.EDIT_TASK_REPORT_FAILURE,
-                error: err
-            });
-        })
+            .then(res => {
+                dispatch({
+                    type: TaskReportConstants.EDIT_TASK_REPORT_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(err => {
+                dispatch({
+                    type: TaskReportConstants.EDIT_TASK_REPORT_FAILURE,
+                    error: err
+                });
+            })
     }
 }

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti } from '../../../../../common-components';
+import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti, ExportExcel } from '../../../../../common-components';
 
 import { EmployeeCreateForm, EmployeeDetailForm, EmployeeEditFrom, EmployeeImportForm } from './combinedContent';
 
@@ -41,19 +41,24 @@ class EmployeeManagement extends Component {
     }
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
 
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else return [day, month, year].join('-');
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        } else {
+            return date
+        }
+
     }
     // Function bắt sự kiện thêm lương nhân viên bằng tay
     createEmployee = () => {
@@ -157,12 +162,289 @@ class EmployeeManagement extends Component {
         });
         this.props.getAllEmployee(this.state);
     }
-    render() {
-        const { importEmployee } = this.state;
-        var { employeesManager, translate, department } = this.props;
-        // const { list } = this.props.department;
 
-        var lists, listPosition = [], list = department.list;
+    // Function chyển đổi dữ liệu thông tin nhân viên thành dạng dữ liệu dùng export
+    convertDataToExportData = (data) => {
+        let dataSheet1 = data.map((x, index) => {
+            let organizationalUnits = x.organizationalUnits.map(y => y.name);
+            let position = x.roles.map(y => y.roleId.name);
+            let employee = x.employees[0];
+            return {
+                STT: index + 1,
+                employeeNumber: employee.employeeNumber,
+                fullName: employee.fullName,
+                organizationalUnits: organizationalUnits.join(', '),
+                position: position.join(', '),
+                birthdate: this.formatDate(employee.birthdate),
+                gender: employee.gender,
+                employeeTimesheetId: employee.employeeTimesheetId,
+                identityCardNumber: employee.identityCardNumber,
+                identityCardDate: this.formatDate(employee.identityCardDate),
+                identityCardAddress: employee.identityCardAddress,
+                birthplace: employee.birthplace,
+                permanentResidence: employee.permanentResidence,
+                temporaryResidence: employee.temporaryResidence,
+                maritalStatus: employee.maritalStatus,
+                status: employee.status,
+                startingDate: this.formatDate(employee.startingDate),
+                leavingDate: this.formatDate(employee.leavingDate),
+                emailInCompany: employee.emailInCompany,
+                taxNumber: employee.taxNumber,
+                taxRepresentative: employee.taxRepresentative,
+                taxDateOfIssue: this.formatDate(employee.taxDateOfIssue),
+                taxAuthority: employee.taxAuthority,
+                ethnic: employee.ethnic,
+                religion: employee.religion,
+                nationality: employee.nationality,
+                educationalLevel: employee.educationalLevel,
+                foreignLanguage: employee.foreignLanguage,
+                professionalSkill: employee.professionalSkill,
+                phoneNumber: employee.phoneNumber,
+                phoneNumber2: employee.phoneNumber2,
+                personalEmail: employee.personalEmail,
+                personalEmail2: employee.personalEmail2,
+                homePhone: employee.homePhone,
+                emergencyContactPerson: employee.emergencyContactPerson,
+                relationWithEmergencyContactPerson: employee.relationWithEmergencyContactPerson,
+                emergencyContactPersonAddress: employee.emergencyContactPersonAddress,
+                emergencyContactPersonPhoneNumber: employee.emergencyContactPersonPhoneNumber,
+                emergencyContactPersonHomePhone: employee.emergencyContactPersonHomePhone,
+                emergencyContactPersonEmail: employee.emergencyContactPersonEmail,
+                atmNumber: employee.atmNumber,
+                bankName: employee.bankName,
+                bankAddress: employee.bankAddress,
+                healthInsuranceNumber: employee.healthInsuranceNumber,
+                healthInsuranceStartDate: this.formatDate(employee.healthInsuranceStartDate),
+                healthInsuranceEndDate: this.formatDate(employee.healthInsuranceEndDate),
+                socialInsuranceNumber: employee.socialInsuranceNumber,
+                archivedRecordNumber: employee.archivedRecordNumber,
+            };
+
+        })
+        let dataSheet2 = [], dataSheet3 = [], dataSheet4 = [], dataSheet5 = [], dataSheet6 = [];
+        data.forEach(x => {
+            let employee = x.employees[0];
+            let experiences = employee.experiences.map(x => {
+                return {
+                    ...x,
+                    employeeNumber: employee.employeeNumber,
+                    fullName: employee.fullName,
+                    startDate: this.formatDate(x.startDate),
+                    endDate: this.formatDate(x.endDate),
+                }
+            });
+            let degrees = employee.degrees.map(x => {
+                return {
+                    ...x,
+                    employeeNumber: employee.employeeNumber,
+                    fullName: employee.fullName
+                }
+            });
+            let certificates = employee.certificates.map(x => {
+                return {
+                    ...x,
+                    employeeNumber: employee.employeeNumber,
+                    fullName: employee.fullName,
+                    startDate: this.formatDate(x.startDate),
+                    endDate: this.formatDate(x.endDate),
+                }
+            });
+            let contracts = employee.contracts.map(x => {
+                return {
+                    ...x,
+                    employeeNumber: employee.employeeNumber,
+                    fullName: employee.fullName,
+                    startDate: this.formatDate(x.startDate),
+                    endDate: this.formatDate(x.endDate),
+                }
+            });
+            let files = employee.files.map(x => {
+                return {
+                    ...x,
+                    employeeNumber: employee.employeeNumber,
+                    fullName: employee.fullName
+                }
+            });
+            dataSheet2 = dataSheet2.concat(experiences);
+            dataSheet3 = dataSheet3.concat(degrees);
+            dataSheet4 = dataSheet4.concat(certificates);
+            dataSheet5 = dataSheet5.concat(contracts);
+            dataSheet6 = dataSheet6.concat(files);
+        });
+
+        dataSheet2 = dataSheet2.map((x, index) => {
+            return { STT: index + 1, ...x }
+        });
+        dataSheet3 = dataSheet3.map((x, index) => {
+            return { STT: index + 1, ...x }
+        });
+        dataSheet4 = dataSheet4.map((x, index) => {
+            return { STT: index + 1, ...x }
+        });
+        dataSheet5 = dataSheet5.map((x, index) => {
+            return { STT: index + 1, ...x }
+        });
+        dataSheet6 = dataSheet6.map((x, index) => {
+            return { STT: index + 1, ...x }
+        });
+
+        let exportData = {
+            fileName: "Bảng theo dõi thông tin nhân viên",
+            dataSheets: [
+                {
+                    sheetName: "1.Nhân viên",
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "employeeNumber", value: "Mã số nhân viên" },
+                                { key: "fullName", value: "Họ và tên" },
+                                { key: "organizationalUnits", value: "Phòng ban" },
+                                { key: "position", value: "Chức vụ" },
+                                { key: "birthdate", value: "Ngày sinh" },
+                                { key: "gender", value: "Giới tính" },
+                                { key: "employeeTimesheetId", value: "Mã số chấm công" },
+                                { key: "identityCardNumber", value: "Số chứng minh thư" },
+                                { key: "identityCardDate", value: "Ngày cấp chứng minh thư" },
+                                { key: "identityCardAddress", value: "Nơi cấp chứng minh thư" },
+                                { key: "birthplace", value: "Nơi sinh" },
+                                { key: "permanentResidence", value: "Hộ khẩu thưởng trú" },
+                                { key: "temporaryResidence", value: "Nơi ở hiện tại" },
+                                { key: "maritalStatus", value: "Tình trạng hôn nhân" },
+                                { key: "status", value: "Tình trạng lao động" },
+                                { key: "startingDate", value: "Ngày bắt đầu làm việc" },
+                                { key: "leavingDate", value: "Ngày nghỉ việc" },
+                                { key: "emailInCompany", value: "Email công ty" },
+                                { key: "taxNumber", value: "Mã số thuế thu nhập cá nhân" },
+                                { key: "taxRepresentative", value: "Đại diện của người nộp thuế" },
+                                { key: "taxDateOfIssue", value: "Ngày cấp mã số thuế" },
+                                { key: "taxAuthority", value: "Cơ quan quản lý thuế" },
+                                { key: "ethnic", value: "Dân tộc" },
+                                { key: "religion", value: "Tôn giáo" },
+                                { key: "nationality", value: "Quốc tịch" },
+                                { key: "educationalLevel", value: "Trình độ văn hoá" },
+                                { key: "foreignLanguage", value: "Trình độ ngoại ngữ" },
+                                { key: "professionalSkill", value: "Trình độ chuyên môn" },
+                                { key: "phoneNumber", value: "Điện thoại di động 1" },
+                                { key: "phoneNumber2", value: "Điện thoại di động 2" },
+                                { key: "personalEmail", value: "Email cá nhân 1" },
+                                { key: "personalEmail2", value: "Email cá nhân 2" },
+                                { key: "homePhone", value: "Điện thoại nhà riêng" },
+                                { key: "emergencyContactPerson", value: "Người liên hệ khẩn cấp" },
+                                { key: "relationWithEmergencyContactPerson", value: "Quan hệ với người liên hệ khẩn cấp" },
+                                { key: "emergencyContactPersonAddress", value: "Địa chỉ người liên hệ khẩn cấp" },
+                                { key: "emergencyContactPersonPhoneNumber", value: "Điện thoại di động người liên hệ khẩn cấp" },
+                                { key: "emergencyContactPersonHomePhone", value: "Điện thoại nhà riêng người liên hệ khẩn cấp" },
+                                { key: "emergencyContactPersonEmail", value: "Email người liên hệ khẩn cấp" },
+                                { key: "atmNumber", value: "Số tài khoản ngân hàng" },
+                                { key: "bankName", value: "Tên ngân hàng" },
+                                { key: "bankAddress", value: "Chi nhánh ngân hàng" },
+                                { key: "healthInsuranceNumber", value: "Mã số BHYT" },
+                                { key: "healthInsuranceStartDate", value: "Ngày BHYT có hiệu lực" },
+                                { key: "healthInsuranceEndDate", value: "Ngày BHYT hết hạn" },
+                                { key: "socialInsuranceNumber", value: "Mã số BHXH" },
+                                { key: "archivedRecordNumber", value: "Nơi lưu trữ hồ sơ" },
+                            ],
+                            data: dataSheet1
+                        }
+                    ]
+                },
+                {
+                    sheetName: '2.HS Nhân viên - Kinh nghiệm',
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "employeeNumber", value: "Mã số nhân viên" },
+                                { key: "fullName", value: "Họ và tên" },
+                                { key: "startDate", value: "Từ tháng/năm" },
+                                { key: "endDate", value: "Đến tháng/năm" },
+                                { key: "company", value: "Đơn vị công tác" },
+                                { key: "position", value: "Chức vụ" },
+                            ],
+                            data: dataSheet2
+                        }
+                    ]
+                },
+                {
+                    sheetName: '3.HS Nhân viên - Bằng cấp',
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "employeeNumber", value: "Mã số nhân viên" },
+                                { key: "fullName", value: "Họ và tên" },
+                                { key: "name", value: "Tên bằng cấp" },
+                                { key: "issuedBy", value: "Nơi đào tạo" },
+                                { key: "year", value: "Năm tốt nghiệp" },
+                                { key: "degreeType", value: "Xếp loại" },
+                            ],
+                            data: dataSheet3
+                        }
+                    ]
+                },
+                {
+                    sheetName: '4.HS Nhân viên - Chứng chỉ',
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "employeeNumber", value: "Mã số nhân viên" },
+                                { key: "fullName", value: "Họ và tên" },
+                                { key: "name", value: "Tên chứng chỉ" },
+                                { key: "issuedBy", value: "Nơi cấp" },
+                                { key: "startDate", value: "Ngày cấp" },
+                                { key: "endDate", value: "Ngày hết hạn" },
+                            ],
+                            data: dataSheet4
+                        }
+                    ]
+                },
+                {
+                    sheetName: '5.HS Nhân viên - Hợp đồng',
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "employeeNumber", value: "Mã số nhân viên" },
+                                { key: "fullName", value: "Họ và tên" },
+                                { key: "name", value: "Tên hợp đồng" },
+                                { key: "contractType", value: "Loại hợp đồng" },
+                                { key: "startDate", value: "Ngày có hiệu lực" },
+                                { key: "endDate", value: "Ngày hết hạn" },
+                            ],
+                            data: dataSheet5
+                        }
+                    ]
+                },
+                {
+                    sheetName: '6.HS Nhân viên - Tài liệu',
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "employeeNumber", value: "Mã số nhân viên" },
+                                { key: "fullName", value: "Họ và tên" },
+                                { key: "name", value: "Tên tài liệu" },
+                                { key: "description", value: "Mô tả" },
+                                { key: "number", value: "Số lượng" },
+                                { key: "status", value: "Trạng thái" },
+                            ],
+                            data: dataSheet6
+                        }
+                    ]
+                }
+            ]
+        }
+        return exportData
+    }
+
+
+    render() {
+        const { importEmployee, limit, page } = this.state;
+        const { employeesManager, translate, department } = this.props;
+
+        let lists, listPosition = [], list = department.list;
         if (this.state.organizationalUnits !== null) {
             let organizationalUnits = this.state.organizationalUnits;
             organizationalUnits.forEach(u => {
@@ -180,10 +462,13 @@ class EmployeeManagement extends Component {
         if (employeesManager.listEmployees) {
             lists = employeesManager.listEmployees;
         }
-        var pageTotal = ((employeesManager.totalList % this.state.limit) === 0) ?
-            parseInt(employeesManager.totalList / this.state.limit) :
-            parseInt((employeesManager.totalList / this.state.limit) + 1);
-        var page = parseInt((this.state.page / this.state.limit) + 1);
+
+        let exportData = this.convertDataToExportData(lists);
+
+        let pageTotal = ((employeesManager.totalList % limit) === 0) ?
+            parseInt(employeesManager.totalList / limit) :
+            parseInt((employeesManager.totalList / limit) + 1);
+        let currentPage = parseInt((page / limit) + 1);
         return (
             <div className="box">
                 <div className="box-body qlcv">
@@ -195,10 +480,8 @@ class EmployeeManagement extends Component {
                                 <li><a style={{ cursor: 'pointer' }} title={'Thêm một thông tin nhân viên'} onClick={this.createEmployee}>{'Thêm bằng tay'}</a></li>
                             </ul>
                         </div>
+                        <ExportExcel id="export-employee" exportData={exportData} style={{ marginRight: 15 }} />
                     </div>
-
-                    {/* <EmployeeImportForm />
-                    <EmployeeCreateForm /> */}
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.unit')}</label>
@@ -313,7 +596,7 @@ class EmployeeManagement extends Component {
                         (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
 
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
                 <EmployeeCreateForm />
                 {importEmployee && <EmployeeImportForm />}

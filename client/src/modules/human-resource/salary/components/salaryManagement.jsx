@@ -208,7 +208,7 @@ class SalaryManagement extends Component {
                                 { key: "employeeNumber", value: "Mã số nhân viên" },
                                 { key: "fullName", value: "Họ và tên" },
                                 { key: "organizationalUnits", value: "Phòng ban" },
-                                { key: "position", value: "chức vụ" },
+                                { key: "position", value: "Chức vụ" },
                                 { key: "gender", value: "Giới tính" },
                                 { key: "birthdate", value: "Ngày sinh" },
                                 { key: "status", value: "Tình trạng lao động" },
