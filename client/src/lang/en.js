@@ -1465,6 +1465,7 @@ export default {
             number: 'Number',
             date: 'Date',
             value_set: 'Value set',
+            code : 'Code',
             view_detail_of_this_task_template: 'View detail of this task',
             edit_this_task_template: 'Edit this task template',
             delete_this_task_template: 'Delete this task template',
@@ -1899,7 +1900,7 @@ export default {
                         request_approval: 'Request for approval',
                         cancel_request_approval: 'Cancel request for approval',
                         not_initialize_organiztional_unit_kpi :'Cannot initialize kpi on this month bacause your unit has not initialized kpi on this month yet, please contact the manager of your unit', 
-                        not_initialize_organiztional_unit_kpi :'Cannot initialize kpi on this month bacause your unit has not activated kpi on this month yet, please contact the manager of your unit',
+                        not_activate_organiztional_unit_kpi :'Cannot initialize kpi on this month bacause your unit has not activated kpi on this month yet, please contact the manager of your unit',
 
                         // Nhóm dành cho các trạng thái tập KPI
                         kpi_status: {
@@ -1965,6 +1966,12 @@ export default {
                             content: 'This is the default target (if necessary, weights can be corrected)',
                             delete: 'Delete'
                         },
+                        handle_populate_info_null: {
+                            error_kpi_approver_null: 'Error! The approver of this KPI set is not exist or was deleted',
+                            error_kpi_organizational_unit_null: 'Error! The organizational unit of this KPI set is not exist or was deleted',
+                            error_kpi_parent_target_null :'Error! The parent target of this KPI set is not exist or was deleted',
+                            error_kpi_targets_list_null :'Error! The list targets of this KPI set is not exist or was deleted',
+                        }
                     },
 
                     create_employee_kpi_modal: { // Module con

@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Swal from 'sweetalert2';
-import { managerKpiActions } from '../redux/actions';
-import { ErrorLabel, DatePicker, DialogModal } from '../../../../../common-components';
+import { withTranslate } from 'react-redux-multilingual';
+
 import {
     getStorage
 } from '../../../../../config';
-import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
+
+import { DatePicker, DialogModal } from '../../../../../common-components';
+
+import { managerKpiActions } from '../redux/actions';
 
 
 var translate ='';
@@ -18,7 +21,7 @@ class ModalCopyKPIPersonal extends Component {
             kpipersonal: {
                 organizationalUnit: "",
                 time: this.formatDate(Date.now()),
-                creator: "" //localStorage.getItem("id")
+                creator: "" 
 
             },
         };
@@ -37,18 +40,17 @@ class ModalCopyKPIPersonal extends Component {
         return [month, year].join('-');
     }
     handleNewDateChange = (value) => {
-        // var value = e.target.value;
         this.setState(state => {
             return {
                 ...state,
-                //errorOnDate: this.validateDate(value),
                 NewDate: value,
             }
         });
 
     }
+
+    /**Gửi req khởi tạo KPI tháng mới từ KPi tháng này */
     handleSubmit = async (id, oldkpipersonal, listkpipersonal, idunit) => {
-        // event.preventDefault();
         var idcreator = getStorage("userId");
         await this.setState(state => {
             return {
@@ -125,10 +127,7 @@ class ModalCopyKPIPersonal extends Component {
             }
         }
     }
-    save = () => {
-        let { listkpipersonal, kpipersonal, idunit , id} = this.props;
-        this.handleSubmit(id, kpipersonal, listkpipersonal, idunit)
-    }
+    
     render() {
         const { NewDate, errorOnDate } = this.state;
         var { listkpipersonal, kpipersonal } = this.props;
@@ -140,11 +139,15 @@ class ModalCopyKPIPersonal extends Component {
                 func={this.save}
                 closeOnSave={false}
             >
+
+                {/**Đơn vị của KPI tháng mới */}
                 <div className="form-group">
                     <label className="col-sm-5">{translate('kpi.organizational_unit.management.copy_modal.organizational_unit')}:</label>
                     <label className="col-sm-8" style={{ fontWeight: "400", marginLeft: "-14.5%" }}>{kpipersonal && kpipersonal.organizationalUnit.name}</label>
                 </div>
                 <div className="form-group">
+
+                    {/**Tháng mới cần khởi tạo KPI */}
                     <label className="col-sm-2">{translate('kpi.organizational_unit.management.copy_modal.month')}:</label>
                     <DatePicker
                         id="new_date"
@@ -152,6 +155,8 @@ class ModalCopyKPIPersonal extends Component {
                         onChange={this.handleNewDateChange}
                         dateFormat="month-year"
                     />
+
+                    {/**Danh sách các mục tiêu */}
                     <div className="form-group" >
                         <label className="col-sm-12">{translate('kpi.organizational_unit.management.copy_modal.list_target')}:</label>
                         <ul>

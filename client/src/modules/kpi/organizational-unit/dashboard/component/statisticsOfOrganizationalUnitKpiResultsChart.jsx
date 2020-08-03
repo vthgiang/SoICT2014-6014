@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
+
 import { withTranslate } from 'react-redux-multilingual';
 
 import c3 from 'c3';
@@ -126,8 +127,8 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         });
 
         point.map(x => {
-            var index = arrayPoint.indexOf(x);
-            var theSamePoints = [];
+            let index = arrayPoint.indexOf(x);
+            let theSamePoints = [];
 
             while (index !== -1) {
                 theSamePoints.push(index);
@@ -251,7 +252,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
 
     render() {
         const { dashboardOrganizationalUnitKpi, translate } = this.props;
-        var listEmployeeKpiSet;
+        let listEmployeeKpiSet;
 
         if (dashboardOrganizationalUnitKpi.employeeKpiSets) {
             listEmployeeKpiSet = dashboardOrganizationalUnitKpi.employeeKpiSets

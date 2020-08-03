@@ -230,6 +230,8 @@ class ModalCreateTaskProcess extends Component {
          nameProcess: this.state.processName,
          description: this.state.processDescription,
          creator: this.state.userId,
+         viewer: this.state.viewer,
+         manager: this.state.manager,
          xmlDiagram: this.state.xmlDiagram,
          infoTask: this.state.info
       }
@@ -388,11 +390,11 @@ class ModalCreateTaskProcess extends Component {
                   <div>
                      <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
                         <ul className="nav nav-tabs">
-                           <li className="active"><a href="#info" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
-                           <li><a href="#process" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
+                           <li className="active"><a href="#info-create" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
+                           <li><a href="#process-create" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
                         </ul>
                         <div className="tab-content">
-                           <div className={selectedCreate === "info" ? "active tab-pane" : "tab-pane"} id="info">
+                           <div className={selectedCreate === "info" ? "active tab-pane" : "tab-pane"} id="info-create">
                               <div className='row'>
                                  <div className='col-md-6'>
                                     <div className="form-group">
@@ -446,7 +448,7 @@ class ModalCreateTaskProcess extends Component {
                            </div>
                         </div>
                         <div className="tab-content">
-                           <div className={selectedCreate === "process" ? "active tab-pane" : "tab-pane"} id="process">
+                           <div className={selectedCreate === "process" ? "active tab-pane" : "tab-pane"} id="process-create">
                               <fieldset className="scheduler-border">
                                  {/* <legend className="scheduler-border">Quy trình công việc</legend> */}
                                  <div className='row'>

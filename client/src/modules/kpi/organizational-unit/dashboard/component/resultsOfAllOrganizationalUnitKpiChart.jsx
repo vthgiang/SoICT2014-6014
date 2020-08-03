@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import {createUnitKpiActions} from '../../creation/redux/actions' 
+import { createUnitKpiActions } from '../../creation/redux/actions';
+
 import { DatePicker } from '../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
@@ -117,10 +118,12 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     }
 
     handleSelectMonthEnd = async (value) => {
+        let month;
+
         if(value.slice(0,2)<12) {
-            var month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
+            month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
         } else {
-            var month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
+            month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
         }
 
         this.INFO_SEARCH.endDate = month;
@@ -253,7 +256,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
     render() {
         const { createKpiUnit, translate } = this.props;
-        var organizationalUnitKpiSetsOfChildUnit;
+        let organizationalUnitKpiSetsOfChildUnit;
 
         if(createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
             organizationalUnitKpiSetsOfChildUnit = createKpiUnit.organizationalUnitKpiSetsOfChildUnit;

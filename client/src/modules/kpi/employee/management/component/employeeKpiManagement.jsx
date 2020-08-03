@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
-import { ModalDetailKPIPersonal } from './employeeKpiDetailModal';
 import { connect } from 'react-redux';
-import { managerKpiActions  } from '../redux/actions';
-import Swal from 'sweetalert2';
+import { withTranslate } from 'react-redux-multilingual';
+
+import {DataTableSetting } from '../../../../../common-components';
+import { DatePicker, SelectBox } from '../../../../../common-components/index';
+
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions'
 
 import { ModalCopyKPIPersonal } from './employeeKpiCopyModal';
-import {PaginateBar, DataTableSetting } from '../../../../../common-components';
-import { DatePicker, SelectBox } from '../../../../../common-components/index';
-import { kpiMemberServices } from '../../../evaluation/employee-evaluation/redux/services';
-import { withTranslate } from 'react-redux-multilingual';
+import { ModalDetailKPIPersonal } from './employeeKpiDetailModal';
+
+
+import Swal from 'sweetalert2';
+
 
 var translate ='';
 class KPIPersonalManager extends Component {
@@ -70,6 +73,8 @@ class KPIPersonalManager extends Component {
 
         return [month, year].join('-');
     }
+
+    /**Hiển thị modal khởi tạo KPI tháng mới từ Kpi tháng đang chọn */
     showModalCopy = async (id) => {
         await this.setState(state => {
             return {
@@ -79,6 +84,8 @@ class KPIPersonalManager extends Component {
         })
         window.$(`#copy-old-kpi-to-new-time-${id}`).modal("show")
     }
+
+    /**Dịch trạng thái của tập KPI */
     checkStatusKPI = (status) => {
         if (status === 0) {
             return translate('kpi.evaluation.employee_evaluation.establishing');
@@ -88,6 +95,7 @@ class KPIPersonalManager extends Component {
             return translate('kpi.evaluation.employee_evaluation.activated');
         }
     }
+
     handleStartDateChange = (value) => {
         this.setState(state => {
                 return {
@@ -97,23 +105,16 @@ class KPIPersonalManager extends Component {
             });
         
     }
+
     handleEndDateChange = (value) => {
         this.setState(state => {
                 return {
                     ...state,
                     endDate: value,
                 }
-            });
-        
-    }
-    handleEmployeeChange =(value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                user: value
-            }
-        });
-    }
+            });   
+        }
+
     handleStatusChange =(value) => {
         this.setState(state => {
             return {
@@ -122,6 +123,8 @@ class KPIPersonalManager extends Component {
             }
         });
     }
+
+    /**Gửi req seach data */
     handleSearchData = async () => {
         if(this.state.startDate === "") this.state.startDate = null;
         if(this.state.endDate === "") this.state.endDate = null;
@@ -140,7 +143,6 @@ class KPIPersonalManager extends Component {
         })
         
         const { infosearch } = this.state;
-        console.log("info====", this.state.user);
             var startDate;
             var startdate=null;
             var endDate;
@@ -163,6 +165,8 @@ class KPIPersonalManager extends Component {
                 this.props.getEmployeeKPISets(infosearch);
             }
     }
+
+    /**Mở modal xem chi tiết 1 mẫu công việc */
     showDetailKpiPersonal = async (item) => {
         await this.setState(state => {
             return {
@@ -172,61 +176,37 @@ class KPIPersonalManager extends Component {
         })
         window.$(`modal-detail-KPI-personal`).modal('show')
     }
+
     render() {
         var kpipersonal;
         var userdepartments;
-        const {translate} =this.props;
+
+        const { translate, kpimembers, user} =this.props;
         const {status,startDate, endDate} = this.state;
-        // var currentKPI, currentTargets, kpiApproved, systempoint, mypoint, approverpoint, targetA, targetC, targetOther, misspoint;
-        const {  kpimembers, user } = this.props;
+
         if (user !== "undefined") userdepartments = user.userdepartments;
         if ( kpimembers !== "undefined") kpipersonal =  kpimembers.kpimembers;
-       
-        let unitMembers;
-        // if (userdepartments) {
-        //     unitMembers = [
-        //         {
-        //             value: [{text:"--Chọn nhân viên--", value: "null"}]
-        //         },
-                
-        //         {
-        //             value: userdepartments.employees.map(item => {return {text: item.name, value: item._id}})
-        //         },
-        //     ]
-        // }
+        
         return (
             <div className="box">
                 <div className="box-body qlcv">
-                    <ModalDetailKPIPersonal employeeKpiSet={this.state.employeeKpiSet}/>
-                    <div className="form-inline">
-                        {/* <div className="form-group">
-                            <label>Nhân viên:</label>
-                            {unitMembers &&
-                            <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                id={`employee-kpi-manage`}
-                                className="form-control"
-                                style={{width: "100%"}}
-                                items={unitMembers}
-                                onChange={this.handleEmployeeChange}
-                                // multiple={true}
-                                value={user}
-                            />}
-                        </div> */}
 
+                    {/**Modal xem chi tiết của 1 tập KPI */}
+                    <ModalDetailKPIPersonal employeeKpiSet={this.state.employeeKpiSet}/>
+
+                    {/**Select box chọn trạng thái để tìm kiếm */}
+                    <div className="form-inline">
                         <div className="form-group">
                             <label>{translate('general.status')}:</label>
                             <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                 id={`status-kpi`}
-                                // className="form-control"
                                 style={{width: "100%"}}
                                 items = {[
                                     {value:-1, text : "--"+translate('kpi.evaluation.employee_evaluation.choose_status')+"--"},
                                     {value:0, text : translate('kpi.evaluation.employee_evaluation.establishing')},
                                     {value:1, text : translate('kpi.evaluation.employee_evaluation.expecting')},
                                     {value:2, text : translate('kpi.evaluation.employee_evaluation.activated')},]}
-                                // items = {items}
                                 onChange={this.handleStatusChange}
-                                // multiple={true}
                                 value={status}
                             />
                         </div>
@@ -234,6 +214,8 @@ class KPIPersonalManager extends Component {
                     </div>
 
                     <div className="form-inline">
+
+                        {/**Chọn ngày bắt đầu */}
                         <div className="form-group">
                             <label>{translate('kpi.evaluation.employee_evaluation.from')}:</label>
                             <DatePicker id='start_date'
@@ -242,7 +224,8 @@ class KPIPersonalManager extends Component {
                             dateFormat="month-year"
                             />
                         </div>
-
+                        
+                        {/**Chọn ngày kết thúc */}
                         <div className="form-group">
                             <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
                             <DatePicker
@@ -260,7 +243,8 @@ class KPIPersonalManager extends Component {
                         </div>
 
                     </div>
-
+                    
+                    {/**Table chứa danh sách các tập KPI */}
                     <DataTableSetting class="pull-right" tableId="kpiEmployeeManagement" tableContainerId="tree-table-container" tableWidth="1300px"
                     columnArr={[ 
                         translate('kpi.evaluation.employee_evaluation.index'),
@@ -299,7 +283,8 @@ class KPIPersonalManager extends Component {
                                     <td>{item.employeePoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.employeePoint}</td>
                                     <td>{item.approvedPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.approvedPoint}</td>
                                     <td>
-                                        {/* item.creator.name, item.creator._id, item._id, item.date */}
+
+                                        {/**Các Button để xem chi tiết, khởi tạo KPI tháng mới */}
                                         <a href="#modal-detail-KPI-personal" onClick={()=> this.showDetailKpiPersonal(item)} data-toggle="modal"
                                         title={translate('kpi.evaluation.employee_evaluation.view_detail')}><i className="material-icons">view_list</i></a>
                                         <a href="#abc" onClick={() => this.showModalCopy(item._id)} data-toggle="modal" 
@@ -314,7 +299,6 @@ class KPIPersonalManager extends Component {
             </div>
         )
     }
-
 }
 
 function mapState(state) {
@@ -324,8 +308,8 @@ function mapState(state) {
 
 const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
-    // getAllKPIPersonal: managerKpiActions .getAllKPIPersonalByMember,
     getEmployeeKPISets: kpiMemberActions.getEmployeeKPISets,
 };
+
 const connectedKPIPersonalManager = connect(mapState, actionCreators)(withTranslate(KPIPersonalManager));
 export { connectedKPIPersonalManager as KPIPersonalManager };

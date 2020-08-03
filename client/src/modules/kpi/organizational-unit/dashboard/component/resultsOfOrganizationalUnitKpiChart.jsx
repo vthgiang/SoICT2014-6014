@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { createKpiUnitActions } from '../redux/actions';
-import {createUnitKpiActions} from '../../creation/redux/actions' 
+import { createUnitKpiActions } from '../../creation/redux/actions';
+
 import { DatePicker } from '../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
@@ -109,7 +110,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
 
     setDataMultiLineChart = () => {
         const { createKpiUnit, translate } = this.props;
-        var listOrganizationalUnitKpiSetEachYear, automaticPoint, employeePoint, approvedPoint, date, dataMultiLineChart;
+        let listOrganizationalUnitKpiSetEachYear, automaticPoint, employeePoint, approvedPoint, date, dataMultiLineChart;
 
         if(createKpiUnit.organizationalUnitKpiSets) {
             listOrganizationalUnitKpiSetEachYear = createKpiUnit.organizationalUnitKpiSets
@@ -138,24 +139,26 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
     };
 
     handleSelectMonthStart = (value) => {
-        var month = value.slice(3,7) + '-' + value.slice(0,2);
+        let month = value.slice(3,7) + '-' + value.slice(0,2);
 
         this.INFO_SEARCH.startDate = month;
     }
 
     handleSelectMonthEnd = async (value) => {
+        let month;
+
         if(value.slice(0,2) < 12) {
-            var month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
+            month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
         } else {
-            var month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
+            month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
         }
 
         this.INFO_SEARCH.endDate = month;
     }
 
     handleSearchData = async () => {
-        var startDate = new Date(this.INFO_SEARCH.startDate);
-        var endDate = new Date(this.INFO_SEARCH.endDate);
+        let startDate = new Date(this.INFO_SEARCH.startDate);
+        let endDate = new Date(this.INFO_SEARCH.endDate);
         const {translate} = this.props;
         if (startDate.getTime() >= endDate.getTime()) {
             Swal.fire({
@@ -186,7 +189,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
         this.removePreviosMultiLineChart();
         const {translate} = this.props;
 
-        var dataMultiLineChart = this.setDataMultiLineChart();
+        let dataMultiLineChart = this.setDataMultiLineChart();
 
         this.chart = c3.generate({
             bindto: this.refs.chart,       
@@ -231,7 +234,8 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
     }
 
     render() {
-        var {translate} = this.props;
+        const { translate } = this.props;
+
         let d = new Date(),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),

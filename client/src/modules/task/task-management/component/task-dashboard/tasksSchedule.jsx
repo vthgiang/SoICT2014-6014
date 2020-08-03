@@ -24,6 +24,8 @@ class TasksSchedule extends Component {
       .add(1, "month")
       .toDate();
 
+    this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+
     this.state = {
       defaultTimeStart,
       defaultTimeEnd,
@@ -42,15 +44,54 @@ class TasksSchedule extends Component {
         startDateAfter: this.formatDate(new Date()),
         endDateBefore: null
       },
-      taskId: null
+      taskId: null,
+
+      dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
+
+      willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
     };
   }
-
-  componentDidMount() {
+  componentDidMount = async () => {
     let { infoSearch } = this.state;
     let { organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = infoSearch;
-    this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
+    
+    await this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
+    
+    await this.setState(state => {
+        return {
+            ...state,
+            dataStatus: this.DATA_STATUS.QUERYING,
+            willUpdate: true       // Khi true sẽ cập nhật dữ liệu vào props từ redux
+        };
+    });
   }
+
+  shouldComponentUpdate = async (nextProps, nextState) => {
+    if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+        if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks || !nextProps.tasks.tasksbyuser) {
+            return false;
+        }
+
+        this.setState(state => {
+            return {
+                ...state,
+                dataStatus: this.DATA_STATUS.AVAILABLE
+            }
+        });
+    } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
+        this.setState(state => {
+            return {
+                ...state,
+                dataStatus: this.DATA_STATUS.FINISHED,
+                willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
+            }
+        });
+
+        return true;
+    }
+
+    return false;
+}
 
   formatDate(date) {
     let d = new Date(date),

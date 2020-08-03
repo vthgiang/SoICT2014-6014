@@ -1050,7 +1050,7 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
     let tasks = await Task.findById(taskId);
     let userId = tasks.accountableEmployees;
     let user1 = await User.find({ _id: { $in: userId } });
-    let email = user.map(item => item.email);
+    let email = user1.map(item => item.email);
     user = await User.findById(data.user);
     newTask.evaluations.reverse();
 
