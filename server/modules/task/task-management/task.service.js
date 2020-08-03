@@ -1104,20 +1104,23 @@ exports.getSubTask = async (taskId) => {
  */
 
 exports.getTasksByUser = async (data) => {
-    if(data.userId){
+    if(data.data == "user"){
         var tasks = await Task.find({
             $or: [
-                { responsibleEmployees: data },
-                { accountableEmployees: data },
-                { consultedEmployees: data },
-                { informedEmployees: data }
+                { responsibleEmployees: data.userId },
+                { accountableEmployees: data.userId },
+                { consultedEmployees: data.userId },
+                { informedEmployees: data.userId }
             ],
             status: "Inprocess"
         })
     }
 
-    if(data.currentRole){
-        var organizationalUnit = await OrganizationalUnit.findOne( {deans : data.currentRole} )
+    if(data.data == "organizationUnit"){
+        var organizationalUnit = await OrganizationalUnit.findOne( 
+            { 'deans': data.currentRole },
+         )
+
         var tasks = await Task.find(
             {organizationalUnit: organizationalUnit._id, status: "Inprocess"},
         )

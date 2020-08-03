@@ -31,7 +31,8 @@ class TaskOrganizationUnitDashboard extends Component {
         // await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
         // await this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
         // await this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
-        // await this.props.getTaskByUser();
+        let organizationUnit = "organizationUnit"
+        await this.props.getTaskByUser(organizationUnit);
         await this.props.getTaskInOrganizationUnitByMonth("[]", null, null);
 
         await this.setState(state => {
@@ -301,7 +302,7 @@ const actionCreators = {
     // getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
     // getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     // getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
-    // getTaskByUser: taskManagementActions.getTasksByUser,
+    getTaskByUser: taskManagementActions.getTasksByUser,
     getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
 
 };

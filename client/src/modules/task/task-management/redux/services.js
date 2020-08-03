@@ -303,13 +303,13 @@ function getSubTask(taskId) {
 /**
  * lấy công việc theo người dùng
  */
-function getTasksByUser() {
+function getTasksByUser(data) {
     var id = getStorage("userId")
-
+    var currentRole = getStorage("currentRole");
     return sendRequest({
         url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
-        params: { userId: id, type: 'all' }
+        params: { userId: id, type: 'all', currentRole: currentRole, data: data }
     }, false, true, 'task.task_management');
 }
 

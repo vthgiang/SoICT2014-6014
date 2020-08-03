@@ -32,7 +32,8 @@ class TaskDashboard extends Component {
         await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
         await this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
         await this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
-        await this.props.getTaskByUser();
+        let data = "user"
+        await this.props.getTaskByUser(data);
 
         await this.setState(state => {
             return {
