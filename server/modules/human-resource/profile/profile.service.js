@@ -1085,7 +1085,7 @@ exports.importEmployeeInfor = async (company, data) => {
     if (rowError.length !== 0) {
         return {
             errorStatus: true,
-            employeeInfor: data,
+            employeesInfor: data,
             rowErrorOfEmployeeInfor: rowError
         }
     } else {
@@ -1100,11 +1100,12 @@ exports.importEmployeeInfor = async (company, data) => {
 }
 
 /**
- * Import kinh nghiệm làm việc
+ * Hàm tiện ích dùng để kiểm tra mã số nhân viên trong dữ liệu import có tồn tại ko
+ * Dùng cho các function import bên dưới
  * @param {*} company : Id công ty
- * @param {*} data : Dữ liệu kinh nghiệm làm việc cần import
+ * @param {*} data : Dữ liệu import
  */
-exports.importExperience = async (company, data) => {
+exports.checkImportData = async (company, data) => {
     let employeeInfo = await Employee.find({
         company: company
     }, {
@@ -1130,11 +1131,27 @@ exports.importExperience = async (company, data) => {
         }
         return x;
     })
+    return {
+        data: data,
+        rowError: rowError
+    };
+}
+
+/**
+ * Import kinh nghiệm làm việc
+ * @param {*} company : Id công ty
+ * @param {*} data : Dữ liệu kinh nghiệm làm việc cần import
+ */
+exports.importExperience = async (company, data) => {
+    let result = await this.checkImportData(company, data);
+    data = result.data;
+    let rowError = result.rowError;
 
     if (rowError.length !== 0) {
         return {
-            data,
-            rowError
+            errorStatus: true,
+            experiences: data,
+            rowErrorOfExperience: rowError
         }
     } else {
         let importData = [];
@@ -1161,9 +1178,102 @@ exports.importExperience = async (company, data) => {
                 _id: x._id
             });
             editEmployee.experiences = editEmployee.experiences.concat(x.experiences);
-            console.log(editEmployee);
             editEmployee.save();
         }
+        return data;
     }
-    return data;
+
+}
+
+/**
+ * Import thông tin bằng cấp
+ * @param {*} company : Id công ty
+ * @param {*} data : Dữ liệu thông tin bằng cấp cần import
+ */
+exports.importDegree = async (company, data) => {
+    let result = await this.checkImportData(company, data);
+    data = result.data;
+    let rowError = result.rowError;
+
+    if (rowError.length !== 0) {
+        return {
+            errorStatus: true,
+            degrees: data,
+            rowErrorOfDegree: rowError
+        }
+    } else {
+        let importData = [];
+        for (let x of data) {
+            if (!importData.includes(x._id)) {
+                importData = [...importData, x._id]
+            }
+        }
+
+        importData = importData.map(x => {
+            let result = {
+                _id: x,
+                degrees: []
+            }
+            data.forEach(y => {
+                if (y._id === x) {
+                    result.degrees.push(y);
+                }
+            })
+            return result;
+        })
+        for (let x of importData) {
+            let editEmployee = await Employee.findOne({
+                _id: x._id
+            });
+            editEmployee.degrees = editEmployee.degrees.concat(x.degrees);
+            editEmployee.save();
+        }
+        return data;
+    }
+}
+
+/**
+ * Import thông tin chứng chỉ
+ * @param {*} company : Id công ty
+ * @param {*} data : Dữ liệu thông tin chứng chỉ cần import
+ */
+exports.importCertificate = async (company, data) => {
+    let result = await this.checkImportData(company, data);
+    data = result.data;
+    let rowError = result.rowError;
+
+    if (rowError.length !== 0) {
+        return {
+            errorStatus: true,
+            certificates: data,
+            rowErrorOfCertificate: rowError
+        }
+    } else {
+        let importData = [];
+        for (let x of data) {
+            if (!importData.includes(x._id)) {
+                importData = [...importData, x._id]
+            }
+        }
+        importData = importData.map(x => {
+            let result = {
+                _id: x,
+                certificates: []
+            }
+            data.forEach(y => {
+                if (y._id === x) {
+                    result.certificates.push(y);
+                }
+            })
+            return result;
+        })
+        for (let x of importData) {
+            let editEmployee = await Employee.findOne({
+                _id: x._id
+            });
+            editEmployee.certificates = editEmployee.certificates.concat(x.certificates);
+            editEmployee.save();
+        }
+        return data;
+    }
 }

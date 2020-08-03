@@ -92,6 +92,8 @@ class EmployeeImportForm extends Component {
                 case "Không có":
                     professionalSkill = "unavailable";
                     break;
+                default:
+                    professionalSkill = null;
             }
             return {
                 ...x,
@@ -238,6 +240,31 @@ class EmployeeImportForm extends Component {
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfDegree = (value) => {
+        value = value.map(x => {
+            let degreeType;
+            switch (x.degreeType) {
+                case "Xuất sắc":
+                    degreeType = "excellent";
+                    break;
+                case "Giỏi":
+                    degreeType = "very_good";
+                    break;
+                case "Khá":
+                    degreeType = "good";
+                    break;
+                case "Trung bình khá":
+                    degreeType = "average_good";
+                    break;
+                case "Trung bình":
+                    degreeType = "ordinary";
+                    break;
+                default:
+                    degreeType = null;
+            }
+            return { ...x, degreeType: degreeType }
+        })
+
+
         let rowError = [];
         // Check dữ liệu import có hợp lệ hay không
         value = value.map((x, index) => {
@@ -280,6 +307,16 @@ class EmployeeImportForm extends Component {
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfCertificate = (value) => {
+        value = value.map(x => {
+            let startDate = typeof x.startDate === 'string' ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
+            let endDate = typeof x.endDate === 'string' ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
+            return {
+                ...x,
+                startDate: this.convertStringToDate(startDate, false),
+                endDate: this.convertStringToDate(endDate, false),
+            }
+        });
+
         let rowError = [];
         // Check dữ liệu import có hợp lệ hay không
         value = value.map((x, index) => {
@@ -481,7 +518,7 @@ class EmployeeImportForm extends Component {
                                     configTableWidth={8000}
                                     showTableWidth={5000}
                                     rowErrorOfReducer={employeesManager.error.rowErrorOfEmployeeInfor}
-                                    dataOfReducer={employeesManager.error.employeeInfor}
+                                    dataOfReducer={employeesManager.error.employeesInfor}
                                     configuration={configurationEmployeeInfo}
                                     handleCheckImportData={this.handleCheckImportDataOfEmployeeInfor}
                                     handleImport={this.handleImportEmployeeInfor}
@@ -491,8 +528,8 @@ class EmployeeImportForm extends Component {
                                     textareaRow={10}
                                     configTableWidth={1000}
                                     showTableWidth={1000}
-                                    rowErrorOfReducer={employeesManager.error.rowError}
-                                    dataOfReducer={employeesManager.error.data}
+                                    rowErrorOfReducer={employeesManager.error.rowErrorOfExperience}
+                                    dataOfReducer={employeesManager.error.experiences}
                                     configuration={configurationExperience}
                                     handleCheckImportData={this.handleCheckImportDataOfExperience}
                                     handleImport={this.handleImportExperience}
@@ -502,8 +539,8 @@ class EmployeeImportForm extends Component {
                                     textareaRow={10}
                                     configTableWidth={1000}
                                     showTableWidth={1000}
-                                    rowErrorOfReducer={employeesManager.error.rowError}
-                                    dataOfReducer={employeesManager.error.data}
+                                    rowErrorOfReducer={employeesManager.error.rowErrorOfDegree}
+                                    dataOfReducer={employeesManager.error.degrees}
                                     configuration={configurationDegree}
                                     handleCheckImportData={this.handleCheckImportDataOfDegree}
                                     handleImport={this.handleImportDegree}
@@ -513,8 +550,8 @@ class EmployeeImportForm extends Component {
                                     textareaRow={10}
                                     configTableWidth={1000}
                                     showTableWidth={1000}
-                                    rowErrorOfReducer={employeesManager.error.rowError}
-                                    dataOfReducer={employeesManager.error.data}
+                                    rowErrorOfReducer={employeesManager.error.rowErrorOfCertificate}
+                                    dataOfReducer={employeesManager.error.certificates}
                                     configuration={configurationCertificate}
                                     handleCheckImportData={this.handleCheckImportDataOfCertificate}
                                     handleImport={this.handleImportCertificate}

@@ -80,11 +80,11 @@ class EmployeeImportTab extends Component {
                             </div>
                         </div>
                         {importData && importData.length !== 0 &&
-                            <div className="form-group col-md-12">
-                                <button type="button" className="btn btn-primary pull-left" onClick={handleImport} disabled={!this.isFormValidated()}>Import excel</button>
+                            <div className="col-md-12">
+                                <button type="button" className="btn btn-primary" onClick={handleImport} disabled={!this.isFormValidated()}>Import excel</button>
                             </div>
                         }
-                        <div className="form-group col-md-12">
+                        <div className="col-md-12">
                             <ShowImportData
                                 id={`import_employee_infor_show_data${id}`}
                                 configData={configData}

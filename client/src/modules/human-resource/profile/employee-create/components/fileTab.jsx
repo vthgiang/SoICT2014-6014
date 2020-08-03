@@ -125,7 +125,7 @@ class FileTab extends Component {
                                             <td>{x.description}</td>
                                             <td>{x.number}</td>
                                             <td>{translate(`manage_employee.${x.status}`)}</td>
-                                            <td>{(typeof x.urlFile === 'undefined' || x.urlFile.length === 0) ? translate('manage_employee.no_files') :
+                                            <td>{!x.urlFile ? translate('manage_employee.no_files') :
                                                 <a className='intable' target={x._id === undefined ? '_self' : '_blank'}
                                                     href={(x._id === undefined) ? x.urlFile : `${LOCAL_SERVER_API + x.urlFile}`}
                                                     download={x.name}>
