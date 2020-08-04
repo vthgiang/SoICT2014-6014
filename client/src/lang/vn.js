@@ -1887,6 +1887,7 @@ export default {
                 create_comment: "Thêm bình luận",
                 enter_description: "Nhập mô tả",
                 create_description: "Thêm mô tả",
+                create_document: "Thêm tài liệu",
                 none_description: "Không có mô tả",
                 enter_action: "Nhập hoạt động",
                 create_action: "Thêm hoạt động",
