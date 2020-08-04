@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
 import { kpiMemberActions } from '../redux/actions';
-import { DataTableSetting } from '../../../../../common-components';
+import { DataTableSetting, ExportExcel } from '../../../../../common-components';
 import { DatePicker, SelectBox } from '../../../../../common-components/index';
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { EmployeeKpiApproveModal } from './employeeKpiApproveModal';
@@ -173,6 +173,86 @@ class EmployeeKpiManagement extends Component {
         })
         window.$(`employee-kpi-evaluation-modal`).modal('show');
     }
+
+    /**Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    // convertDataToExportData = (data) => {
+    //     if (data) {
+            
+
+    //         data = data.map((x, index) => {
+    //             let organizationalUnits = x.organizationalUnits.map(y => y.name);
+    //             let fullName =x.creator.name;
+    //             let automaticPoint = (x.automaticPoint === null)?0:x.automaticPoint;
+    //             let employeePoint = (x.employeePoint === null)?0:x.automaticPoint
+    //             let d = new Date(x.month),
+    //                 month = '' + (d.getMonth() + 1),
+    //                 year = d.getFullYear();
+    //             if (x.bonus.length !== 0) {
+    //                 for (let count in x.bonus) {
+    //                     total = total + parseInt(x.bonus[count].number);
+    //                     otherSalary.forEach((y, key) => {
+    //                         if (y === x.bonus[count].nameBonus) {
+    //                             bonus = { ...bonus, [`bonus${key}`]: parseInt(x.bonus[count].number) }
+    //                         }
+    //                     })
+    //                 };
+
+    //                 total = total + parseInt(x.mainSalary);
+    //             }
+
+    //             return {
+    //                 STT: index + 1,
+    //                 employeeNumber: x.employee.employeeNumber,
+    //                 fullName: x.employee.fullName,
+    //                 mainSalary: parseInt(x.mainSalary),
+    //                 birthdate: this.formatDate(x.employee.birthdate, false),
+    //                 status: x.employee.status === 'active' ? "Đang làm việc" : "Đã nghỉ làm",
+    //                 gender: x.employee.gender === 'male' ? "Nam" : "Nữ",
+    //                 organizationalUnits: organizationalUnits.join(', '),
+    //                 position: position.join(', '),
+    //                 total: total,
+    //                 month: month,
+    //                 year: year,
+    //                 ...bonus
+    //             };
+
+    //         })
+    //     }
+
+    //     let columns = otherSalary.map((x, index) => {
+    //         return { key: `bonus${index}`, value: x, type: "Number" }
+    //     })
+    //     let exportData = {
+    //         fileName: "Bảng theo dõi lương thưởng",
+    //         dataSheets: [
+    //             {
+    //                 sheetName: "sheet1",
+    //                 tables: [
+    //                     {
+    //                         columns: [
+    //                             { key: "STT", value: "STT" },
+    //                             { key: "month", value: "Tháng" },
+    //                             { key: "year", value: "Năm" },
+    //                             { key: "employeeNumber", value: "Mã số nhân viên" },
+    //                             { key: "fullName", value: "Họ và tên" },
+    //                             { key: "organizationalUnits", value: "Phòng ban" },
+    //                             { key: "position", value: "chức vụ" },
+    //                             { key: "gender", value: "Giới tính" },
+    //                             { key: "birthdate", value: "Ngày sinh" },
+    //                             { key: "status", value: "Tình trạng lao động" },
+    //                             { key: "mainSalary", value: "Tiền lương chính", type: "Number" },
+    //                             ...columns,
+    //                             { key: "total", value: "Tổng lương", type: "Number" },
+    //                         ],
+    //                         data: data
+    //                     }
+    //                 ]
+    //             },
+    //         ]
+    //     }
+    //     return exportData
+    // }
+
     render() {
         const { user, kpimembers } = this.props;
         const { translate } = this.props;
@@ -180,7 +260,10 @@ class EmployeeKpiManagement extends Component {
         let userdepartments, kpimember, unitMembers;
 
         if (user.userdepartments) userdepartments = user.userdepartments;
-        if (kpimembers.kpimembers) kpimember = kpimembers.kpimembers;
+        if (kpimembers.kpimembers) {
+            kpimember = kpimembers.kpimembers;
+            console.log('\n\n\n\n\n\n\n\n\n\n', kpimember);
+        }
         if (userdepartments) {
             unitMembers = getEmployeeSelectBoxItems([userdepartments]);
             unitMembers = [{ text: translate('kpi.evaluation.employee_evaluation.choose_employee'), value: 0 }, ...unitMembers[0].value];
@@ -296,6 +379,7 @@ class EmployeeKpiManagement extends Component {
                                         </td>
                                     </tr>}
                             </tbody>
+                            
                         </table>
                     </div>
                 </div>

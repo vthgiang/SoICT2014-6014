@@ -2,6 +2,7 @@ import { VALIDATOR } from '../../../../helpers/validator';
 export const taskReportFormValidator = {
     validateNameTaskReport,
     validateDescriptionTaskReport,
+    validateTasktemplateReport,
 }
 
 function validateNameTaskReport(value) {
@@ -22,6 +23,13 @@ function validateDescriptionTaskReport(value) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Mô tả báo cáo không được để trống";
-    } 
+    }
+    return msg;
+}
+function validateTasktemplateReport(value) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Mẫu báo cáo không được để trống";
+    }
     return msg;
 }

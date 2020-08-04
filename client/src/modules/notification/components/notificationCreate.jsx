@@ -170,7 +170,6 @@ class NotificationCreate extends Component {
                         </div>
                         <div className="form-group">
                             <label>{translate('notification.content')}<span className="text-red">*</span></label>
-                            {/* <textarea type="text" className="form-control" onChange={this.handleContent}/> */}
                             <CKEditor
                                 editor={ ClassicEditor }
                                 onChange={ ( event, editor ) => {

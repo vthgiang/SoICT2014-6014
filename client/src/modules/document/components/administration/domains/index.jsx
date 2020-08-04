@@ -60,7 +60,7 @@ class AdministrationDocumentDomains extends Component {
         })
     }
 
-    render() { 
+    render() {
         const { domainParent, deleteNode } = this.state;
         const { translate } = this.props;
         const { list } = this.props.documents.administration.domains;
@@ -72,7 +72,6 @@ class AdministrationDocumentDomains extends Component {
                 parent: node.parent ? node.parent.toString() : "#"
             }
         })
-
         return ( 
             <React.Fragment>
                 <button className="btn btn-success" onClick={()=>{
@@ -81,7 +80,7 @@ class AdministrationDocumentDomains extends Component {
                 {
                     deleteNode.length > 0 && <button className="btn btn-danger" style={{marginLeft: '5px'}} onClick={this.deleteDomains}>{translate('general.delete')}</button>
                 }
-                <CreateForm domainParent={this.state.domainParent}/>
+                <CreateForm domainParent={this.state.domainParent[0]}/>
                 <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
                         <div className="domain-tree" id="domain-tree">

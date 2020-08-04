@@ -491,10 +491,11 @@ class ModalEditTaskProcess extends Component {
                     // disableSubmit={!this.isTaskFormValidated()}
                     title={this.props.title}
                     func={this.save}
+                    bodyStyle={{paddingTop: 0, paddingBottom: 0}}
                 >
                     <div>
 
-                        <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
+                        <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
                             <ul className="nav nav-tabs">
                                 <li className="active"><a href="#info-edit" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
                                 <li><a href="#process-edit" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
@@ -559,18 +560,29 @@ class ModalEditTaskProcess extends Component {
                                     {/* </fieldset> */}
                                 </div>
                             </div>
-                            <div className="tab-content">
+                            <div className="tab-content" style={{padding: 0, marginTop: -15}}>
                                 <div className={selectedEdit === "process" ? "active tab-pane" : "tab-pane"} id="process-edit">
-                                    <fieldset className="scheduler-border">
+                                    {/* <fieldset className="scheduler-border"> */}
                                         {/* <legend className="scheduler-border">Quy trình công việc</legend> */}
-                                        <div className='row'>
-                                            <div className="tool-bar-xml">
+                                        {/* <div className='row'> */}
+                                            {/* <div className="tool-bar-xml">
                                                 <button onClick={this.exportDiagram}>Export XML</button>
                                                 <button onClick={this.downloadAsSVG}>Save SVG</button>
                                                 <button onClick={this.downloadAsImage}>Save Image</button>
                                                 <button onClick={this.downloadAsBpmn}>Download BPMN</button>
                                             </div>
-                                            <div id={this.generateId} className={showInfo ? 'col-md-8' : 'col-md-12'}></div>
+                                            <div id={this.generateId} className={showInfo ? 'col-md-8' : 'col-md-12'}></div> */}
+                                    
+                                        {/* Quy trình công việc */}
+                                        <div>
+                                            <div id={this.generateId} className={showInfo ? 'col-md-8' : 'col-md-12'}>
+                                                <div style={{position: "absolute", right: 5, top: 5}}>
+                                                    <button onClick={this.exportDiagram}>Export XML</button>
+                                                    <button onClick={this.downloadAsSVG}>Save SVG</button>
+                                                    <button onClick={this.downloadAsImage}>Save Image</button>
+                                                    <button onClick={this.downloadAsBpmn}>Download BPMN</button>
+                                                </div>
+                                            </div>
                                             <div className={showInfo ? 'col-md-4' : undefined}>
 
                                                 {
@@ -619,7 +631,7 @@ class ModalEditTaskProcess extends Component {
                                             </div>
                                         </div>
 
-                                    </fieldset>
+                                    {/* </fieldset> */}
                                 </div>
                             </div>
                         </div>

@@ -235,7 +235,7 @@ export const configurationEmployeeInfo = {
     },
     file: {
         fileName: 'templateImportEmployeeInfor',
-        fileUrl: '/upload/human-resource/templateImport/templateImportSalary.xlsx'
+        fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
     }
 }
 
@@ -281,7 +281,7 @@ export const configurationExperience = {
     },
     file: {
         fileName: 'templateImportEmployeeInfor',
-        fileUrl: '/upload/human-resource/templateImport/templateImportSalary.xlsx'
+        fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
     }
 }
 
@@ -327,7 +327,7 @@ export const configurationDegree = {
     },
     file: {
         fileName: 'templateImportEmployeeInfor',
-        fileUrl: '/upload/human-resource/templateImport/templateImportSalary.xlsx'
+        fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
     }
 }
 
@@ -373,7 +373,7 @@ export const configurationCertificate = {
     },
     file: {
         fileName: 'templateImportEmployeeInfor',
-        fileUrl: '/upload/human-resource/templateImport/templateImportSalary.xlsx'
+        fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
     }
 }
 
@@ -419,7 +419,7 @@ export const configurationContract = {
     },
     file: {
         fileName: 'templateImportEmployeeInfor',
-        fileUrl: '/upload/human-resource/templateImport/templateImportSalary.xlsx'
+        fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
     }
 }
 
@@ -465,6 +465,6 @@ export const configurationFile = {
     },
     file: {
         fileName: 'templateImportEmployeeInfor',
-        fileUrl: '/upload/human-resource/templateImport/templateImportSalary.xlsx'
+        fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
     }
 }
