@@ -656,9 +656,9 @@ class EmployeeManagement extends Component {
         const { importEmployee, limit, page, organizationalUnits } = this.state;
         const { employeesManager, translate, department } = this.props;
 
-        let lists, listPosition = [], list = department.list;
+        let lists, listPosition = [{ value: "", text: "Bạn chưa chọn đơn vị", disabled: true }], list = department.list;
         if (organizationalUnits !== null) {
-            let organizationalUnits = organizationalUnits;
+            listPosition = [];
             organizationalUnits.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
@@ -707,7 +707,7 @@ class EmployeeManagement extends Component {
                             <label className="form-control-static">{translate('page.position')}</label>
                             <SelectMulti id={`multiSelectPosition`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_position'), allSelectedText: translate('page.all_position') }}
-                                items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
+                                items={organizationalUnits === null ? listPosition : listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
                             </SelectMulti>
                         </div>
                     </div>

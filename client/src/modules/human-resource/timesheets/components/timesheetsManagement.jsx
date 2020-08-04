@@ -218,11 +218,11 @@ class TimesheetsManagement extends Component {
     render() {
         const { list } = this.props.department;
         const { translate, timesheets } = this.props;
-        const { month, limit, page, allDayOfMonth, dayNow } = this.state;
+        const { month, limit, page, allDayOfMonth, dayNow, organizationalUnit } = this.state;
 
-        var listTimesheets = [], listPosition = [];
-        if (this.state.organizationalUnit !== null) {
-            let organizationalUnit = this.state.organizationalUnit;
+        var listTimesheets = [], listPosition = [{ value: "", text: "Bạn chưa chọn đơn vị", disabled: true }];
+        if (organizationalUnit !== null) {
+            listPosition = [];
             organizationalUnit.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
@@ -271,7 +271,7 @@ class TimesheetsManagement extends Component {
                             <label className="form-control-static">{translate('human_resource.position')}</label>
                             <SelectMulti id={`multiSelectPosition`} multiple="multiple"
                                 options={{ nonSelectedText: translate('human_resource.non_position'), allSelectedText: translate('human_resource.all_position') }}
-                                items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
+                                items={organizationalUnit === null ? listPosition : listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
                             </SelectMulti>
                         </div>
                     </div>

@@ -73,7 +73,7 @@ class SelectMulti extends Component {
                 <div className={`selectmulti ${display}`}>
                     <select className="form-control" style={{ display: "none" }} ref="selectmulti" id={id} multiple="multiple" value={this.state.value} onChange={() => { }} disabled={disabled}>
                         {items.map(item => {
-                            return <option key={item.value} value={item.value}>{item.text}</option>
+                            return <option key={item.value} value={item.value} disabled={item.disabled ? true : false}>{item.text}</option>
                         })}
                     </select>
                 </div>
