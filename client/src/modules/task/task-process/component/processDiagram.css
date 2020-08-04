@@ -10,11 +10,11 @@
     text-align: center;
 }
 
-#viewprocess > div > a, #editprocess > div > a, #createprocess > div > a {
+#viewprocess > div > a, #editprocess > div > a, #createprocess > div > a, #createtaskbyprocess > div > a {
     visibility: hidden;
 }
 
-#createprocess, #editprocess, #viewprocess {
+#createprocess, #editprocess, #viewprocess, #createtaskbyprocess {
     padding: 0;
 }
 
@@ -81,13 +81,16 @@
     padding: 0 15px;
 }
 
+#createtaskbyprocess > div > div > div.djs-palette.two-column.open, #createtaskbyprocess > div > div > div.djs-overlay-container > div > div > div {
+    display: none;
+}
+
 /* .djs-container {
     position: relative !important;
     overflow: scroll !important;
     background-color: white !important;
 } */
-
-#createprocess svg, #editprocess svg, #viewprocess svg{
+#createprocess svg, #editprocess svg, #viewprocess svg, #createtaskbyprocess svg{
     /* border: 1px solid black; */
     height: calc(100vh - 250px);
 }

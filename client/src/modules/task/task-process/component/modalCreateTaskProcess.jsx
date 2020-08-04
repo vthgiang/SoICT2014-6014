@@ -604,7 +604,7 @@ class ModalCreateTaskProcess extends Component {
                                           </div>
                                           <FormInfoTask
                                              listOrganizationalUnit={listOrganizationalUnit}
-                                             action='edit'
+                                             action='create'
                                              id={id}
                                              info={(info && info[`${id}`]) && info[`${id}`]}
                                              handleChangeName={this.handleChangeName}
