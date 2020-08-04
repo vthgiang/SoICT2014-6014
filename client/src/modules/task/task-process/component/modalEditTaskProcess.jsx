@@ -571,19 +571,19 @@ class ModalEditTaskProcess extends Component {
                                                 <div className="io-zoom-controls">
                                                     <ul className="io-zoom-reset io-control io-control-list">
                                                         <li>
-                                                            <button title="Reset zoom" onClick={this.handleZoomReset}>
+                                                            <a style={{cursor: "pointer"}} title="Reset zoom" onClick={this.handleZoomReset}>
                                                                 <i className="fa fa-crosshairs"></i>
-                                                            </button>
+                                                            </a>
                                                         </li>
                                                         <li>
-                                                            <button title="Zoom in" onClick={this.handleZoomIn}>
+                                                            <a style={{cursor: "pointer"}} title="Zoom in" onClick={this.handleZoomIn}>
                                                                 <i className="fa fa-plus"></i>
-                                                            </button>
+                                                            </a>
                                                         </li>
                                                         <li>
-                                                            <button title="Zoom out" onClick={this.handleZoomOut}>
+                                                            <a style={{cursor: "pointer"}} title="Zoom out" onClick={this.handleZoomOut}>
                                                                 <i className="fa fa-minus"></i>
-                                                            </button>
+                                                            </a>
                                                         </li>
                                                     </ul>
                                                 </div>
