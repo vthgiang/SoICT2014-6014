@@ -665,7 +665,7 @@ export default {
             task: "Detailed Task",
             task_management: 'Task list',
             task_management_dashboard: 'Task dashboard',
-            task_organization_management_dashboard: 'Task in organization unit dashboard',
+            task_organization_management_dashboard: 'Unit task dashboard',
             task_management_process: "Process list",
             //*******START */
             // Quản lý tài sản
