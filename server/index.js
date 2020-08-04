@@ -64,6 +64,7 @@ const recommendDistribute = require('./modules/assets-manager/recommend-distribu
 // report
 const taskReport = require('./modules/report/task-report/taskReport.route');
 
+const customer = require('./modules/customer/customer.route');
 
 // APP
 const app = express();
@@ -168,6 +169,8 @@ app.use("/recommenddistribute", recommendDistribute);
 // Task report
 app.use('/taskreports', taskReport);
 
+// Customer Management
+app.use('/customer', customer);
 
 // Start server
 const port = process.env.PORT || 5000;
