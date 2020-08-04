@@ -32,9 +32,15 @@ class CourseDetailForm extends Component {
             return null;
         }
     }
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextProps._id !== this.state._id) {
+            return true;
+        }
+        return false;
+    }
     render() {
         var { course, translate } = this.props
-        const { name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees,
+        const { _id, name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees,
             endDate, cost, lecturer, employeeCommitmentTime, educationProgram } = this.state;
 
         let formater = new Intl.NumberFormat();
@@ -51,15 +57,15 @@ class CourseDetailForm extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-view-course" isLoading={course.isLoading}
-                    formID="form-view-course"
+                    modalID={`modal-view-course${_id}`} isLoading={course.isLoading}
+                    formID={`form-view-course${_id}`}
                     title={`Khoá đào tạo: ${name} - ${courseId}`}
                     hasSaveButton={false}
                     size={75}
                     maxWidth={850}
                     hasNote={false}
                 >
-                    <form className="form-group" id="form-view-course" >
+                    <form className="form-group" id={`form-view-course${_id}`} >
                         <div className="form-group">
                             <span> Học tại</span>
                             <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;{coursePlace}</span>
@@ -75,7 +81,7 @@ class CourseDetailForm extends Component {
                             <span>Đào tạo bởi {offeredBy} - Thuộc chương trình đào tạo "{educationProgram.name}"</span>
                         </div>
                         <div className="form-group">
-                            <span>Thuộc loại "{type}" với chi phí {formater.format(cost)}{unit} và thời gian cam kết làm việc {employeeCommitmentTime} tháng</span>
+                            <span>Thuộc loại "{type}" với chi phí {formater.format(cost)} {unit} và thời gian cam kết làm việc {employeeCommitmentTime} tháng</span>
                         </div>
                         <div className="form-group">
                             <span>{total} nhân viên tham gia</span>
