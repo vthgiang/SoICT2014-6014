@@ -132,6 +132,8 @@ class TaskTimesheetLog extends Component {
                                         placeholder={translate("task.task_perform.enter_description")}
                                         minRows={3}
                                         maxRows={20}
+                                        onMouseDown={(e) => {e.stopPropagation(); window.$(document).off('focusin.modal');}}
+                                        onTouchStart={(e) => {e.stopPropagation(); window.$(document).off('focusin.modal');}}
                                         onChange={(e) => {
                                             let value = e.target.value;
                                             this.setState(state => {
