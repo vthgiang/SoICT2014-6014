@@ -569,7 +569,7 @@ class ModalEditTaskProcess extends Component {
                                                             </button>
                                                         </li>
                                                         <li>
-                                                            <button href title="Zoom out" onClick={this.handleZoomOut}>
+                                                            <button title="Zoom out" onClick={this.handleZoomOut}>
                                                                 <i className="fa fa-minus"></i>
                                                             </button>
                                                         </li>

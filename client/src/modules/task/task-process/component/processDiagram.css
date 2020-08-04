@@ -86,6 +86,7 @@
     overflow: scroll !important;
     background-color: white !important;
 } */
+
 #createprocess svg, #editprocess svg, #viewprocess svg{
     /* border: 1px solid black; */
     height: calc(100vh - 250px);

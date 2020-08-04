@@ -21,7 +21,7 @@ import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
 import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
 
 
-// Xóa element khỏi palette 
+//Xóa element khỏi palette 
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
 PaletteProvider.prototype.getPaletteEntries = function (element) {
    var entries = _getPaletteEntries.apply(this);
@@ -71,10 +71,10 @@ class ModalCreateTaskProcess extends Component {
       this.initialDiagram = initialDiagram
       this.modeler = new BpmnModeler({
          additionalModules: [
-           nyanDrawModule,
-           nyanPaletteModule
+            nyanDrawModule,
+            nyanPaletteModule
          ]
-       });
+      });
       this.modeling = this.modeler.get('modeling');
       this.generateId = "createprocess"
    }
@@ -211,20 +211,28 @@ class ModalCreateTaskProcess extends Component {
    done = (e) => {
       e.preventDefault()
       let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-      this.modeling.setColor(element1 , {
+      this.modeling.setColor(element1, {
          fill: '#dde6ca',
          stroke: '#6b7060'
-     });
-     let element2 = element1.outgoing
+      });
+      let target = [];
+      element1.outgoing.forEach(x => {
+         target.push(x.target.id)
+      })
+      target.forEach(x => {
+         this.modeling.setColor(this.modeler.get('elementRegistry').get(x), {
+            fill: '#7236ff',
+            stroke: '#7236ff'
+         });
+      })
    }
    interactPopup = (event) => {
       let element = event.element;
-      console.log(element)
       let { department } = this.props
       let source = [];
       let destination = []
       element.incoming.forEach(x => {
-        source.push(x.source.businessObject.name)
+         source.push(x.source.businessObject.name)
       })
       console.log(source)
       element.outgoing.forEach(x => {
@@ -241,7 +249,7 @@ class ModalCreateTaskProcess extends Component {
                   ...state.info[`${element.businessObject.id}`],
                   organizationalUnit: this.props.listOrganizationalUnit[0]?._id,
                   followingTask: source,
-                  proceedTask: destination   
+                  proceedTask: destination
                }
             }
             return {
@@ -258,10 +266,6 @@ class ModalCreateTaskProcess extends Component {
          }
 
       })
-   //    this.modeling.setColor(element, {
-   //       fill: '#dde6ca',
-   //       stroke: '#6b7060'
-   //   });
    }
 
    deleteElements = (event) => {
@@ -538,7 +542,7 @@ class ModalCreateTaskProcess extends Component {
                                              onChange={this.handleChangeManager}
                                              multiple={true}
                                              value={manager}
-            
+
                                           />
                                        }
                                     </div>
@@ -583,7 +587,7 @@ class ModalCreateTaskProcess extends Component {
                                                 </button>
                                              </li>
                                              <li>
-                                                <button href title="Zoom out" onClick={this.handleZoomOut}>
+                                                <button title="Zoom out" onClick={this.handleZoomOut}>
                                                    <i className="fa fa-minus"></i>
                                                 </button>
                                              </li>
@@ -609,8 +613,8 @@ class ModalCreateTaskProcess extends Component {
                                              handleChangeAccountable={this.handleChangeAccountable}
                                              handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
                                              handleChangeTemplate={this.handleChangeTemplate}
-
                                              save={this.save}
+                                             done={this.done}
                                           />
                                        </div>
                                     }

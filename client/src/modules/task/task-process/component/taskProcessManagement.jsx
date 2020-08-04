@@ -88,14 +88,15 @@ class TaskProcessManagement extends Component {
     this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
   }
   setLimit =  (pageTotal) => {
-    console.log(pageTotal)
-    this.setState(state => {
+    if(pageTotal !== this.state.noResultsPerPage) {
+      this.setState(state => {
         return {
             ...state,
             noResultsPerPage: pageTotal
         }
     })
     this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
+    }
   }
   render() {
     const { translate, taskProcess,department } = this.props
@@ -177,7 +178,7 @@ class TaskProcessManagement extends Component {
               'Mô tả',
               'Người tạo mẫu',
             ]}
-            limit={5}
+            limit={this.state.noResultsPerPage}
             setLimit={this.setLimit}
             hideColumnOption={true}
           />
