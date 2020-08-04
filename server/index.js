@@ -56,14 +56,15 @@ const educationPrograms = require('./modules/trainning/education-program/educati
 const courses = require('./modules/trainning/course/course.route');
 
 //asset
-const assetType = require('./modules/assets-manager/asset-type-management/asset-type.route');
-const asset = require('./modules/assets-manager/asset-management/asset.route');
-const recommendProcure = require('./modules/assets-manager/recommend-equipment-procurement/recommend-procurement.route');
-const recommendDistribute = require('./modules/assets-manager/recommend-distribute-equipment/recommend-distribute.route');
+const assetType = require('./modules/asset/asset-type/asset-type.route');
+const asset = require('./modules/asset/asset-management/asset.route');
+const recommendProcure = require('./modules/asset/recommend-equipment-procurement/recommend-procurement.route');
+const recommendDistribute = require('./modules/asset/recommend-distribute-equipment/recommend-distribute.route');
 
 // report
 const taskReport = require('./modules/report/task-report/taskReport.route');
 
+const customer = require('./modules/customer/customer.route');
 
 // APP
 const app = express();
@@ -168,6 +169,8 @@ app.use("/recommenddistribute", recommendDistribute);
 // Task report
 app.use('/taskreports', taskReport);
 
+// Customer Management
+app.use('/customer', customer);
 
 // Start server
 const port = process.env.PORT || 5000;

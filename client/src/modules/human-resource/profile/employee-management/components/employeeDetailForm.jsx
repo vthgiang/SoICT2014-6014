@@ -30,7 +30,7 @@ class EmployeeDetailForm extends Component {
     }
     render() {
         const { employeesManager, translate } = this.props;
-        var { _id, employees, salaries, annualLeaves, commendations, disciplines, courses, roles } = this.state;
+        let { _id, employees, salaries, annualLeaves, commendations, disciplines, courses, roles } = this.state;
         return (
             <React.Fragment>
                 <DialogModal

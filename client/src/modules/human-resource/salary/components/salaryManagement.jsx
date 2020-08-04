@@ -208,7 +208,7 @@ class SalaryManagement extends Component {
                                 { key: "employeeNumber", value: "Mã số nhân viên" },
                                 { key: "fullName", value: "Họ và tên" },
                                 { key: "organizationalUnits", value: "Phòng ban" },
-                                { key: "position", value: "chức vụ" },
+                                { key: "position", value: "Chức vụ" },
                                 { key: "gender", value: "Giới tính" },
                                 { key: "birthdate", value: "Ngày sinh" },
                                 { key: "status", value: "Tình trạng lao động" },
@@ -228,12 +228,12 @@ class SalaryManagement extends Component {
     render() {
         const { list } = this.props.department;
         const { translate, salary } = this.props;
-        const { limit, page } = this.state;
+        const { limit, page, organizationalUnit } = this.state;
         let formater = new Intl.NumberFormat();
-        let listSalarys = [], listPosition = [];
+        let listSalarys = [], listPosition = [{ value: "", text: "Bạn chưa chọn đơn vị", disabled: true }];
 
-        if (this.state.organizationalUnit !== null) {
-            let organizationalUnit = this.state.organizationalUnit;
+        if (organizationalUnit !== null) {
+            listPosition = [];
             organizationalUnit.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
@@ -266,6 +266,7 @@ class SalaryManagement extends Component {
                                 <li><a title={translate('human_resource.salary.add_by_hand_title')} onClick={this.createSalary}>{translate('human_resource.salary.add_by_hand')}</a></li>
                             </ul>
                         </div>
+                        <ExportExcel id="export-salary" exportData={exportData} style={{ marginRight: 15 }} />
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
@@ -279,7 +280,7 @@ class SalaryManagement extends Component {
                             <label className="form-control-static">{translate('human_resource.position')}</label>
                             <SelectMulti id={`multiSelectPosition`} multiple="multiple"
                                 options={{ nonSelectedText: translate('human_resource.non_position'), allSelectedText: translate('human_resource.all_position') }}
-                                items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
+                                items={organizationalUnit === null ? listPosition : listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
                             </SelectMulti>
                         </div>
                     </div>
@@ -392,7 +393,6 @@ class SalaryManagement extends Component {
                         bonus={this.state.currentRow.bonus}
                     />
                 }
-                <ExportExcel id="export-salary" exportData={exportData} />
             </div>
         );
     }

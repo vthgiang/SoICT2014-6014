@@ -48,18 +48,18 @@ export function performtasks(state = {}, action) {
             return {
                 error: action.error
             };
-        case performTaskConstants.GET_TIMESHEETLOGS_REQUEST:
+        case performTaskConstants.GET_TIMESHEET_LOGS_REQUEST:
             return {
                 ...state,
                 loading: true
             };
-        case performTaskConstants.GET_TIMESHEETLOGS_SUCCESS:
+        case performTaskConstants.GET_TIMESHEET_LOGS_SUCCESS:
             return {
                 ...state,
                 loading: false,
                 logtimer: action.payload.data.content
             };
-        case performTaskConstants.GET_TIMESHEETLOGS_FAILURE:
+        case performTaskConstants.GET_TIMESHEET_LOGS_FAILURE:
             return {
                 error: action.error
             };

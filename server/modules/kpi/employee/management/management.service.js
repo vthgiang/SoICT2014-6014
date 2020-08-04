@@ -68,7 +68,7 @@ exports.copyKPI = async (id, data) => {
         .populate("organizationalUnit creator")
         .populate({ path: "kpis", populate: { path: 'parent' } });
 
-return employeeKpiSet;
+    return employeeKpiSet;
 }
 
 /**
@@ -94,7 +94,7 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
         endOfCurrentMonth = new Date(currentYear, currentMonth + 1);
         endOfLastMonth = new Date(currentYear, currentMonth);
     }
-    
+
     if (!organizationalUnitId) {
         organizationalUnit = await OrganizationalUnit.findOne({
             $or: [
@@ -162,7 +162,7 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
         { $replaceRoot: { newRoot: "$employeeKpis" } },
 
         {
-            $group: { 
+            $group: {
                 '_id': "$parentName",
                 'employeeKpi': { $push: "$$ROOT" }
             }
@@ -242,7 +242,7 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (query) => {
 exports.getAllChildrenOrganizational = async (companyId, roleId) => {
 
     let arrayTreeOranizationalUnit = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(companyId, roleId);
-    
+
     let childrenOrganizationalUnits, temporaryChild, deg = 0;
 
     temporaryChild = arrayTreeOranizationalUnit.children;

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { TimesheetsImportForm, TimesheetsCreateForm, TimesheetsEditForm } from './combinedContent';
-import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMulti, SlimScroll } from '../../../../common-components';
+import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMulti, SlimScroll, ExportExcel } from '../../../../common-components';
 
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { TimesheetsActions } from '../redux/actions';
@@ -169,14 +169,60 @@ class TimesheetsManagement extends Component {
         let month = [partMonth[1], partMonth[0]].join('-');
         this.props.searchTimesheets({ ...this.state, month: month });
     }
+
+    // Function chyển đổi dữ liệu chấm công thành dạng dữ liệu dùng export
+    convertDataToExportData = (data) => {
+        data = data.map((x, index) => {
+            let total = 0;
+            x.workSession1.forEach(x => {
+                if (x) {
+                    total += 1;
+                }
+            })
+            x.workSession2.forEach(x => {
+                if (x) {
+                    total += 1;
+                }
+            })
+            return {
+                STT: index + 1,
+                employeeNumber: x.employee.employeeNumber,
+                fullName: x.employee.fullName,
+                total: total / 2,
+            };
+
+        })
+        let exportData = {
+            fileName: "Bảng chấm công",
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "employeeNumber", value: "Mã số nhân viên" },
+                                { key: "fullName", value: "Họ và tên" },
+                                { key: "total", value: "Tổng số công", type: "Number" },
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData
+    }
+
+
     render() {
         const { list } = this.props.department;
         const { translate, timesheets } = this.props;
-        const { month, limit, page, allDayOfMonth, dayNow } = this.state;
+        const { month, limit, page, allDayOfMonth, dayNow, organizationalUnit } = this.state;
 
-        var listTimesheets = [], listPosition = [];
-        if (this.state.organizationalUnit !== null) {
-            let organizationalUnit = this.state.organizationalUnit;
+        var listTimesheets = [], listPosition = [{ value: "", text: "Bạn chưa chọn đơn vị", disabled: true }];
+        if (organizationalUnit !== null) {
+            listPosition = [];
             organizationalUnit.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
@@ -192,6 +238,9 @@ class TimesheetsManagement extends Component {
         if (timesheets.isLoading === false) {
             listTimesheets = timesheets.listTimesheets;
         }
+
+        let exportData = this.convertDataToExportData(listTimesheets);
+
         let pageTotal = (timesheets.totalList % limit === 0) ?
             parseInt(timesheets.totalList / limit) :
             parseInt((timesheets.totalList / limit) + 1);
@@ -207,6 +256,7 @@ class TimesheetsManagement extends Component {
                                 <li><a title={'Thêm mới thông tin chấm công'} onClick={this.createTimesheets}>Thêm bằng tay</a></li>
                             </ul>
                         </div>
+                        <ExportExcel id="export-timesheets" exportData={exportData} style={{ marginRight: 15 }} />
                     </div>
 
                     <div className="form-inline">
@@ -221,7 +271,7 @@ class TimesheetsManagement extends Component {
                             <label className="form-control-static">{translate('human_resource.position')}</label>
                             <SelectMulti id={`multiSelectPosition`} multiple="multiple"
                                 options={{ nonSelectedText: translate('human_resource.non_position'), allSelectedText: translate('human_resource.all_position') }}
-                                items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
+                                items={organizationalUnit === null ? listPosition : listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
                             </SelectMulti>
                         </div>
                     </div>

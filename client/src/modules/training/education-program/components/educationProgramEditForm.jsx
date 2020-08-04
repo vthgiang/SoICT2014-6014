@@ -108,8 +108,6 @@ class EducationProgramEditForm extends Component {
                 errorOnOrganizationalUnit: undefined,
                 errorOnPosition: undefined,
                 errorOnProgramName: undefined,
-
-
             }
         } else {
             return null;
@@ -120,7 +118,7 @@ class EducationProgramEditForm extends Component {
         const { _id, name, programId, organizationalUnit, position, errorOnProgramName,
             errorOnOrganizationalUnit, errorOnPosition, totalList } = this.state;
         const { list } = this.props.department;
-        var listPosition = [];
+        let listPosition = [];
         if (organizationalUnit !== null) {
             organizationalUnit.forEach(u => {
                 list.forEach(x => {
@@ -136,15 +134,15 @@ class EducationProgramEditForm extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-edit-education" isLoading={education.isLoading}
-                    formID="form-edit-education"
+                    modalID={`modal-edit-education${_id}`} isLoading={education.isLoading}
+                    formID={`form-edit-education${_id}`}
                     title="Chỉnh sửa chương trình đào tạo"
                     func={this.save}
                     size={50}
                     maxWidth={500}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form className="form-group" id="form-edit-education" >
+                    <form className="form-group" id={`form-edit-education${_id}`} >
                         <div className={`form-group ${errorOnOrganizationalUnit === undefined ? "" : "has-error"}`}>
                             <label>Áp dụng cho đơn vị<span className="text-red">*</span></label>
                             <SelectMulti id={`edit-multiSelectUnit${_id}`} multiple="multiple" display='inline-block'

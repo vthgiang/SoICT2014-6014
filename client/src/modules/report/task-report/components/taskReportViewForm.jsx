@@ -4,10 +4,8 @@ import { TaskReportActions } from '../redux/actions';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal } from '../../../../common-components';
-import { taskManagementActions } from '../../../task/task-management/redux/actions'
-import c3 from 'c3';
-import 'c3/c3.css';
-import * as d3 from "d3";
+import { taskManagementActions } from '../../../task/task-management/redux/actions';
+import { TwoBarChart } from './twoBarChart';
 class TaskReportViewForm extends Component {
     constructor(props) {
         super(props);
@@ -24,17 +22,16 @@ class TaskReportViewForm extends Component {
 
 
     render() {
-        const { tasks, user, passState, reports, translate } = this.props;
+        const { tasks, user, reports, translate } = this.props;
         let formater = new Intl.NumberFormat();
         let listTaskEvaluation = tasks.listTaskEvaluations;
-        let listTaskInfo = tasks.totalTaskInfo;
-        let titlePassState, headTable = [];
+        let taskInfoName, headTable = [];
 
         // hiển thị trường thông tin hiện trong báo cáo
-        if (passState && listTaskEvaluation && listTaskEvaluation.length !== 0) {
-            titlePassState = listTaskEvaluation[0];
-            titlePassState.taskInformations.forEach(x => {
-                if (passState.find(y => y === x.name)) {
+        if (listTaskEvaluation && listTaskEvaluation.length !== 0) {
+            taskInfoName = listTaskEvaluation[0];
+            taskInfoName.taskInformations.forEach(x => {
+                if (x.type === "Number") {
                     headTable = [...headTable, x.name];
                 }
             })
@@ -48,9 +45,19 @@ class TaskReportViewForm extends Component {
                     title="Xem chi tiết báo cáo"
                     hasSaveButton={true}
                     func={this.save}
+                    size={100}
                 >
                     {/* Modal Body */}
+                    <div className="row">
+                        {
+                            (headTable) && headTable.map((x, key) => (
+                                <div key={key} className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                                    <TwoBarChart key={key} nameData1={x} nameData2='Tổng doanh thu' nameChart={'Báo cáo công việc tháng 7'} />
+                                </div>
+                            ))
 
+                        }
+                    </div>
                     <div className="form-inline">
                         <button id="exportButton" className="btn btn-sm btn-success " style={{ marginBottom: '10px' }}><span className="fa fa-file-excel-o"></span> Export to Excel</button>
                     </div>
@@ -104,9 +111,9 @@ class TaskReportViewForm extends Component {
                                             }
 
                                             let contentTable = [];
-                                            if (passState) {
+                                            if (headTable) {
                                                 item.taskInformations.forEach(element => {
-                                                    if (passState.find(y => y === element.name)) {
+                                                    if (element.type === 'Number') {
                                                         contentTable = [...contentTable, element.value]
                                                     }
                                                 })

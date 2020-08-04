@@ -104,7 +104,7 @@ class HolidayCreateForm extends Component {
         const { startDate, endDate, description, errorOnStartDate, errorOnEndDate, errorOnDescription } = this.state;
         return (
             <React.Fragment>
-                <ButtonModal modalID="modal-create-holiday" button_name="Thêm mới" title="Thêm mới lịch nghỉ" />
+                {/* <ButtonModal modalID="modal-create-holiday" button_name="Thêm mới" title="Thêm mới lịch nghỉ" /> */}
                 <DialogModal
                     modalID="modal-create-holiday" isLoading={holiday.isLoading}
                     formID="form-create-holiday"

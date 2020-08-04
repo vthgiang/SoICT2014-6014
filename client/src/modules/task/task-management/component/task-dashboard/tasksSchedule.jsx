@@ -1,12 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
-import { DatePicker } from '../../../../../common-components/index'
+
 import { taskManagementActions } from '../../../task-management/redux/actions'
+
 import { ModalDetailTask } from './modalDetailTask'
+
+import Timeline, { TodayMarker } from "react-calendar-timeline"
+import { DatePicker } from '../../../../../common-components/index'
+
 import Swal from 'sweetalert2'
 import moment from 'moment'
-import Timeline, {TodayMarker} from "react-calendar-timeline"
 import 'react-calendar-timeline/lib/Timeline.css'
 import './calendar.css'
 
@@ -54,44 +58,49 @@ class TasksSchedule extends Component {
   componentDidMount = async () => {
     let { infoSearch } = this.state;
     let { organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = infoSearch;
-    
+    let unitIds = this.props.units ? this.props.units : "[]";
     await this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
-    
+    await this.props.getTaskInOrganizationUnitByMonth('[]', startDateAfter, endDateBefore);
     await this.setState(state => {
-        return {
-            ...state,
-            dataStatus: this.DATA_STATUS.QUERYING,
-            willUpdate: true       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-        };
+      return {
+        ...state,
+        dataStatus: this.DATA_STATUS.QUERYING,
+        willUpdate: true       // Khi true sẽ cập nhật dữ liệu vào props từ redux
+      };
     });
   }
 
   shouldComponentUpdate = async (nextProps, nextState) => {
     if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-        if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks || !nextProps.tasks.tasksbyuser) {
-            return false;
+      if (this.props.TaskOrganizationUnitDashboard) {
+        if (!nextProps.tasks.organizationUnitTasks) {
+          return false;
         }
+      }
+      else if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks || !nextProps.tasks.tasksbyuser) {
+        return false;
+      }
 
-        this.setState(state => {
-            return {
-                ...state,
-                dataStatus: this.DATA_STATUS.AVAILABLE
-            }
-        });
+      this.setState(state => {
+        return {
+          ...state,
+          dataStatus: this.DATA_STATUS.AVAILABLE
+        }
+      });
     } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
-        this.setState(state => {
-            return {
-                ...state,
-                dataStatus: this.DATA_STATUS.FINISHED,
-                willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-            }
-        });
+      this.setState(state => {
+        return {
+          ...state,
+          dataStatus: this.DATA_STATUS.FINISHED,
+          willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
+        }
+      });
 
-        return true;
+      return true;
     }
 
     return false;
-}
+  }
 
   formatDate(date) {
     let d = new Date(date),
@@ -133,15 +142,15 @@ class TasksSchedule extends Component {
     if (endDateBefore === undefined) endDateBefore = null;
     if (startDateAfter !== null) {
       startAfterSpl = startDateAfter.split("-");
-      startdate_after = new Date(startAfterSpl[1], startAfterSpl[0], 0);
+      startdate_after = new Date(startAfterSpl[0], startAfterSpl[1], 0);
     }
     if (endDateBefore !== null) {
       endBeforeSpl = endDateBefore.split("-");
-      enddate_before = new Date(endBeforeSpl[1], endBeforeSpl[0], 28);
+      enddate_before = new Date(endBeforeSpl[0], endBeforeSpl[1], 28);
     }
     if (startdate_after && enddate_before &&
       Date.parse(startdate_after) > Date.parse(enddate_before)) {
-        const {translate} = this.props;
+      const { translate } = this.props;
       Swal.fire({
         title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
         type: 'warning',
@@ -150,28 +159,40 @@ class TasksSchedule extends Component {
       })
     }
     else {
-      this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
+      if (this.props.TaskOrganizationUnitDashboard) {
+        // let unitIds = this.props.units ? this.props.units : "[]";
+        this.props.getTaskInOrganizationUnitByMonth('[]', startDateAfter, endDateBefore)
+      }
+      else this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
+
     }
   }
   handleStartDateChange = async (value) => {
+
+    let month = value.split("-");
+    let startAfter = [month[1], month[0]].join("-");
+
     await this.setState(state => {
       return {
         ...state,
         infoSearch: {
           ...state.infoSearch,
-          startDateAfter: value,
+          startDateAfter: startAfter,
         }
       }
     });
 
   }
   handleEndDateChange = async (value) => {
+    let month = value.split("-");
+    let endBefore = [month[1], month[0]].join("-");
+    console.log(endBefore);
     await this.setState(state => {
       return {
         ...state,
         infoSearch: {
           ...state.infoSearch,
-          endDateBefore: value,
+          endDateBefore: endBefore,
         }
       }
     });
@@ -179,8 +200,17 @@ class TasksSchedule extends Component {
   }
   getDurations() {
     const { tasks } = this.props;
-    const taskList = tasks && tasks.responsibleTasks;
+    console.log(tasks)
+    var taskList;
     let durations = [];
+    if (tasks) {
+      if (this.props.TaskOrganizationUnitDashboard) {
+        taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
+      }
+      else taskList = tasks.responsibleTasks
+
+    }
+
 
     if (taskList) {
       for (let i = 1; i <= taskList.length; i++) {
@@ -302,15 +332,15 @@ class TasksSchedule extends Component {
             canResize={false}
             defaultTimeStart={defaultTimeStart}
             defaultTimeEnd={defaultTimeEnd}
-            >
+          >
             <TodayMarker date={today}>
               {
-                ({styles, date}) => {
-                  const customStyles ={
+                ({ styles, date }) => {
+                  const customStyles = {
                     ...styles,
                     backgroundColor: '#d73925',
                     width: '3px',
-                    marginLeft:'-4px'
+                    marginLeft: '-4px'
 
                   }
                   return <div style={customStyles}></div>
@@ -334,7 +364,8 @@ function mapState(state) {
 }
 const actions = {
   getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
-  getTaskById: taskManagementActions.getTaskById
+  getTaskById: taskManagementActions.getTaskById,
+  getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
 }
 const connectedSchedule = connect(mapState, actions)(withTranslate(TasksSchedule))
 export { connectedSchedule as TasksSchedule }

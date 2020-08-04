@@ -258,8 +258,8 @@ class EmployeeKpiEvaluationDashboard extends Component {
             activatedKpi = currentMonthEmployeeKpiSets.filter(item => item.status == 2);
             activatedKpi = activatedKpi.length;
         }
-        if (this.props.dashboardEvaluationEmployeeKpiSet.employees) {
-            numberOfEmployee = this.props.dashboardEvaluationEmployeeKpiSet.employees.length;
+        if (this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+            numberOfEmployee = this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.employees.length;
         }
 
 
