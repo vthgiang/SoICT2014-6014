@@ -99,18 +99,6 @@ class ModalEditTaskProcess extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.idProcess !== this.state.idProcess) {
-            // this.props.getDepartment();
-            // let { user } = this.props;
-            // let defaultUnit;
-            // if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
-            //     item.dean === this.state.currentRole
-            //     || item.viceDean === this.state.currentRole
-            //     || item.employee === this.state.currentRole);
-            // if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
-            //     // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
-            //     defaultUnit = user.organizationalUnitsOfUser[0]
-            // }
-            // this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
             return true;
         }
@@ -491,7 +479,7 @@ class ModalEditTaskProcess extends Component {
                     // disableSubmit={!this.isTaskFormValidated()}
                     title={this.props.title}
                     func={this.save}
-                    bodyStyle={{paddingTop: 0, paddingBottom: 0}}
+                    bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
                 >
                     <div>
 
@@ -502,10 +490,6 @@ class ModalEditTaskProcess extends Component {
                             </ul>
                             <div className="tab-content">
                                 <div className={selectedEdit === "info" ? "active tab-pane" : "tab-pane"} id="info-edit">
-                                    {/* <fieldset className="scheduler-border">
-                                        <legend className="scheduler-border">Thông tin quy trình</legend> */}
-
-
                                     <div className='row'>
                                         <div className='col-md-6'>
                                             <div className="form-group">
@@ -556,82 +540,67 @@ class ModalEditTaskProcess extends Component {
                                             </div>
                                         </div>
                                     </div>
-
-                                    {/* </fieldset> */}
                                 </div>
                             </div>
-                            <div className="tab-content" style={{padding: 0, marginTop: -15}}>
+                            <div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
                                 <div className={selectedEdit === "process" ? "active tab-pane" : "tab-pane"} id="process-edit">
-                                    {/* <fieldset className="scheduler-border"> */}
-                                        {/* <legend className="scheduler-border">Quy trình công việc</legend> */}
-                                        {/* <div className='row'> */}
-                                            {/* <div className="tool-bar-xml">
+                                    <div className="row">
+                                        {/* Quy trình công việc */}
+                                        <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
+                                            <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
                                                 <button onClick={this.exportDiagram}>Export XML</button>
                                                 <button onClick={this.downloadAsSVG}>Save SVG</button>
                                                 <button onClick={this.downloadAsImage}>Save Image</button>
                                                 <button onClick={this.downloadAsBpmn}>Download BPMN</button>
                                             </div>
-                                            <div id={this.generateId} className={showInfo ? 'col-md-8' : 'col-md-12'}></div> */}
-                                    
-                                        {/* Quy trình công việc */}
-                                        <div>
-                                            <div id={this.generateId} className={showInfo ? 'col-md-8' : 'col-md-12'}>
-                                                <div style={{position: "absolute", right: 5, top: 5}}>
-                                                    <button onClick={this.exportDiagram}>Export XML</button>
-                                                    <button onClick={this.downloadAsSVG}>Save SVG</button>
-                                                    <button onClick={this.downloadAsImage}>Save Image</button>
-                                                    <button onClick={this.downloadAsBpmn}>Download BPMN</button>
+                                            <div id={this.generateId}></div>
+                                            <div className="row">
+                                                <div className="io-zoom-controls">
+                                                    <ul className="io-zoom-reset io-control io-control-list">
+                                                        <li>
+                                                            <button title="Reset zoom" onClick={this.handleZoomReset}>
+                                                                <i className="fa fa-crosshairs"></i>
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button title="Zoom in" onClick={this.handleZoomIn}>
+                                                                <i className="fa fa-plus"></i>
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button href title="Zoom out" onClick={this.handleZoomOut}>
+                                                                <i className="fa fa-minus"></i>
+                                                            </button>
+                                                        </li>
+                                                    </ul>
                                                 </div>
                                             </div>
-                                            <div className={showInfo ? 'col-md-4' : undefined}>
-
-                                                {
-                                                    (showInfo) &&
+                                        </div>
+                                        <div className={showInfo ? 'col-md-4' : undefined}>
+                                            {
+                                                (showInfo) &&
+                                                <div>
                                                     <div>
-                                                        <div>
-                                                            <h1>Option {name}</h1>
-                                                        </div>
-                                                        <FormInfoTask
-                                                            listOrganizationalUnit={listOrganizationalUnit}
-                                                            action='edit'
-                                                            id={id}
-                                                            info={(info && info[`${id}`]) && info[`${id}`]}
-                                                            handleChangeName={this.handleChangeName}
-                                                            handleChangeDescription={this.handleChangeDescription}
-                                                            handleChangeResponsible={this.handleChangeResponsible}
-                                                            handleChangeAccountable={this.handleChangeAccountable}
-                                                            handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
-                                                            handleChangeTemplate={this.handleChangeTemplate}
-
-                                                            save={this.save}
-                                                        />
+                                                        <h1>Option {name}</h1>
                                                     </div>
-                                                }
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            <div className="io-zoom-controls">
-                                                <ul className="io-zoom-reset io-control io-control-list">
-                                                    <li>
-                                                        <button title="Reset zoom" onClick={this.handleZoomReset}>
-                                                            <i className="fa fa-crosshairs"></i>
-                                                        </button>
-                                                    </li>
-                                                    <li>
-                                                        <button title="Zoom in" onClick={this.handleZoomIn}>
-                                                            <i className="fa fa-plus"></i>
-                                                        </button>
-                                                    </li>
-                                                    <li>
-                                                        <button href title="Zoom out" onClick={this.handleZoomOut}>
-                                                            <i className="fa fa-minus"></i>
-                                                        </button>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
+                                                    <FormInfoTask
+                                                        listOrganizationalUnit={listOrganizationalUnit}
+                                                        action='edit'
+                                                        id={id}
+                                                        info={(info && info[`${id}`]) && info[`${id}`]}
+                                                        handleChangeName={this.handleChangeName}
+                                                        handleChangeDescription={this.handleChangeDescription}
+                                                        handleChangeResponsible={this.handleChangeResponsible}
+                                                        handleChangeAccountable={this.handleChangeAccountable}
+                                                        handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
+                                                        handleChangeTemplate={this.handleChangeTemplate}
 
-                                    {/* </fieldset> */}
+                                                        save={this.save}
+                                                    />
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

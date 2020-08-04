@@ -21,6 +21,7 @@
 .tool-bar-xml {
     display: flex;
     justify-content: flex-end;
+    margin-right: -15px;
 }
 
 .io-zoom-controls ul {
@@ -31,7 +32,7 @@
 
 .io-zoom-controls li {
     list-style: none;
-    margin: -15px 0;
+    margin: 0px 0;
     padding: 0 15px;
 }
 
@@ -41,7 +42,6 @@
     cursor: pointer;
     font-size: 22px;
     line-height: 26px;
-    /* color: #555555; */
     color: #aaa;
     background: none;
     border: none;
@@ -75,12 +75,18 @@
     border: none;
 }
 
+.contain-border {
+    border: 1px solid;
+    margin: 0;
+    padding: 0 15px;
+}
+
 /* .djs-container {
     position: relative !important;
     overflow: scroll !important;
     background-color: white !important;
 } */
 #createprocess svg, #editprocess svg, #viewprocess svg{
-    border: 1px solid black;
-    height: calc(100vh - 170px);
+    /* border: 1px solid black; */
+    height: calc(100vh - 250px);
 }
