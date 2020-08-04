@@ -124,10 +124,11 @@ class UsageLogEditModal extends Component {
 
     // Bắt sự kiện submit form
     save = async () => {
-        var partStart = this.state.startDate.split('-');
+        var partStart = this.formatDate(this.state.startDate).split('-');
         var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
-        var partEnd = this.state.endDate.split('-');
+        var partEnd = this.formatDate(this.state.endDate).split('-');
         var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+
         if (this.isFormValidated()) {
             return this.props.handleChange({ ...this.state, startDate: startDate, endDate: endDate });
         }
@@ -154,9 +155,9 @@ class UsageLogEditModal extends Component {
     render() {
         const { translate, id, user } = this.props;
         var userlist = user.list;
-        const {
-            usedBy, startDate, endDate, description, errorOnDescription } = this.state;
-            console.log(this.state, 'this.state')
+        const { usedBy, startDate, endDate, description, errorOnDescription } = this.state;
+
+        console.log(this.state, 'this.state')
         return (
             <React.Fragment>
                 <DialogModal

@@ -17,7 +17,7 @@ export const configTaskTempalte= {
     mandatory : "Bắt buộc",
     taskInformations: "Danh sách thông tin",
     nameTaskInformation : "Tên thông tin",
-   descriptionTaskInformation: "Mô tả thông tin",
+    descriptionTaskInformation: "Mô tả thông tin",
     type: "Kiểu dữ liệu",
     filledByAccountableEmployeesOnly: "Chỉ quản lý được điền",
     file: {

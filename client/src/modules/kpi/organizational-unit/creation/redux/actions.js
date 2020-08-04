@@ -8,6 +8,8 @@ export const createUnitKpiActions = {
     deleteTargetKPIUnit,
     editStatusKPIUnit,
     getKPIParent,
+    getAllOrganizationalUnitKpiSetByTime,
+    getAllOrganizationalUnitKpiSetByTimeOfChildUnit,
     addTargetKPIUnit,
     editTargetKPIUnit,
     addKPIUnit
@@ -39,6 +41,47 @@ function getCurrentKPIUnit(roleId, organizationalUnitId = undefined, month = und
     };
 }
 
+// Lấy danh sách các tập KPI đơn vị theo từng năm của từng đơn vị 
+function getAllOrganizationalUnitKpiSetByTime(organizationalUnitId, startDate, endDate) {
+    return dispatch => {
+        dispatch({ type: createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_REQUEST });
+
+        createUnitKpiServices.getAllOrganizationalUnitKpiSetByTime(organizationalUnitId, startDate, endDate)
+            .then(res => {
+                dispatch({
+                    type: createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
+
+// Lấy danh sách các tập KPI đơn vị theo từng năm của các đơn vị là con của đơn vị hiện tại và đơn vị hiện tại
+function getAllOrganizationalUnitKpiSetByTimeOfChildUnit(roleId, startDate, endDate) {
+    return dispatch => {
+        dispatch({ type: createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_REQUEST });
+
+        createUnitKpiServices.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(roleId, startDate, endDate)
+            .then(res => {
+                dispatch({
+                    type: createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_OF_CHILDUNIT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
 // Chỉnh sửa kpi đơn vị
 function editKPIUnit(id, newKPI) {
     return dispatch => {

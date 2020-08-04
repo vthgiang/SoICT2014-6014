@@ -1,40 +1,133 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import AdministrationAssetTypes from './types';
-import AssetTypeManager from './AssetTypeManager';
-
-class ManagerAssetType extends Component {
+import { AssetTypeActions } from '../redux/actions';
+import CreateForm from './createForm';
+import EditForm from './editForm';
+import './domains.css'
+import Swal from 'sweetalert2';
+import { Tree, SlimScroll } from '../../../../common-components';
+class AdministrationAssetTypes extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            domainParent: [],
+            deleteNode: []
+        }
     }
-    render() {
-        const { translate } = this.props;
-        return (
-            // <React.Fragment>
-            //     <AdministrationAssetTypes />
-            // </React.Fragment>
 
-            <div className="nav-tabs-custom">
-                <ul className="nav nav-tabs">
-                    <li className="active"><a href="#assettype-tree" data-toggle="tab">Danh mục loại tài sản</a></li>
-                    <li><a href="#assettype-table" data-toggle="tab">Danh sách loại tài sản</a></li>
-                </ul>
-                <div className="tab-content">
-                    <div className="tab-pane active" id="assettype-tree">
-                        <AdministrationAssetTypes />
-                    </div>
-                    <div className="tab-pane" id="assettype-table">
-                        <AssetTypeManager />
+    componentDidMount() {
+        this.props.getAssetTypes();
+    }
+
+    onChanged = async (e, data) => {
+        await this.setState({ currentDomain: data.node })
+
+        window.$(`#edit-asset-type`).slideDown();;
+    }
+
+    checkNode = (e, data) => { //chọn xóa một node và tất cả các node con của nó
+        this.setState({
+            domainParent: [...data.selected],
+            deleteNode: [...data.selected, ...data.node.children_d]
+        })
+    }
+
+    unCheckNode = (e, data) => {
+        this.setState({
+            domainParent: [...data.selected],
+            deleteNode: [...data.selected, ...data.node.children_d]
+        })
+    }
+
+    deleteDomains = () => {
+        const { translate } = this.props;
+        const { deleteNode } = this.state;
+        Swal.fire({
+            html: `<h4 style="color: red"><div>${translate('document.administration.domains.delete')}</div>?</h4>`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: translate('general.no'),
+            confirmButtonText: translate('general.yes'),
+        }).then((result) => {
+            if (result.value && deleteNode.length > 0) {
+                this.props.deleteAssetTypes(deleteNode, "many");
+                this.setState({
+                    deleteNode: []
+                });
+            }
+        })
+    }
+
+    render() {
+        const { domainParent, deleteNode } = this.state;
+        const { translate } = this.props;
+        const { list } = this.props.assetType.administration.types;
+        const dataTree = list.map(node => {
+            return {
+                ...node,
+                id: node._id,
+                text: node.typeName,
+                state: { "opened": true },
+                parent: node.parent ? node.parent.toString() : "#"
+            }
+        })
+
+        console.log("11111***", dataTree);
+
+        return (
+            <div className="box">
+                <div className="box-header with-border">
+                    <button className="btn btn-success pull-right" onClick={() => {
+                        window.$('#modal-create-asset-type').modal('show');
+                    }} title={translate('document.administration.domains.add')} disabled={domainParent.length > 1 ? true : false}>{translate('general.add')}</button>
+                    {
+                        deleteNode.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteDomains}>Xóa</button>
+                    }
+                    <CreateForm domainParent={this.state.domainParent} />
+                </div>
+
+                <div className="box-body">
+                    <div className="row">
+                        <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
+                            <div className="domain-tree" id="domain-tree">
+                                <Tree
+                                    id="tree-qlcv-document"
+                                    onChanged={this.onChanged}
+                                    checkNode={this.checkNode}
+                                    unCheckNode={this.unCheckNode}
+                                    data={dataTree}
+                                />
+                            </div>
+                            <SlimScroll outerComponentId="domain-tree" innerComponentId="tree-qlcv-document" innerComponentWidth={"100%"} activate={true} />
+                        </div>
+                        <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                            {
+                                this.state.currentDomain &&
+                                <EditForm
+                                    domainId={this.state.currentDomain.id}
+                                    domainCode={this.state.currentDomain.original.typeNumber}
+                                    domainName={this.state.currentDomain.text}
+                                    domainDescription={this.state.currentDomain.original.description ? this.state.currentDomain.original.description : ""}
+                                    domainParent={this.state.currentDomain.parent}
+                                />
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
-
         );
     }
 }
 
 const mapStateToProps = state => state;
 
-export default connect(mapStateToProps, null)(withTranslate(ManagerAssetType)); 
+const mapDispatchToProps = {
+    getAssetTypes: AssetTypeActions.getAssetTypes,
+    editAssetType: AssetTypeActions.editAssetType,
+    deleteAssetTypes: AssetTypeActions.deleteAssetTypes,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(AdministrationAssetTypes));

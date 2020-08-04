@@ -16,10 +16,18 @@ export const TaskProcessService = {
 /**
  * Lấy tất cả xml diagram
  */
-function getAllXmlDiagram() {
+function getAllXmlDiagram( pageNumber, noResultsPerPage, name ) {
+    let userId = getStorage("userId");
+    console.log('00000', pageNumber, noResultsPerPage, name);
     return sendRequest({
         url: `${LOCAL_SERVER_API}/taskprocess/diagrams`,
         method: 'GET',
+        params: {
+            userId: userId,
+            pageNumber: pageNumber,
+            noResultsPerPage: noResultsPerPage,
+            name: name,
+        },
     }, false, true, 'task.task_process');
 }
 
@@ -42,7 +50,7 @@ function createXmlDiagram(data) {
         url: `${LOCAL_SERVER_API}/taskprocess/diagrams`,
         method: 'POST',
         data: data
-    }, false, true, 'task.task_process');
+    }, true, true, 'task.task_process');
 }
 
 /**
@@ -55,7 +63,7 @@ function editXmlDiagram(diagramId,data) {
         url: `${LOCAL_SERVER_API}/taskprocess/diagrams/${diagramId}`,
         method: 'PATCH',
         data: data
-    }, false, true, 'task.task_process');
+    }, true, true, 'task.task_process');
 }
 
 /**

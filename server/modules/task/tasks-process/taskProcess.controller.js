@@ -7,7 +7,7 @@ const { LogInfo, LogError } = require('../../../logs');
  */
 exports.getAllXmlDiagrams = async (req, res) => {
   try {
-    var data = await TaskProcessService.getAllXmlDiagram(req.body);
+    var data = await TaskProcessService.getAllXmlDiagram(req.query, req.body);
     await LogInfo(req.user.email, `get all xml diagram `, req.user.company);
     res.status(200).json({
       success: true,

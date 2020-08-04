@@ -208,7 +208,7 @@ class SalaryManagement extends Component {
                                 { key: "employeeNumber", value: "Mã số nhân viên" },
                                 { key: "fullName", value: "Họ và tên" },
                                 { key: "organizationalUnits", value: "Phòng ban" },
-                                { key: "position", value: "chức vụ" },
+                                { key: "position", value: "Chức vụ" },
                                 { key: "gender", value: "Giới tính" },
                                 { key: "birthdate", value: "Ngày sinh" },
                                 { key: "status", value: "Tình trạng lao động" },
@@ -266,6 +266,7 @@ class SalaryManagement extends Component {
                                 <li><a title={translate('human_resource.salary.add_by_hand_title')} onClick={this.createSalary}>{translate('human_resource.salary.add_by_hand')}</a></li>
                             </ul>
                         </div>
+                        <ExportExcel id="export-salary" exportData={exportData} style={{ marginRight: 15 }} />
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
@@ -392,7 +393,6 @@ class SalaryManagement extends Component {
                         bonus={this.state.currentRow.bonus}
                     />
                 }
-                <ExportExcel id="export-salary" exportData={exportData} />
             </div>
         );
     }

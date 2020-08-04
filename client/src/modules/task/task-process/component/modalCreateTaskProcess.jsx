@@ -53,6 +53,9 @@ const initialDiagram =
    '</bpmndi:BPMNDiagram>' +
    '</bpmn:definitions>';
 
+
+var zlevel = 1;
+
 class ModalCreateTaskProcess extends Component {
 
    constructor() {
@@ -139,6 +142,20 @@ class ModalCreateTaskProcess extends Component {
          }
       })
    }
+
+   handleChangeTemplate = async (value) => {
+      await this.setState(state => {
+         state.info[`${state.id}`] = {
+            ...state.info[`${state.id}`],
+            code: state.id,
+            taskTemplate: value,
+         }
+         return {
+            ...state,
+         }
+      })
+   }
+
    handleChangeResponsible = async (value) => {
       // let { value } = e.target;
       await this.setState(state => {
@@ -281,6 +298,8 @@ class ModalCreateTaskProcess extends Component {
          nameProcess: this.state.processName,
          description: this.state.processDescription,
          creator: this.state.userId,
+         viewer: this.state.viewer,
+         manager: this.state.manager,
          xmlDiagram: this.state.xmlDiagram,
          infoTask: this.state.info
       }
@@ -381,6 +400,44 @@ class ModalCreateTaskProcess extends Component {
       });
    }
 
+
+   handleZoomOut = async () => {
+      let zstep = 0.2;
+      let canvas = this.modeler.get('canvas');
+      let eventBus = this.modeler.get('eventBus');
+
+      // set initial zoom level
+      canvas.zoom(zlevel, 'auto');
+
+      // update our zoom level on viewbox change
+      await eventBus.on('canvas.viewbox.changed', function (evt) {
+         zlevel = evt.viewbox.scale;
+      });
+      zlevel = Math.max(zlevel - zstep, zstep);
+      canvas.zoom(zlevel, 'auto');
+   }
+
+   handleZoomReset = () => {
+      let canvas = this.modeler.get('canvas');
+      canvas.zoom('fit-viewport');
+   }
+
+   handleZoomIn = async () => {
+      let zstep = 0.2;
+      let canvas = this.modeler.get('canvas');
+      let eventBus = this.modeler.get('eventBus');
+
+      // set initial zoom level
+      canvas.zoom(zlevel, 'auto');
+      // update our zoom level on viewbox change
+      await eventBus.on('canvas.viewbox.changed', function (evt) {
+         zlevel = evt.viewbox.scale;
+      });
+
+      zlevel = Math.min(zlevel + zstep, 7);
+      canvas.zoom(zlevel, 'auto');
+   }
+
    // Các hàm xử lý sự kiện của form 
    handleChangeContent = async (content) => {
       await this.setState(state => {
@@ -416,7 +473,7 @@ class ModalCreateTaskProcess extends Component {
 
    render() {
       const { translate, department, role } = this.props;
-      const { id, info, showInfo, processDescription, processName, viewer, manager, selectedCreate } = this.state;
+      const { id, name, info, showInfo, processDescription, processName, viewer, manager, selectedCreate } = this.state;
       const { listOrganizationalUnit } = this.props;
 
       let listRole = [];
@@ -434,16 +491,17 @@ class ModalCreateTaskProcess extends Component {
                resetOnClose={true}
                title={this.props.title}
                func={this.save}
+               bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
             >
                <form id="form-create-process-task">
                   <div>
-                     <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
+                     <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
                         <ul className="nav nav-tabs">
-                           <li className="active"><a href="#info" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
-                           <li><a href="#process" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
+                           <li className="active"><a href="#info-create" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
+                           <li><a href="#process-create" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
                         </ul>
                         <div className="tab-content">
-                           <div className={selectedCreate === "info" ? "active tab-pane" : "tab-pane"} id="info">
+                           <div className={selectedCreate === "info" ? "active tab-pane" : "tab-pane"} id="info-create">
                               <div className='row'>
                                  <div className='col-md-6'>
                                     <div className="form-group">
@@ -497,45 +555,66 @@ class ModalCreateTaskProcess extends Component {
                               </div>
                            </div>
                         </div>
-                        <div className="tab-content">
-                           <div className={selectedCreate === "process" ? "active tab-pane" : "tab-pane"} id="process">
-                              <fieldset className="scheduler-border">
-                                 {/* <legend className="scheduler-border">Quy trình công việc</legend> */}
-                                 <div className='row'>
-                                    <div>
+                        <div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
+                           <div className={selectedCreate === "process" ? "active tab-pane" : "tab-pane"} id="process-create">
+
+                              <div className="row">
+                                 {/* Quy trình công việc */}
+                                 <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
+                                    <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
                                        <button onClick={this.exportDiagram}>Export XML</button>
                                        <button onClick={this.downloadAsSVG}>Save SVG</button>
                                        <button onClick={this.downloadAsImage}>Save Image</button>
                                        <button onClick={this.downloadAsBpmn}>Download BPMN</button>
                                     </div>
-                                    <div id={this.generateId} className={this.state.showInfo ? 'col-md-8' : 'col-md-12'}></div>
-                                    <div className={this.state.showInfo ? 'col-md-4' : undefined}>
-
-                                       {
-                                          (showInfo) &&
-                                          <div>
-                                             <div>
-                                                <h1>Option {this.state.name}</h1>
-                                             </div>
-                                             <FormInfoTask
-                                                listOrganizationalUnit={listOrganizationalUnit}
-                                                action='create'
-                                                id={id}
-                                                info={(info && info[`${id}`]) && info[`${id}`]}
-                                                handleChangeName={this.handleChangeName}
-                                                handleChangeDescription={this.handleChangeDescription}
-                                                handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
-                                                handleChangeResponsible={this.handleChangeResponsible}
-                                                handleChangeAccountable={this.handleChangeAccountable}
-                                                save={this.save}
-                                                done = {this.done}
-                                             />
-                                          </div>
-                                       }
+                                    <div id={this.generateId}></div>
+                                    <div className="row">
+                                       <div className="io-zoom-controls">
+                                          <ul className="io-zoom-reset io-control io-control-list">
+                                             <li>
+                                                <button title="Reset zoom" onClick={this.handleZoomReset}>
+                                                   <i className="fa fa-crosshairs"></i>
+                                                </button>
+                                             </li>
+                                             <li>
+                                                <button title="Zoom in" onClick={this.handleZoomIn}>
+                                                   <i className="fa fa-plus"></i>
+                                                </button>
+                                             </li>
+                                             <li>
+                                                <button href title="Zoom out" onClick={this.handleZoomOut}>
+                                                   <i className="fa fa-minus"></i>
+                                                </button>
+                                             </li>
+                                          </ul>
+                                       </div>
                                     </div>
                                  </div>
-                                 
-                              </fieldset>
+                                 <div className={showInfo ? 'col-md-4' : undefined}>
+                                    {
+                                       (showInfo) &&
+                                       <div>
+                                          <div>
+                                             <h1>Option {name}</h1>
+                                          </div>
+                                          <FormInfoTask
+                                             listOrganizationalUnit={listOrganizationalUnit}
+                                             action='edit'
+                                             id={id}
+                                             info={(info && info[`${id}`]) && info[`${id}`]}
+                                             handleChangeName={this.handleChangeName}
+                                             handleChangeDescription={this.handleChangeDescription}
+                                             handleChangeResponsible={this.handleChangeResponsible}
+                                             handleChangeAccountable={this.handleChangeAccountable}
+                                             handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
+                                             handleChangeTemplate={this.handleChangeTemplate}
+
+                                             save={this.save}
+                                          />
+                                       </div>
+                                    }
+                                 </div>
+                              </div>
                            </div>
                         </div>
 

@@ -6,7 +6,7 @@ import { EmployeeImportTab } from './combinedContent';
 import { DialogModal } from '../../../../../common-components';
 
 import {
-    configurationEmployeeInfo, configurationExperience,
+    configurationEmployeeInfo, configurationExperience, configurationSocialInsuranceDetails,
     configurationDegree, configurationCertificate, configurationContract, configurationFile
 } from './fileConfigurationImportEmployee';
 
@@ -19,13 +19,101 @@ class EmployeeImportForm extends Component {
     }
 
     /**
+     * Function chuyển dữ liệu date trong excel thành dạng dd-mm-yyyy
+     * @param {*} serial :số serial của ngày
+     */
+    convertExcelDateToJSDate = (serial) => {
+        let utc_days = Math.floor(serial - 25569);
+        let utc_value = utc_days * 86400;
+        let date_info = new Date(utc_value * 1000);
+        let month = date_info.getMonth() + 1;
+        let day = date_info.getDate();
+        if (month.toString().length < 2)
+            month = '0' + month;
+        if (day.toString().length < 2)
+            day = '0' + day;
+        return [day, month, date_info.getFullYear()].join('-');
+    }
+
+    /**
+     * Hàm tiện ích dùng cho các function bên dưới
+     * Function chuyển String(dd-mm-yyyy) sang date
+     * @param {*} data 
+     */
+    convertStringToDate = (data, monthYear = false) => {
+        if (data) {
+            data = data.split('-');
+            let date;
+            if (monthYear) {
+                date = [data[1], data[0]];
+            } else {
+                date = [data[2], data[1], data[0]];
+            }
+            return date.join('-');
+        } else {
+            return data;
+        }
+
+    }
+
+    /**
      * Function kiểm dữ liệu import thông tin cơ bản của nhân viên
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfEmployeeInfor = (value) => {
-        let rowError = [];
+        value = value.map(x => {
+            let birthdate = typeof x.birthdate === 'string' ? x.birthdate : this.convertExcelDateToJSDate(x.birthdate);
+            let identityCardDate = typeof x.identityCardDate === 'string' ? x.identityCardDate : this.convertExcelDateToJSDate(x.identityCardDate);
+            let startingDate = typeof x.startingDate === 'string' ? x.startingDate : this.convertExcelDateToJSDate(x.startingDate);
+            let leavingDate = typeof x.leavingDate === 'string' ? x.leavingDate : this.convertExcelDateToJSDate(x.leavingDate);
+            let taxDateOfIssue = typeof x.taxDateOfIssue === 'string' ? x.taxDateOfIssue : this.convertExcelDateToJSDate(x.taxDateOfIssue);
+            let healthInsuranceStartDate = typeof x.healthInsuranceStartDate === 'string' ? x.healthInsuranceStartDate : this.convertExcelDateToJSDate(x.healthInsuranceStartDate);
+            let healthInsuranceEndDate = typeof x.healthInsuranceEndDate === 'string' ? x.healthInsuranceEndDate : this.convertExcelDateToJSDate(x.healthInsuranceEndDate);
+            let gender = (x.gender === "Nam" || x.gender.toLowerCase() === "male") ? "male" : "female";
+            console.log(x.status);
+            let maritalStatus = (x.maritalStatus === "Độc thân" || x.maritalStatus.toLowerCase() === "single") ? "single" : "married";
+            let professionalSkill;
+            let status = (x.status === "Đang làm việc" || x.status.toLowerCase() === "active") ? "active" : "leave";
+            switch (x.professionalSkill) {
+                case "Trung cấp":
+                    professionalSkill = "intermediate_degree";
+                    break;
+                case "Cao đẳng":
+                    professionalSkill = "colleges";
+                    break;
+                case "Đại học":
+                    professionalSkill = "university";
+                    break;
+                case "Thạc sĩ":
+                    professionalSkill = "master_degree";
+                    break;
+                case "Tiến sĩ":
+                    professionalSkill = "phd";
+                    break;
+                case "Không có":
+                    professionalSkill = "unavailable";
+                    break;
+                default:
+                    professionalSkill = "unavailable";
+            }
+            return {
+                ...x,
+                birthdate: this.convertStringToDate(birthdate, false),
+                identityCardDate: this.convertStringToDate(identityCardDate, false),
+                startingDate: this.convertStringToDate(startingDate, false),
+                leavingDate: this.convertStringToDate(leavingDate, false),
+                taxDateOfIssue: this.convertStringToDate(taxDateOfIssue, false),
+                healthInsuranceStartDate: this.convertStringToDate(healthInsuranceStartDate, false),
+                healthInsuranceEndDate: this.convertStringToDate(healthInsuranceEndDate, false),
+                gender: gender,
+                maritalStatus: maritalStatus,
+                professionalSkill: professionalSkill,
+                status: status
+            };
+        })
+
         // Check dữ liệu import có hợp lệ hay không
-        let checkImportData = value;
+        let checkImportData = value, rowError = [];
         value = value.map((x, index) => {
             let errorAlert = [];
             if (x.employeeNumber === null || x.fullName === null || x.emailInCompany === null || x.employeeTimesheetId === null
@@ -102,8 +190,18 @@ class EmployeeImportForm extends Component {
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfExperience = (value) => {
-        let rowError = [];
+        value = value.map(x => {
+            let startDate = typeof x.startDate === 'string' ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
+            let endDate = typeof x.endDate === 'string' ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
+            return {
+                ...x,
+                startDate: this.convertStringToDate(startDate, true),
+                endDate: this.convertStringToDate(endDate, true),
+            }
+        });
+
         // Check dữ liệu import có hợp lệ hay không
+        let rowError = [];
         value = value.map((x, index) => {
             let errorAlert = [];
             if (x.employeeNumber === null || x.fullName === null || x.startDate === null || x.endDate === null
@@ -143,6 +241,31 @@ class EmployeeImportForm extends Component {
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfDegree = (value) => {
+        value = value.map(x => {
+            let degreeType;
+            switch (x.degreeType) {
+                case "Xuất sắc":
+                    degreeType = "excellent";
+                    break;
+                case "Giỏi":
+                    degreeType = "very_good";
+                    break;
+                case "Khá":
+                    degreeType = "good";
+                    break;
+                case "Trung bình khá":
+                    degreeType = "average_good";
+                    break;
+                case "Trung bình":
+                    degreeType = "ordinary";
+                    break;
+                default:
+                    degreeType = null;
+            }
+            return { ...x, degreeType: degreeType }
+        })
+
+
         let rowError = [];
         // Check dữ liệu import có hợp lệ hay không
         value = value.map((x, index) => {
@@ -185,6 +308,16 @@ class EmployeeImportForm extends Component {
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfCertificate = (value) => {
+        value = value.map(x => {
+            let startDate = typeof x.startDate === 'string' ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
+            let endDate = typeof x.endDate === 'string' ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
+            return {
+                ...x,
+                startDate: this.convertStringToDate(startDate, false),
+                endDate: this.convertStringToDate(endDate, false),
+            }
+        });
+
         let rowError = [];
         // Check dữ liệu import có hợp lệ hay không
         value = value.map((x, index) => {
@@ -227,6 +360,16 @@ class EmployeeImportForm extends Component {
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfContract = (value) => {
+        value = value.map(x => {
+            let startDate = typeof x.startDate === 'string' ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
+            let endDate = typeof x.endDate === 'string' ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
+            return {
+                ...x,
+                startDate: this.convertStringToDate(startDate, false),
+                endDate: this.convertStringToDate(endDate, false),
+            }
+        });
+
         let rowError = [];
         // Check dữ liệu import có hợp lệ hay không
         value = value.map((x, index) => {
@@ -264,10 +407,78 @@ class EmployeeImportForm extends Component {
     }
 
     /**
+     * Function kiểm dữ liệu import kinh nghiệm làm việc
+     * @param {*} value : dữ liệu cần import
+     */
+    handleCheckImportDataOfSocialInsuranceDetails = (value) => {
+        value = value.map(x => {
+            let startDate = typeof x.startDate === 'string' ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
+            let endDate = typeof x.endDate === 'string' ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
+            return {
+                ...x,
+                startDate: this.convertStringToDate(startDate, true),
+                endDate: this.convertStringToDate(endDate, true),
+            }
+        });
+
+        // Check dữ liệu import có hợp lệ hay không
+        let rowError = [];
+        value = value.map((x, index) => {
+            let errorAlert = [];
+            if (x.employeeNumber === null || x.fullName === null || x.startDate === null || x.endDate === null
+                || x.company === null || x.position === null) {
+                rowError = [...rowError, index + 1]
+                x = { ...x, error: true }
+            }
+            if (x.employeeNumber === null) {
+                errorAlert = [...errorAlert, 'employee_number_required'];
+            };
+            if (x.fullName === null) {
+                errorAlert = [...errorAlert, 'full_name_required'];
+            };
+            if (x.startDate === null) {
+                errorAlert = [...errorAlert, 'start_date_required'];
+            };
+            if (x.endDate === null) {
+                errorAlert = [...errorAlert, 'end_date_required'];
+            };
+            if (x.company === null) {
+                errorAlert = [...errorAlert, 'company_required'];
+            };
+            if (x.position === null) {
+                errorAlert = [...errorAlert, 'position_required'];
+            };
+            x = { ...x, errorAlert: errorAlert }
+            return x;
+        });
+        this.setState({
+            importDataOfSocialInsuranceDetails: value,
+        })
+        return { importData: value, rowError: rowError }
+    }
+
+    /**
      * Function kiểm dữ liệu import tài liệu đính kèm
      * @param {*} value : dữ liệu cần import
      */
     handleCheckImportDataOfFile = (value) => {
+        value = value.map(x => {
+            let status;
+            switch (x.status) {
+                case "Đã nộp":
+                    status = 'submitted';
+                    break;
+                case "Chưa nộp":
+                    status = 'no_submitted';
+                    break;
+                case "Đã trả lại":
+                    status = 'returned';
+                    break;
+                default:
+                    status = null;
+            };
+            return { ...x, status: status };
+        })
         let rowError = [];
         // Check dữ liệu import có hợp lệ hay không
         value = value.map((x, index) => {
@@ -311,7 +522,7 @@ class EmployeeImportForm extends Component {
      */
     handleImportEmployeeInfor = () => {
         let { importDataOfEmployeeInfor } = this.state;
-        this.props.importEmployee(importDataOfEmployeeInfor);
+        this.props.importEmployees({ importType: "Employee_Infor", importData: importDataOfEmployeeInfor });
     }
 
     /**
@@ -319,7 +530,7 @@ class EmployeeImportForm extends Component {
     */
     handleImportExperience = () => {
         let { importDataOfExperience } = this.state;
-        this.props.importEmployee(importDataOfExperience);
+        this.props.importEmployees({ importType: "Experience", importData: importDataOfExperience });
     }
 
     /**
@@ -327,7 +538,7 @@ class EmployeeImportForm extends Component {
     */
     handleImportDegree = () => {
         let { importDataOfDegree } = this.state;
-        this.props.importEmployee(importDataOfDegree);
+        this.props.importEmployees({ importType: "Degree", importData: importDataOfDegree });
     }
 
     /**
@@ -335,7 +546,7 @@ class EmployeeImportForm extends Component {
     */
     handleImportCertificate = () => {
         let { importDataOfCertificate } = this.state;
-        this.props.importEmployee(importDataOfCertificate);
+        this.props.importEmployees({ importType: "Certificate", importData: importDataOfCertificate });
     }
 
     /**
@@ -343,7 +554,15 @@ class EmployeeImportForm extends Component {
     */
     handleImportConstract = () => {
         let { importDataOfContract } = this.state;
-        this.props.importEmployee(importDataOfContract);
+        this.props.importEmployees({ importType: "Contract", importData: importDataOfContract });
+    }
+
+    /**
+   * Function bắt sự kiện import kinh nghiệm làm việc
+   */
+    handleImportSocialInsuranceDetails = () => {
+        let { importDataOfSocialInsuranceDetails } = this.state;
+        this.props.importEmployees({ importType: "SocialInsuranceDetails", importData: importDataOfSocialInsuranceDetails });
     }
 
     /**
@@ -351,7 +570,7 @@ class EmployeeImportForm extends Component {
     */
     handleImportFile = () => {
         let { importDataOfFile } = this.state;
-        this.props.importEmployee(importDataOfFile);
+        this.props.importEmployees({ importType: "File", importData: importDataOfFile });
     }
 
 
@@ -375,6 +594,7 @@ class EmployeeImportForm extends Component {
                                 <li><a title="Import thông tin bằng cấp" data-toggle="tab" href="#import_employee_degree">Bằng cấp</a></li>
                                 <li><a title="Import thông tin chứng chỉ" data-toggle="tab" href="#import_employee_certificate">Chứng chỉ</a></li>
                                 <li><a title="Import hợp đồng lao động" data-toggle="tab" href="#import_employee_contract">Hợp đồng lao động</a></li>
+                                <li><a title="Import quá trình đóng bảo hiểm xã hội" data-toggle="tab" href="#import_employee_socialInsurance_details">Bảo hiểm xã hội</a></li>
                                 <li><a title="Import tài liệu đính kèm" data-toggle="tab" href="#import_employee_file">Tài liệu đính kèm</a></li>
 
                             </ul>
@@ -385,8 +605,8 @@ class EmployeeImportForm extends Component {
                                     textareaRow={12}
                                     configTableWidth={8000}
                                     showTableWidth={5000}
-                                    rowErrorOfReducer={employeesManager.error.rowError}
-                                    dataOfReducer={employeesManager.error.data}
+                                    rowErrorOfReducer={employeesManager.error.rowErrorOfEmployeeInfor}
+                                    dataOfReducer={employeesManager.error.employeesInfor}
                                     configuration={configurationEmployeeInfo}
                                     handleCheckImportData={this.handleCheckImportDataOfEmployeeInfor}
                                     handleImport={this.handleImportEmployeeInfor}
@@ -396,8 +616,8 @@ class EmployeeImportForm extends Component {
                                     textareaRow={10}
                                     configTableWidth={1000}
                                     showTableWidth={1000}
-                                    rowErrorOfReducer={employeesManager.error.rowError}
-                                    dataOfReducer={employeesManager.error.data}
+                                    rowErrorOfReducer={employeesManager.error.rowErrorOfExperience}
+                                    dataOfReducer={employeesManager.error.experiences}
                                     configuration={configurationExperience}
                                     handleCheckImportData={this.handleCheckImportDataOfExperience}
                                     handleImport={this.handleImportExperience}
@@ -407,8 +627,8 @@ class EmployeeImportForm extends Component {
                                     textareaRow={10}
                                     configTableWidth={1000}
                                     showTableWidth={1000}
-                                    rowErrorOfReducer={employeesManager.error.rowError}
-                                    dataOfReducer={employeesManager.error.data}
+                                    rowErrorOfReducer={employeesManager.error.rowErrorOfDegree}
+                                    dataOfReducer={employeesManager.error.degrees}
                                     configuration={configurationDegree}
                                     handleCheckImportData={this.handleCheckImportDataOfDegree}
                                     handleImport={this.handleImportDegree}
@@ -418,8 +638,8 @@ class EmployeeImportForm extends Component {
                                     textareaRow={10}
                                     configTableWidth={1000}
                                     showTableWidth={1000}
-                                    rowErrorOfReducer={employeesManager.error.rowError}
-                                    dataOfReducer={employeesManager.error.data}
+                                    rowErrorOfReducer={employeesManager.error.rowErrorOfCertificate}
+                                    dataOfReducer={employeesManager.error.certificates}
                                     configuration={configurationCertificate}
                                     handleCheckImportData={this.handleCheckImportDataOfCertificate}
                                     handleImport={this.handleImportCertificate}
@@ -429,19 +649,31 @@ class EmployeeImportForm extends Component {
                                     textareaRow={10}
                                     configTableWidth={1000}
                                     showTableWidth={1000}
-                                    rowErrorOfReducer={employeesManager.error.rowError}
-                                    dataOfReducer={employeesManager.error.data}
+                                    rowErrorOfReducer={employeesManager.error.rowErrorOfContract}
+                                    dataOfReducer={employeesManager.error.contracts}
                                     configuration={configurationContract}
                                     handleCheckImportData={this.handleCheckImportDataOfContract}
                                     handleImport={this.handleImportConstract}
                                 />
                                 <EmployeeImportTab
+                                    id="import_employee_socialInsurance_details"
+                                    textareaRow={10}
+                                    configTableWidth={1000}
+                                    showTableWidth={1000}
+                                    rowErrorOfReducer={employeesManager.error.rowErrorOfSocialInsuranceDetails}
+                                    dataOfReducer={employeesManager.error.SocialInsuranceDetails}
+                                    configuration={configurationSocialInsuranceDetails}
+                                    handleCheckImportData={this.handleCheckImportDataOfSocialInsuranceDetails}
+                                    handleImport={this.handleImportSocialInsuranceDetails}
+                                />
+
+                                <EmployeeImportTab
                                     id="import_employee_file"
                                     textareaRow={10}
                                     configTableWidth={1000}
                                     showTableWidth={1000}
-                                    rowErrorOfReducer={employeesManager.error.rowError}
-                                    dataOfReducer={employeesManager.error.data}
+                                    rowErrorOfReducer={employeesManager.error.rowErrorOfFile}
+                                    dataOfReducer={employeesManager.error.files}
                                     configuration={configurationFile}
                                     handleCheckImportData={this.handleCheckImportDataOfFile}
                                     handleImport={this.handleImportFile}
@@ -461,7 +693,7 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    importEmployees: EmployeeManagerActions.importEmployee,
+    importEmployees: EmployeeManagerActions.importEmployees,
 };
 
 const importExcel = connect(mapState, actionCreators)(withTranslate(EmployeeImportForm));

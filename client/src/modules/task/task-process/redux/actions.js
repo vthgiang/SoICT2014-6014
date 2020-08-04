@@ -9,10 +9,11 @@ export const TaskProcessActions = {
 };
 
 
-function getAllXmlDiagram() {
+function getAllXmlDiagram( pageNumber, noResultsPerPage, name ) {
+  console.log('pppp', pageNumber, name, noResultsPerPage);
   return dispatch => {
     dispatch({ type: TaskProcessConstants.GET_ALL_XML_DIAGRAM_REQUEST });
-    TaskProcessService.getAllXmlDiagram()
+    TaskProcessService.getAllXmlDiagram( pageNumber, noResultsPerPage, name )
       .then(
         res => dispatch({ type: TaskProcessConstants.GET_ALL_XML_DIAGRAM_SUCCESS, payload: res.data }),
         error => dispatch({ type: TaskProcessConstants.GET_ALL_XML_DIAGRAM_FAIL })

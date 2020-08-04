@@ -171,9 +171,11 @@ class KPIUnitManager extends Component {
 
     render() {
         const { startDate, endDate, status, errorOnDate, infosearch } = this.state;
+        const { user, managerKpiUnit, translate } = this.props;
+
         var listkpi, currentKPI, currentTargets, kpiApproved, datachat1, targetA, targetC, targetOther, misspoint;
         var unitList, currentUnit, userdepartments;
-        const { user, managerKpiUnit, translate } = this.props;
+
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (user.organizationalUnitsOfUser) {
             unitList = user.organizationalUnitsOfUser;
@@ -249,7 +251,6 @@ class KPIUnitManager extends Component {
                                         onChange={this.handleStatus}
                                         style={{ width: "100%" }}
                                         value={status}
-                                    // multiple={true}
                                     />
                                 }
                             </div>
@@ -263,7 +264,7 @@ class KPIUnitManager extends Component {
                             columnArr={['Người tạo', 'Thời gian', 'Trạng thái', 'Số lượng mục tiêu', 'Kết quả đánh giá', 'Xem chi tiết', 'Tạo KPI tháng mới', 'Cập nhật']}
                             limit={this.state.perPage}
                             setLimit={this.setLimit} hideColumnOption={true} />
-
+                        {/* Danh sách các KPI của đơn vị */}
                         <table id="kpiTable" className="table table-hover table-bordered">
                             <thead>
                                 <tr>

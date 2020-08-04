@@ -384,6 +384,24 @@ export function tasks(state = {}, action) {
                 error: action.error,
 
             }
+
+        case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_SUCCESS:
+            return {
+                ...state,
+                organizationUnitTasks: action.payload,
+                isLoading: false,
+            };
+        case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_FAILURE:
+            return {
+                isLoading: false,
+                error: action.error,
+
+            }
         default:
             return state
     }

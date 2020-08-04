@@ -18,13 +18,15 @@ class TaskProcessManagement extends Component {
     super(props);
     this.state = {
       currentRow: {},
-      currentPage: 1
+      pageNumber: 1, 
+      noResultsPerPage: 5,
     };
 
   }
   componentDidMount = () => {
+    console.log('this.state.pageNumber, this.state.noResultsPerPage,', this.state.pageNumber, this.state.noResultsPerPage);
     this.props.getAllDepartments()
-    this.props.getAllXmlDiagram();
+    this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
     this.props.getRoles();
   }
   checkHasComponent = (name) => {
@@ -187,7 +189,7 @@ class TaskProcessManagement extends Component {
                     <td>{item.description}</td>
                     <td>{item.creator?.name}</td>
                     <td>
-                      <a href="#abc" onClick={() => { this.viewProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>
+                      <a onClick={() => { this.viewProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>
                         <i className="material-icons">view_list</i>
                       </a>
                       <a className="edit" onClick={() => { this.showEditProcess(item) }} title={translate('task_template.edit_this_task_template')}>

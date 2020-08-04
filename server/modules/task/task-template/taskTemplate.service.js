@@ -278,7 +278,11 @@ exports.editTaskTemplate = async (data, id) => {
     return taskTemplate;
 }
 
-
+/**
+ * Thêm mẫu công việc mới từ file excel
+ * @param {*} data 
+ * @param {*} id 
+ */
 exports.importTaskTemplate = async (data,id) => {
 
     for (let i = 0; i < data.length; i++) {
@@ -338,9 +342,8 @@ exports.importTaskTemplate = async (data,id) => {
         }
         let unit = await OrganizationalUnit.findOne({name: data[i].organizationalUnit});
         data[i].organizationalUnit = String(unit._id);
-        // creator
         data[i].creator = id;
-        // luu thong tin
+        
         let result = await this.createTaskTemplate(data[i]);
         console.log(result);
     };

@@ -34,13 +34,19 @@ exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany)
         let newRoles = roles.map(role => role.roleId._id);
         organizationalUnits = await OrganizationalUnit.find({
             $or: [{
-                    'deans': {$in: newRoles}
+                    'deans': {
+                        $in: newRoles
+                    }
                 },
                 {
-                    'viceDeans': {$in: newRoles}
+                    'viceDeans': {
+                        $in: newRoles
+                    }
                 },
                 {
-                    'employees': {$in: newRoles}
+                    'employees': {
+                        $in: newRoles
+                    }
                 }
             ]
         });
@@ -89,7 +95,9 @@ exports.getEmployeeEmailsByOrganizationalUnitsAndPositions = async (organization
 
     // Lấy email của người dùng theo phòng ban và chức danh
     let emailUsers = await User.find({
-        _id: {$in: userId}
+        _id: {
+            $in: userId
+        }
     }, {
         email: 1
     });
@@ -581,7 +589,6 @@ exports.createEmployee = async (data, company, fileInfo) => {
 }
 
 
-
 /**
  * Cập nhât thông tin nhân viên theo id
  */
@@ -722,15 +729,21 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
         let queryDelete = arrDelete !== undefined ? arrDelete.map(x => {
             return {
                 deleteOne: {
-                    "filter": {"_id": x._id}
+                    "filter": {
+                        "_id": x._id
+                    }
                 }
             }
         }) : [];
         let queryEdit = arrEdit !== undefined ? arrEdit.map(x => {
             return {
                 updateOne: {
-                    "filter": {"_id": x._id},
-                    "update": {$set: x}
+                    "filter": {
+                        "_id": x._id
+                    },
+                    "update": {
+                        $set: x
+                    }
                 }
             }
         }) : [];
@@ -787,6 +800,7 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
         courses
     };
 }
+
 /**
  * Xoá thông tin nhân viên
  * @id : Id nhân viên cần xoá
@@ -866,6 +880,7 @@ exports.formatDate = (date, monthDay = true) => {
     }
 
 }
+
 /**
  * Tạo thông báo cho các nhân viên có ngày sinh trùng với ngày hiện tại
  */
@@ -1018,4 +1033,389 @@ exports.createNotificationEndOfContract = async () => {
     }
     await Notification.insertMany(notifications);
 
+}
+
+/**
+ * Import thông tin nhân viên
+ * @param {*} company : Id công ty
+ * @param {*} data : Dữ liệu thông tin nhân viên cần import
+ */
+exports.importEmployeeInfor = async (company, data) => {
+    let employeeInfo = await Employee.find({
+        company: company
+    }, {
+        employeeNumber: 1,
+        _id: 1,
+        emailInCompany: 1,
+        employeeTimesheetId: 1
+    });
+
+    let rowError = [];
+    data = data.map((x, index) => {
+        let checkEmployeeNumber = employeeInfo.some(y => y.employeeNumber === x.employeeNumber);
+        let checkEmailInCompany = employeeInfo.some(y => y.emailInCompany === x.emailInCompany);
+        let checkEmployeeTimesheetId = employeeInfo.some(y => y.employeeTimesheetId.toString() === x.employeeTimesheetId.toString());
+        if (checkEmployeeNumber) {
+            x = {
+                ...x,
+                errorAlert: [...x.errorAlert, "employee_number_have_exist"],
+                error: true
+            };
+        }
+        if (checkEmailInCompany) {
+            x = {
+                ...x,
+                errorAlert: [...x.errorAlert, "email_in_company_required"],
+                error: true
+            };
+        }
+        if (checkEmployeeTimesheetId) {
+            x = {
+                ...x,
+                errorAlert: [...x.errorAlert, "employee_timesheet_id_have_exist"],
+                error: true
+            };
+        }
+        if (checkEmployeeNumber || checkEmailInCompany || checkEmployeeTimesheetId) {
+            rowError = [...rowError, index + 1];
+        }
+        return x;
+    })
+
+    if (rowError.length !== 0) {
+        return {
+            errorStatus: true,
+            employeesInfor: data,
+            rowErrorOfEmployeeInfor: rowError
+        }
+    } else {
+        data = data.map(x => {
+            return {
+                ...x,
+                avatar: '/upload/human-resource/avatars/avatar5.png',
+                company: company,
+            }
+        })
+        return await Employee.insertMany(data);
+    }
+}
+
+/**
+ * Hàm tiện ích dùng để kiểm tra mã số nhân viên trong dữ liệu import có tồn tại ko
+ * Dùng cho các function import bên dưới
+ * @param {*} company : Id công ty
+ * @param {*} data : Dữ liệu import
+ */
+exports.checkImportData = async (company, data) => {
+    let employeeInfo = await Employee.find({
+        company: company
+    }, {
+        employeeNumber: 1,
+        _id: 1
+    });
+
+    let rowError = [];
+    data = data.map((x, index) => {
+        let employee = employeeInfo.filter(y => y.employeeNumber === x.employeeNumber);
+        if (employee.length === 0) {
+            x = {
+                ...x,
+                errorAlert: [...x.errorAlert, "staff_code_not_find"],
+                error: true
+            };
+            rowError = [...rowError, index + 1];
+        } else {
+            x = {
+                ...x,
+                _id: employee[0]._id,
+            };
+        }
+        return x;
+    })
+    return {
+        data: data,
+        rowError: rowError
+    };
+}
+
+/**
+ * Import kinh nghiệm làm việc
+ * @param {*} company : Id công ty
+ * @param {*} data : Dữ liệu kinh nghiệm làm việc cần import
+ */
+exports.importExperience = async (company, data) => {
+    let result = await this.checkImportData(company, data);
+    data = result.data;
+    let rowError = result.rowError;
+
+    if (rowError.length !== 0) {
+        return {
+            errorStatus: true,
+            experiences: data,
+            rowErrorOfExperience: rowError
+        }
+    } else {
+        let importData = [];
+        for (let x of data) {
+            if (!importData.includes(x._id)) {
+                importData = [...importData, x._id]
+            }
+        }
+        importData = importData.map(x => {
+            let result = {
+                _id: x,
+                experiences: []
+            }
+            data.forEach(y => {
+                if (y._id === x) {
+                    result.experiences.push(y);
+                }
+            })
+            return result;
+        })
+
+        for (let x of importData) {
+            let editEmployee = await Employee.findOne({
+                _id: x._id
+            });
+            editEmployee.experiences = editEmployee.experiences.concat(x.experiences);
+            editEmployee.save();
+        }
+        return data;
+    }
+
+}
+
+/**
+ * Import thông tin bằng cấp
+ * @param {*} company : Id công ty
+ * @param {*} data : Dữ liệu thông tin bằng cấp cần import
+ */
+exports.importDegree = async (company, data) => {
+    let result = await this.checkImportData(company, data);
+    data = result.data;
+    let rowError = result.rowError;
+
+    if (rowError.length !== 0) {
+        return {
+            errorStatus: true,
+            degrees: data,
+            rowErrorOfDegree: rowError
+        }
+    } else {
+        let importData = [];
+        for (let x of data) {
+            if (!importData.includes(x._id)) {
+                importData = [...importData, x._id]
+            }
+        }
+
+        importData = importData.map(x => {
+            let result = {
+                _id: x,
+                degrees: []
+            }
+            data.forEach(y => {
+                if (y._id === x) {
+                    result.degrees.push(y);
+                }
+            })
+            return result;
+        })
+        for (let x of importData) {
+            let editEmployee = await Employee.findOne({
+                _id: x._id
+            });
+            editEmployee.degrees = editEmployee.degrees.concat(x.degrees);
+            editEmployee.save();
+        }
+        return data;
+    }
+}
+
+/**
+ * Import thông tin chứng chỉ
+ * @param {*} company : Id công ty
+ * @param {*} data : Dữ liệu thông tin chứng chỉ cần import
+ */
+exports.importCertificate = async (company, data) => {
+    let result = await this.checkImportData(company, data);
+    data = result.data;
+    let rowError = result.rowError;
+
+    if (rowError.length !== 0) {
+        return {
+            errorStatus: true,
+            certificates: data,
+            rowErrorOfCertificate: rowError
+        }
+    } else {
+        let importData = [];
+        for (let x of data) {
+            if (!importData.includes(x._id)) {
+                importData = [...importData, x._id]
+            }
+        }
+        importData = importData.map(x => {
+            let result = {
+                _id: x,
+                certificates: []
+            }
+            data.forEach(y => {
+                if (y._id === x) {
+                    result.certificates.push(y);
+                }
+            })
+            return result;
+        })
+        for (let x of importData) {
+            let editEmployee = await Employee.findOne({
+                _id: x._id
+            });
+            editEmployee.certificates = editEmployee.certificates.concat(x.certificates);
+            editEmployee.save();
+        }
+        return data;
+    }
+}
+
+/**
+ * Import hợp đồng lao động
+ * @param {*} company : Id công ty
+ * @param {*} data : Dữ liệu hợp đồng lao động cần import
+ */
+exports.importContract = async (company, data) => {
+    let result = await this.checkImportData(company, data);
+    data = result.data;
+    let rowError = result.rowError;
+
+    if (rowError.length !== 0) {
+        return {
+            errorStatus: true,
+            contracts: data,
+            rowErrorOfContract: rowError
+        }
+    } else {
+        let importData = [];
+        for (let x of data) {
+            if (!importData.includes(x._id)) {
+                importData = [...importData, x._id]
+            }
+        }
+        importData = importData.map(x => {
+            let result = {
+                _id: x,
+                contracts: []
+            }
+            data.forEach(y => {
+                if (y._id === x) {
+                    result.contracts.push(y);
+                }
+            })
+            return result;
+        })
+        for (let x of importData) {
+            let editEmployee = await Employee.findOne({
+                _id: x._id
+            });
+            editEmployee.contracts = editEmployee.contracts.concat(x.contracts);
+            editEmployee.save();
+        }
+        return data;
+    }
+}
+
+/**
+ * Import quá trình đóng bảo hiểm xã hội
+ * @param {*} company : Id công ty
+ * @param {*} data : Dữ liệu quá trình đóng bảo hiểm xã hội cần import
+ */
+exports.importSocialInsuranceDetails = async (company, data) => {
+    let result = await this.checkImportData(company, data);
+    data = result.data;
+    let rowError = result.rowError;
+
+    if (rowError.length !== 0) {
+        return {
+            errorStatus: true,
+            socialInsuranceDetails: data,
+            rowErrorOfSocialInsuranceDetails: rowError
+        }
+    } else {
+        let importData = [];
+        for (let x of data) {
+            if (!importData.includes(x._id)) {
+                importData = [...importData, x._id]
+            }
+        }
+        importData = importData.map(x => {
+            let result = {
+                _id: x,
+                socialInsuranceDetails: []
+            }
+            data.forEach(y => {
+                if (y._id === x) {
+                    result.socialInsuranceDetails.push(y);
+                }
+            })
+            return result;
+        })
+
+        for (let x of importData) {
+            let editEmployee = await Employee.findOne({
+                _id: x._id
+            });
+            editEmployee.socialInsuranceDetails = editEmployee.socialInsuranceDetails.concat(x.socialInsuranceDetails);
+            editEmployee.save();
+        }
+        return data;
+    }
+
+}
+
+
+/**
+ * Import thông tin tài liệu đính kèm
+ * @param {*} company : Id công ty
+ * @param {*} data : Dữ liệu tài liệu đính kèm cần import
+ */
+exports.importFile = async (company, data) => {
+    let result = await this.checkImportData(company, data);
+    data = result.data;
+    let rowError = result.rowError;
+
+    if (rowError.length !== 0) {
+        return {
+            errorStatus: true,
+            files: data,
+            rowErrorOfFile: rowError
+        }
+    } else {
+        let importData = [];
+        for (let x of data) {
+            if (!importData.includes(x._id)) {
+                importData = [...importData, x._id]
+            }
+        }
+        importData = importData.map(x => {
+            let result = {
+                _id: x,
+                files: []
+            }
+            data.forEach(y => {
+                if (y._id === x) {
+                    result.files.push(y);
+                }
+            })
+            return result;
+        })
+        for (let x of importData) {
+            let editEmployee = await Employee.findOne({
+                _id: x._id
+            });
+            editEmployee.files = editEmployee.files.concat(x.files);
+            editEmployee.save();
+        }
+        return data;
+    }
 }

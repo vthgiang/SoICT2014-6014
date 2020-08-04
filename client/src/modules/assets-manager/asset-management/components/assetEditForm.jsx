@@ -10,6 +10,7 @@ import {
     GeneralTab, MaintainanceLogTab, UsageLogTab, DepreciationTab, IncidentLogTab, DisposalTab, FileTab
 } from '../../asset-create/components/combinedContent';
 import { AssetManagerActions } from '../redux/actions';
+import { UsageActions } from '../../usage-management/redux/actions';
 
 class AssetEditForm extends Component {
     constructor(props) {
@@ -204,7 +205,7 @@ class AssetEditForm extends Component {
     }
 
     save = async () => {
-        let { maintainanceLogs, usageLogs, incidentLogs, files } = this.state;
+        let { maintainanceLogs, usageLogs, incidentLogs, files, assignedTo, handoverFromDate, handoverToDate } = this.state;
         await this.setState({
             img: "",
             createMaintainanceLogs: maintainanceLogs.filter(x => x._id === undefined),
@@ -217,7 +218,22 @@ class AssetEditForm extends Component {
             formData.append("file", x.fileUpload);
         })
         formData.append("fileAvatar", this.state.avatar);
+
         this.props.updateInformationAsset(this.state._id, formData);
+
+        // Thêm vào thông tin sử dụng
+        if (assignedTo !== this.props.assignedTo || handoverFromDate !== this.props.handoverFromDate || handoverToDate !== this.props.handoverToDate) {
+            this.props.createUsage(this.state._id, {
+                usedBy: this.state.assignedTo,
+                startDate: this.state.handoverFromDate,
+                endDate: this.state.handoverToDate,
+                description: '',
+                assignedTo: this.state.assignedTo,
+                handoverFromDate: this.state.handoverFromDate,
+                handoverToDate: this.state.handoverToDate,
+                status: "Đang sử dụng",
+            });
+        }
     }
 
     // Function format dữ liệu Date thành string
@@ -238,7 +254,7 @@ class AssetEditForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps._id !== prevState._id) {
+        if (nextProps._id !== prevState._id || nextProps.usageLogs !== prevState.usageLogs) {
             return {
                 ...prevState,
                 _id: nextProps._id,
@@ -425,6 +441,7 @@ function mapState(state) {
 
 const actionCreators = {
     updateInformationAsset: AssetManagerActions.updateInformationAsset,
+    createUsage: UsageActions.createUsage,
 };
 const editForm = connect(mapState, actionCreators)(withTranslate(AssetEditForm));
 export { editForm as AssetEditForm };

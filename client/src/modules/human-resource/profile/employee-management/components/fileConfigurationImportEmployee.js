@@ -235,7 +235,7 @@ export const configurationEmployeeInfo = {
     },
     file: {
         fileName: 'templateImportEmployeeInfor',
-        fileUrl: '/upload/human-resource/templateImport/templateImportSalary.xlsx'
+        fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
     }
 }
 
@@ -281,7 +281,7 @@ export const configurationExperience = {
     },
     file: {
         fileName: 'templateImportEmployeeInfor',
-        fileUrl: '/upload/human-resource/templateImport/templateImportSalary.xlsx'
+        fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
     }
 }
 
@@ -327,7 +327,7 @@ export const configurationDegree = {
     },
     file: {
         fileName: 'templateImportEmployeeInfor',
-        fileUrl: '/upload/human-resource/templateImport/templateImportSalary.xlsx'
+        fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
     }
 }
 
@@ -373,7 +373,7 @@ export const configurationCertificate = {
     },
     file: {
         fileName: 'templateImportEmployeeInfor',
-        fileUrl: '/upload/human-resource/templateImport/templateImportSalary.xlsx'
+        fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
     }
 }
 
@@ -419,7 +419,53 @@ export const configurationContract = {
     },
     file: {
         fileName: 'templateImportEmployeeInfor',
-        fileUrl: '/upload/human-resource/templateImport/templateImportSalary.xlsx'
+        fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
+    }
+}
+
+// Cấu hình file import quá trình đóng bảo hiểm của nhân viên
+export const configurationSocialInsuranceDetails = {
+    rowHeader: {
+        description: "Số dòng tiêu đề của bảng",
+        value: 1
+    },
+    sheets: {
+        description: "Tên các sheet",
+        value: ["6.HS Nhân viên - Bảo hiểm XH"]
+    },
+    employeeNumber: {
+        columnName: "Mã số nhân viên",
+        description: "Tên tiêu đề ứng với 'Mã số nhân viên' ",
+        value: "Mã số nhân viên"
+    },
+    fullName: {
+        columnName: "Họ và tên",
+        description: "Tên tiêu để ứng với họ và tên",
+        value: "Họ và tên"
+    },
+    startDate: {
+        columnName: "Từ tháng/năm",
+        description: "Tên tiêu để ứng với từ tháng/năm",
+        value: "Từ tháng/năm"
+    },
+    endDate: {
+        columnName: "Đến tháng/năm",
+        description: "Tên tiêu để ứng với đến tháng/năm",
+        value: "Đến tháng/năm"
+    },
+    company: {
+        columnName: "Đơn vị công tác",
+        description: "Tên tiêu để ứng với đơn vị công tác",
+        value: "Đơn vị công tác"
+    },
+    position: {
+        columnName: "Chức vụ",
+        description: "Tên tiêu để ứng với chức vụ",
+        value: "Chức vụ"
+    },
+    file: {
+        fileName: 'templateImportEmployeeInfor',
+        fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
     }
 }
 
@@ -431,7 +477,7 @@ export const configurationFile = {
     },
     sheets: {
         description: "Tên các sheet",
-        value: ["6.HS Nhân viên - Tài liệu"]
+        value: ["7.HS Nhân viên - Tài liệu"]
     },
     employeeNumber: {
         columnName: "Mã số nhân viên",
@@ -465,6 +511,6 @@ export const configurationFile = {
     },
     file: {
         fileName: 'templateImportEmployeeInfor',
-        fileUrl: '/upload/human-resource/templateImport/templateImportSalary.xlsx'
+        fileUrl: '/upload/human-resource/templateImport/templateImportEmployee.xlsx'
     }
 }

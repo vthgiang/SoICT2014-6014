@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {withTranslate} from 'react-redux-multilingual';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 import { LOCAL_SERVER_API } from '../../../../env';
 import { FileAddModal, FileEditModal } from './combinedContent';
 
@@ -134,7 +134,7 @@ class FileTab extends Component {
                                             <td>{x.name}</td>
                                             <td>{x.description}</td>
                                             <td>{x.number}</td>
-                                            <td>{(typeof x.urlFile === 'undefined' || x.urlFile === 0) ? translate('manage_employee.no_files') :
+                                            <td>{!x.urlFile ? translate('manage_employee.no_files') :
                                                 <a className='intable' target={x._id === undefined ? '_self' : '_blank'}
                                                     href={(x._id === undefined) ? x.urlFile : `${LOCAL_SERVER_API + x.urlFile}`}
                                                     download={x.name}>

@@ -60,4 +60,8 @@ router.put('/:id', auth, uploadFile(data, 'fields'), EmployeeController.updateEm
  */
 router.delete('/:id', auth, EmployeeController.deleteEmployee);
 
+// Import thông tin nhân viên
+router.post('/import', auth, EmployeeController.importEmployees);
+
+
 module.exports = router;
