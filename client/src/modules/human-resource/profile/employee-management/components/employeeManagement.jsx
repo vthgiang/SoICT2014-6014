@@ -412,8 +412,6 @@ class EmployeeManagement extends Component {
         })
 
 
-
-
         let exportData = {
             fileName: "Bảng theo dõi thông tin nhân viên",
             dataSheets: [
