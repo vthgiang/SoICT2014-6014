@@ -25,3 +25,66 @@ svg{
 #bpmnContainer > div > a, #editprocess > div > a, #createprocess > div > a {
     visibility: hidden;
 }
+
+.tool-bar-xml {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.io-zoom-controls ul {
+    display: flex;
+    flex-direction: row;
+    /* justify-content: flex-end; */
+}
+
+.io-zoom-controls li {
+    list-style: none;
+    margin: -15px 0;
+    padding: 0 15px;
+}
+
+.io-zoom-controls button{
+    padding: 5px;
+    outline: none;
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 26px;
+    /* color: #555555; */
+    color: #aaa;
+    background: none;
+    border: none;
+}
+
+.io-zoom-controls button:hover{
+    color: #605CA8;
+}
+
+.io-control hr {
+    border: none;
+    border-top: solid 1px #DDD;
+    width: 15px;
+}
+
+.io-control-list {
+    list-style: none;
+    padding: 5px;
+    margin: 0;
+}
+
+.io-control-list a,
+.io-control-list a:visited {
+    padding: 0;
+    outline: none;
+    cursor: pointer;
+    font-size: 22px;
+    line-height: 26px;
+    color: #555555;
+    background: none;
+    border: none;
+}
+
+/* .djs-container {
+    position: relative !important;
+    overflow: scroll !important;
+    background-color: white !important;
+} */
