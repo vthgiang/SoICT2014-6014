@@ -92,28 +92,26 @@ class CertificateTab extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    (typeof certificates === 'undefined' || certificates.length === 0) ? <tr><td colSpan={5}><center> Không có dữ liệu</center></td></tr> :
-                                        certificates.map((x, index) => (
-                                            <tr key={index}>
-                                                <td>{x.name}</td>
-                                                <td>{x.issuedBy}</td>
-                                                <td>{this.formatDate(x.startDate)}</td>
-                                                <td>{this.formatDate(x.endDate)}</td>
-                                                <td>{!x.urlFile ? translate('manage_employee.no_files') :
-                                                    <a className='intable'
-                                                        href={LOCAL_SERVER_API + x.urlFile} target="_blank"
-                                                        download={x.name}>
-                                                        <i className="fa fa-download"> &nbsp;Download!</i>
-                                                    </a>
-                                                }</td>
-                                            </tr>
-                                        ))
+                                    certificates && certificates.length !== 0 &&
+                                    certificates.map((x, index) => (
+                                        <tr key={index}>
+                                            <td>{x.name}</td>
+                                            <td>{x.issuedBy}</td>
+                                            <td>{this.formatDate(x.startDate)}</td>
+                                            <td>{this.formatDate(x.endDate)}</td>
+                                            <td>{!x.urlFile ? translate('manage_employee.no_files') :
+                                                <a className='intable'
+                                                    href={LOCAL_SERVER_API + x.urlFile} target="_blank"
+                                                    download={x.name}>
+                                                    <i className="fa fa-download"> &nbsp;Download!</i>
+                                                </a>
+                                            }</td>
+                                        </tr>
+                                    ))
                                 }
                             </tbody>
                         </table>
-                        {
-                            (typeof certificates === 'undefined' || certificates.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
-                        }
+                        {(certificates === 'undefined' || certificates.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
                     </fieldset>
                 </div>
             </div>
