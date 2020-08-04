@@ -24,7 +24,6 @@ class TaskProcessManagement extends Component {
 
   }
   componentDidMount = () => {
-    console.log('this.state.pageNumber, this.state.noResultsPerPage,', this.state.pageNumber, this.state.noResultsPerPage);
     this.props.getAllDepartments()
     this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
     this.props.getRoles();
@@ -78,21 +77,31 @@ class TaskProcessManagement extends Component {
     window.$(`#modal-create-task`).modal('show')
   }
   setPage = async (pageTotal) => {
-    var test = window.$("#multiSelectUnit").val();
-    var oldCurrentPage = this.state.currentPage;
+    let oldCurrentPage = this.state.pageNumber;
     await this.setState(state => {
         return {
             ...state,
-            currentPage: pageTotal
+            pageNumber: pageTotal
         }
     })
-    var newCurrentPage = this.state.currentPage;
-    // if (oldCurrentPage !== newCurrentPage) this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, test, this.name.value);
-}
+    let newCurrentPage = this.state.pageNumber;
+    this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
+  }
+  setLimit =  (pageTotal) => {
+    console.log(pageTotal)
+    this.setState(state => {
+        return {
+            ...state,
+            noResultsPerPage: pageTotal
+        }
+    })
+    this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
+  }
   render() {
     const { translate, taskProcess,department } = this.props
     const { showModalCreateProcess, currentRow } = this.state
     let listDiagram = taskProcess && taskProcess.xmlDiagram;
+    let totalPage = taskProcess.totalPage
     let listOrganizationalUnit = department?.list
     return (
       <div className="box">
@@ -169,7 +178,7 @@ class TaskProcessManagement extends Component {
               'Người tạo mẫu',
             ]}
             limit={5}
-            // setLimit={t}
+            setLimit={this.setLimit}
             hideColumnOption={true}
           />
           <table className="table table-bordered table-striped table-hover" id="table-task-template">
@@ -207,7 +216,7 @@ class TaskProcessManagement extends Component {
               }
             </tbody>
           </table>
-          <PaginateBar pageTotal={4} currentPage={this.state.currentPage} func={this.setPage} />
+          <PaginateBar pageTotal={totalPage} currentPage={this.state.pageNumber} func={this.setPage} />
         </div>
       </div>
     );

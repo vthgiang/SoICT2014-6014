@@ -215,6 +215,7 @@ class ModalCreateTaskProcess extends Component {
          fill: '#dde6ca',
          stroke: '#6b7060'
      });
+     let element2 = element1.outgoing
    }
    interactPopup = (event) => {
       let element = event.element;
