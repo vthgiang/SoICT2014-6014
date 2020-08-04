@@ -109,6 +109,8 @@ class AdministrationStatisticsReport extends Component {
     barChart = ()=>{
         this.removePreviousBarChart();
         let dataChart = this.getDataViewDownloadBarChart();
+        console.log('rrrrrrrrrrrrrr', dataChart);
+        let x = ["Xem", "Download"];
         this.chart = c3.generate({
             bindto: this.refs.barchart,
 
@@ -123,6 +125,10 @@ class AdministrationStatisticsReport extends Component {
             data: {                                 // Dữ liệu biểu đồ
                 columns: dataChart,
                 type : 'bar',
+            },
+            axis:{
+                type: 'category',
+                value:  x,
             }
         })
     }
