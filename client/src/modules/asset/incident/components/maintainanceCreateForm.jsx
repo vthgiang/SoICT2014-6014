@@ -2,8 +2,8 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {withTranslate} from 'react-redux-multilingual';
 import {DatePicker, DialogModal, ErrorLabel, SelectBox} from '../../../../common-components';
-import {MaintainanceFormValidator} from '../../maintainance-management/components/maintainanceFormValidator';
-import {MaintainanceActions} from '../../maintainance-management/redux/actions';
+import {MaintainanceFormValidator} from '../../maintainance/components/maintainanceFormValidator';
+import {MaintainanceActions} from '../../maintainance/redux/actions';
 import {AssetManagerActions} from '../../asset-management/redux/actions';
 
 class MaintainanceCreateForm extends Component {

@@ -10,7 +10,7 @@ import {
     GeneralTab, MaintainanceLogTab, UsageLogTab, DepreciationTab, IncidentLogTab, DisposalTab, FileTab
 } from '../../asset-create/components/combinedContent';
 import { AssetManagerActions } from '../redux/actions';
-import { UsageActions } from '../../usage-management/redux/actions';
+import { UsageActions } from '../../usage/redux/actions';
 
 class AssetEditForm extends Component {
     constructor(props) {
