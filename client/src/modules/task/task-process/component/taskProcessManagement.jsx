@@ -25,7 +25,6 @@ class TaskProcessManagement extends Component {
 
   }
   componentDidMount = () => {
-    console.log('this.state.pageNumber, this.state.noResultsPerPage,', this.state.pageNumber, this.state.noResultsPerPage);
     this.props.getAllDepartments()
     this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
     this.props.getRoles();
@@ -80,10 +79,40 @@ class TaskProcessManagement extends Component {
     });
     window.$(`#modal-create-task-by-process`).modal("show");
   }
+  showCreateTask = (item) => {
+    this.setState(state => {
+      return {
+        template: item
+      }
+    });
+    window.$(`#modal-create-task`).modal('show')
+  }
+  setPage = async (pageTotal) => {
+    let oldCurrentPage = this.state.pageNumber;
+    await this.setState(state => {
+        return {
+            ...state,
+            pageNumber: pageTotal
+        }
+    })
+    let newCurrentPage = this.state.pageNumber;
+    this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
+  }
+  setLimit =  (pageTotal) => {
+    console.log(pageTotal)
+    this.setState(state => {
+        return {
+            ...state,
+            noResultsPerPage: pageTotal
+        }
+    })
+    this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
+  }
   render() {
     const { translate, taskProcess,department } = this.props
     const { showModalCreateProcess, currentRow } = this.state
     let listDiagram = taskProcess && taskProcess.xmlDiagram;
+    let totalPage = taskProcess.totalPage
     let listOrganizationalUnit = department?.list
     return (
       <div className="box">
@@ -174,7 +203,7 @@ class TaskProcessManagement extends Component {
               'Người tạo mẫu',
             ]}
             limit={5}
-            // setLimit={t}
+            setLimit={this.setLimit}
             hideColumnOption={true}
           />
           <table className="table table-bordered table-striped table-hover" id="table-task-template">
@@ -203,8 +232,8 @@ class TaskProcessManagement extends Component {
                       <a className="delete" onClick={() => { this.deleteDiagram(item._id) }} title={translate('task_template.delete_this_task_template')}>
                         <i className="material-icons"></i>
                       </a>
-                      <a className="" onClick={() => { this.showModalCreateTask(item) }} title={translate('task_template.delete_this_task_template')}>
-                        <span><i className="fa fa-plus-square-o"></i></span>
+                      <a className="delete" onClick= {()=> { this.showModalCreateTask(item)}} title={translate('task_template.delete_this_task_template')}>
+                        <i className="material-icons">add_box</i>
                       </a>
                     </td>
                   </tr>
@@ -212,7 +241,7 @@ class TaskProcessManagement extends Component {
               }
             </tbody>
           </table>
-          {/* <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} /> */}
+          <PaginateBar pageTotal={totalPage} currentPage={this.state.pageNumber} func={this.setPage} />
         </div>
       </div>
     );

@@ -6,6 +6,8 @@ import { DialogModal, SelectBox } from "../../../../common-components";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { getStorage } from '../../../../config';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
+// import Modeling from 'bpmn-js/lib/features/Modeling'
+// import elementRegistry from ''
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
@@ -13,7 +15,13 @@ import './processDiagram.css'
 import { TaskProcessActions } from "../redux/actions";
 import { DepartmentActions } from "../../../super-admin/organizational-unit/redux/actions";
 
-//Xóa element khỏi pallette theo data-action
+
+//bpmn-nyan
+import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
+import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
+
+
+// Xóa element khỏi palette 
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
 PaletteProvider.prototype.getPaletteEntries = function (element) {
    var entries = _getPaletteEntries.apply(this);
@@ -61,7 +69,13 @@ class ModalCreateTaskProcess extends Component {
          save: false
       }
       this.initialDiagram = initialDiagram
-      this.modeler = new BpmnModeler();
+      this.modeler = new BpmnModeler({
+         additionalModules: [
+           nyanDrawModule,
+           nyanPaletteModule
+         ]
+       });
+      this.modeling = this.modeler.get('modeling');
       this.generateId = "createprocess"
    }
    handleChangeBpmnName = async (e) => {
@@ -96,6 +110,11 @@ class ModalCreateTaskProcess extends Component {
             ...state,
          }
       })
+      const modeling = this.modeler.get('modeling');
+      let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+      modeling.updateProperties(element1, {
+         name: value
+      });
    }
 
    handleChangeDescription = async (value) => {
@@ -189,10 +208,29 @@ class ModalCreateTaskProcess extends Component {
 
       this.modeler.on('shape.changed', 1, (e) => this.changeNameElement(e));
    }
-
+   done = (e) => {
+      e.preventDefault()
+      let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+      this.modeling.setColor(element1 , {
+         fill: '#dde6ca',
+         stroke: '#6b7060'
+     });
+     let element2 = element1.outgoing
+   }
    interactPopup = (event) => {
       let element = event.element;
+      console.log(element)
       let { department } = this.props
+      let source = [];
+      let destination = []
+      element.incoming.forEach(x => {
+        source.push(x.source.businessObject.name)
+      })
+      console.log(source)
+      element.outgoing.forEach(x => {
+         destination.push(x.target.businessObject.name)
+      })
+      console.log(destination)
       let nameStr = element.type.split(':');
       this.setState(state => {
          if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process' && element.type !== 'bpmn:StartEvent' && element.type !== 'bpmn:EndEvent' && element.type !== 'bpmn:SequenceFlow') {
@@ -202,6 +240,8 @@ class ModalCreateTaskProcess extends Component {
                state.info[`${element.businessObject.id}`] = {
                   ...state.info[`${element.businessObject.id}`],
                   organizationalUnit: this.props.listOrganizationalUnit[0]?._id,
+                  followingTask: source,
+                  proceedTask: destination   
                }
             }
             return {
@@ -217,7 +257,11 @@ class ModalCreateTaskProcess extends Component {
             return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
          }
 
-      }, () => console.log(this.state))
+      })
+   //    this.modeling.setColor(element, {
+   //       fill: '#dde6ca',
+   //       stroke: '#6b7060'
+   //   });
    }
 
    deleteElements = (event) => {
@@ -229,7 +273,15 @@ class ModalCreateTaskProcess extends Component {
    }
 
    changeNameElement = (event) => {
-      var element = event.element;
+      this.setState(state => {
+         state.info[`${state.id}`] = {
+            ...state.info[`${state.id}`],
+            nameTask: event.element.businessObject.name,
+         }
+         return {
+            ...state,
+         }
+      })
    }
    save = async () => {
       let { department } = this.props
@@ -486,6 +538,7 @@ class ModalCreateTaskProcess extends Component {
                                              onChange={this.handleChangeManager}
                                              multiple={true}
                                              value={manager}
+            
                                           />
                                        }
                                     </div>

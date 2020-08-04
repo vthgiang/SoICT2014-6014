@@ -252,7 +252,7 @@ class ModalEditTaskProcess extends Component {
 
     interactPopup = (event) => {
         var element = event.element;
-        console.log("element||state", element, this.state);
+        console.log(event);
         let nameStr = element.type.split(':');
         this.setState(state => {
             if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' ||
@@ -301,6 +301,7 @@ class ModalEditTaskProcess extends Component {
 
     changeNameElement = (event) => {
         var element = event.element;
+        // this.modeler.updateProperties(shape,{name: 'abc'});
     }
 
     save = async () => {
