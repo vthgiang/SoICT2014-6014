@@ -166,7 +166,6 @@ class EmployeeManagement extends Component {
     // Function chyển đổi dữ liệu thông tin nhân viên thành dạng dữ liệu dùng export
     convertDataToExportData = (data) => {
         const { list } = this.props.department;
-        console.log(data);
         let employeeInforSheet = data.map((x, index) => {
             let organizationalUnits = x.organizationalUnits.map(y => y.name);
             let position = x.roles.map(y => y.roleId.name);

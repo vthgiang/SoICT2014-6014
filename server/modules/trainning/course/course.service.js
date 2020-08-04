@@ -12,15 +12,26 @@ const {
  * @company : Id công ty
  */
 exports.getAllCourses = async (company, organizationalUnits, positions) => {
-    let listEducations = await EducationProgram.find({
-        company: company,
-        applyForOrganizationalUnits: {
-            $in: organizationalUnits
-        },
-        applyForPositions: {
-            $in: positions
+    let keySearch = {
+        company: company
+    };
+    if (organizationalUnits && organizationalUnits.length !== 0) {
+        keySearch = {
+            ...keySearch,
+            applyForOrganizationalUnits: {
+                $in: organizationalUnits
+            },
         }
-    }, {
+    }
+    if (organizationalUnits && positions.length !== 0) {
+        keySearch = {
+            ...keySearch,
+            applyForPositions: {
+                $in: positions
+            }
+        }
+    }
+    let listEducations = await EducationProgram.find(keySearch, {
         _id: 1
     })
     listEducations = listEducations.map(x => {
