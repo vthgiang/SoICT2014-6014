@@ -44,10 +44,10 @@ import { systemComponents } from "../modules/system-admin/system-component/redux
 import { taskProcess } from "../modules/task/task-process/redux/reducers"
 
 //asset
-import { recommendProcure } from "../modules/assets-manager/recommend-procure/redux/reducers";
-import { recommendDistribute } from "../modules/assets-manager/recommend-distribute/redux/reducers";
-import { assetType } from "../modules/assets-manager/asset-type/redux/reducers";
-import { assetsManager } from "../modules/assets-manager/asset-management/redux/reducers";
+import { recommendProcure } from "../modules/asset/recommend-procure/redux/reducers";
+import { recommendDistribute } from "../modules/asset/recommend-distribute/redux/reducers";
+import { assetType } from "../modules/asset/asset-type/redux/reducers";
+import { assetsManager } from "../modules/asset/asset-management/redux/reducers";
 
 
 //report 

@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
-import { UsageFormValidator } from '../../usage-management/components/usageFormValidator';
-import { UsageActions } from '../../usage-management/redux/actions';
+import { UsageFormValidator } from '../../usage/components/usageFormValidator';
+import { UsageActions } from '../../usage/redux/actions';
 import { AssetManagerActions } from '../../asset-management/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 
