@@ -22,7 +22,12 @@ const {
     RecommendDistribute,
 
     DocumentDomain,
-    DocumentCategory
+    DocumentCategory,
+
+    Customer,
+    CustomerLocation,
+    CustomerGroup,
+    CustomerCare
 } = require('../models').schema;
 
 const Terms = require('./terms');
@@ -1783,6 +1788,136 @@ const sampleCompanyData = async () => {
         status: "Chờ phê duyệt",
     }])
     console.log(`Xong! Thông tin đăng ký sử dụng tài sản đã được tạo`);
+
+    console.log("Tạo mẫu dữ liệu khách hàng");
+    const customerLocationData = [
+        {
+            name: "Hà Nội",
+            code: 'HN'
+        },{
+            name: "Thái Bình",
+            code: "TB"
+        },{
+            name: "Đà Nẵng",
+            code: "ĐNa"
+        },{
+            name: "TP. Hồ Chí Minh",
+            code: "SG"
+        }
+    ];
+    const customerLocation = await CustomerLocation.insertMany(customerLocationData);
+
+    const customerGroupData = [
+        {
+            name: "Khách bán buôn",
+            code: 'KBB',
+            company: vnist._id
+        },{
+            name: "Sỉ lẻ",
+            code: "SL",
+            company: vnist._id
+        },{
+            name: "Nhà cung cấp Anh Đức",
+            code: "CCAD",
+            company: vnist._id
+        },{
+            name: "Đại lý Việt Anh",
+            code: "ĐLVA",
+            company: vnist._id
+        }
+    ];
+    const customerGroup = await CustomerGroup.insertMany(customerGroupData);
+
+    const customerData = [
+        {
+            name: 'Nguyễn Thị Phương',
+            code: 'HN1101',
+            phone: '0396629958',
+            address: '123 xã Đàn, Phương Liên, Đống Đa',
+            location: customerLocation[0]._id,
+            email: 'ntphuong@gmail.com',
+            group: customerGroup[0]._id,
+            birth: '20/10/1995',
+            gender: 'Nữ',
+            loyal: true,
+            company: vnist._id
+        },{
+            name: 'Trần Mỹ Hạnh',
+            code: 'HN2497',
+            phone: '0396629919',
+            address: '223 Đê La Thành',
+            location: customerLocation[0]._id,
+            email: 'ntphuong@gmail.com',
+            group: customerGroup[2]._id,
+            birth: '20/10/1995',
+            gender: 'Nữ',
+            loyal: true,
+            company: vnist._id
+        },{
+            name: 'Nguyễn Thị Phương',
+            code: 'HN1101',
+            phone: '0396629958',
+            address: '123 xã Đàn, Phương Liên, Đống Đa',
+            location: customerLocation[0]._id,
+            email: 'ntphuong@gmail.com',
+            group: customerGroup[0]._id,
+            birth: '20/10/1995',
+            gender: 'Nữ',
+            loyal: true,
+            company: vnist._id
+        },{
+            name: 'Trần Mỹ Hạnh',
+            code: 'HN2497',
+            phone: '0396629919',
+            address: '223 Đê La Thành',
+            location: customerLocation[0]._id,
+            email: 'ntphuong@gmail.com',
+            group: customerGroup[2]._id,
+            birth: '20/10/1995',
+            gender: 'Nữ',
+            loyal: true,
+            company: vnist._id
+        },{
+            name: 'Nguyễn Thị Phương',
+            code: 'HN1101',
+            phone: '0396629958',
+            address: '123 xã Đàn, Phương Liên, Đống Đa',
+            location: customerLocation[0]._id,
+            email: 'ntphuong@gmail.com',
+            group: customerGroup[0]._id,
+            birth: '20/10/1995',
+            gender: 'Nữ',
+            loyal: true,
+            company: vnist._id
+        },{
+            name: 'Trần Mỹ Hạnh',
+            code: 'HN2497',
+            phone: '0396629919',
+            address: '223 Đê La Thành',
+            location: customerLocation[0]._id,
+            email: 'ntphuong@gmail.com',
+            group: customerGroup[2]._id,
+            birth: '20/10/1995',
+            gender: 'Nữ',
+            loyal: true,
+            company: vnist._id
+        },{
+            name: 'Nguyễn Thị Phương',
+            code: 'HN1101',
+            phone: '0396629958',
+            address: '123 xã Đàn, Phương Liên, Đống Đa',
+            location: customerLocation[0]._id,
+            email: 'ntphuong@gmail.com',
+            group: customerGroup[0]._id,
+            birth: '20/10/1995',
+            gender: 'Nữ',
+            loyal: true,
+            company: vnist._id
+        }
+    ];
+    const customers = await Customer.insertMany(customerData);
+
+    console.log("Xong! Đã tạo mẫu dữ liệu khách hàng")
 }
 
 

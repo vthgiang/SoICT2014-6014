@@ -27,13 +27,14 @@ function getAllKPIUnit(infosearch) {
 }
 
 // Lấy tất cả KPI đơn vị
-function getChildTargetOfCurrentTarget(kpiId, date) {
+function getChildTargetOfCurrentTarget(kpiId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets`,
         method: 'GET',
         params: {
             organizationalUnitKpiSetId: kpiId,
-            date: date
+            unitKpiSetByEmployeeKpiSetDate: true,
+            type: "getChildTargetOfCurrentTarget"
         }
     }, false, true, 'kpi.organizational_unit');
 }

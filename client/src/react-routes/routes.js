@@ -85,6 +85,9 @@ import { DashBoardAssets} from '../modules/asset/asset-dashboard/components/asse
 //report
 import TaskReportManager from '../modules/report/task-report/components/taskReportManager';
 
+// Customer Management
+import Customer from '../modules/customer/components';
+
 class Routes extends Component {
 
     render() {
@@ -953,7 +956,21 @@ class Routes extends Component {
                         component={ TaskReportManager }
                     />  
 
-
+                    {/* Customer Management */}
+                    <PrivateRoute 
+                        isLoading={ false }
+                        key={ 'customer' }
+                        arrPage={[
+                            { link: '/customer', name:'customer', icon: 'fa fa-user'}
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/customer' }
+                        path={ '/customer' }
+                        pageName={ 'customer' }
+                        layout={ Layout }
+                        component={ Customer }
+                    />
 
                     {/* NOT FOUND */}
                     <Route component={ NotFound }></Route>

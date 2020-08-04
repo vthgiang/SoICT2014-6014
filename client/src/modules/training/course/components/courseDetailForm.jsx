@@ -36,7 +36,18 @@ class CourseDetailForm extends Component {
         var { course, translate } = this.props
         const { name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees,
             endDate, cost, lecturer, employeeCommitmentTime, educationProgram } = this.state;
-        console.log(listEmployees);
+
+        let formater = new Intl.NumberFormat();
+        let faliedNumber = 0, passNumber = 0, total = 0;
+        if (listEmployees && listEmployees.length !== 0) {
+            listEmployees.forEach(x => {
+                if (x.result === "failed") {
+                    faliedNumber += 1;
+                } else {
+                    passNumber += 1;
+                }
+            })
+        }
         return (
             <React.Fragment>
                 <DialogModal
@@ -46,7 +57,7 @@ class CourseDetailForm extends Component {
                     hasSaveButton={false}
                     size={75}
                     maxWidth={850}
-                    hasNote= {false}
+                    hasNote={false}
                 >
                     <form className="form-group" id="form-view-course" >
                         <div className="form-group">
@@ -64,12 +75,12 @@ class CourseDetailForm extends Component {
                             <span>Đào tạo bởi {offeredBy} - Thuộc chương trình đào tạo "{educationProgram.name}"</span>
                         </div>
                         <div className="form-group">
-                            <span>Thuộc loại "{type}" với chi phí {cost}{unit} và thời gian cam kết làm việc {employeeCommitmentTime} tháng</span>
+                            <span>Thuộc loại "{type}" với chi phí {formater.format(cost)}{unit} và thời gian cam kết làm việc {employeeCommitmentTime} tháng</span>
                         </div>
                         <div className="form-group">
-                            <span>60 nhân viên tham gia</span>
-                            <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;- 56 hoàn thành&nbsp;</span>
-                            <span className="text-danger" style={{ fontWeight: "bold" }}>&nbsp;- 4 chưa hoàn thành&nbsp;</span>
+                            <span>{total} nhân viên tham gia</span>
+                            <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;- {passNumber} hoàn thành&nbsp;</span>
+                            <span className="text-danger" style={{ fontWeight: "bold" }}>&nbsp;- {faliedNumber} chưa hoàn thành&nbsp;</span>
                         </div>
                         <div className="form-group">
                             <label className="pull-left">Danh sách nhân viên tham gia:</label>

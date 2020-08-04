@@ -8,7 +8,7 @@ import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskProcessActions } from "../redux/actions";
 import { withTranslate } from "react-redux-multilingual";
 
-
+var zlevel = 1;
 class ModalViewTaskProcess extends Component {
 
     constructor(props) {
@@ -23,7 +23,7 @@ class ModalViewTaskProcess extends Component {
             xmlDiagram: data.xmlDiagram,
         }
         this.viewer = new BpmnViewer();
-        this.generateId = 'bpmnContainer';
+        this.generateId = 'viewprocess';
         this.viewer.importXML(this.props.xmlDiagram)
     }
 
@@ -89,6 +89,43 @@ class ModalViewTaskProcess extends Component {
         })
     }
 
+
+    handleZoomOut = async () => {
+        let zstep = 0.2;
+        let canvas = this.viewer.get('canvas');
+        let eventBus = this.viewer.get('eventBus');
+
+        // set initial zoom level
+        canvas.zoom(zlevel, 'auto');
+
+        // update our zoom level on viewbox change
+        await eventBus.on('canvas.viewbox.changed', function (evt) {
+            zlevel = evt.viewbox.scale;
+        });
+        zlevel = Math.max(zlevel - zstep, zstep);
+        canvas.zoom(zlevel, 'auto');
+    }
+
+    handleZoomReset = () => {
+        let canvas = this.viewer.get('canvas');
+        canvas.zoom('fit-viewport');
+    }
+
+    handleZoomIn = async () => {
+        let zstep = 0.2;
+        let canvas = this.viewer.get('canvas');
+        let eventBus = this.viewer.get('eventBus');
+
+        // set initial zoom level
+        canvas.zoom(zlevel, 'auto');
+        // update our zoom level on viewbox change
+        await eventBus.on('canvas.viewbox.changed', function (evt) {
+            zlevel = evt.viewbox.scale;
+        });
+
+        zlevel = Math.min(zlevel + zstep, 7);
+        canvas.zoom(zlevel, 'auto');
+    }
     render() {
         const { translate, role } = this.props;
         const { listOrganizationalUnit } = this.props
@@ -106,9 +143,10 @@ class ModalViewTaskProcess extends Component {
                     formID="form-task-process"
                     title={this.props.title}
                     hasSaveButton={false}
+                    bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
                 >
                     <div>
-                        <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
+                        <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
                             <ul className="nav nav-tabs">
                                 <li className="active"><a href="#info-view" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
                                 <li><a href="#process-view" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
@@ -171,40 +209,58 @@ class ModalViewTaskProcess extends Component {
                             </div>
 
 
-                            <div className="tab-content">
+                            <div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
                                 <div className={selectedView === "process" ? "active tab-pane" : "tab-pane"} id="process-view">
-                                    <fieldset className="scheduler-border">
-                                        {/* <legend className="scheduler-border">Quy trình công việc</legend> */}
-                                        <div className='row'>
-                                            <div id={this.generateId} className={showInfo ? 'col-md-8' : 'col-md-12'}></div>
-                                            <div className={showInfo ? 'col-md-4' : undefined}>
-
-                                                {
-                                                    (showInfo) &&
-                                                    <div>
-                                                        <div>
-                                                            <h1>Option {name}</h1>
-                                                        </div>
-                                                        <FormInfoTask
-                                                            disabled={true}
-                                                            listOrganizationalUnit={listOrganizationalUnit}
-                                                            action='view'
-                                                            id={id}
-                                                            info={(info && info[`${id}`]) && info[`${id}`]}
-                                                        />
-                                                    </div>
-                                                }
+                                    <div className="row">
+                                        {/* Quy trình công việc */}
+                                        <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
+                                            <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
+                                                <button onClick={this.exportDiagram}>Export XML</button>
+                                                <button onClick={this.downloadAsSVG}>Save SVG</button>
+                                                <button onClick={this.downloadAsImage}>Save Image</button>
+                                                <button onClick={this.downloadAsBpmn}>Download BPMN</button>
+                                            </div>
+                                            <div id={this.generateId}></div>
+                                            <div className="row">
+                                                <div className="io-zoom-controls">
+                                                    <ul className="io-zoom-reset io-control io-control-list">
+                                                        <li>
+                                                            <button title="Reset zoom" onClick={this.handleZoomReset}>
+                                                                <i className="fa fa-crosshairs"></i>
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button title="Zoom in" onClick={this.handleZoomIn}>
+                                                                <i className="fa fa-plus"></i>
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button title="Zoom out" onClick={this.handleZoomOut}>
+                                                                <i className="fa fa-minus"></i>
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div>
-                                            <div id={this.generateId}></div>
-                                            <button onClick={this.exportDiagram}>Export XML</button>
-                                            <button onClick={this.downloadAsSVG}>Save SVG</button>
-                                            <button onClick={this.downloadAsImage}>Save Image</button>
-                                            <button onClick={this.downloadAsBpmn}>Download BPMN</button>
+                                        <div className={showInfo ? 'col-md-4' : undefined}>
+                                            {
+                                                (showInfo) &&
+                                                <div>
+                                                    <div>
+                                                        <h1>Option {name}</h1>
+                                                    </div>
+                                                    <FormInfoTask
+                                                        disabled={true}
+                                                        listOrganizationalUnit={listOrganizationalUnit}
+                                                        action='view'
+                                                        id={id}
+                                                        info={(info && info[`${id}`]) && info[`${id}`]}
+                                                    />
+                                                </div>
+                                            }
                                         </div>
-                                    </fieldset>
-
+                                    </div>
                                 </div>
                             </div>
                         </div>

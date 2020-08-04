@@ -92,11 +92,12 @@ class ListEducation extends Component {
     }
 
     render() {
-        const { translate, education } = this.props;
-        const { list } = this.props.department;
-        var listEducations = "", listPosition = [];
-        if (this.state.organizationalUnit !== null) {
-            let organizationalUnit = this.state.organizationalUnit;
+        const { translate, education, department } = this.props;
+        const { organizationalUnit } = this.state;
+        const { list } = department;
+        var listEducations = "", listPosition = [{ value: "", text: "Bạn chưa chọn đơn vị", disabled: true }];
+        if (organizationalUnit !== null) {
+            listPosition = [];
             organizationalUnit.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
@@ -133,7 +134,7 @@ class ListEducation extends Component {
                             <label className="form-control-static">{translate('human_resource.position')}</label>
                             <SelectMulti id={`multiSelectPosition`} multiple="multiple"
                                 options={{ nonSelectedText: translate('human_resource.non_position'), allSelectedText: translate('human_resource.all_position') }}
-                                items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
+                                items={organizationalUnit === null ? listPosition : listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
                             </SelectMulti>
                         </div>
                         <button type="button" className="btn btn-success" onClick={this.handleSunmitSearch} title="Tìm kiếm" >Tìm kiếm</button>

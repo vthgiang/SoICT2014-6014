@@ -23,6 +23,8 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
     delete entries['create.participant-expanded'];
     return entries;
 }
+
+var zlevel = 1;
 class ModalEditTaskProcess extends Component {
 
     constructor(props) {
@@ -35,6 +37,7 @@ class ModalEditTaskProcess extends Component {
             info: data.infoTask,
             xmlDiagram: data.xmlDiagram,
             selectedEdit: 'info',
+            zlevel: 1,
         }
         this.modeler = new BpmnModeler();
         this.generateId = 'editprocess';
@@ -58,13 +61,13 @@ class ModalEditTaskProcess extends Component {
         // this.modeler.importXML(this.initialDiagram, function (err) {})
 
         var eventBus = this.modeler.get('eventBus');
-        this.modeler.on('element.click', 1, (e) => this.interactPopup(e));
+        this.modeler.on('element.click', 1000, (e) => this.interactPopup(e));
 
         this.modeler.on('shape.remove', 1000, (e) => this.deleteElements(e));
 
         this.modeler.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
 
-        this.modeler.on('shape.changed', 1, (e) => this.changeNameElement(e));
+        this.modeler.on('shape.changed', 1000, (e) => this.changeNameElement(e));
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -209,6 +212,19 @@ class ModalEditTaskProcess extends Component {
         })
     }
 
+    handleChangeTemplate = async (value) => {
+        await this.setState(state => {
+            state.info[`${state.id}`] = {
+                ...state.info[`${state.id}`],
+                code: state.id,
+                taskTemplate: value,
+            }
+            return {
+                ...state,
+            }
+        })
+    }
+
     handleChangeViewer = async (value) => {
         await this.setState(state => {
 
@@ -236,12 +252,12 @@ class ModalEditTaskProcess extends Component {
 
     interactPopup = (event) => {
         var element = event.element;
-        console.log("element||state", element, this.state);
+        console.log(event);
         let nameStr = element.type.split(':');
         this.setState(state => {
             if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' ||
-                element.type === 'bpmn:EndEvent' || element.type === "bpmn:SequenceFlow" ||
-                element.type === "bpmn:StartEvent" || element.type === "bpmn:IntermediateThrowEvent"
+                element.type === "bpmn:SequenceFlow" || element.type === "bpmn:IntermediateThrowEvent"
+                // || element.type === 'bpmn:EndEvent' || element.type === "bpmn:StartEvent" 
             ) {
                 if (!state.info[`${element.businessObject.id}`] ||
                     (state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
@@ -285,6 +301,7 @@ class ModalEditTaskProcess extends Component {
 
     changeNameElement = (event) => {
         var element = event.element;
+        // this.modeler.updateProperties(shape,{name: 'abc'});
     }
 
     save = async () => {
@@ -390,6 +407,73 @@ class ModalEditTaskProcess extends Component {
     }
 
 
+    handleZoomOut = async () => {
+        let zstep = 0.2;
+        let canvas = this.modeler.get('canvas');
+        let eventBus = this.modeler.get('eventBus');
+
+        // set initial zoom level
+        canvas.zoom(zlevel, 'auto');
+        // zlevel = canvas?._cachedViewbox?.scale;
+
+        console.log(canvas);
+        // update our zoom level on viewbox change
+        await eventBus.on('canvas.viewbox.changed', function (evt) {
+            zlevel = evt.viewbox.scale;
+            console.log('scale', zlevel, evt.viewbox.scale);
+        });
+        console.log('zzz', zlevel);
+        zlevel = Math.max(zlevel - zstep, zstep);
+        console.log('zlevel', zlevel);
+        canvas.zoom(zlevel, 'auto');
+    }
+
+    handleZoomReset = () => {
+        console.log('click zoom reset');
+
+        let canvas = this.modeler.get('canvas');
+        console.log('canvas', canvas);
+        canvas.zoom('fit-viewport');
+    }
+
+    handleZoomIn = async () => {
+        let zstep = 0.2;
+        let canvas = this.modeler.get('canvas');
+        let eventBus = this.modeler.get('eventBus');
+
+        // set initial zoom level
+        canvas.zoom(zlevel, 'auto');
+        // zlevel = canvas?._cachedViewbox?.scale;
+        // update our zoom level on viewbox change
+        await eventBus.on('canvas.viewbox.changed', function (evt) {
+            zlevel = evt.viewbox.scale;
+            console.log('scale', zlevel, evt.viewbox.scale);
+        });
+        console.log('zzzIIII', zlevel);
+
+        zlevel = Math.min(zlevel + zstep, 7);
+        canvas.zoom(zlevel, 'auto');
+    }
+
+    exportDiagram = () => {
+        let xmlStr;
+        this.modeler.saveXML({ format: true }, function (err, xml) {
+            if (err) {
+                console.log(err);
+            }
+            else {
+                console.log(xml);
+                xmlStr = xml;
+            }
+        });
+        this.setState(state => {
+            return {
+                ...state,
+                xmlDiagram: xmlStr,
+            }
+        })
+    }
+
     render() {
         const { translate, role } = this.props;
         const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedEdit } = this.state;
@@ -408,20 +492,17 @@ class ModalEditTaskProcess extends Component {
                     // disableSubmit={!this.isTaskFormValidated()}
                     title={this.props.title}
                     func={this.save}
+                    bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
                 >
                     <div>
 
-                        <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
+                        <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
                             <ul className="nav nav-tabs">
                                 <li className="active"><a href="#info-edit" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
                                 <li><a href="#process-edit" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
                             </ul>
                             <div className="tab-content">
                                 <div className={selectedEdit === "info" ? "active tab-pane" : "tab-pane"} id="info-edit">
-                                    {/* <fieldset className="scheduler-border">
-                                        <legend className="scheduler-border">Thông tin quy trình</legend> */}
-
-
                                     <div className='row'>
                                         <div className='col-md-6'>
                                             <div className="form-group">
@@ -472,48 +553,67 @@ class ModalEditTaskProcess extends Component {
                                             </div>
                                         </div>
                                     </div>
-
-                                    {/* </fieldset> */}
                                 </div>
                             </div>
-                            <div className="tab-content">
+                            <div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
                                 <div className={selectedEdit === "process" ? "active tab-pane" : "tab-pane"} id="process-edit">
-                                    <fieldset className="scheduler-border">
-                                        {/* <legend className="scheduler-border">Quy trình công việc</legend> */}
-                                        <div className='row'>
-                                            <div id={this.generateId} className={showInfo ? 'col-md-8' : 'col-md-12'}></div>
-                                            <div className={showInfo ? 'col-md-4' : undefined}>
-
-                                                {
-                                                    (showInfo) &&
-                                                    <div>
-                                                        <div>
-                                                            <h1>Option {name}</h1>
-                                                        </div>
-                                                        <FormInfoTask
-                                                            listOrganizationalUnit={listOrganizationalUnit}
-                                                            action='edit'
-                                                            id={id}
-                                                            info={(info && info[`${id}`]) && info[`${id}`]}
-                                                            handleChangeName={this.handleChangeName}
-                                                            handleChangeDescription={this.handleChangeDescription}
-                                                            handleChangeResponsible={this.handleChangeResponsible}
-                                                            handleChangeAccountable={this.handleChangeAccountable}
-                                                            handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
-
-                                                            save={this.save}
-                                                        />
-                                                    </div>
-                                                }
-                                            </div>
-                                        </div>
-                                        <div>
-                                            {/* <button onClick={this.exportDiagram}>Export XML</button>
+                                    <div className="row">
+                                        {/* Quy trình công việc */}
+                                        <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
+                                            <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
+                                                <button onClick={this.exportDiagram}>Export XML</button>
                                                 <button onClick={this.downloadAsSVG}>Save SVG</button>
                                                 <button onClick={this.downloadAsImage}>Save Image</button>
-                                                <button onClick={this.downloadAsBpmn}>Download BPMN</button> */}
+                                                <button onClick={this.downloadAsBpmn}>Download BPMN</button>
+                                            </div>
+                                            <div id={this.generateId}></div>
+                                            <div className="row">
+                                                <div className="io-zoom-controls">
+                                                    <ul className="io-zoom-reset io-control io-control-list">
+                                                        <li>
+                                                            <button title="Reset zoom" onClick={this.handleZoomReset}>
+                                                                <i className="fa fa-crosshairs"></i>
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button title="Zoom in" onClick={this.handleZoomIn}>
+                                                                <i className="fa fa-plus"></i>
+                                                            </button>
+                                                        </li>
+                                                        <li>
+                                                            <button title="Zoom out" onClick={this.handleZoomOut}>
+                                                                <i className="fa fa-minus"></i>
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </fieldset>
+                                        <div className={showInfo ? 'col-md-4' : undefined}>
+                                            {
+                                                (showInfo) &&
+                                                <div>
+                                                    <div>
+                                                        <h1>Option {name}</h1>
+                                                    </div>
+                                                    <FormInfoTask
+                                                        listOrganizationalUnit={listOrganizationalUnit}
+                                                        action='edit'
+                                                        id={id}
+                                                        info={(info && info[`${id}`]) && info[`${id}`]}
+                                                        handleChangeName={this.handleChangeName}
+                                                        handleChangeDescription={this.handleChangeDescription}
+                                                        handleChangeResponsible={this.handleChangeResponsible}
+                                                        handleChangeAccountable={this.handleChangeAccountable}
+                                                        handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
+                                                        handleChangeTemplate={this.handleChangeTemplate}
+
+                                                        save={this.save}
+                                                    />
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -524,7 +624,6 @@ class ModalEditTaskProcess extends Component {
     }
 
 }
-
 
 function mapState(state) {
     const { user, auth, role } = state;

@@ -236,7 +236,7 @@ class InsurranceTab extends Component {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {(typeof socialInsuranceDetails !== 'undefined' && socialInsuranceDetails.length !== 0) &&
+                                        {socialInsuranceDetails && socialInsuranceDetails.length !== 0 &&
                                             socialInsuranceDetails.map((x, index) => (
                                                 <tr key={index}>
                                                     <td>{this.formatDate(x.startDate, true)}</td>
@@ -252,7 +252,7 @@ class InsurranceTab extends Component {
                                     </tbody>
                                 </table>
                                 {
-                                    (typeof socialInsuranceDetails === 'undefined' || socialInsuranceDetails === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                    (!socialInsuranceDetails || socialInsuranceDetails.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                                 }
                             </div>
                         </div>
