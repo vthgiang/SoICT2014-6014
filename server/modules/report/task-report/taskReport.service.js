@@ -18,7 +18,7 @@ exports.getTaskReports = async (params) => {
     }
 
     let totalList = await TaskReport.countDocuments();
-    let listTaskReport = await TaskReport.find(keySearch).sort({ 'createdAt': 'desc' }).skip(parseInt(params.page)).limit(parseInt(params.limit)).populate({ path: 'creator', select: "_id name" });
+    let listTaskReport = await TaskReport.find(keySearch).sort({ 'createdAt': 'desc' }).skip(parseInt(params.page)).limit(parseInt(params.limit)).populate({ path: 'creator ', select: "_id name" });
     return { totalList, listTaskReport };
 }
 
@@ -29,7 +29,7 @@ exports.getTaskReports = async (params) => {
  */
 exports.getTaskReportById = async (id) => {
     let taskReportById = await TaskReport.findById(id)
-        .populate({ path: 'creator', select: "_id name" });
+        .populate({ path: 'creator organizationalUnit responsibleEmployees accountableEmployees taskTemplate' });
     return taskReportById;
 }
 
@@ -41,7 +41,6 @@ exports.getTaskReportById = async (id) => {
  */
 exports.createTaskReport = async (data, user) => {
     // convert startDate từ string sang Date
-    console.log('daaaaa', data);
     let startTime = data.startDate.split("-");
     let start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
 
@@ -61,23 +60,23 @@ exports.createTaskReport = async (data, user) => {
             filter: value.filter,
             newName: value.newName,
             charType: value.charType,
-            aggregationType: value.aggregationType,
             showInReport: value.showInReport,
+            aggregationType: value.aggregationType,
         }
     }
 
     let newTaskReport = await TaskReport.create({
         organizationalUnit: data.organizationalUnit,
+        taskTemplate: data.taskTemplate,
         name: data.nameTaskReport,
         description: data.descriptionTaskReport,
+        responsibleEmployees: data.responsibleEmployees,
+        accountableEmployees: data.accountableEmployees,
+        status: statusConvert,
         creator: user,
         startDate: start,
         endDate: end,
-        taskTemplate: data.taskTemplate,
-        status: statusConvert,
         frequency: frequencyConvert,
-        responsibleEmployees: data.responsibleEmployees,
-        accountableEmployees: data.accountableEmployees,
         configurations: configurations,
 
     })
@@ -93,13 +92,46 @@ exports.createTaskReport = async (data, user) => {
  * @param {*} người sửa 
  */
 exports.editTaskReport = async (id, data, user) => {
+    // convert startDate từ string sang Date
+    let startTime = data.startDate.split("-");
+    let start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
+
+    // convert endDate từ string sang Date
+    let endTime = data.endDate.split("-");
+    let end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
+    let frequencyConvert = data.frequency.toString();
+
+    let configurations = [];
+    for (let [index, value] of data.taskInformations.entries()) {
+        configurations[index] = {
+            code: value.code,
+            name: value.name,
+            type: value.type,
+            filter: value.filter,
+            newName: value.newName,
+            charType: value.charType,
+            showInReport: value.showInReport,
+            aggregationType: value.aggregationType,
+        }
+    }
+    console.log('configurations', configurations);
     await TaskReport.findByIdAndUpdate(id, {
         $set: {
-            name: data.nameTaskReport,
-            description: data.descriptionTaskReport,
+            organizationalUnit: data.organizationalUnit,
+            taskTemplate: data.taskTemplate,
+            name: data.name,
+            description: data.description,
+            responsibleEmployees: data.responsibleEmployees,
+            accountableEmployees: data.accountableEmployees,
+            status: data.status,
             creator: user,
+            startDate: start,
+            endDate: end,
+            frequency: frequencyConvert,
+            configurations: configurations,
         }
     }, { new: true });
+    console.log('quaday')
     return await TaskReport.findOne({ _id: id }).populate({ path: 'creator', select: '_id name' });
 }
 

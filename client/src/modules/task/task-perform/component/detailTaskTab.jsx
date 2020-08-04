@@ -432,10 +432,10 @@ class DetailTaskTab extends Component {
                                                                     {(eva.results.length !== 0) ?
                                                                         eva.results.map((res, index) => {
                                                                             if (task.inactiveEmployees.indexOf(res.employee._id) !== -1) {
-                                                                                return <li key={index}><strike>{res.employee.name}</strike>: &nbsp;&nbsp; {res.automaticPoint ? res.automaticPoint : translate('task.task_management.detail_not_auto')} - {res.employeePoint ? res.employeePoint : translate('task.task_management.detail_not_auto')} - {res.approvedPoint ? res.approvedPoint : translate('task.task_management.detail_not_acc')}</li>
+                                                                                return <li key={index}><strike>{res.employee.name}</strike>: &nbsp;&nbsp; {res.automaticPoint ? res.automaticPoint : translate('task.task_management.detail_not_auto')} - {res.employeePoint ? res.employeePoint : translate('task.task_management.detail_not_emp')} - {res.approvedPoint ? res.approvedPoint : translate('task.task_management.detail_not_acc')}</li>
                                                                             }
                                                                             else {
-                                                                                return <li key={index}>{res.employee.name}: &nbsp;&nbsp; {res.automaticPoint ? res.automaticPoint : translate('task.task_management.detail_not_auto')} - {res.employeePoint ? res.employeePoint : translate('task.task_management.detail_not_auto')} - {res.approvedPoint ? res.approvedPoint : translate('task.task_management.detail_not_acc')}</li>
+                                                                                return <li key={index}>{res.employee.name}: &nbsp;&nbsp; {res.automaticPoint ? res.automaticPoint : translate('task.task_management.detail_not_auto')} - {res.employeePoint ? res.employeePoint : translate('task.task_management.detail_not_emp')} - {res.approvedPoint ? res.approvedPoint : translate('task.task_management.detail_not_acc')}</li>
                                                                             }
                                                                         }) : <li>{translate('task.task_management.detail_not_eval')}</li>
                                                                     }
@@ -449,9 +449,9 @@ class DetailTaskTab extends Component {
                                                                 {
                                                                     eva.taskInformations.map((info, key) => {
                                                                         if (info.type === "Date") {
-                                                                            return <li key={key}>{info.name}&nbsp;-&nbsp;{translate('task.task_management.detail_value')}: {info.value ? this.formatDate(info.value) : translate('task.task_management.detail_not_eval_on_month')}</li>
+                                                                            return <li key={key}>{info.name}: &nbsp;&nbsp; {info.value ? this.formatDate(info.value) : translate('task.task_management.detail_not_eval_on_month')}</li>
                                                                         }
-                                                                        return <li key={key}>{info.name}&nbsp;-&nbsp;{translate('task.task_management.detail_value')}: {info.value ? info.value : ('task.task_management.detail_not_eval_on_month')}</li>
+                                                                        return <li key={key}>{info.name}: &nbsp;&nbsp; {info.value ? info.value : translate('task.task_management.detail_not_eval_on_month')}</li>
                                                                     })
                                                                 }
                                                             </ul>
@@ -472,11 +472,11 @@ class DetailTaskTab extends Component {
                                                                                 })
                                                                             }
                                                                             </ul>
-                                                                            : <span>&nbsp;&nbsp; {translate('task.task_management.detail_not_kpi')}</span>
+                                                                            : <span>:&nbsp;&nbsp; {translate('task.task_management.detail_not_kpi')}</span>
                                                                         }
                                                                     </div>)
                                                                 })
-                                                            ) : <li>{translate('task.task_management.detail_all_not_kpi')}</li>
+                                                            ) : <div><strong>{translate('task.task_management.detail_all_not_kpi')}</strong></div>
                                                         }
                                                     </div>
                                                 );

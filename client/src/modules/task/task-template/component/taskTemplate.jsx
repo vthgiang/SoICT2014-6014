@@ -7,6 +7,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../redux/actions';
 
 import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../common-components';
+import { ExportExcel } from '../../../../common-components';
 import Swal from 'sweetalert2';
 
 import { ModalAddTaskTemplate } from './addTaskTemplateModal';
@@ -205,6 +206,67 @@ class TaskTemplate extends Component {
         window.$('#modal-add-task-template').modal('show');
     }
 
+    // Function chyển đổi dữ liệu mẫu công việc thành dạng dữ liệu dùng export
+    convertDataToExportData = (data) => {
+        if (data) {
+
+            data = data.map((x, index) => {
+                let taskActions = [];
+                if (x.taskActions.length !== 0){
+                    taskActions = x.taskActions.map( item => item.name);
+                }
+                let taskInformations = [];
+                if (x.taskInformations.length !== 0){
+                    taskInformations = x.taskInformations.map( item => item.name);
+                }
+
+                return {
+                    STT: index + 1,
+                    name: x.name,
+                    description: x.description,
+                    numberOfUse: x.numberOfUse,
+                    creator: x.creator.name,
+                    organizationalUnits: x.organizationalUnit.name,
+                    priority: x.priority,
+                    formula: x.formula,
+                    taskActions: taskActions.join(', '),
+                    taskInformations: taskInformations.join(', ')
+                };
+
+            })
+        }
+
+        // let columns = otherSalary.map((x, index) => {
+        //     return { key: `bonus${index}`, value: x, type: "Number" }
+        // })
+        let exportData = {
+            fileName: "Bảng thống kê mẫu công việc",
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "name", value: "Tên mẫu" },
+                                { key: "description", value: "Mô tả" },
+                                { key: "numberOfUse", value: "Số lần sử dụng"},
+                                { key: "creator", value: "Người tạo mẫu" },
+                                { key: "organizationalUnits", value: "Phòng ban" },
+                                { key: "priority", value: "Độ ưu tiên" },
+                                { key: "formula", value: "Công thức tính điểm" },
+                                { key: "taskActions", value: "Danh sách hoạt động" },
+                                { key: "taskInformations", value: "Danh sách thông tin" }
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData
+    }
+
     render() {
         const { translate, tasktemplates, user } = this.props;
         const { currentPage } = this.state;
@@ -226,12 +288,18 @@ class TaskTemplate extends Component {
         if (tasktemplates.items) {
             listTaskTemplates = tasktemplates.items;
         }
+        let list = [];
+        if (tasktemplates.isLoading === false){
+            list = tasktemplates.items;
+        }
+        let exportData = this.convertDataToExportData(list);
 
         return (
             <div className="box">
                 <div className="box-body qlcv" id="table-task-template">
                     {<ModalViewTaskTemplate taskTemplateId={this.state.currentViewRow} />}
                     {<ModalEditTaskTemplate taskTemplateId={this.state.currentEditRow} />}
+                    
                     {<TaskTemplateImportForm />}
                     {/**Kiểm tra xem role hiện tại có quyền thêm mới mẫu công việc không(chỉ trưởng đơn vị) */}
                     {this.checkHasComponent('create-task-template-button') &&
@@ -256,7 +324,7 @@ class TaskTemplate extends Component {
                             <input className="form-control" type="text" placeholder={translate('task_template.search_by_name')} ref={input => this.name = input} />
                         </div>
                     </div>
-
+                    {<ExportExcel id="export-taskTemplate" exportData={exportData} />}
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('task_template.unit')}</label>
@@ -270,6 +338,7 @@ class TaskTemplate extends Component {
                             <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
                         </div>
                     </div>
+                    
                     <DataTableSetting
                         tableId="table-task-template"
                         columnArr={[

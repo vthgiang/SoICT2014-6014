@@ -4,6 +4,7 @@ import { SelectBox } from './../../../../common-components/index';
 import { withTranslate } from "react-redux-multilingual";
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { UserActions } from '../../../super-admin/user/redux/actions';
+import { taskTemplateActions } from '../../task-template/redux/actions';
 class FormInfoTask extends Component {
 
     constructor(props) {
@@ -14,40 +15,32 @@ class FormInfoTask extends Component {
             nameTask: (info && info.nameTask) ? info.nameTask : '',
             description: (info && info.description) ? info.description : '',
             organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
+            taskTemplate: (info && info.taskTemplate) ? info.taskTemplate : "",
             responsible: (info && info.responsible) ? info.responsible : [],
             accountable: (info && info.accountable) ? info.accountable : [],
             // listRoles: [...listOrganizationalUnit[0]?.deans, ...listOrganizationalUnit[0]?.viceDeans, ...listOrganizationalUnit[0]?.employees]
         }
     }
 
+    componentDidMount() {
+        this.props.getTaskTemplateByUser("1", "0", "[]");
+    }
+
     shouldComponentUpdate(nextProps, nextState) {
-        // console.log(nextProps.info)
-        // console.log(this.props.info)
-        // if(nextProps.info !== this.props.info) {
-        //     return true;
-        // }
         if (nextProps.id !== this.state.id) {
             let { info, listOrganizationalUnit } = nextProps;
-            // let listRoles = [...listOrganizationalUnit[0].deans, ...listOrganizationalUnit[0].viceDeans, ...listOrganizationalUnit[0].employees];
             this.setState(state => {
-            //     if(info && info.organizationalUnit) {
-            //         let { listOrganizationalUnit } = this.props
-            //         listOrganizationalUnit.forEach(x => {
-            //             if(x._id === info.organizationalUnit) {
-            //                 listRoles = [...x.deans, ...x.viceDeans, ...x.employees];
-            //             }
-            //         })
-            // }
-            return {
-                id: nextProps.id,
-                nameTask: (info && info.nameTask) ? info.nameTask : '',
-                description: (info && info.description) ? info.description : '',
-                organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
-                responsible: (info && info.responsible) ? info.responsible : [],
-                accountable: (info && info.accountable) ? info.accountable : [],
-            }
-        })
-        return false;
+                return {
+                    id: nextProps.id,
+                    nameTask: (info && info.nameTask) ? info.nameTask : '',
+                    description: (info && info.description) ? info.description : '',
+                    organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
+                    taskTemplate: (info && info.taskTemplate) ? info.taskTemplate : "",
+                    responsible: (info && info.responsible) ? info.responsible : [],
+                    accountable: (info && info.accountable) ? info.accountable : [],
+                }
+            })
+            return false;
         } else return true;
     }
 
@@ -72,6 +65,12 @@ class FormInfoTask extends Component {
         });
         this.props.handleChangeOrganizationalUnit(value[0])
     }
+    handleChangeTemplate = (value) => {
+        this.setState({
+            taskTemplate: value[0],
+        });
+        this.props.handleChangeTemplate(value[0])
+    }
     handleChangeResponsible = (value) => {
         this.setState({
             responsible: value,
@@ -86,10 +85,10 @@ class FormInfoTask extends Component {
     }
 
     render() {
-        const { user, translate, role } = this.props;
-        const { nameTask, description, responsible, accountable, organizationalUnit, } = this.state;
+        const { user, translate, role, tasktemplates } = this.props;
+        const { nameTask, description, responsible, accountable, organizationalUnit, taskTemplate} = this.state;
         const { id, info, action, listOrganizationalUnit, disabled } = this.props;
-        let usersOfChildrenOrganizationalUnit;
+        let usersOfChildrenOrganizationalUnit, listTaskTemplate;
         if (user && user.usersOfChildrenOrganizationalUnit) {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
@@ -104,6 +103,20 @@ class FormInfoTask extends Component {
         let listItem = listRoles.map(x => {
             return { text: x.name, value: x._id }
         })
+
+        if (tasktemplates.items && organizationalUnit) {
+            listTaskTemplate = tasktemplates.items.filter(function (taskTemplate) {
+                return taskTemplate.organizationalUnit._id === organizationalUnit;
+            });
+        }
+        // list template
+        let listTemp = [{value: "", text: "--Chọn mẫu công việc--" }];
+        if (listTaskTemplate && listTaskTemplate.length !== 0) {
+            listTaskTemplate.map(item => {
+                listTemp.push({ value: item._id, text: item.name })
+            })
+        }
+
         return (
             <div>
                 <form>
@@ -141,6 +154,23 @@ class FormInfoTask extends Component {
                             />
                         }
                     </div>
+                    {(listTaskTemplate && listTaskTemplate.length !== 0) &&
+                    <div className="form-group">
+                        <label htmlFor="exampleFormControlSelect1" style={{ float: 'left' }} >Mẫu công việc</label>
+                        {
+                            <SelectBox
+                                id={`select-template-employee-${id}-${action}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                multiple={false}
+                                items={listTemp}
+                                onChange={this.handleChangeTemplate}
+                                value={taskTemplate}
+                                disabled={disabled}
+                            />
+                        }
+                    </div>
+                    }
                     <div className="form-group">
                         <label htmlFor="exampleFormControlSelect1" style={{ float: 'left' }} >Người thực hiện</label>
                         {
@@ -187,13 +217,14 @@ class FormInfoTask extends Component {
 
 
 function mapState(state) {
-    const { user, auth, role } = state;
-    return { user, auth, role };
+    const { user, auth, role, tasktemplates } = state;
+    return { user, auth, role, tasktemplates };
 }
 
 const actionCreators = {
     getDepartment: UserActions.getDepartmentOfUser,
     // getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
+    getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
 };
 const connectedFormInfoTask = connect(mapState, actionCreators)(withTranslate(FormInfoTask));
 export { connectedFormInfoTask as FormInfoTask };

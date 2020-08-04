@@ -230,7 +230,10 @@ class TaskOrganizationUnitDashboard extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.tasks_calendar')}</div>
                             </div>
-                            <TasksSchedule />
+                            <TasksSchedule
+                                TaskOrganizationUnitDashboard={true}
+                                units={idsUnit}
+                            />
                         </div>
 
                     </div>
