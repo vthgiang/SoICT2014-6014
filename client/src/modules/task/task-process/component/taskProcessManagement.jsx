@@ -67,6 +67,14 @@ class TaskProcessManagement extends Component {
     });
     window.$(`#modal-create-process-task`).modal("show");
   }
+  showCreateTask = (item) => {
+    this.setState(state => {
+      return {
+        template: item
+      }
+    });
+    window.$(`#modal-create-task`).modal('show')
+  }
   setPage = async (pageTotal) => {
     var test = window.$("#multiSelectUnit").val();
     var oldCurrentPage = this.state.currentPage;
@@ -187,6 +195,9 @@ class TaskProcessManagement extends Component {
                       </a>
                       <a className="delete" onClick={() => { this.deleteDiagram(item._id) }} title={translate('task_template.delete_this_task_template')}>
                         <i className="material-icons"></i>
+                      </a>
+                      <a className="delete" onClick= {()=> { this.showCreateTask(item)}} title={translate('task_template.delete_this_task_template')}>
+                        <i className="material-icons">add_box</i>
                       </a>
                     </td>
                   </tr>

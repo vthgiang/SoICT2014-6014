@@ -88,7 +88,7 @@ class FormInfoTask extends Component {
         if (user && user.usersOfChildrenOrganizationalUnit) {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
-        // console.log(info)
+        console.log(info)
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
         let listRoles = [];
         listOrganizationalUnit.forEach(x => {
@@ -173,7 +173,44 @@ class FormInfoTask extends Component {
                     </div>
 
 
-                    {/* <input type="button" className='btn btn-success' value='Gửi' onClick={this.props.save} /> */}
+                    <div className="form-group">
+                        <label htmlFor="exampleFormControlSelect2" style={{ float: 'left' }} >Proceed Task</label>
+                        {
+                            // unitMembers &&
+                            <SelectBox
+                                id={`proceed-task-${id}-${action}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                // items={unitMembers}
+                                items={listItem}
+                                onChange={this.handleChangeAccountable}
+                                multiple={true}
+                                value={accountable}
+                                disabled={disabled}
+                            />
+                        }
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="exampleFormControlSelect2" style={{ float: 'left' }} >Following Task</label>
+                        {
+                            // unitMembers &&
+                            <SelectBox
+                                id={`following-task-${id}-${action}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                // items={unitMembers}
+                                items={listItem}
+                                onChange={this.handleChangeAccountable}
+                                multiple={true}
+                                value={accountable}
+                                disabled={disabled}
+                            />
+                        }
+                    </div>
+                    
+
+
+                    <button className= 'btn btn-primary' onClick = {this.props.done}> Hoàn thành</button>
                 </form>
             </div>
         );

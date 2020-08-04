@@ -15,7 +15,13 @@ import './processDiagram.css'
 import { TaskProcessActions } from "../redux/actions";
 import { DepartmentActions } from "../../../super-admin/organizational-unit/redux/actions";
 
-//Xóa element khỏi pallette theo data-action
+
+//bpmn-nyan
+import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
+import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
+
+
+// Xóa element khỏi palette 
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
 PaletteProvider.prototype.getPaletteEntries = function (element) {
    var entries = _getPaletteEntries.apply(this);
@@ -60,7 +66,13 @@ class ModalCreateTaskProcess extends Component {
          save: false
       }
       this.initialDiagram = initialDiagram
-      this.modeler = new BpmnModeler();
+      this.modeler = new BpmnModeler({
+         additionalModules: [
+           nyanDrawModule,
+           nyanPaletteModule
+         ]
+       });
+      this.modeling = this.modeler.get('modeling');
       this.generateId = "createprocess"
    }
    handleChangeBpmnName = async (e) => {
@@ -179,11 +191,28 @@ class ModalCreateTaskProcess extends Component {
 
       this.modeler.on('shape.changed', 1, (e) => this.changeNameElement(e));
    }
-
+   done = (e) => {
+      e.preventDefault()
+      let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+      this.modeling.setColor(element1 , {
+         fill: '#dde6ca',
+         stroke: '#6b7060'
+     });
+   }
    interactPopup = (event) => {
       let element = event.element;
       console.log(element)
       let { department } = this.props
+      let source = [];
+      let destination = []
+      element.incoming.forEach(x => {
+        source.push(x.source.businessObject.name)
+      })
+      console.log(source)
+      element.outgoing.forEach(x => {
+         destination.push(x.target.businessObject.name)
+      })
+      console.log(destination)
       let nameStr = element.type.split(':');
       this.setState(state => {
          if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process' && element.type !== 'bpmn:StartEvent' && element.type !== 'bpmn:EndEvent' && element.type !== 'bpmn:SequenceFlow') {
@@ -193,6 +222,8 @@ class ModalCreateTaskProcess extends Component {
                state.info[`${element.businessObject.id}`] = {
                   ...state.info[`${element.businessObject.id}`],
                   organizationalUnit: this.props.listOrganizationalUnit[0]?._id,
+                  followingTask: source,
+                  proceedTask: destination   
                }
             }
             return {
@@ -208,7 +239,11 @@ class ModalCreateTaskProcess extends Component {
             return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
          }
 
-      }, () => console.log(this.state))
+      })
+   //    this.modeling.setColor(element, {
+   //       fill: '#dde6ca',
+   //       stroke: '#6b7060'
+   //   });
    }
 
    deleteElements = (event) => {
@@ -444,6 +479,7 @@ class ModalCreateTaskProcess extends Component {
                                              onChange={this.handleChangeManager}
                                              multiple={true}
                                              value={manager}
+            
                                           />
                                        }
                                     </div>
@@ -466,6 +502,12 @@ class ModalCreateTaskProcess extends Component {
                               <fieldset className="scheduler-border">
                                  {/* <legend className="scheduler-border">Quy trình công việc</legend> */}
                                  <div className='row'>
+                                    <div>
+                                       <button onClick={this.exportDiagram}>Export XML</button>
+                                       <button onClick={this.downloadAsSVG}>Save SVG</button>
+                                       <button onClick={this.downloadAsImage}>Save Image</button>
+                                       <button onClick={this.downloadAsBpmn}>Download BPMN</button>
+                                    </div>
                                     <div id={this.generateId} className={this.state.showInfo ? 'col-md-8' : 'col-md-12'}></div>
                                     <div className={this.state.showInfo ? 'col-md-4' : undefined}>
 
@@ -486,17 +528,13 @@ class ModalCreateTaskProcess extends Component {
                                                 handleChangeResponsible={this.handleChangeResponsible}
                                                 handleChangeAccountable={this.handleChangeAccountable}
                                                 save={this.save}
+                                                done = {this.done}
                                              />
                                           </div>
                                        }
                                     </div>
                                  </div>
-                                 <div>
-                                    <button onClick={this.exportDiagram}>Export XML</button>
-                                    <button onClick={this.downloadAsSVG}>Save SVG</button>
-                                    <button onClick={this.downloadAsImage}>Save Image</button>
-                                    <button onClick={this.downloadAsBpmn}>Download BPMN</button>
-                                 </div>
+                                 
                               </fieldset>
                            </div>
                         </div>
