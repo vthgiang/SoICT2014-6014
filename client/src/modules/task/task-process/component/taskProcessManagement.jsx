@@ -9,6 +9,7 @@ import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../common-c
 import { ModalEditTaskProcess } from './modalEditTaskProcess'
 import { ModalCreateTaskProcess } from './modalCreateTaskProcess'
 import { ModalViewTaskProcess } from './modalViewTaskProcess';
+import { ModalCreateTaskByProcess } from './modalCreateTaskByProcess';
 
 import { TaskProcessActions } from '../redux/actions';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
@@ -69,6 +70,16 @@ class TaskProcessManagement extends Component {
     });
     window.$(`#modal-create-process-task`).modal("show");
   }
+  showModalCreateTask = async (item) => {
+    await this.setState(state => {
+      return {
+        ...state,
+        showModalCreateTask: true,
+        currentRow: item,
+      }
+    });
+    window.$(`#modal-create-task-by-process`).modal("show");
+  }
   render() {
     const { translate, taskProcess,department } = this.props
     const { showModalCreateProcess, currentRow } = this.state
@@ -95,6 +106,20 @@ class TaskProcessManagement extends Component {
             this.state.currentRow !== undefined &&
             <ModalEditTaskProcess
               title={'Sửa quy trình công việc'}
+              data={currentRow}
+              listOrganizationalUnit= {listOrganizationalUnit}
+              idProcess={currentRow._id}
+              xmlDiagram={currentRow.xmlDiagram}
+              nameProcess={currentRow.nameProcess}
+              description={currentRow.description}
+              infoTask={currentRow.infoTask}
+              creator={currentRow.creator}
+            />
+          }
+          {
+            this.state.currentRow !== undefined &&
+            <ModalCreateTaskByProcess
+              title={'Tạo chuỗi công việc theo quy trình'}
               data={currentRow}
               listOrganizationalUnit= {listOrganizationalUnit}
               idProcess={currentRow._id}
@@ -177,6 +202,9 @@ class TaskProcessManagement extends Component {
                       </a>
                       <a className="delete" onClick={() => { this.deleteDiagram(item._id) }} title={translate('task_template.delete_this_task_template')}>
                         <i className="material-icons"></i>
+                      </a>
+                      <a className="" onClick={() => { this.showModalCreateTask(item) }} title={translate('task_template.delete_this_task_template')}>
+                        <span><i className="fa fa-plus-square-o"></i></span>
                       </a>
                     </td>
                   </tr>

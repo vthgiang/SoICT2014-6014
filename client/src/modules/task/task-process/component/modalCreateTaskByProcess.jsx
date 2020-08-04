@@ -25,11 +25,12 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
 }
 
 var zlevel = 1;
-class ModalEditTaskProcess extends Component {
+class ModalCreateTaskByProcess extends Component {
 
     constructor(props) {
         super(props);
         let { data } = this.props;
+        console.log('clrscr',data);
         this.state = {
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
@@ -40,7 +41,7 @@ class ModalEditTaskProcess extends Component {
             zlevel: 1,
         }
         this.modeler = new BpmnModeler();
-        this.generateId = 'editprocess';
+        this.generateId = 'createtaskbyprocess';
         this.initialDiagram = data.xmlDiagram;
     }
 
@@ -99,18 +100,18 @@ class ModalEditTaskProcess extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.idProcess !== this.state.idProcess) {
-            // this.props.getDepartment();
-            // let { user } = this.props;
-            // let defaultUnit;
-            // if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
-            //     item.dean === this.state.currentRole
-            //     || item.viceDean === this.state.currentRole
-            //     || item.employee === this.state.currentRole);
-            // if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
-            //     // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
-            //     defaultUnit = user.organizationalUnitsOfUser[0]
-            // }
-            // this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
+            this.props.getDepartment();
+            let { user } = this.props;
+            let defaultUnit;
+            if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
+                item.dean === this.state.currentRole
+                || item.viceDean === this.state.currentRole
+                || item.employee === this.state.currentRole);
+            if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
+                // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+                defaultUnit = user.organizationalUnitsOfUser[0]
+            }
+            this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
             return true;
         }
@@ -413,17 +414,12 @@ class ModalEditTaskProcess extends Component {
 
         // set initial zoom level
         canvas.zoom(zlevel, 'auto');
-        // zlevel = canvas?._cachedViewbox?.scale;
 
-        console.log(canvas);
         // update our zoom level on viewbox change
         await eventBus.on('canvas.viewbox.changed', function (evt) {
             zlevel = evt.viewbox.scale;
-            console.log('scale', zlevel, evt.viewbox.scale);
         });
-        console.log('zzz', zlevel);
         zlevel = Math.max(zlevel - zstep, zstep);
-        console.log('zlevel', zlevel);
         canvas.zoom(zlevel, 'auto');
     }
 
@@ -431,7 +427,6 @@ class ModalEditTaskProcess extends Component {
         console.log('click zoom reset');
 
         let canvas = this.modeler.get('canvas');
-        console.log('canvas', canvas);
         canvas.zoom('fit-viewport');
     }
 
@@ -442,14 +437,10 @@ class ModalEditTaskProcess extends Component {
 
         // set initial zoom level
         canvas.zoom(zlevel, 'auto');
-        // zlevel = canvas?._cachedViewbox?.scale;
         // update our zoom level on viewbox change
         await eventBus.on('canvas.viewbox.changed', function (evt) {
             zlevel = evt.viewbox.scale;
-            console.log('scale', zlevel, evt.viewbox.scale);
         });
-        console.log('zzzIIII', zlevel);
-
         zlevel = Math.min(zlevel + zstep, 7);
         canvas.zoom(zlevel, 'auto');
     }
@@ -486,134 +477,69 @@ class ModalEditTaskProcess extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    size='100' modalID={`modal-edit-process`} isLoading={false}
-                    formID="form-task-process"
+                    size='100' modalID={`modal-create-task-by-process`} isLoading={false}
+                    formID="form-create-task-by-process"
                     // disableSubmit={!this.isTaskFormValidated()}
                     title={this.props.title}
                     func={this.save}
                     bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
                 >
                     <div>
-
-                        <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
-                            <ul className="nav nav-tabs">
-                                <li className="active"><a href="#info-edit" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
-                                <li><a href="#process-edit" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
-                            </ul>
-                            <div className="tab-content">
-                                <div className={selectedEdit === "info" ? "active tab-pane" : "tab-pane"} id="info-edit">
-                                    <div className='row'>
-                                        <div className='col-md-6'>
-                                            <div className="form-group">
-                                                <label>Tên quy trình</label>
-                                                <input type="text"
-                                                    value={processName}
-                                                    className="form-control" placeholder="Mô tả công việc"
-                                                    onChange={this.handleChangeBpmnName}
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="" >Người được phép xem</label>
-                                                {
-                                                    <SelectBox
-                                                        id={`select-viewer-employee-edit-${idProcess}`}
-                                                        className="form-control select2"
-                                                        style={{ width: "100%" }}
-                                                        items={listItem}
-                                                        onChange={this.handleChangeViewer}
-                                                        multiple={true}
-                                                        value={viewer}
-                                                    />
-                                                }
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="" >Người quản lý quy trình</label>
-                                                {
-                                                    <SelectBox
-                                                        id={`select-manager-employee-edit-${idProcess}`}
-                                                        className="form-control select2"
-                                                        style={{ width: "100%" }}
-                                                        items={listItem}
-                                                        onChange={this.handleChangeManager}
-                                                        multiple={true}
-                                                        value={manager}
-                                                    />
-                                                }
-                                            </div>
-                                        </div>
-                                        <div className='col-md-6'>
-                                            <div className="form-group">
-                                                <label>Mô tả quy trình</label>
-                                                <textarea type="text" rows={8}
-                                                    value={processDescription}
-                                                    className="form-control" placeholder="Mô tả công việc"
-                                                    onChange={this.handleChangeBpmnDescription}
-                                                />
-                                            </div>
-                                        </div>
+                        <div className="row">
+                            {/* Quy trình công việc */}
+                            <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
+                                <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
+                                    <button onClick={this.exportDiagram}>Export XML</button>
+                                    <button onClick={this.downloadAsSVG}>Save SVG</button>
+                                    <button onClick={this.downloadAsImage}>Save Image</button>
+                                    <button onClick={this.downloadAsBpmn}>Download BPMN</button>
+                                </div>
+                                <div id={this.generateId}></div>
+                                <div className="row">
+                                    <div className="io-zoom-controls">
+                                        <ul className="io-zoom-reset io-control io-control-list">
+                                            <li>
+                                                <button title="Reset zoom" onClick={this.handleZoomReset}>
+                                                    <i className="fa fa-crosshairs"></i>
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button title="Zoom in" onClick={this.handleZoomIn}>
+                                                    <i className="fa fa-plus"></i>
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button href title="Zoom out" onClick={this.handleZoomOut}>
+                                                    <i className="fa fa-minus"></i>
+                                                </button>
+                                            </li>
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
-                            <div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
-                                <div className={selectedEdit === "process" ? "active tab-pane" : "tab-pane"} id="process-edit">
-                                    <div className="row">
-                                        {/* Quy trình công việc */}
-                                        <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
-                                            <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
-                                                <button onClick={this.exportDiagram}>Export XML</button>
-                                                <button onClick={this.downloadAsSVG}>Save SVG</button>
-                                                <button onClick={this.downloadAsImage}>Save Image</button>
-                                                <button onClick={this.downloadAsBpmn}>Download BPMN</button>
-                                            </div>
-                                            <div id={this.generateId}></div>
-                                            <div className="row">
-                                                <div className="io-zoom-controls">
-                                                    <ul className="io-zoom-reset io-control io-control-list">
-                                                        <li>
-                                                            <button title="Reset zoom" onClick={this.handleZoomReset}>
-                                                                <i className="fa fa-crosshairs"></i>
-                                                            </button>
-                                                        </li>
-                                                        <li>
-                                                            <button title="Zoom in" onClick={this.handleZoomIn}>
-                                                                <i className="fa fa-plus"></i>
-                                                            </button>
-                                                        </li>
-                                                        <li>
-                                                            <button href title="Zoom out" onClick={this.handleZoomOut}>
-                                                                <i className="fa fa-minus"></i>
-                                                            </button>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </div>
+                            <div className={showInfo ? 'col-md-4' : undefined}>
+                                {
+                                    (showInfo) &&
+                                    <div>
+                                        <div>
+                                            <h1>Option {name}</h1>
                                         </div>
-                                        <div className={showInfo ? 'col-md-4' : undefined}>
-                                            {
-                                                (showInfo) &&
-                                                <div>
-                                                    <div>
-                                                        <h1>Option {name}</h1>
-                                                    </div>
-                                                    <FormInfoTask
-                                                        listOrganizationalUnit={listOrganizationalUnit}
-                                                        action='edit'
-                                                        id={id}
-                                                        info={(info && info[`${id}`]) && info[`${id}`]}
-                                                        handleChangeName={this.handleChangeName}
-                                                        handleChangeDescription={this.handleChangeDescription}
-                                                        handleChangeResponsible={this.handleChangeResponsible}
-                                                        handleChangeAccountable={this.handleChangeAccountable}
-                                                        handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
-                                                        handleChangeTemplate={this.handleChangeTemplate}
+                                        <FormInfoTask
+                                            listOrganizationalUnit={listOrganizationalUnit}
+                                            action='create-task'
+                                            id={id}
+                                            info={(info && info[`${id}`]) && info[`${id}`]}
+                                            handleChangeName={this.handleChangeName}
+                                            handleChangeDescription={this.handleChangeDescription}
+                                            handleChangeResponsible={this.handleChangeResponsible}
+                                            handleChangeAccountable={this.handleChangeAccountable}
+                                            handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
+                                            handleChangeTemplate={this.handleChangeTemplate}
 
-                                                        save={this.save}
-                                                    />
-                                                </div>
-                                            }
-                                        </div>
+                                            save={this.save}
+                                        />
                                     </div>
-                                </div>
+                                }
                             </div>
                         </div>
                     </div>
@@ -636,5 +562,5 @@ const actionCreators = {
     getXmlDiagramById: TaskProcessActions.getXmlDiagramById,
     editXmlDiagram: TaskProcessActions.editXmlDiagram,
 };
-const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalEditTaskProcess));
-export { connectedModalAddProcess as ModalEditTaskProcess };
+const connectedModalCreateProcess = connect(mapState, actionCreators)(withTranslate(ModalCreateTaskByProcess));
+export { connectedModalCreateProcess as ModalCreateTaskByProcess };
