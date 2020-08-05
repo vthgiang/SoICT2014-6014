@@ -417,6 +417,7 @@ export default {
             downloads: 'Downloads',
             add: 'Add document',
             edit: 'Edit document',
+            view: 'View document',
             delete: 'Delete document',
             add_version: 'Add document version',
             upload_file: 'Upload file',

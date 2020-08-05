@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { LOCAL_SERVER_API } from '../../../../../env';
 import { toast } from 'react-toastify';
 import ServerResponseAlert from '../../../../alert/components/serverResponseAlert';
 
 import { ContractAddModal, ContractEditModal, CourseAddModal, CourseEditModal } from './combinedContent';
 
 import { CourseActions } from '../../../../training/course/redux/actions';
+import { AuthActions } from '../../../../auth/redux/actions';
 
 class ContractTab extends Component {
     constructor(props) {
@@ -195,9 +195,9 @@ class ContractTab extends Component {
                                             <td>{this.formatDate(x.startDate)}</td>
                                             <td>{this.formatDate(x.endDate)}</td>
                                             <td>{!x.urlFile ? translate('manage_employee.no_files') :
-                                                <a className='intable' target={x._id === undefined ? '_self' : '_blank'}
-                                                    href={(x._id === undefined) ? x.urlFile : `${LOCAL_SERVER_API + x.urlFile}`}
-                                                    download={x.name}>
+                                                <a className='intable'
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={(e) => this.requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
                                                     <i className="fa fa-download"> &nbsp;Download!</i>
                                                 </a>
                                             }</td>
@@ -303,6 +303,8 @@ function mapState(state) {
 };
 const actionCreators = {
     getListCourse: CourseActions.getListCourse,
+    downloadFile: AuthActions.downloadFile,
+
 };
 
 const contractTab = connect(mapState, actionCreators)(withTranslate(ContractTab));
