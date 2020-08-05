@@ -59,6 +59,8 @@ const TaskProcess = require("./task/taskProcess.model")
 //report
 const TaskReport = require('./report/taskReport.model');
 
+//material
+const Material = require('./warehouse/material.model');
 // Customer Management
 const Customer = require('./customer/customer.model');
 const CustomerLocation = require('./customer/customerLocation.model');
@@ -126,6 +128,7 @@ exports.schema = {
 
     TaskReport,
 
+    Material,
     Customer,
     CustomerCare,
     CustomerLocation,

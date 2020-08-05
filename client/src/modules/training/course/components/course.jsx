@@ -48,7 +48,7 @@ class TrainingPlan extends Component {
             ...this.state,
             currentEditRow: value
         })
-        window.$('#modal-edit-course').modal('show');
+        window.$(`#modal-edit-course${value._id}`).modal('show');
     }
 
     // Function bắt sự kiện xem thông tin chương trình đào tạo
@@ -57,7 +57,7 @@ class TrainingPlan extends Component {
             ...this.state,
             currentViewRow: value
         })
-        window.$('#modal-view-course').modal('show');
+        window.$(`#modal-view-course${value._id}`).modal('show');
     }
 
     handleTypeChange = (value) => {

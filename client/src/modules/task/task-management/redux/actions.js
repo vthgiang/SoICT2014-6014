@@ -495,10 +495,10 @@ function evaluateTaskByResponsibleEmployees(data, taskId) {
 /**
  * get task by user
  */
-function getTasksByUser() {
+function getTasksByUser(data) {
     return dispatch => {
         dispatch({ type: taskManagementConstants.GET_TASK_BY_USER_REQUEST });
-        taskManagementService.getTasksByUser()
+        taskManagementService.getTasksByUser(data)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GET_TASK_BY_USER_SUCCESS,

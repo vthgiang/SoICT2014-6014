@@ -166,7 +166,6 @@ class EmployeeManagement extends Component {
     // Function chyển đổi dữ liệu thông tin nhân viên thành dạng dữ liệu dùng export
     convertDataToExportData = (data) => {
         const { list } = this.props.department;
-        console.log(data);
         let employeeInforSheet = data.map((x, index) => {
             let organizationalUnits = x.organizationalUnits.map(y => y.name);
             let position = x.roles.map(y => y.roleId.name);
@@ -657,9 +656,9 @@ class EmployeeManagement extends Component {
         const { importEmployee, limit, page, organizationalUnits } = this.state;
         const { employeesManager, translate, department } = this.props;
 
-        let lists, listPosition = [], list = department.list;
+        let lists, listPosition = [{ value: "", text: "Bạn chưa chọn đơn vị", disabled: true }], list = department.list;
         if (organizationalUnits !== null) {
-            let organizationalUnits = organizationalUnits;
+            listPosition = [];
             organizationalUnits.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
@@ -671,13 +670,11 @@ class EmployeeManagement extends Component {
                 })
             })
         }
-
+        let exportData;
         if (employeesManager.listEmployees) {
             lists = employeesManager.listEmployees;
+            exportData = this.convertDataToExportData(lists);
         }
-
-        let exportData = this.convertDataToExportData(lists);
-
         let pageTotal = ((employeesManager.totalList % limit) === 0) ?
             parseInt(employeesManager.totalList / limit) :
             parseInt((employeesManager.totalList / limit) + 1);
@@ -708,7 +705,7 @@ class EmployeeManagement extends Component {
                             <label className="form-control-static">{translate('page.position')}</label>
                             <SelectMulti id={`multiSelectPosition`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_position'), allSelectedText: translate('page.all_position') }}
-                                items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
+                                items={organizationalUnits === null ? listPosition : listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
                             </SelectMulti>
                         </div>
                     </div>

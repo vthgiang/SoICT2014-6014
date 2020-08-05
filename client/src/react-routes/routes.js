@@ -68,23 +68,25 @@ import { TaskProcessManagement } from '../modules/task/task-process/component/ta
 import { TaskOrganizationUnitDashboard } from '../modules/task/task-management/component/task-organization-dashboard/taskOrganizationUnitDashboard'
 
 //asset
-import RecommendProcure from "../modules/assets-manager/recommend-procure/components";
-import RecommendDistribute from "../modules/assets-manager/recommend-distribute/components";
-import ManagerRecommendProcure from "../modules/assets-manager/recommend-procure-management/components";
-import ManagerRecommendDistribute from "../modules/assets-manager/recommend-distribute-management/components";
-import ManagerAssetType from "../modules/assets-manager/asset-type/components";
-import MaintainanceManager from "../modules/assets-manager/maintainance-management/components";
-import UsageManager from "../modules/assets-manager/usage-management/components";
-import IncidentManager from "../modules/assets-manager/incident-management/components";
-import ManagerDepreciation from "../modules/assets-manager/depreciation/components";
-import AssetManager from "../modules/assets-manager/asset-management/components";
-import { ManagerAssetAssignedCrash} from '../modules/assets-manager/asset-assgined-management/components';
-import { DashBoardAssets} from '../modules/assets-manager/asset-dashboard/components/assetDashBoard';
+import RecommendProcure from "../modules/asset/recommend-procure/components";
+import RecommendDistribute from "../modules/asset/recommend-distribute/components";
+import ManagerRecommendProcure from "../modules/asset/recommend-procure-management/components";
+import ManagerRecommendDistribute from "../modules/asset/recommend-distribute-management/components";
+import ManagerAssetType from "../modules/asset/asset-type/components";
+import MaintainanceManager from "../modules/asset/maintainance/components";
+import UsageManager from "../modules/asset/usage/components";
+import IncidentManager from "../modules/asset/incident/components";
+import ManagerDepreciation from "../modules/asset/depreciation/components";
+import AssetManager from "../modules/asset/asset-management/components";
+import { ManagerAssetAssignedCrash} from '../modules/asset/asset-assgined/components';
+import { DashBoardAssets} from '../modules/asset/asset-dashboard/components/assetDashBoard';
 
 
 //report
 import TaskReportManager from '../modules/report/task-report/components/taskReportManager';
 
+//warehouse
+import MaterialManager from '../modules/warehouse-manager/material-manager/component';
 // Customer Management
 import Customer from '../modules/customer/components';
 
@@ -954,6 +956,22 @@ class Routes extends Component {
                         pageName={ 'task_report' }
                         layout={ Layout }
                         component={ TaskReportManager }
+                    />
+
+                    <PrivateRoute 
+                        isLoading={ this.props.user.isLoading }
+                        key={ 'material-manager' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/material-manager', name: 'material_manager', icon:'fa fa-address-card' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/material-manager' }
+                        path={ '/material-manager' }
+                        pageName={ 'material_manager' }
+                        layout={ Layout }
+                        component={ MaterialManager }
                     />  
 
                     {/* Customer Management */}

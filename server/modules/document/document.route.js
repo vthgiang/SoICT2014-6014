@@ -28,7 +28,7 @@ router.delete("/document-categories/:id", auth, DocumentController.deleteDocumen
 router.get("/documents", auth, DocumentController.getDocuments);
 router.get("/documents/:id", auth, DocumentController.showDocument);
 router.post("/documents", auth, uploadFile([{name:'file', path:'/files'}, {name:'fileScan', path:'/files'}], 'fields'), DocumentController.createDocument);
-router.patch("documents/:id", auth, uploadFile([{name:'file', path:'/files'}, {name:'fileScan', path:'/files'}], 'fields'), DocumentController.editDocument);
-router.delete("documents/:id", auth, DocumentController.deleteDocument);
+router.patch("/documents/:id", auth, uploadFile([{name:'file', path:'/files'}, {name:'fileScan', path:'/files'}], 'fields'), DocumentController.editDocument);
+router.delete("/documents/:id", auth, DocumentController.deleteDocument);
 
 module.exports = router;

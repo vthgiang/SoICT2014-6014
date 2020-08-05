@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { LOCAL_SERVER_API } from '../../../../../env';
 import { DegreeAddModal, CertificateAddModal, DegreeEditModal, CertificateEditModal } from './combinedContent';
+
+import { AuthActions } from '../../../../auth/redux/actions';
 
 class CertificateTab extends Component {
     constructor(props) {
@@ -121,6 +122,12 @@ class CertificateTab extends Component {
             return null;
         }
     }
+
+    requestDownloadFile = (e, path, fileName) => {
+        e.preventDefault()
+        this.props.downloadFile(path, fileName)
+    }
+
     render() {
         const { id, translate } = this.props;
         const { degrees, certificates } = this.state;
@@ -150,9 +157,9 @@ class CertificateTab extends Component {
                                             <td>{x.year}</td>
                                             <td>{translate(`manage_employee.${x.degreeType}`)}</td>
                                             <td>{!x.urlFile ? translate('manage_employee.no_files') :
-                                                <a className='intable' target={x._id === undefined ? '_self' : '_blank'}
-                                                    href={(x._id === undefined) ? x.urlFile : `${LOCAL_SERVER_API + x.urlFile}`}
-                                                    download={x.name}>
+                                                <a className='intable'
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={(e) => this.requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
                                                     <i className="fa fa-download"> &nbsp;Download!</i>
                                                 </a>
                                             }</td>
@@ -183,7 +190,7 @@ class CertificateTab extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof certificates !== 'undefined' && certificates.length !== 0) &&
+                                {(certificates && certificates.length !== 0) &&
                                     certificates.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.name}</td>
@@ -191,9 +198,9 @@ class CertificateTab extends Component {
                                             <td>{this.formatDate(x.startDate)}</td>
                                             <td>{this.formatDate(x.endDate)}</td>
                                             <td>{!x.urlFile ? translate('manage_employee.no_files') :
-                                                <a className='intable' target={x._id === undefined ? '_self' : '_blank'}
-                                                    href={(x._id === undefined) ? x.urlFile : `${LOCAL_SERVER_API + x.urlFile}`}
-                                                    download={x.name}>
+                                                <a className='intable'
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={(e) => this.requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
                                                     <i className="fa fa-download"> &nbsp;Download!</i>
                                                 </a>
                                             }</td>
@@ -206,7 +213,7 @@ class CertificateTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof certificates === 'undefined' || certificates.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!certificates || certificates.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                 </div>
@@ -246,5 +253,10 @@ class CertificateTab extends Component {
         );
     }
 };
-const certificateTab = connect(null, null)(withTranslate(CertificateTab));
+
+const actionCreators = {
+    downloadFile: AuthActions.downloadFile,
+};
+
+const certificateTab = connect(null, actionCreators)(withTranslate(CertificateTab));
 export { certificateTab as CertificateTab };

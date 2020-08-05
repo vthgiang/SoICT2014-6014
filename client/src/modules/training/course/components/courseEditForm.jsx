@@ -229,10 +229,10 @@ class CourseEditForm extends Component {
     }
 
     save = () => {
-        var partStart = this.state.startDate.split('-');
-        var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
-        var partEnd = this.state.startDate.split('-');
-        var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        let partStart = this.state.startDate.split('-');
+        let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
+        let partEnd = this.state.startDate.split('-');
+        let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         let listEmployees = this.state.listEmployees.concat(this.state.addEmployees);
         if (this.isFormValidated()) {
             this.props.updateCourse(this.state._id, { ...this.state, listEmployees: listEmployees, startDate: startDate, endDate: endDate });
@@ -283,39 +283,38 @@ class CourseEditForm extends Component {
     }
 
     render() {
-        var userlist = [];
-        var { education, translate, course, employeesManager } = this.props;
-        var { _id, name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees, endDate, cost, lecturer,
+        let userlist = [];
+        const { education, translate, course, employeesManager } = this.props;
+        const { _id, name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees, endDate, cost, lecturer,
             employeeCommitmentTime, educationProgram, errorOnCourseName, errorOnCoursePlace, errorOnOfferedBy,
             errorOnCost, errorOnEmployeeCommitmentTime, errorOnEducationProgram, errorOnStartDate, errorOnEndDate } = this.state;
-        var listEducations = education.listAll;
+
+        let listEducations = education.listAll;
         if (employeesManager.listEmployeesOfOrganizationalUnits.length !== 0) {
             userlist = employeesManager.listEmployeesOfOrganizationalUnits;
         }
-        console.log(listEmployees);
+
         let employeeInfors = [];
         if (listEmployees.length !== 0) {
             for (let n in listEmployees) {
                 userlist = userlist.filter(x => x._id !== listEmployees[n]._id);
                 let employeeInfor = employeesManager.listEmployeesOfOrganizationalUnits.filter(x => x._id === listEmployees[n]._id);
-
                 employeeInfor[0] = { ...employeeInfor[0], result: listEmployees[n].result }
                 employeeInfors = employeeInfor.concat(employeeInfors);
             }
         }
-        console.log(employeeInfors);
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-edit-course" isLoading={course.isLoading}
-                    formID="form-edit-course"
+                    modalID={`modal-edit-course${_id}`} isLoading={course.isLoading}
+                    formID={`form-edit-course${_id}`}
                     title="Chỉnh sửa khoá đào tạo"
                     func={this.save}
                     size={75}
                     maxWidth={850}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <form className="form-group" id="form-edit-course" >
+                    <form className="form-group" id={`form-edit-course${_id}`} >
                         <div className="row">
                             <div className="form-group col-sm-6 col-xs-12">
                                 <label>Mã khoá đào tạo<span className="text-red">*</span></label>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { EmployeeInfoActions } from '../redux/actions';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import {
     GeneralTab, ContactTab, TaxTab, InsurranceTab, SalaryTab,
     DisciplineTab, AttachmentTab, ExperiencTab, CertificateTab, ContractTab,
@@ -13,6 +14,7 @@ class EmployeeDetail extends Component {
     }
     componentDidMount = async () => {
         this.props.getEmployeeProfile();
+        this.props.getDepartment();
     }
     render() {
         var employees, salaries, annualLeaves, commendations, disciplines, courses, roles = [];
@@ -94,7 +96,6 @@ class EmployeeDetail extends Component {
                                             id="view_attachments"
                                             employee={x}
                                             files={x.files}
-
                                         />
                                     </div>
 
@@ -113,6 +114,7 @@ function mapState(state) {
 }
 const actionCreators = {
     getEmployeeProfile: EmployeeInfoActions.getEmployeeProfile,
+    getDepartment: DepartmentActions.get,
 }
 const connectDetaiEmployee = connect(mapState, actionCreators)(withTranslate(EmployeeDetail));
 export { connectDetaiEmployee as EmployeeDetail };

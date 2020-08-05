@@ -99,6 +99,18 @@ class ModalEditTaskProcess extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.idProcess !== this.state.idProcess) {
+            // this.props.getDepartment();
+            // let { user } = this.props;
+            // let defaultUnit;
+            // if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
+            //     item.dean === this.state.currentRole
+            //     || item.viceDean === this.state.currentRole
+            //     || item.employee === this.state.currentRole);
+            // if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
+            //     // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+            //     defaultUnit = user.organizationalUnitsOfUser[0]
+            // }
+            // this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
             return true;
         }
@@ -240,7 +252,7 @@ class ModalEditTaskProcess extends Component {
 
     interactPopup = (event) => {
         var element = event.element;
-        console.log("element||state", element, this.state);
+        console.log(event);
         let nameStr = element.type.split(':');
         this.setState(state => {
             if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' ||
@@ -289,6 +301,7 @@ class ModalEditTaskProcess extends Component {
 
     changeNameElement = (event) => {
         var element = event.element;
+        // this.modeler.updateProperties(shape,{name: 'abc'});
     }
 
     save = async () => {
@@ -558,19 +571,19 @@ class ModalEditTaskProcess extends Component {
                                                 <div className="io-zoom-controls">
                                                     <ul className="io-zoom-reset io-control io-control-list">
                                                         <li>
-                                                            <button title="Reset zoom" onClick={this.handleZoomReset}>
+                                                            <a style={{cursor: "pointer"}} title="Reset zoom" onClick={this.handleZoomReset}>
                                                                 <i className="fa fa-crosshairs"></i>
-                                                            </button>
+                                                            </a>
                                                         </li>
                                                         <li>
-                                                            <button title="Zoom in" onClick={this.handleZoomIn}>
+                                                            <a style={{cursor: "pointer"}} title="Zoom in" onClick={this.handleZoomIn}>
                                                                 <i className="fa fa-plus"></i>
-                                                            </button>
+                                                            </a>
                                                         </li>
                                                         <li>
-                                                            <button href title="Zoom out" onClick={this.handleZoomOut}>
+                                                            <a style={{cursor: "pointer"}} title="Zoom out" onClick={this.handleZoomOut}>
                                                                 <i className="fa fa-minus"></i>
-                                                            </button>
+                                                            </a>
                                                         </li>
                                                     </ul>
                                                 </div>

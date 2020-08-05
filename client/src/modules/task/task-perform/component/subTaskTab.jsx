@@ -44,19 +44,19 @@ class SubTaskTab extends Component {
                 {subtasks && subtasks.length>0 &&
                     subtasks.map( item =>{
                     return (
-                        <div style={{marginBottom: 20}}>
-                            <strong><a href={`/task?taskId=${item._id}`} target="_blank" >{item.name}</a></strong>
-                            <span> - {item.description}</span>
+                        <div className="item-box">
+                            <strong><a href={`/task?taskId=${item._id}`} target="_blank" >{item.name} </a></strong>
+                            <span>{item.status}, </span>
+                            <span>{item.progress}%, </span>
+                            <span>{this.formatDate(item.startDate)} - {this.formatDate(item.endDate)}</span>
                             <div>
-                                <span>{this.formatDate(item.startDate)} - {this.formatDate(item.endDate)}. </span>
-                                <span>{item.status}. </span>
-                                <span>{item.progress}%</span>
+                                {item.description}
                             </div>
                         </div>
                     )
                 })}
 
-                {subtasks && subtasks.length==0 && <dt>{translate("task.task_perform.none_subtask")}</dt>}
+                {subtasks && subtasks.length==0 && <strong>{translate("task.task_perform.none_subtask")}</strong>}
             </div>
         )
     }

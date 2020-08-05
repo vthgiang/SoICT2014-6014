@@ -127,6 +127,7 @@ exports.editDocument = async (req, res) => {
 };
 
 exports.deleteDocument = async (req, res) => {
+    console.log('---------------------')
     try {
         const doc = await DocumentServices.deleteDocument(req.params.id);
 

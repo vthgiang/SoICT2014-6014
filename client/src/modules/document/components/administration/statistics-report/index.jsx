@@ -25,7 +25,7 @@ class AdministrationStatisticsReport extends Component {
     shouldComponentUpdate(nextProps, nextState){
         if(nextState.dataStatus === this.DATA_STATUS.QUERYING){
             if(nextProps. documents.administration.categories.list.length && nextProps.documents.administration.data.list.length){
-                console.log('aaaaaaaaaaaaaaa',nextProps. documents.administration.categories.list)
+               // console.log('aaaaaaaaaaaaaaa',nextProps. documents.administration.categories.list)
                 this.setState(state =>{
                     return {
                         ...state,
@@ -66,7 +66,7 @@ class AdministrationStatisticsReport extends Component {
     pieChart = ()=>{
         this.removePreviousPieChart();
         let dataChart = this.getDataDocumentAnalys();
-        console.log('pieeeeeeeee', dataChart);
+        //console.log('pieeeeeeeee', dataChart);
         this.chart = c3.generate({
             bindto: this.refs.piechart,
 
@@ -89,6 +89,7 @@ class AdministrationStatisticsReport extends Component {
         const { documents } = this.props;
         const categoryList = documents.administration.categories.list;
         const docList = documents.administration.data.list;
+    
         const data = categoryList.map(category => {
             let docs = docList.filter(doc => doc.category !== undefined && doc.category.name === category.name);
             let totalDownload = 0;
@@ -109,6 +110,7 @@ class AdministrationStatisticsReport extends Component {
     barChart = ()=>{
         this.removePreviousBarChart();
         let dataChart = this.getDataViewDownloadBarChart();
+        let x = ["Xem", "Download"];
         this.chart = c3.generate({
             bindto: this.refs.barchart,
 
@@ -123,6 +125,10 @@ class AdministrationStatisticsReport extends Component {
             data: {                                 // Dữ liệu biểu đồ
                 columns: dataChart,
                 type : 'bar',
+            },
+            axis:{
+                type: 'category',
+                value:  x,
             }
         })
     }
@@ -148,7 +154,7 @@ class AdministrationStatisticsReport extends Component {
         const categoryList = documents.administration.categories.list;
         const docList = documents.administration.data.list;
         console.log('props', categoryList)
-        console.log('stataeee', this.state.dataStatus)
+        console.log('stataeee', docList)
         
         return <React.Fragment>
                 

@@ -21,7 +21,7 @@ class CourseAddModal extends Component {
             result: value[0]
         });
     }
-    
+
     // Bắt sự kiện thay đổi mã khoá đào tạo
     handleCourseIdChange = (value) => {
         this.validateCourseId(value[0], true);
@@ -62,7 +62,7 @@ class CourseAddModal extends Component {
     }
     render() {
         const { listCourses } = this.props.course;
-        const { translate, id, } = this.props;
+        const { translate, id, roles } = this.props;
         const { errorOnCourseId, course, result, nameCourse } = this.state;
         return (
             <React.Fragment>
@@ -76,10 +76,16 @@ class CourseAddModal extends Component {
                     maxWidth={500}
                 >
                     <form className="form-group" id={`form-create-course-${id}`}>
+                        {(!roles || roles.length == 0) &&
+                            <div className="col-sm-12 col-xs-12 form-group">
+                                <span className="text-red">Nhân viên chưa thuộc phòng ban nào</span>
+                            </div>
+                        }
                         <div className={`col-sm-12 col-xs-12 form-group ${errorOnCourseId === undefined ? "" : "has-error"}`}>
                             <label>Mã khoá đào tạo<span className="text-red">*</span></label>
                             <SelectBox
                                 id={`create_courseID_course${id}`}
+                                disabled={!roles || roles.length == 0}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 value={course}
