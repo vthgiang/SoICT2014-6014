@@ -175,99 +175,86 @@ class EmployeeKpiManagement extends Component {
     }
 
     /**Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    // convertDataToExportData = (data) => {
-    //     if (data) {
+    convertDataToExportData = (data) => {
+        if (data) {
             
 
-    //         data = data.map((x, index) => {
-    //             let organizationalUnits = x.organizationalUnits.map(y => y.name);
-    //             let fullName =x.creator.name;
-    //             let automaticPoint = (x.automaticPoint === null)?0:x.automaticPoint;
-    //             let employeePoint = (x.employeePoint === null)?0:x.automaticPoint
-    //             let d = new Date(x.month),
-    //                 month = '' + (d.getMonth() + 1),
-    //                 year = d.getFullYear();
-    //             if (x.bonus.length !== 0) {
-    //                 for (let count in x.bonus) {
-    //                     total = total + parseInt(x.bonus[count].number);
-    //                     otherSalary.forEach((y, key) => {
-    //                         if (y === x.bonus[count].nameBonus) {
-    //                             bonus = { ...bonus, [`bonus${key}`]: parseInt(x.bonus[count].number) }
-    //                         }
-    //                     })
-    //                 };
+            data = data.map((x, index) => {
+               
+                let fullName =x.creator.name;
+                let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
+                let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
+                let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);
+                let d = new Date(x.date),
+                    month = '' + (d.getMonth() + 1),
+                    year = d.getFullYear();
+                let status = this.checkStatusKPI(x.status);
+                let numberTarget =parseInt(x.kpis.length);
+               
 
-    //                 total = total + parseInt(x.mainSalary);
-    //             }
+                return {
+                    STT: index + 1,
+                    fullName: fullName,
+                   
+                    automaticPoint: automaticPoint,
+                    status: status,
+                    employeePoint: employeePoint,
+                    approverPoint: approverPoint,
+                    month: month,
+                    year: year,
+                    numberTarget:numberTarget                   
+                };
 
-    //             return {
-    //                 STT: index + 1,
-    //                 employeeNumber: x.employee.employeeNumber,
-    //                 fullName: x.employee.fullName,
-    //                 mainSalary: parseInt(x.mainSalary),
-    //                 birthdate: this.formatDate(x.employee.birthdate, false),
-    //                 status: x.employee.status === 'active' ? "Đang làm việc" : "Đã nghỉ làm",
-    //                 gender: x.employee.gender === 'male' ? "Nam" : "Nữ",
-    //                 organizationalUnits: organizationalUnits.join(', '),
-    //                 position: position.join(', '),
-    //                 total: total,
-    //                 month: month,
-    //                 year: year,
-    //                 ...bonus
-    //             };
+            })
+        }
+        console.log("\n\n\n\n\n\n\n1111",data);
 
-    //         })
-    //     }
-
-    //     let columns = otherSalary.map((x, index) => {
-    //         return { key: `bonus${index}`, value: x, type: "Number" }
-    //     })
-    //     let exportData = {
-    //         fileName: "Bảng theo dõi lương thưởng",
-    //         dataSheets: [
-    //             {
-    //                 sheetName: "sheet1",
-    //                 tables: [
-    //                     {
-    //                         columns: [
-    //                             { key: "STT", value: "STT" },
-    //                             { key: "month", value: "Tháng" },
-    //                             { key: "year", value: "Năm" },
-    //                             { key: "employeeNumber", value: "Mã số nhân viên" },
-    //                             { key: "fullName", value: "Họ và tên" },
-    //                             { key: "organizationalUnits", value: "Phòng ban" },
-    //                             { key: "position", value: "chức vụ" },
-    //                             { key: "gender", value: "Giới tính" },
-    //                             { key: "birthdate", value: "Ngày sinh" },
-    //                             { key: "status", value: "Tình trạng lao động" },
-    //                             { key: "mainSalary", value: "Tiền lương chính", type: "Number" },
-    //                             ...columns,
-    //                             { key: "total", value: "Tổng lương", type: "Number" },
-    //                         ],
-    //                         data: data
-    //                     }
-    //                 ]
-    //             },
-    //         ]
-    //     }
-    //     return exportData
-    // }
+        let exportData = {
+            fileName: "Bảng theo dõi lương thưởng",
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "month", value: "Tháng" },
+                                { key: "year", value: "Năm" },
+                                { key: "fullName", value: "Họ và tên" },
+                                
+                                { key: "numberTarget", value: "Số lượng mục tiêu" },
+                                { key: "status", value: "Trạng thái mục tiêu" },
+                                { key: "automaticPoint", value: "Điểm tự động" },
+                                { key: "employeePoint", value: "Điểm tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm được đánh giá" }
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData;        
+       
+    }
 
     render() {
         const { user, kpimembers } = this.props;
         const { translate } = this.props;
         const { status, startDate, endDate, kpiId, employeeKpiSet, perPage } = this.state;
         let userdepartments, kpimember, unitMembers;
-
+        let exportData;
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (kpimembers.kpimembers) {
             kpimember = kpimembers.kpimembers;
             console.log('\n\n\n\n\n\n\n\n\n\n', kpimember);
+            exportData = this.convertDataToExportData(kpimember);
         }
         if (userdepartments) {
             unitMembers = getEmployeeSelectBoxItems([userdepartments]);
             unitMembers = [{ text: translate('kpi.evaluation.employee_evaluation.choose_employee'), value: 0 }, ...unitMembers[0].value];
         }
+       
         return (
             <React.Fragment>
                 <div className="box">
@@ -381,6 +368,8 @@ class EmployeeKpiManagement extends Component {
                             </tbody>
                             
                         </table>
+                        {exportData&&<ExportExcel id="export-employee" exportData={exportData} style={{ marginRight: 15 }} />}
+                        
                     </div>
                 </div>
             </React.Fragment>
