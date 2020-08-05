@@ -41,14 +41,14 @@ function createDocument(data) {
     }, true, true, 'document');
 }
 
-function deleteDocument(id) {  
+function deleteDocument(id) { 
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/documents/documents/${id}`,
         method: 'DELETE'
     }, true, true, 'document');
 }
 
-function increaseNumberView(id) {  
+function increaseNumberView(id) { 
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/documents/documents/${id}/increase-number-view`,
         method: 'PATCH',

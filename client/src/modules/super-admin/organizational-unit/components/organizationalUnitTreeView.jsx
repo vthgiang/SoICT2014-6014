@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import './organizationalUnit.css';
 
-import { DeleteNotification } from '../../../../common-components';
+import { DeleteNotification, ExportExcel } from '../../../../common-components';
 
 import { DepartmentActions } from '../redux/actions';
 
@@ -28,9 +28,16 @@ class DepartmentTreeView extends Component {
         const { translate, department } = this.props;
         const { tree } = this.props.department;
         const { currentRow } = this.state;
+        let data = [];
+        if (tree){
+            data = tree;
+        }
+        
+        let exportData = this.convertDataToExportData(data);
 
         return (
             <React.Fragment>
+                {<ExportExcel id="export-organizationalUnit" exportData={exportData} style={{ marginLeft: 5, marginTop: 2 }}/>}
                 {/* Button thêm mới một phòng ban */}
                 <div className="pull-right">
                     <DepartmentCreateForm />
@@ -92,6 +99,73 @@ class DepartmentTreeView extends Component {
     }
 
     // Cac ham xu ly du lieu voi modal
+    convertDataToExportData = (data) => {
+        // chuyen du lieu cay ve du lieu bang
+        if (data) {
+            var listData = [];
+            for (let i in data){
+                listData = this._duyet(data[i], listData);
+            }
+        }
+        if (listData.length !== 0){
+            data = listData.map((x, index) => {
+                let name = x.name;
+                let description = x.description;
+                let deans = x.deans.map( item => item.name);
+                let viceDeans = x.viceDeans.map( item => item.name);
+                let employees = x.employees.map( item => item.name);
+                let parent = "Là đơn vị gốc";
+                if (x.parentName){
+                    parent = x.parentName;
+                }
+                return {
+                    STT: index + 1,
+                    name: name,
+                    description: description,
+                    parent: parent,
+                    deans: deans.join(", "),
+                    viceDeans: viceDeans.join(", "),
+                    employees: employees.join(", ")
+                };
+            })
+        }
+        let exportData = {
+            fileName: "Bảng thống kê cơ cấu tổ chức",
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "name", value: "Tên đơn vị" },
+                                { key: "description", value: "Mô tả đơn vị" },
+                                { key: "parent", value: "Đơn vị cha"},
+                                { key: "deans", value: "Tên chức danh của trưởng đơn vị" },
+                                { key: "viceDeans", value: "Tên chức danh của phó đơn vị"},
+                                { key: "employees", value: "Tên chức danh của nhân viên đơn vị"}
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData
+    }
+    _duyet =  (tree, listData) => {
+        console.log(tree);
+        if (tree.children){
+            listData = [...listData,tree];
+            for (let i in tree.children){
+                tree.children[i]["parentName"] = tree.name;
+                return this._duyet(tree.children[i], listData);
+            }
+        } else {
+            listData = [...listData,tree];
+            return listData;
+        }
+    }
     handleEdit = async (department) => {
         await this.setState(state => {
             return {

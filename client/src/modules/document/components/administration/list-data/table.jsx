@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import { DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, ToolTip } from '../../../../../common-components';
 import {RoleActions} from '../../../../super-admin/role/redux/actions';
 import {DepartmentActions} from '../../../../super-admin/organizational-unit/redux/actions';
+import DocumentInformation from '../../user/documents/DocumentInformation';
 import { DocumentActions } from '../../../redux/actions';
 
 import CreateForm from './createForm';
@@ -84,7 +85,13 @@ class Table extends Component {
             }
         })
     }
-
+    toggleDocumentInformation = async (data) => {
+        await this.setState({
+            currentRow: data
+        });
+        window.$('#modal-information-user-document').modal('show');
+        this.props.increaseNumberView(data._id)
+    }
     render() { 
         const {translate} = this.props;
         const docs = this.props.documents.administration.data;
@@ -98,6 +105,30 @@ class Table extends Component {
                 {
                     currentRow &&
                     <EditForm
+                        documentId={currentRow._id}
+                        documentName={currentRow.name}
+                        documentDescription={currentRow.description}
+                        documentCategory={currentRow.category._id}
+                        documentDomains={currentRow.domains.map(domain => domain._id)}
+                        documentIssuingBody={currentRow.issuingBody}
+                        documentOfficialNumber={currentRow.officialNumber}
+                        documentSigner={currentRow.signer}
+                        documentVersions={currentRow.versions}
+
+                        documentRelationshipDescription={currentRow.relationshipDescription}
+                        documentRelationshipDocuments={currentRow.relationshipDocuments}
+
+                        documentRoles={currentRow.roles}
+
+                        documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
+                        documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
+                        documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
+                    />
+                    
+                }
+                {
+                    currentRow &&
+                    <DocumentInformation
                         documentId={currentRow._id}
                         documentName={currentRow.name}
                         documentDescription={currentRow.description}
@@ -184,6 +215,7 @@ class Table extends Component {
                                     </React.Fragment>
                                 ) })}/></td>
                                 <td>
+                                <a className="text-green" title={translate('document.view')} onClick={()=>this.toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
                                     <a className="text-yellow" title={translate('document.edit')} onClick={()=>this.toggleEditDocument(doc)}><i className="material-icons">edit</i></a>
                                     <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocument(doc._id, doc.name)}><i className="material-icons">delete</i></a>
                                 </td>
