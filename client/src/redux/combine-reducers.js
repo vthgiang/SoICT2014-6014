@@ -53,13 +53,10 @@ import { assetsManager } from "../modules/asset/asset-management/redux/reducers"
 //report 
 import {reports} from "../modules/report/task-report/redux/reducers";
 
-<<<<<<< HEAD
 //material
 import { materials } from "../modules/warehouse-manager/material-manager/redux/reducers";
-=======
 //customer
 import {customer} from "../modules/customer/redux/reducers";
->>>>>>> 6bb3de50dca0663b7cec3cb9c53640af0205dee8
 
 const appReducer = combineReducers(Object.assign({
     //system
@@ -125,14 +122,11 @@ const appReducer = combineReducers(Object.assign({
     //report
     reports,
 
-<<<<<<< HEAD
     //material
     materials,
 
-=======
     // customer management
     customer
->>>>>>> 6bb3de50dca0663b7cec3cb9c53640af0205dee8
     
 }, { Intl }));
 

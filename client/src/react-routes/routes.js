@@ -85,14 +85,11 @@ import { DashBoardAssets} from '../modules/asset/asset-dashboard/components/asse
 //report
 import TaskReportManager from '../modules/report/task-report/components/taskReportManager';
 
-<<<<<<< HEAD
 //warehouse
 import MaterialManager from '../modules/warehouse-manager/material-manager/component';
-=======
 // Customer Management
 import Customer from '../modules/customer/components';
 
->>>>>>> 6bb3de50dca0663b7cec3cb9c53640af0205dee8
 class Routes extends Component {
 
     render() {
@@ -959,7 +956,6 @@ class Routes extends Component {
                         pageName={ 'task_report' }
                         layout={ Layout }
                         component={ TaskReportManager }
-<<<<<<< HEAD
                     />
 
                     <PrivateRoute 
@@ -976,7 +972,6 @@ class Routes extends Component {
                         pageName={ 'material_manager' }
                         layout={ Layout }
                         component={ MaterialManager }
-=======
                     />  
 
                     {/* Customer Management */}
@@ -993,7 +988,6 @@ class Routes extends Component {
                         pageName={ 'customer' }
                         layout={ Layout }
                         component={ Customer }
->>>>>>> 6bb3de50dca0663b7cec3cb9c53640af0205dee8
                     />
 
                     {/* NOT FOUND */}
