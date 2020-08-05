@@ -64,6 +64,9 @@ const recommendDistribute = require('./modules/asset/recommend-distribute-equipm
 // report
 const taskReport = require('./modules/report/task-report/taskReport.route');
 
+//material
+const material = require('./modules/warehouse/material/material.router');
+
 const customer = require('./modules/customer/customer.route');
 
 // APP
@@ -168,6 +171,9 @@ app.use("/recommenddistribute", recommendDistribute);
 
 // Task report
 app.use('/taskreports', taskReport);
+
+// material
+app.use('/materials', material);
 
 // Customer Management
 app.use('/customer', customer);

@@ -209,7 +209,7 @@ exports.data = [
     { path: '/documents/documents/:id/download-file-scan', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/documents/documents/:id/increase-number-view', method: 'PATCH', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/documents/documents/permission-view', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
-    { path: '/documents/user-statistical', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/documents/documents/user-statistical', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
     { path: '/documents/document-categories', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/documents/document-categories', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
@@ -409,6 +409,12 @@ exports.data = [
     { path: '/taskreports', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/taskreports/:id', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/taskreports/:id', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
+
+    //material
+    { path: '/materials', method: 'GET', roles: ['Super Admin', 'System Admin', 'Dean', 'Vice Dean', 'Employee']},
+    { path: '/materials', method: 'POST', roles: ['Super Admin', 'System Admin', 'Dean', 'Vice Dean', 'Employee']},
+    { path: '/materials/:id', method: 'DELETE', roles: ['Super Admin', 'System Admin', 'Dean', 'Vice Dean', 'Employee']},
+    { path: '/materials/:id', method: 'PATCH', roles: ['Super Admin', 'System Admin', 'Dean', 'Vice Dean', 'Employee']},
 
     // Customer Management
     { path: '/customer', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
