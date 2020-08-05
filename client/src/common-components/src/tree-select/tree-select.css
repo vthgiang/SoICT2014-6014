@@ -1,3 +1,7 @@
+.qlcv .dropdown.radio-select{
+  z-index: 3;
+}
+
 .qlcv .dropdown-trigger > span:after {
   font-size: 12px;
   color: #555;
