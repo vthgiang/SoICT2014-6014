@@ -14,7 +14,6 @@ import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
 import { TaskProcessActions } from "../redux/actions";
 import { DepartmentActions } from "../../../super-admin/organizational-unit/redux/actions";
-import qaExtension from './tt.json'
 import customModule from './custom'
 //bpmn-nyan
 import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
