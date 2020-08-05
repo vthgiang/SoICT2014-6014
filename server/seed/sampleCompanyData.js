@@ -23,15 +23,12 @@ const {
 
     DocumentDomain,
     DocumentCategory,
-<<<<<<< HEAD
-    Material
-=======
+    Material,
 
     Customer,
     CustomerLocation,
     CustomerGroup,
     CustomerCare
->>>>>>> 6bb3de50dca0663b7cec3cb9c53640af0205dee8
 } = require('../models').schema;
 
 const Terms = require('./terms');
@@ -1793,7 +1790,8 @@ const sampleCompanyData = async () => {
         status: "Chờ phê duyệt",
     }])
     console.log(`Xong! Thông tin đăng ký sử dụng tài sản đã được tạo`);
-<<<<<<< HEAD
+
+    
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
         TẠO DỮ LIỆU vật tư
@@ -1822,7 +1820,6 @@ const sampleCompanyData = async () => {
         }
     ]);
     console.log("Khởi tạo xong danh sách vật tư");
-=======
 
     console.log("Tạo mẫu dữ liệu khách hàng");
     const customerLocationData = [
@@ -1987,7 +1984,6 @@ const sampleCompanyData = async () => {
     ltphuong.liabilities = customerLiabilities.map(lia=>lia._id);
     await ltphuong.save();
     console.log("Xong! Đã tạo mẫu dữ liệu khách hàng")
->>>>>>> 6bb3de50dca0663b7cec3cb9c53640af0205dee8
 }
 
 
