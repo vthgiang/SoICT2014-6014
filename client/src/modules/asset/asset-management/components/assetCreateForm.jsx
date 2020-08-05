@@ -76,6 +76,7 @@ class AssetCreateForm extends Component {
     }
     // Function lưu các trường thông tin vào state
     handleChange = (name, value) => {
+        console.log("***********111**********", name, value);
         const { asset } = this.state;
         if (name === 'purchaseDate' || name === 'warrantyExpirationDate' || name === 'handoverFromDate' ||
             name === 'handoverToDate' || name === 'startDepreciation' || name === 'disposalDate') {
@@ -190,7 +191,7 @@ class AssetCreateForm extends Component {
                             <li><a title="Thông tin thanh lý" data-toggle="tab" href="#disposal">Thông tin thanh lý</a></li>
                             <li><a title="Tài liệu đính kèm" data-toggle="tab" href="#attachments">Tài liệu đính kèm</a></li>
                         </ul>
-                        < div className="tab-content">
+                        <div className="tab-content">
                             <GeneralTab
                                 id="general"
                                 img={this.state.img}

@@ -296,7 +296,7 @@ exports.searchMaintainances = async (id, data, company) => {
  * Thêm mới phiếu bảo trì
  */
 exports.createMaintainance = async (id, data, incident_id) => {
-    if (incident_id !== undefined) {
+    if (incident_id) {
         return await Asset.update({_id: id, "incidentLogs._id": incident_id}, {
             $set: {
                 "incidentLogs.$.statusIncident": "Đã xử lý"
