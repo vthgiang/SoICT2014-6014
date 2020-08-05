@@ -31,12 +31,18 @@ class TaskOrganizationUnitDashboard extends Component {
     }
 
     componentDidMount = async () => {
+        // await this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
+        // await this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
+        // await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
+        // await this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
+        // await this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
+
 
         await this.props.getDepartment();
-        console.log('\n\n\n\n\n\n\n\n', this.props)
         await this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
         await this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        await this.props.getTaskInOrganizationUnitByMonth("[]", null, null);
+        // await this.props.getTaskInOrganizationUnitByMonth("[]", null, null);
+
 
         await this.setState(state => {
             return {
@@ -48,7 +54,21 @@ class TaskOrganizationUnitDashboard extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+        // console.log(";;;;;;;;", this.state.idsUnit)
+
+        if (!this.state.idsUnit.length && this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+            console.log("====dòng 59=======", this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id)
+            await this.setState((state) => {
+                return {
+                    ...state,
+                    idsUnit: [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id],
+                }
+            });
+
+            await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, null, null);
+
+            return false;
+        } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.tasks.organizationUnitTasks) {
                 return false;
             }
@@ -75,19 +95,25 @@ class TaskOrganizationUnitDashboard extends Component {
     }
 
     handleChangeOrganizationUnit = async (value) => {
-        console.log('Valueeeeeeeeeeeeeeeeeeeeeeeeeee', value);
+        // console.log('Valueeeeeeeeeeeeeeeeeeeeeeeeeee', value);
         await this.setState(state => {
             return {
                 ...state,
                 idsUnit: value
             }
         })
+        let organizationUnit = "organizationUnit";
+        let data = {
+            organizationUnitId: this.state.idsUnit,
+            type: organizationUnit,
+        }
+        await this.props.getTaskByUser(data);
     }
 
     render() {
         const { tasks, translate, user } = this.props;
         let { idsUnit } = this.state;
-        console.log(idsUnit)
+        // console.log(idsUnit)
         // let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
         let numTask, units, queue = [];
         let totalTasks = 0;
@@ -119,7 +145,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                 {childrenOrganizationalUnit &&
                                     <SelectMulti id="multiSelectOrganizationalUnitInTaskUnit"
                                         items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
-                                        options={{ nonSelectedText: translate('kpi.evaluation.dashboard.select_units'), allSelectedText: translate('kpi.evaluation.dashboard.all_unit') }}
+                                        // options={{ nonSelectedText: translate('kpi.evaluation.dashboard.select_units'), allSelectedText: translate('kpi.evaluation.dashboard.all_unit') }}
                                         onChange={this.handleChangeOrganizationUnit}
                                         value={idsUnit}
                                     >
@@ -230,7 +256,12 @@ class TaskOrganizationUnitDashboard extends Component {
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.tasks_calendar')}</div>
                             </div>
-                            <TasksSchedule />
+                            <TasksSchedule
+                                callAction={!this.state.willUpdate}
+                                TaskOrganizationUnitDashboard={true}
+                                // tasksInUnit={tasks.organizationUnitTasks && tasks.organizationUnitTasks}
+                                units={idsUnit}
+                            />
                         </div>
 
                     </div>
@@ -252,7 +283,7 @@ const actionCreators = {
     // getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
     // getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     // getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
-    // getTaskByUser: taskManagementActions.getTasksByUser,
+    getTaskByUser: taskManagementActions.getTasksByUser,
     getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
     getDepartment: UserActions.getDepartmentOfUser,
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,

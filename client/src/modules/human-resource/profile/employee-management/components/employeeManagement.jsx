@@ -165,7 +165,8 @@ class EmployeeManagement extends Component {
 
     // Function chyển đổi dữ liệu thông tin nhân viên thành dạng dữ liệu dùng export
     convertDataToExportData = (data) => {
-        let dataSheet1 = data.map((x, index) => {
+        const { list } = this.props.department;
+        let employeeInforSheet = data.map((x, index) => {
             let organizationalUnits = x.organizationalUnits.map(y => y.name);
             let position = x.roles.map(y => y.roleId.name);
             let employee = x.employees[0];
@@ -219,74 +220,196 @@ class EmployeeManagement extends Component {
                 socialInsuranceNumber: employee.socialInsuranceNumber,
                 archivedRecordNumber: employee.archivedRecordNumber,
             };
-
         })
-        let dataSheet2 = [], dataSheet3 = [], dataSheet4 = [], dataSheet5 = [], dataSheet6 = [];
+
+        let experiencesSheet = [], degreesSheet = [], certificatesSheet = [], contractsSheet = [], socialInsuranceDetailsSheet = [],
+            filesSheet = [], commendationsSheet = [], disciplinesSheet = [], salarysSheet = [], annualLeavesSheet = [], coursesSheet = [];
+
         data.forEach(x => {
             let employee = x.employees[0];
-            let experiences = employee.experiences.map(x => {
+            let experiences = employee.experiences.map(y => {
                 return {
-                    ...x,
+                    ...y,
                     employeeNumber: employee.employeeNumber,
                     fullName: employee.fullName,
-                    startDate: this.formatDate(x.startDate),
-                    endDate: this.formatDate(x.endDate),
+                    startDate: this.formatDate(y.startDate, true),
+                    endDate: this.formatDate(y.endDate, true),
                 }
             });
-            let degrees = employee.degrees.map(x => {
+            let degrees = employee.degrees.map(y => {
+                return {
+                    ...y,
+                    employeeNumber: employee.employeeNumber,
+                    fullName: employee.fullName
+                }
+            });
+            let certificates = employee.certificates.map(y => {
+                return {
+                    ...y,
+                    employeeNumber: employee.employeeNumber,
+                    fullName: employee.fullName,
+                    startDate: this.formatDate(y.startDate),
+                    endDate: this.formatDate(y.endDate),
+                }
+            });
+            let contracts = employee.contracts.map(y => {
+                return {
+                    ...y,
+                    employeeNumber: employee.employeeNumber,
+                    fullName: employee.fullName,
+                    startDate: this.formatDate(y.startDate),
+                    endDate: this.formatDate(y.endDate),
+                }
+            });
+            let socialInsuranceDetails = employee.socialInsuranceDetails.map(y => {
+                return {
+                    ...y,
+                    employeeNumber: employee.employeeNumber,
+                    fullName: employee.fullName,
+                    startDate: this.formatDate(y.startDate, true),
+                    endDate: this.formatDate(y.endDate, true),
+                }
+            });
+            let files = employee.files.map(y => {
+                return {
+                    ...y,
+                    employeeNumber: employee.employeeNumber,
+                    fullName: employee.fullName
+                }
+            });
+            let commendations = x.commendations.map(y => {
+                let decisionUnit = list.find(u => u._id === y.organizationalUnit);
+                return {
+                    ...y,
+                    employeeNumber: employee.employeeNumber,
+                    fullName: employee.fullName,
+                    decisionUnit: decisionUnit ? decisionUnit.name : "",
+                    startDate: this.formatDate(y.startDate),
+                }
+            });
+            let disciplines = x.disciplines.map(y => {
+                let decisionUnit = list.find(u => u._id === y.organizationalUnit);
+                return {
+                    ...y,
+                    employeeNumber: employee.employeeNumber,
+                    fullName: employee.fullName,
+                    decisionUnit: decisionUnit ? decisionUnit.name : "",
+                    startDate: this.formatDate(y.startDate),
+                    endDate: this.formatDate(y.endDate),
+                }
+            });
+            let salarys = x.salarys.map(x => {
                 return {
                     ...x,
                     employeeNumber: employee.employeeNumber,
                     fullName: employee.fullName
                 }
             });
-            let certificates = employee.certificates.map(x => {
+            let annualLeaves = x.annualLeaves.map(y => {
                 return {
-                    ...x,
+                    ...y,
                     employeeNumber: employee.employeeNumber,
                     fullName: employee.fullName,
-                    startDate: this.formatDate(x.startDate),
-                    endDate: this.formatDate(x.endDate),
+                    startDate: this.formatDate(y.startDate),
+                    endDate: this.formatDate(y.endDate),
                 }
             });
-            let contracts = employee.contracts.map(x => {
-                return {
-                    ...x,
-                    employeeNumber: employee.employeeNumber,
-                    fullName: employee.fullName,
-                    startDate: this.formatDate(x.startDate),
-                    endDate: this.formatDate(x.endDate),
-                }
-            });
-            let files = employee.files.map(x => {
+            let courses = x.courses.map(x => {
                 return {
                     ...x,
                     employeeNumber: employee.employeeNumber,
                     fullName: employee.fullName
                 }
             });
-            dataSheet2 = dataSheet2.concat(experiences);
-            dataSheet3 = dataSheet3.concat(degrees);
-            dataSheet4 = dataSheet4.concat(certificates);
-            dataSheet5 = dataSheet5.concat(contracts);
-            dataSheet6 = dataSheet6.concat(files);
+
+            experiencesSheet = experiencesSheet.concat(experiences);
+            degreesSheet = degreesSheet.concat(degrees);
+            certificatesSheet = certificatesSheet.concat(certificates);
+            contractsSheet = contractsSheet.concat(contracts);
+            socialInsuranceDetailsSheet = socialInsuranceDetailsSheet.concat(socialInsuranceDetails);
+            filesSheet = filesSheet.concat(files);
+            commendationsSheet = commendationsSheet.concat(commendations);
+            disciplinesSheet = disciplinesSheet.concat(disciplines);
+            salarysSheet = salarysSheet.concat(salarys);
+            annualLeavesSheet = annualLeavesSheet.concat(annualLeaves);
+            coursesSheet = coursesSheet.concat(courses);
         });
 
-        dataSheet2 = dataSheet2.map((x, index) => {
+        experiencesSheet = experiencesSheet.map((x, index) => {
             return { STT: index + 1, ...x }
         });
-        dataSheet3 = dataSheet3.map((x, index) => {
+        degreesSheet = degreesSheet.map((x, index) => {
             return { STT: index + 1, ...x }
         });
-        dataSheet4 = dataSheet4.map((x, index) => {
+        certificatesSheet = certificatesSheet.map((x, index) => {
             return { STT: index + 1, ...x }
         });
-        dataSheet5 = dataSheet5.map((x, index) => {
+        contractsSheet = contractsSheet.map((x, index) => {
             return { STT: index + 1, ...x }
         });
-        dataSheet6 = dataSheet6.map((x, index) => {
+        socialInsuranceDetailsSheet = socialInsuranceDetailsSheet.map((x, index) => {
             return { STT: index + 1, ...x }
         });
+        filesSheet = filesSheet.map((x, index) => {
+            return { STT: index + 1, ...x }
+        });
+        commendationsSheet = commendationsSheet.map((x, index) => {
+            return { STT: index + 1, ...x }
+        });
+        disciplinesSheet = disciplinesSheet.map((x, index) => {
+            return { STT: index + 1, ...x }
+        });
+        annualLeavesSheet = annualLeavesSheet.map((x, index) => {
+            return { STT: index + 1, ...x }
+        });
+        coursesSheet = coursesSheet.map((x, index) => {
+            return { STT: index + 1, ...x }
+        });
+
+
+        let otherSalary = [];
+        salarysSheet.forEach(x => {
+            if (x.bonus.length !== 0) {
+                for (let count in x.bonus) {
+                    if (!otherSalary.includes(x.bonus[count].nameBonus)) {
+                        otherSalary = [...otherSalary, x.bonus[count].nameBonus]
+                    }
+                };
+            }
+        })
+        salarysSheet = salarysSheet.map((x, index) => {
+            let total = 0, bonus = {};
+            let d = new Date(x.month),
+                month = '' + (d.getMonth() + 1),
+                year = d.getFullYear();
+            if (x.bonus.length !== 0) {
+                for (let count in x.bonus) {
+                    total = total + parseInt(x.bonus[count].number);
+                    otherSalary.forEach((y, key) => {
+                        if (y === x.bonus[count].nameBonus) {
+                            bonus = { ...bonus, [`bonus${key}`]: parseInt(x.bonus[count].number) }
+                        }
+                    })
+                };
+
+                total = total + parseInt(x.mainSalary);
+            }
+
+            return {
+                STT: index + 1,
+                employeeNumber: x.employeeNumber,
+                fullName: x.fullName,
+                mainSalary: parseInt(x.mainSalary),
+                total: total,
+                month: month,
+                year: year,
+                ...bonus
+            };
+        })
+        let columns = otherSalary.map((x, index) => {
+            return { key: `bonus${index}`, value: x, type: "Number" }
+        })
+
 
         let exportData = {
             fileName: "Bảng theo dõi thông tin nhân viên",
@@ -345,7 +468,7 @@ class EmployeeManagement extends Component {
                                 { key: "socialInsuranceNumber", value: "Mã số BHXH" },
                                 { key: "archivedRecordNumber", value: "Nơi lưu trữ hồ sơ" },
                             ],
-                            data: dataSheet1
+                            data: employeeInforSheet
                         }
                     ]
                 },
@@ -362,7 +485,7 @@ class EmployeeManagement extends Component {
                                 { key: "company", value: "Đơn vị công tác" },
                                 { key: "position", value: "Chức vụ" },
                             ],
-                            data: dataSheet2
+                            data: experiencesSheet
                         }
                     ]
                 },
@@ -379,7 +502,7 @@ class EmployeeManagement extends Component {
                                 { key: "year", value: "Năm tốt nghiệp" },
                                 { key: "degreeType", value: "Xếp loại" },
                             ],
-                            data: dataSheet3
+                            data: degreesSheet
                         }
                     ]
                 },
@@ -396,7 +519,7 @@ class EmployeeManagement extends Component {
                                 { key: "startDate", value: "Ngày cấp" },
                                 { key: "endDate", value: "Ngày hết hạn" },
                             ],
-                            data: dataSheet4
+                            data: certificatesSheet
                         }
                     ]
                 },
@@ -413,12 +536,29 @@ class EmployeeManagement extends Component {
                                 { key: "startDate", value: "Ngày có hiệu lực" },
                                 { key: "endDate", value: "Ngày hết hạn" },
                             ],
-                            data: dataSheet5
+                            data: contractsSheet
                         }
                     ]
                 },
                 {
-                    sheetName: '6.HS Nhân viên - Tài liệu',
+                    sheetName: '6.HS Nhân viên - Bảo hiểm XH',
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "employeeNumber", value: "Mã số nhân viên" },
+                                { key: "fullName", value: "Họ và tên" },
+                                { key: "startDate", value: "Từ tháng/năm" },
+                                { key: "endDate", value: "Đến tháng/năm" },
+                                { key: "company", value: "Đơn vị công tác" },
+                                { key: "position", value: "Chức vụ" },
+                            ],
+                            data: socialInsuranceDetailsSheet
+                        }
+                    ]
+                },
+                {
+                    sheetName: '7.HS Nhân viên - Tài liệu',
                     tables: [
                         {
                             columns: [
@@ -430,10 +570,82 @@ class EmployeeManagement extends Component {
                                 { key: "number", value: "Số lượng" },
                                 { key: "status", value: "Trạng thái" },
                             ],
-                            data: dataSheet6
+                            data: filesSheet
                         }
                     ]
-                }
+                },
+                {
+                    sheetName: '8.HS Nhân viên - Khen thưởng',
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "employeeNumber", value: "Mã số nhân viên" },
+                                { key: "fullName", value: "Họ và tên" },
+                                { key: "decisionNumber", value: "Số ra quyết định" },
+                                { key: "decisionUnit", value: "Cấp ra quyết định" },
+                                { key: "startDate", value: "Ngày ra quyết định" },
+                                { key: "type", value: "Hình thức khen thưởng" },
+                                { key: "reason", value: "Lý do khen thưởng" },
+                            ],
+                            data: commendationsSheet
+                        }
+                    ]
+                },
+                {
+                    sheetName: '9.HS Nhân viên - Kỷ luật',
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "employeeNumber", value: "Mã số nhân viên" },
+                                { key: "fullName", value: "Họ và tên" },
+                                { key: "decisionNumber", value: "Số ra quyết định" },
+                                { key: "decisionUnit", value: "Cấp ra quyết định" },
+                                { key: "startDate", value: "Ngày có hiệu lực" },
+                                { key: "endDate", value: "Ngày có hiệu lực" },
+                                { key: "type", value: "Hình thức kỷ luật" },
+                                { key: "reason", value: "Lý do kỷ luật" },
+                            ],
+                            data: disciplinesSheet
+                        }
+                    ]
+                },
+                {
+                    sheetName: '10.HS Nhân viên - Lương thưởng',
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "month", value: "Tháng" },
+                                { key: "year", value: "Năm" },
+                                { key: "employeeNumber", value: "Mã số nhân viên" },
+                                { key: "fullName", value: "Họ và tên" },
+                                { key: "mainSalary", value: "Tiền lương chính", type: "Number" },
+                                ...columns,
+                                { key: "total", value: "Tổng lương", type: "Number" },
+                            ],
+                            data: salarysSheet
+                        }
+                    ]
+                },
+                {
+                    sheetName: '11.HS Nhân viên - Nghỉ phép',
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "employeeNumber", value: "Mã số nhân viên" },
+                                { key: "fullName", value: "Họ và tên" },
+                                { key: "startDate", value: "Ngày bắt đầu" },
+                                { key: "endDate", value: "Ngày kết thúc" },
+                                { key: "reason", value: "Lý do" },
+                                { key: "status", value: "Trạng thái" },
+                            ],
+                            data: annualLeavesSheet
+                        }
+                    ]
+                },
             ]
         }
         return exportData
@@ -441,12 +653,12 @@ class EmployeeManagement extends Component {
 
 
     render() {
-        const { importEmployee, limit, page } = this.state;
+        const { importEmployee, limit, page, organizationalUnits } = this.state;
         const { employeesManager, translate, department } = this.props;
 
-        let lists, listPosition = [], list = department.list;
-        if (this.state.organizationalUnits !== null) {
-            let organizationalUnits = this.state.organizationalUnits;
+        let lists, listPosition = [{ value: "", text: "Bạn chưa chọn đơn vị", disabled: true }], list = department.list;
+        if (organizationalUnits !== null) {
+            listPosition = [];
             organizationalUnits.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
@@ -458,13 +670,11 @@ class EmployeeManagement extends Component {
                 })
             })
         }
-
+        let exportData;
         if (employeesManager.listEmployees) {
             lists = employeesManager.listEmployees;
+            exportData = this.convertDataToExportData(lists);
         }
-
-        let exportData = this.convertDataToExportData(lists);
-
         let pageTotal = ((employeesManager.totalList % limit) === 0) ?
             parseInt(employeesManager.totalList / limit) :
             parseInt((employeesManager.totalList / limit) + 1);
@@ -487,7 +697,7 @@ class EmployeeManagement extends Component {
                             <label className="form-control-static">{translate('page.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
-                                value={this.state.organizationalUnits !== null ? this.state.organizationalUnits : []}
+                                value={organizationalUnits !== null ? organizationalUnits : []}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
@@ -495,7 +705,7 @@ class EmployeeManagement extends Component {
                             <label className="form-control-static">{translate('page.position')}</label>
                             <SelectMulti id={`multiSelectPosition`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_position'), allSelectedText: translate('page.all_position') }}
-                                items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
+                                items={organizationalUnits === null ? listPosition : listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
                             </SelectMulti>
                         </div>
                     </div>

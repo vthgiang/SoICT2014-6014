@@ -9,7 +9,6 @@ import { CallApiStatus } from '../../../auth/redux/reducers'
 import TextareaAutosize from 'react-textarea-autosize';
 import { performTaskAction } from './../redux/actions';
 import './taskTimesheetLog.css';
-import Swal from 'sweetalert2';
 class TaskTimesheetLog extends Component {
     constructor(props) {
         super(props);
@@ -61,12 +60,22 @@ class TaskTimesheetLog extends Component {
             this.timer = null;
         }
     }
-    handleStopTimer = () => {
+    handleStopTimer = (e) => {
+        e.stopPropagation();
         const { auth } = this.props;
         this.setState(state => {
             return {
                 ...state,
                 showModal: auth.user.id
+            }
+        });
+    }
+    resumeTimer = () => {
+        this.setState(state => {
+            return {
+                ...state,
+                showModal: '',
+                description: ''
             }
         });
     }
@@ -85,18 +94,8 @@ class TaskTimesheetLog extends Component {
                 showModal: ""
             }
         });
-        // window.$("#modal-description-abc").modal('show')
     }
-    save = () => {
-        //do something
-        Swal.fire({
-            title: "Bấm giờ quá 8 tiếng sẽ không được ghi nhận",
-            type: 'warning',
-            confirmButtonColor: '#3085d6',
-            confirmButtonText: 'Xác nhận',
-            icon: 'warning'
-        })
-    }
+    
     render() {
 
         const { translate, performtasks, auth } = this.props;
@@ -107,31 +106,26 @@ class TaskTimesheetLog extends Component {
                 {
                     currentTimer &&
                     <React.Fragment>
-                        <div className="timer info-box">
-                            <span className="timer info-box-icon">
-                                <a href="#" className="link-black text-lg">
-                                    <i className="fa fa-stop-circle-o fa-lg" style={{ color: "red" }} aria-hidden="true" title="Dừng bấm giờ" onTouchEnd={this.handleStopTimer} onClick={this.handleStopTimer}></i>
-                                </a>
-                            </span>
-                            <div className="timer info-box-content">
-                                <span className="timer info-box-text">
-                                    {currentTimer.name}
+                        <div className="timesheet-box">
+                            <h4>Bấm giờ công việc</h4>
+                            <div>{currentTimer.name} <a href={`/task?taskId=${currentTimer._id}`}><i className="fa fa-arrow-circle-right"></i></a></div>
+                            <div className="time">
+                                <span>
+                                    <i className="fa fa-stop-circle-o fa-lg" style={{ color: "red", cursor: "pointer" }} aria-hidden="true" title="Dừng bấm giờ" onTouchEnd={this.handleStopTimer} onClick={this.handleStopTimer}></i>
                                 </span>
-                                <span className="timer info-box-number">
-                                    {moment.utc(a).format('HH:mm:ss')}
-                                </span>
+                                <span>&nbsp; {moment.utc(a).format('HH:mm:ss')}</span>
                             </div>
-                        </div>
-
-                        {this.state.showModal == auth.user.id &&
-                            <React.Fragment>
-                                <div style={{ width: '98%', backgroundColor: 'white', border: '1px solid', height: "170px" }}>
-                                    <h2 style={{ width: '100%', textAlign: 'center', fontFamily: 'sans-serif' }}>{translate("task.task_perform.enter_description")}</h2>
+                            {this.state.showModal === auth.user.id &&
+                                <React.Fragment>
+                                    <br/>
+                                    <label>Mô tả công việc đã làm (*)</label>
                                     <TextareaAutosize
                                         style={{ width: '100%' }}
                                         placeholder={translate("task.task_perform.enter_description")}
-                                        minRows={3}
+                                        minRows={5}
                                         maxRows={20}
+                                        onMouseDown={(e) => {e.stopPropagation(); window.$(document).off('focusin.modal');}}
+                                        onTouchStart={(e) => {e.stopPropagation(); window.$(document).off('focusin.modal');}}
                                         onChange={(e) => {
                                             let value = e.target.value;
                                             this.setState(state => {
@@ -139,13 +133,11 @@ class TaskTimesheetLog extends Component {
                                             })
                                         }}
                                     />
-                                    <button className="btn btn-primary pull-right" style={{ marginBottom: '5px' }} onClick={this.stopTimer} >{translate("task.task_perform.stop_timer")}</button>
-                                </div>
-                            </React.Fragment>
-                        }
-                        {(a > 60000 && a < 61000) &&
-                            this.save()
-                        }
+                                    <button className="btn btn-primary" style={{marginRight: 5}} onClick={this.stopTimer}>Lưu</button>
+                                    <button className="btn btn-danger" onClick={this.resumeTimer}>Hủy</button>
+                                </React.Fragment>
+                            }
+                        </div>
                     </React.Fragment>
                 }
             </React.Fragment>

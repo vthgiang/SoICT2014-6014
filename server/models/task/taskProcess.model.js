@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-const Role = require('../auth/role.model')
+const Role = require('../auth/role.model');
 const User = require('../auth/user.model');
-const OrganizationalUnits = require('../super-admin/organizationalUnit.model')
+const OrganizationalUnits = require('../super-admin/organizationalUnit.model');
+const TaskTemplate = require('../task/taskTemplate.model');
 // Create Schema
 const TaskProcessSchema = new Schema({
   xmlDiagram: {
@@ -32,37 +33,41 @@ const TaskProcessSchema = new Schema({
           type: String,
         },
         nameTask: {
-          type: String
+          type: String,
         },
         description: {
-          type: String
+          type: String,
         },
         organizationalUnit: {
           type : Schema.Types.ObjectId,
-          ref: OrganizationalUnits
+          ref: OrganizationalUnits,
+        },
+        taskTemplate: {
+          type: Schema.Types.ObjectId,
+          ref: TaskTemplate,
         },
         accountable: [{
           type: Schema.Types.ObjectId,
-          ref: Role
+          ref: Role,
         }],
         responsible: [{
           type: Schema.Types.ObjectId,
-          ref: Role
+          ref: Role,
         }],
         followingTask: [{
           name: {
-            type: String
+            type: String,
           },
           description: {
-            type: String
+            type: String,
           },
           accountable: [{
             type: Schema.Types.ObjectId,
-            ref: User
+            ref: Role,
           }],
           responsible: [{
             type: Schema.Types.ObjectId,
-            ref: User
+            ref: Role,
           }],
         }]
     }]

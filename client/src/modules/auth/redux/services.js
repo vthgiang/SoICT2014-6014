@@ -51,7 +51,6 @@ function editProfile(data) {
 
 function changeInformation(data) {
     var id = getStorage("userId");
-
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-information`,
         method: 'PATCH',
@@ -61,7 +60,6 @@ function changeInformation(data) {
 
 function changePassword(data) {
     var id = getStorage("userId");
-
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-password`,
         method: 'PATCH',

@@ -364,7 +364,7 @@ async function getResultTaskByMonth(data) {
         { $match: { "month": monthkpi } },
         { $match: { "year": yearkpi } },
     ]
-    if (kpiType === "Responsible") {
+    if (kpiType === "Responsible") { // Thêm điều kiện về kpi (khi kpi không phải là kpi mặc định: phê duyệt, hỗ trợ)
         conditions.unshift({
             $match: { "evaluations.kpis.kpis": mongoose.Types.ObjectId(data.id) }
         });

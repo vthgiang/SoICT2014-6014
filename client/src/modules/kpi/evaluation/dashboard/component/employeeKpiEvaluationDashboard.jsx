@@ -29,6 +29,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
             startMonth: currentYear + '-' + 1,
             endMonth: currentYear + '-' + (currentMonth + 2)
         }
+        this.IDS = null;
 
         this.state = {
             commenting: false,
@@ -44,7 +45,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
 
             dateOfExcellentEmployees: this.formatDate(new Date(currentYear, currentMonth - 1, 1)),
             numberOfExcellentEmployees: 5,
-            ids: null,
+            ids: this.IDS,
             editing: false,
 
             organizationalUnitIds: null
@@ -78,14 +79,43 @@ class EmployeeKpiEvaluationDashboard extends Component {
                     ...state,
                     ids: [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id],
                     infosearch: {
-                        ...state.infosearch,
-                        userId: null
+                        ...state.infosearch
                     },
-                    organizationalUnitIds: null
+                    organizationalUnitIds: [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]
                 }
             });
             return false;
         }
+
+        if (nextProps.user.userdepartments !== this.props.user.userdepartments) {
+            let userdepartments;
+            userdepartments = nextProps.user.userdepartments;
+
+            if (userdepartments) {
+                if (!Array.isArray(userdepartments)) {
+                    userdepartments = [userdepartments]
+                }
+
+                let unitMembers;
+                unitMembers = getEmployeeSelectBoxItems(userdepartments);
+                unitMembers = [...unitMembers];
+
+                this.setState((state) => {
+                    return {
+                        ...state,
+                        infosearch: {
+                            ...state.infosearch,
+                            userId: unitMembers[0].value[2].value
+                        },
+                        organizationalUnitIds: this.IDS
+                    }
+                });
+                this.INFO_SEARCH.userId = unitMembers[0].value[2].value;
+            }
+
+            return true
+        }
+        
         return true;
     }
 
@@ -151,22 +181,11 @@ class EmployeeKpiEvaluationDashboard extends Component {
     }
 
     handleSelectOrganizationalUnit = (value) => {
-        this.setState((state) => {
-            return {
-                ...state,
-                ids: value
-            }
-        });
+        this.IDS = value;
     }
 
     handleUpdateData = () => {
-        let { ids } = this.state;
-        if (ids.length > 0) {
-            this.props.getAllEmployeeKpiSetOfUnitByIds(ids);
-            this.props.getAllEmployeeOfUnitByIds(ids);
-            this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
-            this.props.getAllUserOfDepartment(ids);
-
+        if (this.IDS && this.IDS !== this.state.ids) {
             this.setState((state) => {
                 return {
                     ...state,
@@ -174,10 +193,20 @@ class EmployeeKpiEvaluationDashboard extends Component {
                         ...state.infosearch,
                         userId: null
                     },
-                    organizationalUnitIds: null
+                    organizationalUnitIds: null,
+                    ids: this.IDS
                 }
             });
+
+            if (this.IDS.length > 0) {
+                this.props.getAllEmployeeKpiSetOfUnitByIds(this.IDS);
+                this.props.getAllEmployeeOfUnitByIds(this.IDS);
+                this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
+                this.props.getAllUserOfDepartment(this.IDS);
+            }
         }
+        
+        
     }
 
     handleSelectEmployee = (value) => {
@@ -258,8 +287,8 @@ class EmployeeKpiEvaluationDashboard extends Component {
             activatedKpi = currentMonthEmployeeKpiSets.filter(item => item.status == 2);
             activatedKpi = activatedKpi.length;
         }
-        if (this.props.dashboardEvaluationEmployeeKpiSet.employees) {
-            numberOfEmployee = this.props.dashboardEvaluationEmployeeKpiSet.employees.length;
+        if (this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
+            numberOfEmployee = this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.employees.length;
         }
 
 
@@ -288,19 +317,6 @@ class EmployeeKpiEvaluationDashboard extends Component {
             }
             unitMembers = getEmployeeSelectBoxItems(userdepartments);
             unitMembers = [...unitMembers];
-
-            if (!infosearch.userId) {
-                this.setState(state => {
-                    return {
-                        ...state,
-                        infosearch: {
-                            ...state.infosearch,
-                            userId: unitMembers[0].value[2].value
-                        },
-                        organizationalUnitIds: this.state.ids
-                    }
-                })
-            }
         }
 
 

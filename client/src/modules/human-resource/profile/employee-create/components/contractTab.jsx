@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { LOCAL_SERVER_API } from '../../../../../env';
 import { toast } from 'react-toastify';
 import ServerResponseAlert from '../../../../alert/components/serverResponseAlert';
 
 import { ContractAddModal, ContractEditModal, CourseAddModal, CourseEditModal } from './combinedContent';
 
 import { CourseActions } from '../../../../training/course/redux/actions';
+import { AuthActions } from '../../../../auth/redux/actions';
 
 class ContractTab extends Component {
     constructor(props) {
@@ -167,7 +167,8 @@ class ContractTab extends Component {
 
     render() {
         const { id, translate, course, } = this.props;
-        const { contracts, courses, pageCreate } = this.state;
+        const { contracts, courses, pageCreate, roles } = this.state;
+        console.log(roles);
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -194,9 +195,9 @@ class ContractTab extends Component {
                                             <td>{this.formatDate(x.startDate)}</td>
                                             <td>{this.formatDate(x.endDate)}</td>
                                             <td>{!x.urlFile ? translate('manage_employee.no_files') :
-                                                <a className='intable' target={x._id === undefined ? '_self' : '_blank'}
-                                                    href={(x._id === undefined) ? x.urlFile : `${LOCAL_SERVER_API + x.urlFile}`}
-                                                    download={x.name}>
+                                                <a className='intable'
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={(e) => this.requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
                                                     <i className="fa fa-download"> &nbsp;Download!</i>
                                                 </a>
                                             }</td>
@@ -215,7 +216,7 @@ class ContractTab extends Component {
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.training_process')}</h4></legend>
                         {pageCreate && <a style={{ marginBottom: '10px', marginTop: '2px' }} className="btn btn-success pull-right" title='Do nhân viên chưa thuộc đơn vị nào' data-toggle="modal" data-backdrop="static" href='' disabled >{translate('modal.create')}</a>}
-                        {!pageCreate && <CourseAddModal handleChange={this.handleAddCourse} id={`addCourse${id}`} />}
+                        {!pageCreate && <CourseAddModal roles={roles} handleChange={this.handleAddCourse} id={`addCourse${id}`} />}
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
@@ -231,26 +232,31 @@ class ContractTab extends Component {
                             <tbody>
                                 {(courses !== 'undefined' && courses.length !== 0) &&
                                     courses.map((x, index) => {
-                                        let courseInfo = '';
+                                        let courseInfo;
                                         course.listCourses.forEach(list => {
                                             if (list._id === x.course) {
                                                 courseInfo = list
                                             }
                                         });
-                                        return (
-                                            <tr key={index}>
-                                                <td>{courseInfo.courseId}</td>
-                                                <td>{courseInfo.name}</td>
-                                                <td>{this.formatDate(courseInfo.startDate)}</td>
-                                                <td>{this.formatDate(courseInfo.endDate)}</td>
-                                                <td>{courseInfo.coursePlace}</td>
-                                                <td>{x.result}</td>
-                                                <td >
-                                                    <a onClick={() => this.handleCourseEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title='Chỉnh sửa thông tin khoá đào tạo' ><i className="material-icons">edit</i></a>
-                                                    <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.deleteCourse(index)}><i className="material-icons"></i></a>
-                                                </td>
-                                            </tr>
-                                        )
+                                        if (courseInfo) {
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{courseInfo.courseId}</td>
+                                                    <td>{courseInfo.name}</td>
+                                                    <td>{this.formatDate(courseInfo.startDate)}</td>
+                                                    <td>{this.formatDate(courseInfo.endDate)}</td>
+                                                    <td>{courseInfo.coursePlace}</td>
+                                                    <td>{x.result}</td>
+                                                    <td >
+                                                        <a onClick={() => this.handleCourseEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title='Chỉnh sửa thông tin khoá đào tạo' ><i className="material-icons">edit</i></a>
+                                                        <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.deleteCourse(index)}><i className="material-icons"></i></a>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        } else {
+                                            return null
+                                        }
+
                                     })}
                             </tbody>
                         </table>
@@ -297,6 +303,8 @@ function mapState(state) {
 };
 const actionCreators = {
     getListCourse: CourseActions.getListCourse,
+    downloadFile: AuthActions.downloadFile,
+
 };
 
 const contractTab = connect(mapState, actionCreators)(withTranslate(ContractTab));

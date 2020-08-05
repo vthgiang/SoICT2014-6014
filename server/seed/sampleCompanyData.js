@@ -22,7 +22,16 @@ const {
     RecommendDistribute,
 
     DocumentDomain,
-    DocumentCategory
+    DocumentCategory,
+<<<<<<< HEAD
+    Material
+=======
+
+    Customer,
+    CustomerLocation,
+    CustomerGroup,
+    CustomerCare
+>>>>>>> 6bb3de50dca0663b7cec3cb9c53640af0205dee8
 } = require('../models').schema;
 
 const Terms = require('./terms');
@@ -1783,6 +1792,167 @@ const sampleCompanyData = async () => {
         status: "Chờ phê duyệt",
     }])
     console.log(`Xong! Thông tin đăng ký sử dụng tài sản đã được tạo`);
+<<<<<<< HEAD
+    /*---------------------------------------------------------------------------------------------
+    -----------------------------------------------------------------------------------------------
+        TẠO DỮ LIỆU vật tư
+    -----------------------------------------------------------------------------------------------
+    ----------------------------------------------------------------------------------------------- */
+    console.log("Khởi tạo dữ liệu vật tư");
+    var listMaterial = await Material.insertMany([{
+            materialName: "Laptop Sony Vaio",
+            code: "VVTM02.001",
+            serial: "00001",
+            materialType: "Máy tính",
+            purchaseDate: new Date("2020-06-20"),
+            location: "PKD",
+            description: "Laptop Sony Vaio",
+            cost: 50000000,
+        },
+        {
+            materialName: "Bàn học",
+            code: "VVTM02.002",
+            serial: "00002",
+            materialType: "Bàn",
+            purchaseDate: new Date("2020-06-21"),
+            location: "PKD",
+            description: "Bàn học",
+            cost: 10000000,
+        }
+    ]);
+    console.log("Khởi tạo xong danh sách vật tư");
+=======
+
+    console.log("Tạo mẫu dữ liệu khách hàng");
+    const customerLocationData = [
+        {
+            name: "Hà Nội",
+            code: 'HN'
+        },{
+            name: "Thái Bình",
+            code: "TB"
+        },{
+            name: "Đà Nẵng",
+            code: "ĐNa"
+        },{
+            name: "TP. Hồ Chí Minh",
+            code: "SG"
+        }
+    ];
+    const customerLocation = await CustomerLocation.insertMany(customerLocationData);
+
+    const customerGroupData = [
+        {
+            name: "Khách bán buôn",
+            code: 'KBB',
+            company: vnist._id
+        },{
+            name: "Sỉ lẻ",
+            code: "SL",
+            company: vnist._id
+        },{
+            name: "Nhà cung cấp Anh Đức",
+            code: "CCAD",
+            company: vnist._id
+        },{
+            name: "Đại lý Việt Anh",
+            code: "ĐLVA",
+            company: vnist._id
+        }
+    ];
+    const customerGroup = await CustomerGroup.insertMany(customerGroupData);
+
+    const customerData = [
+        {
+            name: 'Nguyễn Thị Phương',
+            code: 'HN1101',
+            phone: '0396629958',
+            address: '123 xã Đàn, Phương Liên, Đống Đa',
+            location: customerLocation[0]._id,
+            email: 'ntphuong@gmail.com',
+            group: customerGroup[0]._id,
+            birth: '20/10/1995',
+            gender: 'Nữ',
+            loyal: true,
+            company: vnist._id
+        },{
+            name: 'Trần Mỹ Hạnh',
+            code: 'HN2497',
+            phone: '0396629919',
+            address: '223 Đê La Thành',
+            location: customerLocation[0]._id,
+            email: 'ntphuong@gmail.com',
+            group: customerGroup[2]._id,
+            birth: '20/10/1995',
+            gender: 'Nữ',
+            loyal: true,
+            company: vnist._id
+        },{
+            name: 'Nguyễn Thị Phương',
+            code: 'HN1101',
+            phone: '0396629958',
+            address: '123 xã Đàn, Phương Liên, Đống Đa',
+            location: customerLocation[0]._id,
+            email: 'ntphuong@gmail.com',
+            group: customerGroup[0]._id,
+            birth: '20/10/1995',
+            gender: 'Nữ',
+            loyal: true,
+            company: vnist._id
+        },{
+            name: 'Trần Mỹ Hạnh',
+            code: 'HN2497',
+            phone: '0396629919',
+            address: '223 Đê La Thành',
+            location: customerLocation[0]._id,
+            email: 'ntphuong@gmail.com',
+            group: customerGroup[2]._id,
+            birth: '20/10/1995',
+            gender: 'Nữ',
+            loyal: true,
+            company: vnist._id
+        },{
+            name: 'Nguyễn Thị Phương',
+            code: 'HN1101',
+            phone: '0396629958',
+            address: '123 xã Đàn, Phương Liên, Đống Đa',
+            location: customerLocation[0]._id,
+            email: 'ntphuong@gmail.com',
+            group: customerGroup[0]._id,
+            birth: '20/10/1995',
+            gender: 'Nữ',
+            loyal: true,
+            company: vnist._id
+        },{
+            name: 'Trần Mỹ Hạnh',
+            code: 'HN2497',
+            phone: '0396629919',
+            address: '223 Đê La Thành',
+            location: customerLocation[0]._id,
+            email: 'ntphuong@gmail.com',
+            group: customerGroup[2]._id,
+            birth: '20/10/1995',
+            gender: 'Nữ',
+            loyal: true,
+            company: vnist._id
+        },{
+            name: 'Nguyễn Thị Phương',
+            code: 'HN1101',
+            phone: '0396629958',
+            address: '123 xã Đàn, Phương Liên, Đống Đa',
+            location: customerLocation[0]._id,
+            email: 'ntphuong@gmail.com',
+            group: customerGroup[0]._id,
+            birth: '20/10/1995',
+            gender: 'Nữ',
+            loyal: true,
+            company: vnist._id
+        }
+    ];
+    const customers = await Customer.insertMany(customerData);
+
+    console.log("Xong! Đã tạo mẫu dữ liệu khách hàng")
+>>>>>>> 6bb3de50dca0663b7cec3cb9c53640af0205dee8
 }
 
 

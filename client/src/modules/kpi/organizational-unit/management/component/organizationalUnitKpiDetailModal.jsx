@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { managerActions } from '../redux/actions';
 import { DialogModal } from '../../../../../common-components/index';
 import { withTranslate } from 'react-redux-multilingual';
+import { ExportExcel } from '../../../../../common-components';
 
 class ModalDetailKPI extends Component {
     constructor(props) {
@@ -11,7 +12,7 @@ class ModalDetailKPI extends Component {
             content: ""
         };
     }
-    
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -27,7 +28,7 @@ class ModalDetailKPI extends Component {
 
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.id !== this.state.id) {
-            this.props.getChildTarget(nextProps.id);
+            this.props.getChildTarget(nextProps.id, null);
             return false;
         }
         return true;
@@ -40,6 +41,7 @@ class ModalDetailKPI extends Component {
                 content: id
             }
         })
+
     }
 
     formatMonth(date) {
@@ -56,11 +58,100 @@ class ModalDetailKPI extends Component {
         return [month, year].join('-');
     }
 
+    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    convertDataToExportData = (data,date) => {      
+        let fileName = "Thông tin chi tiết KPI đơn vị ";
+        if(date) {
+            let d= new Date(date), 
+                month =d.getMonth()+1,
+                year =d.getFullYear();
+            fileName+="tháng "+month+ "-" +year+"_";
+
+        }
+        fileName += data.name;
+        let unitKpiData=[],detailData;
+
+        if(data){
+            //Component excel nhận truyền vào là dữ liệu dạng mảng
+            let dataObject ={
+                unitKpiName : data.name,
+                unitKpiCriteria :data.criteria,
+                unitKpiWeight : parseInt(data.weight),
+                automaticPoint : (data.automaticPoint === null)?"Chưa đánh giá":parseInt(data.automaticPoint),
+                employeePoint : (data.employeePoint === null)?"Chưa đánh giá":parseInt(data.employeePoint),
+                approverPoint : (data.approvedPoint===null)?"Chưa đánh giá":parseInt(data.approvedPoint),
+            }
+            unitKpiData.push(dataObject);
+        }
+
+        if (data.arrtarget) {           
+            detailData = data.arrtarget.map((x, index) => {               
+                let creatorName = x.creator.name;
+                let targetName = x.target.name;      
+                let unitName =x.organizationalUnit.name;
+                let criteria = x.target.criteria;         
+                let result =x.target.approvedPoint            
+
+                return {
+                    STT: index + 1,
+                    creatorName: creatorName,                   
+                    targetName : targetName,
+                    unitName:unitName,
+                    criteria :criteria,
+                    result: result                   
+                };
+            })
+        }
+
+        let exportData = {
+            fileName: fileName,
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    tables: [
+                        {
+                            columns: [
+                                { key: "unitKpiName", value: "Tên KPI đơn vị" },
+                                { key: "unitKpiCriteria", value: "Tiêu chí đánh giá" },                                
+                                { key: "unitKpiWeight", value: "Trọng số (/100)" },
+                                { key: "automaticPoint", value: "Điểm tự động" },
+                                { key: "employeePoint", value: "Điểm tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm được đánh giá" }
+ 
+                            ],
+                            data:unitKpiData
+                        },
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "creatorName", value: "Người tạo" },                                
+                                { key: "targetName", value: "Tên mục tiêu" },
+                                { key: "unitName", value: "Đơn vị" },
+                                { key: "criteria", value: "Tiêu chí đánh giá" },
+                                { key: "result", value: "Kết quả đánh giá" },
+                            ],
+                            data: detailData
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData;        
+       
+    }
+
     render() {
-        let listchildtarget;
+        let listchildtarget, exportData;
         const { managerKpiUnit, translate } = this.props;
+        let selectedKpi =this.state.content;
+
         if (managerKpiUnit.childtarget) {
             listchildtarget = managerKpiUnit.childtarget;
+        }
+
+        if(selectedKpi&&listchildtarget){
+            let data = listchildtarget.filter(item => (item._id === selectedKpi));
+            exportData=this.convertDataToExportData(data[0],this.props.date);
         }
 
         return (
@@ -77,9 +168,9 @@ class ModalDetailKPI extends Component {
                         </div>
                         <div className="box-body no-padding">
                             <ul className="nav nav-pills nav-stacked">
-                                {listchildtarget  &&
+                                {listchildtarget &&
                                     listchildtarget.map((item, index) =>
-                                        <li key={index} className={this.state.content === item._id ? "active" : undefined }>
+                                        <li key={index} className={this.state.content === item._id ? "active" : undefined}>
                                             <a href="#abc" onClick={() => this.handleChangeContent(item._id)}>
                                                 {item.name}
                                                 <span className="label label-primary pull-right">{item.arrtarget.length}</span>
@@ -93,7 +184,7 @@ class ModalDetailKPI extends Component {
 
                 <div className="col-xs-12 col-sm-8">
                     {/* Thông tin chi tiết mục tiêu KPI đơn vị được chọn */}
-                    {   
+                    {
                         listchildtarget && listchildtarget.map(item => {
                             if (item._id === this.state.content) return <React.Fragment key={item._id}>
                                 <h4>{translate('kpi.organizational_unit.management.detail_modal.information_kpi') + `"${item.name}"`}</h4>
@@ -128,7 +219,7 @@ class ModalDetailKPI extends Component {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {(typeof item && item.arrtarget) ?
+                                        {(item && item.arrtarget) ?
                                             (item.arrtarget.map((data, index) =>
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>
@@ -138,14 +229,10 @@ class ModalDetailKPI extends Component {
                                                     <td>{data.target.criteria}</td>
                                                     <td>{data.target.approvedPoint}</td>
                                                 </tr>)) : <tr><td colSpan={6}>{translate('kpi.organizational_unit.management.detail_modal.no_data')}</td></tr>
-
                                         }
-
                                     </tbody>
                                 </table>
-                                <div>
-                                    <button className="btn btn-primary pull-right">{translate('kpi.organizational_unit.management.detail_modal.export_file')}</button>
-                                </div>
+                                {exportData&&<ExportExcel id="export-unit-kpi-management-detail-kpi" exportData={exportData} style={{ marginRight: 15, marginTop:5 }} />}
                             </React.Fragment>;
                             return true;
                         })

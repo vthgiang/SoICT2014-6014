@@ -544,7 +544,7 @@ exports.evaluateTaskByAccountableEmployees = async (req, res) => {
  */
 getTasksByUser = async (req, res) => {
     try {
-        const tasks = await TaskManagementService.getTasksByUser(req.query.userId);
+        const tasks = await TaskManagementService.getTasksByUser(req.query);
 
         await LogInfo(req.user.email, 'GET_TASK_BY_USER', req.user.company);
         res.status(200).json({
