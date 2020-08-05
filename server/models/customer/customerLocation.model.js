@@ -3,14 +3,19 @@ const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 const CustomerLocationSchema = new Schema({
+    code: {
+        type: String,
+        required: true
+    },
     name: {
         type: String,
         required: true
     },
-    code: {
-        type: String,
-        required: true
-    }
+    district: [{
+        name: {
+            type: String
+        }
+    }]
 },{
     timestamps: true,
     toJSON: { virtuals: true }

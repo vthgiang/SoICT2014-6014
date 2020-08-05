@@ -33,6 +33,7 @@ const {
 const Terms = require('./terms');
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const customerLiabilityModel = require('../models/customer/customerLiability.model');
 
 
 require('dotenv').config({
@@ -1854,62 +1855,62 @@ const sampleCompanyData = async () => {
             loyal: true,
             company: vnist._id
         },{
-            name: 'Nguyễn Thị Phương',
-            code: 'HN1101',
-            phone: '0396629958',
-            address: '123 xã Đàn, Phương Liên, Đống Đa',
+            name: 'Nguyễn Văn Thành',
+            code: 'HN1111',
+            phone: '0396627758',
+            address: '123 Cầu Giấy',
             location: customerLocation[0]._id,
-            email: 'ntphuong@gmail.com',
+            email: 'nvthanh@gmail.com',
             group: customerGroup[0]._id,
-            birth: '20/10/1995',
-            gender: 'Nữ',
+            birth: '03/10/1991',
+            gender: 'Nam',
             loyal: true,
             company: vnist._id
         },{
-            name: 'Trần Mỹ Hạnh',
-            code: 'HN2497',
-            phone: '0396629919',
-            address: '223 Đê La Thành',
+            name: 'Lê Công Vinh',
+            code: 'HN1169',
+            phone: '0395223919',
+            address: '12 Phạm Ngọc Thạch',
             location: customerLocation[0]._id,
-            email: 'ntphuong@gmail.com',
+            email: 'lcvinh@gmail.com',
+            group: customerGroup[1]._id,
+            birth: '11/11/1985',
+            gender: 'Nam',
+            loyal: true,
+            company: vnist._id
+        },{
+            name: 'Nguyễn Thị Lê',
+            code: 'HN1256',
+            phone: '03977733214',
+            address: '11 phố Huế',
+            location: customerLocation[0]._id,
+            email: 'ntle@gmail.com',
+            group: customerGroup[0]._id,
+            birth: '7/9/1993',
+            gender: 'Nam',
+            loyal: true,
+            company: vnist._id
+        },{
+            name: 'Nguyễn Việt Anh',
+            code: 'HN1995',
+            phone: '0396113259',
+            address: '110 Lê Đại Hành',
+            location: customerLocation[0]._id,
+            email: 'nvanh@gmail.com',
             group: customerGroup[2]._id,
-            birth: '20/10/1995',
-            gender: 'Nữ',
+            birth: '20/10/1992',
+            gender: 'Nam',
             loyal: true,
             company: vnist._id
         },{
-            name: 'Nguyễn Thị Phương',
-            code: 'HN1101',
-            phone: '0396629958',
-            address: '123 xã Đàn, Phương Liên, Đống Đa',
+            name: 'Nguyễn Thị Hà',
+            code: 'HN1998',
+            phone: '0396112548',
+            address: '123 Khâm Thiên, Đống Đa',
             location: customerLocation[0]._id,
-            email: 'ntphuong@gmail.com',
+            email: 'ntha@gmail.com',
             group: customerGroup[0]._id,
-            birth: '20/10/1995',
-            gender: 'Nữ',
-            loyal: true,
-            company: vnist._id
-        },{
-            name: 'Trần Mỹ Hạnh',
-            code: 'HN2497',
-            phone: '0396629919',
-            address: '223 Đê La Thành',
-            location: customerLocation[0]._id,
-            email: 'ntphuong@gmail.com',
-            group: customerGroup[2]._id,
-            birth: '20/10/1995',
-            gender: 'Nữ',
-            loyal: true,
-            company: vnist._id
-        },{
-            name: 'Nguyễn Thị Phương',
-            code: 'HN1101',
-            phone: '0396629958',
-            address: '123 xã Đàn, Phương Liên, Đống Đa',
-            location: customerLocation[0]._id,
-            email: 'ntphuong@gmail.com',
-            group: customerGroup[0]._id,
-            birth: '20/10/1995',
+            birth: '21/7/2000',
             gender: 'Nữ',
             loyal: true,
             company: vnist._id
@@ -1917,6 +1918,40 @@ const sampleCompanyData = async () => {
     ];
     const customers = await Customer.insertMany(customerData);
 
+    const customerLiabilities = await customerLiabilityModel.insertMany([
+        {
+            code: 'PT0001',
+            customer: customers[0]._id,
+            creator: users[2]._id,
+            description: 'Công nợ khách hàng 6/2020',
+            total: 1200000,
+            company: vnist._id
+        },{
+            code: 'PT0002',
+            customer: customers[0]._id,
+            creator: users[2]._id,
+            description: 'Công nợ khách hàng 7/2020',
+            total: 530000,
+            company: vnist._id
+        },{
+            code: 'PT0003',
+            customer: customers[0]._id,
+            creator: users[2]._id,
+            description: 'Công nợ khách hàng 8/2020',
+            total: 210000,
+            company: vnist._id
+        },{
+            code: 'PT0004',
+            customer: customers[0]._id,
+            creator: users[4]._id,
+            description: 'Công nợ khách hàng 9/2020',
+            total: 880000,
+            company: vnist._id
+        },
+    ])
+    const ltphuong = await Customer.findById(customers[0]._id);
+    ltphuong.liabilities = customerLiabilities.map(lia=>lia._id);
+    await ltphuong.save();
     console.log("Xong! Đã tạo mẫu dữ liệu khách hàng")
 }
 

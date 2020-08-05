@@ -622,6 +622,8 @@ export default {
             manage_document: 'Manage Documents',
             documents: 'Documents',
 
+            customer: 'Customer',
+
             task_template: 'Task Template',
             cocautochuc: 'Organizational Structure',
             taskmanagement: 'Task Management',

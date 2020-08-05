@@ -538,5 +538,14 @@ const LINKS = [
             ROOT_ROLES.EMPLOYEE.name,
         ]
     },
+    {
+        url: '/customer',
+        description: `Quản lý khách hàng`,
+        category: LINK_CATEGORY.COMMON.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ]
+    },
 ];
 exports.LINKS = LINKS;

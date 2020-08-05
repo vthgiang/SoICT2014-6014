@@ -622,8 +622,9 @@ export default {
             manage_document: 'Quản lý tài liệu',
             documents: 'Tài liệu văn bản',
 
+            customer: 'Khách hàng',
+
             task_template: 'Mẫu Công Việc',
-            cocautochuc: 'Cơ Cấu Tổ Chức',
             taskmanagement: 'Quản Lý Công Việc',
             manageDocument: 'Quản lý văn bản',
             manageDocumentType: 'Quản lý loại văn bản',
