@@ -4,6 +4,7 @@ import {
 export const EmployeeCreateValidator = {
     validateEmployeeNumber,
     validateBrithday,
+    validateStartingDate,
     validateMSCC,
     validateFullName,
     validateEmailCompany,
@@ -59,6 +60,14 @@ function validateBrithday(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Ngày sinh không được để trống";
+    }
+    return msg;
+}
+
+function validateStartingDate(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Ngày bắt đầu làm việc không được để trống";
     }
     return msg;
 }

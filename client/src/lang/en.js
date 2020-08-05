@@ -1313,6 +1313,7 @@ export default {
                     employee_timesheet_id_required: 'Employee timesheet id required',
                     full_name_required: 'Full name required',
                     birthdate_required: 'Birthdate required',
+                    starting_date_required: 'Starting date required',
                     identity_card_number_required: 'Identity card number required',
                     identity_card_date_required: 'Identity card date required',
                     identity_card_address_required: 'Identity card address required',

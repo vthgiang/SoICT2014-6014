@@ -1314,6 +1314,7 @@ export default {
                     employee_timesheet_id_required: 'Mã số chấm công không được để trống',
                     full_name_required: 'Họ và tên không được để trống',
                     birthdate_required: 'Ngày sinh không được để trống',
+                    starting_date_required: 'Ngày bắt đầu làm việc không được để trống',
                     identity_card_number_required: 'Số chứng minh thư/hộ chiếu không được để trống',
                     identity_card_date_required: 'Ngày cấp chứng minh thư/hộ chiếu không được để trống',
                     identity_card_address_required: 'Nơi cấp chứng minh thư/hộ chiếu không được để trống',

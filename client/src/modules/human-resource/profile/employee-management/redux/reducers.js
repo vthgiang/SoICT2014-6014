@@ -48,50 +48,44 @@ export function employeesManager(state = initState, action) {
 
                     isLoading: false
                 }
+            };
+        case EmployeeConstants.ADDEMPLOYEE_SUCCESS:
+            return {
+                ...state,
+                listEmployees: [...state.listEmployees, action.payload],
+                    isLoading: false
+            };
+        case EmployeeConstants.UPDATE_INFOR_EMPLOYEE_SUCCESS:
+            console.log(action.payload);
+            return {
+                ...state,
+                listEmployees: state.listEmployees.map(x => x.employees[0]._id === action.payload.employees[0]._id ? action.payload : x),
+                    isLoading: false
+            };
+        case EmployeeConstants.DELETE_EMPLOYEE_SUCCESS:
+            return {
+                ...state,
+                listEmployees: state.listEmployees.filter(x => (x.employees[0]._id !== action.payload._id)),
+                    isLoading: false,
+            };
+        case EmployeeConstants.IMPORT_EMPLOYEE_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                    importEmployees: action.payload.content,
+                    error: ""
             }
-
-            case EmployeeConstants.ADDEMPLOYEE_SUCCESS:
-                return {
-                    ...state,
-                    listEmployees: [...state.listEmployees, action.payload],
-                        isLoading: false
-                };
+            case EmployeeConstants.GETALL_FAILURE:
             case EmployeeConstants.ADDEMPLOYEE_FAILURE:
-                return {
-                    error: action.error,
-                        isLoading: false,
-                };
-            case EmployeeConstants.UPDATE_INFOR_EMPLOYEE_SUCCESS:
-                console.log(action.payload);
-                return {
-                    ...state,
-                    listEmployees: state.listEmployees.map(x => x.employees[0]._id === action.payload.employees[0]._id ? action.payload : x),
-                        isLoading: false
-                };
-            case EmployeeConstants.DELETE_EMPLOYEE_SUCCESS:
-                return {
-                    ...state,
-                    listEmployees: state.listEmployees.filter(x => (x.employees[0]._id !== action.payload._id)),
-                        isLoading: false,
-                };
-            case EmployeeConstants.IMPORT_EMPLOYEE_SUCCESS:
+            case EmployeeConstants.UPDATE_INFOR_EMPLOYEE_FAILURE:
+            case EmployeeConstants.DELETE_EMPLOYEE_FAILURE:
+            case EmployeeConstants.IMPORT_EMPLOYEE_FAILURE:
                 return {
                     ...state,
                     isLoading: false,
-                        importEmployees: action.payload.content,
-                        error: ""
-                }
-                case EmployeeConstants.GETALL_FAILURE:
-                case EmployeeConstants.ADDEMPLOYEE_FAILURE:
-                case EmployeeConstants.UPDATE_INFOR_EMPLOYEE_FAILURE:
-                case EmployeeConstants.DELETE_EMPLOYEE_FAILURE:
-                case EmployeeConstants.IMPORT_EMPLOYEE_FAILURE:
-                    return {
-                        ...state,
-                        isLoading: false,
-                            error: action.error
-                    };
-                default:
-                    return state
+                        error: action.error
+                };
+            default:
+                return state
     }
 }

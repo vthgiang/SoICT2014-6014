@@ -412,6 +412,7 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
  * @fileInfo : Thông tin file đính kèm
  */
 exports.createEmployee = async (data, company, fileInfo) => {
+    console.log(data);
     let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
         fileDegree = fileInfo.fileDegree,
         fileCertificate = fileInfo.fileCertificate,
@@ -436,6 +437,8 @@ exports.createEmployee = async (data, company, fileInfo) => {
         company: company,
         gender: data.gender,
         status: data.status,
+        startingDate: data.startingDate,
+        leavingDate: data.leavingDate,
         birthdate: data.birthdate,
         birthplace: data.birthplace,
         identityCardNumber: data.identityCardNumber,
@@ -593,6 +596,7 @@ exports.createEmployee = async (data, company, fileInfo) => {
  * Cập nhât thông tin nhân viên theo id
  */
 exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
+    console.log(data);
     let {
         employee,
         createExperiences,
@@ -673,6 +677,8 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
     oldEmployee.employeeTimesheetId = employee.employeeTimesheetId;
     oldEmployee.gender = employee.gender;
     oldEmployee.status = employee.status;
+    oldEmployee.startingDate = employee.startingDate;
+    oldEmployee.leavingDate = employee.leavingDate;
     oldEmployee.birthdate = employee.birthdate;
     oldEmployee.birthplace = employee.birthplace;
     oldEmployee.identityCardNumber = employee.identityCardNumber;
