@@ -174,6 +174,7 @@ class TaskReportCreateForm extends Component {
                         ...value,
                         charType: '0',
                         aggregationType: '0',
+                        showInReport: false,
                     }
                 }
             }
