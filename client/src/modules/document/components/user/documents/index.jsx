@@ -43,7 +43,7 @@ class UserDocumentsData extends Component {
         const { paginate } = docs;
         const {isLoading} = this.props.documents;
         const {currentRow} = this.state;
-        console.log('propssss', isLoading)
+        console.log('propsss', this.props);
         return ( 
             <React.Fragment>
                 {
@@ -118,7 +118,7 @@ class UserDocumentsData extends Component {
                             paginate.map(doc => 
                             <tr key={doc._id}>
                                 <td>{doc.name}</td>
-                                <td>{doc.description}</td>
+                                <td>{doc.description ? doc.description: ""}</td>
                                 <td><DateTimeConverter dateTime={doc.versions[doc.versions.length-1].issuingDate} type="DD-MM-YYYY"/></td>
                                 <td><DateTimeConverter dateTime={doc.versions[doc.versions.length-1].effectiveDate} type="DD-MM-YYYY"/></td>
                                 <td><DateTimeConverter dateTime={doc.versions[doc.versions.length-1].expiredDate} type="DD-MM-YYYY"/></td>
@@ -135,7 +135,7 @@ class UserDocumentsData extends Component {
                                     </React.Fragment>
                                 ) })}/></td>
                                 <td>
-                                    <a className="text-green" title={translate('document.edit')} onClick={()=>this.toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
+                                    <a className="text-green" title={translate('document.view')} onClick={()=>this.toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
                                     
                                 </td>
                             </tr>):

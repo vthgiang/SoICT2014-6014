@@ -78,7 +78,7 @@ class DocumentInformation extends Component {
                 >
                     <form id="form-document-information-statistics">
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Thông tin văn bản</legend>
+                            <legend className="scheduler-border">{translate('document.infomation_docs')}</legend>
                             <div className="row">
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">

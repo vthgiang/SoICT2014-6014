@@ -19,8 +19,8 @@ class Document extends Component {
                 <ul className="nav nav-tabs">
                     <li className="active"><a href="#user-documents" data-toggle="tab">{translate('document.data')}</a></li>
                     <li><a href="#user-document-history-document-downloaded" data-toggle="tab">Những văn bản đã download</a></li>
-                    <li><a href="#user-document-history-statistics" data-toggle="tab">Những tài liệu văn bản phổ biến</a></li>
-                    <li><a href="#user-document-history-statistics" data-toggle="tab">Tài liệu mới nhất</a></li>
+                    <li><a href="#user-document-history-document-common" data-toggle="tab">Những tài liệu văn bản phổ biến</a></li>
+                    <li><a href="user-document-history-document-new" data-toggle="tab">Tài liệu mới nhất</a></li>
                 </ul>
                 <div className="tab-content">
                     <div className="tab-pane active" id="user-documents">
