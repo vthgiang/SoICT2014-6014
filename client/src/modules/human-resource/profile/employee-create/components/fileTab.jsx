@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { LOCAL_SERVER_API } from '../../../../../env';
 import { FileAddModal, FileEditModal } from './combinedContent';
 
+import { AuthActions } from '../../../../auth/redux/actions';
 class FileTab extends Component {
     constructor(props) {
         super(props);
@@ -90,6 +90,11 @@ class FileTab extends Component {
         }
     }
 
+    requestDownloadFile = (e, path, fileName) => {
+        e.preventDefault()
+        this.props.downloadFile(path, fileName)
+    }
+
     render() {
         const { id, translate } = this.props;
         const { files, archivedRecordNumber } = this.state;
@@ -126,9 +131,9 @@ class FileTab extends Component {
                                             <td>{x.number}</td>
                                             <td>{translate(`manage_employee.${x.status}`)}</td>
                                             <td>{!x.urlFile ? translate('manage_employee.no_files') :
-                                                <a className='intable' target={x._id === undefined ? '_self' : '_blank'}
-                                                    href={(x._id === undefined) ? x.urlFile : `${LOCAL_SERVER_API + x.urlFile}`}
-                                                    download={x.name}>
+                                                <a className='intable'
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={(e) => this.requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
                                                     <i className="fa fa-download"> &nbsp;Download!</i>
                                                 </a>
                                             }</td>
@@ -175,5 +180,9 @@ class FileTab extends Component {
     }
 };
 
-const fileTab = connect(null, null)(withTranslate(FileTab));
+const actionCreators = {
+    downloadFile: AuthActions.downloadFile,
+};
+
+const fileTab = connect(null, actionCreators)(withTranslate(FileTab));
 export { fileTab as FileTab };

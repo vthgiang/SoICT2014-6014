@@ -20,9 +20,6 @@ class CustomerCreate extends Component {
 
         return (
             <React.Fragment>
-                {/* Button thêm khách hàng mới */}
-                <ButtonModal modalID="modal-create-customer" button_name="Thêm mới" title="Thêm khách hàng mới" />
-
                 <DialogModal
                     modalID="modal-create-customer" isLoading={customers.isLoading}
                     formID="form-create-customer"

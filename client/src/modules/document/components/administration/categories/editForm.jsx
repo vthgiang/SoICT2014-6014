@@ -30,6 +30,7 @@ class EditForm extends Component {
     }
 
     validateName = (value, willUpdateState)=>{
+        console.log('valueeeeName', value);
         let msg = undefined;
         const {translate} = this.props;
         if(!value){
@@ -53,6 +54,7 @@ class EditForm extends Component {
     }
 
     validateDescription = (value, willUpdateState)=>{
+        console.log('valueDessss', value);
         let msg = undefined;
         const {translate} = this.props;
         if(value === ''){
@@ -74,8 +76,10 @@ class EditForm extends Component {
         this.validateDescription(value, true);
     }
     isValidateForm = ()=>{
+        console.log('111111',this.validateDescription(this.state.categoryDescription, false) );
+        console.log('2222222222',this.validateName(this.state.validateName, false))
         return this.validateDescription(this.state.categoryDescription, false) 
-            && this.validateName(this.state.validateName, false);
+            && this.validateName(this.state.categoryName, false);
     }
     static getDerivedStateFromProps(nextProps, prevState){
         if (nextProps.categoryId !== prevState.categoryId) {

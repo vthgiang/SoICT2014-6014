@@ -18,6 +18,7 @@ class TaskReportManager extends Component {
             limit: 5,
             page: 0,
             name: '',
+            currentRole: localStorage.getItem("userId"),
         }
     }
     componentDidMount() {
@@ -134,13 +135,22 @@ class TaskReportManager extends Component {
 
     }
 
+    checkPermisson = (creator) => {
+        let userId = this.state.currentRole;
+        if (userId === creator) {
+            return true;
+        }
+        return false;
+    }
+
+
     render() {
         const { reports, translate, deleteTaskReport, user } = this.props;
         let pageTotal = (reports.totalList % this.state.limit === 0) ?
             parseInt(reports.totalList / this.state.limit) :
             parseInt((reports.totalList / this.state.limit) + 1);
         let page = parseInt((this.state.page / this.state.limit) + 1);
-
+        console.log('role', this.state.currentRole);
         return (
             <div className="box">
                 <div className="box-body qlcv" >
@@ -231,10 +241,18 @@ class TaskReportManager extends Component {
                                         <td>{item.createdAt.slice(0, 10)}</td>
                                         <td style={{ textAlign: 'center' }}>
                                             <a onClick={() => this.handleView(item._id)}><i className="material-icons">visibility</i></a>
-                                            <a onClick={() => this.handleEdit(item._id)} className="edit text-yellow" style={{ width: '5px' }} title={translate('report_manager.edit')}><i className="material-icons">edit</i></a>
-                                            <a onClick={() => this.handleDelete(item._id, item.name)} className="delete" title={translate('report_manager.title_delete')}>
-                                                <i className="material-icons">delete</i>
-                                            </a>
+
+                                            {/* Check nếu là người tạo thì có thể sửa, xóa báo cáo */}
+                                            {
+                                                this.checkPermisson(item.creator._id) &&
+                                                <React.Fragment>
+                                                    <a onClick={() => this.handleEdit(item._id)} className="edit text-yellow" style={{ width: '5px' }} title={translate('report_manager.edit')}><i className="material-icons">edit</i></a>
+                                                    <a onClick={() => this.handleDelete(item._id, item.name)} className="delete" title={translate('report_manager.title_delete')}>
+                                                        <i className="material-icons">delete</i>
+                                                    </a>
+                                                </React.Fragment>
+
+                                            }
                                         </td>
                                     </tr>
                                 )) : null

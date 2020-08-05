@@ -417,10 +417,11 @@ export default {
             downloads: 'Số lần download',
             add: 'Thêm văn bản',
             edit: 'Sửa văn bản',
+            watch:'Xem văn bản',
             delete: 'Xóa văn bản',
             add_version: 'Thêm phiên bản mới',
-            upload_file: 'Upload File',
-            upload_file_scan: 'Upload File scan',
+            upload_file: 'File tài liệu',
+            upload_file_scan: 'File scan tài liệu',
             download: 'Tải xuống',
             no_version: 'Không có phiên bản nào khác',
             no_blank_description: 'Mô tả không được để trống',
@@ -622,8 +623,9 @@ export default {
             manage_document: 'Quản lý tài liệu',
             documents: 'Tài liệu văn bản',
 
+            customer: 'Khách hàng',
+
             task_template: 'Mẫu Công Việc',
-            cocautochuc: 'Cơ Cấu Tổ Chức',
             taskmanagement: 'Quản Lý Công Việc',
             manageDocument: 'Quản lý văn bản',
             manageDocumentType: 'Quản lý loại văn bản',
@@ -645,6 +647,10 @@ export default {
             list_education: 'Chương trình đào tạo bắt buộc',
             training_plan: 'Quản lý khoá đào tạo',
 
+            manage_warehouse: 'Quản lý kho',
+            material_manager: 'Quản lý thông tin vật tư',
+            dashboard_material: "Bảng tin quản lý vật tư",
+
             manage_kpi: 'Quản lý KPI',
             kpi_unit_create: 'Khởi tạo KPI đơn vị',
             kpi_unit_evaluate: 'Dữ liệu KPI đơn vị',
@@ -665,7 +671,7 @@ export default {
             task: "Chi tiết công việc",
             task_management: 'Danh sách công việc',
             task_management_dashboard: 'Dashboard công việc',
-            task_organization_management_dashboard: 'Dashboard công việc của đơn vị',
+            task_organization_management_dashboard: 'Dashboard công việc đơn vị',
             task_management_process: "Danh sách quy trình",
 
             //*******START */
@@ -1314,6 +1320,7 @@ export default {
                     employee_timesheet_id_required: 'Mã số chấm công không được để trống',
                     full_name_required: 'Họ và tên không được để trống',
                     birthdate_required: 'Ngày sinh không được để trống',
+                    starting_date_required: 'Ngày bắt đầu làm việc không được để trống',
                     identity_card_number_required: 'Số chứng minh thư/hộ chiếu không được để trống',
                     identity_card_date_required: 'Ngày cấp chứng minh thư/hộ chiếu không được để trống',
                     identity_card_address_required: 'Nơi cấp chứng minh thư/hộ chiếu không được để trống',
@@ -1887,6 +1894,7 @@ export default {
                 create_comment: "Thêm bình luận",
                 enter_description: "Nhập mô tả",
                 create_description: "Thêm mô tả",
+                create_document: "Thêm tài liệu",
                 none_description: "Không có mô tả",
                 enter_action: "Nhập hoạt động",
                 create_action: "Thêm hoạt động",
@@ -2577,6 +2585,34 @@ export default {
                 create_kpi_unit_fail: 'Khởi tạo KPI đơn vị lỗi',
                 update_evaluate_kpi_unit_success: 'Cập nhật điểm đánh giá KPI đơn vị thành công',
                 update_evaluate_kpi_unit_fail: 'Cập nhật điểm đánh giá KPI đơn vị lỗi',
+            }
+        },
+
+        manage_warehouse:{
+            material_manager: {
+                index: 'STT',
+                add: 'Thêm vật tư',
+                add_title: 'Thêm vật tư mới',
+                info: 'Thông tin về vật tư',
+                edit: 'Chỉnh sửa thông tin vật tư',
+                delete: 'Xóa vật tư',
+                add_success: 'Thêm mới vật tư thành công',
+                delete_success: 'Xóa vật tư thành công',
+                delete_faile: 'Xóa vật tư thất bại',
+                add_faile: 'Thêm mới vật tư thất bại',
+                edit_success: 'Chỉnh sửa thành công',
+                edit_faile: 'Chỉnh sửa thất bại',
+                date: 'Ngày mua',
+                name: 'Tên vật tư',
+                code: 'Mã vật tư',
+                cost: 'Giá trị',
+                description: 'Mô tả',
+                serial: 'Số serial',
+                purchaseDate: 'Ngày mua',
+                location: 'Vị trí vật tư'
+            },
+            dashboard_material: {
+
             }
         },
 

@@ -57,9 +57,9 @@ exports.searchSalaries = async (params, company) => {
     // Lấy danh sách bảng lương
     var totalList = await Salary.count(keySearch);
     var listSalarys = await Salary.find(keySearch).populate({
-            path: 'employee',
-            model: Employee
-        })
+        path: 'employee',
+        model: Employee
+    })
         .sort({
             'createDate': 'desc'
         }).skip(params.page).limit(params.limit);

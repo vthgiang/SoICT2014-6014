@@ -66,7 +66,7 @@ class CreateForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        if (nextProps.domainParent !== prevState.domainParent && nextProps.domainParent.length) {
+        if (nextProps.domainParent !== prevState.domainParent && nextProps.domainParent &&nextProps.domainParent.length) {
             let dm = nextProps.domainParent;
             return {
                 ...prevState,

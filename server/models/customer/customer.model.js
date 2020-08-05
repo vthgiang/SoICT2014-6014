@@ -42,11 +42,10 @@ const CustomerSchema = new Schema({
     documents: [{ // các tài liệu liên quan đến khách hàng
         type: 'String',
     }],
-    liabilites: { // công nợ khách hàng
-        type: Number,
-        default: 0,
-        required: true
-    },
+    liabilities: [{ // công nợ khách hàng
+        type: Schema.Types.ObjectId,
+        ref: 'customer_liabilities'
+    }],
     loyal: { // khách hàng thân thiết
         type: Boolean,
         default: false

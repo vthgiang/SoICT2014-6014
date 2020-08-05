@@ -25,6 +25,7 @@ class EmployeeCreateForm extends Component {
                 educationalLevel: "12/12",
                 professionalSkill: "unavailable",
                 status: 'active',
+                startingDate: this.formatDate2(Date.now()),
                 identityCardDate: this.formatDate2(Date.now()),
                 birthdate: this.formatDate2(Date.now()),
                 taxDateOfIssue: this.formatDate2(Date.now()),
@@ -70,9 +71,11 @@ class EmployeeCreateForm extends Component {
     // Function lưu các trường thông tin vào state
     handleChange = (name, value) => {
         const { employee } = this.state;
-        if (name === 'birthdate' || name === 'identityCardDate' || name === 'taxDateOfIssue' || name === 'healthInsuranceStartDate' || name === 'healthInsuranceEndDate') {
-            var partValue = value.split('-');
-            value = [partValue[2], partValue[1], partValue[0]].join('-');
+        if (name === 'startingDate' || name === 'leavingDate' || name === 'birthdate' || name === 'identityCardDate' || name === 'taxDateOfIssue' || name === 'healthInsuranceStartDate' || name === 'healthInsuranceEndDate') {
+            if (value) {
+                let partValue = value.split('-');
+                value = [partValue[2], partValue[1], partValue[0]].join('-');
+            }
         }
         this.setState({
             employee: {
@@ -164,6 +167,7 @@ class EmployeeCreateForm extends Component {
         }
         return false;
     }
+
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result = this.validatorInput(this.state.employee.employeeNumber) && this.validatorInput(this.state.employee.employeeTimesheetId) &&
@@ -172,7 +176,8 @@ class EmployeeCreateForm extends Component {
             this.validatorInput(this.state.employee.identityCardDate) && this.validatorInput(this.state.employee.identityCardAddress) &&
             this.validatorInput(this.state.employee.phoneNumber) && this.validatorInput(this.state.employee.temporaryResidence) &&
             this.validatorInput(this.state.employee.taxRepresentative) && this.validatorInput(this.state.employee.taxNumber) &&
-            this.validatorInput(this.state.employee.taxDateOfIssue) && this.validatorInput(this.state.employee.taxAuthority);
+            this.validatorInput(this.state.employee.taxDateOfIssue) && this.validatorInput(this.state.employee.taxAuthority) &&
+            this.validatorInput(this.state.employee.startingDate);
         return result;
     }
 

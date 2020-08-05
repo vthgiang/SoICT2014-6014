@@ -13,19 +13,24 @@ class GeneralTab extends Component {
 
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
 
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else return [day, month, year].join('-');
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        } else {
+            return date;
+        }
+
     }
 
     // Function upload avatar 
@@ -219,6 +224,33 @@ class GeneralTab extends Component {
         return msg === undefined;
     }
 
+    // Function bắt sự kiện thay đổi ngày bắt đầu làm việc
+    handleStartingDateChange = (value) => {
+        this.validateStartingDate(value, true)
+    }
+    validateStartingDate = (value, willUpdateState = true) => {
+        let msg = EmployeeCreateValidator.validateStartingDate(value, this.props.translate)
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnStartingDate: msg,
+                    startingDate: value,
+                }
+            });
+            this.props.handleChange("startingDate", value);
+        }
+        return msg === undefined;
+    }
+
+    // Function bắt sự kiện thay đổi ngày nghỉ việc
+    handleLeavingDateChange = (value) => {
+        this.setState({
+            leavingDate: value
+        });
+        this.props.handleChange("leavingDate", value);
+    }
+
     // Function bắt sự kiện thay đổi ngày cấp CMND
     handleDateCMNDChange = (value) => {
         this.validateCMNDDate(value, true);
@@ -261,6 +293,8 @@ class GeneralTab extends Component {
                 religion: nextProps.employee.religion,
                 nationality: nextProps.employee.nationality,
                 status: nextProps.employee.status,
+                startingDate: nextProps.employee.startingDate,
+                leavingDate: nextProps.employee.leavingDate,
 
                 errorOnBrithdate: undefined,
                 errorOnDateCMND: undefined,
@@ -270,6 +304,7 @@ class GeneralTab extends Component {
                 errorOnEmailCompany: undefined,
                 errorOnCMND: undefined,
                 errorOnAddressCMND: undefined,
+                errorOnStartingDate: undefined,
             }
         } else {
             return null;
@@ -279,8 +314,8 @@ class GeneralTab extends Component {
     render() {
         const { id, translate } = this.props;
         const { birthdate, identityCardDate, img, employeeNumber, employeeTimesheetId, fullName, gender, birthplace, status,
-            emailInCompany, maritalStatus, identityCardNumber, identityCardAddress, ethnic, religion, nationality,
-            errorOnBrithdate, errorOnDateCMND, errorOnEmployeeNumber, errorOnMSCC, errorOnFullName, errorOnEmailCompany,
+            startingDate, leavingDate, emailInCompany, maritalStatus, identityCardNumber, identityCardAddress, ethnic, religion, nationality,
+            errorOnBrithdate, errorOnDateCMND, errorOnEmployeeNumber, errorOnMSCC, errorOnFullName, errorOnEmailCompany, errorOnStartingDate,
             errorOnCMND, errorOnAddressCMND } = this.state;
         return (
             <div id={id} className="tab-pane active">
@@ -379,15 +414,34 @@ class GeneralTab extends Component {
                                 </div>
                             </div>
                         </div>
+
+                    </div>
+                    <div className="form-group col-lg-12 col-md-12 col-ms-12 col-xs-12">
                         <div className="row">
-                            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEmailCompany === undefined ? "" : "has-error"}`}>
+                            <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnEmailCompany === undefined ? "" : "has-error"}`}>
                                 <label htmlFor="emailCompany">{translate('manage_employee.email')}<span className="text-red">*</span></label>
                                 <input type="email" className="form-control" placeholder={translate('manage_employee.email_company')} name="emailInCompany" value={emailInCompany} onChange={this.handleEmailCompanyChange} autoComplete="off" />
                                 <ErrorLabel content={errorOnEmailCompany} />
                             </div>
+                            <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnStartingDate === undefined ? "" : "has-error"}`}>
+                                <label >Ngày bắt đầu làm việc<span className="text-red">*</span></label>
+                                <DatePicker
+                                    id={`startingDate${id}`}
+                                    value={this.formatDate(startingDate)}
+                                    onChange={this.handleStartingDateChange}
+                                />
+                                <ErrorLabel content={errorOnStartingDate} />
+                            </div>
+                            <div className="form-group col-lg-4 col-md-4 col-ms-12 col-xs-12">
+                                <label >Ngày nghỉ việc</label>
+                                <DatePicker
+                                    id={`leavingDate${id}`}
+                                    value={this.formatDate(leavingDate)}
+                                    onChange={this.handleLeavingDateChange}
+                                />
+                                <ErrorLabel content={errorOnBrithdate} />
+                            </div>
                         </div>
-                    </div>
-                    <div className="form-group col-lg-12 col-md-12 col-ms-12 col-xs-12">
                         <div className="row">
                             <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnCMND === undefined ? "" : "has-error"}`}>
                                 <label htmlFor="CMND">{translate('manage_employee.id_card')}<span className="text-red">*</span></label>
