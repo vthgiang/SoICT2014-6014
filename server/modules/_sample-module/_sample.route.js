@@ -2,10 +2,11 @@ const express = require("express");
 const router = express.Router();
 const SampleController = require('./_sample.controller');
 
-router.get("/item", SampleController.get);
-router.get("/item/:id", SampleController.show);
-router.post("/item", SampleController.create);
-router.patch("/item", SampleController.edit);
-router.delete("/item", SampleController.delete);
+router.get("/", SampleController.get);
+
+router.post("/", SampleController.create);
+router.get("/:id", SampleController.show);
+router.patch("/:id", SampleController.edit);
+router.delete("/:id", SampleController.delete);
 
 module.exports = router;

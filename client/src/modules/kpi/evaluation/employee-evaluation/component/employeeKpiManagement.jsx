@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2';
 import { kpiMemberActions } from '../redux/actions';
-import { DataTableSetting } from '../../../../../common-components';
+import { DataTableSetting, ExportExcel } from '../../../../../common-components';
 import { DatePicker, SelectBox } from '../../../../../common-components/index';
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { EmployeeKpiApproveModal } from './employeeKpiApproveModal';
@@ -173,18 +173,88 @@ class EmployeeKpiManagement extends Component {
         })
         window.$(`employee-kpi-evaluation-modal`).modal('show');
     }
+
+    /**Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    convertDataToExportData = (data) => {
+        if (data) {
+            
+
+            data = data.map((x, index) => {
+               
+                let fullName =x.creator.name;
+                let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
+                let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
+                let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);
+                let d = new Date(x.date),
+                    month = '' + (d.getMonth() + 1),
+                    year = d.getFullYear();
+                let status = this.checkStatusKPI(x.status);
+                let numberTarget =parseInt(x.kpis.length);
+               
+
+                return {
+                    STT: index + 1,
+                    fullName: fullName,
+                   
+                    automaticPoint: automaticPoint,
+                    status: status,
+                    employeePoint: employeePoint,
+                    approverPoint: approverPoint,
+                    month: month,
+                    year: year,
+                    numberTarget:numberTarget                   
+                };
+
+            })
+        }
+        console.log("\n\n\n\n\n\n\n1111",data);
+
+        let exportData = {
+            fileName: "Bảng theo dõi lương thưởng",
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "month", value: "Tháng" },
+                                { key: "year", value: "Năm" },
+                                { key: "fullName", value: "Họ và tên" },
+                                
+                                { key: "numberTarget", value: "Số lượng mục tiêu" },
+                                { key: "status", value: "Trạng thái mục tiêu" },
+                                { key: "automaticPoint", value: "Điểm tự động" },
+                                { key: "employeePoint", value: "Điểm tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm được đánh giá" }
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData;        
+       
+    }
+
     render() {
         const { user, kpimembers } = this.props;
         const { translate } = this.props;
         const { status, startDate, endDate, kpiId, employeeKpiSet, perPage } = this.state;
         let userdepartments, kpimember, unitMembers;
-
+        let exportData;
         if (user.userdepartments) userdepartments = user.userdepartments;
-        if (kpimembers.kpimembers) kpimember = kpimembers.kpimembers;
+        if (kpimembers.kpimembers) {
+            kpimember = kpimembers.kpimembers;
+            console.log('\n\n\n\n\n\n\n\n\n\n', kpimember);
+            exportData = this.convertDataToExportData(kpimember);
+        }
         if (userdepartments) {
             unitMembers = getEmployeeSelectBoxItems([userdepartments]);
             unitMembers = [{ text: translate('kpi.evaluation.employee_evaluation.choose_employee'), value: 0 }, ...unitMembers[0].value];
         }
+       
         return (
             <React.Fragment>
                 <div className="box">
@@ -296,7 +366,10 @@ class EmployeeKpiManagement extends Component {
                                         </td>
                                     </tr>}
                             </tbody>
+                            
                         </table>
+                        {exportData&&<ExportExcel id="export-employee" exportData={exportData} style={{ marginRight: 15 }} />}
+                        
                     </div>
                 </div>
             </React.Fragment>

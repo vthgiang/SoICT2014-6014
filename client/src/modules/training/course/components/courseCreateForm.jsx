@@ -25,6 +25,7 @@ class CourseCreateForm extends Component {
             type: "internal",
             listEmployees: [],
             addEmployees: [],
+            educationProgram: "",
         };
     }
 
@@ -424,7 +425,7 @@ class CourseCreateForm extends Component {
                                             <td>
                                                 <div>
                                                     <div className="radio-inline">
-                                                        <input type="radio" name={`result${x._id}`} value="pass" checked={x.result==='pass'}
+                                                        <input type="radio" name={`result${x._id}`} value="pass" checked={x.result === 'pass'}
                                                             onChange={() => this.handleResultChange(x._id, x.result)} />
                                                         <label>Đạt</label>
                                                     </div>

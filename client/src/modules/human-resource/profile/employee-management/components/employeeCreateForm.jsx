@@ -286,7 +286,7 @@ class EmployeeCreateForm extends Component {
                                 pageCreate={true}
                                 contracts={this.state.contracts}
                                 courses={this.state.courses}
-                                organizationalUnits={[]}
+                                // organizationalUnits={[]}
                                 handleAddContract={this.handleChangeContract}
                                 handleEditContract={this.handleChangeContract}
                                 handleDeleteContract={this.handleChangeContract}

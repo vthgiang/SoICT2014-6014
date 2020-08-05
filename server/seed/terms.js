@@ -25,6 +25,7 @@ const LINK_CATEGORY = {
     PROCESS: { name: 'process-management', description: 'Quản lý quy trình'},
     ASSET: { name: 'asset-management', description: 'Quản lý tài sản'},
     REPORT: { name: 'report-management', description: 'Quản lý báo cáo'},
+    MATERIAL: { name: 'material-manager', description: 'Quản lý vật tư'},
 };
 exports.LINK_CATEGORY = LINK_CATEGORY;
 
@@ -536,6 +537,18 @@ const LINKS = [
             ROOT_ROLES.DEAN.name,
             ROOT_ROLES.VICE_DEAN.name,
             ROOT_ROLES.EMPLOYEE.name,
+        ]
+    },
+    {
+        url: '/material-manager',
+        description: 'Quản lý vật tư',
+        category: LINK_CATEGORY.MATERIAL.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name
         ]
     },
 ];

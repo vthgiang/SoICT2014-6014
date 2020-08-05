@@ -1092,6 +1092,7 @@ exports.importEmployeeInfor = async (company, data) => {
         data = data.map(x => {
             return {
                 ...x,
+                avatar: '/upload/human-resource/avatars/avatar5.png',
                 company: company,
             }
         })
@@ -1323,6 +1324,55 @@ exports.importContract = async (company, data) => {
         return data;
     }
 }
+
+/**
+ * Import quá trình đóng bảo hiểm xã hội
+ * @param {*} company : Id công ty
+ * @param {*} data : Dữ liệu quá trình đóng bảo hiểm xã hội cần import
+ */
+exports.importSocialInsuranceDetails = async (company, data) => {
+    let result = await this.checkImportData(company, data);
+    data = result.data;
+    let rowError = result.rowError;
+
+    if (rowError.length !== 0) {
+        return {
+            errorStatus: true,
+            socialInsuranceDetails: data,
+            rowErrorOfSocialInsuranceDetails: rowError
+        }
+    } else {
+        let importData = [];
+        for (let x of data) {
+            if (!importData.includes(x._id)) {
+                importData = [...importData, x._id]
+            }
+        }
+        importData = importData.map(x => {
+            let result = {
+                _id: x,
+                socialInsuranceDetails: []
+            }
+            data.forEach(y => {
+                if (y._id === x) {
+                    result.socialInsuranceDetails.push(y);
+                }
+            })
+            return result;
+        })
+
+        for (let x of importData) {
+            let editEmployee = await Employee.findOne({
+                _id: x._id
+            });
+            editEmployee.socialInsuranceDetails = editEmployee.socialInsuranceDetails.concat(x.socialInsuranceDetails);
+            editEmployee.save();
+        }
+        return data;
+    }
+
+}
+
 
 /**
  * Import thông tin tài liệu đính kèm
