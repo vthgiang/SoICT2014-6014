@@ -59,6 +59,14 @@ const TaskProcess = require("./task/taskProcess.model")
 //report
 const TaskReport = require('./report/taskReport.model');
 
+//material
+const Material = require('./warehouse/material.model');
+// Customer Management
+const Customer = require('./customer/customer.model');
+const CustomerLocation = require('./customer/customerLocation.model');
+const CustomerCare = require('./customer/customerCare.model');
+const CustomerGroup = require('./customer/customerGroup.model');
+
 exports.schema = {
     Privilege,
     Role,
@@ -118,4 +126,10 @@ exports.schema = {
     RecommendDistribute,
 
     TaskReport,
+
+    Material,
+    Customer,
+    CustomerCare,
+    CustomerLocation,
+    CustomerGroup
 } 

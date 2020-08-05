@@ -412,6 +412,7 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
  * @fileInfo : Thông tin file đính kèm
  */
 exports.createEmployee = async (data, company, fileInfo) => {
+    console.log(data);
     let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
         fileDegree = fileInfo.fileDegree,
         fileCertificate = fileInfo.fileCertificate,
@@ -436,6 +437,8 @@ exports.createEmployee = async (data, company, fileInfo) => {
         company: company,
         gender: data.gender,
         status: data.status,
+        startingDate: data.startingDate,
+        leavingDate: data.leavingDate,
         birthdate: data.birthdate,
         birthplace: data.birthplace,
         identityCardNumber: data.identityCardNumber,
@@ -593,6 +596,7 @@ exports.createEmployee = async (data, company, fileInfo) => {
  * Cập nhât thông tin nhân viên theo id
  */
 exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
+    console.log(data);
     let {
         employee,
         createExperiences,
@@ -673,6 +677,8 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
     oldEmployee.employeeTimesheetId = employee.employeeTimesheetId;
     oldEmployee.gender = employee.gender;
     oldEmployee.status = employee.status;
+    oldEmployee.startingDate = employee.startingDate;
+    oldEmployee.leavingDate = employee.leavingDate;
     oldEmployee.birthdate = employee.birthdate;
     oldEmployee.birthplace = employee.birthplace;
     oldEmployee.identityCardNumber = employee.identityCardNumber;
@@ -1092,6 +1098,7 @@ exports.importEmployeeInfor = async (company, data) => {
         data = data.map(x => {
             return {
                 ...x,
+                avatar: '/upload/human-resource/avatars/avatar5.png',
                 company: company,
             }
         })
@@ -1323,6 +1330,55 @@ exports.importContract = async (company, data) => {
         return data;
     }
 }
+
+/**
+ * Import quá trình đóng bảo hiểm xã hội
+ * @param {*} company : Id công ty
+ * @param {*} data : Dữ liệu quá trình đóng bảo hiểm xã hội cần import
+ */
+exports.importSocialInsuranceDetails = async (company, data) => {
+    let result = await this.checkImportData(company, data);
+    data = result.data;
+    let rowError = result.rowError;
+
+    if (rowError.length !== 0) {
+        return {
+            errorStatus: true,
+            socialInsuranceDetails: data,
+            rowErrorOfSocialInsuranceDetails: rowError
+        }
+    } else {
+        let importData = [];
+        for (let x of data) {
+            if (!importData.includes(x._id)) {
+                importData = [...importData, x._id]
+            }
+        }
+        importData = importData.map(x => {
+            let result = {
+                _id: x,
+                socialInsuranceDetails: []
+            }
+            data.forEach(y => {
+                if (y._id === x) {
+                    result.socialInsuranceDetails.push(y);
+                }
+            })
+            return result;
+        })
+
+        for (let x of importData) {
+            let editEmployee = await Employee.findOne({
+                _id: x._id
+            });
+            editEmployee.socialInsuranceDetails = editEmployee.socialInsuranceDetails.concat(x.socialInsuranceDetails);
+            editEmployee.save();
+        }
+        return data;
+    }
+
+}
+
 
 /**
  * Import thông tin tài liệu đính kèm

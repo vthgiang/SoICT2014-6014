@@ -1368,8 +1368,11 @@ class ActionTab extends Component {
                                 {files &&
                                     files.map((item, index) => {
                                         return (
-                                            <div style={{ marginBottom: 20 }} key={index}>
-                                                <div><strong>{item.creator.name} - </strong>{item.description}</div>
+                                            <div className="item-box" key={index}>
+                                                <div>
+                                                    <strong>{item.creator.name} </strong>
+                                                    {item.description}
+                                                </div>
                                                 <a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, item.url, item.name)} >{item.name}</a>
                                             </div>
                                         )
@@ -1385,7 +1388,7 @@ class ActionTab extends Component {
                                     files={taskFiles.files}
                                     text={taskFiles.description}
                                     placeholder={translate("task.task_perform.enter_description")}
-                                    submitButtonText={translate("task.task_perform.create_description")}
+                                    submitButtonText={translate("task.task_perform.create_document")}
                                     onTextChange={(e) => {
                                         let value = e.target.value;
                                         this.setState(state => {
@@ -1397,20 +1400,22 @@ class ActionTab extends Component {
                                 />
                             </React.Fragment>
                         </div>
+
                         {/* Chuyển qua tab công việc con */}
                         <div className={selected === "subTask" ? "active tab-pane" : "tab-pane"} id="subTask">
                             <SubTaskTab
                                 id={this.state.id}
                             />
                         </div>
+
                         {/* Chuyển qua tab Bấm giờ */}
                         <div className={selected === "logTimer" ? "active tab-pane" : "tab-pane"} id="logTimer">
                             {logTimer && logTimer.map(item =>
-                                <div key={item._id} style={{ marginBottom: 20 }}>
-                                    <a style={{ fontWeight: 700 }} style={{ cursor: "pointer" }}>{item.creator.name} - </a>
-                                    {translate("task.task_perform.total_time")} {moment.utc(item.duration, "x").format('HH:mm:ss')} - &nbsp;
-                                    {item.description ? item.description : translate("task.task_perform.none_description")}
-                                    <div>{moment(item.startedAt, "x").format("HH:mm:ss DD/MM/YYYY")} - {moment(item.stoppedAt).format("HH:mm:ss DD/MM/YYYY")} </div>
+                                <div key={item._id} className="item-box">
+                                    <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator.name} </a>
+                                    {translate("task.task_perform.total_time")} {moment.utc(item.duration, "x").format('HH:mm:ss')}&nbsp;
+                                    ({moment(item.startedAt, "x").format("HH:mm:ss DD/MM/YYYY")} - {moment(item.stoppedAt).format("HH:mm:ss DD/MM/YYYY")})
+                                    <div>{item.description ? item.description : translate("task.task_perform.none_description")}</div>
                                 </div>
                             )}
                         </div>
@@ -1418,9 +1423,10 @@ class ActionTab extends Component {
                         {/* Chuyển qua tab Nhật ký lịch sử */}
                         <div className={selected === "historyLog" ? "active tab-pane" : "tab-pane"} id="historyLog">
                             {logs && logs.map(item =>
-                                <div key={item._id} style={{ marginBottom: 20 }}>
-                                    <a style={{ fontWeight: 700 }} style={{ cursor: "pointer" }}>{item.creator.name} - </a>
-                                    {translate("task.task_perform.time")} {moment(item.createdAt).format("HH:mm:ss DD/MM/YYYY")} - {item.title ? item.title : translate("task.task_perform.none_description")}
+                                <div key={item._id} className="item-box">
+                                    <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator.name} </a>
+                                    {item.title ? item.title : translate("task.task_perform.none_description")}&nbsp;
+                                    ({moment(item.createdAt).format("HH:mm:ss DD/MM/YYYY")})
                                     <div>
                                         {item.description ? item.description : translate("task.task_perform.none_description")}
                                     </div>

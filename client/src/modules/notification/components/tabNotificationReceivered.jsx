@@ -58,8 +58,7 @@ class TabNotificationReceivered extends Component {
                                         />
                                     </div>
                                 </div>
-                                {innerText( <span className="threedots" style={{maxWidth: "100%", display: "inline-block"}}><b>{notification.title}</b>  {parse(notification.content)}</span> )}
-                                
+                                <span className="threedots" style={{maxWidth: "100%", display: "inline-block"}}><b>{notification.title}</b> {innerText(parse(notification.content))}</span>
                             </li>
                         ): notifications.isLoading ?
                         <div className="table-info-panel" style={{textAlign: "left"}}>{translate('general.loading')}</div>:

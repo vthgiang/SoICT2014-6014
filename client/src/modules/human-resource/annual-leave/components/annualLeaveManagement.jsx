@@ -31,7 +31,7 @@ class AnnualLeaveManagement extends Component {
             }
         }
         this.state = {
-            organizationalUnits: organizationalUnits ? organizationalUnits : [],
+            organizationalUnits: organizationalUnits,
             position: null,
             employeeNumber: "",
             month: month,
@@ -210,8 +210,9 @@ class AnnualLeaveManagement extends Component {
         const { month, limit, page, organizationalUnits } = this.state;
         const { list } = this.props.department;
         const { translate, annualLeave } = this.props;
-        let listAnnualLeaves = [], listPosition = [];
-        if (organizationalUnits.length !== 0) {
+        let listAnnualLeaves = [], listPosition = [{ value: "", text: "Bạn chưa chọn đơn vị", disabled: true }];
+        if (organizationalUnits !== null) {
+            listPosition = [];
             organizationalUnits.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
@@ -243,7 +244,6 @@ class AnnualLeaveManagement extends Component {
                             <label className="form-control-static">{translate('human_resource.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
                                 options={{ nonSelectedText: translate('human_resource.non_unit'), allSelectedText: translate('human_resource.all_unit') }}
-                                value={organizationalUnits}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
@@ -251,7 +251,7 @@ class AnnualLeaveManagement extends Component {
                             <label className="form-control-static">{translate('human_resource.position')}</label>
                             <SelectMulti id={`multiSelectPosition`} multiple="multiple"
                                 options={{ nonSelectedText: translate('human_resource.non_position'), allSelectedText: translate('human_resource.all_position') }}
-                                items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
+                                items={organizationalUnits === null ? listPosition : listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
                             </SelectMulti>
                         </div>
                     </div>

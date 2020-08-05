@@ -17,7 +17,7 @@ const seedDatabase = async () => {
     // Step 1: Connect to MongoDB
     await mongoose.connect( db, { 
         useNewUrlParser: true, 
-        useUnifiedTopology: true,
+        useUnifiedTopology: true, 
         useCreateIndex: true,
         useFindAndModify: false
     }).then(() => {

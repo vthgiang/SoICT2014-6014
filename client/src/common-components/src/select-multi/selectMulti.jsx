@@ -48,11 +48,12 @@ class SelectMulti extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || !SelectMulti.isEqual(nextProps.items, prevState.items)) {
+        if (nextProps.id !== prevState.id || !SelectMulti.isEqual(nextProps.items, prevState.items) || nextProps.disabled !== prevState.disabled) {
             return {
                 value: nextProps.value, // Lưu value ban đầu vào state
                 id: nextProps.id,
                 items: nextProps.items,
+                disabled: nextProps.disabled,
             }
         } else {
             return null;
@@ -61,7 +62,7 @@ class SelectMulti extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         // Chỉ render lại khi id thay đổi, hoặc khi tập items thay đổi
-        if (nextProps.id !== this.state.id || !SelectMulti.isEqual(nextProps.items, this.state.items))
+        if (nextProps.id !== this.state.id || !SelectMulti.isEqual(nextProps.items, this.state.items) || nextProps.disabled !== this.state.disabled)
             return true;
         return false;
     }
@@ -73,7 +74,7 @@ class SelectMulti extends Component {
                 <div className={`selectmulti ${display}`}>
                     <select className="form-control" style={{ display: "none" }} ref="selectmulti" id={id} multiple="multiple" value={this.state.value} onChange={() => { }} disabled={disabled}>
                         {items.map(item => {
-                            return <option key={item.value} value={item.value}>{item.text}</option>
+                            return <option key={item.value} value={item.value} disabled={item.disabled ? true : false}>{item.text}</option>
                         })}
                     </select>
                 </div>

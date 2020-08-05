@@ -144,7 +144,7 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
     }
 
     tasktemplates = tasktemplate[0].tasks;
-    await TaskTemplate.populate(tasktemplates, { path: "creator organizationalUnit" });
+    await TaskTemplate.populate(tasktemplates, { path: "organizationalUnit creator readByEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees" });
     var totalCount = 0;
     if (JSON.stringify(tasktemplates) !== JSON.stringify([])) {
         totalCount = tasktemplate[0].totalCount[0].count;
