@@ -204,7 +204,9 @@ class ModalCreateTaskProcess extends Component {
       this.modeler.attachTo('#' + this.generateId);
       this.modeler.importXML(this.initialDiagram);
       var eventBus = this.modeler.get('eventBus');
-
+      eventBus.on('element.dblclick', 15000000, function (event) {
+         return false; // will cancel event
+     });
       this.modeler.on('element.click', 1, (e) => this.interactPopup(e));
 
       this.modeler.on('shape.remove', 1000, (e) => this.deleteElements(e));

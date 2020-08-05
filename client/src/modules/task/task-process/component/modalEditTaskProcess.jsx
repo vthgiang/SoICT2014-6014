@@ -15,6 +15,7 @@ import customModule from './custom'
 //bpmn-nyan
 import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
 import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
+import resizeAllModule from 'bpmn-js-nyan/lib/resize-all-rules';
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -45,11 +46,12 @@ class ModalEditTaskProcess extends Component {
         }
         this.modeler = new BpmnModeler({
             additionalModules: [
-               nyanDrawModule,
-               nyanPaletteModule,
-               customModule
+                nyanDrawModule,
+                nyanPaletteModule,
+                customModule,
+                resizeAllModule
             ]
-         });
+        });
         this.modeling = this.modeler.get('modeling')
         this.generateId = 'editprocess';
         this.initialDiagram = data.xmlDiagram;
@@ -72,6 +74,29 @@ class ModalEditTaskProcess extends Component {
         // this.modeler.importXML(this.initialDiagram, function (err) {})
 
         var eventBus = this.modeler.get('eventBus');
+        eventBus.on('element.dblclick', 15000000, function (event) {
+            return false; // will cancel event
+        });
+        // eventBus.on('commandStack.shape.create.postExecute', function (event) {
+        //     // inspect the event; you'll find the created element
+        //     // you can fiddle around with (i.e. to add additional properties)
+        //     event.element.infoTask = "abc"
+        // });
+        this.modeler.on('shape.added', (e) => {
+            if(e.element.type === "bpmn:Task"){
+            //    this.modeler.get('modeling').resizeShape(e.element, {
+            //        width: 260,
+            //        height: 200,
+            //        x:0,
+            //        y: 0
+            //    })
+            }
+            // var modeling = this.modeler.get('modeling').resizeShape(e.element, {
+            //     wit: '#000000',
+            //     stroke: '#e432ee'
+            // }
+          
+        });
         this.modeler.on('element.click', 1000, (e) => this.interactPopup(e));
 
         this.modeler.on('shape.remove', 1000, (e) => this.deleteElements(e));
@@ -344,20 +369,20 @@ class ModalEditTaskProcess extends Component {
         let element1 = this.modeler.get('elementRegistry').get(this.state.id);
         console.log(element1)
         this.modeling.setColor(element1, {
-           fill: '#dde6ca',
-           stroke: '#6b7060'
+            fill: '#dde6ca',
+            stroke: '#6b7060'
         });
         let target = [];
         element1.outgoing.forEach(x => {
-           target.push(x.target.id)
+            target.push(x.target.id)
         })
         target.forEach(x => {
-           this.modeling.setColor(this.modeler.get('elementRegistry').get(x), {
-              fill: '#7236ff',
-              stroke: '#7236ff'
-           });
+            this.modeling.setColor(this.modeler.get('elementRegistry').get(x), {
+                fill: '#7236ff',
+                stroke: '#7236ff'
+            });
         })
-     }
+    }
     downloadAsSVG = () => {
         this.modeler.saveSVG({ format: true }, function (error, svg) {
             if (error) {
