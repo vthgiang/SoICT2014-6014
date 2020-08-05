@@ -175,6 +175,7 @@ class EditForm extends Component {
         return msg === undefined;
     }
     validateVersionName = (value, willUpdateState)=>{
+        console.log('trtrtr', value);
         let msg = undefined;
         const {translate} = this.props;
         if(!value){
@@ -316,16 +317,11 @@ class EditForm extends Component {
     }
 
     isValidateForm = ()=>{
+        
         return this.validateName(this.state.documentName, false)
         && this.validateCategory(this.state.documentCategory, false)
-        && this.validateVersionName(this.state.documentVersionName, false)
         && this.validateOfficialNumber(this.state.documentOfficialNumber, false)
-        && this.validateIssuingDate(this.state.documentIssuingDate, false)
-        && this.validateEffectiveDate(this.state.documentEffectiveDate, false)
-        && this.validateExpiredDate(this.state.documentExpiredDate, false)
         && this.validateSinger(this.state.documentSigner, false)
-        && this.validateDocumentFile(this.state.documentFile, false)
-        && this.validateDocumentFileScan(this.state.documentFileScan, false)
         && this.validateIssuingBody(this.state.documentIssuingBody, false);
     }
     save = () => {
@@ -466,7 +462,7 @@ class EditForm extends Component {
         const roleList = role.list.map( role => {return {value: role._id, text: role.name}});
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc=>{return {value: doc._id, text: doc.name}})
 
-        console.log("STATE:", this.state);
+        console.log("STATE:",!this.isValidateForm());
 
         return ( 
             <React.Fragment>
@@ -474,7 +470,7 @@ class EditForm extends Component {
                     size="100"
                     modalID="modal-edit-document"
                     formID="form-edit-document"
-                    title={translate('document.add')}
+                    title={translate('document.edit')}
                     func={this.save}
                     disableSubmit = {!this.isValidateForm()}
                 >
@@ -548,30 +544,29 @@ class EditForm extends Component {
                                                 func={()=>this.addNewVersion(documentId)}
                                             >
                                                 <React.Fragment>
-                                                <div className={`form-group ${!errorVersionName ? "" : "has-error"}`}>
-                                                        <label>{ translate('document.doc_version.name') }<span className="text-red">*</span></label>
-                                                        <input type="text" className="form-control" onChange={this.handleVersionName}/>
-                                                        <ErrorLabel content ={errorVersionName} />
+                                                <div className={`form-group `}>
+                                                        <label>{ translate('document.doc_version.name') }</label>
+                                                        <input type="text" className="form-control"/>
                                                     </div>
-                                                    <div className={`form-group ${!errorDocumentFile  ? "" : "has-error"}`}>
-                                                        <label>{ translate('document.doc_version.file') }<span className="text-red">*</span></label>
+                                                    <div className="form-group">
+                                                        <label>{ translate('document.doc_version.file') }</label>
                                                         <input type="file"  onChange={this.handleUploadFile}/>
                                                         <ErrorLabel content ={errorDocumentFile} />
                                                     </div>
-                                                    <div className={`form-group ${!errorDocumentFileScan ? "" : "has-error"}`}>
-                                                        <label>{ translate('document.doc_version.scanned_file_of_signed_document') }<span className="text-red">*</span></label>
+                                                    <div className="form-group">
+                                                        <label>{ translate('document.doc_version.scanned_file_of_signed_document') }</label>
                                                         <input type="file" onChange={this.handleUploadFileScan}/>
                                                         <ErrorLabel content ={errorDocumentFileScan} />
                                                     </div>
                                                     <div className="form-group">
-                                                        <label>{ translate('document.doc_version.issuing_date') }<span className="text-red">*</span></label>
+                                                        <label>{ translate('document.doc_version.issuing_date') }</label>
                                                         <DatePicker
                                                             id={`document-edit-version-issuing-date-${documentId}`}
                                                             onChange={this.handleIssuingDate}
                                                         />
                                                     </div>
                                                     <div className="form-group">
-                                                        <label>{ translate('document.doc_version.effective_date') }<span className="text-red">*</span></label>
+                                                        <label>{ translate('document.doc_version.effective_date') }</label>
                                                         <DatePicker
                                                             id={`document-edit-version-effective-date-${documentId}`}
                                                             onChange={this.handleEffectiveDate}

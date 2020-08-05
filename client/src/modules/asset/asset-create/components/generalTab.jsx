@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DatePicker, ErrorLabel, SelectBox } from '../../../../common-components';
+import { DatePicker, ErrorLabel, SelectBox, TreeSelect } from '../../../../common-components';
 import { AssetCreateValidator } from './combinedContent';
 import { LOCAL_SERVER_API } from '../../../../env';
 import "./addAsset.css";
@@ -128,11 +128,18 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện thay đổi loại tài sản
      */
-    handleAssetTypeChange = (value) => {
-        this.setState({
-            assetType: value[0]
+    handleAssetTypeChange = async (value) => {
+        console.log("@@@@@@@@@@@@@@@2222@@@@@@@@@@@@@@", value[0]);
+        await this.setState(state => {
+            return {
+                ...state,
+                assetType: value[0],
+            }
         });
+       
         this.props.handleChange("assetType", value[0]);
+        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", this.state.assetType);
+
     }
 
     /**
@@ -453,9 +460,20 @@ class GeneralTab extends Component {
             errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate,
             errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue,
         } = this.state;
+
         var userlist = user.list;
+
         var assettypelist = assetType.listAssetTypes;
-        console.log(this.state, 'this.state-general')
+        let dataList = assettypelist.map(node => {
+            return {
+                ...node,
+                id: node._id,
+                name: node.typeName,
+            }
+        })
+
+        console.log("******1*******", dataList)
+
         return (
             <div id={_id} className="tab-pane active">
                 <div className="box-body">
@@ -476,7 +494,7 @@ class GeneralTab extends Component {
                         <div className="col-md-8">
                             <label>Thông tin cơ bản:</label>
                             <div>
-                                <div className="col-md-6">
+                                <div id="form-create-asset-type" className="col-md-6">
                                     <div className={`form-group ${errorOnCode === undefined ? "" : "has-error"} `}>
                                         <label htmlFor="code">Mã tài sản<span className="text-red">*</span></label>
                                         <input type="text" className="form-control" name="code" value={code} onChange={this.handleCodeChange} placeholder="Mã tài sản"
@@ -500,20 +518,7 @@ class GeneralTab extends Component {
 
                                     <div className={`form-group${errorOnAssetType === undefined ? "" : "has-error"}`}>
                                         <label>Loại tài sản<span className="text-red">*</span></label>
-                                        <div>
-                                            <div id="assetTypeBox">
-                                                <SelectBox
-                                                    id={`assetType${_id}`}
-                                                    className="form-control select2"
-                                                    style={{ width: "100%" }}
-                                                    items={[{ value: '', text: '---Chọn loại tài sản---' }, ...assettypelist.map(x => { return { value: x._id, text: x.typeNumber + " - " + x.typeName } })]}
-                                                    onChange={this.handleAssetTypeChange}
-                                                    value={assetTypes}
-                                                    multiple={false}
-                                                />
-                                            </div>
-                                            <ErrorLabel content={errorOnAssetType} />
-                                        </div>
+                                        <TreeSelect data={dataList} value={[assetTypes]} handleChange={this.handleAssetTypeChange} mode="radioSelect" />
                                     </div>
 
                                     <div className={`form-group ${errorOnPurchaseDate === undefined ? "" : "has-error"}`}>

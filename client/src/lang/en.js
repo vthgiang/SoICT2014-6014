@@ -665,7 +665,7 @@ export default {
             task: "Detailed Task",
             task_management: 'Task list',
             task_management_dashboard: 'Task dashboard',
-            task_organization_management_dashboard: 'Task in organization unit dashboard',
+            task_organization_management_dashboard: 'Unit task dashboard',
             task_management_process: "Process list",
             //*******START */
             // Quản lý tài sản
@@ -1734,7 +1734,8 @@ export default {
                 enter_comment: "Comment",
                 create_comment: "Create comment",
                 enter_description: "Description",
-                create_desciprtion: "Create description",
+                create_description: "Create description",
+                create_document: "Create documents",
                 none_description: "No description",
                 enter_action: "Action",
                 create_action: "Create action",

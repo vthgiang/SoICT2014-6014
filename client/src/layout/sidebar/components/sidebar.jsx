@@ -201,7 +201,15 @@ class SideBar extends Component {
                                     icon='fa fa-file-text'
                                 />
                             }
-        
+                            {
+                                this.checkURL('/customer', links) === true &&
+                                <Item
+                                    key='customer'
+                                    name='customer'
+                                    path='/customer'
+                                    icon='fa fa-users'
+                                />
+                            }
                             {/* Quan ly tai san */}
                             {
                                 (this.checkURL(url1.path1, links) === true || this.checkURL(url1.path2, links) === true || 

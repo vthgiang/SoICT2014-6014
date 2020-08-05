@@ -9,6 +9,7 @@ import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../common-c
 import { ModalEditTaskProcess } from './modalEditTaskProcess'
 import { ModalCreateTaskProcess } from './modalCreateTaskProcess'
 import { ModalViewTaskProcess } from './modalViewTaskProcess';
+import { ModalCreateTaskByProcess } from './modalCreateTaskByProcess';
 
 import { TaskProcessActions } from '../redux/actions';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
@@ -24,7 +25,6 @@ class TaskProcessManagement extends Component {
 
   }
   componentDidMount = () => {
-    console.log('this.state.pageNumber, this.state.noResultsPerPage,', this.state.pageNumber, this.state.noResultsPerPage);
     this.props.getAllDepartments()
     this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
     this.props.getRoles();
@@ -69,10 +69,51 @@ class TaskProcessManagement extends Component {
     });
     window.$(`#modal-create-process-task`).modal("show");
   }
+  showModalCreateTask = async (item) => {
+    await this.setState(state => {
+      return {
+        ...state,
+        showModalCreateTask: true,
+        currentRow: item,
+      }
+    });
+    window.$(`#modal-create-task-by-process`).modal("show");
+  }
+  showCreateTask = (item) => {
+    this.setState(state => {
+      return {
+        template: item
+      }
+    });
+    window.$(`#modal-create-task`).modal('show')
+  }
+  setPage = async (pageTotal) => {
+    let oldCurrentPage = this.state.pageNumber;
+    await this.setState(state => {
+        return {
+            ...state,
+            pageNumber: pageTotal
+        }
+    })
+    let newCurrentPage = this.state.pageNumber;
+    this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
+  }
+  setLimit =  (pageTotal) => {
+    if(pageTotal !== this.state.noResultsPerPage) {
+      this.setState(state => {
+        return {
+            ...state,
+            noResultsPerPage: pageTotal
+        }
+    })
+    this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
+    }
+  }
   render() {
     const { translate, taskProcess,department } = this.props
     const { showModalCreateProcess, currentRow } = this.state
     let listDiagram = taskProcess && taskProcess.xmlDiagram;
+    let totalPage = taskProcess.totalPage
     let listOrganizationalUnit = department?.list
     return (
       <div className="box">
@@ -95,6 +136,20 @@ class TaskProcessManagement extends Component {
             this.state.currentRow !== undefined &&
             <ModalEditTaskProcess
               title={'Sửa quy trình công việc'}
+              data={currentRow}
+              listOrganizationalUnit= {listOrganizationalUnit}
+              idProcess={currentRow._id}
+              xmlDiagram={currentRow.xmlDiagram}
+              nameProcess={currentRow.nameProcess}
+              description={currentRow.description}
+              infoTask={currentRow.infoTask}
+              creator={currentRow.creator}
+            />
+          }
+          {
+            this.state.currentRow !== undefined &&
+            <ModalCreateTaskByProcess
+              title={'Tạo chuỗi công việc theo quy trình'}
               data={currentRow}
               listOrganizationalUnit= {listOrganizationalUnit}
               idProcess={currentRow._id}
@@ -148,8 +203,8 @@ class TaskProcessManagement extends Component {
               'Mô tả',
               'Người tạo mẫu',
             ]}
-            limit={5}
-            // setLimit={t}
+            limit={this.state.noResultsPerPage}
+            setLimit={this.setLimit}
             hideColumnOption={true}
           />
           <table className="table table-bordered table-striped table-hover" id="table-task-template">
@@ -178,13 +233,16 @@ class TaskProcessManagement extends Component {
                       <a className="delete" onClick={() => { this.deleteDiagram(item._id) }} title={translate('task_template.delete_this_task_template')}>
                         <i className="material-icons"></i>
                       </a>
+                      <a className="delete" onClick= {()=> { this.showModalCreateTask(item)}} title={translate('task_template.delete_this_task_template')}>
+                        <i className="material-icons">add_box</i>
+                      </a>
                     </td>
                   </tr>
                 })
               }
             </tbody>
           </table>
-          {/* <PaginateBar pageTotal={pageTotal} currentPage={currentPage} func={this.setPage} /> */}
+          <PaginateBar pageTotal={totalPage} currentPage={this.state.pageNumber} func={this.setPage} />
         </div>
       </div>
     );
