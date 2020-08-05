@@ -1,5 +1,5 @@
 const { TaskProcess } = require('../../../models').schema;
-const { User, Privilege } = require('../../../models/index').schema;
+const { User, Privilege, TaskTemplate } = require('../../../models/index').schema;
 const mongoose = require('mongoose');
 
 /**
@@ -193,4 +193,49 @@ exports.deleteXmlDiagram = async (diagramId) => {
     await Privilege.findOneAndDelete({resourceId: diagramId, resourceType: "TaskProcess"})
     let data = await TaskProcess.find().populate({ path: 'creator', model: User, select: 'name' });
     return data;
+}
+
+
+/**
+ * 
+ */
+exports.createTaskByProcess = async (processId, body) => {
+    let data = body.infoTask;
+    let startDate, endDate, level;
+
+    for (let i in data) {
+        let taskTemplate, taskActions, cloneActions = [];
+        
+        if (data[i].taskTemplate !== "") {
+            taskTemplate = await TaskTemplate.findById(data[i].taskTemplate);
+            taskActions = taskTemplate.taskActions;
+    
+            for (let i in taskActions) {
+                cloneActions[i] = {
+                    mandatory: taskActions[i].mandatory,
+                    name: taskActions[i].name,
+                    description: taskActions[i].description,
+                }
+            }
+        }
+
+        let task = {
+            organizationalUnit: data[i].organizationalUnit,
+            creator: data[i].creator, //id của người tạo
+            name: data[i].name,
+            description: data[i].description,
+            startDate: startDate,
+            endDate: endDate,
+            priority: data[i].priority,
+            taskTemplate: taskTemplate ? taskTemplate : null,
+            taskInformations: taskTemplate ? taskTemplate.taskInformations : [],
+            taskActions: taskTemplate ? cloneActions : [],
+            parent: (task.parent === "") ? null : task.parent,
+            level: level,
+            responsibleEmployees: data[i].responsibleEmployees,
+            accountableEmployees: data[i].accountableEmployees,
+            consultedEmployees: data[i].consultedEmployees,
+            informedEmployees: data[i].informedEmployees,
+        }
+    }
 }

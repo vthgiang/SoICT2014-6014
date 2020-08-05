@@ -26,7 +26,7 @@ class PraiseManager extends Component {
             position: null,
             decisionNumber: "",
             employeeNumber: "",
-            organizationalUnits: organizationalUnits ? organizationalUnits : [],
+            organizationalUnits: organizationalUnits,
             page: 0,
             limit: 5,
         }
@@ -169,8 +169,9 @@ class PraiseManager extends Component {
         const { limit, page, organizationalUnits } = this.state
         const { list } = this.props.department;
         const { translate, discipline, pageActive } = this.props;
-        var listCommendations = [], listPosition = [];
-        if (organizationalUnits.length !== 0) {
+        var listCommendations = [], listPosition = [{ value: "", text: "Bạn chưa chọn đơn vị", disabled: true }];
+        if (organizationalUnits !== null) {
+            listPosition = [];
             organizationalUnits.forEach(u => {
                 list.forEach(x => {
                     if (x._id === u) {
@@ -201,7 +202,6 @@ class PraiseManager extends Component {
                             <label className="form-control-static">{translate('page.unit')}</label>
                             <SelectMulti id={`multiSelectUnitPraise`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
-                                value={organizationalUnits}
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
@@ -209,7 +209,7 @@ class PraiseManager extends Component {
                             <label className="form-control-static">{translate('page.position')}</label>
                             <SelectMulti id={`multiSelectPositionPraise`} multiple="multiple"
                                 options={{ nonSelectedText: translate('page.non_position'), allSelectedText: translate('page.all_position') }}
-                                items={listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
+                                items={organizationalUnits === null ? listPosition : listPosition.map((p, i) => { return { value: p._id, text: p.name } })} onChange={this.handlePositionChange}>
                             </SelectMulti>
                         </div>
                     </div>

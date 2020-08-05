@@ -36,13 +36,13 @@ class TaskOrganizationUnitDashboard extends Component {
         // await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
         // await this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
         // await this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
-        let organizationUnit = "organizationUnit"
-        await this.props.getTaskByUser(organizationUnit);
+
 
         await this.props.getDepartment();
         await this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
         await this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         // await this.props.getTaskInOrganizationUnitByMonth("[]", null, null);
+
 
         await this.setState(state => {
             return {
@@ -102,6 +102,12 @@ class TaskOrganizationUnitDashboard extends Component {
                 idsUnit: value
             }
         })
+        let organizationUnit = "organizationUnit";
+        let data = {
+            organizationUnitId: this.state.idsUnit,
+            type: organizationUnit,
+        }
+        await this.props.getTaskByUser(data);
     }
 
     render() {

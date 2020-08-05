@@ -28,7 +28,7 @@ class ContractTab extends Component {
         } else return [day, month, year].join('-');
     }
     componentDidMount() {
-        this.props.getListCourse();
+        this.props.getListCourse({ organizationalUnits: this.state.organizationalUnits, positions: this.state.roles });
     }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
@@ -43,6 +43,12 @@ class ContractTab extends Component {
         }
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextProps.id !== this.state.id) {
+            this.props.getListCourse({ organizationalUnits: nextProps.organizationalUnits, positions: nextProps.roles });
+        }
+        return true
+    }
 
     render() {
         const { id, translate, course } = this.props;
@@ -102,22 +108,27 @@ class ContractTab extends Component {
                             <tbody>
                                 {(courses !== 'undefined' && courses.length !== 0) &&
                                     courses.map((x, index) => {
-                                        let courseInfo = '';
+                                        let courseInfo;
                                         course.listCourses.forEach(list => {
                                             if (list._id === x.course) {
                                                 courseInfo = list
                                             }
                                         });
-                                        return (
-                                            <tr key={index}>
-                                                <td>{courseInfo.courseId}</td>
-                                                <td>{courseInfo.name}</td>
-                                                <td>{this.formatDate(courseInfo.startDate)}</td>
-                                                <td>{this.formatDate(courseInfo.endDate)}</td>
-                                                <td>{courseInfo.coursePlace}</td>
-                                                <td>{x.result}</td>
-                                            </tr>
-                                        )
+                                        if (courseInfo) {
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{courseInfo.courseId}</td>
+                                                    <td>{courseInfo.name}</td>
+                                                    <td>{this.formatDate(courseInfo.startDate)}</td>
+                                                    <td>{this.formatDate(courseInfo.endDate)}</td>
+                                                    <td>{courseInfo.coursePlace}</td>
+                                                    <td>{x.result}</td>
+                                                </tr>
+                                            )
+                                        } else {
+                                            return null
+                                        }
+
                                     })
                                 }
                             </tbody>

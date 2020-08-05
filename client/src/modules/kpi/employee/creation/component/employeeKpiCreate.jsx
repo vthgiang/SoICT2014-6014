@@ -554,7 +554,7 @@ class CreateEmployeeKpiSet extends Component {
                                                             <tr key={index + 1}>
                                                                 <td title={index + 1}>{index + 1}</td>
                                                                 <td title={item.name}>{item.name}</td>
-                                                                <td title={item.parent ? item.parent.name : null}>{item.parent ? item.parent.name : null}</td>    
+                                                                <td title={item.parent ? item.parent.name : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_approver_null')}>{item.parent ? item.parent.name : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_approver_null')}</td>    
                                                                 <td title={item.criteria}>{item.criteria}</td>
                                                                 <td title={item.weight}>{item.weight}</td>
                                                                 <td title={this.handleCheckEmployeeKpiStatus(item.status)}>{this.handleCheckEmployeeKpiStatus(item.status)}</td>
@@ -566,7 +566,7 @@ class CreateEmployeeKpiSet extends Component {
                                                                         : <a style={{ color: "#E34724", fontSize: "16px" }} title={translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.action_title.delete')} onClick={() => this.handleDeleteEmployeeKpi(currentKPI.status, item._id, currentKPI._id)}><i className="fa fa-trash"></i></a> 
                                                                     }
                                                                 </td>
-                                                            </tr>:null
+                                                            </tr> : translate('kpi.employee.employee_kpi_set.create_employee_kpi_set.handle_populate_info_null.error_kpi_targets_list_null')
                                                         ))
                                                 }
                                             </tbody>

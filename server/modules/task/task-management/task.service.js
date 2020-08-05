@@ -966,7 +966,6 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
     if (endDateBefore) {
         let endTimeBefore = endDateBefore.split("-");
         let end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
-        console.log('end', end)
         keySearch = {
             ...keySearch,
             endDate: {
@@ -974,7 +973,6 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
             }
         }
     }
-
     organizationUnitTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
         .populate({ path: "organizationalUnit creator parent responsibleEmployees" });
 
@@ -1132,15 +1130,34 @@ exports.getSubTask = async (taskId) => {
  */
 
 exports.getTasksByUser = async (data) => {
-    var tasks = await Task.find({
-        $or: [
-            { responsibleEmployees: data },
-            { accountableEmployees: data },
-            { consultedEmployees: data },
-            { informedEmployees: data }
-        ],
-        status: "Inprocess"
-    })
+    var tasks = [];
+    if (data.data == "user") {
+        tasks = await Task.find({
+            $or: [
+                { responsibleEmployees: data.userId },
+                { accountableEmployees: data.userId },
+                { consultedEmployees: data.userId },
+                { informedEmployees: data.userId }
+            ],
+            status: "Inprocess"
+        })
+    }
+
+    if (data.data == "organizationUnit") {
+        for (let i in data.organizationUnitId) {
+            var organizationalUnit = await OrganizationalUnit.findOne({ _id: data.organizationUnitId[i] })
+            var test = await Task.find(
+                { organizationalUnit: organizationalUnit._id, status: "Inprocess" },
+            )
+
+            for (let j in test) {
+                tasks.push(test[j]);
+            }
+        }
+    }
+
+
+
     var nowdate = new Date();
     var tasksexpire = [], deadlineincoming = [], test;
     for (let i in tasks) {

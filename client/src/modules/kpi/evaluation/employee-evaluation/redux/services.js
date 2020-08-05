@@ -89,6 +89,7 @@ function getTaskById(id, employeeId, date, kpiType) {
         url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpis/${id}/tasks`,
         method: 'GET',
         params: {
+            id: id,
             employeeId: employeeId,
             date: date,
             kpiType: kpiType

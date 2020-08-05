@@ -183,7 +183,7 @@ class CertificateTab extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof certificates !== 'undefined' && certificates.length !== 0) &&
+                                {(certificates && certificates.length !== 0) &&
                                     certificates.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.name}</td>
@@ -206,7 +206,7 @@ class CertificateTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof certificates === 'undefined' || certificates.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!certificates || certificates.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                 </div>
