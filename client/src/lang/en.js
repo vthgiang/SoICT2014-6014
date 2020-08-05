@@ -646,6 +646,10 @@ export default {
             list_education: 'Training Programs',
             training_plan: 'Manage Training Courses',
 
+            manage_warehouse: 'Manage warehouses',
+            material_manager: 'Manage materials information',
+            dashboard_material: "Dashboad manage materials",
+
             manage_kpi: 'Manage KPI',
             kpi_unit_create: 'Create unit KPI',
             kpi_unit_evaluate: 'Evaluate unit KPI',
@@ -666,7 +670,7 @@ export default {
             task: "Detailed Task",
             task_management: 'Task list',
             task_management_dashboard: 'Task dashboard',
-            task_organization_management_dashboard: 'Task in organization unit dashboard',
+            task_organization_management_dashboard: 'Unit task dashboard',
             task_management_process: "Process list",
             //*******START */
             // Quản lý tài sản
@@ -1314,6 +1318,7 @@ export default {
                     employee_timesheet_id_required: 'Employee timesheet id required',
                     full_name_required: 'Full name required',
                     birthdate_required: 'Birthdate required',
+                    starting_date_required: 'Starting date required',
                     identity_card_number_required: 'Identity card number required',
                     identity_card_date_required: 'Identity card date required',
                     identity_card_address_required: 'Identity card address required',
@@ -1735,7 +1740,8 @@ export default {
                 enter_comment: "Comment",
                 create_comment: "Create comment",
                 enter_description: "Description",
-                create_desciprtion: "Create description",
+                create_description: "Create description",
+                create_document: "Create documents",
                 none_description: "No description",
                 enter_action: "Action",
                 create_action: "Create action",
@@ -2421,6 +2427,34 @@ export default {
                 create_kpi_unit_fail: 'Create KPI unit fail',
                 update_evaluate_kpi_unit_success: 'Update kpi unit evaluation successfully',
                 update_evaluate_kpi_unit_fail: 'Update kpi unit evaluation fail',
+            }
+        },
+
+        manage_warehouse:{
+            material_manager: {
+                index: 'Index',
+                add: 'Add material',
+                add_title: 'Add new material',
+                info: 'Material information',
+                edit: 'Edit material information',
+                delete: 'Delete material',
+                add_success: 'Add new material successfully',
+                add_faile: 'Add new material failed',
+                delete_success: 'Delete material successfully',
+                delete_faile: 'Delete material failed',
+                edit_success: 'Edit material successfully',
+                edit_faile: 'Edit material failed',
+                date: 'Date',
+                name: 'User name',
+                code: 'Code',
+                cost: 'Cost',
+                description: 'Description',
+                serial: 'Serial',
+                purchaseDate: 'Purchase date',
+                location: 'Location'
+            },
+            dashboard_material: {
+
             }
         },
 

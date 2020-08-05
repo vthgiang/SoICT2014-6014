@@ -219,15 +219,45 @@ class TaskTemplate extends Component {
                 if (x.taskInformations.length !== 0){
                     taskInformations = x.taskInformations.map( item => item.name);
                 }
-
+                let numberOfUse = "Chưa sử dụng";
+                if (x.numberOfUse !== 0){
+                    numberOfUse = x.numberOfUse;
+                }
+                let readByEmployees = [], responsibleEmployees = [], accountableEmployees = [], consultedEmployees = [], informedEmployees =[];
+                if (x.readByEmployees.length !== 0){
+                    readByEmployees = x.readByEmployees.map( item => item.name);
+                }
+                if (x.responsibleEmployees.length !== 0){
+                    responsibleEmployees = x.responsibleEmployees.map( item => item.name);
+                }
+                if (x.accountableEmployees.length !== 0){
+                    accountableEmployees = x.accountableEmployees.map( item => item.name);
+                }
+                if (x.consultedEmployees.length !== 0){
+                    consultedEmployees = x.consultedEmployees.map( item => item.name);
+                }
+                if (x.informedEmployees.length !== 0){
+                    informedEmployees = x.informedEmployees.map( item => item.name);
+                }
+                let priority = "";
+                switch (x.priority) {
+                    case 1: priority = "thấp"; break;
+                    case 2: priority = "trung bình"; break;
+                    case 3: priority = "cao"; break;
+                }
                 return {
                     STT: index + 1,
                     name: x.name,
                     description: x.description,
-                    numberOfUse: x.numberOfUse,
+                    numberOfUse: numberOfUse,
                     creator: x.creator.name,
+                    readByEmployees: readByEmployees.join(', '),
+                    responsibleEmployees: responsibleEmployees.join(', '),
+                    accountableEmployees: accountableEmployees.join(', '),
+                    consultedEmployees: consultedEmployees.join(', '),
+                    informedEmployees: informedEmployees.join(', '),
                     organizationalUnits: x.organizationalUnit.name,
-                    priority: x.priority,
+                    priority: priority,
                     formula: x.formula,
                     taskActions: taskActions.join(', '),
                     taskInformations: taskInformations.join(', ')
@@ -252,6 +282,11 @@ class TaskTemplate extends Component {
                                 { key: "description", value: "Mô tả" },
                                 { key: "numberOfUse", value: "Số lần sử dụng"},
                                 { key: "creator", value: "Người tạo mẫu" },
+                                { key: "readByEmployees", value: "Người được xem"},
+                                { key: "responsibleEmployees", value: "Người thực hiện"},
+                                { key: "accountableEmployees", value: "Người phê duyệt"},
+                                { key: "consultedEmployees", value: "Người hỗ trợ"},
+                                { key: "informedEmployees", value: "Người quan sát"},
                                 { key: "organizationalUnits", value: "Phòng ban" },
                                 { key: "priority", value: "Độ ưu tiên" },
                                 { key: "formula", value: "Công thức tính điểm" },
@@ -301,6 +336,7 @@ class TaskTemplate extends Component {
                     {<ModalEditTaskTemplate taskTemplateId={this.state.currentEditRow} />}
                     
                     {<TaskTemplateImportForm />}
+                    {<ExportExcel id="export-taskTemplate" exportData={exportData} style={{ marginLeft: 5 }}/>}
                     {/**Kiểm tra xem role hiện tại có quyền thêm mới mẫu công việc không(chỉ trưởng đơn vị) */}
                     {this.checkHasComponent('create-task-template-button') &&
                         <React.Fragment>
@@ -324,7 +360,7 @@ class TaskTemplate extends Component {
                             <input className="form-control" type="text" placeholder={translate('task_template.search_by_name')} ref={input => this.name = input} />
                         </div>
                     </div>
-                    {<ExportExcel id="export-taskTemplate" exportData={exportData} />}
+                    
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('task_template.unit')}</label>
