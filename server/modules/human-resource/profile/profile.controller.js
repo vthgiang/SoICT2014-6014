@@ -162,6 +162,15 @@ exports.createEmployee = async (req, res) => {
                     inputData: req.body
                 }
             });
+        } else if (req.body.startingDate === undefined || req.body.birthdate.trim() === "") {
+            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
+            res.status(400).json({
+                success: false,
+                messages: ["starting_date_required"],
+                content: {
+                    inputData: req.body
+                }
+            });
         } else if (req.body.identityCardNumber === undefined || req.body.identityCardNumber.trim() === "") {
             await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
             res.status(400).json({

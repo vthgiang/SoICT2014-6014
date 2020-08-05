@@ -1,4 +1,4 @@
-export * from './employeeDetailTab';
+export * from './employeeDetailPage';
 export * from './employeeUpdate';
 export * from './generalTab';
 export * from './contactTab';
