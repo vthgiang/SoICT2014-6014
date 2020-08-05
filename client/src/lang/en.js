@@ -645,6 +645,10 @@ export default {
             list_education: 'Training Programs',
             training_plan: 'Manage Training Courses',
 
+            manage_warehouse: 'Manage warehouses',
+            material_manager: 'Manage materials information',
+            dashboard_material: "Dashboad manage materials",
+
             manage_kpi: 'Manage KPI',
             kpi_unit_create: 'Create unit KPI',
             kpi_unit_evaluate: 'Evaluate unit KPI',
@@ -2420,6 +2424,34 @@ export default {
                 create_kpi_unit_fail: 'Create KPI unit fail',
                 update_evaluate_kpi_unit_success: 'Update kpi unit evaluation successfully',
                 update_evaluate_kpi_unit_fail: 'Update kpi unit evaluation fail',
+            }
+        },
+
+        manage_warehouse:{
+            material_manager: {
+                index: 'Index',
+                add: 'Add material',
+                add_title: 'Add new material',
+                info: 'Material information',
+                edit: 'Edit material information',
+                delete: 'Delete material',
+                add_success: 'Add new material successfully',
+                add_faile: 'Add new material failed',
+                delete_success: 'Delete material successfully',
+                delete_faile: 'Delete material failed',
+                edit_success: 'Edit material successfully',
+                edit_faile: 'Edit material failed',
+                date: 'Date',
+                name: 'User name',
+                code: 'Code',
+                cost: 'Cost',
+                description: 'Description',
+                serial: 'Serial',
+                purchaseDate: 'Purchase date',
+                location: 'Location'
+            },
+            dashboard_material: {
+
             }
         },
 

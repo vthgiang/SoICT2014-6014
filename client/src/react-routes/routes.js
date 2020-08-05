@@ -85,6 +85,8 @@ import { DashBoardAssets} from '../modules/assets-manager/asset-dashboard/compon
 //report
 import TaskReportManager from '../modules/report/task-report/components/taskReportManager';
 
+//warehouse
+import MaterialManager from '../modules/warehouse-manager/material-manager/component';
 class Routes extends Component {
 
     render() {
@@ -951,9 +953,23 @@ class Routes extends Component {
                         pageName={ 'task_report' }
                         layout={ Layout }
                         component={ TaskReportManager }
-                    />  
+                    />
 
-
+                    <PrivateRoute 
+                        isLoading={ this.props.user.isLoading }
+                        key={ 'material-manager' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/material-manager', name: 'material_manager', icon:'fa fa-address-card' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/material-manager' }
+                        path={ '/material-manager' }
+                        pageName={ 'material_manager' }
+                        layout={ Layout }
+                        component={ MaterialManager }
+                    />
 
                     {/* NOT FOUND */}
                     <Route component={ NotFound }></Route>

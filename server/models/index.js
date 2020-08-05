@@ -59,6 +59,9 @@ const TaskProcess = require("./task/taskProcess.model")
 //report
 const TaskReport = require('./report/taskReport.model');
 
+//material
+const Material = require('./warehouse/material.model');
+
 exports.schema = {
     Privilege,
     Role,
@@ -118,4 +121,6 @@ exports.schema = {
     RecommendDistribute,
 
     TaskReport,
+
+    Material,
 } 

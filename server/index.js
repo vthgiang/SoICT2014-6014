@@ -64,6 +64,9 @@ const recommendDistribute = require('./modules/assets-manager/recommend-distribu
 // report
 const taskReport = require('./modules/report/task-report/taskReport.route');
 
+//material
+const material = require('./modules/warehouse/material/material.router');
+
 
 // APP
 const app = express();
@@ -167,6 +170,9 @@ app.use("/recommenddistribute", recommendDistribute);
 
 // Task report
 app.use('/taskreports', taskReport);
+
+// material
+app.use('/materials', material);
 
 
 // Start server

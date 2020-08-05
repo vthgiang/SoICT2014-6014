@@ -80,5 +80,6 @@
   },
   "devDependencies": {
     "@ckeditor/ckeditor5-alignment": "^20.0.0"
-  }
+  },
+  "proxy": "http://localhost:8000"
 }

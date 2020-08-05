@@ -52,6 +52,10 @@ import { assetsManager } from "../modules/assets-manager/asset-management/redux/
 
 //report 
 import {reports} from "../modules/report/task-report/redux/reducers";
+
+//material
+import { materials } from "../modules/warehouse-manager/material-manager/redux/reducers";
+
 const appReducer = combineReducers(Object.assign({
     //system
     log,
@@ -115,6 +119,9 @@ const appReducer = combineReducers(Object.assign({
 
     //report
     reports,
+
+    //material
+    materials,
 
     
 }, { Intl }));
