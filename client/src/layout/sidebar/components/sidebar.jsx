@@ -206,6 +206,7 @@ class SideBar extends Component {
                                 />
                             }
                             {
+<<<<<<< HEAD
                                 (this.checkURL(url2.path1, links) === true || this.checkURL(url2.path2, links) === true) &&
                                 <li className="treeview" >
                                     <a href="">
@@ -236,6 +237,16 @@ class SideBar extends Component {
                             }
 
         
+=======
+                                this.checkURL('/customer', links) === true &&
+                                <Item
+                                    key='customer'
+                                    name='customer'
+                                    path='/customer'
+                                    icon='fa fa-users'
+                                />
+                            }
+>>>>>>> 6bb3de50dca0663b7cec3cb9c53640af0205dee8
                             {/* Quan ly tai san */}
                             {
                                 (this.checkURL(url1.path1, links) === true || this.checkURL(url1.path2, links) === true || 

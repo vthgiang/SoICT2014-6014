@@ -26,15 +26,15 @@ class TaskReportCreateForm extends Component {
                 accountableEmployees: [],
                 startDate: '',
                 endDate: '',
-                frequency: '',
+                frequency: 'month',
                 coefficient: 1,
-                listCheckBox: [],
+                // listCheckBox: [],
 
             },
-            showInReport: new Set(),
+            // showInReport: new Set(),
             currentRole: getStorage('currentRole'),
         }
-        this.checkedCheckbox = new Set();
+        // this.checkedCheckbox = new Set();
     }
 
     /**
@@ -166,6 +166,17 @@ class TaskReportCreateForm extends Component {
             let taskTemplate = this.props.tasktemplates.items.find((taskTemplate) =>
                 taskTemplate._id === value
             );
+            let taskInformations = [];
+
+            if (taskTemplate.taskInformations) {
+                for (let [index, value] of taskTemplate.taskInformations.entries()) {
+                    taskInformations[index] = {
+                        ...value,
+                        charType: '0',
+                        aggregationType: '0',
+                    }
+                }
+            }
             this.setState(state => {
                 return {
                     ...state,
@@ -176,7 +187,7 @@ class TaskReportCreateForm extends Component {
                         taskTemplate: taskTemplate._id,
                         responsibleEmployees: taskTemplate.responsibleEmployees,
                         accountableEmployees: taskTemplate.accountableEmployees,
-                        taskInformations: taskTemplate.taskInformations,
+                        taskInformations: taskInformations,
                     }
                 }
             })
@@ -411,7 +422,6 @@ class TaskReportCreateForm extends Component {
         let { newReport } = this.state;
         let value = item.target.checked;
 
-
         let taskInformations = newReport.taskInformations;
         taskInformations[index] = { ...taskInformations[index], showInReport: value };
         this.setState({
@@ -420,16 +430,6 @@ class TaskReportCreateForm extends Component {
                 taskInformations: taskInformations,
             }
         })
-
-        if (this.checkedCheckbox.has(item)) {
-            this.checkedCheckbox.delete(item);
-        } else {
-            this.checkedCheckbox.add(item);
-        }
-        this.setState({
-            showInReport: this.checkedCheckbox,
-        })
-
     }
 
     /**
@@ -445,38 +445,24 @@ class TaskReportCreateForm extends Component {
             aggregationType: newReport.aggregationType,
             chartType: newReport.chartType,
             coefficient: newReport.coefficient,
+            nameTaskReport: newReport.nameTaskReport,
             descriptionTaskReport: newReport.descriptionTaskReport,
             endDate: newReport.endDate,
-            // filterCondition: newReport.filterCondition,
             frequency: newReport.frequency,
-            nameTaskReport: newReport.nameTaskReport,
-            // newName: newReport.newName,
             organizationalUnit: newReport.organizationalUnit,
 
             startDate: newReport.startDate,
             status: newReport.status,
             taskTemplate: newReport.taskTemplate,
-            // showInReport: this.state.showInReport,
             taskInformations: newReport.taskInformations,
         }
 
-        let listCheck = [];
-        for (const i of this.state.showInReport) {
-            listCheck = [...listCheck, i]
-        }
-        this.setState(state => {
-            return {
-                ...state,
-                newReport: {
-                    ...this.state.newReport,
-                    listCheckBox: listCheck,
-                }
-            }
-        })
         this.props.getTaskEvaluations(data);
 
         window.$('#modal-view-taskreport').modal('show');
     }
+
+
     /**
      * Hàm xử lý khi ấn lưu
      */
@@ -498,7 +484,6 @@ class TaskReportCreateForm extends Component {
         const { translate, reports, tasktemplates, user, tasks } = this.props;
         const { errorOnNameTaskReport, errorOnDescriptiontTaskReport, newReport, } = this.state;
         let listTaskTemplate, units, taskInformations = newReport.taskInformations;
-        console.log("taskInformations", taskInformations);
 
         // Lấy ra list task template theo đơn vị
         if (tasktemplates.items && newReport.organizationalUnit) {
@@ -626,7 +611,6 @@ class TaskReportCreateForm extends Component {
                                     onChange={this.handleChangeFrequency}
                                     items={
                                         [
-                                            { text: '---chọn---' },
                                             { value: 'month', text: 'Tháng' },
                                             { value: 'quarter', text: 'Quý' },
                                             { value: 'year', text: 'Năm' },
@@ -758,7 +742,6 @@ class TaskReportCreateForm extends Component {
                                                                 onChange={(e) => this.handleChangeAggregationType(index, e)}
                                                                 items={
                                                                     [
-                                                                        { text: '-chọn-' },
                                                                         { value: '0', text: 'Trung bình cộng' },
                                                                         { value: '1', text: 'Tổng' },
                                                                     ]
@@ -778,9 +761,8 @@ class TaskReportCreateForm extends Component {
                                                                     onChange={(e) => this.handleChangeChart(index, e)}
                                                                     items={
                                                                         [
-                                                                            { text: '-chọn-' },
-                                                                            { value: '0', text: 'Đường' },
-                                                                            { value: '1', text: 'Cột' },
+                                                                            { value: '0', text: 'Cột' },
+                                                                            { value: '1', text: 'Đường' },
                                                                             { value: '2', text: 'Tròn' },
                                                                         ]
                                                                     }

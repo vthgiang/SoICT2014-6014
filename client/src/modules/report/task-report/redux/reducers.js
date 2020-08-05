@@ -1,12 +1,13 @@
-import {TaskReportConstants} from './constants';
+import { TaskReportConstants } from './constants';
 const initState = {
     listTaskReport: [],
+    listTaskReportById: null,
     isLoading: false,
     totalList: 0,
 }
 export function reports(state = initState, action) {
-    
-    switch(action.type) {
+
+    switch (action.type) {
         case TaskReportConstants.GET_TASK_REPORT_REQUEST:
         case TaskReportConstants.DELETE_TASK_REPORT_REQUEST:
         case TaskReportConstants.CREATE_TASK_REPORT_REQUEST:
@@ -33,7 +34,7 @@ export function reports(state = initState, action) {
         case TaskReportConstants.GET_TASK_REPORT_SUCCESS:
             return {
                 ...state,
-                listTaskReport: action.payload.listTaskReport, 
+                listTaskReport: action.payload.listTaskReport,
                 totalList: action.payload.totalList,
                 isLoading: false,
             };
@@ -59,22 +60,23 @@ export function reports(state = initState, action) {
 
 
         case TaskReportConstants.GET_TASK_REPORT_BY_ID_SUCCESS:
-        return {
-            ...state,
-            listTaskReport: action.payload,
-            isLoading: false,
-        };
+            return {
+                ...state,
+                listTaskReportById: action.payload,
+                // totalList: action.payload.totalList,
+                isLoading: false,
+            };
 
-        
+
         case TaskReportConstants.EDIT_TASK_REPORT_SUCCESS:
-        return {
-            ...state,
-            listTaskReport: state.listTaskReport.map(report => ((report._id === action.payload._id) ? action.payload : report)
+            return {
+                ...state,
+                listTaskReport: state.listTaskReport.map(report => ((report._id === action.payload._id) ? action.payload : report)
                 ),
-            isLoading: false,
-        };
+                isLoading: false,
+            };
 
         default:
-        return state;
+            return state;
     }
 }

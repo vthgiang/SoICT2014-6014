@@ -25,6 +25,7 @@ class PinnedPanel extends Component {
                             key={id}
                             defaultPosition={{x: 0, y: 0}}
                             position={null}
+                            allowAnyClick={true}
                             grid={[1, 1]}
                             onStart={this.handleStart}
                             onDrag={this.handleDrag}

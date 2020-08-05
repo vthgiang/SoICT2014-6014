@@ -11,7 +11,7 @@ class ModalDetailKPI extends Component {
             content: ""
         };
     }
-    
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -27,7 +27,7 @@ class ModalDetailKPI extends Component {
 
     shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.id !== this.state.id) {
-            this.props.getChildTarget(nextProps.id);
+            this.props.getChildTarget(nextProps.id, null);
             return false;
         }
         return true;
@@ -77,9 +77,9 @@ class ModalDetailKPI extends Component {
                         </div>
                         <div className="box-body no-padding">
                             <ul className="nav nav-pills nav-stacked">
-                                {listchildtarget  &&
+                                {listchildtarget &&
                                     listchildtarget.map((item, index) =>
-                                        <li key={index} className={this.state.content === item._id ? "active" : undefined }>
+                                        <li key={index} className={this.state.content === item._id ? "active" : undefined}>
                                             <a href="#abc" onClick={() => this.handleChangeContent(item._id)}>
                                                 {item.name}
                                                 <span className="label label-primary pull-right">{item.arrtarget.length}</span>
@@ -93,7 +93,7 @@ class ModalDetailKPI extends Component {
 
                 <div className="col-xs-12 col-sm-8">
                     {/* Thông tin chi tiết mục tiêu KPI đơn vị được chọn */}
-                    {   
+                    {
                         listchildtarget && listchildtarget.map(item => {
                             if (item._id === this.state.content) return <React.Fragment key={item._id}>
                                 <h4>{translate('kpi.organizational_unit.management.detail_modal.information_kpi') + `"${item.name}"`}</h4>
@@ -128,7 +128,7 @@ class ModalDetailKPI extends Component {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {(typeof item && item.arrtarget) ?
+                                        {(item && item.arrtarget) ?
                                             (item.arrtarget.map((data, index) =>
                                                 <tr key={index}>
                                                     <td>{index + 1}</td>

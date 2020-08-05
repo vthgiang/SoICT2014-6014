@@ -5,6 +5,7 @@ import { DeleteNotification, PaginateBar, DateTimeConverter } from '../../../com
 import { NotificationActions } from '../redux/actions';
 import NotificationSentInfo from './notificationSentInfo';
 import parse from 'html-react-parser';
+import innerText from 'react-innertext';
 
 class TabNotificationSent extends Component {
     constructor(props) {
@@ -57,8 +58,7 @@ class TabNotificationSent extends Component {
                                         />
                                     </div>
                                 </div>
-                                <span className="threedots" style={{maxWidth: "100%", display: "inline-block"}}><b>{notification.title}</b>  {parse(notification.content)}</span>
-                                
+                                <span className="threedots" style={{maxWidth: "100%", display: "inline-block"}}><b>{notification.title}</b> {innerText(parse(notification.content))}</span>
                             </li>
                         ): notifications.isLoading ?
                         <div className="table-info-panel" style={{textAlign: "left"}}>{translate('general.loading')}</div>:

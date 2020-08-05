@@ -31,33 +31,27 @@ class NotificationSentInfo extends Component {
     render() { 
         const { notifications, translate } = this.props;
         const { notificationTitle, notificationLevel, notificationContent, notificationSender, notificationCreatedAt, notificationUsers, notificationOrganizationalUnits } = this.state;
-        let level=0;
-        switch (notificationLevel) {
-            case 'info':
-                level = 1;
-                break;
-            case 'general':
-                level = 2;
-                break;
-            case 'important':
-                level = 3;
-                break;
-            case 'emergency':
-                level = 4;
-                break;
-            default:
-                level = 0;
-                break;
-        }
+        
         return ( 
             <DialogModal
                 func={this.save} isLoading={notifications.isLoading}
                 modalID='modal-notification-sent'
                 title={notificationTitle}
                 hasSaveButton={false} hasNote={false}
-                hasNotiLevel={level}
             >
                 <div className="qlcv">
+                    <div className="form-inline">
+                        {
+                        notificationLevel === 'info' ? <i className="fa fa-fw fa-info-circle text-blue"></i> :
+                        notificationLevel === 'general' ? <i className="fa fa-fw fa-bell text-green"></i> :
+                        notificationLevel === 'important' === 3 ? <i className="fa fa-fw fa-warning text-orange"></i> :
+                        <i className="fa fa-fw fa-bomb text-orange"></i> 
+                        }
+                        <div className="form-group">
+                            <div className="inline">{translate('notification.from')}</div>
+                            <div className="inline"><b> {notificationSender}, <DateTimeConverter dateTime={notificationCreatedAt}/></b></div>
+                        </div>
+                    </div>
                     <div style={{margin: '20px 0px 20px 0px'}}>{parse(notificationContent)}</div>
                     {
                         notificationOrganizationalUnits && notificationOrganizationalUnits.length > 0 &&
@@ -78,12 +72,6 @@ class NotificationSentInfo extends Component {
                             }</ul>
                         </React.Fragment>
                     }
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <div className="inline">{translate('notification.from')}</div>
-                            <div className="inline"><b> {notificationSender} - <DateTimeConverter dateTime={notificationCreatedAt}/></b></div>
-                        </div>
-                    </div>
                 </div>
             </DialogModal>
          );

@@ -59,8 +59,16 @@ const TaskProcess = require("./task/taskProcess.model")
 //report
 const TaskReport = require('./report/taskReport.model');
 
+<<<<<<< HEAD
 //material
 const Material = require('./warehouse/material.model');
+=======
+// Customer Management
+const Customer = require('./customer/customer.model');
+const CustomerLocation = require('./customer/customerLocation.model');
+const CustomerCare = require('./customer/customerCare.model');
+const CustomerGroup = require('./customer/customerGroup.model');
+>>>>>>> 6bb3de50dca0663b7cec3cb9c53640af0205dee8
 
 exports.schema = {
     Privilege,
@@ -122,5 +130,12 @@ exports.schema = {
 
     TaskReport,
 
+<<<<<<< HEAD
     Material,
+=======
+    Customer,
+    CustomerCare,
+    CustomerLocation,
+    CustomerGroup
+>>>>>>> 6bb3de50dca0663b7cec3cb9c53640af0205dee8
 } 

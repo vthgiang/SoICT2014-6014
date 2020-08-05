@@ -24,19 +24,13 @@ router.delete("/companies/:companyId/components/:componentId", auth, CompanyCont
 router.get("/link-categories", auth, CompanyControllers.getAllLinkCategories);
 
 
-/**
- * Lấy thông tin cấu hình file import theo id
- */
+// Lấy thông tin cấu hình file import theo id
 router.get('/data-import-configurations', auth, CompanyControllers.getImportConfiguraion);
 
-/**
- * Tạo mới thông tin cấu hình file import
- */
+// Tạo mới thông tin cấu hình file import
 router.post('/data-import-configurations', auth, CompanyControllers.createImportConfiguraion);
 
-/**
- * Chỉnh sửa thông tin cấu hình file import theo id
- */
+// Chỉnh sửa thông tin cấu hình file import theo id
 router.patch('/data-import-configurations/:id', auth, CompanyControllers.editImportConfiguraion);
 
 module.exports = router;

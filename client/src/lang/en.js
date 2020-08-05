@@ -111,7 +111,7 @@ export default {
             status: 'Status',
             yes: 'Yes',
             no: 'No',
-            month:'Month',
+            month: 'Month',
             loading: 'Loading',
             no_data: 'No data',
             success: 'Successfully',
@@ -444,7 +444,7 @@ export default {
                 file: 'File upload',
                 scanned_file_of_signed_document: 'File scan',
                 exp_issuing_body: 'Example: Administrative agencies',
-                exp_official_number:'Example: 05062020VN',
+                exp_official_number: 'Example: 05062020VN',
                 exp_signer: "Example: Nguyễn Việt Anh",
                 exp_version: "Version 1",
                 no_blank_issuingbody: "Issuing body should'n empty",
@@ -669,7 +669,7 @@ export default {
             task: "Detailed Task",
             task_management: 'Task list',
             task_management_dashboard: 'Task dashboard',
-            task_organization_management_dashboard: 'Task in organization unit dashboard',
+            task_organization_management_dashboard: 'Unit task dashboard',
             task_management_process: "Process list",
             //*******START */
             // Quản lý tài sản
@@ -1469,7 +1469,7 @@ export default {
             number: 'Number',
             date: 'Date',
             value_set: 'Value set',
-            code : 'Code',
+            code: 'Code',
             view_detail_of_this_task_template: 'View detail of this task',
             edit_this_task_template: 'Edit this task template',
             delete_this_task_template: 'Delete this task template',
@@ -1701,7 +1701,7 @@ export default {
                 evaluate_task_success: 'Evaluate task success',
                 edit_task_fail: 'Edit task fail',
                 evaluate_task_fail: 'Evaluate task fail',
-                
+
                 add_new_task: 'Add new task',
                 // add_err: 
                 add_err_empty_unit: 'Unit should not be empty',
@@ -1738,7 +1738,8 @@ export default {
                 enter_comment: "Comment",
                 create_comment: "Create comment",
                 enter_description: "Description",
-                create_desciprtion: "Create description",
+                create_description: "Create description",
+                create_document: "Create documents",
                 none_description: "No description",
                 enter_action: "Action",
                 create_action: "Create action",
@@ -1790,7 +1791,7 @@ export default {
                 delete_file_success: "Delete file of action success",
                 delete_file_comment_of_action_success: "Delete file of comment of action success",
                 delete_file_task_comment_success: "Delete file of task comment",
-                create_task_log_success:" Create task log success",
+                create_task_log_success: " Create task log success",
                 get_task_log_success: "get_task_log_success",
 
                 create_result_task_fail: "Can't evaluate task",
@@ -1828,7 +1829,7 @@ export default {
                 delete_file_task_comment_fail: "Delete file of task comment fail",
                 create_task_log_fail: "Create task log fail",
                 get_task_log_fail: "get_task_log_fail",
-                
+
                 // error label
                 err_require: 'Field is required',
                 err_date_required: 'Date is required',
@@ -1903,8 +1904,8 @@ export default {
                         initialize_kpi_newmonth: 'Initialize KPI new month',
                         request_approval: 'Request for approval',
                         cancel_request_approval: 'Cancel request for approval',
-                        not_initialize_organiztional_unit_kpi :'Cannot initialize kpi on this month bacause your unit has not initialized kpi on this month yet, please contact the manager of your unit', 
-                        not_activate_organiztional_unit_kpi :'Cannot initialize kpi on this month bacause your unit has not activated kpi on this month yet, please contact the manager of your unit',
+                        not_initialize_organiztional_unit_kpi: 'Cannot initialize kpi on this month bacause your unit has not initialized kpi on this month yet, please contact the manager of your unit',
+                        not_activate_organiztional_unit_kpi: 'Cannot initialize kpi on this month bacause your unit has not activated kpi on this month yet, please contact the manager of your unit',
 
                         // Nhóm dành cho các trạng thái tập KPI
                         kpi_status: {
@@ -1973,8 +1974,8 @@ export default {
                         handle_populate_info_null: {
                             error_kpi_approver_null: 'Error! The approver of this KPI set is not exist or was deleted',
                             error_kpi_organizational_unit_null: 'Error! The organizational unit of this KPI set is not exist or was deleted',
-                            error_kpi_parent_target_null :'Error! The parent target of this KPI set is not exist or was deleted',
-                            error_kpi_targets_list_null :'Error! The list targets of this KPI set is not exist or was deleted',
+                            error_kpi_parent_target_null: 'Error! The parent target of this KPI set is not exist or was deleted',
+                            error_kpi_targets_list_null: 'Error! The list targets of this KPI set is not exist or was deleted',
                         }
                     },
 
@@ -2078,7 +2079,7 @@ export default {
                     auto_eva: 'Evaluated automatically',
                     employee_eva: 'Evaluated by Employee',
                     approver_eva: 'Evaluated by Approver',
-                    result_kpi_personal:'Personal KPI result',
+                    result_kpi_personal: 'Personal KPI result',
                     distribution_kpi_personal: 'Distribution of KPI personal'
                 },
 
@@ -2093,9 +2094,9 @@ export default {
                     compare: 'Compare',
                     approve_all: 'Approve all',
                     choose_month_cmp: 'Choose month',
-                    kpi_this_month: 'KPI this month',
+                    kpi_this_month: 'KPI month',
                     search: 'Search',
-                    number_of_targets:'Number of targets',
+                    number_of_targets: 'Number of targets',
                     system_evaluate: 'System evaluate',
                     result_self_evaluate: 'Result self evaluate',
                     evaluation_management: 'Evaluation management',
@@ -2108,7 +2109,7 @@ export default {
                     criteria: 'Criteria',
                     weight: 'Weight',
                     result: 'Result',
-                    target : 'targets',
+                    target: 'targets',
                     data_not_found: 'There is no satisfied result',
                     unsuitable_weight: 'Unsuitable weight',
                     status: 'Status',
@@ -2146,7 +2147,7 @@ export default {
                     contribution: 'Contribution',
                     importance_level: 'Importance level',
                     point: 'Point',
-                    evaluated_value:'Evaluate value',
+                    evaluated_value: 'Evaluate value',
                     new_value: 'New value',
                     old_value: 'Old value',
                     auto_value: 'Auto value',
@@ -2202,7 +2203,7 @@ export default {
                 get_system_point_success: 'Get system point successfully',
                 get_system_point_fail: 'Get system point fail',
                 set_task_importance_level_success: 'Set task importance level successfully',
-                set_task_importance_level_fail:'Set task importance level fail'
+                set_task_importance_level_fail: 'Set task importance level fail'
             },
             organizational_unit: {
                 // Module chính

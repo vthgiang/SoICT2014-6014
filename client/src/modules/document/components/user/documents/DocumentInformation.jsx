@@ -4,126 +4,18 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import moment from 'moment';
+import { LOCAL_SERVER_API } from '../../../../../env';
 
 class DocumentInformation extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-
-        }
-    }
-
-    handleName = (e) => {
-        const value = e.target.value;
-        this.setState({
-            documentName: value
-        })
-    }
-
-    handleCategory = (value) => {
-        this.setState({
-            documentCategory: value[0]
-        })
-    }
-
-    handleDomains = value => {
-        this.setState({ documentDomains: value });
-    }
-
-    handleDescription = (e) => {
-        const { value } = e.target;
-        this.setState({ documentDescription: value });
-    }
-
-    handleIssuingBody = (e) => {
-        const { value } = e.target;
-        this.setState({ documentIssuingBody: value });
-    }
-
-    handleOfficialNumber = e => {
-        const { value } = e.target;
-        this.setState({ documentOfficialNumber: value })
-    }
-
-    handleSigner = e => {
-        const { value } = e.target;
-        this.setState({ documentSigner: value })
-    }
-
-    handleRelationshipDescription = e => {
-        const { value } = e.target;
-        this.setState({ documentRelationshipDescription: value });
-    }
-
-    handleRelationshipDocuments = e => {
-        const { value } = e.target;
-        this.setState({ documentRelationshipDocuments: value });
-    }
-
-    handleRoles = value => {
-        this.setState({ documentRoles: value });
-    }
-
-    handleArchivedRecordPlaceInformation = e => {
-        const { value } = e.target;
-        this.setState(state => {
-            return {
-                ...state,
-                documentArchivedRecordPlace: {
-                    ...state.documentArchivedRecordPlace,
-                    information: value
-                }
-            }
-        });
-    }
-
-    handleArchivedRecordPlaceOrganizationalUnit = e => {
-        const { value } = e.target;
-        this.setState(state => {
-            return {
-                ...state,
-                documentArchivedRecordPlace: {
-                    ...state.documentArchivedRecordPlace,
-                    organizationalUnit: value
-                }
-            }
-        });
-    }
-
-    handleArchivedRecordPlaceManager = e => {
-        const { value } = e.target;
-        this.setState(state => {
-            return {
-                ...state,
-                documentArchivedRecordPlace: {
-                    ...state.documentArchivedRecordPlace,
-                    manager: value
-                }
-            }
-        });
-    }
-
-    handleVersionName = (e) => {
-        const { value } = e.target;
-        this.setState({ documentVersionName: value });
-    }
-
-    handleIssuingDate = value => {
-        this.setState({ documentIssuingDate: value })
-    }
-
-    handleEffectiveDate = value => {
-        this.setState({ documentEffectiveDate: value })
-    }
-
-    handleExpiredDate = value => {
-        this.setState({ documentExpiredDate: value })
+        this.state = {}
     }
 
     save = () => {
         const {
             documentId,
-            documentName,
+            documentName, 
             documentCategory,
             documentDomains,
             documentDescription,
@@ -141,22 +33,22 @@ class DocumentInformation extends Component {
             documentArchivedRecordPlaceManager,
         } = this.state;
 
-        const formData = new FormData();
+        const formData = new FormData(); 
         formData.append('name', documentName);
         formData.append('category', documentCategory);
-        if (documentDomains !== undefined) for (let i = 0; i < documentDomains.length; i++) {
+        if(documentDomains !== undefined) for (var i = 0; i < documentDomains.length; i++) {
             formData.append('domains[]', documentDomains[i]);
         }
-        formData.append('description', documentDescription);
+        formData.append('description', documentDescription); 
         formData.append('issuingBody', documentIssuingBody);
         formData.append('officialNumber', documentOfficialNumber);
         formData.append('signer', documentSigner);
 
         formData.append('relationshipDescription', documentRelationshipDescription);
-        if (documentRelationshipDocuments !== undefined) for (let i = 0; i < documentRelationshipDocuments.length; i++) {
+        if(documentRelationshipDocuments !== undefined)for (var i = 0; i < documentRelationshipDocuments.length; i++) {
             formData.append('relationshipDocuments[]', documentRelationshipDocuments[i]);
         }
-        if (documentRoles !== undefined) for (let i = 0; i < documentRoles.length; i++) {
+        if(documentRoles !== undefined) for (var i = 0; i < documentRoles.length; i++) {
             formData.append('roles[]', documentRoles[i]);
         }
 
@@ -176,28 +68,9 @@ class DocumentInformation extends Component {
         this.setState({ documentFileScan: e.target.files[0] });
     }
 
-    addNewVersion = id => {
-        const {
-            documentVersionName,
-            documentIssuingDate,
-            documentEffectiveDate,
-            documentExpiredDate,
-            documentFile,
-            documentFileScan
-        } = this.state;
-
-        const formData = new FormData();
-        formData.append('versionName', documentVersionName);
-        formData.append('issuingDate', moment(documentIssuingDate, "DD-MM-YYYY"));
-        formData.append('effectiveDate', moment(documentEffectiveDate, "DD-MM-YYYY"));
-        formData.append('expiredDate', moment(documentExpiredDate, "DD-MM-YYYY"));
-        formData.append('file', documentFile);
-        formData.append('fileScan', documentFileScan);
-        console.log("FORM DATA: ", formData)
-        this.props.editDocument(id, formData, 'ADD_VERSION');
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
+    
+    
+    static getDerivedStateFromProps(nextProps, prevState){
         if (nextProps.documentId !== prevState.documentId) {
             return {
                 ...prevState,
@@ -220,13 +93,13 @@ class DocumentInformation extends Component {
                 documentArchivedRecordPlaceInfo: nextProps.documentArchivedRecordPlaceInfo,
                 documentArchivedRecordPlaceOrganizationalUnit: nextProps.documentArchivedRecordPlaceOrganizationalUnit,
                 documentArchivedRecordPlaceManager: nextProps.documentArchivedRecordPlaceManager,
-            }
-        } else if (nextProps.documentVersions.length > prevState.documentVersions.length) {
+            } 
+        }else if(nextProps.documentVersions.length > prevState.documentVersions.length){
             return {
                 ...prevState,
                 documentId: nextProps.documentId,
                 documentVersions: nextProps.documentVersions,
-            }
+            } 
         } else {
             return null;
         }
@@ -240,21 +113,34 @@ class DocumentInformation extends Component {
         this.props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
 
+    findDocumentRole(roles, arr_id){
+        let data = arr_id.map(id=>{
+            let name = roles.filter(role=> id && id === role.value);
+            return name.map(x => x.text);
+        })
+        return data;
+    }
+
     render() {
         const {
-            documentId, documentName, documentDescription, documentCategory, documentDomains,
-            documentIssuingBody, documentOfficialNumber, documentSigner, documentVersions,
+            documentId, documentName, documentDescription, documentCategory, documentDomains, 
+            documentIssuingBody, documentOfficialNumber, documentSigner, documentVersions, 
             documentRelationshipDescription, documentRelationshipDocuments,
-            documentRoles,
-            documentArchivedRecordPlaceInfo, documentArchivedRecordPlaceOrganizationalUnit,
+            documentRoles, 
+            documentArchivedRecordPlaceInfo, documentArchivedRecordPlaceOrganizationalUnit, documentArchivedRecordPlaceManager
         } = this.state;
-        const { translate, role, documents, department, user } = this.props;
-        const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
-        const domains = documents.administration.domains.list.map(domain => { return { value: domain._id, text: domain.name } });
-        const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
-        const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
-        console.log('domains', documentDomains)
-        return (
+        const {translate, role, documents, department, user}=this.props;
+        const categories = documents.administration.categories.list.map(category=>{return{value: category._id, text: category.name}});
+        const domains = documents.administration.domains.list.map(domain=>{ return {value: domain._id, text: domain.name}});
+        const roleList = role.list.map( role => {return {value: role._id, text: role.name}});
+        const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc=>{return {value: doc._id, text: doc.name}})
+        console.log('roleList', roleList)
+        console.log('relationshipDocs', relationshipDocs);
+        console.log('categorires', categories);
+        console.log('domainnn', domains);
+        console.log('dddd', this.findDocumentRole(roleList, documentRoles));
+    
+        return ( 
             <React.Fragment>
                 <DialogModal
                     modalID="modal-information-user-document"
@@ -264,62 +150,45 @@ class DocumentInformation extends Component {
                 >
                     <form id="form-information-user-document">
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('documents.infomation_docs')}</legend>
+                            <legend className="scheduler-border">{translate('document.infomation_docs')}</legend>
                             <div className="row">
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>{translate('document.name')}<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" value={documentName} disabled />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{translate('document.doc_version.issuing_body')}<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" value={documentIssuingBody} disabled />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{translate('document.doc_version.official_number')}<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" value={documentOfficialNumber} disabled />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{translate('document.doc_version.signer')}<span className="text-red">*</span></label>
-                                        <input type="text" className="form-control" value={documentSigner} disabled />
-                                    </div>
+                                <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                    <strong>{translate('document.name')}&emsp; </strong>
+                                    {documentName}
                                 </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>{translate('document.category')}<span className="text-red">*</span></label>
-                                        <SelectBox
-                                            id={`select-box-edit-user-document-category-${documentId}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={categories}
-                                            value={documentCategory}
-                                            multiple={false}
-                                            options={{ placeholder: translate('document.administration.categories.not_select') }}
-                                            disabled={true}
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{translate('document.domain')}<span className="text-red">*</span></label>
-                                        <SelectBox
-                                            id={`select-box-edit-user-document-domains-${documentId}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            value={documentDomains}
-                                            items={domains}
-                                            multiple={true}
-                                            options={{ placeholder: translate('document.administration.domains.not_select') }}
-                                            disabled={true}
-                                        />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>{translate('document.description')}<span className="text-red">*</span></label>
-                                        <textarea type="text" className="form-control" value={documentDescription} disabled />
-                                    </div>
+                                <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                    <strong>{translate('document.doc_version.issuing_body')}&emsp; </strong>
+                                    {documentIssuingBody}
                                 </div>
                             </div>
+                            <div className="row">
+                                <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                    <strong>{translate('document.doc_version.official_number')}&emsp; </strong>
+                                    {documentOfficialNumber}
+                                </div>
+                                <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                    <strong>{translate('document.doc_version.signer')}&emsp; </strong>
+                                    {documentSigner}
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                    <strong>{translate('document.category')}&emsp; </strong>
+                                    {documentCategory}
+                                </div>
+                                <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                    <strong>{ translate('document.domain') }&emsp; </strong>
+                                    {documentDomains}
+                                </div>
+                                <div className="for{ translate('document.description') }m-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                    <strong>{ translate('document.description') }&emsp; </strong>
+                                    {documentDescription}
+                                </div>
+                            </div>
+                               
                         </fieldset>
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('document.doc_version.title')}</legend>
+                            <legend className="scheduler-border">{ translate('document.doc_version.title') }</legend>
                             <div className="row">
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <table className="table table-hover table-striped table-bordered" id="table-document-version">
@@ -336,16 +205,16 @@ class DocumentInformation extends Component {
                                         <tbody>
                                             {
                                                 documentVersions !== undefined && documentVersions.length > 0 ?
-                                                    documentVersions.map((version, i) => {
-                                                        return <tr key={i}>
-                                                            <td>{version.versionName}</td>
-                                                            <td><DateTimeConverter dateTime={version.issuingDate} type="DD-MM-YYYY" /></td>
-                                                            <td><DateTimeConverter dateTime={version.effectiveDate} type="DD-MM-YYYY" /></td>
-                                                            <td><DateTimeConverter dateTime={version.expiredDate} type="DD-MM-YYYY" /></td>
-                                                            <td><a href="#" onClick={() => this.requestDownloadDocumentFile(documentId, documentName, i)}><u>{translate('document.download')}</u></a></td>
-                                                            <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(documentId, "SCAN_" + documentName, i)}><u>{translate('document.download')}</u></a></td>
-                                                        </tr>
-                                                    }) : <tr><td colSpan={7}>{translate('document.no_version')}</td></tr>
+                                                documentVersions.map((version, i) => {
+                                                    return <tr key={i}>
+                                                        <td>{version.versionName}</td>
+                                                        <td><DateTimeConverter dateTime={version.issuingDate} type="DD-MM-YYYY"/></td>
+                                                        <td><DateTimeConverter dateTime={version.effectiveDate} type="DD-MM-YYYY"/></td>
+                                                        <td><DateTimeConverter dateTime={version.expiredDate} type="DD-MM-YYYY"/></td>
+                                                        <td><a href="#" onClick={()=>this.requestDownloadDocumentFile(documentId, documentName, i)}><u>{translate('document.download')}</u></a></td>
+                                                        <td><a href="#" onClick={()=>this.requestDownloadDocumentFileScan(documentId, "SCAN_"+documentName, i)}><u>{translate('document.download')}</u></a></td>
+                                                    </tr>
+                                                }) : <tr><td colSpan={7}>{translate('document.no_version')}</td></tr>
                                             }
                                         </tbody>
                                     </table>
@@ -353,63 +222,79 @@ class DocumentInformation extends Component {
                             </div>
                         </fieldset>
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('document.relationship.title')}</legend>
-                            <div className="form-group">
-                                <label>{translate('document.relationship.description')}<span className="text-red">*</span></label>
-                                <textarea type="text" className="form-control" value={documentRelationshipDescription} disabled />
-                            </div>
-                            <div className="form-group">
-                                <label>{translate('document.relationship.list')}<span className="text-red">*</span></label>
+                            <legend className="scheduler-border">{ translate('document.relationship.title') }</legend>
+                            <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                    <strong>{ translate('document.relationship.description') }&emsp; </strong>
+                                    {documentRelationshipDescription}
+                                </div>
+
+                                <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                    <strong>{ translate('document.relationship.list') }&emsp; </strong>
+                                    {documentRelationshipDocuments}
+                                </div>
+
+                            
+                            {/* <div className="form-group">
+                                <label>{ translate('document.relationship.list') }<span className="text-red">*</span></label>
                                 <SelectBox
                                     id="select-edit-documents-user-relationship-to-document"
                                     className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={relationshipDocs}
+                                    style={{width: "100%"}}
+                                    items = {relationshipDocs}
                                     value={documentRelationshipDocuments}
                                     multiple={true}
                                     disabled={true}
                                 />
-                            </div>
+                            </div> */}
                         </fieldset>
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('document.roles')}</legend>
-                            <SelectBox
+                            <legend className="scheduler-border">{ translate('document.roles') }</legend>
+                            <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                    <strong>{ translate('document.roles') }&emsp; </strong>
+                                    {documentRoles}
+                                </div>
+                            {/* <SelectBox
                                 id={`select-edit-user-document-users-see-permission-${documentId}`}
                                 className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={roleList}
+                                style={{width: "100%"}}
+                                items = {roleList}
                                 value={documentRoles}
                                 multiple={true}
                                 disabled={true}
-                            />
+                            /> */}
                         </fieldset>
 
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{translate('document.store.title')}</legend>
-                            <div className="form-group">
-                                <label>{translate('document.store.information')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" value={documentArchivedRecordPlaceInfo} disabled />
-                            </div>
-                            <div className="form-group">
-                                <label>{translate('document.store.organizational_unit_manage')}<span className="text-red">*</span></label>
+                            <legend className="scheduler-border">{ translate('document.store.title') }</legend>
+                            <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                    <strong>{ translate('document.store.information') }&emsp; </strong>
+                                    {documentArchivedRecordPlaceInfo}
+                                </div>
+                                <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                    <strong>{ translate('document.store.organizational_unit_manage') }&emsp; </strong>
+                                    {documentArchivedRecordPlaceOrganizationalUnit}
+                                </div>
+                            
+                            {/* <div className="form-group">
+                                <label>{ translate('document.store.organizational_unit_manage') }<span className="text-red">*</span></label>
                                 <SelectBox
                                     id={`select-edit-user-documents-organizational-unit-manage${documentId}`}
                                     className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={department.list.map(organ => { return { value: organ._id, text: organ.name } })}
+                                    style={{width: "100%"}}
+                                    items = {department.list.map(organ => {return {value: organ._id, text: organ.name}})}
                                     value={documentArchivedRecordPlaceOrganizationalUnit}
                                     multiple={false}
                                     disabled={true}
                                 />
-                            </div>
+                            </div> */}
                         </fieldset>
                     </form>
                 </DialogModal>
             </React.Fragment>
-        );
+         );
     }
 }
-
+ 
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
@@ -418,4 +303,4 @@ const mapDispatchToProps = {
     downloadDocumentFileScan: DocumentActions.downloadDocumentFileScan
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(DocumentInformation));
+export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(DocumentInformation) );

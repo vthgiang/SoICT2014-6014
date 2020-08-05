@@ -526,7 +526,25 @@ exports.importEmployees = async (req, res) => {
         let data;
         if (req.body.importType === 'Employee_Infor') {
             data = await EmployeeService.importEmployeeInfor(req.user.company._id, req.body.importData);
-        }
+        };
+        if (req.body.importType === 'Experience') {
+            data = await EmployeeService.importExperience(req.user.company._id, req.body.importData);
+        };
+        if (req.body.importType === 'Degree') {
+            data = await EmployeeService.importDegree(req.user.company._id, req.body.importData);
+        };
+        if (req.body.importType === 'Certificate') {
+            data = await EmployeeService.importCertificate(req.user.company._id, req.body.importData);
+        };
+        if (req.body.importType === 'Contract') {
+            data = await EmployeeService.importContract(req.user.company._id, req.body.importData);
+        };
+        if (req.body.importType === 'SocialInsuranceDetails') {
+            data = await EmployeeService.importSocialInsuranceDetails(req.user.company._id, req.body.importData);
+        };
+        if (req.body.importType === 'File') {
+            data = await EmployeeService.importFile(req.user.company._id, req.body.importData);
+        };
         if (data.errorStatus === true) {
             await LogError(req.user.email, 'IMPORT_EMPLOYEE', req.user.company);
             res.status(400).json({

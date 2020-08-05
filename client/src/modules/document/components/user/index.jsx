@@ -3,6 +3,9 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import UserDocumentsData from './documents';
 import DocumentUserHistoryStatistics from './history-statistics';
+import DocumentDownloaded from './history-statistics/DocumentDownloaded';
+import DocumentCommon from './history-statistics/DocumentCommon';
+import DocumentNew from './history-statistics/DocumentNew';
 
 class Document extends Component {
     constructor(props) {
@@ -15,15 +18,22 @@ class Document extends Component {
             <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">
                     <li className="active"><a href="#user-documents" data-toggle="tab">{translate('document.data')}</a></li>
-                    <li><a href="#user-document-history-statistics" data-toggle="tab">{translate('document.history_report')}</a></li>
-                        
+                    <li><a href="#user-document-history-document-downloaded" data-toggle="tab">Những văn bản đã download</a></li>
+                    <li><a href="#user-document-history-statistics" data-toggle="tab">Những tài liệu văn bản phổ biến</a></li>
+                    <li><a href="#user-document-history-statistics" data-toggle="tab">Tài liệu mới nhất</a></li>
                 </ul>
                 <div className="tab-content">
                     <div className="tab-pane active" id="user-documents">
                         <UserDocumentsData/>
                     </div>
-                    <div className="tab-pane" id="user-document-history-statistics">
-                        <DocumentUserHistoryStatistics/>
+                    <div className="tab-pane" id="user-document-history-document-downloaded">
+                        <DocumentDownloaded/>
+                    </div>
+                    <div className="tab-pane" id="user-document-history-document-common">
+                        <DocumentCommon/>
+                    </div>
+                    <div className="tab-pane" id="user-document-history-document-new">
+                        <DocumentNew/>
                     </div>
                 </div>
             </div>

@@ -108,7 +108,7 @@ class EducationProgramCreateForm extends Component {
         const { name, programId, organizationalUnit, position, errorOnProgramName, errorOnProgramId,
             errorOnOrganizationalUnit, errorOnPosition } = this.state;
         const { list } = this.props.department;
-        var listPosition = [];
+        let listPosition = [];
         if (this.state.organizationalUnit !== null) {
             let organizationalUnit = this.state.organizationalUnit;
             organizationalUnit.forEach(u => {

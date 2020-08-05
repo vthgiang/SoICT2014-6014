@@ -43,11 +43,9 @@ const TaskReportSchema = new Schema({
     },
     startDate: {
         type: Date,
-        required: true
     },
     endDate: {
         type: Date,
-        required: true
     },
     configurations: [{
         code: { // Mã thuộc tính công việc dùng trong công thức

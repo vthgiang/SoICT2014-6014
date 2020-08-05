@@ -87,7 +87,27 @@ exports.getTaskEvaluations = async (data) => {
         },
     ];
 
+    // if (data.taskInformations) {
+    //     console.log('a');
+    //     data.taskInformations.forEach(item => {
+    //         let filter = JSON.parse(item).filter; // p1> 90000
+    //         // if (JSON.parse(item).type === "Number" && JSON.parse(item).code === "p1") {
+    //         condition = [
+    //             ...condition,
+    //             filterDate,
+    //             { $unwind: "$taskInformations" },
+    //             // { $match: { "taskInformations.type": "Number" } },
+    //             // { $match: { "taskInformations.code": "p1" } },
+    //             { $match: { "taskInformations.value": { $gte: 90000 } } }
+
+    //         ]
+    //         // }
+    //     })
+    // }
+    // console.log('asd', condition);
+
     if (taskStatus === 0) { // Lọc tất cả các coong việc không theo đặc thù
+        console.log('b');
         condition = [
             ...condition,
             filterDate
@@ -96,6 +116,7 @@ exports.getTaskEvaluations = async (data) => {
     } else
         // nếu không lọc theo người thực hiện và người phê duyệt
         if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
+            console.log('c');
             condition = [
                 { $match: { status: taskStatus } },
                 ...condition,
@@ -103,6 +124,7 @@ exports.getTaskEvaluations = async (data) => {
             ]
 
         } else {
+            console.log('d');
             condition = [
                 { $match: { status: taskStatus } },
                 { $match: { responsibleEmployees: { $in: [...responsible.map(x => mongoose.Types.ObjectId(x.toString()))] } } },
@@ -112,12 +134,9 @@ exports.getTaskEvaluations = async (data) => {
             ]
         }
 
-    let result = await Task.aggregate(condition);
-    console.log('result', result);
-    data.taskInformations.map(item => {
-        console.log('data', JSON.parse(item));
-    })
 
+    let result = await Task.aggregate(condition);
+    console.log('result', result)
     return result;
 
 }
@@ -189,7 +208,11 @@ exports.getTaskById = async (id, userId) => {
             }
         }
     }
-    if (!flag) {    // Trưởng đơn vị được phép xem thông tin công việc
+    if (task.creator._id.equals(userId)) {
+        flag = 1;
+    }
+
+    if (!flag) {// Trưởng đơn vị được phép xem thông tin công việc
 
         // Tìm danh sách các role mà user kế thừa phân quyền
         let role = await UserRole.find({ userId: userId });
@@ -202,6 +225,8 @@ exports.getTaskById = async (id, userId) => {
             let roles = await Role.findById(listRole[i]);
             company[i] = roles.company;
         }
+
+        // Tìm cây đơn vị mà đơn vị gốc có userId có role deans
         let tree = [];
         let k = 0;
         for (let i = 0; i < listRole.length; i++) {
@@ -213,7 +238,9 @@ exports.getTaskById = async (id, userId) => {
                 k++;
             }
         }
-        for (let i = 0; i < listRole.length; i++) {
+
+        // Duyệt cây đơn vị, kiểm tra xem mỗi đơn vị có id trùng với id của phòng ban công việc
+        for (let i = 0; i < listRole.length; i++){
             let rol = listRole[i];
             if (!flag) {
                 for (let j = 0; j < tree.length; j++) {
@@ -228,9 +255,7 @@ exports.getTaskById = async (id, userId) => {
             }
         }
     }
-    if (task.creator._id.equals(userId)) {
-        flag = 1;
-    }
+    
     if (flag === 0) {
         return {
             "info": true

@@ -183,7 +183,6 @@
 }
 .files-list-item-preview-image {
     width: 85%;
-    /* //height: 100px; */
     display: inline-block;
     border: 1px solid #000;
 }
@@ -217,9 +216,10 @@
     line-height: 15px;
     font-weight: 600;
 }
-/* #taskAction > div:nth-child(1) > div > div > ul > li {
-    margin-left: 40px;
-} */
+
+
+
+
 #actionComment > div:nth-child(1) > div > div:nth-child(4) > ul > li {
     margin-left: 40px;
 }
@@ -232,4 +232,13 @@
 }
 #documentTask > div.box-body.table-responsive> table > tr > th:nth-child(2) {
     width: 280px;
+}
+
+
+
+.item-box {
+    line-height: 2.2;
+    border-bottom: 1px solid #f4f4f4;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
