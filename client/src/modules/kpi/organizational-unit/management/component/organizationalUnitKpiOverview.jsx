@@ -5,7 +5,7 @@ import { managerActions } from '../redux/actions';
 import { ModalDetailKPI } from './organizationalUnitKpiDetailModal';
 import { ModalCopyKPIUnit } from './organizationalUnitKpiCopyModal';
 import { withTranslate } from 'react-redux-multilingual';
-import { PaginateBar, DataTableSetting, DialogModal, ErrorLabel, DatePicker, SelectBox, ToolTip } from '../../../../../common-components';
+import { DataTableSetting, ErrorLabel, DatePicker, SelectBox, ExportExcel } from '../../../../../common-components';
 import Swal from 'sweetalert2';
 
 class KPIUnitManager extends Component {
@@ -169,12 +169,70 @@ class KPIUnitManager extends Component {
         return (deanCurrentUnit && deanCurrentUnit.includes(currentRole));
     }
 
+    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    convertDataToExportData = (data,unitName) => {
+        let fileName = "Bảng quản lý KPI đơn vị "+ (unitName?unitName:"");
+        if (data) {           
+            data = data.map((x, index) => {
+               
+                let fullName =x.creator.name;
+                let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
+                let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
+                let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);
+                let d = new Date(x.date),
+                    month = '' + (d.getMonth() + 1),
+                    year = d.getFullYear();
+                let status = this.checkStatusKPI(x.status);
+                let numberTarget =parseInt(x.kpis.length);               
+
+                return {
+                    STT: index + 1,
+                    fullName: fullName,                   
+                    automaticPoint: automaticPoint,
+                    status: status,
+                    employeePoint: employeePoint,
+                    approverPoint: approverPoint,
+                    month: month,
+                    year: year,
+                    numberTarget:numberTarget                   
+                };
+            })
+        }
+
+        let exportData = {
+            fileName: fileName,
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "fullName", value: "Người tạo" },
+                                { key: "month", value: "Tháng" },
+                                { key: "year", value: "Năm" },
+                                { key: "status", value: "Trạng thái" },                                
+                                { key: "numberTarget", value: "Số lượng mục tiêu" },                                
+                                { key: "automaticPoint", value: "Điểm tự động" },
+                                { key: "employeePoint", value: "Điểm tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm được đánh giá" }
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData;        
+       
+    }
+
     render() {
         const { startDate, endDate, status, errorOnDate, infosearch } = this.state;
         const { user, managerKpiUnit, translate } = this.props;
 
         var listkpi, currentKPI, currentTargets, kpiApproved, datachat1, targetA, targetC, targetOther, misspoint;
-        var unitList, currentUnit, userdepartments;
+        var unitList, currentUnit, userdepartments, exportData;
 
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (user.organizationalUnitsOfUser) {
@@ -184,6 +242,7 @@ class KPIUnitManager extends Component {
                 || item.viceDeans.includes(this.state.currentRole)
                 || item.employees.includes(this.state.currentRole));
         }
+
         if (managerKpiUnit.kpis) {
             listkpi = managerKpiUnit.kpis;
             if (listkpi && listkpi.length !== 0) {
@@ -203,8 +262,12 @@ class KPIUnitManager extends Component {
                 }).reverse();
                 misspoint = kpiApproved.map(item => {
                     return { label: this.formatDate(item.date), y: (100 - item.result) }
-                }).reverse();
+                }).reverse();                
             };
+        }
+
+        if(userdepartments&&listkpi){
+            exportData =this.convertDataToExportData(listkpi,userdepartments.department);
         }
 
         return (
@@ -306,6 +369,7 @@ class KPIUnitManager extends Component {
                                 }
                             </tbody>
                         </table>
+                        {exportData&&<ExportExcel id="export-unit-kpi-management-overview" exportData={exportData} style={{ marginRight: 15, marginTop:5 }} />}
                     </div>
                 </div>
             </React.Fragment>
