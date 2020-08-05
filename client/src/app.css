@@ -376,14 +376,6 @@ input[type=range]:focus::-ms-fill-upper {
 
 
 
-
-.chart-display {
-    overflow-x: scroll;
-}
-
-
-
-
 /* React-Toastify */
 .Toastify__progress-bar {
     height: 3px;
@@ -413,9 +405,9 @@ input[type=range]:focus::-ms-fill-upper {
     width: 320px;
 }
 .Toastify__toast {
+    min-height: 75px;
     padding: 5px !important;
     position: relative;
-    width: 100%;
     cursor: pointer;
     border-radius: 3px;
     font-size: 13px;
