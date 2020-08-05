@@ -305,11 +305,15 @@ function getSubTask(taskId) {
  */
 function getTasksByUser(data) {
     var id = getStorage("userId")
-    var currentRole = getStorage("currentRole");
     return sendRequest({
         url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
-        params: { userId: id, type: 'all', currentRole: currentRole, data: data }
+        params: {
+            userId: id,
+            type: 'all',
+            organizationUnitId: data.organizationUnitId,
+            data: data.type
+        }
     }, false, true, 'task.task_management');
 }
 

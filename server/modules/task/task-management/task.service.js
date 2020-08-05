@@ -221,7 +221,7 @@ exports.getTaskById = async (id, userId) => {
         }
 
         // Duyệt cây đơn vị, kiểm tra xem mỗi đơn vị có id trùng với id của phòng ban công việc
-        for (let i = 0; i < listRole.length; i++){
+        for (let i = 0; i < listRole.length; i++) {
             let rol = listRole[i];
             if (!flag) {
                 for (let j = 0; j < tree.length; j++) {
@@ -236,7 +236,7 @@ exports.getTaskById = async (id, userId) => {
             }
         }
     }
-    
+
     if (flag === 0) {
         return {
             "info": true
@@ -932,7 +932,6 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
     if (startDateAfter) {
         let startTimeAfter = startDateAfter.split("-");
         let start = new Date(startTimeAfter[0] - 1, startTimeAfter[1], 1);
-
         keySearch = {
             ...keySearch,
             startDate: {
@@ -944,7 +943,6 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
     if (endDateBefore) {
         let endTimeBefore = endDateBefore.split("-");
         let end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
-
         keySearch = {
             ...keySearch,
             endDate: {
@@ -952,10 +950,8 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
             }
         }
     }
-
     organizationUnitTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
         .populate({ path: "organizationalUnit creator parent" });
-
     return {
         "tasks": organizationUnitTasks
     };
@@ -1110,8 +1106,9 @@ exports.getSubTask = async (taskId) => {
  */
 
 exports.getTasksByUser = async (data) => {
-    if(data.data == "user"){
-        var tasks = await Task.find({
+    var tasks = [];
+    if (data.data == "user") {
+        tasks = await Task.find({
             $or: [
                 { responsibleEmployees: data.userId },
                 { accountableEmployees: data.userId },
@@ -1122,15 +1119,20 @@ exports.getTasksByUser = async (data) => {
         })
     }
 
-    if(data.data == "organizationUnit"){
-        var organizationalUnit = await OrganizationalUnit.findOne( 
-            { 'deans': data.currentRole },
-         )
+    if (data.data == "organizationUnit") {
+        for (let i in data.organizationUnitId) {
+            var organizationalUnit = await OrganizationalUnit.findOne({ _id: data.organizationUnitId[i] })
+            var test = await Task.find(
+                { organizationalUnit: organizationalUnit._id, status: "Inprocess" },
+            )
 
-        var tasks = await Task.find(
-            {organizationalUnit: organizationalUnit._id, status: "Inprocess"},
-        )
+            for (let j in test) {
+                tasks.push(test[j]);
+            }
+        }
     }
+
+
 
     var nowdate = new Date();
     var tasksexpire = [], deadlineincoming = [], test;
