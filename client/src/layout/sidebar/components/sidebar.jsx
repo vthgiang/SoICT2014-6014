@@ -59,6 +59,10 @@ class SideBar extends Component {
             path14: "/manage-usage-asset", //Quản lý  sử dụng tài sản
             path15: "/manage-incident-asset", //Quản lý lịch sự cố tài sản
         };
+        const url2 = {
+            path1: "/dashboad-material",
+            path2: "/material-manager",
+        };
 
         const { translate, auth } = this.props;
         const { user, links } = this.props.auth;
@@ -201,6 +205,36 @@ class SideBar extends Component {
                                     icon='fa fa-file-text'
                                 />
                             }
+                            {
+                                (this.checkURL(url2.path1, links) === true || this.checkURL(url2.path2, links) === true) &&
+                                <li className="treeview" >
+                                    <a href="">
+                                        <i className="fa fa-bank" /> <span>{translate(`menu.manage_warehouse`)}</span>
+                                        <span className="pull-right-container">
+                                            <i className="fa fa-angle-left pull-right" />
+                                        </span>
+                                    </a>
+                                    <ul className="treeview-menu">
+                                        {this.checkURL(url2.path1, links) === true &&
+                                            <li className={window.location.pathname === url2.path1 ? "active" : ""}>
+                                                <Link to={url2.path1}>
+                                                    <i className="fa fa-dashboard" />
+                                                    {translate(`menu.dashboard_material`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                        {this.checkURL(url2.path2, links) === true &&
+                                            <li className={window.location.pathname === url2.path2 ? "active" : ""}>
+                                                <Link to={ url2.path2 }>
+                                                    <i className="fa fa-address-card" />
+                                                    {translate(`menu.material_manager`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+
                             {
                                 this.checkURL('/customer', links) === true &&
                                 <Item
@@ -497,6 +531,8 @@ class SideBar extends Component {
                                 </li>
                             }
 
+                            {/* quản lý kho */}
+                            
                             {/* kpi-management */}
                             {
                                 (this.checkURL('/kpi-units/create', links) === true || this.checkURL('/kpi-personals/create', links) === true || this.checkURL('/kpi-personals/overview', links) === true) &&

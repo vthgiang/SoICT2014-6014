@@ -84,11 +84,18 @@ class DomainOfTaskResultsChart extends Component {
 
         if (nextProps.units !== this.props.units || nextProps.callAction !== this.state.callAction || nextState.startMonth !== this.state.startMonth || nextState.endMonth !== this.state.endMonth) {
             if (this.props.TaskOrganizationUnitDashboard) {
-                // console.log("o day dong 86:=======================");
-                // console.log("units:=======================", this.props.units);
                 let idsUnit = this.props.units ? this.props.units : "[]";
-                // console.log(';;;;;;;;;;;;;;;;;', idsUnit)
-                await this.props.getTaskInOrganizationUnitByMonth("[]", this.state.currentMonth, this.state.nextMonth);
+               
+                await this.setState(state => {
+                    return {
+                        ...state,
+                        startMonth: nextState.startMonth,
+                        endMonth: nextState.endMonth,
+                        
+                    }
+                })
+
+                await this.props.getTaskInOrganizationUnitByMonth(idsUnit, nextState.startMonth, nextState.endMonth);
             }
             else {
                 await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.startMonth, nextState.endMonth, null, null, this.state.aPeriodOfTime);
@@ -123,9 +130,8 @@ class DomainOfTaskResultsChart extends Component {
 
         if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
             if (this.props.TaskOrganizationUnitDashboard) { // neu component duoc goi tu task organization unit
-                // console.log("goi den      daay roi nhe2")
                 let idsUnit = this.props.units ? this.props.units : "[]";
-                await this.props.getTaskInOrganizationUnitByMonth("[]", this.state.startMonth, this.state.endMonth);
+                await this.props.getTaskInOrganizationUnitByMonth(idsUnit, this.state.startMonth, this.state.endMonth);
             }
             else {
                 await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth, null, null, this.state.aPeriodOfTime);
@@ -147,7 +153,6 @@ class DomainOfTaskResultsChart extends Component {
             // Kiểm tra tasks đã được bind vào props hay chưa
             if (this.props.TaskOrganizationUnitDashboard) {
                 if (!nextProps.tasks.organizationUnitTasks) {
-                    console.log("o day dong 150:=======================")
                     return false;
                 }
 
@@ -183,7 +188,6 @@ class DomainOfTaskResultsChart extends Component {
 
             return false;
         } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
-            console.log("\n\n\n\n\n\n\n\n\n\n\n\ngoi den dong 186")
             this.domainChart();
 
             this.setState(state => {
@@ -258,7 +262,6 @@ class DomainOfTaskResultsChart extends Component {
 
     // Hàm lọc các công việc theo từng tháng
     filterTasksByMonth = (currentMonth, nextMonth) => {
-        console.log('goi den filter tasks');
         let maxResults = [], minResults = [], maxResult, minResult;
         let listTask;
         if (this.props.TaskOrganizationUnitDashboard) {
@@ -281,13 +284,12 @@ class DomainOfTaskResultsChart extends Component {
 
         if (listTask) {
             listTask = this.props.TaskOrganizationUnitDashboard ? listTask.tasks : listTask; // neu la listTask cua organizationUnit
-            console.log('\n\n\n', listTask)
             listTask.map(task => {
                 task.evaluations.filter(evaluation => {
                     if (new Date(evaluation.date) < new Date(nextMonth) && new Date(evaluation.date) >= new Date(currentMonth)) {
                         return 1;
                     }
-
+                    
                     return 0;
                 }).map(evaluation => {
                     evaluation.results.filter(result => {
@@ -315,7 +317,6 @@ class DomainOfTaskResultsChart extends Component {
         } else {
             minResult = Math.min.apply(Math, minResults);
         }
-
         return {
             'month': new Date(currentMonth),
             'max': maxResult,
@@ -324,7 +325,6 @@ class DomainOfTaskResultsChart extends Component {
     }
 
     setDataDomainChart = () => {
-        console.log('goi den set data');
         const { translate } = this.props;
         const { startMonth, endMonth } = this.state;
 
@@ -366,7 +366,6 @@ class DomainOfTaskResultsChart extends Component {
 
     domainChart = () => {
         this.removePreviosChart();
-        console.log('goi den domain chart');
         let dataChart = this.setDataDomainChart();
 
         this.chart = c3.generate({
@@ -478,9 +477,6 @@ class DomainOfTaskResultsChart extends Component {
                     </section>
                 }
 
-
-
-
                 <section className="col-sm-12 col-xs-12">
                     <div ref="chart"></div>
                 </section>
@@ -493,6 +489,7 @@ function mapState(state) {
     const { tasks } = state;
     return { tasks }
 }
+
 const actions = {
     getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
     getAccountableTaskByUser: taskManagementActions.getAccountableTaskByUser,

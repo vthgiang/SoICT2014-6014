@@ -240,7 +240,7 @@ exports.getTaskById = async (id, userId) => {
         }
 
         // Duyệt cây đơn vị, kiểm tra xem mỗi đơn vị có id trùng với id của phòng ban công việc
-        for (let i = 0; i < listRole.length; i++){
+        for (let i = 0; i < listRole.length; i++) {
             let rol = listRole[i];
             if (!flag) {
                 for (let j = 0; j < tree.length; j++) {
@@ -255,7 +255,7 @@ exports.getTaskById = async (id, userId) => {
             }
         }
     }
-    
+
     if (flag === 0) {
         return {
             "info": true
@@ -950,8 +950,11 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
 
     if (startDateAfter) {
         let startTimeAfter = startDateAfter.split("-");
-        let start = new Date(startTimeAfter[0] - 1, startTimeAfter[1], 1);
-
+        console.log("\n", startTimeAfter[0], startTimeAfter[1])
+        let start;
+        if (startTimeAfter[0] > 12) start = new Date(startTimeAfter[0], startTimeAfter[1] - 1, 1);
+        else start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
+        console.log('\n\nsttart ', start)
         keySearch = {
             ...keySearch,
             startDate: {
@@ -963,7 +966,6 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
     if (endDateBefore) {
         let endTimeBefore = endDateBefore.split("-");
         let end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
-
         keySearch = {
             ...keySearch,
             endDate: {
@@ -971,9 +973,8 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
             }
         }
     }
-
     organizationUnitTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
-        .populate({ path: "organizationalUnit creator parent" });
+        .populate({ path: "organizationalUnit creator parent responsibleEmployees" });
 
     return {
         "tasks": organizationUnitTasks
@@ -1129,15 +1130,34 @@ exports.getSubTask = async (taskId) => {
  */
 
 exports.getTasksByUser = async (data) => {
-    var tasks = await Task.find({
-        $or: [
-            { responsibleEmployees: data },
-            { accountableEmployees: data },
-            { consultedEmployees: data },
-            { informedEmployees: data }
-        ],
-        status: "Inprocess"
-    })
+    var tasks = [];
+    if (data.data == "user") {
+        tasks = await Task.find({
+            $or: [
+                { responsibleEmployees: data.userId },
+                { accountableEmployees: data.userId },
+                { consultedEmployees: data.userId },
+                { informedEmployees: data.userId }
+            ],
+            status: "Inprocess"
+        })
+    }
+
+    if (data.data == "organizationUnit") {
+        for (let i in data.organizationUnitId) {
+            var organizationalUnit = await OrganizationalUnit.findOne({ _id: data.organizationUnitId[i] })
+            var test = await Task.find(
+                { organizationalUnit: organizationalUnit._id, status: "Inprocess" },
+            )
+
+            for (let j in test) {
+                tasks.push(test[j]);
+            }
+        }
+    }
+
+
+
     var nowdate = new Date();
     var tasksexpire = [], deadlineincoming = [], test;
     for (let i in tasks) {

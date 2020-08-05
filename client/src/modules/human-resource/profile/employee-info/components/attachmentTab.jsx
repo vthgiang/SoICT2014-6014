@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { LOCAL_SERVER_API } from '../../../../../env';
 
+import { AuthActions } from '../../../../auth/redux/actions';
 class AttachmentTab extends Component {
     constructor(props) {
         super(props);
@@ -19,6 +19,11 @@ class AttachmentTab extends Component {
         } else {
             return null;
         }
+    }
+
+    requestDownloadFile = (e, path, fileName) => {
+        e.preventDefault()
+        this.props.downloadFile(path, fileName)
     }
 
     render() {
@@ -55,8 +60,8 @@ class AttachmentTab extends Component {
                                             <td>{translate(`manage_employee.${x.status}`)}</td>
                                             <td>{!x.urlFile ? translate('manage_employee.no_files') :
                                                 <a className='intable'
-                                                    href={LOCAL_SERVER_API + x.urlFile} target="_blank"
-                                                    download={x.name}>
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={(e) => this.requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
                                                     <i className="fa fa-download"> &nbsp;Download!</i>
                                                 </a>
                                             }</td>
@@ -75,5 +80,9 @@ class AttachmentTab extends Component {
     }
 };
 
-const tabAttachments = connect(null, null)(withTranslate(AttachmentTab));
+const actionCreators = {
+    downloadFile: AuthActions.downloadFile,
+};
+
+const tabAttachments = connect(null, actionCreators)(withTranslate(AttachmentTab));
 export { tabAttachments as AttachmentTab };
