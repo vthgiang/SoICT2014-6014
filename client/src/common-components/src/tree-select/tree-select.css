@@ -43,6 +43,10 @@
   margin-left: 2.2rem;
 }
 
+.qlcv li.node.leaf > i{
+  display: none;
+}
+
 .qlcv .node.focused {
   background-color: transparent;
 }
