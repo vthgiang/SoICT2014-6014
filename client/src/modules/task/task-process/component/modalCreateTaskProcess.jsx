@@ -76,7 +76,7 @@ class ModalCreateTaskProcess extends Component {
             customModule
          ],
          moddleExtensions: {
-            qa: qaExtension
+            // qa: qaExtension
          }
       });
       this.modeling = this.modeler.get('modeling');
