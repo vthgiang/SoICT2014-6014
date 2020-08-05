@@ -12,6 +12,10 @@ import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
 import { TaskProcessActions } from "../redux/actions";
 
+//bpmn-nyan
+import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
+import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
+
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
 PaletteProvider.prototype.getPaletteEntries = function (element) {
@@ -30,7 +34,6 @@ class ModalCreateTaskByProcess extends Component {
     constructor(props) {
         super(props);
         let { data } = this.props;
-        console.log('clrscr',data);
         this.state = {
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
@@ -40,13 +43,19 @@ class ModalCreateTaskByProcess extends Component {
             selectedEdit: 'info',
             zlevel: 1,
         }
-        this.modeler = new BpmnModeler();
+        this.modeler = new BpmnModeler({
+            additionalModules: [
+               nyanDrawModule,
+               nyanPaletteModule
+            ]
+         });
         this.generateId = 'createtaskbyprocess';
         this.initialDiagram = data.xmlDiagram;
     }
 
     componentDidMount() {
         this.props.getDepartment();
+        this.props.getAllUsersWithRole();
         let { user } = this.props;
         let defaultUnit = user && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.find(item =>
             item.dean === this.state.currentRole
@@ -81,7 +90,6 @@ class ModalCreateTaskByProcess extends Component {
                 }
                 info[`${infoTask[i].code}`] = infoTask[i];
             }
-            console.log('info', info);
             return {
                 ...prevState,
                 idProcess: nextProps.idProcess,
@@ -234,7 +242,6 @@ class ModalCreateTaskByProcess extends Component {
                 viewer: value,
             }
         })
-        console.log('state', this.state);
     }
 
     handleChangeManager = async (value) => {
@@ -245,7 +252,6 @@ class ModalCreateTaskByProcess extends Component {
                 manager: value,
             }
         })
-        console.log('state', this.state);
     }
 
 
@@ -253,11 +259,10 @@ class ModalCreateTaskByProcess extends Component {
 
     interactPopup = (event) => {
         var element = event.element;
-        console.log("element||state", element, this.state);
         let nameStr = element.type.split(':');
         this.setState(state => {
             if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' ||
-                element.type === "bpmn:SequenceFlow" || element.type === "bpmn:IntermediateThrowEvent"
+                element.type === "bpmn:SequenceFlow" || element.type === "bpmn:ServiceTask"
                 // || element.type === 'bpmn:EndEvent' || element.type === "bpmn:StartEvent" 
             ) {
                 if (!state.info[`${element.businessObject.id}`] ||
@@ -285,7 +290,6 @@ class ModalCreateTaskByProcess extends Component {
 
     deleteElements = (event) => {
         var element = event.element;
-        console.log(element);
         this.setState(state => {
             delete state.info[`${state.id}`];
             return {
@@ -293,7 +297,6 @@ class ModalCreateTaskByProcess extends Component {
                 showInfo: false,
             }
         })
-        console.log(this.state);
     }
 
     handleUndoDeleteElement = (event) => {
@@ -307,7 +310,6 @@ class ModalCreateTaskByProcess extends Component {
     save = async () => {
         let xmlStr;
         this.modeler.saveXML({ format: true }, function (err, xml) {
-            console.log(xml);
             xmlStr = xml;
         });
         await this.setState(state => {
@@ -424,7 +426,6 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     handleZoomReset = () => {
-        console.log('click zoom reset');
 
         let canvas = this.modeler.get('canvas');
         canvas.zoom('fit-viewport');
@@ -449,10 +450,8 @@ class ModalCreateTaskByProcess extends Component {
         let xmlStr;
         this.modeler.saveXML({ format: true }, function (err, xml) {
             if (err) {
-                console.log(err);
             }
             else {
-                console.log(xml);
                 xmlStr = xml;
             }
         });
@@ -465,15 +464,15 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     render() {
-        const { translate, role } = this.props;
+        const { translate, role,user } = this.props;
         const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedEdit } = this.state;
         const { listOrganizationalUnit } = this.props
-
+        // let listUser = user.usersWithRole
+        // user.usersWithRole.filter(x => )
         let listRole = [];
         if (role && role.list.length !== 0) listRole = role.list;
         let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
             .map(item => { return { text: item.name, value: item._id } });
-
         return (
             <React.Fragment>
                 <DialogModal
@@ -509,7 +508,7 @@ class ModalCreateTaskByProcess extends Component {
                                                 </button>
                                             </li>
                                             <li>
-                                                <button href title="Zoom out" onClick={this.handleZoomOut}>
+                                                <button title="Zoom out" onClick={this.handleZoomOut}>
                                                     <i className="fa fa-minus"></i>
                                                 </button>
                                             </li>
@@ -561,6 +560,7 @@ const actionCreators = {
     createXmlDiagram: TaskProcessActions.createXmlDiagram,
     getXmlDiagramById: TaskProcessActions.getXmlDiagramById,
     editXmlDiagram: TaskProcessActions.editXmlDiagram,
+    getAllUsersWithRole: UserActions.getAllUsersWithRole
 };
 const connectedModalCreateProcess = connect(mapState, actionCreators)(withTranslate(ModalCreateTaskByProcess));
 export { connectedModalCreateProcess as ModalCreateTaskByProcess };

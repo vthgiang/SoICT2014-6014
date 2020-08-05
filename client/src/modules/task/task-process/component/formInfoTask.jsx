@@ -116,7 +116,7 @@ class FormInfoTask extends Component {
                 listTemp.push({ value: item._id, text: item.name })
             })
         }
-
+        
         return (
             <div>
                 <form>

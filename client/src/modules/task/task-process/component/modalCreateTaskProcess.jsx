@@ -14,8 +14,8 @@ import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
 import { TaskProcessActions } from "../redux/actions";
 import { DepartmentActions } from "../../../super-admin/organizational-unit/redux/actions";
-
-
+import qaExtension from './tt.json'
+import customModule from './custom'
 //bpmn-nyan
 import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
 import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
@@ -31,6 +31,7 @@ PaletteProvider.prototype.getPaletteEntries = function (element) {
    delete entries['create.group'];
    delete entries['create.participant-expanded'];
    delete entries['create.intermediate-event'];
+   delete entries['create.task'];
    return entries;
 }
 const initialDiagram =
@@ -72,8 +73,12 @@ class ModalCreateTaskProcess extends Component {
       this.modeler = new BpmnModeler({
          additionalModules: [
             nyanDrawModule,
-            nyanPaletteModule
-         ]
+            nyanPaletteModule,
+            customModule
+         ],
+         moddleExtensions: {
+            qa: qaExtension
+         }
       });
       this.modeling = this.modeler.get('modeling');
       this.generateId = "createprocess"
@@ -228,17 +233,20 @@ class ModalCreateTaskProcess extends Component {
    }
    interactPopup = (event) => {
       let element = event.element;
+      console.log(element)
       let { department } = this.props
       let source = [];
       let destination = []
       element.incoming.forEach(x => {
          source.push(x.source.businessObject.name)
       })
-      console.log(source)
+
       element.outgoing.forEach(x => {
          destination.push(x.target.businessObject.name)
       })
-      console.log(destination)
+      // this.modeler.setAttribute(this.modeler.get('elementRegistry').get(this.state.id),{
+      //    accountable: 'New name'
+      //  });
       let nameStr = element.type.split(':');
       this.setState(state => {
          if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process' && element.type !== 'bpmn:StartEvent' && element.type !== 'bpmn:EndEvent' && element.type !== 'bpmn:SequenceFlow') {
@@ -453,7 +461,6 @@ class ModalCreateTaskProcess extends Component {
       })
    }
 
-
    handleChangeViewer = async (value) => {
       await this.setState(state => {
 
@@ -462,7 +469,6 @@ class ModalCreateTaskProcess extends Component {
             viewer: value,
          }
       })
-      console.log('state', this.state);
    }
 
    handleChangeManager = async (value) => {
@@ -473,7 +479,6 @@ class ModalCreateTaskProcess extends Component {
             manager: value,
          }
       })
-      console.log('state', this.state);
    }
 
    render() {
@@ -582,12 +587,12 @@ class ModalCreateTaskProcess extends Component {
                                                 </button>
                                              </li>
                                              <li>
-                                                <button title="Zoom in" onClick={this.handleZoomIn}>
+                                                <button style={{ cursor: "pointer" }} title="Zoom in" onClick={this.handleZoomIn}>
                                                    <i className="fa fa-plus"></i>
                                                 </button>
                                              </li>
                                              <li>
-                                                <button title="Zoom out" onClick={this.handleZoomOut}>
+                                                <button style={{ cursor: "pointer" }} title="Zoom out" onClick={this.handleZoomOut}>
                                                    <i className="fa fa-minus"></i>
                                                 </button>
                                              </li>

@@ -3,7 +3,7 @@ import { UserConstants } from "./constants";
 var findIndex = (array, id) => {
     var result = -1;
     array.forEach((value, index) => {
-        if(value._id === id){
+        if (value._id === id) {
             result = index;
         }
     });
@@ -12,7 +12,7 @@ var findIndex = (array, id) => {
 
 const initState = {
     list: [],
-    searchUses:[],
+    searchUses: [],
     listPaginate: [],
     totalDocs: 0,
     limit: 0,
@@ -60,45 +60,45 @@ export function user(state = initState, action) {
                 list: action.payload,
                 isLoading: false
             };
-        case  UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_REQUEST:
+        case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_REQUEST:
             return {
                 loading: true,
                 isLoading: true
             };
-        
-        case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_SUCCESS:      
-        return {
-            ...state,
-            loading: false,
-            employees: action.payload,
-            isLoading: false
-        };
-    
+
+        case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                employees: action.payload,
+                isLoading: false
+            };
+
         case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ROLE_FAILURE:
-        return { 
-            error: action.payload,
-            isLoading: false
-        };
-        case  UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_REQUEST:
+            return {
+                error: action.payload,
+                isLoading: false
+            };
+        case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_REQUEST:
             return {
                 loading: true,
                 isLoading: true
             };
-        
-        case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_SUCCESS:      
-        return {
-            ...state,
-            loading: false,
-            employees: action.payload,
-            isLoading: false
-        };
-    
+
+        case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                employees: action.payload,
+                isLoading: false
+            };
+
         case UserConstants.GET_ALL_EMPLOYEE_OF_UNIT_BY_ID_FAILURE:
-        return { 
-            error: action.payload,
-            isLoading: false
-        };
-        
+            return {
+                error: action.payload,
+                isLoading: false
+            };
+
         case UserConstants.GET_USERS_PAGINATE_SUCCESS:
             if (action.payload.searchUses) {
                 return {
@@ -122,13 +122,13 @@ export function user(state = initState, action) {
                     isLoading: false
                 };
             }
-            
+
         case UserConstants.EDIT_USER_SUCCESS:
             index = findIndex(state.list, action.payload._id);
             indexPaginate = findIndex(state.listPaginate, action.payload._id);
 
             if (index !== -1) {
-                state.list[index]= action.payload;
+                state.list[index] = action.payload;
             };
 
             if (indexPaginate !== -1) {
@@ -279,51 +279,64 @@ export function user(state = initState, action) {
             };
 
         case UserConstants.GETDEPARTMENT_OFUSER_FAILURE:
-            return { 
+            return {
                 ...state,
                 error: action.error,
                 isLoading: false
             };
 
-        case  UserConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_REQUEST:
+        case UserConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_REQUEST:
             return {
                 ...state,
                 isLoading: true
             };
-        
-        case UserConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_SUCCESS:      
+
+        case UserConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_SUCCESS:
             return {
                 ...state,
                 usersOfChildrenOrganizationalUnit: action.payload,
                 isLoading: false
             };
-        
+
         case UserConstants.GET_ALL_USERS_OF_UNIT_AND_ITS_SUB_UNITS_FAILURE:
-            return { 
+            return {
                 error: action.payload,
                 isLoading: false
             };
-        
+
 
         case UserConstants.GET_ALL_USERS_IN_UNITS_OF_COMPANY_REQUEST:
-            return { 
+            return {
                 ...state,
-                isLoading:true
+                isLoading: true
             };
 
         case UserConstants.GET_ALL_USERS_IN_UNITS_OF_COMPANY_SUCCESS:
-            return { 
+            return {
                 ...state,
                 usersInUnitsOfCompany: action.payload,
                 isLoading: false
             };
 
         case UserConstants.GET_ALL_USERS_IN_UNITS_OF_COMPANY_FAILURE:
-            return { 
+            return {
                 error: action.payload,
                 isLoading: false
-            };             
-            
+            };
+        case UserConstants.GET_ALL_USERS_WITH_ROLE_REQUEST:
+            return {
+                isLoading: true
+            }
+        case UserConstants.GET_ALL_USERS_WITH_ROLE_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                usersWithRole: action.payload.data.content
+            }
+        case UserConstants.GET_ALL_USERS_WITH_ROLE_FAIL:
+            return {
+                isLoading: false
+            }
         default:
             return state;
     }
