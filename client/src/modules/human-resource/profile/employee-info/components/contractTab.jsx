@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { LOCAL_SERVER_API } from '../../../../../env';
 
 import { CourseActions } from '../../../../training/course/redux/actions';
+import { AuthActions } from '../../../../auth/redux/actions';
 
 class ContractTab extends Component {
     constructor(props) {
@@ -50,6 +50,11 @@ class ContractTab extends Component {
         return true
     }
 
+    requestDownloadFile = (e, path, fileName) => {
+        e.preventDefault()
+        this.props.downloadFile(path, fileName)
+    }
+
     render() {
         const { id, translate, course } = this.props;
         const { contracts, courses } = this.state;
@@ -78,8 +83,8 @@ class ContractTab extends Component {
                                             <td>{this.formatDate(x.endDate)}</td>
                                             <td>{!x.urlFile ? translate('manage_employee.no_files') :
                                                 <a className='intable'
-                                                    href={LOCAL_SERVER_API + x.urlFile} target="_blank"
-                                                    download={x.name}>
+                                                    style={{ cursor: "pointer" }}
+                                                    onClick={(e) => this.requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
                                                     <i className="fa fa-download"> &nbsp;Download!</i>
                                                 </a>
                                             }</td>
@@ -147,8 +152,10 @@ function mapState(state) {
     const { course } = state;
     return { course };
 };
+
 const actionCreators = {
     getListCourse: CourseActions.getListCourse,
+    downloadFile: AuthActions.downloadFile,
 };
 
 const tabContract = connect(mapState, actionCreators)(withTranslate(ContractTab));

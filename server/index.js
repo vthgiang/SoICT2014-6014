@@ -5,7 +5,9 @@ const bodyParser = require("body-parser");
 const cors = require('cors');
 const cookieParser = require("cookie-parser");
 const multer = require('multer');
-multer({ dest: 'upload/avatars' });
+multer({
+    dest: 'upload/avatars'
+});
 require('dotenv').config();
 
 
@@ -92,14 +94,14 @@ app.use('/upload/asset/pictures', express.static('upload/asset/pictures'));
 
 
 
-const db = process.env.DATABASE;// DB Config
+const db = process.env.DATABASE; // DB Config
 mongoose // Connect to MongoDB
     .connect(
         db, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true
-    }
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true
+        }
     )
     .then(() => console.log("MongoDB successfully connected"))
     .catch(err => console.log(err));
@@ -110,8 +112,8 @@ mongoose.set('useFindAndModify', false); // Global setting cho mongoose, không 
 global.isLog = false;
 const Logger = require('./models/system-admin/log.model');
 Logger.findOne({
-    name: 'log'
-})
+        name: 'log'
+    })
     .then(result => {
         result.status ? isLog = true : isLog = false;
     })
