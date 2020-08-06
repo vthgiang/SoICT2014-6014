@@ -207,8 +207,9 @@ class TasksSchedule extends Component {
 
   }
   getDurations() {
+
     const { tasks } = this.props;
-    console.log(tasks)
+    console.log("get duarationnnnnnnnnnnnnnnnnnn")
     var taskList, inprocessTasks;
     let durations = [];
     if (tasks) {
@@ -257,36 +258,47 @@ class TasksSchedule extends Component {
           }
         })
       }
+      if (inprocessTasks.length) {
+        // console.log(inprocessTasks[0].progress);
+        this.displayTaskProgress(inprocessTasks[0].progress);
+      }
     }
+
     return durations;
   }
 
 
 
-  displayTaskProgress = async () => {
+  displayTaskProgress = async (progress) => {
     let x = document.getElementsByClassName("rct-item");
+    // console.log('\n\n\n\n\n\n\n\n ', x);
     let d = document.createElement('div');
-    let { add } = this.state;
+    var { add } = this.state;
     d.setAttribute("id", "task-progress");
+
     var test = x[0];
+    console.log("dong 277")
     if (x[0]) {
+      console.log('dong 279');
+      // if (add) {
+      let offset = progress * x[0].offsetWidth / 100;
+      console.log(x[0]);
 
+      x[0].appendChild(d);
+      d.style.width = `${offset}px`
+      console.log('dong 284');
 
-
-      if (add) {
-        x[0].appendChild(d);
-        console.log('\n\n\n\n\n\n\n\nchay vao day');
-        await this.setState(state => {
-
-          return {
-            ...state,
-            add: false,
-          }
-        })
-      }
+      // this.setState(state => {
+      //   return {
+      //     ...state,
+      //     add: false,
+      //   }
+      // })
       console.log('rct-item', x[0]);
+      // }
 
     }
+
   }
 
 
@@ -350,6 +362,7 @@ class TasksSchedule extends Component {
     let task = tasks && tasks.task;
     let today = new Date();
     this.displayTaskProgress();
+    console.log('renđêrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
     return (
       <React.Fragment>
         <div className="box-body qlcv">
