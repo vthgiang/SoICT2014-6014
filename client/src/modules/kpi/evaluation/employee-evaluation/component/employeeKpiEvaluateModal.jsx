@@ -2,11 +2,11 @@ import { TaskDialog } from './taskImpotanceDialog';
 import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import { kpiMemberActions } from '../redux/actions';
-import { DataTableSetting,ExportExcel } from '../../../../../common-components';
+import { DataTableSetting, ExportExcel } from '../../../../../common-components';
 import { DialogModal } from '../../../../../common-components/index';
 import { ModalDetailTask } from '../../../../task/task-management/component/task-dashboard/modalDetailTask';
 import { withTranslate } from 'react-redux-multilingual';
-import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
+
 class EmployeeKpiEvaluateModal extends Component {
     constructor(props) {
         super(props);
@@ -14,7 +14,7 @@ class EmployeeKpiEvaluateModal extends Component {
         this.state = {
             organizationalUnit: "",
             content: "",
-            contentName :"",
+            contentName: "",
             name: "",
             description: "",
             point: 0,
@@ -95,15 +95,15 @@ class EmployeeKpiEvaluateModal extends Component {
 
         return [month, year].join('-');
     }
-    handleChangeContent = (id, employeeId, kpiType,name) => {
+    handleChangeContent = (id, employeeId, kpiType, name) => {
         let date = this.props.employeeKpiSet.date;
         this.props.getTaskById(id, employeeId, date, kpiType);
         this.setState(state => {
             return {
                 ...state,
                 content: id,
-                contentName : name,
-                type: kpiType,               
+                contentName: name,
+                type: kpiType,
                 dataStatus: this.DATA_STATUS.QUERYING,
             }
         });
@@ -163,38 +163,38 @@ class EmployeeKpiEvaluateModal extends Component {
     }
 
     /**Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    convertDataToExportData = (dataTask,currentKpiName,employeeName) => {
+    convertDataToExportData = (dataTask, currentKpiName, employeeName) => {
 
-        let fileName = "Thông tin KPI " + (currentKpiName?currentKpiName:"") +" của "+ (employeeName?employeeName:"")  ;
-        if (dataTask) {      
+        let fileName = "Thông tin KPI " + (currentKpiName ? currentKpiName : "") + " của " + (employeeName ? employeeName : "");
+        if (dataTask) {
 
             dataTask = dataTask.map((x, index) => {
-               
-                let name =x.name;
+
+                let name = x.name;
                 let startTaskD = new Date(x.startDate),
                     startTaskDate = startTaskD.getDate(),
-                    startTaskMonth ='' + (startTaskD.getMonth() + 1),
+                    startTaskMonth = '' + (startTaskD.getMonth() + 1),
                     startTaskYear = startTaskD.getFullYear();
                 let endTaskD = new Date(x.endDate),
                     endTaskDate = endTaskD.getDate(),
-                    endTaskMonth =''+ (endTaskD.getMonth()+1)
+                    endTaskMonth = '' + (endTaskD.getMonth() + 1)
                 let startApproveD = new Date(x.preEvaDate),
                     startApproveDate = startApproveD.getDate(),
-                    startApproveMonth ='' + (startApproveD.getMonth()+1)
-                let endApproveD =new Date(x.date),
+                    startApproveMonth = '' + (startApproveD.getMonth() + 1)
+                let endApproveD = new Date(x.date),
                     endApproveDate = endApproveD.getDate(),
-                    endApproveMonth = ''+ (endApproveD.getMonth()+1)
-                let automaticPoint = (x.results.automaticPoint === null)?"Chưa đánh giá":parseInt(x.results.automaticPoint);
-                let employeePoint = (x.results.employeePoint === null)?"Chưa đánh giá":parseInt(x.results.employeePoint);
-                let approverPoint =(x.results.approvedPoint===null)?"Chưa đánh giá":parseInt(x.results.approvedPoint);
+                    endApproveMonth = '' + (endApproveD.getMonth() + 1)
+                let automaticPoint = (x.results.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x.results.automaticPoint);
+                let employeePoint = (x.results.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.results.employeePoint);
+                let approverPoint = (x.results.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.results.approvedPoint);
                 let status = x.status;
-                let contributionPoint =parseInt(x.results.contribution);
+                let contributionPoint = parseInt(x.results.contribution);
                 let importantLevel = parseInt(x.results.taskImportanceLevel);
-               
+
 
                 return {
                     STT: index + 1,
-                    name: name,                   
+                    name: name,
                     automaticPoint: automaticPoint,
                     status: status,
                     employeePoint: employeePoint,
@@ -202,14 +202,14 @@ class EmployeeKpiEvaluateModal extends Component {
                     startTaskDate: startTaskDate,
                     startTaskMonth: startTaskMonth,
                     endTaskDate: endTaskDate,
-                    endTaskMonth : endTaskMonth,
-                    startApproveDate:startApproveDate,
-                    startApproveMonth:startApproveMonth,
-                    endApproveDate:endApproveDate,
-                    endApproveMonth:endApproveMonth,
+                    endTaskMonth: endTaskMonth,
+                    startApproveDate: startApproveDate,
+                    startApproveMonth: startApproveMonth,
+                    endApproveDate: endApproveDate,
+                    endApproveMonth: endApproveMonth,
                     year: startTaskYear,
-                    contributionPoint:contributionPoint,
-                    importantLevel : importantLevel                
+                    contributionPoint: contributionPoint,
+                    importantLevel: importantLevel
                 };
 
             })
@@ -232,7 +232,7 @@ class EmployeeKpiEvaluateModal extends Component {
                                 { key: "startApproveMonth", value: "Tháng bắt đầu công việc" },
                                 { key: "endApproveDate", value: "Ngày kết thúc đánh giá" },
                                 { key: "endApproveMonth", value: "Tháng kết thúc đánh giá" },
-                                { key: "year", value: "Năm" },                                
+                                { key: "year", value: "Năm" },
                                 { key: "status", value: "Trạng thái" },
                                 { key: "contributionPoint", value: "Đóng góp (%)" },
                                 { key: "automaticPoint", value: "Điểm tự động" },
@@ -246,25 +246,25 @@ class EmployeeKpiEvaluateModal extends Component {
                 },
             ]
         }
-        return exportData;        
-       
+        return exportData;
+
     }
 
     render() {
         const { kpimembers } = this.props;
         const { translate, employeeKpiSet } = this.props;
         const { taskId, content, contentName, perPage, points, tasks, taskImportanceDetail } = this.state;
-        let list, myTask,exportData;
+        let list, myTask, exportData;
 
         if (kpimembers.tasks) {
             myTask = kpimembers.tasks;
-            
+
         }
         if (kpimembers.currentKPI) {
             list = kpimembers.currentKPI.kpis;
         }
-        if(employeeKpiSet && employeeKpiSet.creator && employeeKpiSet.creator.name&&myTask){
-            exportData =this.convertDataToExportData(myTask, contentName,employeeKpiSet.creator.name);
+        if (employeeKpiSet && employeeKpiSet.creator && employeeKpiSet.creator.name && myTask) {
+            exportData = this.convertDataToExportData(myTask, contentName, employeeKpiSet.creator.name);
         }
         return (
             <DialogModal
@@ -281,7 +281,7 @@ class EmployeeKpiEvaluateModal extends Component {
                             <ul className="nav nav-pills nav-stacked">
                                 {list && list.map((item, index) =>
                                     <li key={index} className={content === item._id ? "active" : undefined}>
-                                        <a style={{ cursor: 'pointer' }} onClick={() => this.handleChangeContent(item._id, employeeKpiSet.creator._id, item.type,item.name)}>
+                                        <a style={{ cursor: 'pointer' }} onClick={() => this.handleChangeContent(item._id, employeeKpiSet.creator._id, item.type, item.name)}>
                                             {item.name}
                                         &nbsp;
                                     </a>
@@ -294,7 +294,7 @@ class EmployeeKpiEvaluateModal extends Component {
                 <div className="col-xs-12 col-sm-8 qlcv">
                     <div className="form-inline pull-right">
                         <button className="btn btn-success" onClick={() => this.handleSetPointKPI()}>{translate('kpi.evaluation.employee_evaluation.calc_kpi_point')}</button>
-                        {exportData&&<ExportExcel id="export-employee-kpi-evaluate-detail-kpi" exportData={exportData} style={{ marginTop: 5 }} />}
+                        {exportData && <ExportExcel id="export-employee-kpi-evaluate-detail-kpi" exportData={exportData} style={{ marginTop: 5 }} />}
                     </div>
                     {list && list.map(item => {
                         if (item._id === content) return <React.Fragment key={item._id}>
