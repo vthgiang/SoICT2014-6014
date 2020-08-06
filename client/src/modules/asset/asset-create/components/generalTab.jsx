@@ -129,17 +129,15 @@ class GeneralTab extends Component {
      * Bắt sự kiện thay đổi loại tài sản
      */
     handleAssetTypeChange = async (value) => {
-        console.log("@@@@@@@@@@@@@@@2222@@@@@@@@@@@@@@", value[0]);
         await this.setState(state => {
             return {
                 ...state,
-                assetType: value[0],
+                assetTypes: value[0],
             }
         });
        
         this.props.handleChange("assetType", value[0]);
-        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", this.state.assetType);
-
+        console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", this.state.assetTypes);
     }
 
     /**
@@ -472,12 +470,9 @@ class GeneralTab extends Component {
             }
         })
 
-        console.log("******1*******", dataList)
-
         return (
             <div id={_id} className="tab-pane active">
-                <div className="box-body">
-                    <div className="col-md-12">
+                    <div className="row">
                         <div className="col-md-4" style={{ textAlign: 'center' }}>
                             <div>
                                 <a href={img} target="_blank">
@@ -680,7 +675,6 @@ class GeneralTab extends Component {
                             </div>
                         </div>
                     </div>
-                </div>
             </div>
         );
     }

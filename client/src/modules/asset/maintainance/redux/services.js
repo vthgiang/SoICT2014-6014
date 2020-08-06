@@ -9,9 +9,10 @@ export const MaintainanceService = {
 
 // tạo mới thông tin bảo trì tài sản
 function createMaintainance(id, data, incident_id) {
+    console.log("11111111111111111111111111111111", id, data, incident_id);
     return sendRequest({
-        url: incident_id ? `${LOCAL_SERVER_API}/assets/createMaintainance/${id}?incident_id=${incident_id}` : `${LOCAL_SERVER_API}/assets/createMaintainance/${id}`,
-        method: 'PUT',
+        url: incident_id ? `${LOCAL_SERVER_API}/assets/assets/${id}/maintainance-logs?incident_id=${incident_id}` : `${LOCAL_SERVER_API}/assets/assets/${id}/maintainance-logs`,
+        method: 'POST',
         data: data
     }, true, true, 'asset.maintainance');
 }
@@ -19,8 +20,8 @@ function createMaintainance(id, data, incident_id) {
 // chỉnh sửa thông tin bảo trì tài sản
 function updateMaintainance(assetId, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/assets/updateMaintainance/${assetId}`,
-        method: 'PUT',
+        url: `${LOCAL_SERVER_API}/assets/assets/${assetId}/maintainance-logs`,
+        method: 'PATCH',
         data
     }, true, true, 'asset.maintainance');
 }
@@ -28,7 +29,7 @@ function updateMaintainance(assetId, data) {
 // xóa thông tin bảo trì tài sản
 function deleteMaintainance(assetId, maintainanceId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/assets/deleteMaintainance/${assetId}`,
+        url: `${LOCAL_SERVER_API}/assets/assets/${assetId}/maintainance-logs`,
         method: 'DELETE',
         data: {maintainanceId}
     }, true, true, 'asset.maintainance');
