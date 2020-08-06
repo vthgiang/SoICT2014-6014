@@ -10,7 +10,7 @@ class EducationProgramDetailForm extends Component {
     }
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
-        var d = new Date(date),
+        let d = new Date(date),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -51,7 +51,7 @@ class EducationProgramDetailForm extends Component {
     }
 
     setPage = async (pageNumber) => {
-        var page = (pageNumber - 1) * (this.state.limit);
+        let page = (pageNumber - 1) * (this.state.limit);
         await this.setState({
             page: parseInt(page),
             search: true
@@ -88,31 +88,29 @@ class EducationProgramDetailForm extends Component {
 
     render() {
         const { education, course, translate } = this.props;
-        var { name, programId, listCourses, page, limit, totalList, search } = this.state;
+        let { _id, name, programId, listCourses, page, limit, totalList, search } = this.state;
         if (search === true) {
             listCourses = course.listCourses;
             totalList = course.totalList
         }
 
-        var pageTotal = (totalList % limit === 0) ?
+        let pageTotal = (totalList % limit === 0) ?
             parseInt(totalList / limit) :
             parseInt((totalList / limit) + 1);
-        var currentPage = parseInt((page / limit) + 1);
-        console.log(pageTotal);
-        console.log(currentPage);
+        let currentPage = parseInt((page / limit) + 1);
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-view-education" isLoading={education.isLoading && course.isLoading}
-                    formID="form-view-education"
+                    modalID={`modal-view-education${_id}`} isLoading={education.isLoading && course.isLoading}
+                    formID={`form-view-education${_id}`}
                     title={`Thông tin chương trình đào tạo: ${name} - ${programId}`}
                     func={this.save}
                     hasSaveButton={false}
                     size={75}
                     maxWidth={900}
-                    hasNote= {false}
+                    hasNote={false}
                 >
-                    <form className="form-group" id="form-view-education" >
+                    <form className="form-group" id={`form-view-education${_id}`} >
                         <div className="qlcv">
                             <div className="form-inline" >
                                 <div className="form-group">

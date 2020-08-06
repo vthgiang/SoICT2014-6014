@@ -5,12 +5,13 @@ const {LogInfo, LogError} = require('../../../logs');
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
  */
 exports.searchRecommendDistributes = async (req, res) => {
-    // console.log('req.body',req.body);
+    console.log('req.body', req.query.page, req.query.limit);
     try {
-        var listRecommendDistributes = await RecommendDistributeService.searchRecommendDistributes(req.body, req.user.company._id);
+        var listRecommendDistributes = await RecommendDistributeService.searchRecommendDistributes(req.query, req.user.company._id);
         await LogInfo(req.user.email, 'GET_RECOMMENDDISTRIBUTE', req.user.company);
         res.status(200).json({ success: true, messages: ["get_recommend_distribute_success"], content: listRecommendDistributes });
     } catch (error) {
+        console.log(error);
         await LogError(req.user.email, 'GET_RECOMMENDDISTRIBUTE', req.user.company);
         res.status(400).json({ success: false, messages: ["get_recommend_distribute_faile"], content: {error:error}});
     }

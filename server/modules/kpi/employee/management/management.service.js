@@ -118,6 +118,7 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
             }
         },
 
+        // Tìm các organizationalUnitKpis từ bảng organizational_unit_kpis
         {
             $lookup: {
                 from: "organizational_unit_kpis",
@@ -128,6 +129,7 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
         },
         { $unwind: "$organizationalUnitKpis" },
 
+        // Tìm các employeeKpis từ bảng employee_kpis
         {
             $lookup: {
                 from: "employee_kpis",
@@ -136,13 +138,34 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
                 as: "employeeKpis"
             }
         },
-        { $unwind: "$employeeKpis" },
+        {
+            $unwind: {
+                path: "$employeeKpis",
+                preserveNullAndEmptyArrays: true
+            }
+        },
         {
             $addFields: {
                 'employeeKpis.parentName': "$organizationalUnitKpis.name"
             }
         },
+        
+        // Tìm các parentNameOfUnitKpi từ bảng organizational_unit_kpis
+        {
+            $lookup: {
+                from: "organizational_unit_kpis",
+                localField: "organizationalUnitKpis.parent",
+                foreignField: "_id",
+                as: "parentNameOfUnitKpi"
+            }
+        },
+        {
+            $addFields: {
+                'employeeKpis.parentNameOfUnitKpi': "$parentNameOfUnitKpi.name"
+            }
+        },
 
+        // Tìm các employeeKpiSet từ bảng employee_kpi_sets
         {
             $lookup: {
                 from: "employee_kpi_sets",
@@ -151,8 +174,6 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
                 as: "employeeKpiSet"
             }
         },
-        { $unwind: "$employeeKpiSet" },
-
         {
             $addFields: {
                 "employeeKpis.creator": "$employeeKpiSet.creator"
@@ -161,12 +182,13 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
 
         { $replaceRoot: { newRoot: "$employeeKpis" } },
 
+        // Nhóm theo các organizational unit kpi
         {
             $group: {
                 '_id': "$parentName",
                 'employeeKpi': { $push: "$$ROOT" }
             }
-        },
+        }
     ])
 
     return employeeKpis;
@@ -288,13 +310,11 @@ exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (companyId, roleId
     let employeeKpisInChildrenOrganizationalUnit = [], childrenOrganizationalUnits;
 
     childrenOrganizationalUnits = await this.getAllChildrenOrganizational(companyId, roleId);
-    console.log(childrenOrganizationalUnits)
 
     for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
         employeeKpisInChildrenOrganizationalUnit.push(await this.getAllEmployeeKpiInOrganizationalUnit(null, childrenOrganizationalUnits[i].id, month));
         employeeKpisInChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })
     }
-    console.log(employeeKpisInChildrenOrganizationalUnit)
     return employeeKpisInChildrenOrganizationalUnit;
 }
 

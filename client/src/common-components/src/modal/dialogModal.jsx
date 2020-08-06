@@ -39,8 +39,8 @@ class DialogModal extends Component {
     }
 
     render() {
-        const { translate } = this.props;
-        const { resetOnClose = false, disableSubmit = false, hasSaveButton = true, hasNotiLevel = 0, size, styleCustom, maxWidth, hasNote = true, marginTop, bodyStyle = {} } = this.props;
+        const { translate } = this.props;;
+        const { resetOnClose = false, disableSubmit = false, hasSaveButton = true, size, styleCustom, maxWidth, hasNote = true, marginTop, bodyStyle = {} } = this.props;
         return (
             <React.Fragment>
                 <div id={this.props.modalID} className="modal fade" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -54,13 +54,7 @@ class DialogModal extends Component {
                                     }
                                     );
                                 }}>&times;</button>
-                                {hasNotiLevel ? 
-                                <h4 className="modal-title text-center threedots">
-                                    {hasNotiLevel === 1 ? <i className="fa fa-info-circle text-blue"></i> :
-                                    hasNotiLevel === 2 ? <i className="fa fa-bell text-green"></i> :
-                                    hasNotiLevel === 3 ? <i className="fa fa-warning text-orange"></i> :
-                                    <i className="fa fa-bomb text-red"></i>} {this.props.title} &nbsp; {this.props.isLoading && <Loading />}</h4>
-                                : <h4 className="modal-title text-center threedots">{this.props.title} &nbsp; {this.props.isLoading && <Loading />}</h4> }
+                                <h4 className="modal-title text-center threedots">{this.props.title} &nbsp; {this.props.isLoading && <Loading />}</h4>
                             </div>
                             <div className="modal-body text-left" style={bodyStyle}>
                                 {this.props.children}
@@ -76,7 +70,7 @@ class DialogModal extends Component {
                                         {
                                             hasSaveButton && <button type="button" disabled={this.props.disableSubmit} className="btn btn-success" onClick={this.save}>{translate('form.save')}</button>
                                         }
-                                        <button type="button" className="btn btn-default" onClick={() => this.closeModal(resetOnClose)}>{translate('form.close')}</button>
+                                        <button type="button" className="btn btn-danger" onClick={() => this.closeModal(resetOnClose)}>{translate('form.close')}</button>
                                     </div>
                                 </div>
                             </div>

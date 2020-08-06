@@ -59,6 +59,10 @@ class SideBar extends Component {
             path14: "/manage-usage-asset", //Quản lý  sử dụng tài sản
             path15: "/manage-incident-asset", //Quản lý lịch sự cố tài sản
         };
+        const url2 = {
+            path1: "/dashboad-material",
+            path2: "/material-manager",
+        };
 
         const { translate, auth } = this.props;
         const { user, links } = this.props.auth;
@@ -153,7 +157,7 @@ class SideBar extends Component {
                                     key='manage_user'
                                     name='manage_user'
                                     path='/users-management'
-                                    icon='fa fa-users'
+                                    icon='fa fa-user'
                                 />
                             }
                             {
@@ -202,6 +206,36 @@ class SideBar extends Component {
                                 />
                             }
                             {
+                                (this.checkURL(url2.path1, links) === true || this.checkURL(url2.path2, links) === true) &&
+                                <li className="treeview" >
+                                    <a href="">
+                                        <i className="fa fa-bank" /> <span>{translate(`menu.manage_warehouse`)}</span>
+                                        <span className="pull-right-container">
+                                            <i className="fa fa-angle-left pull-right" />
+                                        </span>
+                                    </a>
+                                    <ul className="treeview-menu">
+                                        {this.checkURL(url2.path1, links) === true &&
+                                            <li className={window.location.pathname === url2.path1 ? "active" : ""}>
+                                                <Link to={url2.path1}>
+                                                    <i className="fa fa-dashboard" />
+                                                    {translate(`menu.dashboard_material`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                        {this.checkURL(url2.path2, links) === true &&
+                                            <li className={window.location.pathname === url2.path2 ? "active" : ""}>
+                                                <Link to={url2.path2}>
+                                                    <i className="fa fa-address-card" />
+                                                    {translate(`menu.material_manager`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+
+                            {
                                 this.checkURL('/customer', links) === true &&
                                 <Item
                                     key='customer'
@@ -212,11 +246,11 @@ class SideBar extends Component {
                             }
                             {/* Quan ly tai san */}
                             {
-                                (this.checkURL(url1.path1, links) === true || this.checkURL(url1.path2, links) === true || 
+                                (this.checkURL(url1.path1, links) === true || this.checkURL(url1.path2, links) === true ||
                                     this.checkURL(url1.path3, links) === true || this.checkURL(url1.path6, links) === true ||
                                     this.checkURL(url1.path7, links) === true || this.checkURL(url1.path8, links) === true ||
-                                    this.checkURL(url1.path10, links) === true || this.checkURL(url1.path11, links) === true || 
-                                    this.checkURL(url1.path12, links) === true || this.checkURL(url1.path13, links) === true || 
+                                    this.checkURL(url1.path10, links) === true || this.checkURL(url1.path11, links) === true ||
+                                    this.checkURL(url1.path12, links) === true || this.checkURL(url1.path13, links) === true ||
                                     this.checkURL(url1.path14, links) === true || this.checkURL(url1.path15, links) === true) &&
                                 <li className="treeview" >
                                     <a href="">
@@ -497,6 +531,8 @@ class SideBar extends Component {
                                 </li>
                             }
 
+                            {/* quản lý kho */}
+
                             {/* kpi-management */}
                             {
                                 (this.checkURL('/kpi-units/create', links) === true || this.checkURL('/kpi-personals/create', links) === true || this.checkURL('/kpi-personals/overview', links) === true) &&
@@ -685,6 +721,14 @@ class SideBar extends Component {
         if (activeElement !== null) { // Update style của các menu cha
             this.updateParentMenus(activeElement);
         }
+
+        /**
+         * Fix bug khi menu quá dài, div content-wrapper không dài theo, dẫn đến footer không đặt ở cuối trang
+         * Xem code AdminLTE
+         */
+        window.$('.sidebar-menu').layout();
+        window.$('.sidebar-menu').data("lte.layout").fix();
+
     }
     componentDidMount() {
         /**

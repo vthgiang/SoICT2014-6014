@@ -670,13 +670,11 @@ class EmployeeManagement extends Component {
                 })
             })
         }
-
+        let exportData;
         if (employeesManager.listEmployees) {
             lists = employeesManager.listEmployees;
+            exportData = this.convertDataToExportData(lists);
         }
-
-        let exportData = this.convertDataToExportData(lists);
-
         let pageTotal = ((employeesManager.totalList % limit) === 0) ?
             parseInt(employeesManager.totalList / limit) :
             parseInt((employeesManager.totalList / limit) + 1);
@@ -724,7 +722,7 @@ class EmployeeManagement extends Component {
                             </SelectMulti>
                         </div>
                     </div>
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
+                    <div className="form-inline" style={{ marginBottom: 15 }}>
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
                             <SelectMulti id={`multiSelectStatus`} multiple="multiple"
@@ -736,6 +734,22 @@ class EmployeeManagement extends Component {
                             <label></label>
                             <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSunmitSearch} >Tìm kiếm</button>
                         </div>
+                    </div>
+                    <div className="form-group col-md-12 row" >
+                        <span>Có</span>
+                        {Number(employeesManager.expiresContract) > 0 &&
+                            <React.Fragment>
+                                <span className="text-danger" style={{ fontWeight: "bold" }}>{` ${employeesManager.expiresContract} nhân viên`}</span>
+                                <span>{` hết hạn hợp đồng và`}</span>
+                            </React.Fragment>
+                        }
+                        {
+                            Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0 &&
+                            <React.Fragment>
+                                <span className="text-success" style={{ fontWeight: "bold" }}>{` ${employeesManager.employeesHaveBirthdateInCurrentMonth} nhân viên`}</span>
+                                <span>{` có sinh nhật trong tháng này (${this.formatDate(Date.now(), true)})`}</span>
+                            </React.Fragment>
+                        }
                     </div>
                     <table id="employee-table" className="table table-striped table-bordered table-hover">
                         <thead>

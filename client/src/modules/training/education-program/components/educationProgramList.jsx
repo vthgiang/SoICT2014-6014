@@ -30,7 +30,7 @@ class ListEducation extends Component {
             ...this.state,
             currentEditRow: value
         })
-        window.$('#modal-edit-education').modal('show');
+        window.$(`#modal-edit-education${value._id}`).modal('show');
     }
 
     // Function bắt sự kiện xem thông tin chương trình đào tạo
@@ -39,7 +39,7 @@ class ListEducation extends Component {
             ...this.state,
             currentViewRow: value
         })
-        window.$('#modal-view-education').modal('show');
+        window.$(`#modal-view-education${value._id}`).modal('show');
     }
 
 
@@ -84,7 +84,7 @@ class ListEducation extends Component {
     }
 
     setPage = async (pageNumber) => {
-        var page = (pageNumber - 1) * (this.state.limit);
+        let page = (pageNumber - 1) * (this.state.limit);
         await this.setState({
             page: parseInt(page),
         });
@@ -93,9 +93,9 @@ class ListEducation extends Component {
 
     render() {
         const { translate, education, department } = this.props;
-        const { organizationalUnit } = this.state;
+        const { organizationalUnit, currentEditRow, currentViewRow } = this.state;
         const { list } = department;
-        var listEducations = "", listPosition = [{ value: "", text: "Bạn chưa chọn đơn vị", disabled: true }];
+        let listEducations = [], listPosition = [{ value: "", text: "Bạn chưa chọn đơn vị", disabled: true }];
         if (organizationalUnit !== null) {
             listPosition = [];
             organizationalUnit.forEach(u => {
@@ -112,10 +112,10 @@ class ListEducation extends Component {
         if (education.isLoading === false) {
             listEducations = education.listEducations;
         }
-        var pageTotal = (education.totalList % this.state.limit === 0) ?
+        let pageTotal = (education.totalList % this.state.limit === 0) ?
             parseInt(education.totalList / this.state.limit) :
             parseInt((education.totalList / this.state.limit) + 1);
-        var page = parseInt((this.state.page / this.state.limit) + 1);
+        let page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <div className="box">
                 <div className="box-body qlcv">
@@ -209,7 +209,7 @@ class ListEducation extends Component {
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
                 </div>
                 {
-                    this.state.currentEditRow !== undefined &&
+                    currentEditRow !== undefined &&
                     <EducationProgramEditForm
                         _id={this.state.currentEditRow._id}
                         name={this.state.currentEditRow.name}
@@ -220,7 +220,7 @@ class ListEducation extends Component {
                     />
                 }
                 {
-                    this.state.currentViewRow !== undefined &&
+                    currentViewRow !== undefined &&
                     <EducationProgramDetailForm
                         _id={this.state.currentViewRow._id}
                         name={this.state.currentViewRow.name}

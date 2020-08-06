@@ -48,8 +48,20 @@
     background: #bbb;
     border-bottom: 1px solid #bbb;
 }
+.rct-items .rct-item {
+  background: rgb(97, 173, 245) !important;
+}
 #start_date_after, #end_date_before{
   z-index: 100 !important;
+}
+#task-progress{
+    z-index: -1;
+    background-color: wheat;
+    height: 23px;
+    position: relative;
+    top: -30px;
+    border-radius: 3px;
+    left: -0.5px;
 }
 .flex-right {
   display: flex;

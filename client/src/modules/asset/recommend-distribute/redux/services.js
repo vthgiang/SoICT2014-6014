@@ -12,16 +12,22 @@ export const RecommendDistributeService = {
 // Lấy danh sách phiếu đề nghị mua sắm thiết bị
 function searchRecommendDistributes(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/recommenddistribute/paginate`,
-        method: 'POST',
-        data: data
+        url: `${ LOCAL_SERVER_API }/recommenddistribute/recommend-distributes`,
+        method: 'GET',
+        params: {
+            recommendNumber: data.recommendNumber,
+            month: data.month,
+            status: data.status,
+            page: data.page,
+            limit: data.limit,
+        },
     }, false, true, 'asset.recommend_distribute');
 }
 
 // tạo mới thông tin phiếu đề nghị mua sắm thiết bị
 function createRecommendDistribute(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/recommenddistribute/create`,
+        url: `${ LOCAL_SERVER_API }/recommenddistribute/recommend-distributes`,
         method: 'POST',
         data: data
     }, true, true, 'asset.recommend_distribute');
@@ -30,7 +36,7 @@ function createRecommendDistribute(data) {
 // Xoá thông tin phiếu đề nghị mua sắm thiết bị
 function deleteRecommendDistribute(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/recommenddistribute/${id}`,
+        url: `${ LOCAL_SERVER_API }/recommenddistribute/recommend-distributes/${id}`,
         method: 'DELETE',
     }, true, true, 'asset.recommend_distribute');
 }
@@ -38,7 +44,7 @@ function deleteRecommendDistribute(id) {
 // Cập nhật thông tin phiếu đề nghị mua sắm thiết bị
 function updateRecommendDistribute(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/recommenddistribute/${id}`,
+        url: `${ LOCAL_SERVER_API }/recommenddistribute/recommend-distributes/${id}`,
         method: 'PUT',
         data: data
     }, true, true, 'asset.recommend_distribute');

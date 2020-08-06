@@ -372,7 +372,6 @@ export function tasks(state = {}, action) {
                 isLoading: true
             };
         case taskManagementConstants.GET_TASK_EVALUATION_SUCCESS:
-            console.log('action.payload', action.payload)
             return {
                 ...state,
                 listTaskEvaluations: action.payload,
@@ -388,6 +387,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_REQUEST:
             return {
                 ...state,
+                organizationUnitTasks: null,
                 isLoading: true
             };
         case taskManagementConstants.GET_TASK_IN_ORGANIZATION_UNIT_SUCCESS:

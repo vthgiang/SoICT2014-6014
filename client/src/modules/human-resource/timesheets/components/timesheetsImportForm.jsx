@@ -4,10 +4,10 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, DataTableSetting, ImportFileExcel, ConFigImportFile, SlimScroll, PaginateBar, DatePicker } from '../../../../common-components';
 
-import { LOCAL_SERVER_API } from '../../../../env';
 import { configurationTimesheets } from './fileConfigurationImportTimesheets';
 
 import { TimesheetsActions } from '../redux/actions';
+import { AuthActions } from '../../../auth/redux/actions';
 
 class TimesheetsImportForm extends Component {
     constructor(props) {
@@ -163,6 +163,11 @@ class TimesheetsImportForm extends Component {
         })
     }
 
+    requestDownloadFile = (e, path, fileName) => {
+        e.preventDefault()
+        this.props.downloadFile(path, fileName)
+    }
+
     render() {
         const { translate, timesheets } = this.props;
         let { limit, page, importData, rowError, configData, changeMonth, month, allDayOfMonth, checkFileImport } = this.state;
@@ -217,8 +222,10 @@ class TimesheetsImportForm extends Component {
                             </div>
                             <div className="form-group col-md-4 col-xs-12">
                                 <label></label>
-                                <a className='pull-right' href={LOCAL_SERVER_API + configData.file.fileUrl} target="_blank" style={{ paddingTop: 15 }}
-                                    download={configData.file.fileName}><i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
+                                <a className='pull-right'
+                                    style={{ cursor: "pointer" }}
+                                    onClick={(e) => this.requestDownloadFile(e, `.${configData.file.fileUrl}`, configData.file.fileName)}>
+                                    <i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
                             </div>
 
                             <div className="form-group col-md-12 col-xs-12">
@@ -308,6 +315,7 @@ function mapState(state) {
 
 const actionCreators = {
     importTimesheets: TimesheetsActions.importTimesheets,
+    downloadFile: AuthActions.downloadFile,
 };
 
 const importExcel = connect(mapState, actionCreators)(withTranslate(TimesheetsImportForm));

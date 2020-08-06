@@ -80,17 +80,21 @@ class TaskStatusChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-
-        if (nextProps.units !== this.props.units || nextProps.callAction !== this.state.callAction || nextState.currentMonth !== this.state.currentMonth || nextState.nextMonth !== this.state.nextMonth) {
+        //console.log('should compornet', nextProps.callAction, this.state.callAction)
+        if (
+            nextProps.callAction !== this.state.callAction
+            || nextState.currentMonth !== this.state.currentMonth
+            || nextState.nextMonth !== this.state.nextMonth
+        ) {
+            // //console.log('should compornet')
             if (this.props.TaskOrganizationUnitDashboard) {
-                //console.log("o day dong 86:=======================");
-                //console.log("units:=======================", this.props.units);
+
                 let idsUnit = this.props.units ? this.props.units : "[]";
-                //console.log(';;;;;;;;;;;;;;;;;', idsUnit)
+
+                //console.log(nextState.currentMonth, nextState.nextMonth)
                 await this.props.getTaskInOrganizationUnitByMonth(idsUnit, nextState.currentMonth, nextState.nextMonth);
             }
             else {
-                //console.log("o day dong 90:=======================")
                 await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.currentMonth, nextState.nextMonth, null, null, this.state.aPeriodOfTime);
                 await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.currentMonth, nextState.nextMonth, this.state.aPeriodOfTime);
                 await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.currentMonth, nextState.nextMonth, this.state.aPeriodOfTime);
@@ -122,10 +126,11 @@ class TaskStatusChart extends Component {
         }
 
         if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-            //console.log("o day dong 121:=======================")
+
 
             if (this.props.TaskOrganizationUnitDashboard) { // neu componet duoc goi tu dashboard organization unit
                 let idsUnit = this.props.units ? this.props.units : "[]";
+                //console.log("o day dong 132:=======================")
                 await this.props.getTaskInOrganizationUnitByMonth(idsUnit, this.state.currentMonth, this.state.nextMonth);
             }
             else {
@@ -178,7 +183,9 @@ class TaskStatusChart extends Component {
                     informedTasks: nextProps.tasks.informedTasks,
                     creatorTasks: nextProps.tasks.creatorTasks,
                     organizationUnitTasks: nextProps.tasks.organizationUnitTasks,
+
                 }
+                //console.log("\n\n\n tasksprops", this.TASK_PROPS)
             }
 
             this.setState(state => {
@@ -256,6 +263,7 @@ class TaskStatusChart extends Component {
         let listTask;
         if (this.props.TaskOrganizationUnitDashboard) {
             listTask = this.TASK_PROPS.organizationUnitTasks;
+            //console.log('listTask: ', listTask);
         }
         else if (this.TASK_PROPS.responsibleTasks && this.TASK_PROPS.accountableTasks && this.TASK_PROPS.consultedTasks && this.TASK_PROPS.informedTasks && this.TASK_PROPS.creatorTasks) {
             if (this.state.role === this.ROLE.RESPONSIBLE) {
