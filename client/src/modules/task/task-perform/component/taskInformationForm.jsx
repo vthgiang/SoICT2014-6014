@@ -25,7 +25,8 @@ class TaskInformationForm extends Component {
     }
 
     render() {
-        const { value, task, translate } = this.props;
+        const { translate } = this.props;
+        const { value, task, perform, role, id } = this.props;
 
         return (
             <React.Fragment>
@@ -41,7 +42,7 @@ class TaskInformationForm extends Component {
                                 name="progress"
                                 placeholder={translate('task.task_management.edit_enter_progress')}
                                 onChange={this.props.handleChangeProgress}
-                                value={value.progress}
+                                value={value.progress ? value.progress : ''}
                             />
                             <ErrorLabel content={value.errorOnProgress} />
 
@@ -59,7 +60,7 @@ class TaskInformationForm extends Component {
                                             name={info.code}
                                             placeholder={translate('task.task_management.edit_enter_value')}
                                             onChange={this.props.handleChangeTextInfo}
-                                            disabled={info.filledByAccountableEmployeesOnly && this.props.role !== "accountable"}
+                                            disabled={info.filledByAccountableEmployeesOnly && role !== "accountable"}
                                             value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined) ? value.info[`${info.code}`].value : ''}
                                         />
 
@@ -77,7 +78,7 @@ class TaskInformationForm extends Component {
                                                 name={info.code}
                                                 placeholder={translate('task.task_management.edit_enter_value')}
                                                 onChange={this.props.handleChangeNumberInfo}
-                                                disabled={info.filledByAccountableEmployeesOnly && this.props.role !== "accountable"}
+                                                disabled={info.filledByAccountableEmployeesOnly && role !== "accountable"}
                                                 value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined) && value.info[`${info.code}`].value}
                                             />
                                             {/* <ErrorLabel content={value.errorOnNumberInfo}/> */}
@@ -90,10 +91,10 @@ class TaskInformationForm extends Component {
                                         return <div key={index} className={`form-group ${value.errorOnInfoDate === undefined ? "" : "has-error"}`}>
                                             <label>{info.name}(<span style={{ color: "red" }}>*</span>)</label>
                                             <DatePicker
-                                                id={`info_date_${this.props.perform}_${index}_${info.code}`}
+                                                id={`info_date_${perform}_${index}_${info.code}_${id}`}
                                                 value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined) ? value.info[`${info.code}`].value : undefined}
                                                 onChange={(value) => this.props.handleInfoDateChange(value, info.code)}
-                                                disabled={info.filledByAccountableEmployeesOnly && this.props.role !== "accountable"}
+                                                disabled={info.filledByAccountableEmployeesOnly && role !== "accountable"}
                                             />
                                             <ErrorLabel content={value.errorOnInfoDate} />
                                         </div>
@@ -111,7 +112,7 @@ class TaskInformationForm extends Component {
                                                     value={true}
                                                     onChange={this.props.handleInfoBooleanChange}
                                                     checked={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined) && value.info[`${info.code}`].value === "true"}
-                                                    disabled={info.filledByAccountableEmployeesOnly && this.props.role !== "accountable"}
+                                                    disabled={info.filledByAccountableEmployeesOnly && role !== "accountable"}
                                                 /> Đúng
                                             </label>
                                             <label class="radio-inline">
@@ -121,7 +122,7 @@ class TaskInformationForm extends Component {
                                                     value={false}
                                                     onChange={this.props.handleInfoBooleanChange}
                                                     checked={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined) && value.info[`${info.code}`].value === "false"}
-                                                    disabled={info.filledByAccountableEmployeesOnly && this.props.role !== "accountable"}
+                                                    disabled={info.filledByAccountableEmployeesOnly && role !== "accountable"}
                                                 /> Sai
                                             </label>
                                         </div>
@@ -133,13 +134,13 @@ class TaskInformationForm extends Component {
                                         return <div key={index} className={`form-group `}>
                                             <label>{info.name}(<span style={{ color: "red" }}>*</span>)</label>
                                             <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                                id={`select-set-of-value-${index}-${this.props.perform}`}
+                                                id={`select-set-of-value-${index}-${id}-${perform}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 items={info.extra.split('\n').map(x => { return { value: x, text: x } })}
                                                 onChange={(value) => this.props.handleSetOfValueChange(value, info.code)}
                                                 multiple={false}
-                                                disabled={info.filledByAccountableEmployeesOnly && this.props.role !== "accountable"}
+                                                disabled={info.filledByAccountableEmployeesOnly && role !== "accountable"}
                                                 value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined) && value.info[`${info.code}`].value}
                                             />
                                         </div>
@@ -147,6 +148,17 @@ class TaskInformationForm extends Component {
                                 }
                             })
                         }
+                        {(perform === 'evaluate') &&
+                            <label>
+                                <input
+                                    type="checkbox"
+                                    checked={value.checkSave === true}
+                                    // value={elem._id}
+                                    name="checkSave" onChange={(e) => this.props.handleChangeSaveInfo(e)}
+                                /> Lưu thông tin công việc ra thông tin chung
+                        </label>
+                        }
+
                     </fieldset>
                 </div>
             </React.Fragment>

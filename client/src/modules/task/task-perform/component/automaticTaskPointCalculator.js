@@ -51,7 +51,7 @@ function calcAutoPoint(data) {
     let reduceAction = actionRating.reduce( (accumulator, currentValue) => accumulator + currentValue, 0);
     reduceAction = reduceAction > 0 ? reduceAction : 0;
 
-    let averageActionRating = reduceAction/a;
+    let averageActionRating = a ? 10 : reduceAction/a;
     let autoHasActionInfo = progress/(dayUsed/totalDay) - 0.5*(10-averageActionRating)*10;
     let automaticPoint = 0;
 

@@ -131,6 +131,8 @@ export default {
         auth: {
             validator: {
                 confirm_password_invalid: 'Mật khẩu không trùng khớp. Vui lòng kiểm tra lại',
+                password_length_error: 'Mật khẩu phải có độ dài tối thiểu 6 và không quá 30 ký tự',
+                confirm_password_error: 'Mật khẩu xác thực không khớp'
             },
             security: {
                 label: 'Bảo mật',
@@ -1830,6 +1832,7 @@ export default {
                 calc_where: 'Trong đó',
                 calc_no_value: 'Chưa có giá trị',
                 calc_nan: 'Không tính được',
+                explain: ' - (Vì giá trị điểm tự động tính được nhỏ hơn bằng 0)',
 
                 dashboard_created: 'Đã tạo',
                 dashboard_need_perform: 'Cần thực hiện',

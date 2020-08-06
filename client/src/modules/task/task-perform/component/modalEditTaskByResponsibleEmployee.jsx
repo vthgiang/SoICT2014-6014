@@ -438,7 +438,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
             description: this.state.taskDescription,
             user: this.state.userId,
             progress: this.state.progress,
-            kpi: this.state.kpi ? this.state.kpi : [],
+            // kpi: this.state.kpi ? this.state.kpi : [],
             info: this.state.info,
         }
 
@@ -496,7 +496,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
                                 {/*KPI related*/}
 
-                                <div className="form-group">
+                                {/* <div className="form-group">
                                     <label>{translate('task.task_management.detail_kpi')}:</label>
                                     {
                                         <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
@@ -509,7 +509,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                             value={kpi}
                                         />
                                     }
-                                </div>
+                                </div> */}
                             </fieldset>
                             <TaskInformationForm
                                 task={task && task}
