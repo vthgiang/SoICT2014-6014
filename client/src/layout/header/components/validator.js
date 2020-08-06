@@ -3,6 +3,7 @@ import { VALIDATOR } from '../../../helpers/validator';
 export const Validator = {
     validateName,
     validateEmail,
+    validatePassword
 }
 
 function validateName(value) {
@@ -25,5 +26,14 @@ function validateEmail(value){
         msg = "Email không được để trống";
     } else if(!VALIDATOR.isValidEmail(value))
         msg = "Email không hợp lệ";
+    return msg;
+}
+
+function validatePassword(password){
+    let msg = undefined;
+    if(password.length < 6 || password.length > 30){
+        msg = "auth.validator.password_length_error";
+    }
+    
     return msg;
 }

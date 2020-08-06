@@ -131,6 +131,8 @@ export default {
         auth: {
             validator: {
                 confirm_password_invalid: 'Mật khẩu không trùng khớp. Vui lòng kiểm tra lại',
+                password_length_error: 'Mật khẩu phải có độ dài tối thiểu 6 và không quá 30 ký tự',
+                confirm_password_error: 'Mật khẩu xác thực không khớp'
             },
             security: {
                 label: 'Bảo mật',

@@ -131,6 +131,8 @@ export default {
         auth: {
             validator: {
                 confirm_password_invalid: 'Confirm password invalid! Please input again',
+                password_length_error: 'Password length not less 6 or more than 30 digit',
+                confirm_password_error: 'Confirm password invalid'
             },
             security: {
                 label: 'Security',
