@@ -721,6 +721,14 @@ class SideBar extends Component {
         if (activeElement !== null) { // Update style của các menu cha
             this.updateParentMenus(activeElement);
         }
+
+        /**
+         * Fix bug khi menu quá dài, div content-wrapper không dài theo, dẫn đến footer không đặt ở cuối trang
+         * Xem code AdminLTE
+         */
+        window.$('.sidebar-menu').layout();
+        window.$('.sidebar-menu').data("lte.layout").fix();
+
     }
     componentDidMount() {
         /**
@@ -730,11 +738,6 @@ class SideBar extends Component {
          * Xem thêm trong adminlte.min.js
         */
         window.$('.sidebar-menu').tree();
-
-        /**
-         * Fix bug khi menu quá dài, div content-wrapper không dài theo, dẫn đến footer không đặt ở cuối trang
-         */
-        window.$('.sidebar-menu').layout()
     }
 }
 
