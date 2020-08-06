@@ -73,11 +73,8 @@ class CustomerManagement extends Component {
                         <tr>
                             <th>Tên khách hàng</th>
                             <th>Mã khách hàng</th>
-                            <th>Ngày sinh</th>
                             <th>Số điện thoại</th>
-                            <th>Địa chỉ</th>
                             <th>Khu vực</th>
-                            <th>Giới tính</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
                                 {translate('table.action')}
                                 <DataTableSetting
@@ -103,11 +100,8 @@ class CustomerManagement extends Component {
                                     <tr key={`customer-${customer._id}`}>
                                         <td> {customer.name} </td>
                                         <td> {customer.code} </td>
-                                        <td> {customer.birth} </td>
                                         <td> {customer.phone} </td>
-                                        <td> {customer.address} </td>
-                                        <td> {customer.location.name} </td>
-                                        <td> {customer.gender} </td>
+                                        <td> {customer.location ? customer.location.name : null} </td>
                                         <td style={{ textAlign: 'center' }}>
                                             <a className="text-green" onClick={() => this.handleInformation(customer)}><i className="material-icons">visibility</i></a>
                                             <a className="edit" onClick={this.handleEdit}><i className="material-icons">edit</i></a>

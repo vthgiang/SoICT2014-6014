@@ -35,6 +35,15 @@ exports.getCustomers = async (company, query) => {
     }
 }
 
+exports.createCustomer = async (company, data) => {
+    return await Customer.create({
+        company,
+        name: data.name,
+        code: data.code,
+        phone: data.phone
+    });
+}
+
 // Customer group
 exports.getCustomerGroups = async (company, query) => {
     var page = query.page;
