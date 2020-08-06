@@ -1,35 +1,6 @@
 const AssetTypeService = require('./asset-type.service');
 const {LogInfo, LogError} = require('../../../logs');
 
-/**
- * Lấy danh sách loại tài sản
- */
-exports.searchAssetTypes = async (req, res) => {
-    // console.log('req.body',req.body);
-    try {
-        var listAssetTypes = await AssetTypeService.searchAssetTypes(req.body, req.user.company._id);
-        await LogInfo(req.user.email, 'GET_ASSETTYPE', req.user.company);
-        res.status(200).json({ success: true, messages: ["get_asset_type_success"], content: listAssetTypes });
-    } catch (error) {
-        await LogError(req.user.email, 'GET_ASSETTYPE', req.user.company);
-        res.status(400).json({ success: false, messages: ["get_asset_type_faile"], content: {error:error}});
-    }
-}
-
-// Kiểm tra sự tồn tại của mã loại tài sản 
-exports.checkTypeNumber = async (req, res) => {
-    try {
-        var checkTypeNumber = await AssetTypeService.checkAssetTypeExisted(req.params.typeNumber, req.user.company._id);
-        res.status(200).json({
-            messages: "success",
-            content: checkTypeNumber
-        });
-    } catch (error) {
-        res.status(400).json({
-            messages: error,
-        });
-    }
-}
 
 
 /**
@@ -37,7 +8,7 @@ exports.checkTypeNumber = async (req, res) => {
  */
 exports.getAssetTypes = async (req, res) => {
     try {
-        const types = await AssetTypeService.getAssetTypes(req.user.company._id);
+        const types = await AssetTypeService.getAssetTypes(req.query, req.user.company._id);
         
         await LogInfo(req.user.email, 'GET_ASSET_TYPES', req.user.company);
         res.status(200).json({

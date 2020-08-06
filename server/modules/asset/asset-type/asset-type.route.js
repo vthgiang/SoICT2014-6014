@@ -4,27 +4,15 @@ const { auth } = require('../../../middleware');
 const AssetTypeController = require("./asset-type.controller");
 
 
-
-router.post('/paginate', auth, AssetTypeController.searchAssetTypes);
-router.get("/types", auth, AssetTypeController.getAssetTypes);
+router.get("/asset-types", auth, AssetTypeController.getAssetTypes);
 
 
-router.get('/checkTypeNumber/:typeNumber', auth, AssetTypeController.checkTypeNumber);
+router.post("/asset-types", auth, AssetTypeController.createAssetTypes);
+router.patch("/asset-types/:id", auth, AssetTypeController.editAssetType);
+router.delete("/asset-types/:id", auth, AssetTypeController.deleteAssetTypes);
 
 
-
-
-router.post("/types", auth, AssetTypeController.createAssetTypes);
-
-
-
-router.patch("/types/:id", auth, AssetTypeController.editAssetType);
-
-
-
-router.delete("/types/:id", auth, AssetTypeController.deleteAssetTypes);
-
-router.post("/types/delete-many", auth, AssetTypeController.deleteManyAssetType);
+router.delete("/asset-types", auth, AssetTypeController.deleteManyAssetType);
 
 
 

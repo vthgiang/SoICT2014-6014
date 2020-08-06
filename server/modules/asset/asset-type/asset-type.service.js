@@ -5,63 +5,45 @@ const ObjectId = require('mongoose').Types.ObjectId;
 
 
 /**
- * Lấy danh sách loại tài sản
- */
-exports.searchAssetTypes = async (data, company) => {
-    var keySearch = { company: company };
-
-    // Bắt sựu kiện mã loại tài sản tìm kiếm khác ""
-    if (data.typeNumber !== "") {
-        keySearch = { ...keySearch, typeNumber: { $regex: data.typeNumber, $options: "i" } }
-    }
-
-    // Bắt sựu kiện tên loại tài sản tìm kiếm khác ""
-    if (data.typeName !== "") {
-        keySearch = { ...keySearch, typeName: { $regex: data.typeName, $options: "i" } }
-    };
-
-    var totalList = await AssetType.count(keySearch);
-    var listAssetTypes = await AssetType.find(keySearch).sort({ 'createDate': 'desc' }).skip(data.page).limit(data.limit).populate('parent');
-
-    return { totalList, listAssetTypes };
-    //
-}
-
-
-// Kiểm tra sự tồn tại của typeNumber
-exports.checkAssetTypeExisted = async (typeNumber, company) => {
-    var idTypeNumber = await AssetType.find({
-        typeNumber: typeNumber,
-        company: company
-    }, {
-        field1: 1
-    })
-    var checkTypeNumber = false;
-    if (idTypeNumber.length !== 0) {
-        checkTypeNumber = true
-    }
-    return checkTypeNumber;
-}
-
-
-/**
  * Danh mục văn bản
  */
-exports.getAssetTypes = async (company) => {
-    const list = await AssetType.find({ company });
-    const dataConverted = list.map(type => {
-        return {
-            id: type._id.toString(),
-            key: type._id.toString(),
-            value: type._id.toString(),
-            label: type.typeName,
-            title: type.typeName,
-            parent_id: type.parent ? type.parent.toString() : null
-        }
-    });
-    const tree = await arrayToTree(dataConverted, {});
+exports.getAssetTypes = async (query, company) => {
+    const { typeNumber, typeName, page, limit } = query;
 
-    return { list, tree };
+    if (typeNumber || typeName || page || limit) {console.log(limit, typeof limit);
+        var keySearch = { company: company };
+
+        // Bắt sựu kiện mã loại tài sản tìm kiếm khác ""
+        if (typeNumber !== "") {
+            keySearch = { ...keySearch, typeNumber: { $regex: typeNumber, $options: "i" } }
+        }
+
+        // Bắt sựu kiện tên loại tài sản tìm kiếm khác ""
+        if (typeName !== "") {
+            keySearch = { ...keySearch, typeName: { $regex: typeName, $options: "i" } }
+        };
+
+        var totalList = await AssetType.count(keySearch);
+        var listAssetTypes = await AssetType.find(keySearch).sort({ 'createDate': 'desc' }).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0).populate('parent');
+
+        return { totalList, listAssetTypes };
+    } else {
+        const list = await AssetType.find({ company });
+        const dataConverted = list.map(type => {
+            return {
+                id: type._id.toString(),
+                key: type._id.toString(),
+                value: type._id.toString(),
+                label: type.typeName,
+                title: type.typeName,
+                parent_id: type.parent ? type.parent.toString() : null
+            }
+        });
+        const tree = await arrayToTree(dataConverted, {});
+
+        return { list, tree };
+    }
+    
 }
 
 exports.createAssetTypes = async (company, data) => {
