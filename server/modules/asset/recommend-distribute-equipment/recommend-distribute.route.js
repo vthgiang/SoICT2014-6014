@@ -4,27 +4,13 @@ const { auth } = require('../../../middleware');
 
 const RecommendDistributeController = require("./recommend-distribute.controller");
 
-/**
- * Lấy danh sách phiếu đề nghị cap phat thiết bị
- */ 
-router.post('/paginate',auth, RecommendDistributeController.searchRecommendDistributes);
 
-/**
- * thêm mới phiếu đề nghị cap phat thiết bị
- */ 
-router.post('/create',auth, RecommendDistributeController.createRecommendDistribute);
+router.get('/recommend-distributes', auth, RecommendDistributeController.searchRecommendDistributes);
 
-/**
- * Xoá bẳng thông tin phiếu đề nghị cap phat thiết bị
- */
-router.delete('/:id',auth, RecommendDistributeController.deleteRecommendDistribute);
+router.post('/recommend-distributes', auth, RecommendDistributeController.createRecommendDistribute);
+router.put('/recommend-distributes/:id',auth, RecommendDistributeController.updateRecommendDistribute);
+router.delete('/recommend-distributes/:id', auth, RecommendDistributeController.deleteRecommendDistribute);
 
-/**
- * Cập nhật thông tin phiếu đề nghị cap phat thiết bị
- */
-router.put('/:id',auth, RecommendDistributeController.updateRecommendDistribute);
 
-// Kiểm tra sự tồn tại của mã phiếu
-router.get('/checkRecommendNumber/:recommendNumber', auth, RecommendDistributeController.checkRecommendNumber);
 
 module.exports = router;

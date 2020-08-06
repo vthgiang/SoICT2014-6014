@@ -10,7 +10,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 exports.getAssetTypes = async (query, company) => {
     const { typeNumber, typeName, page, limit } = query;
 
-    if (typeNumber || typeName || page || limit) {console.log(limit, typeof limit);
+    if (typeNumber || typeName || page || limit) {
         var keySearch = { company: company };
 
         // Bắt sựu kiện mã loại tài sản tìm kiếm khác ""
@@ -58,7 +58,7 @@ exports.createAssetTypes = async (company, data) => {
     }
     await AssetType.create(query);
 
-    return await this.getAssetTypes(company);
+    return await this.getAssetTypes({}, company);
 }
 
 exports.editAssetType = async (id, data) => {
@@ -79,12 +79,12 @@ exports.deleteAssetTypes = async (id) => {
     if (type === null) throw ['document_domain_not_found']
     await AssetType.deleteOne({ _id: id });
 
-    return await this.getAssetTypes(type.company);
+    return await this.getAssetTypes({}, type.company);
 }
 
 
 exports.deleteManyAssetType = async (array, company) => {
     await AssetType.deleteMany({ _id: { $in: array } });
 
-    return await this.getAssetTypes(company);
+    return await this.getAssetTypes({}, company);
 }

@@ -57,11 +57,13 @@ function getKPIParent(parentUnit) {
 /** 
  * Lấy danh sách các tập KPI đơn vị theo thời gian của từng đơn vị 
  */
-function getAllOrganizationalUnitKpiSetByTime(organizationalUnitId, startDate, endDate) {
+function getAllOrganizationalUnitKpiSetByTime(roleId, organizationalUnitId, startDate, endDate) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
         method: 'GET',
         params: {
+            allOrganizationalUnitKpiSetByTime: true,
+            roleId: roleId,
             organizationalUnitId: organizationalUnitId,
             startDate: startDate,
             endDate: endDate,

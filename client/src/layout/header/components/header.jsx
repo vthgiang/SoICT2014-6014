@@ -3,12 +3,13 @@ import MainHeaderMenu from './mainHeaderMenu';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../modules/auth/redux/actions';
-import { DialogModal } from '../../../common-components';
+import { DialogModal, ErrorLabel } from '../../../common-components';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { Validator } from './validator';
 import './header.css';
 import { getStorage } from '../../../config';
 import ModalChangeUserInformation from './modalChangeUserInformation';
+import { toast } from 'react-toastify';
 
 class Header extends Component {
     constructor(props) {
@@ -18,7 +19,9 @@ class Header extends Component {
 
     render() { 
         const { translate, auth } = this.props;
-        const { userName, userEmail, userNameError, emailError } = this.state;
+        const {
+            oldPasswordError, newPasswordError, confirmPasswordError
+        } = this.state;
 
         return ( 
             <React.Fragment>
@@ -28,7 +31,7 @@ class Header extends Component {
                         <span className="logo-lg"><img src="/logo.png" alt="Logo" style={{width: "40px", marginTop: "-5px", marginLeft: "-15px"}}></img>VNIST-Việc</span>
                     </Link>
                     <nav className="navbar navbar-static-top">
-                        <a className="sidebar-toggle" data-toggle="push-menu" role="button">
+                        <a className="sidebar-toggle" data-toggle="push-menu" data-expand-on-hover={true} role="button">
                             <span className="sr-only">Toggle navigation</span>
                         </a>
                         <MainHeaderMenu/>
@@ -50,22 +53,23 @@ class Header extends Component {
                     modalID="modal-security"
                     formID="form-security" size="30"
                     title={translate('auth.security.title')}
-                    msg_success={translate('auth.profile.edit_success')}
-                    msg_faile={translate('auth.profile.edit_faile')}
-                    func={this.changePassword}
+                    func={this.saveNewPassword} disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-security" style={{padding: '10px 20px 10px 20px'}}>
-                        <div className="form-group">
+                        <div className={`form-group ${!oldPasswordError ? "" : "has-error"}`}>
                             <label>{ translate('auth.security.old_password') }<span className="text-red">*</span></label>
-                            <input type="password" className="form-control" ref="password"/>
+                            <input className="form-control" type="password" onChange={this.handleOldPassword} />
+                            <ErrorLabel content={oldPasswordError ? translate(oldPasswordError) : undefined} />
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group ${!newPasswordError ? "" : "has-error"}`}>
                             <label>{ translate('auth.security.new_password') }<span className="text-red">*</span></label>
-                            <input type="password" className="form-control" ref="new_password"/>
+                            <input className="form-control" type="password" onChange={this.handleNewPassword} />
+                            <ErrorLabel content={newPasswordError ? translate(newPasswordError) : undefined} />
                         </div>
-                        <div className="form-group">
+                        <div className={`form-group ${!confirmPasswordError ? "" : "has-error"}`}>
                             <label>{ translate('auth.security.confirm_password') }<span className="text-red">*</span></label>
-                            <input type="password" className="form-control" ref="confirm_password"/>
+                            <input className="form-control" type="password" onChange={this.handleConfirmPassword} />
+                            <ErrorLabel content={confirmPasswordError ? translate(confirmPasswordError) : undefined} />
                         </div>
                     </form>
                 </DialogModal>
@@ -74,26 +78,87 @@ class Header extends Component {
          );
     }
 
-    changePassword = () => {
-        const password = this.refs.password.value;
-        const new_password = this.refs.new_password.value;
-        const confirm_password = this.refs.confirm_password.value;
-        const regex = /^[^~`!@#$%^&*()+=/*';\\<>?:",]*$/;
-
-        if ( regex.test(new_password) ===  false || regex.test(confirm_password) ===  false ) {
-            toast.warning(`Mật khẩu không được chứa các kí tự đặc biệt`, {containerId: 'toast-notification'});
-        }else if(new_password.length < 6 || new_password.length > 20)
-            toast.warning('Mật khẩu phải có độ dài từ 6 đến 20 kí tự', {containerId: 'toast-notification'});
-        else if(new_password !== confirm_password)
-            toast.warning('Mật khẩu không khớp', {containerId: 'toast-notification'});
-        else{
-
-            return this.props.changePassword({
-                password,
-                new_password
+    handleOldPassword = (e) => {
+        const { value } = e.target;
+        this.validateOldPassword(value, true);
+    }
+    validateOldPassword = (value, willUpdateState = true) => {
+        let msg = Validator.validatePassword(value);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    oldPasswordError: msg,
+                    oldPassword: value,
+                }
             });
         }
+        return msg === undefined;
+    }
+
+    handleNewPassword = (e) => {
+        const { value } = e.target;
+        this.validateNewPassword(value, true);
+    }
+    validateNewPassword = (value, willUpdateState = true) => {
+        let msg = Validator.validatePassword(value);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    newPasswordError: msg,
+                    newPassword: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    handleConfirmPassword = (e) => {
+        const { value } = e.target;
+        this.validateConfirmPassword(value, true);
+    }
+    validateConfirmPassword = (value, willUpdateState = true) => {
+        const {newPassword} = this.state;
         
+        let msg = Validator.validatePassword(value);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    confirmPasswordError: msg,
+                    confirmPassword: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    isFormValidated = () => {
+        const { oldPassword, newPassword, confirmPassword } = this.state;
+        if(oldPassword !== undefined && newPassword !== undefined && confirmPassword !== undefined){
+            let result =  this.validateOldPassword(oldPassword, false) &&
+            this.validateNewPassword(newPassword, false) &&
+            this.validateConfirmPassword(confirmPassword, false); 
+
+            return result;
+        }
+            
+        return false; 
+    }
+
+    saveNewPassword = () => {
+        const {translate} = this.props;
+        const { oldPassword, newPassword, confirmPassword } = this.state;
+        if(newPassword !== confirmPassword){
+            toast.error(translate('auth.validator.confirm_password_invalid'));
+        }
+        if (this.isFormValidated()) {
+            return this.props.changePassword({
+                password: oldPassword,
+                new_password: newPassword
+            });
+        }
     }
 
     getLinkId = (path, links) => {

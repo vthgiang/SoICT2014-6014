@@ -10,12 +10,11 @@ import c3 from 'c3';
 import 'c3/c3.css';
 import * as d3 from "d3";
 
-
-class TrendsInOrganizationalUnitKpiChart extends Component {
+class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
 
     constructor(props) {
         super(props);
-
+        
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
         
         this.state = {
@@ -25,29 +24,26 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     }
 
     componentDidMount = () => {
-        this.props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"));
-        this.props.getAllTaskOfOrganizationalUnit(localStorage.getItem("currentRole"));
+        this.props.getAllEmployeeKpiInChildrenOrganizationalUnit(localStorage.getItem("currentRole"));
+        this.props.getAllTaskOfChildrenOrganizationalUnit(localStorage.getItem("currentRole"));
 
         this.setState(state => {
             return {
                 ...state,
-                currentRole: localStorage.getItem("currentRole"),
-                dataStatus: this.DATA_STATUS.QUERYING
+                currentRole: localStorage.getItem("currentRole")
             }
         })
     }
-
+    
     shouldComponentUpdate = async (nextProps, nextState) => {
         if (this.state.currentRole !== localStorage.getItem("currentRole")) {
-            await this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"));
-            await this.props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"));
-            await this.props.getAllTaskOfOrganizationalUnit(localStorage.getItem("currentRole"));
-            
+            await this.props.getAllEmployeeKpiInChildrenOrganizationalUnit(localStorage.getItem("currentRole"));
+            await this.props.getAllTaskOfChildrenOrganizationalUnit(localStorage.getItem("currentRole"));
+
             this.setState(state => {
                 return {
                     ...state,
-                    currentRole: localStorage.getItem("currentRole"),
-                    dataStatus: this.DATA_STATUS.QUERYING
+                    dataStatus: this.DATA_STATUS.QUERYING,
                 }
             });
 
@@ -55,9 +51,9 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         if (nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
-            await this.props.getCurrentKPIUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
-            await this.props.getAllEmployeeKpiInOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
-            await this.props.getAllTaskOfOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month)
+            await this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"));
+            await this.props.getAllEmployeeKpiInChildrenOrganizationalUnit(this.state.currentRole, nextState.month);
+            await this.props.getAllTaskOfChildrenOrganizationalUnit(this.state.currentRole, nextProps.month)
 
             this.setState(state => {
                 return {
@@ -74,11 +70,11 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                 return false            
             }
 
-            if(!nextProps.dashboardOrganizationalUnitKpi.employeeKpis) {
+            if(!nextProps.dashboardOrganizationalUnitKpi.employeeKpisOfChildUnit) {
                 return false           
             }
 
-            if (!nextProps.dashboardOrganizationalUnitKpi.tasksOfOrganizationalUnit) {
+            if(!nextProps.dashboardOrganizationalUnitKpi.tasksOfChildrenOrganizationalUnit) {
                 return false           
             }
             
@@ -115,44 +111,125 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
     }
 
+    /** Hàm tiện ích lấy các KPI con có cùng parent */
+    getArrayListChildTargetSameParent = () => {
+        const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = this.props;
+
+        let listOrganizationalUnitKpi, listChildTarget, arrayListChildTargetSameParent;
+
+        if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
+            listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis
+        }
+        if (dashboardOrganizationalUnitKpi.employeeKpisOfChildUnit !== []) {
+            listChildTarget = dashboardOrganizationalUnitKpi.employeeKpisOfChildUnit
+        }
+
+        if (listOrganizationalUnitKpi && listChildTarget) {
+            arrayListChildTargetSameParent = listOrganizationalUnitKpi.map(parent => {
+
+                let index = 0;
+                let maxDeg = listChildTarget[listChildTarget.length - 1][0].deg;
+
+                let listChildTargetSameParent = [];
+
+                while (index <= maxDeg) {
+                    
+                    let listChildTargetSameDeg = listChildTarget.filter(item => item[0].deg === index);
+
+                    if (listChildTargetSameDeg) {
+                        if (index === 0) {
+                            listChildTargetSameParent[index] = listChildTargetSameDeg.map(item => { return item.filter(kpi => kpi._id === parent.name) });
+                        } else {
+                            let parentNameOfUnitKpi = listChildTargetSameParent[index - 1].map(kpi => {
+                                if (kpi[0]) {
+                                    return kpi[0]._id;
+                                }
+                            })
+                            
+                            listChildTargetSameParent[index] = listChildTargetSameDeg.map(item => {
+                                return item.filter(kpi => {
+                                    if (kpi.employeeKpi && kpi.employeeKpi[0].parentNameOfUnitKpi[0]) {
+                                        return parentNameOfUnitKpi.includes(kpi.employeeKpi[0].parentNameOfUnitKpi[0]);
+                                    }
+                                })
+                            });
+                        }
+                    }
+
+                    index++;
+                };
+
+                return listChildTargetSameParent;
+            })
+        }
+
+        return arrayListChildTargetSameParent;
+    }
+
+    /** Hàm tiện ích lấy các công việc cùng KPI */
     getArrayListTaskSameOrganizationUnitKpi = () => {
         const { createKpiUnit, dashboardOrganizationalUnitKpi } = this.props;
-        let listOrganizationalUnitKpi, listChildTarget, listTask, arrayListTaskSameOrganizationUnitKpi;
+
+        let listOrganizationalUnitKpi, listTask, arrayListTaskSameOrganizationUnitKpi;
+        let arrayListChildTargetSameParent = this.getArrayListChildTargetSameParent();
 
         if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis;
         }
-        if (dashboardOrganizationalUnitKpi.employeeKpis !== []) {
-            listChildTarget = dashboardOrganizationalUnitKpi.employeeKpis;
-        }
-        if (dashboardOrganizationalUnitKpi.tasksOfOrganizationalUnit !== []) {
-            listTask = dashboardOrganizationalUnitKpi.tasksOfOrganizationalUnit;
+        if (dashboardOrganizationalUnitKpi.tasksOfChildrenOrganizationalUnit !== []) {
+            listTask = dashboardOrganizationalUnitKpi.tasksOfChildrenOrganizationalUnit;
         }
 
-        if(listOrganizationalUnitKpi && listTask && listTask.length !== 0) {
+        if(listOrganizationalUnitKpi && listTask) {
             arrayListTaskSameOrganizationUnitKpi = listOrganizationalUnitKpi.map(parent => {
                 let temporaryArrayListTaskSameOrganizationUnitKpi = [];
-                if (listChildTarget !== [] && listChildTarget) {
-                    let temporary;
 
-                    temporary = listChildTarget.filter(childTarget => childTarget._id === parent.name);
+                if (arrayListChildTargetSameParent !== [] && arrayListChildTargetSameParent && listTask) {
+                    let listChildTargetSameParent;
 
-                    if (temporary.length !== 0) {
-                        temporary[0].employeeKpi.map(employeeKpi => {
-                            if(listTask.length !== 0){
-                                let list = listTask.filter(item => {
-                                    let kpi, length;
-                                    item.evaluations.kpis.map(item => {
-                                        kpi = item.kpis.filter(kpi => kpi === employeeKpi._id);
-                                        length = kpi.length;
-                                    });
-                                    return length !== 0 && length !== undefined;
+                    if (arrayListChildTargetSameParent) {
+                        listChildTargetSameParent = arrayListChildTargetSameParent.filter(item => item[0][0][0]._id === parent.name);
+                    }
+
+                    if (listChildTargetSameParent.length !== 0) {
+                        listChildTargetSameParent = [...listChildTargetSameParent[0]];
+
+                        listChildTargetSameParent.map(deg => {
+                            if (deg.length !== 0) {
+                                deg.map(unit => {
+                                    if (unit.length !== 0) {
+                                        unit.map(kpi => {
+                                            if (kpi.employeeKpi[0].creator.length !== 0) {
+                                                kpi.employeeKpi.map(employeeKpi => {
+                                                    if (listTask) {
+                                                        listTask.map(task => {
+                                                            let list = task.filter(item => {
+                                                                let kpi, length;
+
+                                                                if (item.evaluations) {
+                                                                    item.evaluations.kpis.map(item => {
+                                                                        kpi = item.kpis.filter(kpi => kpi === employeeKpi._id);
+                                                                        length = kpi.length;
+                                                                    });
+                                                                    return length !== 0 && length !== undefined;
+                                                                } else {
+                                                                    return false
+                                                                }
+                                                            })
+
+                                                            temporaryArrayListTaskSameOrganizationUnitKpi = temporaryArrayListTaskSameOrganizationUnitKpi.concat(list);
+                                                        })
+                                                    }
+                                                })
+                                            }
+                                        })
+                                    }
                                 })
-                                temporaryArrayListTaskSameOrganizationUnitKpi = temporaryArrayListTaskSameOrganizationUnitKpi.concat(list);
                             }
-                        })
+                        })    
                     }
                 }
+
                 temporaryArrayListTaskSameOrganizationUnitKpi = Array.from(new Set(temporaryArrayListTaskSameOrganizationUnitKpi));
                 return temporaryArrayListTaskSameOrganizationUnitKpi;
             })
@@ -213,14 +290,13 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     setNumberOfTaskData = () => {
         const { createKpiUnit, translate } = this.props;
 
-        let listOrganizationalUnitKpi, arrayListTaskSameOrganizationUnitKpi;
+        let listOrganizationalUnitKpi;
         let numberOfTasks = {};
+        let arrayListTaskSameOrganizationUnitKpi = this.getArrayListTaskSameOrganizationUnitKpi();
 
         if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis
         }
-
-        arrayListTaskSameOrganizationUnitKpi = this.getArrayListTaskSameOrganizationUnitKpi();
 
         if (listOrganizationalUnitKpi && arrayListTaskSameOrganizationUnitKpi) {
             listOrganizationalUnitKpi.map(parent => {
@@ -230,6 +306,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
                 numberOfTask = arrayListTaskSameOrganizationUnitKpi[key].length;
                 temporary[parent.name] = numberOfTask;
+
                 numberOfTasks = Object.assign(numberOfTasks, temporary);
             })
         }
@@ -243,40 +320,47 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     }
 
     setNumberOfParticipantData = () => {
-        const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = this.props;
+        const { createKpiUnit, translate } = this.props;
 
-        let listOrganizationalUnitKpi, listChildTarget;
+        let listOrganizationalUnitKpi;
         let numberOfParticipants = {}; 
         let arrayListTaskSameOrganizationUnitKpi = this.getArrayListTaskSameOrganizationUnitKpi();
+        let arrayListChildTargetSameParent = this.getArrayListChildTargetSameParent();
 
         if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis
         }
-        if (dashboardOrganizationalUnitKpi.employeeKpis !== []) {
-            listChildTarget = dashboardOrganizationalUnitKpi.employeeKpis
-        }
 
-        if (!listOrganizationalUnitKpi && listChildTarget){
+        if (!listOrganizationalUnitKpi && arrayListChildTargetSameParent){
             numberOfParticipants = {}
         } else {
             listOrganizationalUnitKpi.map(parent => {
                 let key = listOrganizationalUnitKpi.indexOf(parent);
-                let creators1, creators2, numberOfParticipant=0;
+                let creators1, creators2, numberOfParticipant;
                 let temporary = {};
 
-                if (listChildTarget) {
-                    creators1 = listChildTarget.filter(item => item._id === parent.name);
+                if (arrayListChildTargetSameParent.length !== 0) {
 
-                    if (creators1.length !== 0) {
-                        creators1 = creators1[0].employeeKpi.map(x => {
-                            if (x.creator[0]) {
-                                return x.creator[0];
-                            }
-                        })
-                    }
+                    arrayListChildTargetSameParent[key].map(deg => {
+                        if (deg.length !== 0) {
+                            deg.map(unit => {
+                                if (unit.length !== 0) {
+                                        unit.forEach(kpi => {
+                                        if (kpi.employeeKpi[0].creator.length !== 0) {
+                                            creators1 = kpi.employeeKpi.map(employeeKpi => {
+                                                if (employeeKpi.creator[0]) {
+                                                    return employeeKpi.creator[0];
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            })
+                                
+                        }
+                    })
                 }
                 
-               
                 if (arrayListTaskSameOrganizationUnitKpi) {
                     creators2 = arrayListTaskSameOrganizationUnitKpi[key].map(x => {
                         return x.informedEmployees.concat(x.consultedEmployees).concat(x.informedEmployees);
@@ -285,11 +369,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                 }
 
                 creators1 = Array.from(new Set(creators1));
-                creators1.map(x => {
-                    if (x) {
-                        numberOfParticipant++;
-                    }
-                });
+                numberOfParticipant = creators1.length;
                 temporary[parent.name] = numberOfParticipant;
                 numberOfParticipants = Object.assign(numberOfParticipants, temporary);
             })
@@ -304,31 +384,47 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     }
 
     setNumberOfChildKpiData = () => {
-        const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = this.props;
+        const { createKpiUnit, translate } = this.props;
 
-        let listOrganizationalUnitKpi, listChildTarget;
+        let listOrganizationalUnitKpi;
         let numberOfChildKpis = {};
-
+        let arrayListChildTargetSameParent = this.getArrayListChildTargetSameParent();
+        
         if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis
         }
-        if (dashboardOrganizationalUnitKpi.employeeKpis !== []) {
-            listChildTarget = dashboardOrganizationalUnitKpi.employeeKpis
-        }
-        if(!listOrganizationalUnitKpi && listChildTarget){
+
+        if (!listOrganizationalUnitKpi) {
             numberOfChildKpis = {}
         } else {
             listOrganizationalUnitKpi.map(parent => {
-                let numberOfChildKpi = 0;
-                let temporary = {};
-                if(listChildTarget){
-                    numberOfChildKpi = listChildTarget.filter(item => item._id === parent.name).map(item => {
-                        if (item.employeeKpi[0].creator.length !== 0) {
-                            return item.employeeKpi.length;
+
+                let numberOfChildKpi = 0, temporary = {};
+                let listChildTargetSameParent;
+
+                if (arrayListChildTargetSameParent) {
+                    listChildTargetSameParent = arrayListChildTargetSameParent.filter(item => item[0][0][0]._id === parent.name);
+                }
+                
+                if (listChildTargetSameParent.length !== 0) {
+                    listChildTargetSameParent = [...listChildTargetSameParent[0]];
+
+                    listChildTargetSameParent.map(deg => {
+                        if (deg.length !== 0) {
+                            deg.map(unit => {
+                                if (unit.length !== 0) {
+                                        unit.forEach(kpi => {
+                                        if (kpi.employeeKpi[0].creator.length !== 0) {
+                                            numberOfChildKpi = numberOfChildKpi + kpi.employeeKpi.length;
+                                        }
+                                    });
+                                }
+                            })
+                                
                         }
                     })
                 }
-
+                
                 temporary[parent.name] = numberOfChildKpi;
                 numberOfChildKpis = Object.assign(numberOfChildKpis, temporary);
             })
@@ -338,14 +434,13 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             { name: translate('kpi.organizational_unit.dashboard.trend_chart.amount_child_kpi') },
             numberOfChildKpis
         )
-
+        
         return numberOfChildKpis;
     }
     
     // Thiết lập data trọng số của từng Kpi đơn vị
     setWeightData = () => {
         const { createKpiUnit, translate } = this.props;
-
         let listOrganizationalUnitKpi;
         let weight = {};
 
@@ -381,9 +476,11 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
     barChart = () => {
         this.removePreviousBarChart();
-
+        
         const { createKpiUnit } = this.props;
-        let numberOfParticipants, numberOfChildKpis, executionTimes, numberOfTasks, weight, data, dataChart, listOrganizationalUnitKpi, titleX;
+
+        let numberOfParticipants, numberOfChildKpis, executionTimes, numberOfTasks, weight, listOrganizationalUnitKpi;
+        let data, dataChart, titleX;
            
         if(createKpiUnit.currentKPI) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis;
@@ -422,7 +519,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         dataChart.unshift(titleX);
-        
+
         this.chart = c3.generate({
             bindto: this.refs.chart,                
 
@@ -492,9 +589,9 @@ function mapState(state) {
 }
 const actions = {
     getCurrentKPIUnit: createUnitKpiActions.getCurrentKPIUnit,
-    getAllEmployeeKpiInOrganizationalUnit: dashboardOrganizationalUnitKpiActions.getAllEmployeeKpiInOrganizationalUnit,
-    getAllTaskOfOrganizationalUnit: dashboardOrganizationalUnitKpiActions.getAllTaskOfOrganizationalUnit
+    getAllEmployeeKpiInChildrenOrganizationalUnit: dashboardOrganizationalUnitKpiActions.getAllEmployeeKpiInChildrenOrganizationalUnit,
+    getAllTaskOfChildrenOrganizationalUnit: dashboardOrganizationalUnitKpiActions.getAllTaskOfChildrenOrganizationalUnit
 }
 
-const connectedTrendsInOrganizationalUnitKpiChart = connect(mapState, actions)(withTranslate(TrendsInOrganizationalUnitKpiChart));
-export { connectedTrendsInOrganizationalUnitKpiChart as TrendsInOrganizationalUnitKpiChart };
+const connectedTrendsInChildrenOrganizationalUnitKpiChart = connect(mapState, actions)(withTranslate(TrendsInChildrenOrganizationalUnitKpiChart));
+export { connectedTrendsInChildrenOrganizationalUnitKpiChart as TrendsInChildrenOrganizationalUnitKpiChart };

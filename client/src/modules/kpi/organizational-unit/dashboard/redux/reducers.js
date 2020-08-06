@@ -6,6 +6,7 @@ const initState = {
     organizationalUnitKpiSets: null,
     employeeKpiSets: null,
     organizationalUnitKpiSetsOfChildUnit: null,
+    employeeKpisOfChildUnit: null,
     isLoading: false,
     error: null
 }
@@ -35,7 +36,7 @@ export function dashboardOrganizationalUnitKpi(state = initState, action) {
         case dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_ORGANIZATIONALUNIT_REQUEST:
             return {
                 ...state,
-                tasks: null,
+                tasksOfOrganizationalUnit: null,
                 loading: true,
                 isLoading: false
             }
@@ -44,7 +45,7 @@ export function dashboardOrganizationalUnitKpi(state = initState, action) {
                 ...state,
                 loading: false,
                 isLoading: false,
-                tasks: action.payload
+                tasksOfOrganizationalUnit: action.payload
             }
         case dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_ORGANIZATIONALUNIT_FAILURE:
             return {
@@ -66,6 +67,48 @@ export function dashboardOrganizationalUnitKpi(state = initState, action) {
                 loading: false,
                 isLoading: false,
                 employeeKpiSets: action.payload
+            }
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_CHILDREN_ORGANIZATIONALUNIT_REQUEST:
+            return {
+                ...state,
+                employeeKpisOfChildUnit: null,
+                loading: true,
+                isLoading: false
+            }
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_CHILDREN_ORGANIZATIONALUNIT_SUCCESS:
+            return {
+                ...state,
+                employeeKpisOfChildUnit: action.payload,
+                loading: false,
+                isLoading: false
+            }
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_CHILDREN_ORGANIZATIONALUNIT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+                loading: false,
+                isLoading: false
+            }
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_CHILDREN_ORGANIZATIONALUNIT_REQUEST:
+            return {
+                ...state,
+                tasksOfChildrenOrganizationalUnit: null,
+                loading: true,
+                isLoading: false
+            }
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_CHILDREN_ORGANIZATIONALUNIT_SUCCESS:
+            return {
+                ...state,
+                tasksOfChildrenOrganizationalUnit: action.payload,
+                loading: false,
+                isLoading: false
+            }
+        case dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_CHILDREN_ORGANIZATIONALUNIT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+                loading: false,
+                isLoading: false
             }
         
         default:

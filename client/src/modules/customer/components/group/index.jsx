@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { CustomerActions } from '../../redux/actions';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import {SearchBar, PaginateBar, DataTableSetting} from '../../../../common-components';
+import {SearchBar, PaginateBar, DataTableSetting, DateTimeConverter} from '../../../../common-components';
 import GroupCreate from './groupCreate';
 import GroupEdit from './groupEdit';
 
@@ -54,15 +54,15 @@ class Group extends Component {
                 />
 
                 {/* Bảng dữ liệu phân quyền */}
-                <table className="table table-hover table-striped table-bordered" id="table-manage-role">
+                <table className="table table-hover table-striped table-bordered" id="table-manage-customer-group">
                     <thead>
                         <tr>
                             <th>Tên nhóm</th>
                             <th>Mã nhóm</th>
                             <th>Mô tả</th>
-                            <th>Khuyến mãi áp dụng</th>
                             <th>Ngày tạo</th>
-                            <th style={{ width: '120px', textAlign: 'center' }}>
+                            <th>Số lượng khách hàng</th>
+                            <th style={{ textAlign: 'center' }}>
                                 {translate('table.action')}
                                 <DataTableSetting
                                     columnName={translate('table.action')}
@@ -70,8 +70,8 @@ class Group extends Component {
                                         "Tên nhóm",
                                         "Mã nhóm",
                                         "Mô tả",
-                                        "Khuyến mãi áp dụng",
-                                        "Ngày tạo"
+                                        "Ngày tạo",
+                                        "Số lượng khách hàng"
                                     ]}
                                     limit={this.state.limit}
                                     setLimit={this.setLimit}
@@ -88,8 +88,8 @@ class Group extends Component {
                                         <td> {group.name} </td>
                                         <td> {group.code} </td>
                                         <td> {group.description} </td>
-                                        <td> Sale 50% </td>
-                                        <td> {group.createdAt} </td>
+                                        <td><DateTimeConverter dateTime={group.createdAt} type="DD-MM-YYYY"/></td>
+                                        <td> 0 </td>
                                         <td style={{ textAlign: 'center' }}>
                                             <a className="edit" onClick={this.handleEdit}><i className="material-icons">edit</i></a>
                                         </td>
@@ -100,7 +100,6 @@ class Group extends Component {
                         }
                     </tbody>
                 </table>
-
                 {/* PaginateBar */}
                 <PaginateBar pageTotal={group.totalPages} currentPage={group.page} func={this.setPage} />
             </React.Fragment>
