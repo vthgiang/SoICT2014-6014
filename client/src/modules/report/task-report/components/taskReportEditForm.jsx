@@ -491,7 +491,7 @@ class TaskReportEditForm extends Component {
         const { translate, reports, tasktemplates, user, tasks } = this.props;
         const { editingReport } = this.state;
         const { errorOnNameTaskReport, errorOnDescriptiontTaskReport, errorOnTaskTemplateReport } = this.state.editingReport;
-
+        console.log('editingReport.responsibleEmployees', editingReport.responsibleEmployees);
         let listTaskTemplate, units;
         let listTaskReportById = reports.listTaskReportById;
 
