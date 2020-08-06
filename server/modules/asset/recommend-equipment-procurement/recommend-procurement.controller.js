@@ -5,12 +5,12 @@ const {LogInfo, LogError} = require('../../../logs');
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
  */
 exports.searchRecommendProcures = async (req, res) => {
-    // console.log('req.body',req.body);
     try {
-        var listRecommendProcures = await RecommendProcureService.searchRecommendProcures(req.body, req.user.company._id);
+        var listRecommendProcures = await RecommendProcureService.searchRecommendProcures(req.query, req.user.company._id);
         await LogInfo(req.user.email, 'GET_RECOMMENDPROCURE', req.user.company);
         res.status(200).json({ success: true, messages: ["get_recommend_procure_success"], content: listRecommendProcures });
     } catch (error) {
+        console.log(error);
         await LogError(req.user.email, 'GET_RECOMMENDPROCURE', req.user.company);
         res.status(400).json({ success: false, messages: ["get_recommend_procure_faile"], content: {error:error}});
     }
