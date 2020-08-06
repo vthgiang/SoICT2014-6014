@@ -157,7 +157,7 @@ class SideBar extends Component {
                                     key='manage_user'
                                     name='manage_user'
                                     path='/users-management'
-                                    icon='fa fa-users'
+                                    icon='fa fa-user'
                                 />
                             }
                             {

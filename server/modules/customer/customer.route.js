@@ -12,4 +12,6 @@ router.get("/", auth, CustomerController.getCustomers);
 
 router.get("/group", auth, CustomerController.getCustomerGroups);
 
+router.get("/liability", auth, CustomerController.getCustomerLiabilities);
+
 module.exports = router;

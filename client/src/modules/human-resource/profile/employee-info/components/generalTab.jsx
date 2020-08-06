@@ -9,19 +9,23 @@ class GeneralTab extends Component {
     }
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (date) {
+            var d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
 
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else return [day, month, year].join('-');
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        } else {
+            return date;
+        }
     }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
@@ -44,6 +48,8 @@ class GeneralTab extends Component {
                 ethnic: nextProps.employee.ethnic,
                 religion: nextProps.employee.religion,
                 status: nextProps.employee.status,
+                startingDate: nextProps.employee.startingDate,
+                leavingDate: nextProps.employee.leavingDate,
                 roles: nextProps.roles
             }
         } else {
@@ -52,7 +58,7 @@ class GeneralTab extends Component {
     }
     render() {
         const { id, translate } = this.props;
-        const { avatar, employeeNumber, employeeTimesheetId, fullName, gender, birthdate, birthplace, status, roles,
+        const { avatar, employeeNumber, employeeTimesheetId, fullName, gender, birthdate, birthplace, status, roles, startingDate, leavingDate,
             emailInCompany, maritalStatus, identityCardNumber, identityCardDate, identityCardAddress, nationality, ethnic, religion } = this.state;
         return (
             <div id={id} className="tab-pane active">
@@ -117,6 +123,17 @@ class GeneralTab extends Component {
                         </div>
                         <div className="row">
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                <strong> Ngày bắt đầu làm việc&emsp; </strong>
+                                {this.formatDate(startingDate)}
+                            </div>
+                            <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                <strong>Ngày nghỉ việc&emsp; </strong>
+                                {this.formatDate(leavingDate)}
+                            </div>
+                        </div>
+
+                        <div className="row">
+                            <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('manage_employee.id_card')}&emsp; </strong>
                                 {identityCardNumber}
 
@@ -125,7 +142,6 @@ class GeneralTab extends Component {
                                 <strong>{translate('manage_employee.date_issued')}&emsp; </strong>
                                 {this.formatDate(identityCardDate)}
                             </div>
-
                         </div>
                         <div className="row">
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">

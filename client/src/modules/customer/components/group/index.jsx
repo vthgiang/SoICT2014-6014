@@ -45,8 +45,8 @@ class Group extends Component {
                 {/* Thanh tìm kiếm */}
                 <SearchBar
                     columns={[
-                        { title: 'Tên khách hàng', value: 'name' },
-                        { title: 'Khu vực', value: 'location' }
+                        { title: 'Tên nhóm', value: 'name' },
+                        { title: 'Mã nhóm', value: 'code' }
                     ]}
                     option={option}
                     setOption={this.setOption}

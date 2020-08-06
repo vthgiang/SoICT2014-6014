@@ -670,13 +670,11 @@ class EmployeeManagement extends Component {
                 })
             })
         }
-
+        let exportData;
         if (employeesManager.listEmployees) {
             lists = employeesManager.listEmployees;
+            exportData = this.convertDataToExportData(lists);
         }
-
-        let exportData = this.convertDataToExportData(lists);
-
         let pageTotal = ((employeesManager.totalList % limit) === 0) ?
             parseInt(employeesManager.totalList / limit) :
             parseInt((employeesManager.totalList / limit) + 1);

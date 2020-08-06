@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal } from '../../../../../common-components/index';
-import { DataTableSetting } from '../../../../../common-components';
+import { DataTableSetting,ExportExcel } from '../../../../../common-components';
 
 import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions';
 
@@ -103,9 +103,121 @@ class ModalDetailKPIPersonal extends Component {
         });
     }
 
+    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    convertDataToExportData = (dataKpi,dataDetailKpi) => {   
+
+        let fileName = "Thông tin chi tiết KPI cá nhân ";
+        let kpiData=[],detailData;
+
+        if(dataKpi){
+            fileName+=" "+ dataKpi.name;
+            let dataObject ={
+                kpiName : dataKpi.name,
+                kpiCriteria :dataKpi.criteria,
+                kpiWeight : parseInt(dataKpi.weight),
+                automaticPoint : (dataKpi.automaticPoint === null)?"Chưa đánh giá":parseInt(dataKpi.automaticPoint),
+                employeePoint : (dataKpi.employeePoint === null)?"Chưa đánh giá":parseInt(dataKpi.employeePoint),
+                approverPoint : (dataKpi.approvedPoint===null)?"Chưa đánh giá":parseInt(dataKpi.approvedPoint),
+            }
+            kpiData.push(dataObject);
+        }
+
+        if (dataDetailKpi) {           
+            detailData = dataDetailKpi.map((x, index) => {               
+                let name =x.name;
+                let startTaskD = new Date(x.startDate),
+                    startTaskDate = startTaskD.getDate(),
+                    startTaskMonth ='' + (startTaskD.getMonth() + 1),
+                    startTaskYear = startTaskD.getFullYear();
+                let endTaskD = new Date(x.endDate),
+                    endTaskDate = endTaskD.getDate(),
+                    endTaskMonth =''+ (endTaskD.getMonth()+1)
+                let startApproveD = new Date(x.preEvaDate),
+                    startApproveDate = startApproveD.getDate(),
+                    startApproveMonth ='' + (startApproveD.getMonth()+1)
+                let endApproveD =new Date(x.date),
+                    endApproveDate = endApproveD.getDate(),
+                    endApproveMonth = ''+ (endApproveD.getMonth()+1)
+                let automaticPoint = (x.results.automaticPoint === null)?"Chưa đánh giá":parseInt(x.results.automaticPoint);
+                let employeePoint = (x.results.employeePoint === null)?"Chưa đánh giá":parseInt(x.results.employeePoint);
+                let approverPoint =(x.results.approvedPoint===null)?"Chưa đánh giá":parseInt(x.results.approvedPoint);
+                let status = x.status;
+                let contributionPoint =parseInt(x.results.contribution);
+                let importantLevel = parseInt(x.results.taskImportanceLevel);           
+
+                return {
+                    STT: index + 1,
+                    name: name,                   
+                    automaticPoint: automaticPoint,
+                    status: status,
+                    employeePoint: employeePoint,
+                    approverPoint: approverPoint,
+                    startTaskDate: startTaskDate,
+                    startTaskMonth: startTaskMonth,
+                    endTaskDate: endTaskDate,
+                    endTaskMonth : endTaskMonth,
+                    startApproveDate:startApproveDate,
+                    startApproveMonth:startApproveMonth,
+                    endApproveDate:endApproveDate,
+                    endApproveMonth:endApproveMonth,
+                    year: startTaskYear,
+                    contributionPoint:contributionPoint,
+                    importantLevel : importantLevel                   
+                };
+            })
+        }
+
+        let exportData = {
+            fileName: fileName,
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    tables: [
+                        {
+                            columns: [
+                                { key: "kpiName", value: "Tên KPI cá nhân" },
+                                { key: "kpiCriteria", value: "Tiêu chí đánh giá" },                                
+                                { key: "kpiWeight", value: "Trọng số (/100)" },
+                                { key: "automaticPoint", value: "Điểm tự động" },
+                                { key: "employeePoint", value: "Điểm tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm người phê duyệt đánh giá" },
+                            ],
+                            data: kpiData
+                        },
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "startTaskDate", value: "Ngày bắt đầu công việc" },
+                                { key: "startTaskMonth", value: "Tháng bắt đầu công việc" },
+                                { key: "endTaskDate", value: "Ngày kết thúc công việc" },
+                                { key: "endTaskMonth", value: "Tháng kết thúc công việc" },
+                                { key: "startApproveDate", value: "Ngày bắt đầu đánh giá" },
+                                { key: "startApproveMonth", value: "Tháng bắt đầu công việc" },
+                                { key: "endApproveDate", value: "Ngày kết thúc đánh giá" },
+                                { key: "endApproveMonth", value: "Tháng kết thúc đánh giá" },
+                                { key: "year", value: "Năm" },                                
+                                { key: "status", value: "Trạng thái" },
+                                { key: "contributionPoint", value: "Đóng góp (%)" },
+                                { key: "automaticPoint", value: "Điểm tự động" },
+                                { key: "employeePoint", value: "Điểm tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm được đánh giá" },
+                                { key: "importantLevel", value: "Độ quan trọng" }
+ 
+                            ],
+                            data:detailData
+                        }                        
+                    ]
+                },
+            ]
+        }
+        return exportData;        
+       
+    }
+
     render() {
         var kpimember;
-        var list, myTask = [], thisKPI = null;
+        var list, myTask = [];
+        let exportData,content = this.state.content;
         const { kpimembers, translate } = this.props;
         let { employeeKpiSet } = this.props;
 
@@ -114,6 +226,16 @@ class ModalDetailKPIPersonal extends Component {
 
         if (kpimembers.currentKPI) {
             list = kpimembers.currentKPI.kpis;
+        }
+
+        if(myTask){
+            let dataKpi;
+            for(let i=0;i<list.length;i++){
+                if(list[i]._id === content){
+                    dataKpi=list[i];
+                }
+            }
+            exportData=this.convertDataToExportData(dataKpi,myTask);
         }
 
         return (
@@ -234,6 +356,7 @@ class ModalDetailKPIPersonal extends Component {
                                             }
                                         </tbody>
                                     </table>
+                                    {exportData&&<ExportExcel id="export-employee-kpi-management-detail-kpi" exportData={exportData} style={{ marginTop: 5 }} />}
                                 </React.Fragment>);
                             return true;
                         })}

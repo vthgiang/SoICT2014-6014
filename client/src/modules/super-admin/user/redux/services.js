@@ -21,6 +21,7 @@ export const UserServices = {
     getAllUserInAllUnitsOfCompany,
     getAllEmployeeOfUnitByRole,
     getAllEmployeeOfUnitByIds,
+    getAllUsersWithRole,
     edit,
     create,
     destroy,
@@ -179,5 +180,13 @@ function destroy(id) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/user/users/${id}`,
         method: 'DELETE',
+    }, true, true, 'super_admin.user');
+}
+
+function getAllUsersWithRole() {
+    console.log("hihihihihihihi")
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/user/users/roles/abc`,
+        method: 'GET',
     }, true, true, 'super_admin.user');
 }

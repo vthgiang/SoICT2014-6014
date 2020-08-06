@@ -48,3 +48,24 @@ exports.getCustomerGroups = async(req, res) => {
         })
     }
 };
+
+// Customer liability
+exports.getCustomerLiabilities = async(req, res) => {
+    try {
+        const groups = await CustomerService.getCustomerLiabilities(req.user.company._id, req.query);
+
+        LogInfo(req.user.email, 'GET_CUSTOMER_LIABILITY', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_customer_liability_success'],
+            content: groups
+        });
+    } catch (error) {
+        LogError(req.user.email, 'GET_CUSTOMER_LIABILITY', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_customer_liability_faile'],
+            content: error
+        })
+    }
+};
