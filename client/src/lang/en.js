@@ -2,9 +2,6 @@ export default {
     locale: 'en',
     messages: {
         error: {
-            email_does_not_exist: 'Email does not exist',
-            field_invalid: 'Field input invaid',
-
             /** 
              * Start 
              * Chức năng quản lý nhân sự

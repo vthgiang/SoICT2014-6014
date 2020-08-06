@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, SelectBox, DatePicker } from '../../../../common-components';
 import { CustomerActions } from '../../redux/actions';
+import {list as locations} from './location';
 
 class CustomerCreate extends Component {
     constructor(props) {
@@ -103,7 +104,19 @@ class CustomerCreate extends Component {
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">
                                         <label>Khu vực</label>
-                                        <input type="text" className="form-control" onChange={this.handleName} />
+                                        <SelectBox
+                                            id="select-customer-location"
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={locations.map(location=>{
+                                                return {
+                                                    value: location.Title,
+                                                    text: location.Title
+                                                }
+                                            })}
+                                            onChange={this.handleParents}
+                                            multiple={false}
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -128,7 +141,7 @@ class CustomerCreate extends Component {
             </React.Fragment>
         );
     }
-
+    
     handleBirth = (value) => {
         this.setState({
             ...this.state,
