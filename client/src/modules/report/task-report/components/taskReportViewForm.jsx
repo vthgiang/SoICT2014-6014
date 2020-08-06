@@ -36,85 +36,70 @@ class TaskReportViewForm extends Component {
                 }
             })
         }
-
+        console.log('listTask', listTaskEvaluation);
         let result2 = [];
-        let sump1 = 0, sump2 = 0, avg, month, sum;
+        let sump1 = 0, sump2 = 0, avg, month;
         let result = [];
         if (listTaskEvaluation) {
             listTaskEvaluation.forEach((x, index) => {
-                console.log("xxxexxxx", x.taskInformations);
-                console.log("xxxexxxx2", x.taskInformations[index]);
 
                 let date = new Date(x.date);
                 month = `${date.getMonth() + 1} - ${date.getFullYear()}`;
-                if (Array.isArray(result) && result.length) {
-                    console.log("cccccccccccccccc");
+
+                if (Array.isArray(result) && result.length !== 0) {
                     result.map(n => {
-                        console.log('nnn', n);
                         for (let abc in n) {
                             if (abc === month) {
-                                console.log('trung thang');
-                                // console.log('n', n);
-                                // console.log('abc', abc);
-                                result = { ...result, [abc]: [{ ...x.taskInformations }] };
-
+                                result[month] = { ...result[month], ...x.taskInformations };
+                                console.log("result-58", result);
                             } else {
-                                // result[index] = {
-                                //     ...result, [month]: [{ ...x.taskInformations }]
-                                // };
+                                result[month] = {
+                                    ...result[index], [month]: [{ ...x.taskInformations }]
+                                }
+                                console.log('result-60', result);
                             }
                         }
                     })
-                    // for (let n in result) {
-                    //     console.log('nnn', n);
-                    //     console.log('result', result);
-                    //     if (month === n) {
-                    //         result[month] = { ...result[month], ...x.taskInformations }
-                    //     } else {
-                    //         result = {
-                    //             ...result, [month]: { ...x.taskInformations }
-                    //         };
-                    //     }
-                    // }
-
                 } else {
                     console.log(`bbbbbbbbbbbbbbbbb---${index}`, x.taskInformations);
                     result[index] = {
-                        ...result, [month]: [{ ...x.taskInformations }]
+                        ...result, [month]: [{ ...x.taskInformations }],
                     };
+                    console.log(`result-${index}`, result);
                 }
+
+                // x.taskInformations.reduce(function (res, value) {
+                //     console.log('res', res);
+                //     console.log('value', value);
+                //     if (!res[month]) {
+                //         res[month] = {
+                //             sum: 0,
+                //             month: month
+                //         };
+                //         result2.push(res[month])
+                //     }
+                //     res[month].sum += value.value
+                //     return res;
+                // }, {});
+
+                // for (let n in result) {
+                //     console.log('nnn', n);
+                //     console.log('result', result);
+                //     if (month === n) {
+                //         result[month] = { ...result[month], ...x.taskInformations }
+                //     } else {
+                //         result = {
+                //             ...result, [month]: { ...x.taskInformations }
+                //         };
+                //     }
+                // }
+
+
             })
             console.log(result);
-            // for (let n in result) {
 
-            // }
-            //     x.taskInformations.forEach(y => {
-            //         // console.log('minh log showInReport', y.showInReport);
-            //         if (y.type === 'Number' && y.code === 'p1') {
-            //             sump1 += y.value;
-            //         }
-            //         if (y.type === 'Number' && y.code === 'p2') {
-            //             sump2 += y.value;
-            //         }
-            //     })
-            //     // x.taskInformations.reduce(function (res, value) {
-            //     //     console.log('res', res);
-            //     //     console.log('value', value);
-            //     //     if (!res[month]) {
-            //     //         res[month] = {
-            //     //             sum: 0,
-            //     //             month: month
-            //     //         };
-            //     //         result2.push(res[month])
-            //     //     }
-            //     //     res[month].sum += value.value
-            //     //     return res;
-            //     // }, {});
-            // })
         }
-        // console.log('result2_ver2', result2);
-        // console.log('sum2ver1', sump1);
-        // console.log('sum2ver2', sump2);
+
         // console.log('listTaskEvaluations', tasks.listTaskEvaluations);
         return (
             <React.Fragment>

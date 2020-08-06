@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
+import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
 
 class ModalShowAutoPointInfo extends Component {
     constructor(props) {
@@ -89,6 +90,28 @@ class ModalShowAutoPointInfo extends Component {
             }
         }
 
+        let taskInfo = {
+            task: task,
+            progress: progress,
+            date: date,
+            info: info,
+        };
+
+        let automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        if (isNaN(automaticPoint)) automaticPoint = undefined
+        let calcAuto = automaticPoint;
+
+        let result;
+        if(calcAuto < 0) {
+            result = `${calcAuto} ${translate('task.task_management.explain')}`;
+        }
+        else if( calcAuto >= 0) {
+            result = autoPoint
+        }
+        else {
+            result = translate('task.task_management.calc_nan');
+        }
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -97,6 +120,7 @@ class ModalShowAutoPointInfo extends Component {
                     formID="form-automatic-point-info"
                     title={translate('task.task_management.calc_form')} 
                     hasSaveButton={false}
+                    hasNote={false}
                 >
                     {(task.taskTemplate) &&
                         <div>
@@ -115,7 +139,7 @@ class ModalShowAutoPointInfo extends Component {
                                     })
                                 }
                             </ul>
-                            <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{formula} = {autoPoint? autoPoint: translate('task.task_management.calc_nan')}</p>
+                            <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{formula} = {result}</p>
                         </div> 
                     }
                     {((task.taskTemplate === null || task.taskTemplate === undefined) && a === 0) &&
@@ -127,7 +151,7 @@ class ModalShowAutoPointInfo extends Component {
                                 <li>dayUsed: {translate('task.task_management.calc_day_used')}: {dayUsed} ({translate('task.task_management.calc_days')})</li>
                                 <li>totalDay: {translate('task.task_management.calc_total_day')}: {totalDay} ({translate('task.task_management.calc_days')})</li>
                             </ul>
-                            <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{progress}/({dayUsed}/{totalDay}) = {autoPoint? autoPoint: translate('task.task_management.calc_nan')}</p>
+                            <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{progress}/({dayUsed}/{totalDay}) = {result}</p>
                         </div>
                     }
                     {((task.taskTemplate === null || task.taskTemplate === undefined) && a !== 0) &&
@@ -140,7 +164,8 @@ class ModalShowAutoPointInfo extends Component {
                                 <li>dayUsed: {translate('task.task_management.calc_day_used')}: {dayUsed} ({translate('task.task_management.calc_days')})</li>
                                 <li>totalDay: {translate('task.task_management.calc_total_day')}: {totalDay} ({translate('task.task_management.calc_days')})</li>
                             </ul>
-                        <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{progress}/({dayUsed}/{totalDay}) - {0.5}*({10}-{averageActionRating})*{10} = {autoPoint? autoPoint: translate('task.task_management.calc_nan')}</p>
+                        <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{progress}/({dayUsed}/{totalDay}) - {0.5}*({10}-{averageActionRating})*{10} = {result}</p>
+                        {/* {autoPoint? autoPoint: translate('task.task_management.calc_nan')} */}
                         </div>
                     }
 

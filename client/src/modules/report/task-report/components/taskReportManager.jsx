@@ -135,10 +135,21 @@ class TaskReportManager extends Component {
 
     }
 
-    checkPermisson = (creator) => {
-        let userId = this.state.currentRole;
-        if (userId === creator) {
+    checkPermissonCreator = (creator) => {
+        let currentRole = this.state.currentRole;
+        if (currentRole === creator) {
             return true;
+        }
+        return false;
+    }
+
+
+    checkPermissonDean = (dean) => {
+        let currentRole = localStorage.getItem("currentRole");
+        for (let x in dean) {
+            if (currentRole === dean[x]) {
+                return true;
+            }
         }
         return false;
     }
@@ -233,9 +244,8 @@ class TaskReportManager extends Component {
                         <tbody>
                             {
                                 (reports && reports.listTaskReport && reports.listTaskReport.length !== 0 && typeof reports.listTaskReport !== 'undefined') ? reports.listTaskReport.map(item => (
-
                                     <tr key={item._id}>
-                                        <td>{item.name}</td>
+                                        <td>{item.name} </td>
                                         <td>{item.description}</td>
                                         <td>{item.creator.name}</td>
                                         <td>{item.createdAt.slice(0, 10)}</td>
@@ -244,7 +254,7 @@ class TaskReportManager extends Component {
 
                                             {/* Check nếu là người tạo thì có thể sửa, xóa báo cáo */}
                                             {
-                                                this.checkPermisson(item.creator._id) &&
+                                                (this.checkPermissonDean(item.organizationalUnit.deans) || this.checkPermissonCreator(item.creator._id)) &&
                                                 <React.Fragment>
                                                     <a onClick={() => this.handleEdit(item._id)} className="edit text-yellow" style={{ width: '5px' }} title={translate('report_manager.edit')}><i className="material-icons">edit</i></a>
                                                     <a onClick={() => this.handleDelete(item._id, item.name)} className="delete" title={translate('report_manager.title_delete')}>

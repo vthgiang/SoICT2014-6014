@@ -1832,6 +1832,22 @@ export default {
                 calc_where: 'Trong đó',
                 calc_no_value: 'Chưa có giá trị',
                 calc_nan: 'Không tính được',
+                explain: ' - (Giá trị âm sẽ được tính là 0)',
+                eval_list: 'Danh sách các lần đánh giá',
+                title_eval: 'Đánh giá công việc',
+
+                btn_save_eval: 'Lưu đánh giá',
+                btn_get_info: 'Lấy thông tin',
+                note_not_eval: 'Bạn không thể chỉnh sửa đánh giá nữa vì đã quá 7 ngày sau lần đánh giá cuối cùng.',
+                note_eval: 'Số ngày còn lại để chỉnh sửa đánh giá: ',
+                
+                add_eval_of_this_month: 'Thêm đánh giá tháng này',
+                eval_of: 'Đánh giá tháng',
+                eval_from: 'Đánh giá từ ngày',
+                eval_to: 'Đến ngày',
+                store_info: 'Lưu công việc ra thông tin chung',
+                bool_yes: 'Đúng',
+                bool_no: 'Sai',
 
                 dashboard_created: 'Đã tạo',
                 dashboard_need_perform: 'Cần thực hiện',

@@ -48,6 +48,17 @@ div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > d
 
 
 
+
+
+/* Ghi đè CSS AdminLTE */
+.treeview-menu > li > a {
+    padding: 5px 5px 5px 25px;
+}
+
+
+
+
+
 /* Css cho Link */
 a {
     color: #385898;

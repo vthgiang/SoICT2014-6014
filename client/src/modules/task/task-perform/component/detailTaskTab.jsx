@@ -9,6 +9,7 @@ import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountable
 import { EvaluateByAccountableEmployee } from './evaluateByAccountableEmployee';
 import { EvaluateByConsultedEmployee } from './evaluateByConsultedEmployee';
 import { EvaluateByResponsibleEmployee } from './evaluateByResponsibleEmployee';
+import { EvaluationModal } from './evaluationModal';
 import { getStorage } from '../../../../config';
 
 import './detailTaskTab.css';
@@ -191,7 +192,8 @@ class DetailTaskTab extends Component {
                 showEvaluate: id
             }
         });
-        window.$(`#modal-evaluate-task-by-${role}-${id}-evaluate`).modal('show');
+        // window.$(`#modal-evaluate-task-by-${role}-${id}-evaluate`).modal('show');
+        window.$(`#task-evaluation-modal-${id}-`).modal('show');
 
     }
     refresh = async () => {
@@ -260,9 +262,9 @@ class DetailTaskTab extends Component {
                         }
                         {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
                             <React.Fragment>
-                                <a className="btn btn-app" onClick={() => this.handleShowEndTask(id, currentRole)} title="Kết thúc công việc">
+                                {/* <a className="btn btn-app" onClick={() => this.handleShowEndTask(id, currentRole)} title="Kết thúc công việc">
                                     <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
-                                </a>
+                                </a> */}
 
                                 <a className="btn btn-app" onClick={() => this.handleShowEvaluate(id, currentRole)} title="Đánh giá công việc">
                                     <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_evaluate')}
@@ -513,7 +515,7 @@ class DetailTaskTab extends Component {
                     />
                 }
 
-                {
+                {/* {
                     (id && showEvaluate === id && currentRole === "responsible") &&
                     <EvaluateByResponsibleEmployee
                         id={id}
@@ -522,8 +524,8 @@ class DetailTaskTab extends Component {
                         title={translate('task.task_management.detail_resp_eval')}
                         perform='evaluate'
                     />
-                }
-                {
+                } */}
+                {/* {
                     (id && showEvaluate === id && currentRole === "accountable") &&
                     <EvaluateByAccountableEmployee
                         id={id}
@@ -542,10 +544,21 @@ class DetailTaskTab extends Component {
                         title={translate('task.task_management.detail_cons_eval')}
                         perform='evaluate'
                     />
+                } */}
+                
+                {
+                    (id && showEvaluate === id) &&
+                    <EvaluationModal
+                        id={id}
+                        task={task && task}
+                        role={currentRole}
+                        title={translate('task.task_management.detail_cons_eval')}
+                        perform='evaluate'
+                    />
                 }
 
 
-                {
+                {/* {
                     (id && showEndTask === id && currentRole === "responsible") &&
                     <EvaluateByResponsibleEmployee
                         id={id}
@@ -574,7 +587,7 @@ class DetailTaskTab extends Component {
                         title={translate('task.task_management.detail_cons_stop')}
                         perform='stop'
                     />
-                }
+                } */}
             </React.Fragment>
         );
     }
