@@ -1826,6 +1826,7 @@ export default {
                 calc_where: 'Trong đó',
                 calc_no_value: 'Chưa có giá trị',
                 calc_nan: 'Không tính được',
+                explain: ' - (Vì giá trị điểm tự động tính được nhỏ hơn bằng 0)',
 
                 dashboard_created: 'Đã tạo',
                 dashboard_need_perform: 'Cần thực hiện',

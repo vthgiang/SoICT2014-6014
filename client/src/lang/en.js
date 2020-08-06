@@ -1677,6 +1677,7 @@ export default {
                 calc_where: 'Where',
                 calc_no_value: 'No value',
                 calc_nan: 'NAN',
+                explain: ' - (Because the value of automatic point less than equal 0)',
 
                 dashboard_created: 'Created',
                 dashboard_need_perform: 'Need to perform',
