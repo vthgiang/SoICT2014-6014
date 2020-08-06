@@ -3,28 +3,30 @@ const {Asset, UserRole} = require('../../../models').schema;
 /**
  * Lấy danh sách phiếu đề nghị cấp thiết bị
  */
-exports.searchRecommendDistributes = async (data, company) => {
+exports.searchRecommendDistributes = async (query, company) => {
+    const { recommendNumber, month, status, page, limit } = query;
+
     var keySearch = { company: company};
 
     // Bắt sựu kiện mã phiếu tìm kiếm khác ""
-    if (data.recommendNumber !== "") {
-        keySearch = { ...keySearch, recommendNumber: { $regex: data.recommendNumber, $options: "i" } }
+    if (recommendNumber) {
+        keySearch = { ...keySearch, recommendNumber: { $regex: recommendNumber, $options: "i" } }
     }
 
     //Bắt sựu kiện tháng tìm kiếm khác ""
-    if (data.month !== "" && data.month !== null) {
-        keySearch = { ...keySearch, dateCreate: { $regex: data.month, $options: "i" } }
+    if (month) {
+        keySearch = { ...keySearch, dateCreate: { $regex: month, $options: "i" } }
     }
 
     // Thêm key tìm kiếm phiếu theo trạng thái vào keySearch
-    if (data.status && data.status !== null) {
-        keySearch = { ...keySearch, status: { $in: data.status } };
+    if (status) {
+        keySearch = { ...keySearch, status: { $in: status } };
     };
 
     var totalList = await RecommendDistribute.count(keySearch);
-    var listRecommendDistributes = await RecommendDistribute.find(keySearch).populate('asset proponent approver').sort({'createdAt': 'desc'}).skip(data.page).limit(data.limit);
-    return {totalList, listRecommendDistributes};
-//
+    var listRecommendDistributes = await RecommendDistribute.find(keySearch).populate('asset proponent approver').sort({'createdAt': 'desc'}).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0);
+    
+    return { totalList, listRecommendDistributes };
 }
 
 /**

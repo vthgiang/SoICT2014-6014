@@ -56,7 +56,7 @@ function deleteAssetTypes(id) {
 
 function deleteManyAssetType(array) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/assettype/types/asset-delete-many`,
+        url: `${ LOCAL_SERVER_API }/assettype/asset-types`,
         method: 'DELETE',
         data: {array}
     }, true, true, 'asset.asset_type');

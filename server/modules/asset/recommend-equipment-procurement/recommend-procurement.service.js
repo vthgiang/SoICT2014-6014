@@ -3,28 +3,30 @@ const RecommendProcure = require('../../../models/asset/recommendProcure.model')
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
  */
-exports.searchRecommendProcures = async (data, company) => {
+exports.searchRecommendProcures = async (query, company) => {
+    const { recommendNumber, month, status, page, limit } = query;
+
     var keySearch = { company: company};
 
     // Bắt sựu kiện mã phiếu tìm kiếm khác ""
-    if (data.recommendNumber !== "") {
-        keySearch = { ...keySearch, recommendNumber: { $regex: data.recommendNumber, $options: "i" } }
+    if (recommendNumber) {
+        keySearch = { ...keySearch, recommendNumber: { $regex: recommendNumber, $options: "i" } }
     }
 
     //Bắt sựu kiện tháng tìm kiếm khác ""
-    if (data.month !== "" && data.month !== null) {
-        keySearch = { ...keySearch, dateCreate: { $regex: data.month, $options: "i" } }
+    if (month) {
+        keySearch = { ...keySearch, dateCreate: { $regex: month, $options: "i" } }
     }
 
     // Thêm key tìm kiếm phiếu theo trạng thái vào keySearch
-    if (data.status && data.status !== null) {
-        keySearch = { ...keySearch, status: { $in: data.status } };
+    if (status) {
+        keySearch = { ...keySearch, status: { $in: status } };
     };
 
     var totalList = await RecommendProcure.count(keySearch);
-    var listRecommendProcures = await RecommendProcure.find(keySearch).populate('proponent approver').sort({'createdAt': 'desc'}).skip(data.page).limit(data.limit);
-    return {totalList, listRecommendProcures};
-//
+    var listRecommendProcures = await RecommendProcure.find(keySearch).populate('proponent approver').sort({'createdAt': 'desc'}).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0);
+    
+    return { totalList, listRecommendProcures };
 }
 
 /**
