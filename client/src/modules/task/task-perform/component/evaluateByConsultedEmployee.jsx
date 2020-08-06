@@ -158,6 +158,13 @@ class EvaluateByConsultedEmployee extends Component {
         }
     }
 
+    checkNullUndefined = (x) => {
+        if( x === null || x === undefined ) {
+            return false;
+        }
+        else return true;
+    }
+
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
     formatDate = (date) => {
         let d = new Date(date),
@@ -240,26 +247,29 @@ class EvaluateByConsultedEmployee extends Component {
     }
 
     render() {
-        let { point, errorOnPoint, evaluations, automaticPoint, showAutoPointInfo, dentaDate } = this.state;
+        let { point, errorOnPoint, evaluations, automaticPoint, progress, date, info, showAutoPointInfo, dentaDate } = this.state;
         let { task, translate } = this.props;
 
         let checkNoteMonth;
         checkNoteMonth = this.checkNote();
 
+        let disabled = false;
+        if (checkNoteMonth && (dentaDate > 7)) {
+            disabled = true;
+        }
+        let disableSubmit = !this.isFormValidated();
+
         return (
             <React.Fragment>
                 <div style={{ display: "flex", flexDirection: "column" }}>
-                    {/* <div style={{ justifyContent: "flex-end", display: "flex" }}>
-                        <button className="btn btn-success" onClick={this.save}>{`Lưu đánh giá`}</button>
-                    </div> */}
                     <div className="row">
                         <div className='col-md-8'>
-                            {checkNoteMonth && (dentaDate <= 7 && dentaDate > 0) && <p style={{color: "red"}}>Bạn còn {8 - dentaDate} ngày để chỉnh sửa đánh giá.</p>}
-                            {checkNoteMonth && (dentaDate > 7) && <p style={{color: "red"}}>Bạn không thể chỉnh sửa đánh giá nữa vì đã quá 7 ngày sau lần đánh giá cuối cùng.</p>}
+                            {checkNoteMonth && (dentaDate <= 7 && dentaDate > 0) && <p style={{color: "red"}}>{translate('task.task_management.note_eval')}{8 - dentaDate}.</p>}
+                            {checkNoteMonth && (dentaDate > 7) && <p style={{color: "red"}}>{translate('task.task_management.note_not_eval')}</p>}
                         </div>
                         {!(checkNoteMonth && (dentaDate > 7)) &&
                             <div style={{ justifyContent: "flex-end", display: "flex" }} className='col-md-4'>
-                                <button className="btn btn-success" onClick={this.save}>{`Lưu đánh giá`}</button>
+                                <button disabled={disabled || disableSubmit} className="btn btn-success" onClick={this.save}>{translate('task.task_management.btn_save_eval')}</button>
                             </div>
                         }
                     </div>
@@ -273,7 +283,8 @@ class EvaluateByConsultedEmployee extends Component {
                                     name="point"
                                     placeholder={translate('task.task_management.enter_emp_point')}
                                     onChange={this.handleChangePoint}
-                                    value={point ? point : ''}
+                                    value={this.checkNullUndefined(point) ? point : ''}
+                                    disabled={disabled} 
                                 />
                                 <ErrorLabel content={errorOnPoint} />
                             </div>
@@ -304,7 +315,7 @@ class EvaluateByConsultedEmployee extends Component {
                                                 <div>
                                                     <strong>{translate('task.task_management.detail_auto_point')}: &nbsp;
                                                 <a style={{ cursor: "pointer" }} onClick={() => this.handleShowAutomaticPointInfo()}>
-                                                            {automaticPoint !== undefined ? automaticPoint : translate('task.task_management.detail_not_calc_auto_point')}
+                                                            {this.checkNullUndefined(automaticPoint) ? automaticPoint : translate('task.task_management.detail_not_calc_auto_point')}
                                                         </a>
                                                     </strong>
                                                     {
@@ -330,10 +341,10 @@ class EvaluateByConsultedEmployee extends Component {
                 {
                     showAutoPointInfo === 1 &&
                     <ModalShowAutoPointInfo
-                        task={this.state.task}
-                        progress={this.state.progress}
-                        date={this.state.date}
-                        info={this.state.info}
+                        task={task}
+                        progress={progress}
+                        date={date}
+                        info={info}
                         autoPoint={automaticPoint}
                     />
                 }
