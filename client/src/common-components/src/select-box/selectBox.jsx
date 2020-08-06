@@ -20,7 +20,7 @@ class SelectBox extends Component {
         }
         return {
             ajax: {
-                url: function (params) {
+                data: function (params) {
                     if (params.term !== undefined && params.term !== "") {
                         let inputSearch;
                         if (multiple === true) {

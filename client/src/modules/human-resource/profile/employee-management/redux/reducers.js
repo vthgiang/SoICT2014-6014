@@ -4,8 +4,11 @@ import {
 const initState = {
     isLoading: false,
     totalList: 0,
+    expiresContract: 0,
+    employeesHaveBirthdateInCurrentMonth: 0,
     totalEmployeeOfOrganizationalUnits: 0,
     totalAllEmployee: 0,
+
 
     listEmployees: [],
     listEmployeesOfOrganizationalUnits: [],
@@ -24,11 +27,13 @@ export function employeesManager(state = initState, action) {
                 isLoading: true
             };
         case EmployeeConstants.GETALL_SUCCESS:
-            if (action.payload.totalList !== undefined) {
+            if (action.payload.totalList) {
                 return {
                     ...state,
                     listEmployees: action.payload.data,
                     totalList: action.payload.totalList,
+                    expiresContract: action.payload.expiresContract,
+                    employeesHaveBirthdateInCurrentMonth: action.payload.employeesHaveBirthdateInCurrentMonth,
                     isLoading: false
                 };
             } else {
