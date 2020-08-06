@@ -1,8 +1,11 @@
 const mongoose = require("mongoose");
 const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User, UserRole } = require('../../../models/index').schema;
+
 const moment = require("moment");
 const nodemailer = require("nodemailer");
+
 const OrganizationalUnitService = require('../../super-admin/organizational-unit/organizationalUnit.service');
+const overviewService = require('../../kpi/employee/management/management.service');
 
 /**
  * Lấy tất cả các công việc
@@ -940,9 +943,10 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
         console.log('\n\nsttart ', start)
         keySearch = {
             ...keySearch,
-            startDate: {
-                $gte: start,
-            }
+            $or: [
+                { startDate: { $gte: start } },
+                { endDate: { $gte: start } }
+            ]
         }
     }
 
@@ -951,9 +955,13 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
         let end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
         keySearch = {
             ...keySearch,
-            endDate: {
-                $lte: end
-            }
+            // endDate: {
+            //     $lte: end
+            // }
+            $or: [
+                { startDate: { $lte: end } },
+                { endDate: { $lte: end } }
+            ]
         }
     }
     organizationUnitTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
@@ -1207,7 +1215,7 @@ exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId, mo
         organizationalUnit = await OrganizationalUnit.findOne({ '_id': organizationalUnitId });
     }
 
-    let tasks = await Task.aggregate([
+    let tasksOfOrganizationalUnit = await Task.aggregate([
         { $match: { 'organizationalUnit': organizationalUnit._id } },
         {
             $match: {
@@ -1232,5 +1240,23 @@ exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId, mo
         { $project: { 'startDate': 1, 'endDate': 1, 'evaluations': 1, 'accountableEmployees': 1, 'consultedEmployees': 1, 'informedEmployees': 1, 'status': 1 } }
     ])
 
-    return tasks;
+    return tasksOfOrganizationalUnit;
+}
+
+/**
+ * Lấy tất cả task của các đơn vị con của đơn vị hiện tại 
+ * @param {*} organizationalUnitId 
+ * @param {*} month 
+ */
+exports.getAllTaskOfChildrenOrganizationalUnit = async (companyId, roleId, month) => {
+    
+    let tasksOfChildrenOrganizationalUnit = [], childrenOrganizationalUnits;
+
+    childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(companyId, roleId);
+
+    for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
+        tasksOfChildrenOrganizationalUnit.push(await this.getAllTaskOfOrganizationalUnit(roleId, childrenOrganizationalUnits[i].id, month));
+        tasksOfChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })
+    }
+    return tasksOfChildrenOrganizationalUnit;
 }

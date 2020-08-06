@@ -48,6 +48,17 @@ div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > d
 
 
 
+
+
+/* Ghi đè CSS AdminLTE */
+.treeview-menu > li > a {
+    padding: 5px 5px 5px 25px;
+}
+
+
+
+
+
 /* Css cho Link */
 a {
     color: #385898;
@@ -187,6 +198,7 @@ fieldset.scheduler-border {
     -moz-box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
     box-shadow: 4px 4px 5px rgba(50, 50, 50, 0.55);
 }
+
 legend.scheduler-border {
     width:inherit; /* Or auto */
     padding:0 10px; /* To give a bit of padding on the left and right */
@@ -196,7 +208,20 @@ legend.scheduler-border {
     background-color: #fff;
 }
 
+fieldset.field-box-info {
+    border: 1px solid #D2D6DE !important;
+    padding: 0 1.4em 1.4em 1.4em !important;
+    margin: 0 0 1.5em 0 !important;
+}
 
+legend.legend-box-info {
+    width:inherit; /* Or auto */
+    padding: 2px 8px 2px 8px;
+    border: none;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 18px;
+    background-color: #ffffff;
+}
 
 
 
@@ -362,14 +387,6 @@ input[type=range]:focus::-ms-fill-upper {
 
 
 
-
-.chart-display {
-    overflow-x: scroll;
-}
-
-
-
-
 /* React-Toastify */
 .Toastify__progress-bar {
     height: 3px;
@@ -399,9 +416,9 @@ input[type=range]:focus::-ms-fill-upper {
     width: 320px;
 }
 .Toastify__toast {
+    min-height: 75px;
     padding: 5px !important;
     position: relative;
-    width: 100%;
     cursor: pointer;
     border-radius: 3px;
     font-size: 13px;

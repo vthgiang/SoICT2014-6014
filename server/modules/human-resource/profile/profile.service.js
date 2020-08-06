@@ -292,6 +292,37 @@ exports.getEmployees = async (company, organizationalUnits, positions, allInfor 
 }
 
 /**
+ * Lấy số nhân viên hết hạn hợp đồng lao động trong tháng hiện tại
+ * @param {*} company : Id công ty
+ */
+exports.getEmployeeNumberExpiresContractInCurrentMonth = async (company, month = new Date()) => {
+    let firstDay = new Date(month.getFullYear(), month.getMonth(), 1);
+    let lastDay = new Date(month.getFullYear(), month.getMonth() + 1, 1);
+    let results = await Employee.count({
+        company: company,
+        "contracts.endDate": {
+            "$gt": firstDay,
+            "$lte": lastDay
+        }
+    })
+    return results;
+}
+
+exports.getEmployeeNumberHaveBirthdateInCurrentMonth = async (company, month = new Date()) => {
+    let results = await Employee.find({
+        company: company,
+    }, {
+        _id: 1,
+        birthdate: 1
+    })
+    results = results.filter(x => {
+        let date = new Date(x.birthdate);
+        return date.getMonth() === month.getMonth()
+    });
+    return results.length;
+}
+
+/**
  * Lấy danh sách nhân viên theo key tìm kiếm
  * @params : Dữ liệu key tìm kiếm
  * @company : Id công ty người tìm kiếm
@@ -300,6 +331,7 @@ exports.searchEmployeeProfiles = async (params, company) => {
     let keySearch = {
         company: company
     };
+
     // Bắt sựu kiện đơn vị tìm kiếm khác undefined
     if (params.organizationalUnits !== undefined) {
         let emailInCompany = await this.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnits, params.position);
@@ -310,6 +342,7 @@ exports.searchEmployeeProfiles = async (params, company) => {
             }
         }
     }
+
     // Bắt sựu kiện MSNV tìm kiếm khác ""
     if (params.employeeNumber !== undefined && params.employeeNumber.length !== 0) {
         keySearch = {
@@ -371,6 +404,7 @@ exports.searchEmployeeProfiles = async (params, company) => {
         let courses = await EmployeeCourse.find({
             employee: listEmployees[n]._id
         })
+
         data[n] = {
             employees,
             salarys,
@@ -381,9 +415,13 @@ exports.searchEmployeeProfiles = async (params, company) => {
             ...value
         }
     }
+    let expiresContract = await this.getEmployeeNumberExpiresContractInCurrentMonth(company, new Date());
+    let employeesHaveBirthdateInCurrentMonth = await this.getEmployeeNumberHaveBirthdateInCurrentMonth(company, new Date())
     return {
         data,
-        totalList
+        totalList,
+        expiresContract,
+        employeesHaveBirthdateInCurrentMonth
     }
 }
 

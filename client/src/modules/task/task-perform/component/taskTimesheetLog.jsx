@@ -87,7 +87,7 @@ class TaskTimesheetLog extends Component {
             description: this.state.description,
             timesheetLog: performtasks.currentTimer.timesheetLogs[0]._id
         };
-        await this.props.stopTimer(performtasks.currentTimer._id,timer);
+        await this.props.stopTimer(performtasks.currentTimer._id, timer);
         this.setState(state => {
             return {
                 ...state,
@@ -95,7 +95,7 @@ class TaskTimesheetLog extends Component {
             }
         });
     }
-    
+
     render() {
 
         const { translate, performtasks, auth } = this.props;
@@ -111,21 +111,20 @@ class TaskTimesheetLog extends Component {
                             <div>{currentTimer.name} <a href={`/task?taskId=${currentTimer._id}`}><i className="fa fa-arrow-circle-right"></i></a></div>
                             <div className="time">
                                 <span>
-                                    <i className="fa fa-stop-circle-o fa-lg" style={{ color: "red", cursor: "pointer" }} aria-hidden="true" title="Dừng bấm giờ" onTouchEnd={this.handleStopTimer} onClick={this.handleStopTimer}></i>
+                                    <i className="fa fa-stop-circle-o fa-lg" style={{ color: "red", cursor: "pointer" }} aria-hidden="true" title="Dừng bấm giờ" onClick={this.handleStopTimer}></i>
                                 </span>
                                 <span>&nbsp; {moment.utc(a).format('HH:mm:ss')}</span>
                             </div>
                             {this.state.showModal === auth.user.id &&
                                 <React.Fragment>
-                                    <br/>
+                                    <br />
                                     <label>Mô tả công việc đã làm (*)</label>
                                     <TextareaAutosize
                                         style={{ width: '100%' }}
                                         placeholder={translate("task.task_perform.enter_description")}
                                         minRows={5}
                                         maxRows={20}
-                                        onMouseDown={(e) => {e.stopPropagation(); window.$(document).off('focusin.modal');}}
-                                        onTouchStart={(e) => {e.stopPropagation(); window.$(document).off('focusin.modal');}}
+                                        onClick={(e) => { e.stopPropagation(); window.$(document).off('focusin.modal'); }}
                                         onChange={(e) => {
                                             let value = e.target.value;
                                             this.setState(state => {
@@ -133,7 +132,7 @@ class TaskTimesheetLog extends Component {
                                             })
                                         }}
                                     />
-                                    <button className="btn btn-primary" style={{marginRight: 5}} onClick={this.stopTimer}>Lưu</button>
+                                    <button className="btn btn-primary" style={{ marginRight: 5 }} onClick={this.stopTimer}>Lưu</button>
                                     <button className="btn btn-danger" onClick={this.resumeTimer}>Hủy</button>
                                 </React.Fragment>
                             }

@@ -169,7 +169,9 @@ class DepreciationManager extends Component {
         if (this.props.assetsManager.isLoading === false) {
             lists = this.props.assetsManager.listAssets;
         }
-        console.log(lists, 'lists')
+
+        console.log('Tài sản', lists);
+        console.log('Loại tài sản', assettypelist);
 
         var pageTotal = ((assetsManager.totalList % this.state.limit) === 0) ?
             parseInt(assetsManager.totalList / this.state.limit) :
@@ -252,12 +254,12 @@ class DepreciationManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof lists !== 'undefined' && lists.length !== 0) &&
+                            { lists &&
                                 lists.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
-                                        <td>{x.assetType !== null && assettypelist.length ? assettypelist.filter(item => item._id === x.assetType).pop().typeName : ''}</td>
+                                        <td>{assettypelist && assettypelist.filter(item => item._id === x.assetType).pop() ? assettypelist.filter(item => item._id === x.assetType).pop().typeName : 'Asset type is deleted'}</td>
                                         <td>{formater.format(parseInt(x.cost))} VNĐ</td>
                                         <td>{this.formatDate(x.startDepreciation)}</td>
                                         <td>{x.usefulLife} tháng</td>

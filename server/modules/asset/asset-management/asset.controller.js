@@ -153,6 +153,7 @@ exports.updateDepreciation = async (req, res) => {
  * Thêm mới thông tin bảo trì cho sự cố
  */
 exports.createMaintainanceForIncident = async (req, res) => {
+    console.log(req.query.incident_id);
     try {
         let data = await AssetService.createMaintainanceForIncident(req.params.id, req.body);
         res.status(200).json({success: true, messages: ["create_maintainance_success"], content: data});
@@ -204,6 +205,7 @@ exports.deleteUsage = async (req, res) => {
  * Thêm mới thông tin bảo trì tài sản
  */
 exports.createMaintainance = async (req, res) => {
+    console.log(req.query.incident_id);
     try {
         let data = await AssetService.createMaintainance(req.params.id, req.body, req.query.incident_id);
         res.status(200).json({success: true, messages: ["create_maintainance_success"], content: data});

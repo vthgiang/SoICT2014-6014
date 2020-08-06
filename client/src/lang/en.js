@@ -2,9 +2,6 @@ export default {
     locale: 'en',
     messages: {
         error: {
-            email_does_not_exist: 'Email does not exist',
-            field_invalid: 'Field input invaid',
-
             /** 
              * Start 
              * Chức năng quản lý nhân sự
@@ -134,6 +131,8 @@ export default {
         auth: {
             validator: {
                 confirm_password_invalid: 'Confirm password invalid! Please input again',
+                password_length_error: 'Password length not less 6 or more than 30 digit',
+                confirm_password_error: 'Confirm password invalid'
             },
             security: {
                 label: 'Security',
@@ -622,6 +621,8 @@ export default {
             manage_component: 'Manage ComponentUI',
             manage_document: 'Manage Documents',
             documents: 'Documents',
+
+            customer: 'Customer',
 
             task_template: 'Task Template',
             cocautochuc: 'Organizational Structure',
@@ -1683,6 +1684,7 @@ export default {
                 calc_where: 'Where',
                 calc_no_value: 'No value',
                 calc_nan: 'NAN',
+                explain: ' - (Because the value of automatic point less than equal 0)',
 
                 dashboard_created: 'Created',
                 dashboard_need_perform: 'Need to perform',

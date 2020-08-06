@@ -89,6 +89,17 @@ class ModalShowAutoPointInfo extends Component {
             }
         }
 
+        let result;
+        if(autoPoint === 0) {
+            result = `0 ${translate('task.task_management.explain')}`;
+        }
+        else if( autoPoint > 0) {
+            result = autoPoint
+        }
+        else {
+            result = translate('task.task_management.calc_nan');
+        }
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -115,7 +126,7 @@ class ModalShowAutoPointInfo extends Component {
                                     })
                                 }
                             </ul>
-                            <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{formula} = {autoPoint? autoPoint: translate('task.task_management.calc_nan')}</p>
+                            <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{formula} = {result}</p>
                         </div> 
                     }
                     {((task.taskTemplate === null || task.taskTemplate === undefined) && a === 0) &&
@@ -127,7 +138,7 @@ class ModalShowAutoPointInfo extends Component {
                                 <li>dayUsed: {translate('task.task_management.calc_day_used')}: {dayUsed} ({translate('task.task_management.calc_days')})</li>
                                 <li>totalDay: {translate('task.task_management.calc_total_day')}: {totalDay} ({translate('task.task_management.calc_days')})</li>
                             </ul>
-                            <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{progress}/({dayUsed}/{totalDay}) = {autoPoint? autoPoint: translate('task.task_management.calc_nan')}</p>
+                            <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{progress}/({dayUsed}/{totalDay}) = {result}</p>
                         </div>
                     }
                     {((task.taskTemplate === null || task.taskTemplate === undefined) && a !== 0) &&
@@ -140,7 +151,8 @@ class ModalShowAutoPointInfo extends Component {
                                 <li>dayUsed: {translate('task.task_management.calc_day_used')}: {dayUsed} ({translate('task.task_management.calc_days')})</li>
                                 <li>totalDay: {translate('task.task_management.calc_total_day')}: {totalDay} ({translate('task.task_management.calc_days')})</li>
                             </ul>
-                        <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{progress}/({dayUsed}/{totalDay}) - {0.5}*({10}-{averageActionRating})*{10} = {autoPoint? autoPoint: translate('task.task_management.calc_nan')}</p>
+                        <p><strong>{translate('task.task_management.calc_new_formula')}: </strong>{progress}/({dayUsed}/{totalDay}) - {0.5}*({10}-{averageActionRating})*{10} = {result}</p>
+                        {/* {autoPoint? autoPoint: translate('task.task_management.calc_nan')} */}
                         </div>
                     }
 

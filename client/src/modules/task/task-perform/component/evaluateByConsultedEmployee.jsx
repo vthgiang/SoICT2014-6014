@@ -10,23 +10,89 @@ class EvaluateByConsultedEmployee extends Component {
     constructor(props) {
         super(props);
 
+        let { date, id } = this.props;
+        let data = this.getData(date);
+
+        this.state = {
+            id: id,
+            info: data.info,
+            task: data.task,
+            date: data.date,
+            progress: data.progress,
+            evaluations: data.evaluations,
+            automaticPoint: data.automaticPoint,
+            point: data.point,
+            dentaDate: data.dentaDate,
+        }
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.id !== prevState.id) {
+            return {
+                ...prevState,
+                id: nextProps.id,
+
+                errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
+                errorOnPoint: undefined,
+                errorOnInfoDate: undefined,
+                errorOnProgress: undefined,
+                errorOnInfoBoolean: undefined,
+                errorOnTextInfo: undefined,
+                errorOnNumberInfo: undefined
+            }
+        } else {
+            return null;
+        }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextProps.id !== this.state.id) {
+            let { task, idUser } = this.state;
+            let department = task.organizationalUnit._id;
+            let date = nextProps.date;
+            let data = this.getData(date);
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    id: nextProps.id,
+                    info: data.info,
+                    task: data.task,
+                    date: data.date,
+                    progress: data.progress,
+                    evaluations: data.evaluations,
+                    automaticPoint: data.automaticPoint,
+                    point: data.point,
+                    dentaDate: data.dentaDate,
+                }
+            });
+            return false;
+        }
+        else return true;
+    }
+
+    getData = (dateParams) => {
         let idUser = getStorage("userId");
         let { task } = this.props;
 
         let progress = task.progress;
         let evaluations;
-        let dateOfEval = new Date();
+        let date = dateParams;
+        let dentaDate = 0;
+
+        let splitter = dateParams.split("-");
+        let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
         let monthOfEval = dateOfEval.getMonth();
         let yearOfEval = dateOfEval.getFullYear();
         evaluations = task.evaluations.find(e => (monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()));
 
         let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
 
-        let point = undefined, date;
+        let point = undefined;
         if (evaluations) {
             let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Consulted"));
             if (res) point = res.employeePoint ? res.employeePoint : undefined;
-            date = this.formatDate(evaluations.date);
+            // date = this.formatDate(evaluations.date);
             progress = evaluations.progress;
         }
 
@@ -78,15 +144,17 @@ class EvaluateByConsultedEmployee extends Component {
                 }
             }
         }
-
-        this.state = {
+        dentaDate = Math.round(((new Date()).getTime() - dateOfEval.getTime()) / (1000 * 3600 * 24));
+        
+        return {
             info: info,
             task: task,
             date: date,
             progress: progress,
             evaluations: evaluations,
             automaticPoint: automaticPoint,
-            point: point
+            point: point,
+            dentaDate: dentaDate,
         }
     }
 
@@ -139,25 +207,6 @@ class EvaluateByConsultedEmployee extends Component {
         window.$(`#modal-automatic-point-info`).modal('show');
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
-            return {
-                ...prevState,
-                id: nextProps.id,
-
-                errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
-                errorOnPoint: undefined,
-                errorOnInfoDate: undefined,
-                errorOnProgress: undefined,
-                errorOnInfoBoolean: undefined,
-                errorOnTextInfo: undefined,
-                errorOnNumberInfo: undefined
-            }
-        } else {
-            return null;
-        }
-    }
-
 
     isFormValidated = () => {
         let { point, errorOnPoint } = this.state;
@@ -166,7 +215,7 @@ class EvaluateByConsultedEmployee extends Component {
 
     save = () => {
         let taskId;
-        taskId = this.props.id;
+        taskId = this.state.task._id;
         let data = {
             user: getStorage("userId"),
             role: "Consulted",
@@ -178,21 +227,42 @@ class EvaluateByConsultedEmployee extends Component {
         this.props.evaluateTaskByConsultedEmployees(data, taskId);
     }
 
+    checkNote = () => {
+        let { date } = this.props;
+        let splitter = date.split("-");
+        let isoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+        let now = new Date ();
+
+        if(now.getMonth() === isoDate.getMonth() && now.getFullYear() === isoDate.getFullYear()) {
+            return false;
+        }
+        return true
+    }
+
     render() {
-        let { point, errorOnPoint, evaluations, automaticPoint, showAutoPointInfo } = this.state;
+        let { point, errorOnPoint, evaluations, automaticPoint, showAutoPointInfo, dentaDate } = this.state;
         let { task, translate } = this.props;
+
+        let checkNoteMonth;
+        checkNoteMonth = this.checkNote();
 
         return (
             <React.Fragment>
-                <DialogModal
-                    modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}-${this.props.perform}`}
-                    formID="form-evaluate-task-by-consulted"
-                    title={this.props.title}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                    size={75}
-                    maxWidth={750}
-                >
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                    {/* <div style={{ justifyContent: "flex-end", display: "flex" }}>
+                        <button className="btn btn-success" onClick={this.save}>{`Lưu đánh giá`}</button>
+                    </div> */}
+                    <div className="row">
+                        <div className='col-md-8'>
+                            {checkNoteMonth && (dentaDate <= 7 && dentaDate > 0) && <p style={{color: "red"}}>Bạn còn {8 - dentaDate} ngày để chỉnh sửa đánh giá.</p>}
+                            {checkNoteMonth && (dentaDate > 7) && <p style={{color: "red"}}>Bạn không thể chỉnh sửa đánh giá nữa vì đã quá 7 ngày sau lần đánh giá cuối cùng.</p>}
+                        </div>
+                        {!(checkNoteMonth && (dentaDate > 7)) &&
+                            <div style={{ justifyContent: "flex-end", display: "flex" }} className='col-md-4'>
+                                <button className="btn btn-success" onClick={this.save}>{`Lưu đánh giá`}</button>
+                            </div>
+                        }
+                    </div>
                     <form id="form-evaluate-task-by-consulted">
                         <form className="form-group">
                             <div className={`form-group ${errorOnPoint === undefined ? "" : "has-error"}`}>
@@ -203,7 +273,7 @@ class EvaluateByConsultedEmployee extends Component {
                                     name="point"
                                     placeholder={translate('task.task_management.enter_emp_point')}
                                     onChange={this.handleChangePoint}
-                                    value={point}
+                                    value={point ? point : ''}
                                 />
                                 <ErrorLabel content={errorOnPoint} />
                             </div>
@@ -219,7 +289,7 @@ class EvaluateByConsultedEmployee extends Component {
                                                         evaluations.taskInformations.map((info, index) => {
                                                             if (info.type === "Date") {
                                                                 return <div key={index}>
-                                                                    <p><span style={{ fontWeight: "bold" }}>{info.name}</span>&nbsp;-&nbsp;{translate('task.task_management.detail_value')}: {info.value ? this.formatDate(info.value): translate('task.task_management.not_eval')}</p>
+                                                                    <p><span style={{ fontWeight: "bold" }}>{info.name}</span>&nbsp;-&nbsp;{translate('task.task_management.detail_value')}: {info.value ? this.formatDate(info.value) : translate('task.task_management.not_eval')}</p>
                                                                 </div>
                                                             }
                                                             else return <div key={index}>
@@ -254,7 +324,9 @@ class EvaluateByConsultedEmployee extends Component {
                             </fieldset>
                         </form>
                     </form>
-                </DialogModal>
+
+                </div>
+
                 {
                     showAutoPointInfo === 1 &&
                     <ModalShowAutoPointInfo

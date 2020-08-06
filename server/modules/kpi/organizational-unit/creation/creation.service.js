@@ -82,10 +82,24 @@ exports.getParentOrganizationalUnitKpiSet = async (id) => {
  * @query {*} startDate
  * @query {*} endDate
  */
-exports.getAllOrganizationalUnitKpiSetByTime = async (organizationalUnitId, startDate, endDate) => {
+exports.getAllOrganizationalUnitKpiSetByTime = async (roleId, organizationalUnitId, startDate, endDate) => {
+    
+    let organizationalUnit;
+    if (!organizationalUnitId) {
+        organizationalUnit = await OrganizationalUnit.findOne({
+            $or: [
+                { 'deans': roleId },
+                { 'viceDeans': roleId },
+                { 'employees': roleId }
+            ]
+        });
+    } else {
+        organizationalUnit = { '_id': organizationalUnitId }
+    }
+
     let organizationalUnitKpiSets = await OrganizationalUnitKpiSet.find(
         {
-            'organizationalUnit': organizationalUnitId,
+            'organizationalUnit': organizationalUnit._id,
             'date': {
                 $gte: startDate,
                 $lt: endDate
@@ -107,9 +121,9 @@ exports.getAllOrganizationalUnitKpiSetByTimeOfChildUnit = async (companyId, quer
     let childOrganizationalUnitKpiSets = [], childrenOrganizationalUnits;
 
     childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(companyId, query.roleId);
-    
+   
     for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
-        childOrganizationalUnitKpiSets.push(await this.getAllOrganizationalUnitKpiSetByTime(childrenOrganizationalUnits[i].id, query.startDate, query.endDate));
+        childOrganizationalUnitKpiSets.push(await this.getAllOrganizationalUnitKpiSetByTime(null, childrenOrganizationalUnits[i].id, query.startDate, query.endDate));
         childOrganizationalUnitKpiSets[i].unshift({ 'name': childrenOrganizationalUnits[i].name })
     }
 

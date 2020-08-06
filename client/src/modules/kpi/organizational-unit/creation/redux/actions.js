@@ -42,11 +42,11 @@ function getCurrentKPIUnit(roleId, organizationalUnitId = undefined, month = und
 }
 
 // Lấy danh sách các tập KPI đơn vị theo từng năm của từng đơn vị 
-function getAllOrganizationalUnitKpiSetByTime(organizationalUnitId, startDate, endDate) {
+function getAllOrganizationalUnitKpiSetByTime(roleId, organizationalUnitId, startDate, endDate) {
     return dispatch => {
         dispatch({ type: createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_REQUEST });
 
-        createUnitKpiServices.getAllOrganizationalUnitKpiSetByTime(organizationalUnitId, startDate, endDate)
+        createUnitKpiServices.getAllOrganizationalUnitKpiSetByTime(roleId, organizationalUnitId, startDate, endDate)
             .then(res => {
                 dispatch({
                     type: createUnitKpiConstants.GET_ALL_ORGANIZATIONALUNIT_KPI_SET_BY_TIME_SUCCESS,
