@@ -174,11 +174,10 @@ class EmployeeKpiManagement extends Component {
         window.$(`employee-kpi-evaluation-modal`).modal('show');
     }
 
-    /**Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    convertDataToExportData = (data) => {
-        if (data) {
-            
-
+    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    convertDataToExportData = (data,unitName) => {
+        let fileName = "Bảng theo dõi KPI nhân viên "+ (unitName?unitName:"");
+        if (data) {           
             data = data.map((x, index) => {
                
                 let fullName =x.creator.name;
@@ -189,8 +188,7 @@ class EmployeeKpiManagement extends Component {
                     month = '' + (d.getMonth() + 1),
                     year = d.getFullYear();
                 let status = this.checkStatusKPI(x.status);
-                let numberTarget =parseInt(x.kpis.length);
-               
+                let numberTarget =parseInt(x.kpis.length);               
 
                 return {
                     STT: index + 1,
@@ -204,13 +202,11 @@ class EmployeeKpiManagement extends Component {
                     year: year,
                     numberTarget:numberTarget                   
                 };
-
             })
         }
-        console.log("\n\n\n\n\n\n\n1111",data);
 
         let exportData = {
-            fileName: "Bảng theo dõi lương thưởng",
+            fileName: fileName,
             dataSheets: [
                 {
                     sheetName: "sheet1",
@@ -242,17 +238,18 @@ class EmployeeKpiManagement extends Component {
         const { user, kpimembers } = this.props;
         const { translate } = this.props;
         const { status, startDate, endDate, kpiId, employeeKpiSet, perPage } = this.state;
-        let userdepartments, kpimember, unitMembers;
-        let exportData;
+        let userdepartments, kpimember, unitMembers, exportData;
         if (user.userdepartments) userdepartments = user.userdepartments;
         if (kpimembers.kpimembers) {
             kpimember = kpimembers.kpimembers;
-            console.log('\n\n\n\n\n\n\n\n\n\n', kpimember);
-            exportData = this.convertDataToExportData(kpimember);
         }
         if (userdepartments) {
             unitMembers = getEmployeeSelectBoxItems([userdepartments]);
             unitMembers = [{ text: translate('kpi.evaluation.employee_evaluation.choose_employee'), value: 0 }, ...unitMembers[0].value];
+        }
+
+        if(kpimember&&userdepartments){
+            exportData = this.convertDataToExportData(kpimember,userdepartments.department);            
         }
        
         return (
@@ -368,7 +365,7 @@ class EmployeeKpiManagement extends Component {
                             </tbody>
                             
                         </table>
-                        {exportData&&<ExportExcel id="export-employee" exportData={exportData} style={{ marginRight: 15 }} />}
+                        {exportData&&<ExportExcel id="export-employee-kpi-evaluation-management" exportData={exportData} style={{ marginRight: 15, marginTop:5 }} />}
                         
                     </div>
                 </div>

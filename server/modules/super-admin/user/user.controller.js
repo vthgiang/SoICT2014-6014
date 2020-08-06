@@ -181,3 +181,22 @@ exports.deleteUser = async (req, res) => {
     }
 };
 
+exports.getAllUsersWithRole = async (req, res) => {
+    try {
+        let users = await UserService.getAllUsersWithRole();
+        LogInfo(req.user.email, 'GET ALL USER WITH ROLE', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['delete_user_success'],
+            content: users
+        });
+    } catch (error) {
+
+        LogError(req.user.email, 'GET ALL USER WITH ROLE', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['delete_user_faile'],
+            content: error
+        });
+    }
+}

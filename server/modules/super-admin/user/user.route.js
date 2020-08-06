@@ -11,5 +11,6 @@ router.post("/users", auth, UserController.createUser);
 router.get("/users/:id", auth, UserController.getUser);
 router.patch("/users/:id", auth, UserController.editUser);
 router.delete("/users/:id", auth, UserController.deleteUser);
+router.get('/users/roles/abc',auth,UserController.getAllUsersWithRole)
 
 module.exports = router;

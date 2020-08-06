@@ -15,93 +15,54 @@ class CustomerCreate extends Component {
 
     render() {
         const { translate } = this.props;
-        const {customers} = this.props.customer;
+        const {customers, group} = this.props.customer;
         const {nameError} = this.state;
 
         return (
             <React.Fragment>
                 {/* Button thêm khách hàng mới */}
-                <ButtonModal modalID="modal-create-customer" button_name="Thêm mới" title="Thêm khách hàng mới" />
+                <ButtonModal modalID="modal-create-customer-group" button_name="Thêm mới" title="Thêm nhóm khách hàng mới" />
 
                 <DialogModal
-                    modalID="modal-create-customer" isLoading={customers.isLoading}
-                    formID="form-create-customer"
-                    title="Thêm mới khách hàng"
-                    func={this.save} size="100"
+                    modalID="modal-create-customer-group" isLoading={group.isLoading}
+                    formID="form-create-customer-group"
+                    title="Thêm mới nhóm khách hàng"
+                    func={this.save}
                 >
                     {/* Form thêm khách hàng mới */}
-                    <form id="form-create-role">
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Thông tin chung</legend>
-                            <div className="row">
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>Tên khách hàng<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Số điện thoại<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Nhóm khách hàng<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Giới tính<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>Mã khách hàng<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Email<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Ngày sinh<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                    <div className="form-group">
-                                        <label>Mã số thuế<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                </div>
+                    <form id="form-create-customer-group">
+                        <fieldset className="field-box-info">
+                            <legend className="legend-box-info">Thông tin chung</legend>
+                            <div className="form-group">
+                                <label>Tên nhóm khách hàng<span className="attention"> * </span></label>
+                                <input type="text" className="form-control" onChange={this.handleName} />
+                            </div>
+                            <div className="form-group">
+                                <label>Mã nhóm<span className="attention"> * </span></label>
+                                <input type="text" className="form-control" onChange={this.handleName} />
+                            </div>
+                            <div className="form-group">
+                                <label>Mô tả</label>
+                                <textarea type="text" className="form-control" onChange={this.handleName} />
                             </div>
                         </fieldset>
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Thông tin liên hệ</legend>
-                            <div className="row">
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>Địa chỉ<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                </div>
-                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                    <div className="form-group">
-                                        <label>Khu vực<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" onChange={this.handleName} /><br />
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-                        <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">Thông tin khác</legend>
+                        <fieldset className="field-box-info">
+                            <legend className="legend-box-info">Nâng cao</legend>
                             <div className="form-group">
-                                <label>Nhân viên chăm sóc<span className="attention"> * </span></label>
-                                <input type="text" className="form-control" onChange={this.handleName} /><br />
+                                <label>Giá mặc định</label>
+                                <input type="text" className="form-control" onChange={this.handleName} />
                             </div>
                             <div className="form-group">
-                                <label>Mô tả<span className="attention"> * </span></label>
-                                <input type="text" className="form-control" onChange={this.handleName} /><br />
+                                <label>Thuế mặc định</label>
+                                <input type="text" className="form-control" onChange={this.handleName} />
                             </div>
                             <div className="form-group">
-                                <label>Ưu đãi áp dụng<span className="attention"> * </span></label>
-                                <input type="text" className="form-control" onChange={this.handleName} /><br />
+                                <label>Phương thức thanh toán</label>
+                                <input type="text" className="form-control" onChange={this.handleName} />
+                            </div>
+                            <div className="form-group">
+                                <label>Kỳ hạn thanh toán</label>
+                                <input type="text" className="form-control" onChange={this.handleName} />
                             </div>
                         </fieldset>
                     </form>

@@ -10,8 +10,8 @@ export const UsageService = {
 // tạo mới thông tin phiếu đề nghị mua sắm thiết bị
 function createUsage(id, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/assets/createUsage/${id}`,
-        method: 'PUT',
+        url: `${LOCAL_SERVER_API}/assets/assets/${id}/usage-logs`,
+        method: 'POST',
         data: data
     }, true, true, 'asset.usage');
 }
@@ -19,8 +19,8 @@ function createUsage(id, data) {
 // chỉnh sửa thông tin sử dụng tài sản
 function updateUsage(assetId, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/assets/updateUsage/${assetId}`,
-        method: 'PUT',
+        url: `${LOCAL_SERVER_API}/assets/assets/${assetId}/usage-logs`,
+        method: 'PATCH',
         data
     }, true, true, 'asset.usage');
 }
@@ -28,7 +28,7 @@ function updateUsage(assetId, data) {
 // xóa thông tin sử dụng tài sản
 function deleteUsage(assetId, usageId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/assets/deleteUsage/${assetId}`,
+        url: `${LOCAL_SERVER_API}/assets/assets/${assetId}/usage-logs`,
         method: 'DELETE',
         data: {usageId}
     }, true, true, 'asset.usage');
