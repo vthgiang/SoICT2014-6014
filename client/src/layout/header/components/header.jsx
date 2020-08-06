@@ -31,7 +31,7 @@ class Header extends Component {
                         <span className="logo-lg"><img src="/logo.png" alt="Logo" style={{width: "40px", marginTop: "-5px", marginLeft: "-15px"}}></img>VNIST-Việc</span>
                     </Link>
                     <nav className="navbar navbar-static-top">
-                        <a className="sidebar-toggle" data-toggle="push-menu" role="button">
+                        <a className="sidebar-toggle" data-toggle="push-menu" data-expand-on-hover={true} role="button">
                             <span className="sr-only">Toggle navigation</span>
                         </a>
                         <MainHeaderMenu/>
