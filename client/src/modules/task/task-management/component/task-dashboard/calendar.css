@@ -54,7 +54,7 @@
 #start_date_after, #end_date_before{
   z-index: 100 !important;
 }
-/* #task-progress{
+#task-progress{
     z-index: -1;
     background-color: wheat;
     height: 23px;
@@ -62,7 +62,7 @@
     top: -30px;
     border-radius: 3px;
     left: -0.5px;
-} */
+}
 .flex-right {
   display: flex;
   justify-content: flex-end;
