@@ -940,9 +940,10 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
         console.log('\n\nsttart ', start)
         keySearch = {
             ...keySearch,
-            startDate: {
-                $gte: start,
-            }
+            $or: [
+                { startDate: { $gte: start } },
+                { endDate: { $gte: start } }
+            ]
         }
     }
 
@@ -951,9 +952,13 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
         let end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
         keySearch = {
             ...keySearch,
-            endDate: {
-                $lte: end
-            }
+            // endDate: {
+            //     $lte: end
+            // }
+            $or: [
+                { startDate: { $lte: end } },
+                { endDate: { $lte: end } }
+            ]
         }
     }
     organizationUnitTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })

@@ -2,9 +2,6 @@ export default {
     locale: 'vn',
     messages: {
         error: {
-            email_does_not_exist: 'Email này đã được sử dụng',
-            field_invalid: 'Trường nhập vào không hợp lệ',
-
             /** 
              * Start 
              * Chức năng quản lý nhân sự, xoá sau

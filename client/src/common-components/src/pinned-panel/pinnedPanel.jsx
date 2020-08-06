@@ -6,9 +6,9 @@ import './pinnedPanel.css';
 class PinnedPanel extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = {}
     }
-    
+
     static panels = {};
     static addPanel = (id, panel) => {
         PinnedPanel.panels[id] = panel;
@@ -16,14 +16,15 @@ class PinnedPanel extends Component {
 
 
     render() {
-        return ( 
+        return (
             <React.Fragment>
-                { 
-                    Object.keys(PinnedPanel.panels).map(id => 
+                {
+                    Object.keys(PinnedPanel.panels).map(id =>
                         <Draggable
+                            cancel="textarea, a, i, button"
                             handle={`#${id}`}
                             key={id}
-                            defaultPosition={{x: 0, y: 0}}
+                            defaultPosition={{ x: 0, y: 0 }}
                             position={null}
                             allowAnyClick={true}
                             grid={[1, 1]}
@@ -31,16 +32,16 @@ class PinnedPanel extends Component {
                             onDrag={this.handleDrag}
                             onStop={this.handleStop}>
                             <div id={id} className="pinned-panel">
-                                { PinnedPanel.panels[id] }
+                                {PinnedPanel.panels[id]}
                             </div>
                         </Draggable>
                     )
                 }
             </React.Fragment>
-         );
+        );
     }
 }
- 
+
 const mapStateToProps = state => {
     return state;
 }

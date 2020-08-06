@@ -47,6 +47,7 @@ export function customer(state = initState, action) {
     switch (action.type) {
         case CustomerConstants.GET_CUSTOMERS_REQUEST:
         case CustomerConstants.PAGINATE_CUSTOMERS_REQUEST:
+        case CustomerConstants.CREATE_CUSTOMER_REQUEST:
             return {
                 ...state,
                 customers: {
@@ -57,6 +58,7 @@ export function customer(state = initState, action) {
 
         case CustomerConstants.GET_CUSTOMERS_FAILE:
         case CustomerConstants.PAGINATE_CUSTOMERS_FAILE:
+        case CustomerConstants.CREATE_CUSTOMER_FAILE:
             return {
                 ...state,
                 customers: {
@@ -71,6 +73,16 @@ export function customer(state = initState, action) {
                 customers: {
                     ...state.customers,
                     list: action.payload,
+                    isLoading: false
+                }
+            };
+
+        case CustomerConstants.CREATE_CUSTOMER_SUCCESS:
+            return {
+                ...state,
+                customers: {
+                    ...state.customers,
+                    list: [action.payload, ...state.customers.list],
                     isLoading: false
                 }
             };
