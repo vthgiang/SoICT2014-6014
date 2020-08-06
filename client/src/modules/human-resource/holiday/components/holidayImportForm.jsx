@@ -3,9 +3,8 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ImportFileExcel, ConFigImportFile, ShowImportData, PaginateBar, DatePicker } from '../../../../common-components';
 import { configurationHoliday } from './fileConfigurationImportHoliday';
-import { LOCAL_SERVER_API } from '../../../../env';
 
-import XLSX from 'xlsx';
+import { AuthActions } from '../../../auth/redux/actions';
 import { HolidayActions } from '../redux/actions';
 
 class HolidayImportForm extends Component {
@@ -115,6 +114,11 @@ class HolidayImportForm extends Component {
         this.props.importHoliday(data);
     }
 
+    requestDownloadFile = (e, path, fileName) => {
+        e.preventDefault()
+        this.props.downloadFile(path, fileName)
+    }
+
     render() {
         const { translate, holiday } = this.props;
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
@@ -149,8 +153,10 @@ class HolidayImportForm extends Component {
                             </div>
                             <div className="form-group col-md-4 col-xs-12">
                                 <label></label>
-                                <a className='pull-right' href={LOCAL_SERVER_API + configData.file.fileUrl} target="_blank" style={{ paddingTop: 15 }}
-                                    download={configData.file.fileName}><i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
+                                <a className='pull-right'
+                                    style={{ cursor: "pointer" }}
+                                    onClick={(e) => this.requestDownloadFile(e, `.${configData.file.fileUrl}`, configData.file.fileName)}>
+                                    <i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
                             </div>
                             <div className="form-group col-md-12 col-xs-12">
                                 <ShowImportData
@@ -179,6 +185,7 @@ function mapState(state) {
 
 const actionCreators = {
     importHoliday: HolidayActions.importHoliday,
+    downloadFile: AuthActions.downloadFile,
 };
 
 const importExcel = connect(mapState, actionCreators)(withTranslate(HolidayImportForm));
