@@ -21,7 +21,6 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         this.today = new Date();
 
         this.state = {
-            currentRole: localStorage.getItem("currentRole"),
             month: this.today.getFullYear() + '-' + (this.today.getMonth() + 1),
             dataStatus: this.DATA_STATUS.QUERYING,
             kindOfPoint: this.KIND_OF_POINT.AUTOMATIC
@@ -29,9 +28,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
     }
 
     componentDidMount = () => {
-        if (this.props.organizationalUnitId) {
-            this.props.getAllEmployeeKpiSetInOrganizationalUnit(this.props.organizationalUnitId, this.state.month);
-        }
+        this.props.getAllEmployeeKpiSetInOrganizationalUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.state.month);
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
@@ -47,7 +44,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         }
 
         if (nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
-            await this.props.getAllEmployeeKpiSetInOrganizationalUnit(nextProps.organizationalUnitId, nextProps.month);
+            await this.props.getAllEmployeeKpiSetInOrganizationalUnit(localStorage.getItem("currentRole"), nextProps.organizationalUnitId, nextProps.month);
 
             this.setState(state => {
                 return {
@@ -60,7 +57,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         }
 
         if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-            this.props.getAllEmployeeKpiSetInOrganizationalUnit(this.props.organizationalUnitId, this.state.month);
+            this.props.getAllEmployeeKpiSetInOrganizationalUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.state.month);
 
             this.setState(state => {
                 return {

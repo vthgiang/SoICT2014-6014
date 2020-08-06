@@ -85,7 +85,7 @@ getOrganizationalUnitsThatUserIsDean = async (req, res) =>{
  */
 getChildrenOfOrganizationalUnitsAsTree = async (req, res) => {
     try {
-        var tree = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(req.user.company._id, req.query.roleId);
+        var tree = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(req.user.company._id, req.query.roleId, req.query.organizationalUnitId);
         
         await LogInfo(req.user.email, 'GET_CHILDREN_DEPARTMENTS', req.user.company);
         res.status(200).json({
