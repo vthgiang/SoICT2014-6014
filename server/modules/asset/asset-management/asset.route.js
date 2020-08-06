@@ -5,83 +5,44 @@ const {
     uploadFile
 } = require('../../../middleware');
 const AssetController = require("./asset.controller");
-const data =[
-    {name:'fileAvatar', path:'/asset/pictures'},
-    {name:'file', path:'/asset/files'}
-]
+const data = [{
+    name: 'fileAvatar',
+    path: '/asset/pictures'
+}, {
+    name: 'file',
+    path: '/asset/files'
+}]
 
-/**
- * Lấy danh sách tài sản
- */
-router.get('/', auth, AssetController.searchAssetProfiles);
+/** Tài sản */
+router.get('/assets', auth, AssetController.searchAssetProfiles);
+router.post('/assets', auth, uploadFile(data, 'fields'), AssetController.createAsset);
+router.patch('/assets/:id', auth, uploadFile(data, 'fields'), AssetController.updateAssetInformation);
+router.delete('/assets/:id', auth, AssetController.deleteAsset);
 
-/**
- * Thêm mới một tài sản
- */
-router.post('/', auth, uploadFile(data, 'fields'), AssetController.createAsset);
 
-/**
- * Cập nhật thông tin tài sản theo id
- */
-router.put('/:id', auth, uploadFile(data, 'fields'), AssetController.updateAssetInformation);
 
-/**
- * Xoá thông tin tài sản
- */
-router.delete('/:id', auth, AssetController.deleteAsset);
+/** Tab khấu hao */
+router.patch('/assets/:id/depreciation', auth, AssetController.updateDepreciation);
 
-/**
- * Chỉnh sửa thông tin khấu hao tài sản
- */
-router.put('/updateDepreciation/:id', auth,  AssetController.updateDepreciation);
 
-/**
- * Thêm mới thông tin bảo trì cho sự cố
- */
-router.put('/createMaintainanceForIncident/:id', auth,  AssetController.createMaintainanceForIncident);
 
-/**
- * Thêm mới thông tin sử dụng tài sản
- */
-router.put('/createUsage/:id', auth,  AssetController.createUsage);
+/** Tab thông tin sử dụng */
+router.post('/assets/:id/usage-logs', auth, AssetController.createUsage);
+router.patch('/assets/:id/usage-logs', auth, AssetController.updateUsage);
+router.delete('/assets/:id/usage-logs', auth, AssetController.deleteUsage);
 
-/**
- * Chỉnh sửa thông tin sử dụng tài sản
- */
-router.put('/updateUsage/:id', auth,  AssetController.updateUsage);
 
-/**
- * Xóa thông tin sử dụng tài sản
- */
-router.delete('/deleteUsage/:id', auth,  AssetController.deleteUsage);
 
-/**
- * Thêm mới thông tin bảo trì tài sản
- */
-router.put('/createMaintainance/:id', auth,  AssetController.createMaintainance);
+/** Tab bảo trì */
+router.post('/assets/:id/maintainance-logs', auth, AssetController.createMaintainance);
+router.patch('/assets/:id/maintainance-logs', auth, AssetController.updateMaintainance);
+router.delete('/assets/:id/maintainance-logs', auth, AssetController.deleteMaintainance);
 
-/**
- * Chỉnh sửa thông tin bảo trì tài sản
- */
-router.put('/updateMaintainance/:id', auth,  AssetController.updateMaintainance);
 
-/**
- * Xóa thông tin bảo trì tài sản
- */
-router.delete('/deleteMaintainance/:id', auth,  AssetController.deleteMaintainance);
+
+/** Tab sự cố */
+router.post('/assets/:id/incident-logs', auth, AssetController.createIncident);
+router.patch('/assets/:id/incident-logs', auth, AssetController.updateIncident);
+router.delete('/assets/:id/incident-logs', auth, AssetController.deleteIncident);
+
 module.exports = router;
-
-/**
- * Thêm mới thông tin sự cố tài sản
- */
-router.put('/createIncident/:id', auth,  AssetController.createIncident);
-
-/**
- * Chỉnh sửa thông tin sự cố tài sản
- */
-router.put('/updateIncident/:id', auth,  AssetController.updateIncident);
-
-/**
- * Xóa thông tin sự cố tài sản
- */
-router.delete('/deleteIncident/:id', auth,  AssetController.deleteIncident);

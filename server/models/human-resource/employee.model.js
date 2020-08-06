@@ -21,6 +21,12 @@ const EmployeeSchema = new Schema({
         default: 'active',
         enum: ['active', 'leave']
     },
+    startingDate: { // Ngày bắt đầu làm việc
+        type: Date,
+    },
+    leavingDate: { // Ngày nghỉ việc
+        type: Date,
+    },
     company: {
         type: Schema.Types.ObjectId,
         ref: Company
@@ -199,8 +205,9 @@ const EmployeeSchema = new Schema({
         year: String,
         degreeType: {
             type: String,
-            enum: ['excellent','very_good','good','average_good','ordinary'] //excellent-Xuất sắc, very_good-Giỏi, good-Khá, average_good-Trung bình khá, ordinary-Trung bình
+            enum: ['excellent', 'very_good', 'good', 'average_good', 'ordinary'] //excellent-Xuất sắc, very_good-Giỏi, good-Khá, average_good-Trung bình khá, ordinary-Trung bình
         },
+        file: String,
         urlFile: String
     }],
     certificates: [{ // Chứng chỉ ngắn hạn
@@ -208,6 +215,7 @@ const EmployeeSchema = new Schema({
         issuedBy: String,
         startDate: Date,
         endDate: Date,
+        file: String,
         urlFile: String
     }],
     experiences: [{ // Kinh nghiệm làm việc
@@ -221,6 +229,7 @@ const EmployeeSchema = new Schema({
         contractType: String,
         startDate: Date,
         endDate: Date,
+        file: String,
         urlFile: String
     }],
     archivedRecordNumber: { // Mã hồ sơ lưu trữ
@@ -234,6 +243,7 @@ const EmployeeSchema = new Schema({
             type: String,
             enum: ['submitted', 'no_submitted', 'returned'] //submitted-Đã nộp, no_submitted-Chưa nộp, returned-Đã trả
         },
+        file: String,
         urlFile: String
     }],
 }, {

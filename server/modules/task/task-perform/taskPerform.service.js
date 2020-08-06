@@ -281,7 +281,7 @@ exports.deleteTaskAction = async (params) => {
     for (i = 0; i < files.length; i++) {
         fs.unlinkSync(files[i].url)
     }
-    let task = await Task.findOne({ "_id": params.taskId, "taskActions._id": params.actionId }).populate([
+    let task = await Task.findOne({ "_id": params.taskId}).populate([
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar' }])

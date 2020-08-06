@@ -29,7 +29,13 @@ exports.getTaskReports = async (params) => {
  */
 exports.getTaskReportById = async (id) => {
     let taskReportById = await TaskReport.findById(id)
-        .populate({ path: 'creator organizationalUnit responsibleEmployees accountableEmployees taskTemplate' });
+        .populate({ path: 'taskTemplate' })
+        //  .populate({ path: 'creator organizationalUnit responsibleEmployees accountableEmployees taskTemplate' });
+        .populate({ path: 'creator', select: '_id name' })
+        .populate({ path: 'responsibleEmployees', select: '_id name company' })
+        .populate({ path: 'accountableEmployees', select: '_id name company' })
+        .populate({ path: 'organizationalUnit', select: 'deans viceDeans employees _id name company parent' })
+
     return taskReportById;
 }
 

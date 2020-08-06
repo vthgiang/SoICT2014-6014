@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ImportFileExcel, ConFigImportFile, ShowImportData, DatePicker } from '../../../../common-components';
 import { configurationSalary } from './fileConfigurationImportSalary';
-import { LOCAL_SERVER_API } from '../../../../env';
 
 import { SalaryActions } from '../redux/actions';
+import { AuthActions } from '../../../auth/redux/actions';
 
 class SalaryImportForm extends Component {
     constructor(props) {
@@ -157,6 +157,12 @@ class SalaryImportForm extends Component {
             })
         }
     }
+
+    requestDownloadFile = (e, path, fileName) => {
+        e.preventDefault()
+        this.props.downloadFile(path, fileName)
+    }
+
     render() {
         // let formater = new Intl.NumberFormat();
         const { translate, salary } = this.props;
@@ -213,8 +219,10 @@ class SalaryImportForm extends Component {
                             </div>
                             <div className="form-group col-md-4 col-xs-12">
                                 <label></label>
-                                <a className='pull-right' href={LOCAL_SERVER_API + configData.file.fileUrl} target="_blank" style={{ paddingTop: 15 }}
-                                    download={configData.file.fileName}><i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
+                                <a className='pull-right'
+                                    style={{ cursor: "pointer" }}
+                                    onClick={(e) => this.requestDownloadFile(e, `.${configData.file.fileUrl}`, configData.file.fileName)}>
+                                    <i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
                             </div>
                             <div className="form-group col-md-12 col-xs-12">
                                 <ShowImportData
@@ -243,6 +251,7 @@ function mapState(state) {
 
 const actionCreators = {
     importSalary: SalaryActions.importSalary,
+    downloadFile: AuthActions.downloadFile,
 };
 
 const importExcel = connect(mapState, actionCreators)(withTranslate(SalaryImportForm));

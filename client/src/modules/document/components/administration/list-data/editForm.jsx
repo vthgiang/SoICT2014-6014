@@ -12,7 +12,7 @@ class EditForm extends Component {
     }
 
     handleName = (e) => {
-        const value = e.target.value.trim();
+        const value = e.target.value;
         this.validateName(value, true)
     }
 
@@ -30,17 +30,17 @@ class EditForm extends Component {
     }
 
     handleIssuingBody = (e) => {
-        const value = e.target.value.trim();
+        const value = e.target.value;
         this.validateIssuingBody(value, true);
     }
 
     handleOfficialNumber = (e) => {
-        const value = e.target.value.trim();
+        const value = e.target.value;
         this.validateOfficialNumber(value, true);
     }
 
     handleSigner = (e) => {
-        const value = e.target.value.trim();
+        const value = e.target.value;
        this.validateSinger(value, true);
     }
 
@@ -98,7 +98,7 @@ class EditForm extends Component {
     }
 
     handleVersionName = (e) => {
-        const value = e.target.value.trim();
+        const value = e.target.value;
         this.validateVersionName(value, true);
      }
 
@@ -159,15 +159,16 @@ class EditForm extends Component {
    
     validateIssuingBody = (value, willUpdateState)=>{
         let msg = undefined;
+        let val = value.trim();
         const {translate} = this.props;
-        if(!value){
+        if(!val){
             msg = translate('document.doc_version.no_blank_issuingbody');
         }
         if(willUpdateState){
             this.setState(state=> {
                 return{
                     ...state,
-                    documentIssuingBody: value,
+                    documentIssuingBody: val,
                     errorIssuingBody: msg,
                 }
             })
@@ -178,14 +179,15 @@ class EditForm extends Component {
         console.log('trtrtr', value);
         let msg = undefined;
         const {translate} = this.props;
-        if(!value){
+        let val = value.trim();
+        if(!val){
             msg = translate('document.doc_version.no_blank_version_name');
         }
         if(willUpdateState){
             this.setState(state=> {
                 return{
                     ...state,
-                    documentVersionName: value,
+                    documentVersionName: val,
                     errorVersionName: msg,
                 }
             })
@@ -195,18 +197,19 @@ class EditForm extends Component {
     validateOfficialNumber = (value, willUpdateState)=>{
         const regex = /\d/g
         let msg = undefined;
+        let val = value.trim();
         const {translate} = this.props;
-        if(!value){
+        if(!val){
             msg = translate('document.doc_version.no_blank_official_number');
         }
-        else if(!regex.test(value)){
+        else if(!regex.test(val)){
             msg = translate('document.doc_version.error_office_number');
         }
         if(willUpdateState){
             this.setState(state=>{
                 return{
                     ...state,
-                    documentOfficialNumber: value,
+                    documentOfficialNumber: val,
                     errorOfficialNumber: msg,
                 }
             })
@@ -266,15 +269,16 @@ class EditForm extends Component {
     }
     validateSinger = (value, willUpdateState)=>{
         let msg = undefined;
+        let val = value.trim();
         const {translate} = this.props;
-        if(!value){
+        if(!val){
             msg = translate('document.doc_version.no_blank_signer');
         }
         if(willUpdateState){
             this.setState(state=>{
                 return{
                     ...state,
-                    documentSigner: value,
+                    documentSigner: val,
                     errorSigner: msg,
                 }
             })
@@ -317,6 +321,9 @@ class EditForm extends Component {
     }
 
     isValidateForm = ()=>{
+        console.log('44444444444444444444', this.validateName(this.state.documentName, false), this.validateCategory(this.state.documentCategory, false),
+        this.validateOfficialNumber(this.state.documentOfficialNumber, false),this.validateSinger(this.state.documentSigner, false),
+        this.validateIssuingBody(this.state.documentIssuingBody, false))
         
         return this.validateName(this.state.documentName, false)
         && this.validateCategory(this.state.documentCategory, false)

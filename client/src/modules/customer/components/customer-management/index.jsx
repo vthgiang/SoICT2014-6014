@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { CustomerActions } from '../../redux/actions';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import {SearchBar, PaginateBar, DataTableSetting} from '../../../../common-components';
+import {SearchBar, PaginateBar, DataTableSetting, ButtonModal} from '../../../../common-components';
 import CustomerCreate from './customerCreate';
 import CustomerEdit from './customerEdit';
+import CustomerInformation from './customerInformation';
+import CustomerImportFile from './customerImportFile';
 
 class CustomerManagement extends Component {
     constructor(props) {
@@ -32,17 +34,29 @@ class CustomerManagement extends Component {
 
         return ( 
             <React.Fragment>
-
-                {/* Button thêm phân quyền mới */}
                 <CustomerCreate/>
-
-                {/* Form chỉnh sửa thông tin phân quyền */}
+                <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                    <button type="button" className="btn btn-success pull-right dropdown-toggle" data-toggle="dropdown" aria-expanded="true" title="Thêm mới kế hoạch làm việc" >Thêm mới</button>
+                    <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }} >
+                        <li><a title={'Thêm mới khách hàng từ file excel'} onClick={this.handleImport}>Import file Excel</a></li>
+                        <li><a title={'Thêm mới khách hàng'} onClick={this.handleCreate}>Thêm bằng tay</a></li>
+                    </ul>
+                </div>
+                <a type="button" className="btn btn-primary pull-right" style={{marginRight: '2px'}}>Xuất file</a>
                 {
-                    // currentRow &&
                     <CustomerEdit/>
                 }
-
-                {/* Thanh tìm kiếm */}
+                {
+                    currentRow !== undefined &&
+                    <CustomerInformation
+                        customerId={currentRow._id}
+                        customerName={currentRow.name}
+                        customerLiabilities={currentRow.liabilities}
+                    />
+                }
+                {
+                    <CustomerImportFile/>
+                }
                 <SearchBar
                     columns={[
                         { title: 'Tên khách hàng', value: 'name' },
@@ -59,11 +73,8 @@ class CustomerManagement extends Component {
                         <tr>
                             <th>Tên khách hàng</th>
                             <th>Mã khách hàng</th>
-                            <th>Ngày sinh</th>
                             <th>Số điện thoại</th>
-                            <th>Địa chỉ</th>
                             <th>Khu vực</th>
-                            <th>Giới tính</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
                                 {translate('table.action')}
                                 <DataTableSetting
@@ -89,13 +100,12 @@ class CustomerManagement extends Component {
                                     <tr key={`customer-${customer._id}`}>
                                         <td> {customer.name} </td>
                                         <td> {customer.code} </td>
-                                        <td> {customer.birth} </td>
                                         <td> {customer.phone} </td>
-                                        <td> {customer.address} </td>
-                                        <td> {customer.location.name} </td>
-                                        <td> {customer.gender} </td>
+                                        <td> {customer.location ? customer.location.name : null} </td>
                                         <td style={{ textAlign: 'center' }}>
+                                            <a className="text-green" onClick={() => this.handleInformation(customer)}><i className="material-icons">visibility</i></a>
                                             <a className="edit" onClick={this.handleEdit}><i className="material-icons">edit</i></a>
+                                            <a className="text-red"><i className="material-icons">delete</i></a>
                                         </td>
                                     </tr>
                                 ) : customers.isLoading ?
@@ -150,8 +160,23 @@ class CustomerManagement extends Component {
         this.props.getCustomers(data);
     }
 
+    handleCreate = () => {
+        window.$("#modal-create-customer").modal('show');
+    }
+
+    handleImport = () => {
+        window.$("#modal-customer-import").modal('show');
+    }
+
     handleEdit = () => {
         window.$("#modal-edit-customer").modal('show');
+    }
+
+    handleInformation = async (customer) => {
+        await this.setState({
+            currentRow: customer
+        })
+        window.$("#modal-customer-information").modal('show');
     }
 }
  

@@ -2,9 +2,6 @@ export default {
     locale: 'vn',
     messages: {
         error: {
-            email_does_not_exist: 'Email này đã được sử dụng',
-            field_invalid: 'Trường nhập vào không hợp lệ',
-
             /** 
              * Start 
              * Chức năng quản lý nhân sự, xoá sau
@@ -417,10 +414,11 @@ export default {
             downloads: 'Số lần download',
             add: 'Thêm văn bản',
             edit: 'Sửa văn bản',
+            watch:'Xem văn bản',
             delete: 'Xóa văn bản',
             add_version: 'Thêm phiên bản mới',
-            upload_file: 'Upload File',
-            upload_file_scan: 'Upload File scan',
+            upload_file: 'File tài liệu',
+            upload_file_scan: 'File scan tài liệu',
             download: 'Tải xuống',
             no_version: 'Không có phiên bản nào khác',
             no_blank_description: 'Mô tả không được để trống',
@@ -622,8 +620,9 @@ export default {
             manage_document: 'Quản lý tài liệu',
             documents: 'Tài liệu văn bản',
 
+            customer: 'Khách hàng',
+
             task_template: 'Mẫu Công Việc',
-            cocautochuc: 'Cơ Cấu Tổ Chức',
             taskmanagement: 'Quản Lý Công Việc',
             manageDocument: 'Quản lý văn bản',
             manageDocumentType: 'Quản lý loại văn bản',
@@ -1318,6 +1317,7 @@ export default {
                     employee_timesheet_id_required: 'Mã số chấm công không được để trống',
                     full_name_required: 'Họ và tên không được để trống',
                     birthdate_required: 'Ngày sinh không được để trống',
+                    starting_date_required: 'Ngày bắt đầu làm việc không được để trống',
                     identity_card_number_required: 'Số chứng minh thư/hộ chiếu không được để trống',
                     identity_card_date_required: 'Ngày cấp chứng minh thư/hộ chiếu không được để trống',
                     identity_card_address_required: 'Nơi cấp chứng minh thư/hộ chiếu không được để trống',

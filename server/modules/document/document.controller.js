@@ -127,6 +127,7 @@ exports.editDocument = async (req, res) => {
 };
 
 exports.deleteDocument = async (req, res) => {
+    console.log('---------------------')
     try {
         const doc = await DocumentServices.deleteDocument(req.params.id);
 
@@ -166,6 +167,7 @@ exports.downloadDocumentFileScan = async (req, res) => {
    // try {
         const file = await DocumentServices.downloadDocumentFileScan({id: req.params.id,  numberVersion: req.query.numberVersion, downloaderId: req.user._id});
         await LogInfo(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.user.company);
+        console.log("PATH:", file.path)
         res.download(file.path, file.name);
     // } catch (error) {
     //     await LogError(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.user.company);

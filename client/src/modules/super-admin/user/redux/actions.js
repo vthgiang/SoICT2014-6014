@@ -16,6 +16,7 @@ export const UserActions = {
     getAllUserInAllUnitsOfCompany,
     getAllEmployeeOfUnitByRole,
     getAllEmployeeOfUnitByIds,
+    getAllUsersWithRole,
     edit,
     create,
     destroy,
@@ -398,5 +399,23 @@ function destroy(id) {
                     type: UserConstants.DELETE_USER_FAILE
                 });
             })
+    }
+}
+
+function getAllUsersWithRole() {
+    console.log("hihihihihihihihi")
+    return dispatch => {
+        dispatch({
+            type: UserConstants.GET_ALL_USERS_WITH_ROLE_REQUEST
+        });
+        UserServices.getAllUsersWithRole()
+        .then(
+            payload => {
+                dispatch({ type: UserConstants.GET_ALL_USERS_WITH_ROLE_SUCCESS, payload });
+            },
+            error => {
+                dispatch({ type: UserConstants.GET_ALL_USERS_WITH_ROLE_FAIL, error });
+            }
+        );
     }
 }

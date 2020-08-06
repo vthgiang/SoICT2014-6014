@@ -2,9 +2,6 @@ export default {
     locale: 'en',
     messages: {
         error: {
-            email_does_not_exist: 'Email does not exist',
-            field_invalid: 'Field input invaid',
-
             /** 
              * Start 
              * Chức năng quản lý nhân sự
@@ -417,6 +414,7 @@ export default {
             downloads: 'Downloads',
             add: 'Add document',
             edit: 'Edit document',
+            view: 'View document',
             delete: 'Delete document',
             add_version: 'Add document version',
             upload_file: 'Upload file',
@@ -621,6 +619,8 @@ export default {
             manage_component: 'Manage ComponentUI',
             manage_document: 'Manage Documents',
             documents: 'Documents',
+
+            customer: 'Customer',
 
             task_template: 'Task Template',
             cocautochuc: 'Organizational Structure',
@@ -1317,6 +1317,7 @@ export default {
                     employee_timesheet_id_required: 'Employee timesheet id required',
                     full_name_required: 'Full name required',
                     birthdate_required: 'Birthdate required',
+                    starting_date_required: 'Starting date required',
                     identity_card_number_required: 'Identity card number required',
                     identity_card_date_required: 'Identity card date required',
                     identity_card_address_required: 'Identity card address required',

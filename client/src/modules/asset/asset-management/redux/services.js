@@ -18,7 +18,7 @@ export const AssetService = {
  */
 function getAll(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/assets`,
+        url: `${LOCAL_SERVER_API}/assets/assets`,
         method: 'GET',
         params: {
             code: data !== undefined ? data.code : data,
@@ -37,7 +37,7 @@ function getAll(data) {
  */
 function addNewAsset(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/assets`,
+        url: `${LOCAL_SERVER_API}/assets/assets`,
         method: 'POST',
         data: data,
     }, true, true, 'asset.asset_info');
@@ -50,8 +50,8 @@ function addNewAsset(data) {
  */
 function updateInformationAsset(id, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/assets/${id}`,
-        method: 'PUT',
+        url: `${LOCAL_SERVER_API}/assets/assets/${id}`,
+        method: 'PATCH',
         data: data,
     }, true, true, 'asset.asset_info');
 }
@@ -62,7 +62,7 @@ function updateInformationAsset(id, data) {
  */
 function deleteAsset(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/assets/${id}`,
+        url: `${LOCAL_SERVER_API}/assets/assets/${id}`,
         method: 'DELETE',
     }, true, true, 'asset.asset_info');
 }

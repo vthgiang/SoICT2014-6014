@@ -24,7 +24,7 @@ export const configurationTimesheets = {
         colspan: 31
     },
     file: {
-        fileName: 'templateImportSalary',
+        fileName: 'templateImportTimesheets',
         fileUrl: '/upload/human-resource/templateImport/templateImportTimesheets.xlsx'
     }
 }
