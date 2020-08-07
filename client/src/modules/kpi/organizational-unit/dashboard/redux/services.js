@@ -26,26 +26,28 @@ function getAllEmployeeKpiInOrganizationalUnit(roleId, organizationalUnitId, mon
 }
 
 /** Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng */
-function getAllEmployeeKpiSetInOrganizationalUnit(organizationalUnitId, month) {
+function getAllEmployeeKpiSetInOrganizationalUnit(roleId, organizationalUnitId, month) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets`,
         method: 'GET',
         params: {
             month: month,
             organizationalUnitId: organizationalUnitId,
+            roleId: roleId,
             unitKpiSetByMonth: true,
         }
     }, false, false)
 }
 
 /** Lấy tất cả EmployeeKpis thuộc các đơn vị con của đơn vị hiện tại */
-function getAllEmployeeKpiInChildrenOrganizationalUnit(roleId, month) {
+function getAllEmployeeKpiInChildrenOrganizationalUnit(roleId, month, organizationalUnitId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets`,
         method: 'GET',
         params: {
             roleId: roleId,
             month: month,
+            organizationalUnitId: organizationalUnitId,
             employeeKpiInChildUnit: true
         }
     }, false, false)
@@ -66,14 +68,15 @@ function getAllTaskOfOrganizationalUnit(roleId, organizationalUnitId, month) {
 }
 
 /** Lấy tất cả task của các đơn vị con của đơn vị hiện tại */
-function getAllTaskOfChildrenOrganizationalUnit(roleId, month) {
+function getAllTaskOfChildrenOrganizationalUnit(roleId, month, organizationalUnitId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/task/tasks`,
         method: 'GET',
         params: {
             type: 'get_all_task_of_children_organizational_unit',
             roleId: roleId,
-            month: month
+            month: month,
+            organizationalUnitId: organizationalUnitId
         }
     })
 }

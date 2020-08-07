@@ -76,7 +76,11 @@ exports.editAssetType = async (id, data) => {
 
 exports.deleteAssetTypes = async (id) => {
     const type = await AssetType.findById(id);
-    if (type === null) throw ['document_domain_not_found']
+
+    if (!type) {
+        throw ['document_domain_not_found']
+    }
+    
     await AssetType.deleteOne({ _id: id });
 
     return await this.getAssetTypes({}, type.company);

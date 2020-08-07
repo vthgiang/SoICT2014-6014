@@ -28,6 +28,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         this.state = {
+            currentRole: localStorage.getItem("currentRole"),
             organizationalUnitId: null,
             startDate: this.INFO_SEARCH.startDate,
             endDate: this.INFO_SEARCH.endDate,
@@ -36,7 +37,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
     }
 
     componentDidMount = () => {
-        this.props.getAllOrganizationalUnitKpiSetByTime(this.props.organizationalUnitId, this.state.startDate, this.state.endDate);
+        this.props.getAllOrganizationalUnitKpiSetByTime(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.state.startDate, this.state.endDate);
 
         this.setState(state => {
             return {
@@ -48,7 +49,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
 
     shouldComponentUpdate = async (nextProps, nextState) => {
         if(nextProps.organizationalUnitId !== this.state.organizationalUnitId) {
-            await this.props.getAllOrganizationalUnitKpiSetByTime(nextProps.organizationalUnitId, this.state.startDate, this.state.endDate);
+            await this.props.getAllOrganizationalUnitKpiSetByTime(this.state.currentRole, nextProps.organizationalUnitId, this.state.startDate, this.state.endDate);
             this.setState(state => {
                 return {
                     ...state,
@@ -60,7 +61,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
         }
 
         if(nextState.startDate !== this.state.startDate || nextState.endDate !== this.state.endDate) {
-            await this.props.getAllOrganizationalUnitKpiSetByTime(this.state.organizationalUnitId, nextState.startDate, nextState.endDate);
+            await this.props.getAllOrganizationalUnitKpiSetByTime(this.state.currentRole, this.state.organizationalUnitId, nextState.startDate, nextState.endDate);
             this.setState(state => {
                 return {
                     ...state,

@@ -20,13 +20,15 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         
         this.state = {
             currentRole: null,
-            dataStatus: this.DATA_STATUS.QUERYING
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
         };
     }
 
     componentDidMount = () => {
-        this.props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"));
-        this.props.getAllTaskOfOrganizationalUnit(localStorage.getItem("currentRole"));
+        console.log("999", this.props.organizationalUnitId, this.props.month)
+        this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId);
+        this.props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
+        this.props.getAllTaskOfOrganizationalUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
 
         this.setState(state => {
             return {
@@ -55,6 +57,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         if (nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
+            console.log(nextProps.organizationalUnitId)
             await this.props.getCurrentKPIUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
             await this.props.getAllEmployeeKpiInOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
             await this.props.getAllTaskOfOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month)
