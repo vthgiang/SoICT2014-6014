@@ -1,5 +1,6 @@
 const RecommendDistribute = require('../../../models/asset/recommendDistribute.model');
-const {Asset, UserRole} = require('../../../models').schema;
+const { Asset, UserRole } = require('../../../models').schema;
+
 /**
  * Lấy danh sách phiếu đề nghị cấp thiết bị
  */
@@ -40,12 +41,12 @@ exports.createRecommendDistribute = async (data, company) => {
         company: company,
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
-        proponent: data.proponent, //người đề nghị
+        proponent: data.proponent, // Người đề nghị
         reqContent: data.reqContent,
         asset: data.asset,
         dateStartUse: data.dateStartUse,
         dateEndUse: data.dateEndUse,
-        approver: data.approver, // người phê duyệt
+        approver: data.approver, // Người phê duyệt
         note: data.note,
         status: data.status,
     });
@@ -70,15 +71,16 @@ exports.updateRecommendDistribute = async (id, data) => {
     var recommendDistributeChange = {
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
-        proponent: data.proponent, //người đề nghị
-        reqContent: data.reqContent, //người đề nghị
+        proponent: data.proponent, // Người đề nghị
+        reqContent: data.reqContent, // Người đề nghị
         asset: data.asset,
         dateStartUse: data.dateStartUse,
         dateEndUse: data.dateEndUse,
-        approver: data.approver, // người phê duyệt
+        approver: data.approver, // Người phê duyệt
         note: data.note,
         status: data.status,
     };
+
     // Cập nhật thông tin phiếu đề nghị cap phat thiết bị vào database
     await RecommendDistribute.findOneAndUpdate({
         _id: id
@@ -90,17 +92,3 @@ exports.updateRecommendDistribute = async (id, data) => {
     })
 }
 
-// Kiểm tra sự tồn tại của mã phiếu
-exports.checkRecommendDistributeExisted = async (recommendNumber, company) => {
-    var idRecommendNumber = await RecommendDistribute.find({
-        recommendNumber: recommendNumber,
-        company: company
-    }, {
-        field1: 1
-    })
-    var checkRecommendNumber = false;
-    if (idRecommendNumber.length !== 0) {
-        checkRecommendNumber = true
-    }
-    return checkRecommendNumber;
-}

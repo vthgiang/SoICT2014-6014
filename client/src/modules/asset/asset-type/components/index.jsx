@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
+
+import './domains.css'
+
+import { Tree, SlimScroll } from '../../../../common-components';
+
 import { AssetTypeActions } from '../redux/actions';
 import CreateForm from './createForm';
 import EditForm from './editForm';
-import './domains.css'
-import Swal from 'sweetalert2';
-import { Tree, SlimScroll } from '../../../../common-components';
+
+
 class AdministrationAssetTypes extends Component {
     constructor(props) {
         super(props);
@@ -23,10 +28,10 @@ class AdministrationAssetTypes extends Component {
     onChanged = async (e, data) => {
         await this.setState({ currentDomain: data.node })
 
-        window.$(`#edit-asset-type`).slideDown();;
+        window.$(`#edit-asset-type`).slideDown();
     }
 
-    checkNode = (e, data) => { //chọn xóa một node và tất cả các node con của nó
+    checkNode = (e, data) => { // Chọn xóa một node và tất cả các node con của nó
         this.setState({
             domainParent: [...data.selected],
             deleteNode: [...data.selected, ...data.node.children_d]
@@ -62,9 +67,10 @@ class AdministrationAssetTypes extends Component {
     }
 
     render() {
-        const { domainParent, deleteNode } = this.state;
         const { translate } = this.props;
         const { list } = this.props.assetType.administration.types;
+        const { domainParent, currentDomain, deleteNode } = this.state;
+
         const dataTree = list.map(node => {
             return {
                 ...node,
@@ -75,22 +81,25 @@ class AdministrationAssetTypes extends Component {
             }
         })
 
-        console.log("11111***", dataTree);
 
         return (
             <div className="box">
                 <div className="box-header with-border">
-                    <button className="btn btn-success pull-right" onClick={() => {
-                        window.$('#modal-create-asset-type').modal('show');
-                    }} title={translate('document.administration.domains.add')} disabled={domainParent.length > 1 ? true : false}>{translate('general.add')}</button>
+                    {/* Xóa */}
                     {
                         deleteNode.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteDomains}>Xóa</button>
                     }
-                    <CreateForm domainParent={this.state.domainParent} />
+
+                    {/* Thêm */}
+                    <button className="btn btn-success pull-right" onClick={() => { window.$('#modal-create-asset-type').modal('show'); }} title={translate('document.administration.domains.add')}
+                        disabled={domainParent.length > 1 ? true : false}>{translate('general.add')}</button>
+
+                    <CreateForm domainParent={domainParent} />
                 </div>
 
                 <div className="box-body">
                     <div className="row">
+                        {/* Cây các loại tài sản */}
                         <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
                             <div className="domain-tree" id="domain-tree">
                                 <Tree
@@ -103,15 +112,17 @@ class AdministrationAssetTypes extends Component {
                             </div>
                             <SlimScroll outerComponentId="domain-tree" innerComponentId="tree-qlcv-document" innerComponentWidth={"100%"} activate={true} />
                         </div>
+
+                        {/* Form chỉnh sửa loại tài sản */}
                         <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
                             {
-                                this.state.currentDomain &&
+                                currentDomain &&
                                 <EditForm
-                                    domainId={this.state.currentDomain.id}
-                                    domainCode={this.state.currentDomain.original.typeNumber}
-                                    domainName={this.state.currentDomain.text}
-                                    domainDescription={this.state.currentDomain.original.description ? this.state.currentDomain.original.description : ""}
-                                    domainParent={this.state.currentDomain.parent}
+                                    domainId={currentDomain.id}
+                                    domainCode={currentDomain.original.typeNumber}
+                                    domainName={currentDomain.text}
+                                    domainDescription={currentDomain.original.description ? currentDomain.original.description : ""}
+                                    domainParent={currentDomain.parent}
                                 />
                             }
                         </div>
@@ -122,7 +133,10 @@ class AdministrationAssetTypes extends Component {
     }
 }
 
-const mapStateToProps = state => state;
+function mapStateToProps(state) {
+    const { assetType } = state;
+    return { assetType };
+}
 
 const mapDispatchToProps = {
     getAssetTypes: AssetTypeActions.getAssetTypes,

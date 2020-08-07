@@ -413,10 +413,13 @@ export default {
             effective_date: 'Effective date',
             expired_date: 'Expired date',
             views: 'Views',
+            viewer: 'Viewer',
+            downloader: "Downloader",
             downloads: 'Downloads',
             add: 'Add document',
             edit: 'Edit document',
             view: 'View document',
+            time: "Time",
             delete: 'Delete document',
             add_version: 'Add document version',
             upload_file: 'Upload file',
@@ -1618,7 +1621,7 @@ export default {
                 detail_acc_point: 'Approve point',
                 detail_not_auto: 'Unset automatic point',
                 detail_not_emp: 'Unset employee point',
-                detail_not_acc: 'Unset accountable po',
+                detail_not_acc: 'Unset accountable point',
 
                 detail_not_eval_on_month: 'Not evaluate this month',
                 detail_not_eval: 'Nobody evaluate this month',
@@ -1684,7 +1687,22 @@ export default {
                 calc_where: 'Where',
                 calc_no_value: 'No value',
                 calc_nan: 'NAN',
-                explain: ' - (Because the value of automatic point less than equal 0)',
+                explain: ' - (Negative values ​​will be considered as 0.)',
+                eval_list: 'List of evaluations',
+                title_eval: 'Evaluate task',
+
+                btn_save_eval: 'Save evaluation',
+                btn_get_info: 'Get infomation task',
+                note_not_eval: 'You can no longer edit reviews because it is more than 7 days after the last review.',
+                note_eval: 'Number of days left to edit review: ',
+
+                add_eval_of_this_month: 'Add evaluation of this month',
+                eval_of: 'Evaluation of',
+                eval_from: 'Evaluation from',
+                eval_to: 'Evaluation to',
+                store_info: 'Stored infomation of evaluation to task infomation',
+                bool_yes: 'Yes',
+                bool_no: 'No',
 
                 dashboard_created: 'Created',
                 dashboard_need_perform: 'Need to perform',
@@ -2432,7 +2450,7 @@ export default {
             }
         },
 
-        manage_warehouse:{
+        manage_warehouse: {
             material_manager: {
                 index: 'Index',
                 add: 'Add material',

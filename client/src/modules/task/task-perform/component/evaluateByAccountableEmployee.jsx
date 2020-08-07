@@ -18,9 +18,11 @@ class EvaluateByAccountableEmployee extends Component {
         let { date, id } = this.props;
         let data = this.getData(date);
         currentTask = data;
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         this.state = {
             id: id,
+            errorInfo: {},
             task: data.task,
             userId: data.userId,
             info: data.info,
@@ -34,6 +36,7 @@ class EvaluateByAccountableEmployee extends Component {
             checkSave: data.checkSave,
             prevDate: data.prevDate,
             dentaDate: data.dentaDate,
+            indexReRender: 0,
         }
     }
 
@@ -45,11 +48,8 @@ class EvaluateByAccountableEmployee extends Component {
 
                 errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnPoint: undefined,
-                errorOnInfoDate: undefined,
                 errorOnProgress: undefined,
-                errorOnInfoBoolean: undefined,
-                errorOnTextInfo: undefined,
-                errorOnNumberInfo: undefined,
+                errorInfo: {},
                 errorOnAccountablePoint: undefined,
                 errorOnAccountableContribution: undefined,
                 errorOnMyPoint: undefined
@@ -83,11 +83,13 @@ class EvaluateByAccountableEmployee extends Component {
                     checkSave: data.checkSave,
                     prevDate: data.prevDate,
                     dentaDate: data.dentaDate,
+                    errorInfo: {},
+                    indexReRender: state.indexReRender + 1,
                 }
             });
             return false;
         }
-        else return true;
+        return true;
     }
 
     getData = (dateParam) => {
@@ -109,7 +111,6 @@ class EvaluateByAccountableEmployee extends Component {
         }
         dateOfPrevEval.setMonth(newMonth);
 
-        console.log('date', dateOfEval, dateOfPrevEval);
         let monthOfEval = dateOfEval.getMonth();
         let monthOfPrevEval = dateOfPrevEval.getMonth();
         let yearOfEval = dateOfEval.getFullYear();
@@ -121,7 +122,7 @@ class EvaluateByAccountableEmployee extends Component {
             prevDate = this.formatDate(prevEval.date);
         }
         let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
-        let progress = evaluations ? evaluations.progress : task.progress;
+        let progress = evaluations ? evaluations.progress : undefined;
 
         // let date = this.formatDate(new Date());
         // if (this.props.perform === "stop") { // nếu dừng thì cho ngày là ngày hiện tại
@@ -478,6 +479,7 @@ class EvaluateByAccountableEmployee extends Component {
                 oldAutoPoint: data.autoPoint,
                 progress: data.progress,
                 checkSave: data.checkSave,
+                indexReRender: state.indexReRender + 1,
             }
         });
     }
@@ -707,9 +709,9 @@ class EvaluateByAccountableEmployee extends Component {
                 code: name,
                 type: 'Number'
             }
+            state.errorInfo[name] = this.validateNumberInfo(value);
             return {
                 ...state,
-                errorOnNumberInfo: this.validateNumberInfo(value)
             }
         })
         await this.handleChangeAutoPoint();
@@ -724,9 +726,9 @@ class EvaluateByAccountableEmployee extends Component {
                 code: name,
                 type: 'Text'
             }
+            state.errorInfo[name] = this.validateTextInfo(value);
             return {
                 ...state,
-                errorOnTextInfo: this.validateTextInfo(value)
             }
         })
     }
@@ -738,9 +740,9 @@ class EvaluateByAccountableEmployee extends Component {
                 code: code,
                 type: 'Date'
             }
+            state.errorInfo[code] = this.validateDate(value);
             return {
                 ...state,
-                errorOnInfoDate: this.validateDate(value),
             }
         });
     }
@@ -847,7 +849,33 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     handleDateChange = (value) => {
+        console.log('value', value);
+        let { translate } = this.props; 
+        let { task } = this.state;
         let data = this.getData(value);
+
+        let endOfMonth = new moment().endOf("month").toDate();
+        let startOfMonth = new moment().startOf("month").toDate();
+        let startDate = new Date(task.startDate);
+
+        let splitter = value.split('-');
+        let dateValue = new Date(splitter[2], splitter[1]-1, splitter[0]);
+
+        let de = (endOfMonth.getTime() - dateValue.getTime()); // < 0 -> err
+        let ds = (dateValue.getTime() - startOfMonth.getTime()); // < 0 -> err
+        let dst = (dateValue.getTime() - startDate.getTime()); // < 0 -> err
+
+        let err;
+        if (value.trim() === "") {
+            err = translate('task.task_perform.modal_approve_task.err_empty');
+        }
+
+        else if (dst < 0) {
+            err = 'Ngày đánh giá phải lớn hơn ngày bắt đầu';
+        }
+        else if (de < 0 || ds < 0){
+            err = "Ngày đánh giá phải là ngày trong tháng";
+        }
 
         let automaticPoint = data.automaticPoint;
         let taskInfo = {
@@ -863,18 +891,17 @@ class EvaluateByAccountableEmployee extends Component {
         this.setState(state => {
             return {
                 ...state,
-                errorOnDate: this.validateDate(value),
+                errorOnDate: err,
                 date: value,
                 info: data.info,
                 results: data.results,
                 status: data.statusOptions,
                 empPoint: data.empPoint,
                 autoPoint: automaticPoint,
-                task: data.task,
-                userId: data.userId,
                 progress: data.progress,
                 oldAutoPoint: data.automaticPoint,
                 checkSave: data.checkSave,
+                indexReRender: state.indexReRender + 1,
             }
         });
 
@@ -892,9 +919,9 @@ class EvaluateByAccountableEmployee extends Component {
     isFormValidated = () => {
         const { errorOnDate, errorOnPoint, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint,
             errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnNumberInfo, errorOnTextInfo } = this.state;
-        var { info } = this.state;
+        let { info, results, empPoint, progress, } = this.state;
 
-        var check = true;
+        let check = true;
         for (let i in info) {
             if (info[i].value === undefined) {
                 check = false;
@@ -1041,9 +1068,18 @@ class EvaluateByAccountableEmployee extends Component {
         return true
     }
 
+    checkNullUndefined = (x) => {
+        if( x === null || x === undefined ) {
+            return false;
+        }
+        else return true;
+    }
+
     render() {
         const { translate } = this.props;
-        const { task, date, status, oldAutoPoint, autoPoint, errorOnDate, showAutoPointInfo, dentaDate, prevDate } = this.state;
+        const { task, date, status, oldAutoPoint, autoPoint, errorOnDate, showAutoPointInfo, dentaDate, prevDate, info, results, empPoint, progress,
+                errorInfo, errorApprovedPoint, errorContribute, indexReRender } = this.state;
+        const { id, perform, role} = this.props;
 
         let taskActions = task.taskActions;
         let splitter = date.split('-');
@@ -1065,22 +1101,24 @@ class EvaluateByAccountableEmployee extends Component {
         let checkNoteMonth;
         checkNoteMonth = this.checkNote();
 
+        let disabled = false;
+        if (checkNoteMonth && (dentaDate > 7)) {
+            disabled = true;
+        }
+        let disableSubmit = !this.isFormValidated();
+
         return (
             <React.Fragment>
                 <div style={{ display: "flex", flexDirection: "column" }}>
-                    {/* <div style={{ justifyContent: "flex-end", display: "flex" }}>
-                        <button style={{ marginRight: "5px" }} className="btn btn-primary" onClick={this.updateInfo}>{`Lấy thông tin`}</button>
-                        <button className="btn btn-success" onClick={this.save}>{`Lưu đánh giá`}</button>
-                    </div> */}
                     <div className="row">
                         <div className='col-md-8'>
-                            {checkNoteMonth && (dentaDate <= 7 && dentaDate > 0) && <p style={{ color: "red" }}>Bạn còn {8 - dentaDate} ngày để chỉnh sửa đánh giá.</p>}
-                            {checkNoteMonth && (dentaDate > 7) && <p style={{ color: "red" }}>Bạn không thể chỉnh sửa đánh giá nữa vì đã quá 7 ngày sau lần đánh giá cuối cùng.</p>}
+                            {checkNoteMonth && (dentaDate <= 7 && dentaDate > 0) && <p style={{ color: "red" }}>{translate('task.task_management.note_eval')}{8 - dentaDate}.</p>}
+                            {checkNoteMonth && (dentaDate > 7) && <p style={{ color: "red" }}>{translate('task.task_management.note_not_eval')}</p>}
                         </div>
                         {!(checkNoteMonth && (dentaDate > 7)) &&
                             <div style={{ justifyContent: "flex-end", display: "flex" }} className='col-md-4'>
-                                <button style={{ marginRight: "5px" }} className="btn btn-primary" onClick={this.updateInfo}>{`Lấy thông tin`}</button>
-                                <button className="btn btn-success" onClick={this.save}>{`Lưu đánh giá`}</button>
+                                <button disabled={disabled} style={{ marginRight: "5px" }} className="btn btn-primary" onClick={this.updateInfo}>{translate('task.task_management.btn_get_info')}</button>
+                                <button disabled={disabled || disableSubmit} className="btn btn-success" onClick={this.save}>{translate('task.task_management.btn_save_eval')}</button>
                             </div>
                         }
                     </div>
@@ -1089,31 +1127,33 @@ class EvaluateByAccountableEmployee extends Component {
                         <form id="form-evaluate-task-by-accountable">
                             <div className="row">
                                 <div className="col-md-6">
-                                    <strong>Đánh giá từ ngày: </strong> <br />&nbsp;{prevDate}
+                                    <strong>{translate('task.task_management.eval_to')}:</strong> <br />&nbsp;{prevDate}
                                 </div>
                                 <div className={`form-group col-md-6 ${errorOnDate === undefined ? "" : "has-error"}`}>
-                                    <label>{translate('task.task_management.evaluate_date')}:<span className="text-red">*</span></label>
+                                    <label>{translate('task.task_management.eval_to')}:<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id={`create_date_${this.props.perform}-${this.props.id}`}
+                                        id={`create_date_${perform}-${id}`}
                                         value={date}
                                         onChange={this.handleDateChange}
+                                        disabled={disabled}
                                     />
                                     <ErrorLabel content={errorOnDate} />
                                 </div>
                             </div>
                             {
-                                (this.props.perform === "stop") &&
+                                // (perform === "stop") &&
                                 <div className="form-group">
                                     <label>{translate('task.task_management.detail_status')}:</label>
                                     {
                                         <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                            id={`select-priority-task-${this.props.perform}-${this.props.role}`}
+                                            id={`select-priority-task-${perform}-${role}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={statusArr}
                                             onChange={this.handleStatusChange}
                                             multiple={false}
                                             value={status}
+                                            disabled={disabled}
                                         />
                                     }
                                 </div>
@@ -1131,24 +1171,27 @@ class EvaluateByAccountableEmployee extends Component {
                                     handleChangeTextInfo={this.handleChangeTextInfo}
                                     handleChangeSaveInfo={this.handleChangeSaveInfo}
 
-                                    role={this.props.role}
-                                    perform={this.props.perform}
-                                    id={this.props.id}
+                                    indexReRender={indexReRender}
+                                    
+                                    role={role}
+                                    perform={perform}
+                                    id={id}
                                     value={this.state}
+                                    disabled={disabled}
                                 />
 
                             </div>
                             <div>
                                 <strong>{translate('task.task_management.detail_auto_point')}: &nbsp;
-                            <a style={{ cursor: "pointer" }} id={`autoPoint-${this.props.perform}`} onClick={() => this.handleShowAutomaticPointInfo()}>
-                                        {autoPoint !== undefined ? autoPoint : translate('task.task_management.detail_not_calc_auto_point')}
+                            <a style={{ cursor: "pointer" }} id={`autoPoint-${perform}`} onClick={() => this.handleShowAutomaticPointInfo()}>
+                                        {this.checkNullUndefined(autoPoint) ? autoPoint : translate('task.task_management.detail_not_calc_auto_point')}
                                     </a>
                                 </strong>
                                 <br />
                                 <br />
                                 <strong>{translate('task.task_management.detail_auto_on_system')}: &nbsp;
                             <a style={{ color: "black" }}>
-                                        {oldAutoPoint ? oldAutoPoint : translate('task.task_management.detail_not_auto_on_system')}
+                                        {this.checkNullUndefined(oldAutoPoint) ? oldAutoPoint : translate('task.task_management.detail_not_auto_on_system')}
                                     </a>
                                 </strong>
                                 <br />
@@ -1167,10 +1210,10 @@ class EvaluateByAccountableEmployee extends Component {
                                 {
                                     showAutoPointInfo === 1 &&
                                     <ModalShowAutoPointInfo
-                                        task={this.state.task}
-                                        progress={this.state.progress}
-                                        date={this.state.date}
-                                        info={this.state.info}
+                                        task={task}
+                                        progress={progress}
+                                        date={date}
+                                        info={info}
                                         autoPoint={autoPoint}
                                     />
                                 }
@@ -1194,19 +1237,21 @@ class EvaluateByAccountableEmployee extends Component {
                                                     <tr key={index}>
                                                         <td>{item.name}</td>
                                                         <td>{this.formatRole('Responsible')}</td>
-                                                        <td>{this.state.empPoint[`responsible${item._id}`] ? this.state.empPoint[`responsible${item._id}`] : translate('task.task_management.not_eval')}</td>
+                                                        <td>{this.checkNullUndefined(empPoint[`responsible${item._id}`]) ? empPoint[`responsible${item._id}`] : translate('task.task_management.not_eval')}</td>
                                                         <td style={{ padding: 5 }}>
-                                                            <input className="form-control"
-                                                                value={this.state.results[`contributeResponsible${item._id}`]?.value ? this.state.results[`contributeResponsible${item._id}`].value : ''}
+                                                            <input className={`form-control ${errorContribute && errorContribute[item._id] === undefined ? '' : 'has-error' }`}
+                                                                value={this.checkNullUndefined(results[`contributeResponsible${item._id}`]?.value) ? results[`contributeResponsible${item._id}`].value : ''}
                                                                 type="number" name={`contributeResponsible${item._id}`} placeholder={"%" + translate('task.task_management.contribution')}
                                                                 onChange={(e) => this.handleChangeResponsibleContribution(e, item._id)}
+                                                                disabled={disabled} 
                                                             />
                                                         </td>
                                                         <td style={{ padding: 5 }}>
-                                                            <input className="form-control" type="number"
-                                                                value={this.state.results[`approvedPointResponsible${item._id}`]?.value ? this.state.results[`approvedPointResponsible${item._id}`].value : ''}
+                                                            <input className={`form-control ${errorApprovedPoint && errorApprovedPoint[item._id] === undefined ? '' : 'has-error' }`} type="number"
+                                                                value={this.checkNullUndefined(results[`approvedPointResponsible${item._id}`]?.value) ? results[`approvedPointResponsible${item._id}`].value : ''}
                                                                 name={`approvedPointResponsible${item._id}`} placeholder={translate('task.task_management.detail_acc_point')}
                                                                 onChange={(e) => this.handleChangeApprovedPointForResponsible(e, item._id)}
+                                                                disabled={disabled} 
                                                             />
                                                         </td>
                                                     </tr>
@@ -1220,19 +1265,21 @@ class EvaluateByAccountableEmployee extends Component {
                                                     <tr key={index}>
                                                         <td>{item.name}</td>
                                                         <td>{this.formatRole('Consulted')}</td>
-                                                        <td>{this.state.empPoint[`consulted${item._id}`] ? this.state.empPoint[`consulted${item._id}`] : translate('task.task_management.not_eval')}</td>
+                                                        <td>{this.checkNullUndefined(empPoint[`consulted${item._id}`]) ? empPoint[`consulted${item._id}`] : translate('task.task_management.not_eval')}</td>
                                                         <td style={{ padding: 5 }}>
-                                                            <input className="form-control" type="number"
-                                                                value={this.state.results[`contributeConsulted${item._id}`]?.value ? this.state.results[`contributeConsulted${item._id}`].value : ''}
+                                                            <input className={`form-control ${errorContribute && errorContribute[item._id] === undefined ? '' : 'has-error' }`} type="number"
+                                                                value={this.checkNullUndefined(results[`contributeConsulted${item._id}`]?.value) ? results[`contributeConsulted${item._id}`].value : ''}
                                                                 name={`contributeConsulted${item._id}`} placeholder={"%" + translate('task.task_management.contribution')}
                                                                 onChange={(e) => this.handleChangeConsultedContribution(e, item._id)}
+                                                                disabled={disabled} 
                                                             />
                                                         </td>
                                                         <td style={{ padding: 5 }}>
-                                                            <input className={`form-control`} type="number"
-                                                                value={this.state.results[`approvedPointConsulted${item._id}`]?.value ? this.state.results[`approvedPointConsulted${item._id}`].value : ''}
+                                                            <input className={`form-control ${errorApprovedPoint && errorApprovedPoint[item._id] === undefined ? '' : 'has-error' }`} type="number"
+                                                                value={this.checkNullUndefined(results[`(approvedPointConsulted${item._id}`]?.value) ? results[`approvedPointConsulted${item._id}`].value : ''}
                                                                 name={`approvedPointConsulted${item._id}`} placeholder={translate('task.task_management.detail_acc_point')}
                                                                 onChange={(e) => this.handleChangeApprovedPointForConsulted(e, item._id)}
+                                                                disabled={disabled} 
                                                             />
                                                         </td>
                                                     </tr>
@@ -1246,19 +1293,21 @@ class EvaluateByAccountableEmployee extends Component {
                                                     <tr key={index}>
                                                         <td>{item.name}</td>
                                                         <td>{this.formatRole('Accountable')}</td>
-                                                        <td><p id={`accountablePoint${item._id}`}>{this.state.empPoint[`accountable${item._id}`] ? this.state.empPoint[`accountable${item._id}`] : translate('task.task_management.not_eval')}</p></td>
+                                                        <td><p id={`accountablePoint${item._id}`}>{this.checkNullUndefined(empPoint[`accountable${item._id}`]) ? empPoint[`accountable${item._id}`] : translate('task.task_management.not_eval')}</p></td>
                                                         <td style={{ padding: 5 }}>
-                                                            <input className="form-control" type="number"
-                                                                value={this.state.results[`contributeAccountable${item._id}`]?.value ? this.state.results[`contributeAccountable${item._id}`].value : ''}
+                                                            <input className={`form-control ${errorContribute && errorContribute[item._id] === undefined ? '' : 'has-error' }`} type="number"
+                                                                value={this.checkNullUndefined(results[`contributeAccountable${item._id}`]?.value) ? results[`contributeAccountable${item._id}`].value : ''}
                                                                 name={`contributeAccountable${item._id}`} placeholder={"%" + translate('task.task_management.contribution')}
                                                                 onChange={(e) => this.handleChangeAccountableContribution(e, item._id)}
+                                                                disabled={disabled} 
                                                             />
                                                         </td>
                                                         <td style={{ padding: 5 }}>
-                                                            <input className="form-control" type="number"
-                                                                value={this.state.results[`approvedPoint${item._id}`]?.value ? this.state.results[`approvedPoint${item._id}`].value : ''}
+                                                            <input className={`form-control ${errorApprovedPoint && errorApprovedPoint[item._id] === undefined ? '' : 'has-error' }`} type="number"
+                                                                value={this.checkNullUndefined(results[`approvedPoint${item._id}`]?.value) ? results[`approvedPoint${item._id}`].value : ''}
                                                                 name={`approvedPoint${item._id}`} placeholder={translate('task.task_management.detail_acc_point')}
                                                                 onChange={(e) => this.handleChangeAccountablePoint(e, item._id)}
+                                                                disabled={disabled} 
                                                             />
                                                         </td>
                                                     </tr>

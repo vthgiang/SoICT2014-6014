@@ -72,6 +72,9 @@ exports.searchEmployeeProfiles = async (req, res) => {
                 employeeNumber: req.query.employeeNumber,
                 gender: req.query.gender,
                 status: req.query.status,
+                endDateOfContract: req.query.endDateOfContract,
+                birthdate: req.query.birthdate,
+                typeOfContract: req.query.typeOfContract,
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),
             }
@@ -158,15 +161,6 @@ exports.createEmployee = async (req, res) => {
             res.status(400).json({
                 success: false,
                 messages: ["birthdate_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.startingDate === undefined || req.body.birthdate.trim() === "") {
-            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["starting_date_required"],
                 content: {
                     inputData: req.body
                 }

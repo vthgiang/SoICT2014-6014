@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ErrorLabel, TreeSelect } from '../../../../common-components';
+import { DialogModal, TreeSelect } from '../../../../common-components';
+
 import { AssetTypeActions } from '../redux/actions';
 
 class CreateForm extends Component {
@@ -62,8 +63,9 @@ class CreateForm extends Component {
 
     render() {
         const { translate, assetType } = this.props;
-        const { list } = assetType.administration.types;
         const { domainParent } = this.state;
+
+        const { list } = assetType.administration.types;
 
         let dataList = list.map(node => {
             return {
@@ -81,19 +83,27 @@ class CreateForm extends Component {
                     title="Thêm mới loại tài sản"
                     func={this.save}
                 >
+                    {/* Thêm loại tài sản mới */}
                     <form id="form-create-asset-type">
+                        {/* Mã loại tài sản */}
                         <div className="form-group">
                             <label>Mã loại tài sản<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleCode} />
                         </div>
+
+                        {/* Tên loại tài sản */}
                         <div className="form-group">
                             <label>Tên loại tài sản<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleName} />
                         </div>
+
+                        {/* Loại tài sản cha */}
                         <div className="form-group">
                             <label>Loại tài sản cha</label>
-                            <TreeSelect data={dataList} value={!domainParent ? "" : domainParent} handleChange={this.handleParent} mode="radioSelect" />
+                            <TreeSelect data={dataList} value={[domainParent]} handleChange={this.handleParent} mode="radioSelect" />
                         </div>
+
+                        {/* Mô tả */}
                         <div className="form-group">
                             <label>Mô tả</label>
                             <textarea style={{ minHeight: '100px' }} type="text" className="form-control" onChange={this.handleDescription} />

@@ -204,10 +204,21 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (query) => {
     let beginOfCurrentMonth = new Date(query.month);
     let endOfCurrentMonth = new Date(beginOfCurrentMonth.getFullYear(), beginOfCurrentMonth.getMonth() + 1);
 
-    let organizationalUnitId = new mongoose.Types.ObjectId(query.organizationalUnitId);
+    let organizationalUnit;
+    if (!query.organizationalUnitId) {
+        organizationalUnit = await OrganizationalUnit.findOne({
+            $or: [
+                { 'deans': query.roleId },
+                { 'viceDeans': query.roleId },
+                { 'employees': query.roleId }
+            ]
+        });
+    } else {
+        organizationalUnit = { '_id': new mongoose.Types.ObjectId(query.organizationalUnitId) }
+    }
 
     let employeeKpiSets = await OrganizationalUnit.aggregate([
-        { $match: { '_id': organizationalUnitId } },
+        { $match: { '_id': organizationalUnit._id } },
 
         {
             $lookup: {
@@ -261,9 +272,9 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (query) => {
 /** 
  * Lấy tất cả các đơn vị con của 1 đơn vị xếp vào 1 mảng 
  */
-exports.getAllChildrenOrganizational = async (companyId, roleId) => {
+exports.getAllChildrenOrganizational = async (companyId, roleId, organizationalUnitId) => {
 
-    let arrayTreeOranizationalUnit = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(companyId, roleId);
+    let arrayTreeOranizationalUnit = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(companyId, roleId, organizationalUnitId);
 
     let childrenOrganizationalUnits, temporaryChild, deg = 0;
 
@@ -305,11 +316,11 @@ exports.getAllChildrenOrganizational = async (companyId, roleId) => {
 /** 
  * Lấy tất cả EmployeeKpi thuộc các đơn vị con của đơn vị hiện tại 
  */
-exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (companyId, roleId, month) => {
+exports.getAllEmployeeKpiInChildrenOrganizationalUnit = async (companyId, roleId, month, organizationalUnitId) => {
 
     let employeeKpisInChildrenOrganizationalUnit = [], childrenOrganizationalUnits;
 
-    childrenOrganizationalUnits = await this.getAllChildrenOrganizational(companyId, roleId);
+    childrenOrganizationalUnits = await this.getAllChildrenOrganizational(companyId, roleId, organizationalUnitId);
 
     for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
         employeeKpisInChildrenOrganizationalUnit.push(await this.getAllEmployeeKpiInOrganizationalUnit(null, childrenOrganizationalUnits[i].id, month));

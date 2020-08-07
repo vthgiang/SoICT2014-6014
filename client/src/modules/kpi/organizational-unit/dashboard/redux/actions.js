@@ -34,11 +34,11 @@ function getAllEmployeeKpiInOrganizationalUnit(roleId, organizationalUnitId = un
 }
 
 // Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
-function getAllEmployeeKpiSetInOrganizationalUnit(organizationalUnitId, month) {
+function getAllEmployeeKpiSetInOrganizationalUnit(roleId, organizationalUnitId, month) {
     return dispatch => {
         dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNIT_REQUEST });
 
-        dashboardOrganizationalUnitKpiServices.getAllEmployeeKpiSetInOrganizationalUnit(organizationalUnitId, month)
+        dashboardOrganizationalUnitKpiServices.getAllEmployeeKpiSetInOrganizationalUnit(roleId, organizationalUnitId, month)
             .then(res => {
                 dispatch({
                     type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNIT_SUCCESS,
@@ -55,11 +55,11 @@ function getAllEmployeeKpiSetInOrganizationalUnit(organizationalUnitId, month) {
 }
 
 /** Lấy tất cả EmployeeKpis thuộc các đơn vị con của đơn vị hiện tại */
-function getAllEmployeeKpiInChildrenOrganizationalUnit(roleId, month) {
+function getAllEmployeeKpiInChildrenOrganizationalUnit(roleId, month, organizationalUnitId) {
     return dispatch => {
         dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_CHILDREN_ORGANIZATIONALUNIT_REQUEST });
 
-        dashboardOrganizationalUnitKpiServices.getAllEmployeeKpiInChildrenOrganizationalUnit(roleId, month)
+        dashboardOrganizationalUnitKpiServices.getAllEmployeeKpiInChildrenOrganizationalUnit(roleId, month, organizationalUnitId)
             .then(res => {
                 dispatch({
                     type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_CHILDREN_ORGANIZATIONALUNIT_SUCCESS,
@@ -97,11 +97,11 @@ function getAllTaskOfOrganizationalUnit(roleId, organizationalUnitId = undefined
 }
 
 // Lấy tất cả task của các đơn vị con của đơn vị hiện tại
-function getAllTaskOfChildrenOrganizationalUnit(roleId, month) {
+function getAllTaskOfChildrenOrganizationalUnit(roleId, month, organizationalUnitId) {
     return dispatch => {
         dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_CHILDREN_ORGANIZATIONALUNIT_REQUEST });
 
-        dashboardOrganizationalUnitKpiServices.getAllTaskOfChildrenOrganizationalUnit(roleId, month)
+        dashboardOrganizationalUnitKpiServices.getAllTaskOfChildrenOrganizationalUnit(roleId, month, organizationalUnitId)
             .then(res => {
                 dispatch({
                     type: dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_CHILDREN_ORGANIZATIONALUNIT_SUCCESS,

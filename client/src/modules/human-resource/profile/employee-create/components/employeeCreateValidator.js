@@ -4,7 +4,7 @@ import {
 export const EmployeeCreateValidator = {
     validateEmployeeNumber,
     validateBrithday,
-    validateStartingDate,
+    // validateStartingDate,
     validateMSCC,
     validateFullName,
     validateEmailCompany,
@@ -22,16 +22,12 @@ export const EmployeeCreateValidator = {
 
     validateExperienceUnit,
     validateExperiencePosition,
-    validateExperienceStartDate,
-    validateExperienceEndDate,
 
     validateNameDegree,
     validateIssuedByDegree,
     validateYearDegree,
     validateNameCertificate,
     validateIssuedByCertificate,
-    validateStartDateCertificate,
-    validateEndDateCertificate,
 
     validateStartDateContract,
     validateNameContract,
@@ -60,14 +56,6 @@ function validateBrithday(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Ngày sinh không được để trống";
-    }
-    return msg;
-}
-
-function validateStartingDate(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Ngày bắt đầu làm việc không được để trống";
     }
     return msg;
 }
@@ -165,21 +153,6 @@ function validateExperiencePosition(value, translate) {
     return msg;
 }
 
-function validateExperienceStartDate(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Từ tháng/năm không được để trống";
-    }
-    return msg;
-}
-
-function validateExperienceEndDate(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Đến tháng/năm không được để trống";
-    }
-    return msg;
-}
 
 // Validate TabCertificateContent (bằng cấp và chứng chỉ)
 function validateNameDegree(value, translate) {
@@ -218,22 +191,6 @@ function validateIssuedByCertificate(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Nơi cấp không được để trống";
-    }
-    return msg;
-}
-
-function validateStartDateCertificate(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Ngày cấp không được để trống";
-    }
-    return msg;
-}
-
-function validateEndDateCertificate(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Ngày hết hạn không được để trống";
     }
     return msg;
 }

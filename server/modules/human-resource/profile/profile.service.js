@@ -10,6 +10,7 @@ const {
     Role,
     EmployeeCourse,
     Notification,
+    Timesheets,
 } = require('../../../models').schema;
 
 /**
@@ -52,7 +53,8 @@ exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany)
         });
     }
     if (roles !== []) {
-        roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
+        let arrayRole = ["Admin", "Super Admin", "Employee", "Dean", "Vice Dean"];
+        roles = roles.filter(role => !arrayRole.includes(role.roleId.name));
     }
 
     return {
@@ -308,6 +310,11 @@ exports.getEmployeeNumberExpiresContractInCurrentMonth = async (company, month =
     return results;
 }
 
+/**
+ * Lấy số lượng nhân viên có sinh nhật trong tháng hiện tại
+ * @param {*} company 
+ * @param {*} month 
+ */
 exports.getEmployeeNumberHaveBirthdateInCurrentMonth = async (company, month = new Date()) => {
     let results = await Employee.find({
         company: company,
@@ -331,6 +338,20 @@ exports.searchEmployeeProfiles = async (params, company) => {
     let keySearch = {
         company: company
     };
+    // Thêm key tìm kiếm nhân viên theo ngày hết hạn hợp đồng vào keySearch
+    if (params.endDateOfContract) {
+        console.log(params.endDateOfContract);
+        let month = new Date(params.endDateOfContract);
+        let firstDay = new Date(month.getFullYear(), month.getMonth(), 1);
+        let lastDay = new Date(month.getFullYear(), month.getMonth() + 1, 1);
+        keySearch = {
+            ...keySearch,
+            "contracts.endDate": {
+                "$gt": firstDay,
+                "$lte": lastDay
+            }
+        }
+    }
 
     // Bắt sựu kiện đơn vị tìm kiếm khác undefined
     if (params.organizationalUnits !== undefined) {
@@ -375,14 +396,52 @@ exports.searchEmployeeProfiles = async (params, company) => {
     };
 
     // Lấy danh sách nhân viên
-    let totalList = await Employee.count(keySearch);
     let listEmployees = await Employee.find(keySearch, {
             field1: 1,
-            emailInCompany: 1
+            emailInCompany: 1,
+            birthdate: 1,
+            contracts: 1
         })
         .sort({
             'createdAt': 'desc'
         }).skip(params.page).limit(params.limit);
+
+    // Lọc nhân viên theo tháng sinh
+    if (params.birthdate) {
+        let birthdate = new Date(params.birthdate);
+        listEmployees = listEmployees.filter(x => {
+            let date = new Date(x.birthdate)
+            return date.getMonth() === birthdate.getMonth();
+        })
+    }
+
+    // Lọc nhân viên theo loại hợp đồng lao động
+    if (params.typeOfContract) {
+        let typeOfContract = params.typeOfContract.toLowerCase().trim();
+        listEmployees = listEmployees.filter(x => {
+            let contract;
+            if (x.contracts.length !== 0) {
+                let contracts = x.contracts;
+                contract = contracts.filter(y => {
+                    let endDate = new Date(y.endDate);
+                    let date = new Date();
+                    return endDate.getTime() > date.getTime();
+                })
+            }
+            if (contract.length !== 0) {
+                contract = contract[0];
+                if (contract.contractType.toLowerCase().includes(typeOfContract)) {
+                    return true
+                } else {
+                    return false
+                }
+            } else {
+                return false;
+            }
+        })
+    }
+
+    let totalList = listEmployees.length;
     let data = [];
     for (let n in listEmployees) {
         let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(listEmployees[n].emailInCompany);
@@ -865,6 +924,9 @@ exports.deleteEmployee = async (id) => {
     await Salary.deleteMany({
         employee: id
     });
+    await Timesheets.deleteMany({
+        employee: id
+    })
     return employee;
 }
 

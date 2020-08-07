@@ -3,17 +3,11 @@ const Schema = mongoose.Schema;
 const Company = require('../system-admin/company.model');
 const AssetType = require('./assetType.model');
 const User = require('../auth/user.model');
-//  const OrganizationalUnit = require('../super-admin/organizationalUnit.model');
 
 // Create Schema
 const AssetSchema = new Schema({
 
-    //  organizationalUnit: { // phòng ban
-   //      type: Schema.Types.ObjectId,
-   //      ref: OrganizationalUnit,
-   //  },
-
-    company: {// công ty
+    company: { // công ty
         type: Schema.Types.ObjectId,
         ref: Company,
     },
@@ -22,8 +16,8 @@ const AssetSchema = new Schema({
      * Tab thông tin chung
      */
     avatar: {
-       type: String
-   },
+        type: String
+    },
 
     code: { //2.mã tài sản
         type: String,
@@ -45,7 +39,7 @@ const AssetSchema = new Schema({
     },
 
     purchaseDate: { //6.ngày nhập, ngày mua
-       type: Date,
+        type: Date,
         defaut: Date.now,
         required: true
     },
@@ -54,66 +48,66 @@ const AssetSchema = new Schema({
         type: Date
     },
 
-    managedBy: {//11.Người quản lý
-       type: Schema.Types.ObjectId,
-       ref: User,
-       // required: true
-   },
+    managedBy: { //11.Người quản lý
+        type: Schema.Types.ObjectId,
+        ref: User,
+        // required: true
+    },
 
-   assignedTo: {//12.Người đang được giao sử dụng
-       type: Schema.Types.ObjectId,
-       ref: User,
-       // required: true
-   },
+    assignedTo: { //12.Người đang được giao sử dụng
+        type: Schema.Types.ObjectId,
+        ref: User,
+        // required: true
+    },
 
-   handoverFromDate: { //13.Người được giao sử dụng từ ngày
-       type: Date,
-       // defaut: Date.now,
-       // required: true
-   },
+    handoverFromDate: { //13.Người được giao sử dụng từ ngày
+        type: Date,
+        // defaut: Date.now,
+        // required: true
+    },
 
-   handoverToDate: { //14.Người được giao sử dụng đến ngày
-       type: Date,
-       // defaut: Date.now,
-       // required: true
-   },
+    handoverToDate: { //14.Người được giao sử dụng đến ngày
+        type: Date,
+        // defaut: Date.now,
+        // required: true
+    },
 
-   location: { //15.vị trí tài sản
-       type: String,
-       // required: true
-   },
+    location: { //15.vị trí tài sản
+        type: String,
+        // required: true
+    },
 
-   status: { //16.tình trạng: sẵn sàng sử dụng || đang sử dụng || hỏng hóc || mất || Thanh lý
-       type: String,
-       enum: ["Sẵn sàng sử dụng", "Đang sử dụng", "Hỏng hóc", "Mất", "Thanh lý"]
-       // enum: ["InUse", "Unassigned", "InStorage", "Broken", "InRepair", "Disposed"]
-       // InUse, Active, InStorage, Broken, Lost, In Repair, Disposed, Transferred out, Inoperable
-   },
+    status: { //16.tình trạng: sẵn sàng sử dụng || đang sử dụng || hỏng hóc || mất || Thanh lý
+        type: String,
+        enum: ["Sẵn sàng sử dụng", "Đang sử dụng", "Hỏng hóc", "Mất", "Thanh lý"]
+        // enum: ["InUse", "Unassigned", "InStorage", "Broken", "InRepair", "Disposed"]
+        // InUse, Active, InStorage, Broken, Lost, In Repair, Disposed, Transferred out, Inoperable
+    },
 
-   canRegisterForUse: {
+    canRegisterForUse: {
         type: Boolean,
-    //     type: String,
-    //    enum: ["Được phép đăng ký sử dụng", "Không được phép đăng ký sử dụng"]
-   },
+        //     type: String,
+        //    enum: ["Được phép đăng ký sử dụng", "Không được phép đăng ký sử dụng"]
+    },
 
-   description: { //17.mô tả
-       type: String,
-   },
+    description: { //17.mô tả
+        type: String,
+    },
 
-   detailInfo: [{// thông tin chi tiết
-       nameField: String,// tên trường dữ liệu
-       value: String, //giá trị
-   }],
+    detailInfo: [{ // thông tin chi tiết
+        nameField: String, // tên trường dữ liệu
+        value: String, //giá trị
+    }],
 
-   /***********************************************************************************************
-    * Tab Khấu hao
-    */
-    depreciationType:{ // Cách tính khấu hao
+    /***********************************************************************************************
+     * Tab Khấu hao
+     */
+    depreciationType: { // Cách tính khấu hao
         type: String,
         enum: ["Đường thẳng", "Số dư giảm dần", "Sản lượng"],
         // Reducing balance chính là Declining Balance Method
     },
-   
+
     cost: { //8. Nguyên giá
         type: Number
     },
@@ -121,8 +115,8 @@ const AssetSchema = new Schema({
         type: Number
     },
     startDepreciation: { // thời gian bắt đầu trích khấu hao
-       type: Date
-   },
+        type: Date
+    },
     residualValue: { //10. Giá trị thu hồi ước tính.
         //Là giá trị ước tính của một tài sản vào cuối thời hạn thuê 
         //hoặc thời gian sử dụng hữu ích.Theo nguyên tắc chung, 
@@ -133,11 +127,11 @@ const AssetSchema = new Schema({
     rate: { // Dùng trong phương pháp Reducing balance/DecliningBalance
         type: Number,
     },
-    unitsProducedDuringTheYears: [{// Dùng trong UnitsOfProduction
+    unitsProducedDuringTheYears: [{ // Dùng trong UnitsOfProduction
         year: Number,
         unitsProducedDuringTheYear: Number
     }],
-    estimatedTotalProduction: {// Dùng trong UnitsOfProduction
+    estimatedTotalProduction: { // Dùng trong UnitsOfProduction
         type: Number
     },
 
@@ -145,11 +139,11 @@ const AssetSchema = new Schema({
      * lịch sử sử dụng - Tab cấp phát
      */
     usageLogs: [{ //ghi lại lịch sử sử dụng
-        usedBy: {// người sử dụng
+        usedBy: { // người sử dụng
             type: Schema.Types.ObjectId,
             ref: User,
         },
-        startDate: {// ngày bắt đầu sử dụng
+        startDate: { // ngày bắt đầu sử dụng
             type: Date
         },
         endDate: { //ngày kết thúc sử dụng
@@ -164,32 +158,32 @@ const AssetSchema = new Schema({
      * bảo trì: tab Sửa chữa
      */
     maintainanceLogs: [{ // bảo trì thiết bị
-        maintainanceCode: {//số phiếu
+        maintainanceCode: { //số phiếu
             type: String,
-           //  required: true
+            //  required: true
         },
         createDate: { // ngày lập
             type: Date
         },
-        type: {//phân loại: 1. sửa chữa , 2.thay thế , 3. nâng cấp
+        type: { //phân loại: 1. sửa chữa , 2.thay thế , 3. nâng cấp
             type: String,
-           //  required: true,
+            //  required: true,
         },
-        description: {// nội dung, lý do
+        description: { // nội dung, lý do
             type: String,
-           //  required: true
+            //  required: true
         },
-        startDate: {//Ngày bắt đầu sửa
+        startDate: { //Ngày bắt đầu sửa
             type: Date
         },
-        endDate: {//Ngày hoàn thành
+        endDate: { //Ngày hoàn thành
             type: Date
         },
         expense: { //chi phí sửa chữa - thay thế  - NÂNG CẤP
             type: Number,
-           //  required: true
+            //  required: true
         },
-        status: {//trạng thái, tình trạng: 1-chưa thực hiện || 2-đang thực hiện || 3-đã thực hiện
+        status: { //trạng thái, tình trạng: 1-chưa thực hiện || 2-đang thực hiện || 3-đã thực hiện
             type: String
         },
         createdAt: {
@@ -209,11 +203,11 @@ const AssetSchema = new Schema({
         incidentCode: {
             type: String
         },
-        type: {//Phân loại: 1. Báo hỏng , 2.Báo mất
+        type: { //Phân loại: 1. Báo hỏng , 2.Báo mất
             type: String,
-           //  require: true,
+            //  require: true,
         },
-        reportedBy: {//Người báo cáo
+        reportedBy: { //Người báo cáo
             type: Schema.Types.ObjectId,
             ref: User,
             // required: true
@@ -256,18 +250,18 @@ const AssetSchema = new Schema({
     /**************************************************************************************************
      * Thông tin thanh lý
      */
-   disposalDate: { // thời gian thanh lý
-       type: Date
-   },
-   disposalType: { // 1-phá hủy(scrapped), 2-sold, 3-gifted
-       type: String,
-   },  
-   disposalCost: { // giá trị thanh lý
-       type: Number,
-   },
-   disposalDesc: { // Nội dung thanh lý
-       type: String
-   },
+    disposalDate: { // thời gian thanh lý
+        type: Date
+    },
+    disposalType: { // 1-phá hủy(scrapped), 2-sold, 3-gifted
+        type: String,
+    },
+    disposalCost: { // giá trị thanh lý
+        type: Number,
+    },
+    disposalDesc: { // Nội dung thanh lý
+        type: String
+    },
 
     /***************************************************************************************************
      * trường dữ liệu động
@@ -302,12 +296,12 @@ const AssetSchema = new Schema({
         type: String
     },
 
-   files: [{ // Các file scan đính kèm
-       name: String,
-       description: String,
-       number: String,
-       urlFile: String
-   }],
+    files: [{ // Các file scan đính kèm
+        name: String,
+        description: String,
+        number: String,
+        urlFile: String
+    }],
     createdAt: {
         type: Date,
         default: Date.now

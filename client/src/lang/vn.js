@@ -413,11 +413,14 @@ export default {
             effective_date: 'Ngày áp dụng',
             expired_date: 'Ngày hết hạn',
             views: 'Số lần xem',
+            viewer: 'Người xem',
+            downloader: "Người tải",
             downloads: 'Số lần download',
             add: 'Thêm văn bản',
             edit: 'Sửa văn bản',
-            watch:'Xem văn bản',
+            watch: 'Xem văn bản',
             delete: 'Xóa văn bản',
+            time: "Thời gian",
             add_version: 'Thêm phiên bản mới',
             upload_file: 'File tài liệu',
             upload_file_scan: 'File scan tài liệu',
@@ -1832,7 +1835,22 @@ export default {
                 calc_where: 'Trong đó',
                 calc_no_value: 'Chưa có giá trị',
                 calc_nan: 'Không tính được',
-                explain: ' - (Vì giá trị điểm tự động tính được nhỏ hơn bằng 0)',
+                explain: ' - (Giá trị âm sẽ được tính là 0)',
+                eval_list: 'Danh sách các lần đánh giá',
+                title_eval: 'Đánh giá công việc',
+
+                btn_save_eval: 'Lưu đánh giá',
+                btn_get_info: 'Lấy thông tin',
+                note_not_eval: 'Bạn không thể chỉnh sửa đánh giá nữa vì đã quá 7 ngày sau lần đánh giá cuối cùng.',
+                note_eval: 'Số ngày còn lại để chỉnh sửa đánh giá: ',
+                
+                add_eval_of_this_month: 'Thêm đánh giá tháng này',
+                eval_of: 'Đánh giá tháng',
+                eval_from: 'Đánh giá từ ngày',
+                eval_to: 'Đến ngày',
+                store_info: 'Lưu công việc ra thông tin chung',
+                bool_yes: 'Đúng',
+                bool_no: 'Sai',
 
                 dashboard_created: 'Đã tạo',
                 dashboard_need_perform: 'Cần thực hiện',
@@ -2588,7 +2606,7 @@ export default {
             }
         },
 
-        manage_warehouse:{
+        manage_warehouse: {
             material_manager: {
                 index: 'STT',
                 add: 'Thêm vật tư',
