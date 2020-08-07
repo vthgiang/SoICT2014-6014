@@ -1457,7 +1457,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
                 }
 // quangdz
                 if (yearOfParams > now.getFullYear() || (yearOfParams <= now.getFullYear() && monthOfParams >= now.getMonth())) {
-                    console.log('quang vào update');
+                    // console.log('quang vào update');
                     checkSave && await Task.updateOne(
                         {
                             _id: taskId,

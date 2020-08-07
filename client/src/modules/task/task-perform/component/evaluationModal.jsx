@@ -5,7 +5,6 @@ import { DialogModal } from '../../../../common-components/index';
 import { EvaluateByResponsibleEmployee } from './evaluateByResponsibleEmployee';
 import { EvaluateByAccountableEmployee } from './evaluateByAccountableEmployee';
 import { EvaluateByConsultedEmployee } from './evaluateByConsultedEmployee';
-import en from '../../../../lang/en';
 
 class EvaluationModal extends Component {
     constructor(props) {

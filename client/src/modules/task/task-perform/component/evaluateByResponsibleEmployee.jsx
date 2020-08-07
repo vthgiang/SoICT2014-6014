@@ -125,7 +125,6 @@ class EvaluateByResponsibleEmployee extends Component {
         }
         dateOfPrevEval.setMonth(newMonth);
 
-        console.log('date', dateOfEval, dateOfPrevEval);
         let monthOfEval = dateOfEval.getMonth();
         let monthOfPrevEval = dateOfPrevEval.getMonth();
         let yearOfEval = dateOfEval.getFullYear();

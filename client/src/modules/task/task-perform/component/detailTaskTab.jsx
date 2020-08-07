@@ -145,7 +145,7 @@ class DetailTaskTab extends Component {
         else if (data === "Canceled") return translate('task.task_management.canceled');
     }
 
-    // convert ISODate to String dd/mm/yyyy
+    // convert ISODate to String dd-mm-yyyy
     formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -157,7 +157,7 @@ class DetailTaskTab extends Component {
         if (day.length < 2)
             day = '0' + day;
 
-        return [day, month, year].join('/');
+        return [day, month, year].join('-');
     }
 
     handleShowEdit = async (id, role) => {
@@ -238,6 +238,35 @@ class DetailTaskTab extends Component {
         let evaluations;
         if (task && task.evaluations && task.evaluations.length !== 0) evaluations = task.evaluations; //.reverse()
 
+        let evalList = [];
+        if(evaluations && evaluations.length > 0){
+            for(let i = 0; i < evaluations.length; i++){
+                let prevEval;
+                let prevDate = task.startDate;
+                let splitter = this.formatDate(evaluations[i].date).split("-");
+
+                let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+                let dateOfPrevEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+                let newMonth = dateOfPrevEval.getMonth() - 1;
+                if (newMonth < 0) {
+                    newMonth += 12;
+                    dateOfPrevEval.setYear(dateOfPrevEval.getYear() - 1);
+                }
+                dateOfPrevEval.setMonth(newMonth);
+                
+                let monthOfPrevEval = dateOfPrevEval.getMonth();
+                let yearOfPrevEval = dateOfPrevEval.getFullYear();
+
+                prevEval = evaluations.find(e => (monthOfPrevEval === new Date(e.date).getMonth() && yearOfPrevEval === new Date(e.date).getFullYear()));
+                
+                if (prevEval) {
+                    prevDate = prevEval.date;
+                }
+
+                evalList.push({...evaluations[i], prevDate: prevDate })
+            }
+        }
+        
         return (
             <React.Fragment>
                 {(showToolbar) &&
@@ -302,7 +331,7 @@ class DetailTaskTab extends Component {
                             <div><strong>{translate('task.task_management.detail_link')}: &nbsp;&nbsp;</strong> <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></div>
                             <div><strong>{translate('task.task_management.detail_priority')}: &nbsp;&nbsp;</strong> {task && this.formatPriority(task.priority)}</div>
                             <div><strong>{translate('task.task_management.detail_status')}: &nbsp;&nbsp;</strong> {task && this.formatStatus(task.status)}</div>
-                            <div><strong>{translate('task.task_management.detail_time')}: &nbsp;&nbsp;</strong> {this.formatDate(task && task.startDate)} - {this.formatDate(task && task.endDate)}</div>
+                            <div><strong>{translate('task.task_management.detail_time')}: &nbsp;&nbsp;</strong> {this.formatDate(task && task.startDate)} {`>>`} {this.formatDate(task && task.endDate)}</div>
 
                             <div><strong>{translate('task.task_management.detail_progress')}: &nbsp;&nbsp;</strong> {task && task.progress}%</div>
                             {
@@ -418,11 +447,11 @@ class DetailTaskTab extends Component {
                             <div>
                                     {/* Đánh giá công việc */}
                                     <div>
-                                        {(evaluations) &&
-                                            evaluations.map((eva, keyEva) => {
+                                        {(evalList) &&
+                                            evalList.map((eva, keyEva) => {
                                                 return (
                                                     <div key={keyEva} className="description-box">
-                                                        <h4>{translate('task.task_management.detail_eval_on_date')}&nbsp;{this.formatDate(eva.date)}</h4>
+                                                        <h4>{translate('task.task_management.detail_eval_on_date')}&nbsp;({this.formatDate(eva.prevDate)} {`>>`} {this.formatDate(eva.date)})</h4>
                                                         {
                                                             eva.results.length !== 0 &&
                                                             <div>
