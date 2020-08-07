@@ -413,11 +413,14 @@ export default {
             effective_date: 'Ngày áp dụng',
             expired_date: 'Ngày hết hạn',
             views: 'Số lần xem',
+            viewer: 'Người xem',
+            downloader: "Người tải",
             downloads: 'Số lần download',
             add: 'Thêm văn bản',
             edit: 'Sửa văn bản',
-            watch:'Xem văn bản',
+            watch: 'Xem văn bản',
             delete: 'Xóa văn bản',
+            time: "Thời gian",
             add_version: 'Thêm phiên bản mới',
             upload_file: 'File tài liệu',
             upload_file_scan: 'File scan tài liệu',
@@ -2603,7 +2606,7 @@ export default {
             }
         },
 
-        manage_warehouse:{
+        manage_warehouse: {
             material_manager: {
                 index: 'STT',
                 add: 'Thêm vật tư',

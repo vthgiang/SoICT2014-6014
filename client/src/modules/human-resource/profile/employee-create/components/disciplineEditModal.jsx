@@ -53,39 +53,46 @@ class DisciplineEditModal extends Component {
      * Bắt sự kiện thay đổi ngày có hiệu lực
      */
     handleStartDateChange = (value) => {
-        this.validateStartDate(value, true)
-    }
-    validateStartDate = (value, willUpdateState = true) => {
-        let msg = DisciplineFromValidator.validateStartDate(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnStartDate: msg,
-                    startDate: value,
-                }
-            });
+        let { errorOnEndDate, endDate } = this.state;
+        let errorOnStartDate;
+        let partValue = value.split('-');
+        let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
+
+        let partEndDate = endDate.split('-');
+        let d = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
+
+        if (date.getTime() > d.getTime()) {
+            errorOnStartDate = "Ngày có hiệu lực phải trước ngày hết hiệu lực";
+        } else {
+            errorOnEndDate = errorOnEndDate === 'Ngày hết hiệu lực phải sau ngày có hiệu lực' ? undefined : errorOnEndDate
         }
-        return msg === undefined;
+        this.setState({
+            startDate: value,
+            errorOnStartDate: errorOnStartDate,
+            errorOnEndDate: errorOnEndDate
+        })
     }
     /**
      * Bắt sự kiện thay đổi ngày hết hiệu lực
      */
     handleEndDateChange = (value) => {
-        this.validateEndDate(value, true);
-    }
-    validateEndDate = (value, willUpdateState = true) => {
-        let msg = DisciplineFromValidator.validateEndDate(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnEndDate: msg,
-                    endDate: value,
-                }
-            });
+        let { startDate, errorOnStartDate } = this.state;
+        let partValue = value.split('-');
+        let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
+
+        let partStartDate = startDate.split('-');
+        let d = new Date([partStartDate[2], partStartDate[1], partStartDate[0]].join('-'));
+        let errorOnEndDate;
+        if (d.getTime() > date.getTime()) {
+            errorOnEndDate = "Ngày hết hiệu lực phải sau ngày có hiệu lực";
+        } else {
+            errorOnStartDate = errorOnStartDate === 'Ngày có hiệu lực phải trước ngày hết hiệu lực' ? undefined : errorOnStartDate
         }
-        return msg === undefined;
+        this.setState({
+            endDate: value,
+            errorOnStartDate: errorOnStartDate,
+            errorOnEndDate: errorOnEndDate
+        })
     }
 
     /**
@@ -134,20 +141,25 @@ class DisciplineEditModal extends Component {
      * Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
      */
     isFormValidated = () => {
-        let result =
-            this.validateStartDate(this.state.startDate, false) && this.validateEndDate(this.state.endDate, false) &&
-            this.validateDecisionNumber(this.state.decisionNumber, false) && this.validateOrganizationalUnit(this.state.organizationalUnit, false) &&
+        let result = this.validateDecisionNumber(this.state.decisionNumber, false) && this.validateOrganizationalUnit(this.state.organizationalUnit, false) &&
             this.validateType(this.state.reason, false) && this.validateReason(this.state.reason, false);
-        return result;
+        let partStart = this.state.startDate.split('-');
+        let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
+        let partEnd = this.state.endDate.split('-');
+        let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        if (new Date(startDate).getTime() <= new Date(endDate).getTime()) {
+            return result;
+        } else return false;
     }
+
     /**
      * Bắt sự kiện submit form
      */
     save = async () => {
-        var partStart = this.state.startDate.split('-');
-        var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
-        var partEnd = this.state.endDate.split('-');
-        var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        let partStart = this.state.startDate.split('-');
+        let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
+        let partEnd = this.state.endDate.split('-');
+        let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         if (this.isFormValidated()) {
             return this.props.handleChange({ ...this.state, startDate: startDate, endDate: endDate });
         }
@@ -216,6 +228,7 @@ class DisciplineEditModal extends Component {
                                 <label>{translate('discipline.start_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit_discipline_start_date${id}`}
+                                    deleteValue={false}
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
@@ -225,6 +238,7 @@ class DisciplineEditModal extends Component {
                                 <label>{translate('discipline.end_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit_discipline_end_date${id}`}
+                                    deleteValue={false}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />
