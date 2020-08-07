@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const User = require('../auth/user.model')
+const Role = require('../auth/role.model');
 const OrganizationalUnit = require('../../models/super-admin/organizationalUnit.model');
 const TaskTemplate = require('../../models/task/taskTemplate.model');
 
@@ -27,6 +28,11 @@ const TaskReportSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: User
     },
+    readByEmployees: [{
+        type: Schema.Types.ObjectId,
+        ref: Role,
+        required: true
+    }],
     responsibleEmployees: [{ //Người thực hiện
         type: Schema.Types.ObjectId,
         ref: User,

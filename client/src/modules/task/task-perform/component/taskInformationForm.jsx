@@ -24,9 +24,16 @@ class TaskInformationForm extends Component {
         }
     }
 
+    checkNullUndefined = (x) => {
+        if( x === null || x === undefined ) {
+            return false;
+        }
+        else return true;
+    }
+
     render() {
         const { translate } = this.props;
-        const { value, task, perform, role, id } = this.props;
+        const { value, task, perform, role, id, disabled } = this.props;
 
         return (
             <React.Fragment>
@@ -42,7 +49,8 @@ class TaskInformationForm extends Component {
                                 name="progress"
                                 placeholder={translate('task.task_management.edit_enter_progress')}
                                 onChange={this.props.handleChangeProgress}
-                                value={value.progress ? value.progress : ''}
+                                value={this.checkNullUndefined(value.progress) ? value.progress : ''}
+                                disabled={disabled} 
                             />
                             <ErrorLabel content={value.errorOnProgress} />
 
@@ -61,7 +69,8 @@ class TaskInformationForm extends Component {
                                             placeholder={translate('task.task_management.edit_enter_value')}
                                             onChange={this.props.handleChangeTextInfo}
                                             disabled={info.filledByAccountableEmployeesOnly && role !== "accountable"}
-                                            value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined) ? value.info[`${info.code}`].value : ''}
+                                            value={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) ? value.info[`${info.code}`].value : ''}
+                                            disabled={disabled} 
                                         />
 
                                         {/* <ErrorLabel content={value.errorOnTextInfo}/> */}
@@ -79,7 +88,8 @@ class TaskInformationForm extends Component {
                                                 placeholder={translate('task.task_management.edit_enter_value')}
                                                 onChange={this.props.handleChangeNumberInfo}
                                                 disabled={info.filledByAccountableEmployeesOnly && role !== "accountable"}
-                                                value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined) && value.info[`${info.code}`].value}
+                                                value={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) && value.info[`${info.code}`].value}
+                                                disabled={disabled} 
                                             />
                                             {/* <ErrorLabel content={value.errorOnNumberInfo}/> */}
                                         </div>
@@ -92,9 +102,10 @@ class TaskInformationForm extends Component {
                                             <label>{info.name}(<span style={{ color: "red" }}>*</span>)</label>
                                             <DatePicker
                                                 id={`info_date_${perform}_${index}_${info.code}_${id}`}
-                                                value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined) ? value.info[`${info.code}`].value : undefined}
+                                                value={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) ? value.info[`${info.code}`].value : undefined}
                                                 onChange={(value) => this.props.handleInfoDateChange(value, info.code)}
                                                 disabled={info.filledByAccountableEmployeesOnly && role !== "accountable"}
+                                                disabled={disabled} 
                                             />
                                             <ErrorLabel content={value.errorOnInfoDate} />
                                         </div>
@@ -111,9 +122,10 @@ class TaskInformationForm extends Component {
                                                     name={info.code}
                                                     value={true}
                                                     onChange={this.props.handleInfoBooleanChange}
-                                                    checked={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined) && value.info[`${info.code}`].value === "true"}
+                                                    checked={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) && value.info[`${info.code}`].value === "true"}
                                                     disabled={info.filledByAccountableEmployeesOnly && role !== "accountable"}
-                                                /> Đúng
+                                                    disabled={disabled} 
+                                                /> {translate('task.task_management.bool_yes')}
                                             </label>
                                             <label class="radio-inline">
                                                 <input
@@ -121,9 +133,10 @@ class TaskInformationForm extends Component {
                                                     name={info.code}
                                                     value={false}
                                                     onChange={this.props.handleInfoBooleanChange}
-                                                    checked={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined) && value.info[`${info.code}`].value === "false"}
+                                                    checked={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) && value.info[`${info.code}`].value === "false"}
                                                     disabled={info.filledByAccountableEmployeesOnly && role !== "accountable"}
-                                                /> Sai
+                                                    disabled={disabled} 
+                                                /> {translate('task.task_management.bool_no')}
                                             </label>
                                         </div>
                                     }
@@ -141,7 +154,8 @@ class TaskInformationForm extends Component {
                                                 onChange={(value) => this.props.handleSetOfValueChange(value, info.code)}
                                                 multiple={false}
                                                 disabled={info.filledByAccountableEmployeesOnly && role !== "accountable"}
-                                                value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined) && value.info[`${info.code}`].value}
+                                                value={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) && value.info[`${info.code}`].value}
+                                                disabled={disabled} 
                                             />
                                         </div>
                                     }
@@ -153,9 +167,10 @@ class TaskInformationForm extends Component {
                                 <input
                                     type="checkbox"
                                     checked={value.checkSave === true}
+                                    disabled={disabled} 
                                     // value={elem._id}
                                     name="checkSave" onChange={(e) => this.props.handleChangeSaveInfo(e)}
-                                /> Lưu thông tin công việc ra thông tin chung
+                                /> {translate('task.task_management.store_info')}
                         </label>
                         }
 

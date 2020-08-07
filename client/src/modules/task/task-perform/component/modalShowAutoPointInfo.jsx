@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components';
+import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
 
 class ModalShowAutoPointInfo extends Component {
     constructor(props) {
@@ -89,11 +90,22 @@ class ModalShowAutoPointInfo extends Component {
             }
         }
 
+        let taskInfo = {
+            task: task,
+            progress: progress,
+            date: date,
+            info: info,
+        };
+
+        let automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        if (isNaN(automaticPoint)) automaticPoint = undefined
+        let calcAuto = automaticPoint;
+
         let result;
-        if(autoPoint === 0) {
-            result = `0 ${translate('task.task_management.explain')}`;
+        if(calcAuto < 0) {
+            result = `${calcAuto} ${translate('task.task_management.explain')}`;
         }
-        else if( autoPoint > 0) {
+        else if( calcAuto >= 0) {
             result = autoPoint
         }
         else {
@@ -108,6 +120,7 @@ class ModalShowAutoPointInfo extends Component {
                     formID="form-automatic-point-info"
                     title={translate('task.task_management.calc_form')} 
                     hasSaveButton={false}
+                    hasNote={false}
                 >
                     {(task.taskTemplate) &&
                         <div>

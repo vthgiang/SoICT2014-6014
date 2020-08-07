@@ -18,7 +18,14 @@ exports.getTaskReports = async (params) => {
     }
 
     let totalList = await TaskReport.countDocuments();
-    let listTaskReport = await TaskReport.find(keySearch).sort({ 'createdAt': 'desc' }).skip(parseInt(params.page)).limit(parseInt(params.limit)).populate({ path: 'creator ', select: "_id name" });
+    let listTaskReport = await TaskReport.find(keySearch).sort({ 'createdAt': 'desc' })
+        .skip(parseInt(params.page)).limit(parseInt(params.limit))
+        .populate({ path: 'creator ', select: "_id name" })
+        .populate({ path: 'taskTemplate' })
+        .populate({ path: 'responsibleEmployees', select: '_id name company' })
+        .populate({ path: 'accountableEmployees', select: '_id name company' })
+        .populate({ path: 'organizationalUnit', select: 'deans viceDeans employees _id name company parent' })
+        .populate({ path: 'readByEmployees' })
     return { totalList, listTaskReport };
 }
 
@@ -30,11 +37,11 @@ exports.getTaskReports = async (params) => {
 exports.getTaskReportById = async (id) => {
     let taskReportById = await TaskReport.findById(id)
         .populate({ path: 'taskTemplate' })
-        //  .populate({ path: 'creator organizationalUnit responsibleEmployees accountableEmployees taskTemplate' });
         .populate({ path: 'creator', select: '_id name' })
         .populate({ path: 'responsibleEmployees', select: '_id name company' })
         .populate({ path: 'accountableEmployees', select: '_id name company' })
         .populate({ path: 'organizationalUnit', select: 'deans viceDeans employees _id name company parent' })
+        .populate({ path: 'readByEmployees' })
 
     return taskReportById;
 }
@@ -76,6 +83,7 @@ exports.createTaskReport = async (data, user) => {
         taskTemplate: data.taskTemplate,
         name: data.nameTaskReport,
         description: data.descriptionTaskReport,
+        readByEmployees: data.readByEmployees,
         responsibleEmployees: data.responsibleEmployees,
         accountableEmployees: data.accountableEmployees,
         status: statusConvert,
@@ -120,13 +128,14 @@ exports.editTaskReport = async (id, data, user) => {
             aggregationType: value.aggregationType,
         }
     }
-    console.log('configurations', configurations);
+
     await TaskReport.findByIdAndUpdate(id, {
         $set: {
             organizationalUnit: data.organizationalUnit,
             taskTemplate: data.taskTemplate,
             name: data.name,
             description: data.description,
+            readByEmployees: data.readByEmployees,
             responsibleEmployees: data.responsibleEmployees,
             accountableEmployees: data.accountableEmployees,
             status: data.status,

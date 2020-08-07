@@ -882,12 +882,12 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
     render() {
 
-        const { task } = this.state;
-        const { errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorTaskProgress, taskName, taskDescription, statusOptions, priorityOptions,
+        const { user, tasktemplates, translate } = this.props;
+        const { task, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorTaskProgress, taskName, taskDescription, statusOptions, priorityOptions,
             startDate, endDate, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees
         } = this.state;
 
-        const { user, tasktemplates, translate } = this.props;
+        const { perform, id, role, title } = this.props;
         
         let departmentUsers, usercompanys;
         if (user.userdepartments) departmentUsers = user.userdepartments;
@@ -918,14 +918,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
                     <DialogModal
                         size={75}
                         maxWidth={750}
-                        modalID={`modal-edit-task-by-${this.props.role}-${this.props.id}`}
-                        formID={`form-edit-task-${this.props.role}-${this.props.id}`}
-                        title={this.props.title}
+                        modalID={`modal-edit-task-by-${role}-${id}`}
+                        formID={`form-edit-task-${role}-${id}`}
+                        title={title}
                         isLoading={false}
                         func={this.save}
                         disableSubmit={!this.isFormValidated()}
                     >
-                        <form id={`form-edit-task-${this.props.role}-${this.props.id}`}>
+                        <form id={`form-edit-task-${role}-${id}`}>
                             {/*Thông tin cơ bản*/}
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('task.task_management.edit_basic_info')}</legend>
@@ -957,7 +957,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         <label>{translate('task.task_management.detail_status')}</label>
                                         {
                                             <SelectBox
-                                                id={`select-status-${this.props.perform}-${this.props.role}`}
+                                                id={`select-status-${perform}-${role}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 items={statusArr}
@@ -973,7 +973,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         <label>{translate('task.task_management.detail_priority')}</label>
                                         {
                                             <SelectBox
-                                                id={`select-priority-${this.props.perform}-${this.props.role}`}
+                                                id={`select-priority-${perform}-${role}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 items={priorityArr}
@@ -988,7 +988,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
                                         <label className="control-label">{translate('task.task_management.start_date')}*</label>
                                         <DatePicker
-                                            id={`datepicker2-startdate-${this.props.id}`}
+                                            id={`datepicker2-startdate-${id}`}
                                             value={startDate}
                                             onChange={this.handleChangeTaskStartDate}
                                         />
@@ -997,7 +997,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
                                         <label className="control-label">{translate('task.task_management.end_date')}*</label>
                                         <DatePicker
-                                            id={`datepicker2-enddate-${this.props.id}`}
+                                            id={`datepicker2-enddate-${id}`}
                                             value={endDate}
                                             onChange={this.handleChangeTaskEndDate}
                                         />
@@ -1016,8 +1016,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 handleChangeNumberInfo={this.handleChangeNumberInfo}
                                 handleChangeTextInfo={this.handleChangeTextInfo}
 
-                                role={this.props.role}
-                                perform={this.props.perform}
+                                role={role}
+                                perform={perform}
                                 value={this.state}
                             />
                             <fieldset className="scheduler-border">
@@ -1028,7 +1028,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     <label>{translate('task.task_management.responsible')}</label>
                                     {unitMembers &&
                                         <SelectBox
-                                            id={`select-responsible-employee-${this.props.perform}-${this.props.role}`}
+                                            id={`select-responsible-employee-${perform}-${role}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={unitMembers}
@@ -1044,7 +1044,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     <label>{translate('task.task_management.accountable')}</label>
                                     {unitMembers &&
                                         <SelectBox
-                                            id={`select-accountable-employee-${this.props.perform}-${this.props.role}`}
+                                            id={`select-accountable-employee-${perform}-${role}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={unitMembers}
@@ -1060,7 +1060,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     <label>{translate('task.task_management.consulted')}</label>
                                     {usercompanys &&
                                         <SelectBox
-                                            id={`select-consulted-employee-${this.props.perform}-${this.props.role}`}
+                                            id={`select-consulted-employee-${perform}-${role}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={
@@ -1080,7 +1080,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     <label>{translate('task.task_management.informed')}</label>
                                     {usercompanys &&
                                         <SelectBox
-                                            id={`select-informed-employee-${this.props.perform}-${this.props.role}`}
+                                            id={`select-informed-employee-${perform}-${role}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={
