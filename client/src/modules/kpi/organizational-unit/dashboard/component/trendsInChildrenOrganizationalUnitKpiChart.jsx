@@ -19,18 +19,22 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
         
         this.state = {
             currentRole: null,
-            dataStatus: this.DATA_STATUS.QUERYING
+            dataStatus: this.DATA_STATUS.QUERYING,
+            childUnitChart: 1
         };
     }
 
     componentDidMount = () => {
-        this.props.getAllEmployeeKpiInChildrenOrganizationalUnit(localStorage.getItem("currentRole"));
-        this.props.getAllTaskOfChildrenOrganizationalUnit(localStorage.getItem("currentRole"));
+        console.log("555", this.props.organizationalUnitId)
+        this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId);
+        this.props.getAllEmployeeKpiInChildrenOrganizationalUnit(localStorage.getItem("currentRole"), this.props.month, this.props.organizationalUnitId);
+        this.props.getAllTaskOfChildrenOrganizationalUnit(localStorage.getItem("currentRole"), this.props.month, this.props.organizationalUnitId);
 
         this.setState(state => {
             return {
                 ...state,
-                currentRole: localStorage.getItem("currentRole")
+                currentRole: localStorage.getItem("currentRole"),
+                dataStatus: this.DATA_STATUS.QUERYING
             }
         })
     }
@@ -49,11 +53,13 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
 
             return false;
         }
+        // console.log(nextProps.childUnitChart !== this.state.childUnitChart, nextProps.childUnitChart, this.state.childUnitChart)
 
         if (nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
-            await this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"));
-            await this.props.getAllEmployeeKpiInChildrenOrganizationalUnit(this.state.currentRole, nextState.month);
-            await this.props.getAllTaskOfChildrenOrganizationalUnit(this.state.currentRole, nextProps.month)
+            console.log("****")
+            await this.props.getCurrentKPIUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
+            await this.props.getAllEmployeeKpiInChildrenOrganizationalUnit(this.state.currentRole, nextState.month, nextProps.organizationalUnitId);
+            await this.props.getAllTaskOfChildrenOrganizationalUnit(this.state.currentRole, nextProps.month, nextProps.organizationalUnitId)
 
             this.setState(state => {
                 return {
@@ -84,6 +90,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                     dataStatus: this.DATA_STATUS.AVAILABLE,
                 };
             });
+
             return false;
         } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE){
             this.barChart();
@@ -188,7 +195,11 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                     let listChildTargetSameParent;
 
                     if (arrayListChildTargetSameParent) {
-                        listChildTargetSameParent = arrayListChildTargetSameParent.filter(item => item[0][0][0]._id === parent.name);
+                        listChildTargetSameParent = arrayListChildTargetSameParent.filter(item => {
+                            if (item[0][0][0]) {
+                                return item[0][0][0]._id === parent.name;
+                            }
+                        });
                     }
 
                     if (listChildTargetSameParent.length !== 0) {
@@ -334,45 +345,47 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
         if (!listOrganizationalUnitKpi && arrayListChildTargetSameParent){
             numberOfParticipants = {}
         } else {
-            listOrganizationalUnitKpi.map(parent => {
-                let key = listOrganizationalUnitKpi.indexOf(parent);
-                let creators1, creators2, numberOfParticipant;
-                let temporary = {};
+            if (listOrganizationalUnitKpi) {
+                listOrganizationalUnitKpi.map(parent => {
+                    let key = listOrganizationalUnitKpi.indexOf(parent);
+                    let creators1, creators2, numberOfParticipant;
+                    let temporary = {};
 
-                if (arrayListChildTargetSameParent.length !== 0) {
+                    if (arrayListChildTargetSameParent.length !== 0) {
 
-                    arrayListChildTargetSameParent[key].map(deg => {
-                        if (deg.length !== 0) {
-                            deg.map(unit => {
-                                if (unit.length !== 0) {
+                        arrayListChildTargetSameParent[key].map(deg => {
+                            if (deg.length !== 0) {
+                                deg.map(unit => {
+                                    if (unit.length !== 0) {
                                         unit.forEach(kpi => {
-                                        if (kpi.employeeKpi[0].creator.length !== 0) {
-                                            creators1 = kpi.employeeKpi.map(employeeKpi => {
-                                                if (employeeKpi.creator[0]) {
-                                                    return employeeKpi.creator[0];
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            })
-                                
-                        }
-                    })
-                }
-                
-                if (arrayListTaskSameOrganizationUnitKpi) {
-                    creators2 = arrayListTaskSameOrganizationUnitKpi[key].map(x => {
-                        return x.informedEmployees.concat(x.consultedEmployees).concat(x.informedEmployees);
-                    })
-                    creators2.forEach(x => creators1 = creators1.concat(x));
-                }
+                                            if (kpi.employeeKpi[0].creator.length !== 0) {
+                                                creators1 = kpi.employeeKpi.map(employeeKpi => {
+                                                    if (employeeKpi.creator[0]) {
+                                                        return employeeKpi.creator[0];
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                })
+                                    
+                            }
+                        })
+                    }
+                    
+                    if (arrayListTaskSameOrganizationUnitKpi) {
+                        creators2 = arrayListTaskSameOrganizationUnitKpi[key].map(x => {
+                            return x.informedEmployees.concat(x.consultedEmployees).concat(x.informedEmployees);
+                        })
+                        creators2.forEach(x => creators1 = creators1.concat(x));
+                    }
 
-                creators1 = Array.from(new Set(creators1));
-                numberOfParticipant = creators1.length;
-                temporary[parent.name] = numberOfParticipant;
-                numberOfParticipants = Object.assign(numberOfParticipants, temporary);
-            })
+                    creators1 = Array.from(new Set(creators1));
+                    numberOfParticipant = creators1.length;
+                    temporary[parent.name] = numberOfParticipant;
+                    numberOfParticipants = Object.assign(numberOfParticipants, temporary);
+                })
+            }
         }
 
         numberOfParticipants = Object.assign(
@@ -403,7 +416,11 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                 let listChildTargetSameParent;
 
                 if (arrayListChildTargetSameParent) {
-                    listChildTargetSameParent = arrayListChildTargetSameParent.filter(item => item[0][0][0]._id === parent.name);
+                    listChildTargetSameParent = arrayListChildTargetSameParent.filter(item => {
+                        if (item[0][0][0]) {
+                            return item[0][0][0]._id === parent.name;
+                        }
+                    })
                 }
                 
                 if (listChildTargetSameParent.length !== 0) {
@@ -518,7 +535,9 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
             })
         }
 
-        dataChart.unshift(titleX);
+        if (dataChart) {
+            dataChart.unshift(titleX);
+        }
 
         this.chart = c3.generate({
             bindto: this.refs.chart,                

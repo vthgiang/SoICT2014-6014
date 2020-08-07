@@ -1,3 +1,5 @@
+const { Log } = require('../../../logs');
+
 const {
     Asset,
 } = require('../../../models').schema;
@@ -21,25 +23,25 @@ exports.searchAssetProfiles = async (params, company) => {
     let keySearch = {company: company};
 
     // Bắt sựu kiện MSTS tìm kiếm khác ""
-    if (params.code !== undefined && params.code.length !== 0) {
+    if (params.code) {
         keySearch = {...keySearch, code: {$regex: params.code, $options: "i"}}
     }
     ;
 
     // Bắt sựu kiện Tên tài sản tìm kiếm khác ""
-    if (params.assetName !== undefined && params.assetName.length !== 0) {
+    if (params.assetName) {
         keySearch = {...keySearch, assetName: {$regex: params.assetName, $options: "i"}}
     }
     ;
 
     // Thêm key tìm kiếm tài sản theo trạng thái hoạt động vào keySearch
-    if (params.status !== undefined && params.status.length !== 0) {
+    if (params.status) {
         keySearch = {...keySearch, status: {$in: params.status}};
     }
     ;
 
     // Thêm key tìm kiếm tài sản theo trạng thái hoạt động vào keySearch
-    if (params.canRegisterForUse !== undefined && params.canRegisterForUse.length !== 0) {
+    if (params.canRegisterForUse) {
         keySearch = {...keySearch, canRegisterForUse: {$in: params.canRegisterForUse}};
     }
     ;
@@ -48,12 +50,7 @@ exports.searchAssetProfiles = async (params, company) => {
     let totalList = await Asset.count(keySearch);
     let listAssets = await Asset.find(keySearch)
         .sort({'createdAt': 'desc'}).skip(params.page).limit(params.limit);
-    // let data = [];
-    // for (let n in listAssets) {
-    //     let asset = await Asset.find({ _id: listAssets[n]._id });
-    //     data.push(asset[0])
-    //     // data[n] = { assets }assets
-    // }
+    
     return {data: listAssets, totalList}
 }
 
@@ -64,7 +61,7 @@ exports.searchAssetProfiles = async (params, company) => {
  * @arrayObject :mảng chứa các object
  */
 exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
-    if (arrayFile !== undefined) {
+    if (arrayFile) {
         arrayObject.forEach(x => {
             arrayFile.forEach(y => {
                 if (x.file === y.originalname) {
@@ -107,32 +104,32 @@ exports.createAsset = async (data, company, fileInfo) => {
         description: data.description,
         detailInfo: data.detailInfo,
 
-        // khấu hao
+        // Khấu hao
         cost: data.cost,
         usefulLife: data.usefulLife,
         residualValue: data.residualValue,
         startDepreciation: data.startDepreciation,
         depreciationType: data.depreciationType,
 
-        // sửa chữa - bảo trì
+        // Sửa chữa - bảo trì
         maintainanceLogs: maintainanceLogs,
 
-        //cấp phát - sử dụng
+        // Cấp phát - sử dụng
         usageLogs: usageLogs,
 
-        // sự cố tài sản
+        // Sự cố tài sản
         incidentLogs: incidentLogs,
 
         // Lịch sử vị trí tài sản
         locationLogs: locationLogs,
 
-        // thông tin thanh lý
+        // Thông tin thanh lý
         disposalDate: data.disposalDate,
         disposalType: data.disposalType,
         disposalCost: data.disposalCost,
         disposalDesc: data.disposalDesc,
 
-        // tài liệu đính kèm
+        // Tài liệu đính kèm
         archivedRecordNumber: data.archivedRecordNumber,
         files: files,
     });
@@ -159,29 +156,28 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
     let oldAsset = await Asset.findById(id);
 
     deleteEditCreateObjectInArrayObject = (arrObject, arrDelete, arrEdit, arrCreate, fileInfor = undefined) => {
-        if (arrDelete !== undefined) {
+        if (arrDelete) {
             for (let n in arrDelete) {
                 arrObject = arrObject.filter(x => x._id.toString() !== arrDelete[n]._id);
             }
-            ;
         }
-        ;
-        if (arrEdit !== undefined) {
-            if (fileInfor !== undefined) {
+        
+        if (arrEdit) {
+            if (fileInfor) {
                 arrEdit = this.mergeUrlFileToObject(fileInfor, arrEdit);
             }
             for (let n in arrEdit) {
                 arrObject = arrObject.map(x => (x._id.toString() !== arrEdit[n]._id) ? x : arrEdit[n])
             }
         }
-        ;
-        if (arrCreate !== undefined) {
-            if (fileInfor !== undefined) {
+        
+        if (arrCreate) {
+            if (fileInfor) {
                 arrCreate = this.mergeUrlFileToObject(fileInfor, arrCreate);
             }
             arrCreate.forEach(x => arrObject.push(x));
         }
-        ;
+        
         return arrObject;
     }
 
@@ -206,18 +202,18 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
     oldAsset.canRegisterForUse = data.canRegisterForUse;
     oldAsset.description = data.description;
     oldAsset.detailInfo = data.detailInfo;
-    // khấu hao
+    // Khấu hao
     oldAsset.cost = data.cost;
     oldAsset.usefulLife = data.usefulLife;
     oldAsset.residualValue = data.residualValue;
     oldAsset.startDepreciation = data.startDepreciation;
     oldAsset.depreciationType = data.depreciationType;
-    // thanh lý
+    // Thanh lý
     oldAsset.disposalDate = data.disposalDate;
     oldAsset.disposalType = data.disposalType;
     oldAsset.disposalCost = data.disposalCost;
     oldAsset.disposalDesc = data.disposalDesc;
-    //tài liệu tham khảo
+    // Tài liệu tham khảo
     oldAsset.archivedRecordNumber = data.archivedRecordNumber;
 
     // Edit  thông tin tài sản
@@ -225,13 +221,13 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
 
     // Function edit, create, Delete Document of collection
     queryEditCreateDeleteDocumentInCollection = async (assetId, company, collection, arrDelete, arrEdit, arrCreate) => {
-        let queryDelete = arrDelete !== undefined ? arrDelete.map(x => {
+        let queryDelete = arrDelete ? arrDelete.map(x => {
             return {deleteOne: {"filter": {"_id": x._id}}}
         }) : [];
-        let queryEdit = arrEdit !== undefined ? arrEdit.map(x => {
+        let queryEdit = arrEdit ? arrEdit.map(x => {
             return {updateOne: {"filter": {"_id": x._id}, "update": {$set: x}}}
         }) : [];
-        let queryCrete = arrCreate !== undefined ? arrCreate.map(x => {
+        let queryCrete = arrCreate ? arrCreate.map(x => {
             return {insertOne: {"document": {...x, asset: assetId, company: company}}}
         }) : [];
         let query = [...queryDelete, ...queryEdit, ...queryCrete];
@@ -268,6 +264,7 @@ exports.updateDepreciation = async (id, data) => {
         depreciationType: data.depreciationType,
     });
 }
+
 
 /*
  * Thêm mới phiếu bảo trì cho sự cố
@@ -402,7 +399,6 @@ exports.updateIncident = async (incidentId, data) => {
             "incidentLogs.$.reportedBy": data.reportedBy,
             "incidentLogs.$.dateOfIncident": data.dateOfIncident,
             "incidentLogs.$.description": data.description,
-            // "incidentLogs.$.statusIncident": data.statusIncident,
             status: data.status
         }
     })

@@ -135,7 +135,7 @@ class OrganizationalUnitKpiDashboard extends Component {
 
     render() {
         const { dashboardEvaluationEmployeeKpiSet, translate } = this.props;
-        const { childUnitChart } = this.state;
+        const { childUnitChart, organizationalUnitId, month } = this.state;
 
         let childOrganizationalUnit, childrenOrganizationalUnit, organizationalUnitSelectBox;
         
@@ -183,15 +183,15 @@ class OrganizationalUnitKpiDashboard extends Component {
         }
 
         let d = new Date(),
-            month = '' + (d.getMonth() + 1),
+            monthDate = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
+        if (monthDate.length < 2)
+            monthDate = '0' + monthDate;
         if (day.length < 2)
             day = '0' + day;
-        let defaultDate = [month, year].join('-');
+        let defaultDate = [monthDate, year].join('-');
 
         return (
             <React.Fragment>
@@ -233,12 +233,12 @@ class OrganizationalUnitKpiDashboard extends Component {
                     <div className="box-body qlcv">
                         { !childUnitChart ?
                             <TrendsInOrganizationalUnitKpiChart
-                                organizationalUnitId={this.state.organizationalUnitId}
-                                month={this.state.month}
+                                organizationalUnitId={organizationalUnitId}
+                                month={month}
                             />
                             : <TrendsInChildrenOrganizationalUnitKpiChart
-                                organizationalUnitId={this.state.organizationalUnitId}
-                                month={this.state.month}
+                                organizationalUnitId={organizationalUnitId}
+                                month={month}
                             />
                         }
                     </div>
@@ -255,8 +255,8 @@ class OrganizationalUnitKpiDashboard extends Component {
                                 <div className="box-body qlcv">
                                     {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) &&
                                         <DistributionOfOrganizationalUnitKpiChart
-                                            organizationalUnitId={this.state.organizationalUnitId}
-                                            month={this.state.month}
+                                            organizationalUnitId={organizationalUnitId}
+                                            month={month}
                                         />
                                     }
                                 </div>
@@ -272,8 +272,8 @@ class OrganizationalUnitKpiDashboard extends Component {
                             </div>
                             <div className="box-body qlcv">
                                 <StatisticsOfOrganizationalUnitKpiResultsChart
-                                    organizationalUnitId={this.state.organizationalUnitId}
-                                    month={this.state.month}
+                                    organizationalUnitId={organizationalUnitId}
+                                    month={month}
                                 />
                             </div>
                         </div>
@@ -289,7 +289,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                                 </div>
                                 <div className="box-body qlcv">
                                     {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) &&
-                                        <ResultsOfOrganizationalUnitKpiChart organizationalUnitId={this.state.organizationalUnitId} />
+                                        <ResultsOfOrganizationalUnitKpiChart organizationalUnitId={organizationalUnitId} />
                                     }
                                 </div>
                             </div>
