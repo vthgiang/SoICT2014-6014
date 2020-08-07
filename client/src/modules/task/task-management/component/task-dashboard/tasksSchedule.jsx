@@ -27,7 +27,7 @@ class TasksSchedule extends Component {
       .startOf("month")
       .add(1, "month")
       .toDate();
-
+    let dateNow = new Date();
     this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
     this.state = {
@@ -45,11 +45,11 @@ class TasksSchedule extends Component {
         name: null,
         startDate: null,
         endDate: null,
-        startDateAfter: this.formatDate(new Date()),
+        startDateAfter: this.formatDate(dateNow),
         endDateBefore: null
       },
       taskId: null,
-
+      add: true,
       dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
 
       willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
@@ -59,8 +59,9 @@ class TasksSchedule extends Component {
     let { infoSearch } = this.state;
     let { organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = infoSearch;
     let unitIds = this.props.units ? this.props.units : "[]";
+    console.log('uniit\n\n\n\n\n\n\n\n', this.props.units);
     await this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
-    await this.props.getTaskInOrganizationUnitByMonth('[]', startDateAfter, endDateBefore);
+    await this.props.getTaskInOrganizationUnitByMonth("[]", startDateAfter, endDateBefore);
     await this.setState(state => {
       return {
         ...state,
@@ -102,23 +103,22 @@ class TasksSchedule extends Component {
     return false;
   }
 
-  formatDate(date) {
-    let d = new Date(date),
-      month = '' + (d.getMonth()),
-      day = '' + d.getDate(),
-      year = d.getFullYear();
+  formatDate(d) {
+    // let d = new Date(date),
+    let month = '' + (d.getMonth());
+    let day = '' + d.getDate();
+    let year = d.getFullYear();
 
     if (month.length < 2)
       month = '0' + month;
-    if (day.length < 2)
-      day = '0' + day;
 
     return [month, year].join('-');
   }
 
-  handleSearchTasks = async () => {
+  handleSearchTasks = async (nextState) => {
     let { infoSearch } = this.state;
     let { organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = infoSearch;
+    console.log(startDateAfter, endDateBefore);
     if (startDateAfter === "") startDateAfter = null;
     if (endDateBefore === "") endDateBefore = null;
 
@@ -127,12 +127,12 @@ class TasksSchedule extends Component {
         ...state,
         infoSearch: {
           ...state.infoSearch,
-          startDateAfter: this.state.startDateAfter,
-          endDateBefore: this.state.endDateBefore
+          startDateAfter: startDateAfter,
+          endDateBefore: endDateBefore
         }
       }
     })
-
+    // console.log('===============\n\n\n\n\n\n\n', this.state.infoSearch);
     let startAfterSpl;
     let startdate_after = null;
     let endBeforeSpl;
@@ -144,6 +144,7 @@ class TasksSchedule extends Component {
       startAfterSpl = startDateAfter.split("-");
       startdate_after = new Date(startAfterSpl[0], startAfterSpl[1], 0);
     }
+
     if (endDateBefore !== null) {
       endBeforeSpl = endDateBefore.split("-");
       enddate_before = new Date(endBeforeSpl[0], endBeforeSpl[1], 28);
@@ -159,19 +160,25 @@ class TasksSchedule extends Component {
       })
     }
     else {
+      // console.log('chay den 162', this.props.TaskOrganizationUnitDashboard);
       if (this.props.TaskOrganizationUnitDashboard) {
-        // let unitIds = this.props.units ? this.props.units : "[]";
-        this.props.getTaskInOrganizationUnitByMonth('[]', startDateAfter, endDateBefore)
+        let unitIds = this.props.units ? this.props.units : "[]";
+        console.log("kkkk", startDateAfter, endDateBefore)
+        this.props.getTaskInOrganizationUnitByMonth(unitIds, startDateAfter, endDateBefore);
       }
-      else this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
-
+      else {
+        this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
+        // console.log('ko chay vao if');
+      }
     }
   }
   handleStartDateChange = async (value) => {
-
+    // if (value = )
+    // let test = this.formatDate(value);
+    // console.log(test);
     let month = value.split("-");
-    let startAfter = [month[1], month[0]].join("-");
-
+    let startAfter = [month[0], month[1]].join("-");
+    console.log('dsfsd', startAfter);
     await this.setState(state => {
       return {
         ...state,
@@ -185,7 +192,8 @@ class TasksSchedule extends Component {
   }
   handleEndDateChange = async (value) => {
     let month = value.split("-");
-    let endBefore = [month[1], month[0]].join("-");
+    let endBefore = [month[0], month[1]].join("-");
+
     console.log(endBefore);
     await this.setState(state => {
       return {
@@ -199,28 +207,40 @@ class TasksSchedule extends Component {
 
   }
   getDurations() {
+
     const { tasks } = this.props;
-    console.log(tasks)
-    var taskList;
+    console.log("get duarationnnnnnnnnnnnnnnnnnn")
+    var taskList, inprocessTasks;
     let durations = [];
     if (tasks) {
       if (this.props.TaskOrganizationUnitDashboard) {
         taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
+        inprocessTasks = taskList && taskList.filter(task => task.status === "Inprocess");
       }
-      else taskList = tasks.responsibleTasks
+      else inprocessTasks = tasks.responsibleTasks;
 
     }
 
 
-    if (taskList) {
-      for (let i = 1; i <= taskList.length; i++) {
-        let start_time = moment(new Date(taskList[i - 1].startDate));
-        let end_time = moment(new Date(taskList[i - 1].endDate));
-
+    if (inprocessTasks) {
+      for (let i = 1; i <= inprocessTasks.length; i++) {
+        let start_time = moment(new Date(inprocessTasks[i - 1].startDate));
+        let end_time = moment(new Date(inprocessTasks[i - 1].endDate));
+        let responsibleName = [];
+        let title;
+        inprocessTasks[i - 1].responsibleEmployees.map(x => {
+          responsibleName.push(x.name)
+        });
+        if (this.props.TaskOrganizationUnitDashboard) {
+          title = inprocessTasks[i - 1].name + " - " + responsibleName + " - " + inprocessTasks[i - 1].progress + "%"
+        }
+        else {
+          title = inprocessTasks[i - 1].name + " - " + inprocessTasks[i - 1].progress + "%"
+        }
         durations.push({
           id: parseInt(i),
           group: 1,
-          title: `${taskList[i - 1].name} - ${taskList[i - 1].progress}%`,
+          title: title,
           canMove: false,
 
           start_time: start_time,
@@ -228,23 +248,75 @@ class TasksSchedule extends Component {
 
           itemProps: {
             style: {
-              color: "rgba(0, 0, 0, 0.8)",
+              color: "rgb(0, 0, 0, 0.8)",
               borderStyle: "solid",
               fontWeight: '600',
               fontSize: 14,
               borderWidth: 1,
-              borderRadius: 3
+              borderRadius: 3,
             }
           }
         })
       }
+      if (inprocessTasks.length) {
+        // console.log(inprocessTasks[0].progress);
+        this.displayTaskProgress(inprocessTasks[0].progress);
+      }
     }
+
     return durations;
   }
 
+
+
+  displayTaskProgress = async (progress) => {
+    let x = document.getElementsByClassName("rct-item");
+    // console.log('\n\n\n\n\n\n\n\n ', x);
+    let d = document.createElement('div');
+    var { add } = this.state;
+    d.setAttribute("id", "task-progress");
+
+    var test = x[0];
+    console.log("dong 277")
+    if (x[0]) {
+      console.log('dong 279');
+      // if (add) {
+      let offset = progress * x[0].offsetWidth / 100;
+      console.log(x[0]);
+
+      x[0].appendChild(d);
+      d.style.width = `${offset}px`
+      console.log('dong 284');
+
+      // this.setState(state => {
+      //   return {
+      //     ...state,
+      //     add: false,
+      //   }
+      // })
+      console.log('rct-item', x[0]);
+      // }
+
+    }
+
+  }
+
+
+
   handleItemClick = async (itemId) => {
     let { tasks } = this.props;
-    let id = tasks.responsibleTasks[itemId - 1]._id;
+    let taskList, inprocessTasks;
+
+    if (tasks) {
+      if (this.props.TaskOrganizationUnitDashboard) {
+        taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
+        inprocessTasks = taskList && taskList.filter(task => task.status === "Inprocess");
+      }
+      else inprocessTasks = tasks.responsibleTasks;
+
+    }
+
+    let id = inprocessTasks[itemId - 1]._id;
     await this.setState(state => {
       return {
         ...state,
@@ -289,7 +361,8 @@ class TasksSchedule extends Component {
     let { tasks, translate } = this.props;
     let task = tasks && tasks.task;
     let today = new Date();
-
+    this.displayTaskProgress();
+    console.log('renđêrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
     return (
       <React.Fragment>
         <div className="box-body qlcv">
@@ -340,7 +413,7 @@ class TasksSchedule extends Component {
                     ...styles,
                     backgroundColor: '#d73925',
                     width: '3px',
-                    marginLeft: '-4px'
+                    // marginLeft: '-4px'
 
                   }
                   return <div style={customStyles}></div>

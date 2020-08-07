@@ -23,7 +23,6 @@ const EmployeeSchema = new Schema({
     },
     startingDate: { // Ngày bắt đầu làm việc
         type: Date,
-        required: true
     },
     leavingDate: { // Ngày nghỉ việc
         type: Date,

@@ -36,7 +36,71 @@ class TaskReportViewForm extends Component {
                 }
             })
         }
+        console.log('listTask', listTaskEvaluation);
+        let result2 = [];
+        let sump1 = 0, sump2 = 0, avg, month;
+        let result = [];
+        if (listTaskEvaluation) {
+            listTaskEvaluation.forEach((x, index) => {
 
+                let date = new Date(x.date);
+                month = `${date.getMonth() + 1} - ${date.getFullYear()}`;
+
+                if (Array.isArray(result) && result.length !== 0) {
+                    result.map(n => {
+                        for (let abc in n) {
+                            if (abc === month) {
+                                result[month] = { ...result[month], ...x.taskInformations };
+                                console.log("result-58", result);
+                            } else {
+                                result[month] = {
+                                    ...result[index], [month]: [{ ...x.taskInformations }]
+                                }
+                                console.log('result-60', result);
+                            }
+                        }
+                    })
+                } else {
+                    console.log(`bbbbbbbbbbbbbbbbb---${index}`, x.taskInformations);
+                    result[index] = {
+                        ...result, [month]: [{ ...x.taskInformations }],
+                    };
+                    console.log(`result-${index}`, result);
+                }
+
+                // x.taskInformations.reduce(function (res, value) {
+                //     console.log('res', res);
+                //     console.log('value', value);
+                //     if (!res[month]) {
+                //         res[month] = {
+                //             sum: 0,
+                //             month: month
+                //         };
+                //         result2.push(res[month])
+                //     }
+                //     res[month].sum += value.value
+                //     return res;
+                // }, {});
+
+                // for (let n in result) {
+                //     console.log('nnn', n);
+                //     console.log('result', result);
+                //     if (month === n) {
+                //         result[month] = { ...result[month], ...x.taskInformations }
+                //     } else {
+                //         result = {
+                //             ...result, [month]: { ...x.taskInformations }
+                //         };
+                //     }
+                // }
+
+
+            })
+            console.log(result);
+
+        }
+
+        // console.log('listTaskEvaluations', tasks.listTaskEvaluations);
         return (
             <React.Fragment>
                 <DialogModal
@@ -48,7 +112,7 @@ class TaskReportViewForm extends Component {
                     size={100}
                 >
                     {/* Modal Body */}
-                    <div className="row">
+                    {/* <div className="row">
                         {
                             (headTable) && headTable.map((x, key) => (
                                 <div key={key} className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
@@ -57,7 +121,7 @@ class TaskReportViewForm extends Component {
                             ))
 
                         }
-                    </div>
+                    </div> */}
                     <div className="form-inline">
                         <button id="exportButton" className="btn btn-sm btn-success " style={{ marginBottom: '10px' }}><span className="fa fa-file-excel-o"></span> Export to Excel</button>
                     </div>

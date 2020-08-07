@@ -8,7 +8,7 @@ const OrganizationalUnitService = require('../organizational-unit/organizational
  * Lấy danh sách tất cả user trong 1 công ty
  * @company id của công ty
  */
-exports.getUsers = async (company, query) => { 
+exports.getUsers = async (company, query) => {
     var page = query.page;
     var limit = query.limit;
     var name = query.name;
@@ -72,7 +72,7 @@ exports.getUsers = async (company, query) => {
 
             return users;
         }
-    } else if (unitId){
+    } else if (unitId) {
         return getAllUserInUnitAndItsSubUnits(company, unitId);
     }
 }
@@ -482,4 +482,13 @@ _getAllUsersInOrganizationalUnits = async (data) => {
         userArray.push(users);
     }
     return userArray;
+}
+
+exports.getAllUsersWithRole = async () => {
+    console.log
+    let users = await UserRole.find({})
+            .populate({ path: "userId", model: User, select: 'name email avatar' })
+
+       console.log(users)     
+    return users
 }

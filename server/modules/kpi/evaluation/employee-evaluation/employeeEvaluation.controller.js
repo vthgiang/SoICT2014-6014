@@ -142,7 +142,7 @@ exports.editStatusKpi = async (req, res) => {
 }
 
 /**
- * Lấy danh sách công việc theo id
+ * Lấy danh sách công việc theo kpiId
  */
 
 exports.getTasksByKpiId = async (req, res) => {

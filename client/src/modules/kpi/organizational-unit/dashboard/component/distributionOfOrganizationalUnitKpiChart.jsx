@@ -17,7 +17,9 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
 
         this.state = {
             currentRole: null,
-            dataStatus: this.DATA_STATUS.QUERYING
+            dataStatus: this.DATA_STATUS.QUERYING,
+
+            willUpdate: false
         };
     }
 
@@ -27,7 +29,9 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         this.setState(state => {
             return {
                 ...state,
-                currentRole: localStorage.getItem("currentRole")
+                currentRole: localStorage.getItem("currentRole"),
+                dataStatus: this.DATA_STATUS.QUERYING,
+                willUpdate: true
             }
         })
     }
@@ -40,6 +44,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.QUERYING,
+                    willUpdate: true
                 }
             });
 
@@ -53,6 +58,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.QUERYING,
+                    willUpdate: true
                 }
             });
 
@@ -71,15 +77,28 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
             });
 
             return false;
-        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
+        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
             this.pieChart();
 
             this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.FINISHED,
+                    willUpdate: false
                 };
             });
+        }
+
+        if (nextProps.createKpiUnit.currentKPI && this.state.dataStatus === this.DATA_STATUS.FINISHED) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.QUERYING,
+                    willUpdate: true
+                }
+            });
+
+            return false;
         }
 
         return false;
@@ -114,9 +133,12 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
 
     removePreviousChart() {
         const chart = this.refs.chart;
-        while (chart.hasChildNodes()) {
-            chart.removeChild(chart.lastChild);
-        }
+
+        if (chart) {
+            while (chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild);
+            }
+        } 
     }
 
     pieChart = () => {

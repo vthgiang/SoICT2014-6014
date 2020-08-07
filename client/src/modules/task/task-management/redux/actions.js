@@ -516,7 +516,6 @@ function getTaskEvaluations(data) {
         dispatch({ type: taskManagementConstants.GET_TASK_EVALUATION_REQUEST });
         taskManagementService.getTaskEvaluations(data)
             .then(res => {
-                console.log("res.data.content", res.data.content)
                 dispatch({
                     type: taskManagementConstants.GET_TASK_EVALUATION_SUCCESS,
                     payload: res.data.content

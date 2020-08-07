@@ -3,28 +3,30 @@ const RecommendProcure = require('../../../models/asset/recommendProcure.model')
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị
  */
-exports.searchRecommendProcures = async (data, company) => {
+exports.searchRecommendProcures = async (query, company) => {
+    const { recommendNumber, month, status, page, limit } = query;
+
     var keySearch = { company: company};
 
     // Bắt sựu kiện mã phiếu tìm kiếm khác ""
-    if (data.recommendNumber !== "") {
-        keySearch = { ...keySearch, recommendNumber: { $regex: data.recommendNumber, $options: "i" } }
+    if (recommendNumber) {
+        keySearch = { ...keySearch, recommendNumber: { $regex: recommendNumber, $options: "i" } }
     }
 
     //Bắt sựu kiện tháng tìm kiếm khác ""
-    if (data.month !== "" && data.month !== null) {
-        keySearch = { ...keySearch, dateCreate: { $regex: data.month, $options: "i" } }
+    if (month) {
+        keySearch = { ...keySearch, dateCreate: { $regex: month, $options: "i" } }
     }
 
     // Thêm key tìm kiếm phiếu theo trạng thái vào keySearch
-    if (data.status && data.status !== null) {
-        keySearch = { ...keySearch, status: { $in: data.status } };
+    if (status) {
+        keySearch = { ...keySearch, status: { $in: status } };
     };
 
     var totalList = await RecommendProcure.count(keySearch);
-    var listRecommendProcures = await RecommendProcure.find(keySearch).populate('proponent approver').sort({'createdAt': 'desc'}).skip(data.page).limit(data.limit);
-    return {totalList, listRecommendProcures};
-//
+    var listRecommendProcures = await RecommendProcure.find(keySearch).populate('proponent approver').sort({'createdAt': 'desc'}).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0);
+    
+    return { totalList, listRecommendProcures };
 }
 
 /**
@@ -38,10 +40,10 @@ exports.createRecommendProcure = async (data, company) => {
         company: company,
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
-        proponent: data.proponent, //người đề nghị
+        proponent: data.proponent, // Người đề nghị
         equipment: data.equipment,
         supplier: data.supplier,
-        approver: data.approver, // người phê duyệt
+        approver: data.approver, // Người phê duyệt
         total: data.total,
         unit: data.unit,
         estimatePrice: data.estimatePrice,
@@ -69,16 +71,17 @@ exports.updateRecommendProcure = async (id, data) => {
     var recommendProcureChange = {
         recommendNumber: data.recommendNumber,
         dateCreate: data.dateCreate,
-        proponent: data.proponent, //người đề nghị
+        proponent: data.proponent, // Người đề nghị
         equipment: data.equipment,
         supplier: data.supplier,
-        approver: data.approver, // người phê duyệt
+        approver: data.approver, // Người phê duyệt
         total: data.total,
         unit: data.unit,
         estimatePrice: data.estimatePrice,
         note: data.note,
         status: data.status,
     };
+
     // Cập nhật thông tin phiếu đề nghị mua sắm thiết bị vào database
     await RecommendProcure.findOneAndUpdate({
         _id: id
@@ -88,19 +91,4 @@ exports.updateRecommendProcure = async (id, data) => {
     return await RecommendProcure.findOne({
         _id: id
     })
-}
-
-// Kiểm tra sự tồn tại của mã phiếu
-exports.checkRecommendProcureExisted = async (recommendNumber, company) => {
-    var idRecommendNumber = await RecommendProcure.find({
-        recommendNumber: recommendNumber,
-        company: company
-    }, {
-        field1: 1
-    })
-    var checkRecommendNumber = false;
-    if (idRecommendNumber.length !== 0) {
-        checkRecommendNumber = true
-    }
-    return checkRecommendNumber;
 }

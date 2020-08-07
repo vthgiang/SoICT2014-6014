@@ -11,16 +11,20 @@ import { getStorage } from '../../../../config';
 import moment from 'moment'
 
 var currentTask;
-
+// var indexReRender = 0;
 class EvaluateByResponsibleEmployee extends Component {
     constructor(props) {
 
         super(props);
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
-        let date = this.formatDate(new Date());
+        // let date = this.formatDate(new Date());
+        let { date, evaluation, id } = this.props;
         let data = this.getData(date);
 
         this.state = {
+            errorInfo: {},
+            id: id,
             calcInfo: {},
             task: data.task,
             idUser: data.idUser,
@@ -30,33 +34,118 @@ class EvaluateByResponsibleEmployee extends Component {
             date: data.date,
             kpi: data.kpi,
             point: data.point,
-            progress: data.progress
+            progress: data.progress,
+            checkSave: data.checkSave,
+            prevDate: data.prevDate,
+            dentaDate: data.dentaDate,
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
+            indexReRender: 0,
         }
 
         currentTask = data;
     }
 
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.id !== prevState.id) {
+            return {
+                ...prevState,
+
+                id: nextProps.id,
+
+                errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
+                errorOnPoint: undefined,
+                errorOnInfoDate: undefined,
+                errorOnProgress: undefined,
+                errorInfo: {},
+            }
+        } else {
+            return null;
+        }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        let { task, idUser, dataStatus } = this.state;
+        if (nextProps.id !== this.state.id) {
+            let department = task.organizationalUnit._id;
+            let date = nextProps.date;
+            let data = this.getData(date);
+            this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, department, date);
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorInfo: {},
+                    id: nextProps.id,
+                    task: data.task,
+                    info: data.info,
+                    autoPoint: data.calcAuto,
+                    oldAutoPoint: data.autoPoint,
+                    date: date,
+                    kpi: data.kpi,
+                    point: data.point,
+                    progress: data.progress,
+                    checkSave: data.checkSave,
+                    prevDate: data.prevDate,
+                    dentaDate: data.dentaDate,
+                    indexReRender: state.indexReRender + 1,
+                }
+            });
+            return false;
+        }
+
+        // if(dataStatus === this.DATA_STATUS.QUERYING){
+        //     this.setState(state=>{
+        //         return {
+        //             ...state,
+        //             dataStatus: this.DATA_STATUS.FINISHED,
+        //         }
+        //     });
+        //     return true;
+        // }
+        return true;
+    }
+
     //  Hàm xử lý dữ liệu khởi tạo
     getData = (dateParam) => {
         let idUser = getStorage("userId");
+        let checkSave = false;
         let { task } = this.props;
-        let evaluations;
+        let date = dateParam;
+        let prevDate = this.formatDate(task.startDate);
+        let dentaDate = 0;
+        let evaluation, prevEval;
 
         let splitter = dateParam.split("-");
         let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+        let dateOfPrevEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+        var newMonth = dateOfPrevEval.getMonth() - 1;
+        if (newMonth < 0) {
+            newMonth += 12;
+            dateOfPrevEval.setYear(dateOfPrevEval.getYear() - 1);
+        }
+        dateOfPrevEval.setMonth(newMonth);
+
+        console.log('date', dateOfEval, dateOfPrevEval);
         let monthOfEval = dateOfEval.getMonth();
+        let monthOfPrevEval = dateOfPrevEval.getMonth();
         let yearOfEval = dateOfEval.getFullYear();
-        evaluations = task.evaluations.find(e => (monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()));
+        let yearOfPrevEval = dateOfPrevEval.getFullYear();
 
-        let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
+        evaluation = task.evaluations.find(e => (monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()));
 
-        let date = this.formatDate(new Date());
-        if (this.props.perform === "stop") {
-            date = this.formatDate(new Date());
+        prevEval = task.evaluations.find(e => ((monthOfPrevEval) === new Date(e.date).getMonth() && yearOfPrevEval === new Date(e.date).getFullYear()));
+        if (prevEval) {
+            prevDate = this.formatDate(prevEval.date);
         }
-        else if (this.props.perform === "evaluate") {
-            date = moment().endOf("month").format('DD-MM-YYYY');
-        }
+        let automaticPoint = (evaluation && evaluation.results.length !== 0) ? evaluation.results[0].automaticPoint : undefined;
+
+        // let date = this.formatDate(new Date());
+        // if (this.props.perform === "stop") {
+        //     date = this.formatDate(new Date());
+        // }
+        // else if (this.props.perform === "evaluate") {
+        //     date = moment().endOf("month").format('DD-MM-YYYY');
+        // }
 
         let point = undefined;
         let info = {};
@@ -67,7 +156,7 @@ class EvaluateByResponsibleEmployee extends Component {
             if (infoTask[i].type === "Date") {
                 if (infoTask[i].value) {
                     info[`${infoTask[i].code}`] = {
-                        value: this.formatDate(infoTask[i].value),
+                        // value: undefined,
                         code: infoTask[i].code,
                         type: infoTask[i].type
                     }
@@ -84,7 +173,7 @@ class EvaluateByResponsibleEmployee extends Component {
                 let splitSetOfValues = infoTask[i].extra.split('\n');
                 if (infoTask[i].value) {
                     info[`${infoTask[i].code}`] = {
-                        value: [infoTask[i].value],
+                        // value: undefined,
                         code: infoTask[i].code,
                         type: infoTask[i].type
                     }
@@ -100,7 +189,7 @@ class EvaluateByResponsibleEmployee extends Component {
             else {
                 if (infoTask[i].value) {
                     info[`${infoTask[i].code}`] = {
-                        value: infoTask[i].value,
+                        // value: undefined,
                         code: infoTask[i].code,
                         type: infoTask[i].type
                     }
@@ -108,14 +197,15 @@ class EvaluateByResponsibleEmployee extends Component {
             }
         }
 
-        let progress = task.progress;
-        if (evaluations) {
-            progress = evaluations.progress;
-            if (evaluations.results.length !== 0) {
-                let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Responsible"));
+        // let progress = task.progress;
+        let progress;
+        if (evaluation) {
+            progress = evaluation.progress;
+            if (evaluation.results.length !== 0) {
+                let res = evaluation.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Responsible"));
                 if (res) point = res.employeePoint ? res.employeePoint : undefined;
             }
-            let infoEval = evaluations.taskInformations;
+            let infoEval = evaluation.taskInformations;
             let chkHasInfo = false;
             for (let i in infoEval) {
                 if (infoEval[i].value !== undefined) {
@@ -172,19 +262,19 @@ class EvaluateByResponsibleEmployee extends Component {
                 }
             }
 
-            if (this.props.perform === "stop") {
-                if (chkHasInfo) {
-                    date = this.formatDate(evaluations.date);
-                }
-                else date = this.formatDate(new Date());
-            }
-            else if (this.props.perform === "evaluate") {
+            // if (this.props.perform === "stop") {
+            //     if (chkHasInfo) {
+            //         date = this.formatDate(evaluation.date);
+            //     }
+            //     else date = this.formatDate(new Date());
+            // }
+            // else if (this.props.perform === "evaluate") {
 
-                date = this.formatDate(evaluations.date);
+            //     date = this.formatDate(evaluation.date);
 
-            }
+            // }
 
-            let tmp = evaluations.kpis.find(e => (String(e.employee._id) === String(idUser)));
+            let tmp = evaluation.kpis.find(e => (String(e.employee._id) === String(idUser)));
             if (tmp) {
                 let kpi = tmp.kpis;
 
@@ -204,6 +294,9 @@ class EvaluateByResponsibleEmployee extends Component {
         let calcAuto = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
         if (isNaN(calcAuto)) calcAuto = undefined
 
+        dentaDate = Math.round(((new Date()).getTime() - dateOfEval.getTime()) / (1000 * 3600 * 24));
+        console.log('denta', dentaDate);
+
         return {
             task: task,
             idUser: idUser,
@@ -214,7 +307,110 @@ class EvaluateByResponsibleEmployee extends Component {
             date: date,
             progress: progress,
             calcAuto: calcAuto,
+            checkSave: checkSave,
+            prevDate: prevDate,
+            dentaDate: dentaDate,
         }
+    }
+
+    getInfo = (dateParam) => {
+        let info = {};
+        let checkSave = false;
+
+        let date = dateParam;
+        let evaluation;
+        let task = this.props.task;
+        let splitter = dateParam.split("-");
+        let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+        let monthOfEval = dateOfEval.getMonth();
+        let yearOfEval = dateOfEval.getFullYear();
+
+        evaluation = task.evaluations.find(e => (monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()));
+        let automaticPoint = (evaluation && evaluation.results.length !== 0) ? evaluation.results[0].automaticPoint : undefined;
+        let infoTask = task.taskInformations;
+
+        for (let i in infoTask) {
+            if (infoTask[i].type === "Date") {
+                if (infoTask[i].value) {
+                    info[`${infoTask[i].code}`] = {
+                        value: this.formatDate(infoTask[i].value),
+                        code: infoTask[i].code,
+                        type: infoTask[i].type
+                    }
+                }
+                else if (!infoTask[i].filledByAccountableEmployeesOnly) {
+                    info[`${infoTask[i].code}`] = {
+                        value: this.formatDate(Date.now()),
+                        code: infoTask[i].code,
+                        type: infoTask[i].type
+                    }
+                }
+            }
+            else if (infoTask[i].type === "SetOfValues") {
+                let splitSetOfValues = infoTask[i].extra.split('\n');
+                if (infoTask[i].value) {
+                    info[`${infoTask[i].code}`] = {
+                        value: [infoTask[i].value],
+                        code: infoTask[i].code,
+                        type: infoTask[i].type
+                    }
+                }
+                else if (!infoTask[i].filledByAccountableEmployeesOnly) {
+                    info[`${infoTask[i].code}`] = {
+                        value: [splitSetOfValues[0]],
+                        code: infoTask[i].code,
+                        type: infoTask[i].type
+                    }
+                }
+            }
+            else {
+                if (infoTask[i].value) {
+                    info[`${infoTask[i].code}`] = {
+                        value: infoTask[i].value,
+                        code: infoTask[i].code,
+                        type: infoTask[i].type
+                    }
+                }
+            }
+        }
+
+        let progress = task.progress;
+
+        let taskInfo = {
+            task: task,
+            progress: progress,
+            date: date,
+            info: info,
+        };
+
+        let calcAuto = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
+        if (isNaN(calcAuto)) calcAuto = undefined
+
+        return {
+            info: info,
+            autoPoint: automaticPoint,
+            progress: progress,
+            calcAuto: calcAuto,
+            checkSave: checkSave,
+        }
+    }
+
+    // hàm cập nhật thông tin 
+    updateInfo = async () => {
+        // indexReRender = indexReRender + 1;
+        let data = this.getInfo(this.state.date);
+        await this.setState(state => {
+            return {
+                ...state,
+
+                info: data.info,
+                autoPoint: data.calcAuto,
+                oldAutoPoint: data.autoPoint,
+                progress: data.progress,
+                checkSave: data.checkSave,
+                indexReRender: state.indexReRender + 1,
+            }
+        });
     }
 
     // Function format ngày hiện tại thành dạnh dd-mm-yyyy
@@ -234,7 +430,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
     componentDidMount() {
         let { task, idUser } = this.state;
-        let date = this.formatDate(new Date());
+        let { date } = this.props;
         let department = task.organizationalUnit._id;
 
         this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, department, date);
@@ -265,7 +461,31 @@ class EvaluateByResponsibleEmployee extends Component {
     }
 
     handleDateChange = (value) => {
+        // indexReRender = indexReRender + 1;
+        let { translate } = this.props; 
         let { idUser, task } = this.state;
+
+        let endOfMonth = new moment().endOf("month").toDate();
+        let startOfMonth = new moment().startOf("month").toDate();
+        let startDate = new Date(task.startDate);
+
+        let splitter = value.split('-');
+        let dateValue = new Date(splitter[2], splitter[1]-1, splitter[0]);
+
+        let de = (endOfMonth.getTime() - dateValue.getTime()); // < 0 -> err
+        let ds = (dateValue.getTime() - startOfMonth.getTime()); // < 0 -> err
+        let dst = (dateValue.getTime() - startDate.getTime()); // < 0 -> err
+
+        let err;
+        if (value.trim() === "") {
+            err = translate('task.task_perform.modal_approve_task.err_empty');
+        }
+        else if (dst < 0) {
+            err = 'Ngày đánh giá phải lớn hơn ngày bắt đầu';
+        }
+        else if (de < 0 || ds < 0){
+            err = "Ngày đánh giá phải là ngày trong tháng";
+        }
 
         let data = this.getData(value);
         this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, task.organizationalUnit._id, value);
@@ -284,7 +504,6 @@ class EvaluateByResponsibleEmployee extends Component {
         this.setState(state => {
             return {
                 ...state,
-                errorOnDate: this.validateDate(value),
                 date: value,
                 info: data.info,
                 kpi: data.kpi,
@@ -292,6 +511,10 @@ class EvaluateByResponsibleEmployee extends Component {
                 point: data.point,
                 oldAutoPoint: data.autoPoint,
                 progress: data.progress,
+                checkSave: data.checkSave,
+                errorOnDate: err,
+                // dataStatus: this.DATA_STATUS.QUERYING,
+                indexReRender: state.indexReRender + 1,
             }
         });
     }
@@ -328,9 +551,9 @@ class EvaluateByResponsibleEmployee extends Component {
                 code: name,
                 type: 'Number'
             }
+            state.errorInfo[name] = this.validateNumberInfo(value);
             return {
                 ...state,
-                errorOnNumberInfo: this.validateNumberInfo(value)
             }
         })
         await this.handleChangeAutoPoint();
@@ -345,9 +568,9 @@ class EvaluateByResponsibleEmployee extends Component {
                 code: name,
                 type: 'Text'
             }
+            state.errorInfo[name] = this.validateTextInfo(value);
             return {
                 ...state,
-                errorOnTextInfo: this.validateTextInfo(value)
             }
         })
     }
@@ -360,9 +583,9 @@ class EvaluateByResponsibleEmployee extends Component {
                 code: code,
                 type: 'Date'
             }
+            state.errorInfo[code] = this.validateDate(value);
             return {
                 ...state,
-                errorOnInfoDate: this.validateDate(value),
             }
         });
     }
@@ -479,6 +702,9 @@ class EvaluateByResponsibleEmployee extends Component {
 
     handleChangeAutoPoint = async () => {
         let automaticPoint = this.calcAutomaticPoint();
+        if (automaticPoint < 0) {
+            automaticPoint = 0;
+        };
         await this.setState(state => {
             return {
                 ...state,
@@ -496,6 +722,16 @@ class EvaluateByResponsibleEmployee extends Component {
             }
         });
         window.$(`#modal-automatic-point-info`).modal('show');
+    }
+
+    handleChangeSaveInfo = async (e) => {
+        let { checked } = e.target;
+        await this.setState(state => {
+            return {
+                ...state,
+                checkSave: checked,
+            }
+        });
     }
 
     formatRole = (data) => {
@@ -553,17 +789,17 @@ class EvaluateByResponsibleEmployee extends Component {
         if (title !== '' || description !== '') {
             this.props.addTaskLog({
                 createdAt: Date.now(),
-                
+
                 creator: getStorage("userId"),
                 title: title,
                 description: description,
-            }, this.props.id)
+            }, this.state.task._id)
         }
     }
 
     save = () => {
         let taskId;
-        taskId = this.props.id;
+        taskId = this.state.task._id;
         let data = {
             user: getStorage("userId"),
             progress: this.state.progress,
@@ -574,7 +810,7 @@ class EvaluateByResponsibleEmployee extends Component {
             kpi: this.state.kpi ? this.state.kpi : [],
             date: this.state.date,
             info: this.state.info,
-
+            checkSave: this.state.checkSave,
         }
 
         console.log('data', data, taskId);
@@ -583,30 +819,30 @@ class EvaluateByResponsibleEmployee extends Component {
         this.handleAddTaskLog();
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
-            return {
-                ...prevState,
+    checkNote = () => {
+        let { date } = this.props;
+        let splitter = date.split("-");
+        let isoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+        let now = new Date ();
 
-                id: nextProps.id,
-
-                errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
-                errorOnPoint: undefined,
-                errorOnInfoDate: undefined,
-                errorOnProgress: undefined,
-                errorOnInfoBoolean: undefined,
-                errorOnTextInfo: undefined,
-                errorOnNumberInfo: undefined
-            }
-        } else {
-            return null;
+        if(now.getMonth() === isoDate.getMonth() && now.getFullYear() === isoDate.getFullYear()) {
+            return false;
         }
+        return true
+    }
+
+    checkNullUndefined = (x) => {
+        if( x === null || x === undefined ) {
+            return false;
+        }
+        else return true;
     }
 
     render() {
         const { translate, KPIPersonalManager } = this.props;
-        const { task, point, oldAutoPoint, autoPoint, date, kpi, showAutoPointInfo } = this.state;
+        const { progress, info, task, point, oldAutoPoint, autoPoint, date, kpi, showAutoPointInfo, dentaDate, prevDate, indexReRender } = this.state;
         const { errorOnDate, errorOnPoint } = this.state;
+        const { role, id, perform } = this.props;
 
         let listKpi = [];
         if (KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
@@ -620,110 +856,141 @@ class EvaluateByResponsibleEmployee extends Component {
             && new Date(item.createdAt).getFullYear() === evaluationsDate.getFullYear()
         ))
 
+        let checkNoteMonth;
+        checkNoteMonth = this.checkNote();
+
+        let disabled = false;
+        if (checkNoteMonth && (dentaDate > 7)) {
+            disabled = true;
+        }
+
+        let disableSubmit = !this.isFormValidated();
+
         return (
             <React.Fragment>
-                <DialogModal
-                    modalID={`modal-evaluate-task-by-${this.props.role}-${this.props.id}-${this.props.perform}`}
-                    formID={`form-evaluate-task-by-${this.props.role}`}
-                    title={this.props.title}
-                    func={this.save}
-                    disableSubmit={!this.isFormValidated()}
-                    size={75}
-                    maxWidth={750}
-                >
-                    <form id={`form-evaluate-task-by-${this.props.role}`}>
-                        <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
-                            <label>{translate('task.task_management.evaluate_date')}:<span className="text-red">*</span></label>
-                            <DatePicker
-                                id={`create_date_${this.props.perform}`}
-                                value={date}
-                                onChange={this.handleDateChange}
-                            />
-                            <ErrorLabel content={errorOnDate} />
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                    <div className="row">
+                        <div className='col-md-8'>
+                            {checkNoteMonth && (dentaDate <= 7 && dentaDate > 0) && <p style={{color: "red"}}>{translate('task.task_management.note_eval')}{8 - dentaDate}.</p>}
+                            {checkNoteMonth && (dentaDate > 7) && <p style={{color: "red"}}>{translate('task.task_management.note_not_eval')}</p>}
                         </div>
-                        <div className="form-group">
-                            <label>{translate('task.task_management.detail_kpi')}:</label>
-                            {
-                                <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                    id={`select-kpi-personal-evaluate-${this.props.perform}-${this.props.role}`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={((KPIPersonalManager && KPIPersonalManager.kpiSets) ? KPIPersonalManager.kpiSets.kpis : []).map(x => { return { value: x._id, text: x.name } })}
-                                    onChange={this.handleKpiChange}
-                                    multiple={true}
-                                    value={kpi}
-                                />
-                            }
-                        </div>
-                        <div>
-                            <TaskInformationForm
-                                task={task && task}
-
-                                handleChangeProgress={this.handleChangeProgress}
-                                handleInfoBooleanChange={this.handleInfoBooleanChange}
-                                handleInfoDateChange={this.handleInfoDateChange}
-                                handleSetOfValueChange={this.handleSetOfValueChange}
-                                handleChangeNumberInfo={this.handleChangeNumberInfo}
-                                handleChangeTextInfo={this.handleChangeTextInfo}
-
-                                role={this.props.role}
-                                perform={this.props.perform}
-                                value={this.state}
-                            />
-
-                        </div>
-                        <div>
-                            <strong>{translate('task.task_management.detail_auto_point')}: &nbsp;
-                            <a style={{ cursor: "pointer" }} id={`autoPoint-${this.props.perform}`} onClick={() => this.handleShowAutomaticPointInfo()}>
-                                    {autoPoint !== undefined ? autoPoint : translate('task.task_management.detail_not_calc_auto_point')}
-                                </a>
-                            </strong>
-                            <br />
-                            <br />
-                            <strong>{translate('task.task_management.detail_auto_on_system')}: &nbsp;
-                            <a style={{ color: "black" }}>
-                                    {oldAutoPoint ? oldAutoPoint : translate('task.task_management.detail_not_calc_auto_point')}
-                                </a>
-                            </strong>
-                            <br />
-                            <br />
-                            <strong>{translate('task.task_management.action_not_rating')}: &nbsp; </strong>
-                            <ul>
-                                {actionsNotRating.length === 0 ? <li>{translate('task.task_management.no_action')}.</li> :
-                                    actionsNotRating.map((item, index) => {
-                                        return <li key={index}>
-                                            {item.description}
-                                        </li>
-                                    })
-                                }
-                            </ul>
-
-                            {
-                                showAutoPointInfo === 1 &&
-                                <ModalShowAutoPointInfo
-                                    task={this.state.task}
-                                    progress={this.state.progress}
-                                    date={this.state.date}
-                                    info={this.state.info}
-                                    autoPoint={autoPoint}
-                                />
-                            }
-                            <br />
-                            <div className={`form-group ${errorOnPoint === undefined ? "" : "has-error"}`}>
-                                <label>{translate('task.task_management.detail_emp_point')} (<span style={{ color: "red" }}>*</span>)</label>
-                                <input
-                                    className="form-control"
-                                    type="number"
-                                    name="point"
-                                    placeholder={translate('task.task_management.enter_emp_point')}
-                                    onChange={this.handleChangePoint}
-                                    value={point}
-                                />
-                                <ErrorLabel content={errorOnPoint} />
+                        {!(checkNoteMonth && (dentaDate > 7)) &&
+                            <div style={{ justifyContent: "flex-end", display: "flex" }} className='col-md-4'>
+                                <button disabled={disabled} style={{ marginRight: "5px" }} className="btn btn-primary" onClick={this.updateInfo}>{translate('task.task_management.btn_get_info')}</button>
+                                <button disabled={disabled || disableSubmit} className="btn btn-success" onClick={this.save}>{translate('task.task_management.btn_save_eval')}</button>
                             </div>
-                        </div>
-                    </form>
-                </DialogModal>
+                        }
+                    </div>
+                    <div>
+                        <form id={`form-evaluate-task-by-${role}`}>
+                            <div className="row">
+                                <div className="col-md-6">
+                                    <strong>{ translate('task.task_management.eval_from') }:</strong> <br/>&nbsp;{prevDate}
+                                </div>
+                                <div className={`form-group col-md-6 ${errorOnDate === undefined ? "" : "has-error"}`}>
+                                    {/* <label>{translate('task.task_management.evaluate_date')}:<span className="text-red">*</span></label> */}
+                                    <label>{translate('task.task_management.eval_to')}:<span className="text-red">*</span></label>
+                                    <DatePicker
+                                        id={`create_date_${id}_${perform}`}
+                                        value={date}
+                                        onChange={this.handleDateChange}
+                                        disabled={disabled} 
+                                    />
+                                    <ErrorLabel content={errorOnDate} />
+                                </div>
+                            </div>
+                            <div className="form-group">
+                                <label>{translate('task.task_management.detail_kpi')}:</label>
+                                {
+                                    <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                        id={`select-kpi-personal-evaluate-${perform}-${role}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={((KPIPersonalManager && KPIPersonalManager.kpiSets) ? KPIPersonalManager.kpiSets.kpis : []).map(x => { return { value: x._id, text: x.name } })}
+                                        onChange={this.handleKpiChange}
+                                        multiple={true}
+                                        value={kpi}
+                                        disabled={disabled} 
+                                    />
+                                }
+                            </div>
+                            <div>
+                                <TaskInformationForm
+                                    task={task && task}
+
+                                    handleChangeProgress={this.handleChangeProgress}
+                                    handleInfoBooleanChange={this.handleInfoBooleanChange}
+                                    handleInfoDateChange={this.handleInfoDateChange}
+                                    handleSetOfValueChange={this.handleSetOfValueChange}
+                                    handleChangeNumberInfo={this.handleChangeNumberInfo}
+                                    handleChangeTextInfo={this.handleChangeTextInfo}
+                                    handleChangeSaveInfo={this.handleChangeSaveInfo}
+                                    
+                                    indexReRender={indexReRender}
+
+                                    disabled={disabled} 
+                                    role={role}
+                                    perform={perform}
+                                    id={id}
+                                    value={this.state}
+                                />
+
+                            </div>
+                            <div>
+                                <strong>{translate('task.task_management.detail_auto_point')}: &nbsp;
+                                <a style={{ cursor: "pointer" }} id={`autoPoint-${perform}`} onClick={() => this.handleShowAutomaticPointInfo()}>
+                                        {this.checkNullUndefined(autoPoint) ? autoPoint : translate('task.task_management.detail_not_calc_auto_point')}
+                                    </a>
+                                </strong>
+                                <br />
+                                <br />
+                                <strong>{translate('task.task_management.detail_auto_on_system')}: &nbsp;
+                            <a style={{ color: "black" }}>
+                                        {this.checkNullUndefined(oldAutoPoint) ? oldAutoPoint : translate('task.task_management.detail_not_calc_auto_point')}
+                                    </a>
+                                </strong>
+                                <br />
+                                <br />
+                                <strong>{translate('task.task_management.action_not_rating')}: &nbsp; </strong>
+                                <ul>
+                                    {actionsNotRating.length === 0 ? <li>{translate('task.task_management.no_action')}.</li> :
+                                        actionsNotRating.map((item, index) => {
+                                            return <li key={index}>
+                                                {item.description}
+                                            </li>
+                                        })
+                                    }
+                                </ul>
+
+                                {
+                                    showAutoPointInfo === 1 &&
+                                    <ModalShowAutoPointInfo
+                                        task={task}
+                                        progress={progress}
+                                        date={date}
+                                        info={info}
+                                        autoPoint={autoPoint}
+                                    />
+                                }
+                                <br />
+                                <div className={`form-group ${errorOnPoint === undefined ? "" : "has-error"}`}>
+                                    <label>{translate('task.task_management.detail_emp_point')} (<span style={{ color: "red" }}>*</span>)</label>
+                                    <input
+                                        className="form-control"
+                                        type="number"
+                                        name="point"
+                                        placeholder={translate('task.task_management.enter_emp_point')}
+                                        onChange={this.handleChangePoint}
+                                        value={this.checkNullUndefined(point) ? point : ''}
+                                        disabled={disabled} 
+                                    />
+                                    <ErrorLabel content={errorOnPoint} />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {/* </DialogModal> */}
             </React.Fragment>
         );
     }

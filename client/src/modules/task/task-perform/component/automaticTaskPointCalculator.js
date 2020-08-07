@@ -22,7 +22,7 @@ function calcAutoPoint(data) {
     let { task, date, progress, info } = data;
 
     let splitter = date.split('-');
-    let progressTask = progress;
+    let progressTask = progress ? progress : undefined;
     let evaluationsDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
     let startDate = new Date(task.startDate);
     let endDate = new Date(task.endDate);
@@ -51,7 +51,7 @@ function calcAutoPoint(data) {
     let reduceAction = actionRating.reduce( (accumulator, currentValue) => accumulator + currentValue, 0);
     reduceAction = reduceAction > 0 ? reduceAction : 0;
 
-    let averageActionRating = reduceAction/a;
+    let averageActionRating = a ? 10 : reduceAction/a;
     let autoHasActionInfo = progress/(dayUsed/totalDay) - 0.5*(10-averageActionRating)*10;
     let automaticPoint = 0;
 
@@ -85,6 +85,7 @@ function calcAutoPoint(data) {
             formula = formula.replace(regex, undefined);
         }
 
+        // automaticPoint = 1;
         automaticPoint = eval(formula);
     }
     

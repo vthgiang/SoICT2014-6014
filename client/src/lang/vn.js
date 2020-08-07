@@ -2,9 +2,6 @@ export default {
     locale: 'vn',
     messages: {
         error: {
-            email_does_not_exist: 'Email này đã được sử dụng',
-            field_invalid: 'Trường nhập vào không hợp lệ',
-
             /** 
              * Start 
              * Chức năng quản lý nhân sự, xoá sau
@@ -134,6 +131,8 @@ export default {
         auth: {
             validator: {
                 confirm_password_invalid: 'Mật khẩu không trùng khớp. Vui lòng kiểm tra lại',
+                password_length_error: 'Mật khẩu phải có độ dài tối thiểu 6 và không quá 30 ký tự',
+                confirm_password_error: 'Mật khẩu xác thực không khớp'
             },
             security: {
                 label: 'Bảo mật',
@@ -626,8 +625,9 @@ export default {
             manage_document: 'Quản lý tài liệu',
             documents: 'Tài liệu văn bản',
 
+            customer: 'Khách hàng',
+
             task_template: 'Mẫu Công Việc',
-            cocautochuc: 'Cơ Cấu Tổ Chức',
             taskmanagement: 'Quản Lý Công Việc',
             manageDocument: 'Quản lý văn bản',
             manageDocumentType: 'Quản lý loại văn bản',
@@ -1835,6 +1835,22 @@ export default {
                 calc_where: 'Trong đó',
                 calc_no_value: 'Chưa có giá trị',
                 calc_nan: 'Không tính được',
+                explain: ' - (Giá trị âm sẽ được tính là 0)',
+                eval_list: 'Danh sách các lần đánh giá',
+                title_eval: 'Đánh giá công việc',
+
+                btn_save_eval: 'Lưu đánh giá',
+                btn_get_info: 'Lấy thông tin',
+                note_not_eval: 'Bạn không thể chỉnh sửa đánh giá nữa vì đã quá 7 ngày sau lần đánh giá cuối cùng.',
+                note_eval: 'Số ngày còn lại để chỉnh sửa đánh giá: ',
+                
+                add_eval_of_this_month: 'Thêm đánh giá tháng này',
+                eval_of: 'Đánh giá tháng',
+                eval_from: 'Đánh giá từ ngày',
+                eval_to: 'Đến ngày',
+                store_info: 'Lưu công việc ra thông tin chung',
+                bool_yes: 'Đúng',
+                bool_no: 'Sai',
 
                 dashboard_created: 'Đã tạo',
                 dashboard_need_perform: 'Cần thực hiện',

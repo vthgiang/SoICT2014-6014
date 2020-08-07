@@ -42,6 +42,7 @@ class TaskReportDetailForm extends Component {
                 formID="modal-detail-taskreport"
                 title="Xem chi tiết báo cáo"
                 hasSaveButton={false}
+                hasNote={false}
             >
                 <TaskReportViewForm />
                 <div className="row" >

@@ -26,6 +26,9 @@ function getAll(data) {
             employeeNumber: data !== undefined ? data.employeeNumber : data,
             gender: data !== undefined ? data.gender : data,
             status: data !== undefined ? data.status : data,
+            endDateOfContract: data !== undefined ? data.endDateOfContract : data,
+            birthdate: data !== undefined ? data.birthdate : data,
+            typeOfContract: data !== undefined ? data.typeOfContract : data,
             page: data !== undefined ? data.page : data,
             limit: data !== undefined ? data.limit : data
         }

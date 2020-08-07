@@ -44,7 +44,7 @@ const RecommendDistributeSchema = new Schema({
     note: { //ghi chú
         type: String
     },
-    status: {//trạng thái, tình trạng: chờ phê duyệt || không chấp nhận || đã chấp nhận
+    status: { //trạng thái, tình trạng: chờ phê duyệt || không chấp nhận || đã chấp nhận
         type: String
     },
     createdAt: {

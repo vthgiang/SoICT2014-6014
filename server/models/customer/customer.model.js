@@ -16,8 +16,7 @@ const CustomerSchema = new Schema({
         required: true
     },
     address: { // địa chỉ liên lạc
-        type: String,
-        required: true
+        type: String
     },
     location: { // khu vực
         type: Schema.Types.ObjectId,
@@ -31,7 +30,7 @@ const CustomerSchema = new Schema({
         ref: 'customer_groups'
     },
     birth: { // ngày sinh
-        type: String
+        type: Date
     },
     gender: { // giới tính
         type: String
@@ -40,13 +39,13 @@ const CustomerSchema = new Schema({
         type: String,
     },
     documents: [{ // các tài liệu liên quan đến khách hàng
-        type: 'String',
+        type: Schema.Types.ObjectId,
+        ref: 'documents'
     }],
-    liabilites: { // công nợ khách hàng
-        type: Number,
-        default: 0,
-        required: true
-    },
+    liabilities: [{ // công nợ khách hàng
+        type: Schema.Types.ObjectId,
+        ref: 'customer_liabilities'
+    }],
     loyal: { // khách hàng thân thiết
         type: Boolean,
         default: false
