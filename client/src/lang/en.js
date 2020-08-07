@@ -413,10 +413,13 @@ export default {
             effective_date: 'Effective date',
             expired_date: 'Expired date',
             views: 'Views',
+            viewer: 'Viewer',
+            downloader: "Downloader",
             downloads: 'Downloads',
             add: 'Add document',
             edit: 'Edit document',
             view: 'View document',
+            time: "Time",
             delete: 'Delete document',
             add_version: 'Add document version',
             upload_file: 'Upload file',
@@ -2447,7 +2450,7 @@ export default {
             }
         },
 
-        manage_warehouse:{
+        manage_warehouse: {
             material_manager: {
                 index: 'Index',
                 add: 'Add material',
