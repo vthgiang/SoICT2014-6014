@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import UserDocumentsData from './documents';
 import DocumentUserHistoryStatistics from './history-statistics';
 import DocumentDownloaded from './history-statistics/documentDownloaded';
-import DocumentCommon from './history-statistics/documentCommon1';
+import DocumentCommon from './history-statistics/documentCommon';
 import DocumentNew from './history-statistics/documentNew';
 
 class Document extends Component {
