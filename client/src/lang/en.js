@@ -1618,7 +1618,7 @@ export default {
                 detail_acc_point: 'Approve point',
                 detail_not_auto: 'Unset automatic point',
                 detail_not_emp: 'Unset employee point',
-                detail_not_acc: 'Unset accountable po',
+                detail_not_acc: 'Unset accountable point',
 
                 detail_not_eval_on_month: 'Not evaluate this month',
                 detail_not_eval: 'Nobody evaluate this month',

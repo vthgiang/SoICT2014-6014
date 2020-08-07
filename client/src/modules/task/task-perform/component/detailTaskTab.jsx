@@ -6,9 +6,6 @@ import { taskManagementActions } from './../../task-management/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { ModalEditTaskByResponsibleEmployee } from './modalEditTaskByResponsibleEmployee';
 import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployee';
-import { EvaluateByAccountableEmployee } from './evaluateByAccountableEmployee';
-import { EvaluateByConsultedEmployee } from './evaluateByConsultedEmployee';
-import { EvaluateByResponsibleEmployee } from './evaluateByResponsibleEmployee';
 import { EvaluationModal } from './evaluationModal';
 import { getStorage } from '../../../../config';
 
@@ -514,37 +511,6 @@ class DetailTaskTab extends Component {
                         perform={`edit-${currentRole}`}
                     />
                 }
-
-                {/* {
-                    (id && showEvaluate === id && currentRole === "responsible") &&
-                    <EvaluateByResponsibleEmployee
-                        id={id}
-                        task={task && task}
-                        role={currentRole}
-                        title={translate('task.task_management.detail_resp_eval')}
-                        perform='evaluate'
-                    />
-                } */}
-                {/* {
-                    (id && showEvaluate === id && currentRole === "accountable") &&
-                    <EvaluateByAccountableEmployee
-                        id={id}
-                        task={task && task}
-                        role={currentRole}
-                        title={translate('task.task_management.detail_acc_eval')}
-                        perform='evaluate'
-                    />
-                }
-                {
-                    (id && showEvaluate === id && currentRole === "consulted") &&
-                    <EvaluateByConsultedEmployee
-                        id={id}
-                        task={task && task}
-                        role={currentRole}
-                        title={translate('task.task_management.detail_cons_eval')}
-                        perform='evaluate'
-                    />
-                } */}
                 
                 {
                     (id && showEvaluate === id) &&
@@ -558,36 +524,6 @@ class DetailTaskTab extends Component {
                 }
 
 
-                {/* {
-                    (id && showEndTask === id && currentRole === "responsible") &&
-                    <EvaluateByResponsibleEmployee
-                        id={id}
-                        task={task && task}
-                        role={currentRole}
-                        title={translate('task.task_management.detail_resp_stop')}
-                        perform='stop'
-                    />
-                }
-                {
-                    (id && showEndTask === id && currentRole === "accountable") &&
-                    <EvaluateByAccountableEmployee
-                        id={id}
-                        task={task && task}
-                        role={currentRole}
-                        title={translate('task.task_management.detail_acc_stop')}
-                        perform='stop'
-                    />
-                }
-                {
-                    (id && showEndTask === id && currentRole === "consulted") &&
-                    <EvaluateByConsultedEmployee
-                        id={id}
-                        task={task && task}
-                        role={currentRole}
-                        title={translate('task.task_management.detail_cons_stop')}
-                        perform='stop'
-                    />
-                } */}
             </React.Fragment>
         );
     }
