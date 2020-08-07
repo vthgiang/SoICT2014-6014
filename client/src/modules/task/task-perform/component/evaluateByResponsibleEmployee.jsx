@@ -11,17 +11,19 @@ import { getStorage } from '../../../../config';
 import moment from 'moment'
 
 var currentTask;
-
+// var indexReRender = 0;
 class EvaluateByResponsibleEmployee extends Component {
     constructor(props) {
 
         super(props);
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         // let date = this.formatDate(new Date());
         let { date, evaluation, id } = this.props;
         let data = this.getData(date);
 
         this.state = {
+            errorInfo: {},
             id: id,
             calcInfo: {},
             task: data.task,
@@ -36,6 +38,8 @@ class EvaluateByResponsibleEmployee extends Component {
             checkSave: data.checkSave,
             prevDate: data.prevDate,
             dentaDate: data.dentaDate,
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
+            indexReRender: 0,
         }
 
         currentTask = data;
@@ -52,9 +56,7 @@ class EvaluateByResponsibleEmployee extends Component {
                 errorOnPoint: undefined,
                 errorOnInfoDate: undefined,
                 errorOnProgress: undefined,
-                errorOnInfoBoolean: undefined,
-                errorOnTextInfo: undefined,
-                errorOnNumberInfo: undefined
+                errorInfo: {},
             }
         } else {
             return null;
@@ -62,8 +64,8 @@ class EvaluateByResponsibleEmployee extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
+        let { task, idUser, dataStatus } = this.state;
         if (nextProps.id !== this.state.id) {
-            let { task, idUser } = this.state;
             let department = task.organizationalUnit._id;
             let date = nextProps.date;
             let data = this.getData(date);
@@ -72,6 +74,7 @@ class EvaluateByResponsibleEmployee extends Component {
             this.setState(state => {
                 return {
                     ...state,
+                    errorInfo: {},
                     id: nextProps.id,
                     task: data.task,
                     info: data.info,
@@ -84,11 +87,22 @@ class EvaluateByResponsibleEmployee extends Component {
                     checkSave: data.checkSave,
                     prevDate: data.prevDate,
                     dentaDate: data.dentaDate,
+                    indexReRender: state.indexReRender + 1,
                 }
             });
             return false;
         }
-        else return true;
+
+        // if(dataStatus === this.DATA_STATUS.QUERYING){
+        //     this.setState(state=>{
+        //         return {
+        //             ...state,
+        //             dataStatus: this.DATA_STATUS.FINISHED,
+        //         }
+        //     });
+        //     return true;
+        // }
+        return true;
     }
 
     //  Hàm xử lý dữ liệu khởi tạo
@@ -111,7 +125,6 @@ class EvaluateByResponsibleEmployee extends Component {
         }
         dateOfPrevEval.setMonth(newMonth);
 
-        console.log('date', dateOfEval, dateOfPrevEval);
         let monthOfEval = dateOfEval.getMonth();
         let monthOfPrevEval = dateOfPrevEval.getMonth();
         let yearOfEval = dateOfEval.getFullYear();
@@ -383,15 +396,18 @@ class EvaluateByResponsibleEmployee extends Component {
 
     // hàm cập nhật thông tin 
     updateInfo = async () => {
+        // indexReRender = indexReRender + 1;
         let data = this.getInfo(this.state.date);
         await this.setState(state => {
             return {
                 ...state,
+
                 info: data.info,
                 autoPoint: data.calcAuto,
                 oldAutoPoint: data.autoPoint,
                 progress: data.progress,
                 checkSave: data.checkSave,
+                indexReRender: state.indexReRender + 1,
             }
         });
     }
@@ -444,7 +460,31 @@ class EvaluateByResponsibleEmployee extends Component {
     }
 
     handleDateChange = (value) => {
+        // indexReRender = indexReRender + 1;
+        let { translate } = this.props; 
         let { idUser, task } = this.state;
+
+        let endOfMonth = new moment().endOf("month").toDate();
+        let startOfMonth = new moment().startOf("month").toDate();
+        let startDate = new Date(task.startDate);
+
+        let splitter = value.split('-');
+        let dateValue = new Date(splitter[2], splitter[1]-1, splitter[0]);
+
+        let de = (endOfMonth.getTime() - dateValue.getTime()); // < 0 -> err
+        let ds = (dateValue.getTime() - startOfMonth.getTime()); // < 0 -> err
+        let dst = (dateValue.getTime() - startDate.getTime()); // < 0 -> err
+
+        let err;
+        if (value.trim() === "") {
+            err = translate('task.task_perform.modal_approve_task.err_empty');
+        }
+        else if (dst < 0) {
+            err = 'Ngày đánh giá phải lớn hơn ngày bắt đầu';
+        }
+        else if (de < 0 || ds < 0){
+            err = "Ngày đánh giá phải là ngày trong tháng";
+        }
 
         let data = this.getData(value);
         this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, task.organizationalUnit._id, value);
@@ -463,7 +503,6 @@ class EvaluateByResponsibleEmployee extends Component {
         this.setState(state => {
             return {
                 ...state,
-                errorOnDate: this.validateDate(value),
                 date: value,
                 info: data.info,
                 kpi: data.kpi,
@@ -472,6 +511,9 @@ class EvaluateByResponsibleEmployee extends Component {
                 oldAutoPoint: data.autoPoint,
                 progress: data.progress,
                 checkSave: data.checkSave,
+                errorOnDate: err,
+                // dataStatus: this.DATA_STATUS.QUERYING,
+                indexReRender: state.indexReRender + 1,
             }
         });
     }
@@ -508,9 +550,9 @@ class EvaluateByResponsibleEmployee extends Component {
                 code: name,
                 type: 'Number'
             }
+            state.errorInfo[name] = this.validateNumberInfo(value);
             return {
                 ...state,
-                errorOnNumberInfo: this.validateNumberInfo(value)
             }
         })
         await this.handleChangeAutoPoint();
@@ -525,9 +567,9 @@ class EvaluateByResponsibleEmployee extends Component {
                 code: name,
                 type: 'Text'
             }
+            state.errorInfo[name] = this.validateTextInfo(value);
             return {
                 ...state,
-                errorOnTextInfo: this.validateTextInfo(value)
             }
         })
     }
@@ -540,9 +582,9 @@ class EvaluateByResponsibleEmployee extends Component {
                 code: code,
                 type: 'Date'
             }
+            state.errorInfo[code] = this.validateDate(value);
             return {
                 ...state,
-                errorOnInfoDate: this.validateDate(value),
             }
         });
     }
@@ -797,7 +839,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
     render() {
         const { translate, KPIPersonalManager } = this.props;
-        const { progress, info, task, point, oldAutoPoint, autoPoint, date, kpi, showAutoPointInfo, dentaDate, prevDate } = this.state;
+        const { progress, info, task, point, oldAutoPoint, autoPoint, date, kpi, showAutoPointInfo, dentaDate, prevDate, indexReRender } = this.state;
         const { errorOnDate, errorOnPoint } = this.state;
         const { role, id, perform } = this.props;
 
@@ -882,6 +924,8 @@ class EvaluateByResponsibleEmployee extends Component {
                                     handleChangeNumberInfo={this.handleChangeNumberInfo}
                                     handleChangeTextInfo={this.handleChangeTextInfo}
                                     handleChangeSaveInfo={this.handleChangeSaveInfo}
+                                    
+                                    indexReRender={indexReRender}
 
                                     disabled={disabled} 
                                     role={role}

@@ -25,7 +25,6 @@ class EmployeeCreatePage extends Component {
                 educationalLevel: "12/12",
                 professionalSkill: "unavailable",
                 status: 'active',
-                startingDate: this.formatDate2(Date.now()),
                 identityCardDate: this.formatDate2(Date.now()),
                 birthdate: this.formatDate2(Date.now()),
                 taxDateOfIssue: this.formatDate2(Date.now()),
@@ -198,7 +197,6 @@ class EmployeeCreatePage extends Component {
     }
 
     render() {
-        console.log(this.state);
         const { translate } = this.props;
         return (
             <div className=" qlcv">

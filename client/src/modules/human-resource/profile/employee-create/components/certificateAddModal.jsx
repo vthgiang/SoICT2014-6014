@@ -93,49 +93,59 @@ class CertificateAddModal extends Component {
     }
     // Bắt sự kiện thay đổi ngày có hiệu lực
     handleStartDateChange = (value) => {
-        this.validateStartDateCertificate(value, true);
-    }
-    validateStartDateCertificate = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateStartDateCertificate(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnStartDate: msg,
-                    startDate: value,
-                }
-            });
+        let { errorOnEndDate, endDate } = this.state;
+        let errorOnStartDate;
+        let partValue = value.split('-');
+        let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
+
+        let partEndDate = endDate.split('-');
+        let d = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
+
+        if (date.getTime() > d.getTime()) {
+            errorOnStartDate = "Ngày cấp phải trước ngày hết hạn";
+        } else {
+            errorOnEndDate = errorOnEndDate === 'Ngày hết hạn phải sau ngày cấp' ? undefined : errorOnEndDate
         }
-        return msg === undefined;
+        this.setState({
+            startDate: value,
+            errorOnStartDate: errorOnStartDate,
+            errorOnEndDate: errorOnEndDate
+        })
     }
 
     // Bắt sự kiện thay đổi ngày hết hiệu lực
     handleEndDateChange = (value) => {
-        this.validateEndDateCertificate(value, true);
-    }
-    validateEndDateCertificate = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateEndDateCertificate(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnEndDate: msg,
-                    endDate: value,
-                }
-            });
+        let { startDate, errorOnStartDate } = this.state;
+        let partValue = value.split('-');
+        let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
+
+        let partStartDate = startDate.split('-');
+        let d = new Date([partStartDate[2], partStartDate[1], partStartDate[0]].join('-'));
+        let errorOnEndDate;
+        if (d.getTime() > date.getTime()) {
+            errorOnEndDate = "Ngày hết hạn phải sau ngày cấp";
+        } else {
+            errorOnStartDate = errorOnStartDate === 'Ngày cấp phải trước ngày hết hạn' ? undefined : errorOnStartDate
         }
-        return msg === undefined;
+        this.setState({
+            endDate: value,
+            errorOnStartDate: errorOnStartDate,
+            errorOnEndDate: errorOnEndDate
+        })
     }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result =
-            this.validateNameCertificate(this.state.name, false) &&
-            this.validateIssuedByCertificate(this.state.issuedBy, false) &&
-            this.validateStartDateCertificate(this.state.startDate, false) &&
-            this.validateEndDateCertificate(this.state.endDate, false);
-        return result;
+        let result = this.validateNameCertificate(this.state.name, false) && this.validateIssuedByCertificate(this.state.issuedBy, false);
+        let partStart = this.state.startDate.split('-');
+        let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
+        let partEnd = this.state.endDate.split('-');
+        let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        if (new Date(startDate).getTime() <= new Date(endDate).getTime()) {
+            return result;
+        } else return false;
     }
+
     // Bắt sự kiện submit form
     save = async () => {
         var partStart = this.state.startDate.split('-');
@@ -143,7 +153,7 @@ class CertificateAddModal extends Component {
         var partEnd = this.state.endDate.split('-');
         var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         if (this.isFormValidated()) {
-            return this.props.handleChange({...this.state, startDate: startDate, endDate: endDate});
+            return this.props.handleChange({ ...this.state, startDate: startDate, endDate: endDate });
         }
     }
     render() {
@@ -175,6 +185,7 @@ class CertificateAddModal extends Component {
                                 <label>{translate('manage_employee.date_issued')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`add-start-date-${id}`}
+                                    deleteValue={false}
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
@@ -184,6 +195,7 @@ class CertificateAddModal extends Component {
                                 <label>{translate('manage_employee.end_date_certificate')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`add-end-date-${id}`}
+                                    deleteValue={false}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />

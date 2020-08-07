@@ -44,7 +44,15 @@ class CustomerManagement extends Component {
                 </div>
                 <a type="button" className="btn btn-primary pull-right" style={{marginRight: '2px'}}>Xuất file</a>
                 {
-                    <CustomerEdit/>
+                    currentRow !== undefined &&
+                    <CustomerEdit
+                        customerId={currentRow._id}
+                        customerName={currentRow.name}
+                        customerCode={currentRow.code}
+                        customerPhone={currentRow.phone}
+                        customerEmail={currentRow.email}
+                        customerGroup={currentRow.group._id}
+                    />
                 }
                 {
                     currentRow !== undefined &&
@@ -75,6 +83,8 @@ class CustomerManagement extends Component {
                             <th>Mã khách hàng</th>
                             <th>Số điện thoại</th>
                             <th>Khu vực</th>
+                            <th>Email</th>
+                            <th>Nhóm khách hàng</th>
                             <th style={{ width: '120px', textAlign: 'center' }}>
                                 {translate('table.action')}
                                 <DataTableSetting
@@ -102,9 +112,11 @@ class CustomerManagement extends Component {
                                         <td> {customer.code} </td>
                                         <td> {customer.phone} </td>
                                         <td> {customer.location ? customer.location.name : null} </td>
+                                        <td> {customer.email} </td>
+                                        <td> {customer.group ? customer.group.name : null} </td>
                                         <td style={{ textAlign: 'center' }}>
                                             <a className="text-green" onClick={() => this.handleInformation(customer)}><i className="material-icons">visibility</i></a>
-                                            <a className="edit" onClick={this.handleEdit}><i className="material-icons">edit</i></a>
+                                            <a className="edit" onClick={()=>this.handleEdit(customer)}><i className="material-icons">edit</i></a>
                                             <a className="text-red"><i className="material-icons">delete</i></a>
                                         </td>
                                     </tr>
@@ -168,7 +180,10 @@ class CustomerManagement extends Component {
         window.$("#modal-customer-import").modal('show');
     }
 
-    handleEdit = () => {
+    handleEdit = async (customer) => {
+        await this.setState({
+            currentRow: customer
+        })
         window.$("#modal-edit-customer").modal('show');
     }
 

@@ -48,51 +48,63 @@ class ModalEditExperience extends Component {
     }
     // Function lưu thay đổi "từ tháng/năm" vào state
     handleStartDateChange = (value) => {
-        this.validateExperienceStartDate(value, true)
-    }
-    validateExperienceStartDate = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateExperienceStartDate(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnStartDate: msg,
-                    startDate: value,
-                }
-            });
+        let { errorOnEndDate, endDate } = this.state;
+        let errorOnStartDate;
+        let partValue = value.split('-');
+        let date = new Date([partValue[1], partValue[0], 1].join('-'));
+
+        let partEndDate = endDate.split('-');
+        let d = new Date([partEndDate[1], partEndDate[0], 1].join('-'));
+
+        if (date.getTime() > d.getTime()) {
+            errorOnStartDate = "Từ tháng/năm phải trước đến tháng/năm";
+        } else {
+            errorOnEndDate = errorOnEndDate === 'Đến tháng/năm phải sau từ tháng/năm' ? undefined : errorOnEndDate
         }
-        return msg === undefined;
+        this.setState({
+            startDate: value,
+            errorOnStartDate: errorOnStartDate,
+            errorOnEndDate: errorOnEndDate
+        })
     }
+
     // Function lưu thay đổi "đến tháng/năm" vào state
     handleEndDateChange = (value) => {
-        this.validateExperienceEndDate(value, true)
-    }
-    validateExperienceEndDate = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateExperienceEndDate(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnEndDate: msg,
-                    endDate: value,
-                }
-            });
+        let { startDate, errorOnStartDate } = this.state;
+        let partValue = value.split('-');
+        let date = new Date([partValue[1], partValue[0], 1].join('-'));
+
+        let partStartDate = startDate.split('-');
+        let d = new Date([partStartDate[1], partStartDate[0], 1].join('-'));
+        let errorOnEndDate;
+        if (d.getTime() > date.getTime()) {
+            errorOnEndDate = "Đến tháng/năm phải sau từ tháng/năm";
+        } else {
+            errorOnStartDate = errorOnStartDate === 'Từ tháng/năm phải trước đến tháng/năm' ? undefined : errorOnStartDate
         }
-        return msg === undefined;
+        this.setState({
+            endDate: value,
+            errorOnStartDate: errorOnStartDate,
+            errorOnEndDate: errorOnEndDate
+        })
     }
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result =
-            this.validateExperienceUnit(this.state.company, false) && this.validateExperiencePosition(this.state.position, false) &&
-            this.validateExperienceStartDate(this.state.startDate, false) && this.validateExperienceEndDate(this.state.endDate, false)
-        return result;
+        let result = this.validateExperienceUnit(this.state.company, false) && this.validateExperiencePosition(this.state.position, false);
+        let partStart = this.state.startDate.split('-');
+        let startDate = [partStart[1], partStart[0]].join('-');
+        let partEnd = this.state.endDate.split('-');
+        let endDate = [partEnd[1], partEnd[0]].join('-');
+        if (new Date(startDate).getTime() <= new Date(endDate).getTime()) {
+            return result;
+        } else return false;
     }
     // Bắt sự kiện submit form
     save = async () => {
-        var partStart = this.state.startDate.split('-');
-        var startDate = [partStart[1], partStart[0]].join('-');
-        var partEnd = this.state.endDate.split('-');
-        var endDate = [partEnd[1], partEnd[0]].join('-');
+        let partStart = this.state.startDate.split('-');
+        let startDate = [partStart[1], partStart[0]].join('-');
+        let partEnd = this.state.endDate.split('-');
+        let endDate = [partEnd[1], partEnd[0]].join('-');
         if (this.isFormValidated()) {
             return this.props.handleChange({ ...this.state, startDate: startDate, endDate: endDate });
         }
@@ -145,6 +157,7 @@ class ModalEditExperience extends Component {
                                 <DatePicker
                                     id={`edit-start-date-${id}`}
                                     dateFormat="month-year"
+                                    deleteValue={false}
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
@@ -155,6 +168,7 @@ class ModalEditExperience extends Component {
                                 <DatePicker
                                     id={`edit-end-date-${id}`}
                                     dateFormat="month-year"
+                                    deleteValue={false}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />

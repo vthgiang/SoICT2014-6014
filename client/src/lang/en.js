@@ -413,10 +413,13 @@ export default {
             effective_date: 'Effective date',
             expired_date: 'Expired date',
             views: 'Views',
+            viewer: 'Viewer',
+            downloader: "Downloader",
             downloads: 'Downloads',
             add: 'Add document',
             edit: 'Edit document',
             view: 'View document',
+            time: "Time",
             delete: 'Delete document',
             add_version: 'Add document version',
             upload_file: 'Upload file',
@@ -1618,7 +1621,7 @@ export default {
                 detail_acc_point: 'Approve point',
                 detail_not_auto: 'Unset automatic point',
                 detail_not_emp: 'Unset employee point',
-                detail_not_acc: 'Unset accountable po',
+                detail_not_acc: 'Unset accountable point',
 
                 detail_not_eval_on_month: 'Not evaluate this month',
                 detail_not_eval: 'Nobody evaluate this month',
@@ -2447,7 +2450,7 @@ export default {
             }
         },
 
-        manage_warehouse:{
+        manage_warehouse: {
             material_manager: {
                 index: 'Index',
                 add: 'Add material',
