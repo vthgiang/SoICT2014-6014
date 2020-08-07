@@ -17,8 +17,8 @@ class CourseCreateForm extends Component {
             courseId: "",
             offeredBy: "",
             coursePlace: "",
-            startDate: "",
-            endDate: "",
+            startDate: this.formatDate(Date.now(), false),
+            endDate: this.formatDate(Date.now(), false),
             cost: "",
             lecturer: "",
             employeeCommitmentTime: "",
@@ -27,6 +27,27 @@ class CourseCreateForm extends Component {
             addEmployees: [],
             educationProgram: "",
         };
+    }
+
+    // Function format dữ liệu Date thành string
+    formatDate(date, monthYear = false) {
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
+
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        }
+        return date;
+
     }
 
     // Bắt sự kiện thay đổi mã khoá đào tạo
@@ -176,38 +197,45 @@ class CourseCreateForm extends Component {
 
     // Bắt sự kiện thay đổi thời gian bắt đầu
     handleStartDateChange = (value) => {
-        this.validateStartDate(value, true);
-    }
-    validateStartDate = (value, willUpdateState = true) => {
-        let msg = CourseFormValidator.validateStartDate(value, this.props.translate);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnStartDate: msg,
-                    startDate: value,
-                }
-            });
+        let { errorOnEndDate, endDate } = this.state;
+        let errorOnStartDate;
+        let partValue = value.split('-');
+        let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
+
+        let partEndDate = endDate.split('-');
+        let d = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
+
+        if (date.getTime() > d.getTime()) {
+            errorOnStartDate = "Thời gian bắt đầu phải trước thời gian kết thúc";
+        } else {
+            errorOnEndDate = errorOnEndDate === 'Thời gian kết thúc phải sau thời gian bắt đầu' ? undefined : errorOnEndDate
         }
-        return msg === undefined;
+        this.setState({
+            startDate: value,
+            errorOnStartDate: errorOnStartDate,
+            errorOnEndDate: errorOnEndDate
+        })
     }
 
     // Bắt sự kiện thay đổi thời gian kết thúc
     handleEndDateChange = (value) => {
-        this.validateEndDate(value, true);
-    }
-    validateEndDate = (value, willUpdateState = true) => {
-        let msg = CourseFormValidator.validateEndDate(value, this.props.translate);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnEndDate: msg,
-                    endDate: value,
-                }
-            });
+        let { startDate, errorOnStartDate } = this.state;
+        let partValue = value.split('-');
+        let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
+
+        let partStartDate = startDate.split('-');
+        let d = new Date([partStartDate[2], partStartDate[1], partStartDate[0]].join('-'));
+        let errorOnEndDate;
+        if (d.getTime() > date.getTime()) {
+            errorOnEndDate = "Thời gian kết thúc phải sau thời gian bắt đầu";
+        } else {
+            errorOnStartDate = errorOnStartDate === 'Thời gian bắt đầu phải trước thời gian kết thúc' ? undefined : errorOnStartDate
         }
-        return msg === undefined;
+        this.setState({
+            endDate: value,
+            errorOnStartDate: errorOnStartDate,
+            errorOnEndDate: errorOnEndDate
+        })
     }
 
     // Bắt sự kiện thêm nhân viên tham gia
@@ -253,15 +281,20 @@ class CourseCreateForm extends Component {
         let result =
             this.validateCourseId(this.state.courseId, false) && this.validateCourseName(this.state.name, false) &&
             this.validateCoursePlace(this.state.coursePlace, false) && this.validateCost(this.state.cost, false) &&
-            this.validateEducationProgram(this.state.educationProgram, false) && this.validateEmployeeCommitmentTime(this.state.employeeCommitmentTime, false) &&
-            this.validateEndDate(this.state.endDate, false) && this.validateOfferedBy(this.state.offeredBy, false) && this.validateStartDate(this.state.startDate, false);
-        return result;
+            this.validateEducationProgram(this.state.educationProgram, false) && this.validateEmployeeCommitmentTime(this.state.employeeCommitmentTime, false);
+        let partStart = this.state.startDate.split('-');
+        let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
+        let partEnd = this.state.endDate.split('-');
+        let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        if (new Date(startDate).getTime() <= new Date(endDate).getTime()) {
+            return result;
+        } else return false;
     }
     save = () => {
-        var partStart = this.state.startDate.split('-');
-        var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
-        var partEnd = this.state.startDate.split('-');
-        var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        let partStart = this.state.startDate.split('-');
+        let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
+        let partEnd = this.state.startDate.split('-');
+        let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         let listEmployees = this.state.listEmployees.concat(this.state.addEmployees);
         if (this.isFormValidated()) {
             this.props.createNewCourse({ ...this.state, listEmployees: listEmployees, startDate: startDate, endDate: endDate });
@@ -269,12 +302,12 @@ class CourseCreateForm extends Component {
     }
 
     render() {
-        var userlist = [];
+        let userlist = [];
         const { education, translate, course, employeesManager } = this.props;
         const { name, courseId, type, offeredBy, coursePlace, startDate, unit, listEmployees, endDate, cost, lecturer,
             employeeCommitmentTime, educationProgram, errorOnCourseId, errorOnCourseName, errorOnCoursePlace, errorOnOfferedBy,
             errorOnCost, errorOnEmployeeCommitmentTime, errorOnEducationProgram, errorOnStartDate, errorOnEndDate } = this.state;
-        var listEducations = education.listAll;
+        let listEducations = education.listAll;
         if (employeesManager.listEmployeesOfOrganizationalUnits.length !== 0 && this.state.check === true) {
             userlist = employeesManager.listEmployeesOfOrganizationalUnits;
         }
@@ -317,6 +350,7 @@ class CourseCreateForm extends Component {
                                 <label>Thời gian bắt đầu<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="create_start_date"
+                                    deleteValue={false}
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
@@ -326,6 +360,7 @@ class CourseCreateForm extends Component {
                                 <label>Thời gian kết thúc<span className="text-red">*</span></label>
                                 <DatePicker
                                     id="create_end_date"
+                                    deleteValue={false}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />
@@ -365,7 +400,7 @@ class CourseCreateForm extends Component {
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={educationProgram}
-                                    items={[...listEducations.map(x => { return { value: x._id, text: x.name } }), { value: 'null', text: 'Chọn chương trình đào tạo' }]}
+                                    items={[...listEducations.map(x => { return { value: x._id, text: x.name } }), { value: '', text: 'Chọn chương trình đào tạo' }]}
                                     onChange={this.handleEducationProgramChange}
                                     disabled={listEmployees.length !== 0 ? true : false}
                                 />

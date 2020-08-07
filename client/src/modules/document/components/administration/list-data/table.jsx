@@ -4,19 +4,20 @@ import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
 import { DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, ToolTip } from '../../../../../common-components';
-import {RoleActions} from '../../../../super-admin/role/redux/actions';
-import {DepartmentActions} from '../../../../super-admin/organizational-unit/redux/actions';
-import DocumentInformation from '../../user/documents/DocumentInformation';
+import { RoleActions } from '../../../../super-admin/role/redux/actions';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+import DocumentInformation from '../../user/documents/documentInformation';
 import { DocumentActions } from '../../../redux/actions';
 
 import CreateForm from './createForm';
 import EditForm from './editForm';
-
+import ListView from './listView';
+import ListDownload from './listDownload';
 
 const getIndex = (array, id) => {
     let index = -1;
     for (let i = 0; i < array.length; i++) {
-        if(array[i]._id === id){
+        if (array[i]._id === id) {
             index = i;
             break;
         }
@@ -30,7 +31,7 @@ class Table extends Component {
         this.state = { option: 'name', value: '', limit: 5, page: 1 }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.props.getAllDocuments();
         this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit });
         this.props.getAllRoles();
@@ -52,16 +53,16 @@ class Table extends Component {
     requestDownloadDocumentFileScan = (id, fileName, numberVersion) => {
         this.props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
-        
-    static getDerivedStateFromProps(nextProps, prevState){
-        const {data} = nextProps.documents.administration;
-        if(prevState.currentRow){
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        const { data } = nextProps.documents.administration;
+        if (prevState.currentRow) {
             const index = getIndex(data.list, prevState.currentRow._id);
             if (data.list[index].versions.length !== prevState.currentRow.versions.length) {
                 return {
                     ...prevState,
                     currentRow: data.list[index]
-                } 
+                }
             }
             else return null;
         } else {
@@ -70,7 +71,7 @@ class Table extends Component {
     }
 
     deleteDocument = (id, info) => {
-        const {translate} = this.props;
+        const { translate } = this.props;
         Swal.fire({
             html: `<h4 style="color: red"><div>${translate('document.delete')}</div> <div>"${info}" ?</div></h4>`,
             icon: 'warning',
@@ -92,16 +93,41 @@ class Table extends Component {
         window.$('#modal-information-user-document').modal('show');
         this.props.increaseNumberView(data._id)
     }
-    render() { 
-        const {translate} = this.props;
+    showDetailListView = async (data) => {
+        await this.setState({
+            currentRow: data,
+        });
+        window.$('#modal-list-view').modal('show');
+    }
+    showDetailListDownload = async (data) => {
+        await this.setState({
+            currentRow: data,
+        })
+        window.$('#modal-list-download').modal('show');
+    }
+    render() {
+        const { translate } = this.props;
         const docs = this.props.documents.administration.data;
-        const {paginate} = docs;
-        const {isLoading} = this.props.documents;
-        const {currentRow} = this.state;
+        const { paginate } = docs;
+        const { isLoading } = this.props.documents;
+        const { currentRow } = this.state;
+        console.log('---------------------', docs);
 
-        return ( 
+        return (
             <React.Fragment>
-                <CreateForm/>
+                <CreateForm />
+                {
+                    currentRow &&
+                    <ListView
+                        docs={currentRow}
+                    />
+                }
+                {
+                    currentRow &&
+                    <ListDownload
+                        docs={currentRow}
+                    />
+                }
                 {
                     currentRow &&
                     <EditForm
@@ -124,7 +150,7 @@ class Table extends Component {
                         documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
                     />
-                    
+
                 }
                 {
                     currentRow &&
@@ -149,7 +175,7 @@ class Table extends Component {
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
                     />
                 }
-                <SearchBar 
+                <SearchBar
                     columns={[
                         { title: translate('document.name'), value: 'name' },
                         { title: translate('document.description'), value: 'description' }
@@ -174,19 +200,19 @@ class Table extends Component {
                                 {translate('general.action')}
                                 <DataTableSetting
                                     columnArr={[
-                                        translate('document.name'), 
-                                        translate('document.description'), 
-                                        translate('document.issuing_date'), 
-                                        translate('document.effective_date'), 
-                                        translate('document.expired_date'), 
-                                        translate('document.upload_file'), 
+                                        translate('document.name'),
+                                        translate('document.description'),
+                                        translate('document.issuing_date'),
+                                        translate('document.effective_date'),
+                                        translate('document.expired_date'),
+                                        translate('document.upload_file'),
                                         translate('document.upload_file_scan'),
-                                        translate('document.views'), 
+                                        translate('document.views'),
                                         translate('document.downloads')
                                     ]}
                                     limit={this.state.limit}
                                     setLimit={this.setLimit}
-                                    hideColumnOption = {true}
+                                    hideColumnOption={true}
                                     tableId="table-manage-document"
                                 />
                             </th>
@@ -195,43 +221,39 @@ class Table extends Component {
                     <tbody>
                         {
                             paginate.length > 0 ?
-                            paginate.map(doc => 
-                            <tr key={doc._id}>
-                                <td>{doc.name}</td>
-                                <td>{!doc.description? doc.description : ""}</td>
-                                <td><DateTimeConverter dateTime={doc.versions[doc.versions.length-1].issuingDate} type="DD-MM-YYYY"/></td>
-                                <td><DateTimeConverter dateTime={doc.versions[doc.versions.length-1].effectiveDate} type="DD-MM-YYYY"/></td>
-                                <td><DateTimeConverter dateTime={doc.versions[doc.versions.length-1].expiredDate} type="DD-MM-YYYY"/></td>
-                                <td><a href="#" onClick={()=>this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
-                                <td><a href="#" onClick={()=>this.requestDownloadDocumentFileScan(doc._id, "SCAN_"+doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
-                                <td>{doc.numberOfView}<ToolTip type="latest_history" dataTooltip={doc.views.map(view=> {return (
-                                    <React.Fragment>
-                                        {view.viewer+", "} <DateTimeConverter dateTime={view.time}/>
-                                    </React.Fragment>
-                                ) })}/></td>
-                                <td>{doc.numberOfDownload}<ToolTip type="latest_history" dataTooltip={doc.downloads.map(download=> {return (
-                                    <React.Fragment>
-                                        {download.downloader+", "} <DateTimeConverter dateTime={download.time}/>
-                                    </React.Fragment>
-                                ) })}/></td>
-                                <td>
-                                <a className="text-green" title={translate('document.view')} onClick={()=>this.toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
-                                    <a className="text-yellow" title={translate('document.edit')} onClick={()=>this.toggleEditDocument(doc)}><i className="material-icons">edit</i></a>
-                                    <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocument(doc._id, doc.name)}><i className="material-icons">delete</i></a>
-                                </td>
-                            </tr>):
-                            isLoading ? 
-                            <tr><td colSpan={10}>{translate('general.loading')}</td></tr>:<tr><td colSpan={10}>{translate('general.no_data')}</td></tr>
+                                paginate.map(doc =>
+                                    <tr key={doc._id}>
+                                        <td>{doc.name}</td>
+                                        <td>{!doc.description ? doc.description : ""}</td>
+                                        <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].issuingDate} type="DD-MM-YYYY" /></td>
+                                        <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].effectiveDate} type="DD-MM-YYYY" /></td>
+                                        <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].expiredDate} type="DD-MM-YYYY" /></td>
+                                        <td><a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
+                                        <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
+                                        <td>
+                                            <a href="#modal-list-view" onClick={() => this.showDetailListView(doc)}>{doc.numberOfView}</a>
+                                        </td>
+                                        <td>
+                                            <a href="#modal-list-download" onClick={() => this.showDetailListDownload(doc)}>{doc.numberOfDownload}</a>
+                                        </td>
+                                        <td>
+                                            <a className="text-green" title={translate('document.view')} onClick={() => this.toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
+                                            <a className="text-yellow" title={translate('document.edit')} onClick={() => this.toggleEditDocument(doc)}><i className="material-icons">edit</i></a>
+                                            <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocument(doc._id, doc.name)}><i className="material-icons">delete</i></a>
+                                        </td>
+                                    </tr>) :
+                                isLoading ?
+                                    <tr><td colSpan={10}>{translate('general.loading')}</td></tr> : <tr><td colSpan={10}>{translate('general.no_data')}</td></tr>
                         }
-                        
+
                     </tbody>
                 </table>
-                <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={this.setPage}/> 
+                <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={this.setPage} />
             </React.Fragment>
-         );
+        );
     }
 
-    setPage = async(page) => {
+    setPage = async (page) => {
         this.setState({ page });
         const data = {
             limit: this.state.limit,
@@ -243,7 +265,7 @@ class Table extends Component {
     }
 
     setLimit = (number) => {
-        if (this.state.limit !== number){
+        if (this.state.limit !== number) {
             this.setState({ limit: number });
             const data = { limit: number, page: this.state.page };
             this.props.getAllDocuments(data);
@@ -255,8 +277,8 @@ class Table extends Component {
             [title]: option
         });
     }
-    
-    searchWithOption = async() => {
+
+    searchWithOption = async () => {
         const data = {
             limit: this.state.limit,
             page: 1,
@@ -266,7 +288,7 @@ class Table extends Component {
         await this.props.getAllDocuments(data);
     }
 }
- 
+
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
@@ -279,4 +301,4 @@ const mapDispatchToProps = {
     deleteDocument: DocumentActions.deleteDocument,
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(Table) );
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(Table));

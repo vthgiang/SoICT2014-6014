@@ -10,38 +10,45 @@ class AnnualLeaveEditModal extends Component {
     }
     // Bắt sự kiện thay đổi ngày bắt đầu
     handleStartDateChange = (value) => {
-        this.validateStartDate(value, true);
-    }
-    validateStartDate = (value, willUpdateState = true) => {
-        let msg = AnnualLeaveFormValidator.validateStartDate(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnStartDate: msg,
-                    startDate: value,
-                }
-            });
+        let { errorOnEndDate, endDate } = this.state;
+        let errorOnStartDate;
+        let partValue = value.split('-');
+        let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
+
+        let partEndDate = endDate.split('-');
+        let d = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
+
+        if (date.getTime() > d.getTime()) {
+            errorOnStartDate = "Ngày bắt đầu phải trước ngày kết thúc";
+        } else {
+            errorOnEndDate = errorOnEndDate === 'Ngày kết thúc phải sau ngày bắt đầu' ? undefined : errorOnEndDate
         }
-        return msg === undefined;
+        this.setState({
+            startDate: value,
+            errorOnStartDate: errorOnStartDate,
+            errorOnEndDate: errorOnEndDate
+        })
     }
 
     // Bắt sự kiện thay đổi ngày kết thúc
     handleEndDateChange = (value) => {
-        this.validateEndDate(value, true);
-    }
-    validateEndDate = (value, willUpdateState = true) => {
-        let msg = AnnualLeaveFormValidator.validateEndDate(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnEndDate: msg,
-                    endDate: value,
-                }
-            });
+        let { startDate, errorOnStartDate } = this.state;
+        let partValue = value.split('-');
+        let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
+
+        let partStartDate = startDate.split('-');
+        let d = new Date([partStartDate[2], partStartDate[1], partStartDate[0]].join('-'));
+        let errorOnEndDate;
+        if (d.getTime() > date.getTime()) {
+            errorOnEndDate = "Ngày kết thúc phải sau ngày bắt đầu";
+        } else {
+            errorOnStartDate = errorOnStartDate === 'Ngày bắt đầu phải trước ngày kết thúc' ? undefined : errorOnStartDate
         }
-        return msg === undefined;
+        this.setState({
+            endDate: value,
+            errorOnStartDate: errorOnStartDate,
+            errorOnEndDate: errorOnEndDate
+        })
     }
 
     // Bắt sự kiện thay đổi lý do xin nghỉ phép
@@ -74,18 +81,24 @@ class AnnualLeaveEditModal extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateEndDate(this.state.endDate, false) &&
-            this.validateReason(this.state.reason, false) && this.validateStartDate(this.state.startDate, false);
-        return result;
+        let result = this.validateReason(this.state.reason, false);
+
+        let partStart = this.state.startDate.split('-');
+        let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
+        let partEnd = this.state.endDate.split('-');
+        let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        if (new Date(startDate).getTime() <= new Date(endDate).getTime()) {
+            return result;
+        } else return false;
     }
 
     save = async () => {
-        var partStart = this.state.startDate.split('-');
-        var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
-        var partEnd = this.state.endDate.split('-');
-        var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        let partStart = this.state.startDate.split('-');
+        let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
+        let partEnd = this.state.endDate.split('-');
+        let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         if (this.isFormValidated()) {
-            return this.props.handleChange({...this.state, startDate: startDate, endDate: endDate});
+            return this.props.handleChange({ ...this.state, startDate: startDate, endDate: endDate });
         }
     }
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -128,6 +141,7 @@ class AnnualLeaveEditModal extends Component {
                                 <label>{translate('sabbatical.start_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit_start_date${id}`}
+                                    deleteValue={false}
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
@@ -137,6 +151,7 @@ class AnnualLeaveEditModal extends Component {
                                 <label>{translate('sabbatical.end_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit_end_date${id}`}
+                                    deleteValue={false}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />

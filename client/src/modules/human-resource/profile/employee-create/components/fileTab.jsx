@@ -77,17 +77,72 @@ class FileTab extends Component {
         this.props.handleDeleteFile(this.state.files, data)
     }
 
+    // So sánh 2 đồi tượng
+    static isEqual(objA, objB) {
+        // Tạo các mảng chứa tên các property
+        let aProps = Object.getOwnPropertyNames(objA);
+        let bProps = Object.getOwnPropertyNames(objB);
+
+        if (aProps.length != bProps.length) {
+            return false;
+        }
+        for (let i = 0; i < aProps.length; i++) {
+            let propName = aProps[i];
+            if (objA[propName] !== objB[propName]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
+        if (nextProps.id !== prevState.id || !FileTab.isEqual(nextProps.employee, prevState.employee)) {
             return {
                 ...prevState,
                 id: nextProps.id,
                 files: nextProps.files,
                 archivedRecordNumber: nextProps.employee.archivedRecordNumber,
+                employee: nextProps.employee,
             }
         } else {
             return null;
         }
+    }
+
+    // Function kiểm tra các trường bắt buộc phải nhập
+    validatorInput = (value) => {
+        if (value !== undefined && value.toString().trim() !== '') {
+            return true;
+        }
+        return false;
+    }
+
+    isFormValidated = () => {
+        const { employee } = this.state;
+        let result = this.validatorInput(employee.employeeNumber) && this.validatorInput(employee.employeeTimesheetId) &&
+            this.validatorInput(employee.fullName) && this.validatorInput(employee.birthdate) &&
+            this.validatorInput(employee.emailInCompany) && this.validatorInput(employee.identityCardNumber) &&
+            this.validatorInput(employee.identityCardDate) && this.validatorInput(employee.identityCardAddress) &&
+            this.validatorInput(employee.phoneNumber) && this.validatorInput(employee.temporaryResidence) &&
+            this.validatorInput(employee.taxRepresentative) && this.validatorInput(employee.taxNumber) &&
+            this.validatorInput(employee.taxDateOfIssue) && this.validatorInput(employee.taxAuthority);
+        if (employee.healthInsuranceStartDate && employee.healthInsuranceEndDate) {
+            if (new Date(employee.healthInsuranceEndDate).getTime() < new Date(employee.healthInsuranceStartDate).getTime()) {
+                return false;
+            }
+        } else if ((employee.healthInsuranceStartDate && !employee.healthInsuranceEndDate) ||
+            (!employee.healthInsuranceStartDate && employee.healthInsuranceEndDate)) {
+            return false;
+        }
+        if (employee.leavingDate && employee.startingDate) {
+            if (new Date(employee.leavingDate).getTime() < new Date(employee.startingDate).getTime()) {
+                return false;
+            }
+        } else if (employee.leavingDate && !employee.startingDate) {
+            return false;
+        }
+        return result;
     }
 
     requestDownloadFile = (e, path, fileName) => {
@@ -155,7 +210,7 @@ class FileTab extends Component {
                 {
                     id === "pageAttachments" &&
                     <div className=" box-footer">
-                        <button type="reset" title="Thêm nhân viên mới" className="btn btn-success col-md-2 pull-right btnuser" onClick={() => this.props.handleSubmit()}>{translate('manage_employee.add_staff')}</button>
+                        <button type="reset" disabled={!this.isFormValidated()} title="Thêm nhân viên mới" className="btn btn-success col-md-2 pull-right btnuser" onClick={() => this.props.handleSubmit()}>{translate('manage_employee.add_staff')}</button>
                     </div>
                 }
 

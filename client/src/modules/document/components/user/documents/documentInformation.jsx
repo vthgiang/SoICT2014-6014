@@ -15,7 +15,7 @@ class DocumentInformation extends Component {
     save = () => {
         const {
             documentId,
-            documentName, 
+            documentName,
             documentCategory,
             documentDomains,
             documentDescription,
@@ -33,22 +33,22 @@ class DocumentInformation extends Component {
             documentArchivedRecordPlaceManager,
         } = this.state;
 
-        const formData = new FormData(); 
+        const formData = new FormData();
         formData.append('name', documentName);
         formData.append('category', documentCategory);
-        if(documentDomains !== undefined) for (var i = 0; i < documentDomains.length; i++) {
+        if (documentDomains !== undefined) for (var i = 0; i < documentDomains.length; i++) {
             formData.append('domains[]', documentDomains[i]);
         }
-        formData.append('description', documentDescription); 
+        formData.append('description', documentDescription);
         formData.append('issuingBody', documentIssuingBody);
         formData.append('officialNumber', documentOfficialNumber);
         formData.append('signer', documentSigner);
 
         formData.append('relationshipDescription', documentRelationshipDescription);
-        if(documentRelationshipDocuments !== undefined)for (var i = 0; i < documentRelationshipDocuments.length; i++) {
+        if (documentRelationshipDocuments !== undefined) for (var i = 0; i < documentRelationshipDocuments.length; i++) {
             formData.append('relationshipDocuments[]', documentRelationshipDocuments[i]);
         }
-        if(documentRoles !== undefined) for (var i = 0; i < documentRoles.length; i++) {
+        if (documentRoles !== undefined) for (var i = 0; i < documentRoles.length; i++) {
             formData.append('roles[]', documentRoles[i]);
         }
 
@@ -68,9 +68,9 @@ class DocumentInformation extends Component {
         this.setState({ documentFileScan: e.target.files[0] });
     }
 
-    
-    
-    static getDerivedStateFromProps(nextProps, prevState){
+
+
+    static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.documentId !== prevState.documentId) {
             return {
                 ...prevState,
@@ -93,13 +93,13 @@ class DocumentInformation extends Component {
                 documentArchivedRecordPlaceInfo: nextProps.documentArchivedRecordPlaceInfo,
                 documentArchivedRecordPlaceOrganizationalUnit: nextProps.documentArchivedRecordPlaceOrganizationalUnit,
                 documentArchivedRecordPlaceManager: nextProps.documentArchivedRecordPlaceManager,
-            } 
-        }else if(nextProps.documentVersions.length > prevState.documentVersions.length){
+            }
+        } else if (nextProps.documentVersions.length > prevState.documentVersions.length) {
             return {
                 ...prevState,
                 documentId: nextProps.documentId,
                 documentVersions: nextProps.documentVersions,
-            } 
+            }
         } else {
             return null;
         }
@@ -113,9 +113,10 @@ class DocumentInformation extends Component {
         this.props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
 
-    findDocumentRole(roles, arr_id){
-        let data = arr_id.map(id=>{
-            let name = roles.filter(role=> id && id === role.value);
+    findDocumentRole(roles, arr_id) {
+        console.log('hihihiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii')
+        let data = arr_id.map(id => {
+            let name = roles.filter(role => id && id === role.value);
             return name.map(x => x.text);
         })
         return data;
@@ -123,24 +124,25 @@ class DocumentInformation extends Component {
 
     render() {
         const {
-            documentId, documentName, documentDescription, documentCategory, documentDomains, 
-            documentIssuingBody, documentOfficialNumber, documentSigner, documentVersions, 
+            documentId, documentName, documentDescription, documentCategory, documentDomains,
+            documentIssuingBody, documentOfficialNumber, documentSigner, documentVersions,
             documentRelationshipDescription, documentRelationshipDocuments,
-            documentRoles, 
+            documentRoles,
             documentArchivedRecordPlaceInfo, documentArchivedRecordPlaceOrganizationalUnit, documentArchivedRecordPlaceManager
         } = this.state;
-        const {translate, role, documents, department, user}=this.props;
-        const categories = documents.administration.categories.list.map(category=>{return{value: category._id, text: category.name}});
-        const domains = documents.administration.domains.list.map(domain=>{ return {value: domain._id, text: domain.name}});
-        const roleList = role.list.map( role => {return {value: role._id, text: role.name}});
-        const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc=>{return {value: doc._id, text: doc.name}})
+        const { translate, role, documents, department, user } = this.props;
+        const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
+        const domains = documents.administration.domains.list.map(domain => { return { value: domain._id, text: domain.name } });
+        const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
+        const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
+        let x = this.findDocumentRole(roleList, documentRoles);
         console.log('roleList', roleList)
         console.log('relationshipDocs', relationshipDocs);
         console.log('categorires', categories);
         console.log('domainnn', domains);
-        console.log('dddd', this.findDocumentRole(roleList, documentRoles));
-    
-        return ( 
+        console.log('dddd', x);
+
+        return (
             <React.Fragment>
                 <DialogModal
                     modalID="modal-information-user-document"
@@ -177,18 +179,18 @@ class DocumentInformation extends Component {
                                     {documentCategory}
                                 </div>
                                 <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
-                                    <strong>{ translate('document.domain') }&emsp; </strong>
+                                    <strong>{translate('document.domain')}&emsp; </strong>
                                     {documentDomains}
                                 </div>
                                 <div className="for{ translate('document.description') }m-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
-                                    <strong>{ translate('document.description') }&emsp; </strong>
+                                    <strong>{translate('document.description')}&emsp; </strong>
                                     {documentDescription}
                                 </div>
                             </div>
-                               
+
                         </fieldset>
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{ translate('document.doc_version.title') }</legend>
+                            <legend className="scheduler-border">{translate('document.doc_version.title')}</legend>
                             <div className="row">
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                     <table className="table table-hover table-striped table-bordered" id="table-document-version">
@@ -205,16 +207,16 @@ class DocumentInformation extends Component {
                                         <tbody>
                                             {
                                                 documentVersions !== undefined && documentVersions.length > 0 ?
-                                                documentVersions.map((version, i) => {
-                                                    return <tr key={i}>
-                                                        <td>{version.versionName}</td>
-                                                        <td><DateTimeConverter dateTime={version.issuingDate} type="DD-MM-YYYY"/></td>
-                                                        <td><DateTimeConverter dateTime={version.effectiveDate} type="DD-MM-YYYY"/></td>
-                                                        <td><DateTimeConverter dateTime={version.expiredDate} type="DD-MM-YYYY"/></td>
-                                                        <td><a href="#" onClick={()=>this.requestDownloadDocumentFile(documentId, documentName, i)}><u>{translate('document.download')}</u></a></td>
-                                                        <td><a href="#" onClick={()=>this.requestDownloadDocumentFileScan(documentId, "SCAN_"+documentName, i)}><u>{translate('document.download')}</u></a></td>
-                                                    </tr>
-                                                }) : <tr><td colSpan={7}>{translate('document.no_version')}</td></tr>
+                                                    documentVersions.map((version, i) => {
+                                                        return <tr key={i}>
+                                                            <td>{version.versionName}</td>
+                                                            <td><DateTimeConverter dateTime={version.issuingDate} type="DD-MM-YYYY" /></td>
+                                                            <td><DateTimeConverter dateTime={version.effectiveDate} type="DD-MM-YYYY" /></td>
+                                                            <td><DateTimeConverter dateTime={version.expiredDate} type="DD-MM-YYYY" /></td>
+                                                            <td><a href="#" onClick={() => this.requestDownloadDocumentFile(documentId, documentName, i)}><u>{translate('document.download')}</u></a></td>
+                                                            <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(documentId, "SCAN_" + documentName, i)}><u>{translate('document.download')}</u></a></td>
+                                                        </tr>
+                                                    }) : <tr><td colSpan={7}>{translate('document.no_version')}</td></tr>
                                             }
                                         </tbody>
                                     </table>
@@ -222,18 +224,18 @@ class DocumentInformation extends Component {
                             </div>
                         </fieldset>
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{ translate('document.relationship.title') }</legend>
+                            <legend className="scheduler-border">{translate('document.relationship.title')}</legend>
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
-                                    <strong>{ translate('document.relationship.description') }&emsp; </strong>
-                                    {documentRelationshipDescription}
-                                </div>
+                                <strong>{translate('document.relationship.description')}&emsp; </strong>
+                                {documentRelationshipDescription}
+                            </div>
 
-                                <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
-                                    <strong>{ translate('document.relationship.list') }&emsp; </strong>
-                                    {documentRelationshipDocuments}
-                                </div>
+                            <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                <strong>{translate('document.relationship.list')}&emsp; </strong>
+                                {documentRelationshipDocuments}
+                            </div>
 
-                            
+
                             {/* <div className="form-group">
                                 <label>{ translate('document.relationship.list') }<span className="text-red">*</span></label>
                                 <SelectBox
@@ -248,11 +250,11 @@ class DocumentInformation extends Component {
                             </div> */}
                         </fieldset>
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{ translate('document.roles') }</legend>
+                            <legend className="scheduler-border">{translate('document.roles')}</legend>
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
-                                    <strong>{ translate('document.roles') }&emsp; </strong>
-                                    {documentRoles}
-                                </div>
+                                <strong>{translate('document.roles')}&emsp; </strong>
+                                {documentRoles}
+                            </div>
                             {/* <SelectBox
                                 id={`select-edit-user-document-users-see-permission-${documentId}`}
                                 className="form-control select2"
@@ -265,16 +267,16 @@ class DocumentInformation extends Component {
                         </fieldset>
 
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border">{ translate('document.store.title') }</legend>
+                            <legend className="scheduler-border">{translate('document.store.title')}</legend>
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
-                                    <strong>{ translate('document.store.information') }&emsp; </strong>
-                                    {documentArchivedRecordPlaceInfo}
-                                </div>
-                                <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
-                                    <strong>{ translate('document.store.organizational_unit_manage') }&emsp; </strong>
-                                    {documentArchivedRecordPlaceOrganizationalUnit}
-                                </div>
-                            
+                                <strong>{translate('document.store.information')}&emsp; </strong>
+                                {documentArchivedRecordPlaceInfo}
+                            </div>
+                            <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                <strong>{translate('document.store.organizational_unit_manage')}&emsp; </strong>
+                                {documentArchivedRecordPlaceOrganizationalUnit}
+                            </div>
+
                             {/* <div className="form-group">
                                 <label>{ translate('document.store.organizational_unit_manage') }<span className="text-red">*</span></label>
                                 <SelectBox
@@ -291,10 +293,10 @@ class DocumentInformation extends Component {
                     </form>
                 </DialogModal>
             </React.Fragment>
-         );
+        );
     }
 }
- 
+
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
@@ -303,4 +305,4 @@ const mapDispatchToProps = {
     downloadDocumentFileScan: DocumentActions.downloadDocumentFileScan
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(DocumentInformation) );
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(DocumentInformation));
