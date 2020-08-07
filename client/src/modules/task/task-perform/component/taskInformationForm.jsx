@@ -33,14 +33,21 @@ class TaskInformationForm extends Component {
 
     render() {
         const { translate } = this.props;
-        const { value, task, perform, role, id, disabled, indexReRender } = this.props;
+        const { value, task, perform, role, id, disabled, indexReRender, legendText = translate('task.task_management.detail_info')} = this.props;
 
         return (
             <React.Fragment>
                 <div>
 
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">{translate('task.task_management.eval_on_month')}</legend>
+                        <legend className="scheduler-border">{legendText}</legend>
+
+                        {(perform === 'evaluate') &&
+                            <div className="pull-right" style={{marginTop: -20}}>
+                                <a style={{cursor: "pointer"}}>Nhập tự động từ thông tin công việc hiện tại</a>
+                            </div>
+                        }
+
                         <div className={`form-group ${value.errorOnProgress === undefined ? "" : "has-error"}`}>
                             <label>{translate('task.task_management.detail_progress')} (<span style={{ color: "red" }}>*</span>)</label>
                             <input
@@ -173,7 +180,7 @@ class TaskInformationForm extends Component {
                                     // value={elem._id}
                                     name="checkSave" onChange={(e) => this.props.handleChangeSaveInfo(e)}
                                 /> {translate('task.task_management.store_info')}
-                        </label>
+                            </label>
                         }
 
                     </fieldset>
