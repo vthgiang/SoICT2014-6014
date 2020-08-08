@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
+
 import { AssetManagerActions } from '../redux/actions';
-import { AssetCreateForm, AssetDetailForm, AssetEditForm } from './combinedContent';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { UserActions } from '../../../super-admin/user/redux/actions';
+
+import { AssetCreateForm, AssetDetailForm, AssetEditForm } from './combinedContent';
 
 class AssetManagement extends Component {
     constructor(props) {
@@ -35,11 +38,13 @@ class AssetManagement extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
+        if (month.length < 2) {
+             month = '0' + month;
+        }
+        if (day.length < 2) {
             day = '0' + day;
-
+        }
+            
         return [month, year].join('-');
     }
 
@@ -50,14 +55,19 @@ class AssetManagement extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+            
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     // Bắt sự kiện click xem thông tin tài sản
@@ -159,7 +169,7 @@ class AssetManagement extends Component {
 
     // Bắt sự kiện chuyển trang
     setPage = async (pageNumber) => {
-        var page = (pageNumber - 1) * this.state.limit;
+        let page = (pageNumber - 1) * this.state.limit;
         await this.setState({
             page: parseInt(page),
 
@@ -168,23 +178,28 @@ class AssetManagement extends Component {
     }
 
     render() {
-        var { assetsManager, assetType, translate, user, auth } = this.props;
+        var { assetsManager, assetType, translate, user } = this.props;
+        var { page, limit, currentRowView, currentRow } = this.state;
+
         var lists = "";
         var userlist = user.list;
         var assettypelist = assetType.listAssetTypes;
-        if (this.props.assetsManager.isLoading === false) {
-            lists = this.props.assetsManager.listAssets;
+        if (assetsManager.isLoading === false) {
+            lists = assetsManager.listAssets;
         }
 
-        var pageTotal = ((assetsManager.totalList % this.state.limit) === 0) ?
-            parseInt(assetsManager.totalList / this.state.limit) :
-            parseInt((assetsManager.totalList / this.state.limit) + 1);
-        var page = parseInt((this.state.page / this.state.limit) + 1);
+        var pageTotal = ((assetsManager.totalList % limit) === 0) ?
+            parseInt(assetsManager.totalList / limit) :
+            parseInt((assetsManager.totalList / limit) + 1);
+        var currentPage = parseInt((page / limit) + 1);
 
         return (
             <div className="box">
                 <div className="box-body qlcv">
+                    {/* Form thêm tài sản mới */}
                     <AssetCreateForm />
+
+                    {/* Thanh tìm kiếm */}
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">Mã tài sản</label>
@@ -248,6 +263,8 @@ class AssetManagement extends Component {
                             <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSubmitSearch}>Tìm kiếm</button>
                         </div>
                     </div>
+
+                    {/* Bảng các tài sản */}
                     <table id="asset-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
@@ -273,7 +290,7 @@ class AssetManagement extends Component {
                                             "Thời gian bắt đầu sử dụng",
                                             "Trạng thái"
                                         ]}
-                                        limit={this.state.limit}
+                                        limit={limit}
                                         setLimit={this.setLimit}
                                         hideColumnOption={true}
                                     />
@@ -281,15 +298,15 @@ class AssetManagement extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof lists !== 'undefined' && lists.length !== 0) &&
+                            {(lists && lists.length !== 0) &&
                                 lists.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
-                                        <td>{x.assetType !== null && assettypelist.length && assettypelist.find(item => item._id === x.assetType) ? assettypelist.find(item => item._id === x.assetType).typeName : ''}</td>
+                                        <td>{x.assetType && assettypelist.length && assettypelist.find(item => item._id === x.assetType) ? assettypelist.find(item => item._id === x.assetType).typeName : 'Asset is deleted'}</td>
                                         <td>{this.formatDate(x.purchaseDate)}</td>
-                                        <td>{x.managedBy !== null && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : ''}</td>
-                                        <td>{x.assignedTo !== null && userlist.length && userlist.find(item => item._id === x.assignedTo) ? userlist.find(item => item._id === x.assignedTo).name : ''}</td>
+                                        <td>{x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : 'User is deleted'}</td>
+                                        <td>{x.assignedTo ? (userlist.length && userlist.find(item => item._id === x.assignedTo) ? userlist.find(item => item._id === x.assignedTo).name : 'User is deleted') : ''}</td>
                                         <td>{x.handoverFromDate ? this.formatDate(x.handoverFromDate) : ''}</td>
                                         <td>{x.handoverToDate ? this.formatDate(x.handoverToDate) : ''}</td>
                                         <td>{x.status}</td>
@@ -313,86 +330,91 @@ class AssetManagement extends Component {
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
                         (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
+
+                    {/* PaginateBar */}
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
+
+                {/* Form xem thông tin tài sản */}
                 {
-                    this.state.currentRowView !== undefined &&
+                    currentRowView &&
                     <AssetDetailForm
-                        _id={this.state.currentRowView._id}
-                        avatar={this.state.currentRowView.avatar}
-                        code={this.state.currentRowView.code}
-                        assetName={this.state.currentRowView.assetName}
-                        serial={this.state.currentRowView.serial}
-                        assetType={this.state.currentRowView.assetType}
-                        purchaseDate={this.state.currentRowView.purchaseDate}
-                        warrantyExpirationDate={this.state.currentRowView.warrantyExpirationDate}
-                        managedBy={this.state.currentRowView.managedBy}
-                        assignedTo={this.state.currentRowView.assignedTo}
-                        handoverFromDate={this.state.currentRowView.handoverFromDate}
-                        handoverToDate={this.state.currentRowView.handoverToDate}
-                        location={this.state.currentRowView.location}
-                        description={this.state.currentRowView.description}
-                        status={this.state.currentRowView.status}
-                        canRegisterForUse={this.state.currentRowView.canRegisterForUse}
-                        detailInfo={this.state.currentRowView.detailInfo}
-                        cost={this.state.currentRowView.cost}
+                        _id={currentRowView._id}
+                        avatar={currentRowView.avatar}
+                        code={currentRowView.code}
+                        assetName={currentRowView.assetName}
+                        serial={currentRowView.serial}
+                        assetType={currentRowView.assetType}
+                        purchaseDate={currentRowView.purchaseDate}
+                        warrantyExpirationDate={currentRowView.warrantyExpirationDate}
+                        managedBy={currentRowView.managedBy}
+                        assignedTo={currentRowView.assignedTo}
+                        handoverFromDate={currentRowView.handoverFromDate}
+                        handoverToDate={currentRowView.handoverToDate}
+                        location={currentRowView.location}
+                        description={currentRowView.description}
+                        status={currentRowView.status}
+                        canRegisterForUse={currentRowView.canRegisterForUse}
+                        detailInfo={currentRowView.detailInfo}
+                        cost={currentRowView.cost}
 
-                        residualValue={this.state.currentRowView.residualValue}
-                        startDepreciation={this.state.currentRowView.startDepreciation}
-                        usefulLife={this.state.currentRowView.usefulLife}
-                        depreciationType={this.state.currentRowView.depreciationType}
+                        residualValue={currentRowView.residualValue}
+                        startDepreciation={currentRowView.startDepreciation}
+                        usefulLife={currentRowView.usefulLife}
+                        depreciationType={currentRowView.depreciationType}
 
-                        maintainanceLogs={this.state.currentRowView.maintainanceLogs}
-                        usageLogs={this.state.currentRowView.usageLogs}
-                        incidentLogs={this.state.currentRowView.incidentLogs}
+                        maintainanceLogs={currentRowView.maintainanceLogs}
+                        usageLogs={currentRowView.usageLogs}
+                        incidentLogs={currentRowView.incidentLogs}
 
-                        disposalDate={this.state.currentRowView.disposalDate}
-                        disposalType={this.state.currentRowView.disposalType}
-                        disposalCost={this.state.currentRowView.disposalCost}
-                        disposalDesc={this.state.currentRowView.disposalDesc}
+                        disposalDate={currentRowView.disposalDate}
+                        disposalType={currentRowView.disposalType}
+                        disposalCost={currentRowView.disposalCost}
+                        disposalDesc={currentRowView.disposalDesc}
 
-                        archivedRecordNumber={this.state.currentRowView.archivedRecordNumber}
-                        files={this.state.currentRowView.files}
+                        archivedRecordNumber={currentRowView.archivedRecordNumber}
+                        files={currentRowView.files}
                     />
                 }
 
+                {/* Form chỉnh sửa thông tin tài sản */}
                 {
-                    this.state.currentRow !== undefined &&
+                    currentRow &&
                     <AssetEditForm
-                        _id={this.state.currentRow._id}
-                        avatar={this.state.currentRow.avatar}
-                        code={this.state.currentRow.code}
-                        assetName={this.state.currentRow.assetName}
-                        serial={this.state.currentRow.serial}
-                        assetType={this.state.currentRow.assetType}
-                        purchaseDate={this.state.currentRow.purchaseDate}
-                        warrantyExpirationDate={this.state.currentRow.warrantyExpirationDate}
-                        managedBy={this.state.currentRow.managedBy}
-                        assignedTo={this.state.currentRow.assignedTo}
-                        handoverFromDate={this.state.currentRow.handoverFromDate}
-                        handoverToDate={this.state.currentRow.handoverToDate}
-                        location={this.state.currentRow.location}
-                        description={this.state.currentRow.description}
-                        status={this.state.currentRow.status}
-                        canRegisterForUse={this.state.currentRow.canRegisterForUse}
-                        detailInfo={this.state.currentRow.detailInfo}
+                        _id={currentRow._id}
+                        avatar={currentRow.avatar}
+                        code={currentRow.code}
+                        assetName={currentRow.assetName}
+                        serial={currentRow.serial}
+                        assetType={currentRow.assetType}
+                        purchaseDate={currentRow.purchaseDate}
+                        warrantyExpirationDate={currentRow.warrantyExpirationDate}
+                        managedBy={currentRow.managedBy}
+                        assignedTo={currentRow.assignedTo}
+                        handoverFromDate={currentRow.handoverFromDate}
+                        handoverToDate={currentRow.handoverToDate}
+                        location={currentRow.location}
+                        description={currentRow.description}
+                        status={currentRow.status}
+                        canRegisterForUse={currentRow.canRegisterForUse}
+                        detailInfo={currentRow.detailInfo}
 
-                        cost={this.state.currentRow.cost}
-                        residualValue={this.state.currentRow.residualValue}
-                        startDepreciation={this.state.currentRow.startDepreciation}
-                        usefulLife={this.state.currentRow.usefulLife}
-                        depreciationType={this.state.currentRow.depreciationType}
+                        cost={currentRow.cost}
+                        residualValue={currentRow.residualValue}
+                        startDepreciation={currentRow.startDepreciation}
+                        usefulLife={currentRow.usefulLife}
+                        depreciationType={currentRow.depreciationType}
 
-                        disposalDate={this.state.currentRow.disposalDate}
-                        disposalType={this.state.currentRow.disposalType}
-                        disposalCost={this.state.currentRow.disposalCost}
-                        disposalDesc={this.state.currentRow.disposalDesc}
+                        disposalDate={currentRow.disposalDate}
+                        disposalType={currentRow.disposalType}
+                        disposalCost={currentRow.disposalCost}
+                        disposalDesc={currentRow.disposalDesc}
 
-                        maintainanceLogs={this.state.currentRow.maintainanceLogs}
-                        usageLogs={this.state.currentRow.usageLogs}
-                        incidentLogs={this.state.currentRow.incidentLogs}
-                        archivedRecordNumber={this.state.currentRow.archivedRecordNumber}
-                        files={this.state.currentRow.files}
+                        maintainanceLogs={currentRow.maintainanceLogs}
+                        usageLogs={currentRow.usageLogs}
+                        incidentLogs={currentRow.incidentLogs}
+                        archivedRecordNumber={currentRow.archivedRecordNumber}
+                        files={currentRow.files}
                     />
                 }
             </div>
@@ -401,8 +423,8 @@ class AssetManagement extends Component {
 };
 
 function mapState(state) {
-    const { assetsManager, assetType, user, auth } = state;
-    return { assetsManager, assetType, user, auth };
+    const { assetsManager, assetType, user } = state;
+    return { assetsManager, assetType, user };
 };
 
 const actionCreators = {
