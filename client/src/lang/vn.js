@@ -1762,7 +1762,6 @@ export default {
                 detail_value: 'Giá trị',
                 detail_not_hasinfo: 'Chưa có thông tin',
                 detail_eval: 'Đánh giá công việc',
-                detail_eval_on_date: 'Đánh giá công việc ngày',
                 detail_point: 'Điểm các thành viên',
                 detail_auto_point: 'Điểm tự động',
                 detail_emp_point: 'Điểm tự đánh giá',
@@ -1791,7 +1790,7 @@ export default {
                 evaluate_date: 'Ngày đánh giá',
                 evaluate_member: 'Đánh giá thành viên tham gia công việc',
                 detail_not_calc_auto_point: 'Chưa tính được',
-                detail_auto_on_system: 'Điểm tựu động đang lưu trên hệ thống',
+                detail_auto_on_system: 'Điểm tự động đang lưu trên hệ thống',
                 detail_not_auto_on_system: 'Chưa có dữ liệu',
                 action_not_rating: 'Các hoạt động chưa được đánh giá tháng này',
                 no_action: 'Không có',
@@ -1802,7 +1801,6 @@ export default {
                 role_employee: 'Tên vai trò',
 
                 enter_emp_point: 'Nhập điểm tự đánh giá',
-                eval_on_month: 'Thông tin đánh giá công việc tháng này',
                 responsible_not_eval: 'Người thực hiện chưa đánh giá',
                 not_eval_on_month: 'Chưa có thông tin đánh giá tháng này',
 
@@ -1841,16 +1839,26 @@ export default {
 
                 btn_save_eval: 'Lưu đánh giá',
                 btn_get_info: 'Lấy thông tin',
-                note_not_eval: 'Bạn không thể chỉnh sửa đánh giá nữa vì đã quá 7 ngày sau lần đánh giá cuối cùng.',
+                note_not_eval: 'Đã quá 7 ngày sau ngày đánh giá. Bạn không thể chỉnh sửa thêm!',
                 note_eval: 'Số ngày còn lại để chỉnh sửa đánh giá: ',
                 
                 add_eval_of_this_month: 'Thêm đánh giá tháng này',
                 eval_of: 'Đánh giá tháng',
                 eval_from: 'Đánh giá từ ngày',
                 eval_to: 'Đến ngày',
-                store_info: 'Lưu công việc ra thông tin chung',
+                store_info: 'Lưu các giá trị trên vào thông tin công việc hiện tại',
                 bool_yes: 'Đúng',
                 bool_no: 'Sai',
+
+                detail_evaluation: 'Thông tin đánh giá công việc',
+                err_eval_start: 'Ngày đánh giá phải lớn hơn bằng ngày bắt đầu',
+                err_eval_end: 'Ngày đánh giá phải nhỏ hơn bằng ngày kết thúc',
+                err_eval_on_month: 'Ngày đánh giá phải là ngày trong tháng',
+
+                info_eval_month: 'Thông tin công việc trong đánh giá này',
+
+                auto_point_field: 'Điểm công việc tự động trong đánh giá này',
+                get_outside_info: 'Nhập tự động từ thông tin công việc hiện tại',
 
                 dashboard_created: 'Đã tạo',
                 dashboard_need_perform: 'Cần thực hiện',
