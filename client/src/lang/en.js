@@ -1687,7 +1687,7 @@ export default {
                 calc_where: 'Where',
                 calc_no_value: 'No value',
                 calc_nan: 'NAN',
-                explain: ' - (Negative values ​​will be considered as 0.)',
+                explain: ' (Negative values ​​will be considered as 0)',
                 eval_list: 'List of evaluations',
                 title_eval: 'Evaluate task',
 
