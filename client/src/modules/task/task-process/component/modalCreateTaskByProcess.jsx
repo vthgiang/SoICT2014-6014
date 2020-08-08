@@ -484,7 +484,7 @@ class ModalCreateTaskByProcess extends Component {
                     bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
                 >
                     <div>
-                        <div className="row">
+                        <div className="">
                             {/* Quy trình công việc */}
                             <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
                                 <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
