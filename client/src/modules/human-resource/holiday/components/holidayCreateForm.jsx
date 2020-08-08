@@ -106,8 +106,12 @@ class HolidayCreateForm extends Component {
 
     // Bắt sự kiện submit form
     save = () => {
+        let partStart = this.state.startDate.split('-');
+        let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
+        let partEnd = this.state.endDate.split('-');
+        let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         if (this.isFormValidated()) {
-            this.props.createNewHoliday(this.state);
+            this.props.createNewHoliday({ ...this.state, startDate: startDate, endDate: endDate });
         }
     }
     render() {

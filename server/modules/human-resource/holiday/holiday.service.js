@@ -20,15 +20,10 @@ exports.getAllHolidays = async (company) => {
  * @company : id công ty cần thêm
  */
 exports.createHoliday = async (data, company) => {
-    var partStart = data.startDate.split('-');
-    var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
-    var partEnd = data.endDate.split('-');
-    var endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
-
     return await Holiday.create({
         company: company,
-        startDate: startDate,
-        endDate: endDate,
+        startDate: data.startDate,
+        endDate: data.endDate,
         description: data.description,
     });
 }
@@ -49,14 +44,9 @@ exports.deleteHoliday = async (id) => {
  * @data : dữ liệu chỉnh sửa thông tin nghỉ lễ tết
  */
 exports.updateHoliday = async (id, data) => {
-    var partStart = data.startDate.split('-');
-    var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
-    var partEnd = data.endDate.split('-');
-    var endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
-
-    var holidayChange = {
-        startDate: startDate,
-        endDate: endDate,
+    let holidayChange = {
+        startDate: data.startDate,
+        endDate: data.endDate,
         description: data.description,
     };
     await Holiday.findOneAndUpdate({
@@ -68,6 +58,7 @@ exports.updateHoliday = async (id, data) => {
         _id: id
     })
 }
+
 /**
  * Hàm tiện ích convertdate thành yyyy-mm-dd
  * @param {Hàm} date : ngày cần convert

@@ -52,7 +52,6 @@ class ExperienceTab extends Component {
         let startDate = new Date(data.startDate);
         let endDate = new Date(data.endDate);
         let checkData = true;
-        // Kiểm tra trùng lặp thời gian làm Việc
         for (let n in array) {
             let date1 = new Date(array[n].startDate);
             let date2 = new Date(array[n].endDate);
