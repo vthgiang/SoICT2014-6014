@@ -1858,6 +1858,7 @@ export default {
                 err_eval_on_month: 'Ngày đánh giá phải là ngày trong tháng',
 
                 info_eval_month: 'Thông tin công việc trong đánh giá này',
+                explain_avg_rating: 'Do chưa có hoạt động nào được đánh giá nên mặc định điểm đánh giá hoạt động là 10',
 
                 auto_point_field: 'Điểm công việc tự động trong đánh giá này',
                 get_outside_info: 'Nhập tự động từ thông tin công việc hiện tại',
@@ -2045,6 +2046,7 @@ export default {
                     accountable: 'Vai trò người phê duyệt',
 
                     err_range: 'Giá trị không được vượt quá khoảng 0-100',
+                    err_contribute: 'Tổng phần trăm đóng góp phải là 100',
                     err_empty: 'Giá trị không được để trống'
                 }
 
