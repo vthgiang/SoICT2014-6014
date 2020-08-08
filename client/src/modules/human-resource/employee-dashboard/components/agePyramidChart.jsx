@@ -10,7 +10,9 @@ import 'c3/c3.css';
 class AgePyramidChart extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+            organizationalUnits: []
+        }
     }
 
     // Function tính tuổi nhân viên theo năm sinh nhập vào
@@ -39,6 +41,7 @@ class AgePyramidChart extends Component {
         return max;
     }
     renderChart = (data) => {
+        console.log("render chart")
         let maxData1 = this.findMaxOfArray(data.data1), maxData2 = this.findMaxOfArray(data.data2);
         let qty_max = maxData1 >= maxData2 ? maxData1 : maxData2;
         data.data1.shift(); data.data2.shift();
@@ -98,10 +101,38 @@ class AgePyramidChart extends Component {
         }, 500);
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        return {
-            organizationalUnits: nextProps.organizationalUnits
+    static isEqual = (items1, items2) => {
+        if (!items1 || !items2) {
+            return false;
         }
+        if (items1.length !== items2.length) {
+            return false;
+        }
+        for (let i = 0; i < items1.length; ++i) {
+            if (items1[i]._id !== items2[i]._id) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (!AgePyramidChart.isEqual(nextProps.employeesManager.listAllEmployees, prevState.listAllEmployees) ||
+            !AgePyramidChart.isEqual(nextProps.employeesManager.listEmployeesOfOrganizationalUnits, prevState.listEmployeesOfOrganizationalUnits)) {
+            return {
+                actionSearch: nextProps.actionSearch,
+                organizationalUnits: nextProps.organizationalUnits,
+                listAllEmployees: nextProps.employeesManager.listAllEmployees,
+                listEmployeesOfOrganizationalUnits: nextProps.employeesManager.listEmployeesOfOrganizationalUnits
+            }
+        }
+    }
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextProps.actionSearch !== this.state.actionSearch || !AgePyramidChart.isEqual(nextProps.employeesManager.listAllEmployees, this.state.listAllEmployees) ||
+            !AgePyramidChart.isEqual(nextProps.employeesManager.listEmployeesOfOrganizationalUnits, this.state.listEmployeesOfOrganizationalUnits)) {
+            return true;
+        };
+        return false;
     }
 
     render() {
@@ -147,6 +178,7 @@ class AgePyramidChart extends Component {
             data2: data2AgePyramid,
         }
         listAllEmployees.length !== 0 && this.renderChart(data);
+        console.log("hákdha")
         return (
             <React.Fragment>
                 <div ref="chart"></div>
