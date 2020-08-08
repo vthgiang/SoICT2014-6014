@@ -242,15 +242,15 @@ exports.getEmployees = async (company, organizationalUnits, positions, allInfor 
                     $in: emailInCompany
                 }
             };
-            let totalEmployee = await Employee.countDocuments(keySearch);
             let listEmployeesOfOrganizationalUnits = await Employee.find(keySearch);
+            let totalEmployee = listEmployeesOfOrganizationalUnits.length;
             return {
                 totalEmployee,
                 listEmployeesOfOrganizationalUnits
             }
         }
-        let totalAllEmployee = await Employee.countDocuments(keySearch);
         let listAllEmployees = await Employee.find(keySearch);
+        let totalAllEmployee = listAllEmployees.length;
         return {
             totalAllEmployee,
             listAllEmployees
@@ -264,15 +264,18 @@ exports.getEmployees = async (company, organizationalUnits, positions, allInfor 
                     $in: emailInCompany
                 }
             };
-            let totalEmployee = await Employee.countDocuments(keySearch);
+
             let listEmployeesOfOrganizationalUnits = await Employee.find(keySearch, {
                 _id: 1,
                 emailInCompany: 1,
                 fullName: 1,
                 employeeNumber: 1,
                 gender: 1,
-                birthdate: 1
+                birthdate: 1,
+                startingDate: 1,
+                leavingDate: 1
             });
+            let totalEmployee = listEmployeesOfOrganizationalUnits.length;
             return {
                 totalEmployee,
                 listEmployeesOfOrganizationalUnits
@@ -285,7 +288,9 @@ exports.getEmployees = async (company, organizationalUnits, positions, allInfor 
             fullName: 1,
             employeeNumber: 1,
             gender: 1,
-            birthdate: 1
+            birthdate: 1,
+            startingDate: 1,
+            leavingDate: 1
         });
         return {
             totalAllEmployee,

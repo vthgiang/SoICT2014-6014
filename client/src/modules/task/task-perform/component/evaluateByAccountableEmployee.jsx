@@ -371,7 +371,8 @@ class EvaluateByAccountableEmployee extends Component {
         };
 
         let calcAuto = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
-        if (isNaN(calcAuto)) calcAuto = undefined
+        if (isNaN(calcAuto)) calcAuto = undefined;
+        if (calcAuto < 0) calcAuto = 0;
 
         dentaDate = Math.round(((new Date()).getTime() - dateOfEval.getTime()) / (1000 * 3600 * 24));
 
@@ -465,6 +466,7 @@ class EvaluateByAccountableEmployee extends Component {
 
         let calcAuto = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
         if (isNaN(calcAuto)) calcAuto = undefined
+        if (calcAuto < 0) calcAuto = 0;
 
         return {
             info: info,
@@ -922,6 +924,7 @@ class EvaluateByAccountableEmployee extends Component {
 
         automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
         if (isNaN(automaticPoint)) automaticPoint = undefined
+        if (automaticPoint < 0) automaticPoint = 0;
 
         this.setState(state => {
             return {
@@ -1079,7 +1082,7 @@ class EvaluateByAccountableEmployee extends Component {
         let data = {
             user: getStorage("userId"),
             progress: this.state.progress,
-            automaticPoint: this.state.autoPoint !== 0 ? this.state.autoPoint : parseInt(this.state.progress),
+            automaticPoint: this.state.autoPoint,
             role: "Accountable",
             status: this.state.status,
 
@@ -1093,6 +1096,13 @@ class EvaluateByAccountableEmployee extends Component {
         this.handleAddTaskLog();
 
         this.props.evaluateTaskByAccountableEmployees(data, taskId);
+
+        this.setState(state=>{
+            return {
+                ...state,
+                oldAutoPoint: state.autoPoint,
+            }
+        });
     }
 
     checkNote = () => {
