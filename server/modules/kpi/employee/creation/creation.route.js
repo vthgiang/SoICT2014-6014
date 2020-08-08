@@ -29,12 +29,12 @@ router.delete('/employee-kpis/:id', auth, EmployeeKpiSetController.deleteEmploye
 
 //comments
 router.post('/employee-kpi-sets/:kpiId/comments', auth, uploadFile([{ name: 'files', path: '/files/kpisets' }], 'array'), EmployeeKpiSetController.createComment)
-router.patch('/employee-kpi-sets/:kpiId/comments/:commentId', auth, EmployeeKpiSetController.editComment)
+router.patch('/employee-kpi-sets/:kpiId/comments/:commentId', auth, uploadFile([{ name: 'files', path: '/files/kpisets' }], 'array'), EmployeeKpiSetController.editComment)
 router.delete('/employee-kpi-sets/:kpiId/comments/:commentId', auth, EmployeeKpiSetController.deleteComment)
-
+router.delete('/employee-kpi-sets/:kpiId/comments/:commentId/files/:fileId', auth, EmployeeKpiSetController.deleteFileComment)
 //child comments
-router.post('/employee-kpi-sets/:kpiId/comments/:commentId/child-comments', auth, uploadFile([{ name: 'files', path: '/files/kpisets' }], 'array'), EmployeeKpiSetController.createCommentOfComment)
-router.patch('/employee-kpi-sets/:kpiId/comments/:commentId/child-comments/:childCommentId', auth, EmployeeKpiSetController.editCommentOfComment)
-router.delete('/employee-kpi-sets/:kpiId/comments/:commentId/child-comments/:childCommentId', auth, EmployeeKpiSetController.deleteCommentOfComment)
-
+router.post('/employee-kpi-sets/:kpiId/comments/:commentId/child-comments', auth, uploadFile([{ name: 'files', path: '/files/kpisets' }], 'array'), EmployeeKpiSetController.createChildComment)
+router.patch('/employee-kpi-sets/:kpiId/comments/:commentId/child-comments/:childCommentId', auth, uploadFile([{ name: 'files', path: '/files/kpisets' }], 'array'), EmployeeKpiSetController.editChildComment)
+router.delete('/employee-kpi-sets/:kpiId/comments/:commentId/child-comments/:childCommentId', auth, EmployeeKpiSetController.deleteChildComment)
+router.delete('/employee-kpi-sets/:kpiId/comments/:commentId/child-comments/:childCommentId/files/:fileId', auth, EmployeeKpiSetController.deleteFileChildComment)
 module.exports = router;
