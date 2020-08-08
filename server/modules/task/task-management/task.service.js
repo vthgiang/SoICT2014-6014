@@ -936,32 +936,39 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
 
     if (startDateAfter) {
         let startTimeAfter = startDateAfter.split("-");
-        console.log("\n", startTimeAfter[0], startTimeAfter[1])
         let start;
+
+
         if (startTimeAfter[0] > 12) start = new Date(startTimeAfter[0], startTimeAfter[1] - 1, 1);
         else start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
-        console.log('\n\nsttart ', start)
+        console.log("start: ", start)
         keySearch = {
             ...keySearch,
-            $or: [
-                { startDate: { $gte: start } },
-                { endDate: { $gte: start } }
-            ]
+            endDate: {
+                $gte: start
+            }
+            // $or: [
+            //     { startDate: { $gte: start } },
+            //     { endDate: { $gte: start } }
+            // ]
         }
     }
 
     if (endDateBefore) {
         let endTimeBefore = endDateBefore.split("-");
-        let end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
+        let end;
+        if (endTimeBefore[0] > 12) end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
+        else end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
+        console.log("end : ", end)
         keySearch = {
             ...keySearch,
-            // endDate: {
-            //     $lte: end
-            // }
-            $or: [
-                { startDate: { $lte: end } },
-                { endDate: { $lte: end } }
-            ]
+            startDate: {
+                $lt: end
+            }
+            // $or: [
+            //     { startDate: { $lte: end } },
+            //     { endDate: { $lte: end } }
+            // ]
         }
     }
     organizationUnitTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
@@ -1249,7 +1256,7 @@ exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId, mo
  * @param {*} month 
  */
 exports.getAllTaskOfChildrenOrganizationalUnit = async (companyId, roleId, month) => {
-    
+
     let tasksOfChildrenOrganizationalUnit = [], childrenOrganizationalUnits;
 
     childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(companyId, roleId);

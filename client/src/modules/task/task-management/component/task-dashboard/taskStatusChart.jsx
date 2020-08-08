@@ -54,7 +54,7 @@ class TaskStatusChart extends Component {
             consultedTasks: null,
             informedTasks: null,
             creatorTasks: null,
-            organizationUnitTasks: null,
+            organizationUnitTasks: this.props.tasksUnit,
         }
 
         this.INFO_SEARCH = {
@@ -83,8 +83,8 @@ class TaskStatusChart extends Component {
         //console.log('should compornet', nextProps.callAction, this.state.callAction)
         if (
             nextProps.callAction !== this.state.callAction
-            || nextState.currentMonth !== this.state.currentMonth
-            || nextState.nextMonth !== this.state.nextMonth
+            || nextProps.startMonth !== this.props.startMonth
+            || nextProps.endMonth !== this.props.endMonth
         ) {
             // //console.log('should compornet')
             if (this.props.TaskOrganizationUnitDashboard) {
@@ -92,7 +92,7 @@ class TaskStatusChart extends Component {
                 let idsUnit = this.props.units ? this.props.units : "[]";
 
                 //console.log(nextState.currentMonth, nextState.nextMonth)
-                await this.props.getTaskInOrganizationUnitByMonth(idsUnit, nextState.currentMonth, nextState.nextMonth);
+                await this.props.getTaskInOrganizationUnitByMonth(idsUnit, nextProps.currentMonth, nextProps.nextMonth);
             }
             else {
                 await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.currentMonth, nextState.nextMonth, null, null, this.state.aPeriodOfTime);
@@ -131,7 +131,7 @@ class TaskStatusChart extends Component {
             if (this.props.TaskOrganizationUnitDashboard) { // neu componet duoc goi tu dashboard organization unit
                 let idsUnit = this.props.units ? this.props.units : "[]";
                 //console.log("o day dong 132:=======================")
-                await this.props.getTaskInOrganizationUnitByMonth(idsUnit, this.state.currentMonth, this.state.nextMonth);
+                await this.props.getTaskInOrganizationUnitByMonth(idsUnit, this.props.startMonth, this.props.endMonth);
             }
             else {
                 await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.currentMonth, this.state.nextMonth, null, null, this.state.aPeriodOfTime);
@@ -257,12 +257,13 @@ class TaskStatusChart extends Component {
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
         //console.log('chay vao setdataPieChart =======================================')
-        const { translate } = this.props;
+        const { translate, tasks } = this.props;
 
         let dataPieChart, numberOfInprocess = 0, numberOfWaitForApproval = 0, numberOfFinished = 0, numberOfDelayed = 0, numberOfCanceled = 0;
         let listTask;
         if (this.props.TaskOrganizationUnitDashboard) {
-            listTask = this.TASK_PROPS.organizationUnitTasks;
+            // listTask = this.TASK_PROPS.organizationUnitTasks;
+            listTask = tasks.organizationUnitTasks;
             //console.log('listTask: ', listTask);
         }
         else if (this.TASK_PROPS.responsibleTasks && this.TASK_PROPS.accountableTasks && this.TASK_PROPS.consultedTasks && this.TASK_PROPS.informedTasks && this.TASK_PROPS.creatorTasks) {
@@ -370,7 +371,7 @@ class TaskStatusChart extends Component {
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
-                    <section className="form-inline">
+                    {/* <section className="form-inline">
                         <div className="form-group">
                             <label>{translate('task.task_management.month')}</label>
                             <DatePicker
@@ -387,7 +388,7 @@ class TaskStatusChart extends Component {
                                 <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                             </div>
                         }
-                    </section>
+                    </section> */}
 
 
                     {!TaskOrganizationUnitDashboard &&

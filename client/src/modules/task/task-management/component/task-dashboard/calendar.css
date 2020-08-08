@@ -49,19 +49,19 @@
     border-bottom: 1px solid #bbb;
 }
 .rct-items .rct-item {
-  background: rgb(97, 173, 245) !important;
+  background: rgb(210, 228, 255) !important;
+  /* left: 0 !important */
 }
 #start_date_after, #end_date_before{
   z-index: 100 !important;
 }
-#task-progress{
-    z-index: -1;
-    background-color: wheat;
-    height: 23px;
-    position: relative;
-    top: -30px;
-    border-radius: 3px;
-    left: -0.5px;
+.task-progress{
+  z-index: -1;
+  background-color: rgb(104, 152, 255);
+  height: 21px;
+  position: absolute;
+  top: 1px;
+  border-radius: 3px;
 }
 .flex-right {
   display: flex;
