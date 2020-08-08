@@ -55,7 +55,7 @@ class ModalCreateTaskByProcess extends Component {
 
     componentDidMount() {
         this.props.getDepartment();
-        this.props.getAllUsersWithRole();
+        // this.props.getAllUsersWithRole();
         let { user } = this.props;
         let defaultUnit = user && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.find(item =>
             item.dean === this.state.currentRole
@@ -68,7 +68,6 @@ class ModalCreateTaskByProcess extends Component {
 
 
         this.modeler.attachTo('#' + this.generateId);
-        // this.modeler.importXML(this.initialDiagram, function (err) {})
 
         var eventBus = this.modeler.get('eventBus');
         this.modeler.on('element.click', 1000, (e) => this.interactPopup(e));

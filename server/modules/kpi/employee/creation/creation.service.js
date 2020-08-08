@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const taskCommentModel = require('../../../../models/task/taskComment.model');
-
+const fs = require('fs');
 const { EmployeeKpi, EmployeeKpiSet, OrganizationalUnit, OrganizationalUnitKpiSet, User } = require('../../../../models/index').schema;
 
 // File này làm nhiệm vụ thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
@@ -260,11 +260,26 @@ exports.editComment = async (params, body) => {
  * Delete comment
  */
 exports.deleteComment = async (params) => {
+    let files = await EmployeeKpiSet.aggregate([
+        { $match: { "_id": mongoose.Types.ObjectId(params.kpiId) } },
+        { $unwind: "$comments" },
+        { $replaceRoot: { newRoot: "$comments" } },
+        { $match: { "_id": mongoose.Types.ObjectId(params.commentId) } },
+        { $unwind: "$files" },
+        { $replaceRoot: { newRoot: "$files" } },
+    ])
+    console.log(files)
+
+    //xoa files
+    let i
+    for (i = 0; i < files.length; i++) {
+        fs.unlinkSync(files[i].url)
+    }
     let comments = await EmployeeKpiSet.update(
         { "_id": params.kpiId, "comments._id": params.commentId },
         { $pull: { comments: { _id: params.commentId } } },
         { safe: true })
-    let comment = await EmployeeKpiSet.findOne({ "_id": params.kpiId, "comments._id": params.commentId })
+    let comment = await EmployeeKpiSet.findOne({ "_id": params.kpiId})
         .populate([
             { path: 'comments.creator', model: User, select: 'name email avatar ' },
             { path: 'comments.comments.creator', model: User, select: 'name email avatar' }
@@ -331,6 +346,21 @@ exports.editCommentOfComment = async (params, body) => {
  * Delete comment of comment
  */
 exports.deleteCommentOfComment = async (params) => {
+    let files = await Task.aggregate([
+        { $match: { "_id": mongoose.Types.ObjectId(params.kpiId) } },
+        { $unwind: "$comments" },
+        { $replaceRoot: { newRoot: "$comments" } },
+        { $match: { "_id": mongoose.Types.ObjectId(params.commentId) } },
+        { $unwind: "$comments" },
+        { $replaceRoot: { newRoot: "$comments" } },
+        { $match: { "_id": mongoose.Types.ObjectId(params.childCommentId) } },
+        { $unwind: "$files" },
+        { $replaceRoot: { newRoot: "$files" } }
+    ])
+    let i = 0
+    for (i = 0; i < files.length; i++) {
+        fs.unlinkSync(files[i].url)
+    }
     let comment1 = await EmployeeKpiSet.update(
         { "_id": params.kpiId, "comments._id": params.commentId, "comments.comments._id": params.childCommentId },
         { $pull: { "comments.$.comments": { _id: params.childCommentId } } },

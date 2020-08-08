@@ -127,6 +127,7 @@ class ActionTab extends Component {
                     id: nextProps.id
                 }
             })
+            console.log("Should component")
             this.props.getTimesheetLogs(nextProps.id);
             this.props.getStatusTimer(nextProps.id);
             this.props.getSubTask(nextProps.id);
@@ -736,7 +737,7 @@ class ActionTab extends Component {
     }
     render() {
         let type = ["actions", "commentofactions", "taskcomments", "commentoftaskcomments"];
-        let task, informations, statusTask, files, actionComments, taskActions, taskComments, actions, logTimer, logs;
+        let task, informations, statusTask, files, actionComments, taskActions, taskComments, logTimer, logs;
         const { tasks, performtasks, user, auth, translate, role } = this.props;
         const subtasks = tasks.subtasks;
         const {

@@ -20,6 +20,35 @@ import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
 import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
 
 
+import { is } from 'bpmn-js/lib/util/ModelUtil';
+import { isExpanded } from 'bpmn-js/lib/util/DiUtil';
+import ElementFactory from 'bpmn-js/lib/features/modeling/ElementFactory';
+import LabelEditingProvider from 'bpmn-js/lib/features/label-editing/LabelEditingProvider'
+
+
+ElementFactory.prototype._getDefaultSize = function (semantic) {
+
+   if (is(semantic, 'bpmn:Task')) {
+      return { width: 160, height: 130 };
+   }
+
+   if (is(semantic, 'bpmn:Gateway')) {
+      return { width: 50, height: 50 };
+   }
+
+   if (is(semantic, 'bpmn:Event')) {
+      return { width: 36, height: 36 };
+   }
+
+   if (is(semantic, 'bpmn:TextAnnotation')) {
+      return { width: 100, height: 30 };
+   }
+   return { width: 100, height: 80 };
+
+};
+
+
+
 //Xóa element khỏi palette 
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
 PaletteProvider.prototype.getPaletteEntries = function (element) {
@@ -205,7 +234,15 @@ class ModalCreateTaskProcess extends Component {
       var eventBus = this.modeler.get('eventBus');
       eventBus.on('element.dblclick', 15000000, function (event) {
          return false; // will cancel event
-     });
+      });
+      
+      eventBus.on([
+         'create.end',
+         'autoPlace.end'
+       ], 250, () =>  {
+         this.modeler.get('directEditing').cancel()
+       });
+
       this.modeler.on('element.click', 1, (e) => this.interactPopup(e));
 
       this.modeler.on('shape.remove', 1000, (e) => this.deleteElements(e));
