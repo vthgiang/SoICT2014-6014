@@ -1,9 +1,0 @@
-.files-list {
-    margin-bottom: 45px;
-}
-
-@media screen and (max-width: 1280px ) and (min-width: 992px) {
-    ul {
-      margin-top: -20px !important; 
-    }
-  }

@@ -293,6 +293,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
         let calcAuto = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
         if (isNaN(calcAuto)) calcAuto = undefined
+        if (calcAuto < 0) calcAuto = 0;
 
         dentaDate = Math.round(((new Date()).getTime() - dateOfEval.getTime()) / (1000 * 3600 * 24));
         console.log('denta', dentaDate);
@@ -385,6 +386,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
         let calcAuto = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
         if (isNaN(calcAuto)) calcAuto = undefined
+        if (calcAuto < 0) calcAuto = 0;
 
         return {
             info: info,
@@ -504,6 +506,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
         automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
         if (isNaN(automaticPoint)) automaticPoint = undefined
+        if (automaticPoint < 0) automaticPoint = 0;
 
         this.setState(state => {
             return {
@@ -802,7 +805,7 @@ class EvaluateByResponsibleEmployee extends Component {
         }
     }
 
-    save = () => {
+    save = async () => {
         let taskId;
         taskId = this.state.task._id;
         let data = {
@@ -822,6 +825,13 @@ class EvaluateByResponsibleEmployee extends Component {
         this.props.evaluateTaskByResponsibleEmployees(data, taskId);
 
         this.handleAddTaskLog();
+
+        this.setState(state=>{
+            return {
+                ...state,
+                oldAutoPoint: state.autoPoint,
+            }
+        });
     }
 
 //  kiểm tra có phải đánh giá này là của tháng hiện tại hay ko

@@ -98,7 +98,7 @@ class ContentMaker extends Component {
                         <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={handleEdit}>{cancelButtonText}</a>
                     </div>
                     {files && files.length > 0 &&
-                        <div className='files-list '>
+                        <div className='files-list'>
                             <ul>{files.map((file) =>
                                 <li className='files-list-item' key={file.id}>
                                     <div className='files-list-item-preview'>
