@@ -111,7 +111,7 @@ class CustomerManagement extends Component {
                                         <td> {customer.name} </td>
                                         <td> {customer.code} </td>
                                         <td> {customer.phone} </td>
-                                        <td> {customer.location ? customer.location.name : null} </td>
+                                        <td> {customer.location} </td>
                                         <td> {customer.email} </td>
                                         <td> {customer.group ? customer.group.name : null} </td>
                                         <td style={{ textAlign: 'center' }}>

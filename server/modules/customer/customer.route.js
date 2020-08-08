@@ -10,6 +10,9 @@ router.get("/group", auth, CustomerController.getCustomerGroups);
 // Customer liability
 router.get("/liability", auth, CustomerController.getCustomerLiabilities);
 
+// Get location
+router.get('/location', CustomerController.getLocations);
+
 // Customer
 router.get("/", auth, CustomerController.getCustomers);
 

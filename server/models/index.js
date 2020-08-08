@@ -63,7 +63,6 @@ const TaskReport = require('./report/taskReport.model');
 const Material = require('./warehouse/material.model');
 // Customer Management
 const Customer = require('./customer/customer.model');
-const CustomerLocation = require('./customer/customerLocation.model');
 const CustomerCare = require('./customer/customerCare.model');
 const CustomerGroup = require('./customer/customerGroup.model');
 const CustomerLiability = require('./customer/customerLiability.model');
@@ -131,7 +130,6 @@ exports.schema = {
     Material,
     Customer,
     CustomerCare,
-    CustomerLocation,
     CustomerGroup,
     CustomerLiability
 } 
