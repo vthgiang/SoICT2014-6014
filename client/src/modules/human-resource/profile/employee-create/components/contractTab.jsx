@@ -59,25 +59,67 @@ class ContractTab extends Component {
         window.$(`#modal-edit-contract-editContract${index}`).modal('show');
     }
 
+    // Function kiểm tra trùng lặp thời gian làm Việc
+    checkForFuplicate = (data, array) => {
+        let startDate = new Date(data.startDate);
+        let endDate = new Date(data.endDate);
+        let checkData = true;
+        // Kiểm tra trùng lặp thời gian làm Việc
+        for (let n in array) {
+            let date1 = new Date(array[n].startDate);
+            let date2 = new Date(array[n].endDate);
+            if (date1.getTime() === startDate.getTime() || (startDate.getTime() < date1.getTime() && endDate.getTime() > date1.getTime()) ||
+                (startDate.getTime() < date2.getTime() && endDate.getTime() > date1.getTime())) {
+                checkData = false;
+                break;
+            }
+        }
+        return checkData
+    }
 
-    // function thêm thông tin hợp đồng lao động
+    // Function thêm thông tin hợp đồng lao động
     handleAddContract = async (data) => {
         const { contracts } = this.state;
-        await this.setState({
-            contracts: [...contracts, {
-                ...data
-            }]
-        })
-        this.props.handleAddContract(this.state.contracts, data);
+        let checkData = this.checkForFuplicate(data, contracts);
+        if (checkData) {
+            await this.setState({
+                ...this.state,
+                contracts: [...contracts, {
+                    ...data
+                }]
+            })
+            this.props.handleAddContract(contracts, data);
+        } else {
+            toast.error(
+                <ServerResponseAlert
+                    type='error'
+                    title={'general.error'}
+                    content={['Thời gian hợp đồng lao động bị trùng lặp']}
+                />,
+                { containerId: 'toast-notification' }
+            );
+        }
     }
-    // function chỉnh sửa thông tin hợp đồng lao động
+    // Function chỉnh sửa thông tin hợp đồng lao động
     handleEditContract = async (data) => {
         const { contracts } = this.state;
-        contracts[data.index] = data;
-        await this.setState({
-            contracts: contracts
-        })
-        this.props.handleEditContract(this.state.contracts, data);
+        let checkData = this.checkForFuplicate(data, contracts);
+        if (checkData) {
+            contracts[data.index] = data;
+            await this.setState({
+                contracts: contracts
+            })
+            this.props.handleEditContract(this.state.contracts, data);
+        } else {
+            toast.error(
+                <ServerResponseAlert
+                    type='error'
+                    title={'general.error'}
+                    content={['Thời gian hợp đồng lao động bị trùng lặp']}
+                />,
+                { containerId: 'toast-notification' }
+            );
+        }
     }
     // Function xoá hợp đồng lao động
     delete = async (index) => {
