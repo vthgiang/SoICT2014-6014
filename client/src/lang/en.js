@@ -1614,7 +1614,6 @@ export default {
                 detail_value: 'Value',
                 detail_not_hasinfo: 'Not has infomation',
                 detail_eval: 'Evaluation',
-                detail_eval_on_date: 'Evaluation on',
                 detail_point: 'Member Point',
                 detail_auto_point: 'Automatic point',
                 detail_emp_point: 'Employee point',
@@ -1654,7 +1653,6 @@ export default {
                 role_employee: 'Role',
 
                 enter_emp_point: 'Enter employee point',
-                eval_on_month: 'Evaluation information of this month',
                 responsible_not_eval: 'Responsible employee has not evaluated',
                 not_eval_on_month: 'Not has evaluation information of this month',
 
@@ -1700,7 +1698,7 @@ export default {
                 eval_of: 'Evaluation of',
                 eval_from: 'Evaluation from',
                 eval_to: 'Evaluation to',
-                store_info: 'Stored infomation of evaluation to task infomation',
+                store_info: 'Save the input data into task infomation',
                 bool_yes: 'Yes',
                 bool_no: 'No',
 
