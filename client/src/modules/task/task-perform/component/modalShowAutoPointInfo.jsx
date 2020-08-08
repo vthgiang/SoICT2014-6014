@@ -134,9 +134,9 @@ class ModalShowAutoPointInfo extends Component {
                                 <li>averageActionRating: {translate('task.task_management.calc_average_action_rating')}: {averageActionRating} </li>
                                 <li>progress: {translate('task.task_management.calc_progress')}: {progress} (%)</li>
                                 {
-                                    taskInformations && taskInformations.map(e => {
+                                    taskInformations && taskInformations.map((e, index) => {
                                         if(e.type === 'Number'){
-                                            return <li>{e.code}: {e.name}: {(info[`${e.code}`] && info[`${e.code}`].value)? info[`${e.code}`].value: translate('task.task_management.calc_no_value') }</li>
+                                            return <li key={index}>{e.code}: {e.name}: {(info[`${e.code}`] && info[`${e.code}`].value)? info[`${e.code}`].value: translate('task.task_management.calc_no_value') }</li>
                                         }
                                     })
                                 }

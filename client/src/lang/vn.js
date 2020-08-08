@@ -1798,7 +1798,8 @@ export default {
                 not_eval: 'Chưa đánh giá',
                 acc_evaluate: 'Đánh giá của người phê duyệt',
                 name_employee: 'Tên nhân viên',
-                role_employee: 'Tên vai trò',
+                role_employee: 'Vai trò',
+                detail_emp_point_of: 'Điểm tự đánh giá của',
 
                 enter_emp_point: 'Nhập điểm tự đánh giá',
                 responsible_not_eval: 'Người thực hiện chưa đánh giá',
@@ -1807,7 +1808,7 @@ export default {
                 edit_basic_info: 'Thông tin cơ bản',
                 edit_detail_info: 'Thông tin chi tiết',
                 edit_member_info: 'Thông tin thành viên tham gia',
-                edit_inactive_emp: 'Thông tin người không làm việc nữa',
+                edit_inactive_emp: 'Thông tin thành viên rời khỏi công việc',
                 edit_enter_progress: 'Nhập mức độ hoàn thành',
                 edit_enter_value: 'Nhập giá trị',
 

@@ -1268,7 +1268,7 @@ class EvaluateByAccountableEmployee extends Component {
                                                             <td style={{ padding: 5 }}>
                                                                 <input className={`form-control ${errorContribute && errorContribute[item._id] === undefined ? '' : 'has-error'}`}
                                                                     value={this.checkNullUndefined(results[`contributeResponsible${item._id}`]?.value) ? results[`contributeResponsible${item._id}`].value : ''}
-                                                                    type="number" name={`contributeResponsible${item._id}`} placeholder={"%" + translate('task.task_management.contribution')}
+                                                                    type="number" name={`contributeResponsible${item._id}`} placeholder={"% " + translate('task.task_management.contribution')}
                                                                     onChange={(e) => this.handleChangeResponsibleContribution(e, item._id)}
                                                                     disabled={disabled}
                                                                 />
@@ -1296,7 +1296,7 @@ class EvaluateByAccountableEmployee extends Component {
                                                             <td style={{ padding: 5 }}>
                                                                 <input className={`form-control ${errorContribute && errorContribute[item._id] === undefined ? '' : 'has-error'}`} type="number"
                                                                     value={this.checkNullUndefined(results[`contributeConsulted${item._id}`]?.value) ? results[`contributeConsulted${item._id}`].value : ''}
-                                                                    name={`contributeConsulted${item._id}`} placeholder={"%" + translate('task.task_management.contribution')}
+                                                                    name={`contributeConsulted${item._id}`} placeholder={"% " + translate('task.task_management.contribution')}
                                                                     onChange={(e) => this.handleChangeConsultedContribution(e, item._id)}
                                                                     disabled={disabled}
                                                                 />
@@ -1324,7 +1324,7 @@ class EvaluateByAccountableEmployee extends Component {
                                                             <td style={{ padding: 5 }}>
                                                                 <input className={`form-control ${errorContribute && errorContribute[item._id] === undefined ? '' : 'has-error'}`} type="number"
                                                                     value={this.checkNullUndefined(results[`contributeAccountable${item._id}`]?.value) ? results[`contributeAccountable${item._id}`].value : ''}
-                                                                    name={`contributeAccountable${item._id}`} placeholder={"%" + translate('task.task_management.contribution')}
+                                                                    name={`contributeAccountable${item._id}`} placeholder={"% " + translate('task.task_management.contribution')}
                                                                     onChange={(e) => this.handleChangeAccountableContribution(e, item._id)}
                                                                     disabled={disabled}
                                                                 />

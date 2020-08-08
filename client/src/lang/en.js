@@ -1651,6 +1651,7 @@ export default {
                 acc_evaluate: 'Accountable evaluation',
                 name_employee: 'Name',
                 role_employee: 'Role',
+                detail_emp_point_of: 'Employee point of',
 
                 enter_emp_point: 'Enter employee point',
                 responsible_not_eval: 'Responsible employee has not evaluated',
@@ -1659,7 +1660,7 @@ export default {
                 edit_basic_info: 'Basic information',
                 edit_detail_info: 'Detail information',
                 edit_member_info: 'Member information',
-                edit_inactive_emp: 'Inactive employee information',
+                edit_inactive_emp: 'Inactive employees',
                 edit_enter_progress: 'Enter progress',
                 edit_enter_value: 'Enter value',
 

@@ -1098,64 +1098,70 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 </div>
                             </fieldset>
 
+                            
+                            {/* Thành viên rời khỏi công việc */}
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('task.task_management.edit_inactive_emp')}</legend>
                                 <div className="form-group">
 
-                                    <div className="checkbox">
-                                        <strong>{translate('task.task_management.accountable')}</strong>
-                                        {
-                                            task.accountableEmployees.map(elem => {
-                                                return <div>
-                                                    <label>
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true}
-                                                            value={elem._id}
-                                                            name="accountable" onChange={(e) => this.handleChangeActiveAccountable(e, elem._id)}
-                                                        />{elem.name}
-                                                    </label>
-                                                    <br />
-                                                </div>
-                                            })
-                                        }
-                                        <br />
-                                        <strong>{translate('task.task_management.responsible')}</strong>
-                                        {
-                                            task.responsibleEmployees.map(elem => {
-                                                return <div>
-                                                    <label>
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true}
-                                                            value={elem._id}
-                                                            name="responsible" onChange={(e) => this.handleChangeActiveResponsible(e, elem._id)}
-                                                        />{elem.name}
-                                                    </label>
-                                                    <br />
-                                                </div>
-                                            })
-                                        }
-                                        <br />
+                                    <div style={{ lineHeight: 2.3 }}>
+                                        {/* Thành viên phê duyệt */}
+                                        <div style={{ marginBottom: 15 }}>
+                                            <div><strong>{translate('task.task_management.accountable')}</strong></div>
+                                            {
+                                                task.accountableEmployees.map((elem,index) => {
+                                                    return <div key={index} style={{paddingLeft: 20}}>
+                                                        <label style={{fontWeight: "normal", margin: 0}}>
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true}
+                                                                value={elem._id}
+                                                                name="accountable" onChange={(e) => this.handleChangeActiveAccountable(e, elem._id)}
+                                                            />&nbsp;&nbsp;&nbsp;{elem.name}
+                                                        </label>
+                                                    </div>
+                                                })
+                                            }
+                                        </div>
+
+                                        <div style={{ marginBottom: 15 }}>
+                                            <div><strong>{translate('task.task_management.responsible')}</strong></div>
+                                            {
+                                                task.responsibleEmployees.map((elem, index) => {
+                                                    return <div key={index} style={{ paddingLeft: 20}}>
+                                                        <label style={{ fontWeight: "normal", margin: 0 }}>
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true}
+                                                                value={elem._id}
+                                                                name="responsible" onChange={(e) => this.handleChangeActiveResponsible(e, elem._id)}
+                                                            />&nbsp;&nbsp;&nbsp;{elem.name}
+                                                        </label>
+                                                        <br />
+                                                    </div>
+                                                })
+                                            }
+                                        </div>
+
                                         {task.consultedEmployees.length !== 0 &&
-                                            <React.Fragment>
-                                                <strong>{translate('task.task_management.consulted')}</strong>
+                                        <div>
+                                            <div><strong>{translate('task.task_management.consulted')}</strong></div>
                                                 {
                                                     task.consultedEmployees.map((elem, key) => {
-                                                        return <div key={key}>
-                                                            <label>
+                                                        return <div key={key} style={{ paddingLeft: 20}}>
+                                                            <label style={{ fontWeight: "normal", margin: 0 }}>
                                                                 <input
                                                                     type="checkbox"
                                                                     checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true}
                                                                     value={elem._id}
                                                                     name="consulted" onChange={(e) => this.handleChangeActiveConsulted(e, elem._id)}
-                                                                />{elem.name}
+                                                                />&nbsp;&nbsp;&nbsp;{elem.name}
                                                             </label>
                                                             <br />
                                                         </div>
                                                     })
                                                 }
-                                            </React.Fragment>
+                                        </div>
                                         }
                                     </div>
                                 </div>
