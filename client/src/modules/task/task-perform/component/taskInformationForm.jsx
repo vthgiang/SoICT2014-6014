@@ -42,9 +42,9 @@ class TaskInformationForm extends Component {
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border">{legendText}</legend>
 
-                        {(perform === 'evaluate') &&
+                        {(perform === 'evaluate' && !disabled) &&
                             <div className="pull-right" style={{marginTop: -20}}>
-                                <a style={{cursor: "pointer"}}>Nhập tự động từ thông tin công việc hiện tại</a>
+                                <a style={{cursor: "pointer"}} onClick={this.props.updateInfo}>{translate('task.task_management.get_outside_info')}</a>
                             </div>
                         }
 
@@ -170,7 +170,7 @@ class TaskInformationForm extends Component {
                                 }
                             })
                         }
-                        {(perform === 'evaluate') &&
+                        {(perform === 'evaluate' && !disabled) &&
                             <label className={`form-group`}>
                                 <input
                                     type="checkbox"

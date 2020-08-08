@@ -1850,6 +1850,14 @@ export default {
                 bool_yes: 'Đúng',
                 bool_no: 'Sai',
 
+                detail_evaluation: 'Thông tin đánh giá công việc',
+                err_eval_start: 'Ngày đánh giá phải lớn hơn bằng ngày bắt đầu',
+                err_eval_end: 'Ngày đánh giá phải nhỏ hơn bằng ngày kết thúc',
+                err_eval_on_month: 'Ngày đánh giá phải là ngày trong tháng',
+
+                auto_point_field: 'Điểm công việc tự động trong đánh giá này',
+                get_outside_info: 'Nhập tự động từ thông tin công việc hiện tại',
+
                 dashboard_created: 'Đã tạo',
                 dashboard_need_perform: 'Cần thực hiện',
                 dashboard_need_approve: 'Cần phê duyệt',
