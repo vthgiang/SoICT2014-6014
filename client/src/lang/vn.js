@@ -1342,6 +1342,7 @@ export default {
                 start_date_required: 'Thời gian bắt đầu không được để trống',
                 end_date_required: 'Thời gian kết thúc không được để trống',
                 reason_required: 'Mô tả lịch nghỉ không được để trống',
+                holiday_duplicate_required: 'Thời gian bị trùng lặp',
 
                 get_holiday_success: 'Lấy danh sách lịch làm việc thành công',
                 get_holiday_faile: 'Lấy danh sách lịch làm việc thất bại',
@@ -1842,7 +1843,7 @@ export default {
                 btn_get_info: 'Lấy thông tin',
                 note_not_eval: 'Đã quá 7 ngày sau ngày đánh giá. Bạn không thể chỉnh sửa thêm!',
                 note_eval: 'Số ngày còn lại để chỉnh sửa đánh giá: ',
-                
+
                 add_eval_of_this_month: 'Thêm đánh giá tháng này',
                 eval_of: 'Đánh giá tháng',
                 eval_from: 'Đánh giá từ ngày',

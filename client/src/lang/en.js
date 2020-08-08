@@ -1343,6 +1343,7 @@ export default {
                 start_date_required: 'Start date required',
                 end_date_required: 'End date required',
                 reason_required: 'Reason required',
+                holiday_duplicate_required: 'Time is overlapping',
 
                 get_holiday_success: 'Get holiday success',
                 get_holiday_faile: 'Get holiday faile',
