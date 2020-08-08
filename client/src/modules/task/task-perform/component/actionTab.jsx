@@ -780,7 +780,7 @@ class ActionTab extends Component {
                                 taskActions.map(item => {
                                     // if (item.parent === null)
                                     return (
-                                        <div className="clearfix" key={item._id}>
+                                        <div key={item._id}>
                                             {item.creator ?
                                                 <img className="user-img-level1" src={(LOCAL_SERVER_API + item.creator.avatar)} alt="User Image" /> :
                                                 <div className="user-img-level1" />
@@ -911,8 +911,8 @@ class ActionTab extends Component {
                                                         {/* Các file đính kèm của action */}
                                                         {showFile.some(obj => obj === item._id) &&
                                                             <div>
-                                                                {item.files.map(elem => {
-                                                                    return <div><a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a></div>
+                                                                {item.files.map((elem, index) => {
+                                                                    return <div key={index}><a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a></div>
                                                                 })}
                                                             </div>
                                                         }
