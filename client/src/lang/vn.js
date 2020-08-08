@@ -1342,6 +1342,7 @@ export default {
                 start_date_required: 'Thời gian bắt đầu không được để trống',
                 end_date_required: 'Thời gian kết thúc không được để trống',
                 reason_required: 'Mô tả lịch nghỉ không được để trống',
+                holiday_duplicate_required: 'Thời gian bị trùng lặp',
 
                 get_holiday_success: 'Lấy danh sách lịch làm việc thành công',
                 get_holiday_faile: 'Lấy danh sách lịch làm việc thất bại',
@@ -1798,7 +1799,8 @@ export default {
                 not_eval: 'Chưa đánh giá',
                 acc_evaluate: 'Đánh giá của người phê duyệt',
                 name_employee: 'Tên nhân viên',
-                role_employee: 'Tên vai trò',
+                role_employee: 'Vai trò',
+                detail_emp_point_of: 'Điểm tự đánh giá của',
 
                 enter_emp_point: 'Nhập điểm tự đánh giá',
                 responsible_not_eval: 'Người thực hiện chưa đánh giá',
@@ -1807,7 +1809,7 @@ export default {
                 edit_basic_info: 'Thông tin cơ bản',
                 edit_detail_info: 'Thông tin chi tiết',
                 edit_member_info: 'Thông tin thành viên tham gia',
-                edit_inactive_emp: 'Thông tin người không làm việc nữa',
+                edit_inactive_emp: 'Thông tin thành viên rời khỏi công việc',
                 edit_enter_progress: 'Nhập mức độ hoàn thành',
                 edit_enter_value: 'Nhập giá trị',
 
@@ -1841,7 +1843,7 @@ export default {
                 btn_get_info: 'Lấy thông tin',
                 note_not_eval: 'Đã quá 7 ngày sau ngày đánh giá. Bạn không thể chỉnh sửa thêm!',
                 note_eval: 'Số ngày còn lại để chỉnh sửa đánh giá: ',
-                
+
                 add_eval_of_this_month: 'Thêm đánh giá tháng này',
                 eval_of: 'Đánh giá tháng',
                 eval_from: 'Đánh giá từ ngày',
@@ -1854,6 +1856,9 @@ export default {
                 err_eval_start: 'Ngày đánh giá phải lớn hơn bằng ngày bắt đầu',
                 err_eval_end: 'Ngày đánh giá phải nhỏ hơn bằng ngày kết thúc',
                 err_eval_on_month: 'Ngày đánh giá phải là ngày trong tháng',
+
+                info_eval_month: 'Thông tin công việc trong đánh giá này',
+                explain_avg_rating: 'Do chưa có hoạt động nào được đánh giá nên mặc định điểm đánh giá hoạt động là 10',
 
                 auto_point_field: 'Điểm công việc tự động trong đánh giá này',
                 get_outside_info: 'Nhập tự động từ thông tin công việc hiện tại',
@@ -2041,6 +2046,7 @@ export default {
                     accountable: 'Vai trò người phê duyệt',
 
                     err_range: 'Giá trị không được vượt quá khoảng 0-100',
+                    err_contribute: 'Tổng phần trăm đóng góp phải là 100',
                     err_empty: 'Giá trị không được để trống'
                 }
 

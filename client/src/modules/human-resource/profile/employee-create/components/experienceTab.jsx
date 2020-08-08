@@ -47,30 +47,35 @@ class ExperienceTab extends Component {
         this.props.handleChange(name, value);
     }
 
-    // Function thêm mới kinh nghiệm làm việc
-    handleAddExperience = async (data) => {
-        let { experiences } = this.state;
+    // Function kiểm tra trùng lặp thời gian làm Việc
+    checkForFuplicate = (data, array) => {
         let startDate = new Date(data.startDate);
         let endDate = new Date(data.endDate);
         let checkData = true;
-        // Kiểm tra trùng lặp thời gian làm Việc
-        for (let n in experiences) {
-            let date1 = new Date(experiences[n].startDate);
-            let date2 = new Date(experiences[n].endDate);
+        for (let n in array) {
+            let date1 = new Date(array[n].startDate);
+            let date2 = new Date(array[n].endDate);
             if (date1.getTime() === startDate.getTime() || (startDate.getTime() < date1.getTime() && endDate.getTime() > date1.getTime()) ||
                 (startDate.getTime() < date2.getTime() && endDate.getTime() > date1.getTime())) {
                 checkData = false;
                 break;
             }
         }
+        return checkData
+    }
+
+    // Function thêm mới kinh nghiệm làm việc
+    handleAddExperience = async (data) => {
+        let { experiences } = this.state;
+        let checkData = this.checkForFuplicate(data, experiences);
         if (checkData) {
             await this.setState({
                 ...this.state,
-                experiences: [...this.state.experiences, {
+                experiences: [...experiences, {
                     ...data
                 }]
             })
-            this.props.handleAddExperience(this.state.experiences, data);
+            this.props.handleAddExperience(experiences, data);
         } else {
             toast.error(
                 <ServerResponseAlert
@@ -85,13 +90,26 @@ class ExperienceTab extends Component {
     // Function chỉnh sửa kinh nghiệm làm việc
     handleEditExperience = async (data) => {
         const { experiences } = this.state;
-        experiences[data.index] = data;
-        await this.setState({
-            ...this.state,
-            experiences: experiences
-        });
-        this.props.handleEditExperience(this.state.experiences, data);
+        let checkData = this.checkForFuplicate(data, experiences);
+        if (checkData) {
+            experiences[data.index] = data;
+            await this.setState({
+                ...this.state,
+                experiences: experiences
+            });
+            this.props.handleEditExperience(this.state.experiences, data);
+        } else {
+            toast.error(
+                <ServerResponseAlert
+                    type='error'
+                    title={'general.error'}
+                    content={['Thời gian làm làm việc bị trùng lặp']}
+                />,
+                { containerId: 'toast-notification' }
+            );
+        }
     }
+
     // Function xoá kinh nghiệm làm việc
     delete = async (index) => {
         var { experiences } = this.state;

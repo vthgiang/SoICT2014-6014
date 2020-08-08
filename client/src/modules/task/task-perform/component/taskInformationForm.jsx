@@ -95,7 +95,6 @@ class TaskInformationForm extends Component {
                                                 onChange={this.props.handleChangeNumberInfo}
                                                 disabled={disabled || (info.filledByAccountableEmployeesOnly && role !== "accountable")}
                                                 value={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) && value.info[`${info.code}`].value}
-                                                disabled={disabled} 
                                             />
                                             <ErrorLabel content={value.errorInfo ? value.errorInfo[`${info.code}`] : ''}/>
                                         </div>
@@ -112,7 +111,6 @@ class TaskInformationForm extends Component {
                                                 value={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) ? value.info[`${info.code}`].value : undefined}
                                                 onChange={(value) => this.props.handleInfoDateChange(value, info.code)}
                                                 disabled={disabled || (info.filledByAccountableEmployeesOnly && role !== "accountable")}
-                                                disabled={disabled} 
                                             />
                                             <ErrorLabel content={value.errorInfo ? value.errorInfo[info.code] : ''} />
                                         </div>
@@ -131,7 +129,6 @@ class TaskInformationForm extends Component {
                                                     onChange={this.props.handleInfoBooleanChange}
                                                     checked={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) && value.info[`${info.code}`].value === "true"}
                                                     disabled={disabled || (info.filledByAccountableEmployeesOnly && role !== "accountable")}
-                                                    disabled={disabled} 
                                                 /> {translate('task.task_management.bool_yes')}
                                             </label>
                                             <label class="radio-inline">
@@ -142,7 +139,6 @@ class TaskInformationForm extends Component {
                                                     onChange={this.props.handleInfoBooleanChange}
                                                     checked={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) && value.info[`${info.code}`].value === "false"}
                                                     disabled={disabled || (info.filledByAccountableEmployeesOnly && role !== "accountable")}
-                                                    disabled={disabled} 
                                                 /> {translate('task.task_management.bool_no')}
                                             </label>
                                         </div>
@@ -163,7 +159,6 @@ class TaskInformationForm extends Component {
                                                 multiple={false}
                                                 disabled={disabled || (info.filledByAccountableEmployeesOnly && role !== "accountable")}
                                                 value={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) && value.info[`${info.code}`].value}
-                                                disabled={disabled} 
                                             />
                                         </div>
                                     }

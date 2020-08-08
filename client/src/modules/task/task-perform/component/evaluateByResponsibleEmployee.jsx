@@ -74,8 +74,8 @@ class EvaluateByResponsibleEmployee extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    errorInfo: {},
-                    errorOnProgress: undefined,
+                    // errorInfo: {},
+                    // errorOnProgress: undefined,
                     id: nextProps.id,
                     task: data.task,
                     info: data.info,
@@ -487,9 +487,6 @@ class EvaluateByResponsibleEmployee extends Component {
         else if (dst < 0) {
             err = translate('task.task_management.err_eval_start');
         }
-        else if (det < 0) {
-            err = translate('task.task_management.err_eval_end');
-        }
         else if (de < 0 || ds < 0){
             err = translate('task.task_management.err_eval_on_month');
         }
@@ -500,9 +497,9 @@ class EvaluateByResponsibleEmployee extends Component {
         let automaticPoint = data.autoPoint;
         let taskInfo = {
             task: data.task,
-            progress: data.progress,
+            progress: this.state.progress,
             date: value,
-            info: data.info,
+            info: this.state.info,
         };
 
         automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
@@ -512,17 +509,16 @@ class EvaluateByResponsibleEmployee extends Component {
             return {
                 ...state,
                 date: value,
-                info: data.info,
-                kpi: data.kpi,
+                // info: data.info,
+                // kpi: data.kpi,
                 autoPoint: automaticPoint,
-                point: data.point,
+                // point: data.point,
                 oldAutoPoint: data.autoPoint,
-                progress: data.progress,
-                checkSave: data.checkSave,
+                // progress: data.progress,
+                // checkSave: data.checkSave,
                 errorOnDate: err,
-                errorInfo: {},
-                errorOnProgress: undefined,
-                // dataStatus: this.DATA_STATUS.QUERYING,
+                // errorInfo: {},
+                // errorOnProgress: undefined,
                 indexReRender: state.indexReRender + 1,
             }
         });
@@ -828,6 +824,7 @@ class EvaluateByResponsibleEmployee extends Component {
         this.handleAddTaskLog();
     }
 
+//  kiểm tra có phải đánh giá này là của tháng hiện tại hay ko
     checkNote = () => {
         let { date } = this.props;
         let splitter = date.split("-");
@@ -835,9 +832,9 @@ class EvaluateByResponsibleEmployee extends Component {
         let now = new Date ();
 
         if(now.getMonth() === isoDate.getMonth() && now.getFullYear() === isoDate.getFullYear()) {
-            return false;
+            return false; // là tháng hiện tại
         }
-        return true
+        return true // khác tháng hiện tại
     }
 
     checkNullUndefined = (x) => {
@@ -919,6 +916,7 @@ class EvaluateByResponsibleEmployee extends Component {
                                                 value={date}
                                                 onChange={this.handleDateChange}
                                                 disabled={disabled} 
+                                                // || (checkNoteMonth && (dentaDate <= 20 && dentaDate > 0))
                                             />
                                             <ErrorLabel content={errorOnDate} />
                                         </div>
@@ -961,7 +959,7 @@ class EvaluateByResponsibleEmployee extends Component {
                             {/* Thông tin công việc */}
                             <div>
                                 <TaskInformationForm
-                                    legendText="Thông tin công việc trong đánh giá này"
+                                    legendText={translate('task.task_management.info_eval_month')}
                                     task={task && task}
 
                                     handleChangeProgress={this.handleChangeProgress}
