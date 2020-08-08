@@ -575,7 +575,7 @@ class EvaluateByAccountableEmployee extends Component {
             msg = translate('task.task_perform.modal_approve_task.err_range');
         }
         else if (sum > 100) {
-            msg = translate('task.task_perform.modal_approve_task.err_range');
+            msg = translate('task.task_perform.modal_approve_task.err_contribute');
         }
         return msg;
     }
