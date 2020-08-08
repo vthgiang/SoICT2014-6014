@@ -84,6 +84,7 @@ class EvaluateByAccountableEmployee extends Component {
                     prevDate: data.prevDate,
                     dentaDate: data.dentaDate,
                     errorInfo: {},
+                    errorOnProgress: undefined,
                     indexReRender: state.indexReRender + 1,
                 }
             });
@@ -856,20 +857,26 @@ class EvaluateByAccountableEmployee extends Component {
 
         let endOfMonth = new moment().endOf("month").toDate();
         let startOfMonth = new moment().startOf("month").toDate();
-        let startDate = new Date(task.startDate);
 
+        let startDate = new Date(task.startDate);
+        let endDate = new Date(task.endDate);
+        
         let splitter = value.split('-');
         let dateValue = new Date(splitter[2], splitter[1]-1, splitter[0]);
 
         let de = (endOfMonth.getTime() - dateValue.getTime()); // < 0 -> err
         let ds = (dateValue.getTime() - startOfMonth.getTime()); // < 0 -> err
+        
         let dst = (dateValue.getTime() - startDate.getTime()); // < 0 -> err
+        let det = (endDate.getTime() - dateValue.getTime()); // < 0 -> err
 
         let err;
         if (value.trim() === "") {
             err = translate('task.task_perform.modal_approve_task.err_empty');
         }
-
+        else if (det < 0) {
+            err = 'Ngày đánh giá phải nhỏ hơn ngày kết thúc';
+        }
         else if (dst < 0) {
             err = 'Ngày đánh giá phải lớn hơn ngày bắt đầu';
         }
@@ -892,6 +899,8 @@ class EvaluateByAccountableEmployee extends Component {
             return {
                 ...state,
                 errorOnDate: err,
+                errorInfo: {},
+                errorOnProgress: undefined,
                 date: value,
                 info: data.info,
                 results: data.results,

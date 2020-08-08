@@ -75,6 +75,7 @@ class EvaluateByResponsibleEmployee extends Component {
                 return {
                     ...state,
                     errorInfo: {},
+                    errorOnProgress: undefined,
                     id: nextProps.id,
                     task: data.task,
                     info: data.info,
@@ -466,14 +467,18 @@ class EvaluateByResponsibleEmployee extends Component {
 
         let endOfMonth = new moment().endOf("month").toDate();
         let startOfMonth = new moment().startOf("month").toDate();
+        
         let startDate = new Date(task.startDate);
+        let endDate = new Date(task.endDate);
 
         let splitter = value.split('-');
         let dateValue = new Date(splitter[2], splitter[1]-1, splitter[0]);
 
         let de = (endOfMonth.getTime() - dateValue.getTime()); // < 0 -> err
         let ds = (dateValue.getTime() - startOfMonth.getTime()); // < 0 -> err
+
         let dst = (dateValue.getTime() - startDate.getTime()); // < 0 -> err
+        let det = (endDate.getTime() - dateValue.getTime()); // < 0 -> err
 
         let err;
         if (value.trim() === "") {
@@ -481,6 +486,9 @@ class EvaluateByResponsibleEmployee extends Component {
         }
         else if (dst < 0) {
             err = 'Ngày đánh giá phải lớn hơn ngày bắt đầu';
+        }
+        else if (det < 0) {
+            err = 'Ngày đánh giá phải nhỏ hơn ngày kết thúc';
         }
         else if (de < 0 || ds < 0){
             err = "Ngày đánh giá phải là ngày trong tháng";
@@ -512,6 +520,8 @@ class EvaluateByResponsibleEmployee extends Component {
                 progress: data.progress,
                 checkSave: data.checkSave,
                 errorOnDate: err,
+                errorInfo: {},
+                errorOnProgress: undefined,
                 // dataStatus: this.DATA_STATUS.QUERYING,
                 indexReRender: state.indexReRender + 1,
             }
