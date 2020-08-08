@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, TreeSelect } from '../../../../common-components';
+
+import { TreeSelect } from '../../../../common-components';
+
 import { AssetTypeActions } from '../redux/actions';
 
 class EditForm extends Component {
@@ -24,30 +26,31 @@ class EditForm extends Component {
         })
     }
 
-    validateName = async(value, willUpdateState)=>{
+    validateName = async (value, willUpdateState) => {
         let msg = undefined;
-        const {translate} = this.props;
-        if(!value){
+        const { translate } = this.props;
+        if (!value) {
             msg = "hello world";
         }
-        if(willUpdateState){
-           await this.setState(state=>{
-                return{
+        if (willUpdateState) {
+            await this.setState(state => {
+                return {
                     ...state,
-                    domainName:value,
+                    domainName: value,
                     errorName: msg
                 }
             })
         }
-        
+
         return msg === undefined;
     }
 
-    handleValidateName = (e)=>{
+    handleValidateName = (e) => {
         const value = e.target.value.trim();
         this.validateName(value, true);
     }
-    isValidateForm =() =>{
+
+    isValidateForm = () => {
         return this.validateName(this.state.domainName, false);
     }
 
@@ -63,7 +66,7 @@ class EditForm extends Component {
     };
 
     save = () => {
-        const {domainId, domainCode, domainName, domainDescription, domainParent} = this.state;
+        const { domainId, domainCode, domainName, domainDescription, domainParent } = this.state;
         this.props.editAssetType(domainId, {
             typeNumber: domainCode,
             typeName: domainName,
@@ -72,7 +75,7 @@ class EditForm extends Component {
         });
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
+    static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.domainId !== prevState.domainId) {
             return {
                 ...prevState,
@@ -81,16 +84,16 @@ class EditForm extends Component {
                 domainName: nextProps.domainName,
                 domainDescription: nextProps.domainDescription,
                 domainParent: nextProps.domainParent,
-                errorName : undefined,
-            } 
+                errorName: undefined,
+            }
         } else {
             return null;
         }
     }
 
     render() {
-        const { translate, assetType}=this.props;
-        const {tree,list} = assetType.administration.types;
+        const { translate, assetType } = this.props;
+        const { tree, list } = assetType.administration.types;
         const { domainId, domainCode, domainName, domainDescription, domainParent, errorName } = this.state;
 
         let dataList = list.map(node => {
@@ -100,40 +103,52 @@ class EditForm extends Component {
                 name: node.typeName,
             }
         })
-        
-        return ( 
+
+        return (
             <div id="edit-asset-type">
+                {/* Mã loại tài sản */}
                 <div className="form-group">
                     <label>Mã loại tài sản<span className="text-red">*</span></label>
-                    <input type="text" className="form-control" onChange={this.handleCode} value={domainCode}/>
+                    <input type="text" className="form-control" onChange={this.handleCode} value={domainCode} />
                 </div>
+
+                {/* Tên loại tài sản */}
                 <div className="form-group">
                     <label>Tên loại tài sản<span className="text-red">*</span></label>
-                    <input type="text" className="form-control" onChange={this.handleName} value={domainName}/>
+                    <input type="text" className="form-control" onChange={this.handleName} value={domainName} />
                 </div>
+
+                {/* Loại tài sản cha */}
                 <div className="form-group">
                     <label>Loại tài sản cha<span className="text-red">*</span></label>
-                    <TreeSelect data={dataList} value={[domainParent]} handleChange={this.handleParent} mode="radioSelect"/>
+                    <TreeSelect data={dataList} value={[domainParent]} handleChange={this.handleParent} mode="radioSelect" />
                 </div>
+
+                {/* Mô tả */}
                 <div className="form-group">
                     <label>Mô tả<span className="text-red">*</span></label>
-                    <textarea style={{minHeight: '120px'}} type="text" className="form-control" onChange={this.handleDescription} value={domainDescription}/>
-                </div> 
+                    <textarea style={{ minHeight: '120px' }} type="text" className="form-control" onChange={this.handleDescription} value={domainDescription} />
+                </div>
+
+                {/* Button */}
                 <div className="form-group">
-                    <button className="btn btn-success pull-right" style={{marginLeft: '5px'}} onClick={this.save}>Lưu</button>
-                    <button className="btn btn-danger" onClick={()=>{
+                    <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} onClick={this.save}>Lưu</button>
+                    <button className="btn btn-danger" onClick={() => {
                         window.$(`#edit-asset-type`).slideUp()
                     }}>Đóng</button>
                 </div>
             </div>
-         );
+        );
     }
 }
- 
-const mapStateToProps = state => state;
+
+function mapStateToProps(state) {
+    const { assetType } = state;
+    return { assetType };
+}
 
 const mapDispatchToProps = {
     editAssetType: AssetTypeActions.editAssetType
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(EditForm) );
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(EditForm));

@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { ShowImportData, ImportFileExcel, ConFigImportFile } from '../../../../../common-components';
 
-import { LOCAL_SERVER_API } from '../../../../../env';
+import { AuthActions } from '../../../../auth/redux/actions';
 
 class EmployeeImportTab extends Component {
     constructor(props) {
@@ -52,6 +52,11 @@ class EmployeeImportTab extends Component {
         } return false
     }
 
+    requestDownloadFile = (e, path, fileName) => {
+        e.preventDefault()
+        this.props.downloadFile(path, fileName)
+    }
+
     render() {
         const { id, className = "tab-pane", configuration, rowErrorOfReducer, dataOfReducer, configTableWidth, showTableWidth, handleImport, textareaRow } = this.props;
 
@@ -84,8 +89,10 @@ class EmployeeImportTab extends Component {
                                 />
                             </div>
                             <div className="form-group col-md-4 col-xs-12 pull-right">
-                                <a className='pull-right' href={LOCAL_SERVER_API + configData.file.fileUrl} target="_blank" style={{ paddingTop: 15 }}
-                                    download={configData.file.fileName}><i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
+                                <a className='pull-right'
+                                    style={{ cursor: "pointer" }}
+                                    onClick={(e) => this.requestDownloadFile(e, `.${configData.file.fileUrl}`, configData.file.fileName)}>
+                                    <i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
                             </div>
                         </div>
                         {importData && importData.length !== 0 &&
@@ -112,5 +119,9 @@ class EmployeeImportTab extends Component {
     }
 }
 
-const importExcel = connect(null, null)(withTranslate(EmployeeImportTab));
+const actionCreators = {
+    downloadFile: AuthActions.downloadFile,
+};
+
+const importExcel = connect(null, actionCreators)(withTranslate(EmployeeImportTab));
 export { importExcel as EmployeeImportTab };

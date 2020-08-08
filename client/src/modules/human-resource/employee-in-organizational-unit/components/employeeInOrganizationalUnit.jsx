@@ -20,7 +20,7 @@ class DepartmentManage extends Component {
             ...this.state,
             currentRow: id
         })
-        window.$(`#modal-edit-unit`).modal('show');
+        window.$(`#modal-edit-unit${id}`).modal('show');
     }
     render() {
         var data = [];

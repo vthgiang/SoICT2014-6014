@@ -102,8 +102,11 @@ class ModalCreateTaskProcess extends Component {
          additionalModules: [
             nyanDrawModule,
             nyanPaletteModule,
-            customModule
+            customModule,
+            // { moveCanvas: [ 'value', null ] },
+            {zoomScroll: [ 'value', '' ]}
          ],
+          
          moddleExtensions: {
             // qa: qaExtension
          }
@@ -131,6 +134,15 @@ class ModalCreateTaskProcess extends Component {
       });
    }
 
+   handleUpdateElement = () => {
+      const modeling = this.modeler.get('modeling');
+      let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+      modeling.updateProperties(element1, {
+         // ...element1,
+         info: this.state.info,
+      });
+   }
+
    handleChangeName = async (value) => {
       let { listOrganizationalUnit } = this.props
       await this.setState(state => {
@@ -146,7 +158,9 @@ class ModalCreateTaskProcess extends Component {
       const modeling = this.modeler.get('modeling');
       let element1 = this.modeler.get('elementRegistry').get(this.state.id);
       modeling.updateProperties(element1, {
-         name: value
+         // ...element1,
+         name: value,
+         info: this.state.info,
       });
    }
 
@@ -162,6 +176,7 @@ class ModalCreateTaskProcess extends Component {
             ...state,
          }
       })
+      this.handleUpdateElement();
    }
    handleChangeOrganizationalUnit = async (value) => {
       await this.setState(state => {
@@ -174,6 +189,7 @@ class ModalCreateTaskProcess extends Component {
             ...state,
          }
       })
+      this.handleUpdateElement();
    }
 
    handleChangeTemplate = async (value) => {
@@ -187,6 +203,7 @@ class ModalCreateTaskProcess extends Component {
             ...state,
          }
       })
+      this.handleUpdateElement();
    }
 
    handleChangeResponsible = async (value) => {
@@ -201,6 +218,7 @@ class ModalCreateTaskProcess extends Component {
             ...state,
          }
       })
+      this.handleUpdateElement();
    }
 
    handleChangeAccountable = async (value) => {
@@ -214,6 +232,7 @@ class ModalCreateTaskProcess extends Component {
             ...state,
          }
       })
+      this.handleUpdateElement();
    }
    shouldComponentUpdate(nextProps, nextState) {
       if (nextState.save === true) {
@@ -605,7 +624,7 @@ class ModalCreateTaskProcess extends Component {
                         <div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
                            <div className={selectedCreate === "process" ? "active tab-pane" : "tab-pane"} id="process-create">
 
-                              <div className="row">
+                              <div className="">
                                  {/* Quy trình công việc */}
                                  <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
                                     <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>

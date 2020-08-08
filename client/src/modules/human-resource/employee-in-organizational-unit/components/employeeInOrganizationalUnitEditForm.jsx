@@ -15,13 +15,16 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
         };
     }
     componentDidMount() {
-        this.props.getUser()
+        this.props.getUser();
+        this.props.getUser({ name: "ad" });
     }
     changeSearch = async (value) => {
-        this.setState({
+
+        console.log("gshagdhwd");
+        await this.props.getUser({ name: value })
+        await this.setState({
             textSearch: value
         });
-        await this.props.getUser({ name: value })
     }
 
     // Bắt sự kiện xoá nhân viên đơn vị
@@ -54,6 +57,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
         })
         window.$(`#employee-unit-${id}`).val(null).trigger("change");
     }
+
     save = () => {
         var { roleDeans, roleViceDeans, roleEmployees } = this.state;
         roleDeans.forEach(x => {
@@ -107,21 +111,21 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
 
 
     render() {
-        var { translate, user } = this.props;
-        const { _id, roleEmployees, roleDeans, roleViceDeans, } = this.state;
-        var userlist = user.list, searchUses = user.searchUses;
+        let { translate, user } = this.props;
+        const { _id, roleEmployees, roleDeans, roleViceDeans, textSearch } = this.state;
+        let userlist = user.list, searchUses = user.searchUses;
         return (
             <React.Fragment>
                 <DialogModal
-                    size='50' modalID={`modal-edit-unit`} isLoading={false}
-                    formID={`form-edit-unit`}
+                    size='50' modalID={`modal-edit-unit${_id}`} isLoading={false}
+                    formID={`form-edit-unit${_id}`}
                     title={translate('manage_unit.edit_unit')}
                     msg_success={translate('manage_unit.edit_sucsess')}
                     msg_faile={translate('manage_unit.edit_faile')}
                     func={this.save}
                     disableSubmit={false}
                 >
-                    <form className="form-group" id={`form-edit-unit`}>
+                    <form className="form-group" id={`form-edit-unit${_id}`}>
                         <fieldset className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
                             <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('manage_unit.dean_unit')}</h4></legend>
                             {roleDeans !== undefined && roleDeans.map((x, index) => (
@@ -134,7 +138,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={x.users}
-                                        items={user.list.map(y => { return { value: y._id, text: y.name } })}
+                                        items={user.list.map(y => { return { value: y._id, text: `${y.name} (${y.email})` } })}
                                     />
                                 </div>
                             ))}
@@ -151,7 +155,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                         multiple={true}
                                         style={{ width: "100%" }}
                                         value={x.users}
-                                        items={user.list.map(y => { return { value: y._id, text: y.name } })}
+                                        items={user.list.map(y => { return { value: y._id, text: `${y.name} (${y.email})` } })}
                                     />
                                 </div>
                             ))}
@@ -163,7 +167,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                 infoEmployee = userlist.filter(y => y._id === users[n]).concat(infoEmployee)
                             }
                             return (
-                                <fieldset className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
+                                <fieldset key={index} className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
                                     <legend className="scheduler-border" style={{ marginBottom: 0 }} ><h4 className="box-title">{x.name}</h4></legend>
                                     <div className="form-group" key={index} style={{ marginBottom: 0 }}>
                                         <div className="employeeBox">
@@ -174,9 +178,10 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                                 style={{ width: "100%" }}
                                                 onChange={this.handleEmployeeChange}
                                                 multiple={true}
-                                                searchItems={searchUses.map(u => { return { value: u._id, text: u.name } })}
-                                                changeSearch={this.changeSearch}
-                                                textSearch={this.state.textSearch}
+                                                // searchItems={searchUses.map(u => { return { value: u._id, text: u.name } })}
+                                                // changeSearch={this.changeSearch}
+                                                // textSearch={textSearch}
+                                                items={user.list.map(y => { return { value: y._id, text: `${y.name} (${y.email})` } })}
                                             />
                                         </div>
                                         <button type="button" className="btn btn-success pull-right" style={{ marginBottom: 5 }} onClick={() => this.handleAdd(x.id)} title={translate('manage_unit.add_employee_unit')}>{translate('manage_employee.add_staff')}</button>

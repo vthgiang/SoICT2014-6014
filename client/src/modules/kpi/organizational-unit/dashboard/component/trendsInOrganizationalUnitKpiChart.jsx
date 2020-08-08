@@ -20,31 +20,36 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         
         this.state = {
             currentRole: null,
-            dataStatus: this.DATA_STATUS.QUERYING
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
         };
     }
 
     componentDidMount = () => {
-        this.props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"));
-        this.props.getAllTaskOfOrganizationalUnit(localStorage.getItem("currentRole"));
+        console.log("999", this.props.organizationalUnitId, this.props.month)
+        this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId);
+        this.props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
+        this.props.getAllTaskOfOrganizationalUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
 
         this.setState(state => {
             return {
                 ...state,
-                currentRole: localStorage.getItem("currentRole")
+                currentRole: localStorage.getItem("currentRole"),
+                dataStatus: this.DATA_STATUS.QUERYING
             }
         })
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
         if (this.state.currentRole !== localStorage.getItem("currentRole")) {
+            await this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"));
             await this.props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"));
             await this.props.getAllTaskOfOrganizationalUnit(localStorage.getItem("currentRole"));
-
+            
             this.setState(state => {
                 return {
                     ...state,
-                    dataStatus: this.DATA_STATUS.QUERYING,
+                    currentRole: localStorage.getItem("currentRole"),
+                    dataStatus: this.DATA_STATUS.QUERYING
                 }
             });
 
@@ -52,6 +57,8 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         if (nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
+            console.log(nextProps.organizationalUnitId)
+            await this.props.getCurrentKPIUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
             await this.props.getAllEmployeeKpiInOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
             await this.props.getAllTaskOfOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month)
 
@@ -74,7 +81,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                 return false           
             }
 
-            if(!nextProps.dashboardOrganizationalUnitKpi.tasks) {
+            if (!nextProps.dashboardOrganizationalUnitKpi.tasksOfOrganizationalUnit) {
                 return false           
             }
             
@@ -111,9 +118,9 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
     }
 
-    getListTaskByOrganizationUnitKpi = () => {
+    getArrayListTaskSameOrganizationUnitKpi = () => {
         const { createKpiUnit, dashboardOrganizationalUnitKpi } = this.props;
-        let listOrganizationalUnitKpi, listChildTarget, listTask, listTaskByOrganizationUnitKpi;
+        let listOrganizationalUnitKpi, listChildTarget, listTask, arrayListTaskSameOrganizationUnitKpi;
 
         if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis;
@@ -121,21 +128,21 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         if (dashboardOrganizationalUnitKpi.employeeKpis !== []) {
             listChildTarget = dashboardOrganizationalUnitKpi.employeeKpis;
         }
-        if (dashboardOrganizationalUnitKpi.tasks !== []) {
-            listTask = dashboardOrganizationalUnitKpi.tasks;
+        if (dashboardOrganizationalUnitKpi.tasksOfOrganizationalUnit !== []) {
+            listTask = dashboardOrganizationalUnitKpi.tasksOfOrganizationalUnit;
         }
 
-        if(listOrganizationalUnitKpi && listTask) {
-            listTaskByOrganizationUnitKpi = listOrganizationalUnitKpi.map(parent => {
-                let temporaryListTaskByOrganizationUnitKpi = [];
-                if (listChildTarget !== [] && listChildTarget && listTask) {
+        if(listOrganizationalUnitKpi && listTask && listTask.length !== 0) {
+            arrayListTaskSameOrganizationUnitKpi = listOrganizationalUnitKpi.map(parent => {
+                let temporaryArrayListTaskSameOrganizationUnitKpi = [];
+                if (listChildTarget !== [] && listChildTarget) {
                     let temporary;
 
                     temporary = listChildTarget.filter(childTarget => childTarget._id === parent.name);
 
                     if (temporary.length !== 0) {
                         temporary[0].employeeKpi.map(employeeKpi => {
-                            if(listTask){
+                            if(listTask.length !== 0){
                                 let list = listTask.filter(item => {
                                     let kpi, length;
                                     item.evaluations.kpis.map(item => {
@@ -144,22 +151,23 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                                     });
                                     return length !== 0 && length !== undefined;
                                 })
-                                temporaryListTaskByOrganizationUnitKpi = temporaryListTaskByOrganizationUnitKpi.concat(list);
+                                temporaryArrayListTaskSameOrganizationUnitKpi = temporaryArrayListTaskSameOrganizationUnitKpi.concat(list);
                             }
                         })
                     }
                 }
-                temporaryListTaskByOrganizationUnitKpi = Array.from(new Set(temporaryListTaskByOrganizationUnitKpi));
-                return temporaryListTaskByOrganizationUnitKpi;
+                temporaryArrayListTaskSameOrganizationUnitKpi = Array.from(new Set(temporaryArrayListTaskSameOrganizationUnitKpi));
+                return temporaryArrayListTaskSameOrganizationUnitKpi;
             })
         }
 
-        return listTaskByOrganizationUnitKpi;
+        return arrayListTaskSameOrganizationUnitKpi;
     }
 
     setExecutionTimeData = () => {
-        const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = this.props;
-        let listOrganizationalUnitKpi, listChildTarget, listTask, listTaskByOrganizationUnitKpi;
+        const { createKpiUnit, translate } = this.props;
+
+        let listOrganizationalUnitKpi, arrayListTaskSameOrganizationUnitKpi;
         let executionTimes = {};
         let now = new Date();
         let currentYear = now.getFullYear();
@@ -170,22 +178,16 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis;
         }
-        if (dashboardOrganizationalUnitKpi.employeeKpis !== []) {
-            listChildTarget = dashboardOrganizationalUnitKpi.employeeKpis;
-        }
-        if (dashboardOrganizationalUnitKpi.tasks !== []) {
-            listTask = dashboardOrganizationalUnitKpi.tasks
-        }
 
-        listTaskByOrganizationUnitKpi = this.getListTaskByOrganizationUnitKpi();
+        arrayListTaskSameOrganizationUnitKpi = this.getArrayListTaskSameOrganizationUnitKpi();
 
-        if (listOrganizationalUnitKpi && listChildTarget !== [] && listChildTarget  && listTask && listTask !== []) {
+        if (listOrganizationalUnitKpi && arrayListTaskSameOrganizationUnitKpi) {
             listOrganizationalUnitKpi.map(parent => {
                 let key = listOrganizationalUnitKpi.indexOf(parent);
                 let temporary = {};
                 let executionTime = 0;
 
-                listTaskByOrganizationUnitKpi[key].map(x => {
+                arrayListTaskSameOrganizationUnitKpi[key].map(x => {
                     let date1 = new Date(x.evaluations.date);
                     let date2 = new Date(x.startDate);
                     if(x.evaluations.date) {
@@ -195,8 +197,8 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                     }
                 })
 
-                if (listTaskByOrganizationUnitKpi.length !== 0 && listOrganizationalUnitKpi) {
-                    executionTime = executionTime/listTaskByOrganizationUnitKpi.length;
+                if (arrayListTaskSameOrganizationUnitKpi.length !== 0 && listOrganizationalUnitKpi) {
+                    executionTime = executionTime/arrayListTaskSameOrganizationUnitKpi.length;
                 }
                 temporary[parent.name] = executionTime;
                 executionTimes = Object.assign(executionTimes, temporary);
@@ -212,29 +214,24 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     }
 
     setNumberOfTaskData = () => {
-        const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = this.props;
-        let listOrganizationalUnitKpi, listChildTarget, listTask, listTaskByOrganizationUnitKpi;
+        const { createKpiUnit, translate } = this.props;
+
+        let listOrganizationalUnitKpi, arrayListTaskSameOrganizationUnitKpi;
         let numberOfTasks = {};
 
         if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis
         }
-        if (dashboardOrganizationalUnitKpi.childTarget !== []) {
-            listChildTarget = dashboardOrganizationalUnitKpi.employeeKpis
-        }
-        if (dashboardOrganizationalUnitKpi.tasks !== []) {
-            listTask = dashboardOrganizationalUnitKpi.tasks
-        }
 
-        listTaskByOrganizationUnitKpi = this.getListTaskByOrganizationUnitKpi();
+        arrayListTaskSameOrganizationUnitKpi = this.getArrayListTaskSameOrganizationUnitKpi();
 
-        if (listOrganizationalUnitKpi && listChildTarget !== [] && listChildTarget && listTask && listTask !== []) {
+        if (listOrganizationalUnitKpi && arrayListTaskSameOrganizationUnitKpi) {
             listOrganizationalUnitKpi.map(parent => {
                 let key = listOrganizationalUnitKpi.indexOf(parent);
                 let temporary = {};
                 let numberOfTask;
 
-                numberOfTask = listTaskByOrganizationUnitKpi[key].length;
+                numberOfTask = arrayListTaskSameOrganizationUnitKpi[key].length;
                 temporary[parent.name] = numberOfTask;
                 numberOfTasks = Object.assign(numberOfTasks, temporary);
             })
@@ -250,8 +247,10 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
     setNumberOfParticipantData = () => {
         const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = this.props;
-        let listOrganizationalUnitKpi, listChildTarget, listTaskByOrganizationUnitKpi;
+
+        let listOrganizationalUnitKpi, listChildTarget;
         let numberOfParticipants = {}; 
+        let arrayListTaskSameOrganizationUnitKpi = this.getArrayListTaskSameOrganizationUnitKpi();
 
         if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
             listOrganizationalUnitKpi = createKpiUnit.currentKPI.kpis
@@ -260,35 +259,40 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             listChildTarget = dashboardOrganizationalUnitKpi.employeeKpis
         }
 
-        listTaskByOrganizationUnitKpi = this.getListTaskByOrganizationUnitKpi();
-
         if (!listOrganizationalUnitKpi && listChildTarget){
             numberOfParticipants = {}
         } else {
             listOrganizationalUnitKpi.map(parent => {
                 let key = listOrganizationalUnitKpi.indexOf(parent);
-                let creators1, creators2, numberOfParticipant;
+                let creators1, creators2, numberOfParticipant=0;
                 let temporary = {};
 
-                if(listChildTarget){
+                if (listChildTarget) {
                     creators1 = listChildTarget.filter(item => item._id === parent.name);
 
                     if (creators1.length !== 0) {
                         creators1 = creators1[0].employeeKpi.map(x => {
-                            return x.creator;
+                            if (x.creator[0]) {
+                                return x.creator[0];
+                            }
                         })
                     }
                 }
                 
-                if(listTaskByOrganizationUnitKpi) {
-                    creators2 = listTaskByOrganizationUnitKpi[key].map(x => {
+               
+                if (arrayListTaskSameOrganizationUnitKpi) {
+                    creators2 = arrayListTaskSameOrganizationUnitKpi[key].map(x => {
                         return x.informedEmployees.concat(x.consultedEmployees).concat(x.informedEmployees);
                     })
                     creators2.forEach(x => creators1 = creators1.concat(x));
                 }
 
                 creators1 = Array.from(new Set(creators1));
-                numberOfParticipant = creators1.length;
+                creators1.map(x => {
+                    if (x) {
+                        numberOfParticipant++;
+                    }
+                });
                 temporary[parent.name] = numberOfParticipant;
                 numberOfParticipants = Object.assign(numberOfParticipants, temporary);
             })
@@ -304,6 +308,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
     setNumberOfChildKpiData = () => {
         const { createKpiUnit, dashboardOrganizationalUnitKpi, translate } = this.props;
+
         let listOrganizationalUnitKpi, listChildTarget;
         let numberOfChildKpis = {};
 
@@ -321,7 +326,9 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                 let temporary = {};
                 if(listChildTarget){
                     numberOfChildKpi = listChildTarget.filter(item => item._id === parent.name).map(item => {
-                        return item.employeeKpi.length;
+                        if (item.employeeKpi[0].creator.length !== 0) {
+                            return item.employeeKpi.length;
+                        }
                     })
                 }
 
@@ -341,6 +348,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     // Thiết lập data trọng số của từng Kpi đơn vị
     setWeightData = () => {
         const { createKpiUnit, translate } = this.props;
+
         let listOrganizationalUnitKpi;
         let weight = {};
 
@@ -367,14 +375,16 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
     removePreviousBarChart = () => {
         const chart = this.refs.chart;
-        while(chart.hasChildNodes()){
-            chart.removeChild(chart.lastChild);
-        }
+        if (chart) {
+            while (chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild);
+            }
+        } 
     } 
 
     barChart = () => {
         this.removePreviousBarChart();
-       
+
         const { createKpiUnit } = this.props;
         let numberOfParticipants, numberOfChildKpis, executionTimes, numberOfTasks, weight, data, dataChart, listOrganizationalUnitKpi, titleX;
            
@@ -415,7 +425,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         dataChart.unshift(titleX);
-
+        
         this.chart = c3.generate({
             bindto: this.refs.chart,                
 

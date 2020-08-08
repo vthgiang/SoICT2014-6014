@@ -79,7 +79,9 @@ export default class CustomRenderer extends BaseRenderer {
         fontSize: "10px"
       });
       svgClasses(text).add('djs-label');
-      svgAppend(text, document.createTextNode(`Thực hiện: ${element.id}`));
+
+      let info = element.businessObject.$attrs.info;
+      svgAppend(text, document.createTextNode(`Thực hiện: ${info ? (info[element.id]?.responsible ? info[element.id].responsible : "" ): ""}`));
       svgAppend(parentNode, text);
 
       text = svgCreate('text');
@@ -89,7 +91,7 @@ export default class CustomRenderer extends BaseRenderer {
         fontSize: "10px"
       });
       svgClasses(text).add('djs-label');
-      svgAppend(text, document.createTextNode(`Phê duyệt: ${element.id}`));
+      svgAppend(text, document.createTextNode(`Phê duyệt: ${info ? (info[element.id]?.accountable? info[element.id].accountable : "") : ""}`));
       svgAppend(parentNode, text);
 
       // const line = drawLine(parentNode, 0, 40, 200, 40, 'black');

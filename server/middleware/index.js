@@ -6,7 +6,10 @@ const Privilege = require('../models/auth/privilege.model');
 const Link = require('../models/super-admin/link.model');
 const Company = require('../models/system-admin/company.model');
 const ObjectId = require('mongoose').Types.ObjectId;
-const { data, checkServicePermission } = require('./servicesPermission');
+const {
+    data,
+    checkServicePermission
+} = require('./servicesPermission');
 const multer = require('multer');
 const fs = require('fs');
 const CryptoJS = require("crypto-js");
@@ -25,7 +28,7 @@ const CryptoJS = require("crypto-js");
 exports.authFunc = (checkPage = true) => {
     return async (req, res, next) => {
         try {
-            const token = req.header('auth-token');//JWT nhận từ người dùng
+            const token = req.header('auth-token'); //JWT nhận từ người dùng
             /**
              * Nếu không có JWT được gửi lên -> người dùng chưa đăng nhập
              */
@@ -73,7 +76,10 @@ exports.authFunc = (checkPage = true) => {
                  * Kiểm tra xem current role có đúng với người dùng hay không?
                  */
                 const userId = req.user._id;
-                const userrole = await UserRole.findOne({ userId, roleId: role._id });
+                const userrole = await UserRole.findOne({
+                    userId,
+                    roleId: role._id
+                });
                 if (userrole === null) throw ['user_role_invalid'];
                 /**
                  * Riêng đối với system admin của hệ thống thì bỏ qua bước này
@@ -117,7 +123,9 @@ exports.authFunc = (checkPage = true) => {
                     const privilege = await Privilege.findOne({
                         resourceId: link._id,
                         resourceType: 'Link',
-                        roleId: { $in: roleArr }
+                        roleId: {
+                            $in: roleArr
+                        }
                     });
                     if (privilege === null) throw ('page_access_denied');
                 }
@@ -157,7 +165,9 @@ exports.uploadFile = (arrData, type) => {
     arrData.forEach(x => {
         let dir = `./upload${x.path}`;
         if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
+            fs.mkdirSync(dir, {
+                recursive: true
+            });
         }
     })
 
@@ -168,8 +178,6 @@ exports.uploadFile = (arrData, type) => {
                     cb(null, `./upload${arrData[0].path}`);
                 } else if (type === 'fields') {
                     for (let n in arrData) {
-
-                        console.log('req:', file)
                         if (file.fieldname === arrData[n].name) {
                             cb(null, `./upload${arrData[n].path}`);
                             break;
@@ -196,7 +204,10 @@ exports.uploadFile = (arrData, type) => {
             return getFile.array(name, 20);
         case 'fields':
             arrFile = arrData.map(x => {
-                return { name: x.name, maxCount: 20 }
+                return {
+                    name: x.name,
+                    maxCount: 20
+                }
             })
             return getFile.fields(arrFile);
         default:

@@ -4,6 +4,7 @@ import { sendRequest } from '../../../helpers/requestHelper';
 export const CustomerServices = {
     // Customer
     getCustomers,
+    createCustomer,
 
     // Customer group
     getCustomerGroups,
@@ -15,6 +16,14 @@ function getCustomers(params) {
         method: 'GET',
         params,
     }, false, true, 'customer');
+}
+
+function createCustomer(data) {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/customer`,
+        method: 'POST',
+        data,
+    }, true, true, 'customer');
 }
 
 function getCustomerGroups(params) {

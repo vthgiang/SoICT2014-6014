@@ -14,7 +14,6 @@ exports.getTasks = async (req, res) => {
     if (req.query.type === "all") {
         getAllTasks(req, res);
     }
-
     else if (req.query.type === "responsible") {
         getPaginatedTasksThatUserHasResponsibleRole(req, res);
     }
@@ -38,6 +37,9 @@ exports.getTasks = async (req, res) => {
     }
     else if (req.query.type === "task_in_unit") {
         getAllTaskOfOrganizationalUnitByMonth(req, res);
+    } 
+    else if (req.query.type === "get_all_task_of_children_organizational_unit") {
+        getAllTaskOfChildrenOrganizationalUnit(req, res)
     }
 }
 
@@ -566,18 +568,40 @@ getTasksByUser = async (req, res) => {
 /** Lấy tất cả task của organizationalUnit theo tháng hiện tại */
 getAllTaskOfOrganizationalUnit = async (req, res) => {
     try {
-        var tasks = await TaskManagementService.getAllTaskOfOrganizationalUnit(req.query.roleId, req.query.organizationalUnitId, req.query.month);
+        let tasksOfOrganizationalUnit = await TaskManagementService.getAllTaskOfOrganizationalUnit(req.query.roleId, req.query.organizationalUnitId, req.query.month);
+        
         LogInfo(req.user.email, ' get all task of organizational unit ', req.user.company);
         res.status(200).json({
             success: true,
             messages: ['get_all_task_of_organizational_unit_success'],
-            content: tasks
+            content: tasksOfOrganizationalUnit
         })
     } catch (error) {
         LogError(req.user.email, ' get all task of organizational unit ', req.user.company);
         res.status(400).json({
             success: false,
             messages: ['get_all_task_of_organizational_unit_failure'],
+            content: error
+        })
+    }
+}
+
+/** Lấy tất cả task của các đơn vị con của đơn vị hiện tại */
+getAllTaskOfChildrenOrganizationalUnit = async (req, res) => {
+    try {
+        let tasksOfChildrenOrganizationalUnit = await TaskManagementService.getAllTaskOfChildrenOrganizationalUnit(req.user.company._id, req.query.roleId, req.query.month, req.query.organizationUnitId);
+        
+        LogInfo(req.user.email, ' get all task of children organizational unit ', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_task_of_children_organizational_unit_success'],
+            content: tasksOfChildrenOrganizationalUnit
+        })
+    } catch (error) {
+        LogError(req.user.email, ' get all task of children organizational unit ', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['get_all_task_of_children_organizational_unit_failure'],
             content: error
         })
     }

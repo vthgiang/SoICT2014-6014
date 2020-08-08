@@ -57,15 +57,24 @@ exports.getOrganizationalUnitsAsTree = async (id) => {
  * Lấy các đơn vị con của một đơn vị và đơn vị đó
  * @id Id công ty
  * @role Id của role ứng với đơn vị cần lấy đơn vị con
+ * @organizationalUnit id của đơn vị 
  */
-exports.getChildrenOfOrganizationalUnitsAsTree = async (id, role) => {
-    let organizationalUnit = await OrganizationalUnit.findOne({
-        $or: [
-            {'deans': { $in: role }}, 
-            {'viceDeans':{ $in: role }}, 
-            {'employees':{ $in: role }}
-        ]
-    });
+exports.getChildrenOfOrganizationalUnitsAsTree = async (id, role, organizationalUnitId = undefined) => {
+
+    let organizationalUnit;
+
+    if (!organizationalUnitId) {
+        organizationalUnit = await OrganizationalUnit.findOne({
+            $or: [
+                {'deans': { $in: role }}, 
+                {'viceDeans':{ $in: role }}, 
+                {'employees':{ $in: role }}
+            ]
+        });
+    } else {
+        organizationalUnit = await OrganizationalUnit.findById(organizationalUnitId);
+    }
+    
     const data = await OrganizationalUnit.find({ company: id });
     
     const newData = data.map( department => {return {

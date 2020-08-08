@@ -2,9 +2,6 @@ export default {
     locale: 'en',
     messages: {
         error: {
-            email_does_not_exist: 'Email does not exist',
-            field_invalid: 'Field input invaid',
-
             /** 
              * Start 
              * Chức năng quản lý nhân sự
@@ -134,6 +131,8 @@ export default {
         auth: {
             validator: {
                 confirm_password_invalid: 'Confirm password invalid! Please input again',
+                password_length_error: 'Password length not less 6 or more than 30 digit',
+                confirm_password_error: 'Confirm password invalid'
             },
             security: {
                 label: 'Security',
@@ -414,10 +413,13 @@ export default {
             effective_date: 'Effective date',
             expired_date: 'Expired date',
             views: 'Views',
+            viewer: 'Viewer',
+            downloader: "Downloader",
             downloads: 'Downloads',
             add: 'Add document',
             edit: 'Edit document',
             view: 'View document',
+            time: "Time",
             delete: 'Delete document',
             add_version: 'Add document version',
             upload_file: 'Upload file',
@@ -1341,6 +1343,7 @@ export default {
                 start_date_required: 'Start date required',
                 end_date_required: 'End date required',
                 reason_required: 'Reason required',
+                holiday_duplicate_required: 'Time is overlapping',
 
                 get_holiday_success: 'Get holiday success',
                 get_holiday_faile: 'Get holiday faile',
@@ -1612,14 +1615,13 @@ export default {
                 detail_value: 'Value',
                 detail_not_hasinfo: 'Not has infomation',
                 detail_eval: 'Evaluation',
-                detail_eval_on_date: 'Evaluation on',
                 detail_point: 'Member Point',
                 detail_auto_point: 'Automatic point',
                 detail_emp_point: 'Employee point',
                 detail_acc_point: 'Approve point',
                 detail_not_auto: 'Unset automatic point',
                 detail_not_emp: 'Unset employee point',
-                detail_not_acc: 'Unset accountable po',
+                detail_not_acc: 'Unset accountable point',
 
                 detail_not_eval_on_month: 'Not evaluate this month',
                 detail_not_eval: 'Nobody evaluate this month',
@@ -1650,16 +1652,16 @@ export default {
                 acc_evaluate: 'Accountable evaluation',
                 name_employee: 'Name',
                 role_employee: 'Role',
+                detail_emp_point_of: 'Employee point of',
 
                 enter_emp_point: 'Enter employee point',
-                eval_on_month: 'Evaluation information of this month',
                 responsible_not_eval: 'Responsible employee has not evaluated',
                 not_eval_on_month: 'Not has evaluation information of this month',
 
                 edit_basic_info: 'Basic information',
                 edit_detail_info: 'Detail information',
                 edit_member_info: 'Member information',
-                edit_inactive_emp: 'Inactive employee information',
+                edit_inactive_emp: 'Inactive employees',
                 edit_enter_progress: 'Enter progress',
                 edit_enter_value: 'Enter value',
 
@@ -1685,6 +1687,32 @@ export default {
                 calc_where: 'Where',
                 calc_no_value: 'No value',
                 calc_nan: 'NAN',
+                explain: ' - (Negative values ​​will be considered as 0.)',
+                eval_list: 'List of evaluations',
+                title_eval: 'Evaluate task',
+
+                btn_save_eval: 'Save evaluation',
+                btn_get_info: 'Get infomation task',
+                note_not_eval: 'You can no longer edit reviews because it is more than 7 days after the last review.',
+                note_eval: 'Number of days left to edit review: ',
+
+                add_eval_of_this_month: 'Add evaluation of this month',
+                eval_of: 'Evaluation of',
+                eval_from: 'Evaluation from',
+                eval_to: 'Evaluation to',
+                store_info: 'Save the input data into task infomation',
+                bool_yes: 'Yes',
+                bool_no: 'No',
+
+                detail_evaluation: 'Evaluation infomation',
+                err_eval_start: 'Evaluate date should be greater than equal start date',
+                err_eval_end: 'Evaluate date should be less than equal end date',
+                err_eval_on_month: 'Evaluate date should be day of month',
+
+                info_eval_month: 'Task infomation in evaluation',
+
+                auto_point_field: 'Automatic point of task in this month',
+                get_outside_info: 'Auto fill evaluation infomation from task infomation',
 
                 dashboard_created: 'Created',
                 dashboard_need_perform: 'Need to perform',
@@ -2432,7 +2460,7 @@ export default {
             }
         },
 
-        manage_warehouse:{
+        manage_warehouse: {
             material_manager: {
                 index: 'Index',
                 add: 'Add material',

@@ -1869,7 +1869,7 @@ const sampleCompanyData = async () => {
             location: customerLocation[0]._id,
             email: 'ntphuong@gmail.com',
             group: customerGroup[0]._id,
-            birth: '20/10/1995',
+            birth: '2/10/1995',
             gender: 'Nữ',
             loyal: true,
             company: vnist._id
@@ -1881,7 +1881,7 @@ const sampleCompanyData = async () => {
             location: customerLocation[0]._id,
             email: 'ntphuong@gmail.com',
             group: customerGroup[2]._id,
-            birth: '20/10/1995',
+            birth: '2/10/1995',
             gender: 'Nữ',
             loyal: true,
             company: vnist._id
@@ -1929,7 +1929,7 @@ const sampleCompanyData = async () => {
             location: customerLocation[0]._id,
             email: 'nvanh@gmail.com',
             group: customerGroup[2]._id,
-            birth: '20/10/1992',
+            birth: '2/10/1992',
             gender: 'Nam',
             loyal: true,
             company: vnist._id
@@ -1941,7 +1941,7 @@ const sampleCompanyData = async () => {
             location: customerLocation[0]._id,
             email: 'ntha@gmail.com',
             group: customerGroup[0]._id,
-            birth: '21/7/2000',
+            birth: '2/7/2000',
             gender: 'Nữ',
             loyal: true,
             company: vnist._id

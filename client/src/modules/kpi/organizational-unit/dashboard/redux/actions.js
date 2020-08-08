@@ -4,9 +4,12 @@ import { dashboardOrganizationalUnitKpiServices } from "./services";
 
 export const dashboardOrganizationalUnitKpiActions = {
     getAllEmployeeKpiInOrganizationalUnit,
+    getAllEmployeeKpiInChildrenOrganizationalUnit,
+    
+    getAllEmployeeKpiSetInOrganizationalUnit,
+    
     getAllTaskOfOrganizationalUnit,
-
-    getAllEmployeeKpiSetInOrganizationalUnit
+    getAllTaskOfChildrenOrganizationalUnit
 }
 
 // Lấy tất cả employeeKpi thuộc organizationalUnitKpi hiện tại
@@ -24,6 +27,48 @@ function getAllEmployeeKpiInOrganizationalUnit(roleId, organizationalUnitId = un
             .catch(error => {
                 dispatch({
                     type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_ORGANIZATIONALUNIT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
+
+// Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
+function getAllEmployeeKpiSetInOrganizationalUnit(roleId, organizationalUnitId, month) {
+    return dispatch => {
+        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNIT_REQUEST });
+
+        dashboardOrganizationalUnitKpiServices.getAllEmployeeKpiSetInOrganizationalUnit(roleId, organizationalUnitId, month)
+            .then(res => {
+                dispatch({
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNIT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNIT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
+
+/** Lấy tất cả EmployeeKpis thuộc các đơn vị con của đơn vị hiện tại */
+function getAllEmployeeKpiInChildrenOrganizationalUnit(roleId, month, organizationalUnitId) {
+    return dispatch => {
+        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_CHILDREN_ORGANIZATIONALUNIT_REQUEST });
+
+        dashboardOrganizationalUnitKpiServices.getAllEmployeeKpiInChildrenOrganizationalUnit(roleId, month, organizationalUnitId)
+            .then(res => {
+                dispatch({
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_CHILDREN_ORGANIZATIONALUNIT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEEKPI_IN_CHILDREN_ORGANIZATIONALUNIT_FAILURE,
                     payload: error
                 })
             })
@@ -51,23 +96,21 @@ function getAllTaskOfOrganizationalUnit(roleId, organizationalUnitId = undefined
     }
 }
 
-
-
-// Lấy employee KPI set của tất cả nhân viên 1 đơn vị trong 1 tháng
-function getAllEmployeeKpiSetInOrganizationalUnit(organizationalUnitId, month) {
+// Lấy tất cả task của các đơn vị con của đơn vị hiện tại
+function getAllTaskOfChildrenOrganizationalUnit(roleId, month, organizationalUnitId) {
     return dispatch => {
-        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNIT_REQUEST });
+        dispatch({ type: dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_CHILDREN_ORGANIZATIONALUNIT_REQUEST });
 
-        dashboardOrganizationalUnitKpiServices.getAllEmployeeKpiSetInOrganizationalUnit(organizationalUnitId, month)
+        dashboardOrganizationalUnitKpiServices.getAllTaskOfChildrenOrganizationalUnit(roleId, month, organizationalUnitId)
             .then(res => {
                 dispatch({
-                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNIT_SUCCESS,
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_CHILDREN_ORGANIZATIONALUNIT_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_EMPLOYEE_KPI_SET_IN_ORGANIZATIONALUNIT_FAILURE,
+                    type: dashboardOrganizationalUnitKpiConstants.GET_ALL_TASK_OF_CHILDREN_ORGANIZATIONALUNIT_FAILURE,
                     payload: error
                 })
             })

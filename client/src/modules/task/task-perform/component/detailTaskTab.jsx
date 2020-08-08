@@ -6,9 +6,7 @@ import { taskManagementActions } from './../../task-management/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { ModalEditTaskByResponsibleEmployee } from './modalEditTaskByResponsibleEmployee';
 import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployee';
-import { EvaluateByAccountableEmployee } from './evaluateByAccountableEmployee';
-import { EvaluateByConsultedEmployee } from './evaluateByConsultedEmployee';
-import { EvaluateByResponsibleEmployee } from './evaluateByResponsibleEmployee';
+import { EvaluationModal } from './evaluationModal';
 import { getStorage } from '../../../../config';
 
 import './detailTaskTab.css';
@@ -147,7 +145,7 @@ class DetailTaskTab extends Component {
         else if (data === "Canceled") return translate('task.task_management.canceled');
     }
 
-    // convert ISODate to String dd/mm/yyyy
+    // convert ISODate to String dd-mm-yyyy
     formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -159,7 +157,7 @@ class DetailTaskTab extends Component {
         if (day.length < 2)
             day = '0' + day;
 
-        return [day, month, year].join('/');
+        return [day, month, year].join('-');
     }
 
     handleShowEdit = async (id, role) => {
@@ -191,7 +189,8 @@ class DetailTaskTab extends Component {
                 showEvaluate: id
             }
         });
-        window.$(`#modal-evaluate-task-by-${role}-${id}-evaluate`).modal('show');
+        // window.$(`#modal-evaluate-task-by-${role}-${id}-evaluate`).modal('show');
+        window.$(`#task-evaluation-modal-${id}-`).modal('show');
 
     }
     refresh = async () => {
@@ -239,6 +238,35 @@ class DetailTaskTab extends Component {
         let evaluations;
         if (task && task.evaluations && task.evaluations.length !== 0) evaluations = task.evaluations; //.reverse()
 
+        let evalList = [];
+        if(evaluations && evaluations.length > 0){
+            for(let i = 0; i < evaluations.length; i++){
+                let prevEval;
+                let prevDate = task.startDate;
+                let splitter = this.formatDate(evaluations[i].date).split("-");
+
+                let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+                let dateOfPrevEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+                let newMonth = dateOfPrevEval.getMonth() - 1;
+                if (newMonth < 0) {
+                    newMonth += 12;
+                    dateOfPrevEval.setYear(dateOfPrevEval.getYear() - 1);
+                }
+                dateOfPrevEval.setMonth(newMonth);
+                
+                let monthOfPrevEval = dateOfPrevEval.getMonth();
+                let yearOfPrevEval = dateOfPrevEval.getFullYear();
+
+                prevEval = evaluations.find(e => (monthOfPrevEval === new Date(e.date).getMonth() && yearOfPrevEval === new Date(e.date).getFullYear()));
+                
+                if (prevEval) {
+                    prevDate = prevEval.date;
+                }
+
+                evalList.push({...evaluations[i], prevDate: prevDate })
+            }
+        }
+        
         return (
             <React.Fragment>
                 {(showToolbar) &&
@@ -260,9 +288,9 @@ class DetailTaskTab extends Component {
                         }
                         {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
                             <React.Fragment>
-                                <a className="btn btn-app" onClick={() => this.handleShowEndTask(id, currentRole)} title="Kết thúc công việc">
+                                {/* <a className="btn btn-app" onClick={() => this.handleShowEndTask(id, currentRole)} title="Kết thúc công việc">
                                     <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
-                                </a>
+                                </a> */}
 
                                 <a className="btn btn-app" onClick={() => this.handleShowEvaluate(id, currentRole)} title="Đánh giá công việc">
                                     <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_evaluate')}
@@ -303,7 +331,7 @@ class DetailTaskTab extends Component {
                             <div><strong>{translate('task.task_management.detail_link')}: &nbsp;&nbsp;</strong> <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></div>
                             <div><strong>{translate('task.task_management.detail_priority')}: &nbsp;&nbsp;</strong> {task && this.formatPriority(task.priority)}</div>
                             <div><strong>{translate('task.task_management.detail_status')}: &nbsp;&nbsp;</strong> {task && this.formatStatus(task.status)}</div>
-                            <div><strong>{translate('task.task_management.detail_time')}: &nbsp;&nbsp;</strong> {this.formatDate(task && task.startDate)} - {this.formatDate(task && task.endDate)}</div>
+                            <div><strong>{translate('task.task_management.detail_time')}: &nbsp;&nbsp;</strong> {this.formatDate(task && task.startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(task && task.endDate)}</div>
 
                             <div><strong>{translate('task.task_management.detail_progress')}: &nbsp;&nbsp;</strong> {task && task.progress}%</div>
                             {
@@ -419,11 +447,11 @@ class DetailTaskTab extends Component {
                             <div>
                                     {/* Đánh giá công việc */}
                                     <div>
-                                        {(evaluations) &&
-                                            evaluations.map((eva, keyEva) => {
+                                        {(evalList) &&
+                                            evalList.map((eva, keyEva) => {
                                                 return (
                                                     <div key={keyEva} className="description-box">
-                                                        <h4>{translate('task.task_management.detail_eval_on_date')}&nbsp;{this.formatDate(eva.date)}</h4>
+                                                        <h4>{translate('task.task_management.detail_eval')}&nbsp;{this.formatDate(eva.prevDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(eva.date)}</h4>
                                                         {
                                                             eva.results.length !== 0 &&
                                                             <div>
@@ -512,30 +540,10 @@ class DetailTaskTab extends Component {
                         perform={`edit-${currentRole}`}
                     />
                 }
-
+                
                 {
-                    (id && showEvaluate === id && currentRole === "responsible") &&
-                    <EvaluateByResponsibleEmployee
-                        id={id}
-                        task={task && task}
-                        role={currentRole}
-                        title={translate('task.task_management.detail_resp_eval')}
-                        perform='evaluate'
-                    />
-                }
-                {
-                    (id && showEvaluate === id && currentRole === "accountable") &&
-                    <EvaluateByAccountableEmployee
-                        id={id}
-                        task={task && task}
-                        role={currentRole}
-                        title={translate('task.task_management.detail_acc_eval')}
-                        perform='evaluate'
-                    />
-                }
-                {
-                    (id && showEvaluate === id && currentRole === "consulted") &&
-                    <EvaluateByConsultedEmployee
+                    (id && showEvaluate === id) &&
+                    <EvaluationModal
                         id={id}
                         task={task && task}
                         role={currentRole}
@@ -545,36 +553,6 @@ class DetailTaskTab extends Component {
                 }
 
 
-                {
-                    (id && showEndTask === id && currentRole === "responsible") &&
-                    <EvaluateByResponsibleEmployee
-                        id={id}
-                        task={task && task}
-                        role={currentRole}
-                        title={translate('task.task_management.detail_resp_stop')}
-                        perform='stop'
-                    />
-                }
-                {
-                    (id && showEndTask === id && currentRole === "accountable") &&
-                    <EvaluateByAccountableEmployee
-                        id={id}
-                        task={task && task}
-                        role={currentRole}
-                        title={translate('task.task_management.detail_acc_stop')}
-                        perform='stop'
-                    />
-                }
-                {
-                    (id && showEndTask === id && currentRole === "consulted") &&
-                    <EvaluateByConsultedEmployee
-                        id={id}
-                        task={task && task}
-                        role={currentRole}
-                        title={translate('task.task_management.detail_cons_stop')}
-                        perform='stop'
-                    />
-                }
             </React.Fragment>
         );
     }

@@ -814,7 +814,6 @@ formatDate = (date) => {
  */
 async function checkEvaluations(date, taskId, storeDate) {
     let evaluateId;
-
     let splitterStoreDate = storeDate.split("-");
     let storeDateISO = new Date(splitterStoreDate[2], splitterStoreDate[1] - 1, splitterStoreDate[0]);
 
@@ -921,55 +920,56 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
     let user = data.user;
     let progress = data.progress;
     let info = data.info;
-    let kpisItem = {
-        employee: user,
-        kpis: kpi
-    };
+    // let kpisItem = {
+    //     employee: user,
+    //     kpis: kpi
+    // };
     let date = data.date;
     let evaluateId;
 
     const endOfMonth = moment().endOf("month").format('DD-MM-YYYY')
 
 
-    evaluateId = await checkEvaluations(date, taskId, endOfMonth);
+    // evaluateId = await checkEvaluations(date, taskId, endOfMonth);
     let task = await Task.findById(taskId);
-    // cập nhật thông tin kpi
-    let listKpi = task.evaluations.find(e => String(e._id) === String(evaluateId)).kpis
-    let check_kpi = listKpi.find(kpi => String(kpi.employee) === user);
-    if (check_kpi === undefined) {
-        await Task.updateOne(
-            {
-                _id: taskId,
-                "evaluations._id": evaluateId
-            },
-            {
-                $push: {
-                    "evaluations.$.kpis": kpisItem
-                }
-            },
-            { $new: true }
-        );
-    } else {
-        await Task.updateOne(
-            {
-                _id: taskId,
-                "evaluations._id": evaluateId,
 
-            },
-            {
-                $set: {
-                    "evaluations.$.kpis.$[elem].kpis": kpi
-                }
-            },
-            {
-                arrayFilters: [
-                    {
-                        "elem.employee": user
-                    }
-                ]
-            }
-        );
-    }
+    // cập nhật thông tin kpi
+
+    // let listKpi = task.evaluations.find(e => String(e._id) === String(evaluateId)).kpis
+    // let check_kpi = listKpi.find(kpi => String(kpi.employee) === user);
+    // if (check_kpi === undefined) {
+    //     await Task.updateOne(
+    //         {
+    //             _id: taskId,
+    //             "evaluations._id": evaluateId
+    //         },
+    //         {
+    //             $push: {
+    //                 "evaluations.$.kpis": kpisItem
+    //             }
+    //         },
+    //         { $new: true }
+    //     );
+    // } else {
+    //     await Task.updateOne(
+    //         {
+    //             _id: taskId,
+    //             "evaluations._id": evaluateId,
+
+    //         },
+    //         {
+    //             $set: {
+    //                 "evaluations.$.kpis.$[elem].kpis": kpi
+    //             }
+    //         },
+    //         {
+    //             arrayFilters: [
+    //                 {
+    //                     "elem.employee": user
+    //                 }
+    //             ]
+    //         }
+    //     );
     // }
 
     // chuẩn hóa dữ liệu info
@@ -1278,7 +1278,7 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
  */
 exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
     let user = data.user;
-    // let evaluateId = data.evaluateId;
+    let checkSave = data.checkSave;
     let progress = data.progress;
     let automaticPoint = data.automaticPoint;
     let employeePoint = data.employeePoint;
@@ -1320,7 +1320,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
         }
     }
 
-    await Task.updateOne({ _id: taskId }, { $set: { progress: progress } }, { $new: true });
+    checkSave && await Task.updateOne({ _id: taskId }, { $set: { progress: progress } }, { $new: true });
 
     await Task.updateOne(
         {
@@ -1455,9 +1455,10 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
                     extra: cloneInfo[i].extra,
                     value: info[item].value
                 }
-
+// quangdz
                 if (yearOfParams > now.getFullYear() || (yearOfParams <= now.getFullYear() && monthOfParams >= now.getMonth())) {
-                    await Task.updateOne(
+                    // console.log('quang vào update');
+                    checkSave && await Task.updateOne(
                         {
                             _id: taskId,
                             "taskInformations._id": cloneInfo[i]._id
@@ -1537,7 +1538,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
  */
 exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     let user = data.user;
-    // let evaluateId = data.evaluateId;
+    let checkSave = data.checkSave;
     let progress = data.progress;
 
     let automaticPoint = data.automaticPoint === undefined ? 0 : data.automaticPoint;
@@ -1606,8 +1607,11 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     }
 
-    await Task.updateOne({ _id: taskId }, { $set: { status: status[0], progress: progress } });
+    await Task.updateOne({ _id: taskId }, { $set: { status: status[0] } });
     let task = await Task.findById(taskId);
+
+    checkSave && await Task.updateOne({ _id: taskId }, { $set: { progress: progress } });
+    task = await Task.findById(taskId);
 
     // cập nhật thông tin result================================================================BEGIN=====================================================
 
@@ -1688,7 +1692,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     let task2 = await Task.findById(taskId);
 
-    // cập nhật thông tin result================================================================BEGIN=====================================================
+    // cập nhật thông tin result====================================BEGIN=====================================================
 
     let listResult2 = task2.evaluations.find(e => String(e._id) === String(evaluateId)).results;
 
@@ -1745,10 +1749,10 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
                     extra: cloneInfo[i].extra,
                     value: info[item].value
                 }
-
+//quangdz
                 if (yearOfParams > now.getFullYear() || (yearOfParams <= now.getFullYear() && monthOfParams >= now.getMonth())) {
 
-                    await Task.updateOne(
+                    checkSave && await Task.updateOne(
                         {
                             _id: taskId,
                             "taskInformations._id": cloneInfo[i]._id

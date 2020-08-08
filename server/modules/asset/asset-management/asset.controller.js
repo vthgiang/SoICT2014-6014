@@ -9,10 +9,9 @@ const {
  * Lấy danh sách tài sản
  */
 exports.searchAssetProfiles = async (req, res) => {
-    //console.log(req, 'req')
     try {
         let data;
-        if (req.query.page === undefined && req.query.limit === undefined) {
+        if (!req.query.page && !req.query.limit) {
             data = await AssetService.getAssets(req.user.company._id, false);
         } else {
             let params = {
@@ -34,6 +33,7 @@ exports.searchAssetProfiles = async (req, res) => {
             content: data
         });
     } catch (error) {
+        console.log(error);
         await LogError(req.user.email, 'GET_ASSETS', req.user.company);
         res.status(400).json({
             success: false,
@@ -45,43 +45,33 @@ exports.searchAssetProfiles = async (req, res) => {
     }
 }
 
+
 /**
  * Thêm mới thông tin tài sản
  */
 exports.createAsset = async (req, res) => {
-    console.log('req', req);
     try {
         let avatar = "";
-        if (req.files.fileAvatar !== undefined) {
+        if (req.files.fileAvatar) {
             avatar = `/${req.files.fileAvatar[0].path}`;
         }
         let file = req.files.file;
-        let fileInfo = {file, avatar};
-
-        // Kiểm tra dữ liệu truyền vào
-        // if (req.body.code === undefined || req.body.code.trim()===""){
-        //     await LogError(req.user.email, 'CREATE_ASSET', req.user.company);
-        //     res.status(400).json({ success: false, messages: ["code_required"], content:{ inputData: req.body } });
-        // } else if(req.body.assetName === undefined || req.body.assetName.trim()==="" ){
-        //     await LogError(req.user.email, 'CREATE_ASSET', req.user.company);
-        //     res.status(400).json({ success: false, messages: ["asset_name_company_required"], content:{ inputData: req.body } });
-        // } else if(req.body.serial === undefined || req.body.serial.trim()==="" ){
-        //     await LogError(req.user.email, 'CREATE_ASSET', req.user.company);
-        //     res.status(400).json({ success: false, messages: ["serial_required"], content:{ inputData: req.body } });
-        // } else if(req.body.purchaseDate === undefined || req.body.purchaseDate.trim()==="" ){
-        //     await LogError(req.user.email, 'CREATE_ASSET', req.user.company);
-        //     res.status(400).json({ success: false, messages: ["purchase_date_required"], content:{ inputData: req.body } });
-        // } else if(req.body.warrantyExpirationDate === undefined || req.body.warrantyExpirationDate.trim()===""){
-        //     await LogError(req.user.email, 'CREATE_ASSET', req.user.company);
-        //     res.status(400).json({ success: false, messages: ["warranty_expirationDate_required"], content:{ inputData: req.body } });
-        // } else {
+        let fileInfo = { file, avatar };
+        
         let data = await AssetService.createAsset(req.body, req.user.company._id, fileInfo);
         await LogInfo(req.user.email, 'CREATE_ASSET', req.user.company);
-        res.status(200).json({success: true, messages: ["create_asset_success"], content: data});
-        // }
+        res.status(200).json({
+            success: true,
+            messages: ["create_asset_success"],
+            content: data
+        });
     } catch (error) {
         await LogError(req.user.email, 'CREATE_ASSET', req.user.company);
-        res.status(400).json({success: false, messages: ["create_asset_faile"], content: {error: error}});
+        res.status(400).json({
+            success: false,
+            messages: ["create_asset_faile"],
+            content: { error: error }
+        });
     }
 }
 
@@ -92,38 +82,30 @@ exports.createAsset = async (req, res) => {
 exports.updateAssetInformation = async (req, res) => {
     try {
         let avatar = "";
-        if (req.files.fileAvatar !== undefined) {
+        if (req.files.fileAvatar) {
             avatar = `/${req.files.fileAvatar[0].path}`;
         }
         let file = req.files.file;
         let fileInfo = {file, avatar};
-        // Kiểm tra dữ liệu truyền vào
-        // if (req.body.code === undefined || req.body.code.trim()===""){
-        //     await LogError(req.user.email, 'EDIT_ASSET', req.user.company);
-        //     res.status(400).json({ success: false, messages: ["edit_code_required"], content:{ inputData: req.body } });
-        // } else if(req.body.assetName === undefined || req.body.assetName.trim()==="" ){
-        //     await LogError(req.user.email, 'EDIT_ASSET', req.user.company);
-        //     res.status(400).json({ success: false, messages: ["edit_asset_name_company_required"], content:{ inputData: req.body } });
-        // } else if(req.body.serial === undefined || req.body.serial.trim()==="" ){
-        //     await LogError(req.user.email, 'EDIT_ASSET', req.user.company);
-        //     res.status(400).json({ success: false, messages: ["edit_serial_required"], content:{ inputData: req.body } });
-        // } else if(req.body.purchaseDate === undefined || req.body.purchaseDate.trim()==="" ){
-        //     await LogError(req.user.email, 'EDIT_ASSET', req.user.company);
-        //     res.status(400).json({ success: false, messages: ["edit_purchase_date_required"], content:{ inputData: req.body } });
-        // } else if(req.body.warrantyExpirationDate === undefined || req.body.warrantyExpirationDate.trim()===""){
-        //     await LogError(req.user.email, 'EDIT_ASSET', req.user.company);
-        //     res.status(400).json({ success: false, messages: ["edit_warranty_expirationDate_required"], content:{ inputData: req.body } });
-        // } else {
-        let oldAsset = await AssetService.getAssetInforById(req.params.id);
+        
         let data = await AssetService.updateAssetInformation(req.params.id, req.body, fileInfo, req.user.company._id);
+
         await LogInfo(req.user.email, 'EDIT_ASSET', req.user.company);
-        res.status(200).json({success: true, messages: ["edit_asset_success"], content: data});
-        // }
+        res.status(200).json({
+            success: true,
+            messages: ["edit_asset_success"],
+            content: data
+        });
     } catch (error) {
         await LogError(req.user.email, 'EDIT_ASSET', req.user.company);
-        res.status(400).json({success: false, messages: ["edit_asset_false"], content: {error: error}});
+        res.status(400).json({
+            success: false,
+            messages: ["edit_asset_false"],
+            content: { error: error }
+        });
     }
 }
+
 
 /**
  * Xoá thông tin tài sản
@@ -131,11 +113,20 @@ exports.updateAssetInformation = async (req, res) => {
 exports.deleteAsset = async (req, res) => {
     try {
         let data = await AssetService.deleteAsset(req.params.id);
-        res.status(200).json({success: true, messages: ["delete_asset_success"], content: data});
+        res.status(200).json({
+            success: true,
+            messages: ["delete_asset_success"],
+            content: data
+        });
     } catch (error) {
-        res.status(400).json({success: false, messages: ["delete_asset_false"], content: {error: error}});
+        res.status(400).json({
+            success: false,
+            messages: ["delete_asset_false"],
+            content: { error: error }
+        });
     }
 }
+
 
 /**
  * Chỉnh sửa thông tin khấu hao tài sản
@@ -143,9 +134,17 @@ exports.deleteAsset = async (req, res) => {
 exports.updateDepreciation = async (req, res) => {
     try {
         let data = await AssetService.updateDepreciation(req.params.id, req.body);
-        res.status(200).json({success: true, messages: ["edit_depreciation_success"], content: data});
+        res.status(200).json({
+            success: true,
+            messages: ["edit_depreciation_success"],
+            content: data
+        });
     } catch (error) {
-        res.status(400).json({success: false, messages: ["edit_depreciation_false"], content: {error: error}});
+        res.status(400).json({
+            success: false,
+            messages: ["edit_depreciation_false"],
+            content: { error: error }
+        });
     }
 }
 
@@ -155,25 +154,42 @@ exports.updateDepreciation = async (req, res) => {
 exports.createMaintainanceForIncident = async (req, res) => {
     try {
         let data = await AssetService.createMaintainanceForIncident(req.params.id, req.body);
-        res.status(200).json({success: true, messages: ["create_maintainance_success"], content: data});
+        res.status(200).json({
+            success: true,
+            messages: ["create_maintainance_success"],
+            content: data
+        });
     } catch (error) {
-        res.status(400).json({success: false, messages: ["create_maintainance_false"], content: {error: error}});
+        res.status(400).json({
+            success: false,
+            messages: ["create_maintainance_false"],
+            content: { error: error }
+        });
     }
 }
 
 
-//*****************Thông tin sử dụng************/
+//*****************Thông tin sử dụng******************/
 /**
  * Thêm mới thông tin sử dụng tài sản
  */
 exports.createUsage = async (req, res) => {
     try {
         let data = await AssetService.createUsage(req.params.id, req.body);
-        res.status(200).json({success: true, messages: ["create_usage_success"], content: data});
+        res.status(200).json({
+            success: true,
+            messages: ["create_usage_success"],
+            content: data
+        });
     } catch (error) {
-        res.status(400).json({success: false, messages: ["create_usage_false"], content: {error: error}});
+        res.status(400).json({
+            success: false,
+            messages: ["create_usage_false"],
+            content: { error: error }
+        });
     }
 }
+
 
 /**
  * Chỉnh sửa thông tin sử dụng tài sản
@@ -181,9 +197,17 @@ exports.createUsage = async (req, res) => {
 exports.updateUsage = async (req, res) => {
     try {
         let data = await AssetService.updateUsage(req.params.id, req.body);
-        res.status(200).json({success: true, messages: ["edit_usage_success"], content: data});
+        res.status(200).json({
+            success: true,
+            messages: ["edit_usage_success"],
+            content: data
+        });
     } catch (error) {
-        res.status(400).json({success: false, messages: ["edit_usage_false"], content: {error: error}});
+        res.status(400).json({
+            success: false,
+            messages: ["edit_usage_false"],
+            content: { error: error }
+        });
     }
 }
 
@@ -193,22 +217,41 @@ exports.updateUsage = async (req, res) => {
 exports.deleteUsage = async (req, res) => {
     try {
         let data = await AssetService.deleteUsage(req.params.id, req.body.usageId);
-        res.status(200).json({success: true, messages: ["delete_usage_success"], content: data});
+        res.status(200).json({
+            success: true,
+            messages: ["delete_usage_success"],
+            content: data
+        });
     } catch (error) {
-        res.status(400).json({success: false, messages: ["delete_usage_false"], content: {error: error}});
+        res.status(400).json({
+            success: false,
+            messages: ["delete_usage_false"],
+            content: { error: error }
+        });
     }
 }
+
+
 
 //*****************Thông tin bảo trì**************/
 /**
  * Thêm mới thông tin bảo trì tài sản
  */
 exports.createMaintainance = async (req, res) => {
+    console.log(req.query.incident_id);
     try {
         let data = await AssetService.createMaintainance(req.params.id, req.body, req.query.incident_id);
-        res.status(200).json({success: true, messages: ["create_maintainance_success"], content: data});
+        res.status(200).json({
+            success: true,
+            messages: ["create_maintainance_success"],
+            content: data
+        });
     } catch (error) {
-        res.status(400).json({success: false, messages: ["create_maintainance_false"], content: {error: error}});
+        res.status(400).json({
+            success: false,
+            messages: ["create_maintainance_false"],
+            content: { error: error }
+        });
     }
 }
 
@@ -218,9 +261,17 @@ exports.createMaintainance = async (req, res) => {
 exports.updateMaintainance = async (req, res) => {
     try {
         let data = await AssetService.updateMaintainance(req.params.id, req.body);
-        res.status(200).json({success: true, messages: ["edit_maintainance_success"], content: data});
+        res.status(200).json({
+            success: true,
+            messages: ["edit_maintainance_success"],
+            content: data
+        });
     } catch (error) {
-        res.status(400).json({success: false, messages: ["edit_maintainance_false"], content: {error: error}});
+        res.status(400).json({
+            success: false,
+            messages: ["edit_maintainance_false"],
+            content: { error: error }
+        });
     }
 };
 
@@ -230,9 +281,17 @@ exports.updateMaintainance = async (req, res) => {
 exports.deleteMaintainance = async (req, res) => {
     try {
         let data = await AssetService.deleteMaintainance(req.params.id, req.body.maintainanceId);
-        res.status(200).json({success: true, messages: ["delete_maintainance_success"], content: data});
+        res.status(200).json({
+            success: true,
+            messages: ["delete_maintainance_success"],
+            content: data
+        });
     } catch (error) {
-        res.status(400).json({success: false, messages: ["delete_maintainance_false"], content: {error: error}});
+        res.status(400).json({
+            success: false,
+            messages: ["delete_maintainance_false"],
+            content: { error: error }
+        });
     }
 };
 
@@ -244,7 +303,11 @@ exports.deleteMaintainance = async (req, res) => {
 exports.createIncident = async (req, res) => {
     try {
         let data = await AssetService.createIncident(req.params.id, req.body);
-        res.status(200).json({success: true, messages: ["create_incident_success"], content: data});
+        res.status(200).json({
+            success: true,
+            messages: ["create_incident_success"],
+            content: data
+        });
     } catch (error) {
         res.status(400).json({success: false, messages: ["create_incident_false"], content: {error: error}});
     }
@@ -256,9 +319,17 @@ exports.createIncident = async (req, res) => {
 exports.updateIncident = async (req, res) => {
     try {
         let data = await AssetService.updateIncident(req.params.id, req.body);
-        res.status(200).json({success: true, messages: ["edit_incident_success"], content: data});
+        res.status(200).json({
+            success: true,
+            messages: ["edit_incident_success"],
+            content: data
+        });
     } catch (error) {
-        res.status(400).json({success: false, messages: ["edit_incident_false"], content: {error: error}});
+        res.status(400).json({
+            success: false,
+            messages: ["edit_incident_false"],
+            content: { error: error }
+        });
     }
 }
 
@@ -268,8 +339,16 @@ exports.updateIncident = async (req, res) => {
 exports.deleteIncident = async (req, res) => {
     try {
         let data = await AssetService.deleteIncident(req.params.id, req.body.incidentId);
-        res.status(200).json({success: true, messages: ["delete_incident_success"], content: data});
+        res.status(200).json({
+            success: true,
+            messages: ["delete_incident_success"],
+            content: data
+        });
     } catch (error) {
-        res.status(400).json({success: false, messages: ["delete_incident_false"], content: {error: error}});
+        res.status(400).json({
+            success: false,
+            messages: ["delete_incident_false"],
+            content: { error: error }
+        });
     }
 }

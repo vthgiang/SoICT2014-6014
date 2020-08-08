@@ -6,7 +6,7 @@ import { DatePicker, ErrorLabel } from '../../../../../common-components';
 import { toast } from 'react-toastify';
 import ServerResponseAlert from '../../../../alert/components/serverResponseAlert';
 
-import { ModalImportFileBHXH, SocialInsuranceAddModal, SocialInsuranceEditModal } from './combinedContent';
+import { SocialInsuranceAddModal, SocialInsuranceEditModal } from './combinedContent';
 
 
 class InsurranceTab extends Component {
@@ -16,19 +16,23 @@ class InsurranceTab extends Component {
     }
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
 
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else return [day, month, year].join('-');
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        }
+        return date;
+
     }
 
     // Bắt sự kiện click edit BHXH
@@ -54,9 +58,10 @@ class InsurranceTab extends Component {
     handleStartDateBHYTChange = (value) => {
         let { errorOnHealthInsuranceEndDate, healthInsuranceEndDate } = this.state;
         let errorOnHealthInsuranceStartDate = undefined;
+        let startDate;
         if (value) {
             let partValue = value.split('-');
-            let startDate = [partValue[2], partValue[1], partValue[0]].join('-');
+            startDate = [partValue[2], partValue[1], partValue[0]].join('-');
             let date = new Date(startDate);
             if (healthInsuranceEndDate) {
                 let endDate = healthInsuranceEndDate.split('-');
@@ -64,11 +69,13 @@ class InsurranceTab extends Component {
                 let d = new Date(endDate);
                 if (date.getTime() >= d.getTime()) {
                     errorOnHealthInsuranceStartDate = "Thời gian bắt đầu phải trước thời gian kết thúc";
+                } else {
+                    errorOnHealthInsuranceEndDate = errorOnHealthInsuranceEndDate === 'Thời gian kết thúc phải sau thời gian bắt đầu' ? undefined : errorOnHealthInsuranceEndDate
                 }
             }
         }
         this.setState({
-            healthInsuranceStartDate: value,
+            healthInsuranceStartDate: startDate,
             errorOnHealthInsuranceStartDate: errorOnHealthInsuranceStartDate,
             errorOnHealthInsuranceEndDate: errorOnHealthInsuranceEndDate === 'Ngày có hiệu lực chưa được nhập' ? undefined : errorOnHealthInsuranceEndDate
         })
@@ -88,26 +95,30 @@ class InsurranceTab extends Component {
                 let d = new Date(startDate);
                 if (d.getTime() >= date.getTime()) {
                     this.setState({
-                        healthInsuranceEndDate: value,
+                        healthInsuranceEndDate: endDate,
                         errorOnHealthInsuranceEndDate: "Thời gian kết thúc phải sau thời gian bắt đầu",
                     })
                 } else {
                     this.setState({
-                        healthInsuranceEndDate: value,
+                        healthInsuranceEndDate: endDate,
                         errorOnHealthInsuranceStartDate: undefined,
                         errorOnHealthInsuranceEndDate: undefined,
                     })
-                    this.props.handleChange("healthInsuranceEndDate", value)
+
                 }
             } else {
                 this.setState({
-                    healthInsuranceEndDate: value,
+                    healthInsuranceEndDate: endDate,
                     errorOnHealthInsuranceEndDate: "Ngày có hiệu lực chưa được nhập",
                 })
             }
+        } else {
+            this.setState({
+                healthInsuranceEndDate: value,
+                errorOnHealthInsuranceEndDate: undefined,
+            })
         }
-
-
+        this.props.handleChange("healthInsuranceEndDate", value)
     }
     // function thêm thông tin quá trình đóng BHXH
     handleAddBHXH = async (data) => {
@@ -223,7 +234,7 @@ class InsurranceTab extends Component {
                             </div>
                             <div className="col-md-12">
                                 <h4 className="row col-md-6">{translate('manage_employee.bhxh_process')}:</h4>
-                                <ModalImportFileBHXH index={this.state.key} />
+                                {/* <ModalImportFileBHXH index={this.state.key} /> */}
                                 <SocialInsuranceAddModal handleChange={this.handleAddBHXH} id={`addBHXH${id}`} />
                                 <table className="table table-striped table-bordered table-hover " style={{ marginBottom: 0 }} >
                                     <thead>
