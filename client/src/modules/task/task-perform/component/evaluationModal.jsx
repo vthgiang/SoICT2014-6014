@@ -5,7 +5,6 @@ import { DialogModal } from '../../../../common-components/index';
 import { EvaluateByResponsibleEmployee } from './evaluateByResponsibleEmployee';
 import { EvaluateByAccountableEmployee } from './evaluateByAccountableEmployee';
 import { EvaluateByConsultedEmployee } from './evaluateByConsultedEmployee';
-import en from '../../../../lang/en';
 
 class EvaluationModal extends Component {
     constructor(props) {
@@ -142,26 +141,31 @@ class EvaluationModal extends Component {
                         </div>
                         <div className="box-body no-padding">
                             <ul className="nav nav-pills nav-stacked">
+                                {/* Đánh giá cho tháng đang được thêm, cho lên đầu */}
                                 {(checkMonth === false && showEval === true) && 
                                     <li className={content === 'new' ? "active" : undefined}>
                                         <a style={{ cursor: 'pointer' }} onClick={() => this.handleChangeContent('new', null)}>
-                                            {translate('task.task_management.eval_of')} ({ this.formatMonth(new Date()) })
+                                            {translate('task.task_management.eval_of')} { this.formatMonth(new Date()) }
                                         &nbsp;
                                     </a>
                                     </li>
                                 }
+
+                                {/* Đánh giá cho các tháng trước đó */}
                                 {(evaluationsList && evaluationsList.length!==0) && evaluationsList.map((item, index) =>
                                     <li key={index} className={content === item._id ? "active" : undefined}>
                                         <a style={{ cursor: 'pointer' }} onClick={() => this.handleChangeContent( item._id, item)}>
-                                            {translate('task.task_management.eval_of')} ({ this.formatMonth(item.date) })
+                                            {translate('task.task_management.eval_of')} { this.formatMonth(item.date) }
                                         &nbsp;
                                     </a>
                                     </li>
                                 )}
+
+                                {/* Thêm mới đánh giá */}
                                 {(expire > 0) && (checkMonth === false && showEval === false ) && 
                                     <li className={content === 'new' ? "active" : undefined}>
                                         <a style={{ cursor: 'pointer' }} onClick={() => this.handleAddEval()}>
-                                                {translate('task.task_management.add_eval_of_this_month')} <i style={{color: 'green'}} className="fa fa-plus-square"></i>
+                                        {translate('task.task_management.add_eval_of_this_month')}&nbsp;&nbsp;&nbsp;&nbsp;<i style={{color: 'green'}} className="fa fa-plus-square"></i>
                                             &nbsp;
                                         </a>
                                     </li>

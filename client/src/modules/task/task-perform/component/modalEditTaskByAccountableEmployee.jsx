@@ -120,6 +120,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             consultedEmployees: consultedEmployees,
             informedEmployees: informedEmployees,
             inactiveEmployees: inactiveEmployees,
+            errorInfo: {},
         }
     }
 
@@ -139,7 +140,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 errorOnInfoDate: undefined,
                 errorOnProgress: undefined,
                 errorTaskName: undefined,
-                errorTaskDescription: undefined
+                errorTaskDescription: undefined,
+                errorInfo: {},
 
             }
         } else {
@@ -182,9 +184,9 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 code: name,
                 type: 'Number'
             }
+            state.errorInfo[name] = this.validateNumberInfo(value);
             return {
                 ...state,
-                errorOnNumberInfo: this.validateNumberInfo(value)
             }
         })
     }
@@ -198,9 +200,9 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 code: name,
                 type: 'Text'
             }
+            state.errorInfo[name] = this.validateTextInfo(value);
             return {
                 ...state,
-                errorOnTextInfo: this.validateTextInfo(value)
             }
         })
     }
@@ -213,9 +215,9 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 code: code,
                 type: 'Date'
             }
+            state.errorInfo[code] = this.validateDate(value);
             return {
                 ...state,
-                errorOnInfoDate: this.validateDate(value),
             }
         });
     }

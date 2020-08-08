@@ -34,7 +34,6 @@ exports.getTaskEvaluations = async (data) => {
     let endTime = endDate.split("-");
     let end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
     let filterDate = {};
-
     if (data.responsibleEmployees) {
         responsible = data.responsibleEmployees;
     }
@@ -90,33 +89,44 @@ exports.getTaskEvaluations = async (data) => {
         },
     ];
 
-
-    if (taskStatus === 0) { // Lọc tất cả các coong việc không theo đặc thù
-        console.log('b');
+    if (!startDate && !endDate) {
+        console.log('1')
         condition = [
             ...condition,
-            filterDate
+            { $match: { status: taskStatus } },
+            { $sort: { date: -1 } },
         ]
-
-    } else
-        // nếu không lọc theo người thực hiện và người phê duyệt
-        if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
+    } else {
+        if (taskStatus === 0) { // Lọc tất cả các coong việc không theo đặc thù
+            console.log('2')
             condition = [
-                { $match: { status: taskStatus } },
                 ...condition,
                 filterDate
             ]
 
-        } else {
-            condition = [
-                { $match: { status: taskStatus } },
-                { $match: { responsibleEmployees: { $in: [...responsible.map(x => mongoose.Types.ObjectId(x.toString()))] } } },
-                { $match: { accountableEmployees: { $in: [...accountable.map(y => mongoose.Types.ObjectId(y.toString()))] } } },
-                ...condition,
-                filterDate,
+        } else
+            // nếu không lọc theo người thực hiện và người phê duyệt
+            if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
+                console.log('3')
+                condition = [
+                    { $match: { status: taskStatus } },
+                    ...condition,
+                    filterDate
+                ]
 
-            ]
-        }
+            } else {
+                console.log('4')
+                condition = [
+                    { $match: { status: taskStatus } },
+                    { $match: { responsibleEmployees: { $in: [...responsible.map(x => mongoose.Types.ObjectId(x.toString()))] } } },
+                    { $match: { accountableEmployees: { $in: [...accountable.map(y => mongoose.Types.ObjectId(y.toString()))] } } },
+                    ...condition,
+                    filterDate,
+
+                ]
+            }
+    }
+
 
 
     let result = await Task.aggregate(condition);
@@ -1236,7 +1246,7 @@ exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId, mo
                 ]
             }
         },
-        
+
         { $project: { 'startDate': 1, 'endDate': 1, 'evaluations': 1, 'accountableEmployees': 1, 'consultedEmployees': 1, 'informedEmployees': 1, 'status': 1 } }
     ])
 
@@ -1249,7 +1259,7 @@ exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId, mo
  * @param {*} month 
  */
 exports.getAllTaskOfChildrenOrganizationalUnit = async (companyId, roleId, month, organizationalUnitId) => {
-    
+
     let tasksOfChildrenOrganizationalUnit = [], childrenOrganizationalUnits;
 
     childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(companyId, roleId, organizationalUnitId);
