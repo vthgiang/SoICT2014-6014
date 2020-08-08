@@ -182,7 +182,7 @@ function editComment(setKpiId, commentId, data) {
  */
 function deleteComment(setKpiId, commentId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/${setKpiId}/comment/${commentId}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/${setKpiId}/comments/${commentId}`,
         method: 'DELETE',
     }, false, true)
 }

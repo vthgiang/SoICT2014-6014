@@ -44,6 +44,22 @@ class TaskStatusChart extends Component {
             }
         ]
 
+        // Sao lưu dữ liệu để sử dụng khi dữ liêu thay đổi
+        this.TASK_PROPS = {
+            responsibleTasks: null,
+            accountableTasks: null,
+            consultedTasks: null,
+            informedTasks: null,
+            creatorTasks: null,
+            organizationUnitTasks: this.props.tasksUnit,
+        }
+
+        // this.INFO_SEARCH = {
+        //     role: this.ROLE.RESPONSIBLE,
+        //     currentMonth: currentYear + '-' + (currentMonth + 1),
+        //     nextMonth: currentYear + '-' + (currentMonth + 2)
+        // }
+
         this.state = {
             aPeriodOfTime: true,
             userId: localStorage.getItem("userId"),
@@ -62,8 +78,8 @@ class TaskStatusChart extends Component {
         //console.log('should compornet', nextProps.callAction, this.state.callAction)
         if (
             nextProps.callAction !== this.state.callAction
-            || nextProps.startMonth !== this.state.startMonth
-            || nextProps.endMonth !== this.state.endMonth
+            || nextProps.startMonth !== this.props.startMonth
+            || nextProps.endMonth !== this.props.endMonth
         ) {
             // //console.log('should compornet')
             if (this.props.TaskOrganizationUnitDashboard) {
@@ -71,7 +87,7 @@ class TaskStatusChart extends Component {
                 let idsUnit = this.props.units ? this.props.units : "[]";
 
                 //console.log(nextState.currentMonth, nextState.nextMonth)
-                await this.props.getTaskInOrganizationUnitByMonth(idsUnit, nextProps.startMonth, nextProps.endMonth);
+                await this.props.getTaskInOrganizationUnitByMonth(idsUnit, nextProps.currentMonth, nextProps.nextMonth);
             }
             else {
                 await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
@@ -110,7 +126,7 @@ class TaskStatusChart extends Component {
             if (this.props.TaskOrganizationUnitDashboard) { // neu componet duoc goi tu dashboard organization unit
                 let idsUnit = this.props.units ? this.props.units : "[]";
                 //console.log("o day dong 132:=======================")
-                await this.props.getTaskInOrganizationUnitByMonth(idsUnit, nextProps.startMonth, nextProps.endMonth);
+                await this.props.getTaskInOrganizationUnitByMonth(idsUnit, this.props.startMonth, this.props.endMonth);
             }
             else {
                 await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
@@ -206,6 +222,7 @@ class TaskStatusChart extends Component {
         let dataPieChart, numberOfInprocess = 0, numberOfWaitForApproval = 0, numberOfFinished = 0, numberOfDelayed = 0, numberOfCanceled = 0;
         let listTask;
         if (this.props.TaskOrganizationUnitDashboard) {
+            // listTask = this.TASK_PROPS.organizationUnitTasks;
             listTask = tasks.organizationUnitTasks;
             //console.log('listTask: ', listTask);
         }
@@ -303,12 +320,17 @@ class TaskStatusChart extends Component {
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
-                    {
-                        TaskOrganizationUnitDashboard &&
+                    {/* <section className="form-inline">
                         <div className="form-group">
                             <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                         </div>
-                    }
+                        {
+                            TaskOrganizationUnitDashboard &&
+                            <div className="form-group">
+                                <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+                            </div>
+                        }
+                    </section> */}
 
 
                     {!TaskOrganizationUnitDashboard &&
