@@ -1702,6 +1702,14 @@ export default {
                 bool_yes: 'Yes',
                 bool_no: 'No',
 
+                detail_evaluation: 'Evaluation infomation',
+                err_eval_start: 'Evaluate date should be greater than equal start date',
+                err_eval_end: 'Evaluate date should be less than equal end date',
+                err_eval_on_month: 'Evaluate date should be day of month',
+
+                auto_point_field: 'Automatic point of task in this month',
+                get_outside_info: 'Auto fill evaluation infomation from task infomation',
+
                 dashboard_created: 'Created',
                 dashboard_need_perform: 'Need to perform',
                 dashboard_need_approve: 'Need to approve',

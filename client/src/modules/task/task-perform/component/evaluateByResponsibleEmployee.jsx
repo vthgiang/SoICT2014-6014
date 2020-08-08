@@ -485,13 +485,13 @@ class EvaluateByResponsibleEmployee extends Component {
             err = translate('task.task_perform.modal_approve_task.err_empty');
         }
         else if (dst < 0) {
-            err = 'Ngày đánh giá phải lớn hơn ngày bắt đầu';
+            err = translate('task.task_management.err_eval_start');
         }
         else if (det < 0) {
-            err = 'Ngày đánh giá phải nhỏ hơn ngày kết thúc';
+            err = translate('task.task_management.err_eval_end');
         }
         else if (de < 0 || ds < 0){
-            err = "Ngày đánh giá phải là ngày trong tháng";
+            err = translate('task.task_management.err_eval_on_month');
         }
 
         let data = this.getData(value);
@@ -888,7 +888,7 @@ class EvaluateByResponsibleEmployee extends Component {
                         {/* Nút lưu */}
                         {!(checkNoteMonth && (dentaDate > 7)) &&
                         <div className="pull-right">
-                            <button disabled={disabled} style={{ marginRight: "5px" }} className="btn btn-primary" onClick={this.updateInfo}>{translate('task.task_management.btn_get_info')}</button>
+                            {/* <button disabled={disabled} style={{ marginRight: "5px" }} className="btn btn-primary" onClick={this.updateInfo}>{translate('task.task_management.btn_get_info')}</button> */}
                             <button disabled={disabled || disableSubmit} className="btn btn-success" onClick={this.save}>{translate('task.task_management.btn_save_eval')}</button>
                         </div>
                         }
@@ -913,7 +913,6 @@ class EvaluateByResponsibleEmployee extends Component {
                                     </div>
                                     <div className="col-md-6">
                                         <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
-                                            {/* <label>{translate('task.task_management.evaluate_date')}:<span className="text-red">*</span></label> */}
                                             <label>{translate('task.task_management.eval_to')}:<span className="text-red">*</span></label>
                                             <DatePicker
                                                 id={`create_date_${id}_${perform}`}
@@ -972,7 +971,8 @@ class EvaluateByResponsibleEmployee extends Component {
                                     handleChangeNumberInfo={this.handleChangeNumberInfo}
                                     handleChangeTextInfo={this.handleChangeTextInfo}
                                     handleChangeSaveInfo={this.handleChangeSaveInfo}
-                                    
+                                    updateInfo={this.updateInfo}
+
                                     indexReRender={indexReRender}
 
                                     disabled={disabled} 
@@ -984,7 +984,7 @@ class EvaluateByResponsibleEmployee extends Component {
                             </div>
 
                             <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">Điểm công việc tự động trong đánh giá này</legend>
+                                <legend className="scheduler-border">{translate('task.task_management.auto_point_field')}</legend>
                                 <div style={{lineHeight: "3"}}>
                                     <div>
                                         <strong>{translate('task.task_management.detail_auto_point')}: &nbsp;</strong>

@@ -43,6 +43,8 @@ class ModalShowAutoPointInfo extends Component {
         dayUsed = dayUsed/86400000;
         overdueDate = overdueDate/86400000;
 
+        if(dayUsed === 0) dayUsed = 0.5;
+
         // Các hoạt động (chỉ lấy những hoạt động đã đánh giá)
         let taskActions = task.taskActions;
         
