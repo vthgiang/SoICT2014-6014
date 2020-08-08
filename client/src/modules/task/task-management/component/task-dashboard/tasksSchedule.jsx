@@ -10,7 +10,7 @@ import Timeline, { TodayMarker } from "react-calendar-timeline"
 import { DatePicker } from '../../../../../common-components/index'
 
 import Swal from 'sweetalert2'
-import moment from 'moment'
+import moment, { duration } from 'moment'
 import 'react-calendar-timeline/lib/Timeline.css'
 import './calendar.css'
 
@@ -59,9 +59,8 @@ class TasksSchedule extends Component {
     let { infoSearch } = this.state;
     let { organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = infoSearch;
     let unitIds = this.props.units ? this.props.units : "[]";
-    console.log('uniit\n\n\n\n\n\n\n\n', this.props.units);
     await this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
-    await this.props.getTaskInOrganizationUnitByMonth("[]", startDateAfter, endDateBefore);
+    // await this.props.getTaskInOrganizationUnitByMonth("[]", startDateAfter, endDateBefore);
     await this.setState(state => {
       return {
         ...state,
@@ -104,7 +103,6 @@ class TasksSchedule extends Component {
   }
 
   formatDate(d) {
-    // let d = new Date(date),
     let month = '' + (d.getMonth());
     let day = '' + d.getDate();
     let year = d.getFullYear();
@@ -115,131 +113,85 @@ class TasksSchedule extends Component {
     return [month, year].join('-');
   }
 
-  handleSearchTasks = async (nextState) => {
-    let { infoSearch } = this.state;
-    let { organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = infoSearch;
-    console.log(startDateAfter, endDateBefore);
-    if (startDateAfter === "") startDateAfter = null;
-    if (endDateBefore === "") endDateBefore = null;
+  // handleSearchTasks = async (nextState) => {
+  //   let { infoSearch } = this.state;
+  //   let { organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = infoSearch;
+  //   if (startDateAfter === "") startDateAfter = null;
+  //   if (endDateBefore === "") endDateBefore = null;
 
-    await this.setState(state => {
-      return {
-        ...state,
-        infoSearch: {
-          ...state.infoSearch,
-          startDateAfter: startDateAfter,
-          endDateBefore: endDateBefore
-        }
-      }
-    })
-    // console.log('===============\n\n\n\n\n\n\n', this.state.infoSearch);
-    let startAfterSpl;
-    let startdate_after = null;
-    let endBeforeSpl;
-    let enddate_before = null;
+  //   await this.setState(state => {
+  //     return {
+  //       ...state,
+  //       infoSearch: {
+  //         ...state.infoSearch,
+  //         startDateAfter: startDateAfter,
+  //         endDateBefore: endDateBefore
+  //       }
+  //     }
+  //   })
+  //   let startAfterSpl;
+  //   let startdate_after = null;
+  //   let endBeforeSpl;
+  //   let enddate_before = null;
 
-    if (startDateAfter === undefined) startDateAfter = null;
-    if (endDateBefore === undefined) endDateBefore = null;
-    if (startDateAfter !== null) {
-      startAfterSpl = startDateAfter.split("-");
-      startdate_after = new Date(startAfterSpl[0], startAfterSpl[1], 0);
-    }
+  //   if (startDateAfter === undefined) startDateAfter = null;
+  //   if (endDateBefore === undefined) endDateBefore = null;
+  //   if (startDateAfter !== null) {
+  //     startAfterSpl = startDateAfter.split("-");
+  //     startdate_after = new Date(startAfterSpl[0], startAfterSpl[1], 0);
+  //   }
 
-    if (endDateBefore !== null) {
-      endBeforeSpl = endDateBefore.split("-");
-      enddate_before = new Date(endBeforeSpl[0], endBeforeSpl[1], 28);
-    }
-    if (startdate_after && enddate_before &&
-      Date.parse(startdate_after) > Date.parse(enddate_before)) {
-      const { translate } = this.props;
-      Swal.fire({
-        title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
-        type: 'warning',
-        confirmButtonColor: '#3085d6',
-        confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
-      })
-    }
-    else {
-      // console.log('chay den 162', this.props.TaskOrganizationUnitDashboard);
-      if (this.props.TaskOrganizationUnitDashboard) {
-        let unitIds = this.props.units ? this.props.units : "[]";
-        console.log("kkkk", startDateAfter, endDateBefore)
-        this.props.getTaskInOrganizationUnitByMonth(unitIds, startDateAfter, endDateBefore);
-      }
-      else {
-        this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
-        // console.log('ko chay vao if');
-      }
-    }
-  }
-  handleStartDateChange = async (value) => {
-    // if (value = )
-    // let test = this.formatDate(value);
-    // console.log(test);
-    let month = value.split("-");
-    let startAfter = [month[0], month[1]].join("-");
-    console.log('dsfsd', startAfter);
-    await this.setState(state => {
-      return {
-        ...state,
-        infoSearch: {
-          ...state.infoSearch,
-          startDateAfter: startAfter,
-        }
-      }
-    });
+  //   if (endDateBefore !== null) {
+  //     endBeforeSpl = endDateBefore.split("-");
+  //     enddate_before = new Date(endBeforeSpl[0], endBeforeSpl[1], 28);
+  //   }
+  //   if (startdate_after && enddate_before &&
+  //     Date.parse(startdate_after) > Date.parse(enddate_before)) {
+  //     const { translate } = this.props;
+  //     Swal.fire({
+  //       title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
+  //       type: 'warning',
+  //       confirmButtonColor: '#3085d6',
+  //       confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
+  //     })
+  //   }
+  //   else {
+  //     if (this.props.TaskOrganizationUnitDashboard) {
+  //       let unitIds = this.props.units ? this.props.units : "[]";
+  //       this.props.getTaskInOrganizationUnitByMonth(unitIds, startDateAfter, endDateBefore);
+  //     }
+  //     else {
+  //       this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
+  //     }
+  //   }
+  // }
 
-  }
-  handleEndDateChange = async (value) => {
-    let month = value.split("-");
-    let endBefore = [month[0], month[1]].join("-");
-
-    console.log(endBefore);
-    await this.setState(state => {
-      return {
-        ...state,
-        infoSearch: {
-          ...state.infoSearch,
-          endDateBefore: endBefore,
-        }
-      }
-    });
-
-  }
-  getDurations() {
-
+  // Lấy thời gian các công việc
+  getTaskDurations() {
     const { tasks } = this.props;
-    console.log("get duarationnnnnnnnnnnnnnnnnnn")
     var taskList, inprocessTasks;
-    let durations = [];
+    let taskDurations = [];
     if (tasks) {
       if (this.props.TaskOrganizationUnitDashboard) {
         taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
         inprocessTasks = taskList && taskList.filter(task => task.status === "Inprocess");
       }
       else inprocessTasks = tasks.responsibleTasks;
-
     }
-
 
     if (inprocessTasks) {
       for (let i = 1; i <= inprocessTasks.length; i++) {
         let start_time = moment(new Date(inprocessTasks[i - 1].startDate));
         let end_time = moment(new Date(inprocessTasks[i - 1].endDate));
-        let responsibleName = [];
+        let responsibleEmployeeIds = [];
         let title;
         inprocessTasks[i - 1].responsibleEmployees.map(x => {
-          responsibleName.push(x.name)
+          responsibleEmployeeIds.push(x._id)
         });
-        if (this.props.TaskOrganizationUnitDashboard) {
-          title = inprocessTasks[i - 1].name + " - " + responsibleName + " - " + inprocessTasks[i - 1].progress + "%"
-        }
-        else {
-          title = inprocessTasks[i - 1].name + " - " + inprocessTasks[i - 1].progress + "%"
-        }
-        durations.push({
+        title = inprocessTasks[i - 1].name + " - " + inprocessTasks[i - 1].progress + "%"
+        taskDurations.push({
           id: parseInt(i),
-          group: 1,
+          group: responsibleEmployeeIds[0],
           title: title,
           canMove: false,
 
@@ -258,49 +210,88 @@ class TasksSchedule extends Component {
           }
         })
       }
+
       if (inprocessTasks.length) {
-        // console.log(inprocessTasks[0].progress);
-        this.displayTaskProgress(inprocessTasks[0].progress);
+        let x = document.getElementsByClassName("rct-item");
+        if (x.length) for (let i = 0; i < x.length; i++) {
+          this.displayTaskProgress(inprocessTasks[i].progress, x[i]);
+        }
       }
     }
 
-    return durations;
+    return taskDurations;
   }
 
+  // Nhóm công việc theo người thực hiện
 
+  getTaskGroups() {
+    const { tasks } = this.props;
+    var taskList1, inprocessTasks1;
+    let groupName = [];
+    let distinctGroupName = [];
+    let id = [];
+    let distinctId = []
+    if (tasks) {
+      if (this.props.TaskOrganizationUnitDashboard) {
+        taskList1 = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
+        inprocessTasks1 = taskList1 && taskList1.filter(task => (task.status === "Inprocess" && task.isArchived === false));
+      }
+      else inprocessTasks1 = tasks.responsibleTasks;
 
-  displayTaskProgress = async (progress) => {
-    let x = document.getElementsByClassName("rct-item");
-    // console.log('\n\n\n\n\n\n\n\n ', x);
-    let d = document.createElement('div');
-    var { add } = this.state;
-    d.setAttribute("id", "task-progress");
+      if (inprocessTasks1) {
 
-    var test = x[0];
-    console.log("dong 277")
-    if (x[0]) {
-      console.log('dong 279');
-      // if (add) {
-      let offset = progress * x[0].offsetWidth / 100;
-      console.log(x[0]);
+        for (let i = 1; i <= inprocessTasks1.length; i++) {
 
-      x[0].appendChild(d);
-      d.style.width = `${offset}px`
-      console.log('dong 284');
+          let responsibleName = [];
+          let responsibleEmployeeIds = [];
+          inprocessTasks1[i - 1].responsibleEmployees.map(x => {
 
-      // this.setState(state => {
-      //   return {
-      //     ...state,
-      //     add: false,
-      //   }
-      // })
-      console.log('rct-item', x[0]);
-      // }
+            responsibleName.push(x.name)
+            responsibleEmployeeIds.push(x._id)
+
+          });
+
+          groupName.push({
+            id: responsibleEmployeeIds[0],
+            title: responsibleName
+          })
+
+          id.push(responsibleEmployeeIds[0])
+        }
+        if (groupName) {
+          for (let i = 0; i < id.length; i++) {
+            let idx = distinctId.indexOf(id[i]);
+            if (idx < 0) {
+              distinctId.push(id[i])
+              distinctGroupName.push({
+                id: groupName[i].id,
+                title: groupName[i].title[0]
+              })
+            }
+          }
+        }
+      }
+    }
+    let group = [{ id: "no-data", title: "" }]
+    return distinctGroupName.length ? distinctGroupName : group;
+
+  }
+
+  // Hiển thị tiến độ công việc
+
+  displayTaskProgress = async (progress, x) => {
+    if (x) {
+      let d, child;
+
+      d = document.createElement('div');
+      d.setAttribute("class", "task-progress");
+      const progressWidth = progress * x.offsetWidth / 100;
+      d.style.width = `${progressWidth}px`
+      child = x.childElementCount;
+      if (child === 1) x.appendChild(d);
 
     }
-
   }
-
 
 
   handleItemClick = async (itemId) => {
@@ -356,49 +347,24 @@ class TasksSchedule extends Component {
   };
 
   render() {
-    const { defaultTimeStart, defaultTimeEnd, infoSearch, taskId } = this.state;
-    const { startDateAfter, endDateBefore } = infoSearch;
+    const { defaultTimeStart, defaultTimeEnd } = this.state;
     let { tasks, translate } = this.props;
     let task = tasks && tasks.task;
     let today = new Date();
     this.displayTaskProgress();
-    console.log('renđêrrrrrrrrrrrrrrrrrrrrrrrrrrrrr');
+
     return (
       <React.Fragment>
         <div className="box-body qlcv">
           {<ModalDetailTask task={task} />}
-          <div className="flex-right">
-            <div className="form-inline">
-              <div className="form-group">
-                <label>{translate('task.task_management.from')}: </label>
-                <DatePicker id='start_date_after'
-                  value={startDateAfter}
-                  onChange={this.handleStartDateChange}
-                  dateFormat="month-year"
-                />
-              </div>
-              <div className="form-group">
-                <label>{translate('task.task_management.to')}: </label>
-                <DatePicker
-                  id='end_date_before'
-                  value={endDateBefore}
-                  onChange={this.handleEndDateChange}
-                  dateFormat="month-year"
-                />
-              </div>
-              <div className="form-group">
-                <button className="btn btn-success" onClick={this.handleSearchTasks}>{translate('task.task_management.search')}</button>
-              </div>
-            </div>
-          </div>
           <Timeline
             scrollRef={el => (this.scrollRef = el)}
-            items={this.getDurations()}
-            groups={[{ id: 1, title: 'group' }]}
+            groups={this.getTaskGroups()}
+            items={this.getTaskDurations()}
             itemsSorted
             itemTouchSendsClick={false}
             stackItems
-            sidebarWidth={0}
+            sidebarWidth={150}
             itemHeightRatio={0.8}
             onItemClick={this.handleItemClick}
             canMove={false}
@@ -413,8 +379,6 @@ class TasksSchedule extends Component {
                     ...styles,
                     backgroundColor: '#d73925',
                     width: '3px',
-                    // marginLeft: '-4px'
-
                   }
                   return <div style={customStyles}></div>
                 }

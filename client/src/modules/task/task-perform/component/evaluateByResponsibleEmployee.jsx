@@ -74,8 +74,8 @@ class EvaluateByResponsibleEmployee extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    errorInfo: {},
-                    errorOnProgress: undefined,
+                    // errorInfo: {},
+                    // errorOnProgress: undefined,
                     id: nextProps.id,
                     task: data.task,
                     info: data.info,
@@ -517,8 +517,8 @@ class EvaluateByResponsibleEmployee extends Component {
                 // progress: data.progress,
                 // checkSave: data.checkSave,
                 errorOnDate: err,
-                errorInfo: {},
-                errorOnProgress: undefined,
+                // errorInfo: {},
+                // errorOnProgress: undefined,
                 indexReRender: state.indexReRender + 1,
             }
         });
@@ -824,6 +824,7 @@ class EvaluateByResponsibleEmployee extends Component {
         this.handleAddTaskLog();
     }
 
+//  kiểm tra có phải đánh giá này là của tháng hiện tại hay ko
     checkNote = () => {
         let { date } = this.props;
         let splitter = date.split("-");
@@ -831,9 +832,9 @@ class EvaluateByResponsibleEmployee extends Component {
         let now = new Date ();
 
         if(now.getMonth() === isoDate.getMonth() && now.getFullYear() === isoDate.getFullYear()) {
-            return false;
+            return false; // là tháng hiện tại
         }
-        return true
+        return true // khác tháng hiện tại
     }
 
     checkNullUndefined = (x) => {
@@ -915,6 +916,7 @@ class EvaluateByResponsibleEmployee extends Component {
                                                 value={date}
                                                 onChange={this.handleDateChange}
                                                 disabled={disabled} 
+                                                // || (checkNoteMonth && (dentaDate <= 20 && dentaDate > 0))
                                             />
                                             <ErrorLabel content={errorOnDate} />
                                         </div>
