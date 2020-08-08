@@ -941,13 +941,13 @@ class ActionTab extends Component {
                                                             onSubmit={(e) => { this.handleSaveEditAction(e, item._id, item.description, task._id) }}
                                                         />
                                                         {item.files.length > 0 &&
-                                                            <ul style={{ marginTop: '-40px', marginLeft: '50px', listStyle: 'none' }}>
+                                                            <div className="tool-level1" style={{marginTop: -15}}>
                                                                 {item.files.map(file => {
-                                                                    return <li>
-                                                                        <a style={{ cursor: "pointer" }} className="link-black text-sm">{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "action") }}><i className="fa fa-times"></i></a>
-                                                                    </li>
+                                                                    return <div>
+                                                                        <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "action") }}><i className="fa fa-times"></i></a>
+                                                                    </div>
                                                                 })}
-                                                            </ul>}
+                                                            </div>}
                                                         {showModalDelete === item._id &&
                                                             <DialogModal
                                                                 marginTop = {"20vh"}
@@ -1036,13 +1036,13 @@ class ActionTab extends Component {
                                                                         />
                                                                         {/* Hiện file đã tải lên */}
                                                                         {child.files.length > 0 &&
-                                                                            <ul style={{ marginTop: '-40px', marginLeft: '50px', listStyle: 'none' }}>
-                                                                                {child.files.map(file => {
-                                                                                    return <li>
-                                                                                        <a style={{ cursor: "pointer" }} className="link-black text-sm">{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "commentofaction") }}><i className="fa fa-times"></i></a>
-                                                                                    </li>
+                                                                            <div className="tool-level2" style={{marginTop: -15}}>
+                                                                                {child.files.map((file, index) => {
+                                                                                    return <div key={index}>
+                                                                                        <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "commentofaction") }}><i className="fa fa-times"></i></a>
+                                                                                    </div>
                                                                                 })}
-                                                                            </ul>}
+                                                                            </div>}
                                                                         {/* modal confirm delete file */}
                                                                         {showModalDelete === item._id &&
                                                                             <DialogModal
@@ -1189,13 +1189,13 @@ class ActionTab extends Component {
                                                         />
                                                         {/* Hiện file đã tải lên */}
                                                         {item.files.length > 0 &&
-                                                            <ul style={{ marginTop: '-40px', marginLeft: '50px', listStyle: 'none' }}>
+                                                            <div className="tool-level1" style={{marginTop: -15}}>
                                                                 {item.files.map(file => {
-                                                                    return <li>
-                                                                        <a style={{ cursor: "pointer" }} className="link-black text-sm">{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "taskcomment") }}><i className="fa fa-times"></i></a>
-                                                                    </li>
+                                                                    return <div>
+                                                                        <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "taskcomment") }}><i className="fa fa-times"></i></a>
+                                                                    </div>
                                                                 })}
-                                                            </ul>}
+                                                            </div>}
                                                         {/* modal confirm delete file */}
                                                         {showModalDelete === item._id &&
                                                             <DialogModal
@@ -1287,13 +1287,13 @@ class ActionTab extends Component {
                                                                         />
                                                                         {/* Hiện file đã tải lên */}
                                                                         {child.files.length > 0 &&
-                                                                            <ul style={{ marginTop: '-40px', marginLeft: '50px', listStyle: 'none' }}>
+                                                                            <div className="tool-level2" style={{marginTop: -15}}>
                                                                                 {child.files.map(file => {
-                                                                                    return <li>
-                                                                                        <a style={{ cursor: "pointer" }} className="link-black text-sm">{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "commentoftaskcomment") }}><i className="fa fa-times"></i></a>
-                                                                                    </li>
+                                                                                    return <div>
+                                                                                        <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "commentoftaskcomment") }}><i className="fa fa-times"></i></a>
+                                                                                    </div>
                                                                                 })}
-                                                                            </ul>}
+                                                                            </div>}
                                                                         {/* modal confirm delete file */}
                                                                         {showModalDelete === item._id &&
                                                                             <DialogModal
