@@ -24,16 +24,30 @@ class TaskInformationForm extends Component {
         }
     }
 
+    checkNullUndefined = (x) => {
+        if( x === null || x === undefined ) {
+            return false;
+        }
+        else return true;
+    }
+
     render() {
         const { translate } = this.props;
-        const { value, task, perform, role, id } = this.props;
+        const { value, task, perform, role, id, disabled, indexReRender, legendText = translate('task.task_management.detail_info')} = this.props;
 
         return (
             <React.Fragment>
                 <div>
 
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border">{translate('task.task_management.eval_on_month')}</legend>
+                        <legend className="scheduler-border">{legendText}</legend>
+
+                        {(perform === 'evaluate' && !disabled) &&
+                            <div className="pull-right" style={{marginTop: -20}}>
+                                <a style={{cursor: "pointer"}} onClick={this.props.updateInfo}>{translate('task.task_management.get_outside_info')}</a>
+                            </div>
+                        }
+
                         <div className={`form-group ${value.errorOnProgress === undefined ? "" : "has-error"}`}>
                             <label>{translate('task.task_management.detail_progress')} (<span style={{ color: "red" }}>*</span>)</label>
                             <input
@@ -42,7 +56,8 @@ class TaskInformationForm extends Component {
                                 name="progress"
                                 placeholder={translate('task.task_management.edit_enter_progress')}
                                 onChange={this.props.handleChangeProgress}
-                                value={value.progress ? value.progress : ''}
+                                value={this.checkNullUndefined(value.progress) ? value.progress : ''}
+                                disabled={disabled} 
                             />
                             <ErrorLabel content={value.errorOnProgress} />
 
@@ -52,7 +67,7 @@ class TaskInformationForm extends Component {
                             (task && task.taskInformations.length !== 0) &&
                             task.taskInformations.map((info, index) => {
                                 if (info.type === 'Text') {
-                                    return <div className={`form-group`} key={index}>
+                                    return <div className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`} key={index}>
                                         <label>{info.name}(<span style={{ color: "red" }}>*</span>)</label>
                                         <input
                                             className="form-control"
@@ -60,17 +75,17 @@ class TaskInformationForm extends Component {
                                             name={info.code}
                                             placeholder={translate('task.task_management.edit_enter_value')}
                                             onChange={this.props.handleChangeTextInfo}
-                                            disabled={info.filledByAccountableEmployeesOnly && role !== "accountable"}
-                                            value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined) ? value.info[`${info.code}`].value : ''}
+                                            disabled={ disabled || (info.filledByAccountableEmployeesOnly && role !== "accountable")}
+                                            value={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) ? value.info[`${info.code}`].value : ''}
                                         />
 
-                                        {/* <ErrorLabel content={value.errorOnTextInfo}/> */}
+                                        <ErrorLabel content={value.errorInfo ? value.errorInfo[info.code] : ''}/>
                                     </div>
                                 }
 
                                 {
                                     if (info.type === 'Number') {
-                                        return <div className={`form-group`} key={index}>
+                                        return <div className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`} key={index}>
                                             <label>{info.name}(<span style={{ color: "red" }}>*</span>)</label>
                                             <input
                                                 className="form-control"
@@ -78,32 +93,33 @@ class TaskInformationForm extends Component {
                                                 name={info.code}
                                                 placeholder={translate('task.task_management.edit_enter_value')}
                                                 onChange={this.props.handleChangeNumberInfo}
-                                                disabled={info.filledByAccountableEmployeesOnly && role !== "accountable"}
-                                                value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined) && value.info[`${info.code}`].value}
+                                                disabled={disabled || (info.filledByAccountableEmployeesOnly && role !== "accountable")}
+                                                value={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) && value.info[`${info.code}`].value}
                                             />
-                                            {/* <ErrorLabel content={value.errorOnNumberInfo}/> */}
+                                            <ErrorLabel content={value.errorInfo ? value.errorInfo[`${info.code}`] : ''}/>
                                         </div>
                                     }
                                 }
 
                                 {
                                     if (info.type === 'Date') {
-                                        return <div key={index} className={`form-group ${value.errorOnInfoDate === undefined ? "" : "has-error"}`}>
+                                        return <div key={index} className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`}>
                                             <label>{info.name}(<span style={{ color: "red" }}>*</span>)</label>
                                             <DatePicker
-                                                id={`info_date_${perform}_${index}_${info.code}_${id}`}
-                                                value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined) ? value.info[`${info.code}`].value : undefined}
+                                                id={`info_date_${perform}_${index}_${info.code}_${id}_${indexReRender}`}
+                                                name={info.code}
+                                                value={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) ? value.info[`${info.code}`].value : undefined}
                                                 onChange={(value) => this.props.handleInfoDateChange(value, info.code)}
-                                                disabled={info.filledByAccountableEmployeesOnly && role !== "accountable"}
+                                                disabled={disabled || (info.filledByAccountableEmployeesOnly && role !== "accountable")}
                                             />
-                                            <ErrorLabel content={value.errorOnInfoDate} />
+                                            <ErrorLabel content={value.errorInfo ? value.errorInfo[info.code] : ''} />
                                         </div>
                                     }
                                 }
 
                                 {
                                     if (info.type === 'Boolean') {
-                                        return <div key={index} className={`form-group ${value.errorOnInfoBoolean === undefined ? "" : "has-error"}`}>
+                                        return <div key={index} className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`}>
                                             <label style={{ marginRight: "30px" }}>{info.name}(<span style={{ color: "red" }}>*</span>)</label>
                                             <label class="radio-inline">
                                                 <input
@@ -111,9 +127,9 @@ class TaskInformationForm extends Component {
                                                     name={info.code}
                                                     value={true}
                                                     onChange={this.props.handleInfoBooleanChange}
-                                                    checked={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined) && value.info[`${info.code}`].value === "true"}
-                                                    disabled={info.filledByAccountableEmployeesOnly && role !== "accountable"}
-                                                /> Đúng
+                                                    checked={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) && value.info[`${info.code}`].value === "true"}
+                                                    disabled={disabled || (info.filledByAccountableEmployeesOnly && role !== "accountable")}
+                                                /> {translate('task.task_management.bool_yes')}
                                             </label>
                                             <label class="radio-inline">
                                                 <input
@@ -121,9 +137,9 @@ class TaskInformationForm extends Component {
                                                     name={info.code}
                                                     value={false}
                                                     onChange={this.props.handleInfoBooleanChange}
-                                                    checked={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined) && value.info[`${info.code}`].value === "false"}
-                                                    disabled={info.filledByAccountableEmployeesOnly && role !== "accountable"}
-                                                /> Sai
+                                                    checked={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) && value.info[`${info.code}`].value === "false"}
+                                                    disabled={disabled || (info.filledByAccountableEmployeesOnly && role !== "accountable")}
+                                                /> {translate('task.task_management.bool_no')}
                                             </label>
                                         </div>
                                     }
@@ -131,32 +147,33 @@ class TaskInformationForm extends Component {
 
                                 {
                                     if (info.type === 'SetOfValues') {
-                                        return <div key={index} className={`form-group `}>
+                                        return <div key={index} className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`}>
                                             <label>{info.name}(<span style={{ color: "red" }}>*</span>)</label>
                                             <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                                id={`select-set-of-value-${index}-${id}-${perform}`}
+                                                id={`select-set-of-value-${index}-${id}-${perform}_${indexReRender}`}
                                                 className="form-control select2"
+                                                name={info.code}
                                                 style={{ width: "100%" }}
                                                 items={info.extra.split('\n').map(x => { return { value: x, text: x } })}
                                                 onChange={(value) => this.props.handleSetOfValueChange(value, info.code)}
                                                 multiple={false}
-                                                disabled={info.filledByAccountableEmployeesOnly && role !== "accountable"}
-                                                value={(value.info[`${info.code}`] && value.info[`${info.code}`].value !== undefined) && value.info[`${info.code}`].value}
+                                                disabled={disabled || (info.filledByAccountableEmployeesOnly && role !== "accountable")}
+                                                value={(value.info[`${info.code}`] && this.checkNullUndefined(value.info[`${info.code}`].value)) && value.info[`${info.code}`].value}
                                             />
                                         </div>
                                     }
                                 }
                             })
                         }
-                        {(perform === 'evaluate') &&
-                            <label>
+                        {(perform === 'evaluate' && !disabled) &&
+                            <label className={`form-group`}>
                                 <input
                                     type="checkbox"
                                     checked={value.checkSave === true}
-                                    // value={elem._id}
+                                    disabled={disabled} 
                                     name="checkSave" onChange={(e) => this.props.handleChangeSaveInfo(e)}
-                                /> Lưu thông tin công việc ra thông tin chung
-                        </label>
+                                /> {translate('task.task_management.store_info')}
+                            </label>
                         }
 
                     </fieldset>

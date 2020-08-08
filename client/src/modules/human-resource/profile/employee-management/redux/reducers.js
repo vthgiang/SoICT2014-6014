@@ -27,7 +27,7 @@ export function employeesManager(state = initState, action) {
                 isLoading: true
             };
         case EmployeeConstants.GETALL_SUCCESS:
-            if (action.payload.totalList) {
+            if (action.payload.totalList !== undefined) { // Phải để khác undefined
                 return {
                     ...state,
                     listEmployees: action.payload.data,

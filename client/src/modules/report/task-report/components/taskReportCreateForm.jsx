@@ -514,7 +514,7 @@ class TaskReportCreateForm extends Component {
                     size={100}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <TaskReportViewForm passState={newReport.listCheckBox} />
+                    <TaskReportViewForm passState={newReport.listCheckBox} startDate={newReport.startDate} endDate={newReport.endDate} />
                     <div className="row" >
                         <div className="col-md-12 col-lg-12" style={{ display: 'flex', justifyContent: 'flex-end' }}>
                             <div className="form-inline d-flex justify-content-end">

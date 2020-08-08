@@ -36,18 +36,25 @@ class TaskReportDetailForm extends Component {
         let formater = new Intl.NumberFormat();
         const { reports, translate } = this.props;
         let listTaskReportById = reports.listTaskReportById;
+        const mystyle = {
+            display: "flex",
+        };
+        const styledt = {
+            marginRight: '10px'
+        };
         return (
             <DialogModal
                 size='75' modalID="modal-detail-taskreport" isLoading={false}
                 formID="modal-detail-taskreport"
                 title="Xem chi tiết báo cáo"
                 hasSaveButton={false}
+                hasNote={false}
             >
                 <TaskReportViewForm />
                 <div className="row" >
                     <div className="col-md-12 col-lg-12" style={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <div className="form-inline d-flex justify-content-end">
-                            <button id="exportButton" className="btn btn-sm btn-success " title="Xem chi tiết" style={{ marginBottom: '10px' }} onClick={() => this.handleView()} ><span className="fa fa-eye" style={{ color: '#4e4e4e' }}></span> Xem</button>
+                            <button id="exportButton" className="btn btn-sm btn-success " title="Xem chi tiết" style={{ marginBottom: '6px' }} onClick={() => this.handleView()} ><span className="fa fa-eye" style={{ color: '#4e4e4e' }}></span> Xem</button>
                         </div>
                     </div>
                 </div>
@@ -60,11 +67,15 @@ class TaskReportDetailForm extends Component {
                                 </div>
                             <div className="box-body">
 
-                                <dt>Đơn vị</dt>
-                                <dd>{(listTaskReportById && listTaskReportById.organizationalUnit) ? listTaskReportById.organizationalUnit.name : ''}</dd>
+                                <div style={mystyle}>
+                                    <dt style={styledt}>Đơn vị: </dt>
+                                    <dd>{(listTaskReportById && listTaskReportById.organizationalUnit) ? listTaskReportById.organizationalUnit.name : ''}</dd>
+                                </div>
 
-                                <dt>Mẫu công việc</dt>
-                                <dd>{listTaskReportById && listTaskReportById.taskTemplate && listTaskReportById.taskTemplate.name}</dd>
+                                <div style={mystyle}>
+                                    <dt style={styledt}>Mẫu công việc:</dt>
+                                    <dd>{listTaskReportById && listTaskReportById.taskTemplate && listTaskReportById.taskTemplate.name}</dd>
+                                </div>
 
                                 <dt>Tên báo cáo</dt>
                                 <dd>{listTaskReportById && listTaskReportById.name}</dd>
@@ -72,10 +83,17 @@ class TaskReportDetailForm extends Component {
 
                                 <dt>Mô tả</dt>
                                 <dd>{listTaskReportById && listTaskReportById.description}</dd>
-                                <dt>Đặc thù công việc</dt>
-                                <dd>{listTaskReportById && (listTaskReportById.status === 0 ? 'Tất cả' : (listTaskReportById.status === 1 ? 'Đã hoàn thành' : 'Đang thực hiện'))}</dd>
-                                <dt>Tần suất</dt>
-                                <dd>{listTaskReportById && (listTaskReportById.frequency === 'Month' ? 'Tháng' : (listTaskReportById.frequency === 'quarter' ? 'Quý' : 'Năm'))}</dd>
+
+                                <div style={mystyle}>
+                                    <dt style={styledt}>Đặc thù công việc: </dt>
+                                    <dd>{listTaskReportById && (listTaskReportById.status === 0 ? 'Tất cả' : (listTaskReportById.status === 1 ? 'Đã hoàn thành' : 'Đang thực hiện'))}</dd>
+                                </div>
+
+                                <div style={mystyle}>
+                                    <dt style={styledt}>Tần suất:</dt>
+                                    <dd>{listTaskReportById && (listTaskReportById.frequency === 'Month' ? 'Tháng' : (listTaskReportById.frequency === 'quarter' ? 'Quý' : 'Năm'))}</dd>
+                                </div>
+
                                 {listTaskReportById && listTaskReportById.responsibleEmployees &&
                                     <React.Fragment>
                                         <dt>Người thực hiện</dt>
@@ -100,6 +118,7 @@ class TaskReportDetailForm extends Component {
                                         </dd>
                                     </React.Fragment>
                                 }
+
                                 <dt>Thời gian thực hiện từ ngày</dt>
                                 <dd>{listTaskReportById && listTaskReportById.startDate && listTaskReportById.startDate.slice(0, 10)}</dd>
                                 <dt>Thời gian thực hiện đến ngày</dt>
@@ -124,8 +143,8 @@ class TaskReportDetailForm extends Component {
                                                 {
                                                     (item.filter) ?
                                                         <React.Fragment>
-                                                            <div style={{ display: 'flex' }}>
-                                                                <dt style={{ marginRight: '10px' }}> Điều kiện lọc:  </dt>
+                                                            <div style={mystyle}>
+                                                                <dt style={styledt}> Điều kiện lọc:  </dt>
                                                                 <dd>{item.filter}</dd>
                                                             </div>
                                                         </React.Fragment>
@@ -133,8 +152,8 @@ class TaskReportDetailForm extends Component {
                                                 }
                                                 {(item.showInReport) ?
                                                     <React.Fragment>
-                                                        <div style={{ display: 'flex' }}>
-                                                            <dt style={{ marginRight: '10px' }}> Hiển thị trong báo cáo: </dt>
+                                                        <div style={mystyle}>
+                                                            <dt style={styledt}> Hiển thị trong báo cáo: </dt>
                                                             <dd>{(item.showInReport) === true ? "Có" : "Không"}</dd>
                                                         </div>
                                                     </React.Fragment> : null
@@ -144,8 +163,8 @@ class TaskReportDetailForm extends Component {
                                                 {
                                                     (item.newName) ?
                                                         <React.Fragment>
-                                                            <div style={{ display: 'flex' }}>
-                                                                <dt style={{ marginRight: '10px' }}> Tên mới: </dt>
+                                                            <div style={mystyle}>
+                                                                <dt style={styledt}> Tên mới: </dt>
                                                                 <dd>{item.newName}</dd>
                                                             </div>
 
@@ -156,8 +175,8 @@ class TaskReportDetailForm extends Component {
                                                 {
                                                     (typeof item.aggregationType === "number") ?
                                                         <React.Fragment>
-                                                            <div style={{ display: 'flex' }}>
-                                                                <dt style={{ marginRight: '10px' }}> Cách tính: </dt>
+                                                            <div style={mystyle}>
+                                                                <dt style={styledt}> Cách tính: </dt>
                                                                 <dd>{(item.aggregationType === '0') ? "Trung bình cộng" : "Tổng"}</dd>
                                                             </div>
                                                         </React.Fragment> : <p>cách</p>
@@ -167,13 +186,13 @@ class TaskReportDetailForm extends Component {
                                                 {
                                                     (typeof item.charType === "number") ?
                                                         <React.Fragment>
-                                                            <div style={{ display: 'flex' }}>
-                                                                <dt style={{ marginRight: '10px' }}> Dạng biểu đồ: </dt>
+                                                            <div style={mystyle}>
+                                                                <dt style={styledt}> Dạng biểu đồ: </dt>
                                                                 <dd>{(item.charType === '0') ? "Cột" : (item.charType === '1' ? "Đường" : "Tròn")}</dd>
                                                             </div>
                                                         </React.Fragment> : null
                                                 }
-                                                <hr style={{ borderTop: '1px solid #eae9f5 !important' }} />
+                                                <div style={{ marginBottom: '12px' }}></div>
                                             </React.Fragment>
                                         )
                                 }

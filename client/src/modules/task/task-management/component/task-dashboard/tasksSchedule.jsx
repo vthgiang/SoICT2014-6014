@@ -60,7 +60,7 @@ class TasksSchedule extends Component {
     let { organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = infoSearch;
     let unitIds = this.props.units ? this.props.units : "[]";
     await this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
-    await this.props.getTaskInOrganizationUnitByMonth("[]", startDateAfter, endDateBefore);
+    // await this.props.getTaskInOrganizationUnitByMonth("[]", startDateAfter, endDateBefore);
     await this.setState(state => {
       return {
         ...state,
@@ -70,37 +70,37 @@ class TasksSchedule extends Component {
     });
   }
 
-  // shouldComponentUpdate = async (nextProps, nextState) => {
-  //   if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-  //     if (this.props.TaskOrganizationUnitDashboard) {
-  //       if (!nextProps.tasks.organizationUnitTasks) {
-  //         return false;
-  //       }
-  //     }
-  //     else if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks || !nextProps.tasks.tasksbyuser) {
-  //       return false;
-  //     }
+  shouldComponentUpdate = async (nextProps, nextState) => {
+    if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+      if (this.props.TaskOrganizationUnitDashboard) {
+        if (!nextProps.tasks.organizationUnitTasks) {
+          return false;
+        }
+      }
+      else if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks || !nextProps.tasks.tasksbyuser) {
+        return false;
+      }
 
-  //     this.setState(state => {
-  //       return {
-  //         ...state,
-  //         dataStatus: this.DATA_STATUS.AVAILABLE
-  //       }
-  //     });
-  //   } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
-  //     this.setState(state => {
-  //       return {
-  //         ...state,
-  //         dataStatus: this.DATA_STATUS.FINISHED,
-  //         willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-  //       }
-  //     });
+      this.setState(state => {
+        return {
+          ...state,
+          dataStatus: this.DATA_STATUS.AVAILABLE
+        }
+      });
+    } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
+      this.setState(state => {
+        return {
+          ...state,
+          dataStatus: this.DATA_STATUS.FINISHED,
+          willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
+        }
+      });
 
-  //     return true;
-  //   }
+      return true;
+    }
 
-  //   return false;
-  // }
+    return false;
+  }
 
   formatDate(d) {
     let month = '' + (d.getMonth());
@@ -166,6 +166,7 @@ class TasksSchedule extends Component {
   //   }
   // }
 
+  // Lấy thời gian các công việc
   getTaskDurations() {
     const { tasks } = this.props;
     var taskList, inprocessTasks;
@@ -209,6 +210,7 @@ class TasksSchedule extends Component {
           }
         })
       }
+
       if (inprocessTasks.length) {
         let x = document.getElementsByClassName("rct-item");
         if (x.length) for (let i = 0; i < x.length; i++) {
@@ -216,15 +218,17 @@ class TasksSchedule extends Component {
         }
       }
     }
-    console.log('duraion', taskDurations);
+
     return taskDurations;
   }
+
+  // Nhóm công việc theo người thực hiện
 
   getTaskGroups() {
     const { tasks } = this.props;
     var taskList1, inprocessTasks1;
-    let groups1 = [];
-    let grouptest = [];
+    let groupName = [];
+    let distinctGroupName = [];
     let id = [];
     let distinctId = []
     if (tasks) {
@@ -234,14 +238,12 @@ class TasksSchedule extends Component {
       }
       else inprocessTasks1 = tasks.responsibleTasks;
 
-
-
       if (inprocessTasks1) {
 
         for (let i = 1; i <= inprocessTasks1.length; i++) {
 
-          let responsibleName = []; // ten cua nhung nguoi dang tham gia thuc hien
-          let responsibleEmployeeIds = []; // id cua nhung nguoi thuc hien
+          let responsibleName = [];
+          let responsibleEmployeeIds = [];
           inprocessTasks1[i - 1].responsibleEmployees.map(x => {
 
             responsibleName.push(x.name)
@@ -249,44 +251,47 @@ class TasksSchedule extends Component {
 
           });
 
-          groups1.push({
+          groupName.push({
             id: responsibleEmployeeIds[0],
             title: responsibleName
           })
 
           id.push(responsibleEmployeeIds[0])
         }
-        if (groups1) {
+        if (groupName) {
           for (let i = 0; i < id.length; i++) {
             let idx = distinctId.indexOf(id[i]);
             if (idx < 0) {
               distinctId.push(id[i])
-              grouptest.push({
-                id: groups1[i].id,
-                title: groups1[i].title[0]
+              distinctGroupName.push({
+                id: groupName[i].id,
+                title: groupName[i].title[0]
               })
             }
           }
         }
       }
     }
-    let group = [{ id: "5f228e3a3a5dbb1b540a339d", title: "nguyen van a" },
-    { id: "5f228e3a3a5dbb1b540a339e", title: "hoang van b" }]
-    console.log('gr', grouptest);
-    return grouptest;
+    let group = [{ id: "no-data", title: "" }]
+    return distinctGroupName.length ? distinctGroupName : group;
+
   }
 
+  // Hiển thị tiến độ công việc
 
   displayTaskProgress = async (progress, x) => {
     if (x) {
-      let d = document.createElement('div');
+      let d, child;
+
+      d = document.createElement('div');
       d.setAttribute("class", "task-progress");
-      const offset = progress * x.offsetWidth / 100;
-      x.appendChild(d);
-      d.style.width = `${offset}px`
+      const progressWidth = progress * x.offsetWidth / 100;
+      d.style.width = `${progressWidth}px`
+      child = x.childElementCount;
+      if (child === 1) x.appendChild(d);
+
     }
   }
-
 
 
   handleItemClick = async (itemId) => {

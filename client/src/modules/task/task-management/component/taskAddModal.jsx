@@ -211,10 +211,10 @@ class TaskAddModal extends Component {
                         name: taskTemplate.name,
                         description: taskTemplate.description,
                         priority: taskTemplate.priority,
-                        responsibleEmployees: taskTemplate.responsibleEmployees,
-                        accountableEmployees: taskTemplate.accountableEmployees,
-                        consultedEmployees: taskTemplate.consultedEmployees,
-                        informedEmployees: taskTemplate.informedEmployees,
+                        responsibleEmployees: taskTemplate.responsibleEmployees.map(item=>item._id),
+                        accountableEmployees: taskTemplate.accountableEmployees.map(item => item._id),
+                        consultedEmployees: taskTemplate.consultedEmployees.map(item => item._id),
+                        informedEmployees: taskTemplate.informedEmployees.map(item => item._id),
                         taskTemplate: taskTemplate._id,
                     }
                 };

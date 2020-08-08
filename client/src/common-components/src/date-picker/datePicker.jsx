@@ -81,7 +81,7 @@ class DatePicker extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.id !== this.state.id) // Chỉ render 1 lần, trừ khi id thay đổi
+        if (nextProps.id !== this.state.id || nextState.value !== this.state.value) // Chỉ render 1 lần, trừ khi id,value thay đổi
             return true;
         return false;  // Tự chủ động update (do đã lưu value vào state)
     }

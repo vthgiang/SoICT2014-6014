@@ -1,5 +1,8 @@
 const AssetTypeService = require('./asset-type.service');
-const {LogInfo, LogError} = require('../../../logs');
+const {
+    LogInfo,
+    LogError
+} = require('../../../logs');
 
 
 
@@ -9,7 +12,7 @@ const {LogInfo, LogError} = require('../../../logs');
 exports.getAssetTypes = async (req, res) => {
     try {
         const types = await AssetTypeService.getAssetTypes(req.query, req.user.company._id);
-        
+
         await LogInfo(req.user.email, 'GET_ASSET_TYPES', req.user.company);
         res.status(200).json({
             success: true,
@@ -17,7 +20,6 @@ exports.getAssetTypes = async (req, res) => {
             content: types
         });
     } catch (error) {
-        
         await LogError(req.user.email, 'GET_ASSET_TYPES', req.user.company);
         res.status(400).json({
             success: false,
@@ -30,7 +32,7 @@ exports.getAssetTypes = async (req, res) => {
 exports.createAssetTypes = async (req, res) => {
     try {
         const type = await AssetTypeService.createAssetTypes(req.user.company._id, req.body);
-        
+
         await LogInfo(req.user.email, 'CREATE_ASSET_TYPE', req.user.company);
         res.status(200).json({
             success: true,
@@ -38,7 +40,6 @@ exports.createAssetTypes = async (req, res) => {
             content: type
         });
     } catch (error) {
-        
         await LogError(req.user.email, 'CREATE_ASSET_TYPE', req.user.company);
         res.status(400).json({
             success: false,
@@ -53,7 +54,7 @@ exports.editAssetType = async (req, res) => {
     console.log(req.params.id, req.body);
     try {
         const type = await AssetTypeService.editAssetType(req.params.id, req.body);
-        
+
         await LogInfo(req.user.email, 'EDIT_ASSET_TYPE', req.user.company);
         res.status(200).json({
             success: true,
@@ -61,7 +62,6 @@ exports.editAssetType = async (req, res) => {
             content: type
         });
     } catch (error) {
-        console.log("error: ",error)
         await LogError(req.user.email, 'EDIT_ASSET_TYPE', req.user.company);
         res.status(400).json({
             success: false,
@@ -71,10 +71,10 @@ exports.editAssetType = async (req, res) => {
     }
 };
 
-exports.deleteAssetTypes = async(req, res) => {
+exports.deleteAssetTypes = async (req, res) => {
     try {
         const type = await AssetTypeService.deleteAssetTypes(req.params.id);
-        
+
         await LogInfo(req.user.email, 'DELETE_ASSET_TYPE', req.user.company);
         res.status(200).json({
             success: true,
@@ -82,7 +82,6 @@ exports.deleteAssetTypes = async(req, res) => {
             content: type
         });
     } catch (error) {
-        console.log('ERERRPR"', error)
         await LogError(req.user.email, 'DELETE_ASSET_TYPE', req.user.company);
         res.status(400).json({
             success: false,
@@ -92,10 +91,10 @@ exports.deleteAssetTypes = async(req, res) => {
     }
 };
 
-exports.deleteManyAssetType = async(req, res) => {
+exports.deleteManyAssetType = async (req, res) => {
     try {
         const type = await AssetTypeService.deleteManyAssetType(req.body.array, req.user.company._id);
-        
+
         await LogInfo(req.user.email, 'DELETE_MANY_ASSET_TYPE', req.user.company);
         res.status(200).json({
             success: true,
@@ -103,7 +102,6 @@ exports.deleteManyAssetType = async(req, res) => {
             content: type
         });
     } catch (error) {
-        console.log('ERERRPR"', error)
         await LogError(req.user.email, 'DELETE_MANY_ASSET_TYPE', req.user.company);
         res.status(400).json({
             success: false,

@@ -48,6 +48,10 @@
     background: #bbb;
     border-bottom: 1px solid #bbb;
 }
+.rct-header-root > div{
+  background-color: #f0f0f0;
+    border-bottom: 1px solid #bbb;
+}
 .rct-items .rct-item {
   background: rgb(210, 228, 255) !important;
   /* left: 0 !important */
@@ -60,7 +64,7 @@
   background-color: rgb(104, 152, 255);
   height: 21px;
   position: absolute;
-  top: 1px;
+  top: 0.5px;
   border-radius: 3px;
 }
 .flex-right {

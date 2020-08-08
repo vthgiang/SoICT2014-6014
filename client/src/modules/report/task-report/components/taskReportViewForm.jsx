@@ -20,12 +20,28 @@ class TaskReportViewForm extends Component {
         if (data === 3) return "Cao";
     }
 
-
+    convertMonthYear = (data) => {
+        const time = new Date(data);
+        const m = time.getMonth();
+        const y = time.getFullYear();
+        return `${m + 1}-${y}`;
+    }
     render() {
         const { tasks, user, reports, translate } = this.props;
+        const { startDate, endDate } = this.props;
+
         let formater = new Intl.NumberFormat();
-        let listTaskEvaluation = tasks.listTaskEvaluations;
         let taskInfoName, headTable = [];
+
+        // Nếu không có ngày bắt đầu và kết thúc thì lấy công việc mới nhất
+        let listTaskEvaluation = [];
+        if (tasks.listTaskEvaluations && !startDate && !endDate) {
+            let listTaskEvaluations = tasks.listTaskEvaluations[0]; // lấy công việc đầu mới nhất
+            listTaskEvaluation = [...listTaskEvaluation, listTaskEvaluations];
+        } else {
+
+            listTaskEvaluation = tasks.listTaskEvaluations; // lấy toàn bộ
+        }
 
         // hiển thị trường thông tin hiện trong báo cáo
         if (listTaskEvaluation && listTaskEvaluation.length !== 0) {
@@ -37,85 +53,54 @@ class TaskReportViewForm extends Component {
             })
         }
 
-        let result2 = [];
-        let sump1 = 0, sump2 = 0, avg, month, sum;
-        let result = [];
+        // Convert listTaskEvaluation loại bỏ trường dư thừa
+        let newlistTaskEvaluation;
         if (listTaskEvaluation) {
-            listTaskEvaluation.forEach((x, index) => {
-                console.log("xxxexxxx", x.taskInformations);
-                console.log("xxxexxxx2", x.taskInformations[index]);
-
-                let date = new Date(x.date);
-                month = `${date.getMonth() + 1} - ${date.getFullYear()}`;
-                if (Array.isArray(result) && result.length) {
-                    console.log("cccccccccccccccc");
-                    result.map(n => {
-                        console.log('nnn', n);
-                        for (let abc in n) {
-                            if (abc === month) {
-                                console.log('trung thang');
-                                // console.log('n', n);
-                                // console.log('abc', abc);
-                                result = { ...result, [abc]: [{ ...x.taskInformations }] };
-
-                            } else {
-                                // result[index] = {
-                                //     ...result, [month]: [{ ...x.taskInformations }]
-                                // };
-                            }
+            newlistTaskEvaluation = listTaskEvaluation.map(item => {
+                return {
+                    time: this.convertMonthYear(item.date),
+                    task: item.taskInformations.map(task => {
+                        return {
+                            code: task.code,
+                            value: task.value,
+                            name: task.name,
                         }
+
                     })
-                    // for (let n in result) {
-                    //     console.log('nnn', n);
-                    //     console.log('result', result);
-                    //     if (month === n) {
-                    //         result[month] = { ...result[month], ...x.taskInformations }
-                    //     } else {
-                    //         result = {
-                    //             ...result, [month]: { ...x.taskInformations }
-                    //         };
-                    //     }
-                    // }
-
-                } else {
-                    console.log(`bbbbbbbbbbbbbbbbb---${index}`, x.taskInformations);
-                    result[index] = {
-                        ...result, [month]: [{ ...x.taskInformations }]
-                    };
                 }
-            })
-            console.log(result);
-            // for (let n in result) {
-
-            // }
-            //     x.taskInformations.forEach(y => {
-            //         // console.log('minh log showInReport', y.showInReport);
-            //         if (y.type === 'Number' && y.code === 'p1') {
-            //             sump1 += y.value;
-            //         }
-            //         if (y.type === 'Number' && y.code === 'p2') {
-            //             sump2 += y.value;
-            //         }
-            //     })
-            //     // x.taskInformations.reduce(function (res, value) {
-            //     //     console.log('res', res);
-            //     //     console.log('value', value);
-            //     //     if (!res[month]) {
-            //     //         res[month] = {
-            //     //             sum: 0,
-            //     //             month: month
-            //     //         };
-            //     //         result2.push(res[month])
-            //     //     }
-            //     //     res[month].sum += value.value
-            //     //     return res;
-            //     // }, {});
-            // })
+            });
         }
-        // console.log('result2_ver2', result2);
-        // console.log('sum2ver1', sump1);
-        // console.log('sum2ver2', sump2);
-        // console.log('listTaskEvaluations', tasks.listTaskEvaluations);
+
+        // gom các công việc theo tháng-năm
+        let groupDataByMonth;
+        if (newlistTaskEvaluation) {
+            groupDataByMonth = newlistTaskEvaluation.reduce((groups, item) => {
+                groups[item.time] = [...groups[item.time] || [], item];
+                return groups;
+            }, {});
+        }
+
+        console.log('groupDataByMonth', groupDataByMonth);
+
+        // Tính  tổng các công việc
+        let output;
+        if (groupDataByMonth) {
+            output = Object.entries(groupDataByMonth).map(([time, datapoints]) => {
+                const codes = {}
+                const allTasks = datapoints.flatMap(point => point.task);
+                // console.log('allTasks', allTasks);
+                for (const { code, value, name } of allTasks) {
+                    codes[code] = (codes[code] || 0) + value;
+                }
+                return {
+                    time,
+                    tasks: Object.entries(codes).map(([code, value]) => ({ code, value }))
+                }
+            }
+            )
+        }
+        console.log('output', output);
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -129,12 +114,9 @@ class TaskReportViewForm extends Component {
                     {/* Modal Body */}
                     {/* <div className="row">
                         {
-                            (headTable) && headTable.map((x, key) => (
-                                <div key={key} className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                                    <TwoBarChart key={key} nameData1={x} nameData2='Tổng doanh thu' nameChart={'Báo cáo công việc tháng 7'} />
-                                </div>
-                            ))
-
+                            <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
+                                <TwoBarChart nameData={headTable.map(x => x)} data={output} nameChart={'Báo cáo công việc tháng 7'} />
+                            </div>
                         }
                     </div> */}
                     <div className="form-inline">
@@ -173,7 +155,7 @@ class TaskReportViewForm extends Component {
                                 </thead>
                                 <tbody>
                                     {
-                                        tasks.listTaskEvaluations && tasks.listTaskEvaluations.map((item, key) => {
+                                        listTaskEvaluation && listTaskEvaluation.map((item, key) => {
                                             //Lấy tên người thực hiện 
                                             let getNameResponsibleEmployees = user.usercompanys.filter(item1 => item1._id === item.responsibleEmployees);
                                             getNameResponsibleEmployees = getNameResponsibleEmployees.map(x1 => x1.name);

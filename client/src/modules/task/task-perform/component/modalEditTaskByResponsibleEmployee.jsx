@@ -16,6 +16,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         let data = this.getData(date);
 
         this.state = {
+            errorInfo: {},
             task: data.task,
             userId: data.idUser,
             taskName: data.task.name,
@@ -48,7 +49,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                 errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnPoint: undefined,
                 errorOnInfoDate: undefined,
-                errorOnProgress: undefined
+                errorOnProgress: undefined,
+                errorInfo: {}
             }
         } else {
             return null;
@@ -186,9 +188,9 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                 code: name,
                 type: 'Number'
             }
+            state.errorInfo[name] = this.validateNumberInfo(value);
             return {
                 ...state,
-                errorOnNumberInfo: this.validateNumberInfo(value)
             }
         })
     }
@@ -202,9 +204,9 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                 code: name,
                 type: 'Text'
             }
+            state.errorInfo[name] = this.validateTextInfo(value);
             return {
                 ...state,
-                errorOnTextInfo: this.validateTextInfo(value)
             }
         })
     }
@@ -217,9 +219,9 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                 code: code,
                 type: 'Date'
             }
+            state.errorInfo[code] = this.validateDate(value);
             return {
                 ...state,
-                errorOnInfoDate: this.validateDate(value),
             }
         });
     }
@@ -447,10 +449,19 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         this.handleAddTaskLog(taskId);
     }
 
+    checkNullUndefined = (x) => {
+        if( x === null || x === undefined ) {
+            return false;
+        }
+        else return true;
+    }
+
     render() {
         const { KPIPersonalManager, translate } = this.props
         const { task, taskName, taskDescription, kpi } = this.state;
         const { errorTaskName, errorTaskDescription } = this.state;
+        const { title, id, role, perform } = this.props;
+
         let listKpi = [];
         if (KPIPersonalManager && KPIPersonalManager.kpiSets) listKpi = KPIPersonalManager.kpiSets.kpis;
 
@@ -460,14 +471,14 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                     <DialogModal
                         size={75}
                         maxWidth={750}
-                        modalID={`modal-edit-task-by-${this.props.role}-${this.props.id}`}
-                        formID={`form-edit-task-${this.props.role}-${this.props.id}`}
-                        title={this.props.title}
+                        modalID={`modal-edit-task-by-${role}-${id}`}
+                        formID={`form-edit-task-${role}-${id}`}
+                        title={title}
                         isLoading={false}
                         func={this.save}
                         disableSubmit={!this.isFormValidated()}
                     >
-                        <form id={`form-edit-task-${this.props.role}-${this.props.id}`}>
+                        <form id={`form-edit-task-${role}-${id}`}>
                             {/*Thông tin cơ bản*/}
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('task.task_management.edit_basic_info')}</legend>
@@ -500,7 +511,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                     <label>{translate('task.task_management.detail_kpi')}:</label>
                                     {
                                         <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                            id={`select-kpi-personal-edit-${this.props.perform}-${this.props.role}`}
+                                            id={`select-kpi-personal-edit-${perform}-${role}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={listKpi && listKpi.map(x => { return { value: x._id, text: x.name } })}
@@ -521,8 +532,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                 handleChangeNumberInfo={this.handleChangeNumberInfo}
                                 handleChangeTextInfo={this.handleChangeTextInfo}
 
-                                role={this.props.role}
-                                perform={this.props.perform}
+                                role={role}
+                                perform={perform}
                                 value={this.state}
 
                             />

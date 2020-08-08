@@ -1,4 +1,4 @@
-const {DocumentCategory, DocumentDomain, Role, User, UserRole} = require('../../models').schema;
+const { DocumentCategory, DocumentDomain, Role, User, UserRole } = require('../../models').schema;
 const arrayToTree = require('array-to-tree');
 const fs = require('fs');
 const ObjectId = require('mongoose').Types.ObjectId;
@@ -10,24 +10,28 @@ const ObjectId = require('mongoose').Types.ObjectId;
 exports.getDocuments = async (company, query) => {
     var page = query.page;
     var limit = query.limit;
-    
-    if(!(page || limit)){
-        
-        return await Document.find({company}).populate([
-            { path: 'category', model: DocumentCategory},
-            { path: 'domains', model: DocumentDomain},
+
+    if (!(page || limit)) {
+
+        return await Document.find({ company }).populate([
+            { path: 'category', model: DocumentCategory },
+            { path: 'domains', model: DocumentDomain },
+            { path: 'views.viewer', model: User },
+            { path: "downloads.downloader", model: User },
         ]);
-    }else{
+    } else {
         const option = (query.key !== undefined && query.value !== undefined)
-            ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
-            : {company};
+            ? Object.assign({ company }, { [`${query.key}`]: new RegExp(query.value, "i") })
+            : { company };
         console.log("option: ", option);
-        return await Document.paginate( option , { 
-            page, 
+        return await Document.paginate(option, {
+            page,
             limit,
             populate: [
-                { path: 'category', model: DocumentCategory},
-                { path: 'domains', model: DocumentDomain},
+                { path: 'category', model: DocumentCategory },
+                { path: 'domains', model: DocumentDomain },
+                { path: 'views.viewer', model: User },
+                { path: "downloads.downloader", model: User },
             ]
         });
     }
@@ -37,25 +41,28 @@ exports.getDocuments = async (company, query) => {
  * Lấy thông tin về một tài liệu văn bản
  */
 exports.showDocument = async (id, viewer) => {
-    const doc =  await Document.findById(id).populate([
-        { path: 'category', model: DocumentCategory},
-        { path: 'domains', model: DocumentDomain},
+    const doc = await Document.findById(id).populate([
+        { path: 'category', model: DocumentCategory },
+        { path: 'domains', model: DocumentDomain },
+
     ]);
     doc.numberOfView += 1;
-    const getIndex = (array, value) => {
-        var res = -1;
-        for (let i = 0; i < array.length; i++) {
-            if(array[i].viewer.toString() === value.toString()){
-                res = i;
-                break;
-            }
-        }
+    const getIndex
 
-        return res;
-    }
+        = (array, value) => {
+            var res = -1;
+            for (let i = 0; i < array.length; i++) {
+                if (array[i].viewer.toString() === value.toString()) {
+                    res = i;
+                    break;
+                }
+            }
+
+            return res;
+        }
     var index = getIndex(doc.views, viewer);
-    if(index !== -1) doc.views.splice(index, 1);
-    doc.views.push({viewer});
+    if (index !== -1) doc.views.splice(index, 1);
+    doc.views.push({ viewer });
     await doc.save();
 
     return doc;
@@ -65,9 +72,9 @@ exports.increaseNumberView = async (id, viewer) => {
     const doc = await Document.findById(id);
     doc.numberOfView += 1;
     const getIndex = (array, value) => {
-        var res = -1;
+        let res = -1;
         for (let i = 0; i < array.length; i++) {
-            if(array[i].viewer.toString() === value.toString()){
+            if (array[i].viewer.toString() === value.toString()) {
                 res = i;
                 break;
             }
@@ -76,7 +83,7 @@ exports.increaseNumberView = async (id, viewer) => {
         return res;
     }
     var index = getIndex(doc.views, viewer);
-    if(index !== -1) doc.views.splice(index, 1);
+    if (index !== -1) doc.views.splice(index, 1);
     doc.views.push({ viewer });
     await doc.save();
 
@@ -98,10 +105,10 @@ exports.createDocument = async (company, data) => {
         issuingBody: data.issuingBody,
         signer: data.signer,
         officialNumber: data.officialNumber,
-        
+
         versions: [{
             versionName: data.versionName,
-            issuingDate: (data.issuingDate === 'Invalid date')?"":data.issuingDate,
+            issuingDate: (data.issuingDate === 'Invalid date') ? "" : data.issuingDate,
             effectiveDate: data.effectiveDate,
             expiredDate: data.expiredDate,
             file: data.file,
@@ -109,26 +116,26 @@ exports.createDocument = async (company, data) => {
         }],
         roles: data.roles,
     }
-    if(data.relationshipDescription !== 'undefined') newDoc.relationshipDescription = data.relationshipDescription;
-    if(data.archivedRecordPlaceInfo !== 'undefined') newDoc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo;
-    if(data.archivedRecordPlaceOrganizationalUnit !== 'undefined') newDoc.archivedRecordPlaceOrganizationalUnit = data.archivedRecordPlaceOrganizationalUnit;
-    
+    if (data.relationshipDescription !== 'undefined') newDoc.relationshipDescription = data.relationshipDescription;
+    if (data.archivedRecordPlaceInfo !== 'undefined') newDoc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo;
+    if (data.archivedRecordPlaceOrganizationalUnit !== 'undefined') newDoc.archivedRecordPlaceOrganizationalUnit = data.archivedRecordPlaceOrganizationalUnit;
+
     const doc = await Document.create(newDoc);
 
     return await Document.findById(doc._id).populate([
-        { path: 'category', model: DocumentCategory},
-        { path: 'domains', model: DocumentDomain},
+        { path: 'category', model: DocumentCategory },
+        { path: 'domains', model: DocumentDomain },
     ]);
 }
 
 /**
  * Chỉnh sửa thông tin tài liệu văn bản
  */
-exports.editDocument = async (id, data, query=undefined) => {
-    if(query !== undefined && Object.keys(query).length > 0){
-        
+exports.editDocument = async (id, data, query = undefined) => {
+    if (query !== undefined && Object.keys(query).length > 0) {
+
         const doc = await Document.findById(id);
-        switch(query.option) {
+        switch (query.option) {
             case 'ADD_VERSION':
                 doc.versions.push(data);
                 await doc.save();
@@ -144,7 +151,7 @@ exports.editDocument = async (id, data, query=undefined) => {
             default:
                 return doc;
         }
-    }else{
+    } else {
         const doc = await Document.findById(id);
         doc.name = data.name
         doc.domains = data.domains
@@ -153,40 +160,40 @@ exports.editDocument = async (id, data, query=undefined) => {
         doc.issuingBody = data.issuingBody
         doc.officialNumber = data.officialNumber
         doc.signer = data.signer
-    
-        doc.relationshipDescription = data.relationshipDescription 
+
+        doc.relationshipDescription = data.relationshipDescription
         doc.relationshipDocuments = data.relationshipDocuments
-    
+
         doc.roles = data.roles
-    
-        if(data.archivedRecordPlaceInfo !== 'undefined' && data.archivedRecordPlaceInfo !== undefined) 
-            doc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo 
-        if(data.archivedRecordPlaceOrganizationalUnit !== 'undefined' && data.archivedRecordPlaceOrganizationalUnit !== undefined) 
+
+        if (data.archivedRecordPlaceInfo !== 'undefined' && data.archivedRecordPlaceInfo !== undefined)
+            doc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo
+        if (data.archivedRecordPlaceOrganizationalUnit !== 'undefined' && data.archivedRecordPlaceOrganizationalUnit !== undefined)
             doc.archivedRecordPlaceOrganizationalUnit = data.archivedRecordPlaceOrganizationalUnit
-        if(data.archivedRecordPlaceManager !== 'undefined' && data.archivedRecordPlaceManager !== undefined) 
-            doc.archivedRecordPlaceManager = data.archivedRecordPlaceManager 
-    
+        if (data.archivedRecordPlaceManager !== 'undefined' && data.archivedRecordPlaceManager !== undefined)
+            doc.archivedRecordPlaceManager = data.archivedRecordPlaceManager
+
         await doc.save();
-    
+
         return doc;
     }
 }
 
 exports.deleteDocument = async (id) => {
     const doc = await Document.findById(id);
-    
+
     for (let i = 0; i < doc.versions.length; i++) {
-        if(fs.existsSync(doc.versions[i].file)) fs.unlinkSync(doc.versions[i].file);
-        if(fs.existsSync(doc.versions[i].scannedFileOfSignedDocument)) fs.unlinkSync(doc.versions[i].scannedFileOfSignedDocument);
+        if (fs.existsSync(doc.versions[i].file)) fs.unlinkSync(doc.versions[i].file);
+        if (fs.existsSync(doc.versions[i].scannedFileOfSignedDocument)) fs.unlinkSync(doc.versions[i].scannedFileOfSignedDocument);
     }
-    await Document.deleteOne({_id: id});
+    await Document.deleteOne({ _id: id });
 
     return doc;
 }
 
 exports.downloadDocumentFile = async (data) => {
     const doc = await Document.findById(data.id);
-    if(doc.versions.length < data.numberVersion) throw ['cannot_download_doc_file', 'version_not_found'];
+    if (doc.versions.length < data.numberVersion) throw ['cannot_download_doc_file', 'version_not_found'];
     await downloadFile(doc, data.downloaderId)
     return {
         path: doc.versions[data.numberVersion].file,
@@ -196,7 +203,7 @@ exports.downloadDocumentFile = async (data) => {
 
 exports.downloadDocumentFileScan = async (data) => {
     const doc = await Document.findById(data.id);
-    if(doc.versions.length < data.numberVersion) throw ['cannot_download_doc_file_scan', 'version_scan_not_found'];
+    if (doc.versions.length < data.numberVersion) throw ['cannot_download_doc_file_scan', 'version_scan_not_found'];
     await downloadFile(doc, data.downloaderId)
     return {
         path: doc.versions[data.numberVersion].scannedFileOfSignedDocument,
@@ -204,12 +211,12 @@ exports.downloadDocumentFileScan = async (data) => {
     };
 }
 // hàm thực hiện download 
-async function downloadFile (doc, downloaderId){
+async function downloadFile(doc, downloaderId) {
     doc.numberOfDownload += 1;
     const getIndex = (array, value) => {
         var res = -1;
         for (let i = 0; i < array.length; i++) {
-            if(array[i].downloader.toString() === value.toString()){
+            if (array[i].downloader.toString() === value.toString()) {
                 res = i;
                 break;
             }
@@ -218,7 +225,7 @@ async function downloadFile (doc, downloaderId){
         return res;
     }
     var index = getIndex(doc.downloads, downloaderId);
-    if(index !== -1) doc.downloads.splice(index, 1);
+    if (index !== -1) doc.downloads.splice(index, 1);
     doc.downloads.push({ downloader: downloaderId });
     await doc.save();
 }
@@ -229,15 +236,15 @@ exports.getDocumentCategories = async (company, query) => {
 
     var page = query.page;
     var limit = query.limit;
-    
-    if(page === undefined && limit === undefined ){
-        
-        return await DocumentCategory.find({company});
-    }else{
+
+    if (page === undefined && limit === undefined) {
+
+        return await DocumentCategory.find({ company });
+    } else {
         const option = (query.key !== undefined && query.value !== undefined)
-            ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
-            : {company};
-        return await DocumentCategory.paginate( option , { page, limit });
+            ? Object.assign({ company }, { [`${query.key}`]: new RegExp(query.value, "i") })
+            : { company };
+        return await DocumentCategory.paginate(option, { page, limit });
     }
 }
 
@@ -249,8 +256,8 @@ exports.createDocumentCategory = async (company, data) => {
     });
 }
 
-exports.editDocumentCategory = async(id, data) => {
-   
+exports.editDocumentCategory = async (id, data) => {
+
     const category = await DocumentCategory.findById(id);
     category.name = data.name;
     category.description = data.description;
@@ -259,11 +266,11 @@ exports.editDocumentCategory = async(id, data) => {
     return category;
 }
 
-exports.deleteDocumentCategory = async(id) => {
+exports.deleteDocumentCategory = async (id) => {
     const category = await DocumentCategory.findById(id);
-    const docs = await Document.find({category: id});
-    if(docs.length > 0) throw ['category_used_to_document', 'cannot_delete_category'];
-    await DocumentCategory.deleteOne({_id: id});
+    const docs = await Document.find({ category: id });
+    if (docs.length > 0) throw ['category_used_to_document', 'cannot_delete_category'];
+    await DocumentCategory.deleteOne({ _id: id });
 
     return category;
 }
@@ -274,7 +281,7 @@ exports.deleteDocumentCategory = async(id) => {
 exports.getDocumentDomains = async (company) => {
     const list = await DocumentDomain.find({ company });
     //console.log(list, 'list')
-    const dataConverted = list.map( domain => {
+    const dataConverted = list.map(domain => {
         return {
             id: domain._id.toString(),
             key: domain._id.toString(),
@@ -286,7 +293,7 @@ exports.getDocumentDomains = async (company) => {
     });
     const tree = await arrayToTree(dataConverted, {});
 
-    return {list, tree};
+    return { list, tree };
 }
 
 exports.createDocumentDomain = async (company, data) => {
@@ -295,7 +302,7 @@ exports.createDocumentDomain = async (company, data) => {
         name: data.name,
         description: data.description,
     }
-    if(data.parent.length){
+    if (data.parent.length) {
         query.parent = data.parent
     }
     await DocumentDomain.create(query);
@@ -303,36 +310,40 @@ exports.createDocumentDomain = async (company, data) => {
     return await this.getDocumentDomains(company);
 }
 
-exports.getDocumentsThatRoleCanView = async(company, query) => {
+exports.getDocumentsThatRoleCanView = async (company, query) => {
     var page = query.page;
     var limit = query.limit;
     console.log(query);
     var role = await Role.findById(query.roleId);
     console.log(role);
     var roleArr = [role._id].concat(role.parents);
-    
-    if(page === undefined && limit === undefined ){
-        
+
+    if (page === undefined && limit === undefined) {
+
         return await Document.find({
             company,
-            roles: { $in: roleArr}
+            roles: { $in: roleArr }
         }).populate([
-            { path: 'category', model: DocumentCategory},
-            { path: 'domains', model: DocumentDomain},
-            { path: 'relationshipDocuments', model: Document},
+            { path: 'category', model: DocumentCategory },
+            { path: 'domains', model: DocumentDomain },
+            { path: 'relationshipDocuments', model: Document },
+            { path: 'views.viewer', model: User },
+            { path: "downloads.downloader", model: User },
         ]);
-    }else{
+    } else {
         const option = (query.key !== undefined && query.value !== undefined)
-            ? Object.assign({company, roles: { $in: roleArr}}, {[`${query.key}`]: new RegExp(query.value, "i")})
-            : {company, roles: { $in: roleArr}};
-        
-        return await Document.paginate( option , { 
-            page, 
+            ? Object.assign({ company, roles: { $in: roleArr } }, { [`${query.key}`]: new RegExp(query.value, "i") })
+            : { company, roles: { $in: roleArr } };
+
+        return await Document.paginate(option, {
+            page,
             limit,
             populate: [
-                { path: 'category', model: DocumentCategory},
-                { path: 'domains', model: DocumentDomain},
-                { path: 'relationshipDocuments', model: Document},
+                { path: 'category', model: DocumentCategory },
+                { path: 'domains', model: DocumentDomain },
+                { path: 'relationshipDocuments', model: Document },
+                { path: 'views.viewer', model: User },
+                { path: "downloads.downloader", model: User },
             ]
         });
     }
@@ -342,39 +353,39 @@ exports.getDocumentsUserStatistical = async (userId, query) => {
     const user = await User.findById(userId).populate({
         path: 'roles', model: UserRole
     });
-    var {option} = query;
-    switch(option){
+    var { option } = query;
+    switch (option) {
         case 'downloaded': //những tài liệu văn bản mà người dùng đã tải xuống
             return await Document.find({ "downloads.downloader": userId }).populate([
-                { path: 'category', model: DocumentCategory},
-                { path: 'domains', model: DocumentDomain},
+                { path: 'category', model: DocumentCategory },
+                { path: 'domains', model: DocumentDomain },
             ]).limit(10);
         case 'common': //những tài liệu phổ biến - được xem và tải nhiều nhất gần đây
             return await Document.find({
-                roles: {$in: user.roles.map(res=>res.roleId)}
+                roles: { $in: user.roles.map(res => res.roleId) }
             }).populate([
-                { path: 'category', model: DocumentCategory},
-                { path: 'domains', model: DocumentDomain},
-            ]).sort({numberOfView: -1}).limit(10);
+                { path: 'category', model: DocumentCategory },
+                { path: 'domains', model: DocumentDomain },
+            ]).sort({ numberOfView: -1 }).limit(10);
         case 'latest': //những tài liệu văn bản mà người dùng chưa xem qua lần nào
             return await Document.find({
-                roles: {$in: user.roles.map(res=>res.roleId)},
-                "views.viewer": { "$ne": userId}
+                roles: { $in: user.roles.map(res => res.roleId) },
+                "views.viewer": { "$ne": userId }
             }).populate([
-                { path: 'category', model: DocumentCategory},
-                { path: 'domains', model: DocumentDomain},
+                { path: 'category', model: DocumentCategory },
+                { path: 'domains', model: DocumentDomain },
             ]);
         default:
             return null;
     }
-    
+
 }
 
 exports.editDocumentDomain = async (id, data) => {
     const domain = await DocumentDomain.findById(id);
     domain.name = data.name,
-    domain.description = data.description,
-    domain.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
+        domain.description = data.description,
+        domain.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
     await domain.save();
 
     return domain;
@@ -382,15 +393,15 @@ exports.editDocumentDomain = async (id, data) => {
 
 exports.deleteDocumentDomain = async (id) => {
     const domain = await DocumentDomain.findById(id);
-    if(domain === null) throw ['document_domain_not_found']
-    await DocumentDomain.deleteOne({_id: id});
+    if (domain === null) throw ['document_domain_not_found']
+    await DocumentDomain.deleteOne({ _id: id });
 
     return await this.getDocumentDomains(domain.company);
 }
 
 
 exports.deleteManyDocumentDomain = async (array, company) => {
-    await DocumentDomain.deleteMany({_id: {$in: array}});
+    await DocumentDomain.deleteMany({ _id: { $in: array } });
 
     return await this.getDocumentDomains(company);
 }

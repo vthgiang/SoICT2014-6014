@@ -10,7 +10,9 @@ const {
     Role,
     EmployeeCourse,
     Notification,
+    Timesheets,
 } = require('../../../models').schema;
+const fs = require('fs');
 
 /**
  * Lấy thông tin phòng ban, chức vụ của nhân viên theo emailCompany
@@ -52,7 +54,8 @@ exports.getAllPositionRolesAndOrganizationalUnitsOfUser = async (emailInCompany)
         });
     }
     if (roles !== []) {
-        roles = roles.filter(role => role.roleId.name !== "Admin" && role.roleId.name !== "Super Admin");
+        let arrayRole = ["Admin", "Super Admin", "Employee", "Dean", "Vice Dean"];
+        roles = roles.filter(role => !arrayRole.includes(role.roleId.name));
     }
 
     return {
@@ -300,6 +303,7 @@ exports.getEmployeeNumberExpiresContractInCurrentMonth = async (company, month =
     let lastDay = new Date(month.getFullYear(), month.getMonth() + 1, 1);
     let results = await Employee.count({
         company: company,
+        status: "active",
         "contracts.endDate": {
             "$gt": firstDay,
             "$lte": lastDay
@@ -308,9 +312,15 @@ exports.getEmployeeNumberExpiresContractInCurrentMonth = async (company, month =
     return results;
 }
 
+/**
+ * Lấy số lượng nhân viên có sinh nhật trong tháng hiện tại
+ * @param {*} company 
+ * @param {*} month 
+ */
 exports.getEmployeeNumberHaveBirthdateInCurrentMonth = async (company, month = new Date()) => {
     let results = await Employee.find({
         company: company,
+        status: "active",
     }, {
         _id: 1,
         birthdate: 1
@@ -331,6 +341,19 @@ exports.searchEmployeeProfiles = async (params, company) => {
     let keySearch = {
         company: company
     };
+    // Thêm key tìm kiếm nhân viên theo ngày hết hạn hợp đồng vào keySearch
+    if (params.endDateOfContract) {
+        let month = new Date(params.endDateOfContract);
+        let firstDay = new Date(month.getFullYear(), month.getMonth(), 1);
+        let lastDay = new Date(month.getFullYear(), month.getMonth() + 1, 1);
+        keySearch = {
+            ...keySearch,
+            "contracts.endDate": {
+                "$gt": firstDay,
+                "$lte": lastDay
+            }
+        }
+    }
 
     // Bắt sựu kiện đơn vị tìm kiếm khác undefined
     if (params.organizationalUnits !== undefined) {
@@ -375,14 +398,52 @@ exports.searchEmployeeProfiles = async (params, company) => {
     };
 
     // Lấy danh sách nhân viên
-    let totalList = await Employee.count(keySearch);
     let listEmployees = await Employee.find(keySearch, {
             field1: 1,
-            emailInCompany: 1
+            emailInCompany: 1,
+            birthdate: 1,
+            contracts: 1
         })
         .sort({
             'createdAt': 'desc'
         }).skip(params.page).limit(params.limit);
+
+    // Lọc nhân viên theo tháng sinh
+    if (params.birthdate) {
+        let birthdate = new Date(params.birthdate);
+        listEmployees = listEmployees.filter(x => {
+            let date = new Date(x.birthdate)
+            return date.getMonth() === birthdate.getMonth();
+        })
+    }
+
+    // Lọc nhân viên theo loại hợp đồng lao động
+    if (params.typeOfContract) {
+        let typeOfContract = params.typeOfContract.toLowerCase().trim();
+        listEmployees = listEmployees.filter(x => {
+            let contract;
+            if (x.contracts.length !== 0) {
+                let contracts = x.contracts;
+                contract = contracts.filter(y => {
+                    let endDate = new Date(y.endDate);
+                    let date = new Date();
+                    return endDate.getTime() > date.getTime();
+                })
+            }
+            if (contract.length !== 0) {
+                contract = contract[0];
+                if (contract.contractType.toLowerCase().includes(typeOfContract)) {
+                    return true
+                } else {
+                    return false
+                }
+            } else {
+                return false;
+            }
+        })
+    }
+
+    let totalList = listEmployees.length;
     let data = [];
     for (let n in listEmployees) {
         let value = await this.getAllPositionRolesAndOrganizationalUnitsOfUser(listEmployees[n].emailInCompany);
@@ -435,7 +496,12 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
         arrayObject.forEach(x => {
             arrayFile.forEach(y => {
                 if (x.file === y.originalname) {
-                    x.urlFile = `/${y.path}`;
+                    if (y.path) {
+                        let path = y.path;
+                        let regex = /\\/gi;
+                        x.urlFile = `/${path.replace(regex, '/')}`;
+                    }
+
                 }
             })
         });
@@ -447,15 +513,14 @@ exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
  * Thêm mới nhân viên
  * @data : Dữ liệu thông tin nhân viên
  * @company : Id công ty
- * @fileInfo : Thông tin file đính kèm
+ * @fileInfor : Thông tin file đính kèm
  */
-exports.createEmployee = async (data, company, fileInfo) => {
-    console.log(data);
-    let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
-        fileDegree = fileInfo.fileDegree,
-        fileCertificate = fileInfo.fileCertificate,
-        fileContract = fileInfo.fileContract,
-        file = fileInfo.file;
+exports.createEmployee = async (data, company, fileInfor) => {
+    let avatar = fileInfor.avatar === "" ? data.avatar : fileInfor.avatar,
+        fileDegree = fileInfor.fileDegree,
+        fileCertificate = fileInfor.fileCertificate,
+        fileContract = fileInfor.fileContract,
+        file = fileInfor.file;
     let {
         degrees,
         certificates,
@@ -629,12 +694,12 @@ exports.createEmployee = async (data, company, fileInfo) => {
     };
 }
 
+// exports.deleteFileUpload
 
 /**
  * Cập nhât thông tin nhân viên theo id
  */
-exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
-    console.log(data);
+exports.updateEmployeeInformation = async (id, data, fileInfor, company) => {
     let {
         employee,
         createExperiences,
@@ -671,17 +736,30 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
         editSocialInsuranceDetails,
         deleteSocialInsuranceDetails
     } = data;
-    let avatar = fileInfo.avatar === "" ? employee.avatar : fileInfo.avatar,
-        fileDegree = fileInfo.fileDegree,
-        fileCertificate = fileInfo.fileCertificate,
-        fileContract = fileInfo.fileContract,
-        file = fileInfo.file;
-
+    let avatar = employee.avatar,
+        fileDegree = fileInfor.fileDegree,
+        fileCertificate = fileInfor.fileCertificate,
+        fileContract = fileInfor.fileContract,
+        file = fileInfor.file;
+    if (fileInfor.avatar) {
+        avatar = fileInfor.avatar;
+        let deleteAvatar = `.${employee.avatar}`;
+        if (deleteAvatar !== `./upload/human-resource/avatars/avatar5.png` && fs.existsSync(deleteAvatar)) {
+            fs.unlinkSync(deleteAvatar);
+        }
+    }
     let oldEmployee = await Employee.findById(id);
 
     deleteEditCreateObjectInArrayObject = (arrObject, arrDelete, arrEdit, arrCreate, fileInfor = undefined) => {
         if (arrDelete !== undefined) {
             for (let n in arrDelete) {
+                let obj = arrDelete[n];
+                if (obj.urlFile) {
+                    let deleteAvatar = `.${obj.urlFile}`;
+                    if (fs.existsSync(deleteAvatar)) {
+                        fs.unlinkSync(deleteAvatar);
+                    }
+                }
                 arrObject = arrObject.filter(x => x._id.toString() !== arrDelete[n]._id);
             };
         };
@@ -690,7 +768,20 @@ exports.updateEmployeeInformation = async (id, data, fileInfo, company) => {
                 arrEdit = this.mergeUrlFileToObject(fileInfor, arrEdit);
             }
             for (let n in arrEdit) {
-                arrObject = arrObject.map(x => (x._id.toString() !== arrEdit[n]._id) ? x : arrEdit[n])
+                arrObject = arrObject.map(x => {
+                    if (x._id.toString() !== arrEdit[n]._id) {
+                        return x
+                    } else {
+                        let obj = arrEdit[n];
+                        if (x.urlFile && obj.urlFile && x.urlFile !== obj.urlFile) {
+                            let deleteAvatar = `.${x.urlFile}`;
+                            if (fs.existsSync(deleteAvatar)) {
+                                fs.unlinkSync(deleteAvatar);
+                            }
+                        }
+                        return arrEdit[n]
+                    }
+                })
             }
         };
         if (arrCreate !== undefined) {
@@ -865,6 +956,47 @@ exports.deleteEmployee = async (id) => {
     await Salary.deleteMany({
         employee: id
     });
+    await Timesheets.deleteMany({
+        employee: id
+    })
+    if (employee.avatar) {
+        let deleteAvatar = `.${employee.avatar}`;
+        if (deleteAvatar !== `./upload/human-resource/avatars/avatar5.png` && fs.existsSync(deleteAvatar)) {
+            fs.unlinkSync(deleteAvatar);
+        }
+    };
+    if (employee.degrees && employee.degrees !== 0) {
+        employee.degrees.forEach(x => {
+            let deleteDegrees = `.${x.urlFile}`;
+            if (fs.existsSync(deleteDegrees)) {
+                fs.unlinkSync(deleteDegrees);
+            }
+        })
+        employee.degrees.forEach(x => {
+            let deleteDegrees = `.${x.urlFile}`;
+            if (fs.existsSync(deleteDegrees)) {
+                fs.unlinkSync(deleteDegrees);
+            }
+        })
+        employee.certificates.forEach(x => {
+            let deleteCertificates = `.${x.urlFile}`;
+            if (fs.existsSync(deleteCertificates)) {
+                fs.unlinkSync(deleteCertificates);
+            }
+        })
+        employee.contracts.forEach(x => {
+            let deleteContracts = `.${x.urlFile}`;
+            if (fs.existsSync(deleteContracts)) {
+                fs.unlinkSync(deleteContracts);
+            }
+        })
+        employee.files.forEach(x => {
+            let deleteFiles = `.${x.urlFile}`;
+            if (fs.existsSync(deleteFiles)) {
+                fs.unlinkSync(deleteFiles);
+            }
+        })
+    }
     return employee;
 }
 

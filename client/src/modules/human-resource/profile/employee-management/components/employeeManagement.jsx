@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti, ExportExcel } from '../../../../../common-components';
+import { DataTableSetting, DeleteNotification, PaginateBar, SelectMulti, ExportExcel, DatePicker } from '../../../../../common-components';
 
 import { EmployeeCreateForm, EmployeeDetailForm, EmployeeEditFrom, EmployeeImportForm } from './combinedContent';
 
@@ -124,6 +124,7 @@ class EmployeeManagement extends Component {
             gender: value
         })
     }
+
     // Function lưu giá trị trạng thái vào state khi thay đổi
     handleStatusChange = (value) => {
         if (value.length === 0) {
@@ -135,12 +136,37 @@ class EmployeeManagement extends Component {
         })
     }
 
+    // Function lưu giá trị tháng sinh vào state khi thay đổi
+    handleBirthdateChange = (value) => {
+        if (value) {
+            let partMonth = value.split('-');
+            value = [partMonth[1], partMonth[0]].join('-');
+        }
+        this.setState({
+            ...this.state,
+            birthdate: value
+        });
+    }
+
+    // Function lưu giá trị ngày hết hạn hợp đồng vào state khi thay đổi
+    handleEndDateOfContractChange = (value) => {
+        if (value) {
+            let partMonth = value.split('-');
+            value = [partMonth[1], partMonth[0]].join('-');
+        }
+        this.setState({
+            ...this.state,
+            endDateOfContract: value
+        });
+    }
+
     handleChange = (e) => {
         const { name, value } = e.target;
         this.setState({
             [name]: value
         });
     }
+
     // Function bắt sự kiện tìm kiếm 
     handleSunmitSearch = async () => {
         this.props.getAllEmployee(this.state);
@@ -722,7 +748,7 @@ class EmployeeManagement extends Component {
                             </SelectMulti>
                         </div>
                     </div>
-                    <div className="form-inline" style={{ marginBottom: 15 }}>
+                    <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
                             <SelectMulti id={`multiSelectStatus`} multiple="multiple"
@@ -731,24 +757,56 @@ class EmployeeManagement extends Component {
                             </SelectMulti>
                         </div>
                         <div className="form-group">
-                            <label></label>
+                            <label title="Tháng sinh nhật" className="form-control-static">Sinh nhật</label>
+                            <DatePicker
+                                id="month-birthdate"
+                                dateFormat="month-year"
+                                value=""
+                                onChange={this.handleBirthdateChange}
+                            />
+                        </div>
+
+                    </div>
+                    <div className="form-inline" style={{ marginBottom: 15 }}>
+                        <div className="form-group">
+                            <label title="Tháng hết hạn hợp đồng" className="form-control-static">Hết hạn hợp đồng</label>
+                            <DatePicker
+                                id="month-endDate-contract"
+                                dateFormat="month-year"
+                                value=""
+                                onChange={this.handleEndDateOfContractChange}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-control-static">Loại hợp đồng</label>
+                            <input type="text" className="form-control" name="typeOfContract" onChange={this.handleChange} placeholder="Loại hợp đồng lao động" />
+                        </div>
+                        <div className="form-group">
                             <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSunmitSearch} >Tìm kiếm</button>
                         </div>
                     </div>
                     <div className="form-group col-md-12 row" >
-                        <span>Có</span>
+                        {(Number(employeesManager.expiresContract) > 0 || Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0) &&
+                            <span>Có</span>
+                        }
                         {Number(employeesManager.expiresContract) > 0 &&
                             <React.Fragment>
                                 <span className="text-danger" style={{ fontWeight: "bold" }}>{` ${employeesManager.expiresContract} nhân viên`}</span>
-                                <span>{` hết hạn hợp đồng và`}</span>
+                                <span>{` hết hạn hợp đồng`}</span>
                             </React.Fragment>
+                        }
+                        {(Number(employeesManager.expiresContract) > 0 && Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0) &&
+                            <span>{` và`}</span>
                         }
                         {
                             Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0 &&
                             <React.Fragment>
                                 <span className="text-success" style={{ fontWeight: "bold" }}>{` ${employeesManager.employeesHaveBirthdateInCurrentMonth} nhân viên`}</span>
-                                <span>{` có sinh nhật trong tháng này (${this.formatDate(Date.now(), true)})`}</span>
+                                <span>{` có sinh nhật`}</span>
                             </React.Fragment>
+                        }
+                        {(Number(employeesManager.expiresContract) > 0 || Number(employeesManager.employeesHaveBirthdateInCurrentMonth)) > 0 &&
+                            <span>{` trong tháng này (${this.formatDate(Date.now(), true)})`}</span>
                         }
                     </div>
                     <table id="employee-table" className="table table-striped table-bordered table-hover">
