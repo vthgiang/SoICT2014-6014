@@ -487,9 +487,6 @@ class EvaluateByResponsibleEmployee extends Component {
         else if (dst < 0) {
             err = translate('task.task_management.err_eval_start');
         }
-        else if (det < 0) {
-            err = translate('task.task_management.err_eval_end');
-        }
         else if (de < 0 || ds < 0){
             err = translate('task.task_management.err_eval_on_month');
         }
@@ -500,9 +497,9 @@ class EvaluateByResponsibleEmployee extends Component {
         let automaticPoint = data.autoPoint;
         let taskInfo = {
             task: data.task,
-            progress: data.progress,
+            progress: this.state.progress,
             date: value,
-            info: data.info,
+            info: this.state.info,
         };
 
         automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
@@ -512,17 +509,16 @@ class EvaluateByResponsibleEmployee extends Component {
             return {
                 ...state,
                 date: value,
-                info: data.info,
-                kpi: data.kpi,
+                // info: data.info,
+                // kpi: data.kpi,
                 autoPoint: automaticPoint,
-                point: data.point,
+                // point: data.point,
                 oldAutoPoint: data.autoPoint,
-                progress: data.progress,
-                checkSave: data.checkSave,
+                // progress: data.progress,
+                // checkSave: data.checkSave,
                 errorOnDate: err,
                 errorInfo: {},
                 errorOnProgress: undefined,
-                // dataStatus: this.DATA_STATUS.QUERYING,
                 indexReRender: state.indexReRender + 1,
             }
         });
@@ -961,7 +957,7 @@ class EvaluateByResponsibleEmployee extends Component {
                             {/* Thông tin công việc */}
                             <div>
                                 <TaskInformationForm
-                                    legendText="Thông tin công việc trong đánh giá này"
+                                    legendText={translate('task.task_management.info_eval_month')}
                                     task={task && task}
 
                                     handleChangeProgress={this.handleChangeProgress}

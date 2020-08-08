@@ -873,9 +873,6 @@ class EvaluateByAccountableEmployee extends Component {
         if (value.trim() === "") {
             err = translate('task.task_perform.modal_approve_task.err_empty');
         }
-        else if (det < 0) {
-            err = translate('task.task_management.err_eval_end');
-        }
         else if (dst < 0) {
             err = translate('task.task_management.err_eval_start');
         }
@@ -885,9 +882,9 @@ class EvaluateByAccountableEmployee extends Component {
         let automaticPoint = data.automaticPoint;
         let taskInfo = {
             task: data.task,
-            progress: data.progress,
+            progress: this.state.progress,
             date: value,
-            info: data.info,
+            info: this.state.info,
         };
 
         automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
@@ -900,14 +897,14 @@ class EvaluateByAccountableEmployee extends Component {
                 errorInfo: {},
                 errorOnProgress: undefined,
                 date: value,
-                info: data.info,
-                results: data.results,
-                status: data.statusOptions,
+                // info: data.info,
+                // results: data.results,
+                // status: data.statusOptions,
                 empPoint: data.empPoint,
                 autoPoint: automaticPoint,
-                progress: data.progress,
+                // progress: data.progress,
                 oldAutoPoint: data.automaticPoint,
-                checkSave: data.checkSave,
+                // checkSave: data.checkSave,
                 indexReRender: state.indexReRender + 1,
             }
         });
@@ -1183,6 +1180,7 @@ class EvaluateByAccountableEmployee extends Component {
                             {/* Thông tin công việc */}
                             <div>
                                 <TaskInformationForm
+                                    legendText={translate('task.task_management.info_eval_month')}
                                     task={task && task}
 
                                     handleChangeProgress={this.handleChangeProgress}

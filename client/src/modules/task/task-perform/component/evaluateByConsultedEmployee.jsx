@@ -289,7 +289,7 @@ class EvaluateByConsultedEmployee extends Component {
                                 <ErrorLabel content={errorOnPoint} />
                             </div>
                             <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{translate('task.task_management.detail_evaluation')}</legend>
+                                <legend className="scheduler-border">{translate('task.task_management.info_eval_month')}</legend>
                                 <p><span style={{ fontWeight: "bold" }}>{translate('task.task_management.detail_progress')}:</span> {task && task.progress}%</p>
                                 {
                                     evaluations ?

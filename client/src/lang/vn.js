@@ -1855,6 +1855,8 @@ export default {
                 err_eval_end: 'Ngày đánh giá phải nhỏ hơn bằng ngày kết thúc',
                 err_eval_on_month: 'Ngày đánh giá phải là ngày trong tháng',
 
+                info_eval_month: 'Thông tin công việc trong đánh giá này',
+
                 auto_point_field: 'Điểm công việc tự động trong đánh giá này',
                 get_outside_info: 'Nhập tự động từ thông tin công việc hiện tại',
 

@@ -1707,6 +1707,8 @@ export default {
                 err_eval_end: 'Evaluate date should be less than equal end date',
                 err_eval_on_month: 'Evaluate date should be day of month',
 
+                info_eval_month: 'Task infomation in evaluation',
+
                 auto_point_field: 'Automatic point of task in this month',
                 get_outside_info: 'Auto fill evaluation infomation from task infomation',
 
