@@ -127,6 +127,7 @@ class ActionTab extends Component {
                     id: nextProps.id
                 }
             })
+            console.log("Should component")
             this.props.getTimesheetLogs(nextProps.id);
             this.props.getStatusTimer(nextProps.id);
             this.props.getSubTask(nextProps.id);
@@ -736,7 +737,7 @@ class ActionTab extends Component {
     }
     render() {
         let type = ["actions", "commentofactions", "taskcomments", "commentoftaskcomments"];
-        let task, informations, statusTask, files, actionComments, taskActions, taskComments, actions, logTimer, logs;
+        let task, informations, statusTask, files, actionComments, taskActions, taskComments, logTimer, logs;
         const { tasks, performtasks, user, auth, translate, role } = this.props;
         const subtasks = tasks.subtasks;
         const {
@@ -923,7 +924,7 @@ class ActionTab extends Component {
                                                 <React.Fragment>
                                                     <div>
                                                         <ContentMaker
-                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2"
+                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onEditActionFilesChange}
                                                             onFilesError={this.onFilesError}
                                                             files={newActionEdited.files}
@@ -1016,7 +1017,7 @@ class ActionTab extends Component {
                                                                 <React.Fragment>
                                                                     <div>
                                                                         <ContentMaker
-                                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2"
+                                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                                             onFilesChange={this.onEditCommentOfActionFilesChange}
                                                                             onFilesError={this.onFilesError}
                                                                             files={newCommentOfActionEdited.files}
@@ -1069,7 +1070,7 @@ class ActionTab extends Component {
                                                             src={(LOCAL_SERVER_API + auth.user.avatar)} alt="user avatar"
                                                         />
                                                         <ContentMaker
-                                                            inputCssClass="text-input-level2" controlCssClass="tool-level2"
+                                                            inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onCommentFilesChange}
                                                             onFilesError={this.onFilesError}
                                                             files={newCommentOfAction.files}
@@ -1095,7 +1096,7 @@ class ActionTab extends Component {
                                 <React.Fragment>
                                     <img className="user-img-level1" src={(LOCAL_SERVER_API + auth.user.avatar)} alt="user avatar" />
                                     <ContentMaker
-                                        inputCssClass="text-input-level1" controlCssClass="tool-level1"
+                                        inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
                                         onFilesChange={this.onActionFilesChange}
                                         onFilesError={this.onFilesError}
                                         files={newAction.files}
@@ -1170,7 +1171,7 @@ class ActionTab extends Component {
                                                 <React.Fragment>
                                                     <div>
                                                         <ContentMaker
-                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2"
+                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onEditTaskCommentFilesChange}
                                                             onFilesError={this.onFilesError}
                                                             files={newTaskCommentEdited.files}
@@ -1267,7 +1268,7 @@ class ActionTab extends Component {
                                                                 <React.Fragment>
                                                                     <div>
                                                                         <ContentMaker
-                                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2"
+                                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                                             onFilesChange={this.onEditCommentOfTaskCommentFilesChange}
                                                                             onFilesError={this.onFilesError}
                                                                             styletext={{ marginLeft: "40px", width: "94%" }}
@@ -1318,7 +1319,7 @@ class ActionTab extends Component {
                                                     <div>
                                                         <img className="user-img-level2" src={(LOCAL_SERVER_API + auth.user.avatar)} alt="user avatar" />
                                                         <ContentMaker
-                                                            inputCssClass="text-input-level2" controlCssClass="tool-level2"
+                                                            inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onCommentOfTaskCommentFilesChange}
                                                             onFilesError={this.onFilesError}
                                                             files={newCommentOfTaskComment.files}
@@ -1343,7 +1344,7 @@ class ActionTab extends Component {
                             {/* Thêm bình luận cho công việc*/}
                             <img className="user-img-level1" src={(LOCAL_SERVER_API + auth.user.avatar)} alt="User Image" />
                             <ContentMaker
-                                inputCssClass="text-input-level1" controlCssClass="tool-level1"
+                                inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
                                 onFilesChange={this.onTaskCommentFilesChange}
                                 onFilesError={this.onFilesError}
                                 files={newTaskComment.files}

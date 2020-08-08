@@ -33,7 +33,7 @@ class TaskInformationForm extends Component {
 
     render() {
         const { translate } = this.props;
-        const { value, task, perform, role, id, disabled, indexReRender, legendText = translate('task.task_management.info_eval_month')} = this.props;
+        const { value, task, perform, role, id, disabled, indexReRender, legendText = translate('task.task_management.detail_info')} = this.props;
 
         return (
             <React.Fragment>

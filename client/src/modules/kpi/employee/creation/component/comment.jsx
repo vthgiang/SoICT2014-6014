@@ -118,7 +118,7 @@ class Comment extends Component {
                     files: files,
                 }
             }
-        }, () => { console.log(this.state.comment.files) })
+        })
     }
     onCommentFilesChange = (files) => {
         this.setState((state) => {
