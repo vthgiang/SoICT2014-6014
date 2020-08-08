@@ -87,7 +87,7 @@ class ContentMaker extends Component {
                     </div>
                 </Files>
                 <div className={controlCssClass}>
-                    <div style={{ textAlign: "right" }}>
+                    <div className = "" style={{ textAlign: "right" }}>
                         <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>{translate("task.task_perform.attach_file")}&nbsp;&nbsp;&nbsp;&nbsp;</a>
                         <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => {
                             onSubmit(e);
@@ -98,7 +98,7 @@ class ContentMaker extends Component {
                         <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={handleEdit}>{cancelButtonText}</a>
                     </div>
                     {files && files.length > 0 &&
-                        <div className='files-list'>
+                        <div className='files-list '>
                             <ul>{files.map((file) =>
                                 <li className='files-list-item' key={file.id}>
                                     <div className='files-list-item-preview'>
