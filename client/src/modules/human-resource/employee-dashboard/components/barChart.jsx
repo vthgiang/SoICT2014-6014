@@ -9,7 +9,7 @@ class BarChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            lineBar: true,
+            lineChart: false,
         }
     }
 
@@ -23,7 +23,7 @@ class BarChart extends Component {
     handleChangeViewChart = (value) => {
         this.setState({
             ...this.state,
-            lineBar: value
+            lineChart: value
         })
     }
 
@@ -60,7 +60,7 @@ class BarChart extends Component {
                 x: 'x',
                 columns: [],
                 hide: true,
-                type: data.lineBar === true ? 'bar' : 'spline',
+                type: data.lineChart === true ? 'spline' : 'bar',
                 names: {
                     data1: data.nameData1,
                 },
@@ -104,7 +104,7 @@ class BarChart extends Component {
         }, 300);
     }
     render() {
-        const { lineBar, nameChart } = this.state;
+        const { lineChart, nameChart } = this.state;
         return (
             <React.Fragment>
                 <div className="box">
@@ -115,8 +115,8 @@ class BarChart extends Component {
                         <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: %</b></p>
                         <div className="box-tools pull-right">
                             <div className="btn-group pull-rigth" id="barChart">
-                                <button type="button" className={`btn btn-default btn-xs ${lineBar === false ? 'active' : null}`} onClick={() => this.handleChangeViewChart(true)}>Bar chart</button>
-                                <button type="button" className={`btn btn-default btn-xs ${lineBar === true ? 'active' : null}`} onClick={() => this.handleChangeViewChart(false)}>Line chart</button>
+                                <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Bar chart</button>
+                                <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Line chart</button>
                             </div>
                         </div>
                         <div ref="chart"></div>

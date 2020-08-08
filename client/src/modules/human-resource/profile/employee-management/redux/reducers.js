@@ -9,7 +9,6 @@ const initState = {
     totalEmployeeOfOrganizationalUnits: 0,
     totalAllEmployee: 0,
 
-
     listEmployees: [],
     listEmployeesOfOrganizationalUnits: [],
     listAllEmployees: [],
