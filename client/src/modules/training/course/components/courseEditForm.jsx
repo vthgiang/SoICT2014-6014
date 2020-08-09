@@ -228,7 +228,7 @@ class CourseEditForm extends Component {
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result =
-            this.validateCourseName(this.state.name, false) && this.validateStartDate(this.state.startDate, false) &&
+            this.validateCourseName(this.state.name, false) &&
             this.validateCoursePlace(this.state.coursePlace, false) && this.validateCost(this.state.cost, false) &&
             this.validateEducationProgram(this.state.educationProgram, false) && this.validateEmployeeCommitmentTime(this.state.employeeCommitmentTime, false);
         let partStart = this.state.startDate.split('-');

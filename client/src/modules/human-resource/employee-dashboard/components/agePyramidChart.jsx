@@ -11,11 +11,8 @@ class AgePyramidChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: 'keyId'
+            organizationalUnits: []
         }
-    }
-    componentDidMount() {
-        this.props.getAllEmployee({organizationalUnits:null, status: 'active' });
     }
 
     // Function tính tuổi nhân viên theo năm sinh nhập vào
@@ -102,14 +99,54 @@ class AgePyramidChart extends Component {
             });
         }, 500);
     }
-    shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextProps.id !== this.state.id) {
-            return true;
+
+    static isEqual = (items1, items2) => {
+        if (!items1 || !items2) {
+            return false;
         }
+        if (items1.length !== items2.length) {
+            return false;
+        }
+        for (let i = 0; i < items1.length; ++i) {
+            if (items1[i]._id !== items2[i]._id) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (!AgePyramidChart.isEqual(nextProps.employeesManager.listAllEmployees, prevState.listAllEmployees) ||
+            !AgePyramidChart.isEqual(nextProps.employeesManager.listEmployeesOfOrganizationalUnits, prevState.listEmployeesOfOrganizationalUnits)) {
+            return {
+                actionSearch: nextProps.actionSearch,
+                organizationalUnits: nextProps.organizationalUnits,
+                listAllEmployees: nextProps.employeesManager.listAllEmployees,
+                listEmployeesOfOrganizationalUnits: nextProps.employeesManager.listEmployeesOfOrganizationalUnits
+            }
+        }
+        return null;
+    }
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextProps.actionSearch !== this.state.actionSearch || !AgePyramidChart.isEqual(nextProps.employeesManager.listAllEmployees, this.state.listAllEmployees) ||
+            !AgePyramidChart.isEqual(nextProps.employeesManager.listEmployeesOfOrganizationalUnits, this.state.listEmployeesOfOrganizationalUnits)) {
+            return true;
+        };
         return false;
     }
+
     render() {
-        const { listAllEmployees } = this.props.employeesManager;
+        const { employeesManager, department } = this.props;
+        const { organizationalUnits } = this.state;
+
+        let organizationalUnitsName;
+        if (organizationalUnits) {
+            organizationalUnitsName = department.list.filter(x => organizationalUnits.includes(x._id));
+            organizationalUnitsName = organizationalUnitsName.map(x => x.name);
+        }
+
+        let listAllEmployees = (!organizationalUnits || organizationalUnits.length === department.list.length) ?
+            employeesManager.listAllEmployees : employeesManager.listEmployeesOfOrganizationalUnits;
         let maleEmployees = listAllEmployees.filter(x => x.gender === 'male');
         let femaleEmployees = listAllEmployees.filter(x => x.gender === 'female');
 
@@ -147,7 +184,9 @@ class AgePyramidChart extends Component {
                 <div className="box">
                     <div className="box-header with-border">
                         <i className="fa fa-bar-chart-o" />
-                        <h3 className="box-title">Tháp tuổi cán bộ công nhân viên trong công ty</h3>
+                        <h3 className="box-title">
+                            {`Tháp tuổi cán bộ công nhân viên ${(!organizationalUnits || organizationalUnits.length === department.list.length) ? "trong công ty" : organizationalUnitsName.join(', ')}`}
+                        </h3>
                     </div>
                     <div className="box-body dashboard_box_body">
                         <div className="form-inline">
@@ -173,8 +212,8 @@ class AgePyramidChart extends Component {
 }
 
 function mapState(state) {
-    const { employeesManager } = state;
-    return { employeesManager };
+    const { employeesManager, department } = state;
+    return { employeesManager, department };
 }
 
 const actionCreators = {

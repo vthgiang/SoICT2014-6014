@@ -1835,7 +1835,7 @@ export default {
                 calc_where: 'Trong đó',
                 calc_no_value: 'Chưa có giá trị',
                 calc_nan: 'Không tính được',
-                explain: ' - (Giá trị âm sẽ được tính là 0)',
+                explain: ' (Giá trị âm sẽ được tính là 0)',
                 eval_list: 'Danh sách các lần đánh giá',
                 title_eval: 'Đánh giá công việc',
 

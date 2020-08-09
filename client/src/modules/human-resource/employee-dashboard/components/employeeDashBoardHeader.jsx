@@ -21,19 +21,23 @@ class EmployeeDashBoardHeader extends Component {
 
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
 
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else return [day, month, year].join('-');
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        }
+        return date;
+
     }
 
     componentDidMount() {
@@ -44,7 +48,7 @@ class EmployeeDashBoardHeader extends Component {
         this.props.getListDiscipline({ organizationalUnits: this.state.organizationalUnits, month: this.state.month });
     }
 
-    // function bắt sự kiện thay đổi unit
+    // Function bắt sự kiện thay đổi unit
     handleSelectOrganizationalUnit = (value) => {
         if (value.length === 0) {
             value = null
@@ -57,8 +61,10 @@ class EmployeeDashBoardHeader extends Component {
 
     // Function lưu giá trị tháng vào state khi thay đổi
     handleMonthChange = (value) => {
-        let partMonth = value.split('-');
-        value = [partMonth[1], partMonth[0]].join('-');
+        if (value) {
+            let partMonth = value.split('-');
+            value = [partMonth[1], partMonth[0]].join('-');
+        }
         this.setState({
             ...this.state,
             month: value
@@ -67,21 +73,25 @@ class EmployeeDashBoardHeader extends Component {
 
     // Bắt sự kiện tìm kiếm 
     handleSunmitSearch = async () => {
-        if (this.state.month === "-") {
-            await this.setState({
-                ...this.state,
-                month: ""
-            })
-        }
-        this.props.getAllEmployee({ organizationalUnits: this.state.organizationalUnits, status: 'active' });
-        this.props.searchAnnualLeaves({ organizationalUnits: this.state.organizationalUnits, month: this.state.month });
-        this.props.getListPraise({ organizationalUnits: this.state.organizationalUnits, month: this.state.month });
-        this.props.getListDiscipline({ organizationalUnits: this.state.organizationalUnits, month: this.state.month });
-        this.props.DisRenderAgePyramidChart();
+        const { organizationalUnits, month } = this.state;
+        this.setState({
+            arrUnitShow: organizationalUnits
+        })
+        this.props.getAllEmployee({ organizationalUnits: organizationalUnits, status: 'active' });
+        this.props.searchAnnualLeaves({ organizationalUnits: organizationalUnits, month: month });
+        this.props.getListPraise({ organizationalUnits: organizationalUnits, month: month });
+        this.props.getListDiscipline({ organizationalUnits: organizationalUnits, month: month });
+        this.props.handleSelectOrganizationalUnit(organizationalUnits);
     }
     render() {
         const { employeesManager, department, discipline, annualLeave, translate } = this.props;
-        const { organizationalUnits, month } = this.state;
+        const { organizationalUnits, month, arrUnitShow } = this.state;
+        let organizationalUnitsName;
+        if (arrUnitShow) {
+            organizationalUnitsName = department.list.filter(x => arrUnitShow.includes(x._id));
+            organizationalUnitsName = organizationalUnitsName.map(x => x.name);
+        }
+
         return (
             <React.Fragment>
                 <div className="form-inline">
@@ -94,8 +104,6 @@ class EmployeeDashBoardHeader extends Component {
                         >
                         </SelectMulti>
                     </div>
-                </div>
-                <div className="form-inline">
                     <div className="form-group">
                         <label className="form-control-static">{translate('human_resource.month')}</label>
                         <DatePicker
@@ -104,6 +112,8 @@ class EmployeeDashBoardHeader extends Component {
                             value={this.formatDate(Date.now(), true)}
                             onChange={this.handleMonthChange}
                         />
+                    </div>
+                    <div className="form-group">
                         <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
                     </div>
                 </div>
@@ -111,11 +121,11 @@ class EmployeeDashBoardHeader extends Component {
                     <div className="col-md-3 col-sm-6 col-xs-6">
                         <div className="info-box with-border">
                             <span className="info-box-icon bg-aqua"><i className="fa fa-users"></i></span>
-
-                            <div className="info-box-content">
+                            <div className="info-box-content" title={(!arrUnitShow || arrUnitShow.length === department.list.length) ?
+                                'Tổng số nhân viên trong công ty' : `Số nhân viên ${organizationalUnitsName.join(", ")}`}>
                                 <span className="info-box-text">Số nhân viên</span>
                                 <span className="info-box-number">
-                                    {employeesManager.totalEmployeeOfOrganizationalUnits === 0 ? employeesManager.totalAllEmployee : employeesManager.totalEmployeeOfOrganizationalUnits}
+                                    {(!arrUnitShow || arrUnitShow.length === department.list.length) ? employeesManager.totalAllEmployee : employeesManager.totalEmployeeOfOrganizationalUnits}
                                 </span>
                                 <a href={`/hr-list-employee?organizationalUnits=${organizationalUnits}`} target="_blank" >Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
@@ -124,8 +134,7 @@ class EmployeeDashBoardHeader extends Component {
                     <div className="col-md-3 col-sm-6 col-xs-6">
                         <div className="info-box">
                             <span className="info-box-icon bg-green"><i className="fa fa-gift"></i></span>
-
-                            <div className="info-box-content" >
+                            <div className="info-box-content" title="Số khen thưởng tháng/số khen thưởng năm" >
                                 <span className="info-box-text">Số khen thưởng</span>
                                 <span className="info-box-number">{discipline.totalListCommendation}/{discipline.totalListCommendationOfYear}</span>
                                 <a href={`/hr-discipline?page=commendation?organizationalUnits=${organizationalUnits}?month=${month}`} target="_blank" >Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
@@ -135,8 +144,7 @@ class EmployeeDashBoardHeader extends Component {
                     <div className="col-md-3 col-sm-6 col-xs-6">
                         <div className="info-box">
                             <span className="info-box-icon bg-red"><i className="fa fa-balance-scale"></i></span>
-
-                            <div className="info-box-content" style={{ paddingBottom: 0 }}>
+                            <div className="info-box-content" title="Số kỷ luật tháng/số kỷ luật năm">
                                 <span className="info-box-text">Số kỷ luật</span>
                                 <span className="info-box-number">{discipline.totalListDiscipline}/{discipline.totalListDisciplineOfYear}</span>
                                 <a href={`/hr-discipline?page=discipline?organizationalUnits=${organizationalUnits}?month=${month}`} target="_blank" >Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
@@ -146,7 +154,7 @@ class EmployeeDashBoardHeader extends Component {
                     <div className="col-md-3 col-sm-6 col-xs-6">
                         <div className="info-box">
                             <span className="info-box-icon bg-yellow"><i className="fa fa-calendar-times-o"></i></span>
-                            <div className="info-box-content" style={{ paddingBottom: 0 }}>
+                            <div className="info-box-content" title="Số nghỉ phép tháng/số nghỉ phép năm">
                                 <span className="info-box-text">Số nghỉ phép</span>
                                 <span className="info-box-number">{annualLeave.totalList}/{annualLeave.totalListAnnualLeavesOfYear}</span>
                                 <a href={`hr-annual-leave?organizationalUnits=${organizationalUnits}?month=${month}`} target="_blank" >Xem thêm <i className="fa  fa-arrow-circle-o-right"></i></a>
