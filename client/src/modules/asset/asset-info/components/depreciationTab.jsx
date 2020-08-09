@@ -16,14 +16,19 @@ class DepreciationTab extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -46,28 +51,33 @@ class DepreciationTab extends Component {
     }
 
     addMonthToEndDepreciation = (day) => {
-        if (day !== undefined) {
+        if (day) {
             let { usefulLife } = this.state,
                 splitDay = day.toString().split('-'),
                 currentDate = moment(`${splitDay[2]}-${splitDay[1]}-${splitDay[0]}`),
                 futureMonth = moment(currentDate).add(usefulLife, 'M'),
                 futureMonthEnd = moment(futureMonth).endOf('month');
+            
             if (currentDate.date() !== futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
                 futureMonth = futureMonth.add(1, 'd');
             }
+
             return futureMonth.format('DD-MM-YYYY');
         }
     };
 
 
     render() {
-        const { id, translate } = this.props;
-        const { cost, residualValue, startDepreciation, usefulLife, depreciationType, endDepreciation, annualDepreciationValue,
-            monthlyDepreciationValue } = this.state;
+        const { id } = this.props;
+        const { translate } = this.props;
+        const { cost, residualValue, startDepreciation, usefulLife, depreciationType, endDepreciation, annualDepreciationValue, monthlyDepreciationValue } = this.state;
+        
         var formater = new Intl.NumberFormat();
+
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
+                    {/* Thông tin khấu hao */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">Thông tin khấu hao</h4></legend>
                         <div className="form-group">
@@ -91,7 +101,7 @@ class DepreciationTab extends Component {
                         </div>
                         <div className="form-group">
                             <strong>Thời gian kết thúc trích khấu hao:&emsp; </strong>
-                            {startDepreciation !== '' ? this.addMonthToEndDepreciation(this.formatDate(startDepreciation)) : ""}
+                            {startDepreciation ? this.addMonthToEndDepreciation(this.formatDate(startDepreciation)) : ""}
                         </div>
                         <div className="form-group">
                             <strong>Phương pháp trích khấu hao:&emsp; </strong>

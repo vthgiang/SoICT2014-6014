@@ -82,7 +82,7 @@ class AnnualLeaveEditForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateEmployeeNumber(this.state.employeeNumber, false) && this.validateReason(this.state.reason, false);
+        let result = this.validateReason(this.state.reason, false);
         let partStart = this.state.startDate.split('-');
         let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
         let partEnd = this.state.endDate.split('-');

@@ -1687,7 +1687,7 @@ export default {
                 calc_where: 'Where',
                 calc_no_value: 'No value',
                 calc_nan: 'NAN',
-                explain: ' - (Negative values ​​will be considered as 0.)',
+                explain: ' (Negative values ​​will be considered as 0)',
                 eval_list: 'List of evaluations',
                 title_eval: 'Evaluate task',
 
@@ -1708,6 +1708,7 @@ export default {
                 err_eval_start: 'Evaluate date should be greater than equal start date',
                 err_eval_end: 'Evaluate date should be less than equal end date',
                 err_eval_on_month: 'Evaluate date should be day of month',
+                explain_avg_rating: 'Since no activity has been evaluated, the activity rating default is 10',
 
                 info_eval_month: 'Task infomation in evaluation',
 
@@ -1781,7 +1782,8 @@ export default {
                 enter_comment_action: "Comment of action",
                 create_comment_action: "Create comment",
                 stop_timer: "Stop timer",
-
+                edit: "Edit",
+                delete: "Delete",
 
 
 
@@ -1891,6 +1893,7 @@ export default {
                     accountable: 'Accountable role',
 
                     err_range: 'Value must be between 0 and 100',
+                    err_contribute: 'Sum of contribution should be 100',
                     err_empty: "Value must be required"
                 }
             },

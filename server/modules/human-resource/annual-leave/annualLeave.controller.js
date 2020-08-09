@@ -10,7 +10,9 @@ const {
 exports.searchAnnualLeaves = async (req, res) => {
     try {
         let data = {};
-        if (req.query.page === undefined && req.query.limit === undefined) {
+        if (req.query.numberMonth) {
+            data = await AnnualLeaveService.getAnnualLeaveOfNumberMonth(req.query.organizationalUnits, req.query.numberMonth, req.user.company._id)
+        } else if (req.query.page === undefined && req.query.limit === undefined) {
             data = await AnnualLeaveService.getTotalAnnualLeave(req.user.company._id, req.query.organizationalUnits, req.query.month)
         } else {
             let params = {

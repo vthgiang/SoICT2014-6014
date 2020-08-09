@@ -1,12 +1,16 @@
-import { AnnualLeaveConstants } from './constants';
+import {
+    AnnualLeaveConstants
+} from './constants';
 const initState = {
     isLoading: false,
     listAnnualLeaves: [],
     totalList: 0,
     totalListAnnualLeavesOfYear: 0,
-    error:"",
+    arrMonth: [],
+    listAnnualLeaveOfNumberMonth: [],
+    error: "",
 }
-export function annualLeave(state =initState, action) {
+export function annualLeave(state = initState, action) {
     switch (action.type) {
         case AnnualLeaveConstants.GET_ANNUAL_LEAVE_REQUEST:
         case AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_REQUEST:
@@ -17,30 +21,37 @@ export function annualLeave(state =initState, action) {
                 isLoading: true,
             };
         case AnnualLeaveConstants.GET_ANNUAL_LEAVE_SUCCESS:
+            if (action.payload.arrMonth) {
+                return {
+                    ...state,
+                    arrMonth: action.payload.arrMonth,
+                    listAnnualLeaveOfNumberMonth: action.payload.listAnnualLeaveOfNumberMonth,
+                }
+            }
             return {
                 ...state,
                 isLoading: false,
-                listAnnualLeaves: action.payload.listAnnualLeaves !== undefined ? action.payload.listAnnualLeaves : [],
-                totalList: action.payload.totalList,
-                totalListAnnualLeavesOfYear: action.payload.totalListOfYear? action.payload.totalListOfYear: 0
+                    listAnnualLeaves: action.payload.listAnnualLeaves !== undefined ? action.payload.listAnnualLeaves : [],
+                    totalList: action.payload.totalList,
+                    totalListAnnualLeavesOfYear: action.payload.totalListOfYear ? action.payload.totalListOfYear : 0
             };
         case AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listAnnualLeaves: [...state.listAnnualLeaves, action.payload],
+                    listAnnualLeaves: [...state.listAnnualLeaves, action.payload],
             };
         case AnnualLeaveConstants.DELETE_ANNUAL_LEAVE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listAnnualLeaves: state.listAnnualLeaves.filter(sabbatical => (sabbatical._id !== action.payload._id)),
+                    listAnnualLeaves: state.listAnnualLeaves.filter(sabbatical => (sabbatical._id !== action.payload._id)),
             };
         case AnnualLeaveConstants.UPDATE_ANNUAL_LEAVE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listAnnualLeaves: state.listAnnualLeaves.map(sabbatical =>sabbatical._id === action.payload._id ?action.payload : sabbatical),
+                    listAnnualLeaves: state.listAnnualLeaves.map(sabbatical => sabbatical._id === action.payload._id ? action.payload : sabbatical),
             };
         case AnnualLeaveConstants.GET_ANNUAL_LEAVE_FAILURE:
         case AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_FAILURE:
@@ -49,7 +60,7 @@ export function annualLeave(state =initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                error: action.error
+                    error: action.error
             };
         default:
             return state

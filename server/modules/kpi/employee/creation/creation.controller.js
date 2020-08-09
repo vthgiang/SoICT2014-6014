@@ -1,10 +1,10 @@
 const EmployeeKpiSetService = require('./creation.service');
 const KPIPersonalController = require("../../employee/management/management.controller");
-const {  LogInfo,  LogError } = require('../../../../logs');
+const { LogInfo, LogError } = require('../../../../logs');
 
 // Điều phối đến các hàm thao tác với cơ sở dữ liệu của module quản lý kpi cá nhân
 
-/** Lấy tập KPI cá hiện hiện tại */  
+/** Lấy tập KPI cá hiện hiện tại */
 exports.getEmployeeKpiSet = async (req, res) => {
     if (req.query.userId && req.query.startDate && req.query.endDate) {
         this.getAllEmployeeKpiSetByMonth(req, res);
@@ -66,7 +66,7 @@ exports.getAllEmployeeKpiSetByMonth = async (req, res) => {
 exports.getAllEmployeeKpiSetOfAllEmployeeInOrganizationalUnitByMonth = async (req, res) => {
     try {
         const employeeKpiSetsInOrganizationalUnitByMonth = await EmployeeKpiSetService.getAllEmployeeKpiSetOfAllEmployeeInOrganizationalUnitByMonth(req.query.organizationalUnitIds, req.query.startDate, req.query.endDate);
-        
+
         await LogInfo(req.user.email, ` get all employee kpi set of all employee in organizational unit by month `, req.user.company);
         res.status(200).json({
             success: true,
@@ -83,7 +83,7 @@ exports.getAllEmployeeKpiSetOfAllEmployeeInOrganizationalUnitByMonth = async (re
     }
 }
 
-/** Khởi tạo KPI cá nhân */ 
+/** Khởi tạo KPI cá nhân */
 exports.createEmployeeKpiSet = async (req, res) => {
     try {
         var employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpiSet(req.body);
@@ -102,13 +102,13 @@ exports.createEmployeeKpiSet = async (req, res) => {
             content: error
         });
     }
-  
+
 }
 
-/** Tạo 1 mục tiêu KPI mới */ 
+/** Tạo 1 mục tiêu KPI mới */
 exports.createEmployeeKpi = async (req, res) => {
     try {
-        
+
         var employeeKpi = await EmployeeKpiSetService.createEmployeeKpi(req.body);
         await LogInfo(req.user.email, ` create employee kpi `, req.user.company)
         res.status(200).json({
@@ -126,37 +126,37 @@ exports.createEmployeeKpi = async (req, res) => {
     }
 }
 
-/** Chỉnh sửa thông tin chung của KPI cá nhân */ 
+/** Chỉnh sửa thông tin chung của KPI cá nhân */
 exports.editEmployeeKpiSet = async (req, res) => {
-    if(req.query.status){
-        
-        this.updateEmployeeKpiSetStatus(req,res);
+    if (req.query.status) {
+
+        this.updateEmployeeKpiSetStatus(req, res);
     }
-    else{
+    else {
         try {
-            var employeeKpiSet= await EmployeeKpiSetService.editEmployeeKpiSet(req.body.date,req.params.id);
+            var employeeKpiSet = await EmployeeKpiSetService.editEmployeeKpiSet(req.body.date, req.params.id);
             await LogInfo(req.user.email, ` edit employee kpi set `, req.user.company)
             res.status(200).json({
                 success: true,
                 messages: ['edit_employee_kpi_set_success'],
                 content: employeeKpiSet
             });
-         } catch (error) {
-             await LogError(req.user.email, ` edit employee kpi set `, req.user.company)
+        } catch (error) {
+            await LogError(req.user.email, ` edit employee kpi set `, req.user.company)
             res.status(400).json({
-                 success: false,
-                 messages: ['edit_employee_kpi_set_failure'],
-                 content: error
-             });
+                success: false,
+                messages: ['edit_employee_kpi_set_failure'],
+                content: error
+            });
         }
     }
 }
 
-/** Chỉnh sửa trạng thái của KPI cá nhân */ 
+/** Chỉnh sửa trạng thái của KPI cá nhân */
 exports.updateEmployeeKpiSetStatus = async (req, res) => {
-    try{
-        
-        var employeeKpiSet = await EmployeeKpiSetService.updateEmployeeKpiSetStatus(req.params.id,req.query.status);
+    try {
+
+        var employeeKpiSet = await EmployeeKpiSetService.updateEmployeeKpiSetStatus(req.params.id, req.query.status);
         await LogInfo(req.user.email, ` edit employee kpi set status `, req.user.company)
         res.status(200).json({
             success: true,
@@ -173,7 +173,7 @@ exports.updateEmployeeKpiSetStatus = async (req, res) => {
     }
 }
 
-/** Xóa KPI cá nhân */ 
+/** Xóa KPI cá nhân */
 exports.deleteEmployeeKpiSet = async (req, res) => {
     try {
         var arr = await EmployeeKpiSetService.deleteEmployeeKpiSet(req.params.id);
@@ -197,10 +197,10 @@ exports.deleteEmployeeKpiSet = async (req, res) => {
     }
 }
 
-/** Xóa 1 mục tiêu KPI cá nhân */ 
+/** Xóa 1 mục tiêu KPI cá nhân */
 exports.deleteEmployeeKpi = async (req, res) => {
     try {
-        var employeeKpiSet = await EmployeeKpiSetService.deleteEmployeeKpi(req.params.id,req.query.employeeKpiSetId);
+        var employeeKpiSet = await EmployeeKpiSetService.deleteEmployeeKpi(req.params.id, req.query.employeeKpiSetId);
         await LogInfo(req.user.email, ` delete employee kpi `, req.user.company)
         res.status(200).json({
             success: true,
@@ -215,31 +215,36 @@ exports.deleteEmployeeKpi = async (req, res) => {
             content: error
         });
     }
-    return EmployeeKpiSetService.deleteEmployeeKpi(req.params.id,req.params.kpipersonal);
+    return EmployeeKpiSetService.deleteEmployeeKpi(req.params.id, req.params.kpipersonal);
 }
 
 /**
  * Tạo comment trong trang create KPI employee
  */
-exports.createComment = async (req,res)=> {
+exports.createComment = async (req, res) => {
     try {
-        var files=[] ;
-        if(req.files !== undefined){
-            req.files.forEach((elem,index) => {
-                var path = elem.destination +'/'+ elem.filename;
-                files.push({name : elem.originalname, url: path})
-                
+        var files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                var path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+
             })
         }
-        var comments = await EmployeeKpiSetService.createComment(req.params,req.body,files);
-        await LogInfo(req.user.email, ` create comment `,req.user.company)
+        var comments = await EmployeeKpiSetService.createComment(req.params, req.body, files);
+        await LogInfo(req.user.email, ` create comment `, req.user.company)
         res.status(200).json({
             success: true,
             messages: ['create_comment_success'],
             content: comments
         })
     } catch (error) {
-        
+        await LogError(req.user.email, ` create comment kpi `, req.user.company)
+        res.status(400).json({
+            success: false,
+            messages: ['create_comment_fail'],
+            content: error
+        });
     }
 }
 
@@ -247,25 +252,30 @@ exports.createComment = async (req,res)=> {
  * 
  * Tạo comment trong comment trong trang create KPI employee (tạo replied comment)
  */
-exports.createCommentOfComment = async (req,res)=> {
+exports.createChildComment = async (req, res) => {
     try {
-        var files=[] ;
-        if(req.files !== undefined){
-            req.files.forEach((elem,index) => {
-                var path = elem.destination +'/'+ elem.filename;
-                files.push({name : elem.originalname, url: path})
-                
+        var files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                var path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+
             })
         }
-        var comments = await EmployeeKpiSetService.createCommentOfComment(req.params,req.body,files);
-        await LogInfo(req.user.email, ` create comment `,req.user.company)
+        var comments = await EmployeeKpiSetService.createChildComment(req.params, req.body, files);
+        await LogInfo(req.user.email, ` create comment `, req.user.company)
         res.status(200).json({
             success: true,
-            messages: ['create_comment_of_comment_success'],
+            messages: ['create_child_comment_success'],
             content: comments
         })
     } catch (error) {
-    
+        await LogError(req.user.email, ` create child comment kpi `, req.user.company)
+        res.status(400).json({
+            success: false,
+            messages: ['create_child_comment_fail'],
+            content: error
+        });
     }
 }
 
@@ -273,38 +283,48 @@ exports.createCommentOfComment = async (req,res)=> {
  * 
  *Sửa comment trong trang create KPI employee
  */
-exports.editComment = async (req,res)=> {
+exports.editComment = async (req, res) => {
     try {
-        let comments = await EmployeeKpiSetService.editComment(req.params, req.body);
-        
-        await LogInfo(req.user.email, ` edit comment `,req.user.company)
+        let files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                let path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+
+            })
+        }
+        let comments = await EmployeeKpiSetService.editComment(req.params, req.body, files);
+        await LogInfo(req.user.email, ` edit comment kpi `, req.user.company)
         res.status(200).json({
             success: true,
             messages: ['edit_comment_success'],
             content: comments
         })
     } catch (error) {
+        await LogError(req.user.email, ` edit comment kpi `, req.user.company)
         res.status(400).json({
-            success: true,
+            success: false,
             messages: ['edit_comment_fail'],
             content: error
-        })
+        });
     }
 }
 
 /**
  * Xóa comment trong trang create KPI employee
  */
-exports.deleteComment = async (req,res)=> {
+exports.deleteComment = async (req, res) => {
     try {
+
         var comments = await EmployeeKpiSetService.deleteComment(req.params);
-        await LogInfo(req.user.email, ` delete comment `,req.user.company)
+        await LogInfo(req.user.email, ` delete comment kpi`, req.user.company)
         res.status(200).json({
             success: false,
             messages: ['delete_comment_success'],
             content: comments
         })
     } catch (error) {
+        await LogError(req.user.email, ` delete comment kpi `, req.user.company)
         res.status(200).json({
             success: false,
             messages: ['delete_comment_fail'],
@@ -315,16 +335,25 @@ exports.deleteComment = async (req,res)=> {
 /**
  * Sửa 1 comment trong trang create KPI employee (xóa comment replied)
  */
-exports.editCommentOfComment = async (req,res)=> {
+exports.editChildComment = async (req, res) => {
     try {
-        var comments = await EmployeeKpiSetService.editCommentOfComment(req.params,req.body);
-        await LogInfo(req.user.email, ` edit comment of comment `,req.user.company)
+        let files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                let path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path })
+
+            })
+        }
+        var comments = await EmployeeKpiSetService.editChildComment(req.params, req.body, files);
+        await LogInfo(req.user.email, ` edit comment of comment kpi `, req.user.company)
         res.status(200).json({
             success: true,
             messages: ['edit_comment_of_comment_success'],
             content: comments
         })
     } catch (error) {
+        await LogError(req.user.email, ` edit comment of comment kpi `, req.user.company)
         res.status(400).json({
             success: true,
             messages: ['edit_comment_of_comment_fail'],
@@ -336,19 +365,62 @@ exports.editCommentOfComment = async (req,res)=> {
 /**
  * Xóa comment của commnent trong trang create KPI employee (xóa comment replied)
  */
-exports.deleteCommentOfComment = async (req,res)=> {
+exports.deleteChildComment = async (req, res) => {
     try {
-        var comments = await EmployeeKpiSetService.deleteCommentOfComment(req.params);
-        await LogInfo(req.user.email, ` delete comment of comment `,req.user.company)
+        var comments = await EmployeeKpiSetService.deleteChildComment(req.params);
+        await LogInfo(req.user.email, ` delete child comment kpi `, req.user.company)
         res.status(200).json({
             success: true,
-            messages: ['delete_comment_of_comment_success'],
+            messages: ['delete_child_comment_success'],
             content: comments
         })
     } catch (error) {
+        await LogError(req.user.email, ` delete child comment kpi `, req.user.company)
         res.status(400).json({
             success: true,
-            messages: ['delete_comment_of_comment_fail'],
+            messages: ['delete_child_comment_fail'],
+            content: error
+        })
+    }
+}
+/**
+ * Xóa file của comment
+ */
+exports.deleteFileComment = async (req, res) => {
+    try {
+        var comments = await EmployeeKpiSetService.deleteFileComment(req.params);
+        await LogInfo(req.user.email, ` delete file comment `, req.user.company)
+        res.status(200).json({
+            success: true,
+            messages: ['delete_file_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` delete file comment `, req.user.company)
+        res.status(400).json({
+            success: true,
+            messages: ['delete_file_comment_fail'],
+            content: error
+        })
+    }
+}
+/**
+ * Xóa file child comment
+ */
+exports.deleteFileChildComment = async (req, res) => {
+    try {
+        var comments = await EmployeeKpiSetService.deleteFileChildComment(req.params);
+        await LogInfo(req.user.email, ` delete file child comment `, req.user.company)
+        res.status(200).json({
+            success: true,
+            messages: ['delete_file_comment_success'],
+            content: comments
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` delete file child comment `, req.user.company)
+        res.status(400).json({
+            success: true,
+            messages: ['delete_file_comment_fail'],
             content: error
         })
     }

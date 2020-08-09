@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, forwardRef } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import ReactExport from "react-data-export";
 
+import XLSX from 'xlsx';
 
 class ExportExcel extends Component {
     constructor(props) {
@@ -10,67 +10,137 @@ class ExportExcel extends Component {
         this.state = {};
     }
 
-    // Function chuyển đổi dữ liệu truyền vào thành dạng dữ liệu export
-    convertData = (data) => {
-        // Cấu hình style cho header
-        const styleHeader = {
-            font: { sz: "12", bold: true, color: { rgb: "FFFFFF" }, name: 'Times New Roman' },
-            fill: { fgColor: { rgb: "2d1075" } },
-            border: { left: { style: "thin", color: { rgb: "FFFFFF" } } },
-            alignment: { vertical: "center", horizontal: 'center', wrapText: true }
-        };
-        // Cấu hình style cho body
-        const styleBodyofText = {
-            font: { sz: "12", name: 'Times New Roman' },
-            alignment: { vertical: "center", horizontal: 'left', wrapText: true }
-        }
-        const styleBodyofNumber = {
-            ...styleBodyofText,
-            numFmt: "0"
-        }
+    handleExportExcel = () => {
+        let wb = XLSX.utils.book_new();
+        const { exportData } = this.state;
+        exportData.dataSheets.forEach(x => {
+            if (x.sheetName && x.tables.length !== 0) {
+                let sheetName = x.sheetName.replace(/[*?:\\\/]/gi, '');
+                let origin = 1, merge = [];
+                // Thêm tên báo cáo
+                let ws = XLSX.utils.json_to_sheet([{ "sheetTitle": x.sheetTitle ? x.sheetTitle : "" }], { skipHeader: true, origin: `D${origin}` })
+                if (x.sheetTitle) {
+                    origin += 2;
+                }
 
-        let dataSheets = data.dataSheets.map(x => {
-            let tables = x.tables.map(y => {
-                let data = y.data.map(row => {
-                    let result = [];
-                    y.columns.forEach(col => {
-                        result = [...result, { value: row[col.key] ? row[col.key] : "", style: (col.type === "Number") ? styleBodyofNumber : styleBodyofText }];
-                    })
-                    return result;
-                });
-                let column = y.columns.map(col => {
-                    return { title: col.value, style: styleHeader }
-                });
-                return { columns: column, data: data }
-            })
-            return { sheetName: x.sheetName, tables: tables }
+                x.tables.forEach(y => {
+                    let tableMerge = [],
+                        rowHeader = y.rowHeader,
+                        columns = y.columns,
+                        merges = y.merges;
+
+                    // Thêm tên cho từng bảng
+                    if (y.tableName) {
+                        XLSX.utils.sheet_add_json(ws, [{ "tableName": y.tableName }], { skipHeader: true, origin: `A${origin}` });
+                        tableMerge = [...tableMerge,
+                        {
+                            s: { r: origin - 1, c: 0 },
+                            e: { r: origin - 1, c: columns.length - 1 }
+                        }]
+                        origin += 1;
+                    }
+
+                    // Convert lại dữ liệu các dòng (nối key từ columns với data để dc dữ liệu theo đúng thứ tự)
+                    let data = y.data.map(row => {
+                        let result = [];
+                        columns.forEach(col => {
+                            result = { ...result, [col.value]: row[col.key] ? row[col.key] : "" };
+                        })
+                        return result;
+                    });
+
+                    let arrHeader = []
+                    if (rowHeader && merges && Number(rowHeader) > 1) {
+                        for (let i = 0; i < Number(rowHeader); i++) {
+                            arrHeader = [...arrHeader, columns]
+                        }
+                        for (let j = arrHeader.length - 2; j >= 0; j--) {
+                            arrHeader[j] = arrHeader[j].map(arr => {
+                                let key = arr.key;
+                                merges.forEach(mer => {
+                                    if (key === mer.keyMerge) {
+                                        arr = { ...arr, key: mer.key, colspan: mer.colspan, value: mer.columnName }
+                                    }
+                                })
+                                return arr;
+                            });
+                            for (let count = 0; count < j; count++) {
+                                arrHeader[count] = arrHeader[j];
+                            }
+                        };
+
+                        // Lấy mảng rowspan cho header table
+                        let rowspans = arrHeader[0].map(rowspan => Number(rowHeader));
+                        for (let k = 0; k < arrHeader[0].length; k++) {
+                            for (let row = 0; row < Number(rowHeader); row++) {
+                                let rowData = arrHeader[row];
+                                if (rowData[k].colspan && rowData[k].colspan > 1) {
+                                    for (let count = 0; count < rowData[k].colspan; count++) {
+                                        rowspans[k + count] = rowspans[k + count] - 1;
+                                    }
+                                }
+                            }
+                        }
+
+                        // Thêm dữ liệu header table vào sheet 
+                        arrHeader.forEach((arr, indexs) => {
+                            let rowData = {};
+                            arr.forEach((cell, index) => {
+                                if (rowspans[index] === Number(rowHeader) - indexs) {
+                                    tableMerge = [...tableMerge,
+                                    {
+                                        s: { r: origin - 1, c: index },
+                                        e: { r: origin + rowspans[index] - 2, c: index }
+                                    }]
+                                }
+
+                                rowData = { ...rowData, [cell.key]: cell.value }
+                                if (cell.colspan && cell.colspan > 1) {
+                                    tableMerge = [...tableMerge,
+                                    {
+                                        s: { r: origin - 1, c: index },
+                                        e: { r: origin - 1, c: index + cell.colspan - 1 }
+                                    }]
+                                };
+                            });
+                            XLSX.utils.sheet_add_json(ws, [rowData], { skipHeader: true, origin: `A${origin}` });
+                            origin = origin + 1;
+                        })
+                    };
+
+
+                    // Thêm dữ liệu body table vào sheets
+                    if (rowHeader && merges && Number(rowHeader) > 1) {
+                        XLSX.utils.sheet_add_json(ws, data, { skipHeader: true, origin: `A${origin}` });
+                        origin = origin + data.length + 3;
+                    } else {
+                        XLSX.utils.sheet_add_json(ws, data, { origin: `A${origin}` });
+                        origin = origin + data.length + 4;
+                    }
+
+                    merge = merge.concat(tableMerge);
+                })
+                if (merge.length !== 0) {
+                    ws["!merges"] = merge;
+                }
+                XLSX.utils.book_append_sheet(wb, ws, sheetName);
+            }
         })
-        return { fileName: data.fileName, dataSheets: dataSheets }
+        XLSX.writeFile(wb, `${exportData.fileName}.xlsx`);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         return {
             id: nextProps.id,
             exportData: nextProps.exportData,
-            buttonName: nextProps.buttonName
         }
     }
 
     render() {
-        const ExcelFile = ReactExport.ExcelFile;
-        const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
-        let { buttonName = "Xuất Báo cáo", exportData, style = {}, className = "btn btn-primary pull-right", title = "" } = this.props;
-
-        if (exportData) {
-            exportData = this.convertData(exportData);
-        }
+        const { buttonName = "Xuất Báo cáo", style = {}, className = "btn btn-primary pull-right", title = "" } = this.props;
         return (
             <React.Fragment>
-                <ExcelFile filename={exportData.fileName} element={<button type="button" style={style} className={className} title={title} >{buttonName}</button>}>
-                    {exportData.dataSheets.map((x, key) =>
-                        <ExcelSheet key={key} dataSet={x.tables} name={x.sheetName} />
-                    )}
-                </ExcelFile>
+                <button type="button" style={style} className={className} title={title} onClick={this.handleExportExcel} >{buttonName}</button>
             </React.Fragment>
         )
     }

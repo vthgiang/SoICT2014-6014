@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
 import { AssetCreateValidator } from './combinedContent';
+
 import { UserActions } from '../../../super-admin/user/redux/actions';
 
 class IncidentLogEditModal extends Component {
@@ -18,14 +21,19 @@ class IncidentLogEditModal extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+            
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     // Bắt sự kiện thay đổi mã sự cố
@@ -126,6 +134,7 @@ class IncidentLogEditModal extends Component {
     save = async () => {
         var partDateOfIncident = this.state.dateOfIncident.split('-');
         var dateOfIncident = [partDateOfIncident[2], partDateOfIncident[1], partDateOfIncident[0]].join('-');
+
         if (this.isFormValidated()) {
             return this.props.handleChange({...this.state, dateOfIncident: dateOfIncident});
         }
@@ -153,10 +162,12 @@ class IncidentLogEditModal extends Component {
     }
 
     render() {
-        const { translate, id, user } = this.props;
+        const { id } = this.props;
+        const { translate, user } = this.props;
+        const { incidentCode, type, reportedBy, dateOfIncident, description, statusIncident, errorOnIncidentCode, errorOnDescription } = this.state;
+
         var userlist = user.list;
-        const {
-            incidentCode, type, reportedBy, dateOfIncident, description, statusIncident, errorOnIncidentCode, errorOnDescription } = this.state;
+        
         return (
             <React.Fragment>
                 <DialogModal
@@ -166,13 +177,17 @@ class IncidentLogEditModal extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
+                    {/* Form chỉnh sửa thông tin sự cố */}
                     <form className="form-group" id={`form-edit-incident-${id}`}>
-                    <div className="col-md-12">
-                            <div className={`form-group ${errorOnIncidentCode === undefined ? "" : "has-error"}`}>
+                        <div className="col-md-12">
+                            {/* Mã sự cố */}
+                            <div className={`form-group ${!errorOnIncidentCode ? "" : "has-error"}`}>
                                 <label>Mã sự cố<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" name="incidentCode" value={incidentCode} onChange={this.handleIncidentCodeChange} autoComplete="off" placeholder="Mã sự cố" />
                                 <ErrorLabel content={errorOnIncidentCode} />
                             </div>
+
+                            {/* Phân loại */}
                             <div className="form-group">
                                 <label>Phân loại</label>
                                 <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
@@ -180,6 +195,8 @@ class IncidentLogEditModal extends Component {
                                     <option value="Mất">Mất</option>
                                 </select>
                             </div>
+
+                            {/* Người báo cáo */}
                             <div className={`form-group`}>
                                 <label>Người báo cáo</label>
                                 <div>
@@ -196,6 +213,8 @@ class IncidentLogEditModal extends Component {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Thời gian phát hiện sự cố */}
                             <div className="form-group">
                                 <label>Thời gian phát hiện sự cố</label>
                                 <DatePicker
@@ -204,12 +223,16 @@ class IncidentLogEditModal extends Component {
                                     onChange={this.handleDateOfIncidentChange}
                                 />
                             </div>
-                            <div className={`form-group ${errorOnDescription === undefined ? "" : "has-error"}`}>
+
+                            {/* Nội dung */}
+                            <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
                                 <label>Nội dung<span className="text-red">*</span></label>
                                 <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
                                     placeholder="Nội dung"></textarea>
                                 <ErrorLabel content={errorOnDescription} />
                             </div>
+
+                            {/* Trạng thái */}
                             <div className="form-group">
                                 <label>Trạng thái</label>
                                 <select className="form-control" value={statusIncident} name="type" onChange={this.handleStatusIncidentChange}>

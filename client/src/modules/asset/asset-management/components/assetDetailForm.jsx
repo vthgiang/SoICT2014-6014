@@ -1,16 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { LOCAL_SERVER_API } from '../../../../env';
 import { DialogModal } from '../../../../common-components';
+
 import {
     GeneralTab, MaintainanceLogTab, UsageLogTab, DepreciationTab, IncidentLogTab, DisposalTab, AttachmentTab
 } from '../../asset-info/components/combinedContent';
+
 class AssetDetailForm extends Component {
     constructor(props) {
         super(props);
         this.state = {};
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {
             return {
@@ -72,6 +76,7 @@ class AssetDetailForm extends Component {
                 >
                     <form className="form-group" id="form-view-asset" style={{ marginTop: "-15px" }}>
                         <div className="nav-tabs-custom">
+                            {/* Nav-tabs */}
                             <ul className="nav nav-tabs">
                                 <li className="active"><a title="Thông tin chung" data-toggle="tab" href={`#view_general${_id}`}>Thông tin chung</a></li>
                                 <li><a title="Thông tin sử dụng" data-toggle="tab" href={`#view_usage${_id}`}>Thông tin sử dụng</a></li>
@@ -81,7 +86,9 @@ class AssetDetailForm extends Component {
                                 <li><a title="Thông tin thanh lý" data-toggle="tab" href={`#view_disposal${_id}`}>Thông tin thanh lý</a></li>
                                 <li><a title="Tài liệu đính kèm" data-toggle="tab" href={`#view_attachments${_id}`}>Tài liệu đính kèm</a></li>
                             </ul>
+
                             <div className="tab-content">
+                                {/* Thông tin chung */}
                                 <GeneralTab
                                     id={`view_general${_id}`}
                                     avatar={avatar}
@@ -101,14 +108,20 @@ class AssetDetailForm extends Component {
                                     canRegisterForUse={canRegisterForUse}
                                     detailInfo={detailInfo}
                                 />
+
+                                {/* Thông tin bảo trì */}
                                 <MaintainanceLogTab
                                     id={`view_maintainance${_id}`}
                                     maintainanceLogs={maintainanceLogs}
                                 />
+
+                                {/* Thông tin sử dụng */}
                                 <UsageLogTab
                                     id={`view_usage${_id}`}
                                     usageLogs={usageLogs}
                                 />
+
+                                {/* Thông tin khấu hao */}
                                 <DepreciationTab
                                     id={`view_depreciation${_id}`}
                                     cost={cost}
@@ -117,10 +130,14 @@ class AssetDetailForm extends Component {
                                     usefulLife={usefulLife}
                                     depreciationType={depreciationType}
                                 />
+
+                                {/* Thông tin sự cố */}
                                 <IncidentLogTab
                                     id={`view_incident${_id}`}
                                     incidentLogs={incidentLogs}
                                 />
+
+                                {/* Thông tin thanh lý */}
                                 <DisposalTab
                                     id={`view_disposal${_id}`}
                                     disposalDate={disposalDate}
@@ -128,6 +145,8 @@ class AssetDetailForm extends Component {
                                     disposalCost={disposalCost}
                                     disposalDesc={disposalDesc}
                                 />
+
+                                {/* Tài liệu đính kèm */}
                                 <AttachmentTab
                                     id={`view_attachments${_id}`}
                                     archivedRecordNumber={archivedRecordNumber}

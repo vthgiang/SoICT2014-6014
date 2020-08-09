@@ -1,4 +1,4 @@
-const { DocumentCategory, DocumentDomain, Role, User, UserRole } = require('../../models').schema;
+const { DocumentCategory, DocumentDomain, DocumentArchive, Role, User, UserRole } = require('../../models').schema;
 const arrayToTree = require('array-to-tree');
 const fs = require('fs');
 const ObjectId = require('mongoose').Types.ObjectId;
@@ -16,8 +16,8 @@ exports.getDocuments = async (company, query) => {
         return await Document.find({ company }).populate([
             { path: 'category', model: DocumentCategory },
             { path: 'domains', model: DocumentDomain },
-            { path: 'views.viewer', model: User },
-            { path: "downloads.downloader", model: User },
+            { path: 'views.viewer', model: User, select: 'name id' },
+            { path: "downloads.downloader", model: User, select: 'name id' },
         ]);
     } else {
         const option = (query.key !== undefined && query.value !== undefined)
@@ -30,8 +30,8 @@ exports.getDocuments = async (company, query) => {
             populate: [
                 { path: 'category', model: DocumentCategory },
                 { path: 'domains', model: DocumentDomain },
-                { path: 'views.viewer', model: User },
-                { path: "downloads.downloader", model: User },
+                { path: 'views.viewer', model: User, select: 'name id' },
+                { path: "downloads.downloader", model: User, select: 'name id' },
             ]
         });
     }
@@ -327,8 +327,8 @@ exports.getDocumentsThatRoleCanView = async (company, query) => {
             { path: 'category', model: DocumentCategory },
             { path: 'domains', model: DocumentDomain },
             { path: 'relationshipDocuments', model: Document },
-            { path: 'views.viewer', model: User },
-            { path: "downloads.downloader", model: User },
+            { path: 'views.viewer', model: User, select: 'name id' },
+            { path: "downloads.downloader", model: User, select: 'name id' },
         ]);
     } else {
         const option = (query.key !== undefined && query.value !== undefined)
@@ -342,8 +342,8 @@ exports.getDocumentsThatRoleCanView = async (company, query) => {
                 { path: 'category', model: DocumentCategory },
                 { path: 'domains', model: DocumentDomain },
                 { path: 'relationshipDocuments', model: Document },
-                { path: 'views.viewer', model: User },
-                { path: "downloads.downloader", model: User },
+                { path: 'views.viewer', model: User, select: 'name id' },
+                { path: "downloads.downloader", model: User, select: 'name id' },
             ]
         });
     }
@@ -404,4 +404,62 @@ exports.deleteManyDocumentDomain = async (array, company) => {
     await DocumentDomain.deleteMany({ _id: { $in: array } });
 
     return await this.getDocumentDomains(company);
+}
+
+/**
+ * Kho lưu trữ vật lí 
+ */
+
+exports.getDocumentArchives = async (company) => {
+    const list = await DocumentArchive.find({ company });
+
+    const dataConverted = list.map(archive => {
+        return {
+            id: archive._id.toString(),
+            key: archive._id.toString(),
+            value: archive._id.toString(),
+            label: archive.name,
+            title: archive.name,
+            parent_id: archive.parent ? archive.parent.toString() : null,
+        }
+    });
+    const tree = await arrayToTree(dataConverted, {});
+    return { list, tree };
+}
+
+exports.createDocumentArchive = async (company, data) => {
+    let query = {
+        company,
+        name: data.name,
+        description: data.description,
+    }
+    if (data.parent.length) {
+        query.parent = data.parent
+    }
+    await DocumentArchive.create(query);
+    return await this.getDocumentArchives(company);
+}
+
+exports.deleteDocumentArchive = async (id) => {
+    const archive = await DocumentArchive.find(id);
+    if (!archive) throw ['document_archive_not_found'];
+    await DocumentArchive.deleteOne({ _id: id });
+
+    return await this.getDocumentArchives(archive.company);
+}
+
+exports.deleteManyDocumentArchive = async (array, company) => {
+    await DocumentArchive.deleteMany({ _id: { $in: array } });
+
+    return await this.getDocumentArchives(company);
+}
+
+exports.editDocumentArchive = async (id, data) => {
+    const archive = await DocumentArchive.findById(id);
+    archive.name = data.name,
+        archive.description = data.description;
+    archive.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
+    await archive.save();
+
+    return archive;
 }
