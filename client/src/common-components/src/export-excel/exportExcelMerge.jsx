@@ -58,11 +58,14 @@ class ExportExcelMerge extends Component {
                                 let key = arr.key;
                                 merges.forEach(mer => {
                                     if (key === mer.keyMerge) {
-                                        arr = { ...arr, colspan: mer.colspan, value: mer.columnName }
+                                        arr = { ...arr, key: mer.key, colspan: mer.colspan, value: mer.columnName }
                                     }
                                 })
                                 return arr;
-                            })
+                            });
+                            for (let count = 0; count < j; count++) {
+                                arrHeader[count] = arrHeader[j];
+                            }
                         };
 
                         // Lấy mảng rowspan cho header table
