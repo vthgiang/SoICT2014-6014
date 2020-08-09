@@ -281,7 +281,7 @@ exports.deleteTaskAction = async (params) => {
     for (i = 0; i < files.length; i++) {
         fs.unlinkSync(files[i].url)
     }
-    let task = await Task.findOne({ "_id": params.taskId}).populate([
+    let task = await Task.findOne({ "_id": params.taskId }).populate([
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar' }])
@@ -1045,6 +1045,7 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+        { path: "files.creator", model: User, select: 'name email avatar' },
     ]);
 
     //xu ly gui email
@@ -1178,6 +1179,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+        { path: "files.creator", model: User, select: 'name email avatar' },
     ]);
 
     //xu ly gui email
@@ -1268,6 +1270,7 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+        { path: "files.creator", model: User, select: 'name email avatar' },
     ]);
     newTask.evaluations.reverse();
 
@@ -1456,7 +1459,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
                     extra: cloneInfo[i].extra,
                     value: info[item].value
                 }
-// quangdz
+                // quangdz
                 if (yearOfParams > now.getFullYear() || (yearOfParams <= now.getFullYear() && monthOfParams >= now.getMonth())) {
                     // console.log('quang vào update');
                     checkSave && await Task.updateOne(
@@ -1528,6 +1531,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+        { path: "files.creator", model: User, select: 'name email avatar' },
     ]);
     newTask.evaluations.reverse();
 
@@ -1750,7 +1754,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
                     extra: cloneInfo[i].extra,
                     value: info[item].value
                 }
-//quangdz
+                //quangdz
                 if (yearOfParams > now.getFullYear() || (yearOfParams <= now.getFullYear() && monthOfParams >= now.getMonth())) {
 
                     checkSave && await Task.updateOne(
@@ -1842,6 +1846,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+        { path: "files.creator", model: User, select: 'name email avatar' },
     ]);
     newTask.evaluations.reverse();
 
@@ -1864,11 +1869,11 @@ exports.deleteFileOfAction = async (params) => {
     fs.unlinkSync(file[0].url)
 
     let action = await Task.update(
-        { "_id":params.taskId, "taskActions._id": params.actionId },
+        { "_id": params.taskId, "taskActions._id": params.actionId },
         { $pull: { "taskActions.$.files": { _id: params.fileId } } },
         { safe: true }
     )
-    let task = await Task.findOne({ "_id":params.taskId, "taskActions._id": params.actionId }).populate([
+    let task = await Task.findOne({ "_id": params.taskId, "taskActions._id": params.actionId }).populate([
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar' }])
@@ -1893,12 +1898,12 @@ exports.deleteFileCommentOfAction = async (params) => {
     fs.unlinkSync(file[0].url)
 
     let action = await Task.update(
-        {"_id": params.taskId, "taskActions._id": params.actionId },
+        { "_id": params.taskId, "taskActions._id": params.actionId },
         { $pull: { "taskActions.$.comments.$[].files": { _id: params.fileId } } },
         { safe: true }
     )
 
-    let task = await Task.findOne({"_id": params.taskId, "taskActions._id": params.actionId }).populate([
+    let task = await Task.findOne({ "_id": params.taskId, "taskActions._id": params.actionId }).populate([
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar' }])
@@ -1994,4 +1999,28 @@ exports.editArchivedOfTask = async (taskID) => {
     );
 
     return task;
+}
+
+/**
+ * Xoa file cua task
+ */
+exports.deleteFileTask = async (params) => {
+    let file = await Task.aggregate([
+        { $match: { _id: mongoose.Types.ObjectId(params.taskId) } },
+        { $unwind: "$files" },
+        { $replaceRoot: { newRoot: "$files" } },
+        { $match: { _id: mongoose.Types.ObjectId(params.fileId) } }
+    ])
+
+    fs.unlinkSync(file[0].url)
+
+    let task = await Task.findByIdAndUpdate(
+        { _id: params.taskId, "files._id": params.fileId },
+        { $pull: { "files": { _id: params.fileId } } },
+    )
+    let task1 = await Task.findById({_id:params.taskId}).populate([
+        { path: "files.creator", model: User, select: 'name email avatar' },
+    ]);
+
+    return task1.files;
 }

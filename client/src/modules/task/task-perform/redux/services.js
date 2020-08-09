@@ -34,7 +34,7 @@ export const performTaskService = {
     deleteFileTaskComment,
     deleteFileChildTaskComment,
     getTaskLog,
-
+    deleteFileTask,
     editTaskByAccountableEmployees,
     editTaskByResponsibleEmployees,
     editStatusOfTask,
@@ -484,4 +484,12 @@ function evaluateTaskByAccountableEmployees(data, taskId) {
         }
     }, true, true, 'task.task_management');
 }
-
+/**
+ * Delete file of task
+ */
+function deleteFileTask(fileId, taskId) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/files/${fileId}`,
+        method: 'DELETE',
+    }, true, true, 'task.task_perform');
+}

@@ -345,7 +345,6 @@ exports.editChildComment = async (req, res) => {
 
             })
         }
-        console.log(req.body)
         var comments = await EmployeeKpiSetService.editChildComment(req.params, req.body, files);
         await LogInfo(req.user.email, ` edit comment of comment kpi `, req.user.company)
         res.status(200).json({

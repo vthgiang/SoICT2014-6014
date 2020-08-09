@@ -24,7 +24,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
     }
 
     componentDidMount = () => {
-        this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"));
+        this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
 
         this.setState(state => {
             return {
@@ -89,7 +89,8 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
             });
         }
 
-        if (nextProps.createKpiUnit.currentKPI && this.state.dataStatus === this.DATA_STATUS.FINISHED) {
+        if (!nextProps.createKpiUnit.currentKPI && this.state.dataStatus === this.DATA_STATUS.FINISHED) {
+
             this.setState(state => {
                 return {
                     ...state,

@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { AssetCreateValidator } from './assetCreateValidator';
-import { DatePicker, ErrorLabel, SelectBox } from '../../../../common-components';
+
 import moment from 'moment';
+
+import { DatePicker, ErrorLabel, SelectBox } from '../../../../common-components';
+
+import { AssetCreateValidator } from './assetCreateValidator';
 
 class DepreciationTab extends Component {
     constructor(props) {
@@ -18,14 +21,19 @@ class DepreciationTab extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+            
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     // Function lưu các trường thông tin vào state
@@ -159,49 +167,62 @@ class DepreciationTab extends Component {
     }
 
     addMonthToEndDepreciation = (day) => {
-        if (day !== undefined) {
+        if (day) {
             let { usefulLife } = this.state,
                 splitDay = day.toString().split('-'),
                 currentDate = moment(`${splitDay[2]}-${splitDay[1]}-${splitDay[0]}`),
                 futureMonth = moment(currentDate).add(usefulLife, 'M'),
                 futureMonthEnd = moment(futureMonth).endOf('month');
+            
             if (currentDate.date() !== futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
                 futureMonth = futureMonth.add(1, 'd');
             }
+
             return futureMonth.format('DD-MM-YYYY');
         }
     };
 
     render() {
-        const { id, translate } = this.props;
+        const { id } = this.props;
+        const { translate } = this.props;
+        
         const {
-            cost, residualValue, usefulLife, startDepreciation, depreciationType, endDepreciation, annualDepreciationValue,
-            monthlyDepreciationValue, errorOnCost, errorOnStartDepreciation, errorOnUsefulLife, errorOnDepreciationType
+            cost, residualValue, usefulLife, startDepreciation, depreciationType, errorOnCost, errorOnStartDepreciation,
+            errorOnUsefulLife, errorOnDepreciationType
         } = this.state;
-        console.log('startDepreciation', startDepreciation);
+
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
+                    {/* Thông tin khấu hao */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">Thông tin khấu hao</h4></legend>
-                        <div className={`form-group ${errorOnCost === undefined ? "" : "has-error"} `}>
+
+                        {/* Nguyên giá */}
+                        <div className={`form-group ${!errorOnCost ? "" : "has-error"} `}>
                             <label htmlFor="cost">Nguyên giá (VNĐ)<span className="text-red">*</span></label><br />
                             <input type="number" className="form-control" name="cost" value={cost} onChange={this.handleCostChange}
                                 placeholder="Nguyên giá" autoComplete="off" />
                             <ErrorLabel content={errorOnCost} />
                         </div>
+
+                        {/* Giá trị thu hồi ước tính */}
                         <div className={`form-group`}>
                             <label htmlFor="residualValue">Giá trị thu hồi ước tính (VNĐ)</label><br />
                             <input type="number" className="form-control" name="residualValue" value={residualValue} onChange={this.handleResidualValueChange}
                                 placeholder="Giá trị thu hồi ước tính" autoComplete="off" />
                         </div>
-                        <div className={`form-group ${errorOnUsefulLife === undefined ? "" : "has-error"} `}>
+
+                        {/* Thời gian sử dụng */}
+                        <div className={`form-group ${!errorOnUsefulLife ? "" : "has-error"} `}>
                             <label htmlFor="usefulLife">Thời gian sử dụng (Tháng)<span className="text-red">*</span></label>
                             <input type="number" className="form-control" name="usefulLife" value={usefulLife} onChange={this.handleUsefulLifeChange}
                                 placeholder="Thời gian trích khấu hao" autoComplete="off" />
                             <ErrorLabel content={errorOnUsefulLife} />
                         </div>
-                        <div className={`form-group ${errorOnStartDepreciation === undefined ? "" : "has-error"} `}>
+
+                        {/* Thời gian bắt đầu trích khấu hao */}
+                        <div className={`form-group ${!errorOnStartDepreciation ? "" : "has-error"} `}>
                             <label htmlFor="startDepreciation">Thời gian bắt đầu trích khấu hao<span className="text-red">*</span></label>
                             <DatePicker
                                 id={`startDepreciation${id}`}
@@ -210,7 +231,9 @@ class DepreciationTab extends Component {
                             />
                             <ErrorLabel content={errorOnStartDepreciation} />
                         </div>
-                        <div className={`form-group ${errorOnDepreciationType === undefined ? "" : "has-error"}`}>
+
+                        {/* Phương pháp khấu hao */}
+                        <div className={`form-group ${!errorOnDepreciationType ? "" : "has-error"}`}>
                             <label htmlFor="depreciationType">Phương pháp khấu hao<span className="text-red">*</span></label>
                             <SelectBox
                                 id={`depreciationType${id}`}
@@ -227,30 +250,13 @@ class DepreciationTab extends Component {
                             />
                             <ErrorLabel content={errorOnDepreciationType} />
                         </div>
-                        {/* <div className="form-group">
-                            <label htmlFor="endDepreciation">Thời gian kết thúc trích khấu hao</label><br />
-                            <input
-                                className="form-control"
-                                id={`endDepreciation-${id}`}
-                                value={startDepreciation !== "" ? this.addMonthToEndDepreciation(startDepreciation) : ""}
-                                disabled
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="annualDepreciationValue">Mức độ khấu hao trung bình hằng năm (VNĐ/Năm)</label><br />
-                            <input type="number" className="form-control" name="annualDepreciationValue" value={(12 * cost) / usefulLife}
-                                placeholder="Mức độ khấu hao trung bình hằng năm = ( 12 x Nguyên giá ) / Thời gian trích khấu hao" autoComplete="off" disabled />
-                        </div>
-                        <div className="form-group">
-                            <label htmlFor="monthlyDepreciationValue">Mức độ khấu hao trung bình hằng tháng (VNĐ/Tháng)</label><br />
-                            <input type="number" className="form-control" name="monthlyDepreciationValue" value={cost / usefulLife}
-                                placeholder="Mức độ khấu hao trung bình hằng tháng = Nguyên giá / Thời gian trích khấu hao" autoComplete="off" disabled />
-                        </div> */}
                     </fieldset>
                 </div>
             </div>
         );
     }
 };
+
 const depreciationTab = connect(null, null)(withTranslate(DepreciationTab));
+
 export { depreciationTab as DepreciationTab };

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DatePicker, DialogModal, ErrorLabel } from '../../../../common-components';
+
 import { AssetCreateValidator } from './combinedContent';
 
 class MaintainanceLogEditModal extends Component {
@@ -17,14 +19,19 @@ class MaintainanceLogEditModal extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     // Bắt sự kiện thay đổi mã phiếu
@@ -75,7 +82,7 @@ class MaintainanceLogEditModal extends Component {
 
     // Bắt sự kiện thay đổi "Nội dung"
     handleDescriptionChange = (e) => {
-        let { value }  = e.target;
+        let { value } = e.target;
         this.validateDescription(value, true);
     }
     validateDescription = (value, willUpdateState = true) => {
@@ -120,7 +127,7 @@ class MaintainanceLogEditModal extends Component {
 
     // Bắt sự kiện thay đổi "Chi phí"
     handleExpenseChange = (e) => {
-        let { value }  = e.target;
+        let { value } = e.target;
         this.validateExpense(value, true);
     }
     validateExpense = (value, willUpdateState = true) => {
@@ -139,7 +146,7 @@ class MaintainanceLogEditModal extends Component {
 
     // Bắt sự kiện thay đổi "Trạng thái phiếu"
     handleStatusChange = (e) => {
-        let { value }  = e.target;
+        let { value } = e.target;
         this.setState({
             ...this.state,
             status: value
@@ -148,13 +155,11 @@ class MaintainanceLogEditModal extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result =
-            this.validateMaintainanceCode(this.state.maintainanceCode, false) &&
+        let result = this.validateMaintainanceCode(this.state.maintainanceCode, false) &&
             this.validateCreateDate(this.state.createDate, false) &&
             this.validateDescription(this.state.description, false) &&
-            this.validateStartDate(this.state.startDate, false) 
-            // &&
-            // this.validateExpense(this.state.expense, false)
+            this.validateStartDate(this.state.startDate, false)
+
         return result;
     }
 
@@ -166,6 +171,7 @@ class MaintainanceLogEditModal extends Component {
         var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
         var partEnd = this.state.endDate.split('-');
         var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+
         if (this.isFormValidated()) {
             return this.props.handleChange({ ...this.state, createDate: createDate, startDate: startDate, endDate: endDate });
         }
@@ -198,11 +204,12 @@ class MaintainanceLogEditModal extends Component {
     }
 
     render() {
-        const { translate, id } = this.props;
-        const {
-            maintainanceCode, createDate, type, description, startDate, endDate, expense, status,
+        const { id } = this.props;
+        const { translate } = this.props;
+        const { maintainanceCode, createDate, type, description, startDate, endDate, expense, status,
             errorOnMaintainanceCode, errorOnCreateDate, errorOnDescription, errorOnStartDate, errorOnExpense
         } = this.state;
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -212,16 +219,21 @@ class MaintainanceLogEditModal extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
+                    {/* Form chỉnh sửa phiếu bảo trì */}
                     <form className="form-group" id={`form-edit-maintainance-${id}`}>
                         <div className="col-md-12">
+
                             <div className="col-sm-6">
-                                <div className={`form-group ${errorOnMaintainanceCode === undefined ? "" : "has-error"}`}>
+                                {/* Mã phiếu */}
+                                <div className={`form-group ${!errorOnMaintainanceCode ? "" : "has-error"}`}>
                                     <label>Mã phiếu<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="maintainanceCode" value={maintainanceCode} onChange={this.handleMaintainanceCodeChange} autoComplete="off"
                                         placeholder="Mã phiếu" />
                                     <ErrorLabel content={errorOnMaintainanceCode} />
                                 </div>
-                                <div className={`form-group ${errorOnCreateDate === undefined ? "" : "has-error"}`}>
+
+                                {/* Ngày lập */}
+                                <div className={`form-group ${!errorOnCreateDate ? "" : "has-error"}`}>
                                     <label>Ngày lập<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit-create-date-${id}`}
@@ -230,6 +242,8 @@ class MaintainanceLogEditModal extends Component {
                                     />
                                     <ErrorLabel content={errorOnCreateDate} />
                                 </div>
+
+                                {/* Phân loại */}
                                 <div className="form-group">
                                     <label>Phân loại</label>
                                     <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
@@ -238,16 +252,19 @@ class MaintainanceLogEditModal extends Component {
                                         <option value="Nâng cấp">Nâng cấp</option>
                                     </select>
                                 </div>
-                                <div className={`form-group ${errorOnDescription === undefined ? "" : "has-error"}`}>
+
+                                {/* Nội dung */}
+                                <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
                                     <label>Nội dung<span className="text-red">*</span></label>
                                     <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
                                         placeholder="Nội dung"></textarea>
                                     <ErrorLabel content={errorOnDescription} />
                                 </div>
                             </div>
-                            <div className="col-sm-6">
 
-                                <div className={`form-group ${errorOnStartDate === undefined ? "" : "has-error"}`}>
+                            <div className="col-sm-6">
+                                {/* Ngày thực hiện */}
+                                <div className={`form-group ${!errorOnStartDate ? "" : "has-error"}`}>
                                     <label>Ngày thực hiện<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit-start-date-${id}`}
@@ -256,6 +273,8 @@ class MaintainanceLogEditModal extends Component {
                                     />
                                     <ErrorLabel content={errorOnStartDate} />
                                 </div>
+
+                                {/* Ngày hoàn thành */}
                                 <div className="form-group">
                                     <label>Ngày hoàn thành</label>
                                     <DatePicker
@@ -264,12 +283,14 @@ class MaintainanceLogEditModal extends Component {
                                         onChange={this.handleEndDateChange}
                                     />
                                 </div>
-                                {/* <div className={`form-group ${errorOnExpense === undefined ? "" : "has-error"}`}> */}
+
+                                {/* Chi phí */}
                                 <div className={`form-group`}>
                                     <label>Chi phí (VNĐ)<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="expense" value={expense} onChange={this.handleExpenseChange} autoComplete="off" placeholder="Chi phí" />
-                                    {/* <ErrorLabel content={errorOnExpense} /> */}
                                 </div>
+
+                                {/* Trạng thái */}
                                 <div className="form-group">
                                     <label>Trạng thái</label>
                                     <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
@@ -289,4 +310,5 @@ class MaintainanceLogEditModal extends Component {
 
 
 const editModal = connect(null, null)(withTranslate(MaintainanceLogEditModal));
+
 export { editModal as MaintainanceLogEditModal };
