@@ -20,6 +20,10 @@ const DocumentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'document_domains'
     }],
+    archives: [{
+        type: Schema.Types.ObjectId,
+        ref: 'document_domains'
+    }],
     category: {
         type: Schema.Types.ObjectId,
         ref: 'document_categories'
@@ -33,7 +37,7 @@ const DocumentSchema = new Schema({
     signer: {  // Người ký
         type: String
     },
-    officialNumber:{ // Số hiệu. VD: 920/QD-NHNN
+    officialNumber: { // Số hiệu. VD: 920/QD-NHNN
         type: String
     },
     views: [{
@@ -102,12 +106,12 @@ const DocumentSchema = new Schema({
         //     }
         // },
     }],
-    
+
 
     /**Liên kết văn bản */
     relationshipDescription: { //mô tả
         type: String
-    }, 
+    },
     relationshipDocuments: [{ //các tài liệu được liên kết
         type: Schema.Types.ObjectId,
         replies: this
@@ -131,7 +135,7 @@ const DocumentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'users'
     }
-},{
+}, {
     timestamps: true, //ngày tạo và ngày sửa gần nhất
     toJSON: { virtuals: true }
 });

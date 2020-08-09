@@ -123,7 +123,7 @@ class EditForm extends Component {
     validateName = (value, willUpdateState) => {
         let msg = undefined;
         const { translate } = this.props;
-        if (!value) {
+        if (!value.trim()) {
             msg = translate('document.no_blank_name');
         }
         if (willUpdateState) {
@@ -168,7 +168,7 @@ class EditForm extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    documentIssuingBody: val,
+                    documentIssuingBody: value,
                     errorIssuingBody: msg,
                 }
             })
@@ -186,7 +186,7 @@ class EditForm extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    documentVersionName: val,
+                    documentVersionName: value,
                     errorVersionName: msg,
                 }
             })
@@ -208,7 +208,7 @@ class EditForm extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    documentOfficialNumber: val,
+                    documentOfficialNumber: value,
                     errorOfficialNumber: msg,
                 }
             })
@@ -277,7 +277,7 @@ class EditForm extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    documentSigner: val,
+                    documentSigner: value,
                     errorSigner: msg,
                 }
             })

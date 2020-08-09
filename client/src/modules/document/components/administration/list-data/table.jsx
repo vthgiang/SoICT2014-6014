@@ -105,13 +105,21 @@ class Table extends Component {
         })
         window.$('#modal-list-download').modal('show');
     }
+    checkHasComponent = (name) => {
+        let { auth } = this.props;
+        let result = false;
+        auth.components.forEach(component => {
+            if (component.name === name) result = true;
+        });
+
+        return result;
+    }
     render() {
         const { translate } = this.props;
         const docs = this.props.documents.administration.data;
         const { paginate } = docs;
         const { isLoading } = this.props.documents;
         const { currentRow } = this.state;
-        console.log('---------------------', docs);
 
         return (
             <React.Fragment>
