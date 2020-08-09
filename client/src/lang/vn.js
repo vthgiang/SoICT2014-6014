@@ -1835,7 +1835,7 @@ export default {
                 calc_where: 'Trong đó',
                 calc_no_value: 'Chưa có giá trị',
                 calc_nan: 'Không tính được',
-                explain: ' - (Giá trị âm sẽ được tính là 0)',
+                explain: ' (Giá trị âm sẽ được tính là 0)',
                 eval_list: 'Danh sách các lần đánh giá',
                 title_eval: 'Đánh giá công việc',
 
@@ -1858,6 +1858,7 @@ export default {
                 err_eval_on_month: 'Ngày đánh giá phải là ngày trong tháng',
 
                 info_eval_month: 'Thông tin công việc trong đánh giá này',
+                explain_avg_rating: 'Do chưa có hoạt động nào được đánh giá nên mặc định điểm đánh giá hoạt động là 10',
 
                 auto_point_field: 'Điểm công việc tự động trong đánh giá này',
                 get_outside_info: 'Nhập tự động từ thông tin công việc hiện tại',
@@ -1932,6 +1933,8 @@ export default {
                 enter_comment_action: "Nhập bình luận cho hoạt động",
                 create_comment_action: "Thêm bình luận",
                 stop_timer: "Dừng bấm giờ",
+                edit: "Chỉnh sửa",
+                delete: "Xóa",
 
 
                 // TODO: code_mesage_task_perform
@@ -2045,6 +2048,7 @@ export default {
                     accountable: 'Vai trò người phê duyệt',
 
                     err_range: 'Giá trị không được vượt quá khoảng 0-100',
+                    err_contribute: 'Tổng phần trăm đóng góp phải là 100',
                     err_empty: 'Giá trị không được để trống'
                 }
 

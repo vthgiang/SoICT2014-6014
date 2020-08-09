@@ -12,7 +12,7 @@ class GeneralTab extends Component {
     }
 
     // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
+    static formatDate(date, monthYear = false) {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -248,7 +248,7 @@ class GeneralTab extends Component {
             errorOnLeavingDate = undefined
         }
         this.setState({
-            startingDate: startDate,
+            startingDate: value,
             leavingDate: value ? leavingDate : "",
             errorOnStartingDate: errorOnStartingDate,
             errorOnLeavingDate: errorOnLeavingDate === 'Ngày bắt đầu làm việc chưa được nhập' ? undefined : errorOnLeavingDate
@@ -269,19 +269,19 @@ class GeneralTab extends Component {
                 let d = new Date(startDate);
                 if (d.getTime() >= date.getTime()) {
                     this.setState({
-                        leavingDate: endDate,
+                        leavingDate: value,
                         errorOnLeavingDate: "Thời gian nghỉ việc phải sau thời gian bắt đầu làm việc",
                     })
                 } else {
                     this.setState({
-                        leavingDate: endDate,
+                        leavingDate: value,
                         errorOnStartingDate: undefined,
                         errorOnLeavingDate: undefined,
                     })
                 }
             } else {
                 this.setState({
-                    leavingDate: endDate,
+                    leavingDate: value,
                     errorOnLeavingDate: "Ngày bắt đầu làm việc chưa được nhập",
                 })
             }
@@ -325,19 +325,19 @@ class GeneralTab extends Component {
                 employeeTimesheetId: nextProps.employee.employeeTimesheetId,
                 fullName: nextProps.employee.fullName,
                 gender: nextProps.employee.gender,
-                birthdate: nextProps.employee.birthdate,
+                birthdate: GeneralTab.formatDate(nextProps.employee.birthdate),
                 birthplace: nextProps.employee.birthplace,
                 emailInCompany: nextProps.employee.emailInCompany,
                 maritalStatus: nextProps.employee.maritalStatus,
                 identityCardNumber: nextProps.employee.identityCardNumber,
-                identityCardDate: nextProps.employee.identityCardDate,
+                identityCardDate: GeneralTab.formatDate(nextProps.employee.identityCardDate),
                 identityCardAddress: nextProps.employee.identityCardAddress,
                 ethnic: nextProps.employee.ethnic,
                 religion: nextProps.employee.religion,
                 nationality: nextProps.employee.nationality,
                 status: nextProps.employee.status,
-                startingDate: nextProps.employee.startingDate,
-                leavingDate: nextProps.employee.leavingDate,
+                startingDate: GeneralTab.formatDate(nextProps.employee.startingDate),
+                leavingDate: GeneralTab.formatDate(nextProps.employee.leavingDate),
 
                 errorOnBrithdate: undefined,
                 errorOnDateCMND: undefined,
@@ -422,7 +422,7 @@ class GeneralTab extends Component {
                                 <label >{translate('manage_employee.date_birth')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`brithday${id}`}
-                                    value={this.formatDate(birthdate)}
+                                    value={birthdate}
                                     onChange={this.handleBrithdayChange}
                                 />
                                 <ErrorLabel content={errorOnBrithdate} />
@@ -472,7 +472,7 @@ class GeneralTab extends Component {
                                 <DatePicker
                                     id={`startingDate${id}`}
                                     deleteValue={leavingDate ? false : true}
-                                    value={this.formatDate(startingDate)}
+                                    value={startingDate}
                                     onChange={this.handleStartingDateChange}
                                 />
                                 <ErrorLabel content={errorOnStartingDate} />
@@ -481,7 +481,7 @@ class GeneralTab extends Component {
                                 <label >Ngày nghỉ việc</label>
                                 <DatePicker
                                     id={`leavingDate${id}`}
-                                    value={this.formatDate(leavingDate)}
+                                    value={leavingDate}
                                     onChange={this.handleLeavingDateChange}
                                 />
                                 <ErrorLabel content={errorOnLeavingDate} />
@@ -497,7 +497,7 @@ class GeneralTab extends Component {
                                 <label >{translate('manage_employee.date_issued')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`dateCMND${id}`}
-                                    value={this.formatDate(identityCardDate)}
+                                    value={identityCardDate}
                                     onChange={this.handleDateCMNDChange}
                                 />
                                 <ErrorLabel content={errorOnDateCMND} />

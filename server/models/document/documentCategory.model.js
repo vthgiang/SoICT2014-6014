@@ -21,11 +21,11 @@ const DocumentCategorySchema = new Schema({
         ref: 'companies',
         required: true
     }
-},{
+}, {
     timestamps: true, //ngày tạo và ngày sửa gần nhất
     toJSON: { virtuals: true }
 });
 
 DocumentCategorySchema.plugin(mongoosePaginate);
 
-module.exports = DocumentType = mongoose.model("document_categories", DocumentCategorySchema);
+module.exports = DocumentCategory = mongoose.model("document_categories", DocumentCategorySchema);

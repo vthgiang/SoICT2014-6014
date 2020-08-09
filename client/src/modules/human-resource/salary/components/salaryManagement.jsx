@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { SalaryCreateForm, SalaryEditForm, SalaryImportForm } from './combinedContent';
-import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMulti, ExportExcel } from '../../../../common-components';
+import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMulti, ExportExcel, ExportExcelMerge } from '../../../../common-components';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { SalaryActions } from '../redux/actions';
 
@@ -173,7 +173,7 @@ class SalaryManagement extends Component {
                 }
 
                 return {
-                    STT: index + 1,
+                    STT4: index + 1,
                     employeeNumber: x.employee.employeeNumber,
                     fullName: x.employee.fullName,
                     mainSalary: parseInt(x.mainSalary),
@@ -199,8 +199,17 @@ class SalaryManagement extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
+                    labelSheet: "Bảng theo dõi lương thưởng",
                     tables: [
                         {
+                            tableName: "Bảng lương 1",
+                            merges: [{
+                                key: "other",
+                                columnName: "Lương thưởng khác",
+                                keyMerge: 'bonus0',
+                                colspan: 2
+                            }],
+                            rowHeader: 2,
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "month", value: "Tháng" },
@@ -212,12 +221,38 @@ class SalaryManagement extends Component {
                                 { key: "gender", value: "Giới tính" },
                                 { key: "birthdate", value: "Ngày sinh" },
                                 { key: "status", value: "Tình trạng lao động" },
-                                { key: "mainSalary", value: "Tiền lương chính", type: "Number" },
+                                { key: "mainSalary", value: "Tiền lương chính", },
                                 ...columns,
-                                { key: "total", value: "Tổng lương", type: "Number" },
+                                { key: "total", value: "Tổng lương", },
                             ],
                             data: data
-                        }
+                        },
+                        {
+                            tableName: "Bảng lương 1",
+                            merges: [{
+                                key: "other",
+                                columnName: "Lương thưởng khác",
+                                keyMerge: 'bonus0',
+                                colspan: 2
+                            }],
+                            rowHeader: 2,
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "month", value: "Tháng" },
+                                { key: "year", value: "Năm" },
+                                { key: "employeeNumber", value: "Mã số nhân viên" },
+                                { key: "fullName", value: "Họ và tên" },
+                                { key: "organizationalUnits", value: "Phòng ban" },
+                                { key: "position", value: "Chức vụ" },
+                                { key: "gender", value: "Giới tính" },
+                                { key: "birthdate", value: "Ngày sinh" },
+                                { key: "status", value: "Tình trạng lao động" },
+                                { key: "mainSalary", value: "Tiền lương chính", },
+                                ...columns,
+                                { key: "total", value: "Tổng lương", },
+                            ],
+                            data: data
+                        },
                     ]
                 },
             ]
@@ -393,6 +428,7 @@ class SalaryManagement extends Component {
                         bonus={this.state.currentRow.bonus}
                     />
                 }
+                <ExportExcelMerge id="export-salary" exportData={exportData} style={{ marginTop: 15 }} />
             </div>
         );
     }
