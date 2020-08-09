@@ -81,26 +81,38 @@ class TaskStatusChart extends Component {
 
     shouldComponentUpdate = async (nextProps, nextState) => {
         //console.log('should compornet', nextProps.callAction, this.state.callAction)
+        console.log("Dòng 84", this.state, nextState)
+        console.log("Dòng 85", nextState.currentMonth, this.state.currentMonth, this.props.startMonth)
         if (
             nextProps.callAction !== this.state.callAction
             || nextState.currentMonth !== this.state.currentMonth
             || nextState.nextMonth !== this.state.nextMonth
         ) {
             // //console.log('should compornet')
-            if (this.props.TaskOrganizationUnitDashboard) {
-
+            if (this.props.TaskOrganizationUnitDashboard && this.props.units.length && this.props.startMonth && this.props.endMonth) {
+                console.log("Dòng 91 Status")
+                // console.log("Dòng 87 Domain", this.props.units)
                 let idsUnit = this.props.units ? this.props.units : "[]";
+                console.log("Dòng 95")
+                console.log("Dòng 96, state", this.state)
+                await this.setState(state => {
+                    return {
+                        ...state,
+                        currentMonth: this.props.startMonth,
+                        nextMonth: this.props.endMonth,
 
-                //console.log(nextState.currentMonth, nextState.nextMonth)
-                await this.props.getTaskInOrganizationUnitByMonth(idsUnit, nextState.currentMonth, nextState.nextMonth);
+                    }
+                })
+                console.log("Dòng 104")
+                console.log("Dòng 105 Status", idsUnit, nextState.currentMonth, nextState.nextMonth)
+                await this.props.getTaskInOrganizationUnitByMonth(idsUnit, this.props.startMonth, this.props.endMonth);
             }
-            else {
-                await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.currentMonth, nextState.nextMonth, null, null, this.state.aPeriodOfTime);
-                await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.currentMonth, nextState.nextMonth, this.state.aPeriodOfTime);
-                await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.currentMonth, nextState.nextMonth, this.state.aPeriodOfTime);
-                await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.currentMonth, nextState.nextMonth, this.state.aPeriodOfTime);
-                await this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.currentMonth, nextState.nextMonth, this.state.aPeriodOfTime);
-            }
+
+            await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.currentMonth, nextState.nextMonth, null, null, this.state.aPeriodOfTime);
+            await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.currentMonth, nextState.nextMonth, this.state.aPeriodOfTime);
+            await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.currentMonth, nextState.nextMonth, this.state.aPeriodOfTime);
+            await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.currentMonth, nextState.nextMonth, this.state.aPeriodOfTime);
+            await this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.currentMonth, nextState.nextMonth, this.state.aPeriodOfTime);
 
             await this.setState(state => {
                 return {
@@ -120,7 +132,6 @@ class TaskStatusChart extends Component {
                     role: nextState.role
                 }
             })
-            //console.log("goi pie chart o day dong 114:=======================")
 
             this.pieChart();
         }
@@ -130,7 +141,7 @@ class TaskStatusChart extends Component {
 
             if (this.props.TaskOrganizationUnitDashboard) { // neu componet duoc goi tu dashboard organization unit
                 let idsUnit = this.props.units ? this.props.units : "[]";
-                //console.log("o day dong 132:=======================")
+                console.log("o day dong 132:=======================")
                 await this.props.getTaskInOrganizationUnitByMonth(idsUnit, this.state.currentMonth, this.state.nextMonth);
             }
             else {
@@ -370,24 +381,26 @@ class TaskStatusChart extends Component {
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
-                    <section className="form-inline">
-                        <div className="form-group">
-                            <label>{translate('task.task_management.month')}</label>
-                            <DatePicker
-                                id="monthInStatusTask"
-                                dateFormat="month-year"
-                                value={defaultMonth}
-                                onChange={this.handleSelectMonth}
-                                disabled={false}
-                            />
-                        </div>
-                        {
-                            TaskOrganizationUnitDashboard &&
+                    {!this.props.units &&
+                        <section className="form-inline">
                             <div className="form-group">
-                                <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+                                <label>{translate('task.task_management.month')}</label>
+                                <DatePicker
+                                    id="monthInStatusTask"
+                                    dateFormat="month-year"
+                                    value={defaultMonth}
+                                    onChange={this.handleSelectMonth}
+                                    disabled={false}
+                                />
                             </div>
-                        }
-                    </section>
+                            {
+                                TaskOrganizationUnitDashboard &&
+                                <div className="form-group">
+                                    <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+                                </div>
+                            }
+                        </section>
+                    }
 
 
                     {!TaskOrganizationUnitDashboard &&

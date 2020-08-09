@@ -82,27 +82,22 @@ class DomainOfTaskResultsChart extends Component {
 
     shouldComponentUpdate = async (nextProps, nextState) => {
 
-        if (nextProps.units !== this.props.units || nextProps.callAction !== this.state.callAction || nextState.startMonth !== this.state.startMonth || nextState.endMonth !== this.state.endMonth) {
-            if (this.props.TaskOrganizationUnitDashboard) {
+        if (nextProps.units !== this.props.units 
+            || nextProps.callAction !== this.state.callAction 
+            || nextState.startMonth !== this.state.startMonth || nextState.endMonth !== this.state.endMonth
+            || nextProps.startMonth !== this.props.startMonth || nextProps.endMonth !== this.props.endMonth
+            ) {
+            if (this.props.TaskOrganizationUnitDashboard && this.props.units.length && this.props.startMonth && this.props.endMonth){
                 let idsUnit = this.props.units ? this.props.units : "[]";
-               
-                await this.setState(state => {
-                    return {
-                        ...state,
-                        startMonth: nextState.startMonth,
-                        endMonth: nextState.endMonth,
-                        
-                    }
-                })
+                await this.props.getTaskInOrganizationUnitByMonth(idsUnit, nextProps.startMonth, nextProps.endMonth);
+            } else {
 
-                await this.props.getTaskInOrganizationUnitByMonth(idsUnit, nextState.startMonth, nextState.endMonth);
-            }
-            else {
                 await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.startMonth, nextState.endMonth, null, null, this.state.aPeriodOfTime);
                 await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.startMonth, nextState.endMonth, this.state.aPeriodOfTime);
                 await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.startMonth, nextState.endMonth, this.state.aPeriodOfTime);
                 await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.startMonth, nextState.endMonth, this.state.aPeriodOfTime);
                 await this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.startMonth, nextState.endMonth, this.state.aPeriodOfTime);
+            
             }
             // this.domainChart();
 
@@ -132,8 +127,7 @@ class DomainOfTaskResultsChart extends Component {
             if (this.props.TaskOrganizationUnitDashboard) { // neu component duoc goi tu task organization unit
                 let idsUnit = this.props.units ? this.props.units : "[]";
                 await this.props.getTaskInOrganizationUnitByMonth(idsUnit, this.state.startMonth, this.state.endMonth);
-            }
-            else {
+            } else {
                 await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth, null, null, this.state.aPeriodOfTime);
                 await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth, this.state.aPeriodOfTime);
                 await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth, this.state.aPeriodOfTime);
@@ -424,37 +418,39 @@ class DomainOfTaskResultsChart extends Component {
 
         return (
             <React.Fragment>
-                <section className="form-inline">
-                    <div className="form-group">
-                        <label>{translate('task.task_management.from')}</label>
-                        <DatePicker
-                            id="monthStartInDomainOfTaskResults"
-                            dateFormat="month-year"
-                            value={defaultStartMonth}
-                            onChange={this.handleSelectMonthStart}
-                            disabled={false}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>{translate('task.task_management.to')}</label>
-                        <DatePicker
-                            id="monthEndInDomainOfTaskResults"
-                            dateFormat="month-year"
-                            value={defaultEndMonth}
-                            onChange={this.handleSelectMonthEnd}
-                            disabled={false}
-                        />
-                    </div>
-                </section>
-                {
-                    TaskOrganizationUnitDashboard &&
+                {   !this.props.units &&
+                    <section className="form-inline">
+                        <div className="form-group">
+                            <label>{translate('task.task_management.from')}</label>
+                            <DatePicker
+                                id="monthStartInDomainOfTaskResults"
+                                dateFormat="month-year"
+                                value={defaultStartMonth}
+                                onChange={this.handleSelectMonthStart}
+                                disabled={false}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>{translate('task.task_management.to')}</label>
+                            <DatePicker
+                                id="monthEndInDomainOfTaskResults"
+                                dateFormat="month-year"
+                                value={defaultEndMonth}
+                                onChange={this.handleSelectMonthEnd}
+                                disabled={false}
+                            />
+                        </div>
+                    </section>
+                }
+                {/* {
+                    !this.props.units &&
                     <div className="form-inline">
                         <div className="form-group">
                             <label></label>
                             <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                         </div>
                     </div>
-                }
+                } */}
 
                 {!TaskOrganizationUnitDashboard &&
                     <section className="form-inline">
