@@ -1045,6 +1045,7 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+        { path: "files.creator", model: User, select: 'name email avatar' },
     ]);
 
     //xu ly gui email
@@ -1178,6 +1179,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+        { path: "files.creator", model: User, select: 'name email avatar' },
     ]);
 
     //xu ly gui email
@@ -1268,6 +1270,7 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+        { path: "files.creator", model: User, select: 'name email avatar' },
     ]);
     newTask.evaluations.reverse();
 
@@ -1528,6 +1531,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+        { path: "files.creator", model: User, select: 'name email avatar' },
     ]);
     newTask.evaluations.reverse();
 
@@ -1842,6 +1846,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+        { path: "files.creator", model: User, select: 'name email avatar' },
     ]);
     newTask.evaluations.reverse();
 
