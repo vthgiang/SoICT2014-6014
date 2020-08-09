@@ -114,13 +114,14 @@ class DocumentInformation extends Component {
     }
 
     findDocumentRole(roles, arr_id) {
-        console.log('hihihiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii')
+        console.log('hihihiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii', roles, arr_id)
         let data = arr_id.map(id => {
             let name = roles.filter(role => id && id === role.value);
             return name.map(x => x.text);
         })
         return data;
     }
+
 
     render() {
         const {
@@ -135,13 +136,10 @@ class DocumentInformation extends Component {
         const domains = documents.administration.domains.list.map(domain => { return { value: domain._id, text: domain.name } });
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
-        let x = this.findDocumentRole(roleList, documentRoles);
-        console.log('roleList', roleList)
-        console.log('relationshipDocs', relationshipDocs);
-        console.log('categorires', categories);
-        console.log('domainnn', domains);
-        console.log('dddd', x);
-
+        let roles = this.findDocumentRole(roleList, documentRoles);
+        let category = categories.filter(category => category.value === documentCategory)[0];
+        let domain = domains.filter(domain => domain.value === documentDomains[0])[0];
+        console.log('111111111111111', documentRelationshipDocuments)
         return (
             <React.Fragment>
                 <DialogModal
@@ -176,11 +174,11 @@ class DocumentInformation extends Component {
                             <div className="row">
                                 <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                     <strong>{translate('document.category')}&emsp; </strong>
-                                    {documentCategory}
+                                    {category ? category.text : null}
                                 </div>
                                 <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                     <strong>{translate('document.domain')}&emsp; </strong>
-                                    {documentDomains}
+                                    {domain ? domain.text : null}
                                 </div>
                                 <div className="for{ translate('document.description') }m-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                     <strong>{translate('document.description')}&emsp; </strong>
@@ -253,7 +251,9 @@ class DocumentInformation extends Component {
                             <legend className="scheduler-border">{translate('document.roles')}</legend>
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('document.roles')}&emsp; </strong>
-                                {documentRoles}
+                                {roles ? roles.map(y =>
+                                    <div>{y[0]}</div>
+                                ) : null}
                             </div>
                             {/* <SelectBox
                                 id={`select-edit-user-document-users-see-permission-${documentId}`}

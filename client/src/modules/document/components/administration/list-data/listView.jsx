@@ -14,7 +14,6 @@ class ListView extends Component {
     render() {
         const { translate } = this.props;
         const { views } = this.props.docs;
-        console.log('vvvvvvvvvvvvvvv', views);
         return (
             <React.Fragment>
                 <DialogModal
