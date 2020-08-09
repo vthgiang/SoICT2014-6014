@@ -94,18 +94,6 @@ const TaskSchema = new Schema({
             type: Number,
             default: 0,
         },
-        kpis:[{ // Kpis của những người thực hiện (responsibleEmployees)
-            employee:{ // Người thực hiện A nào đó
-                type: Schema.Types.ObjectId,
-                ref: User,
-                required: true
-            },
-            kpis: [{ // Các kpis của người thực hiện A đó. Phải chọn kpis lúc tạo công việc, và sang đầu tháng mới, nếu công việc chưa kết thúc thì phải chọn lại.
-                type: Schema.Types.ObjectId,
-                ref: EmployeeKpi,
-                required: true
-            }]
-        }],
         results: [{ // Kết quả thực hiện công việc trong tháng đánh giá nói trên
             employee:{ // Người được đánh giá
                 type: Schema.Types.ObjectId,
@@ -117,6 +105,11 @@ const TaskSchema = new Schema({
                 required: true,
                 enum: ["Responsible", "Consulted", "Accountable"]
             },
+            kpis: [{ // Các kpis của người thực hiện A đó. Phải chọn kpis lúc tạo công việc, và sang đầu tháng mới, nếu công việc chưa kết thúc thì phải chọn lại.
+                type: Schema.Types.ObjectId,
+                ref: EmployeeKpi,
+                required: true
+            }],
             automaticPoint: { // Điểm hệ thống đánh giá
                 type: Number,
                 default: 0
