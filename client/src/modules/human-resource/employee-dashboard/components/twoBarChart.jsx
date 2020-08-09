@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import {
-    withTranslate
-} from 'react-redux-multilingual';
+import { withTranslate } from 'react-redux-multilingual';
 
-import {
-    EmployeeManagerActions
-} from '../../profile/employee-management/redux/actions';
+import { SelectMulti, SelectBox } from '../../../../common-components';
+
+import { EmployeeManagerActions } from '../../profile/employee-management/redux/actions';
 
 import c3 from 'c3';
 import 'c3/c3.css';
@@ -16,19 +14,34 @@ class TwoBarChart extends Component {
         super(props);
         this.state = {
             lineChart: false,
+            numberMonth: 12,
+            numberMonthShow: 12,
+            organizationalUnitsSearch: []
         }
     }
 
     componentDidMount() {
-        this.props.getAllEmployee({
-            organizationalUnits: undefined,
-            numberMonth: 12
-        });
-        this.renderChart(this.state);
+        const { organizationalUnits, numberMonth } = this.state;
+        this.props.getAllEmployee({ organizationalUnits: organizationalUnits, numberMonth: numberMonth });
     }
-    componentDidUpdate() {
-        this.renderChart(this.state);
+
+    // Function bắt sự kiện thay đổi unit
+    handleSelectOrganizationalUnit = (value) => {
+        if (value.length === 0) {
+            value = null
+        };
+        this.setState({
+            organizationalUnits: value
+        })
+    };
+
+    // Function bắt sự kiện thay đổi số lượng tháng hiện thị
+    handleNumberMonthChange = (value) => {
+        this.setState({
+            numberMonth: value
+        })
     }
+
     // Bắt sự kiện thay đổi chế đọ xem biểu đồ
     handleChangeViewChart = (value) => {
         this.setState({
@@ -37,23 +50,56 @@ class TwoBarChart extends Component {
         })
     }
 
-    static getDerivedStateFromProps(nextProps, prevState) {
-        return {
-            ...prevState,
-            nameChart: nextProps.nameChart,
-            nameData1: nextProps.nameData1,
-            nameData2: nextProps.nameData2,
-            ratioX: ['x', "2019-07-01", "2019-08-01", "2019-09-01", "2019-10-01", "2019-11-02", "2019-12-01", "2020-01-01", "2020-02-01", "2020-03-01", "2020-04-01", "2020-05-01", "2020-06-01"],
-            data1: ['data1', 12, 15, 8, 13, 10, 18, 5, 14, 6, 18, 6, 9],
-            data2: ['data1', 2, 6, 5, 8, 3, 5, 7, 2, 8, 6, 4, 3],
+    static isEqual = (items1, items2) => {
+        if (!items1 || !items2) {
+            return false;
         }
+        if (items1.length !== items2.length) {
+            return false;
+        }
+        for (let i = 0; i < items1.length; ++i) {
+            if (items1[i].startingDate !== items2[i].startingDate) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (!prevState.arrMonth || nextProps.employeesManager.arrMonth.length !== prevState.arrMonth.length ||
+            !TwoBarChart.isEqual(nextProps.employeesManager.listEmployeesHaveStartingDateOfNumberMonth, prevState.listEmployeesHaveStartingDateOfNumberMonth) ||
+            !TwoBarChart.isEqual(nextProps.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth, prevState.listEmployeesHaveLeavingDateOfNumberMonth)) {
+            return {
+                ...prevState,
+                nameChart: nextProps.nameChart,
+                nameData1: nextProps.nameData1,
+                nameData2: nextProps.nameData2,
+                arrMonth: nextProps.employeesManager.arrMonth,
+                listEmployeesHaveStartingDateOfNumberMonth: nextProps.employeesManager.listEmployeesHaveStartingDateOfNumberMonth,
+                listEmployeesHaveLeavingDateOfNumberMonth: nextProps.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth
+            }
+        }
+        return null;
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextProps.employeesManager.arrMonth.length !== this.state.arrMonth.length ||
+            nextState.lineChart !== this.state.lineChart ||
+            !TwoBarChart.isEqual(nextProps.employeesManager.listEmployeesHaveStartingDateOfNumberMonth, this.state.listEmployeesHaveStartingDateOfNumberMonth) ||
+            !TwoBarChart.isEqual(nextProps.employeesManager.listEmployeesHaveLeavingDateOfNumberMonth, this.state.listEmployeesHaveLeavingDateOfNumberMonth) ||
+            JSON.stringify(nextState.organizationalUnitsSearch) !== JSON.stringify(this.state.organizationalUnitsSearch)) {
+            return true;
+        }
+        return false;
     }
 
     // Xóa các chart đã render khi chưa đủ dữ liệu
     removePreviousChart() {
         const chart = this.refs.chart;
-        while (chart.hasChildNodes()) {
-            chart.removeChild(chart.lastChild);
+        if (chart) {
+            while (chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild);
+            }
         }
     }
 
@@ -113,9 +159,50 @@ class TwoBarChart extends Component {
             });
         }, 300);
     };
+
+    // Bắt sự kiện tìm kiếm 
+    handleSunmitSearch = async () => {
+        const { organizationalUnits, numberMonth } = this.state;
+        this.setState({
+            numberMonthShow: numberMonth,
+            organizationalUnitsSearch: organizationalUnits,
+        })
+        this.props.getAllEmployee({ organizationalUnits: organizationalUnits, numberMonth: numberMonth })
+    }
+
     render() {
         const { department, employeesManager, translate } = this.props;
-        const { lineChart, nameChart } = this.state;
+        const { lineChart, nameChart, nameData1, nameData2, numberMonth, numberMonthShow } = this.state;
+        if (employeesManager.arrMonth.length !== 0) {
+            let ratioX = ['x', ...employeesManager.arrMonth];
+            let listEmployeesHaveStartingDateOfNumberMonth = employeesManager.listEmployeesHaveStartingDateOfNumberMonth;
+            let listEmployeesHaveLeavingDateOfNumberMonth = employeesManager.listEmployeesHaveLeavingDateOfNumberMonth;
+            console.log(listEmployeesHaveLeavingDateOfNumberMonth);
+            console.log(listEmployeesHaveStartingDateOfNumberMonth);
+            let data1 = ['data1'], data2 = ['data2'];
+            employeesManager.arrMonth.forEach(x => {
+                let date = new Date(x);
+                let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+                let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+                let total1 = 0, total2 = 0;
+                listEmployeesHaveStartingDateOfNumberMonth.forEach(y => {
+                    if (y.startingDate && firstDay.getTime() < new Date(y.startingDate).getTime() && new Date(y.startingDate).getTime() <= lastDay.getTime()) {
+                        total1 += 1;
+                    }
+                })
+                listEmployeesHaveLeavingDateOfNumberMonth.forEach(y => {
+                    if (y.leavingDate && firstDay.getTime() < new Date(y.leavingDate).getTime() && new Date(y.leavingDate).getTime() <= lastDay.getTime()) {
+                        total2 += 1;
+                    }
+                })
+                data1 = [...data1, total1];
+                data2 = [...data2, total2];
+            })
+            console.log(data1);
+            console.log(data2);
+
+            this.renderChart({ nameData1, nameData2, ratioX, data1, data2, lineChart });
+        }
         return (
             <div className="box" >
                 <div className="box-header with-border" >
@@ -125,7 +212,7 @@ class TwoBarChart extends Component {
                         <div className="form-inline" >
                             <div className="form-group" >
                                 <label className="form-control-static" > {translate('kpi.evaluation.dashboard.organizational_unit')} </label>
-                                <SelectMulti id="multiSelectUnits"
+                                <SelectMulti id="multiSelectUnits-towBarChart"
                                     items={department.list.map((p, i) => { return { value: p._id, text: p.name } })}
                                     options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
                                     onChange={this.handleSelectOrganizationalUnit} >

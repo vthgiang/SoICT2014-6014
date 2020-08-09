@@ -414,8 +414,7 @@ exports.getEmployeesOfNumberMonth = async (organizationalUnits, numberMonth, com
             startingDate: 1,
             leavingDate: 1
         });
-        console.log(listEmployeesHaveStartingDateOfNumberMonth);
-        console.log(listEmployeesHaveLeavingDateOfNumberMonth);
+
         return {
             arrMonth,
             listEmployeesHaveStartingDateOfNumberMonth,
@@ -438,8 +437,7 @@ exports.getEmployeesOfNumberMonth = async (organizationalUnits, numberMonth, com
             startingDate: 1,
             leavingDate: 1
         });
-        console.log(listEmployeesHaveStartingDateOfNumberMonth);
-        console.log(listEmployeesHaveLeavingDateOfNumberMonth);
+
         return {
             arrMonth,
             listEmployeesHaveStartingDateOfNumberMonth,

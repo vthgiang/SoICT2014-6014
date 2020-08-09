@@ -48,6 +48,7 @@ class BarChart extends Component {
             lineChart: value
         })
     }
+
     static isEqual = (items1, items2) => {
         if (!items1 || !items2) {
             return false;

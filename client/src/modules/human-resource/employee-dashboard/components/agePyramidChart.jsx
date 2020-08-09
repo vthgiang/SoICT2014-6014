@@ -125,6 +125,7 @@ class AgePyramidChart extends Component {
                 listEmployeesOfOrganizationalUnits: nextProps.employeesManager.listEmployeesOfOrganizationalUnits
             }
         }
+        return null;
     }
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.actionSearch !== this.state.actionSearch || !AgePyramidChart.isEqual(nextProps.employeesManager.listAllEmployees, this.state.listAllEmployees) ||
