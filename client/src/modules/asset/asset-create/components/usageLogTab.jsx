@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { UsageLogAddModal, UsageLogEditModal } from './combinedContent';
-import { DataTableSetting, DatePicker, SelectMulti } from '../../../../common-components';
-// import { UserActions } from '../../../super-admin/user/redux/actions';
+
 class UsageLogTab extends Component {
     constructor(props) {
         super(props);
@@ -17,14 +17,19 @@ class UsageLogTab extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     // Function lưu giá trị mã phiếu vào state khi thay đổi
@@ -136,16 +141,23 @@ class UsageLogTab extends Component {
 
 
     render() {
-        const { id, translate, user } = this.props;
-        const { usageLogs } = this.state;
+        const { id } = this.props;
+        const { translate, user } = this.props;
+        const { usageLogs, currentRow } = this.state;
+
         var userlist = user.list;
 
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body qlcv">
+                    {/* Lịch sử sử dụng */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">Lịch sử sử dụng</h4></legend>
+
+                        {/* Form thêm thông tin sử dụng */}
                         <UsageLogAddModal handleChange={this.handleAddUsage} id={`addUsage${id}`} />
+
+                        {/* Bảng thông tin sử dụng */}
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
@@ -157,10 +169,10 @@ class UsageLogTab extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof usageLogs !== 'undefined' && usageLogs.length !== 0) &&
+                                {(usageLogs && usageLogs.length !== 0) &&
                                     usageLogs.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.usedBy !== null && userlist.length ? userlist.filter(item => item._id === x.usedBy).pop().name : ''}</td>
+                                            <td>{x.usedBy ? (userlist.length && userlist.filter(item => item._id === x.usedBy).pop() ? userlist.filter(item => item._id === x.usedBy).pop().name : 'User is deleted') : ''}</td>
                                             <td>{x.startDate ? this.formatDate(x.startDate) : ''}</td>
                                             <td>{x.endDate ? this.formatDate(x.endDate) : ''}</td>
                                             <td>{x.description}</td>
@@ -169,26 +181,27 @@ class UsageLogTab extends Component {
                                                     className="material-icons">edit</i></a>
                                                 <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteUsage(index)}><i className="material-icons"></i></a>
                                             </td>
-                                        </tr>))
+                                        </tr>
+                                    ))
                                 }
                             </tbody>
                         </table>
                         {
-                            (typeof usageLogs === 'undefined' || usageLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!usageLogs || usageLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
 
                 </div>
                 {
-                    this.state.currentRow !== undefined &&
+                    currentRow &&
                     <UsageLogEditModal
-                        id={`editUsage${this.state.currentRow.index}`}
-                        _id={this.state.currentRow._id}
-                        index={this.state.currentRow.index}
-                        usedBy={this.state.currentRow.usedBy}
-                        startDate={this.state.currentRow.startDate}
-                        endDate={this.state.currentRow.endDate}
-                        description={this.state.currentRow.description}
+                        id={`editUsage${currentRow.index}`}
+                        _id={currentRow._id}
+                        index={currentRow.index}
+                        usedBy={currentRow.usedBy}
+                        startDate={currentRow.startDate}
+                        endDate={currentRow.endDate}
+                        description={currentRow.description}
                         handleChange={this.handleEditUsage}
                     />
                 }
@@ -196,9 +209,12 @@ class UsageLogTab extends Component {
         );
     }
 };
+
 function mapState(state) {
     const { user } = state;
     return { user };
 };
+
 const usageLogTab = connect(mapState, null)(withTranslate(UsageLogTab));
+
 export { usageLogTab as UsageLogTab };

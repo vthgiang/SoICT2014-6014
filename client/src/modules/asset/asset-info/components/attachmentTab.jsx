@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { LOCAL_SERVER_API } from '../../../../env';
 
 class AttachmentTab extends Component {
@@ -8,6 +9,7 @@ class AttachmentTab extends Component {
         super(props);
         this.state = {};
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -22,19 +24,26 @@ class AttachmentTab extends Component {
     }
 
     render() {
-        const { id, translate } = this.props;
+        const { id } = this.props;
+        const { translate } = this.props;
         const { files, archivedRecordNumber } = this.state;
+
         return (
             <div id={id} className="tab-pane">
                 <div className="row box-body">
+                    {/* Nơi lưu trữ bản cứng */}
                     <div className="col-md-4">
                         <div className="form-group">
                             <strong>Nơi lưu trữ bản cứng:&emsp;</strong>
                             {archivedRecordNumber}
                         </div>
                     </div>
+
+                    {/* Danh sách tài liệu đính kèm */}
                     <div className="col-md-12">
                         <h4 className="row col-md-6">Danh sách tài liệu đính kèm:</h4>
+
+                        {/* Bảng tài liệu đính kèm */}
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
@@ -45,7 +54,7 @@ class AttachmentTab extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof files !== 'undefined' && files.length !== 0) &&
+                                {(files && files.length !== 0) &&
                                     files.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.name}</td>
@@ -63,7 +72,7 @@ class AttachmentTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof files === 'undefined' || files.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!files || files.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </div>
                 </div>
@@ -74,4 +83,5 @@ class AttachmentTab extends Component {
 };
 
 const tabAttachments = connect(null, null)(withTranslate(AttachmentTab));
+
 export { tabAttachments as AttachmentTab };

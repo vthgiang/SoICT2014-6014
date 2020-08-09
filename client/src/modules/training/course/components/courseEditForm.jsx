@@ -143,38 +143,45 @@ class CourseEditForm extends Component {
 
     // Bắt sự kiện thay đổi thời gian bắt đầu
     handleStartDateChange = (value) => {
-        this.validateStartDate(value, true);
-    }
-    validateStartDate = (value, willUpdateState = true) => {
-        let msg = CourseFormValidator.validateStartDate(value, this.props.translate);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnStartDate: msg,
-                    startDate: value,
-                }
-            });
+        let { errorOnEndDate, endDate } = this.state;
+        let errorOnStartDate;
+        let partValue = value.split('-');
+        let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
+
+        let partEndDate = endDate.split('-');
+        let d = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
+
+        if (date.getTime() > d.getTime()) {
+            errorOnStartDate = "Thời gian bắt đầu phải trước thời gian kết thúc";
+        } else {
+            errorOnEndDate = errorOnEndDate === 'Thời gian kết thúc phải sau thời gian bắt đầu' ? undefined : errorOnEndDate
         }
-        return msg === undefined;
+        this.setState({
+            startDate: value,
+            errorOnStartDate: errorOnStartDate,
+            errorOnEndDate: errorOnEndDate
+        })
     }
 
     // Bắt sự kiện thay đổi thời gian kết thúc
     handleEndDateChange = (value) => {
-        this.validateEndDate(value, true);
-    }
-    validateEndDate = (value, willUpdateState = true) => {
-        let msg = CourseFormValidator.validateEndDate(value, this.props.translate);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnEndDate: msg,
-                    endDate: value,
-                }
-            });
+        let { startDate, errorOnStartDate } = this.state;
+        let partValue = value.split('-');
+        let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
+
+        let partStartDate = startDate.split('-');
+        let d = new Date([partStartDate[2], partStartDate[1], partStartDate[0]].join('-'));
+        let errorOnEndDate;
+        if (d.getTime() > date.getTime()) {
+            errorOnEndDate = "Thời gian kết thúc phải sau thời gian bắt đầu";
+        } else {
+            errorOnStartDate = errorOnStartDate === 'Thời gian bắt đầu phải trước thời gian kết thúc' ? undefined : errorOnStartDate
         }
-        return msg === undefined;
+        this.setState({
+            endDate: value,
+            errorOnStartDate: errorOnStartDate,
+            errorOnEndDate: errorOnEndDate
+        })
     }
 
     // Bắt sự kiện thêm nhân viên tham gia
@@ -221,11 +228,16 @@ class CourseEditForm extends Component {
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let result =
-            this.validateCourseName(this.state.name, false) && this.validateStartDate(this.state.startDate, false) &&
+            this.validateCourseName(this.state.name, false) &&
             this.validateCoursePlace(this.state.coursePlace, false) && this.validateCost(this.state.cost, false) &&
-            this.validateEducationProgram(this.state.educationProgram, false) && this.validateEmployeeCommitmentTime(this.state.employeeCommitmentTime, false) &&
-            this.validateEndDate(this.state.endDate, false) && this.validateOfferedBy(this.state.offeredBy, false);
-        return result;
+            this.validateEducationProgram(this.state.educationProgram, false) && this.validateEmployeeCommitmentTime(this.state.employeeCommitmentTime, false);
+        let partStart = this.state.startDate.split('-');
+        let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
+        let partEnd = this.state.endDate.split('-');
+        let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        if (new Date(startDate).getTime() <= new Date(endDate).getTime()) {
+            return result;
+        } else return false;
     }
 
     save = () => {
@@ -331,6 +343,7 @@ class CourseEditForm extends Component {
                                 <label>Thời gian bắt đầu<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit_start_date${_id}`}
+                                    deleteValue={false}
                                     value={startDate}
                                     onChange={this.handleStartDateChange}
                                 />
@@ -340,6 +353,7 @@ class CourseEditForm extends Component {
                                 <label>Thời gian kết thúc<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit_end_date${_id}`}
+                                    deleteValue={false}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />

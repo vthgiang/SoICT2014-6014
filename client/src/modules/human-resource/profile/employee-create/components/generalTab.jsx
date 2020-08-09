@@ -12,7 +12,7 @@ class GeneralTab extends Component {
     }
 
     // Function format dữ liệu Date thành string
-    formatDate(date, monthYear = false) {
+    static formatDate(date, monthYear = false) {
         if (date) {
             let d = new Date(date),
                 month = '' + (d.getMonth() + 1),
@@ -28,7 +28,7 @@ class GeneralTab extends Component {
                 return [month, year].join('-');
             } else return [day, month, year].join('-');
         } else {
-            return date;
+            return "";
         }
 
     }
@@ -226,28 +226,71 @@ class GeneralTab extends Component {
 
     // Function bắt sự kiện thay đổi ngày bắt đầu làm việc
     handleStartingDateChange = (value) => {
-        this.validateStartingDate(value, true)
-    }
-    validateStartingDate = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateStartingDate(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnStartingDate: msg,
-                    startingDate: value,
+        let { errorOnLeavingDate, leavingDate } = this.state;
+        let errorOnStartingDate = undefined;
+        let startDate;
+        if (value) {
+            let partValue = value.split('-');
+            startDate = [partValue[2], partValue[1], partValue[0]].join('-');
+            let date = new Date(startDate);
+            if (leavingDate) {
+                let endDate = leavingDate.split('-');
+                endDate = [endDate[2], endDate[1], endDate[0]].join('-');
+                let d = new Date(endDate);
+                if (date.getTime() >= d.getTime()) {
+                    errorOnStartingDate = "Thời gian bắt đầu làm việc phải trước thời gian nghỉ việc";
+                } else {
+                    errorOnLeavingDate = errorOnLeavingDate === 'Thời gian nghỉ việc phải sau thời gian bắt đầu làm việc' ? undefined : errorOnLeavingDate
                 }
-            });
-            this.props.handleChange("startingDate", value);
+            }
+        } else {
+            this.props.handleChange("leavingDate", "");
+            errorOnLeavingDate = undefined
         }
-        return msg === undefined;
+        this.setState({
+            startingDate: value,
+            leavingDate: value ? leavingDate : "",
+            errorOnStartingDate: errorOnStartingDate,
+            errorOnLeavingDate: errorOnLeavingDate === 'Ngày bắt đầu làm việc chưa được nhập' ? undefined : errorOnLeavingDate
+        })
+        this.props.handleChange("startingDate", value);
     }
 
     // Function bắt sự kiện thay đổi ngày nghỉ việc
     handleLeavingDateChange = (value) => {
-        this.setState({
-            leavingDate: value
-        });
+        let { startingDate } = this.state;
+        if (value) {
+            let partValue = value.split('-');
+            let endDate = [partValue[2], partValue[1], partValue[0]].join('-');
+            let date = new Date(endDate);
+            if (startingDate) {
+                let startDate = startingDate.split('-');
+                startDate = [startDate[2], startDate[1], startDate[0]].join('-');
+                let d = new Date(startDate);
+                if (d.getTime() >= date.getTime()) {
+                    this.setState({
+                        leavingDate: value,
+                        errorOnLeavingDate: "Thời gian nghỉ việc phải sau thời gian bắt đầu làm việc",
+                    })
+                } else {
+                    this.setState({
+                        leavingDate: value,
+                        errorOnStartingDate: undefined,
+                        errorOnLeavingDate: undefined,
+                    })
+                }
+            } else {
+                this.setState({
+                    leavingDate: value,
+                    errorOnLeavingDate: "Ngày bắt đầu làm việc chưa được nhập",
+                })
+            }
+        } else {
+            this.setState({
+                leavingDate: value,
+                errorOnLeavingDate: undefined,
+            })
+        }
         this.props.handleChange("leavingDate", value);
     }
 
@@ -282,19 +325,19 @@ class GeneralTab extends Component {
                 employeeTimesheetId: nextProps.employee.employeeTimesheetId,
                 fullName: nextProps.employee.fullName,
                 gender: nextProps.employee.gender,
-                birthdate: nextProps.employee.birthdate,
+                birthdate: GeneralTab.formatDate(nextProps.employee.birthdate),
                 birthplace: nextProps.employee.birthplace,
                 emailInCompany: nextProps.employee.emailInCompany,
                 maritalStatus: nextProps.employee.maritalStatus,
                 identityCardNumber: nextProps.employee.identityCardNumber,
-                identityCardDate: nextProps.employee.identityCardDate,
+                identityCardDate: GeneralTab.formatDate(nextProps.employee.identityCardDate),
                 identityCardAddress: nextProps.employee.identityCardAddress,
                 ethnic: nextProps.employee.ethnic,
                 religion: nextProps.employee.religion,
                 nationality: nextProps.employee.nationality,
                 status: nextProps.employee.status,
-                startingDate: nextProps.employee.startingDate,
-                leavingDate: nextProps.employee.leavingDate,
+                startingDate: GeneralTab.formatDate(nextProps.employee.startingDate),
+                leavingDate: GeneralTab.formatDate(nextProps.employee.leavingDate),
 
                 errorOnBrithdate: undefined,
                 errorOnDateCMND: undefined,
@@ -305,6 +348,7 @@ class GeneralTab extends Component {
                 errorOnCMND: undefined,
                 errorOnAddressCMND: undefined,
                 errorOnStartingDate: undefined,
+                errorOnLeavingDate: undefined,
             }
         } else {
             return null;
@@ -316,7 +360,7 @@ class GeneralTab extends Component {
         const { birthdate, identityCardDate, img, employeeNumber, employeeTimesheetId, fullName, gender, birthplace, status,
             startingDate, leavingDate, emailInCompany, maritalStatus, identityCardNumber, identityCardAddress, ethnic, religion, nationality,
             errorOnBrithdate, errorOnDateCMND, errorOnEmployeeNumber, errorOnMSCC, errorOnFullName, errorOnEmailCompany, errorOnStartingDate,
-            errorOnCMND, errorOnAddressCMND } = this.state;
+            errorOnCMND, errorOnAddressCMND, errorOnLeavingDate } = this.state;
         return (
             <div id={id} className="tab-pane active">
                 <div className="row box-body">
@@ -378,7 +422,7 @@ class GeneralTab extends Component {
                                 <label >{translate('manage_employee.date_birth')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`brithday${id}`}
-                                    value={this.formatDate(birthdate)}
+                                    value={birthdate}
                                     onChange={this.handleBrithdayChange}
                                 />
                                 <ErrorLabel content={errorOnBrithdate} />
@@ -424,22 +468,23 @@ class GeneralTab extends Component {
                                 <ErrorLabel content={errorOnEmailCompany} />
                             </div>
                             <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnStartingDate === undefined ? "" : "has-error"}`}>
-                                <label >Ngày bắt đầu làm việc<span className="text-red">*</span></label>
+                                <label >Ngày bắt đầu làm việc</label>
                                 <DatePicker
                                     id={`startingDate${id}`}
-                                    value={this.formatDate(startingDate)}
+                                    deleteValue={leavingDate ? false : true}
+                                    value={startingDate}
                                     onChange={this.handleStartingDateChange}
                                 />
                                 <ErrorLabel content={errorOnStartingDate} />
                             </div>
-                            <div className="form-group col-lg-4 col-md-4 col-ms-12 col-xs-12">
+                            <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnLeavingDate === undefined ? "" : "has-error"}`}>
                                 <label >Ngày nghỉ việc</label>
                                 <DatePicker
                                     id={`leavingDate${id}`}
-                                    value={this.formatDate(leavingDate)}
+                                    value={leavingDate}
                                     onChange={this.handleLeavingDateChange}
                                 />
-                                <ErrorLabel content={errorOnBrithdate} />
+                                <ErrorLabel content={errorOnLeavingDate} />
                             </div>
                         </div>
                         <div className="row">
@@ -452,7 +497,7 @@ class GeneralTab extends Component {
                                 <label >{translate('manage_employee.date_issued')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`dateCMND${id}`}
-                                    value={this.formatDate(identityCardDate)}
+                                    value={identityCardDate}
                                     onChange={this.handleDateCMNDChange}
                                 />
                                 <ErrorLabel content={errorOnDateCMND} />

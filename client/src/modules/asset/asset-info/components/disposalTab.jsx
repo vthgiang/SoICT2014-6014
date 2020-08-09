@@ -15,14 +15,19 @@ class DisposalTab extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -42,14 +47,19 @@ class DisposalTab extends Component {
 
 
     render() {
-        const { id, translate } = this.props;
+        const { id } = this.props;
+        const { translate } = this.props;
         const { disposalDate, disposalType, disposalCost, disposalDesc } = this.state;
+
         var formater = new Intl.NumberFormat();
+        
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
+                    {/* Thông tin thanh lý */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">Thông tin thanh lý</h4></legend>
+
                         <div className="form-group">
                             <strong>Thời gian thanh lý:&emsp; </strong>
                             {disposalDate ? this.formatDate(disposalDate) : ''}
@@ -72,5 +82,7 @@ class DisposalTab extends Component {
         );
     }
 };
+
 const disposalTab = connect(null, null)(withTranslate(DisposalTab));
+
 export { disposalTab as DisposalTab };

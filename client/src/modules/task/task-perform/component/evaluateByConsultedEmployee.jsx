@@ -274,66 +274,71 @@ class EvaluateByConsultedEmployee extends Component {
                         }
                     </div>
                     <form id="form-evaluate-task-by-consulted">
-                        <form className="form-group">
-                            <div className={`form-group ${errorOnPoint === undefined ? "" : "has-error"}`}>
-                                <label>{translate('task.task_management.detail_emp_point')} (<span style={{ color: "red" }}>*</span>)</label>
-                                <input
-                                    className="form-control"
-                                    type="number"
-                                    name="point"
-                                    placeholder={translate('task.task_management.enter_emp_point')}
-                                    onChange={this.handleChangePoint}
-                                    value={this.checkNullUndefined(point) ? point : ''}
-                                    disabled={disabled} 
-                                />
-                                <ErrorLabel content={errorOnPoint} />
-                            </div>
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{translate('task.task_management.eval_on_month')}</legend>
-                                <p><span style={{ fontWeight: "bold" }}>{translate('task.task_management.detail_progress')}:</span> {task && task.progress}%</p>
+                        <div className={`form-group ${errorOnPoint === undefined ? "" : "has-error"}`}>
+                            <label>{translate('task.task_management.detail_emp_point')} (<span style={{ color: "red" }}>*</span>)</label>
+                            <input
+                                className="form-control"
+                                type="number"
+                                name="point"
+                                placeholder={translate('task.task_management.enter_emp_point')}
+                                onChange={this.handleChangePoint}
+                                value={this.checkNullUndefined(point) ? point : ''}
+                                disabled={disabled} 
+                            />
+                            <ErrorLabel content={errorOnPoint} />
+                        </div>
+
+                        {(evaluations && evaluations.results.length !== 0) ?
+                            <div style={{ lineHeight: 2.8 }}>
+                                <strong>{translate('task.task_management.detail_auto_point')}: &nbsp;
+                                                    <a style={{ cursor: "pointer" }} onClick={() => this.handleShowAutomaticPointInfo()}>
+                                        {this.checkNullUndefined(automaticPoint) ? automaticPoint : translate('task.task_management.detail_not_calc_auto_point')}
+                                    </a>
+                                </strong>
+                                {
+                                    evaluations.results.map((res, index) => {
+                                        if (res.role === "Responsible") {
+                                            return <div key={index} >
+                                                <span style={{ fontWeight: "bold" }}>{translate('task.task_management.detail_emp_point_of')} {res.employee.name}</span>:&nbsp;&nbsp;&nbsp;{res.employeePoint}
+                                            </div>
+                                        }
+                                    })
+                                }
+                            </div> : <div><p style={{ color: "red", fontWeight: "bold" }}>{translate('task.task_management.responsible_not_eval')} </p></div>
+                        }
+
+                        {/* Thông tin công việc */}
+                        <br/>
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate('task.task_management.info_eval_month')}</legend>
+                            <div style={{ lineHeight: 2.8 }}>
+                                {/* % tiến độ */}
+                                <div><span style={{ fontWeight: "bold" }}>{translate('task.task_management.detail_progress')}:&nbsp;&nbsp;&nbsp;</span>{task && task.progress}%</div>
+                                
+                                {/* Các thông tin khác */}
                                 {
                                     evaluations ?
-                                        <div >
+                                        <div>
                                             {(evaluations.taskInformations.length !== 0) &&
                                                 <div>
                                                     {
                                                         evaluations.taskInformations.map((info, index) => {
                                                             if (info.type === "Date") {
                                                                 return <div key={index}>
-                                                                    <p><span style={{ fontWeight: "bold" }}>{info.name}</span>&nbsp;-&nbsp;{translate('task.task_management.detail_value')}: {info.value ? this.formatDate(info.value) : translate('task.task_management.not_eval')}</p>
+                                                                    <div><span style={{ fontWeight: "bold" }}>{info.name}</span>:&nbsp;&nbsp;&nbsp;{info.value ? this.formatDate(info.value) : translate('task.task_management.not_eval')}</div>
                                                                 </div>
                                                             }
                                                             else return <div key={index}>
-                                                                <p><span style={{ fontWeight: "bold" }}>{info.name}</span>&nbsp;-&nbsp;{translate('task.task_management.detail_value')}: {info.value ? info.value : translate('task.task_management.not_eval')}</p>
+                                                                <div><span style={{ fontWeight: "bold" }}>{info.name}</span>:&nbsp;&nbsp;&nbsp;{info.value ? info.value : translate('task.task_management.not_eval')}</div>
                                                             </div>
                                                         })
                                                     }
                                                 </div>
                                             }
-                                            <br />
-                                            {(evaluations.results.length !== 0) ?
-                                                <div>
-                                                    <strong>{translate('task.task_management.detail_auto_point')}: &nbsp;
-                                                <a style={{ cursor: "pointer" }} onClick={() => this.handleShowAutomaticPointInfo()}>
-                                                            {this.checkNullUndefined(automaticPoint) ? automaticPoint : translate('task.task_management.detail_not_calc_auto_point')}
-                                                        </a>
-                                                    </strong>
-                                                    {
-                                                        evaluations.results.map((res, index) => {
-                                                            if (res.role === "Responsible") {
-                                                                return <div key={index} >
-                                                                    <p><span style={{ fontWeight: "bold" }}>{translate('task.task_management.responsible')}-{res.employee.name}</span>-{translate('task.task_management.detail_emp_point')}:{res.employeePoint}</p>
-                                                                </div>
-                                                            }
-                                                        })
-                                                    }
-                                                </div> : <div><p style={{ color: "red", fontWeight: "bold" }}>{translate('task.task_management.responsible_not_eval')} </p></div>
-                                            }
-
                                         </div> : <div><p style={{ color: "red", fontWeight: "bold" }}>{translate('task.task_management.not_eval_on_month')} </p></div>
                                 }
-                            </fieldset>
-                        </form>
+                            </div>
+                        </fieldset>
                     </form>
 
                 </div>

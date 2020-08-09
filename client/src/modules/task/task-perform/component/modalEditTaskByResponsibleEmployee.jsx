@@ -16,6 +16,7 @@ class ModalEditTaskByResponsibleEmployee extends Component {
         let data = this.getData(date);
 
         this.state = {
+            errorInfo: {},
             task: data.task,
             userId: data.idUser,
             taskName: data.task.name,
@@ -48,7 +49,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                 errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnPoint: undefined,
                 errorOnInfoDate: undefined,
-                errorOnProgress: undefined
+                errorOnProgress: undefined,
+                errorInfo: {}
             }
         } else {
             return null;
@@ -186,9 +188,9 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                 code: name,
                 type: 'Number'
             }
+            state.errorInfo[name] = this.validateNumberInfo(value);
             return {
                 ...state,
-                errorOnNumberInfo: this.validateNumberInfo(value)
             }
         })
     }
@@ -202,9 +204,9 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                 code: name,
                 type: 'Text'
             }
+            state.errorInfo[name] = this.validateTextInfo(value);
             return {
                 ...state,
-                errorOnTextInfo: this.validateTextInfo(value)
             }
         })
     }
@@ -217,9 +219,9 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                 code: code,
                 type: 'Date'
             }
+            state.errorInfo[code] = this.validateDate(value);
             return {
                 ...state,
-                errorOnInfoDate: this.validateDate(value),
             }
         });
     }

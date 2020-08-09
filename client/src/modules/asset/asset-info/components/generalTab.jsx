@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { LOCAL_SERVER_API } from '../../../../env';
+
 class GeneralTab extends Component {
     constructor(props) {
         super(props);
@@ -15,14 +17,19 @@ class GeneralTab extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+            
+        if (day.length < 2) {
             day = '0' + day;
-
+        }
+            
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        } 
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -65,6 +72,7 @@ class GeneralTab extends Component {
             <div id={id} className="tab-pane active">
                 <div className="box-body">
                     <div className="col-md-12">
+                        {/* Anh tài sản */}
                         <div className="col-md-4" style={{ textAlign: 'center' }}>
                             <div>
                                 <a href={LOCAL_SERVER_API + avatar} target="_blank">
@@ -72,6 +80,8 @@ class GeneralTab extends Component {
                                 </a>
                             </div>
                         </div>
+
+                        {/* Thông tin cơ bản */}
                         <label>Thông tin cơ bản:</label>
                         <br />
                         <div className="col-md-8">
@@ -91,7 +101,7 @@ class GeneralTab extends Component {
                                     </div>
                                     <div className="form-group">
                                         <strong>Loại tài sản:&emsp; </strong>
-                                        {assetTypes !== null && assettypelist.length ? assettypelist.filter(item => item._id === assetTypes).pop().typeName : ''}
+                                        {assetTypes && assettypelist.length && assettypelist.filter(item => item._id === assetTypes).pop() ? assettypelist.filter(item => item._id === assetTypes).pop().typeName : 'Asset type is deleted'}
                                     </div>
                                     <div className="form-group">
                                         <strong>Ngày nhập:&emsp; </strong>
@@ -103,14 +113,14 @@ class GeneralTab extends Component {
                                     </div>
                                     <div className="form-group">
                                         <strong>Người quản lý:&emsp; </strong>
-                                        {managedBy !== null && userlist.length ? userlist.filter(item => item._id === managedBy).pop().name : ''}
+                                        {managedBy && userlist.length && userlist.filter(item => item._id === managedBy).pop() ? userlist.filter(item => item._id === managedBy).pop().name : 'User is deleted'}
                                     </div>
                                 </div>
 
                                 <div className="col-md-6">
                                     <div className="form-group">
                                         <strong>Người sử dụng:&emsp; </strong>
-                                        {assignedTo !== null && userlist.length ? userlist.filter(item => item._id === assignedTo).pop().name : ''}
+                                        {assignedTo ? (userlist.length && userlist.filter(item => item._id === assignedTo).pop() ? userlist.filter(item => item._id === assignedTo).pop().name : 'User is deleted') : ''}
                                     </div>
                                     <div className="form-group">
                                         <strong>Thời gian sử dụng từ ngày:&emsp; </strong>
@@ -138,6 +148,8 @@ class GeneralTab extends Component {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Thông tin chi tiết */}
                             <div className="col-md-12">
                                 <label>Thông tin chi tiết:<a title="Thông tin chi tiết"></a></label>
                                 <div className="form-group">
@@ -149,7 +161,7 @@ class GeneralTab extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {(typeof detailInfo === 'undefined' || detailInfo.length === 0) ? <tr>
+                                            {(!detailInfo || detailInfo.length === 0) ? <tr>
                                                 <td colSpan={3}>
                                                     <center> {translate('table.no_data')}</center>
                                                 </td>

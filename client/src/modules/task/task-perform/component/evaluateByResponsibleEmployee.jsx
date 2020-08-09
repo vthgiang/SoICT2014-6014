@@ -74,7 +74,8 @@ class EvaluateByResponsibleEmployee extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    errorInfo: {},
+                    // errorInfo: {},
+                    // errorOnProgress: undefined,
                     id: nextProps.id,
                     task: data.task,
                     info: data.info,
@@ -125,7 +126,6 @@ class EvaluateByResponsibleEmployee extends Component {
         }
         dateOfPrevEval.setMonth(newMonth);
 
-        console.log('date', dateOfEval, dateOfPrevEval);
         let monthOfEval = dateOfEval.getMonth();
         let monthOfPrevEval = dateOfPrevEval.getMonth();
         let yearOfEval = dateOfEval.getFullYear();
@@ -293,6 +293,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
         let calcAuto = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
         if (isNaN(calcAuto)) calcAuto = undefined
+        if (calcAuto < 0) calcAuto = 0;
 
         dentaDate = Math.round(((new Date()).getTime() - dateOfEval.getTime()) / (1000 * 3600 * 24));
         console.log('denta', dentaDate);
@@ -385,6 +386,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
         let calcAuto = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
         if (isNaN(calcAuto)) calcAuto = undefined
+        if (calcAuto < 0) calcAuto = 0;
 
         return {
             info: info,
@@ -467,24 +469,28 @@ class EvaluateByResponsibleEmployee extends Component {
 
         let endOfMonth = new moment().endOf("month").toDate();
         let startOfMonth = new moment().startOf("month").toDate();
+        
         let startDate = new Date(task.startDate);
+        let endDate = new Date(task.endDate);
 
         let splitter = value.split('-');
         let dateValue = new Date(splitter[2], splitter[1]-1, splitter[0]);
 
         let de = (endOfMonth.getTime() - dateValue.getTime()); // < 0 -> err
         let ds = (dateValue.getTime() - startOfMonth.getTime()); // < 0 -> err
+
         let dst = (dateValue.getTime() - startDate.getTime()); // < 0 -> err
+        let det = (endDate.getTime() - dateValue.getTime()); // < 0 -> err
 
         let err;
         if (value.trim() === "") {
             err = translate('task.task_perform.modal_approve_task.err_empty');
         }
         else if (dst < 0) {
-            err = 'Ngày đánh giá phải lớn hơn ngày bắt đầu';
+            err = translate('task.task_management.err_eval_start');
         }
         else if (de < 0 || ds < 0){
-            err = "Ngày đánh giá phải là ngày trong tháng";
+            err = translate('task.task_management.err_eval_on_month');
         }
 
         let data = this.getData(value);
@@ -493,27 +499,29 @@ class EvaluateByResponsibleEmployee extends Component {
         let automaticPoint = data.autoPoint;
         let taskInfo = {
             task: data.task,
-            progress: data.progress,
+            progress: this.state.progress,
             date: value,
-            info: data.info,
+            info: this.state.info,
         };
 
         automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
         if (isNaN(automaticPoint)) automaticPoint = undefined
+        if (automaticPoint < 0) automaticPoint = 0;
 
         this.setState(state => {
             return {
                 ...state,
                 date: value,
-                info: data.info,
-                kpi: data.kpi,
+                // info: data.info,
+                // kpi: data.kpi,
                 autoPoint: automaticPoint,
-                point: data.point,
+                // point: data.point,
                 oldAutoPoint: data.autoPoint,
-                progress: data.progress,
-                checkSave: data.checkSave,
+                // progress: data.progress,
+                // checkSave: data.checkSave,
                 errorOnDate: err,
-                // dataStatus: this.DATA_STATUS.QUERYING,
+                // errorInfo: {},
+                // errorOnProgress: undefined,
                 indexReRender: state.indexReRender + 1,
             }
         });
@@ -797,7 +805,7 @@ class EvaluateByResponsibleEmployee extends Component {
         }
     }
 
-    save = () => {
+    save = async () => {
         let taskId;
         taskId = this.state.task._id;
         let data = {
@@ -817,8 +825,16 @@ class EvaluateByResponsibleEmployee extends Component {
         this.props.evaluateTaskByResponsibleEmployees(data, taskId);
 
         this.handleAddTaskLog();
+
+        this.setState(state=>{
+            return {
+                ...state,
+                oldAutoPoint: state.autoPoint,
+            }
+        });
     }
 
+//  kiểm tra có phải đánh giá này là của tháng hiện tại hay ko
     checkNote = () => {
         let { date } = this.props;
         let splitter = date.split("-");
@@ -826,9 +842,9 @@ class EvaluateByResponsibleEmployee extends Component {
         let now = new Date ();
 
         if(now.getMonth() === isoDate.getMonth() && now.getFullYear() === isoDate.getFullYear()) {
-            return false;
+            return false; // là tháng hiện tại
         }
-        return true
+        return true // khác tháng hiện tại
     }
 
     checkNullUndefined = (x) => {
@@ -869,53 +885,91 @@ class EvaluateByResponsibleEmployee extends Component {
         return (
             <React.Fragment>
                 <div style={{ display: "flex", flexDirection: "column" }}>
-                    <div className="row">
-                        <div className='col-md-8'>
+                    <div>
+                        {/* Thông báo về thời gian đánh giá */}
+                        <div>
                             {checkNoteMonth && (dentaDate <= 7 && dentaDate > 0) && <p style={{color: "red"}}>{translate('task.task_management.note_eval')}{8 - dentaDate}.</p>}
                             {checkNoteMonth && (dentaDate > 7) && <p style={{color: "red"}}>{translate('task.task_management.note_not_eval')}</p>}
                         </div>
+
+                        {/* Nút lưu */}
                         {!(checkNoteMonth && (dentaDate > 7)) &&
-                            <div style={{ justifyContent: "flex-end", display: "flex" }} className='col-md-4'>
-                                <button disabled={disabled} style={{ marginRight: "5px" }} className="btn btn-primary" onClick={this.updateInfo}>{translate('task.task_management.btn_get_info')}</button>
-                                <button disabled={disabled || disableSubmit} className="btn btn-success" onClick={this.save}>{translate('task.task_management.btn_save_eval')}</button>
-                            </div>
+                        <div className="pull-right">
+                            {/* <button disabled={disabled} style={{ marginRight: "5px" }} className="btn btn-primary" onClick={this.updateInfo}>{translate('task.task_management.btn_get_info')}</button> */}
+                            <button disabled={disabled || disableSubmit} className="btn btn-success" onClick={this.save}>{translate('task.task_management.btn_save_eval')}</button>
+                        </div>
                         }
                     </div>
+
+                    
                     <div>
+                        {/* Đánh giá từ ngày ... đến ngày ... */}
                         <form id={`form-evaluate-task-by-${role}`}>
-                            <div className="row">
-                                <div className="col-md-6">
-                                    <strong>{ translate('task.task_management.eval_from') }:</strong> <br/>&nbsp;{prevDate}
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('task.task_management.detail_general_info')}</legend>
+                                <div className="row">
+                                    <div className="col-md-6">
+                                        <div className="form-group">
+                                            <label>{translate('task.task_management.eval_from')}</label>
+                                            <DatePicker
+                                                id={`start_date_${id}_${perform}`}
+                                                value={prevDate}
+                                                disabled={true}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
+                                            <label>{translate('task.task_management.eval_to')}:<span className="text-red">*</span></label>
+                                            <DatePicker
+                                                id={`create_date_${id}_${perform}`}
+                                                value={date}
+                                                onChange={this.handleDateChange}
+                                                disabled={disabled} 
+                                                // || (checkNoteMonth && (dentaDate <= 20 && dentaDate > 0))
+                                            />
+                                            <ErrorLabel content={errorOnDate} />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className={`form-group col-md-6 ${errorOnDate === undefined ? "" : "has-error"}`}>
-                                    {/* <label>{translate('task.task_management.evaluate_date')}:<span className="text-red">*</span></label> */}
-                                    <label>{translate('task.task_management.eval_to')}:<span className="text-red">*</span></label>
-                                    <DatePicker
-                                        id={`create_date_${id}_${perform}`}
-                                        value={date}
-                                        onChange={this.handleDateChange}
-                                        disabled={disabled} 
-                                    />
-                                    <ErrorLabel content={errorOnDate} />
+
+                                {/* Liên kết KPI */}
+                                <div className="form-group">
+                                    <label>{translate('task.task_management.detail_kpi')}:</label>
+                                    {
+                                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                            id={`select-kpi-personal-evaluate-${perform}-${role}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={((KPIPersonalManager && KPIPersonalManager.kpiSets) ? KPIPersonalManager.kpiSets.kpis : []).map(x => { return { value: x._id, text: x.name } })}
+                                            onChange={this.handleKpiChange}
+                                            multiple={true}
+                                            value={kpi}
+                                            disabled={disabled} 
+                                        />
+                                    }
                                 </div>
-                            </div>
-                            <div className="form-group">
-                                <label>{translate('task.task_management.detail_kpi')}:</label>
-                                {
-                                    <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                                        id={`select-kpi-personal-evaluate-${perform}-${role}`}
-                                        className="form-control select2"
-                                        style={{ width: "100%" }}
-                                        items={((KPIPersonalManager && KPIPersonalManager.kpiSets) ? KPIPersonalManager.kpiSets.kpis : []).map(x => { return { value: x._id, text: x.name } })}
-                                        onChange={this.handleKpiChange}
-                                        multiple={true}
-                                        value={kpi}
-                                        disabled={disabled} 
+
+                                {/* Điểm tự đánh giá */}
+                                <div className={`form-group ${errorOnPoint === undefined ? "" : "has-error"}`}>
+                                    <label>{translate('task.task_management.detail_emp_point')} (<span style={{ color: "red" }}>*</span>)</label>
+                                    <input
+                                        className="form-control"
+                                        type="number"
+                                        name="point"
+                                        placeholder={translate('task.task_management.enter_emp_point')}
+                                        onChange={this.handleChangePoint}
+                                        value={this.checkNullUndefined(point) ? point : ''}
+                                        disabled={disabled}
                                     />
-                                }
-                            </div>
+                                    <ErrorLabel content={errorOnPoint} />
+                                </div>
+                            </fieldset>
+
+                            {/* Thông tin công việc */}
                             <div>
                                 <TaskInformationForm
+                                    legendText={translate('task.task_management.info_eval_month')}
                                     task={task && task}
 
                                     handleChangeProgress={this.handleChangeProgress}
@@ -925,7 +979,8 @@ class EvaluateByResponsibleEmployee extends Component {
                                     handleChangeNumberInfo={this.handleChangeNumberInfo}
                                     handleChangeTextInfo={this.handleChangeTextInfo}
                                     handleChangeSaveInfo={this.handleChangeSaveInfo}
-                                    
+                                    updateInfo={this.updateInfo}
+
                                     indexReRender={indexReRender}
 
                                     disabled={disabled} 
@@ -934,34 +989,36 @@ class EvaluateByResponsibleEmployee extends Component {
                                     id={id}
                                     value={this.state}
                                 />
-
                             </div>
-                            <div>
-                                <strong>{translate('task.task_management.detail_auto_point')}: &nbsp;
-                                <a style={{ cursor: "pointer" }} id={`autoPoint-${perform}`} onClick={() => this.handleShowAutomaticPointInfo()}>
-                                        {this.checkNullUndefined(autoPoint) ? autoPoint : translate('task.task_management.detail_not_calc_auto_point')}
-                                    </a>
-                                </strong>
-                                <br />
-                                <br />
-                                <strong>{translate('task.task_management.detail_auto_on_system')}: &nbsp;
-                            <a style={{ color: "black" }}>
-                                        {this.checkNullUndefined(oldAutoPoint) ? oldAutoPoint : translate('task.task_management.detail_not_calc_auto_point')}
-                                    </a>
-                                </strong>
-                                <br />
-                                <br />
-                                <strong>{translate('task.task_management.action_not_rating')}: &nbsp; </strong>
-                                <ul>
-                                    {actionsNotRating.length === 0 ? <li>{translate('task.task_management.no_action')}.</li> :
-                                        actionsNotRating.map((item, index) => {
-                                            return <li key={index}>
-                                                {item.description}
-                                            </li>
-                                        })
-                                    }
-                                </ul>
 
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('task.task_management.auto_point_field')}</legend>
+                                <div style={{lineHeight: "3"}}>
+                                    <div>
+                                        <strong>{translate('task.task_management.detail_auto_point')}: &nbsp;</strong>
+                                        <a style={{ cursor: "pointer" }} id={`autoPoint-${perform}`} onClick={() => this.handleShowAutomaticPointInfo()}>
+                                            {this.checkNullUndefined(autoPoint) ? autoPoint : translate('task.task_management.detail_not_calc_auto_point')}
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <strong>{translate('task.task_management.detail_auto_on_system')}: &nbsp;</strong>
+                                        <a style={{ color: "black" }}>
+                                            {this.checkNullUndefined(oldAutoPoint) ? oldAutoPoint : translate('task.task_management.detail_not_calc_auto_point')}
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <strong>{translate('task.task_management.action_not_rating')}:&nbsp;&nbsp;</strong>
+                                        {actionsNotRating.length === 0 ? translate('task.task_management.no_action') :
+                                            actionsNotRating.length === 1 ? translate('task.task_management.no_action') :
+                                                actionsNotRating.map((item, index) => {
+                                                    let seperator = index !== 0 ? ", " : "";
+                                                    return <span key={index}>
+                                                        {seperator}&nbsp;&nbsp;({index + 1}) {item.description}
+                                                    </span>
+                                                })
+                                        }
+                                    </div>
+                                </div>
                                 {
                                     showAutoPointInfo === 1 &&
                                     <ModalShowAutoPointInfo
@@ -972,25 +1029,10 @@ class EvaluateByResponsibleEmployee extends Component {
                                         autoPoint={autoPoint}
                                     />
                                 }
-                                <br />
-                                <div className={`form-group ${errorOnPoint === undefined ? "" : "has-error"}`}>
-                                    <label>{translate('task.task_management.detail_emp_point')} (<span style={{ color: "red" }}>*</span>)</label>
-                                    <input
-                                        className="form-control"
-                                        type="number"
-                                        name="point"
-                                        placeholder={translate('task.task_management.enter_emp_point')}
-                                        onChange={this.handleChangePoint}
-                                        value={this.checkNullUndefined(point) ? point : ''}
-                                        disabled={disabled} 
-                                    />
-                                    <ErrorLabel content={errorOnPoint} />
-                                </div>
-                            </div>
+                            </fieldset>
                         </form>
                     </div>
                 </div>
-                {/* </DialogModal> */}
             </React.Fragment>
         );
     }
