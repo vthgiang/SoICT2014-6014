@@ -177,8 +177,6 @@ class TwoBarChart extends Component {
             let ratioX = ['x', ...employeesManager.arrMonth];
             let listEmployeesHaveStartingDateOfNumberMonth = employeesManager.listEmployeesHaveStartingDateOfNumberMonth;
             let listEmployeesHaveLeavingDateOfNumberMonth = employeesManager.listEmployeesHaveLeavingDateOfNumberMonth;
-            console.log(listEmployeesHaveLeavingDateOfNumberMonth);
-            console.log(listEmployeesHaveStartingDateOfNumberMonth);
             let data1 = ['data1'], data2 = ['data2'];
             employeesManager.arrMonth.forEach(x => {
                 let date = new Date(x);
@@ -198,15 +196,12 @@ class TwoBarChart extends Component {
                 data1 = [...data1, total1];
                 data2 = [...data2, total2];
             })
-            console.log(data1);
-            console.log(data2);
-
             this.renderChart({ nameData1, nameData2, ratioX, data1, data2, lineChart });
         }
         return (
             <div className="box" >
                 <div className="box-header with-border" >
-                    <h3 className="box-title" > {nameChart} </h3> </div>
+                    <h3 className="box-title" > {`${nameChart} trong ${numberMonthShow} tháng gần nhất`} </h3> </div>
                 <div className="box-body" >
                     <div className="qlcv" style={{ marginBottom: 15 }} >
                         <div className="form-inline" >
