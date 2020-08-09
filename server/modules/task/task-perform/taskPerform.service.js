@@ -445,13 +445,14 @@ exports.createTaskComment = async (params, body, files) => {
  * Sửa bình luận công việc
  */
 exports.editTaskComment = async (params, body, files) => {
+    let now = new Date()
     let taskComment = await Task.updateOne(
         { "_id": params.taskId, "taskComments._id": params.commentId },
         {
             $set:
             {
                 "taskComments.$.description": body.description,
-
+                "taskComments.$.updatedAt": now,
             }
         }
     )

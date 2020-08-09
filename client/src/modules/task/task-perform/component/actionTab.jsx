@@ -698,9 +698,9 @@ class ActionTab extends Component {
             })
         }
     }
-    handleDeleteFile = async (fileId, fileName, actionId, type) => {
+    handleDeleteFile =  (fileId, fileName, actionId, type) => {
 
-        await this.setState(state => {
+        this.setState(state => {
             return {
                 ...state,
                 showModalDelete: actionId,
@@ -715,9 +715,9 @@ class ActionTab extends Component {
         window.$(`#modal-confirm-deletefile`).modal('show');
     }
     save = (taskId) => {
-        const { deleteFile } = this.state
+        let { deleteFile } = this.state
         if (deleteFile.type === "action") {
-            this.props.deleteFileAction(deleteFile.fileId, deleteFile.actionId, taskId, 2);
+            this.props.deleteFileAction(deleteFile.fileId, deleteFile.actionId, taskId, deleteFile.type);
         } else if (deleteFile.type === "commentofaction") {
             this.props.deleteFileCommentOfAction(deleteFile.fileId, deleteFile.actionId, taskId, deleteFile.type);
         } else if (deleteFile.type === "taskcomment") {
