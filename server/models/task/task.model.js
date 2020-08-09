@@ -100,6 +100,10 @@ const TaskSchema = new Schema({
                 ref: User,
                 required: true
             },
+            organizationalUnit: {
+                type: Schema.Types.ObjectId,
+                ref: OrganizationalUnit,
+            },
             role:{ // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
                 type: String,
                 required: true,
