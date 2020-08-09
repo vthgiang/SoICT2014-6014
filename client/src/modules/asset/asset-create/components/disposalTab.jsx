@@ -16,14 +16,19 @@ class DisposalTab extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+            
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     // Function lưu các trường thông tin vào state
@@ -68,7 +73,6 @@ class DisposalTab extends Component {
                 ...state,
                 disposalCost: value
             }
-
         });
         this.props.handleChange("disposalCost", value);
     }
@@ -83,7 +87,6 @@ class DisposalTab extends Component {
                 ...state,
                 disposalDesc: value
             }
-
         });
         this.props.handleChange("disposalDesc", value);
     }
@@ -104,13 +107,18 @@ class DisposalTab extends Component {
     }
 
     render() {
-        const { id, translate } = this.props;
+        const { id } = this.props;
+        const { translate } = this.props;
         const { disposalDate, disposalType, disposalCost, disposalDesc } = this.state;
+
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
+                    {/* Thông tin thanh lý */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">Thông tin thanh lý</h4></legend>
+
+                        {/* Thời gian thanh lý */}
                         <div className={`form-group`}>
                             <label htmlFor="disposalDate">Thời gian thanh lý</label>
                             <DatePicker
@@ -119,6 +127,8 @@ class DisposalTab extends Component {
                                 onChange={this.handleDisposalDateChange}
                             />
                         </div>
+
+                        {/* Hình thức thanh lý */}
                         <div className="form-group">
                             <label htmlFor="disposalType">Hình thức thanh lý</label>
                             <SelectBox
@@ -135,22 +145,27 @@ class DisposalTab extends Component {
                                 onChange={this.handleDisposalTypeChange}
                             />
                         </div>
+
+                        {/* Giá trị thanh lý */}
                         <div className={`form-group`}>
                             <label htmlFor="disposalCost">Giá trị thanh lý (VNĐ)</label><br />
                             <input type="number" className="form-control" name="disposalCost" value={disposalCost} onChange={this.handleDisposalCostChange}
                                 placeholder="Giá trị thanh lý" autoComplete="off" />
                         </div>
+
+                        {/* Nội dung thanh */}
                         <div className={`form-group`}>
                             <label htmlFor="disposalDesc">Nội dung thanh lý</label><br />
                             <input type="text" className="form-control" name="disposalDesc" value={disposalDesc} onChange={this.handleDisposalDescriptionChange}
                                 placeholder="Nội dung thanh lý" autoComplete="off" />
                         </div>
-
                     </fieldset>
                 </div>
             </div>
         );
     }
 };
+
 const disposalTab = connect(null, null)(withTranslate(DisposalTab));
+
 export { disposalTab as DisposalTab };
