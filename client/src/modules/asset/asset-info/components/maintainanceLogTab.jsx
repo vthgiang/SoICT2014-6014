@@ -15,14 +15,19 @@ class MaintainanceLogTab extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -38,16 +43,21 @@ class MaintainanceLogTab extends Component {
     }
 
     render() {
-        const { id, translate } = this.props;
+        const { id } = this.props;
+        const { translate } = this.props;
         const { maintainanceLogs } = this.state;
+
         console.log('this.state', this.state);
         var formater = new Intl.NumberFormat();
 
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body qlcv">
+                    {/* Lịch sử sửa chữa - thay thế - nâng cấp */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">Lịch sử sửa chữa - thay thế - nâng cấp</h4></legend>
+
+                        {/* Bảng thông tin bảo trì */}
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
@@ -62,7 +72,7 @@ class MaintainanceLogTab extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof maintainanceLogs !== 'undefined' && maintainanceLogs.length !== 0) &&
+                                {(maintainanceLogs && maintainanceLogs.length !== 0) &&
                                     maintainanceLogs.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.maintainanceCode}</td>
@@ -78,12 +88,9 @@ class MaintainanceLogTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof maintainanceLogs === 'undefined' || maintainanceLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!maintainanceLogs || maintainanceLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
-                    {/* <div className="form-group">
-                        <h5 className="box-title">Lịch sử sửa chữa - thay thế - nâng cấp: </h5>
-                    </div> */}
                 </div>
             </div>
         );

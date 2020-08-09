@@ -330,6 +330,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                 TaskOrganizationUnitDashboard={true}
                                 // tasksInUnit={tasks.organizationUnitTasks && tasks.organizationUnitTasks}
                                 units={idsUnit}
+                                willUpdate={true}
                             />
                         </div>
 

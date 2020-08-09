@@ -413,11 +413,14 @@ export default {
             effective_date: 'Ngày áp dụng',
             expired_date: 'Ngày hết hạn',
             views: 'Số lần xem',
+            viewer: 'Người xem',
+            downloader: "Người tải",
             downloads: 'Số lần download',
             add: 'Thêm văn bản',
             edit: 'Sửa văn bản',
-            watch:'Xem văn bản',
+            watch: 'Xem văn bản',
             delete: 'Xóa văn bản',
+            time: "Thời gian",
             add_version: 'Thêm phiên bản mới',
             upload_file: 'File tài liệu',
             upload_file_scan: 'File scan tài liệu',
@@ -1339,6 +1342,7 @@ export default {
                 start_date_required: 'Thời gian bắt đầu không được để trống',
                 end_date_required: 'Thời gian kết thúc không được để trống',
                 reason_required: 'Mô tả lịch nghỉ không được để trống',
+                holiday_duplicate_required: 'Thời gian bị trùng lặp',
 
                 get_holiday_success: 'Lấy danh sách lịch làm việc thành công',
                 get_holiday_faile: 'Lấy danh sách lịch làm việc thất bại',
@@ -1759,7 +1763,6 @@ export default {
                 detail_value: 'Giá trị',
                 detail_not_hasinfo: 'Chưa có thông tin',
                 detail_eval: 'Đánh giá công việc',
-                detail_eval_on_date: 'Đánh giá công việc ngày',
                 detail_point: 'Điểm các thành viên',
                 detail_auto_point: 'Điểm tự động',
                 detail_emp_point: 'Điểm tự đánh giá',
@@ -1788,7 +1791,7 @@ export default {
                 evaluate_date: 'Ngày đánh giá',
                 evaluate_member: 'Đánh giá thành viên tham gia công việc',
                 detail_not_calc_auto_point: 'Chưa tính được',
-                detail_auto_on_system: 'Điểm tựu động đang lưu trên hệ thống',
+                detail_auto_on_system: 'Điểm tự động đang lưu trên hệ thống',
                 detail_not_auto_on_system: 'Chưa có dữ liệu',
                 action_not_rating: 'Các hoạt động chưa được đánh giá tháng này',
                 no_action: 'Không có',
@@ -1796,17 +1799,17 @@ export default {
                 not_eval: 'Chưa đánh giá',
                 acc_evaluate: 'Đánh giá của người phê duyệt',
                 name_employee: 'Tên nhân viên',
-                role_employee: 'Tên vai trò',
+                role_employee: 'Vai trò',
+                detail_emp_point_of: 'Điểm tự đánh giá của',
 
                 enter_emp_point: 'Nhập điểm tự đánh giá',
-                eval_on_month: 'Thông tin đánh giá công việc tháng này',
                 responsible_not_eval: 'Người thực hiện chưa đánh giá',
                 not_eval_on_month: 'Chưa có thông tin đánh giá tháng này',
 
                 edit_basic_info: 'Thông tin cơ bản',
                 edit_detail_info: 'Thông tin chi tiết',
                 edit_member_info: 'Thông tin thành viên tham gia',
-                edit_inactive_emp: 'Thông tin người không làm việc nữa',
+                edit_inactive_emp: 'Thông tin thành viên rời khỏi công việc',
                 edit_enter_progress: 'Nhập mức độ hoàn thành',
                 edit_enter_value: 'Nhập giá trị',
 
@@ -1832,22 +1835,33 @@ export default {
                 calc_where: 'Trong đó',
                 calc_no_value: 'Chưa có giá trị',
                 calc_nan: 'Không tính được',
-                explain: ' - (Giá trị âm sẽ được tính là 0)',
+                explain: ' (Giá trị âm sẽ được tính là 0)',
                 eval_list: 'Danh sách các lần đánh giá',
                 title_eval: 'Đánh giá công việc',
 
                 btn_save_eval: 'Lưu đánh giá',
                 btn_get_info: 'Lấy thông tin',
-                note_not_eval: 'Bạn không thể chỉnh sửa đánh giá nữa vì đã quá 7 ngày sau lần đánh giá cuối cùng.',
+                note_not_eval: 'Đã quá 7 ngày sau ngày đánh giá. Bạn không thể chỉnh sửa thêm!',
                 note_eval: 'Số ngày còn lại để chỉnh sửa đánh giá: ',
-                
+
                 add_eval_of_this_month: 'Thêm đánh giá tháng này',
                 eval_of: 'Đánh giá tháng',
                 eval_from: 'Đánh giá từ ngày',
                 eval_to: 'Đến ngày',
-                store_info: 'Lưu công việc ra thông tin chung',
+                store_info: 'Lưu các giá trị trên vào thông tin công việc hiện tại',
                 bool_yes: 'Đúng',
                 bool_no: 'Sai',
+
+                detail_evaluation: 'Thông tin đánh giá công việc',
+                err_eval_start: 'Ngày đánh giá phải lớn hơn bằng ngày bắt đầu',
+                err_eval_end: 'Ngày đánh giá phải nhỏ hơn bằng ngày kết thúc',
+                err_eval_on_month: 'Ngày đánh giá phải là ngày trong tháng',
+
+                info_eval_month: 'Thông tin công việc trong đánh giá này',
+                explain_avg_rating: 'Do chưa có hoạt động nào được đánh giá nên mặc định điểm đánh giá hoạt động là 10',
+
+                auto_point_field: 'Điểm công việc tự động trong đánh giá này',
+                get_outside_info: 'Nhập tự động từ thông tin công việc hiện tại',
 
                 dashboard_created: 'Đã tạo',
                 dashboard_need_perform: 'Cần thực hiện',
@@ -1919,6 +1933,8 @@ export default {
                 enter_comment_action: "Nhập bình luận cho hoạt động",
                 create_comment_action: "Thêm bình luận",
                 stop_timer: "Dừng bấm giờ",
+                edit: "Chỉnh sửa",
+                delete: "Xóa",
 
 
                 // TODO: code_mesage_task_perform
@@ -2032,6 +2048,7 @@ export default {
                     accountable: 'Vai trò người phê duyệt',
 
                     err_range: 'Giá trị không được vượt quá khoảng 0-100',
+                    err_contribute: 'Tổng phần trăm đóng góp phải là 100',
                     err_empty: 'Giá trị không được để trống'
                 }
 
@@ -2603,7 +2620,7 @@ export default {
             }
         },
 
-        manage_warehouse:{
+        manage_warehouse: {
             material_manager: {
                 index: 'STT',
                 add: 'Thêm vật tư',

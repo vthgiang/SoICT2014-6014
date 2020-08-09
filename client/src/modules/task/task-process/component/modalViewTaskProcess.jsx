@@ -211,7 +211,7 @@ class ModalViewTaskProcess extends Component {
 
                             <div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
                                 <div className={selectedView === "process" ? "active tab-pane" : "tab-pane"} id="process-view">
-                                    <div className="row">
+                                    <div className="">
                                         {/* Quy trình công việc */}
                                         <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
                                             <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>

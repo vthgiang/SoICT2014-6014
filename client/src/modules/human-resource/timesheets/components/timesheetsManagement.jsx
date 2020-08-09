@@ -186,8 +186,8 @@ class TimesheetsManagement extends Component {
             })
             return {
                 STT: index + 1,
-                employeeNumber: x.employee.employeeNumber,
-                fullName: x.employee.fullName,
+                employeeNumber: x.employee ? x.employee.employeeNumber : "",
+                fullName: x.employee ? x.employee.fullName : "",
                 total: total / 2,
             };
 
@@ -235,7 +235,7 @@ class TimesheetsManagement extends Component {
             })
         }
 
-        if (timesheets.isLoading === false) {
+        if (timesheets.isLoading === false && timesheets.listTimesheets.length !== 0) {
             listTimesheets = timesheets.listTimesheets;
         }
 
@@ -317,8 +317,8 @@ class TimesheetsManagement extends Component {
                                     {
                                         listTimesheets.length !== 0 && listTimesheets.map((x, index) => (
                                             <tr key={index}>
-                                                <td style={{ paddingTop: 22 }}>{x.employee.employeeNumber}</td>
-                                                <td style={{ paddingTop: 22 }}>{x.employee.fullName}</td>
+                                                <td style={{ paddingTop: 22 }}>{x.employee ? x.employee.employeeNumber : null}</td>
+                                                <td style={{ paddingTop: 22 }}>{x.employee ? x.employee.fullName : null}</td>
                                                 <td style={{ paddingTop: 22 }}>
                                                     <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin chấm công"><i className="material-icons">edit</i></a>
                                                     <DeleteNotification

@@ -7,7 +7,7 @@ export const createKpiSetActions = {
     updateEmployeeKpiSetStatus,
     deleteEmployeeKpiSet,
     getAllEmployeeKpiSetInOrganizationalUnitsByMonth,
-    
+
     deleteEmployeeKpi,
     createEmployeeKpi,
     editEmployeeKpi,
@@ -17,9 +17,11 @@ export const createKpiSetActions = {
     createComment,
     editComment,
     deleteComment,
-    createCommentOfComment,
-    editCommentOfComment,
-    deleteCommentOfComment
+    createChildComment,
+    editChildComment,
+    deleteChildComment,
+    deleteFileComment,
+    deleteFileChildComment
 };
 
 
@@ -317,10 +319,10 @@ function deleteComment(setKpiId, commentId) {
 }
 
 
-function createCommentOfComment(setKpiId, commentId, data) {
+function createChildComment(setKpiId, commentId, data) {
     return dispatch => {
         dispatch({ type: createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_REQUEST });
-        createKpiSetService.createCommentOfComment(setKpiId, commentId, data)
+        createKpiSetService.createChildComment(setKpiId, commentId, data)
             .then(res => {
                 dispatch({
                     type: createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_SUCCESS,
@@ -336,10 +338,11 @@ function createCommentOfComment(setKpiId, commentId, data) {
     }
 }
 
-function editCommentOfComment(setKpiId, commentId, childCommentId, data) {
+function editChildComment(setKpiId, commentId, childCommentId, data) {
+    console.log(data)
     return dispatch => {
         dispatch({ type: createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_REQUEST });
-        createKpiSetService.editCommentOfComment(setKpiId, commentId, childCommentId, data)
+        createKpiSetService.editChildComment(setKpiId, commentId, childCommentId, data)
             .then(res => {
                 dispatch({
                     type: createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_SUCCESS,
@@ -355,10 +358,10 @@ function editCommentOfComment(setKpiId, commentId, childCommentId, data) {
     }
 }
 
-function deleteCommentOfComment(setKpiId, commentId, childCommentId) {
+function deleteChildComment(setKpiId, commentId, childCommentId) {
     return dispatch => {
         dispatch({ type: createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_REQUEST });
-        createKpiSetService.deleteCommentOfComment(setKpiId, commentId, childCommentId)
+        createKpiSetService.deleteChildComment(setKpiId, commentId, childCommentId)
             .then(res => {
                 dispatch({
                     type: createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_SUCCESS,
@@ -368,6 +371,44 @@ function deleteCommentOfComment(setKpiId, commentId, childCommentId) {
             .catch(error => {
                 dispatch({
                     type: createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
+
+function deleteFileComment(fileId, commentId, setKpiId) {
+    return dispatch => {
+        dispatch({ type: createKpiSetConstants.DELETE_FILE_COMMENT_REQUEST });
+        createKpiSetService.deleteFileComment(fileId, commentId, setKpiId)
+            .then(res => {
+                dispatch({
+                    type: createKpiSetConstants.DELETE_FILE_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createKpiSetConstants.DELETE_FILE_COMMENT_FAILURE,
+                    payload: error
+                })
+            })
+    }
+}
+
+function deleteFileChildComment(fileId, childCommentId, commentId, setKpiId) {
+    return dispatch => {
+        dispatch({ type: createKpiSetConstants.DELETE_FILE_CHILD_COMMENT_REQUEST });
+        createKpiSetService.deleteFileChildComment(fileId, childCommentId, commentId, setKpiId)
+            .then(res => {
+                dispatch({
+                    type: createKpiSetConstants.DELETE_FILE_CHILD_COMMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: createKpiSetConstants.DELETE_FILE_CHILD_COMMENT_FAILURE,
                     payload: error
                 })
             })

@@ -128,6 +128,7 @@ class DomainOfTaskResultsChart extends Component {
                 let idsUnit = this.props.units ? this.props.units : "[]";
                 await this.props.getTaskInOrganizationUnitByMonth(idsUnit, this.state.startMonth, this.state.endMonth);
             } else {
+
                 await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth, null, null, this.state.aPeriodOfTime);
                 await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth, this.state.aPeriodOfTime);
                 await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.startMonth, this.state.endMonth, this.state.aPeriodOfTime);
@@ -442,16 +443,7 @@ class DomainOfTaskResultsChart extends Component {
                         </div>
                     </section>
                 }
-                {/* {
-                    !this.props.units &&
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <label></label>
-                            <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
-                        </div>
-                    </div>
-                } */}
-
+                
                 {!TaskOrganizationUnitDashboard &&
                     <section className="form-inline">
                         <div className="form-group">

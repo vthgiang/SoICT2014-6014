@@ -20,6 +20,35 @@ import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
 import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
 
 
+import { is } from 'bpmn-js/lib/util/ModelUtil';
+import { isExpanded } from 'bpmn-js/lib/util/DiUtil';
+import ElementFactory from 'bpmn-js/lib/features/modeling/ElementFactory';
+import LabelEditingProvider from 'bpmn-js/lib/features/label-editing/LabelEditingProvider'
+
+
+ElementFactory.prototype._getDefaultSize = function (semantic) {
+
+   if (is(semantic, 'bpmn:Task')) {
+      return { width: 160, height: 130 };
+   }
+
+   if (is(semantic, 'bpmn:Gateway')) {
+      return { width: 50, height: 50 };
+   }
+
+   if (is(semantic, 'bpmn:Event')) {
+      return { width: 36, height: 36 };
+   }
+
+   if (is(semantic, 'bpmn:TextAnnotation')) {
+      return { width: 100, height: 30 };
+   }
+   return { width: 100, height: 80 };
+
+};
+
+
+
 //Xóa element khỏi palette 
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
 PaletteProvider.prototype.getPaletteEntries = function (element) {
@@ -73,8 +102,11 @@ class ModalCreateTaskProcess extends Component {
          additionalModules: [
             nyanDrawModule,
             nyanPaletteModule,
-            customModule
+            customModule,
+            // { moveCanvas: [ 'value', null ] },
+            {zoomScroll: [ 'value', '' ]}
          ],
+          
          moddleExtensions: {
             // qa: qaExtension
          }
@@ -102,6 +134,15 @@ class ModalCreateTaskProcess extends Component {
       });
    }
 
+   handleUpdateElement = () => {
+      const modeling = this.modeler.get('modeling');
+      let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+      modeling.updateProperties(element1, {
+         // ...element1,
+         info: this.state.info,
+      });
+   }
+
    handleChangeName = async (value) => {
       let { listOrganizationalUnit } = this.props
       await this.setState(state => {
@@ -117,7 +158,9 @@ class ModalCreateTaskProcess extends Component {
       const modeling = this.modeler.get('modeling');
       let element1 = this.modeler.get('elementRegistry').get(this.state.id);
       modeling.updateProperties(element1, {
-         name: value
+         // ...element1,
+         name: value,
+         info: this.state.info,
       });
    }
 
@@ -133,6 +176,7 @@ class ModalCreateTaskProcess extends Component {
             ...state,
          }
       })
+      this.handleUpdateElement();
    }
    handleChangeOrganizationalUnit = async (value) => {
       await this.setState(state => {
@@ -145,6 +189,7 @@ class ModalCreateTaskProcess extends Component {
             ...state,
          }
       })
+      this.handleUpdateElement();
    }
 
    handleChangeTemplate = async (value) => {
@@ -158,6 +203,7 @@ class ModalCreateTaskProcess extends Component {
             ...state,
          }
       })
+      this.handleUpdateElement();
    }
 
    handleChangeResponsible = async (value) => {
@@ -172,6 +218,7 @@ class ModalCreateTaskProcess extends Component {
             ...state,
          }
       })
+      this.handleUpdateElement();
    }
 
    handleChangeAccountable = async (value) => {
@@ -185,6 +232,7 @@ class ModalCreateTaskProcess extends Component {
             ...state,
          }
       })
+      this.handleUpdateElement();
    }
    shouldComponentUpdate(nextProps, nextState) {
       if (nextState.save === true) {
@@ -205,7 +253,15 @@ class ModalCreateTaskProcess extends Component {
       var eventBus = this.modeler.get('eventBus');
       eventBus.on('element.dblclick', 15000000, function (event) {
          return false; // will cancel event
-     });
+      });
+      
+      eventBus.on([
+         'create.end',
+         'autoPlace.end'
+       ], 250, () =>  {
+         this.modeler.get('directEditing').cancel()
+       });
+
       this.modeler.on('element.click', 1, (e) => this.interactPopup(e));
 
       this.modeler.on('shape.remove', 1000, (e) => this.deleteElements(e));
@@ -568,7 +624,7 @@ class ModalCreateTaskProcess extends Component {
                         <div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
                            <div className={selectedCreate === "process" ? "active tab-pane" : "tab-pane"} id="process-create">
 
-                              <div className="row">
+                              <div className="">
                                  {/* Quy trình công việc */}
                                  <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
                                     <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>

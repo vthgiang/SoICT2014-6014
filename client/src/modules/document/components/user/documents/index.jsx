@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, ToolTip } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
-import {RoleActions} from '../../../../super-admin/role/redux/actions';
-import {DepartmentActions} from '../../../../super-admin/organizational-unit/redux/actions';
-import DocumentInformation from './DocumentInformation';
+import { RoleActions } from '../../../../super-admin/role/redux/actions';
+import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
+import DocumentInformation from './documentInformation';
 import { getStorage } from '../../../../../config';
+import ListDownload from '../../administration/list-data/listDownload';
+import ListView from '../../administration/list-data/listView';
 
 class UserDocumentsData extends Component {
     constructor(props) {
@@ -14,11 +16,11 @@ class UserDocumentsData extends Component {
         this.state = { option: 'name', value: '', limit: 5, page: 1 }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.props.getAllRoles();
         this.props.getAllDepartments();
         this.props.getAllDocuments(getStorage('currentRole'));
-        this.props.getAllDocuments(getStorage('currentRole'), {page: this.state.page, limit: this.state.limit});
+        this.props.getAllDocuments(getStorage('currentRole'), { page: this.state.page, limit: this.state.limit });
     }
 
     toggleDocumentInformation = async (data) => {
@@ -36,16 +38,39 @@ class UserDocumentsData extends Component {
     requestDownloadDocumentFileScan = (id, fileName, numberVersion) => {
         this.props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
-
-    render() { 
-        const {translate} = this.props;
+    showDetailListView = async (data) => {
+        await this.setState({
+            currentRow: data,
+        });
+        window.$('#modal-list-view').modal('show');
+    }
+    showDetailListDownload = async (data) => {
+        await this.setState({
+            currentRow: data,
+        })
+        window.$('#modal-list-download').modal('show');
+    }
+    render() {
+        const { translate } = this.props;
         const docs = this.props.documents.user.data;
         const { paginate } = docs;
-        const {isLoading} = this.props.documents;
-        const {currentRow} = this.state;
+        const { isLoading } = this.props.documents;
+        const { currentRow } = this.state;
         console.log('propsss', this.props);
-        return ( 
+        return (
             <React.Fragment>
+                {
+                    currentRow &&
+                    <ListView
+                        docs={currentRow}
+                    />
+                }
+                {
+                    currentRow &&
+                    <ListDownload
+                        docs={currentRow}
+                    />
+                }
                 {
                     currentRow !== undefined &&
                     <DocumentInformation
@@ -69,7 +94,7 @@ class UserDocumentsData extends Component {
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
                     />
                 }
-                <SearchBar 
+                <SearchBar
                     columns={[
                         { title: translate('document.name'), value: 'name' },
                         { title: translate('document.description'), value: 'description' }
@@ -94,19 +119,19 @@ class UserDocumentsData extends Component {
                                 {translate('general.action')}
                                 <DataTableSetting
                                     columnArr={[
-                                        translate('document.name'), 
-                                        translate('document.description'), 
-                                        translate('document.issuing_date'), 
-                                        translate('document.effective_date'), 
-                                        translate('document.expired_date'), 
-                                        translate('document.upload_file'), 
+                                        translate('document.name'),
+                                        translate('document.description'),
+                                        translate('document.issuing_date'),
+                                        translate('document.effective_date'),
+                                        translate('document.expired_date'),
+                                        translate('document.upload_file'),
                                         translate('document.upload_file_scan'),
-                                        translate('document.views'), 
+                                        translate('document.views'),
                                         translate('document.downloads')
                                     ]}
                                     limit={this.state.limit}
                                     setLimit={this.setLimit}
-                                    hideColumnOption = {true}
+                                    hideColumnOption={true}
                                     tableId="table-manage-user-document"
                                 />
                             </th>
@@ -115,42 +140,38 @@ class UserDocumentsData extends Component {
                     <tbody>
                         {
                             paginate.length > 0 ?
-                            paginate.map(doc => 
-                            <tr key={doc._id}>
-                                <td>{doc.name}</td>
-                                <td>{doc.description ? doc.description: ""}</td>
-                                <td><DateTimeConverter dateTime={doc.versions[doc.versions.length-1].issuingDate} type="DD-MM-YYYY"/></td>
-                                <td><DateTimeConverter dateTime={doc.versions[doc.versions.length-1].effectiveDate} type="DD-MM-YYYY"/></td>
-                                <td><DateTimeConverter dateTime={doc.versions[doc.versions.length-1].expiredDate} type="DD-MM-YYYY"/></td>
-                                <td><a href="#" onClick={()=>this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
-                                <td><a href="#" onClick={()=>this.requestDownloadDocumentFileScan(doc._id, "SCAN_"+doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
-                                <td>{doc.numberOfView}<ToolTip type="latest_history" dataTooltip={doc.views.map(view=> {return (
-                                    <React.Fragment>
-                                        {view.viewer+", "} <DateTimeConverter dateTime={view.time}/>
-                                    </React.Fragment>
-                                ) })}/></td>
-                                <td>{doc.numberOfDownload}<ToolTip type="latest_history" dataTooltip={doc.downloads.map(download=> {return (
-                                    <React.Fragment>
-                                        {download.downloader+", "} <DateTimeConverter dateTime={download.time}/>
-                                    </React.Fragment>
-                                ) })}/></td>
-                                <td>
-                                    <a className="text-green" title={translate('document.view')} onClick={()=>this.toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
-                                    
-                                </td>
-                            </tr>):
-                            isLoading ? 
-                            <tr><td colSpan={10}>{translate('general.loading')}</td></tr>:<tr><td colSpan={10}>{translate('general.no_data')}</td></tr>
+                                paginate.map(doc =>
+                                    <tr key={doc._id}>
+                                        <td>{doc.name}</td>
+                                        <td>{doc.description ? doc.description : ""}</td>
+                                        <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].issuingDate} type="DD-MM-YYYY" /></td>
+                                        <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].effectiveDate} type="DD-MM-YYYY" /></td>
+                                        <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].expiredDate} type="DD-MM-YYYY" /></td>
+                                        <td><a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
+                                        <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
+                                        <td>
+                                            <a href="#modal-list-view" onClick={() => this.showDetailListView(doc)}>{doc.numberOfView}</a>
+                                        </td>
+                                        <td>
+                                            <a href="#modal-list-download" onClick={() => this.showDetailListDownload(doc)}>{doc.numberOfDownload}</a>
+                                        </td>
+                                        <td>
+                                            <a className="text-green" title={translate('document.view')} onClick={() => this.toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
+
+                                        </td>
+                                    </tr>) :
+                                isLoading ?
+                                    <tr><td colSpan={10}>{translate('general.loading')}</td></tr> : <tr><td colSpan={10}>{translate('general.no_data')}</td></tr>
                         }
-                        
+
                     </tbody>
                 </table>
-                <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={this.setPage}/> 
+                <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={this.setPage} />
             </React.Fragment>
-         );
+        );
     }
 
-    setPage = async(page) => {
+    setPage = async (page) => {
         this.setState({ page });
         const data = {
             limit: this.state.limit,
@@ -162,7 +183,7 @@ class UserDocumentsData extends Component {
     }
 
     setLimit = (number) => {
-        if (this.state.limit !== number){
+        if (this.state.limit !== number) {
             this.setState({ limit: number });
             const data = { limit: number, page: this.state.page };
             this.props.getAllDocuments(getStorage('currentRole'), data);
@@ -174,8 +195,8 @@ class UserDocumentsData extends Component {
             [title]: option
         });
     }
-    
-    searchWithOption = async() => {
+
+    searchWithOption = async () => {
         const data = {
             limit: this.state.limit,
             page: 1,
@@ -185,7 +206,7 @@ class UserDocumentsData extends Component {
         await this.props.getAllDocuments(getStorage('currentRole'), data);
     }
 }
- 
+
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
@@ -197,4 +218,4 @@ const mapDispatchToProps = {
     downloadDocumentFileScan: DocumentActions.downloadDocumentFileScan,
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(UserDocumentsData) );
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(UserDocumentsData));

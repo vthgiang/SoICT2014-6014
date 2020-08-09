@@ -23,7 +23,7 @@ class SelectMulti extends Component {
     }
 
     componentDidMount() {
-        const { id, options, onChange } = this.props;
+        const { id, options, onChange, disabled = false } = this.props;
         window.$("#" + id).multiselect(options);
 
         window.$("#" + id).on("change", () => {
@@ -33,7 +33,9 @@ class SelectMulti extends Component {
                 onChange(value);
             }
         })
-
+        if (disabled) {
+            window.$("#" + id).multiselect("disable");
+        }
     }
 
     getValue = () => { // Nếu không dùng onChange, có thể gọi phương thức này qua đối tượng ref để lấy các giá trị đã chọn
@@ -42,9 +44,12 @@ class SelectMulti extends Component {
 
     componentDidUpdate() {
         // Cập nhật lại danh sách lựa chọn (theo select với id là this.props.id)
-        const { id } = this.props;
+        const { id, disabled = false } = this.props;
         window.$("#" + id).multiselect('rebuild');
         window.$("#" + id).multiselect('select', this.state.value);
+        if (disabled) {
+            window.$("#" + id).multiselect("disable");
+        }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -68,11 +73,12 @@ class SelectMulti extends Component {
     }
 
     render() {
-        const { id, items, display = "", disabled = false } = this.props;
+        const { id, items, display = "" } = this.props;
+        const { value } = this.state;
         return (
             <React.Fragment>
                 <div className={`selectmulti ${display}`}>
-                    <select className="form-control" style={{ display: "none" }} ref="selectmulti" id={id} multiple="multiple" value={this.state.value} onChange={() => { }} disabled={disabled}>
+                    <select className="form-control" style={{ display: "none" }} ref="selectmulti" id={id} multiple="multiple" value={value} onChange={() => { }}>
                         {items.map(item => {
                             return <option key={item.value} value={item.value} disabled={item.disabled ? true : false}>{item.text}</option>
                         })}

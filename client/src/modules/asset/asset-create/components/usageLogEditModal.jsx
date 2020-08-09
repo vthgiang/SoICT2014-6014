@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
 import { AssetCreateValidator } from './combinedContent';
+
 import { UserActions } from '../../../super-admin/user/redux/actions';
 
 class UsageLogEditModal extends Component {
@@ -18,36 +21,21 @@ class UsageLogEditModal extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+            
+        if (day.length < 2) {
             day = '0' + day;
-
+        }
+            
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
-    // //6. Bắt sự kiện thay đổi "Người sử dụng"
-    // handleUsedByChange = (e) => {
-    //     const selectedIndex = e.target.options.selectedIndex;
-    //     this.setState({ userReceiveIndex: e.target.options[selectedIndex].getAttribute('data-key1') });
-    //     let value = e.target.value;
-    //     this.validateUsedBy(value, true);
-    // }
-    // validateUsedBy = (value, willUpdateState = true) => {
-    //     let msg = AssetCreateValidator.validateUsedBy(value, this.props.translate)
-    //     if (willUpdateState) {
-    //         this.setState(state => {
-    //             return {
-    //                 ...state,
-    //                 errorOnUsedBy: msg,
-    //                 usedBy: value,
-    //             }
-    //         });
-    //     }
-    //     return msg === undefined;
-    // }
     // /**
     //  * Bắt sự kiện thay đổi người sử dụng
     //  */
@@ -58,7 +46,7 @@ class UsageLogEditModal extends Component {
         });
     }
 
-    //Bắt sự kiện thay đổi "Thời gian bắt đầu sử dụng"
+    // Bắt sự kiện thay đổi "Thời gian bắt đầu sử dụng"
     handleStartDateChange = (value) => {
         this.validateStartDate(value, true);
     }
@@ -94,7 +82,7 @@ class UsageLogEditModal extends Component {
         return msg === undefined;
     }
 
-    //8. Bắt sự kiện thay đổi "Nội dung"
+    // Bắt sự kiện thay đổi "Nội dung"
     handleDescriptionChange = (e) => {
         let value = e.target.value;
         this.validateDescription(value, true);
@@ -116,9 +104,8 @@ class UsageLogEditModal extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result =
-            // this.validateUsedBy(this.state.usedBy, false) &&
-            this.validateDescription(this.state.description, false)
+        let result = this.validateDescription(this.state.description, false)
+
         return result;
     }
 
@@ -153,11 +140,13 @@ class UsageLogEditModal extends Component {
     }
 
     render() {
-        const { translate, id, user } = this.props;
-        var userlist = user.list;
+        const { id } = this.props;
+        const { translate, user } = this.props;
         const { usedBy, startDate, endDate, description, errorOnDescription } = this.state;
 
+        var userlist = user.list;
         console.log(this.state, 'this.state')
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -167,23 +156,11 @@ class UsageLogEditModal extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
+                    {/* Form chỉnh sửa thông tin sử dụng */}
                     <form className="form-group" id={`form-edit-usage-${id}`}>
                         <div className="col-md-12">
-                            {/* <div className="form-group">
-                                <label>Người sử dụng<span className="text-red">*</span></label>
-                                <select id="drops1" className="form-control" name="usedBy"
-                                    value={this.state.usedBy ? this.state.usedBy : ''}
-                                    placeholder="Please Select"
-                                    onChange={this.handleUsedByChange}>
-                                    <option value="" disabled>Please Select</option>
-                                    {user.list.length ? user.list.map((item, index) => {
-                                        return (
-                                            <option data-key1={index} key={index} value={item._id}>{item.name} - {item.email}</option>
-                                        )
-                                    }) : null}
-                                </select>
 
-                            </div> */}
+                            {/* Người sử dụng */}
                             <div className={`form-group`}>
                                 <label>Người sử dụng</label>
                                 <div>
@@ -200,6 +177,8 @@ class UsageLogEditModal extends Component {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Thời gian bắt đầu sử dụng */}
                             <div className="form-group">
                                 <label>Thời gian bắt đầu sử dụng</label>
                                 <DatePicker
@@ -209,6 +188,7 @@ class UsageLogEditModal extends Component {
                                 />
                             </div>
 
+                            {/* Thời gian kết thúc sử dụng */}
                             <div className="form-group">
                                 <label>Thời gian kết thúc sử dụng</label>
                                 <DatePicker
@@ -217,7 +197,9 @@ class UsageLogEditModal extends Component {
                                     onChange={this.handleEndDateChange}
                                 />
                             </div>
-                            <div className={`form-group ${errorOnDescription === undefined ? "" : "has-error"}`}>
+
+                            {/* Nội dung */}
+                            <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
                                 <label>Nội dung<span className="text-red">*</span></label>
                                 <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
                                     placeholder="Nội dung"></textarea>
@@ -236,10 +218,6 @@ function mapState(state) {
     return { user };
 };
 
-const actionCreators = {
-    getUser: UserActions.get,
-};
+const editModal = connect(mapState, null)(withTranslate(UsageLogEditModal));
 
-
-const editModal = connect((state) => ({ assetsManager: state.assetsManager, user: state.user }), null)(withTranslate(UsageLogEditModal));
 export { editModal as UsageLogEditModal };

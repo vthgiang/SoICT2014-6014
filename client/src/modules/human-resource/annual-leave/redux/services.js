@@ -1,5 +1,9 @@
-import { LOCAL_SERVER_API } from '../../../../env';
-import { sendRequest } from '../../../../helpers/requestHelper';
+import {
+    LOCAL_SERVER_API
+} from '../../../../env';
+import {
+    sendRequest
+} from '../../../../helpers/requestHelper';
 export const AnnualLeaveService = {
     searchAnnualLeaves,
     createAnnualLeave,
@@ -10,12 +14,13 @@ export const AnnualLeaveService = {
 /**
  * Lấy danh sách nghỉ phép
  * @data : dữ liệu key tìm kiếm
- */ 
+ */
 function searchAnnualLeaves(data) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/annualLeaves`,
         method: 'GET',
         params: {
+            numberMonth: data.numberMonth,
             organizationalUnits: data.organizationalUnits,
             position: data.position,
             employeeNumber: data.employeeNumber,

@@ -2,7 +2,7 @@ import { createKpiSetConstants } from "./constants";
 
 export function createEmployeeKpiSet(state = {}, action) {
   switch (action.type) {
-    case  createKpiSetConstants.GET_EMPLOYEE_KPI_SET_REQUEST:
+    case createKpiSetConstants.GET_EMPLOYEE_KPI_SET_REQUEST:
       return {
         loading: true,
         isLoading: true
@@ -15,7 +15,7 @@ export function createEmployeeKpiSet(state = {}, action) {
         isLoading: false
       };
     case createKpiSetConstants.GET_EMPLOYEE_KPI_SET_FAILURE:
-      return { 
+      return {
         error: action.payload,
         isLoading: false
       };
@@ -37,7 +37,7 @@ export function createEmployeeKpiSet(state = {}, action) {
         error: action.payload,
         isLoading: false
       };
-    case  createKpiSetConstants.EDIT_EMPLOYEE_KPI_SET_REQUEST:
+    case createKpiSetConstants.EDIT_EMPLOYEE_KPI_SET_REQUEST:
       return {
         ...state,
         // adding: true
@@ -45,7 +45,7 @@ export function createEmployeeKpiSet(state = {}, action) {
         isLoading: false
       };
     case createKpiSetConstants.EDIT_EMPLOYEE_KPI_SET_SUCCESS:
-    
+
       return {
         ...state,
         editing: false,
@@ -57,11 +57,11 @@ export function createEmployeeKpiSet(state = {}, action) {
         isLoading: false
       };
     case createKpiSetConstants.EDIT_EMPLOYEE_KPI_SET_FAILURE:
-      return { 
+      return {
         error: action.payload,
         isLoading: false
       };
-    case  createKpiSetConstants.UPDATE_EMPLOYEE_KPI_SET_STATUS_REQUEST:
+    case createKpiSetConstants.UPDATE_EMPLOYEE_KPI_SET_STATUS_REQUEST:
       return {
         ...state,
         editing: true,
@@ -75,11 +75,11 @@ export function createEmployeeKpiSet(state = {}, action) {
         isLoading: false
       };
     case createKpiSetConstants.UPDATE_EMPLOYEE_KPI_SET_STATUS_FAILURE:
-      return { 
+      return {
         error: action.payload,
         isLoading: false
       };
-    case  createKpiSetConstants.DELETE_EMPLOYEE_KPI_SET_REQUEST:
+    case createKpiSetConstants.DELETE_EMPLOYEE_KPI_SET_REQUEST:
       return {
         ...state,
         deleting: true,
@@ -93,7 +93,7 @@ export function createEmployeeKpiSet(state = {}, action) {
         isLoading: false
       };
     case createKpiSetConstants.DELETE_EMPLOYEE_KPI_SET_FAILURE:
-      return { 
+      return {
         error: action.payload,
         isLoading: false
       };
@@ -134,12 +134,12 @@ export function createEmployeeKpiSet(state = {}, action) {
         isLoading: false
       };
     case createKpiSetConstants.DELETE_EMPLOYEE_KPI_FAILURE:
-      return { 
+      return {
         error: action.payload,
         isLoading: false
       };
 
-    case  createKpiSetConstants.CREATE_EMPLOYEE_KPI_REQUEST:
+    case createKpiSetConstants.CREATE_EMPLOYEE_KPI_REQUEST:
       return {
         loading: true,
         isLoading: false
@@ -151,12 +151,12 @@ export function createEmployeeKpiSet(state = {}, action) {
         isLoading: false
       };
     case createKpiSetConstants.CREATE_EMPLOYEE_KPI_FAILURE:
-      return { 
+      return {
         error: action.payload,
         isLoading: false
       };
 
-    case  createKpiSetConstants.EDIT_EMPLOYEE_KPI_REQUEST:
+    case createKpiSetConstants.EDIT_EMPLOYEE_KPI_REQUEST:
       return {
         ...state,
         currentKPI: {
@@ -170,26 +170,26 @@ export function createEmployeeKpiSet(state = {}, action) {
       };
     case createKpiSetConstants.EDIT_EMPLOYEE_KPI_SUCCESS:
       return {
-          ...state,
-          currentKPI: {
-            ...state.currentKPI,
-            kpis: state.currentKPI.kpis.map(target =>
-              target._id === action.payload._id
-                ? action.payload : target)
-          },
-          isLoading: false
+        ...state,
+        currentKPI: {
+          ...state.currentKPI,
+          kpis: state.currentKPI.kpis.map(target =>
+            target._id === action.payload._id
+              ? action.payload : target)
+        },
+        isLoading: false
       };
     case createKpiSetConstants.EDIT_EMPLOYEE_KPI_FAILURE:
-      return { 
+      return {
         error: action.payload,
         isLoading: false
       };
 
-    case  createKpiSetConstants.CREATE_EMPLOYEE_KPI_SET_REQUEST:
-        return {
-          adding: true,
-          isLoading: false
-        };
+    case createKpiSetConstants.CREATE_EMPLOYEE_KPI_SET_REQUEST:
+      return {
+        adding: true,
+        isLoading: false
+      };
     case createKpiSetConstants.CREATE_EMPLOYEE_KPI_SET_SUCCESS:
       return {
         ...state,
@@ -198,7 +198,7 @@ export function createEmployeeKpiSet(state = {}, action) {
         isLoading: false
       };
     case createKpiSetConstants.CREATE_EMPLOYEE_KPI_SET_FAILURE:
-      return { 
+      return {
         error: action.payload,
         isLoading: false
       };
@@ -206,7 +206,7 @@ export function createEmployeeKpiSet(state = {}, action) {
       return {
         ...state,
         adding: true
-      }  
+      }
     case createKpiSetConstants.CREATE_COMMENT_SUCCESS:
       return {
         ...state,
@@ -214,7 +214,7 @@ export function createEmployeeKpiSet(state = {}, action) {
           ...state.currentKPI,
           comments: action.payload
         }
-      } 
+      }
     case createKpiSetConstants.CREATE_COMMENT_FAILURE:
       return {
         error: action.payload,
@@ -223,7 +223,7 @@ export function createEmployeeKpiSet(state = {}, action) {
       return {
         ...state,
         adding: true
-      }  
+      }
     case createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_SUCCESS:
       return {
         ...state,
@@ -231,16 +231,16 @@ export function createEmployeeKpiSet(state = {}, action) {
           ...state.currentKPI,
           comments: action.payload
         }
-      } 
+      }
     case createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_FAILURE:
       return {
         ...state,
         error: action.payload,
-      }      
+      }
     case createKpiSetConstants.EDIT_COMMENT_REQUEST:
       return {
         ...state,
-        editing : true
+        editing: true
       }
     case createKpiSetConstants.EDIT_COMMENT_SUCCESS:
       return {
@@ -249,18 +249,18 @@ export function createEmployeeKpiSet(state = {}, action) {
         currentKPI: {
           ...state.currentKPI,
           comments: action.payload,
-          
+
         }
-      }    
+      }
     case createKpiSetConstants.EDIT_COMMENT_FAILURE:
       return {
         ...state,
         error: action.payload,
-      } 
-      case createKpiSetConstants.DELETE_COMMENT_REQUEST:
+      }
+    case createKpiSetConstants.DELETE_COMMENT_REQUEST:
       return {
         ...state,
-        editing : true
+        editing: true
       }
     case createKpiSetConstants.DELETE_COMMENT_SUCCESS:
       return {
@@ -269,7 +269,7 @@ export function createEmployeeKpiSet(state = {}, action) {
           ...state.currentKPI,
           comments: action.payload
         }
-      }    
+      }
     case createKpiSetConstants.DELETE_COMMENT_FAILURE:
       return {
         ...state,
@@ -279,7 +279,7 @@ export function createEmployeeKpiSet(state = {}, action) {
       return {
         ...state,
         editing: true
-      }  
+      }
     case createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_SUCCESS:
       return {
         ...state,
@@ -287,17 +287,17 @@ export function createEmployeeKpiSet(state = {}, action) {
           ...state.currentKPI,
           comments: action.payload
         }
-      } 
+      }
     case createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_FAILURE:
       return {
         ...state,
         error: action.payload,
-      }        
+      }
     case createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_REQUEST:
       return {
         ...state,
         deleting: true
-      }  
+      }
     case createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_SUCCESS:
       return {
         ...state,
@@ -305,12 +305,48 @@ export function createEmployeeKpiSet(state = {}, action) {
           ...state.currentKPI,
           comments: action.payload
         }
-      } 
+      }
     case createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_FAILURE:
       return {
         ...state,
         error: action.payload,
-      }            
+      }
+    case createKpiSetConstants.DELETE_FILE_COMMENT_REQUEST:
+      return {
+        ...state,
+        deleting: true
+      }
+    case createKpiSetConstants.DELETE_FILE_COMMENT_SUCCESS:
+      return {
+        ...state,
+        currentKPI: {
+          ...state.currentKPI,
+          comments: action.payload
+        }
+      }
+    case createKpiSetConstants.DELETE_FILE_COMMENT_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+      }
+    case createKpiSetConstants.DELETE_FILE_CHILD_COMMENT_REQUEST:
+      return {
+        ...state,
+        deleting: true
+      }
+    case createKpiSetConstants.DELETE_FILE_CHILD_COMMENT_SUCCESS:
+      return {
+        ...state,
+        currentKPI: {
+          ...state.currentKPI,
+          comments: action.payload
+        }
+      }
+    case createKpiSetConstants.DELETE_FILE_CHILD_COMMENT_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+      }
     default:
       return state
   }

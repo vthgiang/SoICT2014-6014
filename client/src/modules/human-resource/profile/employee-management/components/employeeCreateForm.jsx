@@ -25,7 +25,6 @@ class EmployeeCreateForm extends Component {
                 educationalLevel: "12/12",
                 professionalSkill: "unavailable",
                 status: 'active',
-                startingDate: this.formatDate2(Date.now()),
                 identityCardDate: this.formatDate2(Date.now()),
                 birthdate: this.formatDate2(Date.now()),
                 taxDateOfIssue: this.formatDate2(Date.now()),
@@ -160,9 +159,9 @@ class EmployeeCreateForm extends Component {
         })
     }
 
-    // function kiểm tra các trường bắt buộc phải nhập
+    // Function kiểm tra các trường bắt buộc phải nhập
     validatorInput = (value) => {
-        if (value !== undefined && value.trim() !== '') {
+        if (value !== undefined && value.toString().trim() !== '') {
             return true;
         }
         return false;
@@ -170,14 +169,30 @@ class EmployeeCreateForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validatorInput(this.state.employee.employeeNumber) && this.validatorInput(this.state.employee.employeeTimesheetId) &&
-            this.validatorInput(this.state.employee.fullName) && this.validatorInput(this.state.employee.birthdate) &&
-            this.validatorInput(this.state.employee.emailInCompany) && this.validatorInput(this.state.employee.identityCardNumber) &&
-            this.validatorInput(this.state.employee.identityCardDate) && this.validatorInput(this.state.employee.identityCardAddress) &&
-            this.validatorInput(this.state.employee.phoneNumber) && this.validatorInput(this.state.employee.temporaryResidence) &&
-            this.validatorInput(this.state.employee.taxRepresentative) && this.validatorInput(this.state.employee.taxNumber) &&
-            this.validatorInput(this.state.employee.taxDateOfIssue) && this.validatorInput(this.state.employee.taxAuthority) &&
-            this.validatorInput(this.state.employee.startingDate);
+        const { employee } = this.state;
+        let result = this.validatorInput(employee.employeeNumber) && this.validatorInput(employee.employeeTimesheetId) &&
+            this.validatorInput(employee.fullName) && this.validatorInput(employee.birthdate) &&
+            this.validatorInput(employee.emailInCompany) && this.validatorInput(employee.identityCardNumber) &&
+            this.validatorInput(employee.identityCardDate) && this.validatorInput(employee.identityCardAddress) &&
+            this.validatorInput(employee.phoneNumber) && this.validatorInput(employee.temporaryResidence) &&
+            this.validatorInput(employee.taxRepresentative) && this.validatorInput(employee.taxNumber) &&
+            this.validatorInput(employee.taxDateOfIssue) && this.validatorInput(employee.taxAuthority);
+
+        if (employee.healthInsuranceStartDate && employee.healthInsuranceEndDate) {
+            if (new Date(employee.healthInsuranceEndDate).getTime() < new Date(employee.healthInsuranceStartDate).getTime()) {
+                return false;
+            }
+        } else if ((employee.healthInsuranceStartDate && !employee.healthInsuranceEndDate) ||
+            (!employee.healthInsuranceStartDate && employee.healthInsuranceEndDate)) {
+            return false;
+        }
+        if (employee.leavingDate && employee.startingDate) {
+            if (new Date(employee.leavingDate).getTime() < new Date(employee.startingDate).getTime()) {
+                return false;
+            }
+        } else if (employee.leavingDate && !employee.startingDate) {
+            return false;
+        }
         return result;
     }
 
