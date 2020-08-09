@@ -25,8 +25,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
     }
 
     componentDidMount = () => {
-        console.log("999", this.props.organizationalUnitId, this.props.month)
-        this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId);
+        this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
         this.props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
         this.props.getAllTaskOfOrganizationalUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
 
@@ -41,9 +40,9 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
     shouldComponentUpdate = async (nextProps, nextState) => {
         if (this.state.currentRole !== localStorage.getItem("currentRole")) {
-            await this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"));
-            await this.props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"));
-            await this.props.getAllTaskOfOrganizationalUnit(localStorage.getItem("currentRole"));
+            await this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
+            await this.props.getAllEmployeeKpiInOrganizationalUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
+            await this.props.getAllTaskOfOrganizationalUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
             
             this.setState(state => {
                 return {
@@ -57,7 +56,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         if (nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
-            console.log(nextProps.organizationalUnitId)
             await this.props.getCurrentKPIUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
             await this.props.getAllEmployeeKpiInOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
             await this.props.getAllTaskOfOrganizationalUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month)
@@ -73,7 +71,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if(!nextProps.createKpiUnit.currentKPI) {
+            if (!nextProps.createKpiUnit.currentKPI) {
                 return false            
             }
 
@@ -101,6 +99,20 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                     dataStatus: this.DATA_STATUS.FINISHED,
                 };
             });
+        }
+
+        
+        if (!nextProps.createKpiUnit.currentKPI && this.state.dataStatus === this.DATA_STATUS.FINISHED) {
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.QUERYING,
+                    willUpdate: true
+                }
+            });
+
+            return false;
         }
 
         return false;
@@ -405,7 +417,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
             numberOfChildKpis,
             weight
         ]
-
+        
         if(data) {
             titleX = data.map(x => x.name);
             titleX = ['x'].concat(titleX);
