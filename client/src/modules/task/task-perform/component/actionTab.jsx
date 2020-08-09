@@ -1370,10 +1370,21 @@ class ActionTab extends Component {
                                     files.map((item, index) => {
                                         return (
                                             <div className="item-box" key={index}>
+                                                {(currentUser === item.creator._id) &&
+                                                <div className="btn-group pull-right">
+                                                    <span data-toggle="dropdown">
+                                                        <i className="fa fa-ellipsis-h"></i>
+                                                    </span>
+                                                    <ul className="dropdown-menu">
+                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditAction(item._id)} >{translate("task.task_perform.edit")}</a></li>
+                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteFileTask(item._id, task._id)} >{translate("task.task_perform.delete")}</a></li>
+                                                    </ul>
+                                                </div>}
                                                 <div>
                                                     <strong>{item.creator.name} </strong>
                                                     {item.description}
                                                 </div>
+                                                
                                                 <a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, item.url, item.name)} >{item.name}</a>
                                             </div>
                                         )
@@ -1381,24 +1392,26 @@ class ActionTab extends Component {
                                 }
                             </div>
                             <React.Fragment>
-                                <img className="user-img-level1" src={(LOCAL_SERVER_API + auth.user.avatar)} alt="user avatar" />
-                                <ContentMaker
-                                    inputCssClass="text-input-level1" controlCssClass="tool-level1"
-                                    onFilesChange={this.onTaskFilesChange}
-                                    onFilesError={this.onFilesError}
-                                    files={taskFiles.files}
-                                    text={taskFiles.description}
-                                    placeholder={translate("task.task_perform.enter_description")}
-                                    submitButtonText={translate("task.task_perform.create_document")}
-                                    onTextChange={(e) => {
-                                        let value = e.target.value;
-                                        this.setState(state => {
-                                            return { ...state, taskFiles: { ...state.taskFiles, description: value } }
+                                <div style = {{marginTop: '15px' }}>
+                                    <img className="user-img-level1" src={(LOCAL_SERVER_API + auth.user.avatar)} alt="user avatar" />
+                                    <ContentMaker
+                                        inputCssClass="text-input-level1" controlCssClass="tool-level1"
+                                        onFilesChange={this.onTaskFilesChange}
+                                        onFilesError={this.onFilesError}
+                                        files={taskFiles.files}
+                                        text={taskFiles.description}
+                                        placeholder={translate("task.task_perform.enter_description")}
+                                        submitButtonText={translate("task.task_perform.create_document")}
+                                        onTextChange={(e) => {
+                                            let value = e.target.value;
+                                            this.setState(state => {
+                                                return { ...state, taskFiles: { ...state.taskFiles, description: value } }
 
-                                        })
-                                    }}
-                                    onSubmit={(e) => { this.handleUploadFile(task._id, currentUser) }}
-                                />
+                                            })
+                                        }}
+                                        onSubmit={(e) => { this.handleUploadFile(task._id, currentUser) }}
+                                    />
+                                </div>
                             </React.Fragment>
                         </div>
 
@@ -1475,6 +1488,7 @@ const actionCreators = {
     deleteFileTaskComment: performTaskAction.deleteFileTaskComment,
     deleteFileChildTaskComment: performTaskAction.deleteFileChildTaskComment,
     getTaskLog: performTaskAction.getTaskLog,
+    deleteFileTask: performTaskAction.deleteFileTask
 };
 
 const actionTab = connect(mapState, actionCreators)(withTranslate(ActionTab));

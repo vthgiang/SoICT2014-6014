@@ -178,10 +178,9 @@ class Comment extends Component {
             }
         })
     }
-    editChildComment = async (e, description, childCommentId,commentId, setKpiId) => {
+    editChildComment = async (e, description, childCommentId, commentId, setKpiId) => {
         e.preventDefault();
         let { newChildCommentEdited } = this.state;
-        console.log(newChildCommentEdited)
         let data = new FormData();
         newChildCommentEdited.files.forEach(x => {
             data.append("files", x)
@@ -311,18 +310,18 @@ class Comment extends Component {
         }
     }
     render() {
-        var comment
+        var comments
         var minRows = 3, maxRows = 20
-        const { editComment, editChildComment, showChildComment, currentUser, newCommentEdited, newChildCommentEdited, showModalDelete, deleteFile } = this.state
+        const { editComment, editChildComment, showChildComment, currentUser, newCommentEdited, newChildCommentEdited, showModalDelete, deleteFile, childComment } = this.state
         const { currentKPI, auth, translate } = this.props
-        comment = currentKPI.comments
+        comments = currentKPI.comments
         return (
             <React.Fragment>
-                {comment ?
+                {comments ?
                     //Hiển thị bình luận của công việc
-                    comment.map(item => {
+                    comments.map(item => {
                         return (
-                            <div className="clearfix" key={item._id}>
+                            <div key={item._id}>
                                 <img className="user-img-level1" src={(LOCAL_SERVER_API + item.creator.avatar)} alt="User Image" />
                                 {editComment !== item._id && // Khi đang edit thì ẩn đi
                                     <React.Fragment>
@@ -509,22 +508,6 @@ class Comment extends Component {
                                                             }
                                                         </div>
                                                     </React.Fragment>
-
-                                                    // <div>
-                                                    //     <div className="text-input-level2">
-                                                    //         <textarea
-                                                    //             defaultValue={child.description}
-                                                    //             ref={input => this.newChildComment[child._id] = input}
-                                                    //         />
-                                                    //     </div>
-                                                    //     <ul className="list-inline tool-level2" style={{ textAlign: "right" }}>
-                                                    //         <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => this.editChildComment(e, currentKPI._id, item._id, child._id)}>Gửi chỉnh sửa </a></li>
-                                                    //         <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => this.handleEditChildComment(e)}>Hủy bỏ</a></li>
-                                                    //     </ul>
-                                                    //     <div className="tool-level2">
-
-                                                    //     </div>
-                                                    // </div>
                                                 }
                                             </div>;
                                             return true;
@@ -537,8 +520,8 @@ class Comment extends Component {
                                                 inputCssClass="text-input-level2" controlCssClass="tool-level2"
                                                 onFilesChange={this.onCommentFilesChange}
                                                 onFilesError={this.onFilesError}
-                                                files={this.state.childComment.files}
-                                                text={this.state.childComment.description}
+                                                files={childComment.files}
+                                                text={childComment.description}
                                                 placeholder={translate('task.task_perform.enter_comment')}
                                                 submitButtonText={translate('task.task_perform.create_comment')}
                                                 onTextChange={(e) => {
@@ -579,8 +562,8 @@ class Comment extends Component {
 }
 
 function mapState(state) {
-    const { auth } = state;
-    return { auth };
+    const { auth, currentKPI } = state;
+    return { auth, currentKPI };
 }
 const actionCreators = {
     editComment: createKpiSetActions.editComment,

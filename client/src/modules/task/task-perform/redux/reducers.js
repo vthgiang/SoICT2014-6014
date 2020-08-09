@@ -416,7 +416,22 @@ export function performtasks(state = {}, action) {
                 error: action.error,
                 isLoading: false,
             };
-
+        case performTaskConstants.DELETE_FILE_TASK_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case performTaskConstants.DELETE_FILE_TASK_SUCCESS:
+            var files = { ...state.task, files: action.payload}
+            return {
+                ...state,
+                task: files
+            };
+        case performTaskConstants.DELETE_FILE_TASK_FAILURE:
+            return {
+                error: action.error,
+                isLoading: false,
+            };
         case taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_REQUEST:
             return {
                 ...state,
