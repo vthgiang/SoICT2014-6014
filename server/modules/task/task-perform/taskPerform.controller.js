@@ -54,14 +54,14 @@ exports.getActiveTimesheetLog = async (req, res) => {
 exports.startTimesheetLog = async (req, res) => {
     try {
         let timerStatus = await PerformTaskService.startTimesheetLog(req.params, req.body);
-        await LogInfo(req.user.email, ` start timer `,req.user.company)
+        await LogInfo(req.user.email, ` start timer `, req.user.company)
         res.status(200).json({
             success: true,
             messages: ['start_timer_success'],
             content: timerStatus
         })
     } catch (error) {
-        await LogError(req.user.email, ` start timer `,req.user.company)
+        await LogError(req.user.email, ` start timer `, req.user.company)
         res.status(400).json({
             success: false,
             messages: ['start_timer_fail'],
@@ -76,14 +76,14 @@ exports.startTimesheetLog = async (req, res) => {
 exports.stopTimesheetLog = async (req, res) => {
     try {
         let timer = await PerformTaskService.stopTimesheetLog(req.params, req.body);
-        await LogInfo(req.user.email, ` stop timer `,req.user.company)
+        await LogInfo(req.user.email, ` stop timer `, req.user.company)
         res.status(200).json({
             success: true,
             messages: ['stop_timer_success'],
             content: timer
         })
     } catch (error) {
-        await LogError(req.user.email, ` stop timer `,req.user.company)
+        await LogError(req.user.email, ` stop timer `, req.user.company)
         res.status(400).json({
             success: false,
             messages: ['stop_timer_fail'],
@@ -472,7 +472,7 @@ evaluationAction = async (req, res) => {
  */
 exports.confirmAction = async (req, res) => {
     try {
-        let abc = await PerformTaskService.confirmAction(req.params,req.body);
+        let abc = await PerformTaskService.confirmAction(req.params, req.body);
         await LogInfo(req.user.email, ` confirm action  `, req.user.company)
         res.status(200).json({
             success: true,
@@ -517,26 +517,47 @@ exports.uploadFile = async (req, res) => {
         })
     }
 }
-
+/**
+ * Xóa file của task
+ */
+exports.deleteFileTask = async (req, res) => {
+    // try {
+        let task = await PerformTaskService.deleteFileTask(req.params);
+        console.log(task)
+        await LogInfo(req.user.email, ` delete file of task  `, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['delete_file_success'],
+            content: task
+        })
+    // } catch (error) {
+    //     await LogError(req.user.email, `delete file of task  `, req.user.company);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['delete_file_fail'],
+    //         content: error
+    //     })
+    // }
+}
 /**
  * Xóa file của hoạt động
  */
 exports.deleteFileOfAction = async (req, res) => {
     try {
-    let comment = await PerformTaskService.deleteFileOfAction(req.params);
-                                                                                                                                                                                                                                                                                                         await LogInfo(req.user.email, ` delete file of task  `, req.user.company);
-    res.status(200).json({
-        success: true,
-        messages: ['delete_file_success'],
-        content: comment
-    })
+        let comment = await PerformTaskService.deleteFileOfAction(req.params);
+        await LogInfo(req.user.email, ` delete file of task action  `, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['delete_file_success'],
+            content: comment
+        })
     } catch (error) {
-    await LogError(req.user.email, `delete file of task  `, req.user.company);
-    res.status(400).json({
-        success: false,
-        messages: ['delete_file_fail'],
-        content: error
-    })
+        await LogError(req.user.email, `delete file of task action  `, req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['delete_file_fail'],
+            content: error
+        })
     }
 }
 /**
@@ -586,7 +607,7 @@ exports.deleteFileTaskComment = async (req, res) => {
  */
 exports.addTaskLog = async (req, res) => {
     try {
-        let task = await PerformTaskService.addTaskLog(req.params,req.body);
+        let task = await PerformTaskService.addTaskLog(req.params, req.body);
         await LogInfo(req.user.email, ` CREATE_TASK_LOG  `, req.user.company);
         res.status(200).json({
             success: true,
@@ -631,18 +652,18 @@ exports.getTaskLog = async (req, res) => {
  * @param {*} res 
  */
 exports.editTask = async (req, res) => {
-    if(req.body.type === 'all') {
-        if(req.body.role === 'responsible') {
+    if (req.body.type === 'all') {
+        if (req.body.role === 'responsible') {
             editTaskByResponsibleEmployees(req, res);
         }
-        else if(req.body.role === 'accountable'){
+        else if (req.body.role === 'accountable') {
             editTaskByAccountableEmployees(req, res);
         }
     }
-    else if(req.body.type === 'edit_archived') {
+    else if (req.body.type === 'edit_archived') {
         editArchivedOfTask(req, res);
     }
-    else if(req.body.type === 'edit_status') {
+    else if (req.body.type === 'edit_status') {
         editTaskStatus(req, res);
     }
 }
@@ -653,13 +674,13 @@ exports.editTask = async (req, res) => {
  * @param {*} res 
  */
 exports.evaluateTask = async (req, res) => {
-    if(req.body.role === 'responsible'){
+    if (req.body.role === 'responsible') {
         evaluateTaskByResponsibleEmployees(req, res);
     }
-    else if(req.body.role === 'consulted') {
+    else if (req.body.role === 'consulted') {
         evaluateTaskByConsultedEmployees(req, res);
     }
-    else if(req.body.role === 'accountable') {
+    else if (req.body.role === 'accountable') {
         evaluateTaskByAccountableEmployees(req, res);
     }
 }
@@ -785,13 +806,13 @@ evaluateTaskByAccountableEmployees = async (req, res) => {
  */
 editArchivedOfTask = async (req, res) => {
     try {
-    let task = await PerformTaskService.editArchivedOfTask(req.params.taskId);
-    await LogInfo(req.user.email, ` edit status archived of task  `, req.user.company);
-    res.status(200).json({
-        success: true,
-        messages: ['edit_status_archived_of_task_success'],
-        content: task
-    })
+        let task = await PerformTaskService.editArchivedOfTask(req.params.taskId);
+        await LogInfo(req.user.email, ` edit status archived of task  `, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_status_archived_of_task_success'],
+            content: task
+        })
     } catch (error) {
         await LogError(req.user.email, ` edit status of task `, req.user.company);
         res.status(400).json({

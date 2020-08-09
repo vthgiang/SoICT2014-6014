@@ -1782,7 +1782,8 @@ export default {
                 enter_comment_action: "Comment of action",
                 create_comment_action: "Create comment",
                 stop_timer: "Stop timer",
-
+                edit: "Edit",
+                delete: "Delete",
 
 
 

@@ -1270,7 +1270,7 @@ exports.getAllTaskOfChildrenOrganizationalUnit = async (companyId, roleId, month
     let tasksOfChildrenOrganizationalUnit = [], childrenOrganizationalUnits;
 
     childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(companyId, roleId, organizationalUnitId);
-
+    
     for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
         tasksOfChildrenOrganizationalUnit.push(await this.getAllTaskOfOrganizationalUnit(roleId, childrenOrganizationalUnits[i].id, month));
         tasksOfChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })

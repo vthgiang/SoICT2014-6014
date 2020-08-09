@@ -1933,6 +1933,8 @@ export default {
                 enter_comment_action: "Nhập bình luận cho hoạt động",
                 create_comment_action: "Thêm bình luận",
                 stop_timer: "Dừng bấm giờ",
+                edit: "Chỉnh sửa",
+                delete: "Xóa",
 
 
                 // TODO: code_mesage_task_perform

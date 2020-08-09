@@ -269,8 +269,6 @@ exports.createComment = async (params, body, files) => {
  * Sửa bình luận
  */
 exports.editComment = async (params, body, files) => {
-    console.log(files)
-    console.log(params)
     let commentss = await EmployeeKpiSet.updateOne(
         { "_id": params.kpiId, "comments._id": params.commentId },
         {
@@ -423,7 +421,6 @@ exports.deleteChildComment = async (params) => {
         { $unwind: "$files" },
         { $replaceRoot: { newRoot: "$files" } }
     ])
-    console.log(files)
     let i = 0
     for (i = 0; i < files.length; i++) {
         fs.unlinkSync(files[i].url)
@@ -455,7 +452,6 @@ exports.deleteFileComment = async (params) => {
         { $replaceRoot: { newRoot: "$files" } },
         { $match: { "_id": mongoose.Types.ObjectId(params.fileId) } }
     ])
-
     fs.unlinkSync(file[0].url)
 
     let comment1 = await EmployeeKpiSet.update(
