@@ -181,18 +181,38 @@ class TasksSchedule extends Component {
 
     if (inprocessTasks) {
       for (let i = 1; i <= inprocessTasks.length; i++) {
-        let start_time = moment(new Date(inprocessTasks[i - 1].startDate));
-        let end_time = moment(new Date(inprocessTasks[i - 1].endDate));
+        let startTime, endTime, start_time, end_time, title1, title2, groupTask, titleTask;
+        let multi = false;
         let responsibleEmployeeIds = [];
-        let title;
+        let responsibleEmployeeNames = [];
+        let dayOfTask;
+        startTime = new Date(inprocessTasks[i - 1].startDate);
+        endTime = new Date(inprocessTasks[i - 1].endDate);
+        start_time = moment(startTime);
+        end_time = moment(endTime);
+        dayOfTask = (endTime - startTime) / 86400000;
+        console.log("start. end", dayOfTask)
         inprocessTasks[i - 1].responsibleEmployees.map(x => {
-          responsibleEmployeeIds.push(x._id)
+          responsibleEmployeeIds.push(x._id);
+          responsibleEmployeeNames.push(x.name);
         });
-        title = inprocessTasks[i - 1].name + " - " + inprocessTasks[i - 1].progress + "%"
+        title1 = inprocessTasks[i - 1].name + " - " + inprocessTasks[i - 1].progress + "%";
+        title2 = inprocessTasks[i - 1].name + " - " + responsibleEmployeeNames.join(" - ") + " - " + inprocessTasks[i - 1].progress + "%";
+        if (responsibleEmployeeIds.length > 1) {
+          multi = true;
+        }
+        if (multi) {
+          titleTask = title2;
+          groupTask = "multi-responsible-employee"
+        }
+        else {
+          titleTask = title1;
+          groupTask = responsibleEmployeeIds[0];
+        }
         taskDurations.push({
           id: parseInt(i),
-          group: responsibleEmployeeIds[0],
-          title: title,
+          group: groupTask,
+          title: titleTask,
           canMove: false,
 
           start_time: start_time,
@@ -214,7 +234,7 @@ class TasksSchedule extends Component {
       if (inprocessTasks.length) {
         let x = document.getElementsByClassName("rct-item");
         if (x.length) for (let i = 0; i < x.length; i++) {
-          this.displayTaskProgress(inprocessTasks[i].progress, x[i]);
+          if (inprocessTasks[i]) this.displayTaskProgress(inprocessTasks[i].progress, x[i]);
         }
       }
     }
@@ -230,17 +250,21 @@ class TasksSchedule extends Component {
     let groupName = [];
     let distinctGroupName = [];
     let id = [];
-    let distinctId = []
+    let distinctId = [];
+    let multiResponsibleEmployee = false;
     if (tasks) {
       if (this.props.TaskOrganizationUnitDashboard) {
         taskList1 = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
         inprocessTasks1 = taskList1 && taskList1.filter(task => (task.status === "Inprocess" && task.isArchived === false));
       }
-      else inprocessTasks1 = tasks.responsibleTasks;
-
+      else {
+        taskList1 = tasks && tasks.responsibleTasks;
+        inprocessTasks1 = taskList1 && taskList1.filter(task => (task.status === "Inprocess" && task.isArchived === false));
+      }
       if (inprocessTasks1) {
 
         for (let i = 1; i <= inprocessTasks1.length; i++) {
+
 
           let responsibleName = [];
           let responsibleEmployeeIds = [];
@@ -250,13 +274,19 @@ class TasksSchedule extends Component {
             responsibleEmployeeIds.push(x._id)
 
           });
+          if (responsibleEmployeeIds.length === 1) { // Nếu công việc chỉ có 1 người thực hiện
+            groupName.push({
+              id: responsibleEmployeeIds[0],
+              title: responsibleName
+            })
+          }
 
-          groupName.push({
-            id: responsibleEmployeeIds[0],
-            title: responsibleName
-          })
+          else if (responsibleEmployeeIds.length > 1) {
+            multiResponsibleEmployee = true;
+          }
 
           id.push(responsibleEmployeeIds[0])
+
         }
         if (groupName) {
           for (let i = 0; i < id.length; i++) {
@@ -265,9 +295,15 @@ class TasksSchedule extends Component {
               distinctId.push(id[i])
               distinctGroupName.push({
                 id: groupName[i].id,
-                title: groupName[i].title[0]
+                title: groupName[i].title
               })
             }
+          }
+          if (multiResponsibleEmployee) {
+            distinctGroupName.push({
+              id: "multi-responsible-employee",
+              title: "Cong viec nhieu ng thuc hien"
+            })
           }
         }
       }
@@ -285,8 +321,7 @@ class TasksSchedule extends Component {
 
       d = document.createElement('div');
       d.setAttribute("class", "task-progress");
-      const progressWidth = progress * x.offsetWidth / 100;
-      d.style.width = `${progressWidth}px`
+      d.style.width = `${progress}%`
       child = x.childElementCount;
       if (child === 1) x.appendChild(d);
 
@@ -348,11 +383,12 @@ class TasksSchedule extends Component {
 
   render() {
     const { defaultTimeStart, defaultTimeEnd } = this.state;
-    let { tasks, translate } = this.props;
+    const { tasks, translate } = this.props;
+    let { TaskOrganizationUnitDashboard } = this.props;
     let task = tasks && tasks.task;
     let today = new Date();
     this.displayTaskProgress();
-
+    let sidebarWidth = TaskOrganizationUnitDashboard ? 150 : 0;
     return (
       <React.Fragment>
         <div className="box-body qlcv">
@@ -364,7 +400,7 @@ class TasksSchedule extends Component {
             itemsSorted
             itemTouchSendsClick={false}
             stackItems
-            sidebarWidth={150}
+            sidebarWidth={sidebarWidth}
             itemHeightRatio={0.8}
             onItemClick={this.handleItemClick}
             canMove={false}
@@ -377,8 +413,9 @@ class TasksSchedule extends Component {
                 ({ styles, date }) => {
                   const customStyles = {
                     ...styles,
-                    backgroundColor: '#d73925',
-                    width: '3px',
+                    backgroundColor: 'rgba(231, 76, 60, 0.8)',
+                    width: '2px',
+                    zIndex: '100'
                   }
                   return <div style={customStyles}></div>
                 }
