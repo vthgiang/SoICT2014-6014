@@ -256,7 +256,7 @@ class TimesheetsManagement extends Component {
                                 <li><a title={'Thêm mới thông tin chấm công'} onClick={this.createTimesheets}>Thêm bằng tay</a></li>
                             </ul>
                         </div>
-                        <ExportExcel id="export-timesheets" exportData={exportData} style={{ marginRight: 15 }} />
+                        <ExportExcel id="export-timesheets" exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
                     </div>
 
                     <div className="form-inline">

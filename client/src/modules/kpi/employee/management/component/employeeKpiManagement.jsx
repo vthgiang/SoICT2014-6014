@@ -304,6 +304,7 @@ class KPIPersonalManager extends Component {
                         <button type="button" className="btn btn-success" onClick={()=> this.handleSearchData()}>{
                         translate('kpi.organizational_unit.management.over_view.search')}</button>
                         </div>
+                        {exportData&&<ExportExcel id="export-employee-kpi-management" exportData={exportData} style={{ marginRight: 15, marginTop:5 }} />}
 
                     </div>
                     
@@ -358,7 +359,6 @@ class KPIPersonalManager extends Component {
                             }
                         </tbody>
                     </table>
-                    {exportData&&<ExportExcel id="export-employee-kpi-management" exportData={exportData} style={{ marginRight: 15, marginTop:5 }} />}
                 </div>
             </div>
         )

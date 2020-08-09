@@ -33,7 +33,7 @@ class DashBoardEmployees extends Component {
                         <BarChart nameData1='Số lượt nghỉ' nameChart={'Xu hướng nghỉ phép của nhân viên'} />
                     </div>
                     <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                        <TwoBarChart nameData1='Tuyển mới' nameData2='Nghỉ làm' nameChart={'Tình hình tăng giảm nhân sự trong 12 tháng gần nhất'} />
+                        <TwoBarChart nameData1='Tuyển mới' nameData2='Nghỉ làm' nameChart={'Tình hình tăng giảm nhân sự'} />
                     </div>
                     {/* <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
                         <BarAndLineChart nameData1='% Tổng lương' nameData2='% Mục tiêu' nameChart={'Tỷ lệ % quỹ lương công ty/doanh thu 12 tháng gần nhất'} />

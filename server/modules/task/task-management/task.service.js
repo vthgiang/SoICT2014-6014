@@ -951,7 +951,7 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
 
         if (startTimeAfter[0] > 12) start = new Date(startTimeAfter[0], startTimeAfter[1] - 1, 1);
         else start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
-        console.log("start: ", start)
+
         keySearch = {
             ...keySearch,
             endDate: {
@@ -969,7 +969,7 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
         let end;
         if (endTimeBefore[0] > 12) end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
         else end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
-        console.log("end : ", end)
+
         keySearch = {
             ...keySearch,
             startDate: {

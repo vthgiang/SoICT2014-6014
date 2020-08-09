@@ -7,7 +7,7 @@ const { LogInfo, LogError } = require('../../logs');
 exports.getDocuments = async (req, res) => {
     try {
         const documents = await DocumentServices.getDocuments(req.user.company._id, req.query);
-        
+
         await LogInfo(req.user.email, 'GET_DOCUMENTS', req.user.company);
         res.status(200).json({
             success: true,
@@ -15,7 +15,7 @@ exports.getDocuments = async (req, res) => {
             content: documents
         });
     } catch (error) {
-        
+
         await LogError(req.user.email, 'GET_DOCUMENTS', req.user.company);
         res.status(400).json({
             success: false,
@@ -27,17 +27,17 @@ exports.getDocuments = async (req, res) => {
 
 exports.createDocument = async (req, res) => {
     try {
-        if(req.files.file !== undefined && req.files.fileScan !== undefined){
+        if (req.files.file !== undefined && req.files.fileScan !== undefined) {
             console.log(req.files.file)
-            var pathFile = req.files.file[0].destination +'/'+ req.files.file[0].filename;
-            var pathFileScan = req.files.fileScan[0].destination +'/'+ req.files.fileScan[0].filename;
+            var pathFile = req.files.file[0].destination + '/' + req.files.file[0].filename;
+            var pathFileScan = req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
 
             req.body.file = pathFile;
             req.body.scannedFileOfSignedDocument = pathFileScan;
             console.log("document create: ", req.body);
         }
         const document = await DocumentServices.createDocument(req.user.company._id, req.body);
-        
+
         await LogInfo(req.user.email, 'CREATE_DOCUMENT', req.user.company);
         res.status(200).json({
             success: true,
@@ -58,7 +58,7 @@ exports.createDocument = async (req, res) => {
 exports.increaseNumberView = async (req, res) => {
     try {
         const doc = await DocumentServices.increaseNumberView(req.params.id, req.user._id);
-        
+
         await LogInfo(req.user.email, 'INCREASE_NUMBER_VIEW_OF_DOCUMENT', req.user.company);
         res.status(200).json({
             success: true,
@@ -66,7 +66,7 @@ exports.increaseNumberView = async (req, res) => {
             content: doc
         });
     } catch (error) {
-        
+
         await LogError(req.user.email, 'INCREASE_NUMBER_VIEW_OF_DOCUMENT', req.user.company);
         res.status(400).json({
             success: false,
@@ -80,7 +80,7 @@ exports.showDocument = async (req, res) => {
     try {
         await DocumentServices.increaseNumberView(req.params.id);
         const doc = await DocumentServices.showDocument(req.params.id, req.user._id);
-        
+
         await LogInfo(req.user.email, 'SHOW_DOCUMENT', req.user.company);
         res.status(200).json({
             success: true,
@@ -88,7 +88,7 @@ exports.showDocument = async (req, res) => {
             content: doc
         });
     } catch (error) {
-        
+
         await LogError(req.user.email, 'SHOW_DOCUMENT', req.user.company);
         res.status(400).json({
             success: false,
@@ -100,15 +100,15 @@ exports.showDocument = async (req, res) => {
 
 exports.editDocument = async (req, res) => {
     try {
-        if(req.files && Object.keys(req.files).length > 0){
-            var pathFile = req.files.file[0].destination +'/'+ req.files.file[0].filename;
-            var pathFileScan = req.files.fileScan[0].destination +'/'+ req.files.fileScan[0].filename;
+        if (req.files && Object.keys(req.files).length > 0) {
+            var pathFile = req.files.file[0].destination + '/' + req.files.file[0].filename;
+            var pathFileScan = req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
 
             req.body.file = pathFile;
             req.body.scannedFileOfSignedDocument = pathFileScan;
         }
         const document = await DocumentServices.editDocument(req.params.id, req.body, req.query);
-        
+
         await LogInfo(req.user.email, 'EDIT_DOCUMENT', req.user.company);
         res.status(200).json({
             success: true,
@@ -116,7 +116,7 @@ exports.editDocument = async (req, res) => {
             content: document
         });
     } catch (error) {
-        
+
         await LogError(req.user.email, 'EDIT_DOCUMENT', req.user.company);
         res.status(400).json({
             success: false,
@@ -164,11 +164,11 @@ exports.downloadDocumentFile = async (req, res) => {
 };
 
 exports.downloadDocumentFileScan = async (req, res) => {
-   // try {
-        const file = await DocumentServices.downloadDocumentFileScan({id: req.params.id,  numberVersion: req.query.numberVersion, downloaderId: req.user._id});
-        await LogInfo(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.user.company);
-        console.log("PATH:", file.path)
-        res.download(file.path, file.name);
+    // try {
+    const file = await DocumentServices.downloadDocumentFileScan({ id: req.params.id, numberVersion: req.query.numberVersion, downloaderId: req.user._id });
+    await LogInfo(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.user.company);
+    console.log("PATH:", file.path)
+    res.download(file.path, file.name);
     // } catch (error) {
     //     await LogError(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.user.company);
     //     res.status(400).json({
@@ -185,7 +185,7 @@ exports.downloadDocumentFileScan = async (req, res) => {
 exports.getDocumentCategories = async (req, res) => {
     try {
         const categories = await DocumentServices.getDocumentCategories(req.user.company._id, req.query);
-        
+
         await LogInfo(req.user.email, 'GET_DOCUMENT_CATEGORIES', req.user.company);
         res.status(200).json({
             success: true,
@@ -193,7 +193,7 @@ exports.getDocumentCategories = async (req, res) => {
             content: categories
         });
     } catch (error) {
-        
+
         await LogError(req.user.email, 'GET_DOCUMENT_CATEGORIES', req.user.company);
         res.status(400).json({
             success: false,
@@ -206,7 +206,7 @@ exports.getDocumentCategories = async (req, res) => {
 exports.createDocumentCategory = async (req, res) => {
     try {
         const type = await DocumentServices.createDocumentCategory(req.user.company._id, req.body);
-        
+
         await LogInfo(req.user.email, 'CREATE_DOCUMENT_TYPE', req.user.company);
         res.status(200).json({
             success: true,
@@ -214,7 +214,7 @@ exports.createDocumentCategory = async (req, res) => {
             content: type
         });
     } catch (error) {
-        
+
         await LogError(req.user.email, 'CREATE_DOCUMENT_TYPE', req.user.company);
         res.status(400).json({
             success: false,
@@ -232,7 +232,7 @@ exports.editDocumentCategory = async (req, res) => {
     try {
         console.log("DFSDFDDSFDSFSDF:", req.params.id, req.body)
         const category = await DocumentServices.editDocumentCategory(req.params.id, req.body);
-        
+
         await LogInfo(req.user.email, 'EDIT_DOCUMENT_CATEGORY', req.user.company);
         res.status(200).json({
             success: true,
@@ -240,7 +240,7 @@ exports.editDocumentCategory = async (req, res) => {
             content: category
         });
     } catch (error) {
-        
+
         await LogError(req.user.email, 'EDIT_DOCUMENT_CATEGORY', req.user.company);
         res.status(400).json({
             success: false,
@@ -253,7 +253,7 @@ exports.editDocumentCategory = async (req, res) => {
 exports.deleteDocumentCategory = async (req, res) => {
     try {
         const doc = await DocumentServices.deleteDocumentCategory(req.params.id);
-        
+
         await LogInfo(req.user.email, 'DELETE_DOCUMENT_CATEGORY', req.user.company);
         res.status(200).json({
             success: true,
@@ -261,7 +261,7 @@ exports.deleteDocumentCategory = async (req, res) => {
             content: doc
         });
     } catch (error) {
-        
+
         await LogError(req.user.email, 'DELETE_DOCUMENT_CATEGORY', req.user.company);
         res.status(400).json({
             success: false,
@@ -277,7 +277,7 @@ exports.deleteDocumentCategory = async (req, res) => {
 exports.getDocumentDomains = async (req, res) => {
     try {
         const domains = await DocumentServices.getDocumentDomains(req.user.company._id);
-        
+
         await LogInfo(req.user.email, 'GET_DOCUMENT_DOMAINS', req.user.company);
         res.status(200).json({
             success: true,
@@ -285,7 +285,7 @@ exports.getDocumentDomains = async (req, res) => {
             content: domains
         });
     } catch (error) {
-        
+
         await LogError(req.user.email, 'GET_DOCUMENT_DOMAINS', req.user.company);
         res.status(400).json({
             success: false,
@@ -296,42 +296,43 @@ exports.getDocumentDomains = async (req, res) => {
 };
 
 exports.createDocumentDomain = async (req, res) => {
-   // try {
+    try {
         console.log(req.body)
         const domain = await DocumentServices.createDocumentDomain(req.user.company._id, req.body);
 
         await LogInfo(req.user.email, 'CREATE_DOCUMENT_DOMAIN', req.user.company);
         res.status(200).json({
+            success: true,
             messages: ['create_document_domain_success'],
             content: domain
         });
-    // } catch (error) {
+    } catch (error) {
 
-    //     await LogError(req.user.email, 'CREATE_DOCUMENT_DOMAIN', req.user.company);
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: Array.isArray(error) ? error : ['create_document_domain_faile'],
-    //         content: error
-    //     });
-    // }
+        await LogError(req.user.email, 'CREATE_DOCUMENT_DOMAIN', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['create_document_domain_faile'],
+            content: error
+        });
+    }
 };
 
 exports.showDocumentDomain = (req, res) => {
     console.log("FSDKFJSDLKFJDS")
 };
 
-exports.editDocumentDomain = async(req, res) => {
+exports.editDocumentDomain = async (req, res) => {
     try {
         const domain = await DocumentServices.editDocumentDomain(req.params.id, req.body);
-        
+
         await LogInfo(req.user.email, 'EDIT_DOCUMENT_DOMAIN', req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['edit_domain_success'],
+            messages: ['edit_document_domain_success'],
             content: domain
         });
     } catch (error) {
-        console.log("error: ",error)
+        console.log("error: ", error)
         await LogError(req.user.email, 'EDIT_DOCUMENT_DOMAIN', req.user.company);
         res.status(400).json({
             success: false,
@@ -341,14 +342,14 @@ exports.editDocumentDomain = async(req, res) => {
     }
 };
 
-exports.deleteDocumentDomain = async(req, res) => {
+exports.deleteDocumentDomain = async (req, res) => {
     try {
         const domain = await DocumentServices.deleteDocumentDomain(req.params.id);
-        
+
         await LogInfo(req.user.email, 'DELETE_DOCUMENT_DOMAIN', req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['delete_domain_success'],
+            messages: ['delete_document_domain_success'],
             content: domain
         });
     } catch (error) {
@@ -356,16 +357,16 @@ exports.deleteDocumentDomain = async(req, res) => {
         await LogError(req.user.email, 'DELETE_DOCUMENT_DOMAIN', req.user.company);
         res.status(400).json({
             success: false,
-            messages: Array.isArray(error) ? error : ['delete_domain_faile'],
+            messages: Array.isArray(error) ? error : ['delete_document_domain_faile'],
             content: error
         });
     }
 };
 
-exports.deleteManyDocumentDomain = async(req, res) => {
+exports.deleteManyDocumentDomain = async (req, res) => {
     try {
         const domain = await DocumentServices.deleteManyDocumentDomain(req.body.array, req.user.company._id);
-        
+
         await LogInfo(req.user.email, 'DELETE_MANY_DOCUMENT_DOMAIN', req.user.company);
         res.status(200).json({
             success: true,
@@ -383,10 +384,10 @@ exports.deleteManyDocumentDomain = async(req, res) => {
     }
 };
 
-exports.getDocumentsThatRoleCanView = async(req, res) => {
+exports.getDocumentsThatRoleCanView = async (req, res) => {
     try {
         const docs = await DocumentServices.getDocumentsThatRoleCanView(req.user.company._id, req.query);
-        
+
         await LogInfo(req.user.email, 'GET_DOCUMENTS_THAT_ROLE_CAN_VIEW', req.user.company);
         res.status(200).json({
             success: true,
@@ -394,7 +395,7 @@ exports.getDocumentsThatRoleCanView = async(req, res) => {
             content: docs
         });
     } catch (error) {
-        
+
         await LogError(req.user.email, 'GET_DOCUMENTS_THAT_ROLE_CAN_VIEW', req.user.company);
         res.status(400).json({
             success: false,
@@ -404,10 +405,10 @@ exports.getDocumentsThatRoleCanView = async(req, res) => {
     }
 }
 
-exports.getDocumentsUserStatistical = async(req, res) => {
+exports.getDocumentsUserStatistical = async (req, res) => {
     try {
         const docs = await DocumentServices.getDocumentsUserStatistical(req.user._id, req.query);
-        
+
         await LogInfo(req.user.email, 'GET_DOCUMENTS_USER_STATISTICAL', req.user.company);
         res.status(200).json({
             success: true,
@@ -421,5 +422,110 @@ exports.getDocumentsUserStatistical = async(req, res) => {
             messages: Array.isArray(error) ? error : ['get_documents_faile'],
             content: error
         });
+    }
+}
+/**
+ * Kho lưu trữ vật lí
+ */
+
+exports.getDocumnetArchive = async (req, res) => {
+    try {
+        const archive = await DocumentServices.getDocumentArchives(req.user.company._id);
+
+        await LogInfo(req.user.email, 'GET_DOCUMENT_ARCHIVE', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: ['get_document_archive_success'],
+            content: archive
+        })
+    } catch (error) {
+
+        await LogError(req.user.email, 'GET_DOCUMENT_ARCHIVE', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: Array.isArray(error) ? error : ['get_document_archive_faile'],
+            content: error
+        });
+    }
+};
+
+exports.createDocumentArchive = async (req, res) => {
+    try {
+        const archive = await DocumentServices.createDocumentArchive(req.user.company._id, req.body);
+
+        await LogInfo(req.user.email, 'CREATE_DOCUMENT_ARCHIVE', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: ['create_document_archive_success'],
+            content: archive
+        })
+    } catch (error) {
+
+        await LogError(req.user.email, 'CREATE_DOCUMENT_ARCHIVE', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: Array.isArray(error) ? error : ['create_document_archive_faile'],
+            content: error
+        })
+    }
+};
+
+exports.editDocumentArchive = async (req, res) => {
+    try {
+        const archive = await DocumentServices.editDocumentArchive(req.params.id, req.body);
+
+        await LogInfo(req.user.email, 'EDIT_DOCUMENT_ARCHIVE', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: ['edit_document_archive_success'],
+            content: archive,
+        })
+    } catch (error) {
+
+        await LogError(req.user.email, 'EDIT_DOCUMENT_ARCHIVE', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: Array.isArray(error) ? error : ['edit_document_faile'],
+            content: error
+        })
+    }
+};
+
+exports.deleteDocumentArchive = async (req, res) => {
+    try {
+        const archive = await DocumentServices.deleteDocumentArchive(req.params.id);
+        await LogInfo(req.user.email, 'DELETE_DOCUMENT_ARCHIVE', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: ['delete_document_archive_success'],
+            content: archive
+        })
+    } catch (error) {
+        await LogError(req.user.email, 'DELETE_DOCUMENT_ARCHIVE', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: Array.isArray(error) ? error : ['delete_document_archive_faile'],
+            content: error
+        })
+    }
+};
+
+exports.deleteManyDocumentArchive = async (req, res) => {
+    try {
+        const archive = await DocumentServices.deleteManyDocumentArchive(req.body.array, req.user.company._id);
+
+        await LogInfo(req.user.email, 'DELETE_MANY_DOCUMENT_ARCHIVE', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: ['delete_many_document_archive_success'],
+            content: archive,
+        })
+    } catch (error) {
+        await LogError(req.user.email, 'DELETE_MANY_DOCUMENT_ARCHIVE', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: Array.isArray(error) ? error : ['delete_many_document_archive_faile'],
+            content: error,
+        })
     }
 }

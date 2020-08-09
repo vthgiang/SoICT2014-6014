@@ -186,20 +186,19 @@ class EmployeeKpiManagement extends Component {
                 let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);
                 let d = new Date(x.date),
                     month = '' + (d.getMonth() + 1),
-                    year = d.getFullYear();
+                    year = d.getFullYear(),
+                    time =month+"-"+year;
                 let status = this.checkStatusKPI(x.status);
                 let numberTarget =parseInt(x.kpis.length);               
 
                 return {
                     STT: index + 1,
-                    fullName: fullName,
-                   
+                    fullName: fullName,                   
                     automaticPoint: automaticPoint,
                     status: status,
                     employeePoint: employeePoint,
                     approverPoint: approverPoint,
-                    month: month,
-                    year: year,
+                    time :time,
                     numberTarget:numberTarget                   
                 };
             })
@@ -214,10 +213,8 @@ class EmployeeKpiManagement extends Component {
                         {
                             columns: [
                                 { key: "STT", value: "STT" },
-                                { key: "month", value: "Tháng" },
-                                { key: "year", value: "Năm" },
-                                { key: "fullName", value: "Họ và tên" },
-                                
+                                { key: "time", value: "Thời gian" },
+                                { key: "fullName", value: "Họ và tên" },                                
                                 { key: "numberTarget", value: "Số lượng mục tiêu" },
                                 { key: "status", value: "Trạng thái mục tiêu" },
                                 { key: "automaticPoint", value: "Điểm tự động" },
@@ -309,6 +306,8 @@ class EmployeeKpiManagement extends Component {
                             <div className="form-group">
                                 <button type="button" className="btn btn-success" onClick={() => this.handleSearchData()}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                             </div>
+                            {exportData&&<ExportExcel id="export-employee-kpi-evaluation-management" exportData={exportData} style={{ marginRight: 15, marginTop:5 }} />}
+                        
                         </div>
 
                         <DataTableSetting class="pull-right" tableId="kpiManagement" tableContainerId="tree-table-container" tableWidth="1300px"
@@ -333,7 +332,9 @@ class EmployeeKpiManagement extends Component {
                                     <th title="Tên nhân viên">{translate('kpi.evaluation.employee_evaluation.name')}</th>
                                     <th title="Số lượng mục tiêu">{translate('kpi.evaluation.employee_evaluation.num_of_kpi')}</th>
                                     <th title="Trạng thái KPI">{translate('kpi.evaluation.employee_evaluation.kpi_status')}</th>
-                                    <th title="Kết quả">{translate('kpi.evaluation.employee_evaluation.result')}</th>
+                                    <th title={translate('kpi.evaluation.employee_evaluation.system_evaluate')}>{translate('kpi.evaluation.employee_evaluation.system_evaluate')}</th>
+                                    <th title={translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}>{translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}</th>
+                                    <th title={translate('kpi.evaluation.employee_evaluation.evaluation_management')}>{translate('kpi.evaluation.employee_evaluation.evaluation_management')}</th>
                                     <th title="Phê duyệt" style={{ textAlign: "center" }}>{translate('kpi.evaluation.employee_evaluation.approve')}</th>
                                     <th title="Đánh giá">{translate('kpi.evaluation.employee_evaluation.evaluate')}</th>
                                 </tr>
@@ -347,7 +348,9 @@ class EmployeeKpiManagement extends Component {
                                             <td>{item.creator ? item.creator.name : "Deleted"}</td>
                                             <td>{item.kpis ? item.kpis.length : "Deleted"}</td>
                                             <td>{item ? this.checkStatusKPI(item.status) : "Deleted"}</td>
-                                            <td>{item.approvedPoint === null ? translate('kpi.evaluation.employee_evaluation.not_avaiable') : item.approvedPoint}</td>
+                                            <td>{item.automaticPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.automaticPoint}</td>
+                                            <td>{item.employeePoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.employeePoint}</td>
+                                            <td>{item.approvedPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.approvedPoint}</td>
                                             <td style={{ textAlign: "center" }}>
                                                 <a data-target={`#modal-approve-KPI-member`} onClick={() => this.handleShowApproveModal(item._id)} data-toggle="modal" className="approve"
                                                     title={translate('kpi.evaluation.employee_evaluation.approve_this_kpi')}><i className="fa fa-bullseye"></i></a>
@@ -365,8 +368,6 @@ class EmployeeKpiManagement extends Component {
                             </tbody>
                             
                         </table>
-                        {exportData&&<ExportExcel id="export-employee-kpi-evaluation-management" exportData={exportData} style={{ marginRight: 15, marginTop:5 }} />}
-                        
                     </div>
                 </div>
             </React.Fragment>

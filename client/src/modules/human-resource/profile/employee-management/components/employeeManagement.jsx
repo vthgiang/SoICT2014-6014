@@ -716,7 +716,7 @@ class EmployeeManagement extends Component {
                                 <li><a style={{ cursor: 'pointer' }} title={'Thêm một thông tin nhân viên'} onClick={this.createEmployee}>{'Thêm bằng tay'}</a></li>
                             </ul>
                         </div>
-                        <ExportExcel id="export-employee" exportData={exportData} style={{ marginRight: 15 }} />
+                        <ExportExcel id="export-employee" exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
                     </div>
                     <div className="form-inline">
                         <div className="form-group">

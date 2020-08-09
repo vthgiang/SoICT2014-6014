@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const mongoosePaginate = require('mongoose-paginate-v2');
 
 // Create Schema
-const DocumentDomainSchema = new Schema({
+const DocumentArchiveSchema = new Schema({
     name: { //tên 
         type: String,
         required: true
@@ -29,6 +29,6 @@ const DocumentDomainSchema = new Schema({
     toJSON: { virtuals: true }
 });
 
-DocumentDomainSchema.plugin(mongoosePaginate);
+DocumentArchiveSchema.plugin(mongoosePaginate);
 
-module.exports = DocumentDomain = mongoose.model("document_domains", DocumentDomainSchema);
+module.exports = DocumentArchive = mongoose.model("document_archives", DocumentArchiveSchema);
