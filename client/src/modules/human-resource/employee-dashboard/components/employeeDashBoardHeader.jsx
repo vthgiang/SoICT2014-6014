@@ -96,7 +96,7 @@ class EmployeeDashBoardHeader extends Component {
             <React.Fragment>
                 <div className="form-inline">
                     <div className="form-group">
-                        <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
+                        <label style={{ width: 'auto' }}>{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
                         <SelectMulti id="multiSelectOrganizationalUnit"
                             items={department.list.map((p, i) => { return { value: p._id, text: p.name } })}
                             options={{ nonSelectedText: translate('page.non_unit'), allSelectedText: translate('page.all_unit') }}
@@ -105,7 +105,7 @@ class EmployeeDashBoardHeader extends Component {
                         </SelectMulti>
                     </div>
                     <div className="form-group">
-                        <label className="form-control-static">{translate('human_resource.month')}</label>
+                        <label style={{ width: 'auto' }} >{translate('human_resource.month')}</label>
                         <DatePicker
                             id="month"
                             dateFormat="month-year"
