@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
+import { ExportExcel } from '../../../../../common-components';
+
 import { createKpiSetActions } from '../../creation/redux/actions';
 
 import c3 from 'c3';
@@ -175,9 +177,65 @@ class ResultsOfEmployeeKpiChart extends Component {
         });
     }
 
+    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    convertDataToExportData = (data) => {
+        let fileName = "Biểu đồ theo dõi kết quả KPI cá nhân";
+
+        if (data) {           
+            data = data.map((x, index) => {
+                let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
+                let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
+                let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);
+                let d = new Date(x.date),
+                    month = '' + (d.getMonth() + 1),
+                    year = d.getFullYear(),
+                    date =month+'-'+year;
+
+                return {              
+                    automaticPoint: automaticPoint,
+                    employeePoint: employeePoint,
+                    approverPoint: approverPoint,
+                    time : date,                
+                };
+            })
+        }
+
+        let exportData = {
+            fileName: fileName,
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    tables: [
+                        {
+                            columns: [                            
+                                { key: "time", value: "Thời gian" },
+                                { key: "automaticPoint", value: "Điểm tự động" },
+                                { key: "employeePoint", value: "Điểm tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm được đánh giá" }
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData;        
+       
+    }
+
     render() {
+        let exportData,listEmployeeKpiSetEachYear;
+        const { createEmployeeKpiSet } = this.props;
+        if(createEmployeeKpiSet.employeeKpiSetByMonth) {
+            listEmployeeKpiSetEachYear = createEmployeeKpiSet.employeeKpiSetByMonth;
+            exportData =this.convertDataToExportData(listEmployeeKpiSetEachYear);
+        }
         return (
             <React.Fragment>
+                <div>
+                {exportData&&<ExportExcel id="export-employee-kpi-result-dashboard" exportData={exportData} style={{ marginRight: 15, marginTop:5 }} />}
+                </div>
+                
                 <div ref="chart"></div>
             </React.Fragment>
         )
