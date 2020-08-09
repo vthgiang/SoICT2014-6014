@@ -41,7 +41,6 @@ class AgePyramidChart extends Component {
         return max;
     }
     renderChart = (data) => {
-        console.log("render chart")
         let maxData1 = this.findMaxOfArray(data.data1), maxData2 = this.findMaxOfArray(data.data2);
         let qty_max = maxData1 >= maxData2 ? maxData1 : maxData2;
         data.data1.shift(); data.data2.shift();
@@ -178,7 +177,6 @@ class AgePyramidChart extends Component {
             data2: data2AgePyramid,
         }
         listAllEmployees.length !== 0 && this.renderChart(data);
-        console.log("hákdha")
         return (
             <React.Fragment>
                 <div ref="chart"></div>

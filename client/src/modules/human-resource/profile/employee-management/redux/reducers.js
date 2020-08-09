@@ -9,6 +9,9 @@ const initState = {
     totalEmployeeOfOrganizationalUnits: 0,
     totalAllEmployee: 0,
 
+    arrMonth: [],
+    listEmployeesHaveStartingDateOfNumberMonth: [],
+    listEmployeesHaveLeavingDateOfNumberMonth: [],
     listEmployees: [],
     listEmployeesOfOrganizationalUnits: [],
     listAllEmployees: [],
@@ -26,7 +29,14 @@ export function employeesManager(state = initState, action) {
                 isLoading: true
             };
         case EmployeeConstants.GETALL_SUCCESS:
-            if (action.payload.totalList !== undefined) { // Phải để khác undefined
+            if (action.payload.arrMonth) {
+                return {
+                    ...state,
+                    arrMonth: action.payload.arrMonth,
+                    listEmployeesHaveStartingDateOfNumberMonth: action.payload.listEmployeesHaveStartingDateOfNumberMonth,
+                    listEmployeesHaveLeavingDateOfNumberMonth: action.payload.listEmployeesHaveLeavingDateOfNumberMonth,
+                }
+            } else if (action.payload.totalList !== undefined) { // Phải để khác undefined
                 return {
                     ...state,
                     listEmployees: action.payload.data,

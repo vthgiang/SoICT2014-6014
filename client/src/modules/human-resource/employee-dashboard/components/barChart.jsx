@@ -217,7 +217,7 @@ class BarChart extends Component {
                         <div className="dashboard_box_body">
                             <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: %</b></p>
                             <div className="box-tools pull-right">
-                                <div className="btn-group pull-rigth" id="barChart">
+                                <div className="btn-group pull-rigth">
                                     <button type="button" className={`btn btn-xs ${lineChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Bar chart</button>
                                     <button type="button" className={`btn btn-xs ${lineChart ? 'btn-danger' : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Line chart</button>
                                 </div>
