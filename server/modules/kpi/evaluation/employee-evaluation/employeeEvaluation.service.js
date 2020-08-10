@@ -25,8 +25,8 @@ exports.getEmployeeKPISets = async (data) => {
     let startdate = null;
     let enddate = null;
     let status = null;
-    let user = data.user? data.user: [0];
-    
+    let user = data.user ? data.user : [0];
+
     if (data.startDate) {
         startDate = data.startDate.split("-");
         startdate = new Date(startDate[1], startDate[0], 0);
@@ -42,7 +42,7 @@ exports.getEmployeeKPISets = async (data) => {
             $in: department._id
         }
     }
-    if ( user[0] != '0') {
+    if (user[0] != '0') {
         keySearch = {
             ...keySearch,
             creator: {
@@ -220,11 +220,10 @@ exports.getTasksByKpiId = async (data) => {
 /**
  * Chấm điểm độ quan trọng của công việc
  * @param {*} id id kpi con
- * @param {*} kpiType 
  * @param {*} data 
  */
 
-exports.setTaskImportanceLevel = async (id, kpiType, data) => {
+exports.setTaskImportanceLevel = async (id, data) => {
 
     let date = new Date(data[0].date);
     for (const element of data) {
@@ -234,7 +233,6 @@ exports.setTaskImportanceLevel = async (id, kpiType, data) => {
         id: id,
         date: data[0].date,
         employeeId: data[0].employeeId,
-        kpiType: kpiType
     }
     let task = await getResultTaskByMonth(key);
     let autoPoint = 0;
@@ -337,20 +335,15 @@ async function updateTaskImportanceLevel(taskId, employeeId, point, date) {
 
 async function getResultTaskByMonth(data) {
     let date = new Date(data.date);
-    let kpiType;
-    if (data.kpiType === "1") {
-        kpiType = "Accountable";
-    } else if (data.kpiType === "2") {
-        kpiType = "Consulted";
-    } else {
-        kpiType = "Responsible";
-    }
 
     let monthkpi = parseInt(date.getMonth() + 1);
     let yearkpi = parseInt(date.getFullYear());
 
 
     let conditions = [
+        {
+            $match: { "evaluations.results.kpis": mongoose.Types.ObjectId(data.id) }
+        },
         {
             $unwind: "$evaluations"
         },
@@ -360,19 +353,13 @@ async function getResultTaskByMonth(data) {
         { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
         { $unwind: "$results" },
         { $match: { 'results.employee': mongoose.Types.ObjectId(data.employeeId) } },
-        { $match: { "results.role": kpiType } },
         { $match: { "month": monthkpi } },
         { $match: { "year": yearkpi } },
     ]
-    if (kpiType === "Responsible") { // Thêm điều kiện về kpi (khi kpi không phải là kpi mặc định: phê duyệt, hỗ trợ)
-        conditions.unshift({
-            $match: { "evaluations.kpis.kpis": mongoose.Types.ObjectId(data.id) }
-        });
-    }
+
 
 
     let task = await Task.aggregate(conditions);
-
     for (let i = 0; i < task.length; i++) {
         let x = task[i];
         let date = await new Date(x.date);
