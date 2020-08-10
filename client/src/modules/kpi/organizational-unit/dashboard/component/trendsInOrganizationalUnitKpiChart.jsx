@@ -151,15 +151,15 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                     let temporary;
 
                     temporary = listChildTarget.filter(childTarget => childTarget._id === parent.name);
-
                     if (temporary.length !== 0) {
                         temporary[0].employeeKpi.map(employeeKpi => {
                             if(listTask.length !== 0){
                                 let list = listTask.filter(item => {
-                                    let kpi, length;
-                                    item.evaluations.kpis.map(item => {
+                                    let kpi, length = 0;
+
+                                    item.evaluations.results.map(item => {
                                         kpi = item.kpis.filter(kpi => kpi === employeeKpi._id);
-                                        length = kpi.length;
+                                        length = length + kpi.length;
                                     });
                                     return length !== 0 && length !== undefined;
                                 })
@@ -169,6 +169,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                     }
                 }
                 temporaryArrayListTaskSameOrganizationUnitKpi = Array.from(new Set(temporaryArrayListTaskSameOrganizationUnitKpi));
+                
                 return temporaryArrayListTaskSameOrganizationUnitKpi;
             })
         }
@@ -437,7 +438,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         dataChart.unshift(titleX);
-        
+        console.log("999", dataChart)
         this.chart = c3.generate({
             bindto: this.refs.chart,                
 

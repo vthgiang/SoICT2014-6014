@@ -1544,6 +1544,10 @@ export default {
                 next: 'Next',
                 tasks_calendar: 'Tasks Calendar',
                 model_detail_task_title: 'Detail task',
+                collaborative_tasks: 'Collaborative tasks',
+                in_time: 'In time',
+                delayed_time: 'Delayed',
+                not_achieved: 'Overdue',
 
                 col_name: 'Name of task',
                 col_organization: 'Department',
