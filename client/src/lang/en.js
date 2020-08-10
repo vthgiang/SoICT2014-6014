@@ -12,21 +12,6 @@ export default {
             number_decisions_required: 'Decis number required',
             number_decisions_have_exist: 'Decis number have exist',
             unit_decisions_required: 'Decis unit required',
-            // Quản lý lương nhân viên 
-            // TODO: Xoá sau
-            name_other_salary_required: 'Name other salary required',
-            money_other_salary_required: 'Money other salary required',
-            month_salary_required: 'Month salary required',
-            money_salary_required: 'Money_salary required',
-            month_salary_have_exist: 'Month salary have exist',
-            get_salary_success: 'Get salary success',
-            get_salary_faile: 'Get salary faile',
-            create_salary_success: 'Create salary success',
-            create_salary_faile: 'Create salary faile',
-            delete_salary_success: 'Delete salary success',
-            delete_salary_faile: 'Delete salary faile',
-            edit_salary_success: 'Edit salary success',
-            edit_salary_faile: 'Edit salary faile',
             // Quản lý nghỉ phép
             // TODO: Xoá sau
             start_date_annual_leave_required: 'Start date annual leave required',
@@ -827,28 +812,7 @@ export default {
             edit_success: 'Edit successfully!',
             edit_faile: 'Edit failed!',
         },
-        // Quản lý lương nhân viên
-        salary_employee: { // TODO: Xoá sau
-            list_salary: 'List of staff salary',
-            add_salary: 'Add salary',
-            add_salary_title: 'Add salary',
-            edit_salary: 'Edit Salary',
-            delete_salary: 'Delete salary',
-            add_by_hand: 'Add by hand',
-            add_import: 'Import file excel',
-            add_by_hand_title: 'Add by hand',
-            add_import_title: 'Import file excel',
-            main_salary: 'Main salary',
-            other_salary: 'Other salary',
-            name_salary: 'Name salary',
-            money_salary: 'Money',
-            add_more_salary: 'Add other salary',
-            add_new_salary: 'Add new salary',
-            check_null_msnv: 'Staff code required',
-            check_msnv: 'Not find staff code',
-            check_main_salary: 'Main salary required',
-            check_month: 'Month required',
-        },
+
         // Quản lý nghỉ phép
         sabbatical: {
             list_sabbatical: 'List of staff sabbatical',
@@ -1096,6 +1060,7 @@ export default {
 
         // Module Quản lý nhân sự
         human_resource: {
+
             // Nhóm dùng chung cho module quản lý nhân sự
             unit: 'Unit',
             position: 'Position',
@@ -1110,6 +1075,11 @@ export default {
             non_position: 'Select position',
             all_status: 'Select all status',
             non_status: 'Select status',
+            not_unit: 'Not selected unit',
+            add_data_by_excel: 'Add data by importing excel file',
+            download_file: 'Download the sample import file',
+            choose_file: 'Choose file',
+            name_button_export: 'Export report',
 
             // Thông điệp trả về từ server dung chung cho module quản lý nhân sự
             employee_number_required: 'Staff code required',
@@ -1123,6 +1093,7 @@ export default {
             // Quản lý lương nhân viên
             salary: {
                 list_salary: 'List of staff salary',
+                file_name_export: 'Salary tracking table',
 
                 // Nhóm dành cho table
                 table: {
@@ -1147,6 +1118,11 @@ export default {
                 add_new_salary: 'Add new salary',
 
                 // Thông điệp trả về từ server
+                employee_code_duplicated: 'Staff code is duplicated',
+                employee_name_required: 'Staff name required',
+                employee_number_required: 'Staff code required',
+                staff_code_not_special: 'Staff code does not contain special characters',
+                staff_code_not_find: 'Staff code does not exist',
                 name_other_salary_required: 'Name other salary required',
                 money_other_salary_required: 'Money other salary required',
                 month_salary_required: 'Month salary required',

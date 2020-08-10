@@ -1,23 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DialogModal, ErrorLabel, DatePicker } from '../../../../common-components';
+
 import { SalaryFormValidator } from './salaryFormValidator';
+
 import { SalaryActions } from '../redux/actions';
+
 class SalaryEditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {}
     }
 
-    // Function bắt sự kiện thay đổi tiền lương chính
+    /** Function bắt sự kiện thay đổi tiền lương chính */
     handleMainSalaryChange = (e) => {
         let value = e.target.value;
         this.validateMainSalary(value, true);
     }
-    // Function kiem tra tiền lương chính nhập vào có hợp lệ không
     validateMainSalary = (value, willUpdateState = true) => {
-        let msg = SalaryFormValidator.validateMainSalary(value, this.props.translate);
+        let { translate } = this.props;
+        let msg = SalaryFormValidator.validateMainSalary(value, translate);
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -31,7 +35,7 @@ class SalaryEditForm extends Component {
     }
 
 
-    // Function bắt sự kiện thay đổi đơn vị tiền lương
+    /** Function bắt sự kiện thay đổi đơn vị tiền lương */
     handleChange = (e) => {
         let value = e.target.value;
         this.setState({
@@ -39,9 +43,9 @@ class SalaryEditForm extends Component {
         });
     }
 
-    // Bắt sự kiện click thêm lương thưởng khác
+    /** Bắt sự kiện click thêm lương thưởng khác */
     handleAddBonus = () => {
-        var bonus = this.state.bonus;
+        let { bonus } = this.state;
         if (bonus.length !== 0) {
             let result;
             for (let n in bonus) {
@@ -66,16 +70,16 @@ class SalaryEditForm extends Component {
 
     }
 
-    // Bắt sự kiện chỉnh sửa tên lương thưởng khác 
+    /** Bắt sự kiện chỉnh sửa tên lương thưởng khác */
     handleChangeNameBonus = (e) => {
-        var { value, className } = e.target;
+        let { value, className } = e.target;
         this.validateNameSalary(value, className);
     }
-    // Function kiểm tra tên lương thưởng nhập vào có hợp lệ không
     validateNameSalary = (value, className, willUpdateState = true) => {
-        let msg = SalaryFormValidator.validateNameSalary(value, this.props.translate);
+        let { translate } = this.props;
+        let msg = SalaryFormValidator.validateNameSalary(value, translate);
         if (willUpdateState) {
-            var { bonus } = this.state;
+            let { bonus } = this.state;
             bonus[className] = { ...bonus[className], nameBonus: value }
             this.setState(state => {
                 return {
@@ -88,16 +92,16 @@ class SalaryEditForm extends Component {
         return msg === undefined;
     }
 
-    // Bắt sự kiện chỉnh sửa tiền lương thưởng khác 
+    /** Bắt sự kiện chỉnh sửa tiền lương thưởng khác  */
     handleChangeMoneyBonus = (e) => {
-        var { value, className } = e.target;
+        let { value, className } = e.target;
         this.validateMoreMoneySalary(value, className);
     }
-    // Kiểm tra tiền lương thưởng khác nhập vào có hợp lệ hay không
     validateMoreMoneySalary = (value, className, willUpdateState = true) => {
-        let msg = SalaryFormValidator.validateMoreMoneySalary(value, this.props.translate);
+        let { translate } = this.props;
+        let msg = SalaryFormValidator.validateMoreMoneySalary(value, translate);
         if (willUpdateState) {
-            var { bonus } = this.state;
+            let { bonus } = this.state;
             bonus[className] = { ...bonus[className], number: value }
             this.setState(state => {
                 return {
@@ -110,9 +114,12 @@ class SalaryEditForm extends Component {
         return msg === undefined;
     }
 
-    // Function xoá lương thưởng khác
+    /**
+     * Function xoá lương thưởng khác
+     * @param {*} index : Số thứ tự lương thưởng khác cần xoá
+     */
     delete = (index) => {
-        var { bonus } = this.state;
+        let { bonus } = this.state;
         bonus.splice(index, 1);
         this.setState({
             bonus: bonus
@@ -130,13 +137,13 @@ class SalaryEditForm extends Component {
         }
     };
 
-    // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
+    /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
-        let result = this.validateMainSalary(this.state.mainSalary, false);
-
+        let { mainSalary, bonus } = this.state;
+        let result = this.validateMainSalary(mainSalary, false);
         if (result === true) {
-            if (this.state.bonus !== []) {
-                let test = this.state.bonus;
+            if (bonus !== []) {
+                let test = bonus;
                 for (let n in test) {
                     result = this.validateNameSalary(test[n].nameBonus, n, false) &&
                         this.validateMoreMoneySalary(test[n].number, n, false);
@@ -147,12 +154,14 @@ class SalaryEditForm extends Component {
         return result;
     }
 
-    // Function bắt sự kiện lưu bảng lương
+    /** Function bắt sự kiện lưu bảng lương */
     save = () => {
+        let id = this.state._id;
         if (this.isFormValidated()) {
-            return this.props.updateSalary(this.state._id, this.state);
+            return this.props.updateSalary(id, this.state);
         }
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {
             return {
@@ -174,8 +183,10 @@ class SalaryEditForm extends Component {
 
     render() {
         const { translate, salary } = this.props;
+
         const { employeeNumber, unit, mainSalary, bonus, month, _id,
             errorOnMainSalary, errorOnNameSalary, errorOnMoreMoneySalary } = this.state;
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -186,10 +197,12 @@ class SalaryEditForm extends Component {
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id="form-edit-salary">
+                        {/* Mã số nhân viên */}
                         <div className="form-group">
                             <label>{translate('human_resource.staff_number')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} onChange={this.handleMSNVChange} disabled />
                         </div>
+                        {/* Tháng lương */}
                         <div className="form-group">
                             <label>{translate('human_resource.month')}<span className="text-red">*</span></label>
                             <DatePicker
@@ -200,7 +213,8 @@ class SalaryEditForm extends Component {
                                 disabled={true}
                             />
                         </div>
-                        <div className={`form-group ${errorOnMainSalary === undefined ? "" : "has-error"}`}>
+                        {/* Tiền lương chính */}
+                        <div className={`form-group ${errorOnMainSalary && "has-error"}`}>
                             <label >{translate('human_resource.salary.table.main_salary')}<span className="text-red">*</span></label>
                             <div>
                                 <input type="number" className="form-control" name="mainSalary" value={mainSalary} onChange={this.handleMainSalaryChange} style={{ display: "inline", width: "85%" }} autoComplete="off" />
@@ -211,7 +225,8 @@ class SalaryEditForm extends Component {
                             </div>
                             <ErrorLabel content={errorOnMainSalary} />
                         </div>
-                        <div className={`form-group ${(errorOnNameSalary === undefined && errorOnMoreMoneySalary) === undefined ? "" : "has-error"}`}>
+                        {/* Các loại lương thưởng khác*/}
+                        <div className={`form-group ${(errorOnNameSalary || errorOnMoreMoneySalary) && "has-error"}`}>
                             <label>{translate('human_resource.salary.table.other_salary')}<a title={translate('human_resource.salary.table.add_more_salary')}><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }} onClick={this.handleAddBonus} /></a></label>
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                 <thead>
@@ -222,7 +237,7 @@ class SalaryEditForm extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {(typeof bonus !== 'undefined' && bonus.length !== 0) &&
+                                    {bonus && bonus.length !== 0 &&
                                         bonus.map((x, index) => (
                                             <tr key={index}>
                                                 <td><input className={index} type="text" value={x.nameBonus} name="nameBonus" style={{ width: "100%" }} onChange={this.handleChangeNameBonus} autoComplete="off" /></td>
@@ -235,7 +250,7 @@ class SalaryEditForm extends Component {
                                 </tbody>
                             </table>
                             {
-                                (typeof bonus === 'undefined' || bonus.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                                (!bonus || bonus.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                             }
                             <ErrorLabel content={errorOnNameSalary} />
                             <ErrorLabel content={errorOnMoreMoneySalary} />
