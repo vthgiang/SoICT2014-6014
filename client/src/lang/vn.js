@@ -1896,6 +1896,9 @@ export default {
                 add_err_special_character: 'Tên không được chứa kí tự đặc biệt',
                 add_err_end_date: 'Ngày kết thúc phải sau ngày bắt đầu',
 
+                unit_evaluate: "Đơn vị tiếp nhận kết quả đánh giá công việc",
+                unit_manage_task: "Đơn vị quản lý công việc",
+
             },
             task_perform: {
 

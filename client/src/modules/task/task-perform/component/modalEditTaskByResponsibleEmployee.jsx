@@ -133,14 +133,14 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
             date = this.formatDate(evaluations.date);
 
-            let tmp = evaluations.kpis.find(e => (String(e.employee._id) === String(idUser)));
-            if (tmp) {
-                let kpi = tmp.kpis;
+            // let tmp = evaluations.kpis.find(e => (String(e.employee._id) === String(idUser)));
+            // if (tmp) {
+            //     let kpi = tmp.kpis;
 
-                for (let i in kpi) {
-                    cloneKpi.push(kpi[i]._id);
-                }
-            }
+            //     for (let i in kpi) {
+            //         cloneKpi.push(kpi[i]._id);
+            //     }
+            // }
         }
         return {
             task: task,

@@ -1746,6 +1746,10 @@ export default {
                 add_err_empty_accountable: 'Accountable should not be empty',
                 add_err_special_character: 'This field should not be have special character',
                 add_err_end_date: 'End date should be after start date',
+
+                unit_evaluate: "Unit receiving work evaluation results",
+                unit_manage_task: "Unit managing task",
+
             },
             task_perform: {
                 actions: "Actions",
