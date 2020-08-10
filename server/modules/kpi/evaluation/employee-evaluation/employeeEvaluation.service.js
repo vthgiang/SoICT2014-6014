@@ -220,11 +220,12 @@ exports.getTasksByKpiId = async (data) => {
 /**
  * Chấm điểm độ quan trọng của công việc
  * @param {*} id id kpi con
+ * @param {*} kpiType 
  * @param {*} data 
  */
 
-exports.setTaskImportanceLevel = async (id, data) => {
-
+exports.setTaskImportanceLevel = async (id, kpiType, data) => {
+    console.log('typeee', kpiType);
     let date = new Date(data[0].date);
     for (const element of data) {
         let setPoint = await updateTaskImportanceLevel(element.taskId, element.employeeId, parseInt(element.point), element.date);
@@ -233,6 +234,7 @@ exports.setTaskImportanceLevel = async (id, data) => {
         id: id,
         date: data[0].date,
         employeeId: data[0].employeeId,
+        kpiType: kpiType
     }
     let task = await getResultTaskByMonth(key);
     let autoPoint = 0;
@@ -335,14 +337,22 @@ async function updateTaskImportanceLevel(taskId, employeeId, point, date) {
 
 async function getResultTaskByMonth(data) {
     let date = new Date(data.date);
-
     let monthkpi = parseInt(date.getMonth() + 1);
     let yearkpi = parseInt(date.getFullYear());
-
+    let kpiType;
+    if (data.kpiType === "1") {
+        kpiType = "Accountable";
+    } else if (data.kpiType === "2") {
+        kpiType = "Consulted";
+    } else {
+        kpiType = "Responsible";
+    }
 
     let conditions = [
         {
             $match: { "evaluations.results.kpis": mongoose.Types.ObjectId(data.id) }
+        }, {
+            $match: { "evaluations.results.role": kpiType }
         },
         {
             $unwind: "$evaluations"
