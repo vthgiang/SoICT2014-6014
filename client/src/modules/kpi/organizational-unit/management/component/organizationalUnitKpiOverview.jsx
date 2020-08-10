@@ -181,7 +181,8 @@ class KPIUnitManager extends Component {
                 let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);
                 let d = new Date(x.date),
                     month = '' + (d.getMonth() + 1),
-                    year = d.getFullYear();
+                    year = d.getFullYear(),
+                    date =month + '-' + year;
                 let status = this.checkStatusKPI(x.status);
                 let numberTarget =parseInt(x.kpis.length);               
 
@@ -192,8 +193,7 @@ class KPIUnitManager extends Component {
                     status: status,
                     employeePoint: employeePoint,
                     approverPoint: approverPoint,
-                    month: month,
-                    year: year,
+                    time: date,
                     numberTarget:numberTarget                   
                 };
             })
@@ -209,8 +209,7 @@ class KPIUnitManager extends Component {
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "fullName", value: "Người tạo" },
-                                { key: "month", value: "Tháng" },
-                                { key: "year", value: "Năm" },
+                                { key: "time", value: "Thời gian" },
                                 { key: "status", value: "Trạng thái" },                                
                                 { key: "numberTarget", value: "Số lượng mục tiêu" },                                
                                 { key: "automaticPoint", value: "Điểm tự động" },
@@ -300,6 +299,7 @@ class KPIUnitManager extends Component {
                                 />
                                 <ErrorLabel content={errorOnDate} />
                             </div>
+                            {exportData&&<ExportExcel id="export-unit-kpi-management-overview" exportData={exportData} style={{ marginRight: 15, marginTop:5 }} />}
                         </div>
 
                         <div className="form-inline">
@@ -335,7 +335,9 @@ class KPIUnitManager extends Component {
                                     <th title="Thời gian">{translate('kpi.organizational_unit.management.over_view.time')}</th>
                                     <th title="Trạng thái">{translate('kpi.organizational_unit.management.over_view.status')}</th>
                                     <th title="Số lượng mục tiêu">{translate('kpi.organizational_unit.management.over_view.number_target')}</th>
-                                    <th title="Kết quả đánh giá (Điểm phê duyệt - Điểm hệ thống- Điểm tự đánh giá)">{translate('kpi.organizational_unit.management.over_view.result')}</th>
+                                    <th title={translate('kpi.evaluation.employee_evaluation.system_evaluate')}>{translate('kpi.evaluation.employee_evaluation.system_evaluate')}</th>
+                                    <th title={translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}>{translate('kpi.evaluation.employee_evaluation.result_self_evaluate')}</th>
+                                    <th title={translate('kpi.evaluation.employee_evaluation.evaluation_management')}>{translate('kpi.evaluation.employee_evaluation.evaluation_management')}</th>
                                     <th title="Hành động">{translate('kpi.organizational_unit.management.over_view.action')}</th>
                                 </tr>
                             </thead>
@@ -348,7 +350,9 @@ class KPIUnitManager extends Component {
                                                 <td>{this.formatDate(item.date)}</td>
                                                 <td>{this.checkStatusKPI(item.status)}</td>
                                                 <td>{item.kpis.length}</td>
-                                                <td>{item.approvedPoint === null ? translate('kpi.organizational_unit.management.over_view.not_eval') : `${item.approvedPoint}-${item.automaticPoint}-${item.employeePoint}`}</td>
+                                                <td>{item.automaticPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.automaticPoint}</td>
+                                                <td>{item.employeePoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.employeePoint}</td>
+                                                <td>{item.approvedPoint === null ? translate('kpi.evaluation.employee_evaluation.not_evaluated_yet') : item.approvedPoint}</td>
                                                 <td>
                                                     <a href={`#dataResultTask`} data-toggle="modal" data-backdrop="static"
                                                         data-keyboard="false" title="Xem chi tiết KPI tháng này"><i
@@ -369,7 +373,6 @@ class KPIUnitManager extends Component {
                                 }
                             </tbody>
                         </table>
-                        {exportData&&<ExportExcel id="export-unit-kpi-management-overview" exportData={exportData} style={{ marginRight: 15, marginTop:5 }} />}
                     </div>
                 </div>
             </React.Fragment>

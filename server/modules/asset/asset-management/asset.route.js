@@ -13,7 +13,7 @@ const data = [{
     path: '/asset/files'
 }]
 
-/** Tài sản */
+/* Tài sản */
 router.get('/assets', auth, AssetController.searchAssetProfiles);
 
 router.post('/assets', auth, uploadFile(data, 'fields'), AssetController.createAsset);
@@ -22,26 +22,26 @@ router.delete('/assets/:id', auth, AssetController.deleteAsset);
 
 
 
-/** Tab khấu hao */
-router.patch('/assets/:id/depreciation', auth, AssetController.updateDepreciation);
+/* Tab khấu hao */
+router.patch('/assets/:id/depreciations', auth, AssetController.updateDepreciation);
 
 
 
-/** Tab thông tin sử dụng */
+/* Tab thông tin sử dụng */
 router.post('/assets/:id/usage-logs', auth, AssetController.createUsage);
 router.patch('/assets/:id/usage-logs', auth, AssetController.updateUsage);
 router.delete('/assets/:id/usage-logs', auth, AssetController.deleteUsage);
 
 
 
-/** Tab bảo trì */
+/* Tab bảo trì */
 router.post('/assets/:id/maintainance-logs', auth, AssetController.createMaintainance);
 router.patch('/assets/:id/maintainance-logs', auth, AssetController.updateMaintainance);
 router.delete('/assets/:id/maintainance-logs', auth, AssetController.deleteMaintainance);
 
 
 
-/** Tab sự cố */
+/* Tab sự cố */
 router.post('/assets/:id/incident-logs', auth, AssetController.createIncident);
 router.patch('/assets/:id/incident-logs', auth, AssetController.updateIncident);
 router.delete('/assets/:id/incident-logs', auth, AssetController.deleteIncident);

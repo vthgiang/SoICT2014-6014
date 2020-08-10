@@ -8,7 +8,7 @@ export const DepreciationService = {
 // chỉnh sửa thông tin khấu hao tài sản
 function updateDepreciation(assetId, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/assets/assets/${assetId}/depreciation`,
+        url: `${LOCAL_SERVER_API}/assets/assets/${assetId}/depreciations`,
         method: 'PATCH',
         data
     }, true, true, 'asset.depreciation');

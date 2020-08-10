@@ -5,7 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DistributionOfEmployeeKpiChart } from './distributionOfEmployeeKpiChart';
 import { ResultsOfEmployeeKpiChart } from './resultsOfEmployeeKpiChart';
 
-import { DatePicker } from '../../../../../common-components';
+import { DatePicker, ExportExcel } from '../../../../../common-components';
 import Swal from 'sweetalert2';
 
 var translate='';
