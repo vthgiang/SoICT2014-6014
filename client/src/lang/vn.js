@@ -1710,8 +1710,8 @@ export default {
                 tasks_calendar: 'Lịch công việc chi tiết',
                 model_detail_task_title: 'Thông tin chi tiết công việc',
                 collaborative_tasks: 'Công việc chung',
-                in_time: 'Đúng hạn',
-                delayed_time: 'Trễ hạn',
+                in_time: 'Đúng tiến độ',
+                delayed_time: 'Trễ tiến độ',
                 not_achieved: 'Quá hạn',
 
                 err_organizational_unit: 'Đơn vị đã bị xóa',

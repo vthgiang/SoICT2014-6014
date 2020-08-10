@@ -167,48 +167,15 @@ class EvaluateByAccountableEmployee extends Component {
         let infoEval = task.taskInformations;
         for (let i in infoEval) {
 
-            if (infoEval[i].type === "Date") {
-                if (infoEval[i].value) {
-                    info[`${infoEval[i].code}`] = {
-                        // value: this.formatDate(infoEval[i].value),
-                        code: infoEval[i].code,
-                        type: infoEval[i].type
-                    }
-                }
-                else {
-                    info[`${infoEval[i].code}`] = {
-                        value: this.formatDate(Date.now()),
-                        code: infoEval[i].code,
-                        type: infoEval[i].type
-                    }
-                }
-            }
-            else if (infoEval[i].type === "SetOfValues") {
+            if (infoEval[i].type === "SetOfValues") {
                 let splitSetOfValues = infoEval[i].extra.split('\n');
-                if (infoEval[i].value) {
-                    info[`${infoEval[i].code}`] = {
-                        // value: [infoEval[i].value],
-                        code: infoEval[i].code,
-                        type: infoEval[i].type
-                    }
-                }
-                else {
-                    info[`${infoEval[i].code}`] = {
-                        value: [splitSetOfValues[0]],
-                        code: infoEval[i].code,
-                        type: infoEval[i].type
-                    }
+                info[`${infoEval[i].code}`] = {
+                    value: [splitSetOfValues[0]],
+                    code: infoEval[i].code,
+                    type: infoEval[i].type
                 }
             }
-            else {
-                if (infoEval[i].value) {
-                    info[`${infoEval[i].code}`] = {
-                        // value: infoEval[i].value,
-                        code: infoEval[i].code,
-                        type: infoEval[i].type
-                    }
-                }
-            }
+            
         }
 
         let empPoint = {}, results = {};
@@ -350,7 +317,7 @@ class EvaluateByAccountableEmployee extends Component {
                         }
                         else {
                             info[`${infoEval[i].code}`] = {
-                                value: this.formatDate(Date.now()),
+                                // value: this.formatDate(Date.now()),
                                 code: infoEval[i].code,
                                 type: infoEval[i].type
                             }
@@ -561,12 +528,17 @@ class EvaluateByAccountableEmployee extends Component {
 
     // hàm cập nhật progress
     handleChangeProgress = async (e) => {
+        let {translate} = this.props;
+        let msg;
         let value = parseInt(e.target.value);
+        if (value < 0 || value > 100) {
+            msg = translate('task.task_perform.modal_approve_task.err_range');
+        }
         await this.setState(state => {
             return {
                 ...state,
                 progress: value,
-                errorOnProgress: this.validatePoint(value)
+                errorOnProgress: msg,
             }
         })
         await this.handleChangeAutoPoint();
@@ -874,7 +846,7 @@ class EvaluateByAccountableEmployee extends Component {
         let { translate } = this.props;
         let msg = undefined;
         if (value === "") {
-            msg = translate('task.task_perform.modal_approve_task.err_empty')
+            // msg = translate('task.task_perform.modal_approve_task.err_empty')
         }
         return msg;
     }
@@ -898,7 +870,7 @@ class EvaluateByAccountableEmployee extends Component {
         let msg = undefined;
 
         if (isNaN(value)) {
-            msg = translate('task.task_perform.modal_approve_task.err_empty');
+            // msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
         return msg;
     }
@@ -908,7 +880,7 @@ class EvaluateByAccountableEmployee extends Component {
         let { translate } = this.props;
         let msg = undefined;
         if (value.indexOf("") !== -1) {
-            msg = translate('task.task_perform.modal_approve_task.err_empty');
+            // msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
 
         return msg;
@@ -1042,7 +1014,7 @@ class EvaluateByAccountableEmployee extends Component {
         let { translate } = this.props;
         let msg = undefined;
         if (value.trim() === "") {
-            msg = translate('task.task_perform.modal_approve_task.err_empty');
+            // msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
 
         return msg;
