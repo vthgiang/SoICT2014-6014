@@ -202,7 +202,7 @@ class AssetEditForm extends Component {
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let { code, assetName, serial, assetType, managedBy, purchaseDate, warrantyExpirationDate, location, status, canRegisterForUse, cost, usefulLife, startDepreciation, depreciationType } = this.state;
-        
+
         if (this.state !== {}) {
             let result = this.validatorInput(code) && this.validatorInput(assetName) &&
                 this.validatorInput(serial) && this.validatorInput(assetType) &&
@@ -211,7 +211,7 @@ class AssetEditForm extends Component {
                 this.validatorInput(status) && this.validatorInput(canRegisterForUse) &&
                 this.validatorInput(cost) && this.validatorInput(usefulLife) &&
                 this.validatorInput(startDepreciation) && this.validatorInput(depreciationType);
-            
+
             return result;
         }
 
@@ -262,7 +262,7 @@ class AssetEditForm extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
@@ -271,7 +271,7 @@ class AssetEditForm extends Component {
             return [month, year].join('-');
         } else {
             return [day, month, year].join('-');
-        } 
+        }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -346,7 +346,9 @@ class AssetEditForm extends Component {
 
     render() {
         const { translate, assetsManager } = this.props;
-        const { _id } = this.state;
+        const { _id, img, avatar, code, assetName, serial, assetType, purchaseDate, warrantyExpirationDate, managedBy, assignedTo, handoverFromDate,
+            handoverToDate, location, description, status, canRegisterForUse, detailInfo, usageLogs, maintainanceLogs, cost, residualValue, startDepreciation,
+            usefulLife, depreciationType, incidentLogs, disposalDate, disposalType, disposalCost, disposalDesc, archivedRecordNumber, files } = this.state;
         console.log(this.state, 'this.state-edit')
 
         return (
@@ -374,31 +376,31 @@ class AssetEditForm extends Component {
                             {/* Thông tin chung */}
                             <GeneralTab
                                 _id={`edit_general${_id}`}
-                                img={this.state.img}
+                                img={img}
                                 handleChange={this.handleChange}
                                 handleUpload={this.handleUpload}
-                                avatar={this.state.avatar}
-                                code={this.state.code}
-                                assetName={this.state.assetName}
-                                serial={this.state.serial}
-                                assetTypes={this.state.assetType}
-                                purchaseDate={this.state.purchaseDate}
-                                warrantyExpirationDate={this.state.warrantyExpirationDate}
-                                managedBy={this.state.managedBy}
-                                assignedTo={this.state.assignedTo}
-                                handoverFromDate={this.state.handoverFromDate}
-                                handoverToDate={this.state.handoverToDate}
-                                location={this.state.location}
-                                description={this.state.description}
-                                status={this.state.status}
-                                canRegisterForUse={this.state.canRegisterForUse}
-                                detailInfo={this.state.detailInfo}
+                                avatar={avatar}
+                                code={code}
+                                assetName={assetName}
+                                serial={serial}
+                                assetTypes={assetType}
+                                purchaseDate={purchaseDate}
+                                warrantyExpirationDate={warrantyExpirationDate}
+                                managedBy={managedBy}
+                                assignedTo={assignedTo}
+                                handoverFromDate={handoverFromDate}
+                                handoverToDate={handoverToDate}
+                                location={location}
+                                description={description}
+                                status={status}
+                                canRegisterForUse={canRegisterForUse}
+                                detailInfo={detailInfo}
                             />
 
                             {/* Thông tin sử dụng */}
                             <UsageLogTab
                                 id={`edit_usage${_id}`}
-                                usageLogs={this.state.usageLogs}
+                                usageLogs={usageLogs}
                                 handleAddUsage={this.handleCreateUsageLogs}
                                 handleEditUsage={this.handleEditUsageLogs}
                                 handleDeleteUsage={this.handleDeleteUsageLogs}
@@ -407,7 +409,7 @@ class AssetEditForm extends Component {
                             {/* Thông tin bảo trì */}
                             <MaintainanceLogTab
                                 id={`edit_maintainance${_id}`}
-                                maintainanceLogs={this.state.maintainanceLogs}
+                                maintainanceLogs={maintainanceLogs}
                                 handleAddMaintainance={this.handleCreateMaintainanceLogs}
                                 handleEditMaintainance={this.handleEditMaintainanceLogs}
                                 handleDeleteMaintainance={this.handleDeleteMaintainanceLogs}
@@ -417,18 +419,17 @@ class AssetEditForm extends Component {
                             <DepreciationTab
                                 id={`edit_depreciation${_id}`}
                                 handleChange={this.handleChange}
-                                cost={this.state.cost}
-                                residualValue={this.state.residualValue}
-                                startDepreciation={moment(this.state.startDepreciation).format('DD-MM-YYYY')}
-                                // startDepreciation={this.state.startDepreciation}
-                                usefulLife={this.state.usefulLife}
-                                depreciationType={this.state.depreciationType}
+                                cost={cost}
+                                residualValue={residualValue}
+                                startDepreciation={moment(startDepreciation).format('DD-MM-YYYY')}
+                                usefulLife={usefulLife}
+                                depreciationType={depreciationType}
                             />
 
                             {/* Thông tin sự cố */}
                             <IncidentLogTab
                                 id={`edit_incident${_id}`}
-                                incidentLogs={this.state.incidentLogs}
+                                incidentLogs={incidentLogs}
                                 handleAddIncident={this.handleCreateIncidentLogs}
                                 handleEditIncident={this.handleEditIncidentLogs}
                                 handleDeleteIncident={this.handleDeleteIncidentLogs}
@@ -438,10 +439,10 @@ class AssetEditForm extends Component {
                             <DisposalTab
                                 id={`edit_disposal${_id}`}
                                 handleChange={this.handleChange}
-                                disposalDate={this.state.disposalDate}
-                                disposalType={this.state.disposalType}
-                                disposalCost={this.state.disposalCost}
-                                disposalDesc={this.state.disposalDesc}
+                                disposalDate={disposalDate}
+                                disposalType={disposalType}
+                                disposalCost={disposalCost}
+                                disposalDesc={disposalDesc}
                             />
 
                             {/* Tài liệu đính kèm */}
@@ -451,8 +452,8 @@ class AssetEditForm extends Component {
                                 handleAddFile={this.handleCreateFile}
                                 handleEditFile={this.handleEditFile}
                                 handleDeleteFile={this.handleDeleteFile}
-                                archivedRecordNumber={this.state.archivedRecordNumber}
-                                files={this.state.files}
+                                archivedRecordNumber={archivedRecordNumber}
+                                files={files}
                             />
                         </div>
                     </div>

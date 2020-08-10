@@ -148,11 +148,11 @@ function editStatusKpi(id, status) {
 /**
  *Lấy danh sách công việc theo id
  */
-function getTaskById(id, employeeId, date, kpiType) {
+function getTaskById(id, employeeId, date) {
     return dispatch => {
         dispatch({ type: kpiMemberConstants.GET_TASK_BYID_REQUEST });
 
-        kpiMemberServices.getTaskById(id, employeeId, date, kpiType)
+        kpiMemberServices.getTaskById(id, employeeId, date)
             .then(res => {
                 dispatch({
                     type: kpiMemberConstants.GET_TASK_BYID_SUCCESS,
@@ -170,11 +170,11 @@ function getTaskById(id, employeeId, date, kpiType) {
 /**
  * Chỉnh sửa điểm KPI
  */
-function setPointKPI(employeeId, kpiType, data) {
+function setPointKPI(employeeId, data) {
     return dispatch => {
         dispatch({ type: kpiMemberConstants.SET_POINTKPI_REQUEST });
 
-        kpiMemberServices.setPointKPI(employeeId, kpiType, data)
+        kpiMemberServices.setPointKPI(employeeId, data)
             .then(res => {
                 dispatch({
                     type: kpiMemberConstants.SET_POINTKPI_SUCCESS,

@@ -1709,6 +1709,10 @@ export default {
                 next: 'Sau',
                 tasks_calendar: 'Lịch công việc chi tiết',
                 model_detail_task_title: 'Thông tin chi tiết công việc',
+                collaborative_tasks: 'Công việc chung',
+                in_time: 'Đúng hạn',
+                delayed_time: 'Trễ hạn',
+                not_achieved: 'Quá hạn',
 
                 err_organizational_unit: 'Đơn vị đã bị xóa',
                 err_name_task: 'Tên đã bị xóa',

@@ -7,12 +7,10 @@ import { taskManagementActions } from '../../../task-management/redux/actions'
 import { ModalDetailTask } from './modalDetailTask'
 
 import Timeline, { TodayMarker } from "react-calendar-timeline"
-import { DatePicker } from '../../../../../common-components/index'
-
-import Swal from 'sweetalert2'
-import moment, { duration } from 'moment'
+import moment from 'moment'
 import 'react-calendar-timeline/lib/Timeline.css'
 import './calendar.css'
+import { translate } from 'react-redux-multilingual/lib/utils'
 
 
 class TasksSchedule extends Component {
@@ -55,12 +53,12 @@ class TasksSchedule extends Component {
       willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
     };
   }
+
   componentDidMount = async () => {
     let { infoSearch } = this.state;
     let { organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = infoSearch;
-    let unitIds = this.props.units ? this.props.units : "[]";
+
     await this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
-    // await this.props.getTaskInOrganizationUnitByMonth("[]", startDateAfter, endDateBefore);
     await this.setState(state => {
       return {
         ...state,
@@ -77,7 +75,12 @@ class TasksSchedule extends Component {
           return false;
         }
       }
-      else if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks || !nextProps.tasks.tasksbyuser) {
+      else if (!nextProps.tasks.responsibleTasks
+        || !nextProps.tasks.accountableTasks
+        || !nextProps.tasks.consultedTasks
+        || !nextProps.tasks.informedTasks
+        || !nextProps.tasks.creatorTasks
+        || !nextProps.tasks.tasksbyuser) {
         return false;
       }
 
@@ -87,6 +90,7 @@ class TasksSchedule extends Component {
           dataStatus: this.DATA_STATUS.AVAILABLE
         }
       });
+
     } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
       this.setState(state => {
         return {
@@ -95,10 +99,8 @@ class TasksSchedule extends Component {
           willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
         }
       });
-
       return true;
     }
-
     return false;
   }
 
@@ -113,89 +115,43 @@ class TasksSchedule extends Component {
     return [month, year].join('-');
   }
 
-  // handleSearchTasks = async (nextState) => {
-  //   let { infoSearch } = this.state;
-  //   let { organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = infoSearch;
-  //   if (startDateAfter === "") startDateAfter = null;
-  //   if (endDateBefore === "") endDateBefore = null;
-
-  //   await this.setState(state => {
-  //     return {
-  //       ...state,
-  //       infoSearch: {
-  //         ...state.infoSearch,
-  //         startDateAfter: startDateAfter,
-  //         endDateBefore: endDateBefore
-  //       }
-  //     }
-  //   })
-  //   let startAfterSpl;
-  //   let startdate_after = null;
-  //   let endBeforeSpl;
-  //   let enddate_before = null;
-
-  //   if (startDateAfter === undefined) startDateAfter = null;
-  //   if (endDateBefore === undefined) endDateBefore = null;
-  //   if (startDateAfter !== null) {
-  //     startAfterSpl = startDateAfter.split("-");
-  //     startdate_after = new Date(startAfterSpl[0], startAfterSpl[1], 0);
-  //   }
-
-  //   if (endDateBefore !== null) {
-  //     endBeforeSpl = endDateBefore.split("-");
-  //     enddate_before = new Date(endBeforeSpl[0], endBeforeSpl[1], 28);
-  //   }
-  //   if (startdate_after && enddate_before &&
-  //     Date.parse(startdate_after) > Date.parse(enddate_before)) {
-  //     const { translate } = this.props;
-  //     Swal.fire({
-  //       title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
-  //       type: 'warning',
-  //       confirmButtonColor: '#3085d6',
-  //       confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm')
-  //     })
-  //   }
-  //   else {
-  //     if (this.props.TaskOrganizationUnitDashboard) {
-  //       let unitIds = this.props.units ? this.props.units : "[]";
-  //       this.props.getTaskInOrganizationUnitByMonth(unitIds, startDateAfter, endDateBefore);
-  //     }
-  //     else {
-  //       this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
-  //     }
-  //   }
-  // }
-
   // Lấy thời gian các công việc
   getTaskDurations() {
     const { tasks } = this.props;
     var taskList, inprocessTasks;
     let taskDurations = [];
+
     if (tasks) {
       if (this.props.TaskOrganizationUnitDashboard) {
         taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
-        inprocessTasks = taskList && taskList.filter(task => task.status === "Inprocess");
+        inprocessTasks = taskList && taskList.filter(task => (task.status === "Inprocess" && task.isArchived === false));
       }
-      else inprocessTasks = tasks.responsibleTasks;
+      else {
+        taskList = tasks && tasks.responsibleTasks;
+        inprocessTasks = taskList && taskList.filter(task => (task.status === "Inprocess" && task.isArchived === false));
+      }
     }
 
     if (inprocessTasks) {
+      var startTime, endTime, currentTime, start_time, end_time, title1, title2, groupTask, titleTask;
+      var workingDayMin;
+
       for (let i = 1; i <= inprocessTasks.length; i++) {
-        let startTime, endTime, start_time, end_time, title1, title2, groupTask, titleTask;
         let multi = false;
         let responsibleEmployeeIds = [];
         let responsibleEmployeeNames = [];
-        let dayOfTask;
+
+        currentTime = new Date();
         startTime = new Date(inprocessTasks[i - 1].startDate);
         endTime = new Date(inprocessTasks[i - 1].endDate);
         start_time = moment(startTime);
         end_time = moment(endTime);
-        dayOfTask = (endTime - startTime) / 86400000;
-        console.log("start. end", dayOfTask)
+
         inprocessTasks[i - 1].responsibleEmployees.map(x => {
           responsibleEmployeeIds.push(x._id);
           responsibleEmployeeNames.push(x.name);
         });
+
         title1 = inprocessTasks[i - 1].name + " - " + inprocessTasks[i - 1].progress + "%";
         title2 = inprocessTasks[i - 1].name + " - " + responsibleEmployeeNames.join(" - ") + " - " + inprocessTasks[i - 1].progress + "%";
         if (responsibleEmployeeIds.length > 1) {
@@ -209,6 +165,7 @@ class TasksSchedule extends Component {
           titleTask = title1;
           groupTask = responsibleEmployeeIds[0];
         }
+
         taskDurations.push({
           id: parseInt(i),
           group: groupTask,
@@ -231,27 +188,44 @@ class TasksSchedule extends Component {
         })
       }
 
-      if (inprocessTasks.length) {
-        let x = document.getElementsByClassName("rct-item");
-        if (x.length) for (let i = 0; i < x.length; i++) {
-          if (inprocessTasks[i]) this.displayTaskProgress(inprocessTasks[i].progress, x[i]);
+      let x = document.getElementsByClassName("rct-item");
+      if (x.length) {
+        for (let i = 0; i < x.length; i++) {
+          if (inprocessTasks[i]) {
+            let color;
+            currentTime = new Date();
+            startTime = new Date(inprocessTasks[i].startDate);
+            endTime = new Date(inprocessTasks[i].endDate);
+
+            if (currentTime > endTime && inprocessTasks[i].progress < 100) {
+              color = "#DD4B39"; // not achieved
+            }
+            else {
+              workingDayMin = (endTime - startTime) * inprocessTasks[i].progress / 100;
+              let dayFromStartDate = currentTime - startTime;
+              let timeOver = workingDayMin - dayFromStartDate;
+              if (timeOver >= 0) color = "#00A65A"; // In time or on time
+              else {
+                color = "#F0D83A"; // delay
+              }
+            }
+
+            this.displayTaskProgress(inprocessTasks[i].progress, x[i], color);
+          }
         }
       }
     }
-
     return taskDurations;
   }
 
   // Nhóm công việc theo người thực hiện
 
   getTaskGroups() {
-    const { tasks } = this.props;
+    const { tasks, translate } = this.props;
     var taskList1, inprocessTasks1;
-    let groupName = [];
-    let distinctGroupName = [];
-    let id = [];
-    let distinctId = [];
+    let groupName = [], distinctGroupName = [], id = [], distinctId = [];
     let multiResponsibleEmployee = false;
+
     if (tasks) {
       if (this.props.TaskOrganizationUnitDashboard) {
         taskList1 = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
@@ -262,84 +236,93 @@ class TasksSchedule extends Component {
         inprocessTasks1 = taskList1 && taskList1.filter(task => (task.status === "Inprocess" && task.isArchived === false));
       }
       if (inprocessTasks1) {
-
         for (let i = 1; i <= inprocessTasks1.length; i++) {
-
-
           let responsibleName = [];
           let responsibleEmployeeIds = [];
-          inprocessTasks1[i - 1].responsibleEmployees.map(x => {
 
+          inprocessTasks1[i - 1].responsibleEmployees.map(x => {
             responsibleName.push(x.name)
             responsibleEmployeeIds.push(x._id)
-
           });
+
           if (responsibleEmployeeIds.length === 1) { // Nếu công việc chỉ có 1 người thực hiện
             groupName.push({
               id: responsibleEmployeeIds[0],
               title: responsibleName
             })
           }
-
           else if (responsibleEmployeeIds.length > 1) {
             multiResponsibleEmployee = true;
           }
 
           id.push(responsibleEmployeeIds[0])
-
         }
-        if (groupName) {
+        // Loại bỏ các id trùng nhau
+        if (groupName.length) {
           for (let i = 0; i < id.length; i++) {
             let idx = distinctId.indexOf(id[i]);
+
             if (idx < 0) {
-              distinctId.push(id[i])
-              distinctGroupName.push({
-                id: groupName[i].id,
-                title: groupName[i].title
-              })
+              distinctId.push(id[i]);
+              if (groupName[i]) {
+                distinctGroupName.push({
+                  id: groupName[i].id,
+                  title: groupName[i].title
+                })
+              }
             }
           }
+
           if (multiResponsibleEmployee) {
             distinctGroupName.push({
               id: "multi-responsible-employee",
-              title: "Cong viec nhieu ng thuc hien"
+              title: translate('task.task_management.collaborative_tasks')
             })
           }
         }
       }
     }
     let group = [{ id: "no-data", title: "" }]
-    return distinctGroupName.length ? distinctGroupName : group;
 
+    return distinctGroupName.length ? distinctGroupName : group;
   }
 
   // Hiển thị tiến độ công việc
 
-  displayTaskProgress = async (progress, x) => {
+  displayTaskProgress = async (progress, x, color) => {
     if (x) {
       let d, child;
 
       d = document.createElement('div');
       d.setAttribute("class", "task-progress");
       d.style.width = `${progress}%`
+      d.style.backgroundColor = color;
       child = x.childElementCount;
-      if (child === 1) x.appendChild(d);
 
+      if (child === 1) x.appendChild(d);
     }
   }
 
 
   handleItemClick = async (itemId) => {
     let { tasks } = this.props;
-    let taskList, inprocessTasks;
+    var taskList, inprocessTasks;
 
     if (tasks) {
+      // if (this.props.TaskOrganizationUnitDashboard) {
+      //   taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
+      //   inprocessTasks = taskList && taskList.filter(task => task.status === "Inprocess");
+      // }
+      // else inprocessTasks = tasks.responsibleTasks;
+
       if (this.props.TaskOrganizationUnitDashboard) {
         taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
-        inprocessTasks = taskList && taskList.filter(task => task.status === "Inprocess");
+        inprocessTasks = taskList && taskList.filter(task => (task.status === "Inprocess" && task.isArchived === false));
       }
-      else inprocessTasks = tasks.responsibleTasks;
-
+      else {
+        taskList = tasks && tasks.responsibleTasks;
+        inprocessTasks = taskList && taskList.filter(task => (task.status === "Inprocess" && task.isArchived === false));
+      }
     }
 
     let id = inprocessTasks[itemId - 1]._id;
@@ -413,7 +396,7 @@ class TasksSchedule extends Component {
                 ({ styles, date }) => {
                   const customStyles = {
                     ...styles,
-                    backgroundColor: 'rgba(231, 76, 60, 0.8)',
+                    backgroundColor: 'rgba(231, 76, 60, 1)',
                     width: '2px',
                     zIndex: '100'
                   }
@@ -422,9 +405,24 @@ class TasksSchedule extends Component {
               }
             </TodayMarker>
           </Timeline>
+          <div className="form-inline" style={{ textAlign: "center", margin: "10px" }}>
+            <div className="form-group">
+              <div id="in-time"></div>
+              <label id="label-for-calendar">{translate('task.task_management.in_time')}</label>
+            </div>
+            <div className="form-group">
+              <div id="delay"></div>
+              <label id="label-for-calendar">{translate('task.task_management.delayed_time')}</label>
+            </div>
+            <div className="form-group">
+              <div id="not-achieved"></div>
+              <label id="label-for-calendar">{translate('task.task_management.not_achieved')}</label>
+            </div>
+
+          </div>
           <div className="form-inline pull-right" style={{ marginTop: "5px" }}>
-            <button className='btn btn-danger' onClick={this.onPrevClick}><i className="fa fa-angle-left"></i> {translate('task.task_management.prev')}</button>
-            <button className='btn btn-danger' onClick={this.onNextClick}>{translate('task.task_management.next')} <i className="fa fa-angle-right"></i></button>
+            <button className='btn btn-success' onClick={this.onPrevClick}><i className="fa fa-angle-left"></i> {translate('task.task_management.prev')}</button>
+            <button className='btn btn-success' onClick={this.onNextClick}>{translate('task.task_management.next')} <i className="fa fa-angle-right"></i></button>
           </div>
         </div>
       </React.Fragment>
