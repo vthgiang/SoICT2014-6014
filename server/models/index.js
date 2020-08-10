@@ -6,6 +6,7 @@ const UserRole = require('./auth/userRole.model');
 const Document = require('./document/document.model');
 const DocumentCategory = require('./document/documentCategory.model');
 const DocumentDomain = require('./document/documentDomain.model');
+const DocumentArchive = require('./document/documentArchive.model')
 
 const AnnualLeave = require('./human-resource/annualLeave.model');
 const Commendation = require('./human-resource/commendation.model');

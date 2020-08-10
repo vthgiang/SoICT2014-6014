@@ -47,24 +47,28 @@
   .rct-header-root {
     background: #bbb;
     border-bottom: 1px solid #bbb;
-}
-.rct-items .rct-item {
-  background: rgb(97, 173, 245) !important;
-}
-#start_date_after, #end_date_before{
-  z-index: 100 !important;
-}
-#task-progress{
+  }
+  .rct-header-root > div{
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #bbb;
+  }
+  .rct-items .rct-item {
+    background: rgb(210, 228, 255) !important;
+    /* left: 0 !important */
+  }
+  #start_date_after, #end_date_before{
+    z-index: 100 !important;
+  }
+  .task-progress{
     z-index: -1;
-    background-color: wheat;
-    height: 23px;
-    position: relative;
-    top: -30px;
+    background-color: rgb(104, 152, 255);
+    height: 21px;
+    position: absolute;
+    top: 0.5px;
     border-radius: 3px;
-    left: -0.5px;
-}
-.flex-right {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 10px;
-}
+  }
+  .flex-right {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+  }

@@ -74,8 +74,8 @@ class EvaluateByResponsibleEmployee extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    errorInfo: {},
-                    errorOnProgress: undefined,
+                    // errorInfo: {},
+                    // errorOnProgress: undefined,
                     id: nextProps.id,
                     task: data.task,
                     info: data.info,
@@ -293,6 +293,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
         let calcAuto = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
         if (isNaN(calcAuto)) calcAuto = undefined
+        if (calcAuto < 0) calcAuto = 0;
 
         dentaDate = Math.round(((new Date()).getTime() - dateOfEval.getTime()) / (1000 * 3600 * 24));
         console.log('denta', dentaDate);
@@ -385,6 +386,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
         let calcAuto = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
         if (isNaN(calcAuto)) calcAuto = undefined
+        if (calcAuto < 0) calcAuto = 0;
 
         return {
             info: info,
@@ -504,6 +506,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
         automaticPoint = AutomaticTaskPointCalculator.calcAutoPoint(taskInfo);
         if (isNaN(automaticPoint)) automaticPoint = undefined
+        if (automaticPoint < 0) automaticPoint = 0;
 
         this.setState(state => {
             return {
@@ -517,8 +520,8 @@ class EvaluateByResponsibleEmployee extends Component {
                 // progress: data.progress,
                 // checkSave: data.checkSave,
                 errorOnDate: err,
-                errorInfo: {},
-                errorOnProgress: undefined,
+                // errorInfo: {},
+                // errorOnProgress: undefined,
                 indexReRender: state.indexReRender + 1,
             }
         });
@@ -802,7 +805,7 @@ class EvaluateByResponsibleEmployee extends Component {
         }
     }
 
-    save = () => {
+    save = async () => {
         let taskId;
         taskId = this.state.task._id;
         let data = {
@@ -822,8 +825,16 @@ class EvaluateByResponsibleEmployee extends Component {
         this.props.evaluateTaskByResponsibleEmployees(data, taskId);
 
         this.handleAddTaskLog();
+
+        this.setState(state=>{
+            return {
+                ...state,
+                oldAutoPoint: state.autoPoint,
+            }
+        });
     }
 
+//  kiểm tra có phải đánh giá này là của tháng hiện tại hay ko
     checkNote = () => {
         let { date } = this.props;
         let splitter = date.split("-");
@@ -831,9 +842,9 @@ class EvaluateByResponsibleEmployee extends Component {
         let now = new Date ();
 
         if(now.getMonth() === isoDate.getMonth() && now.getFullYear() === isoDate.getFullYear()) {
-            return false;
+            return false; // là tháng hiện tại
         }
-        return true
+        return true // khác tháng hiện tại
     }
 
     checkNullUndefined = (x) => {
@@ -915,6 +926,7 @@ class EvaluateByResponsibleEmployee extends Component {
                                                 value={date}
                                                 onChange={this.handleDateChange}
                                                 disabled={disabled} 
+                                                // || (checkNoteMonth && (dentaDate <= 20 && dentaDate > 0))
                                             />
                                             <ErrorLabel content={errorOnDate} />
                                         </div>

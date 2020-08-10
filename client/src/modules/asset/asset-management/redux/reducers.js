@@ -70,11 +70,7 @@ export function assetsManager(state = initState, action) {
                 listAssets: [...state.listAssets, ...action.payload.assets],
                 isLoading: false
             };
-        case AssetConstants.ADDASSET_FAILURE:
-            return {
-                error: action.error,
-                isLoading: false,
-            };
+      
         case AssetConstants.UPDATE_INFOR_ASSET_SUCCESS:
             console.log(action.payload);
             return {
@@ -82,6 +78,7 @@ export function assetsManager(state = initState, action) {
                 listAssets: state.listAssets.map(x => x.assets._id === action.payload.assets._id ? action.payload : x),
                 isLoading: false
             };
+        
         case AssetConstants.DELETE_ASSET_SUCCESS:
             return {
                 ...state,

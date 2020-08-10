@@ -20,14 +20,19 @@ class IncidentLogTab extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -43,15 +48,21 @@ class IncidentLogTab extends Component {
     }
 
     render() {
-        const { id, translate, user } = this.props;
+        const { id } = this.props;
+        const { translate, user } = this.props;
         const { incidentLogs } = this.state;
+        
         var userlist = user.list;
         console.log('this.state', this.state);
+
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body qlcv">
+                    {/* Danh sách sự cố tài sản */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">Danh sách sự cố tài sản</h4></legend>
+
+                        {/* Bảng thông tin sự cố */}
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
@@ -63,12 +74,12 @@ class IncidentLogTab extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof incidentLogs !== 'undefined' && incidentLogs.length !== 0) &&
+                                {(incidentLogs && incidentLogs.length !== 0) &&
                                     incidentLogs.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.incidentCode}</td>
                                             <td>{x.type}</td>
-                                            <td>{x.reportedby !== null  && userlist.length ? userlist.filter(item => item._id === x.reportedBy).pop().name: ''}</td>
+                                            <td>{x.reportedby ? (userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted') : ''}</td>
                                             <td>{x.dateOfIncident ? this.formatDate(x.dateOfIncident): ''}</td>
                                             <td>{x.description}</td>
                                         </tr>
@@ -78,7 +89,7 @@ class IncidentLogTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof incidentLogs === 'undefined' || incidentLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!incidentLogs || incidentLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                 </div>

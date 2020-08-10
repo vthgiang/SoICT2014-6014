@@ -87,10 +87,12 @@ class ExperienceTab extends Component {
             );
         }
     }
+
     // Function chỉnh sửa kinh nghiệm làm việc
     handleEditExperience = async (data) => {
         const { experiences } = this.state;
-        let checkData = this.checkForFuplicate(data, experiences);
+        let experiencesNew = [...experiences];
+        let checkData = this.checkForFuplicate(data, experiencesNew.splice(data.index, 1));
         if (checkData) {
             experiences[data.index] = data;
             await this.setState({

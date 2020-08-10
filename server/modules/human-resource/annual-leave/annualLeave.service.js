@@ -94,12 +94,93 @@ exports.getTotalAnnualLeave = async (company, organizationalUnits, month) => {
 }
 
 /**
- * Lấy thông tin nghỉ phép trong 6 hoặc 12 tháng gần nhất
+ * Lấy thông tin nghỉ phép trong 6 hoặc 12 tháng gần nhất theo đơn vị
+ * @param {*} organizationalUnits: array id đơn vị
  * @param {*} numberMonth : Số tháng cần lấy thông tin nghỉ phép (6 hoặc 12)
  * @param {*} company : Id công ty
  */
-exports.getAnnualLeaveOfNumberMonth = async (numberMonth, company) => {
+exports.getAnnualLeaveOfNumberMonth = async (organizationalUnits, numberMonth, company) => {
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+    currentMonth = currentMonth + 1;
+    let arrMonth = [];
+    for (let i = 0; i < Number(numberMonth); i++) {
+        let month = currentMonth - i;
+        if (month > 0) {
+            if (month.toString().length === 1) {
+                month = `${currentYear}-0${month}-01`;
+                arrMonth = [...arrMonth, month];
+            } else {
+                month = `${currentYear}-${month}-01`;
+                arrMonth = [...arrMonth, month];
+            }
+        } else {
+            month = month + 12;
+            if (month.toString().length === 1) {
+                month = `${currentYear-1}-0${month}-01`;
+                arrMonth = [...arrMonth, month];
+            } else {
+                month = `${currentYear-1}-${month}-01`;
+                arrMonth = [...arrMonth, month];
+            }
+        }
+    }
 
+    let querys = [];
+    arrMonth.forEach(x => {
+        let date = new Date(x);
+        let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+        let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+        querys = [...querys, {
+            startDate: {
+                "$gt": firstDay,
+                "$lte": lastDay
+            }
+        }]
+    })
+
+    if (organizationalUnits) {
+        let emailInCompany = await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(organizationalUnits, undefined);
+        let arrId = await Employee.find({
+            company: company,
+            emailInCompany: {
+                $in: emailInCompany
+            }
+        }, {
+            _id: 1
+        })
+        arrId = arrId.map(x => x._id);
+        let listAnnualLeaveOfNumberMonth = await AnnualLeave.find({
+            company: company,
+            status: 'pass',
+            employee: {
+                $in: arrId
+            },
+            "$or": querys
+        }, {
+            startDate: 1,
+            endDate: 1
+        })
+
+        return {
+            listAnnualLeaveOfNumberMonth,
+            arrMonth
+        }
+    } else {
+        let listAnnualLeaveOfNumberMonth = await AnnualLeave.find({
+            company: company,
+            status: 'pass',
+            "$or": querys
+        }, {
+            startDate: 1,
+            endDate: 1
+        })
+
+        return {
+            listAnnualLeaveOfNumberMonth,
+            arrMonth
+        }
+    }
 }
 
 

@@ -173,7 +173,7 @@ class SalaryManagement extends Component {
                 }
 
                 return {
-                    STT: index + 1,
+                    STT4: index + 1,
                     employeeNumber: x.employee.employeeNumber,
                     fullName: x.employee.fullName,
                     mainSalary: parseInt(x.mainSalary),
@@ -199,8 +199,28 @@ class SalaryManagement extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
+                    sheetTitle: "Bảng theo dõi lương thưởng",
                     tables: [
                         {
+                            tableName: "Bảng lương 1",
+                            merges: [{
+                                key: "other",
+                                columnName: "Lương thưởng khác",
+                                keyMerge: 'bonus0',
+                                colspan: 2
+                            },
+                            {
+                                key: "other2",
+                                columnName: "Lương thưởng khác",
+                                keyMerge: 'status',
+                                colspan: 2
+                            }, {
+                                key: "other3",
+                                columnName: "Lương thưởng khác",
+                                keyMerge: 'other2',
+                                colspan: 4
+                            }],
+                            rowHeader: 3,
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "month", value: "Tháng" },
@@ -212,12 +232,12 @@ class SalaryManagement extends Component {
                                 { key: "gender", value: "Giới tính" },
                                 { key: "birthdate", value: "Ngày sinh" },
                                 { key: "status", value: "Tình trạng lao động" },
-                                { key: "mainSalary", value: "Tiền lương chính", type: "Number" },
+                                { key: "mainSalary", value: "Tiền lương chính", },
                                 ...columns,
-                                { key: "total", value: "Tổng lương", type: "Number" },
+                                { key: "total", value: "Tổng lương", },
                             ],
                             data: data
-                        }
+                        },
                     ]
                 },
             ]
@@ -266,7 +286,7 @@ class SalaryManagement extends Component {
                                 <li><a title={translate('human_resource.salary.add_by_hand_title')} onClick={this.createSalary}>{translate('human_resource.salary.add_by_hand')}</a></li>
                             </ul>
                         </div>
-                        <ExportExcel id="export-salary" exportData={exportData} style={{ marginRight: 15 }} />
+                        <ExportExcel id="export-salary" exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
@@ -393,6 +413,7 @@ class SalaryManagement extends Component {
                         bonus={this.state.currentRow.bonus}
                     />
                 }
+                {/* <ExportExcelMerge id="export-salary" exportData={exportData} style={{ marginTop: 15 }} /> */}
             </div>
         );
     }

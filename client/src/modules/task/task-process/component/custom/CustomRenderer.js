@@ -42,54 +42,56 @@ export default class CustomRenderer extends BaseRenderer {
 
 
   drawShape(parentNode, element) {
-    console.log(element)
     const shape = this.bpmnRenderer.drawShape(parentNode, element);
 
 
     const suitabilityScore = this.getSuitabilityScore(element);
 
     if (element.type == 'bpmn:Task') {
-      element.height = 200;
-      element.width = 260;
+      element.height = 130;
+      element.width = 160;
 
       // const rect = drawRect(parentNode, 200, 120, 10, 'black');
       // svgAttr(rect, {
       //   transform: 'translate(0, 20)'
       // });
 
-      const line = drawLine(parentNode, 0, 40, 260, 40, 'black');
-      const line1 = drawLine(parentNode, 0, 150, 260, 150, 'black');
+      const line = drawLine(parentNode, 0, 30, 160, 30, 'black');
+      const line1 = drawLine(parentNode, 0, 90, 160, 90, 'black');
+
 
 
       var text = svgCreate('text');
       svgAttr(text, {
         fill: 'black',
-        transform: 'translate(5, 25)',
+        transform: 'translate(7, 20)',
+        fontSize: "15px"
       });
       svgClasses(text).add('djs-label');
       svgAppend(text, document.createTextNode(element.businessObject.name !== undefined ? element.businessObject.name : ""));
       svgAppend(parentNode, text);
 
-      var a = 'Nguyễn Văn A'
-      var b = "Nguyễn Văn B"
       text = svgCreate('text');
       svgAttr(text, {
         fill: 'black',
-        transform: 'translate(5, 85)'
+        transform: 'translate(5, 50)',
+        fontSize: "10px",
+        fontWeight: "bold"
       });
       svgClasses(text).add('djs-label');
 
       let info = element.businessObject.$attrs.info;
-      svgAppend(text, document.createTextNode(`Thực hiện: ${info ? (info[element.id]?.responsible ? info[element.id].responsible : "" ): ""}`));
+      svgAppend(text, document.createTextNode(`${info ? (info[element.id]?.responsibleName ? info[element.id].responsibleName : "") : ""}`));
       svgAppend(parentNode, text);
 
       text = svgCreate('text');
       svgAttr(text, {
         fill: 'black',
-        transform: 'translate(5, 125)'
+        transform: 'translate(5, 70)',
+        fontSize: "10px"
       });
       svgClasses(text).add('djs-label');
-      svgAppend(text, document.createTextNode(`Phê duyệt: ${info ? (info[element.id]?.accountable? info[element.id].accountable : "") : ""}`));
+      svgAppend(text, document.createTextNode(`${info ? (info[element.id]?.accountableName ? info[element.id].accountableName : "") : ""}`));
       svgAppend(parentNode, text);
 
       // const line = drawLine(parentNode, 0, 40, 200, 40, 'black');

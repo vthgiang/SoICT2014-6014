@@ -117,8 +117,8 @@ class MultipleBarChart extends Component {
                         <p className="pull-left" style={{ marginBottom: 0 }}><b>ĐV tính: %</b></p>
                         <div className="box-tools pull-right">
                             <div className="btn-group pull-rigth">
-                                <button type="button" className={`btn btn-default btn-xs ${lineBar === false ? 'active' : null}`} onClick={() => this.handleChangeViewChart(true)}>Bar chart</button>
-                                <button type="button" className={`btn btn-default btn-xs ${lineBar === true ? 'active' : null}`} onClick={() => this.handleChangeViewChart(false)}>Line chart</button>
+                                <button type="button" className={`btn btn-xs ${lineBar === false ? 'btn-danger' : null}`} onClick={() => this.handleChangeViewChart(true)}>Bar chart</button>
+                                <button type="button" className={`btn btn-xs ${lineBar === true ? 'btn-danger' : null}`} onClick={() => this.handleChangeViewChart(false)}>Line chart</button>
                             </div>
                         </div>
                         <div ref="chart"></div>

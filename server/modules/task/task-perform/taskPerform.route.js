@@ -18,6 +18,7 @@ router.post('/tasks/:taskId/logs', auth, PerformTaskController.addTaskLog);
 //upload file
 router.post('/tasks/:taskId/files', auth, uploadFile([{ name: 'files', path: '/files' }], 'array'), PerformTaskController.uploadFile)
 
+router.delete('/tasks/:taskId/files/:fileId', auth, PerformTaskController.deleteFileTask)
 
 
 //Task Action

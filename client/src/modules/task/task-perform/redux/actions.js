@@ -31,7 +31,7 @@ export const performTaskAction = {
     deleteFileTaskComment,
     deleteFileChildTaskComment,
     getTaskLog,
-
+    deleteFileTask,
     editTaskByAccountableEmployees,
     editTaskByResponsibleEmployees,
     editStatusOfTask,
@@ -101,10 +101,10 @@ function getTimerStatusTask() { //param -- , user
 }
 
 // start timer task
-function startTimerTask(taskId,timer) {
+function startTimerTask(taskId, timer) {
     return dispatch => {
         dispatch({ type: performTaskConstants.START_TIMER_REQUEST });
-        performTaskService.startTimerTask(taskId,timer)
+        performTaskService.startTimerTask(taskId, timer)
             .then(
                 payload => {
                     dispatch({ type: performTaskConstants.START_TIMER_SUCCESS, payload });
@@ -532,6 +532,25 @@ function editArchivedOfTask(id) {
             })
             .catch(error => {
                 dispatch({ type: taskManagementConstants.EDIT_ARCHIVED_STATUS_OF_TASK_FAILURE, error });
+            });
+    };
+}
+
+/**
+ * Delete file of task
+ */
+function deleteFileTask(fileId, taskId) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.DELETE_FILE_TASK_REQUEST });
+        performTaskService.deleteFileTask(fileId, taskId)
+            .then(res => {
+                dispatch({
+                    type: performTaskConstants.DELETE_FILE_TASK_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: performTaskConstants.DELETE_FILE_TASK_FAILURE, error });
             });
     };
 }

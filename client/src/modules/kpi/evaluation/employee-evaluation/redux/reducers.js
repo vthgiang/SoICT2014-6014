@@ -1,8 +1,8 @@
 import { kpiMemberConstants } from "./constants";
-import {createKpiSetConstants} from '../../../employee/creation/redux/constants'
+import { createKpiSetConstants } from '../../../employee/creation/redux/constants'
 export function kpimembers(state = {}, action) {
   switch (action.type) {
-    case  kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_REQUEST:
+    case kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_REQUEST:
       return {
         loading: true,
         isLoading: true
@@ -15,12 +15,12 @@ export function kpimembers(state = {}, action) {
         isLoading: false
       };
     case kpiMemberConstants.GETALL_KPIMEMBER_OfUNIT_FAILURE:
-      return { 
+      return {
         error: action.payload,
         isLoading: false
       };
-      
-    case  kpiMemberConstants.GETALL_KPIMEMBER_REQUEST:
+
+    case kpiMemberConstants.GETALL_KPIMEMBER_REQUEST:
       return {
         ...state,
         loading: true,
@@ -34,11 +34,11 @@ export function kpimembers(state = {}, action) {
         isLoading: false
       };
     case kpiMemberConstants.GETALL_KPIMEMBER_FAILURE:
-      return { 
+      return {
         error: action.payload,
         isLoading: false
       };
-    case  kpiMemberConstants.GET_KPIMEMBER_BYID_REQUEST:
+    case kpiMemberConstants.GET_KPIMEMBER_BYID_REQUEST:
       return {
         ...state,
         isLoading: true,
@@ -51,11 +51,11 @@ export function kpimembers(state = {}, action) {
         isLoading: false
       };
     case kpiMemberConstants.GET_KPIMEMBER_BYID_FAILURE:
-      return { 
+      return {
         error: action.payload,
         isLoading: false
       };
-    case  kpiMemberConstants.GET_KPIMEMBER_BYMONTH_REQUEST:
+    case kpiMemberConstants.GET_KPIMEMBER_BYMONTH_REQUEST:
       return {
         ...state,
         isLoading: true
@@ -67,11 +67,11 @@ export function kpimembers(state = {}, action) {
         isLoading: false
       };
     case kpiMemberConstants.GET_KPIMEMBER_BYMONTH_FAILURE:
-      return { 
+      return {
         error: action.payload,
         isLoading: false
       };
-    case  kpiMemberConstants.APPROVE_KPIMEMBER_REQUEST:
+    case kpiMemberConstants.APPROVE_KPIMEMBER_REQUEST:
       return {
         ...state,
         confirming: true,
@@ -82,42 +82,42 @@ export function kpimembers(state = {}, action) {
         ...state,
         currentKPI: action.payload,
         kpimembers: state.kpimembers.map(item =>
-          item._id === action.payload._id? action.payload: item),
+          item._id === action.payload._id ? action.payload : item),
         isLoading: false
       };
     case kpiMemberConstants.APPROVE_KPIMEMBER_FAILURE:
-      return { 
+      return {
         error: action.payload,
         isLoading: false
       };
-    case  kpiMemberConstants.EDITTARGET_KPIMEMBER_REQUEST:
+    case kpiMemberConstants.EDITTARGET_KPIMEMBER_REQUEST:
       return {
         ...state,
         currentKPI: {
           ...state.currentKPI,
           kpis: state.currentKPI.kpis.map(target =>
-            target._id === action.id? { ...target, editing: true }: target)
+            target._id === action.id ? { ...target, editing: true } : target)
         },
         isLoading: false
       };
     case kpiMemberConstants.EDITTARGET_KPIMEMBER_SUCCESS:
       return {
-          ...state,
-          currentKPI: {
-            ...state.currentKPI,
-            kpis: state.currentKPI.kpis.map(target =>
-              target._id === action.payload._id
-                ? action.payload : target)
-          },
-          target: action.payload,
-          isLoading: false
+        ...state,
+        currentKPI: {
+          ...state.currentKPI,
+          kpis: state.currentKPI.kpis.map(target =>
+            target._id === action.payload._id
+              ? action.payload : target)
+        },
+        target: action.payload,
+        isLoading: false
       };
     case kpiMemberConstants.EDITTARGET_KPIMEMBER_FAILURE:
-      return { 
+      return {
         error: action.payload,
         isLoading: false
       };
-    case  kpiMemberConstants.EDITSTATUS_TARGET_KPIMEMBER_REQUEST:
+    case kpiMemberConstants.EDITSTATUS_TARGET_KPIMEMBER_REQUEST:
       return {
         ...state,
         editing: true,
@@ -128,70 +128,70 @@ export function kpimembers(state = {}, action) {
         ...state,
         editing: false,
         currentKPI: action.payload,
-        kpimembers: state.kpimembers.map(item=>
-          item._id === action.payload._id? action.payload: item),
+        kpimembers: state.kpimembers.map(item =>
+          item._id === action.payload._id ? action.payload : item),
         isLoading: false
       };
     case kpiMemberConstants.EDITSTATUS_TARGET_KPIMEMBER_FAILURE:
-      return { 
+      return {
         error: action.payload,
         isLoading: false
       };
     case kpiMemberConstants.GET_TASK_BYID_FAILURE:
-      return { 
+      return {
         error: action.payload
-        };
-    case  kpiMemberConstants.GET_TASK_BYID_REQUEST: 
+      };
+    case kpiMemberConstants.GET_TASK_BYID_REQUEST:
       return {
         ...state,
         loading: true,
         tasks: null
-        };
-    case  kpiMemberConstants.GET_TASK_BYID_SUCCESS:
+      };
+    case kpiMemberConstants.GET_TASK_BYID_SUCCESS:
       return {
         ...state,
         loading: false,
-        tasks: action.payload, 
+        tasks: action.payload,
       };
-    case  kpiMemberConstants.SET_POINTKPI_REQUEST:
-        return {
-          ...state,
+    case kpiMemberConstants.SET_POINTKPI_REQUEST:
+      return {
+        ...state,
         editing: true
-        };
+      };
     case kpiMemberConstants.SET_POINTKPI_SUCCESS:
       return {
-          ...state,
-          tasks: action.payload.task,
-          currentKPI: {
-            ...state.currentKPI,
-            kpis: state.currentKPI.kpis.map(kpi =>
-              (kpi._id === action.payload.result._id)? action.payload.result: kpi )
-          }
+        ...state,
+        tasks: action.payload.task,
+        currentKPI: {
+          ...state.currentKPI,
+          kpis: state.currentKPI.kpis.map(kpi =>
+            (kpi._id === action.payload.result._id) ? action.payload.result : kpi)
+        }
       };
     case kpiMemberConstants.SET_POINTKPI_FAILURE:
-      return { 
+      return {
         error: action.payload
       };
-    case  kpiMemberConstants.TASK_IMPORTANT_LEVEL_REQUEST:
-        return {
-          ...state,
+    case kpiMemberConstants.TASK_IMPORTANT_LEVEL_REQUEST:
+      return {
+        ...state,
         editing: true
-        };
+      };
     case kpiMemberConstants.TASK_IMPORTANT_LEVEL_SUCCESS:
       return {
-          ...state,
-          currentKPI : action.payload,
-          
+        ...state,
+        currentKPI: action.payload,
+
       };
     case kpiMemberConstants.TASK_IMPORTANT_LEVEL_FAILURE:
-      return { 
+      return {
         error: action.payload
       };
     case createKpiSetConstants.CREATE_COMMENT_REQUEST:
       return {
         ...state,
         adding: true
-      }  
+      }
     case createKpiSetConstants.CREATE_COMMENT_SUCCESS:
       return {
         ...state,
@@ -199,7 +199,7 @@ export function kpimembers(state = {}, action) {
           ...state.currentKPI,
           comments: action.payload
         }
-      } 
+      }
     case createKpiSetConstants.CREATE_COMMENT_FAILURE:
       return {
         error: action.payload,
@@ -208,7 +208,7 @@ export function kpimembers(state = {}, action) {
       return {
         ...state,
         adding: true
-      }  
+      }
     case createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_SUCCESS:
       return {
         ...state,
@@ -216,16 +216,16 @@ export function kpimembers(state = {}, action) {
           ...state.currentKPI,
           comments: action.payload
         }
-      } 
+      }
     case createKpiSetConstants.CREATE_COMMENT_OF_COMMENT_FAILURE:
       return {
         ...state,
         error: action.payload,
-      }      
+      }
     case createKpiSetConstants.EDIT_COMMENT_REQUEST:
       return {
         ...state,
-        editing : true
+        editing: true
       }
     case createKpiSetConstants.EDIT_COMMENT_SUCCESS:
       return {
@@ -234,18 +234,18 @@ export function kpimembers(state = {}, action) {
         currentKPI: {
           ...state.currentKPI,
           comments: action.payload,
-          
+
         }
-      }    
+      }
     case createKpiSetConstants.EDIT_COMMENT_FAILURE:
       return {
         ...state,
         error: action.payload,
-      } 
-      case createKpiSetConstants.DELETE_COMMENT_REQUEST:
+      }
+    case createKpiSetConstants.DELETE_COMMENT_REQUEST:
       return {
         ...state,
-        editing : true
+        editing: true
       }
     case createKpiSetConstants.DELETE_COMMENT_SUCCESS:
       return {
@@ -254,7 +254,7 @@ export function kpimembers(state = {}, action) {
           ...state.currentKPI,
           comments: action.payload
         }
-      }    
+      }
     case createKpiSetConstants.DELETE_COMMENT_FAILURE:
       return {
         ...state,
@@ -264,7 +264,7 @@ export function kpimembers(state = {}, action) {
       return {
         ...state,
         editing: true
-      }  
+      }
     case createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_SUCCESS:
       return {
         ...state,
@@ -272,17 +272,17 @@ export function kpimembers(state = {}, action) {
           ...state.currentKPI,
           comments: action.payload
         }
-      } 
+      }
     case createKpiSetConstants.EDIT_COMMENT_OF_COMMENT_FAILURE:
       return {
         ...state,
         error: action.payload,
-      }        
+      }
     case createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_REQUEST:
       return {
         ...state,
         deleting: true
-      }  
+      }
     case createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_SUCCESS:
       return {
         ...state,
@@ -290,12 +290,48 @@ export function kpimembers(state = {}, action) {
           ...state.currentKPI,
           comments: action.payload
         }
-      } 
+      }
     case createKpiSetConstants.DELETE_COMMENT_OF_COMMENT_FAILURE:
       return {
         ...state,
         error: action.payload,
-      }            
+      }
+    case createKpiSetConstants.DELETE_FILE_COMMENT_REQUEST:
+      return {
+        ...state,
+        deleting: true
+      }
+    case createKpiSetConstants.DELETE_FILE_COMMENT_SUCCESS:
+      return {
+        ...state,
+        currentKPI: {
+          ...state.currentKPI,
+          comments: action.payload
+        }
+      }
+    case createKpiSetConstants.DELETE_FILE_COMMENT_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+      }
+    case createKpiSetConstants.DELETE_FILE_CHILD_COMMENT_REQUEST:
+      return {
+        ...state,
+        deleting: true
+      }
+    case createKpiSetConstants.DELETE_FILE_CHILD_COMMENT_SUCCESS:
+      return {
+        ...state,
+        currentKPI: {
+          ...state.currentKPI,
+          comments: action.payload
+        }
+      }
+    case createKpiSetConstants.DELETE_FILE_CHILD_COMMENT_FAILURE:
+      return {
+        ...state,
+        error: action.payload,
+      }
     default:
       return state
   }

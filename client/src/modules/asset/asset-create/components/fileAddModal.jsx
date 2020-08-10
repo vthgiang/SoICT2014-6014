@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DialogModal, ButtonModal, ErrorLabel } from '../../../../common-components';
+
 import { AssetCreateValidator } from './combinedContent';
+
 class FileAddModal extends Component {
     constructor(props) {
         super(props);
@@ -15,11 +18,13 @@ class FileAddModal extends Component {
             fileUpload: ""
         }
     }
+
     // Bắt sự kiện thay đổi file đính kèm
     handleChangeFile = (e) => {
         const { name } = e.target;
         var file = e.target.files[0];
-        if (file !== undefined) {
+
+        if (file) {
             var url = URL.createObjectURL(file);
             var fileLoad = new FileReader();
             fileLoad.readAsDataURL(file);
@@ -98,23 +103,27 @@ class FileAddModal extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result =
-            this.validateNameFile(this.state.name, false) && this.validateDiscFile(this.state.description, false) &&
+        let result = this.validateNameFile(this.state.name, false) && this.validateDiscFile(this.state.description, false) &&
             this.validateNumberFile(this.state.number, false);
+
         return result;
     }
+
     // Bắt sự kiện submit form
     save = () => {
         if (this.isFormValidated()) {
             return this.props.handleChange(this.state);
         }
     }
+
     render() {
-        const { id, translate } = this.props;
-        const { name, description, number, status,
-            errorOnNameFile, errorOnDiscFile, errorOnNumberFile } = this.state;
+        const { id } = this.props;
+        const { translate } = this.props;
+        const { name, description, number, status, errorOnNameFile, errorOnDiscFile, errorOnNumberFile } = this.state;
+
         return (
             <React.Fragment>
+                {/* Button thêm tài liệu đính kèm */}
                 <ButtonModal modalID={`modal-create-file-${id}`} button_name={translate('modal.create')} title={translate('manage_employee.add_file')} />
                 <DialogModal
                     size='50' modalID={`modal-create-file-${id}`} isLoading={false}
@@ -123,22 +132,30 @@ class FileAddModal extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
+                    {/* Form thêm tài liệu đính kèm */}
                     <form className="form-group" id={`form-create-file-${id}`}>
-                        <div className={`form-group ${errorOnNameFile === undefined ? "" : "has-error"}`}>
+                        {/* Tên tài liệu */}
+                        <div className={`form-group ${!errorOnNameFile ? "" : "has-error"}`}>
                             <label>Tên tài liệu<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="name" value={name} onChange={this.handleNameFileChange} autoComplete="off" />
                             <ErrorLabel content={errorOnNameFile} />
                         </div>
-                        <div className={`form-group ${errorOnDiscFile === undefined ? "" : "has-error"}`}>
+
+                        {/* Mô tả */}
+                        <div className={`form-group ${!errorOnDiscFile ? "" : "has-error"}`}>
                             <label>Mô tả<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="description" value={description} onChange={this.handleDiscFileChange} autoComplete="off" />
                             <ErrorLabel content={errorOnDiscFile} />
                         </div>
-                        <div className={`form-group ${errorOnNumberFile === undefined ? "" : "has-error"}`}>
+
+                        {/* Số lượng */}
+                        <div className={`form-group ${!errorOnNumberFile ? "" : "has-error"}`}>
                             <label>Số lượng<span className="text-red">*</span></label>
                             <input type="number" className="form-control" name="number" value={number} onChange={this.handleNumberChange} autoComplete="off" />
                             <ErrorLabel content={errorOnNumberFile} />
                         </div>
+
+                        {/* File đính kèm */}
                         <div className="form-group">
                             <label htmlFor="file">File đính kèm</label>
                             <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} />
@@ -149,5 +166,7 @@ class FileAddModal extends Component {
         );
     }
 };
+
 const addModal = connect(null, null)(withTranslate(FileAddModal));
+
 export { addModal as FileAddModal };

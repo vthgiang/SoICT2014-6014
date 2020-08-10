@@ -79,7 +79,7 @@ exports.getTotalDiscipline = async (company, organizationalUnits, month) => {
         }
     }
 
-    var totalList = await Discipline.count(keySearch);
+    let totalList = await Discipline.count(keySearch);
     return {
         totalList,
         totalListOfYear

@@ -4,8 +4,8 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import Rating from 'react-rating'
 import moment from 'moment'
-
-import { ContentMaker, DialogModal } from '../../../../common-components'
+import 'moment/locale/vi'
+import { ContentMaker, DialogModal, DateTimeConverter } from '../../../../common-components'
 
 import { getStorage } from '../../../../config';
 import { LOCAL_SERVER_API } from '../../../../env';
@@ -16,14 +16,16 @@ import { SubTaskTab } from './subTaskTab';
 import { AuthActions } from '../../../auth/redux/actions'
 
 import Files from 'react-files'
-
 import './actionTab.css';
+
 
 
 class ActionTab extends Component {
     constructor(props) {
         let idUser = getStorage("userId");
         super(props);
+        let lang = getStorage("lang")
+        moment.locale(lang)
         this.state = {
             currentUser: idUser,
             selected: "taskAction",
@@ -120,6 +122,8 @@ class ActionTab extends Component {
     }
 
     shouldComponentUpdate = (nextProps, nextState) => {
+        // let lang = getStorage("lang")
+        // moment.locale(lang)
         if (nextProps.id !== this.state.id) {
             this.setState(state => {
                 return {
@@ -127,6 +131,7 @@ class ActionTab extends Component {
                     id: nextProps.id
                 }
             })
+            console.log("Should component")
             this.props.getTimesheetLogs(nextProps.id);
             this.props.getStatusTimer(nextProps.id);
             this.props.getSubTask(nextProps.id);
@@ -153,7 +158,7 @@ class ActionTab extends Component {
             }
         })
     }
-    setValueRating = async (actionId,taskId, newValue, firstTime) => {
+    setValueRating = async (actionId, taskId, newValue, firstTime) => {
         await this.setState(state => {
             return {
                 ...state,
@@ -167,7 +172,7 @@ class ActionTab extends Component {
             }
         })
         let { evaluations } = this.state;
-        this.props.evaluationAction(actionId,taskId, evaluations)
+        this.props.evaluationAction(actionId, taskId, evaluations)
         await this.setState(state => {
             return {
                 ...state,
@@ -401,7 +406,7 @@ class ActionTab extends Component {
             }
         })
     }
-    
+
     handleSaveEditAction = async (e, id, description, taskId) => {
         e.preventDefault();
         let { newActionEdited } = this.state;
@@ -488,6 +493,10 @@ class ActionTab extends Component {
             }
         })
     }
+    // componentDidMount = () => {
+    //     let lang = getStorage("lang")
+    //     moment.locale(lang)
+    // }
     handleSaveEditCommentOfTaskComment = async (e, commentId, taskId, description) => {
         e.preventDefault();
         console.log(description)
@@ -697,9 +706,9 @@ class ActionTab extends Component {
             })
         }
     }
-    handleDeleteFile = async (fileId, fileName, actionId, type) => {
+    handleDeleteFile = (fileId, fileName, actionId, type) => {
 
-        await this.setState(state => {
+        this.setState(state => {
             return {
                 ...state,
                 showModalDelete: actionId,
@@ -714,9 +723,9 @@ class ActionTab extends Component {
         window.$(`#modal-confirm-deletefile`).modal('show');
     }
     save = (taskId) => {
-        const { deleteFile } = this.state
+        let { deleteFile } = this.state
         if (deleteFile.type === "action") {
-            this.props.deleteFileAction(deleteFile.fileId, deleteFile.actionId, taskId, 2);
+            this.props.deleteFileAction(deleteFile.fileId, deleteFile.actionId, taskId, deleteFile.type);
         } else if (deleteFile.type === "commentofaction") {
             this.props.deleteFileCommentOfAction(deleteFile.fileId, deleteFile.actionId, taskId, deleteFile.type);
         } else if (deleteFile.type === "taskcomment") {
@@ -735,8 +744,9 @@ class ActionTab extends Component {
         }
     }
     render() {
+
         let type = ["actions", "commentofactions", "taskcomments", "commentoftaskcomments"];
-        let task, informations, statusTask, files, actionComments, taskActions, taskComments, actions, logTimer, logs;
+        let task, informations, statusTask, files, actionComments, taskActions, taskComments, logTimer, logs;
         const { tasks, performtasks, user, auth, translate, role } = this.props;
         const subtasks = tasks.subtasks;
         const {
@@ -779,7 +789,7 @@ class ActionTab extends Component {
                                 taskActions.map(item => {
                                     // if (item.parent === null)
                                     return (
-                                        <div className="clearfix" key={item._id}>
+                                        <div key={item._id}>
                                             {item.creator ?
                                                 <img className="user-img-level1" src={(LOCAL_SERVER_API + item.creator.avatar)} alt="User Image" /> :
                                                 <div className="user-img-level1" />
@@ -788,7 +798,7 @@ class ActionTab extends Component {
                                                 <React.Fragment>
                                                     <div className="content-level1" data-width="100%">
                                                         {item.creator ?
-                                                            <a style={{ cursor: "pointer" }}>{item.creator.name} </a> :
+                                                            <a style={{ cursor: "pointer" }}>{item.creator?.name} </a> :
                                                             item.name && <b>{item.name} </b>}
                                                         {item.description.split('\n').map((item, idx) => {
                                                             return (
@@ -813,7 +823,7 @@ class ActionTab extends Component {
 
                                                     {/* Các file đính kèm */}
                                                     <ul className="list-inline tool-level1">
-                                                        <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
+                                                        <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
                                                         <li>{item.mandatory && !item.creator && <b className="text-sm">{translate("task.task_perform.mandatory_action")}</b>}</li>
                                                         {((item.creator === undefined || item.creator === null) && role === "responsible") &&
                                                             <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => this.handleConfirmAction(e, item._id, currentUser, task._id)}><i className="fa fa-check-circle" aria-hidden="true"></i> {translate("task.task_perform.confirm_action")}</a></li>}
@@ -835,7 +845,7 @@ class ActionTab extends Component {
                                                                                     fullSymbol="fa fa-star fa-2x high"
                                                                                     initialRating={0}
                                                                                     onClick={(value) => {
-                                                                                        this.setValueRating(item._id,task._id, value, 1);
+                                                                                        this.setValueRating(item._id, task._id, value, 1);
                                                                                     }}
                                                                                     onHover={(value) => {
                                                                                         this.setHover(item._id, value)
@@ -893,7 +903,7 @@ class ActionTab extends Component {
                                                                                         fullSymbol="fa fa-star fa-2x high"
                                                                                         initialRating={0}
                                                                                         onClick={(value) => {
-                                                                                            this.setValueRating(item._id,task._id, value, 0);
+                                                                                            this.setValueRating(item._id, task._id, value, 0);
                                                                                         }}
                                                                                         onHover={(value) => {
                                                                                             this.setHover(item._id, value)
@@ -910,8 +920,8 @@ class ActionTab extends Component {
                                                         {/* Các file đính kèm của action */}
                                                         {showFile.some(obj => obj === item._id) &&
                                                             <div>
-                                                                {item.files.map(elem => {
-                                                                    return <div><a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a></div>
+                                                                {item.files.map((elem, index) => {
+                                                                    return <div key={index}><a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, elem.url, elem.name)}> {elem.name} </a></div>
                                                                 })}
                                                             </div>
                                                         }
@@ -923,7 +933,7 @@ class ActionTab extends Component {
                                                 <React.Fragment>
                                                     <div>
                                                         <ContentMaker
-                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2"
+                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onEditActionFilesChange}
                                                             onFilesError={this.onFilesError}
                                                             files={newActionEdited.files}
@@ -940,16 +950,16 @@ class ActionTab extends Component {
                                                             onSubmit={(e) => { this.handleSaveEditAction(e, item._id, item.description, task._id) }}
                                                         />
                                                         {item.files.length > 0 &&
-                                                            <ul style={{ marginTop: '-40px', marginLeft: '50px', listStyle: 'none' }}>
+                                                            <div className="tool-level1" style={{ marginTop: -15 }}>
                                                                 {item.files.map(file => {
-                                                                    return <li>
-                                                                        <a style={{ cursor: "pointer" }} className="link-black text-sm">{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "action") }}><i className="fa fa-times"></i></a>
-                                                                    </li>
+                                                                    return <div>
+                                                                        <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "action") }}><i className="fa fa-times"></i></a>
+                                                                    </div>
                                                                 })}
-                                                            </ul>}
+                                                            </div>}
                                                         {showModalDelete === item._id &&
                                                             <DialogModal
-                                                                marginTop = {"20vh"}
+                                                                marginTop={"20vh"}
                                                                 size={50}
                                                                 maxWidth={100}
                                                                 modalID={`modal-confirm-deletefile`}
@@ -969,12 +979,12 @@ class ActionTab extends Component {
                                                 <div>
                                                     {item.comments.map(child => {
                                                         return <div key={child._id}>
-                                                            <img className="user-img-level2" src={(LOCAL_SERVER_API + child.creator.avatar)} alt="User Image" />
+                                                            <img className="user-img-level2" src={(LOCAL_SERVER_API + child.creator?.avatar)} alt="User Image" />
 
                                                             {editComment !== child._id && // Khi đang edit thì nội dung cũ đi
                                                                 <div>
                                                                     <div className="content-level2">
-                                                                        <a style={{ cursor: "pointer" }}>{child.creator.name} </a>
+                                                                        <a style={{ cursor: "pointer" }}>{child.creator?.name} </a>
                                                                         {child.description.split('\n').map((item, idx) => {
                                                                             return (
                                                                                 <span key={idx}>
@@ -984,7 +994,7 @@ class ActionTab extends Component {
                                                                             );
                                                                         })}
 
-                                                                        {child.creator._id === currentUser &&
+                                                                        {child.creator?._id === currentUser &&
                                                                             <div className="btn-group pull-right">
                                                                                 <span data-toggle="dropdown">
                                                                                     <i className="fa fa-ellipsis-h"></i>
@@ -996,7 +1006,7 @@ class ActionTab extends Component {
                                                                             </div>}
                                                                     </div>
                                                                     <ul className="list-inline tool-level2">
-                                                                        <li><span className="text-sm">{moment(child.createdAt).fromNow()}</span></li>
+                                                                        <li><span className="text-sm">{<DateTimeConverter dateTime={child.createdAt} />}</span></li>
                                                                         <li style={{ display: "inline-table" }}>
                                                                             <div><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowFile(child._id)}><b><i className="fa fa-paperclip" aria-hidden="true"> {translate("task.task_perform.file_attach")} ({child.files && child.files.length})</i></b></a></div></li>
                                                                         {showFile.some(obj => obj === child._id) &&
@@ -1016,7 +1026,7 @@ class ActionTab extends Component {
                                                                 <React.Fragment>
                                                                     <div>
                                                                         <ContentMaker
-                                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2"
+                                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                                             onFilesChange={this.onEditCommentOfActionFilesChange}
                                                                             onFilesError={this.onFilesError}
                                                                             files={newCommentOfActionEdited.files}
@@ -1035,17 +1045,17 @@ class ActionTab extends Component {
                                                                         />
                                                                         {/* Hiện file đã tải lên */}
                                                                         {child.files.length > 0 &&
-                                                                            <ul style={{ marginTop: '-40px', marginLeft: '50px', listStyle: 'none' }}>
-                                                                                {child.files.map(file => {
-                                                                                    return <li>
-                                                                                        <a style={{ cursor: "pointer" }} className="link-black text-sm">{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "commentofaction") }}><i className="fa fa-times"></i></a>
-                                                                                    </li>
+                                                                            <div className="tool-level2" style={{ marginTop: -15 }}>
+                                                                                {child.files.map((file, index) => {
+                                                                                    return <div key={index}>
+                                                                                        <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "commentofaction") }}><i className="fa fa-times"></i></a>
+                                                                                    </div>
                                                                                 })}
-                                                                            </ul>}
+                                                                            </div>}
                                                                         {/* modal confirm delete file */}
                                                                         {showModalDelete === item._id &&
                                                                             <DialogModal
-                                                                                marginTop = {"20vh"}
+                                                                                marginTop={"20vh"}
                                                                                 size={50}
                                                                                 maxWidth={100}
                                                                                 modalID={`modal-confirm-deletefile`}
@@ -1069,7 +1079,7 @@ class ActionTab extends Component {
                                                             src={(LOCAL_SERVER_API + auth.user.avatar)} alt="user avatar"
                                                         />
                                                         <ContentMaker
-                                                            inputCssClass="text-input-level2" controlCssClass="tool-level2"
+                                                            inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onCommentFilesChange}
                                                             onFilesError={this.onFilesError}
                                                             files={newCommentOfAction.files}
@@ -1095,7 +1105,7 @@ class ActionTab extends Component {
                                 <React.Fragment>
                                     <img className="user-img-level1" src={(LOCAL_SERVER_API + auth.user.avatar)} alt="user avatar" />
                                     <ContentMaker
-                                        inputCssClass="text-input-level1" controlCssClass="tool-level1"
+                                        inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
                                         onFilesChange={this.onActionFilesChange}
                                         onFilesError={this.onFilesError}
                                         files={newAction.files}
@@ -1119,12 +1129,12 @@ class ActionTab extends Component {
                                 taskComments.map((item, key) => {
                                     return (
                                         <div className="clearfix" key={key}>
-                                            <img className="user-img-level1" src={(LOCAL_SERVER_API + item.creator.avatar)} alt="User Image" />
+                                            <img className="user-img-level1" src={(LOCAL_SERVER_API + item.creator?.avatar)} alt="User Image" />
 
                                             {editTaskComment !== item._id && // Khi đang edit thì ẩn đi
                                                 <React.Fragment>
                                                     <div className="content-level1">
-                                                        <a style={{ cursor: "pointer" }}>{item.creator.name} </a>
+                                                        <a style={{ cursor: "pointer" }}>{item.creator?.name} </a>
                                                         {item.description.split('\n').map((item, idx) => {
                                                             return (
                                                                 <span key={idx}>
@@ -1133,7 +1143,7 @@ class ActionTab extends Component {
                                                                 </span>
                                                             );
                                                         })}
-                                                        {item.creator._id === currentUser &&
+                                                        {item.creator?._id === currentUser &&
                                                             <div className="btn-group pull-right">
                                                                 <span data-toggle="dropdown">
                                                                     <i className="fa fa-ellipsis-h"></i>
@@ -1147,7 +1157,7 @@ class ActionTab extends Component {
 
 
                                                     <ul className="list-inline tool-level1">
-                                                        <li><span className="text-sm">{moment(item.createdAt).fromNow()}</span></li>
+                                                        <li><span className="text-sm">{<DateTimeConverter dateTime={item.createdAt} />}</span></li>
 
                                                         <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.handleShowChildTaskComment(item._id)}><i className="fa fa-comments-o margin-r-5"></i> {translate("task.task_perform.comment")} ({item.comments.length}) &nbsp;</a></li>
                                                         {item.files.length > 0 &&
@@ -1170,7 +1180,7 @@ class ActionTab extends Component {
                                                 <React.Fragment>
                                                     <div>
                                                         <ContentMaker
-                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2"
+                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onEditTaskCommentFilesChange}
                                                             onFilesError={this.onFilesError}
                                                             files={newTaskCommentEdited.files}
@@ -1188,17 +1198,17 @@ class ActionTab extends Component {
                                                         />
                                                         {/* Hiện file đã tải lên */}
                                                         {item.files.length > 0 &&
-                                                            <ul style={{ marginTop: '-40px', marginLeft: '50px', listStyle: 'none' }}>
+                                                            <div className="tool-level1" style={{ marginTop: -15 }}>
                                                                 {item.files.map(file => {
-                                                                    return <li>
-                                                                        <a style={{ cursor: "pointer" }} className="link-black text-sm">{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "taskcomment") }}><i className="fa fa-times"></i></a>
-                                                                    </li>
+                                                                    return <div>
+                                                                        <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "taskcomment") }}><i className="fa fa-times"></i></a>
+                                                                    </div>
                                                                 })}
-                                                            </ul>}
+                                                            </div>}
                                                         {/* modal confirm delete file */}
                                                         {showModalDelete === item._id &&
                                                             <DialogModal
-                                                                marginTop = {"20vh"}
+                                                                marginTop={"20vh"}
                                                                 size={50}
                                                                 maxWidth={100}
                                                                 modalID={`modal-confirm-deletefile`}
@@ -1218,12 +1228,12 @@ class ActionTab extends Component {
                                                 <div className="comment-content-child">
                                                     {item.comments.map(child => {
                                                         return <div key={child._id}>
-                                                            <img className="user-img-level2" src={(LOCAL_SERVER_API + item.creator.avatar)} alt="User Image" />
+                                                            <img className="user-img-level2" src={(LOCAL_SERVER_API + item.creator?.avatar)} alt="User Image" />
 
                                                             {editCommentOfTaskComment !== child._id && // Đang edit thì ẩn đi
                                                                 <div>
                                                                     <div className="content-level2">
-                                                                        <a style={{ cursor: "pointer" }}>{child.creator.name} </a>
+                                                                        <a style={{ cursor: "pointer" }}>{child.creator?.name} </a>
                                                                         {child.description.split('\n').map((item, idx) => {
                                                                             return (
                                                                                 <span key={idx}>
@@ -1233,7 +1243,7 @@ class ActionTab extends Component {
                                                                             );
                                                                         })}
 
-                                                                        {child.creator._id === currentUser &&
+                                                                        {child.creator?._id === currentUser &&
                                                                             <div className="btn-group pull-right">
                                                                                 <span data-toggle="dropdown">
                                                                                     <i className="fa fa-ellipsis-h"></i>
@@ -1245,7 +1255,7 @@ class ActionTab extends Component {
                                                                             </div>}
                                                                     </div>
                                                                     <ul className="list-inline tool-level2">
-                                                                        <li><span className="text-sm">{moment(child.createdAt).fromNow()}</span></li>
+                                                                        <li><span className="text-sm">{<DateTimeConverter dateTime={child.createdAt} />}</span></li>
                                                                         {child.files.length > 0 &&
                                                                             <React.Fragment>
                                                                                 <li style={{ display: "inline-table" }}>
@@ -1267,7 +1277,7 @@ class ActionTab extends Component {
                                                                 <React.Fragment>
                                                                     <div>
                                                                         <ContentMaker
-                                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2"
+                                                                            inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
                                                                             onFilesChange={this.onEditCommentOfTaskCommentFilesChange}
                                                                             onFilesError={this.onFilesError}
                                                                             styletext={{ marginLeft: "40px", width: "94%" }}
@@ -1282,21 +1292,21 @@ class ActionTab extends Component {
                                                                                     return { ...state, newCommentOfTaskCommentEdited: { ...state.newCommentOfTaskCommentEdited, description: value } }
                                                                                 })
                                                                             }}
-                                                                            onSubmit={(e) => { this.handleSaveEditCommentOfTaskComment(e, child._id, task._id,child.description)}}
+                                                                            onSubmit={(e) => { this.handleSaveEditCommentOfTaskComment(e, child._id, task._id, child.description) }}
                                                                         />
                                                                         {/* Hiện file đã tải lên */}
                                                                         {child.files.length > 0 &&
-                                                                            <ul style={{ marginTop: '-40px', marginLeft: '50px', listStyle: 'none' }}>
+                                                                            <div className="tool-level2" style={{ marginTop: -15 }}>
                                                                                 {child.files.map(file => {
-                                                                                    return <li>
-                                                                                        <a style={{ cursor: "pointer" }} className="link-black text-sm">{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "commentoftaskcomment") }}><i className="fa fa-times"></i></a>
-                                                                                    </li>
+                                                                                    return <div>
+                                                                                        <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, item._id, "commentoftaskcomment") }}><i className="fa fa-times"></i></a>
+                                                                                    </div>
                                                                                 })}
-                                                                            </ul>}
+                                                                            </div>}
                                                                         {/* modal confirm delete file */}
                                                                         {showModalDelete === item._id &&
                                                                             <DialogModal
-                                                                                marginTop = {"20vh"}
+                                                                                marginTop={"20vh"}
                                                                                 size={50}
                                                                                 maxWidth={100}
                                                                                 modalID={`modal-confirm-deletefile`}
@@ -1318,7 +1328,7 @@ class ActionTab extends Component {
                                                     <div>
                                                         <img className="user-img-level2" src={(LOCAL_SERVER_API + auth.user.avatar)} alt="user avatar" />
                                                         <ContentMaker
-                                                            inputCssClass="text-input-level2" controlCssClass="tool-level2"
+                                                            inputCssClass="text-input-level2" controlCssClass="tool-level2 row"
                                                             onFilesChange={this.onCommentOfTaskCommentFilesChange}
                                                             onFilesError={this.onFilesError}
                                                             files={newCommentOfTaskComment.files}
@@ -1343,7 +1353,7 @@ class ActionTab extends Component {
                             {/* Thêm bình luận cho công việc*/}
                             <img className="user-img-level1" src={(LOCAL_SERVER_API + auth.user.avatar)} alt="User Image" />
                             <ContentMaker
-                                inputCssClass="text-input-level1" controlCssClass="tool-level1"
+                                inputCssClass="text-input-level1" controlCssClass="tool-level1 row"
                                 onFilesChange={this.onTaskCommentFilesChange}
                                 onFilesError={this.onFilesError}
                                 files={newTaskComment.files}
@@ -1369,10 +1379,21 @@ class ActionTab extends Component {
                                     files.map((item, index) => {
                                         return (
                                             <div className="item-box" key={index}>
+                                                {(currentUser === item.creator?._id) &&
+                                                    <div className="btn-group pull-right">
+                                                        <span data-toggle="dropdown">
+                                                            <i className="fa fa-ellipsis-h"></i>
+                                                        </span>
+                                                        <ul className="dropdown-menu">
+                                                            <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditAction(item._id)} >{translate("task.task_perform.edit")}</a></li>
+                                                            <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteFileTask(item._id, task._id)} >{translate("task.task_perform.delete")}</a></li>
+                                                        </ul>
+                                                    </div>}
                                                 <div>
-                                                    <strong>{item.creator.name} </strong>
+                                                    <strong>{item.creator?.name} </strong>
                                                     {item.description}
                                                 </div>
+
                                                 <a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, item.url, item.name)} >{item.name}</a>
                                             </div>
                                         )
@@ -1380,24 +1401,26 @@ class ActionTab extends Component {
                                 }
                             </div>
                             <React.Fragment>
-                                <img className="user-img-level1" src={(LOCAL_SERVER_API + auth.user.avatar)} alt="user avatar" />
-                                <ContentMaker
-                                    inputCssClass="text-input-level1" controlCssClass="tool-level1"
-                                    onFilesChange={this.onTaskFilesChange}
-                                    onFilesError={this.onFilesError}
-                                    files={taskFiles.files}
-                                    text={taskFiles.description}
-                                    placeholder={translate("task.task_perform.enter_description")}
-                                    submitButtonText={translate("task.task_perform.create_document")}
-                                    onTextChange={(e) => {
-                                        let value = e.target.value;
-                                        this.setState(state => {
-                                            return { ...state, taskFiles: { ...state.taskFiles, description: value } }
+                                <div style={{ marginTop: '15px' }}>
+                                    <img className="user-img-level1" src={(LOCAL_SERVER_API + auth.user.avatar)} alt="user avatar" />
+                                    <ContentMaker
+                                        inputCssClass="text-input-level1" controlCssClass="tool-level1"
+                                        onFilesChange={this.onTaskFilesChange}
+                                        onFilesError={this.onFilesError}
+                                        files={taskFiles.files}
+                                        text={taskFiles.description}
+                                        placeholder={translate("task.task_perform.enter_description")}
+                                        submitButtonText={translate("task.task_perform.create_document")}
+                                        onTextChange={(e) => {
+                                            let value = e.target.value;
+                                            this.setState(state => {
+                                                return { ...state, taskFiles: { ...state.taskFiles, description: value } }
 
-                                        })
-                                    }}
-                                    onSubmit={(e) => { this.handleUploadFile(task._id, currentUser) }}
-                                />
+                                            })
+                                        }}
+                                        onSubmit={(e) => { this.handleUploadFile(task._id, currentUser) }}
+                                    />
+                                </div>
                             </React.Fragment>
                         </div>
 
@@ -1412,7 +1435,7 @@ class ActionTab extends Component {
                         <div className={selected === "logTimer" ? "active tab-pane" : "tab-pane"} id="logTimer">
                             {logTimer && logTimer.map(item =>
                                 <div key={item._id} className="item-box">
-                                    <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator.name} </a>
+                                    <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
                                     {translate("task.task_perform.total_time")} {moment.utc(item.duration, "x").format('HH:mm:ss')}&nbsp;
                                     ({moment(item.startedAt, "x").format("HH:mm:ss DD/MM/YYYY")} - {moment(item.stoppedAt).format("HH:mm:ss DD/MM/YYYY")})
                                     <div>{item.description ? item.description : translate("task.task_perform.none_description")}</div>
@@ -1424,7 +1447,7 @@ class ActionTab extends Component {
                         <div className={selected === "historyLog" ? "active tab-pane" : "tab-pane"} id="historyLog">
                             {logs && logs.map(item =>
                                 <div key={item._id} className="item-box">
-                                    <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator.name} </a>
+                                    <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
                                     {item.title ? item.title : translate("task.task_perform.none_description")}&nbsp;
                                     ({moment(item.createdAt).format("HH:mm:ss DD/MM/YYYY")})
                                     <div>
@@ -1474,6 +1497,7 @@ const actionCreators = {
     deleteFileTaskComment: performTaskAction.deleteFileTaskComment,
     deleteFileChildTaskComment: performTaskAction.deleteFileChildTaskComment,
     getTaskLog: performTaskAction.getTaskLog,
+    deleteFileTask: performTaskAction.deleteFileTask
 };
 
 const actionTab = connect(mapState, actionCreators)(withTranslate(ActionTab));

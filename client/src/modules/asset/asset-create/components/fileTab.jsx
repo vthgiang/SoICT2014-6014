@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { LOCAL_SERVER_API } from '../../../../env';
+
 import { FileAddModal, FileEditModal } from './combinedContent';
 
 class FileTab extends Component {
@@ -9,6 +11,7 @@ class FileTab extends Component {
         super(props);
         this.state = {};
     }
+
     // Bắt sự kiện click edit khen thưởng
     handleEdit = async (value, index) => {
         await this.setState(state => {
@@ -19,6 +22,7 @@ class FileTab extends Component {
         });
         window.$(`#modal-edit-file-editFile${index}`).modal('show');
     }
+
     // Function lưu các trường thông tin vào state
     handleChange = (e) => {
         const { name, value } = e.target;
@@ -36,7 +40,6 @@ class FileTab extends Component {
                 ...state,
                 archivedRecordNumber: value
             }
-
         });
         this.props.handleChange("archivedRecordNumber", value);
     }
@@ -45,14 +48,17 @@ class FileTab extends Component {
     defaulteClick = async (e) => {
         var { translate } = this.props;
         e.preventDefault();
+
         const defaulteFile = [
             { name: "Hợp đồng mua hàng", description: "Hợp đồng mua hàng", number: "1", file: "", urlFile: "", fileUpload: "" },
             { name: "Ảnh", description: "Ảnh của tài sản", number: "1", file: "", urlFile: "", fileUpload: "" },
             { name: "Tài liệu hướng dẫn sử dụng", description: "Tài liệu hướng dẫn sử dụng", number: "1", file: "", urlFile: "", fileUpload: "" },
         ]
+
         await this.setState({
             files: [...this.state.files, ...defaulteFile]
         })
+
         this.props.handleAddFile(this.state.files)
     }
 
@@ -65,8 +71,8 @@ class FileTab extends Component {
             }]
         })
         this.props.handleAddFile(this.state.files, data)
-
     }
+
     // Function chỉnh sửa thông tin tài liệu đính kèm
     handleEditFile = async (data) => {
         const { files } = this.state;
@@ -76,6 +82,7 @@ class FileTab extends Component {
         })
         this.props.handleEditFile(this.state.files, data)
     }
+
     // Function xoá thông tin tài liệu đính kèm
     handleDeleteFile = async (index) => {
         var { files } = this.state;
@@ -103,20 +110,30 @@ class FileTab extends Component {
 
     render() {
         const { id, translate } = this.props;
-        const { files, archivedRecordNumber } = this.state;
+        const { files, archivedRecordNumber, currentRow } = this.state;
+
         return (
             <div id={id} className="tab-pane">
                 <div className=" row box-body">
+
+                    {/* Nơi lưu trữ bản cứng */}
                     <div className="col-md-4">
                         <div className="form-group">
                             <label>Nơi lưu trữ bản cứng</label>
                             <input type="text" className="form-control" name="archivedRecordNumber" value={archivedRecordNumber} onChange={this.handleArchivedRecordNumberChange} placeholder="Nơi lưu trữ bản cứng" autoComplete="off" />
                         </div>
                     </div>
+
+                    {/* Danh sách tài liệu đính kèm */}
                     <div className="col-md-12">
                         <h4 className="row col-md-6 col-xs-8">Danh sách tài liệu đính kèm:</h4>
+
+                        {/* Form thêm tài liệu đính kèm */}
                         <FileAddModal handleChange={this.handleAddFile} id={`addFile${id}`} />
+                        {/* Button mặc định */}
                         <button style={{ marginTop: 2, marginBottom: 10, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={this.defaulteClick} title={translate('manage_employee.add_default_title')}>{translate('manage_employee.add_default')}</button>
+
+                        {/* Bảng tài liệu đính kèm */}
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
@@ -128,7 +145,7 @@ class FileTab extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof files !== 'undefined' && files.length !== 0) &&
+                                {(files && files.length !== 0) &&
                                     files.map((x, index) => {
                                         return <tr key={index}>
                                             <td>{x.name}</td>
@@ -146,29 +163,29 @@ class FileTab extends Component {
                                                 <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteFile(index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
-                                    }
-
-                                    )}
+                                    })
+                                }
                             </tbody>
                         </table>
                         {
-                            (typeof files === 'undefined' || files.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!files || files.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </div>
                 </div>
 
+                {/* Form chỉnh sửa tài liệu đính kèm */}
                 {
-                    this.state.currentRow !== undefined &&
+                    currentRow &&
                     <FileEditModal
-                        id={`editFile${this.state.currentRow.index}`}
-                        _id={this.state.currentRow._id}
-                        index={this.state.currentRow.index}
+                        id={`editFile${currentRow.index}`}
+                        _id={currentRow._id}
+                        index={currentRow.index}
                         name={this.state.currentRow.name}
-                        description={this.state.currentRow.description}
-                        number={this.state.currentRow.number}
-                        file={this.state.currentRow.file}
-                        urlFile={this.state.currentRow.urlFile}
-                        fileUpload={this.state.currentRow.fileUpload}
+                        description={currentRow.description}
+                        number={currentRow.number}
+                        file={currentRow.file}
+                        urlFile={currentRow.urlFile}
+                        fileUpload={currentRow.fileUpload}
                         handleChange={this.handleEditFile}
                     />
                 }
