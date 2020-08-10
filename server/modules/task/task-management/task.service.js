@@ -34,6 +34,7 @@ exports.getTaskEvaluations = async (data) => {
     let endTime = endDate.split("-");
     let end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
     let filterDate = {};
+
     if (data.responsibleEmployees) {
         responsible = data.responsibleEmployees;
     }
@@ -127,11 +128,8 @@ exports.getTaskEvaluations = async (data) => {
             }
     }
 
-
-
     let result = await Task.aggregate(condition);
 
-    // let result2 = [];
     return result;
 
 
@@ -145,8 +143,8 @@ exports.getTaskById = async (id, userId) => {
     var superTask = await Task.findById(id)
         .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator parent" })
         .populate("evaluations.results.employee")
-        .populate("evaluations.kpis.employee")
-        .populate("evaluations.kpis.kpis")
+        .populate("evaluations.results.organizationalUnit")
+        .populate("evaluations.results.kpis.kpis")
 
     var task = await Task.findById(id).populate([
         { path: "parent", select: "name" },
@@ -154,14 +152,14 @@ exports.getTaskById = async (id, userId) => {
         { path: "organizationalUnit", model: OrganizationalUnit },
         { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
-        { path: "evaluations.kpis.employee", select: "name email _id" },
-        { path: "evaluations.kpis.kpis" },
+        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+        { path: "evaluations.results.kpis"},
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-        { path: "files.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
     ])
     if (!task) {
         return {
@@ -425,7 +423,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
     }
 
     responsibleTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
-        .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
+        .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent responsibleEmployees" });
 
     var totalCount = await Task.count(keySearch);
     var totalPages = Math.ceil(totalCount / perPage);
@@ -957,10 +955,6 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
             endDate: {
                 $gte: start
             }
-            // $or: [
-            //     { startDate: { $gte: start } },
-            //     { endDate: { $gte: start } }
-            // ]
         }
     }
 
@@ -975,10 +969,6 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
             startDate: {
                 $lt: end
             }
-            // $or: [
-            //     { startDate: { $lte: end } },
-            //     { endDate: { $lte: end } }
-            // ]
         }
     }
     organizationUnitTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
@@ -1270,7 +1260,7 @@ exports.getAllTaskOfChildrenOrganizationalUnit = async (companyId, roleId, month
     let tasksOfChildrenOrganizationalUnit = [], childrenOrganizationalUnits;
 
     childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(companyId, roleId, organizationalUnitId);
-    
+
     for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
         tasksOfChildrenOrganizationalUnit.push(await this.getAllTaskOfOrganizationalUnit(roleId, childrenOrganizationalUnits[i].id, month));
         tasksOfChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })

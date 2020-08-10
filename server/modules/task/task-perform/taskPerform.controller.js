@@ -521,23 +521,22 @@ exports.uploadFile = async (req, res) => {
  * Xóa file của task
  */
 exports.deleteFileTask = async (req, res) => {
-    // try {
+    try {
         let task = await PerformTaskService.deleteFileTask(req.params);
-        console.log(task)
         await LogInfo(req.user.email, ` delete file of task  `, req.user.company);
         res.status(200).json({
             success: true,
             messages: ['delete_file_success'],
             content: task
         })
-    // } catch (error) {
-    //     await LogError(req.user.email, `delete file of task  `, req.user.company);
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: ['delete_file_fail'],
-    //         content: error
-    //     })
-    // }
+    } catch (error) {
+        await LogError(req.user.email, `delete file of task  `, req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['delete_file_fail'],
+            content: error
+        })
+    }
 }
 /**
  * Xóa file của hoạt động
@@ -778,6 +777,7 @@ evaluateTaskByResponsibleEmployees = async (req, res) => {
         });
     }
 }
+
 /**
  * evaluate task by accountable employee
  */
@@ -795,6 +795,28 @@ evaluateTaskByAccountableEmployees = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['evaluate_task_fail'],
+            content: error
+        });
+    }
+}
+
+/**
+ * delete evaluation by id
+ */
+exports.deleteEvaluation = async (req, res) => {
+    try {
+        let task = await PerformTaskService.deleteEvaluation(req.params);
+        await LogInfo(req.user.email, ` delete evaluation  `, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['delete_task_success'],
+            content: task
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` delete evaluation `, req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['delete_task_fail'],
             content: error
         });
     }
@@ -842,5 +864,57 @@ editTaskStatus = async (req, res) => {
             messages: ['edit_status_of_task_fail'],
             content: error
         });
+    }
+}
+
+/**
+ * Xóa tai lieu
+ */
+exports.deleteDocument = async (req, res) => {
+    try {
+        let file = await PerformTaskService.deleteDocument(req.params);
+        await LogInfo(req.user.email, ` delete document of task  `, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['delete_document_task_comment_success'],
+            content: file
+        })
+    } catch (error) {
+        await LogError(req.user.email, `delete document of task  `, req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['delete_document_task_comment_fail'],
+            content: error
+        })
+    }
+}
+
+/**
+ * Sua tai lieu
+ */
+exports.editDocument = async (req, res) => {
+    try {
+        let files = [];
+        if (req.files !== undefined) {
+            req.files.forEach((elem, index) => {
+                let path = elem.destination + '/' + elem.filename;
+                files.push({ name: elem.originalname, url: path, description: req.body.description, creator: req.body.creator })
+
+            })
+        }
+        let file = await PerformTaskService.editDocument(req.params, req.body, files);
+        await LogInfo(req.user.email, ` delete document of task  `, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_document_task_comment_success'],
+            content: file
+        })
+    } catch (error) {
+        await LogError(req.user.email, `delete document of task  `, req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_document_task_comment_fail'],
+            content: error
+        })
     }
 }

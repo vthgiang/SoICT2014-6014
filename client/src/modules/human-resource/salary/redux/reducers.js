@@ -1,12 +1,17 @@
-import { SalaryConstants } from './constants';
+import {
+    SalaryConstants
+} from './constants';
+
 const initState = {
     isLoading: false,
     listSalarys: [],
     totalList: 0,
+
     importSalary: [],
     importStatus: false,
-    error:"",
+    error: "",
 }
+
 export function salary(state = initState, action) {
     switch (action.type) {
         case SalaryConstants.GET_SALARY_REQUEST:
@@ -22,38 +27,38 @@ export function salary(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listSalarys: action.payload.listSalarys,
-                totalList: action.payload.totalList,
+                    listSalarys: action.payload.listSalarys,
+                    totalList: action.payload.totalList,
             };
 
         case SalaryConstants.CREATE_SALARY_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listSalarys: [
-                    ...state.listSalarys,
-                    action.payload
-                ],  
+                    listSalarys: [
+                        ...state.listSalarys,
+                        action.payload
+                    ],
             };
         case SalaryConstants.UPDATE_SALARY_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listSalarys: state.listSalarys.map(salary => salary._id === action.payload._id ? action.payload : salary)   
+                    listSalarys: state.listSalarys.map(salary => salary._id === action.payload._id ? action.payload : salary)
             };
         case SalaryConstants.DELETE_SALARY_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listSalarys: state.listSalarys.filter(salary => (salary._id !== action.payload._id)),
+                    listSalarys: state.listSalarys.filter(salary => (salary._id !== action.payload._id)),
             };
         case SalaryConstants.IMPORT_SALARY_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                importStatus: true,
-                importSalary: action.payload.content,
-                error:""
+                    importStatus: true,
+                    importSalary: action.payload.content,
+                    error: ""
             };
         case SalaryConstants.GET_SALARY_FAILURE:
         case SalaryConstants.CREATE_SALARY_FAILURE:
@@ -63,7 +68,7 @@ export function salary(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                error: action.error
+                    error: action.error
             };
 
         default:

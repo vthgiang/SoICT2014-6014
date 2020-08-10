@@ -177,13 +177,16 @@ class EmployeeKpiEvaluateModal extends Component {
                     startTaskYear = startTaskD.getFullYear();
                 let endTaskD = new Date(x.endDate),
                     endTaskDate = endTaskD.getDate(),
-                    endTaskMonth = '' + (endTaskD.getMonth() + 1)
+                    endTaskMonth = '' + (endTaskD.getMonth() + 1),
+                    endTaskYear = endTaskD.getFullYear();
                 let startApproveD = new Date(x.preEvaDate),
                     startApproveDate = startApproveD.getDate(),
-                    startApproveMonth = '' + (startApproveD.getMonth() + 1)
+                    startApproveMonth = '' + (startApproveD.getMonth() + 1),
+                    startApproveYear = startApproveD.getFullYear();
                 let endApproveD = new Date(x.date),
                     endApproveDate = endApproveD.getDate(),
-                    endApproveMonth = '' + (endApproveD.getMonth() + 1)
+                    endApproveMonth = '' + (endApproveD.getMonth() + 1),
+                    endApproveYear = endApproveD.getFullYear();
                 let automaticPoint = (x.results.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x.results.automaticPoint);
                 let employeePoint = (x.results.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.results.employeePoint);
                 let approverPoint = (x.results.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.results.approvedPoint);
@@ -199,15 +202,10 @@ class EmployeeKpiEvaluateModal extends Component {
                     status: status,
                     employeePoint: employeePoint,
                     approverPoint: approverPoint,
-                    startTaskDate: startTaskDate,
-                    startTaskMonth: startTaskMonth,
-                    endTaskDate: endTaskDate,
-                    endTaskMonth: endTaskMonth,
-                    startApproveDate: startApproveDate,
-                    startApproveMonth: startApproveMonth,
-                    endApproveDate: endApproveDate,
-                    endApproveMonth: endApproveMonth,
-                    year: startTaskYear,
+                    startTaskDate: startTaskDate + '-' + startTaskMonth + '-' + startTaskYear,
+                    endTaskDate: endTaskDate + '-' + endTaskMonth + '-' + endTaskYear,
+                    startApproveDate: startApproveDate + '-' + startApproveMonth + '-' + startApproveYear,
+                    endApproveDate: endApproveDate + '-' + endApproveMonth + '-' + endApproveYear,
                     contributionPoint: contributionPoint,
                     importantLevel: importantLevel
                 };
@@ -225,14 +223,9 @@ class EmployeeKpiEvaluateModal extends Component {
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "startTaskDate", value: "Ngày bắt đầu công việc" },
-                                { key: "startTaskMonth", value: "Tháng bắt đầu công việc" },
                                 { key: "endTaskDate", value: "Ngày kết thúc công việc" },
-                                { key: "endTaskMonth", value: "Tháng kết thúc công việc" },
                                 { key: "startApproveDate", value: "Ngày bắt đầu đánh giá" },
-                                { key: "startApproveMonth", value: "Tháng bắt đầu công việc" },
                                 { key: "endApproveDate", value: "Ngày kết thúc đánh giá" },
-                                { key: "endApproveMonth", value: "Tháng kết thúc đánh giá" },
-                                { key: "year", value: "Năm" },
                                 { key: "status", value: "Trạng thái" },
                                 { key: "contributionPoint", value: "Đóng góp (%)" },
                                 { key: "automaticPoint", value: "Điểm tự động" },

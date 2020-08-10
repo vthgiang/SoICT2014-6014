@@ -5,6 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../../common-components/index';
 import { DataTableSetting, ExportExcel } from '../../../../../common-components';
 
+import { ModalDetailTask } from '../../../../task/task-management/component/task-dashboard/modalDetailTask';
 import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions';
 
 class ModalDetailKPIPersonal extends Component {
@@ -125,17 +126,22 @@ class ModalDetailKPIPersonal extends Component {
                 let name = x.name;
                 let startTaskD = new Date(x.startDate),
                     startTaskDate = startTaskD.getDate(),
-                    startTaskMonth = '' + (startTaskD.getMonth() + 1),
-                    startTaskYear = startTaskD.getFullYear();
+                    startTaskMonth = (startTaskD.getMonth() + 1),
+                    startTaskYear = startTaskD.getFullYear(),
+                    startTaskTime = startTaskDate + '-' + startTaskMonth + '-' + startTaskYear
                 let endTaskD = new Date(x.endDate),
                     endTaskDate = endTaskD.getDate(),
-                    endTaskMonth = '' + (endTaskD.getMonth() + 1)
+                    endTaskMonth = (endTaskD.getMonth() + 1),
+                    endTaskYear = endTaskD.getFullYear(),
+                    endTaskTime = endTaskDate + '-' + endTaskMonth + '-' + endTaskYear
                 let startApproveD = new Date(x.preEvaDate),
                     startApproveDate = startApproveD.getDate(),
-                    startApproveMonth = '' + (startApproveD.getMonth() + 1)
+                    startApproveMonth = (startApproveD.getMonth() + 1),
+                    startApproveTime = startApproveDate + '-' + startApproveMonth + '-' + startApproveD.getFullYear()
                 let endApproveD = new Date(x.date),
                     endApproveDate = endApproveD.getDate(),
-                    endApproveMonth = '' + (endApproveD.getMonth() + 1)
+                    endApproveMonth = (endApproveD.getMonth() + 1),
+                    endApproveTime = endApproveDate + '-' + endApproveMonth + '-' + endApproveD.getFullYear()
                 let automaticPoint = (x.results.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x.results.automaticPoint);
                 let employeePoint = (x.results.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.results.employeePoint);
                 let approverPoint = (x.results.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.results.approvedPoint);
@@ -150,15 +156,10 @@ class ModalDetailKPIPersonal extends Component {
                     status: status,
                     employeePoint: employeePoint,
                     approverPoint: approverPoint,
-                    startTaskDate: startTaskDate,
-                    startTaskMonth: startTaskMonth,
-                    endTaskDate: endTaskDate,
-                    endTaskMonth: endTaskMonth,
-                    startApproveDate: startApproveDate,
-                    startApproveMonth: startApproveMonth,
-                    endApproveDate: endApproveDate,
-                    endApproveMonth: endApproveMonth,
-                    year: startTaskYear,
+                    startTaskDate: startTaskTime,
+                    endTaskDate: endTaskTime,
+                    startApproveDate: startApproveTime,
+                    endApproveDate: endApproveTime,
                     contributionPoint: contributionPoint,
                     importantLevel: importantLevel
                 };
@@ -186,14 +187,9 @@ class ModalDetailKPIPersonal extends Component {
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "startTaskDate", value: "Ngày bắt đầu công việc" },
-                                { key: "startTaskMonth", value: "Tháng bắt đầu công việc" },
                                 { key: "endTaskDate", value: "Ngày kết thúc công việc" },
-                                { key: "endTaskMonth", value: "Tháng kết thúc công việc" },
                                 { key: "startApproveDate", value: "Ngày bắt đầu đánh giá" },
-                                { key: "startApproveMonth", value: "Tháng bắt đầu công việc" },
                                 { key: "endApproveDate", value: "Ngày kết thúc đánh giá" },
-                                { key: "endApproveMonth", value: "Tháng kết thúc đánh giá" },
-                                { key: "year", value: "Năm" },
                                 { key: "status", value: "Trạng thái" },
                                 { key: "contributionPoint", value: "Đóng góp (%)" },
                                 { key: "automaticPoint", value: "Điểm tự động" },
@@ -211,6 +207,15 @@ class ModalDetailKPIPersonal extends Component {
         return exportData;
 
     }
+    handleClickTaskName = async (id) => {
+        this.setState(state => {
+            return {
+                ...state,
+                taskId: id,
+            }
+        });
+        window.$(`#modal-detail-task`).modal('show');
+    }
 
     render() {
         var kpimember;
@@ -218,7 +223,7 @@ class ModalDetailKPIPersonal extends Component {
         let exportData, content = this.state.content;
         const { kpimembers, translate } = this.props;
         let { employeeKpiSet } = this.props;
-
+        const { taskId } = this.state;
         if (kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
         kpimember = kpimembers && kpimembers.kpimembers;
 
@@ -228,9 +233,12 @@ class ModalDetailKPIPersonal extends Component {
 
         if (myTask) {
             let dataKpi;
-            for (let i = 0; i < list.length; i++) {
-                if (list[i]._id === content) {
-                    dataKpi = list[i];
+            console.log('listtttt', list);
+            if (list) {
+                for (let i = 0; i < list.length; i++) {
+                    if (list[i]._id === content) {
+                        dataKpi = list[i];
+                    }
                 }
             }
             exportData = this.convertDataToExportData(dataKpi, myTask);
@@ -271,6 +279,7 @@ class ModalDetailKPIPersonal extends Component {
                             if (item._id === this.state.content) return (
                                 <React.Fragment key={item._id}>
                                     <h4>{translate('kpi.evaluation.employee_evaluation.KPI_info') + " " + item.name}</h4>
+                                    {exportData && <ExportExcel id="export-employee-kpi-management-detail-kpi" exportData={exportData} style={{ marginTop: 5 }} />}
                                     <div style={{ lineHeight: 2 }}>
                                         <div>
                                             <label>{translate('kpi.evaluation.employee_evaluation.criteria')}:</label>
@@ -336,7 +345,7 @@ class ModalDetailKPIPersonal extends Component {
 
                                                         <tr key={index}>
                                                             <td>{index + 1}</td>
-                                                            <td>{itemTask.name}</td>
+                                                            <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleClickTaskName(itemTask.taskId)}>{itemTask.name}</a></td>
                                                             <td>{this.formatDate(itemTask.startDate)}<br /> <i className="fa fa-angle-double-down"></i><br /> {this.formatDate(itemTask.endDate)}</td>
                                                             <td>{this.formatDate(itemTask.preEvaDate)}<br /> <i className="fa fa-angle-double-down"></i><br /> {this.formatDate(itemTask.date)}</td>
                                                             <td>{itemTask.status}</td>
@@ -354,12 +363,12 @@ class ModalDetailKPIPersonal extends Component {
                                             }
                                         </tbody>
                                     </table>
-                                    {exportData && <ExportExcel id="export-employee-kpi-management-detail-kpi" exportData={exportData} style={{ marginTop: 5 }} />}
                                 </React.Fragment>);
                             return true;
                         })}
                     </div>
                 </DialogModal>
+                {<ModalDetailTask id={taskId} />}
             </React.Fragment>
         );
     }
@@ -373,7 +382,6 @@ function mapState(state) {
 const actionCreators = {
     getKpisByKpiSetId: kpiMemberActions.getKpisByKpiSetId,
     getTaskById: kpiMemberActions.getTaskById,
-    setPointKPI: kpiMemberActions.setPointKPI
 };
 const connectedModalDetailKPIPersonal = connect(mapState, actionCreators)(withTranslate(ModalDetailKPIPersonal));
 export { connectedModalDetailKPIPersonal as ModalDetailKPIPersonal };

@@ -5,6 +5,8 @@ import { createKpiSetActions } from '../../../employee/creation/redux/actions';
 
 import { withTranslate } from 'react-redux-multilingual';
 
+import { ExportExcel } from '../../../../../common-components';
+
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -143,6 +145,7 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
     }
 
     render() {
+        console.log("|n\n\n\n\n\n\n",this.props.info)
         return (
             <React.Fragment>
                 <div ref="chart"></div>

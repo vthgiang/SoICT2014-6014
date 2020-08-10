@@ -22,7 +22,7 @@ function calcAutoPoint(data) {
     let { task, date, progress, info } = data;
 
     let splitter = date.split('-');
-    let progressTask = progress ? progress : undefined;
+    let progressTask = (progress !== null && progress !== undefined) ? progress : undefined;
     let evaluationsDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
     let startDate = new Date(task.startDate);
     let endDate = new Date(task.endDate);
@@ -54,7 +54,7 @@ function calcAutoPoint(data) {
     reduceAction = reduceAction > 0 ? reduceAction : 0;
 
     let averageActionRating = !a ? 10 : reduceAction/a; // a = 0 thì avg mặc định là 10
-    let autoHasActionInfo = progress/(dayUsed/totalDay) - 0.5*(10-averageActionRating)*10;
+    let autoHasActionInfo = progress/(dayUsed/totalDay) - 0.5*(10-(averageActionRating))*10;
     let automaticPoint = 0;
 
     if(task.taskTemplate === null || task.taskTemplate === undefined){ // Công việc không theo mẫu
@@ -65,18 +65,18 @@ function calcAutoPoint(data) {
         let taskInformations = info;
 
         // thay các biến bằng giá trị
-        formula = formula.replace(/overdueDate/g, overdueDate);
-        formula = formula.replace(/totalDay/g, totalDay);
-        formula = formula.replace(/dayUsed/g, dayUsed);
-        formula = formula.replace(/averageActionRating/g, averageActionRating);
-        formula = formula.replace(/progress/g, progressTask);
+        formula = formula.replace(/overdueDate/g, `(${overdueDate})`);
+        formula = formula.replace(/totalDay/g, `(${totalDay})`);
+        formula = formula.replace(/dayUsed/g, `(${dayUsed})`);
+        formula = formula.replace(/averageActionRating/g, `(${averageActionRating})`);
+        formula = formula.replace(/progress/g, `(${progressTask})`);
         
         // thay mã code bằng giá trị(chỉ dùng cho kiểu số)
         for(let i in taskInformations){
             if(taskInformations[i].type === 'Number'){
                 let stringToGoIntoTheRegex = `${taskInformations[i].code}`;
                 let regex = new RegExp( stringToGoIntoTheRegex, "g");
-                formula = formula.replace(regex, `${taskInformations[i].value}`);
+                formula = formula.replace(regex, `(${taskInformations[i].value})`);
             }
         }
         

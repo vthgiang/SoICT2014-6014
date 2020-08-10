@@ -1,8 +1,4 @@
 export const configurationHoliday = {
-    rowHeader: {
-        description: "Số dòng tiêu đề của bảng",
-        value: 1
-    },
     sheets: {
         description: "Tên các sheet",
         value: ["Sheet1"]

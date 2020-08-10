@@ -11,6 +11,7 @@ import { UserFormValidator } from '../../../../super-admin/user/components/userF
 class OrganizationalUnitKpiAddTargetModal extends Component {
     constructor(props) {
         super(props);
+        
         this.state = {
             name: "",
             parent: null,

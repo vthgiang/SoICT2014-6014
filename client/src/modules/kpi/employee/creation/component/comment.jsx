@@ -313,8 +313,10 @@ class Comment extends Component {
         var comments
         var minRows = 3, maxRows = 20
         const { editComment, editChildComment, showChildComment, currentUser, newCommentEdited, newChildCommentEdited, showModalDelete, deleteFile, childComment } = this.state
-        const { currentKPI, auth, translate } = this.props
-        comments = currentKPI.comments
+        const {  auth, translate } = this.props
+        const { currentKPI } = this.props
+        console.log(currentKPI)
+        comments = currentKPI?.comments
         return (
             <React.Fragment>
                 {comments ?
@@ -322,11 +324,11 @@ class Comment extends Component {
                     comments.map(item => {
                         return (
                             <div key={item._id}>
-                                <img className="user-img-level1" src={(LOCAL_SERVER_API + item.creator.avatar)} alt="User Image" />
+                                <img className="user-img-level1" src={(LOCAL_SERVER_API + item.creator?.avatar)} alt="User Image" />
                                 {editComment !== item._id && // Khi đang edit thì ẩn đi
                                     <React.Fragment>
                                         <div className="content-level1">
-                                            <a style={{ cursor: "pointer" }}>{item.creator.name} </a>
+                                            <a style={{ cursor: "pointer" }}>{item.creator?.name} </a>
                                             {item.description.split('\n').map((item, idx) => {
                                                 return (
                                                     <span key={idx}>
@@ -336,7 +338,7 @@ class Comment extends Component {
                                                 );
                                             })
                                             }
-                                            {item.creator._id === currentUser &&
+                                            {item.creator?._id === currentUser &&
                                                 <div className="btn-group pull-right">
                                                     <span data-toggle="dropdown">
                                                         <i className="fa fa-ellipsis-h"></i>
@@ -416,12 +418,12 @@ class Comment extends Component {
                                     <div className="comment-content-child">
                                         {item.comments.map(child => {
                                             return <div key={child._id}>
-                                                <img className="user-img-level2" src={(LOCAL_SERVER_API + item.creator.avatar)} alt="User Image" />
+                                                <img className="user-img-level2" src={(LOCAL_SERVER_API + item.creator?.avatar)} alt="User Image" />
 
                                                 {editChildComment !== child._id && // Đang edit thì ẩn đi
                                                     <div>
                                                         <p className="content-level2">
-                                                            <a style={{ cursor: "pointer" }}>{child.creator.name} </a>
+                                                            <a style={{ cursor: "pointer" }}>{child.creator?.name} </a>
                                                             {child?.description?.split('\n').map((item, idx) => {
                                                                 return (
                                                                     <span key={idx}>
@@ -432,7 +434,7 @@ class Comment extends Component {
                                                             })
                                                             }
 
-                                                            {child.creator._id === currentUser &&
+                                                            {child.creator?._id === currentUser &&
                                                                 <div className="btn-group pull-right">
                                                                     <span data-toggle="dropdown">
                                                                         <i className="fa fa-ellipsis-h"></i>
@@ -456,7 +458,8 @@ class Comment extends Component {
                                                                             })}
                                                                         </li>
                                                                     }
-                                                                </React.Fragment>}
+                                                                </React.Fragment>
+                                                            }
                                                         </ul>
                                                     </div>
                                                 }
@@ -562,8 +565,8 @@ class Comment extends Component {
 }
 
 function mapState(state) {
-    const { auth, currentKPI } = state;
-    return { auth, currentKPI };
+    const { auth } = state;
+    return { auth };
 }
 const actionCreators = {
     editComment: createKpiSetActions.editComment,

@@ -111,7 +111,7 @@ class ModalShowAutoPointInfo extends Component {
             result = `${calcAuto} ${translate('task.task_management.explain')}`;
         }
         else if( calcAuto >= 0) {
-            result = autoPoint
+            result = calcAuto
         }
         else {
             result = translate('task.task_management.calc_nan');

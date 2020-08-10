@@ -36,10 +36,14 @@ export const performTaskAction = {
     editTaskByResponsibleEmployees,
     editStatusOfTask,
     editArchivedOfTask,
+    editDocument,
+    deleteDocument,
 
     evaluateTaskByAccountableEmployees,
     evaluateTaskByConsultedEmployees,
     evaluateTaskByResponsibleEmployees,
+
+    deleteEvaluation,
 };
 // Create result task
 function createResultTask(result) {
@@ -493,6 +497,26 @@ function evaluateTaskByResponsibleEmployees(data, taskId) {
     };
 }
 
+/**
+ * Delete document of task
+ * @param {*} taskId task id
+ * @param {*} evaluateId evaluate id
+ */
+function deleteEvaluation(taskId, evaluateId) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.DELETE_EVALUATION_REQUEST });
+        performTaskService.deleteEvaluation(taskId, evaluateId)
+            .then(res => {
+                dispatch({
+                    type: performTaskConstants.DELETE_EVALUATION_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: performTaskConstants.DELETE_EVALUATION_FAILURE, error });
+            });
+    };
+}
 
 /**
  * edit Status Of Task
@@ -535,14 +559,32 @@ function editArchivedOfTask(id) {
             });
     };
 }
+/**
+ * edit file of task
+ */
+function editDocument(documentId, taskId, data) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.EDIT_DOCUMENT_TASK_REQUEST });
+        performTaskService.editDocument(documentId, taskId, data)
+            .then(res => {
+                dispatch({
+                    type: performTaskConstants.EDIT_DOCUMENT_TASK_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: performTaskConstants.EDIT_DOCUMENT_TASK_FAILURE, error });
+            });
+    };
+}
 
 /**
  * Delete file of task
  */
-function deleteFileTask(fileId, taskId) {
+function deleteFileTask(fileId, documentId, taskId) {
     return dispatch => {
         dispatch({ type: performTaskConstants.DELETE_FILE_TASK_REQUEST });
-        performTaskService.deleteFileTask(fileId, taskId)
+        performTaskService.deleteFileTask(fileId, documentId, taskId)
             .then(res => {
                 dispatch({
                     type: performTaskConstants.DELETE_FILE_TASK_SUCCESS,
@@ -551,6 +593,25 @@ function deleteFileTask(fileId, taskId) {
             })
             .catch(error => {
                 dispatch({ type: performTaskConstants.DELETE_FILE_TASK_FAILURE, error });
+            });
+    };
+}
+
+/**
+ * Delete document of task
+ */
+function deleteDocument(fileId, documentId, taskId) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.DELETE_DOCUMENT_TASK_REQUEST });
+        performTaskService.deleteDocument(fileId, documentId, taskId)
+            .then(res => {
+                dispatch({
+                    type: performTaskConstants.DELETE_DOCUMENT_TASK_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: performTaskConstants.DELETE_DOCUMENT_TASK_FAILURE, error });
             });
     };
 }

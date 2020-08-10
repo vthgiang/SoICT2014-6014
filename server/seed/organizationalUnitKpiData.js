@@ -464,43 +464,46 @@ var organizationalUnitKpiData = async () => {
             informedEmployees: [viceDean], // Người quan sát
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
-                kpis:[{ // Kpis của những người thực hiện (responsibleEmployees)
-                    employee: employee_1,
-                    kpis: [employee_1KpiArray[0][2]]
-                }],
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
-                        employee: employee_1, // Người được đánh giá
-                        role: "Responsible", // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+                        employee: employee_1,
+                        organizationalUnit: organizationalUnit,
+                        role: "Responsible",
+                        kpis: [employee_1KpiArray[0][2]],
                         automaticPoint: 80,
                         employeePoint: 90,
                         approvedPoint: 85,
                         contribution: 50,
                         taskImportanceLevel: 7,
                     },
-                    { 
-                        employee: employee_2, 
+                    { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee_2,
+                        organizationalUnit: organizationalUnit,
+                        role: "Accountable",
+                        kpis: [employee_2KpiArray[0][0]],
+                        automaticPoint: 90,
+                        employeePoint: 90,
+                        approvedPoint: 90,
+                        contribution: 20,
+                        taskImportanceLevel: 5,
+                    },
+                    { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee_2,
+                        organizationalUnit: organizationalUnit,
                         role: "Consulted",
+                        kpis: [employee_2KpiArray[0][1]],
                         automaticPoint: 90,
                         employeePoint: 90,
                         approvedPoint: 85,
                         contribution: 30,
                         taskImportanceLevel: 5,
                     },
-                    { 
-                        employee: employee_2, 
-                        role: "Accountable",
-                        automaticPoint: 90,
-                        employeePoint: 90,
-                        approvedPoint: 90,
-                        contribution: 20,
-                        taskImportanceLevel: 5,
-                    }
                 ],
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
             progress: 90,
         }, 
+
         {
             organizationalUnit: organizationalUnit,
             creator: dean,
@@ -521,43 +524,44 @@ var organizationalUnitKpiData = async () => {
             informedEmployees: [viceDean], // Người quan sát
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
-                kpis:[{ // Kpis của những người thực hiện (responsibleEmployees)
-                    employee: employee_1,
-                    kpis: [employee_1KpiArray[0][3]]
-                }],
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
-                        employee: employee_1, // Người được đánh giá
-                        role: "Responsible", // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+                        employee: employee_1,
+                        organizationalUnit: organizationalUnit,
+                        role: "Responsible",
+                        kpis: [employee_1KpiArray[0][3]],
                         automaticPoint: 90,
                         employeePoint: 90,
                         approvedPoint: 80,
                         contribution: 60,
                         taskImportanceLevel: 8,
-                    },
-                    { 
-                        employee: employee_2, 
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee_2,
+                        organizationalUnit: organizationalUnit,
+                        role: "Accountable",
+                        kpis: [employee_2KpiArray[0][0]],
+                        automaticPoint: 70,
+                        employeePoint: 90,
+                        approvedPoint: 80,
+                        contribution: 30,
+                        taskImportanceLevel: 5,
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee_2,
+                        organizationalUnit: organizationalUnit,
                         role: "Consulted",
+                        kpis: [employee_2KpiArray[0][1]],
                         automaticPoint: 100,
                         employeePoint: 90,
                         approvedPoint: 90,
                         contribution: 10,
                         taskImportanceLevel: 6,
                     },
-                    { 
-                        employee: employee_2, 
-                        role: "Accountable",
-                        automaticPoint: 70,
-                        employeePoint: 90,
-                        approvedPoint: 80,
-                        contribution: 30,
-                        taskImportanceLevel: 5,
-                    }
                 ],
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
             progress: 100,
         }, 
+
         {
             organizationalUnit: organizationalUnit,
             creator: dean,
@@ -579,83 +583,78 @@ var organizationalUnitKpiData = async () => {
             evaluations: [
                 { // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                     date: new Date(currentYear, currentMonth - 1, 30),
-                    kpis:[
-                        { // Kpis của những người thực hiện (responsibleEmployees)
-                            employee: employee_1,
-                            kpis: [employee_1KpiArray[0][2]]
-                        }
-                    ],
                     results: [
                         { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
-                            employee: employee_1, // Người được đánh giá
-                            role: "Responsible", // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+                            employee: employee_1,
+                            organizationalUnit: organizationalUnit,
+                            role: "Responsible",
+                            kpis: [employee_1KpiArray[0][2]],
                             automaticPoint: 80,
                             employeePoint: 80,
                             approvedPoint: 60,
                             contribution: 70,
                             taskImportanceLevel: 5,
-                        },
-                        { 
-                            employee: employee_2, 
+                        }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                            employee: employee_2,
+                            organizationalUnit: organizationalUnit,
+                            role: "Accountable",
+                            kpis: [employee_2KpiArray[0][0]],
+                            automaticPoint: 70,
+                            employeePoint: 90,
+                            approvedPoint: 80,
+                            contribution: 10,
+                            taskImportanceLevel: 5,
+                        }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                            employee: employee_2,
+                            organizationalUnit: organizationalUnit,
                             role: "Consulted",
+                            kpis: [employee_2KpiArray[0][1]],
                             automaticPoint: 100,
                             employeePoint: 90,
                             approvedPoint: 90,
                             contribution: 20,
                             taskImportanceLevel: 3,
                         },
-                        { 
-                            employee: employee_2, 
-                            role: "Accountable",
-                            automaticPoint: 70,
-                            employeePoint: 90,
-                            approvedPoint: 80,
-                            contribution: 10,
-                            taskImportanceLevel: 5,
-                        }
                     ],
                     taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
                 },
                 { // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                     date: new Date(currentYear, currentMonth, 30),
-                    kpis:[
-                        { // Kpis của những người thực hiện (responsibleEmployees)
-                            employee: employee_1,
-                            kpis: [employee_1KpiArray[1][2]]
-                        }
-                    ],
                     results: [
                         { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
-                            employee: employee_1, // Người được đánh giá
-                            role: "Responsible", // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+                            employee: employee_1,
+                            organizationalUnit: organizationalUnit,
+                            role: "Responsible",
+                            kpis: [employee_1KpiArray[1][2]],
                             automaticPoint: 90,
                             employeePoint: 100,
                             approvedPoint: 80,
                             contribution: 70,
                             taskImportanceLevel: 5,
-                        },
-                        { 
-                            employee: employee_2, 
+                        }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                            employee: employee_2,
+                            organizationalUnit: organizationalUnit,
+                            role: "Accountable",
+                            kpis: [employee_2KpiArray[1][0]],
+                            automaticPoint: 70,
+                            employeePoint: 90,
+                            approvedPoint: 80,
+                            contribution: 20,
+                            taskImportanceLevel: 5,
+                        }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                            employee: employee_2,
+                            organizationalUnit: organizationalUnit,
                             role: "Consulted",
+                            kpis: [employee_2KpiArray[1][1]],
                             automaticPoint: 90,
                             employeePoint: 90,
                             approvedPoint: 90,
                             contribution: 10,
                             taskImportanceLevel: 5,
                         },
-                        { 
-                            employee: employee_2, 
-                            role: "Accountable",
-                            automaticPoint: 70,
-                            employeePoint: 90,
-                            approvedPoint: 80,
-                            contribution: 20,
-                            taskImportanceLevel: 5,
-                        }
                     ],
                     taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
                 }
-
             ],
             progress: 40,
         }, 
@@ -681,43 +680,44 @@ var organizationalUnitKpiData = async () => {
             informedEmployees: [viceDean], // Người quan sát
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
-                kpis:[{ // Kpis của những người thực hiện (responsibleEmployees)
-                    employee: employee_1,
-                    kpis: [employee_1KpiArray[1][2]]
-                }],
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
-                        employee: employee_1, // Người được đánh giá
-                        role: "Responsible", // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+                        employee: employee_1,
+                        organizationalUnit: organizationalUnit,
+                        role: "Responsible",
+                        kpis: [employee_1KpiArray[1][2]],
                         automaticPoint: 90,
                         employeePoint: 90,
                         approvedPoint: 80,
                         contribution: 60,
                         taskImportanceLevel: 5,
-                    },
-                    { 
-                        employee: employee_2, 
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee_2,
+                        organizationalUnit: organizationalUnit,
+                        role: "Accountable",
+                        kpis: [employee_2KpiArray[1][0]],
+                        automaticPoint: 90,
+                        employeePoint: 90,
+                        approvedPoint: 90,
+                        contribution: 20,
+                        taskImportanceLevel: 5,
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee_2,
+                        organizationalUnit: organizationalUnit,
                         role: "Consulted",
+                        kpis: [employee_2KpiArray[1][1]],
                         automaticPoint: 90,
                         employeePoint: 100,
                         approvedPoint: 100,
                         contribution: 20,
                         taskImportanceLevel: 5,
                     },
-                    { 
-                        employee: employee_2, 
-                        role: "Accountable",
-                        automaticPoint: 90,
-                        employeePoint: 90,
-                        approvedPoint: 90,
-                        contribution: 20,
-                        taskImportanceLevel: 5,
-                    }
                 ],
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
             progress: 80,
         }, 
+
         {
             organizationalUnit: organizationalUnit,
             creator: dean,
@@ -738,38 +738,38 @@ var organizationalUnitKpiData = async () => {
             informedEmployees: [dean], // Người quan sát
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
-                kpis:[{ // Kpis của những người thực hiện (responsibleEmployees)
-                    employee: employee_1,
-                    kpis: [employee_1KpiArray[1][3]]
-                }],
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
-                        employee: employee_1, // Người được đánh giá
-                        role: "Responsible", // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+                        employee: employee_1,
+                        organizationalUnit: organizationalUnit,
+                        role: "Responsible",
+                        kpis: [employee_1KpiArray[1][3]],
                         automaticPoint: 95,
                         employeePoint: 95,
                         approvedPoint: 95,
                         contribution: 60,
                         taskImportanceLevel: 5,
-                    },
-                    { 
-                        employee: employee_2, 
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee_2,
+                        organizationalUnit: organizationalUnit,
+                        role: "Accountable",
+                        kpis: [employee_2KpiArray[1][0]],
+                        automaticPoint: 80,
+                        employeePoint: 90,
+                        approvedPoint: 80,
+                        contribution: 10,
+                        taskImportanceLevel: 5,
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee_2,
+                        organizationalUnit: organizationalUnit,
                         role: "Consulted",
+                        kpis: [employee_2KpiArray[1][1]],
                         automaticPoint: 100,
                         employeePoint: 90,
                         approvedPoint: 95,
                         contribution: 30,
                         taskImportanceLevel: 5,
                     },
-                    { 
-                        employee: employee_2, 
-                        role: "Accountable",
-                        automaticPoint: 80,
-                        employeePoint: 90,
-                        approvedPoint: 80,
-                        contribution: 10,
-                        taskImportanceLevel: 5,
-                    }
                 ],
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
@@ -802,43 +802,44 @@ var organizationalUnitKpiData = async () => {
             informedEmployees: [dean], // Người quan sát
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
-                kpis:[{ // Kpis của những người thực hiện (responsibleEmployees)
-                    employee: employee_2,
-                    kpis: [employee_2KpiArray[0][2]]
-                }],
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
-                        employee: employee_2, // Người được đánh giá
-                        role: "Responsible", // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+                        employee: employee_2,
+                        organizationalUnit: organizationalUnit,
+                        role: "Responsible",
+                        kpis: [employee_2KpiArray[0][2]],
                         automaticPoint: 90,
                         employeePoint: 90,
                         approvedPoint: 85,
                         contribution: 50,
                         taskImportanceLevel: 5,
-                    },
-                    { 
-                        employee: employee_1, 
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee_1,
+                        organizationalUnit: organizationalUnit,
+                        role: "Accountable",
+                        kpis: [employee_1KpiArray[0][0]],
+                        automaticPoint: 90,
+                        employeePoint: 90,
+                        approvedPoint: 90,
+                        contribution: 20,
+                        taskImportanceLevel: 5,
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee_1,
+                        organizationalUnit: organizationalUnit,
                         role: "Consulted",
+                        kpis: [employee_1KpiArray[0][1]],
                         automaticPoint: 90,
                         employeePoint: 90,
                         approvedPoint: 85,
                         contribution: 30,
                         taskImportanceLevel: 5,
                     },
-                    { 
-                        employee: employee_1, 
-                        role: "Accountable",
-                        automaticPoint: 90,
-                        employeePoint: 90,
-                        approvedPoint: 90,
-                        contribution: 20,
-                        taskImportanceLevel: 5,
-                    }
                 ],
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
             progress: 75,
         }, 
+
         {
             organizationalUnit: organizationalUnit,
             creator: dean,
@@ -859,43 +860,44 @@ var organizationalUnitKpiData = async () => {
             informedEmployees: [viceDean], // Người quan sát
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
-                kpis:[{ // Kpis của những người thực hiện (responsibleEmployees)
-                    employee: employee_2,
-                    kpis: [employee_2KpiArray[0][3]]
-                }],
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
-                        employee: employee_2, // Người được đánh giá
-                        role: "Responsible", // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+                        employee: employee_2,
+                        organizationalUnit: organizationalUnit,
+                        role: "Responsible",
+                        kpis: [employee_2KpiArray[0][3]],
                         automaticPoint: 95,
                         employeePoint: 90,
                         approvedPoint: 80,
                         contribution: 80,
                         taskImportanceLevel: 5,
-                    },
-                    { 
-                        employee: employee_1, 
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee_1,
+                        organizationalUnit: organizationalUnit,
+                        role: "Accountable",
+                        kpis: [employee_1KpiArray[0][0]],
+                        automaticPoint: 80,
+                        employeePoint: 90,
+                        approvedPoint: 80,
+                        contribution: 10,
+                        taskImportanceLevel: 5,
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee_1,
+                        organizationalUnit: organizationalUnit,
                         role: "Consulted",
+                        kpis: [employee_1KpiArray[0][1]],
                         automaticPoint: 90,
                         employeePoint: 90,
                         approvedPoint: 85,
                         contribution: 10,
                         taskImportanceLevel: 5,
                     },
-                    { 
-                        employee: employee_1, 
-                        role: "Accountable",
-                        automaticPoint: 80,
-                        employeePoint: 90,
-                        approvedPoint: 80,
-                        contribution: 10,
-                        taskImportanceLevel: 5,
-                    }
                 ],
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
             progress: 50,
         }, 
+
         {
             organizationalUnit: organizationalUnit,
             creator: dean,
@@ -917,83 +919,78 @@ var organizationalUnitKpiData = async () => {
             evaluations: [
                 { // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                     date: new Date(currentYear, currentMonth - 1, 30),
-                    kpis:[
-                        { 
-                            employee: employee_2,
-                            kpis: [employee_2KpiArray[0][2]]
-                        }
-                    ],
                     results: [
-                        { 
-                            employee: employee_2, 
+                        { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                            employee: employee_2,
+                            organizationalUnit: organizationalUnit,
                             role: "Responsible",
+                            kpis: [employee_2KpiArray[0][2]],
                             automaticPoint: 60,
                             employeePoint: 90,
                             approvedPoint: 70,
                             contribution: 80,
                             taskImportanceLevel: 5,
-                        },
-                        { 
-                            employee: employee_1, 
+                        }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                            employee: employee_1,
+                            organizationalUnit: organizationalUnit,
+                            role: "Accountable",
+                            kpis: [employee_1KpiArray[0][0]],
+                            automaticPoint: 70,
+                            employeePoint: 90,
+                            approvedPoint: 80,
+                            contribution: 10,
+                            taskImportanceLevel: 5,
+                        }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                            employee: employee_1,
+                            organizationalUnit: organizationalUnit,
                             role: "Consulted",
+                            kpis: [employee_1KpiArray[0][1]],
                             automaticPoint: 95,
                             employeePoint: 90,
                             approvedPoint: 90,
                             contribution: 10,
                             taskImportanceLevel: 5,
                         },
-                        { 
-                            employee: employee_1, 
-                            role: "Accountable",
-                            automaticPoint: 70,
-                            employeePoint: 90,
-                            approvedPoint: 80,
-                            contribution: 10,
-                            taskImportanceLevel: 5,
-                        }
                     ],
                     taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
                 },
                 { // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                     date: new Date(currentYear, currentMonth, 30),
-                    kpis:[
-                        { 
-                            employee: employee_2,
-                            kpis: [employee_2KpiArray[1][2]]
-                        }
-                    ],
                     results: [
-                        { 
-                            employee: employee_2, 
+                        { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                            employee: employee_2,
+                            organizationalUnit: organizationalUnit,
                             role: "Responsible",
+                            kpis: [employee_2KpiArray[1][2]],
                             automaticPoint: 90,
                             employeePoint: 100,
                             approvedPoint: 80,
                             contribution: 50,
                             taskImportanceLevel: 5,
-                        },
-                        { 
-                            employee: employee_1, 
+                        }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                            employee: employee_1,
+                            organizationalUnit: organizationalUnit,
+                            role: "Accountable",
+                            kpis: [employee_1KpiArray[1][0]],
+                            automaticPoint: 80,
+                            employeePoint: 90,
+                            approvedPoint: 80,
+                            contribution: 20,
+                            taskImportanceLevel: 5,
+                        }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                            employee: employee_1,
+                            organizationalUnit: organizationalUnit,
                             role: "Consulted",
+                            kpis: [employee_1KpiArray[1][1]],
                             automaticPoint: 90,
                             employeePoint: 90,
                             approvedPoint: 80,
                             contribution: 30,
                             taskImportanceLevel: 5,
                         },
-                        { 
-                            employee: employee_1, 
-                            role: "Accountable",
-                            automaticPoint: 80,
-                            employeePoint: 90,
-                            approvedPoint: 80,
-                            contribution: 20,
-                            taskImportanceLevel: 5,
-                        }
                     ],
                     taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
                 }
-
             ],
             progress: 85,
         }, 
@@ -1019,43 +1016,44 @@ var organizationalUnitKpiData = async () => {
             informedEmployees: [viceDean], // Người quan sát
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
-                kpis:[{ // Kpis của những người thực hiện (responsibleEmployees)
-                    employee: employee_2,
-                    kpis: [employee_2KpiArray[1][2]]
-                }],
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
-                        employee: employee_2, // Người được đánh giá
-                        role: "Responsible", // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+                        employee: employee_2,
+                        organizationalUnit: organizationalUnit,
+                        role: "Responsible",
+                        kpis: [employee_2KpiArray[1][2]],
                         automaticPoint: 50,
                         employeePoint: 90,
                         approvedPoint: 60,
                         contribution: 20,
                         taskImportanceLevel: 5,
-                    },
-                    { 
-                        employee: employee_1, 
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee_1,
+                        organizationalUnit: organizationalUnit,
+                        role: "Accountable",
+                        kpis: [employee_1KpiArray[1][0]],
+                        automaticPoint: 100,
+                        employeePoint: 90,
+                        approvedPoint: 95,
+                        contribution: 20,
+                        taskImportanceLevel: 5,
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee_1,
+                        organizationalUnit: organizationalUnit,
                         role: "Consulted",
+                        kpis: [employee_1KpiArray[1][1]],
                         automaticPoint: 90,
                         employeePoint: 100,
                         approvedPoint: 80,
                         contribution: 60,
                         taskImportanceLevel: 5,
                     },
-                    { 
-                        employee: employee_1, 
-                        role: "Accountable",
-                        automaticPoint: 100,
-                        employeePoint: 90,
-                        approvedPoint: 95,
-                        contribution: 20,
-                        taskImportanceLevel: 5,
-                    }
                 ],
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
             progress: 60,
         }, 
+
         {
             organizationalUnit: organizationalUnit,
             creator: dean,
@@ -1076,38 +1074,38 @@ var organizationalUnitKpiData = async () => {
             informedEmployees: [dean], // Người quan sát
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
-                kpis:[{ // Kpis của những người thực hiện (responsibleEmployees)
-                    employee: employee_2,
-                    kpis: [employee_2KpiArray[1][3]]
-                }],
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
-                        employee: employee_2, // Người được đánh giá
-                        role: "Responsible", // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+                        employee: employee_2,
+                        organizationalUnit: organizationalUnit,
+                        role: "Responsible",
+                        kpis: [employee_2KpiArray[1][3]],
                         automaticPoint: 90,
                         employeePoint: 90,
                         approvedPoint: 80,
                         contribution: 40,
                         taskImportanceLevel: 5,
-                    },
-                    { 
-                        employee: employee_1, 
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee_1,
+                        organizationalUnit: organizationalUnit,
+                        role: "Accountable",
+                        kpis: [employee_1KpiArray[1][0]],
+                        automaticPoint: 80,
+                        employeePoint: 90,
+                        approvedPoint: 60,
+                        contribution: 20,
+                        taskImportanceLevel: 5,
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee_1,
+                        organizationalUnit: organizationalUnit,
                         role: "Consulted",
+                        kpis: [employee_1KpiArray[1][1]],
                         automaticPoint: 100,
                         employeePoint: 90,
                         approvedPoint: 80,
                         contribution: 40,
                         taskImportanceLevel: 5,
                     },
-                    { 
-                        employee: employee_1, 
-                        role: "Accountable",
-                        automaticPoint: 80,
-                        employeePoint: 90,
-                        approvedPoint: 60,
-                        contribution: 20,
-                        taskImportanceLevel: 5,
-                    }
                 ],
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
@@ -1437,43 +1435,44 @@ var organizationalUnitKpiData = async () => {
             informedEmployees: [viceDean], // Người quan sát
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
-                kpis:[{ // Kpis của những người thực hiện (responsibleEmployees)
-                    employee: employee,
-                    kpis: [employeeKpiArray[0][2]]
-                }],
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
-                        employee: employee, // Người được đánh giá
-                        role: "Responsible", // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+                        employee: employee,
+                        organizationalUnit: organizationalUnit,
+                        role: "Responsible",
+                        kpis: [employeeKpiArray[0][2]],
                         automaticPoint: 80,
                         employeePoint: 60,
                         approvedPoint: 40,
                         contribution: 60,
                         taskImportanceLevel: 7,
-                    },
-                    { 
-                        employee: employee, 
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee,
+                        organizationalUnit: organizationalUnit,
+                        role: "Accountable",
+                        kpis: [employeeKpiArray[0][0]],
+                        automaticPoint: 80,
+                        employeePoint: 70,
+                        approvedPoint: 50,
+                        contribution: 10,
+                        taskImportanceLevel: 5,
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee,
+                        organizationalUnit: organizationalUnit,
                         role: "Consulted",
+                        kpis: [employeeKpiArray[0][1]],
                         automaticPoint: 90,
                         employeePoint: 50,
                         approvedPoint: 30,
                         contribution: 30,
                         taskImportanceLevel: 7,
                     },
-                    { 
-                        employee: employee, 
-                        role: "Accountable",
-                        automaticPoint: 80,
-                        employeePoint: 70,
-                        approvedPoint: 50,
-                        contribution: 10,
-                        taskImportanceLevel: 5,
-                    }
                 ],
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
             progress: 75,
         }, 
+
         {
             organizationalUnit: organizationalUnit,
             creator: dean,
@@ -1494,38 +1493,38 @@ var organizationalUnitKpiData = async () => {
             informedEmployees: [viceDean], // Người quan sát
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
-                kpis:[{ // Kpis của những người thực hiện (responsibleEmployees)
-                    employee: employee,
-                    kpis: [employeeKpiArray[0][3]]
-                }],
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
-                        employee: employee, // Người được đánh giá
-                        role: "Responsible", // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+                        employee: employee,
+                        organizationalUnit: organizationalUnit,
+                        role: "Responsible",
+                        kpis: [employeeKpiArray[0][3]],
                         automaticPoint: 100,
                         employeePoint: 90,
                         approvedPoint: 70,
                         contribution: 60,
                         taskImportanceLevel: 8,
-                    },
-                    { 
-                        employee: employee, 
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee,
+                        organizationalUnit: organizationalUnit,
+                        role: "Accountable",
+                        kpis: [employeeKpiArray[0][0]],
+                        automaticPoint: 70,
+                        employeePoint: 60,
+                        approvedPoint: 50,
+                        contribution: 20,
+                        taskImportanceLevel: 5,
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee,
+                        organizationalUnit: organizationalUnit,
                         role: "Consulted",
+                        kpis: [employeeKpiArray[0][1]],
                         automaticPoint: 60,
                         employeePoint: 50,
                         approvedPoint: 35,
                         contribution: 20,
                         taskImportanceLevel: 6,
                     },
-                    { 
-                        employee: employee, 
-                        role: "Accountable",
-                        automaticPoint: 70,
-                        employeePoint: 60,
-                        approvedPoint: 50,
-                        contribution: 20,
-                        taskImportanceLevel: 5,
-                    }
                 ],
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
@@ -1552,79 +1551,75 @@ var organizationalUnitKpiData = async () => {
             evaluations: [
                 { // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                     date: new Date(currentYear, currentMonth - 1, 30),
-                    kpis:[
-                        { // Kpis của những người thực hiện (responsibleEmployees)
-                            employee: employee,
-                            kpis: [employeeKpiArray[0][2]]
-                        }
-                    ],
                     results: [
                         { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
-                            employee: employee, // Người được đánh giá
-                            role: "Responsible", // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+                            employee: employee,
+                            organizationalUnit: organizationalUnit,
+                            role: "Responsible",
+                            kpis: [employeeKpiArray[0][2]],
                             automaticPoint: 80,
                             employeePoint: 70,
                             approvedPoint: 50,
                             contribution: 30,
                             taskImportanceLevel: 7,
-                        },
-                        { 
-                            employee: employee, 
+                        }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                            employee: employee,
+                            organizationalUnit: organizationalUnit,
+                            role: "Accountable",
+                            kpis: [employeeKpiArray[0][0]],
+                            automaticPoint: 70,
+                            employeePoint: 90,
+                            approvedPoint: 35,
+                            contribution: 50,
+                            taskImportanceLevel: 5,
+                        }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                            employee: employee,
+                            organizationalUnit: organizationalUnit,
                             role: "Consulted",
+                            kpis: [employeeKpiArray[0][1]],
                             automaticPoint: 100,
                             employeePoint: 90,
                             approvedPoint: 80,
                             contribution: 20,
                             taskImportanceLevel: 3,
                         },
-                        { 
-                            employee: employee, 
-                            role: "Accountable",
-                            automaticPoint: 70,
-                            employeePoint: 90,
-                            approvedPoint: 35,
-                            contribution: 50,
-                            taskImportanceLevel: 5,
-                        }
                     ],
                     taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
                 },
                 { // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                     date: new Date(currentYear, currentMonth, 30),
-                    kpis:[
-                        { 
-                            employee: employee,
-                            kpis: [employeeKpiArray[1][2]]
-                        }
-                    ],
                     results: [
                         { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
-                            employee: employee, // Người được đánh giá
-                            role: "Responsible", // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+                            employee: employee,
+                            organizationalUnit: organizationalUnit,
+                            role: "Responsible",
+                            kpis: [employeeKpiArray[1][2]],
                             automaticPoint: 90,
                             employeePoint: 80,
                             approvedPoint: 60,
                             contribution: 50,
                             taskImportanceLevel: 7,
-                        },
-                        { 
-                            employee: employee, 
+                        }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                            employee: employee,
+                            organizationalUnit: organizationalUnit,
+                            role: "Accountable",
+                            kpis: [employeeKpiArray[1][0]],
+                            automaticPoint: 70,
+                            employeePoint: 90,
+                            approvedPoint: 40,
+                            contribution: 20,
+                            taskImportanceLevel: 5,
+                        }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                            employee: employee,
+                            organizationalUnit: organizationalUnit,
                             role: "Consulted",
+                            kpis: [employeeKpiArray[1][1]],
                             automaticPoint: 90,
                             employeePoint: 70,
                             approvedPoint: 60,
                             contribution: 30,
                             taskImportanceLevel: 5,
                         },
-                        { 
-                            employee: employee, 
-                            role: "Accountable",
-                            automaticPoint: 70,
-                            employeePoint: 90,
-                            approvedPoint: 40,
-                            contribution: 20,
-                            taskImportanceLevel: 5,
-                        }
                     ],
                     taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
                 }
@@ -1654,43 +1649,44 @@ var organizationalUnitKpiData = async () => {
             informedEmployees: [viceDean], // Người quan sát
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
-                kpis:[{ // Kpis của những người thực hiện (responsibleEmployees)
-                    employee: employee,
-                    kpis: [employeeKpiArray[1][2]]
-                }],
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
-                        employee: employee, // Người được đánh giá
-                        role: "Responsible", // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+                        employee: employee,
+                        organizationalUnit: organizationalUnit,
+                        role: "Responsible",
+                        kpis: [employeeKpiArray[1][2]],
                         automaticPoint: 90,
                         employeePoint: 70,
                         approvedPoint: 80,
                         contribution: 50,
                         taskImportanceLevel: 7,
-                    },
-                    { 
-                        employee: employee, 
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee,
+                        organizationalUnit: organizationalUnit,
+                        role: "Accountable",
+                        kpis: [employeeKpiArray[1][0]],
+                        automaticPoint: 90,
+                        employeePoint: 80,
+                        approvedPoint: 60,
+                        contribution: 30,
+                        taskImportanceLevel: 5,
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee,
+                        organizationalUnit: organizationalUnit,
                         role: "Consulted",
+                        kpis: [employeeKpiArray[1][1]],
                         automaticPoint: 90,
                         employeePoint: 100,
                         approvedPoint: 60,
                         contribution: 20,
                         taskImportanceLevel: 5,
                     },
-                    { 
-                        employee: employee, 
-                        role: "Accountable",
-                        automaticPoint: 90,
-                        employeePoint: 80,
-                        approvedPoint: 60,
-                        contribution: 30,
-                        taskImportanceLevel: 5,
-                    }
                 ],
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],
             progress: 60,
         }, 
+
         {
             organizationalUnit: organizationalUnit,
             creator: dean,
@@ -1711,38 +1707,38 @@ var organizationalUnitKpiData = async () => {
             informedEmployees: [dean], // Người quan sát
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
-                kpis:[{ // Kpis của những người thực hiện (responsibleEmployees)
-                    employee: employee,
-                    kpis: [employeeKpiArray[1][3]]
-                }],
                 results: [
                     { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
-                        employee: employee, // Người được đánh giá
-                        role: "Responsible", // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+                        employee: employee,
+                        organizationalUnit: organizationalUnit,
+                        role: "Responsible",
+                        kpis: [employeeKpiArray[1][3]],
                         automaticPoint: 90,
                         employeePoint: 80,
                         approvedPoint: 60,
-                        contribution: 40,
+                        contribution: 10,
                         taskImportanceLevel: 10,
-                    },
-                    { 
-                        employee: employee, 
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee,
+                        organizationalUnit: organizationalUnit,
+                        role: "Accountable",
+                        kpis: [employeeKpiArray[1][0]],
+                        automaticPoint: 80,
+                        employeePoint: 70,
+                        approvedPoint: 40,
+                        contribution: 30,
+                        taskImportanceLevel: 5,
+                    }, { // Kết quả thực hiện công việc trong tháng đánh giá nói trên
+                        employee: employee,
+                        organizationalUnit: organizationalUnit,
                         role: "Consulted",
+                        kpis: [employeeKpiArray[1][1]],
                         automaticPoint: 100,
                         employeePoint: 90,
                         approvedPoint: 50,
                         contribution: 30,
                         taskImportanceLevel: 7,
                     },
-                    { 
-                        employee: employee, 
-                        role: "Accountable",
-                        automaticPoint: 80,
-                        employeePoint: 70,
-                        approvedPoint: 40,
-                        contribution: 30,
-                        taskImportanceLevel: 5,
-                    }
                 ],
                 taskInformations: [] // Lưu lại lịch sử các giá trị của thuộc tính công việc trong mỗi lần đánh giá
             }],

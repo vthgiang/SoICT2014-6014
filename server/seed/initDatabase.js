@@ -7,6 +7,7 @@ require('dotenv').config({path: '../.env'});
 const Terms = require('./terms');
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const {DATA} = require("./locations");
 
 // DB Config
 const db = process.env.DATABASE;
@@ -205,8 +206,8 @@ const seedDatabase = async () => {
         await systemComponent.save();
     }
 
-    
-    
+    // Thêm dữ liệu khu vực 
+    await Location.insertMany(DATA);
     
     
 

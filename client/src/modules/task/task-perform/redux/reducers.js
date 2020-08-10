@@ -326,10 +326,10 @@ export function performtasks(state = {}, action) {
             }
         case performTaskConstants.UPLOAD_FILE_SUCCESS:
 
-            var files = { ...state.task, files: action.payload.data.content }
+            var documents = { ...state.task, documents: action.payload.data.content }
             return {
                 ...state,
-                task: files
+                task: documents
             }
         case performTaskConstants.UPLOAD_FILE_FAILURE:
         case performTaskConstants.DELETE_FILE_ACTION_REQUEST:
@@ -422,100 +422,144 @@ export function performtasks(state = {}, action) {
                 isLoading: true
             };
         case performTaskConstants.DELETE_FILE_TASK_SUCCESS:
-            var files = { ...state.task, files: action.payload}
+            var documents = { ...state.task, documents: action.payload }
             return {
                 ...state,
-                task: files
+                task: documents
             };
         case performTaskConstants.DELETE_FILE_TASK_FAILURE:
             return {
                 error: action.error,
                 isLoading: false,
             };
-        case taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_REQUEST:
+        case performTaskConstants.EDIT_TASK_BY_ACCOUNTABLE_REQUEST:
             return {
                 ...state,
                 isLoading: true
             };
-        case taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_SUCCESS:
+        case performTaskConstants.EDIT_TASK_BY_ACCOUNTABLE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 task: action.payload
             };
-        case taskManagementConstants.EDIT_TASK_BY_ACCOUNTABLE_FAILURE:
+        case performTaskConstants.EDIT_TASK_BY_ACCOUNTABLE_FAILURE:
             return {
                 isLoading: false,
                 error: action.error
             };
-        case taskManagementConstants.EDIT_TASK_BY_RESPONSIBLE_REQUEST:
+        case performTaskConstants.EDIT_TASK_BY_RESPONSIBLE_REQUEST:
             return {
                 ...state,
                 isLoading: true
             };
-        case taskManagementConstants.EDIT_TASK_BY_RESPONSIBLE_SUCCESS:
+        case performTaskConstants.EDIT_TASK_BY_RESPONSIBLE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 task: action.payload
             };
-        case taskManagementConstants.EDIT_TASK_BY_RESPONSIBLE_FAILURE:
+        case performTaskConstants.EDIT_TASK_BY_RESPONSIBLE_FAILURE:
             return {
                 isLoading: false,
                 error: action.error
             };
-        case taskManagementConstants.EVALUATE_TASK_BY_ACCOUNTABLE_REQUEST:
+        case performTaskConstants.EVALUATE_TASK_BY_ACCOUNTABLE_REQUEST:
             return {
                 ...state,
                 isLoading: true
             };
-        case taskManagementConstants.EVALUATE_TASK_BY_ACCOUNTABLE_SUCCESS:
+        case performTaskConstants.EVALUATE_TASK_BY_ACCOUNTABLE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 task: action.payload
             };
-        case taskManagementConstants.EVALUATE_TASK_BY_ACCOUNTABLE_FAILURE:
+        case performTaskConstants.EVALUATE_TASK_BY_ACCOUNTABLE_FAILURE:
             return {
                 isLoading: false,
                 error: action.error
             };
-        case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_REQUEST:
+        case performTaskConstants.EVALUATE_TASK_BY_RESPONSIBLE_REQUEST:
             return {
                 ...state,
                 isLoading: true
             };
-        case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_SUCCESS:
+        case performTaskConstants.EVALUATE_TASK_BY_RESPONSIBLE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
                 task: action.payload
             };
-        case taskManagementConstants.EVALUATE_TASK_BY_RESPONSIBLE_FAILURE:
+        case performTaskConstants.EVALUATE_TASK_BY_RESPONSIBLE_FAILURE:
             return {
                 isLoading: false,
                 error: action.error
             };
-        case taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_REQUEST:
+        case performTaskConstants.EVALUATE_TASK_BY_CONSULTED_REQUEST:
             return {
                 ...state,
                 isLoading: true
             };
-        case taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_SUCCESS:
+        case performTaskConstants.EVALUATE_TASK_BY_CONSULTED_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                // task: {
-                //     info : action.payload
-                // }
                 task: action.payload
             };
-        case taskManagementConstants.EVALUATE_TASK_BY_CONSULTED_FAILURE:
+        case performTaskConstants.EVALUATE_TASK_BY_CONSULTED_FAILURE:
             return {
                 isLoading: false,
                 error: action.error
             };
-
+        case performTaskConstants.DELETE_EVALUATION_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case performTaskConstants.DELETE_EVALUATION_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                task: action.payload
+            };
+        case performTaskConstants.DELETE_EVALUATION_FAILURE:
+            return {
+                isLoading: false,
+                error: action.error
+            };
+        case performTaskConstants.DELETE_DOCUMENT_TASK_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case performTaskConstants.DELETE_DOCUMENT_TASK_SUCCESS:
+            var documents = { ...state.task, documents: action.payload }
+            return {
+                ...state,
+                task: documents
+            };
+        case performTaskConstants.DELETE_DOCUMENT_TASK_FAILURE:
+            return {
+                error: action.error,
+                isLoading: false,
+            };
+        case performTaskConstants.EDIT_DOCUMENT_TASK_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case performTaskConstants.EDIT_DOCUMENT_TASK_SUCCESS:
+            var documents = { ...state.task, documents: action.payload }
+            return {
+                ...state,
+                task: documents
+            };
+        case performTaskConstants.EDIT_DOCUMENT_TASK_FAILURE:
+            return {
+                error: action.error,
+                isLoading: false,
+            };
         default:
             return state
     }

@@ -317,6 +317,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
             }
             unitMembers = getEmployeeSelectBoxItems(userdepartments);
             unitMembers = [...unitMembers];
+            console.log( "\n\n\n\n\n\n",unitMembers)
         }
 
 
@@ -524,6 +525,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                             userId={infosearch.userId}
                                             startMonth={infosearch.startMonth}
                                             endMonth={infosearch.endMonth}
+                                            info = {infosearch}
                                         />
                                     }
                                 </div>

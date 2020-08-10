@@ -7,7 +7,7 @@ const PerformTaskController = require("./taskPerform.controller");
 router.get('/task-timesheet-logs', auth, PerformTaskController.getActiveTimesheetLog);
 
 router.get('/tasks/:taskId/timesheet-logs', auth, PerformTaskController.getTaskTimesheetLogs);
-router.post('/tasks/:taskId/timesheet-logs/start-timer',auth, PerformTaskController.startTimesheetLog);
+router.post('/tasks/:taskId/timesheet-logs/start-timer', auth, PerformTaskController.startTimesheetLog);
 router.post('/tasks/:taskId/timesheet-logs/stop-timer', auth, PerformTaskController.stopTimesheetLog);
 
 
@@ -17,8 +17,9 @@ router.post('/tasks/:taskId/logs', auth, PerformTaskController.addTaskLog);
 
 //upload file
 router.post('/tasks/:taskId/files', auth, uploadFile([{ name: 'files', path: '/files' }], 'array'), PerformTaskController.uploadFile)
-
-router.delete('/tasks/:taskId/files/:fileId', auth, PerformTaskController.deleteFileTask)
+router.patch('/tasks/:taskId/documents/:documentId', auth, uploadFile([{ name: 'files', path: '/files' }], 'array'), PerformTaskController.editDocument)
+router.delete('/tasks/:taskId/documents/:documentId', auth, PerformTaskController.deleteDocument)
+router.delete('/tasks/:taskId/documents/:documentId/files/:fileId', auth, PerformTaskController.deleteFileTask)
 
 
 //Task Action
@@ -53,6 +54,7 @@ router.patch('/tasks/:taskId/task-comments/:commentId/comments/files/:fileId', a
 
 router.post('/tasks/:taskId', auth, PerformTaskController.editTask);
 router.post('/tasks/:taskId/evaluate', auth, PerformTaskController.evaluateTask);
+router.delete('/tasks/:taskId/evaluations/:evaluationId', auth, PerformTaskController.deleteEvaluation);
 
 
 module.exports = router;

@@ -49,7 +49,7 @@ class TaskInformationForm extends Component {
                         }
 
                         <div className={`form-group ${value.errorOnProgress === undefined ? "" : "has-error"}`}>
-                            <label>{translate('task.task_management.detail_progress')} (<span style={{ color: "red" }}>*</span>)</label>
+                            <label>{translate('task.task_management.detail_progress')}</label>
                             <input
                                 className="form-control"
                                 type="number"
@@ -68,7 +68,7 @@ class TaskInformationForm extends Component {
                             task.taskInformations.map((info, index) => {
                                 if (info.type === 'Text') {
                                     return <div className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`} key={index}>
-                                        <label>{info.name}(<span style={{ color: "red" }}>*</span>)</label>
+                                        <label>{info.name}</label>
                                         <input
                                             className="form-control"
                                             type="text"
@@ -86,7 +86,7 @@ class TaskInformationForm extends Component {
                                 {
                                     if (info.type === 'Number') {
                                         return <div className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`} key={index}>
-                                            <label>{info.name}(<span style={{ color: "red" }}>*</span>)</label>
+                                            <label>{info.name}</label>
                                             <input
                                                 className="form-control"
                                                 type="number"
@@ -104,7 +104,7 @@ class TaskInformationForm extends Component {
                                 {
                                     if (info.type === 'Date') {
                                         return <div key={index} className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`}>
-                                            <label>{info.name}(<span style={{ color: "red" }}>*</span>)</label>
+                                            <label>{info.name}</label>
                                             <DatePicker
                                                 id={`info_date_${perform}_${index}_${info.code}_${id}_${indexReRender}`}
                                                 name={info.code}
@@ -120,7 +120,7 @@ class TaskInformationForm extends Component {
                                 {
                                     if (info.type === 'Boolean') {
                                         return <div key={index} className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`}>
-                                            <label style={{ marginRight: "30px" }}>{info.name}(<span style={{ color: "red" }}>*</span>)</label>
+                                            <label style={{ marginRight: "30px" }}>{info.name}</label>
                                             <label class="radio-inline">
                                                 <input
                                                     type="radio"
@@ -148,7 +148,7 @@ class TaskInformationForm extends Component {
                                 {
                                     if (info.type === 'SetOfValues') {
                                         return <div key={index} className={`form-group ${value.errorInfo && value.errorInfo[info.code] === undefined ? "" : "has-error"}`}>
-                                            <label>{info.name}(<span style={{ color: "red" }}>*</span>)</label>
+                                            <label>{info.name}</label>
                                             <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                                 id={`select-set-of-value-${index}-${id}-${perform}_${indexReRender}`}
                                                 className="form-control select2"

@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, SelectBox, DatePicker } from '../../../../common-components';
 import { CustomerActions } from '../../redux/actions';
-import {list as locations} from './location';
 
 class CustomerEdit extends Component {
     constructor(props) {
@@ -111,12 +110,7 @@ class CustomerEdit extends Component {
                                             id={`select-customer-location-${customerId}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={locations.map(location=>{
-                                                return {
-                                                    value: location.Title,
-                                                    text: location.Title
-                                                }
-                                            })}
+                                            items={[]}
                                             onChange={this.handleParents}
                                             multiple={false}
                                         />
