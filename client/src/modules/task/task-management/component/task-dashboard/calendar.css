@@ -78,7 +78,7 @@
     display: inline-block;
   }
   #in-time{
-    background-color:#3C8DBC;
+    background-color:#4da75b;
   }
   #delay{
     background-color:  #F0D83A;
@@ -87,7 +87,7 @@
     background-color: #DD4B39;
   }
   #label-for-calendar{
-    margin-left: -30px;
     font-weight: 500;
     font-size: 13px;
+    text-align: left;
   }
