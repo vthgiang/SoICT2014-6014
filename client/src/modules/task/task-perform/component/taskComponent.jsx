@@ -30,11 +30,13 @@ class TaskComponent extends Component {
             if (taskId && this.flag == 1) {
                 this.flag = 2;
                 this.props.getTaskById(taskId);
+                this.props.getDepartment();
                 return true;
             }
         }
         if (nextProps.id !== this.state.id) {
             this.props.getTaskById(nextProps.id); // this.props.id // đổi thành nextProps.id để lấy dữ liệu về sớm hơn
+            this.props.getDepartment();
             this.setState( state => {
                 return {
                     ...state,
@@ -57,9 +59,10 @@ class TaskComponent extends Component {
 
     render = () => {
         const { translate } = this.props;
+        const { user, tasks, performtasks } = this.props;
 
-        let taskId = this.props.id;;
-        let task;
+        let taskId = this.props.id;
+        let task, units;
 
         if (this.props.location){
             if (this.flag !== 1){
@@ -67,7 +70,10 @@ class TaskComponent extends Component {
             }
         }
         
-        const { tasks, performtasks } = this.props;
+        if( user.organizationalUnitsOfUser) {
+            units = user.organizationalUnitsOfUser;
+        }
+
         if (performtasks.task) {
             task = performtasks.task;
         }
@@ -103,12 +109,13 @@ class TaskComponent extends Component {
     }
 }
 function mapState(state) {
-    const { tasks, performtasks } = state;
-    return { tasks, performtasks };
+    const { tasks, performtasks, user } = state;
+    return { tasks, performtasks, user };
 }
 
 const actionCreators = {
     getTaskById: taskManagementActions.getTaskById,
+    getDepartment: UserActions.getDepartmentOfUser,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
 };
 

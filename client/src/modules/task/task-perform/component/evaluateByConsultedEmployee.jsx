@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ErrorLabel } from '../../../../common-components/index';
+import { getStorage } from '../../../../config';
+import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components/index';
 import { performTaskAction } from '../redux/actions';
 import { ModalShowAutoPointInfo } from './modalShowAutoPointInfo';
-import { getStorage } from '../../../../config';
+import { managerKpiActions } from '../../../kpi/employee/management/redux/actions';
 
 class EvaluateByConsultedEmployee extends Component {
     constructor(props) {
@@ -23,7 +24,18 @@ class EvaluateByConsultedEmployee extends Component {
             automaticPoint: data.automaticPoint,
             point: data.point,
             dentaDate: data.dentaDate,
+            unit: data.unit,
+            kpi: data.kpi,
+            idUser: data.idUser
         }
+    }
+
+    componentDidMount() {
+        let { idUser, unit } = this.state;
+        let { date } = this.props;
+        let defaultDepartment = unit;
+
+        this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, defaultDepartment, date);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -47,10 +59,11 @@ class EvaluateByConsultedEmployee extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.id !== this.state.id) {
-            let { task, idUser } = this.state;
-            let department = task.organizationalUnit._id;
+            let { task, idUser, unit } = this.state;
+            let department = unit;
             let date = nextProps.date;
             let data = this.getData(date);
+            this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, department, date);
 
             this.setState(state => {
                 return {
@@ -64,6 +77,8 @@ class EvaluateByConsultedEmployee extends Component {
                     automaticPoint: data.automaticPoint,
                     point: data.point,
                     dentaDate: data.dentaDate,
+                    unit: data.unit,
+                    kpi: data.kpi,
                 }
             });
             return false;
@@ -72,14 +87,18 @@ class EvaluateByConsultedEmployee extends Component {
     }
 
     getData = (dateParams) => {
-        let idUser = getStorage("userId");
+        const { user } = this.props;
         let { task } = this.props;
+        let idUser = getStorage("userId");
 
         let progress = task.progress;
         let evaluations;
         let date = dateParams;
         let dentaDate = 0;
-
+        let unit;
+        if (user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
+            unit = user.organizationalUnitsOfUser[0]._id;
+        }
         let splitter = dateParams.split("-");
         let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
         let monthOfEval = dateOfEval.getMonth();
@@ -88,10 +107,21 @@ class EvaluateByConsultedEmployee extends Component {
 
         let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
 
-        let point = undefined;
+        let point = undefined, cloneKpi = [];
         if (evaluations) {
             let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Consulted"));
-            if (res) point = res.employeePoint ? res.employeePoint : undefined;
+            if (res) {
+                point = res.employeePoint ? res.employeePoint : undefined;
+                unit = res.organizationalUnit._id;
+                let kpi = res.kpis;
+
+                for (let i in kpi) {
+                    cloneKpi.push(kpi[i]._id);
+                }
+
+                point = res.employeePoint ? res.employeePoint : undefined;
+            
+            }
             // date = this.formatDate(evaluations.date);
             progress = evaluations.progress;
         }
@@ -145,9 +175,10 @@ class EvaluateByConsultedEmployee extends Component {
             }
         }
         dentaDate = Math.round(((new Date()).getTime() - dateOfEval.getTime()) / (1000 * 3600 * 24));
-        
+
         return {
             info: info,
+            idUser: idUser,
             task: task,
             date: date,
             progress: progress,
@@ -155,11 +186,13 @@ class EvaluateByConsultedEmployee extends Component {
             automaticPoint: automaticPoint,
             point: point,
             dentaDate: dentaDate,
+            unit: unit,
+            kpi: cloneKpi,
         }
     }
 
     checkNullUndefined = (x) => {
-        if( x === null || x === undefined ) {
+        if (x === null || x === undefined) {
             return false;
         }
         else return true;
@@ -203,6 +236,26 @@ class EvaluateByConsultedEmployee extends Component {
         })
     }
 
+    // hàm thay đổi kpi
+    handleKpiChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                kpi: value
+            }
+        });
+    }
+
+    // hàm cập nhật đơn vị
+    handleChangeUnit = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                unit: value[0]
+            }
+        });
+        this.props.getAllKpiSetsOrganizationalUnitByMonth(this.state.idUser, value[0], this.state.date);
+    }
 
     handleShowAutomaticPointInfo = async () => {
         await this.setState(state => {
@@ -226,6 +279,8 @@ class EvaluateByConsultedEmployee extends Component {
         let data = {
             user: getStorage("userId"),
             role: "Consulted",
+            unit: this.state.unit,
+            kpi: this.state.kpi,
             employeePoint: this.state.point,
             date: this.formatDate(Date.now()),
             automaticPoint: this.state.automaticPoint
@@ -238,17 +293,23 @@ class EvaluateByConsultedEmployee extends Component {
         let { date } = this.props;
         let splitter = date.split("-");
         let isoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-        let now = new Date ();
+        let now = new Date();
 
-        if(now.getMonth() === isoDate.getMonth() && now.getFullYear() === isoDate.getFullYear()) {
+        if (now.getMonth() === isoDate.getMonth() && now.getFullYear() === isoDate.getFullYear()) {
             return false;
         }
         return true
     }
 
     render() {
-        let { point, errorOnPoint, evaluations, automaticPoint, progress, date, info, showAutoPointInfo, dentaDate } = this.state;
-        let { task, translate } = this.props;
+        const { translate, user, KPIPersonalManager } = this.props;
+        const { point, errorOnPoint, evaluations, automaticPoint, progress, date, info, showAutoPointInfo, dentaDate, kpi, unit, } = this.state;
+        let { task, perform, role } = this.props;
+
+        let listUnits = [];
+        if ( user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0 ) {
+            listUnits = user.organizationalUnitsOfUser.map( x => {return {value: x._id, text: x.name}});
+        }
 
         let checkNoteMonth;
         checkNoteMonth = this.checkNote();
@@ -259,13 +320,14 @@ class EvaluateByConsultedEmployee extends Component {
         }
         let disableSubmit = !this.isFormValidated();
 
+        console.log('====quang', this.state);
         return (
             <React.Fragment>
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <div className="row">
                         <div className='col-md-8'>
-                            {checkNoteMonth && (dentaDate <= 7 && dentaDate > 0) && <p style={{color: "red"}}>{translate('task.task_management.note_eval')}{8 - dentaDate}.</p>}
-                            {checkNoteMonth && (dentaDate > 7) && <p style={{color: "red"}}>{translate('task.task_management.note_not_eval')}</p>}
+                            {checkNoteMonth && (dentaDate <= 7 && dentaDate > 0) && <p style={{ color: "red" }}>{translate('task.task_management.note_eval')}{8 - dentaDate}.</p>}
+                            {checkNoteMonth && (dentaDate > 7) && <p style={{ color: "red" }}>{translate('task.task_management.note_not_eval')}</p>}
                         </div>
                         {!(checkNoteMonth && (dentaDate > 7)) &&
                             <div style={{ justifyContent: "flex-end", display: "flex" }} className='col-md-4'>
@@ -274,47 +336,90 @@ class EvaluateByConsultedEmployee extends Component {
                         }
                     </div>
                     <form id="form-evaluate-task-by-consulted">
-                        <div className={`form-group ${errorOnPoint === undefined ? "" : "has-error"}`}>
-                            <label>{translate('task.task_management.detail_emp_point')} (<span style={{ color: "red" }}>*</span>)</label>
-                            <input
-                                className="form-control"
-                                type="number"
-                                name="point"
-                                placeholder={translate('task.task_management.enter_emp_point')}
-                                onChange={this.handleChangePoint}
-                                value={this.checkNullUndefined(point) ? point : ''}
-                                disabled={disabled} 
-                            />
-                            <ErrorLabel content={errorOnPoint} />
-                        </div>
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate('task.task_management.detail_general_info')}</legend>
+
+                            {/* Đơn vị đánh giá */}
+                            <div className="form-group">
+                                <label>{translate('task.task_management.department')}:</label>
+                                {
+                                    <SelectBox
+                                        id={`select-organizational-unit-evaluate-${perform}-${role}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={listUnits}
+                                        onChange={this.handleChangeUnit}
+                                        multiple={false}
+                                        value={unit}
+                                        disabled={disabled}
+                                    />
+                                }
+                            </div>
+
+                            {/* Liên kết KPI */}
+                            <div className="form-group">
+                                <label>{translate('task.task_management.detail_kpi')}:</label>
+                                {
+                                    <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                                        id={`select-kpi-personal-evaluate-${perform}-${role}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={((KPIPersonalManager && KPIPersonalManager.kpiSets) ? KPIPersonalManager.kpiSets.kpis : []).map(x => { return { value: x._id, text: x.name } })}
+                                        onChange={this.handleKpiChange}
+                                        multiple={true}
+                                        value={kpi}
+                                        disabled={disabled}
+                                    />
+                                }
+                            </div>
+                            {/* Điểm tự đánh giá */}
+                            <div className={`form-group ${errorOnPoint === undefined ? "" : "has-error"}`}>
+                                <label>{translate('task.task_management.detail_emp_point')} (<span style={{ color: "red" }}>*</span>)</label>
+                                <input
+                                    className="form-control"
+                                    type="number"
+                                    name="point"
+                                    placeholder={translate('task.task_management.enter_emp_point')}
+                                    onChange={this.handleChangePoint}
+                                    value={this.checkNullUndefined(point) ? point : ''}
+                                    disabled={disabled}
+                                />
+                                <ErrorLabel content={errorOnPoint} />
+                            </div>
+                        </fieldset>
+
 
                         {(evaluations && evaluations.results.length !== 0) ?
-                            <div style={{ lineHeight: 2.8 }}>
-                                <strong>{translate('task.task_management.detail_auto_point')}: &nbsp;
-                                                    <a style={{ cursor: "pointer" }} onClick={() => this.handleShowAutomaticPointInfo()}>
-                                        {this.checkNullUndefined(automaticPoint) ? automaticPoint : translate('task.task_management.detail_not_calc_auto_point')}
-                                    </a>
-                                </strong>
-                                {
-                                    evaluations.results.map((res, index) => {
-                                        if (res.role === "Responsible") {
-                                            return <div key={index} >
-                                                <span style={{ fontWeight: "bold" }}>{translate('task.task_management.detail_emp_point_of')} {res.employee.name}</span>:&nbsp;&nbsp;&nbsp;{res.employeePoint}
-                                            </div>
-                                        }
-                                    })
-                                }
-                            </div> : <div><p style={{ color: "red", fontWeight: "bold" }}>{translate('task.task_management.responsible_not_eval')} </p></div>
+                            <fieldset className="scheduler-border">
+                                <legend className="scheduler-border">{translate('task.task_management.auto_point_field')}</legend>
+                                <div style={{ lineHeight: 2.8 }}>
+                                    <strong>{translate('task.task_management.detail_auto_point')}: &nbsp;
+                                                        <a style={{ cursor: "pointer" }} onClick={() => this.handleShowAutomaticPointInfo()}>
+                                            {this.checkNullUndefined(automaticPoint) ? automaticPoint : translate('task.task_management.detail_not_calc_auto_point')}
+                                        </a>
+                                    </strong>
+                                    {
+                                        evaluations.results.map((res, index) => {
+                                            if (res.role === "Responsible") {
+                                                return <div key={index} >
+                                                    <span style={{ fontWeight: "bold" }}>{translate('task.task_management.detail_emp_point_of')} {res.employee.name}</span>:&nbsp;&nbsp;&nbsp;{res.employeePoint}
+                                                </div>
+                                            }
+                                        })
+                                    }
+                                </div>
+                            </fieldset> : <div><p style={{ color: "red", fontWeight: "bold" }}>{translate('task.task_management.responsible_not_eval')} </p></div>
+                            
                         }
 
                         {/* Thông tin công việc */}
-                        <br/>
+                        <br />
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('task.task_management.info_eval_month')}</legend>
                             <div style={{ lineHeight: 2.8 }}>
                                 {/* % tiến độ */}
                                 <div><span style={{ fontWeight: "bold" }}>{translate('task.task_management.detail_progress')}:&nbsp;&nbsp;&nbsp;</span>{task && task.progress}%</div>
-                                
+
                                 {/* Các thông tin khác */}
                                 {
                                     evaluations ?
@@ -359,11 +464,12 @@ class EvaluateByConsultedEmployee extends Component {
 }
 
 const mapState = (state) => {
-    const { tasks, performtasks } = state;
-    return { tasks, performtasks };
+    const { tasks, performtasks, KPIPersonalManager, user } = state;
+    return { tasks, performtasks, KPIPersonalManager, user };
 }
 const getState = {
     evaluateTaskByConsultedEmployees: performTaskAction.evaluateTaskByConsultedEmployees,
+    getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
 }
 
 const evaluateByConsultedEmployee = connect(mapState, getState)(withTranslate(EvaluateByConsultedEmployee));

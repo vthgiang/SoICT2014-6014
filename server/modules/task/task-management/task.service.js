@@ -145,8 +145,8 @@ exports.getTaskById = async (id, userId) => {
     var superTask = await Task.findById(id)
         .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator parent" })
         .populate("evaluations.results.employee")
-        .populate("evaluations.kpis.employee")
-        .populate("evaluations.kpis.kpis")
+        .populate("evaluations.results.organizationalUnit")
+        .populate("evaluations.results.kpis.kpis")
 
     var task = await Task.findById(id).populate([
         { path: "parent", select: "name" },
@@ -154,8 +154,8 @@ exports.getTaskById = async (id, userId) => {
         { path: "organizationalUnit", model: OrganizationalUnit },
         { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
-        { path: "evaluations.kpis.employee", select: "name email _id" },
-        { path: "evaluations.kpis.kpis" },
+        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+        { path: "evaluations.results.kpis"},
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },

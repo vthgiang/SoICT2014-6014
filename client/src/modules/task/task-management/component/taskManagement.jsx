@@ -705,6 +705,7 @@ class TaskManagement extends Component {
                     {
                         currentTaskId !== undefined &&
                         <ModalPerform
+                            units={units}
                             id={currentTaskId}
                         />
                     }
