@@ -178,9 +178,9 @@ exports.searchAnnualLeaves = async (params, company) => {
     };
     var totalList = await AnnualLeave.count(keySearch);
     var listAnnualLeaves = await AnnualLeave.find(keySearch).populate({
-            path: 'employee',
-            model: Employee
-        })
+        path: 'employee',
+        model: Employee
+    })
         .sort({
             'createdAt': 'desc'
         }).skip(params.page).limit(params.limit);
