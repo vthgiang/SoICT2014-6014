@@ -65,7 +65,7 @@ class ExportExcel extends Component {
                                 return arr;
                             });
                             for (let count = 0; count < j; count++) {
-                                arrHeader[count] = arrHeader[j];
+                                arrHeader[count] = arrHeader[j].map(arr => { return { key: arr.key, value: arr.value } });
                             }
                         };
 
