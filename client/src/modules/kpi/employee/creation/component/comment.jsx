@@ -313,7 +313,9 @@ class Comment extends Component {
         var comments
         var minRows = 3, maxRows = 20
         const { editComment, editChildComment, showChildComment, currentUser, newCommentEdited, newChildCommentEdited, showModalDelete, deleteFile, childComment } = this.state
-        const { currentKPI, auth, translate } = this.props
+        const {  auth, translate } = this.props
+        const { currentKPI } = this.props
+        console.log(currentKPI)
         comments = currentKPI?.comments
         return (
             <React.Fragment>
@@ -563,8 +565,8 @@ class Comment extends Component {
 }
 
 function mapState(state) {
-    const { auth, currentKPI } = state;
-    return { auth, currentKPI };
+    const { auth } = state;
+    return { auth };
 }
 const actionCreators = {
     editComment: createKpiSetActions.editComment,

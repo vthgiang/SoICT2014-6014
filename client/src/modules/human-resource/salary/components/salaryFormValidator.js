@@ -10,7 +10,12 @@ export const SalaryFormValidator = {
     validateMoreMoneySalary
 
 }
-// Function kiểm tra mã nhân viên
+
+/**
+ * Function kiểm tra mã nhân viên
+ * @param {*} value : Giá trị mã nhân viên
+ * @param {*} translate : props song ngữ
+ */
 function validateEmployeeNumber(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
@@ -20,7 +25,12 @@ function validateEmployeeNumber(value, translate) {
     }
     return msg;
 }
-// Function kiểm tra tháng lương 
+
+/**
+ * Function kiểm tra tháng lương
+ * @param {*} value : Giá trị tháng lương
+ * @param {*} translate : props song ngữ
+ */
 function validateMonthSalary(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
@@ -28,7 +38,12 @@ function validateMonthSalary(value, translate) {
     }
     return msg;
 }
-// Function kiểm tra tiền lương chính
+
+/**
+ * Function kiểm tra tiền lương chính
+ * @param {*} value : Giá trị tiền lương chính
+ * @param {*} translate : props song ngữ
+ */
 function validateMainSalary(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
@@ -36,7 +51,12 @@ function validateMainSalary(value, translate) {
     }
     return msg;
 }
-// Function kiểm tra tên lương thưởng khác
+
+/**
+ * Function kiểm tra tên lương thưởng khác
+ * @param {*} value : Giá trị tên lương thưởng khác
+ * @param {*} translate : props song ngữ
+ */
 function validateNameSalary(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
@@ -44,7 +64,12 @@ function validateNameSalary(value, translate) {
     }
     return msg;
 }
-// Function kiểm tra tiền lương thưởng khác
+
+/**
+ * Function kiểm tra tiền lương thưởng khác
+ * @param {*} value : Giá trị tiền lương thưởng khác
+ * @param {*} translate : props song ngữ
+ */
 function validateMoreMoneySalary(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {

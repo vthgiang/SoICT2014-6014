@@ -135,10 +135,11 @@ class ImportFileExcel extends Component {
     }
 
     render() {
+        const { translate } = this.props;
         const { disabled = false } = this.props;
         return (
             <React.Fragment>
-                <label>File excel cần import</label>
+                <label>{translate('human_resource.choose_file')}</label>
                 <input type="file" className="form-control"
                     accept=".xlms,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                     onChange={this.handleChangeFileImport} disabled={disabled} />

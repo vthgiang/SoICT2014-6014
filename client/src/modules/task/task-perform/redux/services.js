@@ -39,6 +39,8 @@ export const performTaskService = {
     editTaskByResponsibleEmployees,
     editStatusOfTask,
     editArchivedOfTask,
+    editDocument,
+    deleteDocument,
 
     evaluateTaskByAccountableEmployees,
     evaluateTaskByConsultedEmployees,
@@ -393,14 +395,14 @@ function editArchivedOfTask(taskId) {
 * @param {*} status trang thai muon cap nhat
 */
 function editStatusOfTask(taskId, status) {
-   return sendRequest({
-       url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}`,
-       method: 'POST',
-       data: {
-           status: status,
-           type: 'edit_status'
-       }
-   }, false, true, 'task.task_management');
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}`,
+        method: 'POST',
+        data: {
+            status: status,
+            type: 'edit_status'
+        }
+    }, false, true, 'task.task_management');
 }
 
 /**
@@ -487,9 +489,30 @@ function evaluateTaskByAccountableEmployees(data, taskId) {
 /**
  * Delete file of task
  */
-function deleteFileTask(fileId, taskId) {
+function deleteFileTask(fileId, documentId, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/files/${fileId}`,
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/documents/${documentId}/files/${fileId}`,
         method: 'DELETE',
     }, true, true, 'task.task_perform');
 }
+/**
+ * Delete document of task
+ */
+function deleteDocument(documentId, taskId) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/documents/${documentId}`,
+        method: 'DELETE',
+    }, true, true, 'task.task_perform');
+}
+/**
+ * Edit document of task
+ */
+function editDocument(documentId, taskId, data) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/documents/${documentId}`,
+        data: data,
+        method: 'PATCH',
+    }, true, true, 'task.task_perform');
+}
+
+

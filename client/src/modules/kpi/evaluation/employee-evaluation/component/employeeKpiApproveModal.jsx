@@ -6,6 +6,7 @@ import { DialogModal, ErrorLabel, DatePicker } from '../../../../../common-compo
 import { withTranslate } from 'react-redux-multilingual';
 import { getStorage } from '../../../../../config';
 import { EmployeeKpiComment } from './employeeKpiComment';
+import { Comment } from '../../../employee/creation/component/comment'
 class EmployeeKpiApproveModal extends Component {
     constructor(props) {
         let idUser = getStorage("userId");
@@ -332,7 +333,7 @@ class EmployeeKpiApproveModal extends Component {
                     </div>
                     <div className="row" style={{ display: 'flex', flex: 'no-wrap', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                         <div className="col-xs-12 col-sm-12 col-md-6">
-                            <EmployeeKpiComment currentKPI={kpimembers.currentKPI} />
+                            <Comment currentKPI={kpimembers.currentKPI} />
                         </div>
                     </div>
                 </DialogModal>

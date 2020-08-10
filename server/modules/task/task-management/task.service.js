@@ -161,7 +161,7 @@ exports.getTaskById = async (id, userId) => {
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-        { path: "files.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
     ])
     if (!task) {
         return {
