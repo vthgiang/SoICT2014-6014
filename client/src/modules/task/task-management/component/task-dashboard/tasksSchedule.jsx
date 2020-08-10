@@ -198,13 +198,13 @@ class TasksSchedule extends Component {
             endTime = new Date(inprocessTasks[i].endDate);
 
             if (currentTime > endTime && inprocessTasks[i].progress < 100) {
-              color = "#DD4B39"; // not archived
+              color = "#DD4B39"; // not achieved
             }
             else {
               workingDayMin = (endTime - startTime) * inprocessTasks[i].progress / 100;
               let dayFromStartDate = currentTime - startTime;
               let timeOver = workingDayMin - dayFromStartDate;
-              if (timeOver >= 0) color = "#3C8DBC"; // In time or on time
+              if (timeOver >= 0) color = "#00A65A"; // In time or on time
               else {
                 color = "#F0D83A"; // delay
               }
@@ -306,14 +306,23 @@ class TasksSchedule extends Component {
 
   handleItemClick = async (itemId) => {
     let { tasks } = this.props;
-    let taskList, inprocessTasks;
+    var taskList, inprocessTasks;
 
     if (tasks) {
+      // if (this.props.TaskOrganizationUnitDashboard) {
+      //   taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
+      //   inprocessTasks = taskList && taskList.filter(task => task.status === "Inprocess");
+      // }
+      // else inprocessTasks = tasks.responsibleTasks;
+
       if (this.props.TaskOrganizationUnitDashboard) {
         taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
-        inprocessTasks = taskList && taskList.filter(task => task.status === "Inprocess");
+        inprocessTasks = taskList && taskList.filter(task => (task.status === "Inprocess" && task.isArchived === false));
       }
-      else inprocessTasks = tasks.responsibleTasks;
+      else {
+        taskList = tasks && tasks.responsibleTasks;
+        inprocessTasks = taskList && taskList.filter(task => (task.status === "Inprocess" && task.isArchived === false));
+      }
     }
 
     let id = inprocessTasks[itemId - 1]._id;
