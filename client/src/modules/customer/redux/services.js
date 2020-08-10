@@ -8,6 +8,8 @@ export const CustomerServices = {
 
     // Customer group
     getCustomerGroups,
+
+    getLocations
 };
 
 function getCustomers(params) {
@@ -31,5 +33,12 @@ function getCustomerGroups(params) {
         url: `${ LOCAL_SERVER_API }/customer/group`,
         method: 'GET',
         params,
+    }, false, true, 'customer');
+}
+
+function getLocations() {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/customer/location`,
+        method: 'GET'
     }, false, true, 'customer');
 }

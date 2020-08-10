@@ -13,7 +13,8 @@ class ModalPerform extends Component {
 
     render() {
         var task;
-        const { tasks} = this.props; 
+        const { tasks } = this.props; 
+        const { units } = this.props; 
         
         if (typeof tasks.task !== 'undefined' && tasks.task !== null) task = tasks.task;
         
@@ -28,6 +29,7 @@ class ModalPerform extends Component {
                     hasSaveButton={false}
                 >
                     <TaskComponent 
+                        units={units}
                         id={this.props.id} 
                     />
                 </DialogModal>

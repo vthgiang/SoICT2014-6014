@@ -14,7 +14,7 @@ class ImportFileExcel extends Component {
     handleChangeFileImport = (e) => {
         let { configData } = this.props;
         let sheets = configData.sheets.value;
-        let rowHeader = configData.rowHeader.value;
+        let rowHeader;
         let file = e.target.files[0];
 
         if (file !== undefined) {
@@ -36,6 +36,11 @@ class ImportFileExcel extends Component {
                     if (key !== 'sheets' && key !== 'rowHeader' && key !== 'file') {
                         let data = configData[key];
                         data = data.value;
+                        if (Array.isArray(data)) {
+                            data = data.map(x => x.toString());
+                        } else {
+                            data = data.toString();
+                        }
                         indexKeyImport = { ...indexKeyImport, [key]: data }
                     }
                 }
@@ -43,7 +48,7 @@ class ImportFileExcel extends Component {
                 sheet_lists.length !== 0 && sheet_lists.forEach(x => {
                     let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: false, defval: null });
                     // Lấy index của các tiều đề cột mà người dùng muốn import
-                    for (let i = 0; i < Number(rowHeader); i++) {
+                    for (let i = 0; i < data.length; i++) {
                         data[i].forEach((x, index) => {
                             if (x !== null) {
                                 for (let key in configData) {
@@ -76,6 +81,22 @@ class ImportFileExcel extends Component {
                                 }
                             }
                         });
+                        let done = true;
+                        for (let key in indexKeyImport) {
+                            if (Array.isArray(indexKeyImport[key])) {
+                                indexKeyImport[key].forEach(y => {
+                                    if (typeof y !== 'number') {
+                                        done = false;
+                                    }
+                                })
+                            } else if (typeof indexKeyImport[key] !== 'number') {
+                                done = false;
+                            }
+                        };
+                        if (done) {
+                            rowHeader = i + 1;
+                            break;
+                        }
                     }
 
                     // Convert dữ liệu thành dạng array json theo key trong configData

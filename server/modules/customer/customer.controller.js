@@ -102,3 +102,12 @@ exports.getCustomerLiabilities = async(req, res) => {
         })
     }
 };
+
+exports.getLocations  = async(req, res) => {
+    const locations = await CustomerService.getLocations();
+    res.status(200).json({
+        success: true,
+        messages: ['get_location_success'],
+        content: locations
+    });
+};

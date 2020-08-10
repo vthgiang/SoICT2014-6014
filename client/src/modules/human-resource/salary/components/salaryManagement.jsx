@@ -203,24 +203,13 @@ class SalaryManagement extends Component {
                     tables: [
                         {
                             tableName: "Bảng lương 1",
-                            merges: [{
-                                key: "other",
-                                columnName: "Lương thưởng khác",
-                                keyMerge: 'bonus0',
-                                colspan: 2
-                            },
-                            {
-                                key: "other2",
-                                columnName: "Lương thưởng khác",
-                                keyMerge: 'status',
-                                colspan: 2
-                            }, {
-                                key: "other3",
-                                columnName: "Lương thưởng khác",
-                                keyMerge: 'other2',
-                                colspan: 4
-                            }],
-                            rowHeader: 3,
+                            // merges: [{
+                            //     key: "other",
+                            //     columnName: "Lương thưởng khác",
+                            //     keyMerge: 'bonus0',
+                            //     colspan: 2
+                            // }],
+                            // rowHeader: 3,
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "month", value: "Tháng" },
