@@ -1460,8 +1460,8 @@ class ActionTab extends Component {
                                                     <React.Fragment>
                                                         <div>
                                                             <ContentMaker
-                                                                inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
-                                                                styletext={{ marginTop: "15px" }}
+                                                                inputCssClass="text-input-file-level1" controlCssClass="tool-level2 row"
+                                                                // styletext={{ marginTop: "15px" }}
                                                                 onFilesChange={this.onEditFileTask}
                                                                 onFilesError={this.onFilesError}
                                                                 files={fileTaskEdited.files}
