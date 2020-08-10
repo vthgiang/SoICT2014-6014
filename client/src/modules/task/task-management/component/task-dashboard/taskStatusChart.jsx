@@ -3,8 +3,7 @@ import { connect } from 'react-redux';
 
 import { taskManagementActions } from '../../redux/actions';
 
-import { SelectBox, SelectMulti } from '../../../../../common-components/index';
-import { DatePicker } from '../../../../../common-components';
+import { SelectBox } from '../../../../../common-components/index';
 
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -18,9 +17,6 @@ class TaskStatusChart extends Component {
         super(props);
 
         let { translate } = this.props;
-        let currentDate = new Date();
-        let currentYear = currentDate.getFullYear();
-        let currentMonth = currentDate.getMonth();
 
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
         this.ROLE = { RESPONSIBLE: 1, ACCOUNTABLE: 2, CONSULTED: 3, INFORMED: 4, CREATOR: 5 };
@@ -57,21 +53,13 @@ class TaskStatusChart extends Component {
             organizationUnitTasks: null,
         }
 
-        this.INFO_SEARCH = {
-            role: this.ROLE.RESPONSIBLE,
-            currentMonth: currentYear + '-' + (currentMonth + 1),
-            nextMonth: currentYear + '-' + (currentMonth + 2)
-        }
-
         this.state = {
             aPeriodOfTime: true,
             userId: localStorage.getItem("userId"),
 
             dataStatus: this.DATA_STATUS.QUERYING,
 
-            role: this.INFO_SEARCH.role,
-            currentMonth: this.INFO_SEARCH.currentMonth,
-            nextMonth: this.INFO_SEARCH.nextMonth,
+            role: this.ROLE.RESPONSIBLE,
 
             willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
             callAction: false
@@ -82,9 +70,8 @@ class TaskStatusChart extends Component {
     shouldComponentUpdate = async (nextProps, nextState) => {
         if (
             nextProps.callAction !== this.state.callAction
-            || nextState.currentMonth !== this.state.currentMonth
-            || nextState.nextMonth !== this.state.nextMonth
-            || nextProps.startMonth !== this.props.startMonth || nextProps.endMonth !== this.props.endMonth
+            || nextProps.startMonth !== this.props.startMonth
+            || nextProps.endMonth !== this.props.endMonth
         ) {
 
             if (this.props.TaskOrganizationUnitDashboard && this.props.units.length && this.props.startMonth && this.props.endMonth) {
@@ -94,8 +81,8 @@ class TaskStatusChart extends Component {
                 await this.setState(state => {
                     return {
                         ...state,
-                        currentMonth: this.props.startMonth,
-                        nextMonth: this.props.endMonth,
+                        startMonth: this.props.startMonth,
+                        endMonth: this.props.endMonth,
                         
                     }
                 })
@@ -103,11 +90,11 @@ class TaskStatusChart extends Component {
                 await this.props.getTaskInOrganizationUnitByMonth(idsUnit, nextProps.startMonth, nextProps.endMonth);
             } else {
             
-                await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.currentMonth, nextState.nextMonth, null, null, this.state.aPeriodOfTime);
-                await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.currentMonth, nextState.nextMonth, this.state.aPeriodOfTime);
-                await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.currentMonth, nextState.nextMonth, this.state.aPeriodOfTime);
-                await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.currentMonth, nextState.nextMonth, this.state.aPeriodOfTime);
-                await this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextState.currentMonth, nextState.nextMonth, this.state.aPeriodOfTime);
+                await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
+                await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
+                await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
+                await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTimeh);
+                await this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
             }
             await this.setState(state => {
                 return {
@@ -132,19 +119,17 @@ class TaskStatusChart extends Component {
         }
 
         if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-
-
             if (this.props.TaskOrganizationUnitDashboard) { // neu componet duoc goi tu dashboard organization unit
                 let idsUnit = this.props.units ? this.props.units : "[]";
                 console.log("o day dong 132:=======================")
-                await this.props.getTaskInOrganizationUnitByMonth(idsUnit, this.state.currentMonth, this.state.nextMonth);
+                await this.props.getTaskInOrganizationUnitByMonth(idsUnit, nextProps.startMonth, nextProps.endMonth);
             }
             else {
-                await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.currentMonth, this.state.nextMonth, null, null, this.state.aPeriodOfTime);
-                await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.currentMonth, this.state.nextMonth, this.state.aPeriodOfTime);
-                await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.currentMonth, this.state.nextMonth, this.state.aPeriodOfTime);
-                await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.currentMonth, this.state.nextMonth, this.state.aPeriodOfTime);
-                await this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, this.state.currentMonth, this.state.nextMonth, this.state.aPeriodOfTime);
+                await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
+                await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
+                await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
+                await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTimeh);
+                await this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
             }
             await this.setState(state => {
                 return {
@@ -212,10 +197,12 @@ class TaskStatusChart extends Component {
 
     static getDerivedStateFromProps = (nextProps, prevState) => {
 
-        if (nextProps.callAction !== prevState.callAction) {
+        if (nextProps.callAction !== prevState.callAction || nextProps.startMonth !== prevState.startMonth || nextProps.endMonth !== prevState.endMonth) {
             return {
                 ...prevState,
-                callAction: nextProps.callAction
+                callAction: nextProps.callAction,
+                startMonth: nextProps.startMonth,
+                endMonth: nextProps.endMonth
             }
         } else {
             return null
@@ -223,31 +210,10 @@ class TaskStatusChart extends Component {
     }
 
     handleSelectRole = (value) => {
-        this.INFO_SEARCH.role = Number(value[0])
-    }
-
-    handleSelectMonth = (value) => {
-        let nextMonth, currentMonth;
-
-        currentMonth = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
-
-        if (new Number(value.slice(0, 2)) < 12) {
-            nextMonth = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
-        } else {
-            nextMonth = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
-        }
-
-        this.INFO_SEARCH.currentMonth = currentMonth;
-        this.INFO_SEARCH.nextMonth = nextMonth;
-    }
-
-    handleSearchData = async () => {
-        await this.setState(state => {
+        this.setState(state => {
             return {
                 ...state,
-                role: this.INFO_SEARCH.role,
-                currentMonth: this.INFO_SEARCH.currentMonth,
-                nextMonth: this.INFO_SEARCH.nextMonth
+                role: Number(value[0])
             }
         })
     }
@@ -348,45 +314,12 @@ class TaskStatusChart extends Component {
 
     render() {
         const { translate, TaskOrganizationUnitDashboard } = this.props;
-        const { units } = this.props;
-        let d = new Date(),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
-
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        let defaultMonth = [month, year].join('-');
 
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
-                   { !this.props.units &&
-                   <section className="form-inline">
-                        <div className="form-group">
-                            <label>{translate('task.task_management.month')}</label>
-                            <DatePicker
-                                id="monthInStatusTask"
-                                dateFormat="month-year"
-                                value={defaultMonth}
-                                onChange={this.handleSelectMonth}
-                                disabled={false}
-                            />
-                        </div>
-                        {
-                            TaskOrganizationUnitDashboard &&
-                            <div className="form-group">
-                                <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
-                            </div>
-                        }
-                    </section>
-                    }
-
-
                     {!TaskOrganizationUnitDashboard &&
-                        <section className="form-inline">
+                        <section className="form-inline" style={{ textAlign: "right" }}>
                             <div className="form-group">
                                 <label>{translate('task.task_management.role')}</label>
                                 <SelectBox
@@ -399,13 +332,8 @@ class TaskStatusChart extends Component {
                                     value={this.ROLE_SELECTBOX[0].value}
                                 />
                             </div>
-                            <div className="form-group">
-                                <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
-                            </div>
                         </section>
                     }
-
-
 
                     <section ref="chart"></section>
                 </div>

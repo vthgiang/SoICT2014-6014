@@ -86,7 +86,7 @@ exports.getAllEmployeeKpiSetOfAllEmployeeInOrganizationalUnitByMonth = async (re
 /** Khởi tạo KPI cá nhân */
 exports.createEmployeeKpiSet = async (req, res) => {
     try {
-        var employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpiSet(req.body);
+        let employeeKpiSet = await EmployeeKpiSetService.createEmployeeKpiSet(req.body);
 
         await LogInfo(req.user.email, ` create employee kpi set `, req.user.company)
         res.status(200).json({
@@ -108,8 +108,8 @@ exports.createEmployeeKpiSet = async (req, res) => {
 /** Tạo 1 mục tiêu KPI mới */
 exports.createEmployeeKpi = async (req, res) => {
     try {
-
-        var employeeKpi = await EmployeeKpiSetService.createEmployeeKpi(req.body);
+        let employeeKpi = await EmployeeKpiSetService.createEmployeeKpi(req.body);
+        
         await LogInfo(req.user.email, ` create employee kpi `, req.user.company)
         res.status(200).json({
             success: true,

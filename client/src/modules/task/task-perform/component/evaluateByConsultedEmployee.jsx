@@ -121,7 +121,7 @@ class EvaluateByConsultedEmployee extends Component {
                 }
 
                 point = res.employeePoint ? res.employeePoint : undefined;
-            
+
             }
             // date = this.formatDate(evaluations.date);
             progress = evaluations.progress;
@@ -314,8 +314,8 @@ class EvaluateByConsultedEmployee extends Component {
         let { task, perform, role } = this.props;
 
         let listUnits = [];
-        if ( user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0 ) {
-            listUnits = user.organizationalUnitsOfUser.map( x => {return {value: x._id, text: x.name}});
+        if (user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
+            listUnits = user.organizationalUnitsOfUser.map(x => { return { value: x._id, text: x.name } });
         }
 
         let checkNoteMonth;
@@ -349,7 +349,7 @@ class EvaluateByConsultedEmployee extends Component {
 
                             {/* Đơn vị đánh giá */}
                             <div className="form-group">
-                                <label>{translate('task.task_management.department')}:</label>
+                                <label>{translate('task.task_management.unit_evaluate')}</label>
                                 {
                                     <SelectBox
                                         id={`select-organizational-unit-evaluate-${perform}-${role}`}
@@ -366,7 +366,7 @@ class EvaluateByConsultedEmployee extends Component {
 
                             {/* Liên kết KPI */}
                             <div className="form-group">
-                                <label>{translate('task.task_management.detail_kpi')}:</label>
+                                <label>{translate('task.task_management.detail_kpi')}</label>
                                 {
                                     <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                         id={`select-kpi-personal-evaluate-${perform}-${role}`}
@@ -397,9 +397,9 @@ class EvaluateByConsultedEmployee extends Component {
                         </fieldset>
 
                         {/* Thông tin điểm tự động */}
-                        {(evaluations && evaluations.results.length !== 0) ?
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{translate('task.task_management.auto_point_field')}</legend>
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate('task.task_management.auto_point_field')}</legend>
+                            {(evaluations && evaluations.results.length !== 0) ?
                                 <div style={{ lineHeight: 2.8 }}>
                                     <strong>{translate('task.task_management.detail_auto_point')}: &nbsp;
                                                         <a style={{ cursor: "pointer" }} onClick={() => this.handleShowAutomaticPointInfo()}>
@@ -415,10 +415,9 @@ class EvaluateByConsultedEmployee extends Component {
                                             }
                                         })
                                     }
-                                </div>
-                            </fieldset> : <div><p style={{ color: "red", fontWeight: "bold" }}>{translate('task.task_management.responsible_not_eval')} </p></div>
-                            
-                        }
+                                </div> : <div><p style={{ color: "red", fontWeight: "bold" }}>{translate('task.task_management.responsible_not_eval')} </p></div>
+                            }
+                        </fieldset>
 
                         {/* Thông tin công việc */}
                         <br />

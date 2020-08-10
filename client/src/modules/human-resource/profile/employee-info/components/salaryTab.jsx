@@ -7,22 +7,32 @@ class SalaryTab extends Component {
         super(props);
         this.state = {};
     }
-    // Function format dữ liệu Date thành string
+
+    /**
+     * Function format dữ liệu Date thành string
+     * @param {*} date : Ngày cần format
+     * @param {*} monthYear : true trả về dạng ngày tháng, false trả về ngày tháng năm
+     */
     formatDate(date, monthYear = false) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
 
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else return [day, month, year].join('-');
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        }
+        return date;
+
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -35,10 +45,15 @@ class SalaryTab extends Component {
             return null;
         }
     }
+
     render() {
-        var formater = new Intl.NumberFormat();
-        const { id, translate } = this.props;
+        const { translate } = this.props;
+
+        const { id } = this.props;
+
         const { annualLeaves, salaries } = this.state;
+
+        let formater = new Intl.NumberFormat();
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -47,13 +62,13 @@ class SalaryTab extends Component {
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
-                                    <th>{translate('table.month')}</th>
-                                    <th>{translate('salary_employee.main_salary')}</th>
-                                    <th>{translate('table.total_salary')}</th>
+                                    <th>{translate('human_resource.month')}</th>
+                                    <th>{translate('human_resource.salary.table.main_salary')}</th>
+                                    <th>{translate('human_resource.salary.table.total_salary')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof salaries !== 'undefined' && salaries.length !== 0) &&
+                                {salaries && salaries.length !== 0 &&
                                     salaries.map((x, index) => {
                                         if (x.bonus.length !== 0) {
                                             var total = 0;
@@ -67,7 +82,7 @@ class SalaryTab extends Component {
                                                 <td>{formater.format(parseInt(x.mainSalary))} {x.unit}</td>
                                                 <td>
                                                     {
-                                                        (typeof x.bonus === 'undefined' || x.bonus.length === 0) ?
+                                                        (!x.bonus || x.bonus.length === 0) ?
                                                             formater.format(parseInt(x.mainSalary)) :
                                                             formater.format(total + parseInt(x.mainSalary))
                                                     } {x.unit}
@@ -79,7 +94,7 @@ class SalaryTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof salaries === 'undefined' || salaries.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!salaries || salaries.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                     <fieldset className="scheduler-border">

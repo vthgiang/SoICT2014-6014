@@ -137,7 +137,8 @@ class ExportExcel extends Component {
     }
 
     render() {
-        const { buttonName = "Xuất Báo cáo", style = {}, className = "btn btn-primary pull-right", title = "" } = this.props;
+        const { translate } = this.props;
+        const { buttonName = translate('human_resource.name_button_export'), style = {}, className = "btn btn-primary pull-right", title = "" } = this.props;
         return (
             <React.Fragment>
                 <button type="button" style={style} className={className} title={title} onClick={this.handleExportExcel} >{buttonName}</button>

@@ -966,7 +966,7 @@ class EvaluateByResponsibleEmployee extends Component {
                                     </div>
                                     <div className="col-md-6">
                                         <div className={`form-group ${errorOnDate === undefined ? "" : "has-error"}`}>
-                                            <label>{translate('task.task_management.eval_to')}:<span className="text-red">*</span></label>
+                                            <label>{translate('task.task_management.eval_to')}<span className="text-red">*</span></label>
                                             <DatePicker
                                                 id={`create_date_${id}_${perform}`}
                                                 value={date}
@@ -981,7 +981,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
                                 {/* Đơn vị đánh giá */}
                                 <div className="form-group">
-                                    <label>{translate('task.task_management.department')}:</label>
+                                    <label>{translate('task.task_management.unit_evaluate')}</label>
                                     {
                                         <SelectBox 
                                             id={`select-organizational-unit-evaluate-${perform}-${role}`}
@@ -998,7 +998,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
                                 {/* Liên kết KPI */}
                                 <div className="form-group">
-                                    <label>{translate('task.task_management.detail_kpi')}:</label>
+                                    <label>{translate('task.task_management.detail_kpi')}</label>
                                     {
                                         <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                             id={`select-kpi-personal-evaluate-${perform}-${role}`}
