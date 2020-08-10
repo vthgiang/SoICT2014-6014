@@ -66,6 +66,7 @@ class EvaluateByAccountableEmployee extends Component {
                 errorInfo: {},
                 errorApprovedPoint: {},
                 errorContribute: {},
+                errSumContribution: undefined,
                 errorOnAccountablePoint: undefined,
                 errorOnAccountableContribution: undefined,
                 errorOnMyPoint: undefined
@@ -617,7 +618,14 @@ class EvaluateByAccountableEmployee extends Component {
         if (value < 0 || value > 100) {
             msg = translate('task.task_perform.modal_approve_task.err_range');
         }
-        else if (sum > 100) {
+        return msg;
+    }
+
+    validateSumContribute = () => {
+        let { translate } = this.props;
+        let msg = undefined;
+        let sum = this.calcSumContribution();
+        if (sum > 100) {
             msg = translate('task.task_perform.modal_approve_task.err_contribute');
         }
         return msg;
@@ -670,6 +678,7 @@ class EvaluateByAccountableEmployee extends Component {
             state.errorContribute[`accountable${id}`] = this.validateEvaluateContribute(value);
             return {
                 ...state,
+                errSumContribution: this.validateSumContribute(),
             }
         })
     }
@@ -704,8 +713,10 @@ class EvaluateByAccountableEmployee extends Component {
             state.errorContribute[`responsible${id}`] = this.validateEvaluateContribute(value);
             return {
                 ...state,
+                errSumContribution: this.validateSumContribute(),
             }
         })
+        console.log('err', this.state.errSumContribution);
     }
 
     handleChangeApprovedPointForConsulted = async (e, id) => {
@@ -738,6 +749,7 @@ class EvaluateByAccountableEmployee extends Component {
             state.errorContribute[`consulted${id}`] = this.validateEvaluateContribute(value);
             return {
                 ...state,
+                errSumContribution: this.validateSumContribute(),
             }
         })
     }
@@ -1039,20 +1051,33 @@ class EvaluateByAccountableEmployee extends Component {
     // hàm validate submit
     isFormValidated = () => {
         const { errorOnDate, errorOnPoint, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint,
-            errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnNumberInfo, errorOnTextInfo } = this.state;
+            errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnNumberInfo, errorOnTextInfo, errorApprovedPoint, errorContribute, errSumContribution } = this.state;
         let { info, results, empPoint, progress, } = this.state;
 
-        let check = true;
-        for (let i in info) {
-            if (info[i].value === undefined) {
-                check = false;
+        let checkErrorContribute = true;
+        let checkErrorApprovedPoint = true;
+
+        if( Object.keys(errorApprovedPoint).length === 0) {
+
+        }
+        for (let i in errorApprovedPoint) {
+            if (errorApprovedPoint[i]) {
+                checkErrorApprovedPoint = false;
                 break;
             }
         }
-        return (errorOnDate === undefined && errorOnPoint === undefined && errorOnProgress === undefined
-            && errorOnInfoDate === undefined && errorOnAccountablePoint === undefined
-            && errorOnAccountableContribution === undefined && errorOnMyPoint === undefined
-            && errorOnInfoBoolean === undefined && errorOnNumberInfo === undefined && errorOnTextInfo === undefined) ? true : false;
+
+        for (let i in errorContribute) {
+            if (errorContribute[i]) {
+                checkErrorContribute = false;
+                break;
+            }
+        }
+
+        return checkErrorApprovedPoint && checkErrorContribute && (errorOnDate === undefined && errorOnPoint === undefined 
+            && errorOnInfoDate === undefined && errorOnAccountablePoint === undefined && errorOnProgress === undefined
+            && errorOnAccountableContribution === undefined && errorOnMyPoint === undefined && errSumContribution === undefined
+            && errorOnInfoBoolean === undefined && errorOnNumberInfo === undefined && errorOnTextInfo === undefined ) ? true : false;
     }
 
     // hàm hiển thị modal show autopoint
@@ -1213,9 +1238,10 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
     render() {
+        console.log('state', this.state);
         const { translate, user, KPIPersonalManager } = this.props;
         const { task, date, status, oldAutoPoint, autoPoint, errorOnDate, showAutoPointInfo, dentaDate, prevDate, info, results, empPoint, progress,
-            errorInfo, errorApprovedPoint, errorContribute, indexReRender, unit, kpi } = this.state;
+            errorInfo, errorApprovedPoint, errorContribute, errSumContribution, indexReRender, unit, kpi } = this.state;
         const { id, perform, role } = this.props;
 
         let listKpi = [];
@@ -1292,7 +1318,7 @@ class EvaluateByAccountableEmployee extends Component {
                                     </div>
                                     {/* ngày đánh giá */}
                                     <div className={`form-group col-md-6 ${errorOnDate === undefined ? "" : "has-error"}`}>
-                                        <label>{translate('task.task_management.eval_to')}:<span className="text-red">*</span></label>
+                                        <label>{translate('task.task_management.eval_to')}<span className="text-red">*</span></label>
                                         <DatePicker
                                             id={`create_date_${perform}-${id}`}
                                             value={date}
@@ -1305,7 +1331,7 @@ class EvaluateByAccountableEmployee extends Component {
                                 {
                                     // Trạng thái công việc
                                     <div className="form-group">
-                                        <label>{translate('task.task_management.detail_status')}:</label>
+                                        <label>{translate('task.task_management.detail_status')}</label>
                                         {
                                             <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                                 id={`select-priority-task-${perform}-${role}`}
@@ -1322,7 +1348,7 @@ class EvaluateByAccountableEmployee extends Component {
                                 }
                                 {/* Đơn vị đánh giá */}
                                 <div className="form-group">
-                                    <label>{translate('task.task_management.department')}:</label>
+                                    <label>{translate('task.task_management.unit_evaluate')}</label>
                                     {
                                         <SelectBox 
                                             id={`select-organizational-unit-evaluate-${perform}-${role}`}
@@ -1339,7 +1365,7 @@ class EvaluateByAccountableEmployee extends Component {
 
                                 {/* Liên kết KPI */}
                                 <div className="form-group">
-                                    <label>{translate('task.task_management.detail_kpi')}:</label>
+                                    <label>{translate('task.task_management.detail_kpi')}</label>
                                     {
                                         <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                             id={`select-kpi-personal-evaluate-${perform}-${role}`}
@@ -1431,11 +1457,16 @@ class EvaluateByAccountableEmployee extends Component {
                                     {
                                         <table className="table table-striped table-hover">
                                             <tr>
-                                                <th>{translate('task.task_management.name_employee')}</th>
-                                                <th>{translate('task.task_management.role_employee')}</th>
-                                                <th>{translate('task.task_management.detail_emp_point')}</th>
-                                                <th>% {translate('task.task_management.contribution')}</th>
-                                                <th>{translate('task.task_management.acc_evaluate')}</th>
+                                                <th><div className="form-group"><label>{translate('task.task_management.name_employee')}</label></div></th>
+                                                <th><div className="form-group"><label>{translate('task.task_management.role_employee')}</label></div></th>
+                                                <th><div className="form-group"><label>{translate('task.task_management.detail_emp_point')}</label></div></th>
+                                                <th> 
+                                                    <div className={`form-group ${errSumContribution === undefined ? "" : "has-error"}`}>
+                                                       <label>% {translate('task.task_management.contribution')}</label>
+                                                       <ErrorLabel content={errSumContribution ? errSumContribution : ''} />
+                                                    </div> 
+                                                </th>
+                                                <th><div className="form-group"><label>{translate('task.task_management.acc_evaluate')}</label></div></th>
                                             </tr>
 
                                             { // Chấm điểm phê duyệt cho người thực hiện
@@ -1540,7 +1571,6 @@ class EvaluateByAccountableEmployee extends Component {
                                                             </td>
                                                         </tr>
                                                     )
-
                                                 )
                                             }
                                         </table>

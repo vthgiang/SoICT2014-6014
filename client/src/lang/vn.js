@@ -1709,6 +1709,10 @@ export default {
                 next: 'Sau',
                 tasks_calendar: 'Lịch công việc chi tiết',
                 model_detail_task_title: 'Thông tin chi tiết công việc',
+                collaborative_tasks: 'Công việc chung',
+                in_time: 'Đúng hạn',
+                delayed_time: 'Trễ hạn',
+                not_achieved: 'Quá hạn',
 
                 err_organizational_unit: 'Đơn vị đã bị xóa',
                 err_name_task: 'Tên đã bị xóa',
@@ -1872,6 +1876,9 @@ export default {
 
                 add_err_special_character: 'Tên không được chứa kí tự đặc biệt',
                 add_err_end_date: 'Ngày kết thúc phải sau ngày bắt đầu',
+
+                unit_evaluate: "Đơn vị tiếp nhận kết quả đánh giá công việc",
+                unit_manage_task: "Đơn vị quản lý công việc",
 
             },
             task_perform: {
