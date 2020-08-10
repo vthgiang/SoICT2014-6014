@@ -112,9 +112,14 @@ class EvaluationModal extends Component {
 
 
     render() {
-        const { translate } = this.props;
+        const { translate, performtasks } = this.props;
         const { evaluationsList, checkEval, checkMonth, showEval, content, evaluation, expire } = this.state;
-        const { task, role, id } = this.props;
+        const { role, id } = this.props;
+
+        let task;
+        if (performtasks.task) {
+            task = performtasks.task;
+        }
 
         let dateParam = this.TODAY;
         let now = new Date();
@@ -224,9 +229,12 @@ class EvaluationModal extends Component {
     }
 }
 
-const mapState = (state) => { }
+const mapState = (state) => {
+    const { performtasks } = state;
+    return { performtasks }
+}
 
 const actionCreators = {};
 
-const connectedEvaluationModal = connect(null, null)(withTranslate(EvaluationModal));
+const connectedEvaluationModal = connect(mapState, actionCreators)(withTranslate(EvaluationModal));
 export { connectedEvaluationModal as EvaluationModal };
