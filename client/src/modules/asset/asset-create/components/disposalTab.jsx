@@ -19,7 +19,7 @@ class DisposalTab extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
@@ -123,7 +123,7 @@ class DisposalTab extends Component {
                             <label htmlFor="disposalDate">Thời gian thanh lý</label>
                             <DatePicker
                                 id={`disposalDate${id}`}
-                                value={disposalDate ? this.formatDate(disposalDate): ''}
+                                value={disposalDate ? this.formatDate(disposalDate) : ''}
                                 onChange={this.handleDisposalDateChange}
                             />
                         </div>
@@ -137,10 +137,10 @@ class DisposalTab extends Component {
                                 style={{ width: "100%" }}
                                 value={disposalType}
                                 items={[
-                                    { value: '', text: '---Chọn hình thức thanh lý---'}, 
-                                    { value: 'Tiêu hủy', text: 'Tiêu hủy'},
-                                    { value: 'Nhượng bán', text: 'Nhượng bán'},
-                                    { value: 'Tặng', text: 'Tặng'},
+                                    { value: '', text: '---Chọn hình thức thanh lý---' },
+                                    { value: 'Tiêu hủy', text: 'Tiêu hủy' },
+                                    { value: 'Nhượng bán', text: 'Nhượng bán' },
+                                    { value: 'Tặng', text: 'Tặng' },
                                 ]}
                                 onChange={this.handleDisposalTypeChange}
                             />
