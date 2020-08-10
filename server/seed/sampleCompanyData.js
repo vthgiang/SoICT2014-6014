@@ -1822,22 +1822,6 @@ const sampleCompanyData = async () => {
     console.log("Khởi tạo xong danh sách vật tư");
 
     console.log("Tạo mẫu dữ liệu khách hàng");
-    const customerLocationData = [
-        {
-            name: "Hà Nội",
-            code: 'HN'
-        },{
-            name: "Thái Bình",
-            code: "TB"
-        },{
-            name: "Đà Nẵng",
-            code: "ĐNa"
-        },{
-            name: "TP. Hồ Chí Minh",
-            code: "SG"
-        }
-    ];
-    const customerLocation = await CustomerLocation.insertMany(customerLocationData);
 
     const customerGroupData = [
         {
@@ -1866,10 +1850,10 @@ const sampleCompanyData = async () => {
             code: 'HN1101',
             phone: '0396629958',
             address: '123 xã Đàn, Phương Liên, Đống Đa',
-            location: customerLocation[0]._id,
+            location: "Hà Nội",
             email: 'ntphuong@gmail.com',
             group: customerGroup[0]._id,
-            birth: '20/10/1995',
+            birth: '2/10/1995',
             gender: 'Nữ',
             loyal: true,
             company: vnist._id
@@ -1878,10 +1862,10 @@ const sampleCompanyData = async () => {
             code: 'HN2497',
             phone: '0396629919',
             address: '223 Đê La Thành',
-            location: customerLocation[0]._id,
+            location: "Hà Nội",
             email: 'ntphuong@gmail.com',
             group: customerGroup[2]._id,
-            birth: '20/10/1995',
+            birth: '2/10/1995',
             gender: 'Nữ',
             loyal: true,
             company: vnist._id
@@ -1890,7 +1874,7 @@ const sampleCompanyData = async () => {
             code: 'HN1111',
             phone: '0396627758',
             address: '123 Cầu Giấy',
-            location: customerLocation[0]._id,
+            location: "Hà Nội",
             email: 'nvthanh@gmail.com',
             group: customerGroup[0]._id,
             birth: '03/10/1991',
@@ -1902,7 +1886,7 @@ const sampleCompanyData = async () => {
             code: 'HN1169',
             phone: '0395223919',
             address: '12 Phạm Ngọc Thạch',
-            location: customerLocation[0]._id,
+            location: "Hà Nội",
             email: 'lcvinh@gmail.com',
             group: customerGroup[1]._id,
             birth: '11/11/1985',
@@ -1914,7 +1898,7 @@ const sampleCompanyData = async () => {
             code: 'HN1256',
             phone: '03977733214',
             address: '11 phố Huế',
-            location: customerLocation[0]._id,
+            location: "Hà Nội",
             email: 'ntle@gmail.com',
             group: customerGroup[0]._id,
             birth: '7/9/1993',
@@ -1926,10 +1910,10 @@ const sampleCompanyData = async () => {
             code: 'HN1995',
             phone: '0396113259',
             address: '110 Lê Đại Hành',
-            location: customerLocation[0]._id,
+            location: "Hà Nội",
             email: 'nvanh@gmail.com',
             group: customerGroup[2]._id,
-            birth: '20/10/1992',
+            birth: '2/10/1992',
             gender: 'Nam',
             loyal: true,
             company: vnist._id
@@ -1938,10 +1922,10 @@ const sampleCompanyData = async () => {
             code: 'HN1998',
             phone: '0396112548',
             address: '123 Khâm Thiên, Đống Đa',
-            location: customerLocation[0]._id,
+            location: "Hà Nội",
             email: 'ntha@gmail.com',
             group: customerGroup[0]._id,
-            birth: '21/7/2000',
+            birth: '2/7/2000',
             gender: 'Nữ',
             loyal: true,
             company: vnist._id

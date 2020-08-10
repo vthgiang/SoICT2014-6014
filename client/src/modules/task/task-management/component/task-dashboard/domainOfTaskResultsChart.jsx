@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { taskManagementActions } from '../../redux/actions';
 
 import { SelectBox } from '../../../../../common-components/index';
-import { DatePicker } from '../../../../../common-components';
 
 import { withTranslate } from 'react-redux-multilingual';
 

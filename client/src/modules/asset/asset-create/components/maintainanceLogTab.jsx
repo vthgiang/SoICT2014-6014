@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { MaintainanceLogAddModal, MaintainanceLogEditModal } from './combinedContent';
 
 class MaintainanceLogTab extends Component {
@@ -16,14 +17,19 @@ class MaintainanceLogTab extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     // Bắt sự kiện click edit phiếu
@@ -47,6 +53,7 @@ class MaintainanceLogTab extends Component {
         })
         this.props.handleAddMaintainance(this.state.maintainanceLogs, data)
     }
+
     // Function chỉnh sửa thông tin bảo trì
     handleEditMaintainance = async (data) => {
         const { maintainanceLogs } = this.state;
@@ -56,6 +63,7 @@ class MaintainanceLogTab extends Component {
         });
         this.props.handleEditMaintainance(this.state.maintainanceLogs, data)
     }
+
     // Function bắt sự kiện xoá thông tin bảo trì
     handleDeleteMaintainance = async (index) => {
         var { maintainanceLogs } = this.state;
@@ -82,16 +90,23 @@ class MaintainanceLogTab extends Component {
 
 
     render() {
-        const { id, translate } = this.props;
-        const { maintainanceLogs } = this.state;
+        const { id } = this.props;
+        const { translate } = this.props;
+        const { maintainanceLogs, currentRow } = this.state;
+
         var formater = new Intl.NumberFormat();
 
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body qlcv">
+                    {/* Lịch sử bảo trì */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">Lịch sử bảo trì</h4></legend>
+
+                        {/* Form thêm thông tin bảo trì */}
                         <MaintainanceLogAddModal handleChange={this.handleAddMaintainance} id={`addMaintainance${id}`} />
+
+                        {/* Bảng phiếu bảo trì */}
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
@@ -107,45 +122,48 @@ class MaintainanceLogTab extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof maintainanceLogs !== 'undefined' && maintainanceLogs.length !== 0) &&
+                                {(maintainanceLogs && maintainanceLogs.length !== 0) &&
                                     maintainanceLogs.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.maintainanceCode}</td>
-                                            <td>{x.createDate ? this.formatDate(x.createDate): ''}</td>
+                                            <td>{x.createDate ? this.formatDate(x.createDate) : ''}</td>
                                             <td>{x.type}</td>
                                             <td>{x.description}</td>
-                                            <td>{x.startDate ? this.formatDate(x.startDate): ''}</td>
-                                            <td>{x.endDate ? this.formatDate(x.endDate): ''}</td>
-                                            <td>{x.expense ? formater.format(parseInt(x.expense)): ''} VNĐ</td>
+                                            <td>{x.startDate ? this.formatDate(x.startDate) : ''}</td>
+                                            <td>{x.endDate ? this.formatDate(x.endDate) : ''}</td>
+                                            <td>{x.expense ? formater.format(parseInt(x.expense)) : ''} VNĐ</td>
                                             <td>{x.status}</td>
                                             <td>
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin phiếu"><i
                                                     className="material-icons">edit</i></a>
                                                 <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteMaintainance(index)}><i className="material-icons"></i></a>
                                             </td>
-                                        </tr>))
+                                        </tr>
+                                    ))
                                 }
                             </tbody>
                         </table>
                         {
-                            (typeof maintainanceLogs === 'undefined' || maintainanceLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!maintainanceLogs || maintainanceLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                 </div>
+
+                {/* Form chỉnh sửa phiếu bảo trì */}
                 {
-                    this.state.currentRow !== undefined &&
+                    currentRow &&
                     <MaintainanceLogEditModal
-                        id={`editMaintainance${this.state.currentRow.index}`}
-                        _id={this.state.currentRow._id}
-                        index={this.state.currentRow.index}
-                        maintainanceCode={this.state.currentRow.maintainanceCode}
-                        createDate={this.state.currentRow.createDate}
-                        type={this.state.currentRow.type}
-                        description={this.state.currentRow.description}
-                        startDate={this.state.currentRow.startDate}
-                        endDate={this.state.currentRow.endDate}
-                        expense={this.state.currentRow.expense}
-                        status={this.state.currentRow.status}
+                        id={`editMaintainance${currentRow.index}`}
+                        _id={currentRow._id}
+                        index={currentRow.index}
+                        maintainanceCode={currentRow.maintainanceCode}
+                        createDate={currentRow.createDate}
+                        type={currentRow.type}
+                        description={currentRow.description}
+                        startDate={currentRow.startDate}
+                        endDate={currentRow.endDate}
+                        expense={currentRow.expense}
+                        status={currentRow.status}
                         handleChange={this.handleEditMaintainance}
                     />
                 }
@@ -156,4 +174,5 @@ class MaintainanceLogTab extends Component {
 
 
 const maintainanceLogTab = connect(null, null)(withTranslate(MaintainanceLogTab));
+
 export { maintainanceLogTab as MaintainanceLogTab };

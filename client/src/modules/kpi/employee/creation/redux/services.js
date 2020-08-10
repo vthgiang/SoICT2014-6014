@@ -22,9 +22,11 @@ export const createKpiSetService = {
     createComment,
     editComment,
     deleteComment,
-    createCommentOfComment,
-    editCommentOfComment,
-    deleteCommentOfComment
+    createChildComment,
+    editChildComment,
+    deleteChildComment,
+    deleteFileComment,
+    deleteFileChildComment
 };
 
 /** Lấy tập KPI cá nhân hiện tại */
@@ -159,7 +161,7 @@ function createComment(setKpiId, data) {
 /**
  * Tạo comment cho kpi set
  */
-function createCommentOfComment(setKpiId, commentId, data) {
+function createChildComment(setKpiId, commentId, data) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/${setKpiId}/comments/${commentId}/child-comments`,
         method: 'POST',
@@ -182,14 +184,14 @@ function editComment(setKpiId, commentId, data) {
  */
 function deleteComment(setKpiId, commentId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/${setKpiId}/comment/${commentId}`,
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/${setKpiId}/comments/${commentId}`,
         method: 'DELETE',
     }, false, true)
 }
 /**
  * Edit comment of comment
  */
-function editCommentOfComment(setKpiId, commentId, childCommentId, data) {
+function editChildComment(setKpiId, commentId, childCommentId, data) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/${setKpiId}/comments/${commentId}/child-comments/${childCommentId}`,
         method: 'PATCH',
@@ -199,9 +201,28 @@ function editCommentOfComment(setKpiId, commentId, childCommentId, data) {
 /**
  * Delete comment of comment
  */
-function deleteCommentOfComment(setKpiId, commentId, childCommentId) {
+function deleteChildComment(setKpiId, commentId, childCommentId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/${setKpiId}/comments/${commentId}/child-comments/${childCommentId}`,
+        method: 'DELETE',
+    }, false, true)
+}
+
+/**
+ * Delete file of comment
+ */
+function deleteFileComment(fileId,commentId, setKpiId) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/${setKpiId}/comments/${commentId}/files/${fileId}`,
+        method: 'DELETE',
+    }, false, true)
+}
+/**
+ * Delete file child comment
+ */
+function deleteFileChildComment(fileId, childCommentId, commentId, setKpiId) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets/${setKpiId}/comments/${commentId}/child-comments/${childCommentId}/files/${fileId}`,
         method: 'DELETE',
     }, false, true)
 }

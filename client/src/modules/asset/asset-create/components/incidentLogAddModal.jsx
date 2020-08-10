@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
 import { AssetCreateValidator } from './combinedContent';
+
 import { UserActions } from '../../../super-admin/user/redux/actions';
 
 class IncidentLogAddModal extends Component {
@@ -24,17 +27,20 @@ class IncidentLogAddModal extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         return [day, month, year].join('-');
     }
 
     // Bắt sự kiện thay đổi mã sự cố
     handleIncidentCodeChange = (e) => {
-        let {value} = e.target;
+        let { value } = e.target;
         this.validateIncidentCode(value, true);
     }
     validateIncidentCode = (value, willUpdateState = true) => {
@@ -89,7 +95,7 @@ class IncidentLogAddModal extends Component {
     }
 
 
-    //8. Bắt sự kiện thay đổi "Nội dung sự cố"
+    // Bắt sự kiện thay đổi "Nội dung sự cố"
     handleDescriptionChange = (e) => {
         let value = e.target.value;
         this.validateIncidentDescription(value, true);
@@ -120,8 +126,7 @@ class IncidentLogAddModal extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result =
-            this.validateIncidentCode(this.state.incidentCode, false) &&
+        let result = this.validateIncidentCode(this.state.incidentCode, false) &&
             this.validateDateOfIncident(this.state.dateOfIncident, false) &&
             this.validateIncidentDescription(this.state.description, false)
         return result;
@@ -131,20 +136,23 @@ class IncidentLogAddModal extends Component {
     save = async () => {
         var partDateOfIncident = this.state.dateOfIncident.split('-');
         var dateOfIncident = [partDateOfIncident[2], partDateOfIncident[1], partDateOfIncident[0]].join('-');
+
         if (this.isFormValidated()) {
-            return this.props.handleChange({...this.state, dateOfIncident: dateOfIncident});
+            return this.props.handleChange({ ...this.state, dateOfIncident: dateOfIncident });
         }
     }
-    
+
     render() {
         const { translate, id, user } = this.props;
+        const { incidentCode, type, reportedBy, dateOfIncident, description, statusIncident, errorOnIncidentCode, errorOnDescription } = this.state;
+
         var userlist = user.list;
-        const {
-            incidentCode, type, reportedBy, dateOfIncident, description, statusIncident, errorOnIncidentCode, errorOnDescription } = this.state;
-            console.log(this.state, 'this.state')
+
         return (
             <React.Fragment>
+                {/* Button thêm thông tin sự cố */}
                 <ButtonModal modalID={`modal-create-incident-${id}`} button_name="Thêm mới" title="Thêm mới thông tin sự cố" />
+
                 <DialogModal
                     size='50' modalID={`modal-create-incident-${id}`} isLoading={false}
                     formID={`form-create-incident-${id}`}
@@ -152,13 +160,17 @@ class IncidentLogAddModal extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
+                    {/* Form thêm thông tin sự cố */}
                     <form className="form-group" id={`form-create-incident-${id}`}>
                         <div className="col-md-12">
-                            <div className={`form-group ${errorOnIncidentCode === undefined ? "" : "has-error"}`}>
+                            {/* Mã sự cố */}
+                            <div className={`form-group ${!errorOnIncidentCode ? "" : "has-error"}`}>
                                 <label>Mã sự cố<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" name="incidentCode" value={incidentCode} onChange={this.handleIncidentCodeChange} autoComplete="off" placeholder="Mã sự cố" />
                                 <ErrorLabel content={errorOnIncidentCode} />
                             </div>
+
+                            {/* Phân loại */}
                             <div className="form-group">
                                 <label>Phân loại</label>
                                 <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
@@ -166,6 +178,8 @@ class IncidentLogAddModal extends Component {
                                     <option value="Mất">Mất</option>
                                 </select>
                             </div>
+
+                            {/* Người báo cáo */}
                             <div className={`form-group`}>
                                 <label>Người báo cáo</label>
                                 <div>
@@ -182,6 +196,8 @@ class IncidentLogAddModal extends Component {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Thời gian phát hiện sự cố */}
                             <div className="form-group">
                                 <label>Thời gian phát hiện sự cố</label>
                                 <DatePicker
@@ -190,12 +206,16 @@ class IncidentLogAddModal extends Component {
                                     onChange={this.handleDateOfIncidentChange}
                                 />
                             </div>
-                            <div className={`form-group ${errorOnDescription === undefined ? "" : "has-error"}`}>
+
+                            {/* Nội dung */}
+                            <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
                                 <label>Nội dung<span className="text-red">*</span></label>
                                 <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
                                     placeholder="Nội dung"></textarea>
                                 <ErrorLabel content={errorOnDescription} />
                             </div>
+
+                            {/* Trạng thái */}
                             <div className="form-group">
                                 <label>Trạng thái</label>
                                 <select className="form-control" value={statusIncident} name="statusIncident" onChange={this.handleStatusIncidentChange}>

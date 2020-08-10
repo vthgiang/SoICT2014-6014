@@ -28,7 +28,7 @@ class TaskOrganizationUnitDashboard extends Component {
         if (day.length < 2)
             day = '0' + day;
         let defaultEndMonth = [month, year].join('-');
-        let defaultStartMonth = ['01', year].join('-');
+        let defaultStartMonth = [month - 3, year].join('-');
 
         this.state = {
             userID: "",
@@ -38,6 +38,7 @@ class TaskOrganizationUnitDashboard extends Component {
             willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
             callAction: false,
 
+            checkUnit: 0,
             startMonth: defaultStartMonth,
             endMonth: defaultEndMonth
         };
@@ -69,20 +70,30 @@ class TaskOrganizationUnitDashboard extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        // console.log(";;;;;;;;", this.state.idsUnit)
 
-        if (!this.state.idsUnit.length && this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
-            console.log("====dòng 59=======", this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id)
+        let data, organizationUnit = "organizationUnit";
+
+        if (!this.state.idsUnit.length && this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit || (nextState.checkUnit !== this.state.checkUnit || nextState.startMonth !== this.state.startMonth || nextState.endMonth !== this.state.endMonth)) {
+            let idsUnit = !this.state.idsUnit.length ? [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id] : nextState.idsUnit;
+            console.log("ids", idsUnit);
             await this.setState((state) => {
                 return {
                     ...state,
-                    idsUnit: [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id],
+                    startMonth: nextState.startMonth,
+                    endMonth: nextState.endMonth,
+                    checkUnit: nextState.checkUnit,
+                    idsUnit: idsUnit,
                 }
             });
 
-            await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, null, null);
+            data = {
+                organizationUnitId: this.state.idsUnit,
+                type: organizationUnit,
+            }
 
-            return false;
+            await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, this.state.startMonth, this.state.endMonth);
+            await this.props.getTaskByUser(data);
+
         } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.tasks.organizationUnitTasks) {
                 return false;
@@ -110,19 +121,14 @@ class TaskOrganizationUnitDashboard extends Component {
     }
 
     handleChangeOrganizationUnit = async (value) => {
-        // console.log('Valueeeeeeeeeeeeeeeeeeeeeeeeeee', value);
+        let checkUnit = this.state.checkUnit + 1
         await this.setState(state => {
             return {
                 ...state,
+                checkUnit: checkUnit,
                 idsUnit: value
             }
         })
-        let organizationUnit = "organizationUnit";
-        let data = {
-            organizationUnitId: this.state.idsUnit,
-            type: organizationUnit,
-        }
-        await this.props.getTaskByUser(data);
     }
 
     handleSelectMonthStart = async (value) => {
@@ -152,22 +158,12 @@ class TaskOrganizationUnitDashboard extends Component {
         })
     }
 
-    handleAnalysis = async () => {
-        let { idsUnit, startMonth, endMonth } = this.state;
-        console.log("\n\n\n state: ", idsUnit, startMonth, endMonth);
-        await this.props.getTaskInOrganizationUnitByMonth(idsUnit, startMonth, endMonth);
-    }
-
     render() {
         const { tasks, translate, user } = this.props;
         let { idsUnit, startMonth, endMonth } = this.state;
-        // console.log(idsUnit)
-        // let amountResponsibleTask = 0, amountTaskCreated = 0, amountAccountableTasks = 0, amountConsultedTasks = 0;
         let numTask, units, queue = [];
         let totalTasks = 0;
         let childrenOrganizationalUnit = [];
-
-
 
         if (this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
             let currentOrganizationalUnit = this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
@@ -223,9 +219,6 @@ class TaskOrganizationUnitDashboard extends Component {
                                     disabled={false}
                                 />
                             </div>
-                            <div className="form-inline" style={{ marginRight: "5px" }}>
-                                <button type="button" className="btn btn-success" onClick={this.handleAnalysis}>{translate('kpi.evaluation.dashboard.analyze')}</button>
-                            </div>
                         </div>
                     </div>
                     <div className="col-xs-12">
@@ -239,6 +232,8 @@ class TaskOrganizationUnitDashboard extends Component {
                                         callAction={!this.state.willUpdate}
                                         TaskOrganizationUnitDashboard={true}
                                         units={idsUnit}
+                                        startMonth={startMonth}
+                                        endMonth={endMonth}
                                     />
                                 }
                             </div>
@@ -254,6 +249,8 @@ class TaskOrganizationUnitDashboard extends Component {
                                     <TaskStatusChart
                                         callAction={!this.state.willUpdate}
                                         TaskOrganizationUnitDashboard={true}
+                                        startMonth={startMonth}
+                                        endMonth={endMonth}
                                         // tasksInUnit={tasks.organizationUnitTasks && tasks.organizationUnitTasks}
                                         units={idsUnit}
                                     />
@@ -283,7 +280,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                                                 <i className="fa fa-ellipsis-v" />
                                                             </span>
                                                             <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
-                                                            <small className="label label-warning"><i className="fa fa-clock-o" />{item.totalDays} {translate('task.task_management.calc_days')}</small>
+                                                            <small className="label label-danger"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
                                                         </li>
                                                     ) : "Không có công việc quá hạn"
                                             }
@@ -310,7 +307,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                                                 <i className="fa fa-ellipsis-v" />
                                                             </span>
                                                             <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" />{item.task.name}</span>
-                                                            <small className="label label-info"><i className="fa fa-clock-o" />{item.totalDays} {translate('task.task_management.calc_days')}</small>
+                                                            <small className="label label-warning"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
                                                         </li>
                                                     ) : "Không có công việc nào sắp hết hạn"
                                             }
@@ -333,6 +330,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                 TaskOrganizationUnitDashboard={true}
                                 // tasksInUnit={tasks.organizationUnitTasks && tasks.organizationUnitTasks}
                                 units={idsUnit}
+                                willUpdate={true}
                             />
                         </div>
 
@@ -349,12 +347,6 @@ function mapState(state) {
     return { tasks, user, dashboardEvaluationEmployeeKpiSet };
 }
 const actionCreators = {
-    // getAllTaskByRole: taskManagementActions.getAllTaskByRole,
-    // getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
-    // getAccountableTaskByUser: taskManagementActions.getAccountableTaskByUser,
-    // getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
-    // getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
-    // getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
     getTaskByUser: taskManagementActions.getTasksByUser,
     getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
     getDepartment: UserActions.getDepartmentOfUser,

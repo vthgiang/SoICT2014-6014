@@ -25,8 +25,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
     }
 
     componentDidMount = () => {
-        console.log("555", this.props.organizationalUnitId)
-        this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId);
+        this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
         this.props.getAllEmployeeKpiInChildrenOrganizationalUnit(localStorage.getItem("currentRole"), this.props.month, this.props.organizationalUnitId);
         this.props.getAllTaskOfChildrenOrganizationalUnit(localStorage.getItem("currentRole"), this.props.month, this.props.organizationalUnitId);
 
@@ -41,8 +40,9 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
     
     shouldComponentUpdate = async (nextProps, nextState) => {
         if (this.state.currentRole !== localStorage.getItem("currentRole")) {
-            await this.props.getAllEmployeeKpiInChildrenOrganizationalUnit(localStorage.getItem("currentRole"));
-            await this.props.getAllTaskOfChildrenOrganizationalUnit(localStorage.getItem("currentRole"));
+            await this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
+            await this.props.getAllEmployeeKpiInChildrenOrganizationalUnit(localStorage.getItem("currentRole"), this.props.month, this.props.organizationalUnitId);
+            await this.props.getAllTaskOfChildrenOrganizationalUnit(localStorage.getItem("currentRole"), this.props.month, this.props.organizationalUnitId);
 
             this.setState(state => {
                 return {
@@ -53,10 +53,8 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
 
             return false;
         }
-        // console.log(nextProps.childUnitChart !== this.state.childUnitChart, nextProps.childUnitChart, this.state.childUnitChart)
 
         if (nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
-            console.log("****")
             await this.props.getCurrentKPIUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
             await this.props.getAllEmployeeKpiInChildrenOrganizationalUnit(this.state.currentRole, nextState.month, nextProps.organizationalUnitId);
             await this.props.getAllTaskOfChildrenOrganizationalUnit(this.state.currentRole, nextProps.month, nextProps.organizationalUnitId)
@@ -80,7 +78,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                 return false           
             }
 
-            if(!nextProps.dashboardOrganizationalUnitKpi.tasksOfChildrenOrganizationalUnit) {
+            if (!nextProps.dashboardOrganizationalUnitKpi.tasksOfChildrenOrganizationalUnit) {
                 return false           
             }
             
@@ -92,7 +90,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
             });
 
             return false;
-        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE){
+        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
             this.barChart();
 
             this.setState(state =>{
@@ -214,13 +212,13 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                                                 kpi.employeeKpi.map(employeeKpi => {
                                                     if (listTask) {
                                                         listTask.map(task => {
-                                                            let list = task.filter(item => {
-                                                                let kpi, length;
+                                                            let list = task.filter(item1 => {
+                                                                let kpi, length = 0;
 
-                                                                if (item.evaluations) {
-                                                                    item.evaluations.kpis.map(item => {
-                                                                        kpi = item.kpis.filter(kpi => kpi === employeeKpi._id);
-                                                                        length = kpi.length;
+                                                                if (item1.evaluations) {
+                                                                    item1.evaluations.results.map(item2 => {
+                                                                        kpi = item2.kpis.filter(kpis => kpis === employeeKpi._id);
+                                                                        length = length + kpi.length;
                                                                     });
                                                                     return length !== 0 && length !== undefined;
                                                                 } else {

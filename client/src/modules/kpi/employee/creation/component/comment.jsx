@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { ContentMaker } from '../../../../../common-components'
+import { ContentMaker, DialogModal } from '../../../../../common-components'
 import { LOCAL_SERVER_API } from '../../../../../env'
 import { getStorage } from '../../../../../config'
 
@@ -20,8 +20,10 @@ class Comment extends Component {
             editComment: '',
             currentUser: idUser,
             showChildComment: '',
-            editCommentOfComment: '',
+            editChildComment: '',
             showfile: [],
+            deleteFile: '',
+            showModalDelete: '',
             comment: {
                 creator: idUser,
                 description: '',
@@ -30,15 +32,24 @@ class Comment extends Component {
             newComment: {
                 description: ''
             },
-            commentOfComment: {
+            childComment: {
                 creator: idUser,
                 description: '',
                 files: [],
+            },
+            newCommentEdited: {
+                creator: idUser,
+                description: "",
+                files: []
+            },
+            newChildCommentEdited: {
+                creator: idUser,
+                description: "",
+                files: []
             }
-
         }
         this.newComment = [];
-        this.newCommentOfComment = []
+        this.newChildComment = []
     }
 
     handleEditTaskComment = (id) => {
@@ -101,11 +112,11 @@ class Comment extends Component {
         })
     }
 
-    handleEditCommentOfComment = async (id) => {
+    handleEditChildComment = async (id) => {
         await this.setState(state => {
             return {
                 ...state,
-                editCommentOfComment: id
+                editChildComment: id
             }
         })
     }
@@ -118,14 +129,14 @@ class Comment extends Component {
                     files: files,
                 }
             }
-        }, () => { console.log(this.state.comment.files) })
+        })
     }
     onCommentFilesChange = (files) => {
         this.setState((state) => {
             return {
                 ...state,
-                commentOfComment: {
-                    ...state.commentOfComment,
+                childComment: {
+                    ...state.childComment,
                     files: files,
                 }
             }
@@ -133,35 +144,67 @@ class Comment extends Component {
     }
     onFilesError = (error, file) => {
     }
-    editComment = async (setKpiId, commentId) => {
-        let { newComment } = this.state;
-        if (newComment.description) {
-            this.props.editComment(setKpiId, commentId, newComment)
+
+
+    editComment = async (e, description, commentId, setKpiId) => {
+        e.preventDefault()
+        let { newCommentEdited } = this.state;
+        let data = new FormData();
+        newCommentEdited.files.forEach(x => {
+            data.append("files", x)
+        })
+        data.append("creator", newCommentEdited.creator);
+        data.append("type", "edit")
+        if (newCommentEdited.description === "") {
+            data.append("description", description)
+        } else {
+            data.append("description", newCommentEdited.description)
         }
-        this.setState(state => {
-            return {
-                ...state,
-                editComment: ""
-            }
-        });
-    }
-    editCommentOfComment = async (e, setKpiId, commentId, childCommentId) => {
-        e.preventDefault();
+        if (newCommentEdited.description) {
+            this.props.editComment(setKpiId, commentId, data)
+        }
+        if (newCommentEdited.description || newCommentEdited.files) {
+            this.props.editComment(setKpiId, commentId, data);
+        }
         await this.setState(state => {
             return {
                 ...state,
-                newCommentOfComment: {
-                    ...state.newCommentOfComment,
-                    description: this.newCommentOfComment[childCommentId].value,
-                    // file:
-                },
-                editCommentOfComment: ''
+                editComment: "",
+                newCommentEdited: {
+                    ...state.newCommentEdited,
+                    files: [],
+                    description: ""
+                }
             }
         })
-        var { newCommentOfComment } = this.state;
-        if (newCommentOfComment.description) {
-            this.props.editCommentOfComment(setKpiId, commentId, childCommentId, newCommentOfComment);
+    }
+    editChildComment = async (e, description, childCommentId, commentId, setKpiId) => {
+        e.preventDefault();
+        let { newChildCommentEdited } = this.state;
+        let data = new FormData();
+        newChildCommentEdited.files.forEach(x => {
+            data.append("files", x)
+        })
+        if (newChildCommentEdited.description === "") {
+            data.append("description", description)
+        } else {
+            data.append("description", newChildCommentEdited.description)
         }
+        data.append("creator", newChildCommentEdited.creator)
+        if (newChildCommentEdited.description || newChildCommentEdited.files) {
+            this.props.editChildComment(setKpiId, commentId, childCommentId, data);
+        }
+        await this.setState(state => {
+            return {
+                ...state,
+                newChildCommentEdited: {
+                    ...state.newChildCommentEdited,
+                    description: "",
+                    files: []
+                },
+                editChildComment: ""
+            }
+        })
     }
     submitComment = async (setKpiId) => {
         var { comment } = this.state;
@@ -186,23 +229,23 @@ class Comment extends Component {
             }
         })
     }
-    submitCommentOfComment = async (setKpiId, commentId) => {
-        var { commentOfComment } = this.state;
+    submitChildComment = async (setKpiId, commentId) => {
+        var { childComment } = this.state;
         const data = new FormData();
-        data.append("creator", commentOfComment.creator);
-        data.append("description", commentOfComment.description);
-        commentOfComment.files && commentOfComment.files.forEach(x => {
+        data.append("creator", childComment.creator);
+        data.append("description", childComment.description);
+        childComment.files && childComment.files.forEach(x => {
             data.append("files", x);
         })
-        if (commentOfComment.creator && commentOfComment.description) {
-            this.props.createCommentOfComment(setKpiId, commentId, data);
+        if (childComment.creator && childComment.description) {
+            this.props.createChildComment(setKpiId, commentId, data);
         }
-        // Reset state cho việc thêm mới action
+        // Reset state cho việc thêm mới comment
         await this.setState(state => {
             return {
                 ...state,
-                commentOfComment: {
-                    ...state.commentOfComment,
+                childComment: {
+                    ...state.childComment,
                     description: "",
                     files: [],
                 },
@@ -213,23 +256,79 @@ class Comment extends Component {
         e.preventDefault()
         this.props.downloadFile(path, fileName)
     }
+    handleDeleteFile = async (fileId, fileName, childCommentId, commentId, setKpiId, type) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                showModalDelete: commentId,
+                deleteFile: {
+                    fileId: fileId,
+                    commentId: commentId,
+                    fileName: fileName,
+                    type: type,
+                    setKpiId: setKpiId,
+                    childCommentId: childCommentId
+                }
+            }
+        });
+        window.$(`#modal-confirm-deletefile-kpi`).modal('show');
+    }
+
+    onEditCommentFilesChange = (files) => {
+        this.setState(state => {
+            return {
+                ...state,
+                newCommentEdited: {
+                    ...state.newCommentEdited,
+                    files: files,
+                }
+            }
+        })
+    }
+
+    onEditFileChildComment = (files) => {
+        this.setState(state => {
+            return {
+                ...state,
+                newChildCommentEdited: {
+                    ...state.newChildCommentEdited,
+                    files: files,
+                }
+            }
+        })
+    }
+
+
+
+
+    save = (setKpiId) => {
+        let { deleteFile } = this.state
+        if (deleteFile.type === "comment") {
+            this.props.deleteFileComment(deleteFile.fileId, deleteFile.commentId, deleteFile.setKpiId)
+        } else if (deleteFile.type === "childComment") {
+            this.props.deleteFileChildComment(deleteFile.fileId, deleteFile.childCommentId, deleteFile.commentId, deleteFile.setKpiId)
+        }
+    }
     render() {
-        var comment
+        var comments
         var minRows = 3, maxRows = 20
-        const { editComment, editCommentOfComment, showChildComment, currentUser } = this.state
-        const { currentKPI, auth, translate } = this.props
-        comment = currentKPI.comments
+        const { editComment, editChildComment, showChildComment, currentUser, newCommentEdited, newChildCommentEdited, showModalDelete, deleteFile, childComment } = this.state
+        const {  auth, translate } = this.props
+        const { currentKPI } = this.props
+        console.log(currentKPI)
+        comments = currentKPI?.comments
         return (
             <React.Fragment>
-                {comment ?
-                    comment.map(item => {
+                {comments ?
+                    //Hiển thị bình luận của công việc
+                    comments.map(item => {
                         return (
-                            <div className="clearfix" key={item._id}>
-                                <img className="user-img-level1" src={(LOCAL_SERVER_API + item.creator.avatar)} alt="User Image" />
+                            <div key={item._id}>
+                                <img className="user-img-level1" src={(LOCAL_SERVER_API + item.creator?.avatar)} alt="User Image" />
                                 {editComment !== item._id && // Khi đang edit thì ẩn đi
                                     <React.Fragment>
                                         <div className="content-level1">
-                                            <a style={{ cursor: "pointer" }}>{item.creator.name} </a>
+                                            <a style={{ cursor: "pointer" }}>{item.creator?.name} </a>
                                             {item.description.split('\n').map((item, idx) => {
                                                 return (
                                                     <span key={idx}>
@@ -239,7 +338,7 @@ class Comment extends Component {
                                                 );
                                             })
                                             }
-                                            {item.creator._id === currentUser &&
+                                            {item.creator?._id === currentUser &&
                                                 <div className="btn-group pull-right">
                                                     <span data-toggle="dropdown">
                                                         <i className="fa fa-ellipsis-h"></i>
@@ -271,41 +370,61 @@ class Comment extends Component {
 
                                 {/*Chỉnh sửa nội dung trao đổi của công việc */}
                                 {editComment === item._id &&
-                                    <div>
-                                        <div className="text-input-level1">
-                                            <TextareaAutosize
+                                    <React.Fragment>
+                                        <div>
+                                            <ContentMaker
+                                                inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
+                                                onFilesChange={this.onEditCommentFilesChange}
+                                                onFilesError={this.onFilesError}
+                                                files={newCommentEdited.files}
                                                 defaultValue={item.description}
-                                                useCacheForDOMMeasurements
-                                                minRows={minRows}
-                                                maxRows={maxRows}
-                                                onChange={(e) => {
+                                                submitButtonText={translate("task.task_perform.save_edit")}
+                                                cancelButtonText={translate("task.task_perform.cancel")}
+                                                handleEdit={(e) => this.handleEditComment(e)}
+                                                onTextChange={(e) => {
                                                     let value = e.target.value;
                                                     this.setState(state => {
-                                                        return { ...state, newComment: { ...state.newComment, description: value } }
+                                                        return { ...state, newCommentEdited: { ...state.newCommentEdited, description: value } }
                                                     })
                                                 }}
+                                                onSubmit={(e) => { this.editComment(e, item.description, item._id, currentKPI._id) }}
                                             />
+                                            {item.files.length > 0 &&
+                                                <div className="tool-level1" style={{ marginTop: -15 }}>
+                                                    {item.files.map(file => {
+                                                        return <div>
+                                                            <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, "", item._id, currentKPI._id, "comment") }}><i className="fa fa-times"></i></a>
+                                                        </div>
+                                                    })}
+                                                </div>}
+                                            {showModalDelete === item._id &&
+                                                <DialogModal
+                                                    marginTop={"20vh"}
+                                                    size={50}
+                                                    maxWidth={100}
+                                                    modalID={`modal-confirm-deletefile-kpi`}
+                                                    formID={`from-confirm-deletefile-kpi`}
+                                                    isLoading={false}
+                                                    func={() => this.save(currentKPI._id)}
+                                                >
+                                                    {translate("task.task_perform.question_delete_file")} {deleteFile.fileName} ?
+                                            </DialogModal>
+                                            }
                                         </div>
-                                        <ul className="list-inline tool-level1" style={{ textAlign: "right" }}>
-                                            <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={() => this.editComment(currentKPI._id, item._id)}>{translate('task.task_perform.save_edit')}</a></li>
-                                            <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => this.handleEditComment(e)}>{translate('task.task_perform.cancel')}</a></li>
-                                        </ul>
-                                        <div className="tool-level1">
-                                        </div>
-                                    </div>}
-
+                                    </React.Fragment>
+                                }
                                 {/* Hiển thị bình luận cho bình luận */}
                                 {showChildComment === item._id &&
                                     <div className="comment-content-child">
                                         {item.comments.map(child => {
                                             return <div key={child._id}>
-                                                <img className="user-img-level2" src={(LOCAL_SERVER_API + item.creator.avatar)} alt="User Image" />
+                                                <img className="user-img-level2" src={(LOCAL_SERVER_API + item.creator?.avatar)} alt="User Image" />
 
-                                                {editCommentOfComment !== child._id && // Đang edit thì ẩn đi
+                                                {editChildComment !== child._id && // Đang edit thì ẩn đi
                                                     <div>
                                                         <p className="content-level2">
-                                                            <a style={{ cursor: "pointer" }}>{child.creator.name} </a>
-                                                            {child.description.split('\n').map((item, idx) => {
+                                                            <a style={{ cursor: "pointer" }}>{child.creator?.name} </a>
+                                                            {child?.description?.split('\n').map((item, idx) => {
                                                                 return (
                                                                     <span key={idx}>
                                                                         {item}
@@ -315,14 +434,14 @@ class Comment extends Component {
                                                             })
                                                             }
 
-                                                            {child.creator._id === currentUser &&
+                                                            {child.creator?._id === currentUser &&
                                                                 <div className="btn-group pull-right">
                                                                     <span data-toggle="dropdown">
                                                                         <i className="fa fa-ellipsis-h"></i>
                                                                     </span>
                                                                     <ul className="dropdown-menu">
-                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditCommentOfComment(child._id)} >Sửa bình luận</a></li>
-                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteCommentOfComment(currentKPI._id, item._id, child._id)} >Xóa bình luận</a></li>
+                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.handleEditChildComment(child._id)} >Sửa bình luận</a></li>
+                                                                        <li><a style={{ cursor: "pointer" }} onClick={() => this.props.deleteChildComment(currentKPI._id, item._id, child._id)} >Xóa bình luận</a></li>
                                                                     </ul>
                                                                 </div>}
                                                         </p>
@@ -339,28 +458,59 @@ class Comment extends Component {
                                                                             })}
                                                                         </li>
                                                                     }
-                                                                </React.Fragment>}
+                                                                </React.Fragment>
+                                                            }
                                                         </ul>
                                                     </div>
                                                 }
 
                                                 {/* Sửa bình luận của bình luận */}
-                                                {editCommentOfComment === child._id &&
-                                                    <div>
-                                                        <div className="text-input-level2">
-                                                            <textarea
+                                                {editChildComment === child._id &&
+                                                    <React.Fragment>
+                                                        <div>
+                                                            <ContentMaker
+                                                                inputCssClass="text-input-level1" controlCssClass="tool-level2 row"
+                                                                onFilesChange={this.onEditFileChildComment}
+                                                                onFilesError={this.onFilesError}
+                                                                files={newChildCommentEdited.files}
                                                                 defaultValue={child.description}
-                                                                ref={input => this.newCommentOfComment[child._id] = input}
+                                                                styletext={{ marginLeft: "40px", width: "94%" }}
+                                                                submitButtonText={translate("task.task_perform.save_edit")}
+                                                                cancelButtonText={translate("task.task_perform.cancel")}
+                                                                handleEdit={(e) => this.handleEditChildComment(e)}
+                                                                onTextChange={(e) => {
+                                                                    let value = e.target.value;
+                                                                    this.setState(state => {
+                                                                        return { ...state, newChildCommentEdited: { ...state.newChildCommentEdited, description: value } }
+                                                                    })
+                                                                }}
+                                                                onSubmit={(e) => { this.editChildComment(e, child.description, child._id, item._id, currentKPI._id) }}
                                                             />
+                                                            {/* Hiện file đã tải lên */}
+                                                            {child.files.length > 0 &&
+                                                                <div className="tool-level2" style={{ marginTop: -15 }}>
+                                                                    {child.files.map((file, index) => {
+                                                                        return <div key={index}>
+                                                                            <a style={{ cursor: "pointer" }}>{file.name} &nbsp;</a><a style={{ cursor: "pointer" }} className="link-black text-sm btn-box-tool" onClick={() => { this.handleDeleteFile(file._id, file.name, child._id, item._id, currentKPI._id, "childComment") }}><i className="fa fa-times"></i></a>
+                                                                        </div>
+                                                                    })}
+                                                                </div>}
+                                                            {/* modal confirm delete file */}
+                                                            {showModalDelete === item._id &&
+                                                                <DialogModal
+                                                                    marginTop={"20vh"}
+                                                                    size={50}
+                                                                    maxWidth={100}
+                                                                    modalID={`modal-confirm-deletefile-kpi`}
+                                                                    formID={`from-confirm-deletefile`}
+                                                                    isLoading={false}
+                                                                    func={() => this.save(currentKPI._id)}
+                                                                >
+                                                                    {translate("task.task_perform.question_delete_file")} {deleteFile.fileName}?
+                                                                </DialogModal>
+                                                            }
                                                         </div>
-                                                        <ul className="list-inline tool-level2" style={{ textAlign: "right" }}>
-                                                            <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => this.editCommentOfComment(e, currentKPI._id, item._id, child._id)}>Gửi chỉnh sửa </a></li>
-                                                            <li><a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => this.handleEditCommentOfComment(e)}>Hủy bỏ</a></li>
-                                                        </ul>
-                                                        <div className="tool-level2">
-
-                                                        </div>
-                                                    </div>
+                                                    </React.Fragment>
                                                 }
                                             </div>;
                                             return true;
@@ -373,17 +523,17 @@ class Comment extends Component {
                                                 inputCssClass="text-input-level2" controlCssClass="tool-level2"
                                                 onFilesChange={this.onCommentFilesChange}
                                                 onFilesError={this.onFilesError}
-                                                files={this.state.commentOfComment.files}
-                                                text={this.state.commentOfComment.description}
+                                                files={childComment.files}
+                                                text={childComment.description}
                                                 placeholder={translate('task.task_perform.enter_comment')}
                                                 submitButtonText={translate('task.task_perform.create_comment')}
                                                 onTextChange={(e) => {
                                                     let value = e.target.value;
                                                     this.setState(state => {
-                                                        return { ...state, commentOfComment: { ...state.commentOfComment, description: value } }
+                                                        return { ...state, childComment: { ...state.childComment, description: value } }
                                                     })
                                                 }}
-                                                onSubmit={() => this.submitCommentOfComment(currentKPI._id, item._id)}
+                                                onSubmit={() => this.submitChildComment(currentKPI._id, item._id)}
                                             />
                                         </div>
                                     </div>
@@ -423,9 +573,11 @@ const actionCreators = {
     deleteComment: createKpiSetActions.deleteComment,
     downloadFile: AuthActions.downloadFile,
     createComment: createKpiSetActions.createComment,
-    createCommentOfComment: createKpiSetActions.createCommentOfComment,
-    editCommentOfComment: createKpiSetActions.editCommentOfComment,
-    deleteCommentOfComment: createKpiSetActions.deleteCommentOfComment
+    createChildComment: createKpiSetActions.createChildComment,
+    editChildComment: createKpiSetActions.editChildComment,
+    deleteChildComment: createKpiSetActions.deleteChildComment,
+    deleteFileComment: createKpiSetActions.deleteFileComment,
+    deleteFileChildComment: createKpiSetActions.deleteFileChildComment
 };
 const comment = connect(mapState, actionCreators)(withTranslate(Comment));
 

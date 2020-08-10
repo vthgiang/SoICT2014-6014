@@ -38,6 +38,10 @@ const initState = {
         prevPage: 0,
         nextPage: 0,
         isLoading: true,
+    },
+    location: {
+        list: [],
+        isLoading: true
     }
 }
 
@@ -87,6 +91,8 @@ export function customer(state = initState, action) {
                 }
             };
 
+        
+
         case CustomerConstants.GET_CUSTOMER_GROUPS_REQUEST:
         case CustomerConstants.PAGINATE_CUSTOMER_GROUPS_REQUEST:
             return {
@@ -116,6 +122,34 @@ export function customer(state = initState, action) {
                     isLoading: false
                 }
             };
+
+        case CustomerConstants.GET_LOCATIONS_REQUEST:
+            return {
+                ...state,
+                location: {
+                    ...state.location,
+                    isLoading: true
+                }
+            }
+
+        case CustomerConstants.GET_LOCATIONS_FAILE:
+            return {
+                ...state,
+                location: {
+                    ...state.location,
+                    isLoading: false
+                }
+            }
+
+        case CustomerConstants.GET_LOCATIONS_SUCCESS:
+            return {
+                ...state,
+                location: {
+                    ...state.location,
+                    list: action.payload,
+                    isLoading: false
+                }
+            }
 
         default:
             return state;

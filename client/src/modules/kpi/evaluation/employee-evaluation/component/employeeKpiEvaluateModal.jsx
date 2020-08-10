@@ -95,15 +95,14 @@ class EmployeeKpiEvaluateModal extends Component {
 
         return [month, year].join('-');
     }
-    handleChangeContent = (id, employeeId, kpiType, name) => {
+    handleChangeContent = (id, employeeId, name) => {
         let date = this.props.employeeKpiSet.date;
-        this.props.getTaskById(id, employeeId, date, kpiType);
+        this.props.getTaskById(id, employeeId, date);
         this.setState(state => {
             return {
                 ...state,
                 content: id,
                 contentName: name,
-                type: kpiType,
                 dataStatus: this.DATA_STATUS.QUERYING,
             }
         });
@@ -112,7 +111,7 @@ class EmployeeKpiEvaluateModal extends Component {
     handleSetPointKPI = () => {
         let date = this.props.employeeKpiSet.date;
         let employeeId = this.props.employeeKpiSet.creator._id;
-        let { tasks, points, type, content } = this.state;
+        let { tasks, points, content } = this.state;
         if (tasks && tasks.length > 0) {
             let data = [];
             tasks.forEach(element => {
@@ -120,12 +119,11 @@ class EmployeeKpiEvaluateModal extends Component {
                     taskId: element.taskId,
                     date: date,
                     point: points[element.taskId],
-                    type: type,
                     employeeId: employeeId
                 })
             });
 
-            this.props.setPointKPI(content, type, data);
+            this.props.setPointKPI(content, data);
         }
     }
 
@@ -177,13 +175,16 @@ class EmployeeKpiEvaluateModal extends Component {
                     startTaskYear = startTaskD.getFullYear();
                 let endTaskD = new Date(x.endDate),
                     endTaskDate = endTaskD.getDate(),
-                    endTaskMonth = '' + (endTaskD.getMonth() + 1)
+                    endTaskMonth = '' + (endTaskD.getMonth() + 1),
+                    endTaskYear = endTaskD.getFullYear();
                 let startApproveD = new Date(x.preEvaDate),
                     startApproveDate = startApproveD.getDate(),
-                    startApproveMonth = '' + (startApproveD.getMonth() + 1)
+                    startApproveMonth = '' + (startApproveD.getMonth() + 1),
+                    startApproveYear = startApproveD.getFullYear();
                 let endApproveD = new Date(x.date),
                     endApproveDate = endApproveD.getDate(),
-                    endApproveMonth = '' + (endApproveD.getMonth() + 1)
+                    endApproveMonth = '' + (endApproveD.getMonth() + 1),
+                    endApproveYear = endApproveD.getFullYear();
                 let automaticPoint = (x.results.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x.results.automaticPoint);
                 let employeePoint = (x.results.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.results.employeePoint);
                 let approverPoint = (x.results.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.results.approvedPoint);
@@ -199,15 +200,10 @@ class EmployeeKpiEvaluateModal extends Component {
                     status: status,
                     employeePoint: employeePoint,
                     approverPoint: approverPoint,
-                    startTaskDate: startTaskDate,
-                    startTaskMonth: startTaskMonth,
-                    endTaskDate: endTaskDate,
-                    endTaskMonth: endTaskMonth,
-                    startApproveDate: startApproveDate,
-                    startApproveMonth: startApproveMonth,
-                    endApproveDate: endApproveDate,
-                    endApproveMonth: endApproveMonth,
-                    year: startTaskYear,
+                    startTaskDate: startTaskDate + '-' + startTaskMonth + '-' + startTaskYear,
+                    endTaskDate: endTaskDate + '-' + endTaskMonth + '-' + endTaskYear,
+                    startApproveDate: startApproveDate + '-' + startApproveMonth + '-' + startApproveYear,
+                    endApproveDate: endApproveDate + '-' + endApproveMonth + '-' + endApproveYear,
                     contributionPoint: contributionPoint,
                     importantLevel: importantLevel
                 };
@@ -225,14 +221,9 @@ class EmployeeKpiEvaluateModal extends Component {
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "startTaskDate", value: "Ngày bắt đầu công việc" },
-                                { key: "startTaskMonth", value: "Tháng bắt đầu công việc" },
                                 { key: "endTaskDate", value: "Ngày kết thúc công việc" },
-                                { key: "endTaskMonth", value: "Tháng kết thúc công việc" },
                                 { key: "startApproveDate", value: "Ngày bắt đầu đánh giá" },
-                                { key: "startApproveMonth", value: "Tháng bắt đầu công việc" },
                                 { key: "endApproveDate", value: "Ngày kết thúc đánh giá" },
-                                { key: "endApproveMonth", value: "Tháng kết thúc đánh giá" },
-                                { key: "year", value: "Năm" },
                                 { key: "status", value: "Trạng thái" },
                                 { key: "contributionPoint", value: "Đóng góp (%)" },
                                 { key: "automaticPoint", value: "Điểm tự động" },
@@ -281,7 +272,7 @@ class EmployeeKpiEvaluateModal extends Component {
                             <ul className="nav nav-pills nav-stacked">
                                 {list && list.map((item, index) =>
                                     <li key={index} className={content === item._id ? "active" : undefined}>
-                                        <a style={{ cursor: 'pointer' }} onClick={() => this.handleChangeContent(item._id, employeeKpiSet.creator._id, item.type, item.name)}>
+                                        <a style={{ cursor: 'pointer' }} onClick={() => this.handleChangeContent(item._id, employeeKpiSet.creator._id, item.name)}>
                                             {item.name}
                                         &nbsp;
                                     </a>

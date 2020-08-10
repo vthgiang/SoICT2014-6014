@@ -19,8 +19,7 @@ const CustomerSchema = new Schema({
         type: String
     },
     location: { // khu vực
-        type: Schema.Types.ObjectId,
-        ref: 'customer_locations'
+        type: String
     },
     email: { // địa chỉ email
         type: String

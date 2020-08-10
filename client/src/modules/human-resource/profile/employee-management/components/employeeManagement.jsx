@@ -716,7 +716,7 @@ class EmployeeManagement extends Component {
                                 <li><a style={{ cursor: 'pointer' }} title={'Thêm một thông tin nhân viên'} onClick={this.createEmployee}>{'Thêm bằng tay'}</a></li>
                             </ul>
                         </div>
-                        <ExportExcel id="export-employee" exportData={exportData} style={{ marginRight: 15 }} />
+                        <ExportExcel id="export-employee" exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
@@ -786,21 +786,27 @@ class EmployeeManagement extends Component {
                         </div>
                     </div>
                     <div className="form-group col-md-12 row" >
-                        {Number(employeesManager.expiresContract) > 0 || Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0 &&
+                        {(Number(employeesManager.expiresContract) > 0 || Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0) &&
                             <span>Có</span>
                         }
                         {Number(employeesManager.expiresContract) > 0 &&
                             <React.Fragment>
                                 <span className="text-danger" style={{ fontWeight: "bold" }}>{` ${employeesManager.expiresContract} nhân viên`}</span>
-                                <span>{` hết hạn hợp đồng và`}</span>
+                                <span>{` hết hạn hợp đồng`}</span>
                             </React.Fragment>
+                        }
+                        {(Number(employeesManager.expiresContract) > 0 && Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0) &&
+                            <span>{` và`}</span>
                         }
                         {
                             Number(employeesManager.employeesHaveBirthdateInCurrentMonth) > 0 &&
                             <React.Fragment>
                                 <span className="text-success" style={{ fontWeight: "bold" }}>{` ${employeesManager.employeesHaveBirthdateInCurrentMonth} nhân viên`}</span>
-                                <span>{` có sinh nhật trong tháng này (${this.formatDate(Date.now(), true)})`}</span>
+                                <span>{` có sinh nhật`}</span>
                             </React.Fragment>
+                        }
+                        {(Number(employeesManager.expiresContract) > 0 || Number(employeesManager.employeesHaveBirthdateInCurrentMonth)) > 0 &&
+                            <span>{` trong tháng này (${this.formatDate(Date.now(), true)})`}</span>
                         }
                     </div>
                     <table id="employee-table" className="table table-striped table-bordered table-hover">

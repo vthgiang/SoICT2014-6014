@@ -87,7 +87,7 @@ class ContentMaker extends Component {
                     </div>
                 </Files>
                 <div className={controlCssClass}>
-                    <div style={{ textAlign: "right" }}>
+                    <div className = "" style={{ textAlign: "right" }}>
                         <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => this.refs.fileComponent.openFileChooser()}>{translate("task.task_perform.attach_file")}&nbsp;&nbsp;&nbsp;&nbsp;</a>
                         <a style={{ cursor: "pointer" }} className="link-black text-sm" onClick={(e) => {
                             onSubmit(e);

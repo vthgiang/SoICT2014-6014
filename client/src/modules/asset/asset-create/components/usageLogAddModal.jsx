@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
 import { AssetCreateValidator } from './combinedContent';
+
 import { UserActions } from '../../../super-admin/user/redux/actions';
 
 class UsageLogAddModal extends Component {
@@ -23,10 +26,13 @@ class UsageLogAddModal extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+            
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         return [day, month, year].join('-');
     }
@@ -77,7 +83,7 @@ class UsageLogAddModal extends Component {
         return msg === undefined;
     }
 
-    //8. Bắt sự kiện thay đổi "Nội dung"
+    // Bắt sự kiện thay đổi "Nội dung"
     handleDescriptionChange = (e) => {
         let value = e.target.value;
         this.validateDescription(value, true);
@@ -99,9 +105,8 @@ class UsageLogAddModal extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result =
-            // this.validateUsedBy(this.state.usedBy, false) &&
-            this.validateDescription(this.state.description, false)
+        let result = this.validateDescription(this.state.description, false)
+
         return result;
     }
 
@@ -128,10 +133,13 @@ class UsageLogAddModal extends Component {
     }
 
     render() {
-        const { translate, id, user } = this.props;
-        var userlist = user.list;
+        const { id } = this.props;
+        const { translate, user } = this.props;
         const { usedBy, startDate, endDate, description, errorOnDescription } = this.state;
+
+        var userlist = user.list;
         console.log(this.state, 'this.state')
+
         return (
             <React.Fragment>
                 <ButtonModal modalID={`modal-create-usage-${id}`} button_name="Thêm mới" title="Thêm mới thông tin cấp phát sử dụng" />
@@ -142,8 +150,11 @@ class UsageLogAddModal extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
+                    {/* Form thêm thông tin sử dụng */}
                     <form className="form-group" id={`form-create-usage-${id}`}>
                         <div className="col-md-12">
+
+                            {/* Người sử dụng */}
                             <div className={`form-group`}>
                                 <label>Người sử dụng</label>
                                 <div>
@@ -160,6 +171,8 @@ class UsageLogAddModal extends Component {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Thời gian bắt đầu sử dụng */}
                             <div className="form-group">
                                 <label>Thời gian bắt đầu sử dụng</label>
                                 <DatePicker
@@ -169,6 +182,7 @@ class UsageLogAddModal extends Component {
                                 />
                             </div>
 
+                            {/* Thời gian kết thúc sử dụng */}
                             <div className="form-group">
                                 <label>Thời gian kết thúc sử dụng</label>
                                 <DatePicker
@@ -177,7 +191,9 @@ class UsageLogAddModal extends Component {
                                     onChange={this.handleEndDateChange}
                                 />
                             </div>
-                            <div className={`form-group ${errorOnDescription === undefined ? "" : "has-error"}`}>
+
+                            {/* Nội dung */}
+                            <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
                                 <label>Nội dung<span className="text-red">*</span></label>
                                 <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
                                     placeholder="Nội dung"></textarea>

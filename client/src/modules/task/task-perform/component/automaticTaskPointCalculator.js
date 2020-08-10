@@ -22,7 +22,7 @@ function calcAutoPoint(data) {
     let { task, date, progress, info } = data;
 
     let splitter = date.split('-');
-    let progressTask = progress ? progress : undefined;
+    let progressTask = (progress !== null && progress !== undefined) ? progress : undefined;
     let evaluationsDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
     let startDate = new Date(task.startDate);
     let endDate = new Date(task.endDate);
@@ -30,6 +30,8 @@ function calcAutoPoint(data) {
     let totalDay = endDate.getTime() - startDate.getTime();
     let dayUsed = evaluationsDate.getTime() - startDate.getTime();
     let overdueDate = (dayUsed - totalDay > 0) ? dayUsed - totalDay : 0;
+
+    if(dayUsed <= 0) dayUsed = 0.5;
 
     // Tính điểm theo độ trễ ngày tương đối
     let autoDependOnDay = progressTask / (dayUsed/totalDay); // tiến độ thực tế / tiến độ lí thuyết
@@ -51,7 +53,7 @@ function calcAutoPoint(data) {
     let reduceAction = actionRating.reduce( (accumulator, currentValue) => accumulator + currentValue, 0);
     reduceAction = reduceAction > 0 ? reduceAction : 0;
 
-    let averageActionRating = a ? 10 : reduceAction/a;
+    let averageActionRating = !a ? 10 : reduceAction/a; // a = 0 thì avg mặc định là 10
     let autoHasActionInfo = progress/(dayUsed/totalDay) - 0.5*(10-averageActionRating)*10;
     let automaticPoint = 0;
 

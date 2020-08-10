@@ -4,9 +4,7 @@ const {
     LogError
 } = require('../../../logs');
 
-/**
- * Lấy danh sách các bảng lương
- */
+/** Lấy danh sách các bảng lương */
 exports.searchSalaries = async (req, res) => {
     try {
         let data = {};
@@ -38,12 +36,11 @@ exports.searchSalaries = async (req, res) => {
         });
     }
 }
-/**
- * Tạo mới một bảng lương 
- */
+
+/** Tạo mới một bảng lương */
 exports.createSalary = async (req, res) => {
     try {
-        // Kiểm tra thông tin dữ liệ truyền vào
+        // Kiểm tra thông tin dữ liệu truyền vào
         if (req.body.employeeNumber.trim() === "") {
             await LogError(req.user.email, 'CREATE_SARALY', req.user.company);
             res.status(400).json({
@@ -72,7 +69,7 @@ exports.createSalary = async (req, res) => {
                 }
             });
         } else {
-            var createSaraly = await SalaryService.createSalary(req.body, req.user.company._id);
+            let createSaraly = await SalaryService.createSalary(req.body, req.user.company._id);
             // Kiểm tra sự tồn tại của mã nhân viên
             if (createSaraly === null) {
                 await LogError(req.user.email, 'CREATE_SARALY', req.user.company);
@@ -113,12 +110,10 @@ exports.createSalary = async (req, res) => {
     }
 }
 
-/**
- * Xoá thông tin bảng lương
- */
+/** Xoá thông tin bảng lương */
 exports.deleteSalary = async (req, res) => {
     try {
-        var saralyDelete = await SalaryService.deleteSalary(req.params.id);
+        let saralyDelete = await SalaryService.deleteSalary(req.params.id);
         await LogInfo(req.user.email, 'DELETE_SARALY', req.user.company);
         res.status(200).json({
             success: true,
@@ -136,9 +131,8 @@ exports.deleteSalary = async (req, res) => {
         });
     }
 }
-/**
- * Chỉnh sửa thông tin bảng lương
- */
+
+/** Chỉnh sửa thông tin bảng lương */
 exports.updateSalary = async (req, res) => {
     try {
         // Kiểm tra dữ liệu truyền vào
@@ -170,7 +164,7 @@ exports.updateSalary = async (req, res) => {
                 }
             });
         } else {
-            var saralyUpdate = await SalaryService.updateSalary(req.params.id, req.body, req.user.company._id);
+            let saralyUpdate = await SalaryService.updateSalary(req.params.id, req.body, req.user.company._id);
             // Kiểm tra sự tồn tại của mã nhân viên
             if (saralyUpdate === null) {
                 await LogError(req.user.email, 'EDIT_SARALY', req.user.company);
@@ -202,10 +196,10 @@ exports.updateSalary = async (req, res) => {
     }
 }
 
-// Import dữ liệu bảng lương
+/** Import dữ liệu bảng lương */
 exports.importSalaries = async (req, res) => {
     try {
-        var data = await SalaryService.importSalaries(req.body, req.user.company._id);
+        let data = await SalaryService.importSalaries(req.body, req.user.company._id);
         if (data.rowError !== undefined) {
             await LogError(req.user.email, 'IMPORT_SARALY', req.user.company);
             res.status(400).json({

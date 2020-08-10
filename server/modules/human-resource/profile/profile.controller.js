@@ -63,7 +63,9 @@ exports.updatePersonalInformation = async (req, res) => {
 exports.searchEmployeeProfiles = async (req, res) => {
     try {
         let data;
-        if (req.query.page === undefined && req.query.limit === undefined) {
+        if (req.query.numberMonth) {
+            data = await EmployeeService.getEmployeesOfNumberMonth(req.query.organizationalUnits, req.query.numberMonth, req.user.company._id);
+        } else if (req.query.page === undefined && req.query.limit === undefined) {
             data = await EmployeeService.getEmployees(req.user.company._id, req.query.organizationalUnits, req.query.position, false, req.query.status);
         } else {
             let params = {
@@ -104,14 +106,20 @@ exports.searchEmployeeProfiles = async (req, res) => {
 exports.createEmployee = async (req, res) => {
     try {
         let avatar = "";
-        if (req.files.fileAvatar !== undefined) {
-            avatar = `/${req.files.fileAvatar[0].path}`;
+        if (req.files && req.files.fileAvatar !== undefined) {
+            let fileAvatar = req.files.fileAvatar[0];
+            if (fileAvatar.path) {
+                let path = fileAvatar.path;
+                let regex = /\\/gi;
+                avatar = `/${path.replace(regex, '/')}`;
+            }
+
         }
-        let fileDegree = req.files.fileDegree,
-            fileCertificate = req.files.fileCertificate,
-            fileContract = req.files.fileContract,
-            file = req.files.file;
-        let fileInfo = {
+        let fileDegree = req.files ? req.files.fileDegree : undefined,
+            fileCertificate = req.files ? req.files.fileCertificate : undefined,
+            fileContract = req.files ? req.files.fileContract : undefined,
+            file = req.files ? req.files.file : undefined;
+        let fileInfor = {
             fileDegree,
             fileCertificate,
             fileContract,
@@ -271,7 +279,7 @@ exports.createEmployee = async (req, res) => {
                         }
                     });
                 } else {
-                    var data = await EmployeeService.createEmployee(req.body, req.user.company._id, fileInfo);
+                    var data = await EmployeeService.createEmployee(req.body, req.user.company._id, fileInfor);
                     let checkUser = await UserService.checkUserExited(req.body.emailInCompany);
                     if (checkUser === false) {
                         let userInfo = {
@@ -308,14 +316,20 @@ exports.createEmployee = async (req, res) => {
 exports.updateEmployeeInformation = async (req, res) => {
     try {
         let avatar = "";
-        if (req.files.fileAvatar !== undefined) {
-            avatar = `/${req.files.fileAvatar[0].path}`;
+        if (req.files && req.files.fileAvatar !== undefined) {
+            let fileAvatar = req.files.fileAvatar[0]
+            if (fileAvatar.path) {
+                let path = fileAvatar.path;
+                let regex = /\\/gi;
+                avatar = `/${path.replace(regex, '/')}`;
+            }
         }
-        let fileDegree = req.files.fileDegree,
-            fileCertificate = req.files.fileCertificate,
-            fileContract = req.files.fileContract,
-            file = req.files.file;
-        let fileInfo = {
+
+        let fileDegree = req.files ? req.files.fileDegree : undefined,
+            fileCertificate = req.files ? req.files.fileCertificate : undefined,
+            fileContract = req.files ? req.files.fileContract : undefined,
+            file = req.files ? req.files.file : undefined;
+        let fileInfor = {
             fileDegree,
             fileCertificate,
             fileContract,
@@ -479,7 +493,7 @@ exports.updateEmployeeInformation = async (req, res) => {
                     });
                 }
             }
-            var data = await EmployeeService.updateEmployeeInformation(req.params.id, req.body, fileInfo, req.user.company._id);
+            var data = await EmployeeService.updateEmployeeInformation(req.params.id, req.body, fileInfor, req.user.company._id);
             await LogInfo(req.user.email, 'EDIT_EMPLOYEE', req.user.company);
             res.status(200).json({
                 success: true,

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { createKpiSetActions } from '../../../employee/creation/redux/actions';
 
-import { DatePicker } from '../../../../../common-components';
+import { DatePicker,ExportExcel } from '../../../../../common-components';
 
 import { withTranslate } from 'react-redux-multilingual'
 
@@ -205,7 +205,62 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
             }
         }
 
-        return point
+        return point;
+    }
+
+    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    convertDataToExportData = (data) => {
+        let fileName = "Biểu đồ theo dõi kết quả KPI nhân viên toàn đơn vị";
+
+        if (data) {           
+            data = data.map((item, index) => {
+                let dataEmployeeKpi;
+                if(item.employeeKpi && (item.employeeKpi.length !== 0)){
+                    dataEmployeeKpi = item.employeeKpi.map((x,index)=>{
+                        let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
+                        let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
+                        let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);
+                        let d = new Date(x.date),
+                        month = '' + (d.getMonth() + 1),
+                        year = d.getFullYear(),
+                        date =month+'-'+year;
+
+                        return {              
+                            automaticPoint: automaticPoint,
+                            employeePoint: employeePoint,
+                            approverPoint: approverPoint,
+                            time : date,                
+                        };
+                    })
+                }
+                return {
+                    sheetName : item._id,
+                    dataInSheet : dataEmployeeKpi
+                }
+            })
+        }
+
+        let exportData = {
+            fileName: fileName,
+            dataSheets: data.map((x,index)=>{
+                return {
+                    sheetName: x.sheetName,
+                    tables: [
+                        {
+                            columns: [                            
+                                { key: "time", value: "Thời gian" },
+                                { key: "automaticPoint", value: "Điểm tự động" },
+                                { key: "employeePoint", value: "Điểm tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm được đánh giá" }
+                            ],
+                            data: x.dataInSheet
+                        }
+                    ]
+                }
+            })
+        }
+        return exportData;        
+       
     }
 
     removePreviousChart = () => {
@@ -267,7 +322,14 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
     }
 
     render() {
-        const { translate } = this.props;
+        let exportData;
+        const { createEmployeeKpiSet,translate } = this.props;
+        let employeeKpiSetsInOrganizationalUnitByMonth;
+
+        if (createEmployeeKpiSet.employeeKpiSetsInOrganizationalUnitByMonth) {
+            employeeKpiSetsInOrganizationalUnitByMonth = createEmployeeKpiSet.employeeKpiSetsInOrganizationalUnitByMonth;
+            exportData =this.convertDataToExportData(employeeKpiSetsInOrganizationalUnitByMonth);
+        }
         let d = new Date(),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
@@ -295,6 +357,9 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
                     </div>
                 </section>
                 <section className="form-inline">
+                    <div>
+                    {exportData&&<ExportExcel id="export-employee-kpi-evaluate-result-dashboard" exportData={exportData} style={{ marginTop:5 }} />}
+                    </div>
                     <div className="form-group">
                         <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
                         <DatePicker
@@ -311,11 +376,13 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
                 </section>
 
                 <section className="box-body" style={{ textAlign: "right" }}>
+                    
                     <div className="btn-group">
                         <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.AUTOMATIC)}>{translate('kpi.evaluation.dashboard.auto_point')}</button>
                         <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.EMPLOYEE)}>{translate('kpi.evaluation.dashboard.employee_point')}</button>
                         <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.APPROVED)}>{translate('kpi.evaluation.dashboard.approve_point')}</button>
                     </div>
+                    
 
                     <div ref="chart"></div>
                 </section>

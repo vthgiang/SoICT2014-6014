@@ -118,9 +118,7 @@ class ConFigImportFile extends Component {
 
                         <div className="form-group col-sm-12 col-xs-12">
                             <label>Cấu hình file import của bạn như sau:</label><br />
-                            <span>File import có</span>
-                            <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;{configData.rowHeader.value}&nbsp;</span>
-                            <span>dòng tiêu đề và đọc dữ liệu các sheet: </span>
+                            <span>File import đọc dữ liệu các sheet: </span>
                             <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;{configData.sheets.value.length > 1 ? configData.sheets.value.join(', ') : configData.sheets.value}</span>
 
                             <div id={`croll-table-${id}`} style={{ marginTop: 5 }}>

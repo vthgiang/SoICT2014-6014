@@ -24,11 +24,11 @@ const DocumentDomainSchema = new Schema({
         type: Schema.Types.ObjectId,
         replies: this
     }
-},{
+}, {
     timestamps: true, //ngày tạo và ngày sửa gần nhất
     toJSON: { virtuals: true }
 });
 
 DocumentDomainSchema.plugin(mongoosePaginate);
 
-module.exports = DocumentCategory = mongoose.model("document_domains", DocumentDomainSchema);
+module.exports = DocumentDomain = mongoose.model("document_domains", DocumentDomainSchema);

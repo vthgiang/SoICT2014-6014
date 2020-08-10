@@ -6,6 +6,7 @@ const UserRole = require('./auth/userRole.model');
 const Document = require('./document/document.model');
 const DocumentCategory = require('./document/documentCategory.model');
 const DocumentDomain = require('./document/documentDomain.model');
+const DocumentArchive = require('./document/documentArchive.model')
 
 const AnnualLeave = require('./human-resource/annualLeave.model');
 const Commendation = require('./human-resource/commendation.model');
@@ -63,10 +64,11 @@ const TaskReport = require('./report/taskReport.model');
 const Material = require('./warehouse/material.model');
 // Customer Management
 const Customer = require('./customer/customer.model');
-const CustomerLocation = require('./customer/customerLocation.model');
 const CustomerCare = require('./customer/customerCare.model');
 const CustomerGroup = require('./customer/customerGroup.model');
 const CustomerLiability = require('./customer/customerLiability.model');
+
+const Location = require('./common/location.model');
 
 exports.schema = {
     Privilege,
@@ -131,7 +133,8 @@ exports.schema = {
     Material,
     Customer,
     CustomerCare,
-    CustomerLocation,
     CustomerGroup,
-    CustomerLiability
+    CustomerLiability,
+
+    Location,
 } 

@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { SalaryCreateForm, SalaryEditForm, SalaryImportForm } from './combinedContent';
+
 import { DataTableSetting, DeleteNotification, PaginateBar, DatePicker, SelectMulti, ExportExcel } from '../../../../common-components';
-import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
+
+import { SalaryCreateForm, SalaryEditForm, SalaryImportForm } from './combinedContent';
+
 import { SalaryActions } from '../redux/actions';
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 
 class SalaryManagement extends Component {
     constructor(props) {
@@ -18,34 +21,42 @@ class SalaryManagement extends Component {
             limit: 5,
         }
     }
+
     componentDidMount() {
         this.props.searchSalary(this.state);
         this.props.getDepartment();
     }
 
-    // Function format dữ liệu Date thành string
+    /**
+     * Function format dữ liệu Date thành string
+     * @param {*} date : Ngày muốn format
+     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
+     */
     formatDate(date, monthYear = false) {
-        let d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
 
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else return [day, month, year].join('-');
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        }
+        return date;
     }
 
-    // Function bắt sự kiện thêm lương nhân viên bằng tay
+    /** Function bắt sự kiện thêm lương nhân viên bằng tay */
     createSalary = () => {
         window.$('#modal-create-salary').modal('show');
     }
 
-    // Function bắt sự kiện thêm lương nhân viên bằng import file
+    /** Function bắt sự kiện thêm lương nhân viên bằng import file */
     importSalary = async () => {
         await this.setState({
             importSalary: true
@@ -53,7 +64,10 @@ class SalaryManagement extends Component {
         window.$('#modal_import_file').modal('show');
     }
 
-    // Function bắt sự kiện chỉnh sửa thông tin nhân viên
+    /**
+     * Function bắt sự kiện chỉnh sửa thông tin lương nhân viên
+     * @param {*} value : Thông tin lương nhân viên cần chỉnh sửa
+     */
     handleEdit = async (value) => {
         await this.setState({
             ...this.state,
@@ -62,16 +76,18 @@ class SalaryManagement extends Component {
         window.$('#modal-edit-salary').modal('show');
     }
 
-    // Function lưu giá trị mã nhân viên vào state khi thay đổi
+    /** Function lưu giá trị mã nhân viên vào state khi thay đổi */
     handleMSNVChange = (event) => {
         const { name, value } = event.target;
         this.setState({
             [name]: value
         });
-
     }
 
-    // Function lưu giá trị unit vào state khi thay đổi
+    /**
+     * Function lưu giá trị unit vào state khi thay đổi
+     * @param {*} value : Array id đơn vị
+     */
     handleUnitChange = (value) => {
         if (value.length === 0) {
             value = null
@@ -82,7 +98,10 @@ class SalaryManagement extends Component {
         })
     }
 
-    // Function lưu giá trị chức vụ vào state khi thay đổi
+    /**
+     * Function lưu giá trị chức vụ vào state khi thay đổi
+     * @param {*} value : Array id phòng ban
+     */
     handlePositionChange = (value) => {
         if (value.length === 0) {
             value = null
@@ -93,26 +112,32 @@ class SalaryManagement extends Component {
         })
     }
 
-    // Function lưu giá trị tháng vào state khi thay đổi
+    /**
+     *Function lưu giá trị tháng vào state khi thay đổi
+     * @param {*} value : Giá trị tháng
+     */
     handleMonthChange = (value) => {
-        let partMonth = value.split('-');
-        value = [partMonth[1], partMonth[0]].join('-');
+        if (value) {
+            let partMonth = value.split('-');
+            value = [partMonth[1], partMonth[0]].join('-');
+        }
         this.setState({
             ...this.state,
             month: value
         });
     }
 
-    // Function bắt sự kiện tìm kiếm 
+    /** Function bắt sự kiện tìm kiếm */
     handleSunmitSearch = async () => {
-        if (this.state.month === null) {
+        const { month } = this.state;
+        if (month === null) {
             let partMonth = this.formatDate(Date.now(), true).split('-');
             let month = [partMonth[1], partMonth[0]].join('-');
             await this.setState({
                 ...this.state,
                 month: month
             })
-        } else if (this.state.month === "-") {
+        } else if (month === "-") {
             await this.setState({
                 ...this.state,
                 month: ""
@@ -121,7 +146,10 @@ class SalaryManagement extends Component {
         this.props.searchSalary(this.state);
     }
 
-    // Bắt sự kiện setting số dòng hiện thị trên một trang
+    /**
+     * Bắt sự kiện setting số dòng hiện thị trên một trang
+     * @param {*} number : Số dòng hiện thị
+     */
     setLimit = async (number) => {
         await this.setState({
             limit: parseInt(number),
@@ -129,7 +157,10 @@ class SalaryManagement extends Component {
         this.props.searchSalary(this.state);
     }
 
-    // Bắt sự kiện chuyển trang
+    /**
+     * Bắt sự kiện chuyển trang
+     * @param {*} pageNumber : Số trang cần xem
+     */
     setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * (this.state.limit);
         await this.setState({
@@ -138,8 +169,12 @@ class SalaryManagement extends Component {
         this.props.searchSalary(this.state);
     }
 
-    // Function chyển đổi dữ liệu bảng lương thành dạng dữ liệu dùng export
+    /**
+     * Function chyển đổi dữ liệu bảng lương thành dạng dữ liệu dùng export
+     * @param {*} data : dữ liệu bảng lương
+     */
     convertDataToExportData = (data) => {
+        const { translate } = this.props;
         let otherSalary = [];
         if (data) {
             data.forEach(x => {
@@ -168,12 +203,11 @@ class SalaryManagement extends Component {
                             }
                         })
                     };
-
                     total = total + parseInt(x.mainSalary);
                 }
 
                 return {
-                    STT: index + 1,
+                    STT4: index + 1,
                     employeeNumber: x.employee.employeeNumber,
                     fullName: x.employee.fullName,
                     mainSalary: parseInt(x.mainSalary),
@@ -187,7 +221,6 @@ class SalaryManagement extends Component {
                     year: year,
                     ...bonus
                 };
-
             })
         }
 
@@ -195,12 +228,21 @@ class SalaryManagement extends Component {
             return { key: `bonus${index}`, value: x, type: "Number" }
         })
         let exportData = {
-            fileName: "Bảng theo dõi lương thưởng",
+            fileName: translate('human_resource.salary.file_name_export'),
             dataSheets: [
                 {
                     sheetName: "sheet1",
+                    sheetTitle: translate('human_resource.salary.file_name_export'),
                     tables: [
                         {
+                            // tableName: "Bảng lương 1",
+                            // merges: [{
+                            //     key: "other",
+                            //     columnName: "Lương thưởng khác",
+                            //     keyMerge: 'bonus0',
+                            //     colspan: 2
+                            // }],
+                            // rowHeader: 3,
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "month", value: "Tháng" },
@@ -212,12 +254,12 @@ class SalaryManagement extends Component {
                                 { key: "gender", value: "Giới tính" },
                                 { key: "birthdate", value: "Ngày sinh" },
                                 { key: "status", value: "Tình trạng lao động" },
-                                { key: "mainSalary", value: "Tiền lương chính", type: "Number" },
+                                { key: "mainSalary", value: "Tiền lương chính", },
                                 ...columns,
-                                { key: "total", value: "Tổng lương", type: "Number" },
+                                { key: "total", value: "Tổng lương", },
                             ],
                             data: data
-                        }
+                        },
                     ]
                 },
             ]
@@ -226,11 +268,13 @@ class SalaryManagement extends Component {
     }
 
     render() {
-        const { list } = this.props.department;
-        const { translate, salary } = this.props;
+        const { translate, salary, department } = this.props;
+
         const { limit, page, organizationalUnit } = this.state;
+
         let formater = new Intl.NumberFormat();
-        let listSalarys = [], listPosition = [{ value: "", text: "Bạn chưa chọn đơn vị", disabled: true }];
+        let { list } = department;
+        let listSalarys = [], listPosition = [{ value: "", text: translate('human_resource.not_unit'), disabled: true }];
 
         if (organizationalUnit !== null) {
             listPosition = [];
@@ -259,16 +303,21 @@ class SalaryManagement extends Component {
             <div className="box">
                 <div className="box-body qlcv">
                     <div className="form-inline">
+                        {/* Nút xuất thêm bảng lương*/}
                         <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
                             <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.salary.add_salary_title')} >{translate('human_resource.salary.add_salary')}</button>
                             <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                                <li><a title={translate('human_resource.salary.add_import_title')} onClick={this.importSalary}>{translate('human_resource.salary.add_import')}</a></li>
-                                <li><a title={translate('human_resource.salary.add_by_hand_title')} onClick={this.createSalary}>{translate('human_resource.salary.add_by_hand')}</a></li>
+                                <li><a title={translate('human_resource.salary.add_import_title')} onClick={this.importSalary}>
+                                    {translate('human_resource.salary.add_import')}</a></li>
+                                <li><a title={translate('human_resource.salary.add_by_hand_title')} onClick={this.createSalary}>
+                                    {translate('human_resource.salary.add_by_hand')}</a></li>
                             </ul>
                         </div>
-                        <ExportExcel id="export-salary" exportData={exportData} style={{ marginRight: 15 }} />
+                        {/* Nút xuất báo cáo */}
+                        <ExportExcel id="export-salary" exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
                     </div>
                     <div className="form-inline">
+                        {/* Đơn vị */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
@@ -276,6 +325,7 @@ class SalaryManagement extends Component {
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
+                        {/* Chức vụ */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.position')}</label>
                             <SelectMulti id={`multiSelectPosition`} multiple="multiple"
@@ -285,10 +335,12 @@ class SalaryManagement extends Component {
                         </div>
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
+                        {/* Mã số nhân viên */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.staff_number')}</label>
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleMSNVChange} placeholder={translate('human_resource.staff_number')} autoComplete="off" />
                         </div>
+                        {/* Tháng */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.month')}</label>
                             <DatePicker
@@ -297,6 +349,7 @@ class SalaryManagement extends Component {
                                 value={this.formatDate(Date.now(), true)}
                                 onChange={this.handleMonthChange}
                             />
+                            {/* Nút tìm kiếm */}
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
                         </div>
                     </div>
@@ -328,7 +381,7 @@ class SalaryManagement extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(listSalarys !== 'undefined' && listSalarys.length !== 0) &&
+                            {(listSalarys && listSalarys.length !== 0) &&
                                 listSalarys.map((x, index) => {
                                     if (x.bonus.length !== 0) {
                                         var total = 0;
@@ -343,7 +396,7 @@ class SalaryManagement extends Component {
                                             <td>{this.formatDate(x.month, true)}</td>
                                             <td>
                                                 {
-                                                    (typeof x.bonus === 'undefined' || x.bonus.length === 0) ?
+                                                    (x.bonus || x.bonus.length === 0) ?
                                                         formater.format(parseInt(x.mainSalary)) :
                                                         formater.format(total + parseInt(x.mainSalary))
                                                 } {x.unit}
@@ -364,7 +417,7 @@ class SalaryManagement extends Component {
                                                     content={translate('human_resource.salary.delete_salary')}
                                                     data={{
                                                         id: x._id,
-                                                        info: x.employee.employeeNumber + "- " + translate('human_resource.month') + ": " + x.month
+                                                        info: x.employee.employeeNumber + "- " + translate('human_resource.month') + ": " + this.formatDate(x.month, true)
                                                     }}
                                                     func={this.props.deleteSalary}
                                                 />
@@ -374,16 +427,22 @@ class SalaryManagement extends Component {
                             }
                         </tbody>
                     </table>
+
                     {salary.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listSalarys === 'undefined' || listSalarys.length === 0) && <div className="--info-panel">{translate('confirm.no_data')}</div>
+                        (!listSalarys || listSalarys.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
+
+                {/* Form thêm thông tin bảng lương bằng tay */}
                 <SalaryCreateForm />
+
+                {/* Form Thêm thông tin bảng lương bằng import file */}
                 {this.state.importSalary && <SalaryImportForm />}
-                {
-                    this.state.currentRow !== undefined &&
+
+                {/* Form chỉnh sửa thông tin bảng lương */
+                    this.state.currentRow &&
                     <SalaryEditForm
                         _id={this.state.currentRow._id}
                         unit={this.state.currentRow.unit}
@@ -404,9 +463,9 @@ function mapState(state) {
 };
 
 const actionCreators = {
-    getDepartment: DepartmentActions.get,
     searchSalary: SalaryActions.searchSalary,
     deleteSalary: SalaryActions.deleteSalary,
+    getDepartment: DepartmentActions.get,
 };
 
 const connectedListSalary = connect(mapState, actionCreators)(withTranslate(SalaryManagement));

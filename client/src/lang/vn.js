@@ -12,21 +12,6 @@ export default {
             number_decisions_required: 'Số ra quyết định không được để trống',
             number_decisions_have_exist: 'Số ra quyết định đã tồn tại',
             unit_decisions_required: 'Cấp ra quyết định không được để trống',
-            // Quản lý lương nhân viên
-            // TODO: Xoá sau
-            name_other_salary_required: 'Tên lương thưởng khác không được để trống',
-            money_other_salary_required: 'Tiền lương thưởng khác không được để trống',
-            month_salary_required: 'Tháng lương không được để trống',
-            money_salary_required: 'Tiền lương chính không được để trống',
-            month_salary_have_exist: 'Tháng lương đã tồn tại',
-            get_salary_success: 'Lấy thông tin lương nhân viên thành công',
-            get_salary_faile: 'Lấy thông tin lương nhân viên thất bại',
-            create_salary_success: 'Thêm bảng lương thành công',
-            create_salary_faile: 'Thêm bảng lương thất bại',
-            delete_salary_success: 'Xoá bẳng lương thành công',
-            delete_salary_faile: 'Xoá bảng lương thất bại',
-            edit_salary_success: 'Chỉnh sửa bảng lương thành công',
-            edit_salary_faile: 'Chỉnh sửa bảng lương thất bại',
             // Quản lý nghỉ phép
             // TODO: Xoá sau
             start_date_annual_leave_required: 'Ngày bắt đầu không được để trống',
@@ -850,24 +835,6 @@ export default {
             edit_succes: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
         },
-        // Quản lý lương nhân viên
-        salary_employee: { // TODO: Xoá sau
-            list_salary: 'Danh sách bảng lương nhân viên',
-            add_salary: 'Thêm bảng lương',
-            add_salary_title: 'Thêm bảng lương nhân viên',
-            edit_salary: 'Chỉnh sửa bảng lương nhân viên',
-            delete_salary: 'Xoá bảng lương',
-            add_by_hand: 'Thêm bằng tay',
-            add_import: 'Import file excel',
-            add_by_hand_title: 'Thêm một bảng lương',
-            add_import_title: 'Thêm nhiều bảng lương',
-            main_salary: 'Tiền lương chính',
-            other_salary: 'Các loại lương thưởng khác',
-            name_salary: 'Tên lương thưởng',
-            money_salary: 'Số tiền',
-            add_more_salary: 'Thêm lương thưởng khác',
-            add_new_salary: 'Thêm mới bảng lương',
-        },
         // Quản lý khen thưởng, kỷ luật
         discipline: { // TODO: Xoá sau
             list_discipline: 'Danh sách kỷ luật',
@@ -1093,6 +1060,7 @@ export default {
 
         // Modules Quản lý nhân sự
         human_resource: {
+
             // Nhóm dùng chung cho module quản lý nhân sự
             unit: 'Đơn vị',
             position: 'Chức vụ',
@@ -1106,6 +1074,12 @@ export default {
             non_position: 'Chọn chức vụ',
             all_status: 'Chọn tất cả các trạng thái',
             non_status: 'Chọn trạng thái',
+            not_unit: 'Chưa chọn đơn vị',
+            add_data_by_excel: 'Thêm dữ liệu bằng việc Import file excel',
+            download_file: 'Download file import mẫu!',
+            choose_file: 'Chọn file',
+            name_button_export: 'Xuất báo cáo',
+
             // Thông điệp trả về từ server dung chung cho module quản lý nhân sự
             employee_number_required: 'Mã nhân viên không được để trống',
             staff_code_not_special: 'Mã nhân viên không được chứ ký tự đặc biệt',
@@ -1117,6 +1091,7 @@ export default {
             // Quản lý lương nhân viên
             salary: {
                 list_salary: 'Danh sách bảng lương nhân viên',
+                file_name_export: 'Bảng theo dõi lương thưởng',
 
                 // Nhóm dành cho table
                 table: {
@@ -1141,6 +1116,8 @@ export default {
                 add_new_salary: 'Thêm mới bảng lương',
 
                 // Thông điệp trả về từ server
+                employee_code_duplicated: 'Mã số nhân viên bị trùng lặp',
+                employee_name_required: 'Tên nhân viên không được để trống',
                 employee_number_required: 'Mã nhân viên không được để trống',
                 staff_code_not_special: 'Mã nhân viên không được chứ ký tự đặc biệt',
                 staff_code_not_find: 'Mã nhân viên không tồn tại',
@@ -1342,6 +1319,7 @@ export default {
                 start_date_required: 'Thời gian bắt đầu không được để trống',
                 end_date_required: 'Thời gian kết thúc không được để trống',
                 reason_required: 'Mô tả lịch nghỉ không được để trống',
+                holiday_duplicate_required: 'Thời gian bị trùng lặp',
 
                 get_holiday_success: 'Lấy danh sách lịch làm việc thành công',
                 get_holiday_faile: 'Lấy danh sách lịch làm việc thất bại',
@@ -1731,6 +1709,10 @@ export default {
                 next: 'Sau',
                 tasks_calendar: 'Lịch công việc chi tiết',
                 model_detail_task_title: 'Thông tin chi tiết công việc',
+                collaborative_tasks: 'Công việc chung',
+                in_time: 'Đúng hạn',
+                delayed_time: 'Trễ hạn',
+                not_achieved: 'Quá hạn',
 
                 err_organizational_unit: 'Đơn vị đã bị xóa',
                 err_name_task: 'Tên đã bị xóa',
@@ -1762,7 +1744,6 @@ export default {
                 detail_value: 'Giá trị',
                 detail_not_hasinfo: 'Chưa có thông tin',
                 detail_eval: 'Đánh giá công việc',
-                detail_eval_on_date: 'Đánh giá công việc ngày',
                 detail_point: 'Điểm các thành viên',
                 detail_auto_point: 'Điểm tự động',
                 detail_emp_point: 'Điểm tự đánh giá',
@@ -1791,7 +1772,7 @@ export default {
                 evaluate_date: 'Ngày đánh giá',
                 evaluate_member: 'Đánh giá thành viên tham gia công việc',
                 detail_not_calc_auto_point: 'Chưa tính được',
-                detail_auto_on_system: 'Điểm tựu động đang lưu trên hệ thống',
+                detail_auto_on_system: 'Điểm tự động đang lưu trên hệ thống',
                 detail_not_auto_on_system: 'Chưa có dữ liệu',
                 action_not_rating: 'Các hoạt động chưa được đánh giá tháng này',
                 no_action: 'Không có',
@@ -1799,17 +1780,17 @@ export default {
                 not_eval: 'Chưa đánh giá',
                 acc_evaluate: 'Đánh giá của người phê duyệt',
                 name_employee: 'Tên nhân viên',
-                role_employee: 'Tên vai trò',
+                role_employee: 'Vai trò',
+                detail_emp_point_of: 'Điểm tự đánh giá của',
 
                 enter_emp_point: 'Nhập điểm tự đánh giá',
-                eval_on_month: 'Thông tin đánh giá công việc tháng này',
                 responsible_not_eval: 'Người thực hiện chưa đánh giá',
                 not_eval_on_month: 'Chưa có thông tin đánh giá tháng này',
 
                 edit_basic_info: 'Thông tin cơ bản',
                 edit_detail_info: 'Thông tin chi tiết',
                 edit_member_info: 'Thông tin thành viên tham gia',
-                edit_inactive_emp: 'Thông tin người không làm việc nữa',
+                edit_inactive_emp: 'Thông tin thành viên rời khỏi công việc',
                 edit_enter_progress: 'Nhập mức độ hoàn thành',
                 edit_enter_value: 'Nhập giá trị',
 
@@ -1835,22 +1816,33 @@ export default {
                 calc_where: 'Trong đó',
                 calc_no_value: 'Chưa có giá trị',
                 calc_nan: 'Không tính được',
-                explain: ' - (Giá trị âm sẽ được tính là 0)',
+                explain: ' (Giá trị âm sẽ được tính là 0)',
                 eval_list: 'Danh sách các lần đánh giá',
                 title_eval: 'Đánh giá công việc',
 
                 btn_save_eval: 'Lưu đánh giá',
                 btn_get_info: 'Lấy thông tin',
-                note_not_eval: 'Bạn không thể chỉnh sửa đánh giá nữa vì đã quá 7 ngày sau lần đánh giá cuối cùng.',
+                note_not_eval: 'Đã quá 7 ngày sau ngày đánh giá. Bạn không thể chỉnh sửa thêm!',
                 note_eval: 'Số ngày còn lại để chỉnh sửa đánh giá: ',
-                
+
                 add_eval_of_this_month: 'Thêm đánh giá tháng này',
                 eval_of: 'Đánh giá tháng',
                 eval_from: 'Đánh giá từ ngày',
                 eval_to: 'Đến ngày',
-                store_info: 'Lưu công việc ra thông tin chung',
+                store_info: 'Lưu các giá trị trên vào thông tin công việc hiện tại',
                 bool_yes: 'Đúng',
                 bool_no: 'Sai',
+
+                detail_evaluation: 'Thông tin đánh giá công việc',
+                err_eval_start: 'Ngày đánh giá phải lớn hơn bằng ngày bắt đầu',
+                err_eval_end: 'Ngày đánh giá phải nhỏ hơn bằng ngày kết thúc',
+                err_eval_on_month: 'Ngày đánh giá phải là ngày trong tháng',
+
+                info_eval_month: 'Thông tin công việc trong đánh giá này',
+                explain_avg_rating: 'Do chưa có hoạt động nào được đánh giá nên mặc định điểm đánh giá hoạt động là 10',
+
+                auto_point_field: 'Điểm công việc tự động trong đánh giá này',
+                get_outside_info: 'Nhập tự động từ thông tin công việc hiện tại',
 
                 dashboard_created: 'Đã tạo',
                 dashboard_need_perform: 'Cần thực hiện',
@@ -1884,6 +1876,9 @@ export default {
 
                 add_err_special_character: 'Tên không được chứa kí tự đặc biệt',
                 add_err_end_date: 'Ngày kết thúc phải sau ngày bắt đầu',
+
+                unit_evaluate: "Đơn vị tiếp nhận kết quả đánh giá công việc",
+                unit_manage_task: "Đơn vị quản lý công việc",
 
             },
             task_perform: {
@@ -1922,6 +1917,8 @@ export default {
                 enter_comment_action: "Nhập bình luận cho hoạt động",
                 create_comment_action: "Thêm bình luận",
                 stop_timer: "Dừng bấm giờ",
+                edit: "Chỉnh sửa",
+                delete: "Xóa",
 
 
                 // TODO: code_mesage_task_perform
@@ -2035,6 +2032,7 @@ export default {
                     accountable: 'Vai trò người phê duyệt',
 
                     err_range: 'Giá trị không được vượt quá khoảng 0-100',
+                    err_contribute: 'Tổng phần trăm đóng góp phải là 100',
                     err_empty: 'Giá trị không được để trống'
                 }
 

@@ -3,12 +3,14 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { LOCAL_SERVER_API } from '../../../../env';
+import moment from 'moment';
+
 import { DialogModal } from '../../../../common-components';
 import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
-import moment from 'moment';
 import {
     GeneralTab, MaintainanceLogTab, UsageLogTab, DepreciationTab, IncidentLogTab, DisposalTab, FileTab
 } from '../../asset-create/components/combinedContent';
+
 import { AssetManagerActions } from '../redux/actions';
 import { UsageActions } from '../../usage/redux/actions';
 
@@ -28,7 +30,8 @@ class AssetEditForm extends Component {
 
     // Function lưu các trường thông tin vào state
     handleChange = (name, value) => {
-        if (name === 'purchaseDate' || name === 'warrantyExpirationDate' || name === 'handoverFromDate' || name === 'handoverToDate' || name === 'startDepreciation' || name === 'disposalDate') { //
+        if (name === 'purchaseDate' || name === 'warrantyExpirationDate' || name === 'handoverFromDate' ||
+            name === 'handoverToDate' || name === 'startDepreciation' || name === 'disposalDate') { //
             if (value) {
                 var partValue = value.split('-');
                 value = [partValue[2], partValue[1], partValue[0]].join('-');
@@ -36,6 +39,7 @@ class AssetEditForm extends Component {
                 value = null
             }
         }
+
         this.setState({
             [name]: value
         });
@@ -47,9 +51,10 @@ class AssetEditForm extends Component {
             maintainanceLogs: data
         })
     }
+
     // Function chỉnh sửa sửa chữa, thay thế, nâng cấp
     handleEditMaintainanceLogs = (data, editData) => {
-        if (editData._id !== undefined) {
+        if (editData._id) {
             this.setState({
                 editMaintainanceLogs: [...this.state.editMaintainanceLogs, editData]
             })
@@ -59,9 +64,10 @@ class AssetEditForm extends Component {
             })
         }
     }
+
     // Function xoá sửa chữa, thay thế, nâng cấp
     handleDeleteMaintainanceLogs = (data, deleteData) => {
-        if (deleteData._id !== undefined) {
+        if (deleteData._id) {
             this.setState({
                 deleteMaintainanceLogs: [...this.state.deleteMaintainanceLogs, deleteData],
                 editMaintainanceLogs: this.state.editMaintainanceLogs.filter(x => x._id !== deleteData._id)
@@ -79,9 +85,10 @@ class AssetEditForm extends Component {
             usageLogs: data
         })
     }
+
     // Function chỉnh sửa thông tin cấp phát, điều chuyển, thu hồi
     handleEditUsageLogs = (data, editData) => {
-        if (editData._id !== undefined) {
+        if (editData._id) {
             this.setState({
                 editUsageLogs: [...this.state.editUsageLogs, editData]
             })
@@ -91,9 +98,10 @@ class AssetEditForm extends Component {
             })
         }
     }
+
     // Function xoá thông tin cấp phát, điều chuyển, thu hồi
     handleDeleteUsageLogs = (data, deleteData) => {
-        if (deleteData._id !== undefined) {
+        if (deleteData._id) {
             this.setState({
                 deleteUsageLogs: [...this.state.deleteUsageLogs, deleteData],
                 editUsageLogs: this.state.editUsageLogs.filter(x => x._id !== deleteData._id)
@@ -111,9 +119,10 @@ class AssetEditForm extends Component {
             incidentLogs: data
         })
     }
+
     // Function chỉnh sửa thông tin sự cố tài sản
     handleEditIncidentLogs = (data, editData) => {
-        if (editData._id !== undefined) {
+        if (editData._id) {
             this.setState({
                 editIncidentLogs: [...this.state.editIncidentLogs, editData]
             })
@@ -123,9 +132,10 @@ class AssetEditForm extends Component {
             })
         }
     }
+
     // Function xoá thông tin sự cố tài sản
     handleDeleteIncidentLogs = (data, deleteData) => {
-        if (deleteData._id !== undefined) {
+        if (deleteData._id) {
             this.setState({
                 deleteIncidentLogs: [...this.state.deleteIncidentLogs, deleteData],
                 editIncidentLogs: this.state.editIncidentLogs.filter(x => x._id !== deleteData._id)
@@ -143,9 +153,10 @@ class AssetEditForm extends Component {
             files: data
         })
     }
+
     // Function chỉnh sửa thông tin tài liệu đính kèm
     handleEditFile = (data, editData) => {
-        if (editData._id !== undefined) {
+        if (editData._id) {
             this.setState({
                 editFiles: [...this.state.editFiles, editData]
             })
@@ -155,9 +166,10 @@ class AssetEditForm extends Component {
             })
         }
     }
+
     // Function xoá thông tin tài liệu đính kèm
     handleDeleteFile = (data, deleteData) => {
-        if (deleteData._id !== undefined) {
+        if (deleteData._id) {
             this.setState({
                 deleteFiles: [...this.state.deleteFiles, deleteData],
                 editFiles: this.state.editFiles.filter(x => x._id !== deleteData._id)
@@ -181,7 +193,7 @@ class AssetEditForm extends Component {
 
     // function kiểm tra các trường bắt buộc phải nhập
     validatorInput = (value) => {
-        if (value !== undefined && value.toString().trim() !== '') {
+        if (value && value.toString().trim() !== '') {
             return true;
         }
         return false;
@@ -189,30 +201,34 @@ class AssetEditForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
+        let { code, assetName, serial, assetType, managedBy, purchaseDate, warrantyExpirationDate, location, status, canRegisterForUse, cost, usefulLife, startDepreciation, depreciationType } = this.state;
+
         if (this.state !== {}) {
-            let result =
-                this.validatorInput(this.state.code) && this.validatorInput(this.state.assetName) &&
-                this.validatorInput(this.state.serial) && this.validatorInput(this.state.assetType) &&
-                this.validatorInput(this.state.managedBy) &&
-                this.validatorInput(this.state.purchaseDate) && this.validatorInput(this.state.warrantyExpirationDate) &&
-                this.validatorInput(this.state.location) && this.validatorInput(this.state.status) &&
-                this.validatorInput(this.state.canRegisterForUse) &&
-                this.validatorInput(this.state.cost) && this.validatorInput(this.state.usefulLife) &&
-                this.validatorInput(this.state.startDepreciation) && this.validatorInput(this.state.depreciationType);
+            let result = this.validatorInput(code) && this.validatorInput(assetName) &&
+                this.validatorInput(serial) && this.validatorInput(assetType) &&
+                this.validatorInput(managedBy) && this.validatorInput(purchaseDate) &&
+                this.validatorInput(warrantyExpirationDate) && this.validatorInput(location) &&
+                this.validatorInput(status) && this.validatorInput(canRegisterForUse) &&
+                this.validatorInput(cost) && this.validatorInput(usefulLife) &&
+                this.validatorInput(startDepreciation) && this.validatorInput(depreciationType);
+
             return result;
         }
+
         return true;
     }
 
     save = async () => {
         let { maintainanceLogs, usageLogs, incidentLogs, files, assignedTo, handoverFromDate, handoverToDate } = this.state;
+
         await this.setState({
             img: "",
-            createMaintainanceLogs: maintainanceLogs.filter(x => x._id === undefined),
-            createUsageLogs: usageLogs.filter(x => x._id === undefined),
-            createIncidentLogs: incidentLogs.filter(x => x._id === undefined),
-            createFiles: files.filter(x => x._id === undefined),
+            createMaintainanceLogs: maintainanceLogs.filter(x => !x._id),
+            createUsageLogs: usageLogs.filter(x => !x._id),
+            createIncidentLogs: incidentLogs.filter(x => !x._id),
+            createFiles: files.filter(x => !x._id),
         })
+
         let formData = convertJsonObjectToFormData(this.state);
         files.forEach(x => {
             formData.append("file", x.fileUpload);
@@ -243,14 +259,19 @@ class AssetEditForm extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -276,24 +297,24 @@ class AssetEditForm extends Component {
                 status: nextProps.status,
                 canRegisterForUse: nextProps.canRegisterForUse,
                 detailInfo: nextProps.detailInfo,
-                //khấu hao
+                // Khấu hao
                 cost: nextProps.cost,
                 residualValue: nextProps.residualValue,
                 usefulLife: nextProps.usefulLife,
                 startDepreciation: nextProps.startDepreciation,
                 depreciationType: nextProps.depreciationType,
-                //thanh lý
+                // Thanh lý
                 disposalDate: nextProps.disposalDate,
                 disposalType: nextProps.disposalType,
                 disposalCost: nextProps.disposalCost,
                 disposalDesc: nextProps.disposalDesc,
-                //bảo trì
+                // Bảo trì
                 maintainanceLogs: nextProps.maintainanceLogs,
-                //sử dụng
+                // Sử dụng
                 usageLogs: nextProps.usageLogs,
-                //sự cố
+                // Sự cố
                 incidentLogs: nextProps.incidentLogs,
-                // tài liệu tham khảo
+                // Tài liệu tham khảo
                 archivedRecordNumber: nextProps.archivedRecordNumber,
                 files: nextProps.files,
 
@@ -317,7 +338,6 @@ class AssetEditForm extends Component {
                 errorOnAssignedTo: undefined,
                 errorOnNameField: undefined,
                 errorOnValue: undefined,
-
             }
         } else {
             return null;
@@ -326,7 +346,9 @@ class AssetEditForm extends Component {
 
     render() {
         const { translate, assetsManager } = this.props;
-        const { _id } = this.state;
+        const { _id, img, avatar, code, assetName, serial, assetType, purchaseDate, warrantyExpirationDate, managedBy, assignedTo, handoverFromDate,
+            handoverToDate, location, description, status, canRegisterForUse, detailInfo, usageLogs, maintainanceLogs, cost, residualValue, startDepreciation,
+            usefulLife, depreciationType, incidentLogs, disposalDate, disposalType, disposalCost, disposalDesc, archivedRecordNumber, files } = this.state;
         console.log(this.state, 'this.state-edit')
 
         return (
@@ -338,6 +360,7 @@ class AssetEditForm extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
+                    {/* Nav-tabs */}
                     <div className="nav-tabs-custom" style={{ marginTop: '-15px' }}>
                         <ul className="nav nav-tabs">
                             <li className="active"><a title="Thông tin chung" data-toggle="tab" href={`#edit_general${_id}`}>Thông tin chung</a></li>
@@ -348,86 +371,92 @@ class AssetEditForm extends Component {
                             <li><a title="Thông tin thanh lý" data-toggle="tab" href={`#edit_disposal${_id}`}>Thông tin thanh lý</a></li>
                             <li><a title="Tài liệu đính kèm" data-toggle="tab" href={`#edit_attachments${_id}`}>Tài liệu đính kèm</a></li>
                         </ul>
+
                         < div className="tab-content">
+                            {/* Thông tin chung */}
                             <GeneralTab
                                 _id={`edit_general${_id}`}
-                                img={this.state.img}
+                                img={img}
                                 handleChange={this.handleChange}
                                 handleUpload={this.handleUpload}
-                                avatar={this.state.avatar}
-                                code={this.state.code}
-                                assetName={this.state.assetName}
-                                serial={this.state.serial}
-                                assetTypes={this.state.assetType}
-                                purchaseDate={this.state.purchaseDate}
-                                warrantyExpirationDate={this.state.warrantyExpirationDate}
-                                managedBy={this.state.managedBy}
-                                assignedTo={this.state.assignedTo}
-                                handoverFromDate={this.state.handoverFromDate}
-                                handoverToDate={this.state.handoverToDate}
-                                location={this.state.location}
-                                description={this.state.description}
-                                status={this.state.status}
-                                canRegisterForUse={this.state.canRegisterForUse}
-                                detailInfo={this.state.detailInfo}
+                                avatar={avatar}
+                                code={code}
+                                assetName={assetName}
+                                serial={serial}
+                                assetTypes={assetType}
+                                purchaseDate={purchaseDate}
+                                warrantyExpirationDate={warrantyExpirationDate}
+                                managedBy={managedBy}
+                                assignedTo={assignedTo}
+                                handoverFromDate={handoverFromDate}
+                                handoverToDate={handoverToDate}
+                                location={location}
+                                description={description}
+                                status={status}
+                                canRegisterForUse={canRegisterForUse}
+                                detailInfo={detailInfo}
                             />
 
+                            {/* Thông tin sử dụng */}
                             <UsageLogTab
                                 id={`edit_usage${_id}`}
-                                usageLogs={this.state.usageLogs}
+                                usageLogs={usageLogs}
                                 handleAddUsage={this.handleCreateUsageLogs}
                                 handleEditUsage={this.handleEditUsageLogs}
                                 handleDeleteUsage={this.handleDeleteUsageLogs}
                             />
 
+                            {/* Thông tin bảo trì */}
                             <MaintainanceLogTab
                                 id={`edit_maintainance${_id}`}
-                                maintainanceLogs={this.state.maintainanceLogs}
+                                maintainanceLogs={maintainanceLogs}
                                 handleAddMaintainance={this.handleCreateMaintainanceLogs}
                                 handleEditMaintainance={this.handleEditMaintainanceLogs}
                                 handleDeleteMaintainance={this.handleDeleteMaintainanceLogs}
                             />
 
+                            {/* Thông tin khấu hao */}
                             <DepreciationTab
                                 id={`edit_depreciation${_id}`}
                                 handleChange={this.handleChange}
-                                cost={this.state.cost}
-                                residualValue={this.state.residualValue}
-                                startDepreciation={moment(this.state.startDepreciation).format('DD-MM-YYYY')}
-                                // startDepreciation={this.state.startDepreciation}
-                                usefulLife={this.state.usefulLife}
-                                depreciationType={this.state.depreciationType}
+                                cost={cost}
+                                residualValue={residualValue}
+                                startDepreciation={moment(startDepreciation).format('DD-MM-YYYY')}
+                                usefulLife={usefulLife}
+                                depreciationType={depreciationType}
                             />
 
+                            {/* Thông tin sự cố */}
                             <IncidentLogTab
                                 id={`edit_incident${_id}`}
-                                incidentLogs={this.state.incidentLogs}
+                                incidentLogs={incidentLogs}
                                 handleAddIncident={this.handleCreateIncidentLogs}
                                 handleEditIncident={this.handleEditIncidentLogs}
                                 handleDeleteIncident={this.handleDeleteIncidentLogs}
                             />
 
+                            {/* Thông tin thanh lý */}
                             <DisposalTab
                                 id={`edit_disposal${_id}`}
                                 handleChange={this.handleChange}
-                                disposalDate={this.state.disposalDate}
-                                disposalType={this.state.disposalType}
-                                disposalCost={this.state.disposalCost}
-                                disposalDesc={this.state.disposalDesc}
+                                disposalDate={disposalDate}
+                                disposalType={disposalType}
+                                disposalCost={disposalCost}
+                                disposalDesc={disposalDesc}
                             />
 
+                            {/* Tài liệu đính kèm */}
                             <FileTab
                                 id={`edit_attachments${_id}`}
                                 handleChange={this.handleChange}
                                 handleAddFile={this.handleCreateFile}
                                 handleEditFile={this.handleEditFile}
                                 handleDeleteFile={this.handleDeleteFile}
-                                archivedRecordNumber={this.state.archivedRecordNumber}
-                                files={this.state.files}
+                                archivedRecordNumber={archivedRecordNumber}
+                                files={files}
                             />
                         </div>
                     </div>
-                    {/* </form> */}
                 </DialogModal>
             </React.Fragment>
         )

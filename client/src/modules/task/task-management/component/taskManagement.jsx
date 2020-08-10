@@ -467,7 +467,6 @@ class TaskManagement extends Component {
     render() {
         const { tasks, user, translate } = this.props;
         const { currentTaskId, currentPage, currentTab, parentTask, startDate, endDate, perPage } = this.state;
-
         let currentTasks, units = [];
         let pageTotals;
 
@@ -706,6 +705,7 @@ class TaskManagement extends Component {
                     {
                         currentTaskId !== undefined &&
                         <ModalPerform
+                            units={units}
                             id={currentTaskId}
                         />
                     }

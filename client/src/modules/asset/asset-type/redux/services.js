@@ -9,7 +9,11 @@ export const AssetTypeService = {
     deleteManyAssetType,
 }
 
-// Lấy danh sách loại tài sản
+
+/**
+ * Lấy danh sách loại tài sản
+ * @param {*} data Dữ liệu tìm kiếm
+ */
 function searchAssetTypes(data) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/assettype/asset-types`,
@@ -23,7 +27,9 @@ function searchAssetTypes(data) {
     }, false, true, 'asset.asset_type');
 }
 
-// Danh mục văn bản - domain
+/**
+ * Lấy danh sách loại tài sản
+ */
 function getAssetTypes() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/assettype/asset-types`,
@@ -31,6 +37,10 @@ function getAssetTypes() {
     }, false, true, 'asset.asset_type');
 }
 
+
+/**
+ * Tạo loại tài sản mới
+ */
 function createAssetTypes(data) {  
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/assettype/asset-types`,
@@ -39,6 +49,9 @@ function createAssetTypes(data) {
     }, true, true, 'asset.asset_type');
 }
 
+/**
+ * Chỉnh sửa thông tin loại tài sản
+ */
 function editAssetType(id, data) {  
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/assettype/asset-types/${id}`,
@@ -47,6 +60,9 @@ function editAssetType(id, data) {
     }, true, true, 'asset.asset_type');
 }
 
+/**
+ * Xóa 1 loại tài sản
+ */
 function deleteAssetTypes(id) {  
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/assettype/asset-types/${id}`,
@@ -54,6 +70,9 @@ function deleteAssetTypes(id) {
     }, true, true, 'asset.asset_type');
 }
 
+/**
+ * Xóa nhiều loại tài sản
+ */
 function deleteManyAssetType(array) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/assettype/asset-types`,

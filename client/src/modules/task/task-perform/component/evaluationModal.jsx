@@ -32,15 +32,15 @@ class EvaluationModal extends Component {
         let today = new Date(splitter[2], splitter[1] - 1, splitter[0]);
         let monthOfEval = today.getMonth();
         let yearOfEval = today.getFullYear();
-        
+
         let endDate = new Date(task.endDate);
 
-        let expire = endDate.getTime() - today.getTime(); 
+        let expire = endDate.getTime() - today.getTime();
 
         evaluationOfMonth = task.evaluations.find(e => (monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()));
 
         if (evaluations.length > 0) {
-            if(!evaluationOfMonth) { // có đánh giá các tháng nhưng chưa có đánh giá tháng này
+            if (!evaluationOfMonth) { // có đánh giá các tháng nhưng chưa có đánh giá tháng này
                 checkEval = true;
                 checkMonth = false;
             }
@@ -56,7 +56,7 @@ class EvaluationModal extends Component {
             checkMonth: checkMonth,
             expire: expire,
         }
-        
+
         return data;
     }
 
@@ -116,8 +116,16 @@ class EvaluationModal extends Component {
         const { evaluationsList, checkEval, checkMonth, showEval, content, evaluation, expire } = this.state;
         const { task, role, id } = this.props;
 
+        let dateParam = this.TODAY;
+        let now = new Date();
+        let startDate = new Date(task.startDate);
+
+        if (now.getTime() < startDate.getTime()) {
+            dateParam = this.formatDate(startDate);
+        }
+
         let title;
-        if(role === 'responsible') {
+        if (role === 'responsible') {
             title = translate('task.task_management.detail_resp_eval');
         }
         else if (role === 'accountable') {
@@ -126,7 +134,7 @@ class EvaluationModal extends Component {
         else if (role === 'consulted') {
             title = translate('task.task_management.detail_cons_eval');
         }
-        
+
         return (
             <DialogModal
                 modalID={`task-evaluation-modal-${id}-`}
@@ -141,26 +149,31 @@ class EvaluationModal extends Component {
                         </div>
                         <div className="box-body no-padding">
                             <ul className="nav nav-pills nav-stacked">
-                                {(checkMonth === false && showEval === true) && 
+                                {/* Đánh giá cho tháng đang được thêm, cho lên đầu */}
+                                {(checkMonth === false && showEval === true) &&
                                     <li className={content === 'new' ? "active" : undefined}>
                                         <a style={{ cursor: 'pointer' }} onClick={() => this.handleChangeContent('new', null)}>
-                                            {translate('task.task_management.eval_of')} ({ this.formatMonth(new Date()) })
+                                            {translate('task.task_management.eval_of')} {this.formatMonth(new Date())}
                                         &nbsp;
                                     </a>
                                     </li>
                                 }
-                                {(evaluationsList && evaluationsList.length!==0) && evaluationsList.map((item, index) =>
+
+                                {/* Đánh giá cho các tháng trước đó */}
+                                {(evaluationsList && evaluationsList.length !== 0) && evaluationsList.map((item, index) =>
                                     <li key={index} className={content === item._id ? "active" : undefined}>
-                                        <a style={{ cursor: 'pointer' }} onClick={() => this.handleChangeContent( item._id, item)}>
-                                            {translate('task.task_management.eval_of')} ({ this.formatMonth(item.date) })
+                                        <a style={{ cursor: 'pointer' }} onClick={() => this.handleChangeContent(item._id, item)}>
+                                            {translate('task.task_management.eval_of')} {this.formatMonth(item.date)}
                                         &nbsp;
                                     </a>
                                     </li>
                                 )}
-                                {(expire > 0) && (checkMonth === false && showEval === false ) && 
+
+                                {/* Thêm mới đánh giá */}
+                                {(expire > 0) && (checkMonth === false && showEval === false) &&
                                     <li className={content === 'new' ? "active" : undefined}>
                                         <a style={{ cursor: 'pointer' }} onClick={() => this.handleAddEval()}>
-                                                {translate('task.task_management.add_eval_of_this_month')} <i style={{color: 'green'}} className="fa fa-plus-square"></i>
+                                            {translate('task.task_management.add_eval_of_this_month')}&nbsp;&nbsp;&nbsp;&nbsp;<i style={{ color: 'green' }} className="fa fa-plus-square"></i>
                                             &nbsp;
                                         </a>
                                     </li>
@@ -178,40 +191,40 @@ class EvaluationModal extends Component {
                             title={title}
                             perform='evaluate'
                             evaluation={evaluation}
-                            date={evaluation ? this.formatDate(evaluation.date) : this.TODAY}
+                            date={evaluation ? this.formatDate(evaluation.date) : dateParam}
                         />
                     }
                     {
-                    (content !== undefined && role === "accountable") &&
-                    <EvaluateByAccountableEmployee
-                        id={content}
-                        task={task}
-                        role={role}
-                        title={title}
-                        perform='evaluate'
-                        evaluation={evaluation}
-                        date={evaluation ? this.formatDate(evaluation.date) : this.TODAY}
-                    />
-                }
-                {
-                    (content !== undefined && role === "consulted") &&
-                    <EvaluateByConsultedEmployee
-                        id={content}
-                        task={task}
-                        role={role}
-                        title={title}
-                        perform='evaluate'
-                        evaluation={evaluation}
-                        date={evaluation ? this.formatDate(evaluation.date) : this.TODAY}
-                    />
-                }
+                        (content !== undefined && role === "accountable") &&
+                        <EvaluateByAccountableEmployee
+                            id={content}
+                            task={task}
+                            role={role}
+                            title={title}
+                            perform='evaluate'
+                            evaluation={evaluation}
+                            date={evaluation ? this.formatDate(evaluation.date) : dateParam}
+                        />
+                    }
+                    {
+                        (content !== undefined && role === "consulted") &&
+                        <EvaluateByConsultedEmployee
+                            id={content}
+                            task={task}
+                            role={role}
+                            title={title}
+                            perform='evaluate'
+                            evaluation={evaluation}
+                            date={evaluation ? this.formatDate(evaluation.date) : dateParam}
+                        />
+                    }
                 </div>
             </DialogModal>
         );
     }
 }
 
-const mapState = (state) => {}
+const mapState = (state) => { }
 
 const actionCreators = {};
 

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { IncidentLogAddModal, IncidentLogEditModal } from './combinedContent';
+
 class IncidentLogTab extends Component {
     constructor(props) {
         super(props);
@@ -15,14 +17,19 @@ class IncidentLogTab extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+            
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     // Bắt sự kiện click edit phiếu
@@ -84,16 +91,23 @@ class IncidentLogTab extends Component {
 
 
     render() {
-        const { id, translate, user } = this.props;
-        const { incidentLogs } = this.state;
+        const { id } = this.props;
+        const { translate, user } = this.props;
+        const { incidentLogs, currentRow } = this.state;
+
         var userlist = user.list;
 
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body qlcv">
+                    {/* Lịch sử sự cố */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">Lịch sử sự cố</h4></legend>
+
+                        {/* Form thêm thông tin sự cố */}
                         <IncidentLogAddModal handleChange={this.handleAddIncident} id={`addIncident${id}`} />
+
+                        {/* Bảng thông tin sự cố */}
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
@@ -107,12 +121,12 @@ class IncidentLogTab extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof incidentLogs !== 'undefined' && incidentLogs.length !== 0) &&
+                                {(incidentLogs && incidentLogs.length !== 0) &&
                                     incidentLogs.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.incidentCode}</td>
                                             <td>{x.type}</td>
-                                            <td>{x.reportedBy !== null && userlist.length ? userlist.filter(item => item._id === x.reportedBy).pop().name : ''}</td>
+                                            <td>{x.reportedBy ? (userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted') : ''}</td>
                                             <td>{x.dateOfIncident ? this.formatDate(x.dateOfIncident): ''}</td>
                                             <td>{x.description}</td>
                                             <td>{x.statusIncident}</td>
@@ -121,28 +135,30 @@ class IncidentLogTab extends Component {
                                                     className="material-icons">edit</i></a>
                                                 <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteIncident(index)}><i className="material-icons"></i></a>
                                             </td>
-                                        </tr>))
+                                        </tr>
+                                    ))
                                 }
                             </tbody>
                         </table>
                         {
-                            (typeof incidentLogs === 'undefined' || incidentLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!incidentLogs || incidentLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
-
                 </div>
+
+                {/* Form chỉnh sửa thông tin sự cố */}
                 {
-                    this.state.currentRow !== undefined &&
+                    currentRow &&
                     <IncidentLogEditModal
-                        id={`editIncident${this.state.currentRow.index}`}
-                        _id={this.state.currentRow._id}
-                        index={this.state.currentRow.index}
-                        incidentCode={this.state.currentRow.incidentCode}
-                        type={this.state.currentRow.type}
-                        reportedBy={this.state.currentRow.reportedBy}
-                        dateOfIncident={this.formatDate(this.state.currentRow.dateOfIncident)}
-                        description={this.state.currentRow.description}
-                        statusIncident={this.state.currentRow.statusIncident}
+                        id={`editIncident${currentRow.index}`}
+                        _id={currentRow._id}
+                        index={currentRow.index}
+                        incidentCode={currentRow.incidentCode}
+                        type={currentRow.type}
+                        reportedBy={currentRow.reportedBy}
+                        dateOfIncident={this.formatDate(currentRow.dateOfIncident)}
+                        description={currentRow.description}
+                        statusIncident={currentRow.statusIncident}
                         handleChange={this.handleEditIncident}
                     />
                 }
@@ -150,9 +166,12 @@ class IncidentLogTab extends Component {
         );
     }
 };
+
 function mapState(state) {
     const { user } = state;
     return { user };
 };
+
 const incidentLogTab = connect(mapState, null)(withTranslate(IncidentLogTab));
+
 export { incidentLogTab as IncidentLogTab };
