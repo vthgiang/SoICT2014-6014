@@ -86,6 +86,7 @@ class EvaluateByConsultedEmployee extends Component {
         else return true;
     }
 
+    // hàm lấy dữ liệu khởi tạo
     getData = (dateParams) => {
         const { user } = this.props;
         let { task } = this.props;
@@ -191,6 +192,7 @@ class EvaluateByConsultedEmployee extends Component {
         }
     }
 
+    // hàm check null undefined
     checkNullUndefined = (x) => {
         if (x === null || x === undefined) {
             return false;
@@ -213,6 +215,7 @@ class EvaluateByConsultedEmployee extends Component {
         return [day, month, year].join('-');
     }
 
+    // hàm validate điểm tự đnahs giá
     validatePoint = (value) => {
         let { translate } = this.props;
         let msg = undefined;
@@ -225,6 +228,7 @@ class EvaluateByConsultedEmployee extends Component {
         return msg;
     }
 
+    // cập nhật điểm tự đánh giá
     handleChangePoint = async (e) => {
         let value = parseInt(e.target.value);
         await this.setState(state => {
@@ -257,6 +261,7 @@ class EvaluateByConsultedEmployee extends Component {
         this.props.getAllKpiSetsOrganizationalUnitByMonth(this.state.idUser, value[0], this.state.date);
     }
 
+    // show modal autopoint
     handleShowAutomaticPointInfo = async () => {
         await this.setState(state => {
             return {
@@ -267,12 +272,13 @@ class EvaluateByConsultedEmployee extends Component {
         window.$(`#modal-automatic-point-info`).modal('show');
     }
 
-
+    // hàm validate submit
     isFormValidated = () => {
         let { point, errorOnPoint } = this.state;
         return (point !== undefined && errorOnPoint === undefined) ? true : false;
     }
 
+    // hàm submit
     save = () => {
         let taskId;
         taskId = this.state.task._id;
@@ -289,6 +295,7 @@ class EvaluateByConsultedEmployee extends Component {
         this.props.evaluateTaskByConsultedEmployees(data, taskId);
     }
 
+    // hàm kiểm tra thông báo
     checkNote = () => {
         let { date } = this.props;
         let splitter = date.split("-");
@@ -320,15 +327,16 @@ class EvaluateByConsultedEmployee extends Component {
         }
         let disableSubmit = !this.isFormValidated();
 
-        console.log('====quang', this.state);
         return (
             <React.Fragment>
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <div className="row">
+                        {/* Thông báo thời gian đánh giá */}
                         <div className='col-md-8'>
                             {checkNoteMonth && (dentaDate <= 7 && dentaDate > 0) && <p style={{ color: "red" }}>{translate('task.task_management.note_eval')}{8 - dentaDate}.</p>}
                             {checkNoteMonth && (dentaDate > 7) && <p style={{ color: "red" }}>{translate('task.task_management.note_not_eval')}</p>}
                         </div>
+                        {/* nút lưu */}
                         {!(checkNoteMonth && (dentaDate > 7)) &&
                             <div style={{ justifyContent: "flex-end", display: "flex" }} className='col-md-4'>
                                 <button disabled={disabled || disableSubmit} className="btn btn-success" onClick={this.save}>{translate('task.task_management.btn_save_eval')}</button>
@@ -388,7 +396,7 @@ class EvaluateByConsultedEmployee extends Component {
                             </div>
                         </fieldset>
 
-
+                        {/* Thông tin điểm tự động */}
                         {(evaluations && evaluations.results.length !== 0) ?
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('task.task_management.auto_point_field')}</legend>
@@ -448,7 +456,7 @@ class EvaluateByConsultedEmployee extends Component {
 
                 </div>
 
-                {
+                { // modal hiển thị thông tin điểm tự động
                     showAutoPointInfo === 1 &&
                     <ModalShowAutoPointInfo
                         task={task}

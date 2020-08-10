@@ -928,7 +928,6 @@ class EvaluateByResponsibleEmployee extends Component {
 
         let disableSubmit = !this.isFormValidated();
 
-        console.log('data', this.state);
         return (
             <React.Fragment>
                 <div style={{ display: "flex", flexDirection: "column" }}>
