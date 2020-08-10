@@ -742,24 +742,25 @@ exports.confirmAction = async (params, body) => {
  * Upload tài liệu cho cộng việc
  */
 exports.uploadFile = async (params, body, files) => {
-    let evaluationActionRating = await Task.findOne(
-        { _id: params.taskId }
-    )
-
-
-    let abc = [...evaluationActionRating.files, ...files]
-
-
-    let abc1 = await Task.updateOne(
+    let files1 = {
+        files: files,
+        creator: body.creator,
+        description: body.description
+    }
+    let task1 = await Task.updateOne(
         { _id: params.taskId },
-        { $set: { files: abc } }
+        {
+            $push: {
+                documents: files1
+            }
+        }
     )
 
     let task = await Task.findOne({ _id: params.taskId }).populate([
-        { path: "files.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);
 
-    return task.files
+    return task.documents
 }
 
 /**
@@ -1045,7 +1046,7 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-        { path: "files.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);
 
     //xu ly gui email
@@ -1179,7 +1180,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-        { path: "files.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);
 
     //xu ly gui email
@@ -1271,7 +1272,7 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-        { path: "files.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);
     newTask.evaluations.reverse();
 
@@ -1537,7 +1538,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-        { path: "files.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);
     newTask.evaluations.reverse();
 
@@ -1872,7 +1873,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-        { path: "files.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);
     newTask.evaluations.reverse();
 
@@ -2033,20 +2034,81 @@ exports.editArchivedOfTask = async (taskID) => {
 exports.deleteFileTask = async (params) => {
     let file = await Task.aggregate([
         { $match: { _id: mongoose.Types.ObjectId(params.taskId) } },
+        { $unwind: "$documents" },
+        { $replaceRoot: { newRoot: "$documents" } },
+        { $match: { _id: mongoose.Types.ObjectId(params.documentId) } },
         { $unwind: "$files" },
         { $replaceRoot: { newRoot: "$files" } },
         { $match: { _id: mongoose.Types.ObjectId(params.fileId) } }
     ])
-
+    console.log(file)
     fs.unlinkSync(file[0].url)
 
-    let task = await Task.findByIdAndUpdate(
-        { _id: params.taskId, "files._id": params.fileId },
-        { $pull: { "files": { _id: params.fileId } } },
+    let task = await Task.update(
+        { "_id": params.taskId, "documents._id": params.documentId, "documents.files._id": params.fileId },
+        { $pull: { "documents.$.files": { "_id": params.fileId } } },
+        { safe: true }
     )
     let task1 = await Task.findById({ _id: params.taskId }).populate([
-        { path: "files.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);
 
-    return task1.files;
+    return task1.documents;
+}
+
+/**
+ * Xoa document cua task
+ */
+exports.deleteDocument = async (params) => {
+    let files = await Task.aggregate([
+        { $match: { _id: mongoose.Types.ObjectId(params.taskId) } },
+        { $unwind: "$documents" },
+        { $replaceRoot: { newRoot: "$documents" } },
+        { $match: { _id: mongoose.Types.ObjectId(params.documentId) } },
+        { $unwind: "$files" },
+        { $replaceRoot: { newRoot: "$files" } },
+    ])
+    for (i = 0; i < files.length; i++) {
+        fs.unlinkSync(files[i].url)
+    }
+
+    let task = await Task.update(
+        { "_id": params.taskId, "documents._id": params.documentId},
+        { $pull: { "documents": { "_id": params.documentId } } },
+        { safe: true }
+    )
+    let task1 = await Task.findById({ _id: params.taskId }).populate([
+        { path: "documents.creator", model: User, select: 'name email avatar' },
+    ]);
+
+    return task1.documents;
+}
+/**
+ * Sua document
+ */
+exports.editDocument = async (params,body,files) => {
+    console.log(body)
+    let document = await Task.updateOne(
+        { "_id": params.taskId, "documents._id": params.documentId },
+        {
+            $set:
+            {
+                "documents.$.description": body.description
+            }
+        }
+    )
+    let action1 = await Task.updateOne(
+        { "_id": params.taskId, "documents._id": params.documentId },
+        {
+            $push:
+            {
+                "documents.$.files": files
+            }
+        }
+    )
+    let task1 = await Task.findById({ _id: params.taskId }).populate([
+        { path: "documents.creator", model: User, select: 'name email avatar' },
+    ]);
+
+    return task1.documents
 }

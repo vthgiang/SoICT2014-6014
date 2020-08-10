@@ -326,10 +326,10 @@ export function performtasks(state = {}, action) {
             }
         case performTaskConstants.UPLOAD_FILE_SUCCESS:
 
-            var files = { ...state.task, files: action.payload.data.content }
+            var documents = { ...state.task, documents: action.payload.data.content }
             return {
                 ...state,
-                task: files
+                task: documents
             }
         case performTaskConstants.UPLOAD_FILE_FAILURE:
         case performTaskConstants.DELETE_FILE_ACTION_REQUEST:
@@ -422,10 +422,10 @@ export function performtasks(state = {}, action) {
                 isLoading: true
             };
         case performTaskConstants.DELETE_FILE_TASK_SUCCESS:
-            var files = { ...state.task, files: action.payload}
+            var documents = { ...state.task, documents: action.payload }
             return {
                 ...state,
-                task: files
+                task: documents
             };
         case performTaskConstants.DELETE_FILE_TASK_FAILURE:
             return {
@@ -515,7 +515,38 @@ export function performtasks(state = {}, action) {
                 isLoading: false,
                 error: action.error
             };
-
+        case performTaskConstants.DELETE_DOCUMENT_TASK_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case performTaskConstants.DELETE_DOCUMENT_TASK_SUCCESS:
+            var documents = { ...state.task, documents: action.payload }
+            return {
+                ...state,
+                task: documents
+            };
+        case performTaskConstants.DELETE_DOCUMENT_TASK_FAILURE:
+            return {
+                error: action.error,
+                isLoading: false,
+            };
+        case performTaskConstants.EDIT_DOCUMENT_TASK_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case performTaskConstants.EDIT_DOCUMENT_TASK_SUCCESS:
+            var documents = { ...state.task, documents: action.payload }
+            return {
+                ...state,
+                task: documents
+            };
+        case performTaskConstants.EDIT_DOCUMENT_TASK_FAILURE:
+            return {
+                error: action.error,
+                isLoading: false,
+            };
         default:
             return state
     }
