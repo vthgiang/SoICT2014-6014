@@ -31,10 +31,8 @@ class TaskReportCreateForm extends Component {
                 // listCheckBox: [],
 
             },
-            // showInReport: new Set(),
             currentRole: getStorage('currentRole'),
         }
-        // this.checkedCheckbox = new Set();
     }
 
     /**
@@ -479,12 +477,14 @@ class TaskReportCreateForm extends Component {
         this.props.getAllUserOfCompany();
         this.props.getAllUserInAllUnitsOfCompany();
         this.props.getAllTask();
+        this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
+
     }
 
     render() {
         const { translate, reports, tasktemplates, user, tasks } = this.props;
         const { errorOnNameTaskReport, errorOnDescriptiontTaskReport, newReport, } = this.state;
-        let listTaskTemplate, units, taskInformations = newReport.taskInformations;
+        let listTaskTemplate, units, taskInformations = newReport.taskInformations, listRole, listRoles = [];
 
         // Lấy ra list task template theo đơn vị
         if (tasktemplates.items && newReport.organizationalUnit) {
@@ -501,6 +501,15 @@ class TaskReportCreateForm extends Component {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
 
+        if (user.roledepartments) {
+            listRole = user.roledepartments;
+            for (let x in listRole.deans)
+                listRoles[x] = listRole.deans[x];
+            for (let x in listRole.viceDeans)
+                listRoles = [...listRoles, listRole.viceDeans[x]];
+            for (let x in listRole.employees)
+                listRoles = [...listRoles, listRole.employees[x]];
+        }
         // Lấy thông tin nhân viên của đơn vị
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
@@ -539,6 +548,29 @@ class TaskReportCreateForm extends Component {
                         </div>
 
                         <div className="col-md-6">
+                            {/* Người được xem */}
+                            <div className={`form-group`} >
+                                <label className="control-label">{translate('task_template.permission_view')}<span className="text-red">*</span></label>
+                                {listRoles &&
+                                    <SelectBox
+                                        id={`read-select-box`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={
+                                            listRoles.map(x => { return { value: x._id, text: x.name } })
+                                        }
+                                        onChange={this.handleTaskTemplateRead}
+                                        multiple={true}
+                                        options={{ placeholder: "Người được xem" }}
+                                    />
+                                }
+                                {/* <ErrorLabel content={this.state.newTemplate.errorOnRead} /> */}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="row">
+                        <div className="col-md-6">
                             {/* Chọn mẫu công việc */}
                             <div className="form-group">
                                 <label>Mẫu công việc
@@ -553,11 +585,7 @@ class TaskReportCreateForm extends Component {
                                     }
                                 </select>
                             </div>
-                        </div>
-                    </div>
 
-                    <div className="row">
-                        <div className="col-md-6">
                             {/* Tên báo cáo */}
                             <div className={`form-group ${!errorOnNameTaskReport ? "" : "has-error"}`}>
                                 <label>{translate('report_manager.name')}
@@ -567,13 +595,14 @@ class TaskReportCreateForm extends Component {
                                 <ErrorLabel content={errorOnNameTaskReport} />
                             </div>
                         </div>
+
                         <div className="col-md-6">
                             {/* Mô tả báo cáo */}
                             <div className={`form-group ${!errorOnDescriptiontTaskReport ? "" : "has-error"}`}>
                                 <label htmlFor="Descriptionreport">{translate('report_manager.description')}
                                     <span className="text-red">*</span>
                                 </label>
-                                <textarea rows={2} type="text" className="form-control" id="Descriptionreport" name="description" value={(newReport.descriptionTaskReport)} onChange={this.handleDesTaskReportChange} />
+                                <textarea rows={5} type="text" className="form-control" id="Descriptionreport" name="description" value={(newReport.descriptionTaskReport)} onChange={this.handleDesTaskReportChange} />
                                 <ErrorLabel content={errorOnDescriptiontTaskReport} />
                             </div>
                         </div>
@@ -793,12 +822,15 @@ function mapState(state) {
 }
 const actionCreators = {
     createTaskReport: TaskReportActions.createTaskReport,
-    getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
+
+    getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getDepartment: UserActions.getDepartmentOfUser,
+    getRoleSameDepartment: UserActions.getRoleSameDepartment,
+
     getAllTask: taskManagementActions.getAll,
     getTaskEvaluations: taskManagementActions.getTaskEvaluations,
 }
