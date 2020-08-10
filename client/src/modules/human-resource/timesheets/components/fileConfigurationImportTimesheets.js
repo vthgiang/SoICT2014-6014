@@ -1,8 +1,4 @@
 export const configurationTimesheets = {
-    rowHeader: {
-        description: "Số dòng tiêu đề của bảng",
-        value: 2
-    },
     sheets: {
         description: "Tên các sheet",
         value: ["Sheet1"]
