@@ -317,7 +317,7 @@ class EmployeeKpiComment extends Component {
 
         if (kpimembers.currentKPI) {
             currentKPI = kpimembers.currentKPI;
-            comments = currentKPI.comments
+            comments = currentKPI?.comments
         }
         return (
             <React.Fragment>

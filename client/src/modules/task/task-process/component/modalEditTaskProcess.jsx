@@ -12,10 +12,8 @@ import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
 import { TaskProcessActions } from "../redux/actions";
 import customModule from './custom'
-//bpmn-nyan
-import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
-import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
-import resizeAllModule from 'bpmn-js-nyan/lib/resize-all-rules';
+
+import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -46,10 +44,7 @@ class ModalEditTaskProcess extends Component {
         }
         this.modeler = new BpmnModeler({
             additionalModules: [
-                nyanDrawModule,
-                nyanPaletteModule,
                 customModule,
-                resizeAllModule
             ]
         });
         this.modeling = this.modeler.get('modeling')
@@ -71,32 +66,27 @@ class ModalEditTaskProcess extends Component {
 
 
         this.modeler.attachTo('#' + this.generateId);
-        // this.modeler.importXML(this.initialDiagram, function (err) {})
+
 
         var eventBus = this.modeler.get('eventBus');
-        eventBus.on('element.dblclick', 15000000, function (event) {
-            return false; // will cancel event
-        });
-        // eventBus.on('commandStack.shape.create.postExecute', function (event) {
-        //     // inspect the event; you'll find the created element
-        //     // you can fiddle around with (i.e. to add additional properties)
-        //     event.element.infoTask = "abc"
-        // });
-        this.modeler.on('shape.added', (e) => {
-            if(e.element.type === "bpmn:Task"){
-            //    this.modeler.get('modeling').resizeShape(e.element, {
-            //        width: 260,
-            //        height: 200,
-            //        x:0,
-            //        y: 0
-            //    })
+
+        //Vo hieu hoa double click edit label
+        eventBus.on('element.dblclick', 10000, function (event) {
+            var element = event.element;
+
+            if (isAny(element, ['bpmn:Task'])) {
+                return false;
             }
-            // var modeling = this.modeler.get('modeling').resizeShape(e.element, {
-            //     wit: '#000000',
-            //     stroke: '#e432ee'
-            // }
-          
         });
+        
+        //Vo hieu hoa chinh sua label khi tao moi 
+        eventBus.on([
+            'create.end',
+            'autoPlace.end'
+        ], 250, (e) => {
+            this.modeler.get('directEditing').cancel()
+        });
+
         this.modeler.on('element.click', 1000, (e) => this.interactPopup(e));
 
         this.modeler.on('shape.remove', 1000, (e) => this.deleteElements(e));
@@ -367,7 +357,6 @@ class ModalEditTaskProcess extends Component {
     done = (e) => {
         e.preventDefault()
         let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-        console.log(element1)
         this.modeling.setColor(element1, {
             fill: '#dde6ca',
             stroke: '#6b7060'
@@ -378,9 +367,28 @@ class ModalEditTaskProcess extends Component {
         })
         target.forEach(x => {
             this.modeling.setColor(this.modeler.get('elementRegistry').get(x), {
-                fill: '#7236ff',
+                // fill: '#7236ff',
                 stroke: '#7236ff'
             });
+        })
+
+        var outgoing = element1.outgoing;
+        outgoing.forEach(x => {
+            var outgoingEdge = this.modeler.get('elementRegistry').get(x.id);
+
+            this.modeling.setColor(outgoingEdge, {
+                stroke: '#7236ff',
+                width: '5px'
+            })
+        })
+        var incoming = element1.incoming;
+        incoming.forEach(x => {
+            var incomingEdge = this.modeler.get('elementRegistry').get(x.id);
+
+            this.modeling.setColor(incomingEdge, {
+                stroke: '#dde6ca',
+                width: '5px'
+            })
         })
     }
     downloadAsSVG = () => {
@@ -625,17 +633,17 @@ class ModalEditTaskProcess extends Component {
                                                 <div className="io-zoom-controls">
                                                     <ul className="io-zoom-reset io-control io-control-list">
                                                         <li>
-                                                            <a style={{cursor: "pointer"}} title="Reset zoom" onClick={this.handleZoomReset}>
+                                                            <a style={{ cursor: "pointer" }} title="Reset zoom" onClick={this.handleZoomReset}>
                                                                 <i className="fa fa-crosshairs"></i>
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a style={{cursor: "pointer"}} title="Zoom in" onClick={this.handleZoomIn}>
+                                                            <a style={{ cursor: "pointer" }} title="Zoom in" onClick={this.handleZoomIn}>
                                                                 <i className="fa fa-plus"></i>
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a style={{cursor: "pointer"}} title="Zoom out" onClick={this.handleZoomOut}>
+                                                            <a style={{ cursor: "pointer" }} title="Zoom out" onClick={this.handleZoomOut}>
                                                                 <i className="fa fa-minus"></i>
                                                             </a>
                                                         </li>
