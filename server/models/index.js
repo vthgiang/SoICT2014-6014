@@ -67,6 +67,8 @@ const CustomerCare = require('./customer/customerCare.model');
 const CustomerGroup = require('./customer/customerGroup.model');
 const CustomerLiability = require('./customer/customerLiability.model');
 
+const Location = require('./common/location.model');
+
 exports.schema = {
     Privilege,
     Role,
@@ -131,5 +133,7 @@ exports.schema = {
     Customer,
     CustomerCare,
     CustomerGroup,
-    CustomerLiability
+    CustomerLiability,
+
+    Location,
 } 

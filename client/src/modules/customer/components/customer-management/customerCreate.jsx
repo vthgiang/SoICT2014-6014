@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, SelectBox, DatePicker } from '../../../../common-components';
 import { CustomerActions } from '../../redux/actions';
-import {list as locations} from './location';
 import moment from 'moment';
 
 class CustomerCreate extends Component {
@@ -11,13 +10,13 @@ class CustomerCreate extends Component {
         super(props);
         this.state = {
             customerBirth: '',
-            customerSale: 'group'
+            customerSale: 'group',
         }
     }
 
     render() {
         const { translate } = this.props;
-        const {customers, group} = this.props.customer;
+        const {customers, group, location} = this.props.customer;
         const {customerSale} = this.state;
         console.log("State: ", this.state)
 
@@ -112,9 +111,9 @@ class CustomerCreate extends Component {
                                             id="select-customer-location"
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={locations.map(location=>{
+                                            items={location.list.map(location=>{
                                                 return {
-                                                    value: location.Title,
+                                                    value: location.SolrID,
                                                     text: location.Title
                                                 }
                                             })}

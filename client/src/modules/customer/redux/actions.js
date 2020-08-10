@@ -8,6 +8,7 @@ export const CustomerActions = {
 
     // Customer Group
     getCustomerGroups,
+    getLocations
 };
 
 function getCustomers(data=undefined){
@@ -75,5 +76,19 @@ function getCustomerGroups(data=undefined){
             })
         })
         .catch(err=>{ dispatch({ type: CustomerConstants.GET_CUSTOMER_GROUPS_FAILE })})
+    }
+}
+
+function getLocations(){
+    return dispatch => {
+        dispatch({ type: CustomerConstants.GET_LOCATIONS_REQUEST});
+        CustomerServices.getLocations()
+        .then(res => {
+            dispatch({
+                type: CustomerConstants.GET_LOCATIONS_SUCCESS,
+                payload: res.data.content
+            })
+        })
+        .catch(err=>{ dispatch({ type: CustomerConstants.GET_LOCATIONS_FAILE })})
     }
 }

@@ -25,6 +25,7 @@ class CustomerManagement extends Component {
             limit: this.state.limit,
             page: this.state.page
         });
+        this.props.getLocations();
     }
 
     render() { 
@@ -203,6 +204,7 @@ function mapState(state) {
 
 const getState = {
     getCustomers: CustomerActions.getCustomers,
+    getLocations: CustomerActions.getLocations,
 }
 
 export default connect(mapState, getState)(withTranslate(CustomerManagement));
