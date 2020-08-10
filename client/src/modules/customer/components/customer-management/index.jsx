@@ -25,6 +25,7 @@ class CustomerManagement extends Component {
             limit: this.state.limit,
             page: this.state.page
         });
+        this.props.getLocations();
     }
 
     render() { 
@@ -111,7 +112,7 @@ class CustomerManagement extends Component {
                                         <td> {customer.name} </td>
                                         <td> {customer.code} </td>
                                         <td> {customer.phone} </td>
-                                        <td> {customer.location ? customer.location.name : null} </td>
+                                        <td> {customer.location} </td>
                                         <td> {customer.email} </td>
                                         <td> {customer.group ? customer.group.name : null} </td>
                                         <td style={{ textAlign: 'center' }}>
@@ -203,6 +204,7 @@ function mapState(state) {
 
 const getState = {
     getCustomers: CustomerActions.getCustomers,
+    getLocations: CustomerActions.getLocations,
 }
 
 export default connect(mapState, getState)(withTranslate(CustomerManagement));

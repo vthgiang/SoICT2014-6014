@@ -15,12 +15,9 @@ import './processDiagram.css'
 import { TaskProcessActions } from "../redux/actions";
 import { DepartmentActions } from "../../../super-admin/organizational-unit/redux/actions";
 import customModule from './custom'
-//bpmn-nyan
-import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
-import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
-
 
 import { is } from 'bpmn-js/lib/util/ModelUtil';
+import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import { isExpanded } from 'bpmn-js/lib/util/DiUtil';
 import ElementFactory from 'bpmn-js/lib/features/modeling/ElementFactory';
 import LabelEditingProvider from 'bpmn-js/lib/features/label-editing/LabelEditingProvider'
@@ -100,16 +97,10 @@ class ModalCreateTaskProcess extends Component {
       this.initialDiagram = initialDiagram
       this.modeler = new BpmnModeler({
          additionalModules: [
-            nyanDrawModule,
-            nyanPaletteModule,
             customModule,
             // { moveCanvas: [ 'value', null ] },
-            {zoomScroll: [ 'value', '' ]}
+            { zoomScroll: ['value', ''] }
          ],
-          
-         moddleExtensions: {
-            // qa: qaExtension
-         }
       });
       this.modeling = this.modeler.get('modeling');
       this.generateId = "createprocess"
@@ -208,11 +199,22 @@ class ModalCreateTaskProcess extends Component {
 
    handleChangeResponsible = async (value) => {
       // let { value } = e.target;
+      let { role } = this.props
+      let responsible = []
+     
+      role.list.forEach(x => {
+         value.forEach(y => {
+            if(y === x._id) {
+               responsible.push(x.name)
+            }
+         })
+      })
       await this.setState(state => {
          state.info[`${state.id}`] = {
             ...state.info[`${state.id}`],
             code: state.id,
             responsible: value,
+            responsibleName: responsible
          }
          return {
             ...state,
@@ -222,11 +224,22 @@ class ModalCreateTaskProcess extends Component {
    }
 
    handleChangeAccountable = async (value) => {
+      let { role } = this.props
+      let accountable = []
+     
+      role.list.forEach(x => {
+         value.forEach(y => {
+            if(y === x._id) {
+               accountable.push(x.name)
+            }
+         })
+      })
       await this.setState(state => {
          state.info[`${state.id}`] = {
             ...state.info[`${state.id}`],
             code: state.id,
             accountable: value,
+            accountableName: accountable
          }
          return {
             ...state,
@@ -251,16 +264,26 @@ class ModalCreateTaskProcess extends Component {
       this.modeler.attachTo('#' + this.generateId);
       this.modeler.importXML(this.initialDiagram);
       var eventBus = this.modeler.get('eventBus');
-      eventBus.on('element.dblclick', 15000000, function (event) {
-         return false; // will cancel event
+
+      //Vo hieu hoa double click edit label
+      eventBus.on('element.dblclick', 10000, function (event) {
+         var element = event.element;
+
+         if (isAny(element, ['bpmn:Task'])) {
+            return false; // will cancel event
+         }
       });
-      
+
+
+      //Vo hieu hoa edit label khi tao shape
       eventBus.on([
          'create.end',
          'autoPlace.end'
-       ], 250, () =>  {
+      ], 250, (e) => {
+         // if (e.element[0].type === "bpmn:Task") {
          this.modeler.get('directEditing').cancel()
-       });
+         // }
+      });
 
       this.modeler.on('element.click', 1, (e) => this.interactPopup(e));
 
@@ -290,7 +313,6 @@ class ModalCreateTaskProcess extends Component {
    }
    interactPopup = (event) => {
       let element = event.element;
-      console.log(element)
       let { department } = this.props
       let source = [];
       let destination = []
@@ -301,9 +323,6 @@ class ModalCreateTaskProcess extends Component {
       element.outgoing.forEach(x => {
          destination.push(x.target.businessObject.name)
       })
-      // this.modeler.setAttribute(this.modeler.get('elementRegistry').get(this.state.id),{
-      //    accountable: 'New name'
-      //  });
       let nameStr = element.type.split(':');
       this.setState(state => {
          if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process' && element.type !== 'bpmn:StartEvent' && element.type !== 'bpmn:EndEvent' && element.type !== 'bpmn:SequenceFlow') {
@@ -638,17 +657,17 @@ class ModalCreateTaskProcess extends Component {
                                        <div className="io-zoom-controls">
                                           <ul className="io-zoom-reset io-control io-control-list">
                                              <li>
-                                                <a style={{cursor: "pointer"}} title="Reset zoom" onClick={this.handleZoomReset}>
+                                                <a style={{ cursor: "pointer" }} title="Reset zoom" onClick={this.handleZoomReset}>
                                                    <i className="fa fa-crosshairs"></i>
                                                 </a>
                                              </li>
                                              <li>
-                                                <a style={{cursor: "pointer"}} title="Zoom in" onClick={this.handleZoomIn}>
+                                                <a style={{ cursor: "pointer" }} title="Zoom in" onClick={this.handleZoomIn}>
                                                    <i className="fa fa-plus"></i>
                                                 </a>
                                              </li>
                                              <li>
-                                                <a style={{cursor: "pointer"}} title="Zoom out" onClick={this.handleZoomOut}>
+                                                <a style={{ cursor: "pointer" }} title="Zoom out" onClick={this.handleZoomOut}>
                                                    <i className="fa fa-minus"></i>
                                                 </a>
                                              </li>
