@@ -387,7 +387,7 @@ class TaskAddModal extends Component {
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('task.task_management.detail_info')}</legend>
                             <div className={'form-group'}>
-                                <label className="control-label">{translate('task.task_management.col_organization')}*</label>
+                                <label className="control-label">{translate('task.task_management.unit_manage_task')}*</label>
 
                                 {units &&
                                     <select value={newTask.organizationalUnit} className="form-control" onChange={this.handleChangeTaskOrganizationalUnit}>

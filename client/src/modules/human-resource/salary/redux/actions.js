@@ -1,9 +1,11 @@
 import {
     SalaryConstants
 } from "./constants";
+
 import {
     SalaryService
 } from "./services";
+
 export const SalaryActions = {
     searchSalary,
     createSalary,

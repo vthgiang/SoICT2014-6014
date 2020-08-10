@@ -196,31 +196,32 @@ class OrganizationalUnitKpiDashboard extends Component {
         return (
             <React.Fragment>
                 <div className="qlcv">
-                    {childOrganizationalUnit &&
-                        <span className="form-inline">
-                            <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
-                            <SelectBox
-                                id={`organizationalUnitSelectBoxInOrganizationalUnitKpiDashboard`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={organizationalUnitSelectBox}
-                                multiple={false}
-                                onChange={this.handleSelectOrganizationalUnitId}
-                                value={organizationalUnitSelectBox[0].value}
+                    <div className="form-inline">
+                        {childOrganizationalUnit &&
+                            <div className="form-group">
+                                <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.organizational_unit')}</label>
+                                <SelectBox
+                                    id={`organizationalUnitSelectBoxInOrganizationalUnitKpiDashboard`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={organizationalUnitSelectBox}
+                                    multiple={false}
+                                    onChange={this.handleSelectOrganizationalUnitId}
+                                    value={organizationalUnitSelectBox[0].value}
+                                />
+                            </div>
+                        }
+                        <div className="form-group">
+                            <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.month')}</label>
+                            <DatePicker
+                                id="monthInOrganizationalUnitKpiDashboard"
+                                dateFormat="month-year"             
+                                value={defaultDate}                     
+                                onChange={this.handleSelectMonth}
+                                disabled={false}                   
                             />
-                        </span>
-                    }
-
-                    <span className="form-inline">
-                        <label style={{ width: "auto" }}>{translate('kpi.organizational_unit.dashboard.month')}</label>
-                        <DatePicker
-                            id="monthInOrganizationalUnitKpiDashboard"
-                            dateFormat="month-year"             
-                            value={defaultDate}                     
-                            onChange={this.handleSelectMonth}
-                            disabled={false}                   
-                        />
-                    </span>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Xu hướng thực hiện mục tiêu */}

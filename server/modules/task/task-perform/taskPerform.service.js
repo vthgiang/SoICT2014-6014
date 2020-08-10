@@ -742,24 +742,25 @@ exports.confirmAction = async (params, body) => {
  * Upload tài liệu cho cộng việc
  */
 exports.uploadFile = async (params, body, files) => {
-    let evaluationActionRating = await Task.findOne(
-        { _id: params.taskId }
-    )
-
-
-    let abc = [...evaluationActionRating.files, ...files]
-
-
-    let abc1 = await Task.updateOne(
+    let files1 = {
+        files: files,
+        creator: body.creator,
+        description: body.description
+    }
+    let task1 = await Task.updateOne(
         { _id: params.taskId },
-        { $set: { files: abc } }
+        {
+            $push: {
+                documents: files1
+            }
+        }
     )
 
     let task = await Task.findOne({ _id: params.taskId }).populate([
-        { path: "files.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);
 
-    return task.files
+    return task.documents
 }
 
 /**
@@ -1038,14 +1039,14 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "organizationalUnit", model: OrganizationalUnit },
         { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
-        { path: "evaluations.kpis.employee", select: "name email _id" },
-        { path: "evaluations.kpis.kpis" },
+        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+        { path: "evaluations.results.kpis" },
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-        { path: "files.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);
 
     //xu ly gui email
@@ -1170,16 +1171,16 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: " responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
-        { path: "evaluations.kpis.employee", select: "name email _id" },
-        { path: "evaluations.kpis.kpis" },
+        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+        { path: "evaluations.results.kpis" },
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-        { path: "files.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);
 
     //xu ly gui email
@@ -1200,15 +1201,14 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
 exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
     let user = data.user;
     // let evaluateId = data.evaluateId;
-    let automaticPoint = data.automaticPoint;
-    let employeePoint = data.employeePoint;
-    let role = data.role;
-    let date = data.date;
+    let { automaticPoint, employeePoint, kpi, unit, role, date } = data;
     let evaluateId = await checkEvaluations(date, taskId, date);
 
     let resultItem = {
         employee: user,
         employeePoint: employeePoint,
+        organizationalUnit: unit,
+        kpis: kpi,
         automaticPoint: automaticPoint,
         role: role
     }
@@ -1243,7 +1243,9 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
             {
                 $set: {
                     "evaluations.$.results.$[elem].employeePoint": employeePoint,
-                    "evaluations.$.results.$[elem].automaticPoint": automaticPoint
+                    "evaluations.$.results.$[elem].automaticPoint": automaticPoint,
+                    "evaluations.$.results.$[elem].organizationalUnit": unit,
+                    "evaluations.$.results.$[elem].kpis": kpi,
                 }
             },
             {
@@ -1261,16 +1263,16 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: " responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
-        { path: "evaluations.kpis.employee", select: "name email _id" },
-        { path: "evaluations.kpis.kpis" },
+        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+        { path: "evaluations.results.kpis" },
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-        { path: "files.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);
     newTask.evaluations.reverse();
 
@@ -1282,6 +1284,7 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
  */
 exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
     let user = data.user;
+    let unit = data.unit;
     let checkSave = data.checkSave;
     let progress = data.progress;
     let automaticPoint = data.automaticPoint;
@@ -1297,13 +1300,15 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
     let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     let dateFormat = evaluateDate;
 
-    let kpisItem = {
-        employee: user,
-        kpis: kpi
-    }
+    // let kpisItem = {
+    //     employee: user,
+    //     kpis: kpi
+    // }
 
     let resultItem = {
         employee: user,
+        organizationalUnit: unit,
+        kpis: kpi,
         employeePoint: employeePoint,
         automaticPoint: automaticPoint,
         role: role
@@ -1343,43 +1348,43 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
 
     let task = await Task.findById(taskId);
 
-    let listKpi = task.evaluations.find(e => String(e._id) === String(evaluateId)).kpis
+    // let listKpi = task.evaluations.find(e => String(e._id) === String(evaluateId)).kpis
 
-    let check_kpi = listKpi.find(kpi => String(kpi.employee) === user);
-    if (check_kpi === undefined) {
-        await Task.updateOne(
-            {
-                _id: taskId,
-                "evaluations._id": evaluateId
-            },
-            {
-                $push: {
-                    "evaluations.$.kpis": kpisItem
-                }
-            },
-            { $new: true }
-        );
-    } else {
-        await Task.updateOne(
-            {
-                _id: taskId,
-                "evaluations._id": evaluateId,
+    // let check_kpi = listKpi.find(kpi => String(kpi.employee) === user);
+    // if (check_kpi === undefined) {
+    //     await Task.updateOne(
+    //         {
+    //             _id: taskId,
+    //             "evaluations._id": evaluateId
+    //         },
+    //         {
+    //             $push: {
+    //                 "evaluations.$.kpis": kpisItem
+    //             }
+    //         },
+    //         { $new: true }
+    //     );
+    // } else {
+    //     await Task.updateOne(
+    //         {
+    //             _id: taskId,
+    //             "evaluations._id": evaluateId,
 
-            },
-            {
-                $set: {
-                    "evaluations.$.kpis.$[elem].kpis": kpi
-                }
-            },
-            {
-                arrayFilters: [
-                    {
-                        "elem.employee": user
-                    }
-                ]
-            }
-        );
-    }
+    //         },
+    //         {
+    //             $set: {
+    //                 "evaluations.$.kpis.$[elem].kpis": kpi
+    //             }
+    //         },
+    //         {
+    //             arrayFilters: [
+    //                 {
+    //                     "elem.employee": user
+    //                 }
+    //             ]
+    //         }
+    //     );
+    // }
 
     // cập nhật thông tin result
 
@@ -1410,7 +1415,9 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
             {
                 $set: {
                     "evaluations.$.results.$[elem].employeePoint": employeePoint,
-                    "evaluations.$.results.$[elem].automaticPoint": automaticPoint
+                    "evaluations.$.results.$[elem].automaticPoint": automaticPoint,
+                    "evaluations.$.results.$[elem].organizationalUnit": unit,
+                    "evaluations.$.results.$[elem].kpis": kpi,
                 }
             },
             {
@@ -1522,16 +1529,16 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: " responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
-        { path: "evaluations.kpis.employee", select: "name email _id" },
-        { path: "evaluations.kpis.kpis" },
+        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+        { path: "evaluations.results.kpis" },
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-        { path: "files.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);
     newTask.evaluations.reverse();
 
@@ -1553,6 +1560,9 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     let status = data.status; // neu ket thuc thi moi thay doi, con neu la danh gia thi k doi
     let info = data.info;
     let results = data.results;
+
+    let unit = data.unit;
+    let kpi = data.kpi;
 
     let splitter = date.split("-");
     let evaluateDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
@@ -1679,6 +1689,61 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     }
 
+    let task2 = await Task.findById(taskId);
+
+    // cập nhật thông tin result====================================BEGIN=====================================================
+
+    let listResult2 = task2.evaluations.find(e => String(e._id) === String(evaluateId)).results;
+
+    // cập nhật điểm cá nhân cho ng phe duyet
+    let check_approve = listResult2.find(r => (String(r.employee) === user && String(r.role) === "Accountable"));
+
+    if (cloneResult.length > 0) {
+        for (let i in cloneResult) {
+            if (String(cloneResult[i].role) === "Accountable") {
+                await Task.updateOne(
+                    {
+                        _id: taskId,
+                        "evaluations._id": evaluateId,
+                    },
+                    {
+                        $set: {
+                            "evaluations.$.results.$[elem].employeePoint": cloneResult[i].point,
+                            "evaluations.$.results.$[elem].organizationalUnit": unit,
+                            "evaluations.$.results.$[elem].kpis": kpi,
+                        }
+                    },
+                    {
+                        arrayFilters: [
+                            {
+                                "elem.employee": cloneResult[i].employee,
+                                "elem.role": cloneResult[i].role
+                            }
+                        ]
+                    }
+                )
+            }
+        }
+    }
+    else {
+        await Task.updateOne(
+            {
+                _id: taskId,
+                "evaluations._id": evaluateId
+            },
+            {
+                $push: {
+                    "evaluations.$.results": {
+                        organizationalUnit: unit,
+                        kpis: kpi,
+                        employee: user,
+                        role: "Accountable",
+                    }
+                }
+            },
+            { $new: true }
+        );
+    }
 
 
     //cập nhật lại tất cả điểm tự động
@@ -1694,44 +1759,6 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
             }
         }
     )
-
-    let task2 = await Task.findById(taskId);
-
-    // cập nhật thông tin result====================================BEGIN=====================================================
-
-    let listResult2 = task2.evaluations.find(e => String(e._id) === String(evaluateId)).results;
-
-    // cập nhật điểm cá nhân cho ng phe duyet
-
-    let check_approve = listResult2.find(r => (String(r.employee) === user && String(r.role) === "Accountable"));
-
-
-    for (let i in cloneResult) {
-        if (String(cloneResult[i].role) === "Accountable") {
-            await Task.updateOne(
-                {
-                    _id: taskId,
-                    "evaluations._id": evaluateId,
-
-                },
-                {
-                    $set: {
-                        "evaluations.$.results.$[elem].employeePoint": cloneResult[i].point,
-                    }
-                },
-                {
-                    arrayFilters: [
-                        {
-                            "elem.employee": cloneResult[i].employee,
-                            "elem.role": cloneResult[i].role
-                        }
-                    ]
-                }
-            )
-        }
-    }
-
-
 
     // update Info task
     let splitterDate = date.split("-");
@@ -1796,7 +1823,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         }
     }
 
-    // cập nhật thông tin result========================================================END========================================================
+    // cập nhật thông tin result======================================END================================================
 
 
     // update date of evaluation
@@ -1837,16 +1864,16 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: " responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
-        { path: "evaluations.kpis.employee", select: "name email _id" },
-        { path: "evaluations.kpis.kpis" },
+        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+        { path: "evaluations.results.kpis" },
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-        { path: "files.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);
     newTask.evaluations.reverse();
 
@@ -2007,20 +2034,81 @@ exports.editArchivedOfTask = async (taskID) => {
 exports.deleteFileTask = async (params) => {
     let file = await Task.aggregate([
         { $match: { _id: mongoose.Types.ObjectId(params.taskId) } },
+        { $unwind: "$documents" },
+        { $replaceRoot: { newRoot: "$documents" } },
+        { $match: { _id: mongoose.Types.ObjectId(params.documentId) } },
         { $unwind: "$files" },
         { $replaceRoot: { newRoot: "$files" } },
         { $match: { _id: mongoose.Types.ObjectId(params.fileId) } }
     ])
-
+    console.log(file)
     fs.unlinkSync(file[0].url)
 
-    let task = await Task.findByIdAndUpdate(
-        { _id: params.taskId, "files._id": params.fileId },
-        { $pull: { "files": { _id: params.fileId } } },
+    let task = await Task.update(
+        { "_id": params.taskId, "documents._id": params.documentId, "documents.files._id": params.fileId },
+        { $pull: { "documents.$.files": { "_id": params.fileId } } },
+        { safe: true }
     )
-    let task1 = await Task.findById({_id:params.taskId}).populate([
-        { path: "files.creator", model: User, select: 'name email avatar' },
+    let task1 = await Task.findById({ _id: params.taskId }).populate([
+        { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);
 
-    return task1.files;
+    return task1.documents;
+}
+
+/**
+ * Xoa document cua task
+ */
+exports.deleteDocument = async (params) => {
+    let files = await Task.aggregate([
+        { $match: { _id: mongoose.Types.ObjectId(params.taskId) } },
+        { $unwind: "$documents" },
+        { $replaceRoot: { newRoot: "$documents" } },
+        { $match: { _id: mongoose.Types.ObjectId(params.documentId) } },
+        { $unwind: "$files" },
+        { $replaceRoot: { newRoot: "$files" } },
+    ])
+    for (i = 0; i < files.length; i++) {
+        fs.unlinkSync(files[i].url)
+    }
+
+    let task = await Task.update(
+        { "_id": params.taskId, "documents._id": params.documentId},
+        { $pull: { "documents": { "_id": params.documentId } } },
+        { safe: true }
+    )
+    let task1 = await Task.findById({ _id: params.taskId }).populate([
+        { path: "documents.creator", model: User, select: 'name email avatar' },
+    ]);
+
+    return task1.documents;
+}
+/**
+ * Sua document
+ */
+exports.editDocument = async (params,body,files) => {
+    console.log(body)
+    let document = await Task.updateOne(
+        { "_id": params.taskId, "documents._id": params.documentId },
+        {
+            $set:
+            {
+                "documents.$.description": body.description
+            }
+        }
+    )
+    let action1 = await Task.updateOne(
+        { "_id": params.taskId, "documents._id": params.documentId },
+        {
+            $push:
+            {
+                "documents.$.files": files
+            }
+        }
+    )
+    let task1 = await Task.findById({ _id: params.taskId }).populate([
+        { path: "documents.creator", model: User, select: 'name email avatar' },
+    ]);
+
+    return task1.documents
 }

@@ -170,14 +170,16 @@ const TaskSchema = new Schema({
         default: -1,
         required: true
     },
-    files: [{ // Các files đi kèm với công việc
-        name: {
-            type: String,
-        },
-        url: {
-            type: String,
-            required: true
-        },
+    documents: [{ // Các files đi kèm với công việc
+        files: [{
+            name: {
+                type: String,
+            },
+            url: {
+                type: String,
+                required: true
+            },
+        }],
         description: {
             type: String,
         },
