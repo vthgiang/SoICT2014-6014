@@ -115,6 +115,7 @@ class EvaluateByAccountableEmployee extends Component {
         return true;
     }
 
+    // hàm lấy dữ liệu khởi tạo
     getData = (dateParam) => {
         const { user } = this.props;
         let { task } = this.props;
@@ -429,7 +430,7 @@ class EvaluateByAccountableEmployee extends Component {
         }
     }
 
-
+    // hàm lấy thông tin từ thông tin công việc
     getInfo = (dateParam) => {
         let info = {};
         let checkSave = false;
@@ -545,6 +546,7 @@ class EvaluateByAccountableEmployee extends Component {
         return [day, month, year].join('-');
     }
 
+    // hàm cập nhật điểm tự đánh giá
     handleChangePoint = async (e) => {
         let value = parseInt(e.target.value);
         await this.setState(state => {
@@ -556,6 +558,7 @@ class EvaluateByAccountableEmployee extends Component {
         })
     }
 
+    // hàm cập nhật progress
     handleChangeProgress = async (e) => {
         let value = parseInt(e.target.value);
         await this.setState(state => {
@@ -568,6 +571,7 @@ class EvaluateByAccountableEmployee extends Component {
         await this.handleChangeAutoPoint();
     }
 
+    // hàm tính điểm tự dộng
     calcAutomaticPoint = () => {
         let taskInfo = {
             task: this.state.task,
@@ -582,6 +586,7 @@ class EvaluateByAccountableEmployee extends Component {
         return automaticPoint;
     }
 
+    // hàm cập nhật điểm tự động
     handleChangeAutoPoint = async () => {
         let automaticPoint = this.calcAutomaticPoint();
         if (automaticPoint < 0) {
@@ -618,6 +623,7 @@ class EvaluateByAccountableEmployee extends Component {
         return msg;
     }
 
+    // hàm tính tổng phần trăm đóng góp hiện tại ->> để validate
     calcSumContribution = () => {
         let { results } = this.state;
         let sum = 0;
@@ -632,6 +638,7 @@ class EvaluateByAccountableEmployee extends Component {
         return sum;
     }
 
+    // begin: các hàm cập nhật đóng góp và điểm phê duyệt
     handleChangeAccountablePoint = async (e, id) => {
         let value = parseInt(e.target.value);
         let name = e.target.name
@@ -771,7 +778,9 @@ class EvaluateByAccountableEmployee extends Component {
             }
         });
     }
+    // -->end
 
+    // hàm cập nhật thông tin số
     handleChangeNumberInfo = async (e) => {
         let value = parseInt(e.target.value);
         let name = e.target.name;
@@ -789,6 +798,7 @@ class EvaluateByAccountableEmployee extends Component {
         await this.handleChangeAutoPoint();
     }
 
+    // hàm cập nhật ttin văn bản
     handleChangeTextInfo = async (e) => {
         let value = e.target.value;
         let name = e.target.name;
@@ -805,6 +815,8 @@ class EvaluateByAccountableEmployee extends Component {
         })
     }
 
+
+    // hàm validate thoogn tin ngày tháng
     handleInfoDateChange = (value, code) => {
         this.setState(state => {
             state.info[`${code}`] = {
@@ -819,7 +831,7 @@ class EvaluateByAccountableEmployee extends Component {
         });
     }
 
-
+    // hàm validate ttin boolean
     handleInfoBooleanChange = (event) => {
         let { name, value } = event.target;
         this.setState(state => {
@@ -834,6 +846,7 @@ class EvaluateByAccountableEmployee extends Component {
         });
     }
 
+    // hàm validate ngày tháng
     validateDate = (value, willUpdateState = true) => {
         let { translate } = this.props;
         let msg = undefined;
@@ -844,6 +857,7 @@ class EvaluateByAccountableEmployee extends Component {
         return msg;
     }
 
+    // hàm validate ttin van bản
     validateTextInfo = (value) => {
         let { translate } = this.props;
         let msg = undefined;
@@ -853,6 +867,7 @@ class EvaluateByAccountableEmployee extends Component {
         return msg;
     }
 
+    // hàm validate số
     validatePoint = (value) => {
         let { translate } = this.props;
         let msg = undefined;
@@ -865,6 +880,7 @@ class EvaluateByAccountableEmployee extends Component {
         return msg;
     }
 
+    // hàm cập nhật ttin số
     validateNumberInfo = (value) => {
         let { translate } = this.props;
         let msg = undefined;
@@ -887,7 +903,7 @@ class EvaluateByAccountableEmployee extends Component {
     }
 
 
-
+    // hàm cập nhật thông tin tập giá trị
     handleSetOfValueChange = async (value, code) => {
         this.setState(state => {
             state.info[`${code}`] = {
@@ -901,6 +917,7 @@ class EvaluateByAccountableEmployee extends Component {
         });
     }
 
+    // hàm cập nhật tùy chọn trạng thái lấy thông tin công việc
     handleChangeSaveInfo = async (e) => {
         let { checked } = e.target;
         await this.setState(state => {
@@ -911,6 +928,7 @@ class EvaluateByAccountableEmployee extends Component {
         });
     }
 
+    // hàm cập nhật trạng thái
     handleStatusChange = (value) => {
         this.setState(state => {
             return {
@@ -942,6 +960,7 @@ class EvaluateByAccountableEmployee extends Component {
         this.props.getAllKpiSetsOrganizationalUnitByMonth(this.state.userId, value[0], this.state.date);
     }
 
+    // hàm cập nhật ngày đánh giá
     handleDateChange = (value) => {
         let { translate } = this.props;
         let { task, userId, unit } = this.state;
@@ -1017,6 +1036,7 @@ class EvaluateByAccountableEmployee extends Component {
         return msg;
     }
 
+    // hàm validate submit
     isFormValidated = () => {
         const { errorOnDate, errorOnPoint, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint,
             errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnNumberInfo, errorOnTextInfo } = this.state;
@@ -1035,6 +1055,7 @@ class EvaluateByAccountableEmployee extends Component {
             && errorOnInfoBoolean === undefined && errorOnNumberInfo === undefined && errorOnTextInfo === undefined) ? true : false;
     }
 
+    // hàm hiển thị modal show autopoint
     handleShowAutomaticPointInfo = async () => {
         await this.setState(state => {
             return {
@@ -1046,6 +1067,7 @@ class EvaluateByAccountableEmployee extends Component {
 
     }
 
+    // format vai trò multi language
     formatRole = (data) => {
         const { translate } = this.props;
         if (data === "Consulted") return translate('task.task_management.consulted');
@@ -1053,6 +1075,7 @@ class EvaluateByAccountableEmployee extends Component {
         if (data === "Responsible") return translate('task.task_management.responsible');
     }
 
+    // hàm ghi lại lich sử đánh giá
     handleAddTaskLog = () => {
         let title = '';
         let description = '';
@@ -1135,6 +1158,7 @@ class EvaluateByAccountableEmployee extends Component {
 
     }
 
+    // hàm submit
     save = () => {
         let taskId;
         taskId = this.state.task._id;
@@ -1167,6 +1191,7 @@ class EvaluateByAccountableEmployee extends Component {
         });
     }
 
+    // hàm kiểm tra thông báo
     checkNote = () => {
         let { date } = this.props;
         let splitter = date.split("-");
@@ -1179,6 +1204,7 @@ class EvaluateByAccountableEmployee extends Component {
         return true
     }
 
+    // hàm kiểm tra NULL, UNDEFINED
     checkNullUndefined = (x) => {
         if (x === null || x === undefined) {
             return false;
@@ -1253,6 +1279,7 @@ class EvaluateByAccountableEmployee extends Component {
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('task.task_management.detail_general_info')}</legend>
                                 <div className="row">
+                                    {/* ngày đánh giá tháng trc hoặc ngày bắt đầu làm việc */}
                                     <div className="col-md-6">
                                         <div className="form-group">
                                             <label>{translate('task.task_management.eval_from')}</label>
@@ -1263,6 +1290,7 @@ class EvaluateByAccountableEmployee extends Component {
                                             />
                                         </div>
                                     </div>
+                                    {/* ngày đánh giá */}
                                     <div className={`form-group col-md-6 ${errorOnDate === undefined ? "" : "has-error"}`}>
                                         <label>{translate('task.task_management.eval_to')}:<span className="text-red">*</span></label>
                                         <DatePicker
@@ -1327,7 +1355,7 @@ class EvaluateByAccountableEmployee extends Component {
                                 </div>
                             </fieldset>
 
-                            {/* Thông tin công việc */}
+                            {/* Thông tin đánh giá công việc */}
                             <div>
                                 <TaskInformationForm
                                     legendText={translate('task.task_management.info_eval_month')}
@@ -1355,7 +1383,7 @@ class EvaluateByAccountableEmployee extends Component {
 
 
                             <div>
-
+                                {/* Thông tin điểm tự động */}
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('task.task_management.auto_point_field')}</legend>
                                     <div style={{ lineHeight: "3" }}>
@@ -1384,7 +1412,7 @@ class EvaluateByAccountableEmployee extends Component {
                                             }
                                         </div>
                                     </div>
-                                    {
+                                    { // modal thông tin điểm tự động
                                         showAutoPointInfo === 1 &&
                                         <ModalShowAutoPointInfo
                                             task={task}
@@ -1395,6 +1423,8 @@ class EvaluateByAccountableEmployee extends Component {
                                         />
                                     }
                                 </fieldset>
+
+                                {/* Phần chấm điểm phê duyệt */}
                                 <fieldset className="scheduler-border">
                                     <legend className="scheduler-border">{translate('task.task_management.evaluate_member')}</legend>
 
@@ -1408,7 +1438,7 @@ class EvaluateByAccountableEmployee extends Component {
                                                 <th>{translate('task.task_management.acc_evaluate')}</th>
                                             </tr>
 
-                                            {
+                                            { // Chấm điểm phê duyệt cho người thực hiện
                                                 task && task.responsibleEmployees.map((item, index) =>
                                                     (task.inactiveEmployees.indexOf(item._id) === -1 &&
                                                         <tr key={index}>
@@ -1443,7 +1473,7 @@ class EvaluateByAccountableEmployee extends Component {
 
                                                 )
                                             }
-                                            {
+                                            { // Chấm điểm phê duyệt cho người hỗ trợ
                                                 task && task.consultedEmployees.map((item, index) =>
                                                     (task.inactiveEmployees.indexOf(item._id) === -1 &&
                                                         <tr key={index}>
@@ -1479,7 +1509,7 @@ class EvaluateByAccountableEmployee extends Component {
 
                                                 )
                                             }
-                                            {
+                                            { // Chấm điểm phê duyệt cho người phê duyệt
                                                 task && task.accountableEmployees.map((item, index) =>
                                                     (task.inactiveEmployees.indexOf(item._id) === -1 &&
                                                         <tr key={index}>
