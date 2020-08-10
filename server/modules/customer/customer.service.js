@@ -1,5 +1,5 @@
 const { Customer, CustomerLocation, CustomerGroup, User, CustomerLiability } = require('../../models').schema;
-
+const axios = require('axios');
 // Customer
 exports.getCustomers = async (company, query) => {
     var page = query.page;
@@ -9,7 +9,6 @@ exports.getCustomers = async (company, query) => {
         return await Customer
             .find({ company })
             .populate([
-                { path: 'location', model: CustomerLocation },
                 { path: 'group', model: CustomerGroup },
                 { path: 'liabilities', model: CustomerLiability, populate: [
                     { path: 'creator', model: User },
@@ -25,7 +24,6 @@ exports.getCustomers = async (company, query) => {
                 page, 
                 limit,
                 populate: [
-                    { path: 'location', model: CustomerLocation },
                     { path: 'group', model: CustomerGroup },
                     { path: 'liabilities', model: CustomerLiability, populate: [
                         { path: 'creator', model: User },
@@ -40,7 +38,12 @@ exports.createCustomer = async (company, data) => {
         company,
         name: data.name,
         code: data.code,
-        phone: data.phone
+        phone: data.phone,
+        address: data.address,
+        location: data.location,
+        email: data.email,
+        group: data.group,
+        birth: data.birth
     });
 }
 
@@ -89,4 +92,10 @@ exports.getCustomerLiabilities = async (company, query) => {
                 ]
             });
     }
+}
+
+exports.getLocations = async () => {
+    const result = await axios.get('https://thongtindoanhnghiep.co/api/city');
+
+    return result.data.LtsItem;
 }

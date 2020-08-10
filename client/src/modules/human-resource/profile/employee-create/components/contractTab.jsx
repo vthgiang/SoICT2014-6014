@@ -102,7 +102,8 @@ class ContractTab extends Component {
     // Function chỉnh sửa thông tin hợp đồng lao động
     handleEditContract = async (data) => {
         const { contracts } = this.state;
-        let checkData = this.checkForFuplicate(data, contracts);
+        let contractsNew = [...contracts];
+        let checkData = this.checkForFuplicate(data, contractsNew.splice(data.index, 1));
         if (checkData) {
             contracts[data.index] = data;
             await this.setState({
