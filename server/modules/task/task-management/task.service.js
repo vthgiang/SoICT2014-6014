@@ -425,7 +425,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
     }
 
     responsibleTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
-        .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
+        .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent responsibleEmployees" });
 
     var totalCount = await Task.count(keySearch);
     var totalPages = Math.ceil(totalCount / perPage);
@@ -957,10 +957,6 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
             endDate: {
                 $gte: start
             }
-            // $or: [
-            //     { startDate: { $gte: start } },
-            //     { endDate: { $gte: start } }
-            // ]
         }
     }
 
@@ -975,10 +971,6 @@ exports.getAllTaskOfOrganizationalUnitByMonth = async (task) => {
             startDate: {
                 $lt: end
             }
-            // $or: [
-            //     { startDate: { $lte: end } },
-            //     { endDate: { $lte: end } }
-            // ]
         }
     }
     organizationUnitTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
@@ -1270,7 +1262,7 @@ exports.getAllTaskOfChildrenOrganizationalUnit = async (companyId, roleId, month
     let tasksOfChildrenOrganizationalUnit = [], childrenOrganizationalUnits;
 
     childrenOrganizationalUnits = await overviewService.getAllChildrenOrganizational(companyId, roleId, organizationalUnitId);
-    
+
     for (let i = 0; i < childrenOrganizationalUnits.length; i++) {
         tasksOfChildrenOrganizationalUnit.push(await this.getAllTaskOfOrganizationalUnit(roleId, childrenOrganizationalUnits[i].id, month));
         tasksOfChildrenOrganizationalUnit[i].unshift({ 'name': childrenOrganizationalUnits[i].name, 'deg': childrenOrganizationalUnits[i].deg })
