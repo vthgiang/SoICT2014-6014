@@ -175,6 +175,7 @@ exports.updateHoliday = async (req, res) => {
         } else {
             // Chỉnh sửa thông tin nghỉ lễ
             let holidays = await HolidayService.getAllHolidays(req.user.company._id);
+            holidays = holidays.filter(x => x._id.toString() !== req.params.id);
             let checkData = this.checkForFuplicate(req.body, holidays);
             if (checkData) {
                 let data = await HolidayService.updateHoliday(req.params.id, req.body);
@@ -194,7 +195,6 @@ exports.updateHoliday = async (req, res) => {
                     }
                 });
             }
-
         }
     } catch (error) {
         await LogError(req.user.email, 'EDIT_HOLIDAY', req.user.company);
