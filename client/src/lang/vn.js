@@ -12,21 +12,6 @@ export default {
             number_decisions_required: 'Số ra quyết định không được để trống',
             number_decisions_have_exist: 'Số ra quyết định đã tồn tại',
             unit_decisions_required: 'Cấp ra quyết định không được để trống',
-            // Quản lý lương nhân viên
-            // TODO: Xoá sau
-            name_other_salary_required: 'Tên lương thưởng khác không được để trống',
-            money_other_salary_required: 'Tiền lương thưởng khác không được để trống',
-            month_salary_required: 'Tháng lương không được để trống',
-            money_salary_required: 'Tiền lương chính không được để trống',
-            month_salary_have_exist: 'Tháng lương đã tồn tại',
-            get_salary_success: 'Lấy thông tin lương nhân viên thành công',
-            get_salary_faile: 'Lấy thông tin lương nhân viên thất bại',
-            create_salary_success: 'Thêm bảng lương thành công',
-            create_salary_faile: 'Thêm bảng lương thất bại',
-            delete_salary_success: 'Xoá bẳng lương thành công',
-            delete_salary_faile: 'Xoá bảng lương thất bại',
-            edit_salary_success: 'Chỉnh sửa bảng lương thành công',
-            edit_salary_faile: 'Chỉnh sửa bảng lương thất bại',
             // Quản lý nghỉ phép
             // TODO: Xoá sau
             start_date_annual_leave_required: 'Ngày bắt đầu không được để trống',
@@ -850,24 +835,6 @@ export default {
             edit_succes: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
         },
-        // Quản lý lương nhân viên
-        salary_employee: { // TODO: Xoá sau
-            list_salary: 'Danh sách bảng lương nhân viên',
-            add_salary: 'Thêm bảng lương',
-            add_salary_title: 'Thêm bảng lương nhân viên',
-            edit_salary: 'Chỉnh sửa bảng lương nhân viên',
-            delete_salary: 'Xoá bảng lương',
-            add_by_hand: 'Thêm bằng tay',
-            add_import: 'Import file excel',
-            add_by_hand_title: 'Thêm một bảng lương',
-            add_import_title: 'Thêm nhiều bảng lương',
-            main_salary: 'Tiền lương chính',
-            other_salary: 'Các loại lương thưởng khác',
-            name_salary: 'Tên lương thưởng',
-            money_salary: 'Số tiền',
-            add_more_salary: 'Thêm lương thưởng khác',
-            add_new_salary: 'Thêm mới bảng lương',
-        },
         // Quản lý khen thưởng, kỷ luật
         discipline: { // TODO: Xoá sau
             list_discipline: 'Danh sách kỷ luật',
@@ -1093,6 +1060,7 @@ export default {
 
         // Modules Quản lý nhân sự
         human_resource: {
+
             // Nhóm dùng chung cho module quản lý nhân sự
             unit: 'Đơn vị',
             position: 'Chức vụ',
@@ -1106,6 +1074,12 @@ export default {
             non_position: 'Chọn chức vụ',
             all_status: 'Chọn tất cả các trạng thái',
             non_status: 'Chọn trạng thái',
+            not_unit: 'Chưa chọn đơn vị',
+            add_data_by_excel: 'Thêm dữ liệu bằng việc Import file excel',
+            download_file: 'Download file import mẫu!',
+            choose_file: 'Chọn file',
+            name_button_export: 'Xuất báo cáo',
+
             // Thông điệp trả về từ server dung chung cho module quản lý nhân sự
             employee_number_required: 'Mã nhân viên không được để trống',
             staff_code_not_special: 'Mã nhân viên không được chứ ký tự đặc biệt',
@@ -1117,6 +1091,7 @@ export default {
             // Quản lý lương nhân viên
             salary: {
                 list_salary: 'Danh sách bảng lương nhân viên',
+                file_name_export: 'Bảng theo dõi lương thưởng',
 
                 // Nhóm dành cho table
                 table: {
@@ -1141,6 +1116,8 @@ export default {
                 add_new_salary: 'Thêm mới bảng lương',
 
                 // Thông điệp trả về từ server
+                employee_code_duplicated: 'Mã số nhân viên bị trùng lặp',
+                employee_name_required: 'Tên nhân viên không được để trống',
                 employee_number_required: 'Mã nhân viên không được để trống',
                 staff_code_not_special: 'Mã nhân viên không được chứ ký tự đặc biệt',
                 staff_code_not_find: 'Mã nhân viên không tồn tại',
@@ -1899,6 +1876,9 @@ export default {
 
                 add_err_special_character: 'Tên không được chứa kí tự đặc biệt',
                 add_err_end_date: 'Ngày kết thúc phải sau ngày bắt đầu',
+
+                unit_evaluate: "Đơn vị tiếp nhận kết quả đánh giá công việc",
+                unit_manage_task: "Đơn vị quản lý công việc",
 
             },
             task_perform: {

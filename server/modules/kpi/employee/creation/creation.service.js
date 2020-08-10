@@ -109,8 +109,29 @@ exports.createEmployeeKpiSet = async (data) => {
     let creatorId = data.creator;
     let approverId = data.approver;
     let dateId = data.date;
+
+    let currentMonth = data.date.slice(3, 7) + '-' + data.date.slice(0, 2);
+    let nextMonth;
+    if (new Number(data.date.slice(0, 2)) < 12) {
+        if (new Number(data.date.slice(0, 2)) < 10) {
+            nextMonth = data.date.slice(3, 7) + '-0' + (new Number(data.date.slice(0, 2)) + 1);
+        } else {
+            nextMonth = data.date.slice(3, 7) + '-' + (new Number(data.date.slice(0, 2)) + 1);
+        }
+    } else {
+        nextMonth = (new Number(data.date.slice(3, 7)) + 1) + '-01';
+    }
+
     // Tìm kiếm danh sách các mục tiêu mặc định của phòng ban
-    let organizationalUnitKpiSet = await OrganizationalUnitKpiSet.findOne({ organizationalUnit: organizationalUnitId, status: 1 }).populate("kpis");//status = 1 là kpi đã đc phê duyệt
+    let organizationalUnitKpiSet = await OrganizationalUnitKpiSet
+        .findOne({
+            organizationalUnit: organizationalUnitId,
+            status: 1,
+            date: {
+                $gte: currentMonth, $lt: nextMonth
+            }
+        })
+        .populate("kpis");//status = 1 là kpi đã đc phê duyệt
 
     let defaultOrganizationalUnitKpi;
     if (organizationalUnitKpiSet.kpis) defaultOrganizationalUnitKpi = organizationalUnitKpiSet.kpis.filter(item => item.type !== 0);

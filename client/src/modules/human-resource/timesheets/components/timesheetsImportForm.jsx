@@ -195,10 +195,10 @@ class TimesheetsImportForm extends Component {
                     size={75}
                 >
                     <form className="form-group" id={`form_import_file`}>
-
                         <ConFigImportFile
                             id="import_timesheets_config"
                             configData={configData}
+                            textareaRow={8}
                             scrollTableWidth={850}
                             handleChangeConfig={this.handleChangeConfig}
                         />

@@ -141,6 +141,7 @@ class HolidayImportForm extends Component {
                         <ConFigImportFile
                             id="import_salary_config"
                             configData={configData}
+                            textareaRow={8}
                             scrollTable={false}
                             handleChangeConfig={this.handleChangeConfig}
                         />

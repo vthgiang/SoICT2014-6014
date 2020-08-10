@@ -213,12 +213,12 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                                                     if (listTask) {
                                                         listTask.map(task => {
                                                             let list = task.filter(item1 => {
-                                                                let kpi, length;
+                                                                let kpi, length = 0;
 
                                                                 if (item1.evaluations) {
-                                                                    item1.evaluations.kpis.map(item2 => {
+                                                                    item1.evaluations.results.map(item2 => {
                                                                         kpi = item2.kpis.filter(kpis => kpis === employeeKpi._id);
-                                                                        length = kpi.length;
+                                                                        length = length + kpi.length;
                                                                     });
                                                                     return length !== 0 && length !== undefined;
                                                                 } else {

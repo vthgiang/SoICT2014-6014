@@ -22,7 +22,7 @@ function calcAutoPoint(data) {
     let { task, date, progress, info } = data;
 
     let splitter = date.split('-');
-    let progressTask = progress ? progress : undefined;
+    let progressTask = (progress !== null && progress !== undefined) ? progress : undefined;
     let evaluationsDate = new Date(splitter[2], splitter[1]-1, splitter[0]);
     let startDate = new Date(task.startDate);
     let endDate = new Date(task.endDate);

@@ -10,12 +10,12 @@ const {
  * @company : Id công ty người tìm kiếm
  */
 exports.searchSalaries = async (params, company) => {
-    var keySearchEmployee, keySearch = {
+    let keySearchEmployee, keySearch = {
         company: company
     };
 
     // Bắt sựu kiện đơn vị tìm kiếm khác undefined 
-    if (params.organizationalUnit !== undefined) {
+    if (params.organizationalUnit) {
         let emailInCompany = await EmployeeService.getEmployeeEmailsByOrganizationalUnitsAndPositions(params.organizationalUnit, params.position);
         keySearchEmployee = {
             ...keySearchEmployee,
@@ -26,7 +26,7 @@ exports.searchSalaries = async (params, company) => {
     }
 
     // Bắt sựu kiện MSNV tìm kiếm khác undefined
-    if (params.employeeNumber !== undefined && params.employeeNumber.length !== 0) {
+    if (params.employeeNumber && params.employeeNumber.length !== 0) {
         keySearchEmployee = {
             ...keySearchEmployee,
             employeeNumber: {
@@ -35,9 +35,9 @@ exports.searchSalaries = async (params, company) => {
             }
         }
     }
-    if (keySearchEmployee !== undefined) {
-        var employeeInfo = await Employee.find(keySearchEmployee);
-        var employee = employeeInfo.map(x => x._id);
+    if (keySearchEmployee) {
+        let employeeInfo = await Employee.find(keySearchEmployee);
+        let employee = employeeInfo.map(x => x._id);
         keySearch = {
             ...keySearch,
             employee: {
@@ -47,7 +47,7 @@ exports.searchSalaries = async (params, company) => {
     }
 
     // Bắt sựu kiện tháng tìm kiếm khác null
-    if (params.month !== undefined && params.month.length !== 0) {
+    if (params.month && params.month.length !== 0) {
         keySearch = {
             ...keySearch,
             month: new Date(params.month)
@@ -55,11 +55,11 @@ exports.searchSalaries = async (params, company) => {
     };
 
     // Lấy danh sách bảng lương
-    var totalList = await Salary.count(keySearch);
-    var listSalarys = await Salary.find(keySearch).populate({
-        path: 'employee',
-        model: Employee
-    })
+    let totalList = await Salary.count(keySearch);
+    let listSalarys = await Salary.find(keySearch).populate({
+            path: 'employee',
+            model: Employee
+        })
         .sort({
             'createDate': 'desc'
         }).skip(params.page).limit(params.limit);
@@ -173,7 +173,7 @@ exports.updateSalary = async (id, data, company) => {
         let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailInCompany);
 
         // Lấy thông tin bảng lương vừa cập nhật
-        var updateSalary = await Salary.findOne({
+        let updateSalary = await Salary.findOne({
             _id: id
         }).populate([{
             path: 'employee',
@@ -187,21 +187,6 @@ exports.updateSalary = async (id, data, company) => {
 
     } else return null
 }
-
-
-
-// formatDate = (date) => {
-//     var d = new Date(date),
-//         month = (d.getMonth() + 1),
-//         //day = d.getDate(),
-//         year = d.getFullYear();
-//         console.log("====",d);
-//     if (month.length < 2)
-//         month = '0' + month;
-//     if (day.length < 2)
-//         day = '0' + day;
-//     return [year,month].join('-');
-// }
 
 /**
  * import dữ liệu bảng lương 

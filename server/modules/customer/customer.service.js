@@ -1,5 +1,4 @@
 const { Customer, CustomerLocation, CustomerGroup, User, CustomerLiability } = require('../../models').schema;
-const axios = require('axios');
 // Customer
 exports.getCustomers = async (company, query) => {
     var page = query.page;
