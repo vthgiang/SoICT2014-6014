@@ -15,45 +15,42 @@ const db = process.env.DATABASE;
 const seedDatabase = async () => {
     await console.log("Bắt đầu khởi tạo dữ liệu mẫu ...");
 
-    // Step 1: Connect to MongoDB
-    await mongoose.connect( db, { 
-        useNewUrlParser: true, 
-        useUnifiedTopology: true, 
+    const optionDatabase = process.env.DB_AUTHENTICATION === 'true' ?
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
         useCreateIndex: true,
-        useFindAndModify: false
-    }).then(() => {
+        useFindAndModify: false,
+        user: process.env.DB_USERNAME,
+        pass: process.env.DB_PASSWORD
+    }:{
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+    }
+
+    // Step 1: Connect to MongoDB
+    await mongoose.connect(db, optionDatabase).then(() => {
         console.log("Kết nối thành công đến MongoDB!\n");
     }).catch(err => console.log("DB ERROR! :(\n", err));
 
-
-
-
-
-    // Step 2: Xóa DB cũ
-    await mongoose.connection.db.dropDatabase(
-        console.log("Khởi tạo lại môi trường để cài đặt dữ liệu mẫu.")
+    // Step 2: Xóa database cũ
+    mongoose.connection.db.dropDatabase(
+        console.log(`Dữ liệu cũ của ${mongoose.connection.db.databaseName} đã được xóa.`)
     );
-
-
     
-    
-    // Step 3: Tạo bản ghi trạng thái log
-    await Log.create({ name: 'log', status: true });
-
-
-
-    
-    // Step 4: Tạo các roletype trong hệ thống
-    await RoleType.insertMany([
+    // Step 3: Tạo các roletype trong hệ thống
+    const roleType = await RoleType.insertMany([
         { name: Terms.ROLE_TYPES.ROOT }, 
         { name: Terms.ROLE_TYPES.POSITION },
         { name: Terms.ROLE_TYPES.COMPANY_DEFINED }
     ]);
+    console.log("ROLETYPE:", roleType)
 
 
 
-
-    // Step 5: Tạo tài khoản system admin cho hệ thống quản lý công việc
+    // Step 4: Tạo tài khoản system admin cho hệ thống quản lý công việc
     var salt = await bcrypt.genSaltSync(10);
     var hash = await bcrypt.hashSync(process.env.SYSTEM_ADMIN_PASSWORD, salt);
     var systemAdmin = await User.create({
@@ -72,7 +69,7 @@ const seedDatabase = async () => {
 
 
 
-    // Step 6: Tạo các page cho system admin
+    // Step 5: Tạo các page cho system admin
     var links = await Link.insertMany([
         {
             url: '/',
@@ -130,7 +127,7 @@ const seedDatabase = async () => {
     
     
     
-    // Step 7: Tạo các role abstract mặc định để khởi tạo cho từng công ty
+    // Step 6: Tạo các role abstract mặc định để khởi tạo cho từng công ty
     let roleSuperAdmin = await RootRole.create({
         name: Terms.ROOT_ROLES.SUPER_ADMIN.name,
         description: Terms.ROOT_ROLES.SUPER_ADMIN.description
@@ -157,7 +154,7 @@ const seedDatabase = async () => {
 
 
 
-    // Step 8: Khởi tạo các system link để áp dụng cho các công ty sử dụng dịch vụ
+    // Step 7: Khởi tạo các system link để áp dụng cho các công ty sử dụng dịch vụ
     let systemLinks = Terms.LINKS;
     let convertRoleNameToRoleId = (roleName) => { // Tạo nhanh hàm tiện ích chuyển đổi tên role thành id role
         if (roleName === Terms.ROOT_ROLES.SUPER_ADMIN.name){

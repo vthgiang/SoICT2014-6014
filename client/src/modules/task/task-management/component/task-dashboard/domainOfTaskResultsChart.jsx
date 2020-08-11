@@ -298,7 +298,6 @@ class DomainOfTaskResultsChart extends Component {
     domainChart = () => {
         this.removePreviosChart();
         let dataChart = this.setDataDomainChart();
-
         this.chart = c3.generate({
             bindto: this.refs.chart,             // Đẩy chart vào thẻ div có id="chart"
 
@@ -343,16 +342,6 @@ class DomainOfTaskResultsChart extends Component {
 
         return (
             <React.Fragment>
-                {
-                    TaskOrganizationUnitDashboard &&
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <label></label>
-                            <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
-                        </div>
-                    </div>
-                }
-
                 {!TaskOrganizationUnitDashboard &&
                     <section className="form-inline" style={{ textAlign: "right" }}>
                         <div className="form-group">

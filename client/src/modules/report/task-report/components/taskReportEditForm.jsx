@@ -122,10 +122,10 @@ class TaskReportEditForm extends Component {
                         ...state,
                         editingReport: {
                             ...this.state.editingReport,
-                            // name: '',
-                            // description: '',
                             taskTemplate: '',
                             status: '',
+                            startDate: '',
+                            endDate: '',
                             responsibleEmployees: [],
                             accountableEmployees: [],
                             errorOnDescriptiontTaskReport: undefined,
@@ -283,15 +283,28 @@ class TaskReportEditForm extends Component {
      * @param {*} value 
      */
     handleEditStartDate = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                editingReport: {
-                    ...this.state.editingReport,
-                    startDate: value,
+        if (typeof value === 'undefined') {
+            this.setState(state => {
+                return {
+                    ...state,
+                    editingReport: {
+                        ...this.state.editingReport,
+                        startDate: '',
+                    }
                 }
-            }
-        })
+            });
+        } else {
+            this.setState(state => {
+                return {
+                    ...state,
+                    editingReport: {
+                        ...this.state.editingReport,
+                        startDate: value,
+                    }
+                }
+            })
+        }
+
     }
 
     /**
@@ -299,15 +312,28 @@ class TaskReportEditForm extends Component {
      * @param {*} value 
      */
     handleEditEndDate = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                editingReport: {
-                    ...this.state.editingReport,
-                    endDate: value,
+        if (typeof value === 'undefined') {
+            this.setState(state => {
+                return {
+                    ...state,
+                    editingReport: {
+                        ...this.state.editingReport,
+                        endDate: '',
+                    }
                 }
-            }
-        })
+            });
+        } else {
+            this.setState(state => {
+                return {
+                    ...state,
+                    editingReport: {
+                        ...this.state.editingReport,
+                        endDate: value,
+                    }
+                }
+            })
+        }
+
     }
 
     /**
@@ -418,6 +444,7 @@ class TaskReportEditForm extends Component {
     save = () => {
         if (this.isFormValidated()) {
             this.props.editTaskReport(this.state.taskReportId, this.state.editingReport);
+            console.log('this.state.editingReport', this.state.editingReport)
         }
     }
 
@@ -496,11 +523,11 @@ class TaskReportEditForm extends Component {
         const { errorOnNameTaskReport, errorOnDescriptiontTaskReport, errorOnTaskTemplateReport } = this.state.editingReport;
         let listTaskTemplate, units, listRole, listRoles = [];
         let listTaskReportById = reports.listTaskReportById;
-
+        console.log('listTaskReportById', listTaskReportById)
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
         }
-
+        console.log('editingReport', editingReport)
         let usersOfChildrenOrganizationalUnit;
         if (user.usersOfChildrenOrganizationalUnit) {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
@@ -717,13 +744,14 @@ class TaskReportEditForm extends Component {
                         <div className="col-md-6">
                             {/* Thống kê từ ngày */}
                             {
-                                editingReport && editingReport.startDate && <div className="form-group">
+                                <div className="form-group">
                                     <label>Thống kê từ ngày</label>
                                     <DatePicker
                                         id="start-date"
-                                        value={this.state.editingReport.startDate}
+                                        value={(editingReport.startDate) ? editingReport.startDate : ''}
                                         onChange={this.handleEditStartDate}
                                         disabled={false}
+
                                     />
                                 </div>
                             }
@@ -732,15 +760,16 @@ class TaskReportEditForm extends Component {
                         <div className="col-md-6">
                             {/* Thống kê đến ngày */}
                             {
-                                editingReport && editingReport.endDate && <div className="form-group">
+                                <div className="form-group">
                                     <label>Thống kê đến ngày </label>
                                     <DatePicker
                                         id="end-date"
-                                        value={this.state.editingReport.endDate}
+                                        value={(editingReport.endDate) ? editingReport.endDate : ''} //isNaN(parseFloat(editingReport.endDate)) ? ' ' :
                                         onChange={this.handleEditEndDate}
                                         disabled={false}
                                     />
-                                </div>}
+                                </div>
+                            }
                         </div>
                     </div>
 

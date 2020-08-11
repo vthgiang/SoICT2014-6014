@@ -236,7 +236,9 @@ class EvaluateByAccountableEmployee extends Component {
 
                 let tmp = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Accountable"));
                 if (tmp) {
-                    unit = tmp.organizationalUnit._id;
+                    if( tmp.organizationalUnit ){
+                        unit =  tmp.organizationalUnit._id;
+                    };
                     let kpi = tmp.kpis;
 
                     for (let i in kpi) {

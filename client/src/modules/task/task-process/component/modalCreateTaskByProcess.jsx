@@ -11,7 +11,7 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
 import { TaskProcessActions } from "../redux/actions";
-
+import customModule from './custom'
 //bpmn-nyan
 // import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
 // import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
@@ -45,8 +45,7 @@ class ModalCreateTaskByProcess extends Component {
         }
         this.modeler = new BpmnModeler({
             additionalModules: [
-            //    nyanDrawModule,
-            //    nyanPaletteModule
+                customModule
             ]
          });
         this.generateId = 'createtaskbyprocess';
@@ -55,7 +54,7 @@ class ModalCreateTaskByProcess extends Component {
 
     componentDidMount() {
         this.props.getDepartment();
-        // this.props.getAllUsersWithRole();
+        this.props.getAllUsersWithRole();
         let { user } = this.props;
         let defaultUnit = user && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.find(item =>
             item.dean === this.state.currentRole
@@ -466,7 +465,7 @@ class ModalCreateTaskByProcess extends Component {
         const { translate, role,user } = this.props;
         const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedEdit } = this.state;
         const { listOrganizationalUnit } = this.props
-        // let listUser = user.usersWithRole
+        let listUser = user.usersWithRole
         // user.usersWithRole.filter(x => )
         let listRole = [];
         if (role && role.list.length !== 0) listRole = role.list;
@@ -526,6 +525,8 @@ class ModalCreateTaskByProcess extends Component {
                                             listOrganizationalUnit={listOrganizationalUnit}
                                             action='create-task'
                                             id={id}
+                                            astemplate = {false}
+                                            listUser = {listUser}
                                             info={(info && info[`${id}`]) && info[`${id}`]}
                                             handleChangeName={this.handleChangeName}
                                             handleChangeDescription={this.handleChangeDescription}
