@@ -3,9 +3,9 @@ import {sendRequest} from '../../../../helpers/requestHelper';
 
 export const IncidentService = {
     createIncident,
+    createMaintainanceForIncident,
     updateIncident,
     deleteIncident,
-    createMaintainanceForIncident,
 }
 
 // tạo mới thông tin sự cố tài sản

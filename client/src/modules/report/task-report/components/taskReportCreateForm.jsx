@@ -184,8 +184,8 @@ class TaskReportCreateForm extends Component {
                         nameTaskReport: taskTemplate.name,
                         descriptionTaskReport: taskTemplate.description,
                         taskTemplate: taskTemplate._id,
-                        responsibleEmployees: taskTemplate.responsibleEmployees,
-                        accountableEmployees: taskTemplate.accountableEmployees,
+                        // responsibleEmployees: taskTemplate.responsibleEmployees,
+                        // accountableEmployees: taskTemplate.accountableEmployees,
                         taskInformations: taskInformations,
                     }
                 }
@@ -483,7 +483,8 @@ class TaskReportCreateForm extends Component {
 
     render() {
         const { translate, reports, tasktemplates, user, tasks } = this.props;
-        const { errorOnNameTaskReport, errorOnDescriptiontTaskReport, newReport, } = this.state;
+        const { newReport, } = this.state;
+        const { errorOnNameTaskReport, errorOnDescriptiontTaskReport, } = this.state.newReport;
         let listTaskTemplate, units, taskInformations = newReport.taskInformations, listRole, listRoles = [];
 
         // Lấy ra list task template theo đơn vị

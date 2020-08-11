@@ -65,7 +65,9 @@ export default class CustomRenderer extends BaseRenderer {
       svgAttr(text, {
         fill: 'black',
         transform: 'translate(7, 20)',
-        fontSize: "15px"
+        fontSize: "15px",
+        wordBreak: "break-all",
+        overflowWrap: "break-word"
       });
       svgClasses(text).add('djs-label');
       svgAppend(text, document.createTextNode(element.businessObject.name !== undefined ? element.businessObject.name : ""));
@@ -81,7 +83,9 @@ export default class CustomRenderer extends BaseRenderer {
       svgClasses(text).add('djs-label');
 
       let info = element.businessObject.$attrs.info;
-      svgAppend(text, document.createTextNode(`${info ? (info[element.id]?.responsibleName ? info[element.id].responsibleName : "") : ""}`));
+      let accountableName = element.businessObject.$attrs.accountableName
+      let responsibleName = element.businessObject.$attrs.responsibleName
+      svgAppend(text, document.createTextNode(`${responsibleName ? responsibleName : ""}`));
       svgAppend(parentNode, text);
 
       text = svgCreate('text');
@@ -91,7 +95,7 @@ export default class CustomRenderer extends BaseRenderer {
         fontSize: "10px"
       });
       svgClasses(text).add('djs-label');
-      svgAppend(text, document.createTextNode(`${info ? (info[element.id]?.accountableName ? info[element.id].accountableName : "") : ""}`));
+      svgAppend(text, document.createTextNode(`${accountableName ? accountableName : ""}`));
       svgAppend(parentNode, text);
 
       // const line = drawLine(parentNode, 0, 40, 200, 40, 'black');

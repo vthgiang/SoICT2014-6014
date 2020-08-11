@@ -97,6 +97,9 @@
 #createprocess > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2) {
     display: none;
 }
-#editprocess > div > div > svg > g > g.layer-base > g:nth-child(3) > g > g > text:nth-child(2) {
+#editprocess > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2) {
+    display: none;
+}
+#createtaskbyprocess > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2) {
     display: none;
 }

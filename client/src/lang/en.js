@@ -1729,6 +1729,8 @@ export default {
 
                 unit_evaluate: "Unit receiving work evaluation results",
                 unit_manage_task: "Unit managing task",
+                delete_eval: "Delete evaluation",
+                delete_eval_title: 'Are you sure to delete this evaluation?'
 
             },
             task_perform: {

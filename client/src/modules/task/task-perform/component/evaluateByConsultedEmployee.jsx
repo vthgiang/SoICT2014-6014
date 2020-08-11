@@ -113,7 +113,9 @@ class EvaluateByConsultedEmployee extends Component {
             let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Consulted"));
             if (res) {
                 point = res.employeePoint ? res.employeePoint : undefined;
-                unit = res.organizationalUnit._id;
+                if( res.organizationalUnit ){
+                    unit =  res.organizationalUnit._id;
+                };
                 let kpi = res.kpis;
 
                 for (let i in kpi) {
@@ -425,7 +427,7 @@ class EvaluateByConsultedEmployee extends Component {
                             <legend className="scheduler-border">{translate('task.task_management.info_eval_month')}</legend>
                             <div style={{ lineHeight: 2.8 }}>
                                 {/* % tiến độ */}
-                                <div><span style={{ fontWeight: "bold" }}>{translate('task.task_management.detail_progress')}:&nbsp;&nbsp;&nbsp;</span>{(evaluations.progress !== null && evaluations.progress !== undefined) ? `${evaluations.progress}%` : translate('task.task_management.not_eval')}</div>
+                                <div><span style={{ fontWeight: "bold" }}>{translate('task.task_management.detail_progress')}:&nbsp;&nbsp;&nbsp;</span>{(evaluations?.progress !== null && evaluations?.progress !== undefined) ? `${evaluations?.progress}%` : translate('task.task_management.not_eval')}</div>
 
                                 {/* Các thông tin khác */}
                                 {
