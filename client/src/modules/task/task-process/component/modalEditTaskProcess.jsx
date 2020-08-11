@@ -78,7 +78,7 @@ class ModalEditTaskProcess extends Component {
                 return false;
             }
         });
-        
+
         //Vo hieu hoa chinh sua label khi tao moi 
         eventBus.on([
             'create.end',
@@ -124,25 +124,31 @@ class ModalEditTaskProcess extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.idProcess !== this.state.idProcess) {
-            // this.props.getDepartment();
-            // let { user } = this.props;
-            // let defaultUnit;
-            // if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
-            //     item.dean === this.state.currentRole
-            //     || item.viceDean === this.state.currentRole
-            //     || item.employee === this.state.currentRole);
-            // if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
-            //     // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
-            //     defaultUnit = user.organizationalUnitsOfUser[0]
-            // }
-            // this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
+        if (nextProps.idProcess !== this.state.idProcess) { 
+            let { infoTask } = this.props
+            for (const x in infoTask) {
+                if (x !== undefined) {
+                    const modeling = this.modeler.get('modeling');
+                    let element1 = this.modeler.get('elementRegistry').get(x);
+                    if(element1) {
+                        modeling.updateProperties(element1, {
+                            info: infoTask[x],
+                        });
+                    }
+                }
+            }
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
             return true;
         }
         return true;
     }
-
+    handleUpdateElement = (abc) => {
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        modeling.updateProperties(element1, {
+            info: this.state.info,
+        });
+    }
     // Các hàm xử lý sự kiện của form 
     handleChangeContent = async (content) => {
         await this.setState(state => {
@@ -184,6 +190,11 @@ class ModalEditTaskProcess extends Component {
                 ...state,
             }
         })
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        modeling.updateProperties(element1, {
+            name: value,
+        });
     }
 
     handleChangeDescription = async (value) => {
@@ -197,32 +208,58 @@ class ModalEditTaskProcess extends Component {
                 ...state,
             }
         })
+        this.handleUpdateElement();
     }
 
     handleChangeResponsible = async (value) => {
+        let { role } = this.props
+        let responsible = []
+
+        role.list.forEach(x => {
+            value.forEach(y => {
+                if (y === x._id) {
+                    responsible.push(x.name)
+                }
+            })
+        })
+
         await this.setState(state => {
             state.info[`${state.id}`] = {
                 ...state.info[`${state.id}`],
                 code: state.id,
                 responsible: value,
+                responsibleName: responsible
             }
             return {
                 ...state,
             }
         })
+        this.handleUpdateElement();
     }
 
     handleChangeAccountable = async (value) => {
+        let { role } = this.props
+        let accountable = []
+
+        role.list.forEach(x => {
+            value.forEach(y => {
+                if (y === x._id) {
+                    accountable.push(x.name)
+                }
+            })
+        })
         await this.setState(state => {
             state.info[`${state.id}`] = {
                 ...state.info[`${state.id}`],
                 code: state.id,
                 accountable: value,
+                accountableName: accountable
             }
             return {
                 ...state,
             }
-        })
+        }, console.log(this.state.info))
+        this.handleUpdateElement();
     }
 
     handleChangeOrganizationalUnit = async (value) => {
@@ -236,6 +273,7 @@ class ModalEditTaskProcess extends Component {
                 ...state,
             }
         })
+        this.handleUpdateElement();
     }
 
     handleChangeTemplate = async (value) => {
@@ -249,6 +287,7 @@ class ModalEditTaskProcess extends Component {
                 ...state,
             }
         })
+        this.handleUpdateElement();
     }
 
     handleChangeViewer = async (value) => {
@@ -278,7 +317,6 @@ class ModalEditTaskProcess extends Component {
 
     interactPopup = (event) => {
         var element = event.element;
-        console.log(event);
         let nameStr = element.type.split(':');
         this.setState(state => {
             if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' ||
