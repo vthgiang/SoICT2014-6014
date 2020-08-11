@@ -71,7 +71,7 @@ class FormInfoTask extends Component {
         });
         this.props.handleChangeTemplate(value[0])
     }
-    handleChangeResponsible = (value,a) => {
+    handleChangeResponsible = (value, a) => {
         this.setState({
             responsible: value,
         })
@@ -86,9 +86,9 @@ class FormInfoTask extends Component {
 
     render() {
         const { user, translate, role, tasktemplates } = this.props;
-        const { nameTask, description, responsible, accountable, organizationalUnit, taskTemplate} = this.state;
-        const { id, info, action, listOrganizationalUnit, disabled,listUser } = this.props;
-        let usersOfChildrenOrganizationalUnit, listTaskTemplate, listUserAccountable, listUserResponsible;
+        const { nameTask, description, responsible, accountable, organizationalUnit, taskTemplate } = this.state;
+        const { id, info, action, listOrganizationalUnit, disabled, listUser, astemplate } = this.props;
+        let usersOfChildrenOrganizationalUnit, listTaskTemplate, listUserAccountable = [], listUserResponsible = [];
         if (user && user.usersOfChildrenOrganizationalUnit) {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
@@ -109,7 +109,7 @@ class FormInfoTask extends Component {
             });
         }
         // list template
-        let listTemp = [{value: "", text: "--Chọn mẫu công việc--" }];
+        let listTemp = [{ value: "", text: "--Chọn mẫu công việc--" }];
         if (listTaskTemplate && listTaskTemplate.length !== 0) {
             listTaskTemplate.map(item => {
                 listTemp.push({ value: item._id, text: item.name })
@@ -117,14 +117,14 @@ class FormInfoTask extends Component {
         }
         //Xử lí khởi tạo quy trình
         if (listUser) {
-            listUserAccountable = listUser.filter(x => {
-                if (info?.accountable?.indexOf(x.roleId) !== -1) {
-                    return x?.userId?.name
+            listUser.forEach(x => {
+                if (info?.accountable.some(y => y === x.roleId)) {
+                    listUserAccountable.push({ value: x.userId._id, text: x.userId.name })
                 }
             })
-            listUserResponsible = listUser.filter(x => {
-                if (info?.responsible?.indexOf(x.roleId) !== -1) {
-                    return x?.userId?.name
+            listUser.forEach(x => {
+                if (info?.responsible.some(y => y === x.roleId)) {
+                    listUserResponsible.push({ value: x.userId._id, text: x.userId.name })
                 }
             })
         }
@@ -166,21 +166,21 @@ class FormInfoTask extends Component {
                         }
                     </div>
                     {(listTaskTemplate && listTaskTemplate.length !== 0) &&
-                    <div className="form-group">
-                        <label htmlFor="exampleFormControlSelect1" style={{ float: 'left' }} >Mẫu công việc</label>
-                        {
-                            <SelectBox
-                                id={`select-template-employee-${id}-${action}`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                multiple={false}
-                                items={listTemp}
-                                onChange={this.handleChangeTemplate}
-                                value={taskTemplate}
-                                disabled={disabled}
-                            />
-                        }
-                    </div>
+                        <div className="form-group">
+                            <label htmlFor="exampleFormControlSelect1" style={{ float: 'left' }} >Mẫu công việc</label>
+                            {
+                                <SelectBox
+                                    id={`select-template-employee-${id}-${action}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    multiple={false}
+                                    items={listTemp}
+                                    onChange={this.handleChangeTemplate}
+                                    value={taskTemplate}
+                                    disabled={disabled}
+                                />
+                            }
+                        </div>
                     }
                     <div className="form-group">
                         <label htmlFor="exampleFormControlSelect1" style={{ float: 'left' }} >Người thực hiện</label>
@@ -191,7 +191,7 @@ class FormInfoTask extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 // items={unitMembers}
-                                items={listItem}
+                                items={astemplate ? listItem : listUserResponsible}
                                 onChange={this.handleChangeResponsible}
                                 multiple={true}
                                 value={responsible}
@@ -209,7 +209,7 @@ class FormInfoTask extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 // items={unitMembers}
-                                items={listItem}
+                                items={astemplate ? listItem : listUserAccountable}
                                 onChange={this.handleChangeAccountable}
                                 multiple={true}
                                 value={accountable}
@@ -218,7 +218,7 @@ class FormInfoTask extends Component {
                         }
                     </div>
 
-                    <button className= 'btn btn-primary' onClick = {this.props.done}> Hoàn thành</button>
+                    <button className='btn btn-primary' onClick={this.props.done}> Hoàn thành</button>
                 </form>
             </div>
         );
