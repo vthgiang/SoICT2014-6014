@@ -201,7 +201,13 @@ exports.deleteXmlDiagram = async (diagramId) => {
  */
 exports.createTaskByProcess = async (processId, body) => {
     let data = body.infoTask;
-    let startDate, endDate, level;
+    let level;
+
+    let splitter = data.startDate.split("-");
+    let startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    splitter = data.endDate.split("-");
+    let endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+
 
     for (let i in data) {
         let taskTemplate, taskActions, cloneActions = [];
@@ -218,8 +224,7 @@ exports.createTaskByProcess = async (processId, body) => {
                 }
             }
         }
-
-        let task = {
+        await Task.create({
             organizationalUnit: data[i].organizationalUnit,
             creator: data[i].creator, //id của người tạo
             name: data[i].name,
@@ -236,6 +241,6 @@ exports.createTaskByProcess = async (processId, body) => {
             accountableEmployees: data[i].accountableEmployees,
             consultedEmployees: data[i].consultedEmployees,
             informedEmployees: data[i].informedEmployees,
-        }
+        });
     }
 }

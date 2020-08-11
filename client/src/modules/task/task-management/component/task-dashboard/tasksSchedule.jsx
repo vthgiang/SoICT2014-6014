@@ -34,17 +34,18 @@ class TasksSchedule extends Component {
       startDate: null,
       endDate: null,
       infoSearch: {
-        organizationalUnit: '[]',
+        organizationalUnit: this.props.units,
         currentPage: "1",
         perPage: "1000",
         status: '[]',
         priority: '[]',
         special: '[]',
         name: null,
-        startDate: null,
+        startDate: this.formatDate(dateNow),
         endDate: null,
-        startDateAfter: this.formatDate(dateNow),
-        endDateBefore: null
+        startDateAfter: null,
+        endDateBefore: null,
+        aPeriodOfTime: true
       },
       taskId: null,
       add: true,
@@ -52,56 +53,6 @@ class TasksSchedule extends Component {
 
       willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
     };
-  }
-
-  componentDidMount = async () => {
-    let { infoSearch } = this.state;
-    let { organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = infoSearch;
-
-    await this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
-    await this.setState(state => {
-      return {
-        ...state,
-        dataStatus: this.DATA_STATUS.QUERYING,
-        willUpdate: true       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-      };
-    });
-  }
-
-  shouldComponentUpdate = async (nextProps, nextState) => {
-    if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-      if (this.props.TaskOrganizationUnitDashboard) {
-        if (!nextProps.tasks.organizationUnitTasks) {
-          return false;
-        }
-      }
-      else if (!nextProps.tasks.responsibleTasks
-        || !nextProps.tasks.accountableTasks
-        || !nextProps.tasks.consultedTasks
-        || !nextProps.tasks.informedTasks
-        || !nextProps.tasks.creatorTasks
-        || !nextProps.tasks.tasksbyuser) {
-        return false;
-      }
-
-      this.setState(state => {
-        return {
-          ...state,
-          dataStatus: this.DATA_STATUS.AVAILABLE
-        }
-      });
-
-    } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
-      this.setState(state => {
-        return {
-          ...state,
-          dataStatus: this.DATA_STATUS.FINISHED,
-          willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-        }
-      });
-      return true;
-    }
-    return false;
   }
 
   formatDate(d) {
@@ -122,95 +73,223 @@ class TasksSchedule extends Component {
     let taskDurations = [];
 
     if (tasks) {
+      // Phân chia công việc vào nhóm theo người thực hiện
       if (this.props.TaskOrganizationUnitDashboard) {
         taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
         inprocessTasks = taskList && taskList.filter(task => (task.status === "Inprocess" && task.isArchived === false));
-      }
-      else {
-        taskList = tasks && tasks.responsibleTasks;
-        inprocessTasks = taskList && taskList.filter(task => (task.status === "Inprocess" && task.isArchived === false));
-      }
-    }
 
-    if (inprocessTasks) {
-      var startTime, endTime, currentTime, start_time, end_time, title1, title2, groupTask, titleTask;
-      var workingDayMin;
+        if (inprocessTasks) {
+          var startTime, endTime, currentTime, start_time, end_time, title1, title2, groupTask, titleTask;
+          var workingDayMin;
 
-      for (let i = 1; i <= inprocessTasks.length; i++) {
-        let multi = false;
-        let responsibleEmployeeIds = [];
-        let responsibleEmployeeNames = [];
+          for (let i = 1; i <= inprocessTasks.length; i++) {
+            let multi = false;
+            let responsibleEmployeeIds = [];
+            let responsibleEmployeeNames = [];
 
-        currentTime = new Date();
-        startTime = new Date(inprocessTasks[i - 1].startDate);
-        endTime = new Date(inprocessTasks[i - 1].endDate);
-        start_time = moment(startTime);
-        end_time = moment(endTime);
-
-        inprocessTasks[i - 1].responsibleEmployees.map(x => {
-          responsibleEmployeeIds.push(x._id);
-          responsibleEmployeeNames.push(x.name);
-        });
-
-        title1 = inprocessTasks[i - 1].name + " - " + inprocessTasks[i - 1].progress + "%";
-        title2 = inprocessTasks[i - 1].name + " - " + responsibleEmployeeNames.join(" - ") + " - " + inprocessTasks[i - 1].progress + "%";
-        if (responsibleEmployeeIds.length > 1) {
-          multi = true;
-        }
-        if (multi) {
-          titleTask = title2;
-          groupTask = "multi-responsible-employee"
-        }
-        else {
-          titleTask = title1;
-          groupTask = responsibleEmployeeIds[0];
-        }
-
-        taskDurations.push({
-          id: parseInt(i),
-          group: groupTask,
-          title: titleTask,
-          canMove: false,
-
-          start_time: start_time,
-          end_time: end_time,
-
-          itemProps: {
-            style: {
-              color: "rgb(0, 0, 0, 0.8)",
-              borderStyle: "solid",
-              fontWeight: '600',
-              fontSize: 14,
-              borderWidth: 1,
-              borderRadius: 3,
-            }
-          }
-        })
-      }
-
-      let x = document.getElementsByClassName("rct-item");
-      if (x.length) {
-        for (let i = 0; i < x.length; i++) {
-          if (inprocessTasks[i]) {
-            let color;
             currentTime = new Date();
-            startTime = new Date(inprocessTasks[i].startDate);
-            endTime = new Date(inprocessTasks[i].endDate);
+            startTime = new Date(inprocessTasks[i - 1].startDate);
+            endTime = new Date(inprocessTasks[i - 1].endDate);
+            start_time = moment(startTime);
+            end_time = moment(endTime);
 
-            if (currentTime > endTime && inprocessTasks[i].progress < 100) {
-              color = "#DD4B39"; // not achieved
+            inprocessTasks[i - 1].responsibleEmployees.map(x => {
+              responsibleEmployeeIds.push(x._id);
+              responsibleEmployeeNames.push(x.name);
+            });
+
+            title1 = inprocessTasks[i - 1].name + " - " + inprocessTasks[i - 1].progress + "%";
+            title2 = inprocessTasks[i - 1].name + " - " + responsibleEmployeeNames.join(" - ") + " - " + inprocessTasks[i - 1].progress + "%";
+            if (responsibleEmployeeIds.length > 1) {
+              multi = true;
+            }
+            if (multi) {
+              titleTask = title2;
+              groupTask = "multi-responsible-employee"
             }
             else {
-              workingDayMin = (endTime - startTime) * inprocessTasks[i].progress / 100;
-              let dayFromStartDate = currentTime - startTime;
-              let timeOver = workingDayMin - dayFromStartDate;
-              if (timeOver >= 0) color = "#00A65A"; // In time or on time
-              else {
-                color = "#F0D83A"; // delay
-              }
+              titleTask = title1;
+              groupTask = responsibleEmployeeIds[0];
             }
 
-            this.displayTaskProgress(inprocessTasks[i].progress, x[i], color);
+            taskDurations.push({
+              id: parseInt(i),
+              group: groupTask,
+              title: titleTask,
+              canMove: false,
+
+              start_time: start_time,
+              end_time: end_time,
+
+              itemProps: {
+                style: {
+                  color: "rgb(0, 0, 0, 0.8)",
+                  borderStyle: "solid",
+                  fontWeight: '600',
+                  fontSize: 14,
+                  borderWidth: 1,
+                  borderRadius: 3,
+                }
+              }
+            })
+          }
+
+          let x = document.getElementsByClassName("rct-item");
+          if (x.length) {
+            for (let i = 0; i < x.length; i++) {
+              if (inprocessTasks[i]) {
+                let color;
+                currentTime = new Date();
+                startTime = new Date(inprocessTasks[i].startDate);
+                endTime = new Date(inprocessTasks[i].endDate);
+
+                if (currentTime > endTime && inprocessTasks[i].progress < 100) {
+                  color = "#DD4B39"; // not achieved
+                }
+                else {
+                  workingDayMin = (endTime - startTime) * inprocessTasks[i].progress / 100;
+                  let dayFromStartDate = currentTime - startTime;
+                  let timeOver = workingDayMin - dayFromStartDate;
+                  if (timeOver >= 0) color = "#00A65A"; // In time or on time
+                  else {
+                    color = "#F0D83A"; // delay
+                  }
+                }
+
+                this.displayTaskProgress(inprocessTasks[i].progress, x[i], color);
+              }
+            }
+          }
+        }
+      }
+
+      // Chia nhóm công việc theo vai trò trong công việc
+      else {
+        let res, acc, con, inf;
+        var inprocessTasks2 = [];
+
+        res = tasks.responsibleTasks;
+        acc = tasks.accountableTasks;
+        con = tasks.consultedTasks;
+        inf = tasks.informedTasks;
+
+        if (res) {
+          res.map(item => {
+            if (item.status === "Inprocess" && item.isArchived === false) {
+              inprocessTasks2.push({
+                id: item._id,
+                gr: 'responsible-tasks',
+                name: item.name,
+                startDate: item.startDate,
+                endDate: item.endDate,
+                progress: item.progress
+              })
+            }
+          })
+        }
+
+        if (acc) {
+          acc.map(item => {
+            if (item.status === "Inprocess" && item.isArchived === false) {
+              inprocessTasks2.push({
+                id: item._id,
+                gr: 'accountable-tasks',
+                name: item.name,
+                startDate: item.startDate,
+                endDate: item.endDate,
+                progress: item.progress
+              })
+            }
+          })
+        }
+
+        if (con) {
+          con.map(item => {
+            if (item.status === "Inprocess" && item.isArchived === false) {
+              inprocessTasks2.push({
+                id: item._id,
+                gr: 'consulted-tasks',
+                name: item.name,
+                startDate: item.startDate,
+                endDate: item.endDate,
+                progress: item.progress
+              })
+            }
+          })
+        }
+
+        if (inf) {
+          inf.map(item => {
+            if (item.status === "Inprocess" && item.isArchived === false) {
+              inprocessTasks2.push({
+                id: item._id,
+                gr: 'informed-tasks',
+                name: item.name,
+                startDate: item.startDate,
+                endDate: item.endDate,
+                progress: item.progress
+              })
+            }
+          })
+        }
+
+        if (inprocessTasks2) {
+          for (let i = 0; i < inprocessTasks2.length; i++) {
+
+            if (inprocessTasks2[i]) {
+              let startTime, endTime, start_time, end_time;
+              let titleTask = inprocessTasks2[i].name + " - " + inprocessTasks2[i].progress + "%";
+
+              startTime = new Date(inprocessTasks2[i].startDate);
+              endTime = new Date(inprocessTasks2[i].endDate);
+              start_time = moment(startTime);
+              end_time = moment(endTime);
+
+              taskDurations.push({
+                id: i + 1,
+                group: inprocessTasks2[i].gr,
+                title: titleTask,
+                canMove: false,
+                start_time: start_time,
+                end_time: end_time,
+                itemProps: {
+                  style: {
+                    color: "rgb(0, 0, 0, 0.8)",
+                    borderStyle: "solid",
+                    fontWeight: '600',
+                    fontSize: 14,
+                    borderWidth: 1,
+                    borderRadius: 3,
+                  }
+                }
+              })
+            }
+          }
+          let x = document.getElementsByClassName("rct-item");
+          if (x.length) {
+            for (let i = 0; i < x.length; i++) {
+              if (inprocessTasks2[i]) {
+                let color;
+                currentTime = new Date();
+                startTime = new Date(inprocessTasks2[i].startDate);
+                endTime = new Date(inprocessTasks2[i].endDate);
+
+                if (currentTime > endTime && inprocessTasks2[i].progress < 100) {
+                  color = "#DD4B39"; // not achieved
+                }
+                else {
+                  workingDayMin = (endTime - startTime) * inprocessTasks2[i].progress / 100;
+                  let dayFromStartDate = currentTime - startTime;
+                  let timeOver = workingDayMin - dayFromStartDate;
+                  if (timeOver >= 0) color = "#00A65A"; // In time or on time
+                  else {
+                    color = "#F0D83A"; // delay
+                  }
+                }
+
+                this.displayTaskProgress(inprocessTasks2[i].progress, x[i], color);
+              }
+            }
           }
         }
       }
@@ -227,63 +306,93 @@ class TasksSchedule extends Component {
     let multiResponsibleEmployee = false;
 
     if (tasks) {
+
+      // Phân nhóm công việc theo người thực hiện
       if (this.props.TaskOrganizationUnitDashboard) {
         taskList1 = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
         inprocessTasks1 = taskList1 && taskList1.filter(task => (task.status === "Inprocess" && task.isArchived === false));
-      }
-      else {
-        taskList1 = tasks && tasks.responsibleTasks;
-        inprocessTasks1 = taskList1 && taskList1.filter(task => (task.status === "Inprocess" && task.isArchived === false));
-      }
-      if (inprocessTasks1) {
-        for (let i = 1; i <= inprocessTasks1.length; i++) {
-          let responsibleName = [];
-          let responsibleEmployeeIds = [];
+        console.log('inprpcess', inprocessTasks1);
+        if (inprocessTasks1) {
+          for (let i = 1; i <= inprocessTasks1.length; i++) {
+            let responsibleName = [];
+            let responsibleEmployeeIds = [];
 
-          inprocessTasks1[i - 1].responsibleEmployees.map(x => {
-            responsibleName.push(x.name)
-            responsibleEmployeeIds.push(x._id)
-          });
+            inprocessTasks1[i - 1].responsibleEmployees.map(x => {
+              responsibleName.push(x.name)
+              responsibleEmployeeIds.push(x._id)
+            });
 
-          if (responsibleEmployeeIds.length === 1) { // Nếu công việc chỉ có 1 người thực hiện
-            groupName.push({
-              id: responsibleEmployeeIds[0],
-              title: responsibleName
-            })
+            if (responsibleEmployeeIds.length === 1) { // Nếu công việc chỉ có 1 người thực hiện
+              groupName.push({
+                id: responsibleEmployeeIds[0],
+                title: responsibleName
+              });
+              id.push(responsibleEmployeeIds[0])
+            }
+            else if (responsibleEmployeeIds.length > 1) { // Nếu công việc có nhiều người làm chung
+              multiResponsibleEmployee = true;
+            }
+
+            // id.push(responsibleEmployeeIds[0])
           }
-          else if (responsibleEmployeeIds.length > 1) {
-            multiResponsibleEmployee = true;
-          }
+          // Loại bỏ các id trùng nhau
+          if (groupName.length) {
+            console.log('GRName:\n\n\n', id, groupName);
+            for (let i = 0; i < id.length; i++) {
+              let idx = distinctId.indexOf(id[i]);
 
-          id.push(responsibleEmployeeIds[0])
-        }
-        // Loại bỏ các id trùng nhau
-        if (groupName.length) {
-          for (let i = 0; i < id.length; i++) {
-            let idx = distinctId.indexOf(id[i]);
-
-            if (idx < 0) {
-              distinctId.push(id[i]);
-              if (groupName[i]) {
-                distinctGroupName.push({
-                  id: groupName[i].id,
-                  title: groupName[i].title
-                })
+              if (idx < 0) {
+                distinctId.push(id[i]);
+                if (groupName[i]) {
+                  distinctGroupName.push({
+                    id: groupName[i].id,
+                    title: groupName[i].title
+                  })
+                }
               }
             }
-          }
 
-          if (multiResponsibleEmployee) {
-            distinctGroupName.push({
-              id: "multi-responsible-employee",
-              title: translate('task.task_management.collaborative_tasks')
-            })
+            if (multiResponsibleEmployee) {
+              distinctGroupName.push({
+                id: "multi-responsible-employee",
+                title: translate('task.task_management.collaborative_tasks')
+              })
+            }
           }
+        }
+      }
+
+      //Phân nhóm công việc theo vai trò trong công việc
+      else {
+        let res, acc, con, inf;
+
+        if (tasks) {
+          res = tasks.responsibleTasks;
+          acc = tasks.accountableTasks;
+          con = tasks.consultedTasks;
+          inf = tasks.informedTasks;
+
+          if (res && res.length) distinctGroupName.push({
+            id: "responsible-tasks",
+            title: translate('task.task_management.responsible')
+          })
+          if (acc && acc.length) distinctGroupName.push({
+            id: "accountable-tasks",
+            title: translate('task.task_management.accountable')
+          })
+          if (con && con.length) distinctGroupName.push({
+            id: "consulted-tasks",
+            title: translate('task.task_management.consulted')
+          })
+          if (inf && inf.length) distinctGroupName.push({
+            id: "informed-tasks",
+            title: translate('task.task_management.informed')
+          })
         }
       }
     }
     let group = [{ id: "no-data", title: "" }]
-
+    console.log('group', distinctGroupName);
     return distinctGroupName.length ? distinctGroupName : group;
   }
 
@@ -309,23 +418,64 @@ class TasksSchedule extends Component {
     var taskList, inprocessTasks;
 
     if (tasks) {
-      // if (this.props.TaskOrganizationUnitDashboard) {
-      //   taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
-      //   inprocessTasks = taskList && taskList.filter(task => task.status === "Inprocess");
-      // }
-      // else inprocessTasks = tasks.responsibleTasks;
-
       if (this.props.TaskOrganizationUnitDashboard) {
         taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
         inprocessTasks = taskList && taskList.filter(task => (task.status === "Inprocess" && task.isArchived === false));
       }
       else {
-        taskList = tasks && tasks.responsibleTasks;
-        inprocessTasks = taskList && taskList.filter(task => (task.status === "Inprocess" && task.isArchived === false));
+        let res, acc, con, inf;
+        var inprocessTasks2 = [];
+
+        res = tasks.responsibleTasks;
+        acc = tasks.accountableTasks;
+        con = tasks.consultedTasks;
+        inf = tasks.informedTasks;
+
+        if (res) {
+          await res.map(item => {
+            if (item.status === "Inprocess" && item.isArchived === false) {
+              inprocessTasks2.push({
+                _id: item._id
+              })
+            }
+          })
+        }
+
+        if (acc) {
+          await acc.map(item => {
+            if (item.status === "Inprocess" && item.isArchived === false) {
+              inprocessTasks2.push({
+                _id: item._id
+              })
+            }
+          })
+        }
+
+        if (con) {
+          await con.map(item => {
+            if (item.status === "Inprocess" && item.isArchived === false) {
+              inprocessTasks2.push({
+                _id: item._id
+              })
+            }
+          })
+        }
+
+        if (inf) {
+          await inf.map(item => {
+            if (item.status === "Inprocess" && item.isArchived === false) {
+              inprocessTasks2.push({
+                _id: item._id
+              })
+            }
+          })
+        }
+        inprocessTasks = inprocessTasks2;
       }
     }
 
     let id = inprocessTasks[itemId - 1]._id;
+
     await this.setState(state => {
       return {
         ...state,
@@ -371,7 +521,7 @@ class TasksSchedule extends Component {
     let task = tasks && tasks.task;
     let today = new Date();
     this.displayTaskProgress();
-    let sidebarWidth = TaskOrganizationUnitDashboard ? 150 : 0;
+    // let sidebarWidth = TaskOrganizationUnitDashboard ? 150 : 0;
     return (
       <React.Fragment>
         <div className="box-body qlcv">
@@ -383,7 +533,7 @@ class TasksSchedule extends Component {
             itemsSorted
             itemTouchSendsClick={false}
             stackItems
-            sidebarWidth={sidebarWidth}
+            sidebarWidth={150}
             itemHeightRatio={0.8}
             onItemClick={this.handleItemClick}
             canMove={false}
@@ -436,6 +586,9 @@ function mapState(state) {
 }
 const actions = {
   getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
+  getAccountableTaskByUser: taskManagementActions.getAccountableTaskByUser,
+  getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
+  getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
   getTaskById: taskManagementActions.getTaskById,
   getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
 }

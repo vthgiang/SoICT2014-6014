@@ -110,3 +110,21 @@ exports.deleteXmlDiagram = async (req, res) => {
   }
 }
 
+exports.createTaskByProcess = async (req, res) => {
+  try {
+      var data = await TaskProcessService.createTaskByProcess(req.params.processId, req.body);
+      await LogInfo(req.user.email, `create_task_by_process`, req.user.company);
+      res.status(200).json({
+          success: true,
+          messages: ['create_task_by_process_success'],
+          content: data,
+      });
+  } catch (error) {
+      await LogError(req.user.email, `create_task_by_process`, req.user.company);
+      res.status(400).json({
+          success: false,
+          messages: ['create_task_by_process_fail'],
+          content: error,
+      });
+  }
+}
