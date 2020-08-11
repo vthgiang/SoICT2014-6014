@@ -43,14 +43,23 @@ require('dotenv').config({
 
 // DB CONFIG
 const db = process.env.DATABASE;
-
-// KẾT NỐI TỚI CSDL MONGODB
-mongoose.connect(db, {
+const optionDatabase = process.env.DB_AUTHENTICATION === 'true' ?
+{
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
-    useFindAndModify: false
-}).then(() => {
+    useFindAndModify: false,
+    user: process.env.DB_USERNAME,
+    pass: process.env.DB_PASSWORD
+}:{
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+}
+
+// KẾT NỐI TỚI CSDL MONGODB
+mongoose.connect(db, optionDatabase).then(() => {
     console.log("Kết nối thành công đến MongoDB!\n");
 }).catch(err => console.log("ERROR! :(\n", err));
 
