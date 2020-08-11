@@ -498,7 +498,7 @@ function deleteEvaluation(taskId, evaluationId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/evaluations/${evaluationId}`,
         method: 'DELETE',
-    }, true, true, 'task.task_perform');
+    }, true, true, 'task.task_management');
 }
 
 /**

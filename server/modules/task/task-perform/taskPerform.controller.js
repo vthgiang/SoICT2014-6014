@@ -809,14 +809,14 @@ exports.deleteEvaluation = async (req, res) => {
         await LogInfo(req.user.email, ` delete evaluation  `, req.user.company);
         res.status(200).json({
             success: true,
-            messages: ['delete_task_success'],
+            messages: ['delete_evaluation_success'],
             content: task
         })
     } catch (error) {
         await LogError(req.user.email, ` delete evaluation `, req.user.company);
         res.status(400).json({
             success: false,
-            messages: ['delete_task_fail'],
+            messages: ['delete_evaluation_fail'],
             content: error
         });
     }

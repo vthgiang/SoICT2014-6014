@@ -1879,6 +1879,10 @@ export default {
 
                 unit_evaluate: "Đơn vị tiếp nhận kết quả đánh giá công việc",
                 unit_manage_task: "Đơn vị quản lý công việc",
+                delete_eval: "Xóa đánh giá tháng này",
+                delete_eval_title: 'Bạn có chắc chắn muốn xóa đánh giá này?',
+                delete_evaluation_success: "Xóa đánh giá thành công",
+                delete_evaluation_fail: "Xóa đánh giá thất bại",
 
             },
             task_perform: {
