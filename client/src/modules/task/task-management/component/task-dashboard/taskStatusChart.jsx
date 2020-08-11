@@ -75,9 +75,6 @@ class TaskStatusChart extends Component {
         ) {
 
             if (this.props.TaskOrganizationUnitDashboard && this.props.units.length && this.props.startMonth && this.props.endMonth) {
-
-                let idsUnit = this.props.units ? this.props.units : "[]";
-  
                 await this.setState(state => {
                     return {
                         ...state,
@@ -87,7 +84,9 @@ class TaskStatusChart extends Component {
                     }
                 })
 
-                await this.props.getTaskInOrganizationUnitByMonth(idsUnit, nextProps.startMonth, nextProps.endMonth);
+                if(this.props.units.length){
+                    await this.props.getTaskInOrganizationUnitByMonth(this.props.units, nextProps.startMonth, nextProps.endMonth);
+                }
             } else {
             
                 await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
@@ -120,9 +119,9 @@ class TaskStatusChart extends Component {
 
         if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
             if (this.props.TaskOrganizationUnitDashboard) { // neu componet duoc goi tu dashboard organization unit
-                let idsUnit = this.props.units ? this.props.units : "[]";
-                console.log("o day dong 132:=======================")
-                await this.props.getTaskInOrganizationUnitByMonth(idsUnit, nextProps.startMonth, nextProps.endMonth);
+                if(this.props.units.length !== 0){
+                    await this.props.getTaskInOrganizationUnitByMonth(this.props.units , nextProps.startMonth, nextProps.endMonth);
+                }
             }
             else {
                 await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
