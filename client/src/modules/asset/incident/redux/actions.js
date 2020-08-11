@@ -4,9 +4,9 @@ import {AssetManagerActions} from '../../asset-management/redux/actions';
 
 export const IncidentActions = {
     createIncident,
+    createMaintainanceForIncident,
     updateIncident,
     deleteIncident,
-    createMaintainanceForIncident,
 }
 
 function createIncident(id, data) {

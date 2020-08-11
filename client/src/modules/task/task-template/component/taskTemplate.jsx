@@ -250,7 +250,7 @@ class TaskTemplate extends Component {
                     name: x.name,
                     description: x.description,
                     numberOfUse: numberOfUse,
-                    creator: x.creator.name,
+                    creator: x.creator.email,
                     readByEmployees: readByEmployees.join(', '),
                     responsibleEmployees: responsibleEmployees.join(', '),
                     accountableEmployees: accountableEmployees.join(', '),

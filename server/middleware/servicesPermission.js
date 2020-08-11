@@ -335,9 +335,14 @@ exports.data = [
     // add task log
     { path: '/performtask/tasks/:taskId/logs', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/tasks/:taskId/logs', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    
     // edit task - evaluate task
     { path: '/performtask/tasks/:taskId', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
     { path: '/performtask/tasks/:taskId/evaluate', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    // delete evaluation
+    { path: '/performtask/tasks/:taskId/evaluations/:evaluationId', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    
+    
     //task process
 
     { path: '/taskprocess/diagrams', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },

@@ -169,8 +169,7 @@ exports.getTasksByKpiId = async (req, res) => {
 
 exports.setTaskImportanceLevel = async (req, res) => {
     //try {
-    console.log(req.body);
-    const kpimembers = await KPIMemberService.setTaskImportanceLevel(req.params.id, req.body);
+    const kpimembers = await KPIMemberService.setTaskImportanceLevel(req.params.id, req.query.kpiType, req.body);
     await LogInfo(req.user.email, `Set task importance level`, req.user.company);
     res.status(200).json({
         success: true,

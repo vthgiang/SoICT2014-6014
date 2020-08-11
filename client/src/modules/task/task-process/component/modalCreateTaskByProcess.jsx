@@ -13,8 +13,8 @@ import './processDiagram.css'
 import { TaskProcessActions } from "../redux/actions";
 
 //bpmn-nyan
-import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
-import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
+// import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
+// import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -45,8 +45,8 @@ class ModalCreateTaskByProcess extends Component {
         }
         this.modeler = new BpmnModeler({
             additionalModules: [
-               nyanDrawModule,
-               nyanPaletteModule
+            //    nyanDrawModule,
+            //    nyanPaletteModule
             ]
          });
         this.generateId = 'createtaskbyprocess';
