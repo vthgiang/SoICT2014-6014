@@ -41,10 +41,11 @@ class TasksSchedule extends Component {
         priority: '[]',
         special: '[]',
         name: null,
-        startDate: null,
+        startDate: this.formatDate(dateNow),
         endDate: null,
-        startDateAfter: this.formatDate(dateNow),
-        endDateBefore: null
+        startDateAfter: null,
+        endDateBefore: null,
+        aPeriodOfTime: true
       },
       taskId: null,
       add: true,
@@ -52,60 +53,6 @@ class TasksSchedule extends Component {
 
       willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
     };
-  }
-
-  componentDidMount = async () => {
-    let { infoSearch } = this.state;
-    let { organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore } = infoSearch;
-
-    // await this.props.getResponsibleTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
-    // await this.props.getAccountableTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
-    // await this.props.getConsultedTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
-    // await this.props.getInformedTaskByUser(organizationalUnit, currentPage, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore);
-
-    await this.setState(state => {
-      return {
-        ...state,
-        dataStatus: this.DATA_STATUS.QUERYING,
-        willUpdate: true       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-      };
-    });
-  }
-
-  shouldComponentUpdate = async (nextProps, nextState) => {
-    if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-      if (this.props.TaskOrganizationUnitDashboard) {
-        if (!nextProps.tasks.organizationUnitTasks) {
-          return false;
-        }
-      }
-      else if (!nextProps.tasks.responsibleTasks
-        || !nextProps.tasks.accountableTasks
-        || !nextProps.tasks.consultedTasks
-        || !nextProps.tasks.informedTasks
-        || !nextProps.tasks.creatorTasks
-        || !nextProps.tasks.tasksbyuser) {
-        return false;
-      }
-
-      this.setState(state => {
-        return {
-          ...state,
-          dataStatus: this.DATA_STATUS.AVAILABLE
-        }
-      });
-
-    } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
-      this.setState(state => {
-        return {
-          ...state,
-          dataStatus: this.DATA_STATUS.FINISHED,
-          willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-        }
-      });
-      return true;
-    }
-    return false;
   }
 
   formatDate(d) {
@@ -219,96 +166,92 @@ class TasksSchedule extends Component {
       // Chia nhóm công việc theo vai trò trong công việc
       else {
         let res, acc, con, inf;
-        let taskList2 = [];
-        if (tasks) {
-          console.log('tasd', tasks);
-          res = tasks.responsibleTasks;
-          acc = tasks.accountableTasks;
-          con = tasks.consultedTasks;
-          inf = tasks.informedTasks;
+        var inprocessTasks2 = [];
 
-          if (res) {
-            res.map(item => {
-              if (item.status === "Inprocess" && item.isArchived === false) {
-                taskList2.push({
-                  id: item._id,
-                  gr: 'responsible-tasks',
-                  name: item.name,
-                  startDate: item.startDate,
-                  endDate: item.endDate,
-                  progress: item.progress
-                })
-              }
-            })
-          }
+        res = tasks.responsibleTasks;
+        acc = tasks.accountableTasks;
+        con = tasks.consultedTasks;
+        inf = tasks.informedTasks;
 
-          if (acc) {
-            acc.map(item => {
-              if (item.status === "Inprocess" && item.isArchived === false) {
-                taskList2.push({
-                  id: item._id,
-                  gr: 'accountable-tasks',
-                  name: item.name,
-                  startDate: item.startDate,
-                  endDate: item.endDate,
-                  progress: item.progress
-                })
-              }
-            })
-          }
-
-          if (con) {
-            con.map(item => {
-              if (item.status === "Inprocess" && item.isArchived === false) {
-                taskList2.push({
-                  id: item._id,
-                  gr: 'consulted-tasks',
-                  name: item.name,
-                  startDate: item.startDate,
-                  endDate: item.endDate,
-                  progress: item.progress
-                })
-              }
-            })
-          }
-
-          if (inf) {
-            inf.map(item => {
-              if (item.status === "Inprocess" && item.isArchived === false) {
-                taskList2.push({
-                  id: item._id,
-                  gr: 'informed-tasks',
-                  name: item.name,
-                  startDate: item.startDate,
-                  endDate: item.endDate,
-                  progress: item.progress
-                })
-              }
-            })
-          }
+        if (res) {
+          res.map(item => {
+            if (item.status === "Inprocess" && item.isArchived === false) {
+              inprocessTasks2.push({
+                id: item._id,
+                gr: 'responsible-tasks',
+                name: item.name,
+                startDate: item.startDate,
+                endDate: item.endDate,
+                progress: item.progress
+              })
+            }
+          })
         }
 
-        if (taskList2) {
-          for (let i = 0; i < taskList2.length; i++) {
+        if (acc) {
+          acc.map(item => {
+            if (item.status === "Inprocess" && item.isArchived === false) {
+              inprocessTasks2.push({
+                id: item._id,
+                gr: 'accountable-tasks',
+                name: item.name,
+                startDate: item.startDate,
+                endDate: item.endDate,
+                progress: item.progress
+              })
+            }
+          })
+        }
 
-            if (taskList2[i]) {
-              console.log('taskList', taskList2[i]);
+        if (con) {
+          con.map(item => {
+            if (item.status === "Inprocess" && item.isArchived === false) {
+              inprocessTasks2.push({
+                id: item._id,
+                gr: 'consulted-tasks',
+                name: item.name,
+                startDate: item.startDate,
+                endDate: item.endDate,
+                progress: item.progress
+              })
+            }
+          })
+        }
+
+        if (inf) {
+          inf.map(item => {
+            if (item.status === "Inprocess" && item.isArchived === false) {
+              inprocessTasks2.push({
+                id: item._id,
+                gr: 'informed-tasks',
+                name: item.name,
+                startDate: item.startDate,
+                endDate: item.endDate,
+                progress: item.progress
+              })
+            }
+          })
+        }
+
+        if (inprocessTasks2) {
+          for (let i = 0; i < inprocessTasks2.length; i++) {
+
+            if (inprocessTasks2[i]) {
               let startTime, endTime, start_time, end_time;
-              startTime = new Date(taskList2[i].startDate);
-              endTime = new Date(taskList2[i].endDate);
+              let titleTask = inprocessTasks2[i].name + " - " + inprocessTasks2[i].progress + "%";
+
+              startTime = new Date(inprocessTasks2[i].startDate);
+              endTime = new Date(inprocessTasks2[i].endDate);
               start_time = moment(startTime);
               end_time = moment(endTime);
-              let titleTask = taskList2[i].name + " - " + taskList2[i].progress + "%";
 
               taskDurations.push({
-                id: taskList2[i].id,
-                group: taskList2[i].gr,
+                id: i + 1,
+                group: inprocessTasks2[i].gr,
                 title: titleTask,
                 canMove: false,
-
                 start_time: start_time,
                 end_time: end_time,
-
                 itemProps: {
                   style: {
                     color: "rgb(0, 0, 0, 0.8)",
@@ -325,17 +268,17 @@ class TasksSchedule extends Component {
           let x = document.getElementsByClassName("rct-item");
           if (x.length) {
             for (let i = 0; i < x.length; i++) {
-              if (taskList2[i]) {
+              if (inprocessTasks2[i]) {
                 let color;
                 currentTime = new Date();
-                startTime = new Date(taskList2[i].startDate);
-                endTime = new Date(taskList2[i].endDate);
+                startTime = new Date(inprocessTasks2[i].startDate);
+                endTime = new Date(inprocessTasks2[i].endDate);
 
-                if (currentTime > endTime && taskList2[i].progress < 100) {
+                if (currentTime > endTime && inprocessTasks2[i].progress < 100) {
                   color = "#DD4B39"; // not achieved
                 }
                 else {
-                  workingDayMin = (endTime - startTime) * taskList2[i].progress / 100;
+                  workingDayMin = (endTime - startTime) * inprocessTasks2[i].progress / 100;
                   let dayFromStartDate = currentTime - startTime;
                   let timeOver = workingDayMin - dayFromStartDate;
                   if (timeOver >= 0) color = "#00A65A"; // In time or on time
@@ -344,14 +287,13 @@ class TasksSchedule extends Component {
                   }
                 }
 
-                this.displayTaskProgress(taskList2[i].progress, x[i], color);
+                this.displayTaskProgress(inprocessTasks2[i].progress, x[i], color);
               }
             }
           }
         }
       }
     }
-    console.log('duarion', taskDurations);
     return taskDurations;
   }
 
@@ -369,7 +311,7 @@ class TasksSchedule extends Component {
       if (this.props.TaskOrganizationUnitDashboard) {
         taskList1 = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
         inprocessTasks1 = taskList1 && taskList1.filter(task => (task.status === "Inprocess" && task.isArchived === false));
-
+        console.log('inprpcess', inprocessTasks1);
         if (inprocessTasks1) {
           for (let i = 1; i <= inprocessTasks1.length; i++) {
             let responsibleName = [];
@@ -384,16 +326,18 @@ class TasksSchedule extends Component {
               groupName.push({
                 id: responsibleEmployeeIds[0],
                 title: responsibleName
-              })
+              });
+              id.push(responsibleEmployeeIds[0])
             }
-            else if (responsibleEmployeeIds.length > 1) {
+            else if (responsibleEmployeeIds.length > 1) { // Nếu công việc có nhiều người làm chung
               multiResponsibleEmployee = true;
             }
 
-            id.push(responsibleEmployeeIds[0])
+            // id.push(responsibleEmployeeIds[0])
           }
           // Loại bỏ các id trùng nhau
           if (groupName.length) {
+            console.log('GRName:\n\n\n', id, groupName);
             for (let i = 0; i < id.length; i++) {
               let idx = distinctId.indexOf(id[i]);
 
@@ -448,7 +392,7 @@ class TasksSchedule extends Component {
       }
     }
     let group = [{ id: "no-data", title: "" }]
-
+    console.log('group', distinctGroupName);
     return distinctGroupName.length ? distinctGroupName : group;
   }
 
@@ -479,12 +423,59 @@ class TasksSchedule extends Component {
         inprocessTasks = taskList && taskList.filter(task => (task.status === "Inprocess" && task.isArchived === false));
       }
       else {
-        taskList = tasks && tasks.responsibleTasks;
-        inprocessTasks = taskList && taskList.filter(task => (task.status === "Inprocess" && task.isArchived === false));
+        let res, acc, con, inf;
+        var inprocessTasks2 = [];
+
+        res = tasks.responsibleTasks;
+        acc = tasks.accountableTasks;
+        con = tasks.consultedTasks;
+        inf = tasks.informedTasks;
+
+        if (res) {
+          await res.map(item => {
+            if (item.status === "Inprocess" && item.isArchived === false) {
+              inprocessTasks2.push({
+                _id: item._id
+              })
+            }
+          })
+        }
+
+        if (acc) {
+          await acc.map(item => {
+            if (item.status === "Inprocess" && item.isArchived === false) {
+              inprocessTasks2.push({
+                _id: item._id
+              })
+            }
+          })
+        }
+
+        if (con) {
+          await con.map(item => {
+            if (item.status === "Inprocess" && item.isArchived === false) {
+              inprocessTasks2.push({
+                _id: item._id
+              })
+            }
+          })
+        }
+
+        if (inf) {
+          await inf.map(item => {
+            if (item.status === "Inprocess" && item.isArchived === false) {
+              inprocessTasks2.push({
+                _id: item._id
+              })
+            }
+          })
+        }
+        inprocessTasks = inprocessTasks2;
       }
     }
 
     let id = inprocessTasks[itemId - 1]._id;
+
     await this.setState(state => {
       return {
         ...state,
