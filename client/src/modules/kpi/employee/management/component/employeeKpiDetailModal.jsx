@@ -233,7 +233,6 @@ class ModalDetailKPIPersonal extends Component {
 
         if (myTask) {
             let dataKpi;
-            console.log('listtttt', list);
             if (list) {
                 for (let i = 0; i < list.length; i++) {
                     if (list[i]._id === content) {
