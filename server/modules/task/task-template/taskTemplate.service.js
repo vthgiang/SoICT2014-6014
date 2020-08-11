@@ -279,8 +279,12 @@ exports.editTaskTemplate = async (data, id) => {
             }
         },
         { new: true },
-    ).populate("organizationalUnit creator readByEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees");
-    
+    ).populate([
+        {path: "organizationalUnit", model: OrganizationalUnit, select :"name deans"},
+        {path: "readByEmployees", model: Role, select: "name"},
+        {path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", model: User, select: "name email"}]);
+        
+    // xóa privilege tương ứng để tạo lại privilege tương ứng với quyền xem
     var privileges = await Privilege.deleteMany({
         resourceId: id, //id của task template
         resourceType: "TaskTemplate"
