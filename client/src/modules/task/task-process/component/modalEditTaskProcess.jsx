@@ -700,6 +700,7 @@ class ModalEditTaskProcess extends Component {
                                                         listOrganizationalUnit={listOrganizationalUnit}
                                                         action='edit'
                                                         id={id}
+                                                        astemplate = {true}
                                                         info={(info && info[`${id}`]) && info[`${id}`]}
                                                         handleChangeName={this.handleChangeName}
                                                         handleChangeDescription={this.handleChangeDescription}

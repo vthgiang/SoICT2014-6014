@@ -54,7 +54,7 @@ class ModalCreateTaskByProcess extends Component {
 
     componentDidMount() {
         this.props.getDepartment();
-        // this.props.getAllUsersWithRole();
+        this.props.getAllUsersWithRole();
         let { user } = this.props;
         let defaultUnit = user && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.find(item =>
             item.dean === this.state.currentRole
@@ -465,7 +465,7 @@ class ModalCreateTaskByProcess extends Component {
         const { translate, role,user } = this.props;
         const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedEdit } = this.state;
         const { listOrganizationalUnit } = this.props
-        // let listUser = user.usersWithRole
+        let listUser = user.usersWithRole
         // user.usersWithRole.filter(x => )
         let listRole = [];
         if (role && role.list.length !== 0) listRole = role.list;
@@ -525,6 +525,8 @@ class ModalCreateTaskByProcess extends Component {
                                             listOrganizationalUnit={listOrganizationalUnit}
                                             action='create-task'
                                             id={id}
+                                            astemplate = {false}
+                                            listUser = {listUser}
                                             info={(info && info[`${id}`]) && info[`${id}`]}
                                             handleChangeName={this.handleChangeName}
                                             handleChangeDescription={this.handleChangeDescription}
