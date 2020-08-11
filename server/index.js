@@ -93,11 +93,7 @@ app.use('/upload/asset/pictures', express.static('upload/asset/pictures'));
 
 
 
-const db = process.env.DATABASE; // DB 
-if(process.env.DB_AUTHENTICATION === 'true'){
-    
-}
-
+const db = process.env.DATABASE;
 const optionConnectDB = process.env.DB_AUTHENTICATION === 'true' ?
 {
     useNewUrlParser: true,
