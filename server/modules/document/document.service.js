@@ -95,7 +95,6 @@ exports.increaseNumberView = async (id, viewer) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (company, data) => {
-    console.log('3333', data);
     const newDoc = {
         company,
         name: data.name,
