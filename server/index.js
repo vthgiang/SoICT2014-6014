@@ -93,30 +93,30 @@ app.use('/upload/asset/pictures', express.static('upload/asset/pictures'));
 
 
 
-const db = process.env.DATABASE; // DB Config
+const db = process.env.DATABASE; // DB 
+if(process.env.DB_AUTHENTICATION === 'true'){
+    
+}
+
+const optionConnectDB = process.env.DB_AUTHENTICATION === 'true' ?
+{
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+    user: process.env.DB_USERNAME,
+    pass: process.env.DB_PASSWORD
+}:{
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false
+}
+
 mongoose // Connect to MongoDB
-    .connect(
-        db, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true
-        }
-    )
+    .connect(db, optionConnectDB)
     .then(() => console.log("MongoDB successfully connected"))
     .catch(err => console.log(err));
-mongoose.set('useFindAndModify', false); // Global setting cho mongoose, không dùng useFindAndModify
-
-
-
-global.isLog = false;
-const Logger = require('./models/system-admin/log.model');
-Logger.findOne({
-        name: 'log'
-    })
-    .then(result => {
-        result.status ? isLog = true : isLog = false;
-    })
-    .catch(err => console.log("message: ", err));
 
 // Function gọi Api vào thời gian xác định
 schedulerController.chedulesCallApi();
