@@ -33,7 +33,7 @@ class TaskTemplate extends Component {
         //edit later
         this.props.getTaskTemplateByUser(this.state.currentPage, this.state.perPage, "[]", "");
     }
-    
+
     /**Cập nhật số dòng trên một trang hiển thị */
     setLimit = async (limit) => {
         if (Number(limit) !== this.state.perPage) {
@@ -84,7 +84,7 @@ class TaskTemplate extends Component {
         await this.updateCurrentPage(index);
         if (oldCurrentPage !== index) this.props.getTaskTemplateByUser(index, this.state.perPage, test, this.name.value);
     }
-    
+
     /**Khi có hành động thay đổi data(thêm sửa xóa 1 mẫu công việc...), Hiển thị dữ liệu về trang 1 */
     handleUpdateData = () => {
         var test = window.$("#multiSelectUnit").val();
@@ -155,7 +155,7 @@ class TaskTemplate extends Component {
         });
         return result;
     }
-    
+
     /**Hiển thị số thứ tự của trang đang xem ở paginate bar */
     setPage = async (pageTotal) => {
         var test = window.$("#multiSelectUnit").val();
@@ -191,7 +191,7 @@ class TaskTemplate extends Component {
         })
         window.$('#modal-edit-task-template').modal('show');
     }
-    
+
     /**Mở modal import file excel */
     handImportFile = (event) => {
         event.preventDefault();
@@ -212,32 +212,32 @@ class TaskTemplate extends Component {
 
             data = data.map((x, index) => {
                 let taskActions = [];
-                if (x.taskActions.length !== 0){
-                    taskActions = x.taskActions.map( item => item.name);
+                if (x.taskActions.length !== 0) {
+                    taskActions = x.taskActions.map(item => item.name);
                 }
                 let taskInformations = [];
-                if (x.taskInformations.length !== 0){
-                    taskInformations = x.taskInformations.map( item => item.name);
+                if (x.taskInformations.length !== 0) {
+                    taskInformations = x.taskInformations.map(item => item.name);
                 }
                 let numberOfUse = "Chưa sử dụng";
-                if (x.numberOfUse !== 0){
+                if (x.numberOfUse !== 0) {
                     numberOfUse = x.numberOfUse;
                 }
-                let readByEmployees = [], responsibleEmployees = [], accountableEmployees = [], consultedEmployees = [], informedEmployees =[];
-                if (x.readByEmployees.length !== 0){
-                    readByEmployees = x.readByEmployees.map( item => item.name);
+                let readByEmployees = [], responsibleEmployees = [], accountableEmployees = [], consultedEmployees = [], informedEmployees = [];
+                if (x.readByEmployees.length !== 0) {
+                    readByEmployees = x.readByEmployees.map(item => item.name);
                 }
-                if (x.responsibleEmployees.length !== 0){
-                    responsibleEmployees = x.responsibleEmployees.map( item => item.name);
+                if (x.responsibleEmployees.length !== 0) {
+                    responsibleEmployees = x.responsibleEmployees.map(item => item.name);
                 }
-                if (x.accountableEmployees.length !== 0){
-                    accountableEmployees = x.accountableEmployees.map( item => item.name);
+                if (x.accountableEmployees.length !== 0) {
+                    accountableEmployees = x.accountableEmployees.map(item => item.name);
                 }
-                if (x.consultedEmployees.length !== 0){
-                    consultedEmployees = x.consultedEmployees.map( item => item.name);
+                if (x.consultedEmployees.length !== 0) {
+                    consultedEmployees = x.consultedEmployees.map(item => item.name);
                 }
-                if (x.informedEmployees.length !== 0){
-                    informedEmployees = x.informedEmployees.map( item => item.name);
+                if (x.informedEmployees.length !== 0) {
+                    informedEmployees = x.informedEmployees.map(item => item.name);
                 }
                 let priority = "";
                 switch (x.priority) {
@@ -250,7 +250,7 @@ class TaskTemplate extends Component {
                     name: x.name,
                     description: x.description,
                     numberOfUse: numberOfUse,
-                    creator: x.creator.name,
+                    creator: x.creator.email,
                     readByEmployees: readByEmployees.join(', '),
                     responsibleEmployees: responsibleEmployees.join(', '),
                     accountableEmployees: accountableEmployees.join(', '),
@@ -280,13 +280,13 @@ class TaskTemplate extends Component {
                                 { key: "STT", value: "STT" },
                                 { key: "name", value: "Tên mẫu" },
                                 { key: "description", value: "Mô tả" },
-                                { key: "numberOfUse", value: "Số lần sử dụng"},
+                                { key: "numberOfUse", value: "Số lần sử dụng" },
                                 { key: "creator", value: "Người tạo mẫu" },
-                                { key: "readByEmployees", value: "Người được xem"},
-                                { key: "responsibleEmployees", value: "Người thực hiện"},
-                                { key: "accountableEmployees", value: "Người phê duyệt"},
-                                { key: "consultedEmployees", value: "Người hỗ trợ"},
-                                { key: "informedEmployees", value: "Người quan sát"},
+                                { key: "readByEmployees", value: "Người được xem" },
+                                { key: "responsibleEmployees", value: "Người thực hiện" },
+                                { key: "accountableEmployees", value: "Người phê duyệt" },
+                                { key: "consultedEmployees", value: "Người hỗ trợ" },
+                                { key: "informedEmployees", value: "Người quan sát" },
                                 { key: "organizationalUnits", value: "Phòng ban" },
                                 { key: "priority", value: "Độ ưu tiên" },
                                 { key: "formula", value: "Công thức tính điểm" },
@@ -324,7 +324,7 @@ class TaskTemplate extends Component {
             listTaskTemplates = tasktemplates.items;
         }
         let list = [];
-        if (tasktemplates.isLoading === false){
+        if (tasktemplates.isLoading === false) {
             list = tasktemplates.items;
         }
         let exportData = this.convertDataToExportData(list);
@@ -334,9 +334,9 @@ class TaskTemplate extends Component {
                 <div className="box-body qlcv" id="table-task-template">
                     {<ModalViewTaskTemplate taskTemplateId={this.state.currentViewRow} />}
                     {<ModalEditTaskTemplate taskTemplateId={this.state.currentEditRow} />}
-                    
+
                     {<TaskTemplateImportForm />}
-                    {<ExportExcel id="export-taskTemplate" exportData={exportData} style={{ marginLeft: 5 }}/>}
+                    {<ExportExcel id="export-taskTemplate" exportData={exportData} style={{ marginLeft: 5 }} />}
                     {/**Kiểm tra xem role hiện tại có quyền thêm mới mẫu công việc không(chỉ trưởng đơn vị) */}
                     {this.checkHasComponent('create-task-template-button') &&
                         <React.Fragment>
@@ -352,7 +352,7 @@ class TaskTemplate extends Component {
                             </div>
                         </React.Fragment>
                     }
-                    
+
                     {/**Các ô input để nhập điều kiện tìm mẫu công việc */}
                     <div className="form-inline">
                         <div className="form-group">
@@ -360,7 +360,7 @@ class TaskTemplate extends Component {
                             <input className="form-control" type="text" placeholder={translate('task_template.search_by_name')} ref={input => this.name = input} />
                         </div>
                     </div>
-                    
+
                     <div className="form-inline">
                         <div className="form-group">
                             <label className="form-control-static">{translate('task_template.unit')}</label>
@@ -374,7 +374,7 @@ class TaskTemplate extends Component {
                             <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
                         </div>
                     </div>
-                    
+
                     <DataTableSetting
                         tableId="table-task-template"
                         columnArr={[
@@ -388,7 +388,7 @@ class TaskTemplate extends Component {
                         setLimit={this.setLimit}
                         hideColumnOption={true}
                     />
-                     
+
                     {/**Table chứa các mẫu công việc trong 1 trang */}
                     <table className="table table-bordered table-striped table-hover" id="table-task-template">
                         <thead>
@@ -419,10 +419,10 @@ class TaskTemplate extends Component {
                                                 {/**Check quyền xem có được xóa hay sửa mẫu công việc không */}
                                                 {this.checkPermisson(item.organizationalUnit.deans) &&
                                                     <React.Fragment>
-                                                        <a href ="cursor:{'pointer'}" onClick={() => this.handleEdit(item._id)} className="edit" title={translate('task_template.edit_this_task_template')}>
+                                                        <a href="cursor:{'pointer'}" onClick={() => this.handleEdit(item._id)} className="edit" title={translate('task_template.edit_this_task_template')}>
                                                             <i className="material-icons">edit</i>
                                                         </a>
-                                                        <a href ="cursor:{'pointer'}" onClick={() => this.handleDelete(item._id, item.numberOfUse)} className="delete" title={translate('task_template.delete_this_task_template')}>
+                                                        <a href="cursor:{'pointer'}" onClick={() => this.handleDelete(item._id, item.numberOfUse)} className="delete" title={translate('task_template.delete_this_task_template')}>
                                                             <i className="material-icons"></i>
                                                         </a>
                                                     </React.Fragment>

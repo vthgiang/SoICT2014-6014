@@ -1885,10 +1885,10 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
  * @param {*} params 
  */
 exports.deleteEvaluation = async (params) => {
-    let { taskId, evaluateId } = params;
+    let { taskId, evaluationId } = params;
     await Task.updateOne(
         {_id: taskId},
-        { $pull: {evaluations: { "evaluations._id": evaluateId} } },
+        { $pull: {evaluations: { _id: evaluationId} } },
         {$new: true}
     )
     // let newTask = await Task.findById(taskId);

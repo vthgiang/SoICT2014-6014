@@ -125,11 +125,11 @@ class ModalCreateTaskProcess extends Component {
       });
    }
 
-   handleUpdateElement = () => {
+   handleUpdateElement = (abc) => {
+      console.log("hihihihi")
       const modeling = this.modeler.get('modeling');
       let element1 = this.modeler.get('elementRegistry').get(this.state.id);
       modeling.updateProperties(element1, {
-         // ...element1,
          info: this.state.info,
       });
    }
@@ -149,7 +149,6 @@ class ModalCreateTaskProcess extends Component {
       const modeling = this.modeler.get('modeling');
       let element1 = this.modeler.get('elementRegistry').get(this.state.id);
       modeling.updateProperties(element1, {
-         // ...element1,
          name: value,
          info: this.state.info,
       });
@@ -220,7 +219,11 @@ class ModalCreateTaskProcess extends Component {
             ...state,
          }
       })
-      this.handleUpdateElement();
+      const modeling = this.modeler.get('modeling');
+      let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+      modeling.updateProperties(element1, {
+         responsibleName: responsible
+      });
    }
 
    handleChangeAccountable = async (value) => {
@@ -239,13 +242,17 @@ class ModalCreateTaskProcess extends Component {
             ...state.info[`${state.id}`],
             code: state.id,
             accountable: value,
-            accountableName: accountable
+            
          }
          return {
             ...state,
          }
       })
-      this.handleUpdateElement();
+      const modeling = this.modeler.get('modeling');
+      let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+      modeling.updateProperties(element1, {
+         accountableName: accountable
+      });
    }
    shouldComponentUpdate(nextProps, nextState) {
       if (nextState.save === true) {
@@ -313,6 +320,7 @@ class ModalCreateTaskProcess extends Component {
    }
    interactPopup = (event) => {
       let element = event.element;
+      console.log(element)
       let { department } = this.props
       let source = [];
       let destination = []
@@ -332,8 +340,8 @@ class ModalCreateTaskProcess extends Component {
                state.info[`${element.businessObject.id}`] = {
                   ...state.info[`${element.businessObject.id}`],
                   organizationalUnit: this.props.listOrganizationalUnit[0]?._id,
-                  followingTask: source,
-                  proceedTask: destination
+                  // followingTask: source,
+                  // proceedTask: destination
                }
             }
             return {

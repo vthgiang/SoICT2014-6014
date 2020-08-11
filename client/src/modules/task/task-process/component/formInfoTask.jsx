@@ -87,8 +87,8 @@ class FormInfoTask extends Component {
     render() {
         const { user, translate, role, tasktemplates } = this.props;
         const { nameTask, description, responsible, accountable, organizationalUnit, taskTemplate} = this.state;
-        const { id, info, action, listOrganizationalUnit, disabled } = this.props;
-        let usersOfChildrenOrganizationalUnit, listTaskTemplate;
+        const { id, info, action, listOrganizationalUnit, disabled,listUser } = this.props;
+        let usersOfChildrenOrganizationalUnit, listTaskTemplate, listUserAccountable, listUserResponsible;
         if (user && user.usersOfChildrenOrganizationalUnit) {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
@@ -115,7 +115,19 @@ class FormInfoTask extends Component {
                 listTemp.push({ value: item._id, text: item.name })
             })
         }
-        
+        //Xử lí khởi tạo quy trình
+        if (listUser) {
+            listUserAccountable = listUser.filter(x => {
+                if (info?.accountable?.indexOf(x.roleId) !== -1) {
+                    return x?.userId?.name
+                }
+            })
+            listUserResponsible = listUser.filter(x => {
+                if (info?.responsible?.indexOf(x.roleId) !== -1) {
+                    return x?.userId?.name
+                }
+            })
+        }
         return (
             <div>
                 <form>

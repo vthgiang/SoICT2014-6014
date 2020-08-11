@@ -81,12 +81,15 @@ exports.getTaskReportById = async (id) => {
  */
 exports.createTaskReport = async (data, user) => {
     // convert startDate từ string sang Date
-    let startTime = data.startDate.split("-");
-    let start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
+    let startTime, start = null, endTime, end = null;
+    if (data.startDate && data.endDate) {
+        startTime = data.startDate.split("-");
+        start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
 
-    // convert endDate từ string sang Date
-    let endTime = data.endDate.split("-");
-    let end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
+        // convert endDate từ string sang Date
+        endTime = data.endDate.split("-");
+        end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
+    }
 
     let statusConvert = Number(data.status);
     let frequencyConvert = data.frequency.toString();
@@ -133,13 +136,28 @@ exports.createTaskReport = async (data, user) => {
  * @param {*} người sửa 
  */
 exports.editTaskReport = async (id, data, user) => {
-    // convert startDate từ string sang Date
-    let startTime = data.startDate.split("-");
-    let start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
+    let startTime, start = null, endTime, end = null;
 
-    // convert endDate từ string sang Date
-    let endTime = data.endDate.split("-");
-    let end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
+    if (data.startDate && data.endDate) {
+        // convert startDate từ string sang Date
+        startTime = data.startDate.split("-");
+        start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
+
+        // convert endDate từ string sang Date
+        endTime = data.endDate.split("-");
+        end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
+    } else
+        if (data.startDate && !data.endDate) {
+            // convert startDate từ string sang Date
+            startTime = data.startDate.split("-");
+            start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
+        } else
+            if (!data.startDate && data.endDate) {
+                // convert endDate từ string sang Date
+                endTime = data.endDate.split("-");
+                end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
+            }
+
     let frequencyConvert = data.frequency.toString();
 
     let configurations = [];
@@ -173,7 +191,6 @@ exports.editTaskReport = async (id, data, user) => {
             configurations: configurations,
         }
     }, { new: true });
-    console.log('quaday')
     return await TaskReport.findOne({ _id: id }).populate({ path: 'creator', select: '_id name' });
 }
 
