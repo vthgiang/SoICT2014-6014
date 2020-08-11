@@ -45,6 +45,8 @@ export const performTaskService = {
     evaluateTaskByAccountableEmployees,
     evaluateTaskByConsultedEmployees,
     evaluateTaskByResponsibleEmployees,
+
+    deleteEvaluation,
 };
 
 
@@ -486,6 +488,19 @@ function evaluateTaskByAccountableEmployees(data, taskId) {
         }
     }, true, true, 'task.task_management');
 }
+
+/**
+ * Delete file of task
+ * @param {*} taskId id task
+ * @param {*} evaluationId id evaluation
+ */
+function deleteEvaluation(taskId, evaluationId) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/evaluations/${evaluationId}`,
+        method: 'DELETE',
+    }, true, true, 'task.task_management');
+}
+
 /**
  * Delete file of task
  */

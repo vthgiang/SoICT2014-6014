@@ -5,6 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../../common-components/index';
 import { DataTableSetting, ExportExcel } from '../../../../../common-components';
 
+import { ModalDetailTask } from '../../../../task/task-management/component/task-dashboard/modalDetailTask';
 import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions';
 
 class ModalDetailKPIPersonal extends Component {
@@ -89,9 +90,9 @@ class ModalDetailKPIPersonal extends Component {
     }
 
     /**Hiển thị nội dung 1 mục tiêu KPI mới khi click vào tên mục tiêu đó */
-    handleChangeContent = (id, employeeId) => {
+    handleChangeContent = (id, employeeId, kpiType) => {
         let date = this.props.employeeKpiSet.date;
-        this.props.getTaskById(id, employeeId, date);
+        this.props.getTaskById(id, employeeId, date, kpiType);
         this.setState(state => {
             return {
                 ...state,
@@ -206,6 +207,15 @@ class ModalDetailKPIPersonal extends Component {
         return exportData;
 
     }
+    handleClickTaskName = async (id) => {
+        this.setState(state => {
+            return {
+                ...state,
+                taskId: id,
+            }
+        });
+        window.$(`#modal-detail-task`).modal('show');
+    }
 
     render() {
         var kpimember;
@@ -213,7 +223,7 @@ class ModalDetailKPIPersonal extends Component {
         let exportData, content = this.state.content;
         const { kpimembers, translate } = this.props;
         let { employeeKpiSet } = this.props;
-
+        const { taskId } = this.state;
         if (kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
         kpimember = kpimembers && kpimembers.kpimembers;
 
@@ -223,9 +233,12 @@ class ModalDetailKPIPersonal extends Component {
 
         if (myTask) {
             let dataKpi;
-            for (let i = 0; i < list.length; i++) {
-                if (list[i]._id === content) {
-                    dataKpi = list[i];
+            console.log('listtttt', list);
+            if (list) {
+                for (let i = 0; i < list.length; i++) {
+                    if (list[i]._id === content) {
+                        dataKpi = list[i];
+                    }
                 }
             }
             exportData = this.convertDataToExportData(dataKpi, myTask);
@@ -250,7 +263,7 @@ class ModalDetailKPIPersonal extends Component {
                                 <ul className="nav nav-pills nav-stacked">
                                     {list && list.map((item, index) =>
                                         <li key={index} className={this.state.content === item._id ? "active" : ""}>
-                                            <a style={{ cursor: "pointer" }} onClick={() => this.handleChangeContent(item._id, employeeKpiSet.creator._id)}>
+                                            <a style={{ cursor: "pointer" }} onClick={() => this.handleChangeContent(item._id, employeeKpiSet.creator._id, item.type)}>
                                                 {item.name}&nbsp;
                                         </a>
                                         </li>
@@ -332,7 +345,7 @@ class ModalDetailKPIPersonal extends Component {
 
                                                         <tr key={index}>
                                                             <td>{index + 1}</td>
-                                                            <td>{itemTask.name}</td>
+                                                            <td><a style={{ cursor: 'pointer' }} onClick={() => this.handleClickTaskName(itemTask.taskId)}>{itemTask.name}</a></td>
                                                             <td>{this.formatDate(itemTask.startDate)}<br /> <i className="fa fa-angle-double-down"></i><br /> {this.formatDate(itemTask.endDate)}</td>
                                                             <td>{this.formatDate(itemTask.preEvaDate)}<br /> <i className="fa fa-angle-double-down"></i><br /> {this.formatDate(itemTask.date)}</td>
                                                             <td>{itemTask.status}</td>
@@ -355,6 +368,7 @@ class ModalDetailKPIPersonal extends Component {
                         })}
                     </div>
                 </DialogModal>
+                {<ModalDetailTask id={taskId} />}
             </React.Fragment>
         );
     }
@@ -368,7 +382,6 @@ function mapState(state) {
 const actionCreators = {
     getKpisByKpiSetId: kpiMemberActions.getKpisByKpiSetId,
     getTaskById: kpiMemberActions.getTaskById,
-    setPointKPI: kpiMemberActions.setPointKPI
 };
 const connectedModalDetailKPIPersonal = connect(mapState, actionCreators)(withTranslate(ModalDetailKPIPersonal));
 export { connectedModalDetailKPIPersonal as ModalDetailKPIPersonal };

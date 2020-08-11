@@ -1,4 +1,3 @@
-// import axios from 'axios';
 import { LOCAL_SERVER_API } from '../../../../env';
 // import { AuthenticateHeader } from '../../../../config';
 import { sendRequest } from '../../../../helpers/requestHelper';

@@ -19,12 +19,37 @@ class EvaluationModal extends Component {
             checkMonth: data.checkMonth,
             expire: data.expire,
             showEval: false,
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
         };
     }
 
+    shouldComponentUpdate (nextProps, nextState) {
+        if(this.state.dataStatus === this.DATA_STATUS.QUERYING){
+            let data = this.handleData(this.formatDate(new Date()));
+            this.setState(state => {
+                return {
+                    evaluationsList: data.evaluations,
+                    checkEval: data.checkEval,
+                    checkMonth: data.checkMonth,
+                    expire: data.expire,
+                    showEval: false,
+                    dataStatus: this.DATA_STATUS.FINISHED,
+                }
+            })
+            return true;
+        }
+        return true;
+    }
+
     handleData = (dateParam) => {
-        let { task } = this.props;
+        let { performtasks } = this.props;
         let data, checkMonth = false, checkEval = false;
+        
+        let task;
+        if (performtasks.task) {
+            task = performtasks.task;
+        }
+        
         let evaluations = task.evaluations;
         let evaluationOfMonth;
 
@@ -110,11 +135,25 @@ class EvaluationModal extends Component {
         });
     }
 
+    handleChangeDataStatus = (value) => {
+        this.setState(state=>{
+            return {
+                ...state,
+                dataStatus: value,
+                content: undefined,
+            }
+        });
+    }
 
     render() {
-        const { translate } = this.props;
-        const { evaluationsList, checkEval, checkMonth, showEval, content, evaluation, expire } = this.state;
-        const { task, role, id } = this.props;
+        const { translate, performtasks } = this.props;
+        const { evaluationsList, checkMonth, showEval, content, evaluation, expire } = this.state;
+        const { role, id } = this.props;
+
+        let task;
+        if (performtasks.task) {
+            task = performtasks.task;
+        }
 
         let dateParam = this.TODAY;
         let now = new Date();
@@ -198,6 +237,7 @@ class EvaluationModal extends Component {
                         (content !== undefined && role === "accountable") &&
                         <EvaluateByAccountableEmployee
                             id={content}
+                            handleChangeDataStatus={this.handleChangeDataStatus}
                             task={task}
                             role={role}
                             title={title}
@@ -224,9 +264,12 @@ class EvaluationModal extends Component {
     }
 }
 
-const mapState = (state) => { }
+const mapState = (state) => {
+    const { performtasks } = state;
+    return { performtasks }
+}
 
 const actionCreators = {};
 
-const connectedEvaluationModal = connect(null, null)(withTranslate(EvaluationModal));
+const connectedEvaluationModal = connect(mapState, actionCreators)(withTranslate(EvaluationModal));
 export { connectedEvaluationModal as EvaluationModal };

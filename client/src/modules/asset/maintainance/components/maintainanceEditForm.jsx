@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
 import { MaintainanceFormValidator } from './maintainanceFormValidator';
+
 import { MaintainanceActions } from '../redux/actions';
 import { AssetManagerActions } from '../../asset-management/redux/actions';
 
@@ -154,13 +157,11 @@ class MaintainanceEditForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result =
-            this.validateMaintainanceCode(this.state.maintainanceCode, false) &&
+        let result = this.validateMaintainanceCode(this.state.maintainanceCode, false) &&
             this.validateCreateDate(this.state.createDate, false) &&
             this.validateDescription(this.state.description, false) &&
             this.validateStartDate(this.state.startDate, false)
-        // &&
-        // this.validateExpense(this.state.expense, false)
+        
         return result;
     }
 
@@ -173,6 +174,7 @@ class MaintainanceEditForm extends Component {
         var partEnd = this.state.endDate.split('-');
         var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset._id;
+
         if (this.isFormValidated()) {
             let dataToSubit = {
                 maintainanceCode: this.state.maintainanceCode,
@@ -217,13 +219,14 @@ class MaintainanceEditForm extends Component {
 
     render() {
         const { _id, translate, assetsManager } = this.props;
-        var assetlist = assetsManager.listAssets;
-
         const {
             maintainanceCode, createDate, type, asset, description, startDate, endDate, expense, status,
             errorOnMaintainanceCode, errorOnCreateDate, errorOnDescription, errorOnStartDate, errorOnExpense
         } = this.state;
+
+        var assetlist = assetsManager.listAssets;
         console.log(this.state, 'this.state-u')
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -233,15 +236,20 @@ class MaintainanceEditForm extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
+                    {/* Form chỉnh sửa phiếu bỏ trì */}
                     <form className="form-group" id="form-edit-maintainance">
                         <div className="col-md-12">
+
                             <div className="col-sm-6">
-                                <div className={`form-group ${errorOnMaintainanceCode === undefined ? "" : "has-error"}`}>
+                                {/* Mã phiếu */}
+                                <div className={`form-group ${!errorOnMaintainanceCode ? "" : "has-error"}`}>
                                     <label>Mã phiếu<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="maintainanceCode" value={maintainanceCode} onChange={this.handleMaintainanceCodeChange} autoComplete="off" placeholder="Mã phiếu" />
                                     <ErrorLabel content={errorOnMaintainanceCode} />
                                 </div>
-                                <div className={`form-group ${errorOnCreateDate === undefined ? "" : "has-error"}`}>
+
+                                {/* Ngày lập */}
+                                <div className={`form-group ${!errorOnCreateDate ? "" : "has-error"}`}>
                                     <label>Ngày lập<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit-create-date${_id}`}
@@ -250,6 +258,8 @@ class MaintainanceEditForm extends Component {
                                     />
                                     <ErrorLabel content={errorOnCreateDate} />
                                 </div>
+
+                                {/* Phân loại */}
                                 <div className="form-group">
                                     <label>Phân loại</label>
                                     <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
@@ -259,6 +269,7 @@ class MaintainanceEditForm extends Component {
                                     </select>
                                 </div>
 
+                                {/* Tài sản */}
                                 <div className={`form-group`}>
                                     <label>Tài sản</label>
                                     <div>
@@ -276,16 +287,18 @@ class MaintainanceEditForm extends Component {
                                         </div>
                                     </div>
                                 </div>
-
-                                <div className={`form-group ${errorOnDescription === undefined ? "" : "has-error"}`}>
+                                
+                                {/* Nội dung */}
+                                <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
                                     <label>Nội dung<span className="text-red">*</span></label>
                                     <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off" placeholder="Nội dung"></textarea>
                                     <ErrorLabel content={errorOnDescription} />
                                 </div>
-
                             </div>
+
                             <div className="col-sm-6">
-                                <div className={`form-group ${errorOnStartDate === undefined ? "" : "has-error"}`}>
+                                {/* Ngày thực hiện */}
+                                <div className={`form-group ${!errorOnStartDate ? "" : "has-error"}`}>
                                     <label>Ngày thực hiện<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit-start-date${_id}`}
@@ -294,6 +307,8 @@ class MaintainanceEditForm extends Component {
                                     />
                                     <ErrorLabel content={errorOnStartDate} />
                                 </div>
+
+                                {/* Ngày hoàn thành */}
                                 <div className="form-group">
                                     <label>Ngày hoàn thành</label>
                                     <DatePicker
@@ -302,11 +317,15 @@ class MaintainanceEditForm extends Component {
                                         onChange={this.handleEndDateChange}
                                     />
                                 </div>
-                                <div className={`form-group ${errorOnExpense === undefined ? "" : "has-error"}`}>
+
+                                {/* Chi phí */}
+                                <div className={`form-group ${!errorOnExpense ? "" : "has-error"}`}>
                                     <label>Chi phí (VNĐ)<span className="text-red">*</span></label>
                                     <input type="number" className="form-control" name="expense" value={expense} onChange={this.handleExpenseChange} autoComplete="off" placeholder="Chi phí" />
                                     <ErrorLabel content={errorOnExpense} />
                                 </div>
+
+                                {/* Trạng thái */}
                                 <div className="form-group">
                                     <label>Trạng thái</label>
                                     <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>

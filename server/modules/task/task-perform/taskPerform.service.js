@@ -1879,6 +1879,40 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     return newTask;
 }
+
+/**
+ * Delete evaluations by month
+ * @param {*} params 
+ */
+exports.deleteEvaluation = async (params) => {
+    let { taskId, evaluationId } = params;
+    await Task.updateOne(
+        {_id: taskId},
+        { $pull: {evaluations: { _id: evaluationId} } },
+        {$new: true}
+    )
+    // let newTask = await Task.findById(taskId);
+    let newTask = await Task.findById(taskId).populate([
+        { path: "parent", select: "name" },
+        { path: "taskTemplate", select: "formula" },
+        { path: "organizationalUnit", model: OrganizationalUnit },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "evaluations.results.employee", select: "name email _id" },
+        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+        { path: "evaluations.results.kpis" },
+        { path: "taskActions.creator", model: User, select: 'name email avatar' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+        { path: "taskComments.creator", model: User, select: 'name email avatar' },
+        { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
+    ]);
+    newTask.evaluations.reverse();
+
+    return newTask;
+}
+
+
 /**
  * Xóa file của hoạt động
  */

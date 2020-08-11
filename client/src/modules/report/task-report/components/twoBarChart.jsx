@@ -8,30 +8,56 @@ import 'c3/c3.css';
 class TwoBarChart extends Component {
     constructor(props) {
         super(props);
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
         this.state = {
-            lineBar: true,
+            dataStatus: this.DATA_STATUS.QUERYING
         }
     }
 
     componentDidMount() {
         this.renderChart(this.state);
     }
-    componentDidUpdate() {
-        this.renderChart(this.state);
-    }
 
+    shouldComponentUpdate = (nextProps, nextState) => {
+
+    }
 
     static getDerivedStateFromProps(nextProps, prevState) {
+        let dataConvert = [], dateConvert = [], valueConvert = [];
+        if (nextProps.data) {
+            nextProps.data.forEach(x => {
+                let date = new Date(x.time);
+                let getYear = date.getFullYear();
+                let getMonth = date.getMonth() + 1;
+                let newDate = `${getYear}-${getMonth}-1`;
+                return dateConvert = [...dateConvert, newDate];
+            }
+            )
+        }
+        dateConvert.unshift("x");
+        console.log('dateConvert', dateConvert);
+
+        if (nextProps.data) {
+            let valueConvert = Object.values(nextProps.data.flatMap(x => x.tasks).reduce((a, i) => {
+                if (typeof i.value === 'number') {
+                    a[i.code] = a[i.code] || [i.code];
+                    a[i.code].push(i.value);
+                }
+                return a;
+            }, {}));
+
+            console.log('values', valueConvert);
+            dataConvert = [...[dateConvert], ...valueConvert];
+            console.log('dataConvert', dataConvert);
+        }
+
         return {
             ...prevState,
-            nameChart: nextProps.nameChart,
-            nameData1: nextProps.nameData1,
-            nameData2: nextProps.nameData2,
-            ratioX: ['x', "2020-07-01", "2020-08-01"],
-            data1: ['data1', 5, 7],
-            data2: ['data1', 22, 26],
+            nameData: nextProps.nameData,
+            data: dataConvert,
         }
     }
+
 
     // Xóa các chart đã render khi chưa đủ dữ liệu
     removePreviousChart() {
@@ -42,22 +68,16 @@ class TwoBarChart extends Component {
     }
 
     renderChart = (data) => {
-        data.data1.shift();
-        data.data2.shift();
-        let fakeData1 = data.data1.map(x => 2 * x);
-        let fakeData2 = data.data2.map(x => x / 2);
+        console.log('datata', data)
         this.removePreviousChart();
-        let chart = c3.generate({
+        this.chart = c3.generate({
             bindto: this.refs.chart,
             data: {
                 x: 'x',
-                columns: [],
+                columns: data.data,
                 hide: true,
                 type: 'bar',
-                names: {
-                    data1: data.nameData1,
-                    data2: data.nameData2,
-                },
+
             },
             bar: {
                 width: { ratio: 0.3 }
@@ -78,19 +98,10 @@ class TwoBarChart extends Component {
             },
         });
 
-        setTimeout(function () {
-            chart.load({
-                columns: [data.ratioX, ['data1', ...fakeData1], ['data2', ...fakeData2]],
-            });
-        }, 30);
-        setTimeout(function () {
-            chart.load({
-                columns: [data.ratioX, ['data1', ...data.data1], ['data2', ...data.data2]],
-            });
-        }, 50);
     }
     render() {
         const { lineBar, nameChart } = this.state;
+        console.log('state', this.state);
         return (
             <React.Fragment>
                 <div className="box">

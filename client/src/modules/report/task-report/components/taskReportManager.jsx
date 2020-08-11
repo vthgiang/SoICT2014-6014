@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { ButtonModal } from '../../../../common-components';
-import { DataTableSetting, PaginateBar, SelectBox } from '../../../../common-components';
+import { DataTableSetting, PaginateBar, DatePicker } from '../../../../common-components';
 import { TaskReportActions } from '../redux/actions';
 import { TaskReportCreateForm } from './taskReportCreateForm';
 import { TaskReportEditForm } from './taskReportEditForm';
@@ -18,6 +18,8 @@ class TaskReportManager extends Component {
             limit: 5,
             page: 0,
             name: '',
+            month: null,
+            creator: '',
             currentRole: localStorage.getItem("userId"),
         }
     }
@@ -96,8 +98,36 @@ class TaskReportManager extends Component {
         })
     }
 
+    /**
+     * Bắt sự kiện tìm kiếm theo người tạo
+     * @param {*} e 
+     */
+    handleChangeCreator = (e) => {
+        const { value } = e.target;
+
+        this.setState(state => {
+            return {
+                ...state,
+                creator: value,
+            }
+        })
+    }
+
     // Bắt sự kiện khi click nút tìm kiếm
     search = async () => {
+        if (this.state.month === null) {
+            let partMonth = this.formatDate(Date.now(), true).split('-');
+            let month = [partMonth[1], partMonth[0]].join('-');
+            await this.setState({
+                ...this.state,
+                month: month
+            })
+        } else if (this.state.month === "-") {
+            await this.setState({
+                ...this.state,
+                month: ""
+            })
+        }
         await this.props.getTaskReports(this.state);
     }
 
@@ -154,6 +184,31 @@ class TaskReportManager extends Component {
         return false;
     }
 
+    formatDate(date, monthYear = false) {
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        if (monthYear === true) {
+            return [month, year].join('-');
+        } else return [day, month, year].join('-');
+    }
+
+
+    handleMonthChange = (value) => {
+        let partMonth = value.split('-');
+        value = [partMonth[1], partMonth[0]].join('-');
+        this.setState({
+            ...this.state,
+            month: value
+        });
+    }
 
     render() {
         const { reports, translate, deleteTaskReport, user } = this.props;
@@ -161,7 +216,7 @@ class TaskReportManager extends Component {
             parseInt(reports.totalList / this.state.limit) :
             parseInt((reports.totalList / this.state.limit) + 1);
         let page = parseInt((this.state.page / this.state.limit) + 1);
-        console.log('role', this.state.currentRole);
+
         return (
             <div className="box">
                 <div className="box-body qlcv" >
@@ -187,26 +242,19 @@ class TaskReportManager extends Component {
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">{translate('report_manager.creator')}</label>
-                            <input className="form-control" type="text" onKeyUp={this.handleEnterLimitSetting} name="name" onChange={this.handleChangeInput} placeholder={translate('report_manager.search_by_creator')} />
+                            <input className="form-control" type="text" onKeyUp={this.handleEnterLimitSetting} name="creator" onChange={this.handleChangeCreator} placeholder={translate('report_manager.search_by_creator')} />
                         </div>
 
                     </div>
 
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
-                            <label className="form-control-static">Sắp xếp theo</label>
-                            <SelectBox
-                                id={`sort-date33333`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                items={
-                                    [
-                                        { value: "", text: 'Ngày tạo mới nhất' },
-                                        { value: "", text: 'Ngày tạo cũ nhất' },
-                                    ]
-                                }
-                                onChange={this.handleSortDate}
-                                multiple={false}
+                            <label className="form-control-static">Tháng</label>
+                            <DatePicker
+                                id="month"
+                                dateFormat="month-year"
+                                value={this.formatDate(Date.now(), true)}
+                                onChange={this.handleMonthChange}
                             />
                         </div>
 

@@ -116,7 +116,6 @@ exports.editTaskReport = async (req, res) => {
     try {
         let editTaskReport = await TaskReportService.editTaskReport(req.params.id, req.body, req.user._id);
         LogInfo(req.user.email, ' edit_task_report ', req.user.company);
-        console.log('editTaskReport', editTaskReport)
         res.status(200).json({
             success: true,
             messages: ['edit_report_manager_success'],

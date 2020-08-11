@@ -84,7 +84,7 @@ function editStatusKpi(id, status) {
 /**
  *  Lấy danh sách công việc theo id của kpi con
 */
-function getTaskById(id, employeeId, date) {
+function getTaskById(id, employeeId, date, kpiType) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpis/${id}/tasks`,
         method: 'GET',
@@ -92,20 +92,21 @@ function getTaskById(id, employeeId, date) {
             id: id,
             employeeId: employeeId,
             date: date,
+            kpiType: kpiType
         }
     }, false, true, 'kpi.evaluation')
 }
 /**
  *  chỉnh sửa approvepoint 
 */
-function setPointKPI(employeeId, data) {
-    console.log('ddddd', data);
+function setPointKPI(employeeId, kpiType, data) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpis/${employeeId}/set-task-importance-level`,
         method: 'POST',
         data: data,
         params: {
             employeeId: employeeId,
+            kpiType: kpiType
         }
     }, true, true, 'kpi.evaluation')
 }

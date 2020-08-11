@@ -13,7 +13,10 @@ exports.getAllTaskTemplates = (req, res) => {
  * @id id mẫu công việc
  */
 exports.getTaskTemplate = async (id) => {
-    var taskTemplate = TaskTemplate.findById(id).populate("organizationalUnit creator readByEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees");
+    var taskTemplate = TaskTemplate.findById(id).populate([
+        {path: "organizationalUnit", model: OrganizationalUnit, select :"name deans"},
+        {path: "readByEmployees", model: Role, select: "name"},
+        {path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", model: User, select: "name email"}]);
     return taskTemplate;
 }
 
@@ -144,7 +147,10 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
     }
 
     tasktemplates = tasktemplate[0].tasks;
-    await TaskTemplate.populate(tasktemplates, { path: "organizationalUnit creator readByEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees" });
+    await TaskTemplate.populate(tasktemplates, [
+        {path: "organizationalUnit", model: OrganizationalUnit, select :"name deans"},
+        {path: "readByEmployees", model: Role, select: "name"},
+        {path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", model: User, select: "name email"}]);
     var totalCount = 0;
     if (JSON.stringify(tasktemplates) !== JSON.stringify([])) {
         totalCount = tasktemplate[0].totalCount[0].count;

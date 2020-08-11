@@ -113,7 +113,9 @@ class EvaluateByConsultedEmployee extends Component {
             let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Consulted"));
             if (res) {
                 point = res.employeePoint ? res.employeePoint : undefined;
-                unit = res.organizationalUnit._id;
+                if( res.organizationalUnit ){
+                    unit =  res.organizationalUnit._id;
+                };
                 let kpi = res.kpis;
 
                 for (let i in kpi) {
@@ -140,13 +142,13 @@ class EvaluateByConsultedEmployee extends Component {
                         type: infoEval[i].type
                     }
                 }
-                else if (!infoEval[i].filledByAccountableEmployeesOnly) {
-                    info[`${infoEval[i].code}`] = {
-                        value: this.formatDate(Date.now()),
-                        code: infoEval[i].code,
-                        type: infoEval[i].type
-                    }
-                }
+                // else if (!infoEval[i].filledByAccountableEmployeesOnly) {
+                //     info[`${infoEval[i].code}`] = {
+                //         // value: this.formatDate(Date.now()),
+                //         code: infoEval[i].code,
+                //         type: infoEval[i].type
+                //     }
+                // }
             }
             else if (infoEval[i].type === "SetOfValues") {
                 let splitSetOfValues = infoEval[i].extra.split('\n');
@@ -157,13 +159,13 @@ class EvaluateByConsultedEmployee extends Component {
                         type: infoEval[i].type
                     }
                 }
-                else if (!infoEval[i].filledByAccountableEmployeesOnly) {
-                    info[`${infoEval[i].code}`] = {
-                        value: [splitSetOfValues[0]],
-                        code: infoEval[i].code,
-                        type: infoEval[i].type
-                    }
-                }
+                // else if (!infoEval[i].filledByAccountableEmployeesOnly) {
+                //     info[`${infoEval[i].code}`] = {
+                //         value: [splitSetOfValues[0]],
+                //         code: infoEval[i].code,
+                //         type: infoEval[i].type
+                //     }
+                // }
             }
             else {
                 if (infoEval[i].value) {
@@ -425,7 +427,7 @@ class EvaluateByConsultedEmployee extends Component {
                             <legend className="scheduler-border">{translate('task.task_management.info_eval_month')}</legend>
                             <div style={{ lineHeight: 2.8 }}>
                                 {/* % tiến độ */}
-                                <div><span style={{ fontWeight: "bold" }}>{translate('task.task_management.detail_progress')}:&nbsp;&nbsp;&nbsp;</span>{task && task.progress}%</div>
+                                <div><span style={{ fontWeight: "bold" }}>{translate('task.task_management.detail_progress')}:&nbsp;&nbsp;&nbsp;</span>{(evaluations?.progress !== null && evaluations?.progress !== undefined) ? `${evaluations?.progress}%` : translate('task.task_management.not_eval')}</div>
 
                                 {/* Các thông tin khác */}
                                 {
@@ -437,11 +439,11 @@ class EvaluateByConsultedEmployee extends Component {
                                                         evaluations.taskInformations.map((info, index) => {
                                                             if (info.type === "Date") {
                                                                 return <div key={index}>
-                                                                    <div><span style={{ fontWeight: "bold" }}>{info.name}</span>:&nbsp;&nbsp;&nbsp;{info.value ? this.formatDate(info.value) : translate('task.task_management.not_eval')}</div>
+                                                                    <div><span style={{ fontWeight: "bold" }}>{info.name}</span>:&nbsp;&nbsp;&nbsp;{(info.value !== null && info.value !== undefined) ? this.formatDate(info.value) : translate('task.task_management.not_eval')}</div>
                                                                 </div>
                                                             }
                                                             else return <div key={index}>
-                                                                <div><span style={{ fontWeight: "bold" }}>{info.name}</span>:&nbsp;&nbsp;&nbsp;{info.value ? info.value : translate('task.task_management.not_eval')}</div>
+                                                                <div><span style={{ fontWeight: "bold" }}>{info.name}</span>:&nbsp;&nbsp;&nbsp;{(info.value !== null && info.value !== undefined) ? info.value : translate('task.task_management.not_eval')}</div>
                                                             </div>
                                                         })
                                                     }

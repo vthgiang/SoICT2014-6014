@@ -225,8 +225,8 @@ class DetailTaskTab extends Component {
         const { showToolbar, id } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
 
         let task;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null) {
-            task = tasks.task;
+        if (performtasks.task) {
+            task = performtasks.task;
         }
 
         let statusTask
@@ -474,7 +474,7 @@ class DetailTaskTab extends Component {
                                                     <div>
                                                         <div><strong>{translate('task.task_management.detail_info')}</strong></div>
                                                         <ul>
-                                                            <li>{translate('task.task_management.detail_progress')}: &nbsp;&nbsp; {eva.progress}%</li>
+                                                            <li>{translate('task.task_management.detail_progress')}: &nbsp;&nbsp; {(eva.progress !== null && eva.progress !== undefined) ? `${eva.progress}%` : translate('task.task_management.detail_not_eval_on_month')}</li>
                                                             {
                                                                 eva.taskInformations.map((info, key) => {
                                                                     if (info.type === "Date") {

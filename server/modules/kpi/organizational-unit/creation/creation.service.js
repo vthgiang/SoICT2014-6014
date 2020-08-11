@@ -215,15 +215,27 @@ exports.editOrganizationalUnitKpiSet = async (dateString, id) => {
  * @data thông tin chung của tập Kpi đơn vị
  */
 exports.createOrganizationalUnitKpiSet = async (data) => {
-    var dateId = data.date;
-    var creatorId = data.creator;
-    var organizationalUnitId = data.organizationalUnit;
+    let dateId = data.date;
+    let creatorId = data.creator;
+    let organizationalUnitId = data.organizationalUnit;
 
-    var time = dateId.split("-");
-    var date = new Date(time[1], time[0], 0);
+    let time = dateId.split("-");
+    let date = new Date(time[1], time[0], 0);
 
+    let currentMonth = data.date.slice(3, 7) + '-' + data.date.slice(0, 2);
+    let nextMonth;
+    if (new Number(data.date.slice(0, 2)) < 12) {
+        if (new Number(data.date.slice(0, 2)) < 10) {
+            nextMonth = data.date.slice(3, 7) + '-0' + (new Number(data.date.slice(0, 2)) + 1);
+        } else {
+            nextMonth = data.date.slice(3, 7) + '-' + (new Number(data.date.slice(0, 2)) + 1);
+        }
+    } else {
+        nextMonth = (new Number(data.date.slice(3, 7)) + 1) + '-01';
+    }
+    
     // Tạo thông tin chung cho KPI đơn vị
-    var organizationalUnitKpi = await OrganizationalUnitKpiSet.create({
+    let organizationalUnitKpi = await OrganizationalUnitKpiSet.create({
         organizationalUnit: organizationalUnitId,
         creator: creatorId,
         date: date,
@@ -231,14 +243,25 @@ exports.createOrganizationalUnitKpiSet = async (data) => {
     });
 
     // Tìm kiếm phòng ban hiện tại và kiểm tra xem nó có phòng ban cha hay không
-    var organizationalUnit = await OrganizationalUnit.findById(organizationalUnitId);
+    let organizationalUnit = await OrganizationalUnit.findById(organizationalUnitId);
+
     if (organizationalUnit.parent !== null) {
-        var organizationalUnitParent = await OrganizationalUnitKpiSet.findOne({ organizationalUnit: organizationalUnit.parent, status: 1 }).populate("kpis");
-        var defaultTarget;
+        let organizationalUnitParent = await OrganizationalUnitKpiSet
+            .findOne({
+                organizationalUnit: organizationalUnit.parent,
+                status: 1,
+                date: {
+                    $gte: currentMonth, $lt: nextMonth
+                }
+            })
+            .populate("kpis");
+
+        let defaultTarget;
+
         if (organizationalUnitParent.kpis) defaultTarget = organizationalUnitParent.kpis.filter(item => item.type !== 0);//default Target là nhưng mục tiêu có default !== 0
         if (defaultTarget !== []) {
-            var defaultTarget = await Promise.all(defaultTarget.map(async (item) => {
-                var defaultT = await OrganizationalUnitKpi.create({
+            defaultTarget = await Promise.all(defaultTarget.map(async (item) => {
+                let defaultT = await OrganizationalUnitKpi.create({
                     name: item.name,
                     parent: item._id,
                     weight: 5,
@@ -252,7 +275,7 @@ exports.createOrganizationalUnitKpiSet = async (data) => {
             );
         }
     } else {
-        var targetA = await OrganizationalUnitKpi.create({
+        let targetA = await OrganizationalUnitKpi.create({
             name: "Phê duyệt công việc",
             parent: null,
             weight: 5,
@@ -262,7 +285,8 @@ exports.createOrganizationalUnitKpiSet = async (data) => {
         organizationalUnitKpi = await OrganizationalUnitKpiSet.findByIdAndUpdate(
             organizationalUnitKpi, { $push: { kpis: targetA._id } }, { new: true }
         );
-        var targetC = await OrganizationalUnitKpi.create({
+        
+        let targetC = await OrganizationalUnitKpi.create({
             name: "Hỗ trợ thực hiện công việc",
             parent: null,
             weight: 5,

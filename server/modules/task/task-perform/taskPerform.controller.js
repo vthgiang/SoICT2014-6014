@@ -777,6 +777,7 @@ evaluateTaskByResponsibleEmployees = async (req, res) => {
         });
     }
 }
+
 /**
  * evaluate task by accountable employee
  */
@@ -794,6 +795,28 @@ evaluateTaskByAccountableEmployees = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: ['evaluate_task_fail'],
+            content: error
+        });
+    }
+}
+
+/**
+ * delete evaluation by id
+ */
+exports.deleteEvaluation = async (req, res) => {
+    try {
+        let task = await PerformTaskService.deleteEvaluation(req.params);
+        await LogInfo(req.user.email, ` delete evaluation  `, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['delete_evaluation_success'],
+            content: task
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` delete evaluation `, req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['delete_evaluation_fail'],
             content: error
         });
     }

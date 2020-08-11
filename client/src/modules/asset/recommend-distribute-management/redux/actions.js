@@ -4,14 +4,12 @@ import { AssetManagerActions } from "../../asset-management/redux/actions";
 
 export const RecommendDistributeActions = {
     searchRecommendDistributes,
-    // createRecommendDistribute,
     deleteRecommendDistribute,
     updateRecommendDistribute,
 };
 
 // lấy danh sách phiếu đề nghị mua sắm thiết bị
 function searchRecommendDistributes(data) {
-
     return async (dispatch) => {
         try {
             const result = await RecommendDistributeService.searchRecommendDistributes(data);

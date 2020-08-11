@@ -19,6 +19,8 @@ function getTaskReports(data) {
         method: 'GET',
         params: {
             name: data.name,
+            month: data.month,
+            creator: data.creator,
             page: data.page,
             limit: data.limit,
         },
