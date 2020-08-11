@@ -425,7 +425,7 @@ class EvaluateByConsultedEmployee extends Component {
                             <legend className="scheduler-border">{translate('task.task_management.info_eval_month')}</legend>
                             <div style={{ lineHeight: 2.8 }}>
                                 {/* % tiến độ */}
-                                <div><span style={{ fontWeight: "bold" }}>{translate('task.task_management.detail_progress')}:&nbsp;&nbsp;&nbsp;</span>{(evaluations.progress !== null && evaluations.progress !== undefined) ? `${evaluations.progress}%` : translate('task.task_management.not_eval')}</div>
+                                <div><span style={{ fontWeight: "bold" }}>{translate('task.task_management.detail_progress')}:&nbsp;&nbsp;&nbsp;</span>{(evaluations?.progress !== null && evaluations?.progress !== undefined) ? `${evaluations?.progress}%` : translate('task.task_management.not_eval')}</div>
 
                                 {/* Các thông tin khác */}
                                 {
