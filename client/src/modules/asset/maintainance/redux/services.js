@@ -9,7 +9,6 @@ export const MaintainanceService = {
 
 // tạo mới thông tin bảo trì tài sản
 function createMaintainance(id, data, incident_id) {
-    console.log("11111111111111111111111111111111", id, data, incident_id);
     return sendRequest({
         url: incident_id ? `${LOCAL_SERVER_API}/assets/assets/${id}/maintainance-logs?incident_id=${incident_id}` : `${LOCAL_SERVER_API}/assets/assets/${id}/maintainance-logs`,
         method: 'POST',

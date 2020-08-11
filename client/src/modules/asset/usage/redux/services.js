@@ -30,6 +30,6 @@ function deleteUsage(assetId, usageId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/assets/assets/${assetId}/usage-logs`,
         method: 'DELETE',
-        data: {usageId}
+        data: { usageId }
     }, true, true, 'asset.usage');
 }
