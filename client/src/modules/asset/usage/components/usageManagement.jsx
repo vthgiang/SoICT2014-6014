@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { UsageCreateForm } from './usageCreateForm';
-import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar } from '../../../../common-components';
+
+import { DataTableSetting, DatePicker, PaginateBar } from '../../../../common-components';
+
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { AssetManagerActions } from '../../asset-management/redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
+
 import { AssetEditForm } from '../../asset-management/components/combinedContent';
+import { UsageCreateForm } from './usageCreateForm';
+
 class UsageManagement extends Component {
     constructor(props) {
         super(props);
@@ -33,19 +37,6 @@ class UsageManagement extends Component {
         });
     }
 
-
-    // // Bắt sự kiện click chỉnh sửa thông tin sử dụng
-    // handleEdit = async (value, asset) => {
-    //     value.asset = asset;
-    //     await this.setState(state => {
-    //         return {
-    //             ...state,
-    //             currentRow: value
-    //         }
-    //     });
-    //     window.$('#modal-edit-usage').modal('show');
-    // }
-
     // Bắt sự kiện click chỉnh sửa thông tin tài sản
     handleEdit = async (value) => {
         console.log(value);
@@ -65,14 +56,19 @@ class UsageManagement extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+            
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -82,10 +78,13 @@ class UsageManagement extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+            
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         return [month, year].join('-');
     }
@@ -96,7 +95,6 @@ class UsageManagement extends Component {
         this.setState({
             [name]: value
         });
-
     }
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
@@ -105,7 +103,6 @@ class UsageManagement extends Component {
         this.setState({
             [name]: value
         });
-
     }
 
     // Function lưu giá trị tháng vào state khi thay đổi
@@ -156,6 +153,8 @@ class UsageManagement extends Component {
 
     render() {
         const { translate, assetsManager, assetType, user } = this.props;
+        const { page, limit, currentRow } = this.state;
+
         var lists = "";
         var userlist = user.list;
         var assettypelist = assetType.listAssetTypes;
@@ -164,26 +163,33 @@ class UsageManagement extends Component {
             lists = this.props.assetsManager.listAssets;
         }
 
-        var pageTotal = ((assetsManager.totalList % this.state.limit) === 0) ?
-            parseInt(assetsManager.totalList / this.state.limit) :
-            parseInt((assetsManager.totalList / this.state.limit) + 1);
-        var page = parseInt((this.state.page / this.state.limit) + 1);
+        var pageTotal = ((assetsManager.totalList % limit) === 0) ?
+            parseInt(assetsManager.totalList / limit) :
+            parseInt((assetsManager.totalList / limit) + 1);
+        var currentPage = parseInt((page / limit) + 1);
+
         return (
             <div className="box">
                 <div className="box-body qlcv">
+                    {/* Form thêm mới thông tin sử dụng */}
                     <UsageCreateForm />
-                    <div className="form-inline">
 
+                    {/* Thanh tìm kiếm */}
+                    <div className="form-inline">
+                        {/* Mã tài sản */}
                         <div className="form-group">
                             <label className="form-control-static">Mã tài sản</label>
                             <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off" />
                         </div>
+
+                        {/* Tên tài sản */}
                         <div className="form-group">
                             <label className="form-control-static">Tên tài sản</label>
                             <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off" />
                         </div>
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
+                        {/* Tháng */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.month')}</label>
                             <DatePicker
@@ -193,12 +199,15 @@ class UsageManagement extends Component {
                                 onChange={this.handleMonthChange}
                             />
                         </div>
+
+                        {/* Button tìm kiếm */}
                         <div className="form-group">
                             <label></label>
                             <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={() => this.handleSubmitSearch()}>Tìm kiếm</button>
                         </div>
                     </div>
 
+                    {/* Bảng thông tin đăng kí sử dụng tài sản */}
                     <table id="usage-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
@@ -208,7 +217,6 @@ class UsageManagement extends Component {
                                 <th style={{ width: "8%" }}>Người sử dụng</th>
                                 <th style={{ width: "10%" }}>Thời gian bắt đầu sử dụng</th>
                                 <th style={{ width: "10%" }}>Thời gian kết thúc sử dụng</th>
-                                {/* <th style={{ width: "10%" }}>Nội dung</th> */}
                                 <th style={{ width: "10%" }}>Vị trí tài sản</th>
                                 <th style={{ width: "10%" }}>Trạng thái</th>
                                 <th style={{ width: '100px', textAlign: 'center' }}>Hành động
@@ -225,7 +233,7 @@ class UsageManagement extends Component {
                                             "Vị trí tài sản",
                                             "Trạng thái",
                                         ]}
-                                        limit={this.state.limit}
+                                        limit={limit}
                                         setLimit={this.setLimit}
                                         hideColumnOption={true}
                                     />
@@ -233,96 +241,72 @@ class UsageManagement extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof lists !== 'undefined' && lists.length) &&
-                                // lists.map(asset => {
-                                //     return asset.usageLogs.map((x, index) => (
+                            {(lists && lists.length) &&
                                 lists.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
-                                        <td>{x.assetType !== null && assettypelist.length && assettypelist.find(item => item._id === x.assetType) ? assettypelist.find(item => item._id === x.assetType).typeName : ''}</td>
-                                        <td>{x.assignedTo !== null && userlist.length && userlist.find(item => item._id === x.assignedTo) ? userlist.find(item => item._id === x.assignedTo).name : ''}</td>
+                                        <td>{x.assetType && assettypelist.length && assettypelist.find(item => item._id === x.assetType) ? assettypelist.find(item => item._id === x.assetType).typeName : ''}</td>
+                                        <td>{x.assignedTo ? (userlist.length && userlist.find(item => item._id === x.assignedTo) ? userlist.find(item => item._id === x.assignedTo).name : 'User is deleted') : ''}</td>
                                         <td>{x.handoverFromDate ? this.formatDate(x.handoverFromDate) : ''}</td>
                                         <td>{x.handoverToDate ? this.formatDate(x.handoverToDate) : ''}</td>
                                         <td>{x.location}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            {/* <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin lịch sử hoạt động của tài sản"><i
-                                                    className="material-icons">edit</i></a> */}
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin sử dụng tài sản"><i className="material-icons">edit</i></a>
-                                            {/* <DeleteNotification
-                                                    content="Xóa thông tin lịch sử hoạt động của tài sản"
-                                                    data={{
-                                                        id: x._id,
-                                                        info: asset.code + " - " + x.usedBy
-                                                    }}
-                                                    func={() => this.deleteUsage(asset._id, x._id)}
-                                                /> */}
                                         </td>
-                                    </tr>))
-                                //         ))
-                                // })
-
+                                    </tr>
+                                ))
                             }
                         </tbody>
                     </table>
                     {assetsManager.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
+
+                    {/* PaginateBar */}
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
 
-                {/* {
-                    this.state.currentRow !== undefined &&
-                    <UsageEditForm
-                        _id={this.state.currentRow._id}
-                        asset={this.state.currentRow.asset}
-                        usedBy={this.state.currentRow.usedBy}
-                        startDate={this.state.currentRow.startDate}
-                        endDate={this.state.currentRow.endDate}
-                        description={this.state.currentRow.description}
-                    />
-                } */}
-
+                {/* Form chỉnh sửa thông tin đăng kí sử dụng */}
                 {
-                    this.state.currentRow !== undefined &&
+                    currentRow &&
                     <AssetEditForm
-                        _id={this.state.currentRow._id}
-                        avatar={this.state.currentRow.avatar}
-                        code={this.state.currentRow.code}
-                        assetName={this.state.currentRow.assetName}
-                        serial={this.state.currentRow.serial}
-                        assetType={this.state.currentRow.assetType}
-                        purchaseDate={this.state.currentRow.purchaseDate}
-                        warrantyExpirationDate={this.state.currentRow.warrantyExpirationDate}
-                        managedBy={this.state.currentRow.managedBy}
-                        assignedTo={this.state.currentRow.assignedTo}
-                        handoverFromDate={this.state.currentRow.handoverFromDate}
-                        handoverToDate={this.state.currentRow.handoverToDate}
-                        location={this.state.currentRow.location}
-                        description={this.state.currentRow.description}
-                        status={this.state.currentRow.status}
-                        canRegisterForUse={this.state.currentRow.canRegisterForUse}
-                        detailInfo={this.state.currentRow.detailInfo}
+                        _id={currentRow._id}
+                        avatar={currentRow.avatar}
+                        code={currentRow.code}
+                        assetName={currentRow.assetName}
+                        serial={currentRow.serial}
+                        assetType={currentRow.assetType}
+                        purchaseDate={currentRow.purchaseDate}
+                        warrantyExpirationDate={currentRow.warrantyExpirationDate}
+                        managedBy={currentRow.managedBy}
+                        assignedTo={currentRow.assignedTo}
+                        handoverFromDate={currentRow.handoverFromDate}
+                        handoverToDate={currentRow.handoverToDate}
+                        location={currentRow.location}
+                        description={currentRow.description}
+                        status={currentRow.status}
+                        canRegisterForUse={currentRow.canRegisterForUse}
+                        detailInfo={currentRow.detailInfo}
 
-                        cost={this.state.currentRow.cost}
-                        residualValue={this.state.currentRow.residualValue}
-                        startDepreciation={this.state.currentRow.startDepreciation}
-                        usefulLife={this.state.currentRow.usefulLife}
-                        depreciationType={this.state.currentRow.depreciationType}
+                        cost={currentRow.cost}
+                        residualValue={currentRow.residualValue}
+                        startDepreciation={currentRow.startDepreciation}
+                        usefulLife={currentRow.usefulLife}
+                        depreciationType={currentRow.depreciationType}
 
-                        disposalDate={this.state.currentRow.disposalDate}
-                        disposalType={this.state.currentRow.disposalType}
-                        disposalCost={this.state.currentRow.disposalCost}
-                        disposalDesc={this.state.currentRow.disposalDesc}
+                        disposalDate={currentRow.disposalDate}
+                        disposalType={currentRow.disposalType}
+                        disposalCost={currentRow.disposalCost}
+                        disposalDesc={currentRow.disposalDesc}
 
-                        maintainanceLogs={this.state.currentRow.maintainanceLogs}
-                        usageLogs={this.state.currentRow.usageLogs}
-                        incidentLogs={this.state.currentRow.incidentLogs}
-                        archivedRecordNumber={this.state.currentRow.archivedRecordNumber}
-                        files={this.state.currentRow.files}
-
+                        maintainanceLogs={currentRow.maintainanceLogs}
+                        usageLogs={currentRow.usageLogs}
+                        incidentLogs={currentRow.incidentLogs}
+                        archivedRecordNumber={currentRow.archivedRecordNumber}
+                        files={currentRow.files}
                     />
                 }
             </div>
