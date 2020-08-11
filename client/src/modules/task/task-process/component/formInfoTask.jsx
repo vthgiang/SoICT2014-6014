@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { SelectBox } from './../../../../common-components/index';
+import { SelectBox, DatePicker } from './../../../../common-components/index';
 import { withTranslate } from "react-redux-multilingual";
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { UserActions } from '../../../super-admin/user/redux/actions';
@@ -12,6 +12,9 @@ class FormInfoTask extends Component {
         let { info, id, listOrganizationalUnit } = this.props;
         this.state = {
             id: id,
+            startDate: (info && info.startDate) ? info.startDate : "",
+            endDate: (info && info.endDate) ? info.endDate : "",
+            priority: (info && info.priority) ? info.priority : 1,
             nameTask: (info && info.nameTask) ? info.nameTask : '',
             description: (info && info.description) ? info.description : '',
             organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
@@ -32,6 +35,9 @@ class FormInfoTask extends Component {
             this.setState(state => {
                 return {
                     id: nextProps.id,
+                    startDate: (info && info.startDate) ? info.startDate : "",
+                    endDate: (info && info.endDate) ? info.endDate : "",
+                    priority: (info && info.priority) ? info.priority : 1,
                     nameTask: (info && info.nameTask) ? info.nameTask : '',
                     description: (info && info.description) ? info.description : '',
                     organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
@@ -71,7 +77,7 @@ class FormInfoTask extends Component {
         });
         this.props.handleChangeTemplate(value[0])
     }
-    handleChangeResponsible = (value,a) => {
+    handleChangeResponsible = (value, a) => {
         this.setState({
             responsible: value,
         })
@@ -84,11 +90,38 @@ class FormInfoTask extends Component {
         this.props.handleChangeAccountable(value);
     }
 
+    handleChangeTaskStartDate = (value) => {
+        this.setState({
+            startDate: value,
+        })
+        this.props.handleChangeTaskStartDate(value);
+    }
+
+    handleChangeTaskEndDate = (value) => {
+        this.setState({
+            endDate: value,
+        });
+
+        this.props.handleChangeTaskEndDate(value)
+    }
+    
+    handleChangeTaskPriority = (event) => {
+        let {value} = event.target;
+        this.setState(state => {
+            return {
+                ...state,
+                priority: value,
+            };
+        });
+        this.props.handleChangeTaskPriority(value)
+    }
+
+
     render() {
         const { user, translate, role, tasktemplates } = this.props;
-        const { nameTask, description, responsible, accountable, organizationalUnit, taskTemplate} = this.state;
-        const { id, info, action, listOrganizationalUnit, disabled } = this.props;
-        let usersOfChildrenOrganizationalUnit, listTaskTemplate;
+        const { nameTask, description, responsible, accountable, organizationalUnit, taskTemplate, startDate, endDate, priority } = this.state;
+        const { id, info, action, listOrganizationalUnit, disabled, listUser, astemplate } = this.props;
+        let usersOfChildrenOrganizationalUnit, listTaskTemplate, listUserAccountable = [], listUserResponsible = [];
         if (user && user.usersOfChildrenOrganizationalUnit) {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
@@ -109,13 +142,25 @@ class FormInfoTask extends Component {
             });
         }
         // list template
-        let listTemp = [{value: "", text: "--Chọn mẫu công việc--" }];
+        let listTemp = [{ value: "", text: "--Chọn mẫu công việc--" }];
         if (listTaskTemplate && listTaskTemplate.length !== 0) {
             listTaskTemplate.map(item => {
                 listTemp.push({ value: item._id, text: item.name })
             })
         }
-        
+        //Xử lí khởi tạo quy trình
+        if (listUser) {
+            listUser.forEach(x => {
+                if (info?.accountable.some(y => y === x.roleId)) {
+                    listUserAccountable.push({ value: x.userId._id, text: x.userId.name })
+                }
+            })
+            listUser.forEach(x => {
+                if (info?.responsible.some(y => y === x.roleId)) {
+                    listUserResponsible.push({ value: x.userId._id, text: x.userId.name })
+                }
+            })
+        }
         return (
             <div>
                 <form>
@@ -154,21 +199,21 @@ class FormInfoTask extends Component {
                         }
                     </div>
                     {(listTaskTemplate && listTaskTemplate.length !== 0) &&
-                    <div className="form-group">
-                        <label htmlFor="exampleFormControlSelect1" style={{ float: 'left' }} >Mẫu công việc</label>
-                        {
-                            <SelectBox
-                                id={`select-template-employee-${id}-${action}`}
-                                className="form-control select2"
-                                style={{ width: "100%" }}
-                                multiple={false}
-                                items={listTemp}
-                                onChange={this.handleChangeTemplate}
-                                value={taskTemplate}
-                                disabled={disabled}
-                            />
-                        }
-                    </div>
+                        <div className="form-group">
+                            <label htmlFor="exampleFormControlSelect1" style={{ float: 'left' }} >Mẫu công việc</label>
+                            {
+                                <SelectBox
+                                    id={`select-template-employee-${id}-${action}`}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    multiple={false}
+                                    items={listTemp}
+                                    onChange={this.handleChangeTemplate}
+                                    value={taskTemplate}
+                                    disabled={disabled}
+                                />
+                            }
+                        </div>
                     }
                     <div className="form-group">
                         <label htmlFor="exampleFormControlSelect1" style={{ float: 'left' }} >Người thực hiện</label>
@@ -179,7 +224,7 @@ class FormInfoTask extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 // items={unitMembers}
-                                items={listItem}
+                                items={astemplate ? listItem : listUserResponsible}
                                 onChange={this.handleChangeResponsible}
                                 multiple={true}
                                 value={responsible}
@@ -197,7 +242,7 @@ class FormInfoTask extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 // items={unitMembers}
-                                items={listItem}
+                                items={astemplate ? listItem : listUserAccountable}
                                 onChange={this.handleChangeAccountable}
                                 multiple={true}
                                 value={accountable}
@@ -206,7 +251,42 @@ class FormInfoTask extends Component {
                         }
                     </div>
 
-                    <button className= 'btn btn-primary' onClick = {this.props.done}> Hoàn thành</button>
+                    {/* Ngay bat dau - ngay ket thuc */}
+                    <div className=" row form-group">
+                        <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12}`}>
+                            <label className="control-label">{translate('task.task_management.start_date')}*</label>
+                            <DatePicker
+                                id={`datepicker1-${id}`}
+                                dateFormat="day-month-year"
+                                value={startDate}
+                                onChange={this.handleChangeTaskStartDate}
+                            />
+                            {/* <ErrorLabel content={errorOnStartDate} /> */}
+                        </div>
+                        <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 }`}>
+                            <label className="control-label">{translate('task.task_management.end_date')}*</label>
+                            <DatePicker
+                                id={`datepicker2-${id}`}
+                                value={endDate}
+                                onChange={this.handleChangeTaskEndDate}
+                            />
+                            {/* <ErrorLabel content={errorOnEndDate} /> */}
+                        </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label className="control-label">{translate('task.task_management.detail_priority')}*</label>
+                        <select className="form-control"
+                            value={priority}
+                            onChange={this.handleChangeTaskPriority}
+                        >
+                            <option value={3}>{translate('task.task_management.high')}</option>
+                            <option value={2}>{translate('task.task_management.normal')}</option>
+                            <option value={1}>{translate('task.task_management.low')}</option>
+                        </select>
+                    </div>
+
+                    <button className='btn btn-primary' onClick={this.props.done}> Hoàn thành</button>
                 </form>
             </div>
         );

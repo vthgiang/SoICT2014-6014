@@ -11,7 +11,8 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
 import { TaskProcessActions } from "../redux/actions";
-
+import customModule from './custom'
+import { TaskFormValidator } from "../../task-management/component/taskFormValidator";
 //bpmn-nyan
 // import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
 // import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
@@ -45,8 +46,7 @@ class ModalCreateTaskByProcess extends Component {
         }
         this.modeler = new BpmnModeler({
             additionalModules: [
-            //    nyanDrawModule,
-            //    nyanPaletteModule
+                customModule
             ]
          });
         this.generateId = 'createtaskbyprocess';
@@ -55,7 +55,7 @@ class ModalCreateTaskByProcess extends Component {
 
     componentDidMount() {
         this.props.getDepartment();
-        // this.props.getAllUsersWithRole();
+        this.props.getAllUsersWithRole();
         let { user } = this.props;
         let defaultUnit = user && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.find(item =>
             item.dean === this.state.currentRole
@@ -253,6 +253,54 @@ class ModalCreateTaskByProcess extends Component {
         })
     }
 
+
+    handleChangeTaskStartDate = (value) => {
+        this.validateTaskStartDate(value, true);
+    }
+    validateTaskStartDate = (value, willUpdateState = true) => {
+        let { translate } = this.props;
+        let msg = TaskFormValidator.validateTaskStartDate(value, this.state.info[`${this.state.id}`].endDate ? this.state.info[`${this.state.id}`].endDate : "", translate);
+
+        if (willUpdateState) {
+            this.state.info[`${this.state.id}`].startDate = value;
+            this.state.info[`${this.state.id}`].errorOnStartDate = msg;
+            this.setState(state => {
+                return {
+                    ...state,
+                };
+            });
+        }
+        return msg === undefined;
+    }
+
+    handleChangeTaskEndDate = (value) => {
+        this.validateTaskEndDate(value, true);
+    }
+    validateTaskEndDate = (value, willUpdateState = true) => {
+        let { translate } = this.props;
+        let msg = TaskFormValidator.validateTaskEndDate(this.state.info[`${this.state.id}`].startDate ? this.state.info[`${this.state.id}`].startDate : "", value, translate);
+
+        if (willUpdateState) {
+            this.state.info[`${this.state.id}`].endDate = value;
+            this.state.info[`${this.state.id}`].errorOnEndDate = msg;
+            this.setState(state => {
+                return {
+                    ...state,
+                };
+            });
+        }
+        console.log('state.info', this.state);
+        return msg === undefined;
+    }
+
+    handleChangeTaskPriority = (value) => {
+        this.state.info[`${this.state.id}`].priority = value;
+        this.setState(state => {
+            return {
+                ...state,
+            };
+        });
+    }
 
     // Các hàm  xử lý sự kiện của bpmn
 
@@ -466,7 +514,7 @@ class ModalCreateTaskByProcess extends Component {
         const { translate, role,user } = this.props;
         const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedEdit } = this.state;
         const { listOrganizationalUnit } = this.props
-        // let listUser = user.usersWithRole
+        let listUser = user.usersWithRole
         // user.usersWithRole.filter(x => )
         let listRole = [];
         if (role && role.list.length !== 0) listRole = role.list;
@@ -526,6 +574,8 @@ class ModalCreateTaskByProcess extends Component {
                                             listOrganizationalUnit={listOrganizationalUnit}
                                             action='create-task'
                                             id={id}
+                                            astemplate = {false}
+                                            listUser = {listUser}
                                             info={(info && info[`${id}`]) && info[`${id}`]}
                                             handleChangeName={this.handleChangeName}
                                             handleChangeDescription={this.handleChangeDescription}
@@ -533,6 +583,10 @@ class ModalCreateTaskByProcess extends Component {
                                             handleChangeAccountable={this.handleChangeAccountable}
                                             handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
                                             handleChangeTemplate={this.handleChangeTemplate}
+
+                                            handleChangeTaskPriority={this.handleChangeTaskPriority}
+                                            handleChangeTaskStartDate={this.handleChangeTaskStartDate}
+                                            handleChangeTaskEndDate={this.handleChangeTaskEndDate}
 
                                             save={this.save}
                                         />
