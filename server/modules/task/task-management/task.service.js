@@ -153,7 +153,7 @@ exports.getTaskById = async (id, userId) => {
         { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
-        { path: "evaluations.results.kpis"},
+        { path: "evaluations.results.kpis" },
         { path: "taskActions.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
         { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
@@ -400,24 +400,30 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
 
     if (startDateAfter) {
         let startTimeAfter = startDateAfter.split("-");
-        let start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
+        let start;
+
+
+        if (startTimeAfter[0] > 12) start = new Date(startTimeAfter[0], startTimeAfter[1] - 1, 1);
+        else start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
 
         keySearch = {
             ...keySearch,
-            startDate: {
-                $gte: start,
+            endDate: {
+                $gte: start
             }
         }
     }
 
     if (endDateBefore) {
         let endTimeBefore = endDateBefore.split("-");
-        let end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
+        let end;
+        if (endTimeBefore[0] > 12) end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
+        else end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
 
         keySearch = {
             ...keySearch,
-            endDate: {
-                $lte: end
+            startDate: {
+                $lt: end
             }
         }
     }
@@ -439,7 +445,7 @@ exports.getPaginatedTasksThatUserHasResponsibleRole = async (task) => {
  * @task dữ liệu từ params
  */
 exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, aPeriodOfTime } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
 
     var accountableTasks;
     var perPage = Number(perPage);
@@ -545,7 +551,35 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
             }
         }
     }
+    if (startDateAfter) {
+        let startTimeAfter = startDateAfter.split("-");
+        let start;
 
+
+        if (startTimeAfter[0] > 12) start = new Date(startTimeAfter[0], startTimeAfter[1] - 1, 1);
+        else start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
+
+        keySearch = {
+            ...keySearch,
+            endDate: {
+                $gte: start
+            }
+        }
+    }
+
+    if (endDateBefore) {
+        let endTimeBefore = endDateBefore.split("-");
+        let end;
+        if (endTimeBefore[0] > 12) end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
+        else end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            startDate: {
+                $lt: end
+            }
+        }
+    }
     accountableTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
@@ -561,7 +595,7 @@ exports.getPaginatedTasksThatUserHasAccountableRole = async (task) => {
  * Lấy công việc hỗ trợ theo id người dùng
  */
 exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, aPeriodOfTime } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
 
     var consultedTasks;
     var perPage = Number(perPage);
@@ -667,7 +701,35 @@ exports.getPaginatedTasksThatUserHasConsultedRole = async (task) => {
             }
         }
     }
+    if (startDateAfter) {
+        let startTimeAfter = startDateAfter.split("-");
+        let start;
 
+
+        if (startTimeAfter[0] > 12) start = new Date(startTimeAfter[0], startTimeAfter[1] - 1, 1);
+        else start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
+
+        keySearch = {
+            ...keySearch,
+            endDate: {
+                $gte: start
+            }
+        }
+    }
+
+    if (endDateBefore) {
+        let endTimeBefore = endDateBefore.split("-");
+        let end;
+        if (endTimeBefore[0] > 12) end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
+        else end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            startDate: {
+                $lt: end
+            }
+        }
+    }
     consultedTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage).populate({ path: "organizationalUnit creator parent" });
 
@@ -805,7 +867,7 @@ exports.getPaginatedTasksCreatedByUser = async (task) => {
  * Lấy công việc quan sát theo id người dùng
  */
 exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
-    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, aPeriodOfTime } = task;
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
 
     var informedTasks;
     var perPage = Number(perPage);
@@ -911,7 +973,35 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
             }
         }
     }
+    if (startDateAfter) {
+        let startTimeAfter = startDateAfter.split("-");
+        let start;
 
+
+        if (startTimeAfter[0] > 12) start = new Date(startTimeAfter[0], startTimeAfter[1] - 1, 1);
+        else start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
+
+        keySearch = {
+            ...keySearch,
+            endDate: {
+                $gte: start
+            }
+        }
+    }
+
+    if (endDateBefore) {
+        let endTimeBefore = endDateBefore.split("-");
+        let end;
+        if (endTimeBefore[0] > 12) end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
+        else end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            startDate: {
+                $lt: end
+            }
+        }
+    }
     informedTasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
         .skip(perPage * (page - 1)).limit(perPage)
         .populate({ path: "organizationalUnit creator parent" });

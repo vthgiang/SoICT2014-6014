@@ -66,7 +66,7 @@ class DomainOfTaskResultsChart extends Component {
                         ...state,
                         startMonth: nextProps.startMonth,
                         endMonth: nextProps.endMonth,
-                        
+
                     }
                 })
 
@@ -75,10 +75,15 @@ class DomainOfTaskResultsChart extends Component {
                 }
             }
             else {
+                // await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
+                // await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
+                // await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
+                // await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
+                // await this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
                 await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
-                await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
-                await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
-                await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
+                await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
+                await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.PeriodOfTime);
+                await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
                 await this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
             }
             // this.domainChart();
@@ -113,10 +118,15 @@ class DomainOfTaskResultsChart extends Component {
             }
             else {
                 await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
-                await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
-                await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
-                await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTimeh);
+                await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
+                await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.PeriodOfTime);
+                await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
                 await this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
+                // await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
+                // await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
+                // await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
+                // await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTimeh);
+                // await this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
             }
             await this.setState(state => {
                 return {
@@ -221,7 +231,7 @@ class DomainOfTaskResultsChart extends Component {
                     if (new Date(evaluation.date) < new Date(nextMonth) && new Date(evaluation.date) >= new Date(currentMonth)) {
                         return 1;
                     }
-                    
+
                     return 0;
                 }).map(evaluation => {
                     evaluation.results.filter(result => {

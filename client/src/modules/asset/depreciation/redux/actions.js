@@ -1,6 +1,6 @@
-import {DepreciationService} from './services';
-import {DepreciationConstants} from './constants';
-import {AssetManagerActions} from '../../asset-management/redux/actions';
+import { DepreciationService } from './services';
+import { DepreciationConstants } from './constants';
+import { AssetManagerActions } from '../../asset-management/redux/actions';
 
 export const DepreciationActions = {
     updateDepreciation,
