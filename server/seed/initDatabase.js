@@ -1,5 +1,3 @@
-const Log = require('../models/system-admin/log.model');
-
 const { RoleType, Role, RootRole, SystemLink, SystemComponent, Link, Privilege, User, UserRole} = require('../models').schema;
 
 require('dotenv').config({path: '../.env'});
