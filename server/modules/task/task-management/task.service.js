@@ -34,6 +34,7 @@ exports.getTaskEvaluations = async (data) => {
     let endTime = endDate.split("-");
     let end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
     let filterDate = {};
+
     if (data.responsibleEmployees) {
         responsible = data.responsibleEmployees;
     }
@@ -127,11 +128,8 @@ exports.getTaskEvaluations = async (data) => {
             }
     }
 
-
-
     let result = await Task.aggregate(condition);
 
-    // let result2 = [];
     return result;
 
 

@@ -178,7 +178,7 @@ class EmployeeKpiEvaluateModal extends Component {
                 let endTaskD = new Date(x.endDate),
                     endTaskDate = endTaskD.getDate(),
                     endTaskMonth = '' + (endTaskD.getMonth() + 1),
-                    endTaskYear=endTaskD.getFullYear();
+                    endTaskYear = endTaskD.getFullYear();
                 let startApproveD = new Date(x.preEvaDate),
                     startApproveDate = startApproveD.getDate(),
                     startApproveMonth = '' + (startApproveD.getMonth() + 1),
@@ -202,10 +202,10 @@ class EmployeeKpiEvaluateModal extends Component {
                     status: status,
                     employeePoint: employeePoint,
                     approverPoint: approverPoint,
-                    startTaskDate: startTaskDate+'-'+startTaskMonth+'-'+startTaskYear,
-                    endTaskDate: endTaskDate+ '-'+endTaskMonth+'-'+endTaskYear,
-                    startApproveDate: startApproveDate+'-'+startApproveMonth+'-'+startApproveYear,
-                    endApproveDate: endApproveDate+'-'+endApproveMonth+'-'+endApproveYear,
+                    startTaskDate: startTaskDate + '-' + startTaskMonth + '-' + startTaskYear,
+                    endTaskDate: endTaskDate + '-' + endTaskMonth + '-' + endTaskYear,
+                    startApproveDate: startApproveDate + '-' + startApproveMonth + '-' + startApproveYear,
+                    endApproveDate: endApproveDate + '-' + endApproveMonth + '-' + endApproveYear,
                     contributionPoint: contributionPoint,
                     importantLevel: importantLevel
                 };

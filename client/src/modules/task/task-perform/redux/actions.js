@@ -42,6 +42,8 @@ export const performTaskAction = {
     evaluateTaskByAccountableEmployees,
     evaluateTaskByConsultedEmployees,
     evaluateTaskByResponsibleEmployees,
+
+    deleteEvaluation,
 };
 // Create result task
 function createResultTask(result) {
@@ -495,6 +497,26 @@ function evaluateTaskByResponsibleEmployees(data, taskId) {
     };
 }
 
+/**
+ * Delete document of task
+ * @param {*} taskId task id
+ * @param {*} evaluateId evaluate id
+ */
+function deleteEvaluation(taskId, evaluateId) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.DELETE_EVALUATION_REQUEST });
+        performTaskService.deleteEvaluation(taskId, evaluateId)
+            .then(res => {
+                dispatch({
+                    type: performTaskConstants.DELETE_EVALUATION_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ type: performTaskConstants.DELETE_EVALUATION_FAILURE, error });
+            });
+    };
+}
 
 /**
  * edit Status Of Task

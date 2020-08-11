@@ -34,7 +34,6 @@ exports.createDocument = async (req, res) => {
 
             req.body.file = pathFile;
             req.body.scannedFileOfSignedDocument = pathFileScan;
-            console.log("document create: ", req.body);
         }
         const document = await DocumentServices.createDocument(req.user.company._id, req.body);
 
@@ -164,19 +163,9 @@ exports.downloadDocumentFile = async (req, res) => {
 };
 
 exports.downloadDocumentFileScan = async (req, res) => {
-    // try {
     const file = await DocumentServices.downloadDocumentFileScan({ id: req.params.id, numberVersion: req.query.numberVersion, downloaderId: req.user._id });
     await LogInfo(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.user.company);
-    console.log("PATH:", file.path)
     res.download(file.path, file.name);
-    // } catch (error) {
-    //     await LogError(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.user.company);
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: Array.isArray(error) ? error : ['download_document_file_scan_faile'],
-    //         content: error
-    //     });
-    // }
 };
 
 /**
@@ -230,7 +219,6 @@ exports.showDocumentCategory = (req, res) => {
 
 exports.editDocumentCategory = async (req, res) => {
     try {
-        console.log("DFSDFDDSFDSFSDF:", req.params.id, req.body)
         const category = await DocumentServices.editDocumentCategory(req.params.id, req.body);
 
         await LogInfo(req.user.email, 'EDIT_DOCUMENT_CATEGORY', req.user.company);
@@ -297,7 +285,6 @@ exports.getDocumentDomains = async (req, res) => {
 
 exports.createDocumentDomain = async (req, res) => {
     try {
-        console.log(req.body)
         const domain = await DocumentServices.createDocumentDomain(req.user.company._id, req.body);
 
         await LogInfo(req.user.email, 'CREATE_DOCUMENT_DOMAIN', req.user.company);
@@ -318,7 +305,7 @@ exports.createDocumentDomain = async (req, res) => {
 };
 
 exports.showDocumentDomain = (req, res) => {
-    console.log("FSDKFJSDLKFJDS")
+
 };
 
 exports.editDocumentDomain = async (req, res) => {
@@ -332,7 +319,7 @@ exports.editDocumentDomain = async (req, res) => {
             content: domain
         });
     } catch (error) {
-        console.log("error: ", error)
+
         await LogError(req.user.email, 'EDIT_DOCUMENT_DOMAIN', req.user.company);
         res.status(400).json({
             success: false,
@@ -353,7 +340,7 @@ exports.deleteDocumentDomain = async (req, res) => {
             content: domain
         });
     } catch (error) {
-        console.log('ERERRPR"', error)
+
         await LogError(req.user.email, 'DELETE_DOCUMENT_DOMAIN', req.user.company);
         res.status(400).json({
             success: false,
@@ -374,7 +361,7 @@ exports.deleteManyDocumentDomain = async (req, res) => {
             content: domain
         });
     } catch (error) {
-        console.log('ERERRPR"', error)
+
         await LogError(req.user.email, 'DELETE_MANY_DOCUMENT_DOMAIN', req.user.company);
         res.status(400).json({
             success: false,

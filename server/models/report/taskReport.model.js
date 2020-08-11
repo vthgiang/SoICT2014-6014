@@ -88,4 +88,4 @@ const TaskReportSchema = new Schema({
     timestamps: true
 });
 
-module.exports = TaskReport = mongoose.model("task-report", TaskReportSchema);
+module.exports = TaskReport = mongoose.model("task_reports", TaskReportSchema);

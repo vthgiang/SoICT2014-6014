@@ -1710,8 +1710,8 @@ export default {
                 tasks_calendar: 'Lịch công việc chi tiết',
                 model_detail_task_title: 'Thông tin chi tiết công việc',
                 collaborative_tasks: 'Công việc chung',
-                in_time: 'Đúng hạn',
-                delayed_time: 'Trễ hạn',
+                in_time: 'Đúng tiến độ',
+                delayed_time: 'Trễ tiến độ',
                 not_achieved: 'Quá hạn',
 
                 err_organizational_unit: 'Đơn vị đã bị xóa',
@@ -1879,6 +1879,10 @@ export default {
 
                 unit_evaluate: "Đơn vị tiếp nhận kết quả đánh giá công việc",
                 unit_manage_task: "Đơn vị quản lý công việc",
+                delete_eval: "Xóa đánh giá tháng này",
+                delete_eval_title: 'Bạn có chắc chắn muốn xóa đánh giá này?',
+                delete_evaluation_success: "Xóa đánh giá thành công",
+                delete_evaluation_fail: "Xóa đánh giá thất bại",
 
             },
             task_perform: {

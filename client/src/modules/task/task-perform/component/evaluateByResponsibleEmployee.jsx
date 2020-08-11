@@ -169,16 +169,9 @@ class EvaluateByResponsibleEmployee extends Component {
         let infoTask = task.taskInformations;
         for (let i in infoTask) {
             if (infoTask[i].type === "Date") {
-                if (infoTask[i].value) {
+                if (!infoTask[i].filledByAccountableEmployeesOnly) {
                     info[`${infoTask[i].code}`] = {
-                        // value: undefined,
-                        code: infoTask[i].code,
-                        type: infoTask[i].type
-                    }
-                }
-                else if (!infoTask[i].filledByAccountableEmployeesOnly) {
-                    info[`${infoTask[i].code}`] = {
-                        value: this.formatDate(Date.now()),
+                        // value: this.formatDate(Date.now()),
                         code: infoTask[i].code,
                         type: infoTask[i].type
                     }
@@ -186,25 +179,9 @@ class EvaluateByResponsibleEmployee extends Component {
             }
             else if (infoTask[i].type === "SetOfValues") {
                 let splitSetOfValues = infoTask[i].extra.split('\n');
-                if (infoTask[i].value) {
-                    info[`${infoTask[i].code}`] = {
-                        // value: undefined,
-                        code: infoTask[i].code,
-                        type: infoTask[i].type
-                    }
-                }
-                else if (!infoTask[i].filledByAccountableEmployeesOnly) {
+                if (!infoTask[i].filledByAccountableEmployeesOnly) {
                     info[`${infoTask[i].code}`] = {
                         value: [splitSetOfValues[0]],
-                        code: infoTask[i].code,
-                        type: infoTask[i].type
-                    }
-                }
-            }
-            else {
-                if (infoTask[i].value) {
-                    info[`${infoTask[i].code}`] = {
-                        // value: undefined,
                         code: infoTask[i].code,
                         type: infoTask[i].type
                     }
@@ -251,7 +228,7 @@ class EvaluateByResponsibleEmployee extends Component {
                         }
                         else if (!infoEval[i].filledByAccountableEmployeesOnly) {
                             info[`${infoEval[i].code}`] = {
-                                value: this.formatDate(Date.now()),
+                                // value: this.formatDate(Date.now()),
                                 code: infoEval[i].code,
                                 type: infoEval[i].type
                             }
@@ -260,6 +237,7 @@ class EvaluateByResponsibleEmployee extends Component {
                     else if (infoEval[i].type === "SetOfValues") {
                         let splitSetOfValues = infoEval[i].extra.split('\n');
                         if (infoEval[i].value) {
+                            console.log('Qiamh1');
                             info[`${infoEval[i].code}`] = {
                                 value: [infoEval[i].value],
                                 code: infoEval[i].code,
@@ -267,6 +245,7 @@ class EvaluateByResponsibleEmployee extends Component {
                             }
                         }
                         else if (!infoEval[i].filledByAccountableEmployeesOnly) {
+                            console.log('Qiamh2');
                             info[`${infoEval[i].code}`] = {
                                 value: [splitSetOfValues[0]],
                                 code: infoEval[i].code,
@@ -564,12 +543,17 @@ class EvaluateByResponsibleEmployee extends Component {
 
     // hàm cập nhật tiến độ
     handleChangeProgress = async (e) => {
+        let { translate } = this.props;
         let value = parseInt(e.target.value);
+        let msg;
+        if (value < 0 || value > 100) {
+            msg = translate('task.task_perform.modal_approve_task.err_range');
+        }
         await this.setState(state => {
             return {
                 ...state,
                 progress: value,
-                errorOnProgress: this.validatePoint(value)
+                errorOnProgress: msg,
             }
         })
         await this.handleChangeAutoPoint();
@@ -660,7 +644,7 @@ class EvaluateByResponsibleEmployee extends Component {
         let { translate } = this.props;
         let msg = undefined;
         if (value.indexOf("") !== -1) {
-            msg = translate('task.task_perform.modal_approve_task.err_empty');
+            // msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
 
         return msg;
@@ -670,7 +654,7 @@ class EvaluateByResponsibleEmployee extends Component {
         let { translate } = this.props;
         let msg = undefined;
         if (value === "") {
-            msg = translate('task.task_perform.modal_approve_task.err_empty')
+            // msg = translate('task.task_perform.modal_approve_task.err_empty')
         }
         return msg;
     }
@@ -680,7 +664,7 @@ class EvaluateByResponsibleEmployee extends Component {
         let msg = undefined;
 
         if (isNaN(value)) {
-            msg = translate('task.task_perform.modal_approve_task.err_empty');
+            // msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
         return msg;
     }
@@ -689,7 +673,7 @@ class EvaluateByResponsibleEmployee extends Component {
         let { translate } = this.props;
         let msg = undefined;
         if (value.trim() === "") {
-            msg = translate('task.task_perform.modal_approve_task.err_empty');
+            // msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
 
         return msg;

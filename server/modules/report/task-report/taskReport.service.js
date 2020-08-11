@@ -7,15 +7,40 @@ const { TaskReport, Task, TaskTemplate, Role, OrganizationalUnit, User } = requi
  * @param  params 
  */
 exports.getTaskReports = async (params) => {
-    const name = params.name;
-    let keySearch = {}
+    const nameSearch = params.name;
+    const creatorSearch = params.creator;
+    let dateSearch, month, year, startDate, endDate;
+    if (params.month) {
+        dateSearch = params.month.split('-');
+        month = dateSearch[1], year = dateSearch[0];
+        startDate = new Date(year, month - 1, 2);
+        endDate = new Date(year, month - 1, 32);
+    }
 
-    if (name !== undefined && name.length !== 0) {
+    let keySearch = {};
+
+    if (nameSearch !== undefined && nameSearch.length !== 0) {
         keySearch = {
             ...keySearch,
-            name: { $regex: params.name, $options: "i" },
+            nameSearch: { $regex: params.name, $options: "i" },
         }
     }
+
+    // Tìm kiếm theo người tạo
+    if (creatorSearch !== undefined && creatorSearch.length !== 0) {
+        keySearch = {
+            ...keySearch,
+            creatorSearch: { $regex: params.creator, $options: "i" },
+        }
+    }
+
+    // Tìm kiếm theo tháng
+    if (params.month !== undefined && params.month.length !== 0) {
+        keySearch = {
+            ...keySearch,
+            createdAt: { $gte: startDate, $lte: endDate }
+        }
+    };
 
     let totalList = await TaskReport.countDocuments();
     let listTaskReport = await TaskReport.find(keySearch).sort({ 'createdAt': 'desc' })
@@ -26,6 +51,7 @@ exports.getTaskReports = async (params) => {
         .populate({ path: 'accountableEmployees', select: '_id name company' })
         .populate({ path: 'organizationalUnit', select: 'deans viceDeans employees _id name company parent' })
         .populate({ path: 'readByEmployees' })
+
     return { totalList, listTaskReport };
 }
 
@@ -40,6 +66,7 @@ exports.getTaskReportById = async (id) => {
         .populate({ path: 'creator', select: '_id name' })
         .populate({ path: 'responsibleEmployees', select: '_id name company' })
         .populate({ path: 'accountableEmployees', select: '_id name company' })
+        .populate({ path: 'readByEmployees', select: '_id name company' })
         .populate({ path: 'organizationalUnit', select: 'deans viceDeans employees _id name company parent' })
         .populate({ path: 'readByEmployees' })
 
