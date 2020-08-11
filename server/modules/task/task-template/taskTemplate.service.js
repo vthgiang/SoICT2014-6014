@@ -150,7 +150,7 @@ exports.searchTaskTemplates = async (id, pageNumber, noResultsPerPage, organizat
     await TaskTemplate.populate(tasktemplates, [
         {path: "organizationalUnit", model: OrganizationalUnit, select :"name deans"},
         {path: "readByEmployees", model: Role, select: "name"},
-        {path: "creator readByEmployees responsibleEmployees accountableEmployees consultedEmployees informedEmployees", model: User, select: "name email"}]);
+        {path: "creator responsibleEmployees accountableEmployees consultedEmployees informedEmployees", model: User, select: "name email"}]);
     var totalCount = 0;
     if (JSON.stringify(tasktemplates) !== JSON.stringify([])) {
         totalCount = tasktemplate[0].totalCount[0].count;
