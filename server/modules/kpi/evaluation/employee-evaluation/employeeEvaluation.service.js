@@ -351,8 +351,6 @@ async function getResultTaskByMonth(data) {
     let conditions = [
         {
             $match: { "evaluations.results.kpis": mongoose.Types.ObjectId(data.id) }
-        }, {
-            $match: { "evaluations.results.role": kpiType }
         },
         {
             $unwind: "$evaluations"
@@ -362,6 +360,7 @@ async function getResultTaskByMonth(data) {
         },
         { $addFields: { "month": { $month: '$date' }, "year": { $year: '$date' } } },
         { $unwind: "$results" },
+        { $match: { "results.role": kpiType } },
         { $match: { 'results.employee': mongoose.Types.ObjectId(data.employeeId) } },
         { $match: { "month": monthkpi } },
         { $match: { "year": yearkpi } },
