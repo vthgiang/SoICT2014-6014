@@ -5,7 +5,7 @@ export const DepreciationService = {
     updateDepreciation,
 }
 
-// chỉnh sửa thông tin khấu hao tài sản
+// Chỉnh sửa thông tin khấu hao tài sản
 function updateDepreciation(assetId, data) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/assets/assets/${assetId}/depreciations`,
