@@ -130,9 +130,11 @@ class ModalEditTaskProcess extends Component {
                 if (x !== undefined) {
                     const modeling = this.modeler.get('modeling');
                     let element1 = this.modeler.get('elementRegistry').get(x);
-                    modeling.updateProperties(element1, {
-                        info: infoTask[x],
-                    });
+                    if(element1) {
+                        modeling.updateProperties(element1, {
+                            info: infoTask[x],
+                        });
+                    }
                 }
             }
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
