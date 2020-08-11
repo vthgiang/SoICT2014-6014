@@ -10,5 +10,6 @@
 /upload/task/*
 /upload/files/*
 /upload/files./*
+/upload/private/*
 
 package-lock.json
