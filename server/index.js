@@ -5,11 +5,14 @@ const bodyParser = require("body-parser");
 const cors = require('cors');
 const cookieParser = require("cookie-parser");
 const multer = require('multer');
+global.SERVER_BACKUP_PATH = __dirname+"/../backup";
+
 multer({
     dest: 'upload/avatars'
 });
 require('dotenv').config();
-require('./helpers/backupDatabase');
+global.AUTO_BACKUP_DATABASE = require('./helpers/backupDatabase').backupScheduler;
+AUTO_BACKUP_DATABASE.start();
 
 // Application Modules
 const schedulerController = require('./modules/scheduler/scheduler.controller');
@@ -48,6 +51,7 @@ const log = require('./modules/system-admin/log/log.route');
 const systemComponent = require('./modules/system-admin/system-component/systemComponent.route');
 const systemLink = require('./modules/system-admin/system-link/systemLink.route');
 const rootRole = require('./modules/system-admin/root-role/rootRole.route');
+const systemSetting = require('./modules/system-admin/system-setting/systemSetting.route');
 
 const tasktemplate = require("./modules/task/task-template/taskTemplate.route")
 const taskManagement = require("./modules/task/task-management/task.route");
@@ -151,6 +155,7 @@ app.use("/system-admin/log", log);
 app.use("/system-admin/system-component", systemComponent);
 app.use("/system-admin/system-link", systemLink);
 app.use("/system-admin/root-role", rootRole);
+app.use("/system-admin/system-setting", systemSetting);
 
 app.use("/task", taskManagement);
 app.use("/performtask", taskPerform);

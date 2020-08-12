@@ -58,7 +58,7 @@ class ScheduleMonthlyForm extends Component {
                     <div className="form-group">
                         <label>Giờ</label>
                         <SelectBox
-                            id="schedule-weekly-hour"
+                            id="schedule-monthly-hour"
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[
@@ -97,7 +97,7 @@ class ScheduleMonthlyForm extends Component {
                     <div className="form-group">
                         <label>Phút</label>
                         <SelectBox
-                            id="schedule-weekly-minute"
+                            id="schedule-monthly-minute"
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[
@@ -172,7 +172,7 @@ class ScheduleMonthlyForm extends Component {
                     <div className="form-group">
                         <label>Giây</label>
                         <SelectBox
-                            id="schedule-weekly-second"
+                            id="schedule-monthly-second"
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[
@@ -245,7 +245,7 @@ class ScheduleMonthlyForm extends Component {
                 </div>
             
             </div>
-            <button className="btn btn-success pull-right">Save</button>
+            <button className="btn btn-success">Save</button>
         </React.Fragment>); 
     }
 }
