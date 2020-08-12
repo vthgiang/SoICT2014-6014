@@ -113,7 +113,7 @@ class ModalEditTaskProcess extends Component {
                 showInfo: false,
                 info: info,
                 processDescription: nextProps.data.description ? nextProps.data.description : '',
-                processName: nextProps.data.nameProcess ? nextProps.data.nameProcess : '',
+                processName: nextProps.data.processName ? nextProps.data.processName : '',
                 viewer: nextProps.data.viewer ? nextProps.data.viewer : [],
                 manager: nextProps.data.manager ? nextProps.data.manager : [],
                 xmlDiagram: nextProps.data.xmlDiagram,
@@ -381,7 +381,7 @@ class ModalEditTaskProcess extends Component {
             }
         })
         let data = {
-            nameProcess: this.state.processName,
+            processName: this.state.processName,
             description: this.state.processDescription,
             viewer: this.state.viewer,
             manager: this.state.manager,

@@ -13,7 +13,7 @@ class ScheduleYearlyForm extends Component {
                     <div className="form-group">
                         <label>Tháng</label>
                         <SelectBox
-                            id="schedule-weekly-month"
+                            id="schedule-yearly-month"
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[
@@ -88,7 +88,7 @@ class ScheduleYearlyForm extends Component {
                     <div className="form-group">
                         <label>Giờ</label>
                         <SelectBox
-                            id="schedule-weekly-hour"
+                            id="schedule-yearly-hour"
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[
@@ -127,7 +127,7 @@ class ScheduleYearlyForm extends Component {
                     <div className="form-group">
                         <label>Phút</label>
                         <SelectBox
-                            id="schedule-weekly-minute"
+                            id="schedule-yearly-minute"
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[
@@ -202,7 +202,7 @@ class ScheduleYearlyForm extends Component {
                     <div className="form-group">
                         <label>Giây</label>
                         <SelectBox
-                            id="schedule-weekly-second"
+                            id="schedule-yearly-second"
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[
@@ -275,7 +275,7 @@ class ScheduleYearlyForm extends Component {
                 </div>
             </div>
             
-            <button className="btn btn-success pull-right">Save</button>
+            <button className="btn btn-success">Save</button>
         </React.Fragment>);
     }
 }
