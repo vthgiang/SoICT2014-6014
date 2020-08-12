@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
-import { FormInfoTask } from "./formInfoTask";
+import { FormInfoProcess } from "./formInfoProcess";
 import { DialogModal, SelectBox } from "../../../../common-components";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { getStorage } from '../../../../config';
@@ -113,7 +113,7 @@ class ModalEditTaskProcess extends Component {
                 showInfo: false,
                 info: info,
                 processDescription: nextProps.data.description ? nextProps.data.description : '',
-                processName: nextProps.data.nameProcess ? nextProps.data.nameProcess : '',
+                processName: nextProps.data.processName ? nextProps.data.processName : '',
                 viewer: nextProps.data.viewer ? nextProps.data.viewer : [],
                 manager: nextProps.data.manager ? nextProps.data.manager : [],
                 xmlDiagram: nextProps.data.xmlDiagram,
@@ -381,7 +381,7 @@ class ModalEditTaskProcess extends Component {
             }
         })
         let data = {
-            nameProcess: this.state.processName,
+            processName: this.state.processName,
             description: this.state.processDescription,
             viewer: this.state.viewer,
             manager: this.state.manager,
@@ -696,7 +696,7 @@ class ModalEditTaskProcess extends Component {
                                                     <div>
                                                         <h1>Option {name}</h1>
                                                     </div>
-                                                    <FormInfoTask
+                                                    <FormInfoProcess
                                                         listOrganizationalUnit={listOrganizationalUnit}
                                                         action='edit'
                                                         id={id}

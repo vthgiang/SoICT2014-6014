@@ -1,10 +1,35 @@
 const exec = require('child_process').exec;
 const CronJob = require('cron').CronJob;
-const job = new CronJob('30 32 17 * * *', function() {
-    console.log("backup data")
-    exec('mongodump --host="localhost" --port="27017" --out="D:/backup" --db="qlcv"', 
+require('dotenv').config('../.env');
+const BACKUP_TIME = '0 0 2 15 * *'; // chạy tự động: ngày 15 lúc 2 giờ sáng (hàng tháng)
+
+const option = {
+    host: process.env.DB_HOST,
+    dbName: process.env.DB_NAME,
+    dbPort: "27017",
+    store: SERVER_BACKUP_PATH,
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD
+};
+
+exports.backupDatabase = (option) => {
+    console.log("Backup database.\n")
+    exec(`mongodump --host="${option.host}" --port="${option.dbPort}" --out="${option.store}" --db="${option.dbName}" --username="${option.username}" --password="${option.password}"`, 
     function (error, stdout, stderr) {
-        console.log("Error backup data:", error)
-    });
-}, null, true, 'Asia/Ho_Chi_Minh');
-job.start();
+        if(error !== null){
+            console.log("Backup database error\n", error, stdout, stderr);
+        }
+    })
+}
+
+exports.backupScheduler = new CronJob(BACKUP_TIME, function() {
+        console.log("Start backup database.\n")
+        exec(`mongodump --host="${option.host}" --port="${option.dbPort}" --out="${option.store}" --db="${option.dbName}" --username="${option.username}" --password="${option.password}"`, 
+        function (error, stdout, stderr) {
+            if(error !== null){
+                console.log("Backup database error\n", error, stdout, stderr);
+            }
+        })
+    }, function() {
+    console.log("Stop backup datasbase.\n")
+}, false, 'Asia/Ho_Chi_Minh');

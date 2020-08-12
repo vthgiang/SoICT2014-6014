@@ -6,7 +6,7 @@ export const IncidentFormValidator = {
     validateIncidentCode,
     validateDateOfIncident,
     validateDescription,
-    
+
 
 }
 
@@ -37,4 +37,3 @@ function validateDescription(value, translate) {
     }
     return msg;
 }
-
