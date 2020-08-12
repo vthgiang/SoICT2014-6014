@@ -29,26 +29,26 @@ class CreateForm extends Component {
     handleCategory = (value) => {
         this.validateCategory(value[0], true);
     }
- 
+
     handleDomains = value => {
         this.setState({ documentDomains: value });
     }
- 
+
     handleDescription = (e) => {
-        const {value} = e.target;
-        this.setState({documentDescription: value});
+        const { value } = e.target;
+        this.setState({ documentDescription: value });
     }
- 
+
     handleVersionName = (e) => {
-       const value = e.target.value.trim();
-       this.validateVersionName(value, true);
+        const value = e.target.value.trim();
+        this.validateVersionName(value, true);
     }
- 
+
     handleIssuingBody = (e) => {
         const value = e.target.value.trim();
         this.validateIssuingBody(value, true);
     }
- 
+
     handleOfficialNumber = (e) => {
         const value = e.target.value.trim();
         this.validateOfficialNumber(value, true);
@@ -56,7 +56,7 @@ class CreateForm extends Component {
 
     handleSigner = (e) => {
         const value = e.target.value.trim();
-       this.validateSinger(value, true);
+        this.validateSinger(value, true);
     }
 
     handleIssuingDate = (value) => {
@@ -72,7 +72,7 @@ class CreateForm extends Component {
     }
 
     handleRelationshipDescription = (e) => {
-        const {value} = e.target;
+        const { value } = e.target;
         this.setState({ documentRelationshipDescription: value });
     }
 
@@ -85,17 +85,17 @@ class CreateForm extends Component {
     }
 
     handleArchivedRecordPlaceInfo = (e) => {
-        const {value} = e.target;
-        this.setState({documentArchivedRecordPlaceInfo: value});
+        const { value } = e.target;
+        this.setState({ documentArchivedRecordPlaceInfo: value });
     }
 
     handleArchivedRecordPlaceOrganizationalUnit = (value) => {
-        this.setState({documentArchivedRecordPlaceOrganizationalUnit: value});
+        this.setState({ documentArchivedRecordPlaceOrganizationalUnit: value });
     }
 
     handleArchivedRecordPlaceManager = (e) => {
-        const {value} = e.target;
-        this.setState({documentArchivedRecordPlaceManager: value});
+        const { value } = e.target;
+        this.setState({ documentArchivedRecordPlaceManager: value });
     }
 
     handleUploadFile = (e) => {
@@ -107,15 +107,15 @@ class CreateForm extends Component {
         const value = e.target.files[0];
         this.validateDocumentFileScan(value, true);
     }
-    validateName = (value, willUpdateState)=>{
+    validateName = (value, willUpdateState) => {
         let msg = undefined;
-        const {translate} = this.props;
-        if(!value){
+        const { translate } = this.props;
+        if (!value) {
             msg = translate('document.no_blank_name');
         }
-        if(willUpdateState){
-            this.setState(state=>{
-                return{
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
                     ...state,
                     documentName: value,
                     errorName: msg,
@@ -125,15 +125,15 @@ class CreateForm extends Component {
         return msg === undefined;
     }
 
-    validateCategory = (value, willUpdateState)=>{
+    validateCategory = (value, willUpdateState) => {
         let msg = undefined;
-        const {translate} = this.props;
-        if(!value){
+        const { translate } = this.props;
+        if (!value) {
             msg = translate('document.doc_version.no_blank_category');
         }
-        if(willUpdateState){
-            this.setState(state=>{
-                return{
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
                     ...state,
                     documentCategory: value,
                     errorCategory: msg,
@@ -143,16 +143,16 @@ class CreateForm extends Component {
         return msg === undefined;
     }
 
-   
-    validateIssuingBody = (value, willUpdateState)=>{
+
+    validateIssuingBody = (value, willUpdateState) => {
         let msg = undefined;
-        const {translate} = this.props;
-        if(!value){
-            msg =translate('document.doc_version.no_blank_issuingbody');
+        const { translate } = this.props;
+        if (!value) {
+            msg = translate('document.doc_version.no_blank_issuingbody');
         }
-        if(willUpdateState){
-            this.setState(state=>{
-                return{
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
                     ...state,
                     documentIssuingBody: value,
                     errorIssuingBody: msg,
@@ -161,15 +161,15 @@ class CreateForm extends Component {
         }
         return msg === undefined;
     }
-    validateVersionName = (value, willUpdateState)=>{
+    validateVersionName = (value, willUpdateState) => {
         let msg = undefined;
-        const {translate} = this.props;
-        if(!value){
+        const { translate } = this.props;
+        if (!value) {
             msg = translate('document.doc_version.no_blank_version_name');
         }
-        if(willUpdateState){
-            this.setState(state=>{
-                return{
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
                     ...state,
                     documentVersionName: value,
                     errorVersionName: msg,
@@ -178,19 +178,19 @@ class CreateForm extends Component {
         }
         return msg === undefined;
     }
-    validateOfficialNumber = (value, willUpdateState)=>{
+    validateOfficialNumber = (value, willUpdateState) => {
         const regex = /\d/g
         let msg = undefined;
-        const {translate} = this.props;
-        if(!value){
+        const { translate } = this.props;
+        if (!value) {
             msg = translate('document.doc_version.no_blank_official_number');
         }
-        else if(!regex.test(value)){
+        else if (!regex.test(value)) {
             msg = translate('document.doc_version.error_office_number');
         }
-        if(willUpdateState){
-            this.setState(state=>{
-                return{
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
                     ...state,
                     documentOfficialNumber: value,
                     errorOfficialNumber: msg,
@@ -199,15 +199,15 @@ class CreateForm extends Component {
         }
         return msg === undefined;
     }
-    validateIssuingDate = (value, willUpdateState)=>{
+    validateIssuingDate = (value, willUpdateState) => {
         let msg = undefined;
-        const {translate} = this.props;
-        if(!value){
+        const { translate } = this.props;
+        if (!value) {
             msg = translate('document.doc_version.no_blank_issuingdate');
         }
-        if(willUpdateState){
-            this.setState(state=>{
-                return{
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
                     ...state,
                     documentIssuingDate: value,
                     errorIssuingDate: msg,
@@ -216,15 +216,15 @@ class CreateForm extends Component {
         }
         return msg === undefined;
     }
-    validateEffectiveDate = (value, willUpdateState)=>{
+    validateEffectiveDate = (value, willUpdateState) => {
         let msg = undefined;
-        const {translate} = this.props;
-        if(!value){
+        const { translate } = this.props;
+        if (!value) {
             msg = translate('document.doc_version.no_blank_effectivedate');
         }
-        if(willUpdateState){
-            this.setState(state=>{
-                return{
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
                     ...state,
                     documentEffectiveDate: value,
                     errorEffectiveDate: msg,
@@ -233,15 +233,15 @@ class CreateForm extends Component {
         }
         return msg === undefined;
     }
-    validateExpiredDate = (value, willUpdateState)=>{
+    validateExpiredDate = (value, willUpdateState) => {
         let msg = undefined;
-        const {translate} = this.props;
-        if(!value){
+        const { translate } = this.props;
+        if (!value) {
             msg = translate('document.doc_version.no_blank_expired_date');
         }
-        if(willUpdateState){
-            this.setState(state=>{
-                return{
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
                     ...state,
                     documentExpiredDate: value,
                     errorExpiredDate: msg,
@@ -250,15 +250,15 @@ class CreateForm extends Component {
         }
         return msg === undefined;
     }
-    validateSinger = (value, willUpdateState)=>{
+    validateSinger = (value, willUpdateState) => {
         let msg = undefined;
-        const {translate} = this.props;
-        if(!value){
+        const { translate } = this.props;
+        if (!value) {
             msg = translate('document.doc_version.no_blank_signer');
         }
-        if(willUpdateState){
-            this.setState(state=>{
-                return{
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
                     ...state,
                     documentSigner: value,
                     errorSigner: msg,
@@ -267,15 +267,15 @@ class CreateForm extends Component {
         }
         return msg === undefined;
     }
-    validateDocumentFile = (value, willUpdateState)=>{
+    validateDocumentFile = (value, willUpdateState) => {
         let msg = undefined;
-        const {translate} = this.props;
-        if(!value){
+        const { translate } = this.props;
+        if (!value) {
             msg = translate('document.doc_version.no_blank_file');
         }
-        if(willUpdateState){
-            this.setState(state=>{
-                return{
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
                     ...state,
                     documentFile: value,
                     errorDocumentFile: msg,
@@ -284,15 +284,15 @@ class CreateForm extends Component {
         }
         return msg === undefined;
     }
-    validateDocumentFileScan = (value, willUpdateState)=>{
+    validateDocumentFileScan = (value, willUpdateState) => {
         let msg = undefined;
-        const {translate} = this.props;
-        if(!value.name){
+        const { translate } = this.props;
+        if (!value.name) {
             msg = translate('document.doc_version.no_blank_file_scan');
         }
-        if(willUpdateState){
-            this.setState(state=>{
-                return{
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
                     ...state,
                     documentFileScan: value,
                     errorDocumentFileScan: msg,
@@ -303,7 +303,7 @@ class CreateForm extends Component {
     }
 
 
-     isValidateForm = ()=>{
+    isValidateForm = () => {
         return this.validateName(this.state.documentName, false)
             && this.validateCategory(this.state.documentCategory, false)
             && this.validateVersionName(this.state.documentVersionName, false)
@@ -312,7 +312,7 @@ class CreateForm extends Component {
             && this.validateEffectiveDate(this.state.documentEffectiveDate, false)
             && this.validateExpiredDate(this.state.documentExpiredDate, false)
             && this.validateSinger(this.state.documentSigner, false)
-            && this.validateDocumentFile(this.state.documentFile, false) 
+            && this.validateDocumentFile(this.state.documentFile, false)
             && this.validateDocumentFileScan(this.state.documentFileScan, false)
             && this.validateIssuingBody(this.state.documentIssuingBody, false);
     }
@@ -320,9 +320,10 @@ class CreateForm extends Component {
 
     save = () => {
         const {
-            documentName, 
+            documentName,
             documentCategory,
             documentDomains,
+            documentArchives,
             documentDescription,
             documentVersionName,
             documentIssuingBody,
@@ -340,11 +341,14 @@ class CreateForm extends Component {
             documentArchivedRecordPlaceOrganizationalUnit,
             documentArchivedRecordPlaceManager,
         } = this.state;
-        const formData = new FormData(); 
+        const formData = new FormData();
         formData.append('name', documentName);
         formData.append('category', documentCategory);
-        if(documentDomains) for (let i = 0; i < documentDomains.length; i++) {
+        if (documentDomains) for (let i = 0; i < documentDomains.length; i++) {
             formData.append('domains[]', documentDomains[i]);
+        }
+        if (documentArchives) for (let i = 0; i < documentArchives.length; i++) {
+            formData.append('domains[]', documentArchives[i]);
         }
         formData.append('description', documentDescription);
         formData.append('issuingBody', documentIssuingBody);
@@ -359,10 +363,10 @@ class CreateForm extends Component {
         formData.append('fileScan', documentFileScan);
 
         formData.append('relationshipDescription', documentRelationshipDescription);
-        if(documentRelationshipDocuments)for (let i = 0; i < documentRelationshipDocuments.length; i++) {
+        if (documentRelationshipDocuments) for (let i = 0; i < documentRelationshipDocuments.length; i++) {
             formData.append('relationshipDocuments[]', documentRelationshipDocuments[i]);
         }
-        if(documentRoles) for (let i = 0; i < documentRoles.length; i++) {
+        if (documentRoles) for (let i = 0; i < documentRoles.length; i++) {
             formData.append('roles[]', documentRoles[i]);
         }
 
@@ -379,151 +383,154 @@ class CreateForm extends Component {
         const { errorName, errorIssuingBody, errorOfficialNumber, errorSigner, errorVersionName,
             errorDocumentFile, errorDocumentFileScan, errorIssuingDate, errorEffectiveDate,
             errorExpiredDate, errorCategory } = this.state;
+        const archives = documents.administration.archives.list;
+        const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
 
-        const categories = documents.administration.categories.list.map(category =>
-                            { return { value: category._id, text: category.name } });
-
-        
+        console.log('domainnssss', list);
+        console.log('archivesss', archives);
         const documentRoles = role.list.map(role => { return { value: role._id, text: role.name } });
-        const relationshipDocs = documents.administration.data.list.map(doc =>
-                                 { return { value: doc._id, text: doc.name } })
-        return ( 
+        const relationshipDocs = documents.administration.data.list.map(doc => { return { value: doc._id, text: doc.name } })
+        return (
             <React.Fragment>
-                <ButtonModal modalID="modal-create-document" button_name={translate('general.add')} title={translate('manage_user.add_title')}/>
+                <ButtonModal modalID="modal-create-document" button_name={translate('general.add')} title={translate('manage_user.add_title')} />
                 <DialogModal
                     modalID="modal-create-document"
                     formID="form-create-document"
                     title={translate('document.add')}
                     func={this.save} size="100"
-                    disableSubmit = {!this.isValidateForm()}
+                    disableSubmit={!this.isValidateForm()}
                 >
                     <form id="form-create-document">
                         <div className="nav-tabs-custom">
                             <ul className="nav nav-tabs">
-                                <li className="active"><a href="#doc-info" data-toggle="tab">{ translate('document.infomation_docs') }</a></li>
-                                <li><a href="#doc-sub-info" data-toggle="tab">{ translate('document.relationship_role_store') }</a></li>
+                                <li className="active"><a href="#doc-info" data-toggle="tab">{translate('document.infomation_docs')}</a></li>
+                                <li><a href="#doc-sub-info" data-toggle="tab">{translate('document.relationship_role_store')}</a></li>
                             </ul>
                             <div className="tab-content">
                                 <div className="tab-pane active" id="doc-info">
                                     <div className="row">
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <div className={`form-group ${!errorName  ? "" : "has-error"}`}>
-                                                <label>{ translate('document.name') }<span className="text-red">*</span></label>
-                                                <input type="text" className="form-control" onChange={this.handleName}/>
-                                                <ErrorLabel content ={errorName} />
+                                            <div className={`form-group ${!errorName ? "" : "has-error"}`}>
+                                                <label>{translate('document.name')}<span className="text-red">*</span></label>
+                                                <input type="text" className="form-control" onChange={this.handleName} />
+                                                <ErrorLabel content={errorName} />
                                             </div>
-                                            <div className={`form-group ${!errorIssuingBody? "" : "has-error"}`}>
-                                                <label>{ translate('document.doc_version.issuing_body') }<span className="text-red">*</span></label>
-                                                <input type="text" className="form-control" onChange={this.handleIssuingBody} placeholder={translate('document.doc_version.exp_issuing_body')}/>
-                                                <ErrorLabel content ={errorIssuingBody} />
+                                            <div className={`form-group ${!errorIssuingBody ? "" : "has-error"}`}>
+                                                <label>{translate('document.doc_version.issuing_body')}<span className="text-red">*</span></label>
+                                                <input type="text" className="form-control" onChange={this.handleIssuingBody} placeholder={translate('document.doc_version.exp_issuing_body')} />
+                                                <ErrorLabel content={errorIssuingBody} />
                                             </div>
                                             <div className={`form-group ${!errorOfficialNumber ? "" : "has-error"}`}>
-                                                <label>{ translate('document.doc_version.official_number') }<span className="text-red">*</span></label>
-                                                <input type="text" className="form-control" onChange={this.handleOfficialNumber} placeholder={translate('document.doc_version.exp_official_number')}/>
-                                                <ErrorLabel content ={errorOfficialNumber} />
+                                                <label>{translate('document.doc_version.official_number')}<span className="text-red">*</span></label>
+                                                <input type="text" className="form-control" onChange={this.handleOfficialNumber} placeholder={translate('document.doc_version.exp_official_number')} />
+                                                <ErrorLabel content={errorOfficialNumber} />
                                             </div>
-                                            <div className={`form-group ${!errorSigner  ? "" : "has-error"}`}>
-                                                <label>{ translate('document.doc_version.signer') }<span className="text-red">*</span></label>
-                                                <input type="text" className="form-control" onChange={this.handleSigner} placeholder={translate('document.doc_version.exp_signer')}/>
-                                                <ErrorLabel content ={errorSigner} />
+                                            <div className={`form-group ${!errorSigner ? "" : "has-error"}`}>
+                                                <label>{translate('document.doc_version.signer')}<span className="text-red">*</span></label>
+                                                <input type="text" className="form-control" onChange={this.handleSigner} placeholder={translate('document.doc_version.exp_signer')} />
+                                                <ErrorLabel content={errorSigner} />
                                             </div>
                                         </div>
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                             <div className={`form-group ${errorCategory === undefined ? "" : "has-error"}`}>
-                                                <label>{ translate('document.category') }<span className="text-red">*</span></label>
+                                                <label>{translate('document.category')}<span className="text-red">*</span></label>
                                                 <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                                     id="select-documents-relationship"
                                                     className="form-control select2"
-                                                    style={{width: "100%"}}
-                                                    items = {categories}
+                                                    style={{ width: "100%" }}
+                                                    items={categories}
                                                     onChange={this.handleCategory}
                                                     multiple={false}
-                                                    options={{placeholder: translate('document.administration.categories.select')}}
+                                                    options={{ placeholder: translate('document.administration.categories.select') }}
                                                 />
-                                                <ErrorLabel content ={errorCategory} />
+                                                <ErrorLabel content={errorCategory} />
                                             </div>
                                             <div className="form-group">
-                                                <label>{ translate('document.domain') }</label>
-                                                <TreeSelect data={list} handleChange={this.handleDomains} mode="hierarchical"/>
+                                                <label>{translate('document.domain')}</label>
+                                                <TreeSelect data={list} handleChange={this.handleDomains} mode="hierarchical" />
                                             </div>
                                             <div className="form-group">
-                                                <label>{ translate('document.description') }</label>
-                                                <textarea style={{height: '100px'}} type="text" className="form-control" onChange={this.handleDescription}/>
+                                                <label>Lưu trữ</label>
+                                                <TreeSelect data={archives} handleChange={this.handleDomains} mode="hierarchical" />
+                                            </div>
+                                            <div className="form-group">
+                                                <label>{translate('document.description')}</label>
+                                                <textarea style={{ height: '100px' }} type="text" className="form-control" onChange={this.handleDescription} />
                                             </div>
                                         </div>
                                     </div>
                                     <div className="row">
-                                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                                <div className={`form-group ${!errorVersionName ? "" : "has-error"}`}>
-                                                    <label>{ translate('document.doc_version.name') }<span className="text-red">*</span></label>
-                                                    <input type="text" className="form-control" onChange={this.handleVersionName} placeholder={translate('document.doc_version.exp_version')}/>
-                                                    <ErrorLabel content ={errorVersionName} />
-                                                </div>  
-                                                <div className={`form-group ${!errorDocumentFile ? "" : "has-error"}`}>
-                                                    <label>{ translate('document.doc_version.file') }<span className="text-red">*</span></label>
-                                                    <input type="file" onChange={this.handleUploadFile}/>
-                                                    <ErrorLabel content ={errorDocumentFile} />
-                                                </div>
-                                                <div className={`form-group ${!errorDocumentFileScan ? "" : "has-error"}`}>
-                                                    <label>{ translate('document.doc_version.scanned_file_of_signed_document') }<span className="text-red">*</span></label>
-                                                    <input type="file" onChange={this.handleUploadFileScan}/>
-                                                    <ErrorLabel content ={errorDocumentFileScan} />
-                                                </div>
-                                                <div className={`form-group ${!errorIssuingDate ? "" : "has-error"}`}>
-                                                    <label>{ translate('document.doc_version.issuing_date') }<span className="text-red">*</span></label>
-                                                    <DatePicker
-                                                        id="create-document-version-issuing-date"
-                                                        value={this.state.documentIssuingDate}
-                                                        onChange={this.handleIssuingDate}
-                                                    />
-                                                    <ErrorLabel content ={errorIssuingDate} />
-                                                </div>
-                                                <div className={`form-group ${!errorEffectiveDate ? "" : "has-error"}`}>
-                                                    <label>{ translate('document.doc_version.effective_date') }<span className="text-red">*</span></label>
-                                                    <DatePicker
-                                                        id="create-document-version-effective-date"
-                                                        value={this.state.documentEffectiveDate}
-                                                        onChange={this.handleEffectiveDate}
-                                                    />
-                                                    <ErrorLabel content ={errorEffectiveDate} />
-                                                </div>
-                                                <div className={`form-group ${!errorExpiredDate ? "" : "has-error"}`}>
-                                                    <label>{ translate('document.doc_version.expired_date') }<span className="text-red">*</span></label>
-                                                    <DatePicker
-                                                        id="create-document-version-expired-date"
-                                                        value={this.state.documentExpiredDate}
-                                                        onChange={this.handleExpiredDate}
-                                                    />
-                                                    <ErrorLabel content ={errorExpiredDate} />
-                                                </div>
+                                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                            <div className={`form-group ${!errorVersionName ? "" : "has-error"}`}>
+                                                <label>{translate('document.doc_version.name')}<span className="text-red">*</span></label>
+                                                <input type="text" className="form-control" onChange={this.handleVersionName} placeholder={translate('document.doc_version.exp_version')} />
+                                                <ErrorLabel content={errorVersionName} />
+                                            </div>
+                                            <div className={`form-group ${!errorDocumentFile ? "" : "has-error"}`}>
+                                                <label>{translate('document.doc_version.file')}<span className="text-red">*</span></label>
+                                                <input type="file" onChange={this.handleUploadFile} />
+                                                <ErrorLabel content={errorDocumentFile} />
+                                            </div>
+                                            <div className={`form-group ${!errorDocumentFileScan ? "" : "has-error"}`}>
+                                                <label>{translate('document.doc_version.scanned_file_of_signed_document')}<span className="text-red">*</span></label>
+                                                <input type="file" onChange={this.handleUploadFileScan} />
+                                                <ErrorLabel content={errorDocumentFileScan} />
+                                            </div>
+                                            <div className={`form-group ${!errorIssuingDate ? "" : "has-error"}`}>
+                                                <label>{translate('document.doc_version.issuing_date')}<span className="text-red">*</span></label>
+                                                <DatePicker
+                                                    id="create-document-version-issuing-date"
+                                                    value={this.state.documentIssuingDate}
+                                                    onChange={this.handleIssuingDate}
+                                                />
+                                                <ErrorLabel content={errorIssuingDate} />
+                                            </div>
+                                            <div className={`form-group ${!errorEffectiveDate ? "" : "has-error"}`}>
+                                                <label>{translate('document.doc_version.effective_date')}<span className="text-red">*</span></label>
+                                                <DatePicker
+                                                    id="create-document-version-effective-date"
+                                                    value={this.state.documentEffectiveDate}
+                                                    onChange={this.handleEffectiveDate}
+                                                />
+                                                <ErrorLabel content={errorEffectiveDate} />
+                                            </div>
+                                            <div className={`form-group ${!errorExpiredDate ? "" : "has-error"}`}>
+                                                <label>{translate('document.doc_version.expired_date')}<span className="text-red">*</span></label>
+                                                <DatePicker
+                                                    id="create-document-version-expired-date"
+                                                    value={this.state.documentExpiredDate}
+                                                    onChange={this.handleExpiredDate}
+                                                />
+                                                <ErrorLabel content={errorExpiredDate} />
                                             </div>
                                         </div>
+                                    </div>
                                 </div>
                                 <div className="tab-pane" id="doc-sub-info">
                                     <div className="row">
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                             <div className="form-group">
-                                                <label>{ translate('document.relationship.description') }</label>
-                                                <textarea style={{height: '34px'}} type="text" className="form-control" onChange={this.handleRelationshipDescription}/>
+                                                <label>{translate('document.relationship.description')}</label>
+                                                <textarea style={{ height: '34px' }} type="text" className="form-control" onChange={this.handleRelationshipDescription} />
                                             </div>
                                             <div className="form-group">
-                                                <label>{ translate('document.relationship.list') }</label>
+                                                <label>{translate('document.relationship.list')}</label>
                                                 <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                                     id="select-documents-relationship-to-document"
                                                     className="form-control select2"
-                                                    style={{width: "100%"}}
-                                                    items = {relationshipDocs}
+                                                    style={{ width: "100%" }}
+                                                    items={relationshipDocs}
                                                     onChange={this.handleRelationshipDocuments}
                                                     multiple={true}
                                                 />
                                             </div>
                                             <div className="form-group">
-                                                <label>{ translate('document.roles') }</label>
+                                                <label>{translate('document.roles')}</label>
                                                 <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                                     id="select-document-users-see-permission"
                                                     className="form-control select2"
-                                                    style={{width: "100%"}}
-                                                    items = {documentRoles}
+                                                    style={{ width: "100%" }}
+                                                    items={documentRoles}
                                                     onChange={this.handleRoles}
                                                     multiple={true}
                                                 />
@@ -531,18 +538,18 @@ class CreateForm extends Component {
                                         </div>
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                             <div className="form-group">
-                                                <label>{ translate('document.store.information') }</label>
-                                                <input type="text" className="form-control" onChange={this.handleArchivedRecordPlaceInfo} placeholder="VD: Tủ 301"/>
+                                                <label>{translate('document.store.information')}</label>
+                                                <input type="text" className="form-control" onChange={this.handleArchivedRecordPlaceInfo} placeholder="VD: Tủ 301" />
                                             </div>
                                             <div className="form-group">
-                                                <label>{ translate('document.store.organizational_unit_manage') }</label>
+                                                <label>{translate('document.store.organizational_unit_manage')}</label>
                                                 <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                                     id="select-documents-organizational-unit-manage"
                                                     className="form-control select2"
-                                                    style={{width: "100%"}}
-                                                    items = {department.list.map(organ => {return {value: organ._id, text: organ.name}})}
+                                                    style={{ width: "100%" }}
+                                                    items={department.list.map(organ => { return { value: organ._id, text: organ.name } })}
                                                     onChange={this.handleArchivedRecordPlaceOrganizationalUnit}
-                                                    options={{placeholder: translate('document.store.select_organizational')}}
+                                                    options={{ placeholder: translate('document.store.select_organizational') }}
                                                     multiple={false}
                                                 />
                                             </div>
@@ -554,14 +561,14 @@ class CreateForm extends Component {
                     </form>
                 </DialogModal>
             </React.Fragment>
-         );
+        );
     }
 }
- 
+
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     createDocument: DocumentActions.createDocument
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(CreateForm) );
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CreateForm));

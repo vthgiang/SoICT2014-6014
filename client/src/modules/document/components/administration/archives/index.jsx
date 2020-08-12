@@ -67,21 +67,21 @@ class AdministrationDocumentArchives extends Component {
         const { archiveParent, deleteNode } = this.state;
         const { translate } = this.props;
         const { list } = this.props.documents.administration.archives;
-        const dataTree = list ? list.map(node => {
+        const dataTree = list.map(node => {
             return {
                 ...node,
                 text: node.name,
                 state: { "open": true },
                 parent: node.parent ? node.parent.toString() : "#"
             }
-        }) : null
+        })
         return (
             <React.Fragment>
                 <button className="btn btn-success" onClick={() => {
                     window.$('#modal-create-document-archive').modal('show');
                 }} title={`Thêm`} disable={archiveParent.length > 1 ? true : false}>Thêm</button>
                 {
-                    deleteNode.length > 0 && <button class="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteDocumentArchive}>Xóa</button>
+                    deleteNode.length > 0 && <button class="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteArchive}>Xóa</button>
                 }
                 <CreateForm domainParent={this.state.archiveParent[0]} />
                 <div className="row">

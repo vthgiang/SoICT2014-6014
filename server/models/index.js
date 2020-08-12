@@ -79,6 +79,7 @@ exports.schema = {
     Document,
     DocumentCategory,
     DocumentDomain,
+    DocumentArchive,
 
     AnnualLeave,
     Commendation,

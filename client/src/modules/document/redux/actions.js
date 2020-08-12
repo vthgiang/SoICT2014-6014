@@ -452,8 +452,8 @@ function createDocumentArchive(data) {
 function editDocumentArchive(id, data) {
 
     return dispatch => {
-        dispatch({ type: DocumentConstants.EDIT_DOCUMENT_ARCHIVE_SUCCESS });
-        DocumentServices.createDocumentArchives(id, data)
+        dispatch({ type: DocumentConstants.EDIT_DOCUMENT_ARCHIVE_REQUEST });
+        DocumentServices.editDocumentArchives(id, data)
             .then(res => {
                 dispatch({
                     type: DocumentConstants.EDIT_DOCUMENT_ARCHIVE_SUCCESS,
