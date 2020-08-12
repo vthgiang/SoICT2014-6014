@@ -72,6 +72,8 @@ class AddTaskTemplate extends Component {
     }
     handleTaskTemplateName = (event) => {
         let value = event.target.value;
+        let { isProcess} = this.props
+        isProcess && this.props.handleChangeName(value)
         this.validateTaskTemplateName(value, true);
     }
 
@@ -211,6 +213,7 @@ class AddTaskTemplate extends Component {
                 ...state,
             };
         });
+        this.props.handleChangeResponsible(value)
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
@@ -221,6 +224,7 @@ class AddTaskTemplate extends Component {
                 ...state,
             };
         });
+        this.props.handleChangeAccountable(value)
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
@@ -345,6 +349,7 @@ class AddTaskTemplate extends Component {
         const { newTemplate, showMore } = this.state;
         const { department, user, translate, tasktemplates, isProcess } = this.props;
         if (newTemplate.taskActions) taskActions = newTemplate.taskActions;
+        console.log(this.props.info)
         if (newTemplate.taskInformations) taskInformations = newTemplate.taskInformations;
 
         if (user.organizationalUnitsOfUser) {
@@ -407,27 +412,30 @@ class AddTaskTemplate extends Component {
                         </div>
                     </div>
 
-                    {/**Những Role có quyền xem mẫu công việc này*/}
-                    <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
-                        <div className={`form-group ${this.state.newTemplate.errorOnRead === undefined ? "" : "has-error"}`} >
-                            <label className="control-label">{translate('task_template.permission_view')}*</label>
-                            {listRoles &&
-                                <SelectBox
-                                    id={`read-select-box`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={
-                                        listRoles.map(x => { return { value: x._id, text: x.name } })
-                                    }
-                                    onChange={this.handleTaskTemplateRead}
-                                    multiple={true}
-                                    options={{ placeholder: `${translate('task_template.permission_view')}` }}
-                                />
-                            }
-                            <ErrorLabel content={this.state.newTemplate.errorOnRead} />
+                        {/**Những Role có quyền xem mẫu công việc này*/}
+                        {!isProcess &&
+                            <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                            <div className={`form-group ${this.state.newTemplate.errorOnRead===undefined?"":"has-error"}`} >
+                                <label className="control-label">{translate('task_template.permission_view')}*</label>
+                                {listRoles &&
+                                    <SelectBox
+                                        id={`read-select-box`}
+                                        className="form-control select2"
+                                        style={{width: "100%"}}
+                                        items={
+                                            listRoles.map( x => { return { value : x._id, text : x.name}})
+                                        }
+                                        onChange={this.handleTaskTemplateRead}
+                                        multiple={true}
+                                        options={{placeholder: `${translate('task_template.permission_view')}`}}
+                                    />
+                                }
+                                <ErrorLabel content={this.state.newTemplate.errorOnRead}/>
+                            </div>
                         </div>
+                        }
                     </div>
-                </div>
+                {/* </div> */}
 
 
 
@@ -577,7 +585,7 @@ function mapState(state) {
     return { adding, department, user, tasktemplates };
 }
 
-const actionCreators = {
+const actionCreators = {                                                    
     addNewTemplate: taskTemplateActions.addTaskTemplate,
     getDepartment: UserActions.getDepartmentOfUser,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
