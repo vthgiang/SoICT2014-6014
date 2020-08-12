@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
-import { FormInfoTask } from "./formInfoTask";
+import { FormInfoProcess } from "./formInfoProcess";
 import { DialogModal, SelectBox } from "../../../../common-components";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { getStorage } from '../../../../config';
@@ -696,10 +696,11 @@ class ModalEditTaskProcess extends Component {
                                                     <div>
                                                         <h1>Option {name}</h1>
                                                     </div>
-                                                    <FormInfoTask
+                                                    <FormInfoProcess
                                                         listOrganizationalUnit={listOrganizationalUnit}
                                                         action='edit'
                                                         id={id}
+                                                        astemplate = {true}
                                                         info={(info && info[`${id}`]) && info[`${id}`]}
                                                         handleChangeName={this.handleChangeName}
                                                         handleChangeDescription={this.handleChangeDescription}

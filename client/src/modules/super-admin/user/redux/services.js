@@ -188,5 +188,5 @@ function getAllUsersWithRole() {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/user/users/roles/abc`,
         method: 'GET',
-    }, true, true, 'super_admin.user');
+    }, false, false, 'super_admin.user');
 }
