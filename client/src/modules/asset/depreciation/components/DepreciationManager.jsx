@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DataTableSetting, DatePicker, PaginateBar, SelectMulti } from '../../../../common-components';
+
 import { AssetManagerActions } from '../../asset-management/redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
+import { UserActions } from '../../../super-admin/user/redux/actions';
+
 import { AssetDetailForm } from '../../asset-management/components/combinedContent';
 import { DepreciationEditForm } from './depreciationEditForm';
-import { UserActions } from '../../../super-admin/user/redux/actions';
 
 class DepreciationManager extends Component {
     constructor(props) {
@@ -19,13 +22,11 @@ class DepreciationManager extends Component {
             page: 0,
             limit: 5,
         }
-        this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
 
     componentDidMount() {
         this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         this.props.getAllAsset(this.state);
-
     }
 
     // Bắt sự kiện click xem thông tin tài sản
@@ -57,10 +58,13 @@ class DepreciationManager extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+            
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         return [month, year].join('-');
     }
@@ -72,14 +76,19 @@ class DepreciationManager extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     // Bắt sự kiện click xem thông tin tài sản
@@ -98,7 +107,6 @@ class DepreciationManager extends Component {
         this.setState({
             [name]: value
         });
-
     }
 
     // Function lưu giá trị tên tài sản vào state khi thay đổi
@@ -107,7 +115,6 @@ class DepreciationManager extends Component {
         this.setState({
             [name]: value
         });
-
     }
 
     // Function lưu giá trị tháng vào state khi thay đổi
@@ -123,7 +130,7 @@ class DepreciationManager extends Component {
         if (value.length === 0) {
             value = null
         }
-        ;
+        
         this.setState({
             ...this.state,
             assetType: value
@@ -149,51 +156,58 @@ class DepreciationManager extends Component {
     // Bắt sự kiện chuyển trang
     setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * this.state.limit;
+
         await this.setState({
             page: parseInt(page),
-
         });
+
         this.props.getAllAsset(this.state);
     }
+
     addMonth = (date, month) => {
         date = new Date(date);
         let newDate = new Date(date.setMonth(date.getMonth() + month));
+
         return this.formatDate(newDate);
     };
 
     render() {
         const { translate, assetsManager, assetType } = this.props;
+        const { page, limit, currentRowView, currentRow } = this.state;
+
         var lists = "";
         var assettypelist = assetType.listAssetTypes;
         var formater = new Intl.NumberFormat();
-        if (this.props.assetsManager.isLoading === false) {
-            lists = this.props.assetsManager.listAssets;
+        if (assetsManager.isLoading === false) {
+            lists = assetsManager.listAssets;
         }
 
-        console.log('Tài sản', lists);
-        console.log('Loại tài sản', assettypelist);
+        var pageTotal = ((assetsManager.totalList % limit) === 0) ?
+            parseInt(assetsManager.totalList / limit) :
+            parseInt((assetsManager.totalList / limit) + 1);
+        var currentPage = parseInt((page / limit) + 1);
 
-        var pageTotal = ((assetsManager.totalList % this.state.limit) === 0) ?
-            parseInt(assetsManager.totalList / this.state.limit) :
-            parseInt((assetsManager.totalList / this.state.limit) + 1);
-        var page = parseInt((this.state.page / this.state.limit) + 1);
         return (
             <div className="box">
                 <div className="box-body qlcv">
-                    <div className="form-group">
-                        <h4 className="box-title">Danh sách khấu hao tài sản: </h4>
-                    </div>
+
+                    {/* Thanh tìm kiếm */}
                     <div className="form-inline">
+                        {/* Mã tài sản */}
                         <div className="form-group">
                             <label className="form-control-static">Mã tài sản</label>
                             <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off" />
                         </div>
+
+                        {/* Tên tài sản */}
                         <div className="form-group">
                             <label className="form-control-static">Tên tài sản</label>
                             <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off" />
                         </div>
                     </div>
+
                     <div className="form-inline" style={{ marginBottom: 10 }}>
+                        {/* Phân loại */}
                         <div className="form-group">
                             <label className="form-control-static">Phân loại</label>
                             <SelectMulti id={`multiSelectType`} multiple="multiple"
@@ -203,6 +217,8 @@ class DepreciationManager extends Component {
                             >
                             </SelectMulti>
                         </div>
+
+                        {/* Tháng */}
                         <div className="form-group">
                             <label className="form-control-static">Tháng</label>
                             <DatePicker
@@ -212,10 +228,14 @@ class DepreciationManager extends Component {
                                 onChange={this.handleMonthChange}
                             />
                         </div>
+
+                        {/* Button tìm kiếm */}
                         <div className="form-group">
                             <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={() => this.handleSubmitSearch()}>Tìm kiếm</button>
                         </div>
                     </div>
+
+                    {/* Bảng thông tin khấu hao */}
                     <table id="depreciation-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
@@ -246,7 +266,7 @@ class DepreciationManager extends Component {
                                             "Giá trị còn lại",
                                             "Thời gian kết thúc trích khấu hao"
                                         ]}
-                                        limit={this.state.limit}
+                                        limit={limit}
                                         setLimit={this.setLimit}
                                         hideColumnOption={true}
                                     />
@@ -273,68 +293,73 @@ class DepreciationManager extends Component {
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin khấu hao tài sản"><i
                                                 className="material-icons">edit</i></a>
                                         </td>
-                                    </tr>))
+                                    </tr>
+                                ))
                             }
                         </tbody>
                     </table>
                     {assetsManager.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
 
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
+                    {/* PaginateBar */}
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
 
+                {/* Form xem chi tiết thông tin khấu hao */}
                 {
-                    this.state.currentRowView !== undefined &&
+                    currentRowView &&
                     <AssetDetailForm
-                        _id={this.state.currentRowView._id}
-                        avatar={this.state.currentRowView.avatar}
-                        code={this.state.currentRowView.code}
-                        assetName={this.state.currentRowView.assetName}
-                        serial={this.state.currentRowView.serial}
-                        assetType={this.state.currentRowView.assetType}
-                        purchaseDate={this.state.currentRowView.purchaseDate}
-                        warrantyExpirationDate={this.state.currentRowView.warrantyExpirationDate}
-                        managedBy={this.state.currentRowView.managedBy}
-                        assignedTo={this.state.currentRowView.assignedTo}
-                        handoverFromDate={this.state.currentRowView.handoverFromDate}
-                        handoverToDate={this.state.currentRowView.handoverToDate}
-                        location={this.state.currentRowView.location}
-                        description={this.state.currentRowView.description}
-                        status={this.state.currentRowView.status}
-                        canRegisterForUse={this.state.currentRowView.canRegisterForUse}
-                        detailInfo={this.state.currentRowView.detailInfo}
+                        _id={currentRowView._id}
+                        avatar={currentRowView.avatar}
+                        code={currentRowView.code}
+                        assetName={currentRowView.assetName}
+                        serial={currentRowView.serial}
+                        assetType={currentRowView.assetType}
+                        purchaseDate={currentRowView.purchaseDate}
+                        warrantyExpirationDate={currentRowView.warrantyExpirationDate}
+                        managedBy={currentRowView.managedBy}
+                        assignedTo={currentRowView.assignedTo}
+                        handoverFromDate={currentRowView.handoverFromDate}
+                        handoverToDate={currentRowView.handoverToDate}
+                        location={currentRowView.location}
+                        description={currentRowView.description}
+                        status={currentRowView.status}
+                        canRegisterForUse={currentRowView.canRegisterForUse}
+                        detailInfo={currentRowView.detailInfo}
 
-                        cost={this.state.currentRowView.cost}
-                        residualValue={this.state.currentRowView.residualValue}
-                        startDepreciation={this.state.currentRowView.startDepreciation}
-                        usefulLife={this.state.currentRowView.usefulLife}
-                        depreciationType={this.state.currentRowView.depreciationType}
+                        cost={currentRowView.cost}
+                        residualValue={currentRowView.residualValue}
+                        startDepreciation={currentRowView.startDepreciation}
+                        usefulLife={currentRowView.usefulLife}
+                        depreciationType={currentRowView.depreciationType}
 
-                        maintainanceLogs={this.state.currentRowView.maintainanceLogs}
-                        usageLogs={this.state.currentRowView.usageLogs}
-                        incidentLogs={this.state.currentRowView.incidentLogs}
+                        maintainanceLogs={currentRowView.maintainanceLogs}
+                        usageLogs={currentRowView.usageLogs}
+                        incidentLogs={currentRowView.incidentLogs}
 
-                        disposalDate={this.state.currentRowView.disposalDate}
-                        disposalType={this.state.currentRowView.disposalType}
-                        disposalCost={this.state.currentRowView.disposalCost}
-                        disposalDesc={this.state.currentRowView.disposalDesc}
+                        disposalDate={currentRowView.disposalDate}
+                        disposalType={currentRowView.disposalType}
+                        disposalCost={currentRowView.disposalCost}
+                        disposalDesc={currentRowView.disposalDesc}
 
-                        archivedRecordNumber={this.state.currentRowView.archivedRecordNumber}
-                        files={this.state.currentRowView.files}
+                        archivedRecordNumber={currentRowView.archivedRecordNumber}
+                        files={currentRowView.files}
                     />
                 }
+
+                {/* Form chỉnh sửa thông tin khấu hao */}
                 {
-                    this.state.currentRow !== undefined &&
+                    currentRow &&
                     <DepreciationEditForm
-                        _id={this.state.currentRow._id}
-                        asset={this.state.currentRow.asset}
-                        cost={this.state.currentRow.cost}
-                        residualValue={this.state.currentRow.residualValue}
-                        startDepreciation={this.formatDate(this.state.currentRow.startDepreciation)}
-                        usefulLife={this.state.currentRow.usefulLife}
-                        depreciationType={this.state.currentRow.depreciationType}
+                        _id={currentRow._id}
+                        asset={currentRow.asset}
+                        cost={currentRow.cost}
+                        residualValue={currentRow.residualValue}
+                        startDepreciation={this.formatDate(currentRow.startDepreciation)}
+                        usefulLife={currentRow.usefulLife}
+                        depreciationType={currentRow.depreciationType}
                     />
                 }
             </div>
@@ -350,7 +375,6 @@ function mapState(state) {
 const actionCreators = {
     searchAssetTypes: AssetTypeActions.searchAssetTypes,
     getAllAsset: AssetManagerActions.getAllAsset,
-
     getUser: UserActions.get,
 };
 

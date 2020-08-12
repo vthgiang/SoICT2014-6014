@@ -208,16 +208,41 @@ class TaskTemplate extends Component {
 
     // Function chyển đổi dữ liệu mẫu công việc thành dạng dữ liệu dùng export
     convertDataToExportData = (data) => {
+        let datas = [];
         if (data) {
-
-            data = data.map((x, index) => {
-                let taskActions = [];
-                if (x.taskActions.length !== 0) {
-                    taskActions = x.taskActions.map(item => item.name);
+            for (let k = 0; k < data.length; k++) {
+                let x = data[k];
+                let length = 0;
+                let actionName = [], actionDescription = [], mandatory = [] ;
+                if (x.taskActions.length !==0 ) {
+                    if (x.taskActions.length > length){
+                        length = x.taskActions.length;
+                    }
+                    for (let i = 0; i < x.taskActions.length; i++) {
+                        actionName[i] = x.taskActions[i].name;
+                        actionDescription[i] = x.taskActions[i].description;
+                        if (x.taskActions[i].mandatory) {
+                            mandatory[i] = "Bắt buộc";
+                        } else {
+                            mandatory[i] = "Không bắt buộc";
+                        }
+                    }
                 }
-                let taskInformations = [];
+                let infoName = [], infoType = [], infoDescription = [], infoFill = [];
                 if (x.taskInformations.length !== 0) {
-                    taskInformations = x.taskInformations.map(item => item.name);
+                    if (x.taskInformations.length > length) {
+                        length = x.taskInformations.length;
+                    }
+                    for (let i = 0; i < x.taskInformations.length; i++){
+                        infoName[i] = x.taskInformations[i].name;
+                        infoDescription[i] = x.taskInformations[i].description;
+                        infoType[i] = x.taskInformations[i].type;
+                        if (x.taskInformations[i].filledByAccountableEmployeesOnly) {
+                            infoFill[i] = "true";
+                        } else {
+                            infoFill[i] = "false";
+                        }
+                    }
                 }
                 let numberOfUse = "Chưa sử dụng";
                 if (x.numberOfUse !== 0) {
@@ -245,8 +270,7 @@ class TaskTemplate extends Component {
                     case 2: priority = "trung bình"; break;
                     case 3: priority = "cao"; break;
                 }
-                return {
-                    STT: index + 1,
+                let out = { STT: k + 1,
                     name: x.name,
                     description: x.description,
                     numberOfUse: numberOfUse,
@@ -259,16 +283,45 @@ class TaskTemplate extends Component {
                     organizationalUnits: x.organizationalUnit.name,
                     priority: priority,
                     formula: x.formula,
-                    taskActions: taskActions.join(', '),
-                    taskInformations: taskInformations.join(', ')
-                };
-
-            })
+                    actionName: actionName[0],
+                    actionDescription: actionDescription[0],
+                    mandatory: mandatory[0],
+                    infoName: infoName[0],
+                    infoDescription: infoDescription[0],
+                    infoType: infoType[0],
+                    infoFill: infoFill[0] }
+                datas = [...datas, out];
+                if (length > 1) {
+                    for ( let i = 1; i < length; i++){
+                        out = {
+                            STT: 0,
+                            name: "",
+                            description: "",
+                            numberOfUse: 0,
+                            creator: "",
+                            readByEmployees: "",
+                            responsibleEmployees: "",
+                            accountableEmployees: "",
+                            consultedEmployees: "",
+                            informedEmployees: "",
+                            organizationalUnits: "",
+                            priority: "",
+                            formula: 0,
+                            actionName: actionName[i],
+                            actionDescription: actionDescription[i],
+                            mandatory: mandatory[i],
+                            infoName: infoName[i],
+                            infoDescription: infoDescription[i],
+                            infoType: infoType[i],
+                            infoFill: infoFill[i]
+                        };
+                        datas = [...datas, out];
+                    }
+                }
+            }
         }
 
-        // let columns = otherSalary.map((x, index) => {
-        //     return { key: `bonus${index}`, value: x, type: "Number" }
-        // })
+        
         let exportData = {
             fileName: "Bảng thống kê mẫu công việc",
             dataSheets: [
@@ -276,6 +329,19 @@ class TaskTemplate extends Component {
                     sheetName: "sheet1",
                     tables: [
                         {
+                            tableName: "Bảng thống kê mẫu công việc",
+                            merges: [{
+                                key: "taskActions",
+                                columnName: "Danh sách hoạt động",
+                                keyMerge: 'actionName',
+                                colspan: 3
+                            }, {
+                                key: "taskInfo",
+                                columnName: "Danh sách thông tin",
+                                keyMerge: 'infoName',
+                                colspan: 4
+                            }],
+                            rowHeader: 2,
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "name", value: "Tên mẫu" },
@@ -290,10 +356,15 @@ class TaskTemplate extends Component {
                                 { key: "organizationalUnits", value: "Phòng ban" },
                                 { key: "priority", value: "Độ ưu tiên" },
                                 { key: "formula", value: "Công thức tính điểm" },
-                                { key: "taskActions", value: "Danh sách hoạt động" },
-                                { key: "taskInformations", value: "Danh sách thông tin" }
+                                { key: "actionName", value: "Tên hoạt động" },
+                                { key: "actionDescription", value: "Mô tả hoạt động" },
+                                { key: "mandatory", value: "Bắt buộc" },
+                                { key: "infoName", value: "Tên thông tin" },
+                                { key: "infoDescription", value: "Mô tả thông tin" },
+                                { key: "infoType", value: "Kiểu dữ liệu" },
+                                { key: "infoFill", value: "Chỉ quản lý được điền" }
                             ],
-                            data: data
+                            data: datas
                         }
                     ]
                 },
