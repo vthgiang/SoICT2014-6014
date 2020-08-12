@@ -429,6 +429,12 @@ exports.data = [
     { path: '/materials/:id', method: 'DELETE', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/materials/:id', method: 'PATCH', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
+    //order
+    { path: "/orders", method: "GET", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
+    { path: "/orders", method: "POST", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
+    { path: "/orders/:id", method: "DELETE", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
+    { path: "/orders/:id", method: "PATCH", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
+
     // Customer Management
     { path: '/customer', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/customer', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
