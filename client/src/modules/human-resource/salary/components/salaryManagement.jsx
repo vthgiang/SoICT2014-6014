@@ -207,11 +207,11 @@ class SalaryManagement extends Component {
                 }
 
                 return {
-                    STT4: index + 1,
+                    STT: index + 1,
                     employeeNumber: x.employee.employeeNumber,
                     fullName: x.employee.fullName,
                     mainSalary: parseInt(x.mainSalary),
-                    birthdate: this.formatDate(x.employee.birthdate, false),
+                    birthdate: new Date(x.employee.birthdate),
                     status: x.employee.status === 'active' ? "Đang làm việc" : "Đã nghỉ làm",
                     gender: x.employee.gender === 'male' ? "Nam" : "Nữ",
                     organizationalUnits: organizationalUnits.join(', '),
@@ -238,9 +238,19 @@ class SalaryManagement extends Component {
                             // tableName: "Bảng lương 1",
                             // merges: [{
                             //     key: "other",
-                            //     columnName: "Lương thưởng khác",
-                            //     keyMerge: 'bonus0',
+                            //     columnName: "Lương thưởng 123",
+                            //     keyMerge: 'gender',
                             //     colspan: 2
+                            // }, {
+                            //     key: "other1",
+                            //     columnName: "Lương thưởng 124",
+                            //     keyMerge: 'organizationalUnits',
+                            //     colspan: 2
+                            // }, {
+                            //     key: "other2",
+                            //     columnName: "Lương thưởng 1235",
+                            //     keyMerge: 'other1',
+                            //     colspan: 4
                             // }],
                             // rowHeader: 3,
                             columns: [
