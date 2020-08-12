@@ -166,6 +166,7 @@ class EmployeeKpiEvaluateModal extends Component {
     convertDataToExportData = (dataTask, currentKpiName, employeeName) => {
 
         let fileName = "Thông tin KPI " + (currentKpiName ? currentKpiName : "") + " của " + (employeeName ? employeeName : "");
+        let tableName = 'Danh sách công việc ' +(currentKpiName ? currentKpiName : "") + " của " + (employeeName ? employeeName : "");
         if (dataTask) {
 
             dataTask = dataTask.map((x, index) => {
@@ -218,8 +219,10 @@ class EmployeeKpiEvaluateModal extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
+                    sheetTitle : fileName,
                     tables: [
                         {
+                            tableName : tableName,
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "startTaskDate", value: "Ngày bắt đầu công việc" },
