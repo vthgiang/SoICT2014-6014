@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components';
+
 import { RecommendDistributeFromValidator } from './RecommendDistributeFromValidator';
+
 import { RecommendDistributeActions } from '../redux/actions';
 import { AssetManagerActions } from '../../asset-management/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
+
 class RecommendDistributeEditForm extends Component {
     constructor(props) {
         super(props);
@@ -125,12 +129,12 @@ class RecommendDistributeEditForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result =
-            this.validateRecommendNumber(this.state.recommendNumber, false) &&
+        let result = this.validateRecommendNumber(this.state.recommendNumber, false) &&
             this.validateDateCreate(this.state.dateCreate, false) &&
             this.validateReqContent(this.state.reqContent, false) &&
             this.validateDateStartUse(this.state.dateCreate, false) &&
             this.validateDateEndUse(this.state.dateCreate, false)
+
         return result;
     }
 
@@ -139,6 +143,7 @@ class RecommendDistributeEditForm extends Component {
             return this.props.updateRecommendDistribute(this.state._id, this.state);
         }
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {
             return {
@@ -166,13 +171,16 @@ class RecommendDistributeEditForm extends Component {
     }
 
     render() {
-        const { _id, translate, recommendDistribute, user, assetsManager, auth } = this.props;
-        var assetlist = assetsManager.listAssets;
-        var userlist = user.list;
+        const { _id } = this.props;
+        const { translate, recommendDistribute, user, assetsManager, auth } = this.props;
         const {
             recommendNumber, dateCreate, proponent, asset, reqContent, dateStartUse, dateEndUse,
             errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse
         } = this.state;
+
+        var assetlist = assetsManager.listAssets;
+        var userlist = user.list;
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -182,15 +190,20 @@ class RecommendDistributeEditForm extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
+                    {/* Form chỉnh sửa thông tin đăng ký sử dụng tài sản */}
                     <form className="form-group" id="form-edit-recommenddistribute">
                         <div className="col-md-12">
+
                             <div className="col-sm-6">
-                                <div className={`form-group ${errorOnRecommendNumber === undefined ? "" : "has-error"}`}>
+                                {/* Mã phiếu */}
+                                <div className={`form-group ${!errorOnRecommendNumber ? "" : "has-error"}`}>
                                     <label>Mã phiếu<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} autoComplete="off" placeholder="Mã phiếu" />
                                     <ErrorLabel content={errorOnRecommendNumber} />
                                 </div>
-                                <div className={`form-group ${errorOnDateCreate === undefined ? "" : "has-error"}`}>
+
+                                {/* Ngày lập */}
+                                <div className={`form-group ${!errorOnDateCreate ? "" : "has-error"}`}>
                                     <label>Ngày lập<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit_start_date${_id}`}
@@ -199,6 +212,8 @@ class RecommendDistributeEditForm extends Component {
                                     />
                                     <ErrorLabel content={errorOnDateCreate} />
                                 </div>
+
+                                {/* Người đề nghị */}
                                 <div className={`form-group`}>
                                     <label>Người đề nghị</label>
                                     <div>
@@ -211,20 +226,24 @@ class RecommendDistributeEditForm extends Component {
                                                     return { value: x._id, text: x.name + " - " + x.email }
                                                 })}
                                                 onChange={this.handleProponentChange}
-                                                value={proponent._id}
+                                                value={proponent ? proponent._id : null}
                                                 multiple={false}
                                                 disabled
                                             />
                                         </div>
                                     </div>
                                 </div>
-                                <div className={`form-group ${errorOnReqContent === undefined ? "" : "has-error"}`}>
+
+                                {/* Nội dung đề nghị */}
+                                <div className={`form-group ${!errorOnReqContent ? "" : "has-error"}`}>
                                     <label>Nội dung đề nghị<span className="text-red">*</span></label>
                                     <textarea className="form-control" rows="3" style={{ height: 34 }} name="reqContent" value={reqContent} onChange={this.handleReqContentChange} autoComplete="off" placeholder="Nội dung đề nghị"></textarea>
                                     <ErrorLabel content={errorOnReqContent} />
                                 </div>
                             </div>
+
                             <div className="col-sm-6">
+                                {/* Tài sản */}
                                 <div className={`form-group`}>
                                     <label>Tài sản</label>
                                     <div>
@@ -237,14 +256,16 @@ class RecommendDistributeEditForm extends Component {
                                                     return { value: x._id, text: x.code + " - " + x.assetName }
                                                 })}
                                                 onChange={this.handleAssetChange}
-                                                value={asset._id}
+                                                value={asset ? asset._id : null}
                                                 multiple={false}
                                                 disabled
                                             />
                                         </div>
                                     </div>
                                 </div>
-                                <div className={`form-group ${errorOnDateStartUse === undefined ? "" : "has-error"}`}>
+
+                                {/* Thời gian đăng ký sử dụng từ ngày */}
+                                <div className={`form-group ${!errorOnDateStartUse ? "" : "has-error"}`}>
                                     <label>Thời gian đăng ký sử dụng từ ngày<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit_start_use${_id}`}
@@ -253,8 +274,10 @@ class RecommendDistributeEditForm extends Component {
                                     />
                                     <ErrorLabel content={errorOnDateStartUse} />
                                 </div>
-                                <div className={`form-group ${errorOnDateEndUse === undefined ? "" : "has-error"}`}>
-                                    <label>thời gian đăng ký sử dụng đến ngày<span className="text-red">*</span></label>
+
+                                {/* Thời gian đăng ký sử dụng đến ngày */}
+                                <div className={`form-group ${!errorOnDateEndUse ? "" : "has-error"}`}>
+                                    <label>Thời gian đăng ký sử dụng đến ngày<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit_end_use${_id}`}
                                         value={dateEndUse}
@@ -262,7 +285,6 @@ class RecommendDistributeEditForm extends Component {
                                     />
                                     <ErrorLabel content={errorOnDateEndUse} />
                                 </div>
-
                             </div>
                         </div>
                     </form>
