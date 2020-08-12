@@ -609,7 +609,6 @@ class ModalCreateTaskByProcess extends Component {
                                             handleChangeAccountable={this.handleChangeAccountable}
                                             handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
                                             handleChangeTemplate={this.handleChangeTemplate}
-
                                             handleChangeTaskPriority={this.handleChangeTaskPriority}
                                             handleChangeTaskStartDate={this.handleChangeTaskStartDate}
                                             handleChangeTaskEndDate={this.handleChangeTaskEndDate}

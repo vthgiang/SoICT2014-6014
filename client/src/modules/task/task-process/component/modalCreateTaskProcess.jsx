@@ -136,22 +136,10 @@ class ModalCreateTaskProcess extends Component {
    }
 
    handleChangeName = async (value) => {
-      let { listOrganizationalUnit } = this.props
-      await this.setState(state => {
-         state.info[`${state.id}`] = {
-            ...state.info[`${state.id}`],
-            code: state.id,
-            nameTask: value,
-         }
-         return {
-            ...state,
-         }
-      })
       const modeling = this.modeler.get('modeling');
       let element1 = this.modeler.get('elementRegistry').get(this.state.id);
       modeling.updateProperties(element1, {
          name: value,
-         info: this.state.info,
       });
    }
 
@@ -198,26 +186,11 @@ class ModalCreateTaskProcess extends Component {
    }
 
    handleChangeResponsible = async (value) => {
-      // let { value } = e.target;
-      let { role } = this.props
+      let { user } = this.props
       let responsible = []
-     
-      role.list.forEach(x => {
-         value.forEach(y => {
-            if(y === x._id) {
-               responsible.push(x.name)
-            }
-         })
-      })
-      await this.setState(state => {
-         state.info[`${state.id}`] = {
-            ...state.info[`${state.id}`],
-            code: state.id,
-            responsible: value,
-            responsibleName: responsible
-         }
-         return {
-            ...state,
+      user.usercompanys.forEach(x => {
+         if (value.some(y => y === x._id)) {
+            responsible.push(x.name)
          }
       })
       const modeling = this.modeler.get('modeling');
@@ -228,25 +201,11 @@ class ModalCreateTaskProcess extends Component {
    }
 
    handleChangeAccountable = async (value) => {
-      let { role } = this.props
+      let { user } = this.props
       let accountable = []
-     
-      role.list.forEach(x => {
-         value.forEach(y => {
-            if(y === x._id) {
-               accountable.push(x.name)
-            }
-         })
-      })
-      await this.setState(state => {
-         state.info[`${state.id}`] = {
-            ...state.info[`${state.id}`],
-            code: state.id,
-            accountable: value,
-            
-         }
-         return {
-            ...state,
+      user.usercompanys.forEach(x => {
+         if (value.some(y => y === x._id)) {
+            accountable.push(x.name)
          }
       })
       const modeling = this.modeler.get('modeling');
@@ -341,8 +300,6 @@ class ModalCreateTaskProcess extends Component {
                state.info[`${element.businessObject.id}`] = {
                   ...state.info[`${element.businessObject.id}`],
                   organizationalUnit: this.props.listOrganizationalUnit[0]?._id,
-                  // followingTask: source,
-                  // proceedTask: destination
                }
             }
             return {
@@ -357,7 +314,7 @@ class ModalCreateTaskProcess extends Component {
          else {
             return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
          }
-      })
+      }, () => console.log(this.state))
    }
 
    deleteElements = (event) => {
@@ -566,10 +523,16 @@ class ModalCreateTaskProcess extends Component {
    }
 
    handleChangeInfo = (value) => {
-      // =================ĐỂ TẠM===================
-      this.setState({
-         // info: value
-      })
+      let info = {
+         ...value,
+         codeId: this.state.id
+      }
+
+      this.setState(
+         state => {
+            state.info[`${state.id}`] = value
+         }, () => console.log(this.state))
+
    }
 
    render() {
@@ -638,7 +601,6 @@ class ModalCreateTaskProcess extends Component {
                                              onChange={this.handleChangeManager}
                                              multiple={true}
                                              value={manager}
-
                                           />
                                        }
                                     </div>
@@ -714,13 +676,14 @@ class ModalCreateTaskProcess extends Component {
                                              save={this.save}
                                              done={this.done}
                                           /> */}
-                                          <AddTaskTemplate 
+                                          <AddTaskTemplate
                                              isProcess={true}
                                              id={id}
+                                             info={(info && info[`${id}`]) && info[`${id}`]}
                                              onChangeTemplateData={this.handleChangeInfo}
-                                             // handleChangeName={} // cập nhật tên vào diagram
-                                             // handleChangeResponsible={} // cập nhật hiển thi diagram
-                                             // handleChangeAccountable={} // cập nhật hiển thị diagram
+                                             handleChangeName={this.handleChangeName} // cập nhật tên vào diagram
+                                             handleChangeResponsible={this.handleChangeResponsible} // cập nhật hiển thi diagram
+                                             handleChangeAccountable={this.handleChangeAccountable} // cập nhật hiển thị diagram
                                           />
                                        </div>
                                     }
