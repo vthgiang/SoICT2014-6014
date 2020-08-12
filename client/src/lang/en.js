@@ -1497,6 +1497,11 @@ export default {
                 creator: 'Creator',
                 informed: 'Informed',
 
+                responsible_role: 'Responsible',
+                accountable_role: 'Acountable',
+                consulted_role: 'Consulted',
+                informed_role: 'Informed',
+
                 add_task: 'Add task',
                 add_title: 'Add a new task',
                 add_subtask: 'Add sub task',
@@ -1544,7 +1549,7 @@ export default {
                 next: 'Next',
                 tasks_calendar: 'Tasks Calendar',
                 model_detail_task_title: 'Detail task',
-                collaborative_tasks: 'Collaborative tasks',
+                collaborative_tasks: 'Multiple employees',
                 in_time: 'In time',
                 delayed_time: 'Delayed',
                 not_achieved: 'Overdue',

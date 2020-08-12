@@ -135,6 +135,7 @@ class TasksSchedule extends Component {
           }
 
           let x = document.getElementsByClassName("rct-item");
+
           if (x.length) {
             for (let i = 0; i < x.length; i++) {
               if (inprocessTasks[i]) {
@@ -155,7 +156,6 @@ class TasksSchedule extends Component {
                     color = "#F0D83A"; // delay
                   }
                 }
-
                 this.displayTaskProgress(inprocessTasks[i].progress, x[i], color);
               }
             }
@@ -166,7 +166,7 @@ class TasksSchedule extends Component {
       // Chia nhóm công việc theo vai trò trong công việc
       else {
         let res, acc, con, inf;
-        var inprocessTasks2 = [];
+        let inprocessTasks2 = [];
 
         res = tasks.responsibleTasks;
         acc = tasks.accountableTasks;
@@ -174,63 +174,63 @@ class TasksSchedule extends Component {
         inf = tasks.informedTasks;
 
         if (res) {
-          res.map(item => {
-            if (item.status === "Inprocess" && item.isArchived === false) {
+          for (let i = 0; i < res.length; i++) {
+            if (res[i].status === "Inprocess" && res[i].isArchived === false) {
               inprocessTasks2.push({
-                id: item._id,
+                id: res[i]._id,
                 gr: 'responsible-tasks',
-                name: item.name,
-                startDate: item.startDate,
-                endDate: item.endDate,
-                progress: item.progress
+                name: res[i].name,
+                startDate: res[i].startDate,
+                endDate: res[i].endDate,
+                progress: res[i].progress
               })
             }
-          })
+          }
         }
 
         if (acc) {
-          acc.map(item => {
-            if (item.status === "Inprocess" && item.isArchived === false) {
+          for (let i = 0; i < acc.length; i++) {
+            if (acc[i].status === "Inprocess" && acc[i].isArchived === false) {
               inprocessTasks2.push({
-                id: item._id,
+                id: acc[i]._id,
                 gr: 'accountable-tasks',
-                name: item.name,
-                startDate: item.startDate,
-                endDate: item.endDate,
-                progress: item.progress
+                name: acc[i].name,
+                startDate: acc[i].startDate,
+                endDate: acc[i].endDate,
+                progress: acc[i].progress
               })
             }
-          })
+          }
         }
 
         if (con) {
-          con.map(item => {
-            if (item.status === "Inprocess" && item.isArchived === false) {
+          for (let i = 0; i < con.length; i++) {
+            if (con[i].status === "Inprocess" && con[i].isArchived === false) {
               inprocessTasks2.push({
-                id: item._id,
+                id: con[i]._id,
                 gr: 'consulted-tasks',
-                name: item.name,
-                startDate: item.startDate,
-                endDate: item.endDate,
-                progress: item.progress
+                name: con[i].name,
+                startDate: con[i].startDate,
+                endDate: con[i].endDate,
+                progress: con[i].progress
               })
             }
-          })
+          }
         }
 
         if (inf) {
-          inf.map(item => {
-            if (item.status === "Inprocess" && item.isArchived === false) {
+          for (let i = 0; i < inf.length; i++) {
+            if (inf[i].status === "Inprocess" && inf[i].isArchived === false) {
               inprocessTasks2.push({
-                id: item._id,
+                id: inf[i]._id,
                 gr: 'informed-tasks',
-                name: item.name,
-                startDate: item.startDate,
-                endDate: item.endDate,
-                progress: item.progress
+                name: inf[i].name,
+                startDate: inf[i].startDate,
+                endDate: inf[i].endDate,
+                progress: inf[i].progress
               })
             }
-          })
+          }
         }
 
         if (inprocessTasks2) {
@@ -286,7 +286,6 @@ class TasksSchedule extends Component {
                     color = "#F0D83A"; // delay
                   }
                 }
-
                 this.displayTaskProgress(inprocessTasks2[i].progress, x[i], color);
               }
             }
@@ -311,7 +310,6 @@ class TasksSchedule extends Component {
       if (this.props.TaskOrganizationUnitDashboard) {
         taskList1 = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
         inprocessTasks1 = taskList1 && taskList1.filter(task => (task.status === "Inprocess" && task.isArchived === false));
-        console.log('inprpcess', inprocessTasks1);
         if (inprocessTasks1) {
           for (let i = 1; i <= inprocessTasks1.length; i++) {
             let responsibleName = [];
@@ -333,11 +331,9 @@ class TasksSchedule extends Component {
               multiResponsibleEmployee = true;
             }
 
-            // id.push(responsibleEmployeeIds[0])
           }
           // Loại bỏ các id trùng nhau
           if (groupName.length) {
-            console.log('GRName:\n\n\n', id, groupName);
             for (let i = 0; i < id.length; i++) {
               let idx = distinctId.indexOf(id[i]);
 
@@ -374,25 +370,25 @@ class TasksSchedule extends Component {
 
           if (res && res.length) distinctGroupName.push({
             id: "responsible-tasks",
-            title: translate('task.task_management.responsible')
+            title: translate('task.task_management.responsible_role')
           })
           if (acc && acc.length) distinctGroupName.push({
             id: "accountable-tasks",
-            title: translate('task.task_management.accountable')
+            title: translate('task.task_management.accountable_role')
           })
           if (con && con.length) distinctGroupName.push({
             id: "consulted-tasks",
-            title: translate('task.task_management.consulted')
+            title: translate('task.task_management.consulted_role')
           })
           if (inf && inf.length) distinctGroupName.push({
             id: "informed-tasks",
-            title: translate('task.task_management.informed')
+            title: translate('task.task_management.informed_role')
           })
         }
       }
     }
-    let group = [{ id: "no-data", title: "" }]
-    console.log('group', distinctGroupName);
+    let group = [{ id: "no-data", title: "" }];
+
     return distinctGroupName.length ? distinctGroupName : group;
   }
 
@@ -400,17 +396,22 @@ class TasksSchedule extends Component {
 
   displayTaskProgress = async (progress, x, color) => {
     if (x) {
-      let d, child;
-
+      let d, child, pr;
+      pr = progress;
       d = document.createElement('div');
       d.setAttribute("class", "task-progress");
-      d.style.width = `${progress}%`
+      d.style.width = `${progress}%`;
+
       d.style.backgroundColor = color;
+
       child = x.childElementCount;
 
-      if (child === 1) x.appendChild(d);
+      if (child === 1) {
+        await x.appendChild(d);
+      }
     }
   }
+
 
 
   handleItemClick = async (itemId) => {
@@ -515,13 +516,24 @@ class TasksSchedule extends Component {
   };
 
   render() {
-    const { defaultTimeStart, defaultTimeEnd } = this.state;
     const { tasks, translate } = this.props;
-    let { TaskOrganizationUnitDashboard } = this.props;
+    const { TaskOrganizationUnitDashboard } = this.props;
+    const { defaultTimeStart, defaultTimeEnd } = this.state;
+
     let task = tasks && tasks.task;
     let today = new Date();
-    this.displayTaskProgress();
-    // let sidebarWidth = TaskOrganizationUnitDashboard ? 150 : 0;
+
+    let rctHeadText = TaskOrganizationUnitDashboard ? translate('task.task_management.responsible') : translate('task.task_management.role');
+    let rctHead = document.getElementsByClassName("rct-header-root");
+
+    if (rctHead[0]) {
+      let first = rctHead[0].children;
+      if (first[0]) {
+        first[0].setAttribute("id", "rct-header-text")
+        first[0].innerHTML = rctHeadText;
+      }
+    }
+
     return (
       <React.Fragment>
         <div className="box-body qlcv">
