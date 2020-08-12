@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DialogModal, ErrorLabel, DatePicker, SelectBox } from '../../../../common-components';
+
 import { RecommendProcureFromValidator } from './RecommendProcureFromValidator';
+
 import { RecommendProcureActions } from '../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
+
 class RecommendProcureEditForm extends Component {
     constructor(props) {
         super(props);
@@ -12,6 +16,7 @@ class RecommendProcureEditForm extends Component {
             status: "Chờ phê duyệt"
         };
     }
+
     // Bắt sự kiện thay đổi mã phiếu
     handleRecommendNumberChange = (e) => {
         let value = e.target.value;
@@ -138,6 +143,7 @@ class RecommendProcureEditForm extends Component {
             return this.props.updateRecommendProcure(this.state._id, this.state);
         }
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {
             return {
@@ -164,11 +170,13 @@ class RecommendProcureEditForm extends Component {
     }
 
     render() {
-        const { _id, translate, recommendProcure, user } = this.props;
-        var userlist = user.list;
+        const { _id } = this.props;
+        const { translate, recommendProcure, user } = this.props;
         const { recommendNumber, dateCreate, proponent, equipment, supplier, total, unit, estimatePrice,
             errorOnEquipment, errorOnTotal, errorOnUnit } = this.state;
-        console.log('this.state', this.state);
+
+        var userlist = user.list;
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -178,13 +186,18 @@ class RecommendProcureEditForm extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
+                    {/* Form chỉnh sửa phiếu đề nghị mua sắm thiết bị */}
                     <form className="form-group" id="form-edit-recommendprocure">
                         <div className="col-md-12">
+
                             <div className="col-sm-6">
+                                {/* Mã phiếu */}
                                 <div className="form-group">
                                     <label>Mã phiếu<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} />
                                 </div>
+
+                                {/* Ngày lập */}
                                 <div className="form-group">
                                     <label>Ngày lập<span className="text-red">*</span></label>
                                     <DatePicker
@@ -193,6 +206,8 @@ class RecommendProcureEditForm extends Component {
                                         onChange={this.handleDateCreateChange}
                                     />
                                 </div>
+
+                                {/* Người đề nghị */}
                                 <div className={`form-group`}>
                                     <label>Người đề nghị</label>
                                     <div>
@@ -205,34 +220,44 @@ class RecommendProcureEditForm extends Component {
                                                     return { value: x._id, text: x.name + " - " + x.email }
                                                 })}
                                                 onChange={this.handleProponentChange}
-                                                value={proponent._id}
+                                                value={proponent ? proponent._id : null}
                                                 multiple={false}
                                                 disabled
                                             />
                                         </div>
                                     </div>
                                 </div>
-                                <div className={`form-group ${errorOnEquipment === undefined ? "" : "has-error"}`}>
+
+                                {/* Thiết bị đề nghị mua */}
+                                <div className={`form-group ${!errorOnEquipment ? "" : "has-error"}`}>
                                     <label>Thiết bị đề nghị mua<span className="text-red">*</span></label>
                                     <textarea className="form-control" rows="3" style={{ height: 34 }} name="equipment" value={equipment} onChange={this.handleEquipmentChange}></textarea>
                                     <ErrorLabel content={errorOnEquipment} />
                                 </div>
                             </div>
+
                             <div className="col-sm-6">
+                                {/* Nhà cung cấp */}
                                 <div className="form-group">
                                     <label>Nhà cung cấp</label>
                                     <input type="text" className="form-control" name="supplier" value={supplier} onChange={this.handleSupplierChange} />
                                 </div>
-                                <div className={`form-group ${errorOnTotal === undefined ? "" : "has-error"}`}>
+
+                                {/* Số lượng */}
+                                <div className={`form-group ${!errorOnTotal ? "" : "has-error"}`}>
                                     <label>Số lượng<span className="text-red">*</span></label>
                                     <input type="number" className="form-control" name="total" value={total} onChange={this.handleTotalChange} />
                                     <ErrorLabel content={errorOnTotal} />
                                 </div>
-                                <div className={`form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
+
+                                {/* Đơn vị tính */}
+                                <div className={`form-group ${!errorOnUnit ? "" : "has-error"}`}>
                                     <label>Đơn vị tính<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="unit" value={unit} onChange={this.handleUnitChange} autoComplete="off" placeholder="Đơn vị tính" />
                                     <ErrorLabel content={errorOnUnit} />
                                 </div>
+
+                                {/* Giá trị dự tính */}
                                 <div className="form-group">
                                     <label>Giá trị dự tính (VNĐ)</label>
                                     <input type="number" className="form-control" name="estimatePrice" value={estimatePrice} onChange={this.handleEstimatePriceChange} />

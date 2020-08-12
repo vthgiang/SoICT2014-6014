@@ -371,7 +371,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         else if (numOfInactiveResp === numOfResponsible) {
             let { translate } = this.props;
             Swal.fire({
-                title: translate('task.task_perform.err_has_accountable'),
+                title: translate('task.task_perform.err_has_responsible'),
                 type: 'Warning',
                 showCancelButton: false,
                 confirmButtonColor: '#3085d6',
@@ -423,7 +423,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         if (numOfInactiveResp === numOfResponsible) {
             let { translate } = this.props;
             Swal.fire({
-                title: translate('task.task_perform.err_has_accountable'),
+                title: translate('task.task_perform.err_has_responsible'),
                 type: 'Warning',
                 showCancelButton: false,
                 confirmButtonColor: '#3085d6',

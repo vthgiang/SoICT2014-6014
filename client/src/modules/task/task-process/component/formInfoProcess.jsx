@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { SelectBox } from '../../../../common-components/index';
+import { SelectBox, DatePicker } from '../../../../common-components/index';
 import { withTranslate } from "react-redux-multilingual";
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { UserActions } from '../../../super-admin/user/redux/actions';
@@ -44,7 +44,10 @@ class FormInfoProcess extends Component {
         } else return true;
     }
 
-
+    showMore =  (e) => {
+        e.preventDefault()
+        this.setState({showMore: 1 });
+    }
     handleChangeName = (e) => {
         const { value } = e.target;
         this.setState({
@@ -83,11 +86,35 @@ class FormInfoProcess extends Component {
         })
         this.props.handleChangeAccountable(value);
     }
+    handleChangeTaskStartDate = (value) => {
+        this.setState({
+            startDate: value,
+        })
+        this.props.handleChangeTaskStartDate(value);
+    }
 
+    handleChangeTaskEndDate = (value) => {
+        this.setState({
+            endDate: value,
+        });
+
+        this.props.handleChangeTaskEndDate(value)
+    }
+    
+    handleChangeTaskPriority = (event) => {
+        let {value} = event.target;
+        this.setState(state => {
+            return {
+                ...state,
+                priority: value,
+            };
+        });
+        this.props.handleChangeTaskPriority(value)
+    }
     render() {
         const { user, translate, role, tasktemplates } = this.props;
-        const { nameTask, description, responsible, accountable, organizationalUnit, taskTemplate } = this.state;
-        const { id, info, action, listOrganizationalUnit, disabled, listUser, astemplate } = this.props;
+        const { nameTask, description, responsible, accountable, organizationalUnit, taskTemplate,showMore } = this.state;
+        const { id, info, action, listOrganizationalUnit, disabled } = this.props;
         let usersOfChildrenOrganizationalUnit, listTaskTemplate, listUserAccountable = [], listUserResponsible = [];
         if (user && user.usersOfChildrenOrganizationalUnit) {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
@@ -179,7 +206,7 @@ class FormInfoProcess extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 // items={unitMembers}
-                                items={astemplate ? listItem : listUserResponsible}
+                                items={listItem}
                                 onChange={this.handleChangeResponsible}
                                 multiple={true}
                                 value={responsible}
@@ -197,7 +224,7 @@ class FormInfoProcess extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 // items={unitMembers}
-                                items={astemplate ? listItem : listUserAccountable}
+                                items={listItem}
                                 onChange={this.handleChangeAccountable}
                                 multiple={true}
                                 value={accountable}
@@ -205,7 +232,46 @@ class FormInfoProcess extends Component {
                             />
                         }
                     </div>
+                    { showMore && 
+                        <React.Fragment>
+                            <div className="form-group">
+                        <label htmlFor="exampleFormControlSelect1" style={{ float: 'left' }} >Người thực hiện</label>
+                        {
+                            // unitMembers &&
+                            <SelectBox
+                                id={`select-responsible-employee-${id}-${action}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                // items={unitMembers}
+                                items={listItem}
+                                onChange={this.handleChangeResponsible}
+                                multiple={true}
+                                value={responsible}
+                                disabled={disabled}
+                            />
+                        }
+                    </div>
 
+                    <div className="form-group">
+                        <label htmlFor="exampleFormControlSelect2" style={{ float: 'left' }} >Người phê duyệt</label>
+                        {
+                            // unitMembers &&
+                            <SelectBox
+                                id={`select-accountable-employee-${id}-${action}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                // items={unitMembers}
+                                items={listItem}
+                                onChange={this.handleChangeAccountable}
+                                multiple={true}
+                                value={accountable}
+                                disabled={disabled}
+                            />
+                        }
+                    </div>
+                        </React.Fragment>
+                    }
+                    <button className='btn btn-primary' onClick={(e)=> this.showMore(e)} >Chi tiết </button> &nbsp;
                     <button className='btn btn-primary' onClick={this.props.done}> Hoàn thành</button>
                 </form>
             </div>

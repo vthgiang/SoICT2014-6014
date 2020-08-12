@@ -70,22 +70,6 @@ export function assetType(state = initState, action) {
                 listAssetTypes: [...state.listAssetTypes, action.payload],
             };
         
-        case AssetTypeConstants.GET_ASSET_TYPE_FAILURE:
-        case AssetTypeConstants.CREATE_ASSET_TYPE_FAILURE:
-            return {
-                ...state,
-                isLoading: false,
-                error: action.error.message
-            };
-
-        case AssetTypeConstants.GET_DOCUMENT_DOMAINS_FAILE:
-        case AssetTypeConstants.CREATE_DOCUMENT_DOMAIN_FAILE:
-        case AssetTypeConstants.DELETE_DOCUMENT_DOMAIN_FAILE:
-            return {
-                ...state,
-                isLoading: false,
-            };
-            
         case AssetTypeConstants.GET_DOCUMENT_DOMAINS_SUCCESS:
         case AssetTypeConstants.CREATE_DOCUMENT_DOMAIN_SUCCESS:
             return {
@@ -96,6 +80,7 @@ export function assetType(state = initState, action) {
                     types: action.payload
                 }
             };
+        
         case AssetTypeConstants.EDIT_DOCUMENT_DOMAIN_SUCCESS:
             index = findIndex(state.administration.types.list, action.payload._id);
             if (index !== -1) state.administration.types.list[index] = action.payload;
@@ -105,6 +90,7 @@ export function assetType(state = initState, action) {
                 ...state,
                 isLoading: false
             };
+        
         case AssetTypeConstants.DELETE_DOCUMENT_DOMAIN_SUCCESS:
             return {
                 ...state,
@@ -113,6 +99,22 @@ export function assetType(state = initState, action) {
                     ...state.administration,
                     types: action.payload
                 }
+            };
+        
+        case AssetTypeConstants.GET_ASSET_TYPE_FAILURE:
+            case AssetTypeConstants.CREATE_ASSET_TYPE_FAILURE:
+            return {
+                ...state,
+                isLoading: false,
+                error: action.error.message
+            };
+
+        case AssetTypeConstants.GET_DOCUMENT_DOMAINS_FAILE:
+            case AssetTypeConstants.CREATE_DOCUMENT_DOMAIN_FAILE:
+            case AssetTypeConstants.DELETE_DOCUMENT_DOMAIN_FAILE:
+            return {
+                ...state,
+                isLoading: false,
             };
 
         default:
