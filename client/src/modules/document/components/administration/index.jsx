@@ -6,44 +6,49 @@ import AdministrationDocumentCategories from './categories';
 import AdministrationDocumentDomains from './domains';
 import AdministrationDocumentListData from './list-data';
 import AdministrationStatisticsReport from './statistics-report';
+import AdministrationDocumentArchives from './archives';
 
 class ManageDocument extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
+        this.state = {
 
-         }
+        }
     }
-    render() { 
+    render() {
         const { translate } = this.props;
-        return ( 
+        return (
             <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">
                     <li className="active"><a href="#administration-document-list-data" data-toggle="tab">{translate('document.data')}</a></li>
                     <li><a href="#administration-document-categories" data-toggle="tab">{translate('document.category')}</a></li>
                     <li><a href="#administration-document-domains" data-toggle="tab">{translate('document.domain')}</a></li>
                     <li><a href="#administration-statistics-report" data-toggle="tab">{translate('document.statistics_report')}</a></li>
+                    <li><a href="#administration-document-archives" data-toggle="tab">Lưu trữ</a></li>
                 </ul>
                 <div className="tab-content">
                     <div className="tab-pane active" id="administration-document-list-data">
-                        <AdministrationDocumentListData/>
+                        <AdministrationDocumentListData />
                     </div>
                     <div className="tab-pane" id="administration-document-categories">
-                        <AdministrationDocumentCategories/>
+                        <AdministrationDocumentCategories />
                     </div>
                     <div className="tab-pane" id="administration-document-domains">
-                        <AdministrationDocumentDomains/>
+                        <AdministrationDocumentDomains />
                     </div>
                     <div className="tab-pane" id="administration-statistics-report">
-                        <AdministrationStatisticsReport/>
+                        <AdministrationStatisticsReport />
+                    </div>
+                    <div className="tab-pane" id="administration-document-archives">
+                        <AdministrationDocumentArchives />
                     </div>
                 </div>
             </div>
-         );
+        );
     }
 }
- 
- 
+
+
 const mapStateToProps = state => state;
 
-export default connect( mapStateToProps, null )( withTranslate(ManageDocument) );
+export default connect(mapStateToProps, null)(withTranslate(ManageDocument));

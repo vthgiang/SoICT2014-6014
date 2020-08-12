@@ -95,7 +95,7 @@ function getAllTaskByRole(id, role) {
  * @param {*} endDate kết thúc công việc
  */
 
-function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime=false) { //user, -- param
+function getResponsibleTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false) { //user, -- param
     return dispatch => {
         dispatch({
             type: taskManagementConstants.GETTASK_RESPONSIBLE_BYUSER_REQUEST
@@ -131,12 +131,12 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
  * @param {*} endDate kết thúc công việc
  */
 
-function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime=false) {
+function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false) {
     return dispatch => {
         dispatch({
             type: taskManagementConstants.GETTASK_ACCOUNTABLE_BYUSER_REQUEST
         });
-        taskManagementService.getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime)
+        taskManagementService.getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_ACCOUNTABLE_BYUSER_SUCCESS,
@@ -167,13 +167,13 @@ function getAccountableTaskByUser(unit, number, perPage, status, priority, speci
  */
 
 
-function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime=false) {
+function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false) {
     return dispatch => {
         dispatch({
             type: taskManagementConstants.GETTASK_CONSULTED_BYUSER_REQUEST
         });
 
-        taskManagementService.getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime)
+        taskManagementService.getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_CONSULTED_BYUSER_SUCCESS,
@@ -204,13 +204,13 @@ function getConsultedTaskByUser(unit, number, perPage, status, priority, special
  */
 
 
-function getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime=false) {
+function getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false) {
     return dispatch => {
         dispatch({
             type: taskManagementConstants.GETTASK_INFORMED_BYUSER_REQUEST
         });
 
-        taskManagementService.getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime)
+        taskManagementService.getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_INFORMED_BYUSER_SUCCESS,
@@ -239,13 +239,13 @@ function getInformedTaskByUser(unit, number, perPage, status, priority, special,
  * @param {*} endDate kết thúc công việc
  */
 
-function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime=false) {
+function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false) {
     return dispatch => {
         dispatch({
             type: taskManagementConstants.GETTASK_CREATOR_BYUSER_REQUEST
         });
 
-        taskManagementService.getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, aPeriodOfTime)
+        taskManagementService.getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime)
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.GETTASK_CREATOR_BYUSER_SUCCESS,

@@ -12,6 +12,7 @@ import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
 import { TaskProcessActions } from "../redux/actions";
 import customModule from './custom'
+import { TaskFormValidator } from "../../task-management/component/taskFormValidator";
 //bpmn-nyan
 // import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
 // import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
@@ -254,6 +255,54 @@ class ModalCreateTaskByProcess extends Component {
         })
     }
 
+
+    handleChangeTaskStartDate = (value) => {
+        this.validateTaskStartDate(value, true);
+    }
+    validateTaskStartDate = (value, willUpdateState = true) => {
+        let { translate } = this.props;
+        let msg = TaskFormValidator.validateTaskStartDate(value, this.state.info[`${this.state.id}`].endDate ? this.state.info[`${this.state.id}`].endDate : "", translate);
+
+        if (willUpdateState) {
+            this.state.info[`${this.state.id}`].startDate = value;
+            this.state.info[`${this.state.id}`].errorOnStartDate = msg;
+            this.setState(state => {
+                return {
+                    ...state,
+                };
+            });
+        }
+        return msg === undefined;
+    }
+
+    handleChangeTaskEndDate = (value) => {
+        this.validateTaskEndDate(value, true);
+    }
+    validateTaskEndDate = (value, willUpdateState = true) => {
+        let { translate } = this.props;
+        let msg = TaskFormValidator.validateTaskEndDate(this.state.info[`${this.state.id}`].startDate ? this.state.info[`${this.state.id}`].startDate : "", value, translate);
+
+        if (willUpdateState) {
+            this.state.info[`${this.state.id}`].endDate = value;
+            this.state.info[`${this.state.id}`].errorOnEndDate = msg;
+            this.setState(state => {
+                return {
+                    ...state,
+                };
+            });
+        }
+        console.log('state.info', this.state);
+        return msg === undefined;
+    }
+
+    handleChangeTaskPriority = (value) => {
+        this.state.info[`${this.state.id}`].priority = value;
+        this.setState(state => {
+            return {
+                ...state,
+            };
+        });
+    }
 
     // Các hàm  xử lý sự kiện của bpmn
 
@@ -536,6 +585,11 @@ class ModalCreateTaskByProcess extends Component {
                                             handleChangeAccountable={this.handleChangeAccountable}
                                             handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
                                             handleChangeTemplate={this.handleChangeTemplate}
+
+                                            handleChangeTaskPriority={this.handleChangeTaskPriority}
+                                            handleChangeTaskStartDate={this.handleChangeTaskStartDate}
+                                            handleChangeTaskEndDate={this.handleChangeTaskEndDate}
+
                                             save={this.save}
                                         />
                                     </div>
