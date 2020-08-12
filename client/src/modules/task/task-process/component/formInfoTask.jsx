@@ -120,7 +120,7 @@ class FormInfoTask extends Component {
         const { user, translate, role, tasktemplates } = this.props;
         const { id, info, action, listOrganizationalUnit, disabled, template, listUser, task,responsible,accountable } = this.props;
 
-        const { nameTask, description, organizationalUnit, taskTemplate } = this.state;
+        const { nameTask, description, organizationalUnit, taskTemplate, startDate, endDate, priority } = this.state;
         console.log(info)
         let usersOfChildrenOrganizationalUnit, listTaskTemplate, listUserAccountable = [], listUserResponsible = [];
         if (user && user.usersOfChildrenOrganizationalUnit) {
