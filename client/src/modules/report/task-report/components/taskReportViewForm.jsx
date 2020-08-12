@@ -24,7 +24,7 @@ class TaskReportViewForm extends Component {
         const time = new Date(data);
         const m = time.getMonth();
         const y = time.getFullYear();
-        return `${m + 1}-${y}`;
+        return `${y}-${m + 1}`;
     }
 
     render() {
@@ -53,12 +53,10 @@ class TaskReportViewForm extends Component {
                             code: task.code,
                             value: task.value,
                         }
-
                     })
                 }
             });
         }
-        console.log('listTask', newlistTaskEvaluation);
 
         let groupDataByMonth;
         if (newlistTaskEvaluation) {
@@ -67,7 +65,6 @@ class TaskReportViewForm extends Component {
                 return groups;
             }, {});
         }
-        console.log("groupData", groupDataByMonth);
 
         let output;
         if (groupDataByMonth) {
@@ -76,7 +73,6 @@ class TaskReportViewForm extends Component {
                 const allTasks = datapoints.flatMap(point => point.task);
                 for (const { code, value } of allTasks) {
                     codes[code] = (codes[code] || 0) + value;
-
                 }
                 return {
                     time,
