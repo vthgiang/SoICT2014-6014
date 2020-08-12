@@ -288,7 +288,7 @@ class AddTaskTemplate extends Component {
                     id: nextProps.id,
                     newTemplate: {
                         organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
-                        name: (info && info.nameTask) ? info.name : '',
+                        name: (info && info.name) ? info.name : '',
                         // readByEmployees: [],
                         responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees : [],
                         accountableEmployees: (info && info.accountableEmployees) ? info.accountableEmployees : [],
@@ -346,10 +346,9 @@ class AddTaskTemplate extends Component {
     render() {
 
         var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean, listRoles = [];
-        const { newTemplate, showMore } = this.state;
+        const { newTemplate, showMore, accountableEmployees, responsibleEmployees,  } = this.state;
         const { department, user, translate, tasktemplates, isProcess } = this.props;
         if (newTemplate.taskActions) taskActions = newTemplate.taskActions;
-        console.log(this.props.info)
         if (newTemplate.taskInformations) taskInformations = newTemplate.taskInformations;
 
         if (user.organizationalUnitsOfUser) {
@@ -381,7 +380,6 @@ class AddTaskTemplate extends Component {
 
         var allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
-
         return (
             <React.Fragment>
 
@@ -481,6 +479,7 @@ class AddTaskTemplate extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={unitMembers}
+                                            value = {responsibleEmployees}
                                             onChange={this.handleTaskTemplateResponsible}
                                             multiple={true}
                                             options={{ placeholder: `${translate('task_template.performer')}` }}
@@ -496,6 +495,7 @@ class AddTaskTemplate extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={unitMembers}
+                                            value = {accountableEmployees}
                                             onChange={this.handleTaskTemplateAccountable}
                                             multiple={true}
                                             options={{ placeholder: `${translate('task_template.approver')}` }}
