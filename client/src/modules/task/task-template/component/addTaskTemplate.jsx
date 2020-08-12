@@ -14,11 +14,13 @@ import { DialogModal, SelectBox, ErrorLabel } from '../../../../common-component
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import './tasktemplate.css';
+import { getStorage } from '../../../../config';
 
 class AddTaskTemplate extends Component {
     constructor(props) {
         super(props);
-
+console.log('quangconstructor');
+        let userId = getStorage("userId")
         this.state = {
             newTemplate: {
                 organizationalUnit: '',
@@ -29,7 +31,7 @@ class AddTaskTemplate extends Component {
                 consultedEmployees: [],
                 informedEmployees: [],
                 description: '',
-                creator: '',
+                creator: userId,
                 formula: '',
                 priority: 3,
                 taskActions: [],
@@ -213,7 +215,7 @@ class AddTaskTemplate extends Component {
                 ...state,
             };
         });
-        this.props.handleChangeResponsible(value)
+        this.props.isProcess && this.props.handleChangeResponsible(value)
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
@@ -224,7 +226,7 @@ class AddTaskTemplate extends Component {
                 ...state,
             };
         });
-        this.props.handleChangeAccountable(value)
+        this.props.isProcess && this.props.handleChangeAccountable(value)
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
@@ -288,14 +290,14 @@ class AddTaskTemplate extends Component {
                     id: nextProps.id,
                     newTemplate: {
                         organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
-                        name: (info && info.nameTask) ? info.name : '',
+                        name: (info && info.name) ? info.name : '',
                         // readByEmployees: [],
                         responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees : [],
                         accountableEmployees: (info && info.accountableEmployees) ? info.accountableEmployees : [],
                         consultedEmployees: (info && info.consultedEmployees) ? info.consultedEmployees : [],
                         informedEmployees: (info && info.informedEmployees) ? info.informedEmployees : [],
                         description: (info && info.description) ? info.description : '',
-                        creator: (info && info.creator) ? info.creator : '',
+                        creator: (info && info.creator) ? info.creator : getStorage("userId"),
                         formula: (info && info.formula) ? info.formula : '',
                         priority: (info && info.priority) ? info.priority : 3,
                         taskActions: (info && info.taskActions) ? info.taskActions : [],
@@ -304,6 +306,18 @@ class AddTaskTemplate extends Component {
                     showMore: this.props.isProcess ? false : true,
                 }
             })
+            this.props.getDepartment();
+            let { user } = this.props;
+            let defaultUnit;
+            if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
+                item.dean === this.state.currentRole
+                || item.viceDean === this.state.currentRole
+                || item.employee === this.state.currentRole);
+            if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
+                // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+                defaultUnit = user.organizationalUnitsOfUser[0]
+            }
+            this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
             return false;
         }
 
@@ -346,10 +360,9 @@ class AddTaskTemplate extends Component {
     render() {
 
         var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean, listRoles = [];
-        const { newTemplate, showMore } = this.state;
+        const { newTemplate, showMore, accountableEmployees, responsibleEmployees,  } = this.state;
         const { department, user, translate, tasktemplates, isProcess } = this.props;
         if (newTemplate.taskActions) taskActions = newTemplate.taskActions;
-        console.log(this.props.info)
         if (newTemplate.taskInformations) taskInformations = newTemplate.taskInformations;
 
         if (user.organizationalUnitsOfUser) {
@@ -381,7 +394,6 @@ class AddTaskTemplate extends Component {
 
         var allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
-
         return (
             <React.Fragment>
 
@@ -403,6 +415,7 @@ class AddTaskTemplate extends Component {
                                             return { value: x._id, text: x.name };
                                         })
                                     }
+                                    value={newTemplate.organizationalUnit}
                                     onChange={this.handleTaskTemplateUnit}
                                     multiple={false}
                                     value={newTemplate.organizationalUnit}
@@ -425,6 +438,7 @@ class AddTaskTemplate extends Component {
                                         items={
                                             listRoles.map( x => { return { value : x._id, text : x.name}})
                                         }
+                                        value={newTemplate.readByEmployees}
                                         onChange={this.handleTaskTemplateRead}
                                         multiple={true}
                                         options={{placeholder: `${translate('task_template.permission_view')}`}}
@@ -481,6 +495,7 @@ class AddTaskTemplate extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={unitMembers}
+                                            value={newTemplate.responsibleEmployees}
                                             onChange={this.handleTaskTemplateResponsible}
                                             multiple={true}
                                             options={{ placeholder: `${translate('task_template.performer')}` }}
@@ -496,6 +511,7 @@ class AddTaskTemplate extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={unitMembers}
+                                            value={newTemplate.accountableEmployees}
                                             onChange={this.handleTaskTemplateAccountable}
                                             multiple={true}
                                             options={{ placeholder: `${translate('task_template.approver')}` }}
@@ -511,6 +527,7 @@ class AddTaskTemplate extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={allUnitsMember}
+                                            value={newTemplate.consultedEmployees}
                                             onChange={this.handleTaskTemplateConsult}
                                             multiple={true}
                                             options={{ placeholder: `${translate('task_template.supporter')}` }}
@@ -526,6 +543,7 @@ class AddTaskTemplate extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={allUnitsMember}
+                                            value={newTemplate.informedEmployees}
                                             onChange={this.handleTaskTemplateInform}
                                             multiple={true}
                                             options={{ placeholder: `${translate('task_template.observer')}` }}

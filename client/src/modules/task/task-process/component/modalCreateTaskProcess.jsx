@@ -127,7 +127,6 @@ class ModalCreateTaskProcess extends Component {
    }
 
    handleUpdateElement = (abc) => {
-      console.log("hihihihi")
       const modeling = this.modeler.get('modeling');
       let element1 = this.modeler.get('elementRegistry').get(this.state.id);
       modeling.updateProperties(element1, {
@@ -314,7 +313,7 @@ class ModalCreateTaskProcess extends Component {
          else {
             return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
          }
-      }, () => console.log(this.state))
+      })
    }
 
    deleteElements = (event) => {
@@ -349,32 +348,33 @@ class ModalCreateTaskProcess extends Component {
          }
       })
       let data = {
-         nameProcess: this.state.processName,
-         description: this.state.processDescription,
-         creator: this.state.userId,
-         viewer: this.state.viewer,
-         manager: this.state.manager,
+         info: this.state.info,
          xmlDiagram: this.state.xmlDiagram,
-         infoTask: this.state.info
+         processName: this.state.processName,
+         processDescription: this.state.processDescription,
+         manager: this.state.manager,
+         viewer: this.state.viewer,
+         creator: getStorage("userId")
       }
-      for (const i in data.infoTask) {
-         if (!data.infoTask[i].organizationalUnit) {
-            data.infoTask[i].organizationalUnit = department.list[0]._id
-         }
-      }
+      console.log(data)
+      // for (const i in data.infoTask) {
+      //    if (!data.infoTask[i].organizationalUnit) {
+      //       data.infoTask[i].organizationalUnit = department.list[0]._id
+      //    }
+      // }
       await this.props.createXmlDiagram(data)
-      this.setState(state => {
-         return {
-            ...state,
-            processName: null,
-            processDescription: '',
-            viewer: undefined,
-            manager: undefined,
-            save: true,
-            selectedCreate: 'info',
-            showInfo: false
-         }
-      });
+      // this.setState(state => {
+      //    return {
+      //       ...state,
+      //       processName: null,
+      //       processDescription: '',
+      //       viewer: undefined,
+      //       manager: undefined,
+      //       save: true,
+      //       selectedCreate: 'info',
+      //       showInfo: false
+      //    }
+      // });
    }
 
    downloadAsSVG = () => {
@@ -531,7 +531,7 @@ class ModalCreateTaskProcess extends Component {
       this.setState(
          state => {
             state.info[`${state.id}`] = value
-         }, () => console.log(this.state))
+         })
 
    }
 
