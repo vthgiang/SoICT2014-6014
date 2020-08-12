@@ -236,8 +236,8 @@ class EvaluateByAccountableEmployee extends Component {
 
                 let tmp = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Accountable"));
                 if (tmp) {
-                    if( tmp.organizationalUnit ){
-                        unit =  tmp.organizationalUnit._id;
+                    if (tmp.organizationalUnit) {
+                        unit = tmp.organizationalUnit._id;
                     };
                     let kpi = tmp.kpis;
 
@@ -1184,7 +1184,7 @@ class EvaluateByAccountableEmployee extends Component {
             cancelButtonColor: '#d33',
             confirmButtonText: translate('general.yes'),
             cancelButtonText: translate('general.no'),
-        }).then( async (res) => {
+        }).then(async (res) => {
             if (res.value) {
                 // Xóa Evaluation
                 let taskId, evaluationId;
@@ -1392,7 +1392,11 @@ class EvaluateByAccountableEmployee extends Component {
                                             id={`select-kpi-personal-evaluate-${perform}-${role}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={((KPIPersonalManager && KPIPersonalManager.kpiSets) ? KPIPersonalManager.kpiSets.kpis : []).map(x => { return { value: x._id, text: x.name } })}
+                                            items={
+                                                (KPIPersonalManager && KPIPersonalManager.kpiSets) ?
+                                                    (KPIPersonalManager.kpiSets.kpis.filter(e => (e.type === 1)).map(x => { return { value: x._id, text: x.name } }))
+                                                    : []
+                                            }
                                             onChange={this.handleKpiChange}
                                             multiple={true}
                                             value={kpi}

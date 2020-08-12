@@ -24,7 +24,7 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (data) => {
     let kpiSets = await EmployeeKpiSet.find({
         creator: userId,
         organizationalUnit: departmentId
-    }).populate({ path: 'kpis', select: 'name' });
+    }).populate({ path: 'kpis', select: 'name type' });
 
     let kpiSetsByMonth = kpiSets.find(e => (e.date.getMonth() === monthOfParams && e.date.getFullYear() === yearOfParams));
 

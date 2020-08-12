@@ -13,9 +13,11 @@ const option = {
 };
 
 exports.backupDatabase = (option) => {
-    console.log("Backup database.\n")
-    exec(`mongodump --host="${option.host}" --port="${option.dbPort}" --out="${option.store}" --db="${option.dbName}" --username="${option.username}" --password="${option.password}"`, 
-    function (error, stdout, stderr) {
+    console.log("Backup database.\n");
+    const command = process.env.DB_AUTHENTICATION === 'true' ?
+        `mongodump --host="${option.host}" --port="${option.dbPort}" --out="${option.store}" --db="${option.dbName}" --username="${option.username}" --password="${option.password}"` :
+        `mongodump --host="${option.host}" --port="${option.dbPort}" --out="${option.store}" --db="${option.dbName}"`;
+    exec(command, function (error, stdout, stderr) {
         if(error !== null){
             console.log("Backup database error\n", error, stdout, stderr);
         }
@@ -24,8 +26,10 @@ exports.backupDatabase = (option) => {
 
 exports.backupScheduler = new CronJob(BACKUP_TIME, function() {
         console.log("Start backup database.\n")
-        exec(`mongodump --host="${option.host}" --port="${option.dbPort}" --out="${option.store}" --db="${option.dbName}" --username="${option.username}" --password="${option.password}"`, 
-        function (error, stdout, stderr) {
+        const command = process.env.DB_AUTHENTICATION === 'true' ?
+            `mongodump --host="${option.host}" --port="${option.dbPort}" --out="${option.store}" --db="${option.dbName}" --username="${option.username}" --password="${option.password}"` :
+            `mongodump --host="${option.host}" --port="${option.dbPort}" --out="${option.store}" --db="${option.dbName}"`;
+        exec(command, function (error, stdout, stderr) {
             if(error !== null){
                 console.log("Backup database error\n", error, stdout, stderr);
             }

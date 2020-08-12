@@ -5,6 +5,7 @@ import {SelectBox} from '../../../../common-components';
 import ScheduleMonthlyForm from './scheduleMonthlyForm';
 import ScheduleWeeklyForm from './ScheduleWeeklyForm';
 import ScheduleYearlyForm from './ScheduleYearlyForm';
+import { LogActions } from '../redux/actions';
 
 class LogSystem extends Component {
 
@@ -90,7 +91,7 @@ class LogSystem extends Component {
                                             <button className="btn btn-success">Save</button>
                                         }
                                     </React.Fragment> : 
-                                    <button className="btn btn-success">Sao lưu</button>
+                                    <button className="btn btn-success" onClick={this.props.backupDatabase}>Sao lưu</button>
                                 }
                             </div>
                         </div>
@@ -151,6 +152,7 @@ function mapState(state) {
     return { log }
 }
 const actions = {
+    backupDatabase: LogActions.backupDatabase
 }
 
 const connectedLogSystem = connect(mapState, actions)(withTranslate(LogSystem));
