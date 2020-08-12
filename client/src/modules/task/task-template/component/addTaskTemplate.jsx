@@ -213,7 +213,7 @@ console.log('quangconstructor');
                 ...state,
             };
         });
-        this.props.handleChangeResponsible(value)
+        this.props.isProcess && this.props.handleChangeResponsible(value)
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
@@ -224,7 +224,7 @@ console.log('quangconstructor');
                 ...state,
             };
         });
-        this.props.handleChangeAccountable(value)
+        this.props.isProcess && this.props.handleChangeAccountable(value)
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
