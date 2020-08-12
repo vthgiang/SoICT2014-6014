@@ -182,31 +182,54 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     handleChangeResponsible = async (value) => {
+        let { user } = this.props
+        let responsible = []
+        user.usersWithRole.forEach(x => {
+            if (value.some(y => y === x.userId._id)) {
+                responsible.push(x.userId.name)
+            }
+        })
         await this.setState(state => {
             state.info[`${state.id}`] = {
                 ...state.info[`${state.id}`],
                 code: state.id,
-                // responsible: value,
                 responsibleName: value
             }
             return {
                 ...state,
             }
         })
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        modeling.updateProperties(element1, {
+            responsibleName: responsible
+        });
+
     }
 
     handleChangeAccountable = async (value) => {
+        let { user } = this.props
+        let accountable = []
+        user.usersWithRole.forEach(x => {
+            if (value.some(y => y === x.userId._id)) {
+                accountable.push(x.userId.name)
+            }
+        })
         await this.setState(state => {
             state.info[`${state.id}`] = {
                 ...state.info[`${state.id}`],
                 code: state.id,
-                // accountable: value,
                 accountableName: value
             }
             return {
                 ...state,
             }
         })
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        modeling.updateProperties(element1, {
+            accountableName: accountable
+        });
     }
 
     handleChangeOrganizationalUnit = async (value) => {
@@ -308,6 +331,7 @@ class ModalCreateTaskByProcess extends Component {
 
     interactPopup = (event) => {
         var element = event.element;
+        console.log(element)
         let nameStr = element.type.split(':');
         this.setState(state => {
             if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' ||
@@ -578,7 +602,7 @@ class ModalCreateTaskByProcess extends Component {
                                             id={id}
                                             listUser={listUser}
                                             info={(info && info[`${id}`]) && info[`${id}`]}
-                                            task = {info?.[`${id}`]}
+                                            task={info?.[`${id}`]}
                                             handleChangeName={this.handleChangeName}
                                             handleChangeDescription={this.handleChangeDescription}
                                             handleChangeResponsible={this.handleChangeResponsible}
