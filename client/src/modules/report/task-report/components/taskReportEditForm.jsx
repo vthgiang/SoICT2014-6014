@@ -764,7 +764,7 @@ class TaskReportEditForm extends Component {
                                     <label>Thống kê đến ngày </label>
                                     <DatePicker
                                         id="end-date"
-                                        value={(editingReport.endDate) ? editingReport.endDate : ''} //isNaN(parseFloat(editingReport.endDate)) ? ' ' :
+                                        value={(editingReport.endDate) ? editingReport.endDate : ''}
                                         onChange={this.handleEditEndDate}
                                         disabled={false}
                                     />

@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { RecommendDistributeEditForm } from './RecommendDistributeEditForm';
+
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
+
+import { RecommendDistributeEditForm } from './RecommendDistributeEditForm';
+
 import { AssetManagerActions } from "../../asset-management/redux/actions";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { RecommendDistributeActions } from '../redux/actions';
@@ -17,19 +20,10 @@ class RecommendDistribute extends Component {
             page: 0,
             limit: 10,
         }
-        this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
     componentDidMount() {
         this.props.searchRecommendDistributes(this.state);
         this.props.getUser();
-        // this.props.getAllAsset({
-        //     code: "",
-        //     assetName: "",
-        //     assetType: null,
-        //     status: null,
-        //     page: 0,
-        //     limit: 5,
-        // });
     }
 
     // Bắt sự kiện click chỉnh sửa thông tin phiếu đăng ký cấp phát
@@ -50,14 +44,19 @@ class RecommendDistribute extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+            
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -67,10 +66,13 @@ class RecommendDistribute extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         return [month, year].join('-');
     }
@@ -97,6 +99,7 @@ class RecommendDistribute extends Component {
         if (value.length === 0) {
             value = null
         };
+
         this.setState({
             ...this.state,
             status: value
@@ -133,25 +136,36 @@ class RecommendDistribute extends Component {
 
     render() {
         const { translate, recommendDistribute, assetsManager, assetType, user, auth } = this.props;
+        const { page, limit, currentRowEdit } = this.state;
+
         var listRecommendDistributes = "";
         var lists = "";
         var userlist = user.list;
         var assettypelist = assetType.listAssetTypes;
-        if (this.props.recommendDistribute.isLoading === false) {
-            listRecommendDistributes = this.props.recommendDistribute.listRecommendDistributes;
+
+        if (recommendDistribute.isLoading === false) {
+            listRecommendDistributes = recommendDistribute.listRecommendDistributes;
         }
-        var pageTotal = ((this.props.recommendDistribute.totalList % this.state.limit) === 0) ?
-            parseInt(this.props.recommendDistribute.totalList / this.state.limit) :
-            parseInt((this.props.recommendDistribute.totalList / this.state.limit) + 1);
-        var page = parseInt((this.state.page / this.state.limit) + 1);
+
+        var pageTotal = ((recommendDistribute.totalList % limit) === 0) ?
+            parseInt(recommendDistribute.totalList / limit) :
+            parseInt((recommendDistribute.totalList / limit) + 1);
+        
+        var currentPage = parseInt((page / limit) + 1);
+
         return (
             <div id="recommenddistribute" className="tab-pane">
                 <div className="box-body qlcv">
+
+                    {/* Thanh tìm kiếm */}
                     <div className="form-inline">
+                        {/* Mã phiếu */}
                         <div className="form-group">
-                            <label className="form-control-static">Mã phiếu:</label>
+                            <label className="form-control-static">Mã phiếu</label>
                             <input type="text" className="form-control" name="recommendNumber" onChange={this.handleRecommendNumberChange} placeholder="Mã phiếu" autoComplete="off" />
                         </div>
+
+                        {/* Tháng */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.month')}</label>
                             <DatePicker
@@ -160,10 +174,11 @@ class RecommendDistribute extends Component {
                                 value={this.formatDate(Date.now())}
                                 onChange={this.handleMonthChange}
                             />
-
                         </div>
                     </div>
+
                     <div className="form-inline" style={{ marginBottom: 10 }}>
+                        {/* Trạng thái */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
                             <SelectMulti id={`multiSelectStatus`} multiple="multiple"
@@ -177,11 +192,15 @@ class RecommendDistribute extends Component {
                             >
                             </SelectMulti>
                         </div>
+
+                        {/* Button tìm kiếm */}
                         <div className="form-group">
                             <label></label>
                             <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSubmitSearch()} >{translate('page.add_search')}</button>
                         </div>
                     </div>
+
+                    {/* Bảng thông tin đăng ký sử dụng tài sản */}
                     <table id="recommenddistribute-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
@@ -208,7 +227,7 @@ class RecommendDistribute extends Component {
                                             "Người phê duyệt",
                                             "Trạng thái",
                                         ]}
-                                        limit={this.state.limit}
+                                        limit={limit}
                                         setLimit={this.setLimit}
                                         hideColumnOption={true}
                                     />
@@ -216,18 +235,18 @@ class RecommendDistribute extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listRecommendDistributes !== 'undefined' && listRecommendDistributes.length !== 0) &&
-                                listRecommendDistributes.filter(item => item.proponent._id === auth.user._id).map((x, index) => {
+                            {(listRecommendDistributes && listRecommendDistributes.length !== 0) &&
+                                listRecommendDistributes.filter(item => item.proponent && item.proponent._id === auth.user._id).map((x, index) => {
                                     return (
                                         <tr key={index}>
                                             <td>{x.recommendNumber}</td>
                                             <td>{x.dateCreate}</td>
-                                            <td>{x.proponent.name}</td>
-                                            <td>{x.asset !== null ? x.asset.code : ''}</td>
-                                            <td>{x.asset !== null ? x.asset.assetName : ''}</td>
+                                            <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
+                                            <td>{x.asset ? x.asset.code : 'Asset is deleted'}</td>
+                                            <td>{x.asset ? x.asset.assetName : 'Asset is deleted'}</td>
                                             <td>{x.dateStartUse}</td>
                                             <td>{x.dateEndUse}</td>
-                                            <td>{x.approver && x.approver.name}</td>
+                                            <td>{x.approver ? x.approver.name : 'User is deleted'}</td>
                                             <td>{x.status}</td>
                                             <td style={{ textAlign: "center" }}>
                                                 <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin phiếu đăng ký cấp phát"><i className="material-icons">edit</i></a>
@@ -248,25 +267,28 @@ class RecommendDistribute extends Component {
                     </table>
                     {recommendDistribute.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listRecommendDistributes === 'undefined' || listRecommendDistributes.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (!listRecommendDistributes || listRecommendDistributes.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
+
+                    {/* PaginateBar */}
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
 
+                {/* Form chỉnh sửa thông tin đăng ký sử dụng tài sản */}
                 {
-                    this.state.currentRowEdit !== undefined &&
+                    currentRowEdit &&
                     <RecommendDistributeEditForm
-                        _id={this.state.currentRowEdit._id}
-                        recommendNumber={this.state.currentRowEdit.recommendNumber}
-                        dateCreate={this.state.currentRowEdit.dateCreate}
-                        proponent={this.state.currentRowEdit.proponent}
-                        reqContent={this.state.currentRowEdit.reqContent}
-                        asset={this.state.currentRowEdit.asset}
-                        dateStartUse={this.state.currentRowEdit.dateStartUse}
-                        dateEndUse={this.state.currentRowEdit.dateEndUse}
-                        status={this.state.currentRowEdit.status}
-                        approver={this.state.currentRowEdit.approver}
-                        note={this.state.currentRowEdit.note}
+                        _id={currentRowEdit._id}
+                        recommendNumber={currentRowEdit.recommendNumber}
+                        dateCreate={currentRowEdit.dateCreate}
+                        proponent={currentRowEdit.proponent}
+                        reqContent={currentRowEdit.reqContent}
+                        asset={currentRowEdit.asset}
+                        dateStartUse={currentRowEdit.dateStartUse}
+                        dateEndUse={currentRowEdit.dateEndUse}
+                        status={currentRowEdit.status}
+                        approver={currentRowEdit.approver}
+                        note={currentRowEdit.note}
                     />
                 }
             </div >

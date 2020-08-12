@@ -254,7 +254,6 @@ class RecommendDistributeManager extends Component {
                         <tbody>
                             {(listRecommendDistributes && listRecommendDistributes.length !== 0) &&
                                 listRecommendDistributes.map((x, index) => {
-                                    console.log(x);
                                     return (<tr key={index}>
                                         <td>{x.recommendNumber}</td>
                                         <td>{x.dateCreate}</td>
