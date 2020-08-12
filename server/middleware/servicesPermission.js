@@ -95,6 +95,8 @@ exports.data = [
     { path: '/system-admin/system-component/system-components/:systemComponentId', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/components-default-management/role/:roleId/link/:linkId', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
+    { path: '/system-admin/system-setting/backup-database/backup', method: 'PATCH', roles: ['System Admin'] },
+
     { path: '/user/users', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
     { path: '/user/users', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
@@ -426,6 +428,12 @@ exports.data = [
     { path: '/materials', method: 'POST', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/materials/:id', method: 'DELETE', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/materials/:id', method: 'PATCH', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+
+    //order
+    { path: "/orders", method: "GET", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
+    { path: "/orders", method: "POST", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
+    { path: "/orders/:id", method: "DELETE", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
+    { path: "/orders/:id", method: "PATCH", roles: ["Super Admin", "Admin", "Dean", "Vice Dean", "Employee"] },
 
     // Customer Management
     { path: '/customer', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },

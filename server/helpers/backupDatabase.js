@@ -1,25 +1,39 @@
 const exec = require('child_process').exec;
 const CronJob = require('cron').CronJob;
 require('dotenv').config('../.env');
-global.SCHEDULE = '0 26 9 * * *'; //mặc định chạy vào ngày 15 hàng tháng
+const BACKUP_TIME = '0 0 2 15 * *'; // chạy tự động: ngày 15 lúc 2 giờ sáng (hàng tháng)
 
-const dbConfig = {
-    HOST: process.env.DB_HOST,
-    DB_NAME: process.env.DB_NAME,
-    DB_PORT: "27017",
-    DB_STORE: "D:/backup",
-    DB_USERNAME: process.env.DB_USERNAME,
-    DB_PASSWORD: process.env.DB_PASSWORD
+const option = {
+    host: process.env.DB_HOST,
+    dbName: process.env.DB_NAME,
+    dbPort: "27017",
+    store: SERVER_BACKUP_PATH,
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD
+};
+
+exports.backupDatabase = (option) => {
+    console.log("Backup database.\n");
+    const command = process.env.DB_AUTHENTICATION === 'true' ?
+        `mongodump --host="${option.host}" --port="${option.dbPort}" --out="${option.store}" --db="${option.dbName}" --username="${option.username}" --password="${option.password}"` :
+        `mongodump --host="${option.host}" --port="${option.dbPort}" --out="${option.store}" --db="${option.dbName}"`;
+    exec(command, function (error, stdout, stderr) {
+        if(error !== null){
+            console.log("Backup database error\n", error, stdout, stderr);
+        }
+    })
 }
 
-const job = new CronJob(SCHEDULE, function() {
-    console.log("backup data")
-    exec(`mongodump --host="${dbConfig.HOST}" --port="${dbConfig.DB_PORT}" --out="${dbConfig.DB_STORE}" --db="${dbConfig.DB_NAME}" --username="thai" --password="123456"`, 
-    function (error, stdout, stderr) {
-        console.log("Error backup data:", error)
-    });
-}, null, true, 'Asia/Ho_Chi_Minh');
-
-if(process.env.DB_BACKUP === 'true'){
-    job.start();
-}
+exports.backupScheduler = new CronJob(BACKUP_TIME, function() {
+        console.log("Start backup database.\n")
+        const command = process.env.DB_AUTHENTICATION === 'true' ?
+            `mongodump --host="${option.host}" --port="${option.dbPort}" --out="${option.store}" --db="${option.dbName}" --username="${option.username}" --password="${option.password}"` :
+            `mongodump --host="${option.host}" --port="${option.dbPort}" --out="${option.store}" --db="${option.dbName}"`;
+        exec(command, function (error, stdout, stderr) {
+            if(error !== null){
+                console.log("Backup database error\n", error, stdout, stderr);
+            }
+        })
+    }, function() {
+    console.log("Stop backup datasbase.\n")
+}, false, 'Asia/Ho_Chi_Minh');
