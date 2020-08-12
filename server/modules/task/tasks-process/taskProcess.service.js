@@ -23,7 +23,7 @@ exports.getAllXmlDiagram = async (query, body) => {
     let roleId = allRole.map(function (el) { return mongoose.Types.ObjectId(el) });
 
     var taskProcess = await TaskProcess.aggregate([
-        { $match: { nameProcess: { "$regex": name, "$options": "i" } } },
+        { $match: { processName: { "$regex": name, "$options": "i" } } },
         {
             $lookup:
             {
@@ -92,18 +92,22 @@ exports.getXmlDiagramById = (params) => {
  * @param {*} body dữ liệu diagram cần tạo
  */
 exports.createXmlDiagram = async (body) => {
+    console.log(body.info)
     let info = [];
-    for (const x in body.infoTask) {
-        info.push(body.infoTask[x])
+    for (const x in body.info) {
+        if(Object.keys(body.info[x]).length !== 0) {
+            info.push(body.info[x])
+        }
     }
+    console.log(info)
     let data = await TaskProcess.create({
-        creator: body.creator,
-        viewer: body.viewer,
-        manager: body.manager,
-        nameProcess: body.nameProcess,
-        description: body.description,
         xmlDiagram: body.xmlDiagram,
-        infoTask: info
+        processName: body.processName,
+        processDescription: body.processDescription,
+        manager: body.manager,
+        viewer: body.viewer,
+        infoTask: info,
+        creator: body.creator
     })
 
 
@@ -170,8 +174,8 @@ exports.editXmlDiagram = async (params, body) => {
           $set: {
               xmlDiagram: body.xmlDiagram,
               infoTask: info,
-              description: body.description,
-              nameProcess: body.nameProcess,
+              processDescription: body.processDescription,
+              processName: body.processName,
               creator: body.creator,
               viewer: body.viewer,
               manager: body.manager,

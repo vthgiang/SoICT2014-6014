@@ -7,6 +7,7 @@ import { DocumentActions } from '../../../redux/actions';
 
 class EditForm extends Component {
     constructor(props) {
+        super(props);
         this.state = {
 
         }
@@ -54,7 +55,7 @@ class EditForm extends Component {
 
     save = () => {
         const { archiveId, archiveName, archiveDescription, archiveParent } = this.state;
-        this.props.editDocumentDomain(archiveId, {
+        this.props.editDocumentArchive(archiveId, {
             name: archiveName,
             description: archiveDescription,
             parent: archiveParent
@@ -77,7 +78,7 @@ class EditForm extends Component {
     }
     render() {
         const { translate, documents } = this.props;
-        const { tree, list } = document.administration.archives;
+        const { tree, list } = documents.administration.archives;
         const { archiveId, archiveName, archiveDescription, archiveParent, errorName } = this.state;
 
         return (

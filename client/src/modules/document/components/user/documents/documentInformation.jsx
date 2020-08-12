@@ -18,6 +18,7 @@ class DocumentInformation extends Component {
             documentName,
             documentCategory,
             documentDomains,
+            documentArchives,
             documentDescription,
             documentIssuingBody,
             documentOfficialNumber,
@@ -38,6 +39,9 @@ class DocumentInformation extends Component {
         formData.append('category', documentCategory);
         if (documentDomains !== undefined) for (var i = 0; i < documentDomains.length; i++) {
             formData.append('domains[]', documentDomains[i]);
+        }
+        if (documentArchives !== undefined) for (var i = 0; i < documentArchives.length; i++) {
+            formData.append('archives[]', documentArchives[i]);
         }
         formData.append('description', documentDescription);
         formData.append('issuingBody', documentIssuingBody);
@@ -79,6 +83,7 @@ class DocumentInformation extends Component {
                 documentDescription: nextProps.documentDescription,
                 documentCategory: nextProps.documentCategory,
                 documentDomains: nextProps.documentDomains,
+                documentArchives: nextProps.documentArchives,
                 documentIssuingBody: nextProps.documentIssuingBody,
                 documentOfficialNumber: nextProps.documentOfficialNumber,
                 documentSigner: nextProps.documentSigner,
@@ -128,7 +133,7 @@ class DocumentInformation extends Component {
             documentId, documentName, documentDescription, documentCategory, documentDomains,
             documentIssuingBody, documentOfficialNumber, documentSigner, documentVersions,
             documentRelationshipDescription, documentRelationshipDocuments,
-            documentRoles,
+            documentRoles, documentArchives,
             documentArchivedRecordPlaceInfo, documentArchivedRecordPlaceOrganizationalUnit, documentArchivedRecordPlaceManager
         } = this.state;
         const { translate, role, documents, department, user } = this.props;

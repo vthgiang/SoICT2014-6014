@@ -74,7 +74,7 @@ class TaskStatusChart extends Component {
             || nextProps.endMonth !== this.props.endMonth
         ) {
 
-            if (this.props.TaskOrganizationUnitDashboard && this.props.units.length && this.props.startMonth && this.props.endMonth) {
+            if (this.props.TaskOrganizationUnitDashboard && this.props.units && this.props.startMonth && this.props.endMonth) {
                 await this.setState(state => {
                     return {
                         ...state,
@@ -85,7 +85,7 @@ class TaskStatusChart extends Component {
                 })
 
 
-                if (this.props.units.length) {
+                if (this.props.units) {
                     await this.props.getTaskInOrganizationUnitByMonth(this.props.units, nextProps.startMonth, nextProps.endMonth);
                 }
             } else {
@@ -124,7 +124,7 @@ class TaskStatusChart extends Component {
 
         if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
             if (this.props.TaskOrganizationUnitDashboard) { // neu componet duoc goi tu dashboard organization unit
-                if (this.props.units.length) {
+                if (this.props.units) {
                     await this.props.getTaskInOrganizationUnitByMonth(this.props.units, nextProps.startMonth, nextProps.endMonth);
                 }
             }

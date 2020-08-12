@@ -4,6 +4,7 @@ import {
 import {
     AssetTypeService
 } from "./services";
+
 export const AssetTypeActions = {
     searchAssetTypes,
     getAssetTypes,

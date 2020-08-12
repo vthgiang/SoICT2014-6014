@@ -48,7 +48,7 @@ exports.getXmlDiagramById = async (req, res) => {
  * tạo mới diagram
  */
 exports.createXmlDiagram = async (req, res) => {
-  try {
+  // try {
     var data = await TaskProcessService.createXmlDiagram(req.body);
     await LogInfo(req.user.email, `create xml diagram `, req.user.company);
     res.status(200).json({
@@ -56,14 +56,14 @@ exports.createXmlDiagram = async (req, res) => {
       messages: ['export thanh công'],
       content: data
     });
-  } catch (error) {
-    await LogError(req.user.email, `create xml diagram `, req.user.company);
-    res.status(400).json({
-      success: false,
-      messages: ['abc'],
-      content: error
-    });
-  }
+  // } catch (error) {
+  //   await LogError(req.user.email, `create xml diagram `, req.user.company);
+  //   res.status(400).json({
+  //     success: false,
+  //     messages: ['abc'],
+  //     content: error
+  //   });
+  // }
 }
 /**
  * chỉnh sửa mới diagram
