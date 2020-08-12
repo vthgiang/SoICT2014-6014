@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { AnnualLeaveCreateForm, AnnualLeaveEditForm } from './combinedContent';
+
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti, ExportExcel } from '../../../../common-components';
 
-import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
+import { AnnualLeaveCreateForm, AnnualLeaveEditForm } from './combinedContent';
+
 import { AnnualLeaveActions } from '../redux/actions';
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
+
 
 class AnnualLeaveManagement extends Component {
     constructor(props) {
@@ -39,13 +42,17 @@ class AnnualLeaveManagement extends Component {
             page: 0,
             limit: 5,
         }
-        this.handleSunmitSearch = this.handleSunmitSearch.bind(this);
     }
+
     componentDidMount() {
         this.props.searchAnnualLeaves(this.state);
         this.props.getDepartment();
     }
-    // Bắt sự kiện click chỉnh sửa thông tin nghỉ phép
+
+    /**
+     * Bắt sự kiện click chỉnh sửa thông tin nghỉ phép
+     * @param {*} value : Thông tin nghỉ phép
+     */
     handleEdit = async (value) => {
         await this.setState(state => {
             return {
@@ -55,24 +62,33 @@ class AnnualLeaveManagement extends Component {
         });
         window.$('#modal-edit-sabbtical').modal('show');
     }
-    // Function format dữ liệu Date thành string
+
+    /**
+     * Function format dữ liệu Date thành string
+     * @param {*} date : Ngày muốn format
+     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
+     */
     formatDate(date, monthYear = false) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
 
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else return [day, month, year].join('-');
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        }
+        return date;
+
     }
 
-    // Function lưu giá trị mã nhân viên vào state khi thay đổi
+    /** Function lưu giá trị mã nhân viên vào state khi thay đổi */
     handleMSNVChange = (e) => {
         const { name, value } = e.target;
         this.setState({
@@ -80,7 +96,10 @@ class AnnualLeaveManagement extends Component {
         });
     }
 
-    // Function lưu giá trị tháng vào state khi thay đổi
+    /**
+     * Function lưu giá trị tháng vào state khi thay đổi
+     * @param {*} value :Tháng tìm kiếm
+     */
     handleMonthChange = (value) => {
         let partMonth = value.split('-');
         value = [partMonth[1], partMonth[0]].join('-');
@@ -90,7 +109,10 @@ class AnnualLeaveManagement extends Component {
         });
     }
 
-    // Function lưu giá trị unit vào state khi thay đổi
+    /**
+     * Function lưu giá trị unit vào state khi thay đổi
+     * @param {*} value : array id đơn vị
+     */
     handleUnitChange = (value) => {
         if (value.length === 0) {
             value = null
@@ -101,7 +123,10 @@ class AnnualLeaveManagement extends Component {
         })
     }
 
-    // Function lưu giá trị chức vụ vào state khi thay đổi
+    /**
+     * Function lưu giá trị chức vụ vào state khi thay đổi
+     * @param {*} value : Array id chức vụ
+     */
     handlePositionChange = (value) => {
         if (value.length === 0) {
             value = null
@@ -112,7 +137,10 @@ class AnnualLeaveManagement extends Component {
         })
     }
 
-    // Function lưu giá trị status vào state khi thay đổi
+    /**
+     * Function lưu giá trị status vào state khi thay đổi
+     * @param {*} value 
+     */
     handleStatusChange = (value) => {
         if (value.length === 0) {
             value = null
@@ -123,7 +151,7 @@ class AnnualLeaveManagement extends Component {
         })
     }
 
-    // Function bắt sự kiện tìm kiếm 
+    /** Function bắt sự kiện tìm kiếm */
     handleSunmitSearch = async () => {
         if (this.state.month === null) {
             let partMonth = this.formatDate(Date.now(), true).split('-');

@@ -72,7 +72,8 @@ class SalaryTab extends Component {
      * @param {*} data : Dữ liệu thông tin lương cần thêm
      */
     handleAddSalary = async (data) => {
-        const { salaries } = this.state;
+        console.log(data);
+        let { salaries } = this.state;
         let check = [];
         check = salaries.filter(x => (x.month === data.month));
         if (check.length !== 0) {
@@ -90,7 +91,7 @@ class SalaryTab extends Component {
                     ...data
                 }]
             })
-            this.props.handleAddSalary(salaries, data);
+            this.props.handleAddSalary(this.state.salaries, data);
         }
     }
 
@@ -99,12 +100,14 @@ class SalaryTab extends Component {
      * @param {*} data : Thông tin lương cần chỉnh sửa
      */
     handleEditSalary = async (data) => {
-        const { salaries } = this.state;
+        console.log(data);
+        let { salaries } = this.state;
         salaries[data.index] = data;
+        console.log(salaries);
         await this.setState({
             salaries: salaries
         })
-        this.props.handleEditSalary(salaries, data);
+        this.props.handleEditSalary(this.state.salaries, data);
     }
 
     /**
@@ -112,6 +115,7 @@ class SalaryTab extends Component {
      * @param {*} index : Số thứ tự thông tin lương cần xoá
      */
     handleDeleteSalary = async (index) => {
+        console.log(index);
         let { salaries } = this.state;
         let data = salaries[index];
         salaries.splice(index, 1);
@@ -180,7 +184,7 @@ class SalaryTab extends Component {
     render() {
         const { id, translate } = this.props;
 
-        const { annualLeaves, salaries } = this.state;
+        let { annualLeaves, salaries, currentRow, currentRowSabbatical } = this.state;
 
         let formater = new Intl.NumberFormat();
 
@@ -275,25 +279,26 @@ class SalaryTab extends Component {
                 {
                     this.state.currentRow !== undefined &&
                     <SalaryEditModal
-                        id={`editSalary${this.state.currentRow.index}`}
-                        _id={this.state.currentRow._id}
-                        unit={this.state.currentRow.unit}
-                        month={this.formatDate(this.state.currentRow.month, true)}
-                        mainSalary={this.state.currentRow.mainSalary}
-                        bonus={this.state.currentRow.bonus}
+                        id={`editSalary${currentRow.index}`}
+                        _id={currentRow._id}
+                        index={currentRow.index}
+                        unit={currentRow.unit}
+                        month={this.formatDate(currentRow.month, true)}
+                        mainSalary={currentRow.mainSalary}
+                        bonus={currentRow.bonus}
                         handleChange={this.handleEditSalary}
                     />
                 }
                 {
                     this.state.currentRowSabbatical !== undefined &&
                     <AnnualLeaveEditModal
-                        id={`editSabbatical${this.state.currentRowSabbatical.index}`}
-                        _id={this.state.currentRowSabbatical._id}
-                        index={this.state.currentRowSabbatical.index}
-                        startDate={this.formatDate(this.state.currentRowSabbatical.startDate)}
-                        endDate={this.formatDate(this.state.currentRowSabbatical.endDate)}
-                        reason={this.state.currentRowSabbatical.reason}
-                        status={this.state.currentRowSabbatical.status}
+                        id={`editSabbatical${currentRowSabbatical.index}`}
+                        _id={currentRowSabbatical._id}
+                        index={currentRowSabbatical.index}
+                        startDate={this.formatDate(currentRowSabbatical.startDate)}
+                        endDate={this.formatDate(currentRowSabbatical.endDate)}
+                        reason={currentRowSabbatical.reason}
+                        status={currentRowSabbatical.status}
                         handleChange={this.handleEditAnnualLeave}
                     />
                 }

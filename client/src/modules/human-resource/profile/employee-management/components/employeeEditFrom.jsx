@@ -542,6 +542,7 @@ class EmployeeEditFrom extends Component {
     render() {
         const { translate, employeesManager } = this.props;
         const { _id } = this.state;
+        console.log(this.state);
         return (
             <React.Fragment>
                 <DialogModal
