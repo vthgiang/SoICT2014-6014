@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { RecommendProcureManagerEditForm } from './RecommendProcureManagerEditForm';
+
 import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
+
 import { RecommendProcureActions } from '../../recommend-procure/redux/actions';
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { RecommendProcureDetailForm } from "../../recommend-procure/components/RecommendProcureDetailForm";
+
+import { RecommendProcureManagerEditForm } from './RecommendProcureManagerEditForm';
 
 class RecommendProcureManager extends Component {
     constructor(props) {
@@ -17,8 +20,8 @@ class RecommendProcureManager extends Component {
             page: 0,
             limit: 5,
         }
-        this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
+
     componentDidMount() {
         this.props.searchRecommendProcures(this.state);
         this.props.getUser();
@@ -52,14 +55,19 @@ class RecommendProcureManager extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -69,10 +77,13 @@ class RecommendProcureManager extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         return [month, year].join('-');
     }
@@ -83,7 +94,6 @@ class RecommendProcureManager extends Component {
         this.setState({
             [name]: value
         });
-
     }
 
     // Function lưu giá trị tháng vào state khi thay đổi
@@ -99,6 +109,7 @@ class RecommendProcureManager extends Component {
         if (value.length === 0) {
             value = null
         };
+
         this.setState({
             ...this.state,
             status: value
@@ -107,13 +118,10 @@ class RecommendProcureManager extends Component {
 
     // Function bắt sự kiện tìm kiếm 
     handleSubmitSearch = async () => {
-        // if (this.state.month === "") {
-            await this.setState({
-                ...this.state,
+        await this.setState({
+            ...this.state,
+        })
 
-                // month: this.formatDate(Date.now())
-            })
-        // }
         this.props.searchRecommendProcures(this.state);
     }
 
@@ -137,26 +145,32 @@ class RecommendProcureManager extends Component {
 
     render() {
         const { translate, recommendProcure } = this.props;
-        var listRecommendProcures = "";
+        const { page, limit, currentRowView, currentRow } = this.state;
 
-        if (this.props.recommendProcure.isLoading === false) {
-            listRecommendProcures = this.props.recommendProcure.listRecommendProcures;
+        var listRecommendProcures = "";
+        if (recommendProcure.isLoading === false) {
+            listRecommendProcures = recommendProcure.listRecommendProcures;
         }
-        var pageTotal = ((this.props.recommendProcure.totalList % this.state.limit) === 0) ?
-            parseInt(this.props.recommendProcure.totalList / this.state.limit) :
-            parseInt((this.props.recommendProcure.totalList / this.state.limit) + 1);
-        var page = parseInt((this.state.page / this.state.limit) + 1);
+
+        var pageTotal = ((recommendProcure.totalList % limit) === 0) ?
+            parseInt(recommendProcure.totalList / limit) :
+            parseInt((recommendProcure.totalList / limit) + 1);
+
+        var currentPage = parseInt((page / limit) + 1);
+
         return (
             <div className="box" >
                 <div className="box-body qlcv">
-                    <div className="form-group">
-                        <h4 className="box-title">Danh sách phiếu đề nghị mua sắm thiết bị: </h4>
-                    </div>
+
+                    {/* Thanh tìm kiếm */}
                     <div className="form-inline">
+                        {/* Mã phiếu */}
                         <div className="form-group">
-                            <label className="form-control-static">Mã phiếu:</label>
+                            <label className="form-control-static">Mã phiếu</label>
                             <input type="text" className="form-control" name="recommendNumber" onChange={this.handleRecommendNumberChange} placeholder="Mã phiếu" autoComplete="off" />
                         </div>
+
+                        {/* Tháng */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.month')}</label>
                             <DatePicker
@@ -168,7 +182,9 @@ class RecommendProcureManager extends Component {
 
                         </div>
                     </div>
+
                     <div className="form-inline" style={{ marginBottom: 10 }}>
+                        {/* Trạng thái */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
                             <SelectMulti id={`multiSelectStatus`} multiple="multiple"
@@ -182,11 +198,15 @@ class RecommendProcureManager extends Component {
                             >
                             </SelectMulti>
                         </div>
+
+                        {/* Button tìm kiếm */}
                         <div className="form-group">
                             <label></label>
                             <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSubmitSearch()} >{translate('page.add_search')}</button>
                         </div>
                     </div>
+
+                    {/* Bảng phiếu đăng ký mua sắm tài sản */}
                     <table id="recommendprocuremanage-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
@@ -209,7 +229,7 @@ class RecommendProcureManager extends Component {
                                             "Ghi chú",
                                             "Trạng thái",
                                         ]}
-                                        limit={this.state.limit}
+                                        limit={limit}
                                         setLimit={this.setLimit}
                                         hideColumnOption={true}
                                     />
@@ -217,14 +237,14 @@ class RecommendProcureManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listRecommendProcures !== 'undefined' && listRecommendProcures.length !== 0) &&
+                            {(listRecommendProcures && listRecommendProcures.length !== 0) &&
                                 listRecommendProcures.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.recommendNumber}</td>
                                         <td>{x.dateCreate}</td>
-                                        <td>{x.proponent.name}</td>
+                                        <td>{x.proponent ? x.proponent.name : 'User is deleted'}</td>
                                         <td>{x.equipment}</td>
-                                        <td>{x.approver ? x.approver.name : ''}</td>
+                                        <td>{x.approver ? x.approver.name : 'User is deleted'}</td>
                                         <td>{x.note}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
@@ -239,48 +259,55 @@ class RecommendProcureManager extends Component {
                                                 func={this.props.deleteRecommendProcure}
                                             />
                                         </td>
-                                    </tr>))
+                                    </tr>
+                                ))
                             }
                         </tbody>
                     </table>
                     {recommendProcure.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listRecommendProcures === 'undefined' || listRecommendProcures.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (!listRecommendProcures || listRecommendProcures.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
+
+                    {/* PaginateBar */}
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
+
+                {/* Form xem chi tiết phiếu đăng ký mua sắm tài sản */}
                 {
-                    this.state.currentRowView !== undefined &&
+                    currentRowView &&
                     <RecommendProcureDetailForm
-                        _id={this.state.currentRowView._id}
-                        recommendNumber={this.state.currentRowView.recommendNumber}
-                        dateCreate={this.state.currentRowView.dateCreate}
-                        proponent={this.state.currentRowView.proponent}
-                        equipment={this.state.currentRowView.equipment}
-                        supplier={this.state.currentRowView.supplier}
-                        total={this.state.currentRowView.total}
-                        unit={this.state.currentRowView.unit}
-                        estimatePrice={this.state.currentRowView.estimatePrice}
-                        approver={this.state.currentRowView.approver}
-                        note={this.state.currentRowView.note}
-                        status={this.state.currentRowView.status}
+                        _id={currentRowView._id}
+                        recommendNumber={currentRowView.recommendNumber}
+                        dateCreate={currentRowView.dateCreate}
+                        proponent={currentRowView.proponent}
+                        equipment={currentRowView.equipment}
+                        supplier={currentRowView.supplier}
+                        total={currentRowView.total}
+                        unit={currentRowView.unit}
+                        estimatePrice={currentRowView.estimatePrice}
+                        approver={currentRowView.approver}
+                        note={currentRowView.note}
+                        status={currentRowView.status}
                     />
                 }
+
+                {/* Form chỉnh sửa phiếu đăng ký mua sắm tài sản */}
                 {
-                    this.state.currentRow !== undefined &&
+                    currentRow &&
                     <RecommendProcureManagerEditForm
-                        _id={this.state.currentRow._id}
-                        recommendNumber={this.state.currentRow.recommendNumber}
-                        dateCreate={this.state.currentRow.dateCreate}
-                        proponent={this.state.currentRow.proponent}
-                        equipment={this.state.currentRow.equipment}
-                        supplier={this.state.currentRow.supplier}
-                        total={this.state.currentRow.total}
-                        unit={this.state.currentRow.unit}
-                        estimatePrice={this.state.currentRow.estimatePrice}
-                        approver={this.state.currentRow.approver}
-                        note={this.state.currentRow.note}
-                        status={this.state.currentRow.status}
+                        _id={currentRow._id}
+                        recommendNumber={currentRow.recommendNumber}
+                        dateCreate={currentRow.dateCreate}
+                        proponent={currentRow.proponent}
+                        equipment={currentRow.equipment}
+                        supplier={currentRow.supplier}
+                        total={currentRow.total}
+                        unit={currentRow.unit}
+                        estimatePrice={currentRow.estimatePrice}
+                        approver={currentRow.approver}
+                        note={currentRow.note}
+                        status={currentRow.status}
                     />
                 }
             </div >

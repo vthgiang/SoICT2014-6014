@@ -71,6 +71,7 @@ class DomainOfTaskResultsChart extends Component {
                 })
 
                 if(this.props.units.length){
+                    console.log("Hiii")
                     await this.props.getTaskInOrganizationUnitByMonth(this.props.units, nextProps.startMonth, nextProps.endMonth);
                 }
             }
@@ -235,10 +236,9 @@ class DomainOfTaskResultsChart extends Component {
                     return 0;
                 }).map(evaluation => {
                     evaluation.results.filter(result => {
-                        if (result.employee === this.state.userId) {
+                        if (this.props.units.length || (result.employee === this.state.userId)) {
                             return 1;
                         }
-
                         return 0;
                     }).map(result => {
                         maxResults.push(Math.max(result.automaticPoint, result.employeePoint, result.approvedPoint))
@@ -259,6 +259,7 @@ class DomainOfTaskResultsChart extends Component {
         } else {
             minResult = Math.min.apply(Math, minResults);
         }
+        
         return {
             'month': new Date(currentMonth),
             'max': maxResult,

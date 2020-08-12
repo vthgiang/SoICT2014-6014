@@ -21,6 +21,7 @@ import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import { isExpanded } from 'bpmn-js/lib/util/DiUtil';
 import ElementFactory from 'bpmn-js/lib/features/modeling/ElementFactory';
 import LabelEditingProvider from 'bpmn-js/lib/features/label-editing/LabelEditingProvider'
+import { AddTaskTemplate } from "../../task-template/component/addTaskTemplate";
 
 
 ElementFactory.prototype._getDefaultSize = function (semantic) {
@@ -564,6 +565,13 @@ class ModalCreateTaskProcess extends Component {
       })
    }
 
+   handleChangeInfo = (value) => {
+      // =================ĐỂ TẠM===================
+      this.setState({
+         // info: value
+      })
+   }
+
    render() {
       const { translate, department, role } = this.props;
       const { id, name, info, showInfo, processDescription, processName, viewer, manager, selectedCreate } = this.state;
@@ -690,6 +698,7 @@ class ModalCreateTaskProcess extends Component {
                                           <div>
                                              <h1>Option {name}</h1>
                                           </div>
+                                          {/*
                                           <FormInfoProcess
                                              listOrganizationalUnit={listOrganizationalUnit}
                                              action='create'
@@ -703,7 +712,15 @@ class ModalCreateTaskProcess extends Component {
                                              handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
                                              handleChangeTemplate={this.handleChangeTemplate}
                                              save={this.save}
-                                             // done={this.done}
+                                             done={this.done}
+                                          /> */}
+                                          <AddTaskTemplate 
+                                             isProcess={true}
+                                             id={id}
+                                             onChangeTemplateData={this.handleChangeInfo}
+                                             // handleChangeName={} // cập nhật tên vào diagram
+                                             // handleChangeResponsible={} // cập nhật hiển thi diagram
+                                             // handleChangeAccountable={} // cập nhật hiển thị diagram
                                           />
                                        </div>
                                     }

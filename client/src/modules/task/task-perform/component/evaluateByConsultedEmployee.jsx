@@ -88,9 +88,13 @@ class EvaluateByConsultedEmployee extends Component {
 
     // hàm lấy dữ liệu khởi tạo
     getData = (dateParams) => {
-        const { user } = this.props;
+        const { user, KPIPersonalManager } = this.props;
         let { task } = this.props;
         let idUser = getStorage("userId");
+
+        let cloneKpi = (KPIPersonalManager && KPIPersonalManager.kpiSets) ?
+            (KPIPersonalManager.kpiSets.kpis.filter(e => ( e.type === 2 )).map(x => { return { value: x._id, text: x.name } }))
+            : []
 
         let progress = task.progress;
         let evaluations;
@@ -108,13 +112,13 @@ class EvaluateByConsultedEmployee extends Component {
 
         let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
 
-        let point = undefined, cloneKpi = [];
+        let point = undefined;
         if (evaluations) {
             let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Consulted"));
             if (res) {
                 point = res.employeePoint ? res.employeePoint : undefined;
-                if( res.organizationalUnit ){
-                    unit =  res.organizationalUnit._id;
+                if (res.organizationalUnit) {
+                    unit = res.organizationalUnit._id;
                 };
                 let kpi = res.kpis;
 
@@ -178,6 +182,8 @@ class EvaluateByConsultedEmployee extends Component {
             }
         }
         dentaDate = Math.round(((new Date()).getTime() - dateOfEval.getTime()) / (1000 * 3600 * 24));
+
+        console.log('KPI--', cloneKpi);
 
         return {
             info: info,
@@ -374,7 +380,11 @@ class EvaluateByConsultedEmployee extends Component {
                                         id={`select-kpi-personal-evaluate-${perform}-${role}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={((KPIPersonalManager && KPIPersonalManager.kpiSets) ? KPIPersonalManager.kpiSets.kpis : []).map(x => { return { value: x._id, text: x.name } })}
+                                        items={
+                                            (KPIPersonalManager && KPIPersonalManager.kpiSets) ?
+                                                (KPIPersonalManager.kpiSets.kpis.filter(e => ( e.type === 2 )).map(x => { return { value: x._id, text: x.name } }))
+                                                : []
+                                        }
                                         onChange={this.handleKpiChange}
                                         multiple={true}
                                         value={kpi}
