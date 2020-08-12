@@ -9,7 +9,7 @@ function backupDatabase() {
     return dispatch => {
         dispatch({ type: LogConstants.BACKUP_DATABASE_REQUEST });
 
-        LogServices.getLogState()
+        LogServices.backupDatabase()
             .then(res => {
                 dispatch({
                     type: LogConstants.BACKUP_DATABASE_SUCCESS,
