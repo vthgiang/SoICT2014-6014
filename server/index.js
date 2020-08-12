@@ -9,8 +9,7 @@ multer({
     dest: 'upload/avatars'
 });
 require('dotenv').config();
-
-
+require('./helpers/backupDatabase');
 
 // Application Modules
 const schedulerController = require('./modules/scheduler/scheduler.controller');
