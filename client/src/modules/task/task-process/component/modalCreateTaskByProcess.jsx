@@ -47,7 +47,7 @@ class ModalCreateTaskByProcess extends Component {
             additionalModules: [
                 customModule
             ]
-         });
+        });
         this.generateId = 'createtaskbyprocess';
         this.initialDiagram = data.xmlDiagram;
     }
@@ -185,7 +185,8 @@ class ModalCreateTaskByProcess extends Component {
             state.info[`${state.id}`] = {
                 ...state.info[`${state.id}`],
                 code: state.id,
-                responsible: value,
+                // responsible: value,
+                responsibleName: value
             }
             return {
                 ...state,
@@ -198,7 +199,8 @@ class ModalCreateTaskByProcess extends Component {
             state.info[`${state.id}`] = {
                 ...state.info[`${state.id}`],
                 code: state.id,
-                accountable: value,
+                // accountable: value,
+                accountableName: value
             }
             return {
                 ...state,
@@ -462,12 +464,12 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     render() {
-        const { translate, role,user } = this.props;
-        const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedEdit } = this.state;
+        const { translate, role, user } = this.props;
+        const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedEdit, infoTask } = this.state;
         const { listOrganizationalUnit } = this.props
         let listUser = user.usersWithRole
-        // user.usersWithRole.filter(x => )
         let listRole = [];
+        let task = Object.assign({}, info)
         if (role && role.list.length !== 0) listRole = role.list;
         let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
             .map(item => { return { text: item.name, value: item._id } });
@@ -496,17 +498,17 @@ class ModalCreateTaskByProcess extends Component {
                                     <div className="io-zoom-controls">
                                         <ul className="io-zoom-reset io-control io-control-list">
                                             <li>
-                                                <a style={{cursor: "pointer"}} title="Reset zoom" onClick={this.handleZoomReset}>
+                                                <a style={{ cursor: "pointer" }} title="Reset zoom" onClick={this.handleZoomReset}>
                                                     <i className="fa fa-crosshairs"></i>
                                                 </a>
                                             </li>
                                             <li>
-                                                <a style={{cursor: "pointer"}} title="Zoom in" onClick={this.handleZoomIn}>
+                                                <a style={{ cursor: "pointer" }} title="Zoom in" onClick={this.handleZoomIn}>
                                                     <i className="fa fa-plus"></i>
                                                 </a>
                                             </li>
                                             <li>
-                                                <a style={{cursor: "pointer"}} title="Zoom out" onClick={this.handleZoomOut}>
+                                                <a style={{ cursor: "pointer" }} title="Zoom out" onClick={this.handleZoomOut}>
                                                     <i className="fa fa-minus"></i>
                                                 </a>
                                             </li>
@@ -525,16 +527,15 @@ class ModalCreateTaskByProcess extends Component {
                                             listOrganizationalUnit={listOrganizationalUnit}
                                             action='create-task'
                                             id={id}
-                                            astemplate = {false}
-                                            listUser = {listUser}
+                                            listUser={listUser}
                                             info={(info && info[`${id}`]) && info[`${id}`]}
+                                            task = {info?.[`${id}`]}
                                             handleChangeName={this.handleChangeName}
                                             handleChangeDescription={this.handleChangeDescription}
                                             handleChangeResponsible={this.handleChangeResponsible}
                                             handleChangeAccountable={this.handleChangeAccountable}
                                             handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
                                             handleChangeTemplate={this.handleChangeTemplate}
-
                                             save={this.save}
                                         />
                                     </div>

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { SelectBox } from './../../../../common-components/index';
+import { SelectBox } from '../../../../common-components/index';
 import { withTranslate } from "react-redux-multilingual";
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../../task-template/redux/actions';
-class FormInfoTask extends Component {
+class FormInfoProcess extends Component {
 
     constructor(props) {
         super(props);
@@ -16,8 +16,9 @@ class FormInfoTask extends Component {
             description: (info && info.description) ? info.description : '',
             organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
             taskTemplate: (info && info.taskTemplate) ? info.taskTemplate : "",
-            responsible: (info && info.responsibleName) ? info.responsibleName : [],
-            accountable: (info && info.accountableName) ? info.accountableName : [],
+            responsible: (info && info.responsible) ? info.responsible : [],
+            accountable: (info && info.accountable) ? info.accountable : [],
+            // listRoles: [...listOrganizationalUnit[0]?.deans, ...listOrganizationalUnit[0]?.viceDeans, ...listOrganizationalUnit[0]?.employees]
         }
     }
 
@@ -35,8 +36,8 @@ class FormInfoTask extends Component {
                     description: (info && info.description) ? info.description : '',
                     organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
                     taskTemplate: (info && info.taskTemplate) ? info.taskTemplate : "",
-                    responsible: (info && info.responsibleName) ? info.responsibleName : [],
-                    accountable: (info && info.accountableName) ? info.accountableName : [],
+                    responsible: (info && info.responsible) ? info.responsible : [],
+                    accountable: (info && info.accountable) ? info.accountable : [],
                 }
             })
             return false;
@@ -85,41 +86,28 @@ class FormInfoTask extends Component {
 
     render() {
         const { user, translate, role, tasktemplates } = this.props;
-        const { id, info, action, listOrganizationalUnit, disabled, template, listUser, task,responsible,accountable } = this.props;
-
-        const { nameTask, description, organizationalUnit, taskTemplate } = this.state;
-        console.log(info)
+        const { nameTask, description, responsible, accountable, organizationalUnit, taskTemplate } = this.state;
+        const { id, info, action, listOrganizationalUnit, disabled, listUser, astemplate } = this.props;
         let usersOfChildrenOrganizationalUnit, listTaskTemplate, listUserAccountable = [], listUserResponsible = [];
         if (user && user.usersOfChildrenOrganizationalUnit) {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
-
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
         let listRoles = [];
-        let listItem = [];
         listOrganizationalUnit.forEach(x => {
             if (x._id === info?.organizationalUnit) {
                 listRoles = [...x.deans, ...x.viceDeans, ...x.employees]
             }
         })
-        listItem = listRoles.map(x => {
+        let listItem = listRoles.map(x => {
             return { text: x.name, value: x._id }
         })
 
-        //Xử lí khởi tạo quy trình
-        if (listUser) {
-            listUser.forEach(x => {
-                if (info?.accountable.some(y => y === x.roleId)) {
-                    listUserAccountable.push({ value: x.userId._id, text: x.userId.name })
-                }
-            })
-            listUser.forEach(x => {
-                if (info?.responsible.some(y => y === x.roleId)) {
-                    listUserResponsible.push({ value: x.userId._id, text: x.userId.name })
-                }
-            })
+        if (tasktemplates.items && organizationalUnit) {
+            listTaskTemplate = tasktemplates.items.filter(function (taskTemplate) {
+                return taskTemplate.organizationalUnit._id === organizationalUnit;
+            });
         }
-
         // list template
         let listTemp = [{ value: "", text: "--Chọn mẫu công việc--" }];
         if (listTaskTemplate && listTaskTemplate.length !== 0) {
@@ -127,6 +115,7 @@ class FormInfoTask extends Component {
                 listTemp.push({ value: item._id, text: item.name })
             })
         }
+
         return (
             <div>
                 <form>
@@ -190,7 +179,7 @@ class FormInfoTask extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 // items={unitMembers}
-                                items={listUserResponsible}
+                                items={astemplate ? listItem : listUserResponsible}
                                 onChange={this.handleChangeResponsible}
                                 multiple={true}
                                 value={responsible}
@@ -207,8 +196,8 @@ class FormInfoTask extends Component {
                                 id={`select-accountable-employee-${id}-${action}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-
-                                items={listUserAccountable}
+                                // items={unitMembers}
+                                items={astemplate ? listItem : listUserAccountable}
                                 onChange={this.handleChangeAccountable}
                                 multiple={true}
                                 value={accountable}
@@ -235,5 +224,5 @@ const actionCreators = {
     // getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
 };
-const connectedFormInfoTask = connect(mapState, actionCreators)(withTranslate(FormInfoTask));
-export { connectedFormInfoTask as FormInfoTask };
+const connectedFormInfoProcess = connect(mapState, actionCreators)(withTranslate(FormInfoProcess));
+export { connectedFormInfoProcess as FormInfoProcess };
