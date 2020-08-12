@@ -691,7 +691,7 @@ class ModalCreateTaskProcess extends Component {
                                        </div>
                                     </div>
                                  </div>
-                                 <div className={showInfo ? 'col-md-4' : undefined}>
+                                 <div style={{overflow: "auto", height: "650px"}} className={showInfo ? 'col-md-4' : undefined}>
                                     {
                                        (showInfo) &&
                                        <div>
