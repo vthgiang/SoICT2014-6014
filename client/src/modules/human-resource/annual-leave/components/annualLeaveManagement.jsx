@@ -33,6 +33,7 @@ class AnnualLeaveManagement extends Component {
                 }
             }
         }
+
         this.state = {
             organizationalUnits: organizationalUnits,
             position: null,
@@ -169,7 +170,10 @@ class AnnualLeaveManagement extends Component {
         this.props.searchAnnualLeaves(this.state);
     }
 
-    // Bắt sự kiện setting số dòng hiện thị trên một trang
+    /**
+     * Bắt sự kiện setting số dòng hiện thị trên một trang
+     * @param {*} number : Số dòng hiện thị
+     */
     setLimit = async (number) => {
         await this.setState({
             limit: parseInt(number),
@@ -177,7 +181,10 @@ class AnnualLeaveManagement extends Component {
         this.props.searchAnnualLeaves(this.state);
     }
 
-    // Bắt sự kiện chuyển trang
+    /**
+     * Bắt sự kiện chuyển trang
+     * @param {*} pageNumber : Số trạng hiện tại cần hiện thị
+     */
     setPage = async (pageNumber) => {
         var page = (pageNumber - 1) * this.state.limit;
         await this.setState({
@@ -187,7 +194,10 @@ class AnnualLeaveManagement extends Component {
         this.props.searchAnnualLeaves(this.state);
     }
 
-    // Function chyển đổi dữ liệu nghỉ phép thành dạng dữ liệu dùng export
+    /**
+     * Function chyển đổi dữ liệu nghỉ phép thành dạng dữ liệu dùng export
+     * @param {*} data : dữ liệu nghỉ phép
+     */
     convertDataToExportData = (data) => {
         if (data) {
             data = data.map((x, index) => {
@@ -199,8 +209,8 @@ class AnnualLeaveManagement extends Component {
                     fullName: x.employee.fullName,
                     organizationalUnits: organizationalUnits.join(', '),
                     position: position.join(', '),
-                    startDate: this.formatDate(x.startDate),
-                    endDate: this.formatDate(x.endDate),
+                    startDate: new Date(x.startDate),
+                    endDate: new Date(x.endDate),
                     reason: x.reason,
                     status: x.status === "pass" ? "Đã chấp nhận" : (x.status === "process" ? "Chờ phê duyệt" : "Không cấp nhận")
                 };
@@ -235,10 +245,13 @@ class AnnualLeaveManagement extends Component {
     }
 
     render() {
-        const { month, limit, page, organizationalUnits } = this.state;
-        const { list } = this.props.department;
-        const { translate, annualLeave } = this.props;
-        let listAnnualLeaves = [], listPosition = [{ value: "", text: "Bạn chưa chọn đơn vị", disabled: true }];
+        const { translate, annualLeave, department } = this.props;
+
+        const { month, limit, page, organizationalUnits, currentRow } = this.state;
+
+        const { list } = department;
+        let listAnnualLeaves = [], listPosition = [{ value: "", text: translate('human_resource.not_unit'), disabled: true }];
+
         if (organizationalUnits !== null) {
             listPosition = [];
             organizationalUnits.forEach(u => {
@@ -252,22 +265,24 @@ class AnnualLeaveManagement extends Component {
                 })
             })
         }
+
         if (annualLeave.isLoading === false) {
             listAnnualLeaves = annualLeave.listAnnualLeaves;
         }
-
         let exportData = this.convertDataToExportData(listAnnualLeaves);
 
-        var pageTotal = ((annualLeave.totalList % limit) === 0) ?
+        let pageTotal = ((annualLeave.totalList % limit) === 0) ?
             parseInt(annualLeave.totalList / limit) :
             parseInt((annualLeave.totalList / limit) + 1);
-        var currentPage = parseInt((page / limit) + 1);
+        let currentPage = parseInt((page / limit) + 1);
+
         return (
             <div className="box" >
                 <div className="box-body qlcv">
                     <AnnualLeaveCreateForm />
                     <ExportExcel id="export-annual_leave" exportData={exportData} style={{ marginRight: 15, marginTop: 2 }} />
                     <div className="form-inline">
+                        {/* Đơn vị */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
@@ -275,6 +290,7 @@ class AnnualLeaveManagement extends Component {
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
+                        {/* Chức vụ */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.position')}</label>
                             <SelectMulti id={`multiSelectPosition`} multiple="multiple"
@@ -284,10 +300,12 @@ class AnnualLeaveManagement extends Component {
                         </div>
                     </div>
                     <div className="form-inline">
+                        {/* Mã số nhân viên */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.staff_number')}</label>
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleMSNVChange} placeholder={translate('human_resource.staff_number')} autoComplete="off" />
                         </div>
+                        {/* Tháng */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.month')}</label>
                             <DatePicker
@@ -296,10 +314,10 @@ class AnnualLeaveManagement extends Component {
                                 value={month === null ? this.formatDate(Date.now(), true) : month}
                                 onChange={this.handleMonthChange}
                             />
-
                         </div>
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
+                        {/* Trạng thái */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.status')}</label>
                             <SelectMulti id={`multiSelectStatus`} multiple="multiple"
@@ -313,6 +331,7 @@ class AnnualLeaveManagement extends Component {
                             >
                             </SelectMulti>
                         </div>
+                        {/* Button tìm kiếm */}
                         <div className="form-group">
                             <label></label>
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={() => this.handleSunmitSearch()} >{translate('general.search')}</button>
@@ -350,7 +369,7 @@ class AnnualLeaveManagement extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listAnnualLeaves !== 'undefined' && listAnnualLeaves.length !== 0) &&
+                            {listAnnualLeaves && listAnnualLeaves.length !== 0 &&
                                 listAnnualLeaves.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.employee.employeeNumber}</td>
@@ -386,12 +405,12 @@ class AnnualLeaveManagement extends Component {
                     </table>
                     {annualLeave.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof listAnnualLeaves === 'undefined' || listAnnualLeaves.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (!listAnnualLeaves || listAnnualLeaves.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
                 {
-                    this.state.currentRow !== undefined &&
+                    currentRow &&
                     <AnnualLeaveEditForm
                         _id={this.state.currentRow._id}
                         employeeNumber={this.state.currentRow.employee.employeeNumber}
