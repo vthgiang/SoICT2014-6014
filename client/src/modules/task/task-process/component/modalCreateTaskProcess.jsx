@@ -703,7 +703,7 @@ class ModalCreateTaskProcess extends Component {
                                              handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
                                              handleChangeTemplate={this.handleChangeTemplate}
                                              save={this.save}
-                                             done={this.done}
+                                             // done={this.done}
                                           />
                                        </div>
                                     }
