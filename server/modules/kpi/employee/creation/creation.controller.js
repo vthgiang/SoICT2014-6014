@@ -23,7 +23,7 @@ exports.getEmployeeKpiSet = async (req, res) => {
     }
     else {
         try {
-            var employeeKpiSet = await EmployeeKpiSetService.getEmployeeKpiSet(req.query.userId, req.query.role, req.query.month);
+            let employeeKpiSet = await EmployeeKpiSetService.getEmployeeKpiSet(req.query.userId, req.query.role, req.query.month);
             await LogInfo(req.user.email, ` get employee kpi set by user id `, req.user.company);
             res.status(200).json({
                 success: true,
