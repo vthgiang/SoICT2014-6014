@@ -58,6 +58,9 @@ import { materials } from "../modules/warehouse-manager/material-manager/redux/r
 //customer
 import {customer} from "../modules/customer/redux/reducers";
 
+//order
+import { order } from "../modules/order/redux/reducers";
+
 const appReducer = combineReducers(Object.assign({
     //system
     log,
@@ -126,7 +129,10 @@ const appReducer = combineReducers(Object.assign({
     materials,
 
     // customer management
-    customer
+    customer,
+
+    //order
+    order,
     
 }, { Intl }));
 

@@ -688,6 +688,10 @@ export default {
             // QUẢN LÝ BÁO CÁO
             report_management: 'Report management',
             task_report: 'Manage task reports',
+
+            //QUẢN LÝ ĐƠN HÀNG
+            manage_orders: "Manage Orders",
+            manage_list_orders: "Manage List Orders",
         },
 
         manage_system: {
@@ -2475,6 +2479,28 @@ export default {
             dashboard_material: {
 
             }
+        },
+
+        // manage order
+        manage_order: {
+            index: "Index",
+            add_order: "Add order",
+            add_title: "Add new order",
+            edit_title: "Edit order",
+            add_success: "Add new order successfully",
+            add_failure: "Add new order failed",
+            edit_success: "Order updated",
+            edit_failure: "Update failed",
+            delete_success: "Order deleted",
+            delete_failure: "Delete failed",
+            get_success: "Get data success",
+            get_failure: "Can not get data",
+            code: "Order code",
+            quantity: "Quantity",
+            amount: "Amount",
+            code_placeholder: "input order code",
+            edit_order: "Edit order",
+            delete_order: "Delete Order",
         },
 
         report_manager: {
