@@ -7,7 +7,7 @@ export const IncidentService = {
     deleteIncident,
 }
 
-// tạo mới thông tin sự cố tài sản
+// Tạo mới thông tin sự cố tài sản
 function createIncident(id, data) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/assets/assets/${id}/incident-logs`,
@@ -16,7 +16,7 @@ function createIncident(id, data) {
     }, true, true, 'asset.incident');
 }
 
-// chỉnh sửa thông tin sự cố tài sản
+// Chỉnh sửa thông tin sự cố tài sản
 function updateIncident(assetId, data) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/assets/assets/${assetId}/incident-logs`,
@@ -25,7 +25,7 @@ function updateIncident(assetId, data) {
     }, true, true, 'asset.incident');
 }
 
-// xóa thông tin sự cố tài sản
+// Xóa thông tin sự cố tài sản
 function deleteIncident(assetId, incidentId) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/assets/assets/${assetId}/incident-logs`,
