@@ -122,4 +122,5 @@ const mapDispatchToProps = {
     deleteDocumentArchive: DocumentActions.deleteDocumentArchive,
 }
 
+// export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(AdministrationDocumentArchives));
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(AdministrationDocumentArchives));

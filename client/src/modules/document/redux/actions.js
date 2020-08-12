@@ -427,7 +427,7 @@ function getDocumentArchive() {
                 })
             })
             .catch(err => {
-                dispatch({ type: DocumentConstants.GET_DOCUMENT_CATEGORIES_FAILE });
+                dispatch({ type: DocumentConstants.GET_DOCUMENT_ARCHIVE_FAILE });
             })
     }
 };

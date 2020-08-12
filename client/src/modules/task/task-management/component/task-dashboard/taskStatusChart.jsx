@@ -86,7 +86,7 @@ class TaskStatusChart extends Component {
                         
                     }
                 })
-
+                console.log("Status", idsUnit);
                 await this.props.getTaskInOrganizationUnitByMonth(idsUnit, nextProps.startMonth, nextProps.endMonth);
             } else {
             
