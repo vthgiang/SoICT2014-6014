@@ -20,6 +20,7 @@ class TaskReportEditForm extends Component {
                 status: '',
                 responsibleEmployees: [],
                 accountableEmployees: [],
+                readByEmployees: [],
                 startDate: '',
                 endDate: '',
                 frequency: '',
@@ -45,6 +46,7 @@ class TaskReportEditForm extends Component {
         // Lấy tất cả nhân viên trong công ty
         this.props.getAllUserInAllUnitsOfCompany();
         this.props.getTaskTemplateByUser("1", "0", "[]");
+        this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
     }
 
     /**
@@ -120,10 +122,10 @@ class TaskReportEditForm extends Component {
                         ...state,
                         editingReport: {
                             ...this.state.editingReport,
-                            // name: '',
-                            // description: '',
                             taskTemplate: '',
                             status: '',
+                            startDate: '',
+                            endDate: '',
                             responsibleEmployees: [],
                             accountableEmployees: [],
                             errorOnDescriptiontTaskReport: undefined,
@@ -281,15 +283,28 @@ class TaskReportEditForm extends Component {
      * @param {*} value 
      */
     handleEditStartDate = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                editingReport: {
-                    ...this.state.editingReport,
-                    startDate: value,
+        if (typeof value === 'undefined') {
+            this.setState(state => {
+                return {
+                    ...state,
+                    editingReport: {
+                        ...this.state.editingReport,
+                        startDate: '',
+                    }
                 }
-            }
-        })
+            });
+        } else {
+            this.setState(state => {
+                return {
+                    ...state,
+                    editingReport: {
+                        ...this.state.editingReport,
+                        startDate: value,
+                    }
+                }
+            })
+        }
+
     }
 
     /**
@@ -297,15 +312,28 @@ class TaskReportEditForm extends Component {
      * @param {*} value 
      */
     handleEditEndDate = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                editingReport: {
-                    ...this.state.editingReport,
-                    endDate: value,
+        if (typeof value === 'undefined') {
+            this.setState(state => {
+                return {
+                    ...state,
+                    editingReport: {
+                        ...this.state.editingReport,
+                        endDate: '',
+                    }
                 }
-            }
-        })
+            });
+        } else {
+            this.setState(state => {
+                return {
+                    ...state,
+                    editingReport: {
+                        ...this.state.editingReport,
+                        endDate: value,
+                    }
+                }
+            })
+        }
+
     }
 
     /**
@@ -416,6 +444,7 @@ class TaskReportEditForm extends Component {
     save = () => {
         if (this.isFormValidated()) {
             this.props.editTaskReport(this.state.taskReportId, this.state.editingReport);
+            console.log('this.state.editingReport', this.state.editingReport)
         }
     }
 
@@ -453,6 +482,7 @@ class TaskReportEditForm extends Component {
                 organizationalUnit: listTaskReportById.organizationalUnit._id,
                 responsibleEmployees: listTaskReportById.responsibleEmployees.map(x => x._id),
                 accountableEmployees: listTaskReportById.accountableEmployees.map(x => x._id),
+                readByEmployees: listTaskReportById.readByEmployees.map(x => x._id),
                 taskTemplate: listTaskReportById.taskTemplate._id,
                 startDate: this.formatDate(listTaskReportById.startDate),
                 endDate: this.formatDate(listTaskReportById.endDate),
@@ -491,26 +521,34 @@ class TaskReportEditForm extends Component {
         const { translate, reports, tasktemplates, user, tasks } = this.props;
         const { editingReport } = this.state;
         const { errorOnNameTaskReport, errorOnDescriptiontTaskReport, errorOnTaskTemplateReport } = this.state.editingReport;
-        console.log('editingReport.responsibleEmployees', editingReport.responsibleEmployees);
-        let listTaskTemplate, units;
+        let listTaskTemplate, units, listRole, listRoles = [];
         let listTaskReportById = reports.listTaskReportById;
-
+        console.log('listTaskReportById', listTaskReportById)
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
         }
-
+        console.log('editingReport', editingReport)
         let usersOfChildrenOrganizationalUnit;
         if (user.usersOfChildrenOrganizationalUnit) {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
 
+        if (user.roledepartments) {
+            listRole = user.roledepartments;
+            for (let x in listRole.deans)
+                listRoles[x] = listRole.deans[x];
+            for (let x in listRole.viceDeans)
+                listRoles = [...listRoles, listRole.viceDeans[x]];
+            for (let x in listRole.employees)
+                listRoles = [...listRoles, listRole.employees[x]];
+        }
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
         if (tasktemplates.items && editingReport.organizationalUnit) {
             listTaskTemplate = tasktemplates.items.filter(function (taskTemplate) {
                 return taskTemplate.organizationalUnit._id === editingReport.organizationalUnit
             })
         }
-        console.log('state', this.state)
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -540,6 +578,31 @@ class TaskReportEditForm extends Component {
 
                         </div>
                         <div className="col-md-6">
+                            {/* Người được xem */}
+                            <div className={`form-group`} >
+                                <label className="control-label">{translate('task_template.permission_view')}<span className="text-red">*</span></label>
+                                {(listRoles && editingReport.readByEmployees) &&
+                                    <SelectBox
+                                        id={`read-select-box`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={
+                                            listRoles.map(x => { return { value: x._id, text: x.name } })
+                                        }
+
+                                        value={editingReport.readByEmployees}
+                                        onChange={this.handleCh}
+                                        multiple={true}
+                                        options={{ placeholder: "Người được xem" }}
+                                    />
+                                }
+                                {/* <ErrorLabel content={this.state.newTemplate.errorOnRead} /> */}
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-md-6">
+                            {/* Mẫu công việc */}
                             <div className="form-group">
                                 <label>Mẫu công việc
                                         <span className="text-red">*</span>
@@ -557,13 +620,9 @@ class TaskReportEditForm extends Component {
                                         </select>
                                         <ErrorLabel content={errorOnTaskTemplateReport} />
                                     </React.Fragment>
-
                                 }
                             </div>
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-md-6">
+
                             {/* Tên báo cáo */}
                             {
                                 listTaskReportById && <div className={`form-group ${!errorOnNameTaskReport ? "" : "has-error"}`}>
@@ -583,7 +642,7 @@ class TaskReportEditForm extends Component {
                                     <label htmlFor="Descriptionreport">{translate('report_manager.description')}
                                         <span className="text-red">*</span>
                                     </label>
-                                    <textarea rows={2} type="text" className="form-control" id="Descriptionreport" name="description" value={editingReport.description} onChange={this.handleDesTaskReportChange} />
+                                    <textarea rows={5} type="text" className="form-control" id="Descriptionreport" name="description" value={editingReport.description} onChange={this.handleDesTaskReportChange} />
                                     <ErrorLabel content={errorOnDescriptiontTaskReport} />
                                 </div>
                             }
@@ -685,13 +744,14 @@ class TaskReportEditForm extends Component {
                         <div className="col-md-6">
                             {/* Thống kê từ ngày */}
                             {
-                                editingReport && editingReport.startDate && <div className="form-group">
+                                <div className="form-group">
                                     <label>Thống kê từ ngày</label>
                                     <DatePicker
                                         id="start-date"
-                                        value={this.state.editingReport.startDate}
+                                        value={(editingReport.startDate) ? editingReport.startDate : ''}
                                         onChange={this.handleEditStartDate}
                                         disabled={false}
+
                                     />
                                 </div>
                             }
@@ -700,15 +760,16 @@ class TaskReportEditForm extends Component {
                         <div className="col-md-6">
                             {/* Thống kê đến ngày */}
                             {
-                                editingReport && editingReport.endDate && <div className="form-group">
+                                <div className="form-group">
                                     <label>Thống kê đến ngày </label>
                                     <DatePicker
                                         id="end-date"
-                                        value={this.state.editingReport.endDate}
+                                        value={(editingReport.endDate) ? editingReport.endDate : ''}
                                         onChange={this.handleEditEndDate}
                                         disabled={false}
                                     />
-                                </div>}
+                                </div>
+                            }
                         </div>
                     </div>
 
@@ -822,12 +883,15 @@ const mapState = state => state;
 const actionCreators = {
     getTaskReportById: TaskReportActions.getTaskReportById,
     editTaskReport: TaskReportActions.editTaskReport,
-    getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
+
     getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
+    getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
+
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
     getAllUserInAllUnitsOfCompany: UserActions.getAllUserInAllUnitsOfCompany,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
     getDepartment: UserActions.getDepartmentOfUser,
+    getRoleSameDepartment: UserActions.getRoleSameDepartment,
 };
 const editReport = connect(mapState, actionCreators)(withTranslate(TaskReportEditForm));
 

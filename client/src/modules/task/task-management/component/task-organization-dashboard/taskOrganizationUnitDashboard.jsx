@@ -27,8 +27,7 @@ class TaskOrganizationUnitDashboard extends Component {
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
-        let defaultEndMonth = [month, year].join('-');
-        let defaultStartMonth = [month - 3, year].join('-');
+
 
         this.state = {
             userID: "",
@@ -39,8 +38,8 @@ class TaskOrganizationUnitDashboard extends Component {
             callAction: false,
 
             checkUnit: 0,
-            startMonth: defaultStartMonth,
-            endMonth: defaultEndMonth
+            startMonth: [year, month - 3].join('-'),
+            endMonth: [year, month].join('-')
         };
 
 
@@ -75,7 +74,7 @@ class TaskOrganizationUnitDashboard extends Component {
 
         if (!this.state.idsUnit.length && this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit || (nextState.checkUnit !== this.state.checkUnit || nextState.startMonth !== this.state.startMonth || nextState.endMonth !== this.state.endMonth)) {
             let idsUnit = !this.state.idsUnit.length ? [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id] : nextState.idsUnit;
-            console.log("ids", idsUnit);
+
             await this.setState((state) => {
                 return {
                     ...state,
@@ -91,9 +90,10 @@ class TaskOrganizationUnitDashboard extends Component {
                 type: organizationUnit,
             }
 
-            await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, this.state.startMonth, this.state.endMonth);
+            if (this.state.idsUnit.length) {
+                await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, this.state.startMonth, this.state.endMonth);
+            }
             await this.props.getTaskByUser(data);
-
         } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.tasks.organizationUnitTasks) {
                 return false;
@@ -165,6 +165,18 @@ class TaskOrganizationUnitDashboard extends Component {
         let totalTasks = 0;
         let childrenOrganizationalUnit = [];
 
+        let d = new Date(),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        let defaultEndMonth = [month, year].join('-');
+        let defaultStartMonth = [month - 3, year].join('-');
+
         if (this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
             let currentOrganizationalUnit = this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
             childrenOrganizationalUnit.push(currentOrganizationalUnit);
@@ -204,7 +216,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                 <DatePicker
                                     id="monthStartInOrganizationUnitDashboard"
                                     dateFormat="month-year"
-                                    value={startMonth}
+                                    value={defaultStartMonth}
                                     onChange={this.handleSelectMonthStart}
                                     disabled={false}
                                 />
@@ -214,7 +226,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                 <DatePicker
                                     id="monthEndInOrganizationUnitDashboard"
                                     dateFormat="month-year"
-                                    value={endMonth}
+                                    value={defaultEndMonth}
                                     onChange={this.handleSelectMonthEnd}
                                     disabled={false}
                                 />

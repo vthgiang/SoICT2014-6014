@@ -271,7 +271,7 @@ class OrganizationalUnitKpiCreate extends Component {
         const { translate } = this.props;
         const { editing, currentRole, organizationalUnitKpiSet } = this.state;
 
-        var unitList, currentUnit, currentKPI;
+        let unitList, currentUnit, currentKPI;
 
         if (user.organizationalUnitsOfUser) {
             unitList = user.organizationalUnitsOfUser;
@@ -363,7 +363,7 @@ class OrganizationalUnitKpiCreate extends Component {
                                 <table className="table table-bordered table-striped table-hover">
                                     <thead>
                                         <tr>
-                                            <th titl="Số thứ tự" style={{ width: "40px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}</th>
+                                            <th title="Số thứ tự" style={{ width: "40px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}</th>
                                             <th title="Tên mục tiêu">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.target_name')}</th>
                                             <th title="Tiêu chí đánh giá">{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.evaluation_criteria')}</th>
                                             <th title="Trọng số" style={{ width: "100px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.weight')}</th>

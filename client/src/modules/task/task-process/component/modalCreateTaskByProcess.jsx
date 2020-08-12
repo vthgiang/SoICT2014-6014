@@ -11,10 +11,11 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
 import { TaskProcessActions } from "../redux/actions";
-
+import customModule from './custom'
+import { TaskFormValidator } from "../../task-management/component/taskFormValidator";
 //bpmn-nyan
-import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
-import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
+// import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
+// import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -45,17 +46,16 @@ class ModalCreateTaskByProcess extends Component {
         }
         this.modeler = new BpmnModeler({
             additionalModules: [
-               nyanDrawModule,
-               nyanPaletteModule
+                customModule
             ]
-         });
+        });
         this.generateId = 'createtaskbyprocess';
         this.initialDiagram = data.xmlDiagram;
     }
 
     componentDidMount() {
         this.props.getDepartment();
-        // this.props.getAllUsersWithRole();
+        this.props.getAllUsersWithRole();
         let { user } = this.props;
         let defaultUnit = user && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.find(item =>
             item.dean === this.state.currentRole
@@ -182,29 +182,54 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     handleChangeResponsible = async (value) => {
+        let { user } = this.props
+        let responsible = []
+        user.usersWithRole.forEach(x => {
+            if (value.some(y => y === x.userId._id)) {
+                responsible.push(x.userId.name)
+            }
+        })
         await this.setState(state => {
             state.info[`${state.id}`] = {
                 ...state.info[`${state.id}`],
                 code: state.id,
-                responsible: value,
+                responsibleName: value
             }
             return {
                 ...state,
             }
         })
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        modeling.updateProperties(element1, {
+            responsibleName: responsible
+        });
+
     }
 
     handleChangeAccountable = async (value) => {
+        let { user } = this.props
+        let accountable = []
+        user.usersWithRole.forEach(x => {
+            if (value.some(y => y === x.userId._id)) {
+                accountable.push(x.userId.name)
+            }
+        })
         await this.setState(state => {
             state.info[`${state.id}`] = {
                 ...state.info[`${state.id}`],
                 code: state.id,
-                accountable: value,
+                accountableName: value
             }
             return {
                 ...state,
             }
         })
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        modeling.updateProperties(element1, {
+            accountableName: accountable
+        });
     }
 
     handleChangeOrganizationalUnit = async (value) => {
@@ -254,10 +279,59 @@ class ModalCreateTaskByProcess extends Component {
     }
 
 
+    handleChangeTaskStartDate = (value) => {
+        this.validateTaskStartDate(value, true);
+    }
+    validateTaskStartDate = (value, willUpdateState = true) => {
+        let { translate } = this.props;
+        let msg = TaskFormValidator.validateTaskStartDate(value, this.state.info[`${this.state.id}`].endDate ? this.state.info[`${this.state.id}`].endDate : "", translate);
+
+        if (willUpdateState) {
+            this.state.info[`${this.state.id}`].startDate = value;
+            this.state.info[`${this.state.id}`].errorOnStartDate = msg;
+            this.setState(state => {
+                return {
+                    ...state,
+                };
+            });
+        }
+        return msg === undefined;
+    }
+
+    handleChangeTaskEndDate = (value) => {
+        this.validateTaskEndDate(value, true);
+    }
+    validateTaskEndDate = (value, willUpdateState = true) => {
+        let { translate } = this.props;
+        let msg = TaskFormValidator.validateTaskEndDate(this.state.info[`${this.state.id}`].startDate ? this.state.info[`${this.state.id}`].startDate : "", value, translate);
+
+        if (willUpdateState) {
+            this.state.info[`${this.state.id}`].endDate = value;
+            this.state.info[`${this.state.id}`].errorOnEndDate = msg;
+            this.setState(state => {
+                return {
+                    ...state,
+                };
+            });
+        }
+        console.log('state.info', this.state);
+        return msg === undefined;
+    }
+
+    handleChangeTaskPriority = (value) => {
+        this.state.info[`${this.state.id}`].priority = value;
+        this.setState(state => {
+            return {
+                ...state,
+            };
+        });
+    }
+
     // Các hàm  xử lý sự kiện của bpmn
 
     interactPopup = (event) => {
         var element = event.element;
+        console.log(element)
         let nameStr = element.type.split(':');
         this.setState(state => {
             if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' ||
@@ -463,12 +537,12 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     render() {
-        const { translate, role,user } = this.props;
-        const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedEdit } = this.state;
+        const { translate, role, user } = this.props;
+        const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedEdit, infoTask } = this.state;
         const { listOrganizationalUnit } = this.props
-        // let listUser = user.usersWithRole
-        // user.usersWithRole.filter(x => )
+        let listUser = user.usersWithRole
         let listRole = [];
+        let task = Object.assign({}, info)
         if (role && role.list.length !== 0) listRole = role.list;
         let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
             .map(item => { return { text: item.name, value: item._id } });
@@ -497,17 +571,17 @@ class ModalCreateTaskByProcess extends Component {
                                     <div className="io-zoom-controls">
                                         <ul className="io-zoom-reset io-control io-control-list">
                                             <li>
-                                                <a style={{cursor: "pointer"}} title="Reset zoom" onClick={this.handleZoomReset}>
+                                                <a style={{ cursor: "pointer" }} title="Reset zoom" onClick={this.handleZoomReset}>
                                                     <i className="fa fa-crosshairs"></i>
                                                 </a>
                                             </li>
                                             <li>
-                                                <a style={{cursor: "pointer"}} title="Zoom in" onClick={this.handleZoomIn}>
+                                                <a style={{ cursor: "pointer" }} title="Zoom in" onClick={this.handleZoomIn}>
                                                     <i className="fa fa-plus"></i>
                                                 </a>
                                             </li>
                                             <li>
-                                                <a style={{cursor: "pointer"}} title="Zoom out" onClick={this.handleZoomOut}>
+                                                <a style={{ cursor: "pointer" }} title="Zoom out" onClick={this.handleZoomOut}>
                                                     <i className="fa fa-minus"></i>
                                                 </a>
                                             </li>
@@ -526,13 +600,18 @@ class ModalCreateTaskByProcess extends Component {
                                             listOrganizationalUnit={listOrganizationalUnit}
                                             action='create-task'
                                             id={id}
+                                            listUser={listUser}
                                             info={(info && info[`${id}`]) && info[`${id}`]}
+                                            task={info?.[`${id}`]}
                                             handleChangeName={this.handleChangeName}
                                             handleChangeDescription={this.handleChangeDescription}
                                             handleChangeResponsible={this.handleChangeResponsible}
                                             handleChangeAccountable={this.handleChangeAccountable}
                                             handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
                                             handleChangeTemplate={this.handleChangeTemplate}
+                                            handleChangeTaskPriority={this.handleChangeTaskPriority}
+                                            handleChangeTaskStartDate={this.handleChangeTaskStartDate}
+                                            handleChangeTaskEndDate={this.handleChangeTaskEndDate}
 
                                             save={this.save}
                                         />

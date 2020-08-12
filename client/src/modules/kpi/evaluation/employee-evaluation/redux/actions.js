@@ -148,11 +148,11 @@ function editStatusKpi(id, status) {
 /**
  *Lấy danh sách công việc theo id
  */
-function getTaskById(id, employeeId, date, kpiType) {
+function getTaskById(id, employeeId, date, type) {
     return dispatch => {
         dispatch({ type: kpiMemberConstants.GET_TASK_BYID_REQUEST });
 
-        kpiMemberServices.getTaskById(id, employeeId, date, kpiType)
+        kpiMemberServices.getTaskById(id, employeeId, date, type)
             .then(res => {
                 dispatch({
                     type: kpiMemberConstants.GET_TASK_BYID_SUCCESS,

@@ -1,11 +1,14 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {withTranslate} from 'react-redux-multilingual';
-import {DatePicker, DialogModal, ErrorLabel, SelectBox} from '../../../../common-components';
-import {UsageFormValidator} from './usageFormValidator';
-import {UsageActions} from '../redux/actions';
-import {AssetManagerActions} from '../../asset-management/redux/actions';
-import {UserActions} from '../../../super-admin/user/redux/actions';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+
+import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
+import { UsageFormValidator } from './usageFormValidator';
+
+import { UsageActions } from '../redux/actions';
+import { AssetManagerActions } from '../../asset-management/redux/actions';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 
 class UsageEditForm extends Component {
     constructor(props) {
@@ -20,14 +23,19 @@ class UsageEditForm extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+            
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     /**
@@ -120,6 +128,7 @@ class UsageEditForm extends Component {
         var partEnd = this.state.endDate.split('-');
         var endDate = [partEnd[0], partEnd[1], partEnd[2]].join('-');
         let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset._id;
+
         if (this.isFormValidated()) {
             let dataToSubit = {
                 usedBy: !this.state.usedBy ? this.props.user.list[0].id : this.state.usedBy,
@@ -154,14 +163,15 @@ class UsageEditForm extends Component {
     }
 
     render() {
-        const {id, translate, user, assetsManager} = this.props;
-        var userlist = user.list;
-        var assetlist = assetsManager.listAssets;
+        const { id } = this.props;
+        const { translate, user, assetsManager } = this.props;
         const {
             asset, usedBy, startDate, endDate, description, errorOnStartDate, errorOnDescription
         } = this.state;
-        console.log(this.props._id, 'id')
-        console.log('asset', asset._id);
+        
+        var userlist = user.list;
+        var assetlist = assetsManager.listAssets;
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -171,8 +181,10 @@ class UsageEditForm extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
+                    {/* Form chỉnh sửa phiếu đăng ký sử dụng tài sản */}
                     <form className="form-group" id={`form-create-usage`}>
                         <div className="col-md-12">
+                            {/* Tài sản */}
                             <div className={`form-group`}>
                                 <label>Tài sản</label>
                                 <div>
@@ -180,8 +192,8 @@ class UsageEditForm extends Component {
                                         <SelectBox
                                             id={`edit-usage-asset${id}`}
                                             className="form-control select2"
-                                            style={{width: "100%"}}
-                                            items={assetlist.map(x => ({value: x._id, text: x.code + " - " + x.assetName}))}
+                                            style={{ width: "100%" }}
+                                            items={assetlist.map(x => ({ value: x._id, text: x.code + " - " + x.assetName }))}
                                             onChange={this.handleAssetChange}
                                             value={asset._id}
                                             multiple={false}
@@ -189,6 +201,8 @@ class UsageEditForm extends Component {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Người sử dụng */}
                             <div className={`form-group`}>
                                 <label>Người sử dụng</label>
                                 <div>
@@ -196,9 +210,9 @@ class UsageEditForm extends Component {
                                         <SelectBox
                                             id={`edit-usedBy${id}`}
                                             className="form-control select2"
-                                            style={{width: "100%"}}
+                                            style={{ width: "100%" }}
                                             items={userlist.map(x => {
-                                                return {value: x._id, text: x.name + " - " + x.email}
+                                                return { value: x._id, text: x.name + " - " + x.email }
                                             })}
                                             onChange={this.handleUsedByChange}
                                             value={usedBy}
@@ -207,16 +221,19 @@ class UsageEditForm extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className={`form-group ${errorOnStartDate === undefined ? "" : "has-error"}`}>
+
+                            {/* Thời gian bắt đầu sử dụng */}
+                            <div className={`form-group ${!errorOnStartDate ? "" : "has-error"}`}>
                                 <label>Thời gian bắt đầu sử dụng<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit-start-date${id}`}
                                     value={this.formatDate(startDate)}
                                     onChange={this.handleStartDateChange}
                                 />
-                                <ErrorLabel content={errorOnStartDate}/>
+                                <ErrorLabel content={errorOnStartDate} />
                             </div>
 
+                            {/* Thời gian kết thúc sử dụng */}
                             <div className="form-group">
                                 <label>Thời gian kết thúc sử dụng</label>
                                 <DatePicker
@@ -225,11 +242,13 @@ class UsageEditForm extends Component {
                                     onChange={this.handleEndDateChange}
                                 />
                             </div>
-                            <div className={`form-group ${errorOnDescription === undefined ? "" : "has-error"}`}>
+
+                            {/* Nội dung */}
+                            <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
                                 <label>Nội dung<span className="text-red">*</span></label>
-                                <textarea className="form-control" rows="3" style={{height: 34}} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
-                                          placeholder="Nội dung"></textarea>
-                                <ErrorLabel content={errorOnDescription}/>
+                                <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
+                                    placeholder="Nội dung"></textarea>
+                                <ErrorLabel content={errorOnDescription} />
                             </div>
                         </div>
                     </form>
@@ -240,8 +259,8 @@ class UsageEditForm extends Component {
 };
 
 function mapState(state) {
-    var {usage, assetsManager, user} = state;
-    return {usage, assetsManager, user};
+    var { usage, assetsManager, user } = state;
+    return { usage, assetsManager, user };
 };
 
 const actionCreators = {
@@ -251,4 +270,4 @@ const actionCreators = {
 };
 
 const editModal = connect(mapState, actionCreators)(withTranslate(UsageEditForm));
-export {editModal as UsageEditForm};
+export { editModal as UsageEditForm };

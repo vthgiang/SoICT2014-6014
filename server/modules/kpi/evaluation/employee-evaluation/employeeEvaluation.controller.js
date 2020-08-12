@@ -168,19 +168,19 @@ exports.getTasksByKpiId = async (req, res) => {
  */
 
 exports.setTaskImportanceLevel = async (req, res) => {
-    try {
-        const kpimembers = await KPIMemberService.setTaskImportanceLevel(req.params.id, req.query.kpiType, req.body);
-        await LogInfo(req.user.email, `Set task importance level`, req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['set_task_importance_level_success'],
-            content: kpimembers
-        });
-    } catch (error) {
-        await LogInfo(req.user.email, `Set point for kpi`, req.user.company);
-        res.status(400).json({
-            messages: ['set_task_importance_level_fail'],
-            message: error
-        });
-    }
+    //try {
+    const kpimembers = await KPIMemberService.setTaskImportanceLevel(req.params.id, req.query.kpiType, req.body);
+    await LogInfo(req.user.email, `Set task importance level`, req.user.company);
+    res.status(200).json({
+        success: true,
+        messages: ['set_task_importance_level_success'],
+        content: kpimembers
+    });
+    // } catch (error) {
+    //     await LogInfo(req.user.email, `Set point for kpi`, req.user.company);
+    //     res.status(400).json({
+    //         messages: ['set_task_importance_level_fail'],
+    //         message: error
+    //     });
+    // }
 }

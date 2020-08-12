@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import LazyLoad from 'react-lazyload';
+
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/dashboard/redux/actions';
 
 import { TrendsInOrganizationalUnitKpiChart } from './trendsInOrganizationalUnitKpiChart';
@@ -137,6 +139,12 @@ class OrganizationalUnitKpiDashboard extends Component {
         const { dashboardEvaluationEmployeeKpiSet, translate } = this.props;
         const { childUnitChart, organizationalUnitId, month } = this.state;
 
+        const Loading = () => (
+            <div className="post loading" style={{ textAlign: "center" }}>
+                <h5>Loading...</h5>
+            </div>
+        )
+
         let childOrganizationalUnit, childrenOrganizationalUnit, organizationalUnitSelectBox;
         
         if (dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
@@ -232,15 +240,19 @@ class OrganizationalUnitKpiDashboard extends Component {
                         <button className="pull-right" title={ !childUnitChart ? "Hiển thị biểu đồ các đơn vị con" : "Hiển thị biểu đồ đơn vị hiện tại" } onClick={this.handleSelectTypeChildUnit}>{ !childUnitChart ? "Các đơn vị con" : "Đơn vị hiện tại" }</button>
                     </div>
                     <div className="box-body qlcv">
-                        { !childUnitChart ?
-                            <TrendsInOrganizationalUnitKpiChart
-                                organizationalUnitId={organizationalUnitId}
-                                month={month}
-                            />
-                            : <TrendsInChildrenOrganizationalUnitKpiChart
-                                organizationalUnitId={organizationalUnitId}
-                                month={month}
-                            />
+                        {!childUnitChart ?
+                            <LazyLoad key="trendsInOrganizationalUnitKpiChart" placeholder={<Loading/>}>
+                                <TrendsInOrganizationalUnitKpiChart
+                                    organizationalUnitId={organizationalUnitId}
+                                    month={month}
+                                />
+                            </LazyLoad>
+                            : <LazyLoad key="trendsInChildrenOrganizationalUnitKpiChart" placeholder={<Loading/>}>
+                                <TrendsInChildrenOrganizationalUnitKpiChart
+                                    organizationalUnitId={organizationalUnitId}
+                                    month={month}
+                                />
+                            </LazyLoad>
                         }
                     </div>
                 </div>
@@ -254,12 +266,14 @@ class OrganizationalUnitKpiDashboard extends Component {
                                     <div className="box-title">{translate('kpi.organizational_unit.dashboard.distributive')}{this.state.date}</div>
                                 </div>
                                 <div className="box-body qlcv">
-                                    {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) &&
+                                { (this.state.dataStatus === this.DATA_STATUS.AVAILABLE) &&
+                                    <LazyLoad key="distributionOfOrganizationalUnitKpiChart" placeholder={<Loading/>}>
                                         <DistributionOfOrganizationalUnitKpiChart
                                             organizationalUnitId={organizationalUnitId}
                                             month={month}
                                         />
-                                    }
+                                    </LazyLoad>
+                                }
                                 </div>
                             </div>
                         }
@@ -272,10 +286,12 @@ class OrganizationalUnitKpiDashboard extends Component {
                                 <div className="box-title">{translate('kpi.organizational_unit.dashboard.statiscial')} {this.state.date}</div>
                             </div>
                             <div className="box-body qlcv">
-                                <StatisticsOfOrganizationalUnitKpiResultsChart
-                                    organizationalUnitId={organizationalUnitId}
-                                    month={month}
-                                />
+                                <LazyLoad key="statisticsOfOrganizationalUnitKpiResultsChart" placeholder={<Loading/>}>
+                                    <StatisticsOfOrganizationalUnitKpiResultsChart
+                                        organizationalUnitId={organizationalUnitId}
+                                        month={month}
+                                    />
+                                </LazyLoad>
                             </div>
                         </div>
                     </div>
@@ -289,9 +305,11 @@ class OrganizationalUnitKpiDashboard extends Component {
                                     <div className="box-title">{translate('kpi.organizational_unit.dashboard.result_kpi_unit')}</div>
                                 </div>
                                 <div className="box-body qlcv">
-                                    {(this.state.dataStatus === this.DATA_STATUS.AVAILABLE) &&
-                                        <ResultsOfOrganizationalUnitKpiChart organizationalUnitId={organizationalUnitId} />
-                                    }
+                                { (this.state.dataStatus === this.DATA_STATUS.AVAILABLE) &&
+                                    <LazyLoad key="resultsOfOrganizationalUnitKpiChart" placeholder={<Loading/>}>
+                                        <ResultsOfOrganizationalUnitKpiChart organizationalUnitId={organizationalUnitId}/>
+                                    </LazyLoad>
+                                }
                                 </div>
                             </div>
                         </div>
@@ -305,7 +323,9 @@ class OrganizationalUnitKpiDashboard extends Component {
                                     <div className="box-title">{translate('kpi.organizational_unit.dashboard.result_kpi_units')}</div>
                                 </div>
                                 <div className="box-body qlcv">
-                                    <ResultsOfAllOrganizationalUnitKpiChart />
+                                    <LazyLoad key="resultsOfAllOrganizationalUnitKpiChart" placeholder={<Loading/>}>
+                                        <ResultsOfAllOrganizationalUnitKpiChart />
+                                    </LazyLoad>
                                 </div>
                             </div>
                         </div>

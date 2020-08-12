@@ -24,24 +24,14 @@ class TaskReportViewForm extends Component {
         const time = new Date(data);
         const m = time.getMonth();
         const y = time.getFullYear();
-        return `${m + 1}-${y}`;
+        return `${y}-${m + 1}`;
     }
+
     render() {
         const { tasks, user, reports, translate } = this.props;
-        const { startDate, endDate } = this.props;
-
         let formater = new Intl.NumberFormat();
+        let listTaskEvaluation = tasks.listTaskEvaluations;
         let taskInfoName, headTable = [];
-
-        // Nếu không có ngày bắt đầu và kết thúc thì lấy công việc mới nhất
-        let listTaskEvaluation = [];
-        if (tasks.listTaskEvaluations && !startDate && !endDate) {
-            let listTaskEvaluations = tasks.listTaskEvaluations[0]; // lấy công việc đầu mới nhất
-            listTaskEvaluation = [...listTaskEvaluation, listTaskEvaluations];
-        } else {
-
-            listTaskEvaluation = tasks.listTaskEvaluations; // lấy toàn bộ
-        }
 
         // hiển thị trường thông tin hiện trong báo cáo
         if (listTaskEvaluation && listTaskEvaluation.length !== 0) {
@@ -53,7 +43,6 @@ class TaskReportViewForm extends Component {
             })
         }
 
-        // Convert listTaskEvaluation loại bỏ trường dư thừa
         let newlistTaskEvaluation;
         if (listTaskEvaluation) {
             newlistTaskEvaluation = listTaskEvaluation.map(item => {
@@ -63,15 +52,12 @@ class TaskReportViewForm extends Component {
                         return {
                             code: task.code,
                             value: task.value,
-                            name: task.name,
                         }
-
                     })
                 }
             });
         }
 
-        // gom các công việc theo tháng-năm
         let groupDataByMonth;
         if (newlistTaskEvaluation) {
             groupDataByMonth = newlistTaskEvaluation.reduce((groups, item) => {
@@ -80,16 +66,12 @@ class TaskReportViewForm extends Component {
             }, {});
         }
 
-        console.log('groupDataByMonth', groupDataByMonth);
-
-        // Tính  tổng các công việc
         let output;
         if (groupDataByMonth) {
             output = Object.entries(groupDataByMonth).map(([time, datapoints]) => {
                 const codes = {}
                 const allTasks = datapoints.flatMap(point => point.task);
-                // console.log('allTasks', allTasks);
-                for (const { code, value, name } of allTasks) {
+                for (const { code, value } of allTasks) {
                     codes[code] = (codes[code] || 0) + value;
                 }
                 return {
@@ -99,6 +81,7 @@ class TaskReportViewForm extends Component {
             }
             )
         }
+
         console.log('output', output);
 
         return (
@@ -112,13 +95,14 @@ class TaskReportViewForm extends Component {
                     size={100}
                 >
                     {/* Modal Body */}
-                    {/* <div className="row">
+                    <div className="row">
                         {
                             <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                                <TwoBarChart nameData={headTable.map(x => x)} data={output} nameChart={'Báo cáo công việc tháng 7'} />
+                                <TwoBarChart nameData={headTable.map(x => x)} data={output} nameChart={'Báo cáo công việc '} />
                             </div>
+
                         }
-                    </div> */}
+                    </div>
                     <div className="form-inline">
                         <button id="exportButton" className="btn btn-sm btn-success " style={{ marginBottom: '10px' }}><span className="fa fa-file-excel-o"></span> Export to Excel</button>
                     </div>
@@ -155,7 +139,7 @@ class TaskReportViewForm extends Component {
                                 </thead>
                                 <tbody>
                                     {
-                                        listTaskEvaluation && listTaskEvaluation.map((item, key) => {
+                                        tasks.listTaskEvaluations && tasks.listTaskEvaluations.map((item, key) => {
                                             //Lấy tên người thực hiện 
                                             let getNameResponsibleEmployees = user.usercompanys.filter(item1 => item1._id === item.responsibleEmployees);
                                             getNameResponsibleEmployees = getNameResponsibleEmployees.map(x1 => x1.name);

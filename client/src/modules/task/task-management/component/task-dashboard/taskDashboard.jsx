@@ -42,11 +42,12 @@ class TaskDashboard extends Component {
     }
 
     componentDidMount = async () => {
+        // unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false
         await this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
-        await this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
-        await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
-        await this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
-        await this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
+        await this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
+        await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
+        await this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
+        await this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
         let data = {
             type: "user"
         }
@@ -60,7 +61,7 @@ class TaskDashboard extends Component {
             };
         });
     }
-    
+
     shouldComponentUpdate = async (nextProps, nextState) => {
         if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks || !nextProps.tasks.tasksbyuser) {
@@ -231,8 +232,8 @@ class TaskDashboard extends Component {
                     <div className="form-inline">
                         <div className="form-group">
                             <label>{translate('task.task_management.from')}</label>
-                            <DatePicker 
-                                id="monthStartInTaskDashBoard"      
+                            <DatePicker
+                                id="monthStartInTaskDashBoard"
                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
                                 value={defaultStartMonth}                 // giá trị mặc định cho datePicker    
                                 onChange={this.handleSelectMonthStart}
@@ -244,9 +245,9 @@ class TaskDashboard extends Component {
                     {/**Chọn ngày kết thúc */}
                     <div className="form-inline">
                         <div className="form-group">
-                        <label>{translate('task.task_management.to')}</label>
-                            <DatePicker 
-                                id="monthEndInTaskDashBoard"      
+                            <label>{translate('task.task_management.to')}</label>
+                            <DatePicker
+                                id="monthEndInTaskDashBoard"
                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
                                 value={defaultEndMonth}                 // giá trị mặc định cho datePicker    
                                 onChange={this.handleSelectMonthEnd}
@@ -347,17 +348,17 @@ class TaskDashboard extends Component {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
                                             {
-                                                (tasks.tasksbyuser.expire.length !== 0)?
-                                                tasks.tasksbyuser.expire.map((item, key) =>
-                                                    <li key={key}>
-                                                        <span className="handle">
-                                                            <i className="fa fa-ellipsis-v" />
-                                                            <i className="fa fa-ellipsis-v" />
-                                                        </span>
-                                                        <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
-                                                        <small className="label label-danger"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
-                                                    </li>
-                                                ): "Không có công việc quá hạn"
+                                                (tasks.tasksbyuser.expire.length !== 0) ?
+                                                    tasks.tasksbyuser.expire.map((item, key) =>
+                                                        <li key={key}>
+                                                            <span className="handle">
+                                                                <i className="fa fa-ellipsis-v" />
+                                                                <i className="fa fa-ellipsis-v" />
+                                                            </span>
+                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
+                                                            <small className="label label-danger"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
+                                                        </li>
+                                                    ) : "Không có công việc quá hạn"
                                             }
                                         </ul> : "Đang tải dữ liệu"
                                 }
@@ -374,17 +375,17 @@ class TaskDashboard extends Component {
                                     (tasks && tasks.tasksbyuser) ?
                                         <ul className="todo-list">
                                             {
-                                                (tasks.tasksbyuser.deadlineincoming.length !== 0)?
-                                                tasks.tasksbyuser.deadlineincoming.map((item, key) =>
-                                                    <li key={key}>
-                                                        <span className="handle">
-                                                            <i className="fa fa-ellipsis-v" />
-                                                            <i className="fa fa-ellipsis-v" />
-                                                        </span>
-                                                        <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" />{item.task.name}</span>
-                                                        <small className="label label-warning"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
-                                                    </li>
-                                                ):"Không có công việc nào sắp hết hạn"
+                                                (tasks.tasksbyuser.deadlineincoming.length !== 0) ?
+                                                    tasks.tasksbyuser.deadlineincoming.map((item, key) =>
+                                                        <li key={key}>
+                                                            <span className="handle">
+                                                                <i className="fa fa-ellipsis-v" />
+                                                                <i className="fa fa-ellipsis-v" />
+                                                            </span>
+                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" />{item.task.name}</span>
+                                                            <small className="label label-warning"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
+                                                        </li>
+                                                    ) : "Không có công việc nào sắp hết hạn"
                                             }
                                         </ul> : "Đang tải dữ liệu"
                                 }

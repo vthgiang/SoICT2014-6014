@@ -119,10 +119,21 @@ class TaskReportDetailForm extends Component {
                                     </React.Fragment>
                                 }
 
-                                <dt>Thời gian thực hiện từ ngày</dt>
-                                <dd>{listTaskReportById && listTaskReportById.startDate && listTaskReportById.startDate.slice(0, 10)}</dd>
-                                <dt>Thời gian thực hiện đến ngày</dt>
-                                <dd>{listTaskReportById && listTaskReportById.endDate && listTaskReportById.endDate.slice(0, 10)}</dd>
+                                {/* Người được xem */}
+                                {listTaskReportById && listTaskReportById.readByEmployees &&
+                                    <React.Fragment>
+                                        <dt>Người được xem</dt>
+                                        <dd>
+                                            <ul>
+                                                {listTaskReportById && listTaskReportById.readByEmployees.map((item, index) => {
+                                                    console.log('item', item);
+                                                    return <li key={index}>{item.name}</li>
+                                                })}
+                                            </ul>
+                                        </dd>
+                                    </React.Fragment>
+                                }
+
 
                             </div>
                         </div>
@@ -192,7 +203,12 @@ class TaskReportDetailForm extends Component {
                                                             </div>
                                                         </React.Fragment> : null
                                                 }
+
                                                 <div style={{ marginBottom: '12px' }}></div>
+                                                <dt>Thời gian thực hiện từ ngày</dt>
+                                                <dd>{listTaskReportById && listTaskReportById.startDate && listTaskReportById.startDate.slice(0, 10)}</dd>
+                                                <dt>Thời gian thực hiện đến ngày</dt>
+                                                <dd>{listTaskReportById && listTaskReportById.endDate && listTaskReportById.endDate.slice(0, 10)}</dd>
                                             </React.Fragment>
                                         )
                                 }

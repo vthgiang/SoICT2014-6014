@@ -31,7 +31,6 @@ const TaskReportSchema = new Schema({
     readByEmployees: [{
         type: Schema.Types.ObjectId,
         ref: Role,
-        required: true
     }],
     responsibleEmployees: [{ //Người thực hiện
         type: Schema.Types.ObjectId,
@@ -80,7 +79,7 @@ const TaskReportSchema = new Schema({
         aggregationType: { // 0: tính theo kiểu trung bình cộng, 1: tính theo kiểu tổng
             type: Number
         },
-        charType: { // 0: colChart, 1: barchart,....
+        charType: { // 0: Barchart, 1: Line Chart, 2: Pie chart,....
             type: Number
         }
     }]
@@ -88,4 +87,4 @@ const TaskReportSchema = new Schema({
     timestamps: true
 });
 
-module.exports = TaskReport = mongoose.model("task-report", TaskReportSchema);
+module.exports = TaskReport = mongoose.model("task_reports", TaskReportSchema);

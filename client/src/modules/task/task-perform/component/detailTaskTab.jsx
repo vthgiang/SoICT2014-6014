@@ -225,8 +225,8 @@ class DetailTaskTab extends Component {
         const { showToolbar, id } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
 
         let task;
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null) {
-            task = tasks.task;
+        if (performtasks.task) {
+            task = performtasks.task;
         }
 
         let statusTask
@@ -329,6 +329,7 @@ class DetailTaskTab extends Component {
                         {task &&
                             <div className="description-box">
                                 <div><strong>{translate('task.task_management.detail_link')}: &nbsp;&nbsp;</strong> <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></div>
+                                <div><strong>{translate('task.task_management.unit_manage_task')}: &nbsp;&nbsp;</strong> {task && task.organizationalUnit ? task.organizationalUnit.name : translate('task.task_management.err_organizational_unit')}</div>
                                 <div><strong>{translate('task.task_management.detail_priority')}: &nbsp;&nbsp;</strong> {task && this.formatPriority(task.priority)}</div>
                                 <div><strong>{translate('task.task_management.detail_status')}: &nbsp;&nbsp;</strong> {task && this.formatStatus(task.status)}</div>
                                 <div><strong>{translate('task.task_management.detail_time')}: &nbsp;&nbsp;</strong> {this.formatDate(task && task.startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(task && task.endDate)}</div>
@@ -473,7 +474,7 @@ class DetailTaskTab extends Component {
                                                     <div>
                                                         <div><strong>{translate('task.task_management.detail_info')}</strong></div>
                                                         <ul>
-                                                            <li>{translate('task.task_management.detail_progress')}: &nbsp;&nbsp; {eva.progress}%</li>
+                                                            <li>{translate('task.task_management.detail_progress')}: &nbsp;&nbsp; {(eva.progress !== null && eva.progress !== undefined) ? `${eva.progress}%` : translate('task.task_management.detail_not_eval_on_month')}</li>
                                                             {
                                                                 eva.taskInformations.map((info, key) => {
                                                                     if (info.type === "Date") {

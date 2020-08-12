@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
-import { AssetCreateValidator } from '../../asset-create/components/assetCreateValidator';
-import { AssetManagerActions } from '../../asset-management/redux/actions';
-import { DepreciationActions } from '../redux/actions';
+
 import moment from 'moment';
+
+import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
+import { AssetCreateValidator } from '../../asset-create/components/assetCreateValidator';
+import { DepreciationActions } from '../redux/actions';
 
 class DepreciationEditForm extends Component {
     constructor(props) {
@@ -31,8 +33,8 @@ class DepreciationEditForm extends Component {
     }
     validateCost = (value, willUpdateState = true) => {
         let msg = AssetCreateValidator.validateCost(value, this.props.translate)
-        if (willUpdateState) {
 
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -53,8 +55,8 @@ class DepreciationEditForm extends Component {
     }
     validateResidualValue = (value, willUpdateState = true) => {
         let msg = AssetCreateValidator.validateResidualValue(value, this.props.translate)
-        if (willUpdateState) {
 
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -75,8 +77,8 @@ class DepreciationEditForm extends Component {
     }
     validateUsefulLife = (value, willUpdateState = true) => {
         let msg = AssetCreateValidator.validateUsefulLife(value, this.props.translate)
-        if (willUpdateState) {
 
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -96,8 +98,8 @@ class DepreciationEditForm extends Component {
     }
     validateStartDepreciation = (value, willUpdateState = true) => {
         let msg = AssetCreateValidator.validateStartDepreciation(value, this.props.translate)
-        if (willUpdateState) {
 
+        if (willUpdateState) {
             this.setState(state => {
                 return {
                     ...state,
@@ -120,34 +122,35 @@ class DepreciationEditForm extends Component {
 
 
     addMonthToEndDepreciation = (day) => {
-        if (day !== undefined) {
+        if (day) {
             let { usefulLife } = this.state,
                 splitDay = day.toString().split('-'),
                 currentDate = moment(`${splitDay[2]}-${splitDay[1]}-${splitDay[0]}`),
                 futureMonth = moment(currentDate).add(usefulLife, 'M'),
                 futureMonthEnd = moment(futureMonth).endOf('month');
+            
             if (currentDate.date() !== futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
                 futureMonth = futureMonth.add(1, 'd');
             }
+
             return futureMonth.format('DD-MM-YYYY');
         }
     };
 
     // function kiểm tra các trường bắt buộc phải nhập
     validatorInput = (value) => {
-        if (value !== undefined && value.toString().trim() !== '') {
+        if (value && value.toString().trim() !== '') {
             return true;
         }
+
         return false;
     }
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result =
-            // this.validateCost(this.state.cost, false) &&
-            // this.validateUsefulLife(this.state.usefulLife, false) &&
-            this.validateStartDepreciation(this.state.startDepreciation, false) &&
+        let result = this.validateStartDepreciation(this.state.startDepreciation, false) &&
             this.validatorInput(this.state.depreciationType);
+        
         return result;
     }
 
@@ -155,6 +158,7 @@ class DepreciationEditForm extends Component {
         var partDepreciation = this.state.startDepreciation.split('-');
         var startDepreciation = [partDepreciation[2], partDepreciation[1], partDepreciation[0]].join('-');
         let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset._id;
+
         if (this.isFormValidated()) {
             let dataToSubmit = {
                 cost: this.state.cost,
@@ -189,12 +193,15 @@ class DepreciationEditForm extends Component {
 
 
     render() {
-        const { _id, translate, assetsManager } = this.props;
-        var assetlist = assetsManager.listAssets;
+        const { _id } = this.props;
+        const { translate, assetsManager } = this.props;
         const { asset,
             cost, residualValue, usefulLife, startDepreciation, depreciationType, endDepreciation, annualDepreciationValue,
             monthlyDepreciationValue, errorOnCost, errorOnStartDepreciation, errorOnDepreciationType, errorOnUsefulLife
         } = this.state;
+
+        var assetlist = assetsManager.listAssets;
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -204,9 +211,10 @@ class DepreciationEditForm extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
+                    {/* Form chỉnh sửa thông tin khấu hao */}
                     <form className="form-group" id="form-edit-depreciation">
+                        {/* Tài sản */}
                         <div className="col-md-12">
-
                             <div className={`form-group`}>
                                 <label>Tài sản</label>
                                 <div>
@@ -224,24 +232,32 @@ class DepreciationEditForm extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className={`form-group ${errorOnCost === undefined ? "" : "has-error"} `}>
+
+                            {/* Nguyên giá */}
+                            <div className={`form-group ${!errorOnCost ? "" : "has-error"} `}>
                                 <label htmlFor="cost">Nguyên giá (VNĐ)<span className="text-red">*</span></label><br />
                                 <input type="number" className="form-control" name="cost" value={cost} onChange={this.handleCostChange}
                                     placeholder="Nguyên giá" autoComplete="off" />
                                 <ErrorLabel content={errorOnCost} />
                             </div>
+
+                            {/* Giá trị thu hồi ước tính */}
                             <div className={`form-group`}>
                                 <label htmlFor="residualValue">Giá trị thu hồi ước tính (VNĐ)</label><br />
                                 <input type="number" className="form-control" name="residualValue" value={residualValue} onChange={this.handleResidualValueChange}
                                     placeholder="Giá trị thu hồi ước tính" autoComplete="off" />
                             </div>
-                            <div className={`form-group ${errorOnUsefulLife === undefined ? "" : "has-error"} `}>
+
+                            {/* Thời gian sử dụng */}
+                            <div className={`form-group ${!errorOnUsefulLife ? "" : "has-error"} `}>
                                 <label htmlFor="usefulLife">Thời gian sử dụng (Tháng)<span className="text-red">*</span></label>
                                 <input type="number" className="form-control" name="usefulLife" value={usefulLife} onChange={this.handleUsefulLifeChange}
                                     placeholder="Thời gian trích khấu hao" autoComplete="off" />
                                 <ErrorLabel content={errorOnUsefulLife} />
                             </div>
-                            <div className={`form-group ${errorOnStartDepreciation === undefined ? "" : "has-error"} `}>
+
+                            {/* Thời gian bắt đầu trích khấu hao */}
+                            <div className={`form-group ${!errorOnStartDepreciation ? "" : "has-error"} `}>
                                 <label htmlFor="startDepreciation">Thời gian bắt đầu trích khấu hao<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`startDepreciation${_id}`}
@@ -250,7 +266,9 @@ class DepreciationEditForm extends Component {
                                 />
                                 <ErrorLabel content={errorOnStartDepreciation} />
                             </div>
-                            <div className={`form-group ${errorOnDepreciationType === undefined ? "" : "has-error"}`}>
+
+                            {/* Phương pháp khấu hao */}
+                            <div className={`form-group ${!errorOnDepreciationType ? "" : "has-error"}`}>
                                 <label htmlFor="depreciationType">Phương pháp khấu hao<span className="text-red">*</span></label>
                                 <SelectBox
                                     id={`depreciationType${_id}`}
@@ -267,6 +285,7 @@ class DepreciationEditForm extends Component {
                                 />
                                 <ErrorLabel content={errorOnDepreciationType} />
                             </div>
+                            
                             {/* <div className="form-group">
                                 <label htmlFor="endDepreciation">Thời gian kết thúc trích khấu hao (Ghi chú: thời gian kết thúc = thời gian bắt đầu + thời gian trích khấu hao)</label><br />
                                 <input

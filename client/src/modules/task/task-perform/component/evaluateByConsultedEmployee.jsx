@@ -88,9 +88,13 @@ class EvaluateByConsultedEmployee extends Component {
 
     // hàm lấy dữ liệu khởi tạo
     getData = (dateParams) => {
-        const { user } = this.props;
+        const { user, KPIPersonalManager } = this.props;
         let { task } = this.props;
         let idUser = getStorage("userId");
+
+        let cloneKpi = (KPIPersonalManager && KPIPersonalManager.kpiSets) ?
+            (KPIPersonalManager.kpiSets.kpis.filter(e => ( e.type === 2 )).map(x => { return { value: x._id, text: x.name } }))
+            : []
 
         let progress = task.progress;
         let evaluations;
@@ -108,12 +112,14 @@ class EvaluateByConsultedEmployee extends Component {
 
         let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
 
-        let point = undefined, cloneKpi = [];
+        let point = undefined;
         if (evaluations) {
             let res = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Consulted"));
             if (res) {
                 point = res.employeePoint ? res.employeePoint : undefined;
-                unit = res.organizationalUnit._id;
+                if (res.organizationalUnit) {
+                    unit = res.organizationalUnit._id;
+                };
                 let kpi = res.kpis;
 
                 for (let i in kpi) {
@@ -121,7 +127,7 @@ class EvaluateByConsultedEmployee extends Component {
                 }
 
                 point = res.employeePoint ? res.employeePoint : undefined;
-            
+
             }
             // date = this.formatDate(evaluations.date);
             progress = evaluations.progress;
@@ -140,13 +146,13 @@ class EvaluateByConsultedEmployee extends Component {
                         type: infoEval[i].type
                     }
                 }
-                else if (!infoEval[i].filledByAccountableEmployeesOnly) {
-                    info[`${infoEval[i].code}`] = {
-                        value: this.formatDate(Date.now()),
-                        code: infoEval[i].code,
-                        type: infoEval[i].type
-                    }
-                }
+                // else if (!infoEval[i].filledByAccountableEmployeesOnly) {
+                //     info[`${infoEval[i].code}`] = {
+                //         // value: this.formatDate(Date.now()),
+                //         code: infoEval[i].code,
+                //         type: infoEval[i].type
+                //     }
+                // }
             }
             else if (infoEval[i].type === "SetOfValues") {
                 let splitSetOfValues = infoEval[i].extra.split('\n');
@@ -157,13 +163,13 @@ class EvaluateByConsultedEmployee extends Component {
                         type: infoEval[i].type
                     }
                 }
-                else if (!infoEval[i].filledByAccountableEmployeesOnly) {
-                    info[`${infoEval[i].code}`] = {
-                        value: [splitSetOfValues[0]],
-                        code: infoEval[i].code,
-                        type: infoEval[i].type
-                    }
-                }
+                // else if (!infoEval[i].filledByAccountableEmployeesOnly) {
+                //     info[`${infoEval[i].code}`] = {
+                //         value: [splitSetOfValues[0]],
+                //         code: infoEval[i].code,
+                //         type: infoEval[i].type
+                //     }
+                // }
             }
             else {
                 if (infoEval[i].value) {
@@ -176,6 +182,8 @@ class EvaluateByConsultedEmployee extends Component {
             }
         }
         dentaDate = Math.round(((new Date()).getTime() - dateOfEval.getTime()) / (1000 * 3600 * 24));
+
+        console.log('KPI--', cloneKpi);
 
         return {
             info: info,
@@ -314,8 +322,8 @@ class EvaluateByConsultedEmployee extends Component {
         let { task, perform, role } = this.props;
 
         let listUnits = [];
-        if ( user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0 ) {
-            listUnits = user.organizationalUnitsOfUser.map( x => {return {value: x._id, text: x.name}});
+        if (user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
+            listUnits = user.organizationalUnitsOfUser.map(x => { return { value: x._id, text: x.name } });
         }
 
         let checkNoteMonth;
@@ -349,7 +357,7 @@ class EvaluateByConsultedEmployee extends Component {
 
                             {/* Đơn vị đánh giá */}
                             <div className="form-group">
-                                <label>{translate('task.task_management.department')}:</label>
+                                <label>{translate('task.task_management.unit_evaluate')}</label>
                                 {
                                     <SelectBox
                                         id={`select-organizational-unit-evaluate-${perform}-${role}`}
@@ -366,13 +374,17 @@ class EvaluateByConsultedEmployee extends Component {
 
                             {/* Liên kết KPI */}
                             <div className="form-group">
-                                <label>{translate('task.task_management.detail_kpi')}:</label>
+                                <label>{translate('task.task_management.detail_kpi')}</label>
                                 {
                                     <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                         id={`select-kpi-personal-evaluate-${perform}-${role}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
-                                        items={((KPIPersonalManager && KPIPersonalManager.kpiSets) ? KPIPersonalManager.kpiSets.kpis : []).map(x => { return { value: x._id, text: x.name } })}
+                                        items={
+                                            (KPIPersonalManager && KPIPersonalManager.kpiSets) ?
+                                                (KPIPersonalManager.kpiSets.kpis.filter(e => ( e.type === 2 )).map(x => { return { value: x._id, text: x.name } }))
+                                                : []
+                                        }
                                         onChange={this.handleKpiChange}
                                         multiple={true}
                                         value={kpi}
@@ -397,9 +409,9 @@ class EvaluateByConsultedEmployee extends Component {
                         </fieldset>
 
                         {/* Thông tin điểm tự động */}
-                        {(evaluations && evaluations.results.length !== 0) ?
-                            <fieldset className="scheduler-border">
-                                <legend className="scheduler-border">{translate('task.task_management.auto_point_field')}</legend>
+                        <fieldset className="scheduler-border">
+                            <legend className="scheduler-border">{translate('task.task_management.auto_point_field')}</legend>
+                            {(evaluations && evaluations.results.length !== 0) ?
                                 <div style={{ lineHeight: 2.8 }}>
                                     <strong>{translate('task.task_management.detail_auto_point')}: &nbsp;
                                                         <a style={{ cursor: "pointer" }} onClick={() => this.handleShowAutomaticPointInfo()}>
@@ -415,10 +427,9 @@ class EvaluateByConsultedEmployee extends Component {
                                             }
                                         })
                                     }
-                                </div>
-                            </fieldset> : <div><p style={{ color: "red", fontWeight: "bold" }}>{translate('task.task_management.responsible_not_eval')} </p></div>
-                            
-                        }
+                                </div> : <div><p style={{ color: "red", fontWeight: "bold" }}>{translate('task.task_management.responsible_not_eval')} </p></div>
+                            }
+                        </fieldset>
 
                         {/* Thông tin công việc */}
                         <br />
@@ -426,7 +437,7 @@ class EvaluateByConsultedEmployee extends Component {
                             <legend className="scheduler-border">{translate('task.task_management.info_eval_month')}</legend>
                             <div style={{ lineHeight: 2.8 }}>
                                 {/* % tiến độ */}
-                                <div><span style={{ fontWeight: "bold" }}>{translate('task.task_management.detail_progress')}:&nbsp;&nbsp;&nbsp;</span>{task && task.progress}%</div>
+                                <div><span style={{ fontWeight: "bold" }}>{translate('task.task_management.detail_progress')}:&nbsp;&nbsp;&nbsp;</span>{(evaluations?.progress !== null && evaluations?.progress !== undefined) ? `${evaluations?.progress}%` : translate('task.task_management.not_eval')}</div>
 
                                 {/* Các thông tin khác */}
                                 {
@@ -438,11 +449,11 @@ class EvaluateByConsultedEmployee extends Component {
                                                         evaluations.taskInformations.map((info, index) => {
                                                             if (info.type === "Date") {
                                                                 return <div key={index}>
-                                                                    <div><span style={{ fontWeight: "bold" }}>{info.name}</span>:&nbsp;&nbsp;&nbsp;{info.value ? this.formatDate(info.value) : translate('task.task_management.not_eval')}</div>
+                                                                    <div><span style={{ fontWeight: "bold" }}>{info.name}</span>:&nbsp;&nbsp;&nbsp;{(info.value !== null && info.value !== undefined) ? this.formatDate(info.value) : translate('task.task_management.not_eval')}</div>
                                                                 </div>
                                                             }
                                                             else return <div key={index}>
-                                                                <div><span style={{ fontWeight: "bold" }}>{info.name}</span>:&nbsp;&nbsp;&nbsp;{info.value ? info.value : translate('task.task_management.not_eval')}</div>
+                                                                <div><span style={{ fontWeight: "bold" }}>{info.name}</span>:&nbsp;&nbsp;&nbsp;{(info.value !== null && info.value !== undefined) ? info.value : translate('task.task_management.not_eval')}</div>
                                                             </div>
                                                         })
                                                     }

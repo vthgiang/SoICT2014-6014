@@ -9,6 +9,7 @@ import { TaskInformationForm } from './taskInformationForm';
 import { AutomaticTaskPointCalculator } from './automaticTaskPointCalculator';
 import { ModalShowAutoPointInfo } from './modalShowAutoPointInfo';
 import moment from 'moment';
+import Swal from 'sweetalert2';
 
 var currentTask;
 
@@ -66,6 +67,7 @@ class EvaluateByAccountableEmployee extends Component {
                 errorInfo: {},
                 errorApprovedPoint: {},
                 errorContribute: {},
+                errSumContribution: undefined,
                 errorOnAccountablePoint: undefined,
                 errorOnAccountableContribution: undefined,
                 errorOnMyPoint: undefined
@@ -166,48 +168,15 @@ class EvaluateByAccountableEmployee extends Component {
         let infoEval = task.taskInformations;
         for (let i in infoEval) {
 
-            if (infoEval[i].type === "Date") {
-                if (infoEval[i].value) {
-                    info[`${infoEval[i].code}`] = {
-                        // value: this.formatDate(infoEval[i].value),
-                        code: infoEval[i].code,
-                        type: infoEval[i].type
-                    }
-                }
-                else {
-                    info[`${infoEval[i].code}`] = {
-                        value: this.formatDate(Date.now()),
-                        code: infoEval[i].code,
-                        type: infoEval[i].type
-                    }
-                }
-            }
-            else if (infoEval[i].type === "SetOfValues") {
+            if (infoEval[i].type === "SetOfValues") {
                 let splitSetOfValues = infoEval[i].extra.split('\n');
-                if (infoEval[i].value) {
-                    info[`${infoEval[i].code}`] = {
-                        // value: [infoEval[i].value],
-                        code: infoEval[i].code,
-                        type: infoEval[i].type
-                    }
-                }
-                else {
-                    info[`${infoEval[i].code}`] = {
-                        value: [splitSetOfValues[0]],
-                        code: infoEval[i].code,
-                        type: infoEval[i].type
-                    }
+                info[`${infoEval[i].code}`] = {
+                    value: [splitSetOfValues[0]],
+                    code: infoEval[i].code,
+                    type: infoEval[i].type
                 }
             }
-            else {
-                if (infoEval[i].value) {
-                    info[`${infoEval[i].code}`] = {
-                        // value: infoEval[i].value,
-                        code: infoEval[i].code,
-                        type: infoEval[i].type
-                    }
-                }
-            }
+
         }
 
         let empPoint = {}, results = {};
@@ -267,7 +236,9 @@ class EvaluateByAccountableEmployee extends Component {
 
                 let tmp = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Accountable"));
                 if (tmp) {
-                    unit = tmp.organizationalUnit._id;
+                    if (tmp.organizationalUnit) {
+                        unit = tmp.organizationalUnit._id;
+                    };
                     let kpi = tmp.kpis;
 
                     for (let i in kpi) {
@@ -349,7 +320,7 @@ class EvaluateByAccountableEmployee extends Component {
                         }
                         else {
                             info[`${infoEval[i].code}`] = {
-                                value: this.formatDate(Date.now()),
+                                // value: this.formatDate(Date.now()),
                                 code: infoEval[i].code,
                                 type: infoEval[i].type
                             }
@@ -560,12 +531,17 @@ class EvaluateByAccountableEmployee extends Component {
 
     // hàm cập nhật progress
     handleChangeProgress = async (e) => {
+        let { translate } = this.props;
+        let msg;
         let value = parseInt(e.target.value);
+        if (value < 0 || value > 100) {
+            msg = translate('task.task_perform.modal_approve_task.err_range');
+        }
         await this.setState(state => {
             return {
                 ...state,
                 progress: value,
-                errorOnProgress: this.validatePoint(value)
+                errorOnProgress: msg,
             }
         })
         await this.handleChangeAutoPoint();
@@ -617,7 +593,14 @@ class EvaluateByAccountableEmployee extends Component {
         if (value < 0 || value > 100) {
             msg = translate('task.task_perform.modal_approve_task.err_range');
         }
-        else if (sum > 100) {
+        return msg;
+    }
+
+    validateSumContribute = () => {
+        let { translate } = this.props;
+        let msg = undefined;
+        let sum = this.calcSumContribution();
+        if (sum > 100) {
             msg = translate('task.task_perform.modal_approve_task.err_contribute');
         }
         return msg;
@@ -670,6 +653,7 @@ class EvaluateByAccountableEmployee extends Component {
             state.errorContribute[`accountable${id}`] = this.validateEvaluateContribute(value);
             return {
                 ...state,
+                errSumContribution: this.validateSumContribute(),
             }
         })
     }
@@ -704,8 +688,10 @@ class EvaluateByAccountableEmployee extends Component {
             state.errorContribute[`responsible${id}`] = this.validateEvaluateContribute(value);
             return {
                 ...state,
+                errSumContribution: this.validateSumContribute(),
             }
         })
+        console.log('err', this.state.errSumContribution);
     }
 
     handleChangeApprovedPointForConsulted = async (e, id) => {
@@ -738,6 +724,7 @@ class EvaluateByAccountableEmployee extends Component {
             state.errorContribute[`consulted${id}`] = this.validateEvaluateContribute(value);
             return {
                 ...state,
+                errSumContribution: this.validateSumContribute(),
             }
         })
     }
@@ -862,7 +849,7 @@ class EvaluateByAccountableEmployee extends Component {
         let { translate } = this.props;
         let msg = undefined;
         if (value === "") {
-            msg = translate('task.task_perform.modal_approve_task.err_empty')
+            // msg = translate('task.task_perform.modal_approve_task.err_empty')
         }
         return msg;
     }
@@ -886,7 +873,7 @@ class EvaluateByAccountableEmployee extends Component {
         let msg = undefined;
 
         if (isNaN(value)) {
-            msg = translate('task.task_perform.modal_approve_task.err_empty');
+            // msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
         return msg;
     }
@@ -896,7 +883,7 @@ class EvaluateByAccountableEmployee extends Component {
         let { translate } = this.props;
         let msg = undefined;
         if (value.indexOf("") !== -1) {
-            msg = translate('task.task_perform.modal_approve_task.err_empty');
+            // msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
 
         return msg;
@@ -938,7 +925,7 @@ class EvaluateByAccountableEmployee extends Component {
         });
     }
 
-    
+
     // hàm thay đổi kpi
     handleKpiChange = (value) => {
         this.setState(state => {
@@ -1030,7 +1017,7 @@ class EvaluateByAccountableEmployee extends Component {
         let { translate } = this.props;
         let msg = undefined;
         if (value.trim() === "") {
-            msg = translate('task.task_perform.modal_approve_task.err_empty');
+            // msg = translate('task.task_perform.modal_approve_task.err_empty');
         }
 
         return msg;
@@ -1039,19 +1026,32 @@ class EvaluateByAccountableEmployee extends Component {
     // hàm validate submit
     isFormValidated = () => {
         const { errorOnDate, errorOnPoint, errorOnAccountablePoint, errorOnAccountableContribution, errorOnMyPoint,
-            errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnNumberInfo, errorOnTextInfo } = this.state;
+            errorOnProgress, errorOnInfoDate, errorOnInfoBoolean, errorOnNumberInfo, errorOnTextInfo, errorApprovedPoint, errorContribute, errSumContribution } = this.state;
         let { info, results, empPoint, progress, } = this.state;
 
-        let check = true;
-        for (let i in info) {
-            if (info[i].value === undefined) {
-                check = false;
+        let checkErrorContribute = true;
+        let checkErrorApprovedPoint = true;
+
+        if (Object.keys(errorApprovedPoint).length === 0) {
+
+        }
+        for (let i in errorApprovedPoint) {
+            if (errorApprovedPoint[i]) {
+                checkErrorApprovedPoint = false;
                 break;
             }
         }
-        return (errorOnDate === undefined && errorOnPoint === undefined && errorOnProgress === undefined
-            && errorOnInfoDate === undefined && errorOnAccountablePoint === undefined
-            && errorOnAccountableContribution === undefined && errorOnMyPoint === undefined
+
+        for (let i in errorContribute) {
+            if (errorContribute[i]) {
+                checkErrorContribute = false;
+                break;
+            }
+        }
+
+        return checkErrorApprovedPoint && checkErrorContribute && (errorOnDate === undefined && errorOnPoint === undefined
+            && errorOnInfoDate === undefined && errorOnAccountablePoint === undefined && errorOnProgress === undefined
+            && errorOnAccountableContribution === undefined && errorOnMyPoint === undefined && errSumContribution === undefined
             && errorOnInfoBoolean === undefined && errorOnNumberInfo === undefined && errorOnTextInfo === undefined) ? true : false;
     }
 
@@ -1158,6 +1158,51 @@ class EvaluateByAccountableEmployee extends Component {
 
     }
 
+    // format tháng
+    formatMonth(date) {
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [month, year].join('-');
+    }
+
+    // hàm delete 
+    deleteEval = async () => {
+        let { translate } = this.props;
+        Swal.fire({
+            title: translate('task.task_management.delete_eval_title'),
+            type: 'success',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: translate('general.yes'),
+            cancelButtonText: translate('general.no'),
+        }).then(async (res) => {
+            if (res.value) {
+                // Xóa Evaluation
+                let taskId, evaluationId;
+                taskId = this.state.task._id;
+                evaluationId = this.props.id;
+
+                await this.props.deleteEvaluation(taskId, evaluationId);
+                this.props.addTaskLog({
+                    createdAt: Date.now(),
+                    creator: getStorage("userId"),
+                    title: `Xóa đánh giá công việc tháng ${this.formatMonth(new Date())}`,
+                    description: ``,
+                }, taskId);
+                this.props.handleChangeDataStatus(1); // 1 = DATA_STATUS.QUERYING
+            }
+        });
+    }
+
     // hàm submit
     save = () => {
         let taskId;
@@ -1215,7 +1260,7 @@ class EvaluateByAccountableEmployee extends Component {
     render() {
         const { translate, user, KPIPersonalManager } = this.props;
         const { task, date, status, oldAutoPoint, autoPoint, errorOnDate, showAutoPointInfo, dentaDate, prevDate, info, results, empPoint, progress,
-            errorInfo, errorApprovedPoint, errorContribute, indexReRender, unit, kpi } = this.state;
+            errorInfo, errorApprovedPoint, errorContribute, errSumContribution, indexReRender, unit, kpi } = this.state;
         const { id, perform, role } = this.props;
 
         let listKpi = [];
@@ -1224,8 +1269,8 @@ class EvaluateByAccountableEmployee extends Component {
         }
 
         let listUnits = [];
-        if ( user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0 ) {
-            listUnits = user.organizationalUnitsOfUser.map( x => {return {value: x._id, text: x.name}});
+        if (user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
+            listUnits = user.organizationalUnitsOfUser.map(x => { return { value: x._id, text: x.name } });
         }
 
         let taskActions = task.taskActions;
@@ -1266,6 +1311,8 @@ class EvaluateByAccountableEmployee extends Component {
                         {/* Nút lưu */}
                         {!(checkNoteMonth && (dentaDate > 7)) &&
                             <div className='pull-right'>
+                                {/* disabled={disabled || disableSubmit} */}
+                                {(id !== 'new') && <button style={{ marginRight: '5px' }} className="btn btn-danger" onClick={this.deleteEval}>{translate('task.task_management.delete_eval')}</button>}
                                 <button disabled={disabled || disableSubmit} className="btn btn-success" onClick={this.save}>{translate('task.task_management.btn_save_eval')}</button>
                             </div>
                         }
@@ -1292,7 +1339,7 @@ class EvaluateByAccountableEmployee extends Component {
                                     </div>
                                     {/* ngày đánh giá */}
                                     <div className={`form-group col-md-6 ${errorOnDate === undefined ? "" : "has-error"}`}>
-                                        <label>{translate('task.task_management.eval_to')}:<span className="text-red">*</span></label>
+                                        <label>{translate('task.task_management.eval_to')}<span className="text-red">*</span></label>
                                         <DatePicker
                                             id={`create_date_${perform}-${id}`}
                                             value={date}
@@ -1305,7 +1352,7 @@ class EvaluateByAccountableEmployee extends Component {
                                 {
                                     // Trạng thái công việc
                                     <div className="form-group">
-                                        <label>{translate('task.task_management.detail_status')}:</label>
+                                        <label>{translate('task.task_management.detail_status')}</label>
                                         {
                                             <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                                 id={`select-priority-task-${perform}-${role}`}
@@ -1322,9 +1369,9 @@ class EvaluateByAccountableEmployee extends Component {
                                 }
                                 {/* Đơn vị đánh giá */}
                                 <div className="form-group">
-                                    <label>{translate('task.task_management.department')}:</label>
+                                    <label>{translate('task.task_management.unit_evaluate')}</label>
                                     {
-                                        <SelectBox 
+                                        <SelectBox
                                             id={`select-organizational-unit-evaluate-${perform}-${role}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
@@ -1332,24 +1379,28 @@ class EvaluateByAccountableEmployee extends Component {
                                             onChange={this.handleChangeUnit}
                                             multiple={false}
                                             value={unit}
-                                            disabled={disabled} 
+                                            disabled={disabled}
                                         />
                                     }
                                 </div>
 
                                 {/* Liên kết KPI */}
                                 <div className="form-group">
-                                    <label>{translate('task.task_management.detail_kpi')}:</label>
+                                    <label>{translate('task.task_management.detail_kpi')}</label>
                                     {
                                         <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                                             id={`select-kpi-personal-evaluate-${perform}-${role}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={((KPIPersonalManager && KPIPersonalManager.kpiSets) ? KPIPersonalManager.kpiSets.kpis : []).map(x => { return { value: x._id, text: x.name } })}
+                                            items={
+                                                (KPIPersonalManager && KPIPersonalManager.kpiSets) ?
+                                                    (KPIPersonalManager.kpiSets.kpis.filter(e => (e.type === 1)).map(x => { return { value: x._id, text: x.name } }))
+                                                    : []
+                                            }
                                             onChange={this.handleKpiChange}
                                             multiple={true}
                                             value={kpi}
-                                            disabled={disabled} 
+                                            disabled={disabled}
                                         />
                                     }
                                 </div>
@@ -1431,11 +1482,16 @@ class EvaluateByAccountableEmployee extends Component {
                                     {
                                         <table className="table table-striped table-hover">
                                             <tr>
-                                                <th>{translate('task.task_management.name_employee')}</th>
-                                                <th>{translate('task.task_management.role_employee')}</th>
-                                                <th>{translate('task.task_management.detail_emp_point')}</th>
-                                                <th>% {translate('task.task_management.contribution')}</th>
-                                                <th>{translate('task.task_management.acc_evaluate')}</th>
+                                                <th><div className="form-group"><label>{translate('task.task_management.name_employee')}</label></div></th>
+                                                <th><div className="form-group"><label>{translate('task.task_management.role_employee')}</label></div></th>
+                                                <th><div className="form-group"><label>{translate('task.task_management.detail_emp_point')}</label></div></th>
+                                                <th>
+                                                    <div className={`form-group ${errSumContribution === undefined ? "" : "has-error"}`}>
+                                                        <label>% {translate('task.task_management.contribution')}</label>
+                                                        <ErrorLabel content={errSumContribution ? errSumContribution : ''} />
+                                                    </div>
+                                                </th>
+                                                <th><div className="form-group"><label>{translate('task.task_management.acc_evaluate')}</label></div></th>
                                             </tr>
 
                                             { // Chấm điểm phê duyệt cho người thực hiện
@@ -1540,7 +1596,6 @@ class EvaluateByAccountableEmployee extends Component {
                                                             </td>
                                                         </tr>
                                                     )
-
                                                 )
                                             }
                                         </table>
@@ -1562,6 +1617,7 @@ const mapState = (state) => {
 }
 const getState = {
     addTaskLog: performTaskAction.addTaskLog,
+    deleteEvaluation: performTaskAction.deleteEvaluation,
     evaluateTaskByAccountableEmployees: performTaskAction.evaluateTaskByAccountableEmployees,
     getAllKpiSetsOrganizationalUnitByMonth: managerKpiActions.getAllKpiSetsOrganizationalUnitByMonth,
 }

@@ -1,13 +1,16 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {withTranslate} from 'react-redux-multilingual';
-import {MaintainanceCreateForm} from './maintainanceCreateForm';
-import {IncidentEditForm} from '../../asset-assgined/components/incidentEditForm';
-import {DataTableSetting, DatePicker, DeleteNotification, PaginateBar} from '../../../../common-components';
-import {IncidentActions} from '../../asset-assgined/redux/actions';
-import {UserActions} from '../../../super-admin/user/redux/actions';
-import {AssetManagerActions} from '../../asset-management/redux/actions';
-import {AssetTypeActions} from "../../asset-type/redux/actions";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+
+import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar } from '../../../../common-components';
+
+import { MaintainanceCreateForm } from './maintainanceCreateForm';
+import { IncidentEditForm } from '../../asset-assgined/components/incidentEditForm';
+
+import { IncidentActions } from '../../asset-assgined/redux/actions';
+import { UserActions } from '../../../super-admin/user/redux/actions';
+import { AssetManagerActions } from '../../asset-management/redux/actions';
+import { AssetTypeActions } from "../../asset-type/redux/actions";
 
 class IncidentManagement extends Component {
     constructor(props) {
@@ -19,11 +22,10 @@ class IncidentManagement extends Component {
             page: 0,
             limit: 100,
         }
-        this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
 
     componentDidMount() {
-        this.props.searchAssetTypes({typeNumber: "", typeName: "", limit: 0});
+        this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         this.props.getUser();
         this.props.getAllAsset({
             code: "",
@@ -68,14 +70,19 @@ class IncidentManagement extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+            
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -85,17 +92,20 @@ class IncidentManagement extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+            
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         return [month, year].join('-');
     }
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
     handleCodeChange = (event) => {
-        const {name, value} = event.target;
+        const { name, value } = event.target;
         this.setState({
             [name]: value
         });
@@ -104,7 +114,7 @@ class IncidentManagement extends Component {
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
     handleAssetNameChange = (event) => {
-        const {name, value} = event.target;
+        const { name, value } = event.target;
         this.setState({
             [name]: value
         });
@@ -147,7 +157,7 @@ class IncidentManagement extends Component {
     }
 
     deleteIncident = (assetId, incidentId) => {
-        this.props.deleteIncident(assetId, incidentId).then(({response}) => {
+        this.props.deleteIncident(assetId, incidentId).then(({ response }) => {
             if (response.data.success) {
                 this.props.getAllAsset({
                     code: "",
@@ -162,39 +172,41 @@ class IncidentManagement extends Component {
     }
 
     render() {
-        const {translate, assetsManager, assetType, user, auth} = this.props;
+        const { translate, assetsManager, assetType, user, auth } = this.props;
+        const { page, limit, currentRow, currentRowAdd } = this.state;
+
         var lists = "";
         var userlist = user.list;
         var assettypelist = assetType.listAssetTypes;
         var formater = new Intl.NumberFormat();
-        if (this.props.assetsManager.isLoading === false) {
-            lists = this.props.assetsManager.listAssets;
+        if (assetsManager.isLoading === false) {
+            lists = assetsManager.listAssets;
         }
 
-        var pageTotal = ((this.props.assetsManager.totalList % this.state.limit) === 0) ?
-            parseInt(this.props.assetsManager.totalList / this.state.limit) :
-            parseInt((this.props.assetsManager.totalList / this.state.limit) + 1);
-        var page = parseInt((this.state.page / this.state.limit) + 1);
+        var pageTotal = ((assetsManager.totalList % limit) === 0) ?
+            parseInt(assetsManager.totalList / limit) :
+            parseInt((assetsManager.totalList / limit) + 1);
+        var currentPage = parseInt((page / limit) + 1);
         console.log('assetsManager', assetsManager);
+
         return (
             <div className="box">
                 <div className="box-body qlcv">
                     {/* <UsageCreateForm/> */}
-                    <div className="form-group">
-                        <h4 className="box-title">Danh sách sự cố tài sản: </h4>
-                    </div>
+                   
+                    {/* Thanh tìm kiếm */}
                     <div className="form-inline">
-
                         <div className="form-group">
                             <label className="form-control-static">Mã tài sản</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off"/>
+                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off" />
                         </div>
                         <div className="form-group">
                             <label className="form-control-static">Tên tài sản</label>
-                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off"/>
+                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off" />
                         </div>
                     </div>
-                    <div className="form-inline" style={{marginBottom: 10}}>
+
+                    <div className="form-inline" style={{ marginBottom: 10 }}>
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.month')}</label>
                             <DatePicker
@@ -210,98 +222,102 @@ class IncidentManagement extends Component {
                         </div>
                     </div>
 
+                    {/* Bảng danh sách sự cố tài sản */}
                     <table id="incident-table" className="table table-striped table-bordered table-hover">
                         <thead>
-                        <tr>
-                            <th style={{width: "10%"}}>Mã tài sản</th>
-                            <th style={{width: "10%"}}>Tên tài sản</th>
-                            <th style={{width: "10%"}}>Mã sự cố</th>
-                            <th style={{width: "10%"}}>Phân loại</th>
-                            <th style={{width: "8%"}}>Người báo cáo</th>
-                            <th style={{width: "10%"}}>Thời gian phát hiện sự cố</th>
-                            <th style={{width: "10%"}}>Nội dung sự cố</th>
-                            <th style={{width: "10%"}}>Trạng thái</th>
-                            <th style={{width: '100px', textAlign: 'center'}}>Hành động
+                            <tr>
+                                <th style={{ width: "10%" }}>Mã tài sản</th>
+                                <th style={{ width: "10%" }}>Tên tài sản</th>
+                                <th style={{ width: "10%" }}>Mã sự cố</th>
+                                <th style={{ width: "10%" }}>Phân loại</th>
+                                <th style={{ width: "8%" }}>Người báo cáo</th>
+                                <th style={{ width: "10%" }}>Thời gian phát hiện sự cố</th>
+                                <th style={{ width: "10%" }}>Nội dung sự cố</th>
+                                <th style={{ width: "10%" }}>Trạng thái</th>
+                                <th style={{ width: '100px', textAlign: 'center' }}>Hành động
                                 <DataTableSetting
-                                    tableId="incident-table"
-                                    columnArr={[
-                                        "Mã tài sản",
-                                        "Tên tài sản",
-                                        "Mã sự cố",
-                                        "Phân loại",
-                                        "Người báo cáo",
-                                        "Thời gian phát hiện sự cố",
-                                        "Nội dung sự cố",
-                                        "Trạng thái",
-                                    ]}
-                                    limit={this.state.limit}
-                                    setLimit={this.setLimit}
-                                    hideColumnOption={true}
-                                />
-                            </th>
-                        </tr>
+                                        tableId="incident-table"
+                                        columnArr={[
+                                            "Mã tài sản",
+                                            "Tên tài sản",
+                                            "Mã sự cố",
+                                            "Phân loại",
+                                            "Người báo cáo",
+                                            "Thời gian phát hiện sự cố",
+                                            "Nội dung sự cố",
+                                            "Trạng thái",
+                                        ]}
+                                        limit={limit}
+                                        setLimit={this.setLimit}
+                                        hideColumnOption={true}
+                                    />
+                                </th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {(typeof lists !== 'undefined' && lists.length) &&
-                        lists.map(asset => {
-                            // return asset.incidentLogs.filter(item => item.reportedBy === auth.user._id).map((x, index) => (
-                            return asset.incidentLogs.map((x, index) => (
-                                <tr key={index}>
-                                    <td>{asset.code}</td>
-                                    <td>{asset.assetName}</td>
-                                    <td>{x.incidentCode}</td>
-                                    <td>{x.type}</td>
-                                    <td>{x.reportedBy !== null && userlist.length ? userlist.filter(item => item._id === x.reportedBy).pop().name : ''}</td>
-                                    <td>{x.dateOfIncident ? this.formatDate2(x.dateOfIncident) : ''}</td>
-                                    <td>{x.description}</td>
-                                    <td>{x.statusIncident}</td>
-                                    <td style={{textAlign: "center"}}>
-                                        <a onClick={() => this.handleAddMaintaince(x, asset)} className="settings text-green" style={{width: '5px'}} title="Thêm mới thông tin bảo trì tài sản"><i
-                                            className="material-icons">settings</i></a>
-                                        <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{width: '5px'}} title="Chỉnh sửa thông tin sự cố tài sản"><i
-                                            className="material-icons">edit</i></a>
-                                        <DeleteNotification
-                                            content="Xóa thông tin sự cố của tài sản"
-                                            data={{
-                                                id: x._id,
-                                                info: asset.code + " - " + x.incidentCode
-                                            }}
-                                            func={() => this.deleteIncident(asset._id, x._id)}
-                                        />
+                            {(lists && lists.length) &&
+                                lists.map(asset => {
+                                    return asset.incidentLogs.map((x, index) => (
+                                        <tr key={index}>
+                                            <td>{asset.code}</td>
+                                            <td>{asset.assetName}</td>
+                                            <td>{x.incidentCode}</td>
+                                            <td>{x.type}</td>
+                                            <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted'}</td>
+                                            <td>{x.dateOfIncident ? this.formatDate2(x.dateOfIncident) : ''}</td>
+                                            <td>{x.description}</td>
+                                            <td>{x.statusIncident}</td>
+                                            <td style={{ textAlign: "center" }}>
+                                                <a onClick={() => this.handleAddMaintaince(x, asset)} className="settings text-green" style={{ width: '5px' }} title="Thêm mới thông tin bảo trì tài sản"><i
+                                                    className="material-icons">settings</i></a>
+                                                <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin sự cố tài sản"><i
+                                                    className="material-icons">edit</i></a>
+                                                <DeleteNotification
+                                                    content="Xóa thông tin sự cố của tài sản"
+                                                    data={{
+                                                        id: x._id,
+                                                        info: asset.code + " - " + x.incidentCode
+                                                    }}
+                                                    func={() => this.deleteIncident(asset._id, x._id)}
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))
+                                })
 
-                                    </td>
-                                </tr>))
-                        })
-
-                        }
+                            }
                         </tbody>
                     </table>
                     {assetsManager.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage}/>
+
+                    {/* PaginateBar */}
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
 
+                {/* Form chỉnh sửa thông tin sự cố */}
                 {
-                    this.state.currentRow !== undefined &&
+                    currentRow &&
                     <IncidentEditForm
-                        _id={this.state.currentRow._id}
-                        asset={this.state.currentRow.asset}
-                        incidentCode={this.state.currentRow.incidentCode}
-                        type={this.state.currentRow.type}
-                        reportedBy={this.state.currentRow.reportedBy}
-                        dateOfIncident={this.formatDate2(this.state.currentRow.dateOfIncident)}
-                        description={this.state.currentRow.description}
+                        _id={currentRow._id}
+                        asset={currentRow.asset}
+                        incidentCode={currentRow.incidentCode}
+                        type={currentRow.type}
+                        reportedBy={currentRow.reportedBy}
+                        dateOfIncident={this.formatDate2(currentRow.dateOfIncident)}
+                        description={currentRow.description}
                     />
                 }
 
+                {/* Form thêm thông tin bảo trì */}
                 {
-                    this.state.currentRowAdd !== undefined &&
+                    currentRowAdd &&
                     <MaintainanceCreateForm
-                        _id={this.state.currentRowAdd._id}
-                        asset={this.state.currentRowAdd.asset}
-                        statusIncident={this.state.currentRowAdd.statusIncident}
+                        _id={currentRowAdd._id}
+                        asset={currentRowAdd.asset}
+                        statusIncident={currentRowAdd.statusIncident}
                     />
                 }
             </div>
@@ -310,8 +326,8 @@ class IncidentManagement extends Component {
 };
 
 function mapState(state) {
-    const {assetsManager, assetType, user, auth} = state;
-    return {assetsManager, assetType, user, auth};
+    const { assetsManager, assetType, user, auth } = state;
+    return { assetsManager, assetType, user, auth };
 };
 
 const actionCreators = {
@@ -322,4 +338,4 @@ const actionCreators = {
 };
 
 const connectedListUsage = connect(mapState, actionCreators)(withTranslate(IncidentManagement));
-export {connectedListUsage as IncidentManagement};
+export { connectedListUsage as IncidentManagement };

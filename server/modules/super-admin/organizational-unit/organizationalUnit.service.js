@@ -60,7 +60,7 @@ exports.getOrganizationalUnitsAsTree = async (id) => {
  * @organizationalUnit id của đơn vị 
  */
 exports.getChildrenOfOrganizationalUnitsAsTree = async (id, role, organizationalUnitId = undefined) => {
-
+    
     let organizationalUnit;
 
     if (!organizationalUnitId) {
@@ -76,7 +76,7 @@ exports.getChildrenOfOrganizationalUnitsAsTree = async (id, role, organizational
     }
     
     const data = await OrganizationalUnit.find({ company: id });
-    
+
     const newData = data.map( department => {return {
             id: department._id.toString(),
             name: department.name,
@@ -87,13 +87,16 @@ exports.getChildrenOfOrganizationalUnitsAsTree = async (id, role, organizational
             parent_id: department.parent !== null ? department.parent.toString() : null
         }
     });
-    
+
     const tree = await arrayToTree(newData);
+
     for(let j = 0; j < tree.length; j++){
         let queue = [];
-        if(organizationalUnit.name === tree[j].name){
+
+        if (organizationalUnit.name === tree[j].name) {
             return tree[j];
         }
+        
         queue.push(tree[j]);
         while(queue.length > 0){
             v = queue.shift();

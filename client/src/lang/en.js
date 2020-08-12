@@ -1544,6 +1544,10 @@ export default {
                 next: 'Next',
                 tasks_calendar: 'Tasks Calendar',
                 model_detail_task_title: 'Detail task',
+                collaborative_tasks: 'Collaborative tasks',
+                in_time: 'In time',
+                delayed_time: 'Delayed',
+                not_achieved: 'Overdue',
 
                 col_name: 'Name of task',
                 col_organization: 'Department',
@@ -1722,6 +1726,12 @@ export default {
                 add_err_empty_accountable: 'Accountable should not be empty',
                 add_err_special_character: 'This field should not be have special character',
                 add_err_end_date: 'End date should be after start date',
+
+                unit_evaluate: "Unit receiving work evaluation results",
+                unit_manage_task: "Unit managing task",
+                delete_eval: "Delete evaluation",
+                delete_eval_title: 'Are you sure to delete this evaluation?'
+
             },
             task_perform: {
                 actions: "Actions",

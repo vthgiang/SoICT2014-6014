@@ -18,7 +18,7 @@ exports.login = async (fingerprint, data) => { // data bao gom email va password
         .findOne({email : data.email})
         .populate([
             { path: 'roles', model: UserRole, populate: { path: 'roleId'} }, 
-            { path: 'company', model: Company, select: '_id name short_name active' }
+            { path: 'company', model: Company, select: '_id name shortName active' }
         ]);
 
     if(!user) throw ["email_password_invalid"];
