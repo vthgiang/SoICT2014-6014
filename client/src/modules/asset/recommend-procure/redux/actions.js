@@ -4,11 +4,11 @@ import { RecommendProcureService } from "./services";
 export const RecommendProcureActions = {
     searchRecommendProcures,
     createRecommendProcure,
-    deleteRecommendProcure,
     updateRecommendProcure,
+    deleteRecommendProcure,
 };
 
-// lấy danh sách phiếu đề nghị mua sắm thiết bị
+// Lấy danh sách phiếu đề nghị mua sắm thiết bị
 function searchRecommendProcures(data) {
 
     return async dispatch => {
@@ -60,29 +60,7 @@ function createRecommendProcure(data) {
     }
 }
 
-// Xoá thông tin thông tin phiếu đề nghị mua sắm thiết bị
-function deleteRecommendProcure(id) {
-    return dispatch => {
-        dispatch({
-            type: RecommendProcureConstants.DELETE_RECOMMEND_PROCURE_REQUEST,
-        });
-        RecommendProcureService.deleteRecommendProcure(id)
-            .then(res => {
-                dispatch({
-                    type: RecommendProcureConstants.DELETE_RECOMMEND_PROCURE_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: RecommendProcureConstants.DELETE_RECOMMEND_PROCURE_SUCCESS,
-                    error: err.response.data
-                });
-            })
-    }
-}
-
-// cập nhật thông tin phiếu đề nghị mua sắm thiết bị
+// Cập nhật thông tin phiếu đề nghị mua sắm thiết bị
 function updateRecommendProcure(id, infoRecommendProcure) {
     return async dispatch => {
         try {
@@ -110,5 +88,27 @@ function updateRecommendProcure(id, infoRecommendProcure) {
                 error: err.response.data
             });
         }
+    }
+}
+
+// Xoá thông tin thông tin phiếu đề nghị mua sắm thiết bị
+function deleteRecommendProcure(id) {
+    return dispatch => {
+        dispatch({
+            type: RecommendProcureConstants.DELETE_RECOMMEND_PROCURE_REQUEST,
+        });
+        RecommendProcureService.deleteRecommendProcure(id)
+            .then(res => {
+                dispatch({
+                    type: RecommendProcureConstants.DELETE_RECOMMEND_PROCURE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: RecommendProcureConstants.DELETE_RECOMMEND_PROCURE_SUCCESS,
+                    error: err.response.data
+                });
+            })
     }
 }

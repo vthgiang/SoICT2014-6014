@@ -4,11 +4,11 @@ import { AssetManagerActions } from "../../asset-management/redux/actions";
 
 export const RecommendDistributeActions = {
     searchRecommendDistributes,
-    deleteRecommendDistribute,
     updateRecommendDistribute,
+    deleteRecommendDistribute,
 };
 
-// lấy danh sách phiếu đề nghị mua sắm thiết bị
+// Lấy danh sách phiếu đề nghị mua sắm thiết bị
 function searchRecommendDistributes(data) {
     return async (dispatch) => {
         try {
@@ -27,29 +27,7 @@ function searchRecommendDistributes(data) {
     };
 }
 
-// Xoá thông tin thông tin phiếu đăng ký sử dụng tài sản
-function deleteRecommendDistribute(id) {
-    return dispatch => {
-        dispatch({
-            type: RecommendDistributeConstants.DELETE_RECOMMEND_DISTRIBUTE_REQUEST,
-        });
-        RecommendDistributeService.deleteRecommendDistribute(id)
-            .then(res => {
-                dispatch({
-                    type: RecommendDistributeConstants.DELETE_RECOMMEND_DISTRIBUTE_SUCCESS,
-                    payload: res.data.content
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: RecommendDistributeConstants.DELETE_RECOMMEND_DISTRIBUTE_SUCCESS,
-                    error: err.response.data
-                });
-            })
-    }
-}
-
-// cập nhật thông tin phiếu đăng ký sử dụng
+// Cập nhật thông tin phiếu đăng ký sử dụng
 function updateRecommendDistribute(id, infoRecommendDistribute) {
     return async dispatch => {
         try {
@@ -85,5 +63,27 @@ function updateRecommendDistribute(id, infoRecommendDistribute) {
                 error: err.response.data
             });
         }
+    }
+}
+
+// Xoá thông tin thông tin phiếu đăng ký sử dụng tài sản
+function deleteRecommendDistribute(id) {
+    return dispatch => {
+        dispatch({
+            type: RecommendDistributeConstants.DELETE_RECOMMEND_DISTRIBUTE_REQUEST,
+        });
+        RecommendDistributeService.deleteRecommendDistribute(id)
+            .then(res => {
+                dispatch({
+                    type: RecommendDistributeConstants.DELETE_RECOMMEND_DISTRIBUTE_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: RecommendDistributeConstants.DELETE_RECOMMEND_DISTRIBUTE_SUCCESS,
+                    error: err.response.data
+                });
+            })
     }
 }

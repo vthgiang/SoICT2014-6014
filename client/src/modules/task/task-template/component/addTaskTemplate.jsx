@@ -18,7 +18,7 @@ import './tasktemplate.css';
 class AddTaskTemplate extends Component {
     constructor(props) {
         super(props);
-
+console.log('quangconstructor');
         this.state = {
             newTemplate: {
                 organizationalUnit: '',
@@ -304,6 +304,18 @@ class AddTaskTemplate extends Component {
                     showMore: this.props.isProcess ? false : true,
                 }
             })
+            this.props.getDepartment();
+            let { user } = this.props;
+            let defaultUnit;
+            if (user && user.organizationalUnitsOfUser) defaultUnit = user.organizationalUnitsOfUser.find(item =>
+                item.dean === this.state.currentRole
+                || item.viceDean === this.state.currentRole
+                || item.employee === this.state.currentRole);
+            if (!defaultUnit && user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
+                // Khi không tìm được default unit, mặc định chọn là đơn vị đầu tiên
+                defaultUnit = user.organizationalUnitsOfUser[0]
+            }
+            this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
             return false;
         }
 
@@ -401,6 +413,7 @@ class AddTaskTemplate extends Component {
                                             return { value: x._id, text: x.name };
                                         })
                                     }
+                                    value={newTemplate.organizationalUnit}
                                     onChange={this.handleTaskTemplateUnit}
                                     multiple={false}
                                     value={newTemplate.organizationalUnit}
@@ -423,6 +436,7 @@ class AddTaskTemplate extends Component {
                                         items={
                                             listRoles.map( x => { return { value : x._id, text : x.name}})
                                         }
+                                        value={newTemplate.readByEmployees}
                                         onChange={this.handleTaskTemplateRead}
                                         multiple={true}
                                         options={{placeholder: `${translate('task_template.permission_view')}`}}
@@ -479,7 +493,7 @@ class AddTaskTemplate extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={unitMembers}
-                                            value = {responsibleEmployees}
+                                            value={newTemplate.responsibleEmployees}
                                             onChange={this.handleTaskTemplateResponsible}
                                             multiple={true}
                                             options={{ placeholder: `${translate('task_template.performer')}` }}
@@ -495,7 +509,7 @@ class AddTaskTemplate extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={unitMembers}
-                                            value = {accountableEmployees}
+                                            value={newTemplate.accountableEmployees}
                                             onChange={this.handleTaskTemplateAccountable}
                                             multiple={true}
                                             options={{ placeholder: `${translate('task_template.approver')}` }}
@@ -511,6 +525,7 @@ class AddTaskTemplate extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={allUnitsMember}
+                                            value={newTemplate.consultedEmployees}
                                             onChange={this.handleTaskTemplateConsult}
                                             multiple={true}
                                             options={{ placeholder: `${translate('task_template.supporter')}` }}
@@ -526,6 +541,7 @@ class AddTaskTemplate extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={allUnitsMember}
+                                            value={newTemplate.informedEmployees}
                                             onChange={this.handleTaskTemplateInform}
                                             multiple={true}
                                             options={{ placeholder: `${translate('task_template.observer')}` }}
