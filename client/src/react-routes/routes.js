@@ -90,6 +90,9 @@ import MaterialManager from '../modules/warehouse-manager/material-manager/compo
 // Customer Management
 import Customer from '../modules/customer/components';
 
+//orders
+import OrderManagement from "../modules/order/components";
+
 class Routes extends Component {
 
     render() {
@@ -988,6 +991,28 @@ class Routes extends Component {
                         pageName={ 'customer' }
                         layout={ Layout }
                         component={ Customer }
+                    />
+
+                    {/* Orders Management */}
+                    
+                    <PrivateRoute
+                        isLoading={this.props.order.isLoading}
+                        key={"manage-orders"}
+                        arrPage={[
+                        { link: "/", name: "home", icon: "fa fa-home" },
+                        {
+                            link: "/manage-orders",
+                            name: "manage_orders",
+                            icon: "fa fa-address-card",
+                        },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-orders"}
+                        path={"/manage-orders"}
+                        pageName={"manage-orders"}
+                        layout={Layout}
+                        component={OrderManagement}
                     />
 
                     {/* NOT FOUND */}

@@ -689,6 +689,10 @@ export default {
             // QUẢN LÝ BÁO CÁO
             report_management: 'Quản lý báo cáo',
             task_report: 'Quản lý báo cáo công việc',
+
+            //QUẢN LÝ ĐƠN HÀNG
+            manage_orders: "Quản lý đơn hàng",
+            manage_list_orders: "Danh sách đơn hàng",
         },
 
         manage_system: {
@@ -2634,6 +2638,29 @@ export default {
             dashboard_material: {
 
             }
+        },
+
+        
+        //manager order
+        manage_order: {
+            index: "Số thứ tự",
+            add_order: "Thêm đơn hàng",
+            add_title: "Thêm mới đơn hàng",
+            edit_title: "Chỉnh sửa đơn hàng",
+            add_success: "Thêm đơn hàng thành công",
+            add_failure: "Đơn hàng không hợp lệ",
+            edit_success: "Đơn hàng đã được cập nhật",
+            edit_failure: "Xảy ra lỗi trong cập nhật đơn hàng",
+            delete_success: "Đơn hàng đã được xóa",
+            delete_failure: "Chưa thể xóa đơn hàng",
+            get_success: "Đã lấy dữ liệu",
+            get_failure: "Không lấy được dữ liệu",
+            code: "Mã đơn hàng",
+            quantity: "Số lượng",
+            amount: "Tổng tiền",
+            code_placeholder: "Nhập vào mã đơn hàng",
+            edit_order: "Chỉnh sửa đơn hàng",
+            delete_order: "Xóa đơn hàng",
         },
 
         report_manager: {

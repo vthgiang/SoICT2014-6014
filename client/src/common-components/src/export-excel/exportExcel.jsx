@@ -2,7 +2,8 @@ import React, { Component, forwardRef } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import XLSX from 'xlsx';
+import * as Excel from "exceljs";
+import * as FileSaver from 'file-saver';
 
 class ExportExcel extends Component {
     constructor(props) {
@@ -11,45 +12,38 @@ class ExportExcel extends Component {
     }
 
     handleExportExcel = () => {
-        let wb = XLSX.utils.book_new();
         const { exportData } = this.state;
+        let workbook = new Excel.Workbook();
+
         exportData.dataSheets.forEach(x => {
             if (x.sheetName && x.tables.length !== 0) {
                 let sheetName = x.sheetName.replace(/[*?:\\\/]/gi, '');
-                let origin = 1, merge = [];
-                // Thêm tên báo cáo
-                let ws = XLSX.utils.json_to_sheet([{ "sheetTitle": x.sheetTitle ? x.sheetTitle : "" }], { skipHeader: true, origin: `D${origin}` })
-                if (x.sheetTitle) {
-                    origin += 2;
-                }
+                let worksheet = workbook.addWorksheet(sheetName);
+
+                let currentRow = 1;
+                if (x.sheetTitle) { // Thêm tiêu đề sheet
+                    worksheet.getCell('A1').value = x.sheetTitle;
+                    worksheet.getCell('A1').alignment = { vertical: 'middle', horizontal: 'center' };
+                    worksheet.getCell('A1').font = { name: 'Arial', family: 4, size: 18, bold: true, color: { argb: 'FF2D1075' } };
+                    worksheet.mergeCells('A1:M1');
+                    currentRow = currentRow + 2;
+                };
 
                 x.tables.forEach(y => {
-                    let tableMerge = [],
-                        rowHeader = y.rowHeader,
+                    let rowHeader = y.rowHeader,
                         columns = y.columns,
                         merges = y.merges;
 
-                    // Thêm tên cho từng bảng
-                    if (y.tableName) {
-                        XLSX.utils.sheet_add_json(ws, [{ "tableName": y.tableName }], { skipHeader: true, origin: `A${origin}` });
-                        tableMerge = [...tableMerge,
-                        {
-                            s: { r: origin - 1, c: 0 },
-                            e: { r: origin - 1, c: columns.length - 1 }
-                        }]
-                        origin += 1;
-                    }
+                    if (y.tableName) { // Thêm tên bảng
+                        worksheet.getCell(`A${currentRow}`).value = y.tableName;
+                        worksheet.getCell(`A${currentRow}`).alignment = { vertical: 'middle' };
+                        worksheet.getCell(`A${currentRow}`).font = { name: 'Arial', size: 12, bold: true, color: { argb: 'FF2D1075' } };
+                        let endMergeTablename = worksheet.getRow(currentRow).getCell(columns.length).address;
+                        worksheet.mergeCells(`A${currentRow}:${endMergeTablename}`);
+                        currentRow = currentRow + 1;
+                    };
 
-                    // Convert lại dữ liệu các dòng (nối key từ columns với data để dc dữ liệu theo đúng thứ tự)
-                    let data = y.data.map(row => {
-                        let result = [];
-                        columns.forEach(col => {
-                            result = { ...result, [col.value]: row[col.key] ? row[col.key] : "" };
-                        })
-                        return result;
-                    });
-
-                    let arrHeader = []
+                    let arrHeader = [];
                     if (rowHeader && merges && Number(rowHeader) > 1) {
                         for (let i = 0; i < Number(rowHeader); i++) {
                             arrHeader = [...arrHeader, columns]
@@ -82,59 +76,73 @@ class ExportExcel extends Component {
                             }
                         }
 
-                        // Thêm dữ liệu header table vào sheet 
-                        arrHeader.forEach((arr, indexs) => {
-                            let rowData = {};
-                            arr.forEach((cell, index) => {
-                                if (rowspans[index] === Number(rowHeader) - indexs) {
-                                    tableMerge = [...tableMerge,
-                                    {
-                                        s: { r: origin - 1, c: index },
-                                        e: { r: origin + rowspans[index] - 2, c: index }
-                                    }]
-                                }
+                        // Thêm header của bảng khi rowHeader > 1
+                        arrHeader.forEach((arr, index) => {
+                            arr = arr.map(cell => cell.value);
+                            worksheet.getRow(currentRow + index).values = arr;
+                            for (let n = 1; n <= columns.length; n++) { // Thêm style cho header
+                                let cell = worksheet.getRow(currentRow + index).getCell(n).address;
+                                worksheet.getCell(cell).font = { name: 'Arial', size: 10, bold: true, color: { argb: "FFFFFFFF" } };
+                                worksheet.getCell(cell).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+                                worksheet.getCell(cell).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: "FF2D1075" } };
+                                worksheet.getCell(cell).border = { left: { style: "thin", color: { argb: "FFFFFFFF" } }, top: { style: "thin", color: { argb: "FFFFFFFF" } } };
+                            }
 
-                                rowData = { ...rowData, [cell.key]: cell.value }
-                                if (cell.colspan && cell.colspan > 1) {
-                                    tableMerge = [...tableMerge,
-                                    {
-                                        s: { r: origin - 1, c: index },
-                                        e: { r: origin - 1, c: index + cell.colspan - 1 }
-                                    }]
+                        });
+                        arrHeader.forEach((arr, index) => {
+                            arr = arr.map((cell, key) => {
+                                let startMergeCell = worksheet.getRow(currentRow + index).getCell(key + 1).address;
+                                if (cell.colspan && Number(cell.colspan) > 1) {
+                                    let endMergeColum = worksheet.getRow(currentRow + index).getCell(key + Number(cell.colspan)).address;
+                                    worksheet.mergeCells(`${startMergeCell}:${endMergeColum}`);
                                 };
-                            });
-                            XLSX.utils.sheet_add_json(ws, [rowData], { skipHeader: true, origin: `A${origin}` });
-                            origin = origin + 1;
+                                if (rowspans[key] === Number(rowHeader) - index && rowspans[key] > 1) {
+                                    let endMergeRow = startMergeCell;
+                                    endMergeRow = endMergeRow.replace(/[0-9]/gi, '').trim();
+                                    worksheet.mergeCells(`${startMergeCell}:${endMergeRow}${currentRow + rowspans[key] - 1}`);
+                                }
+                            })
                         })
+                        currentRow = currentRow + arrHeader.length;
+                    } else {
+                        // Thêm header của bảng khi rowHeader = 1
+                        worksheet.getRow(currentRow).values = columns.map(col => col.value);
+                        for (let n = 1; n <= columns.length; n++) { // Thêm style cho header
+                            let cell = worksheet.getRow(currentRow).getCell(n).address;
+                            worksheet.getCell(cell).font = { name: 'Arial', size: 10, bold: true, color: { argb: "FFFFFFFF" } };
+                            worksheet.getCell(cell).alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+                            worksheet.getCell(cell).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: "FF2D1075" } };
+                            worksheet.getCell(cell).border = { left: { style: "thin", color: { argb: "FFFFFFFF" } } };
+                        }
+                        currentRow += 1;
                     };
 
+                    worksheet.columns = columns.map(col => {
+                        return { key: col.key, width: 15 }
+                    });
 
-                    // Thêm dữ liệu body table vào sheets
-                    if (rowHeader && merges && Number(rowHeader) > 1) {
-                        XLSX.utils.sheet_add_json(ws, data, { skipHeader: true, origin: `A${origin}` });
-                        origin = origin + data.length + 3;
-                    } else {
-                        XLSX.utils.sheet_add_json(ws, data, { origin: `A${origin}` });
-                        origin = origin + data.length + 4;
-                    }
-
-                    merge = merge.concat(tableMerge);
+                    // Thêm dữ liệu vào body table
+                    worksheet.addRows(y.data);
+                    y.data.forEach((obj, index) => {
+                        worksheet.getRow(currentRow + index).font = { name: 'Arial' };
+                        worksheet.getRow(currentRow + index).alignment = { wrapText: true };
+                    })
+                    currentRow = currentRow + y.data.length + 3;
                 })
-                if (merge.length !== 0) {
-                    ws["!merges"] = merge;
-                }
-                XLSX.utils.book_append_sheet(wb, ws, sheetName);
             }
-        })
-        XLSX.writeFile(wb, `${exportData.fileName}.xlsx`);
-    }
+        });
+        workbook.xlsx.writeBuffer().then(data => {
+            const blob = new Blob([data], { type: this.blobType });
+            FileSaver.saveAs(blob, `${exportData.fileName}.xlsx`);
+        });
+    };
 
     static getDerivedStateFromProps(nextProps, prevState) {
         return {
             id: nextProps.id,
             exportData: nextProps.exportData,
         }
-    }
+    };
 
     render() {
         const { translate } = this.props;
