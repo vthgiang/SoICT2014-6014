@@ -234,6 +234,8 @@ class TasksSchedule extends Component {
         }
 
         if (inprocessTasks2) {
+          console.log('inprocess', inprocessTasks2);
+
           for (let i = 0; i < inprocessTasks2.length; i++) {
 
             if (inprocessTasks2[i]) {
@@ -396,12 +398,12 @@ class TasksSchedule extends Component {
 
   displayTaskProgress = async (progress, x, color) => {
     if (x) {
-      let d, child, pr;
-      pr = progress;
+      console.log('progresssssss', color);
+      let d, child;
       d = document.createElement('div');
       d.setAttribute("class", "task-progress");
       d.style.width = `${progress}%`;
-
+      // console.log('progresssssss', d.style.width);
       d.style.backgroundColor = color;
 
       child = x.childElementCount;

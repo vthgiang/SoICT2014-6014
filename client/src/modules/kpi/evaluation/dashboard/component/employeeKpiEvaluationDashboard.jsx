@@ -71,9 +71,10 @@ class EmployeeKpiEvaluationDashboard extends Component {
         this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
     }
 
-    shouldComponentUpdate = (nextProps, nextState) => {
+    shouldComponentUpdate = async (nextProps, nextState) => {
         if (!this.state.ids && this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
-            this.setState((state) => {
+
+            await this.setState((state) => {
                 return {
                     ...state,
                     ids: [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id],
@@ -83,6 +84,8 @@ class EmployeeKpiEvaluationDashboard extends Component {
                     organizationalUnitIds: [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]
                 }
             });
+            console.log("========", this.state.ids);
+            this.props.getAllEmployeeOfUnitByIds(this.state.ids);
             return false;
         }
 
@@ -258,7 +261,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
     render() {
         const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = this.props;
         const { translate } = this.props;
-        console.log("=========", this.props)
+        // console.log("=========", this.props)
         let { dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids, organizationalUnitIds } = this.state;
 
         let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee;
