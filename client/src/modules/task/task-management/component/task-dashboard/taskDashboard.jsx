@@ -387,7 +387,7 @@ class TaskDashboard extends Component {
                                                                 <i className="fa fa-ellipsis-v" />
                                                                 <i className="fa fa-ellipsis-v" />
                                                             </span>
-                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" />{item.task.name}</span>
+                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
                                                             <small className="label label-warning"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
                                                         </li>
                                                     ) : "Không có công việc nào sắp hết hạn"
