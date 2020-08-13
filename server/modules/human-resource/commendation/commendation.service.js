@@ -26,8 +26,8 @@ exports.getTotalCommendation = async (company, organizationalUnits, month) => {
         }
     }
     if (keySearchEmployee !== undefined) {
-        var employeeinfo = await Employee.find(keySearchEmployee);
-        var employee = employeeinfo.map(employeeinfo => employeeinfo._id);
+        let employeeinfo = await Employee.find(keySearchEmployee);
+        let employee = employeeinfo.map(employeeinfo => employeeinfo._id);
         keySearch = {
             ...keySearch,
             employee: {
@@ -39,9 +39,9 @@ exports.getTotalCommendation = async (company, organizationalUnits, month) => {
     // Bắt sựu kiện tháng tìm kiếm khác "", undefined
     let totalListOfYear = 0;
     if (month !== undefined && month.length !== 0) {
-        var date = new Date(month);
-        var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-        var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+        let date = new Date(month);
+        let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+        let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
         let firstDayOfYear = new Date(date.getFullYear() - 1, 12, 1);
         let lastDayOfYear = new Date(date.getFullYear(), 12, 1);
         totalListOfYear = await Commendation.count({
@@ -77,7 +77,7 @@ exports.getTotalCommendation = async (company, organizationalUnits, month) => {
             }
         }
     }
-    var totalList = await Commendation.count(keySearch);
+    let totalList = await Commendation.count(keySearch);
     return {
         totalList,
         totalListOfYear
@@ -91,7 +91,7 @@ exports.getTotalCommendation = async (company, organizationalUnits, month) => {
  * @company : Id công ty người tìm kiếm
  */
 exports.searchCommendations = async (params, company) => {
-    var keySearchEmployee, keySearch = {
+    let keySearchEmployee, keySearch = {
         company: company
     };
 
@@ -117,8 +117,8 @@ exports.searchCommendations = async (params, company) => {
         }
     }
     if (keySearchEmployee !== undefined) {
-        var employeeinfo = await Employee.find(keySearchEmployee);
-        var employee = employeeinfo.map(employeeinfo => employeeinfo._id);
+        let employeeinfo = await Employee.find(keySearchEmployee);
+        let employee = employeeinfo.map(employeeinfo => employeeinfo._id);
         keySearch = {
             ...keySearch,
             employee: {
@@ -139,8 +139,8 @@ exports.searchCommendations = async (params, company) => {
     };
 
     // Lấy danh sách khen thưởng
-    var totalList = await Commendation.count(keySearch);
-    var listCommendations = await Commendation.find(keySearch).populate({
+    let totalList = await Commendation.count(keySearch);
+    let listCommendations = await Commendation.find(keySearch).populate({
             path: 'employee',
             model: Employee
         })
@@ -177,7 +177,7 @@ exports.createCommendation = async (data, company) => {
         emailInCompany: 1
     });
     if (employeeInfo !== null) {
-        var isCommendation = await Commendation.findOne({
+        let isCommendation = await Commendation.findOne({
             employee: employeeInfo._id,
             company: company,
             decisionNumber: data.decisionNumber
@@ -188,9 +188,9 @@ exports.createCommendation = async (data, company) => {
             return "have_exist"
         } else {
             // Thêm khen thưởng vào database
-            var partStart = data.startDate.split('-');
-            var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
-            var createCommendation = await Commendation.create({
+            let partStart = data.startDate.split('-');
+            let startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
+            let createCommendation = await Commendation.create({
                 employee: employeeInfo._id,
                 company: company,
                 decisionNumber: data.decisionNumber,
@@ -245,9 +245,9 @@ exports.updateCommendation = async (id, data, company) => {
         emailInCompany: 1
     });
     if (employeeInfo !== null) {
-        var partStart = data.startDate.split('-');
-        var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
-        var commendationChange = {
+        let partStart = data.startDate.split('-');
+        let startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
+        let commendationChange = {
             organizationalUnit: data.organizationalUnit,
             startDate: startDate,
             type: data.type,
@@ -265,7 +265,7 @@ exports.updateCommendation = async (id, data, company) => {
         let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailInCompany);
 
         // Lấy thông tin khen thưởng vừa cập nhật
-        var updateCommendation = await Commendation.findOne({
+        let updateCommendation = await Commendation.findOne({
             _id: id
         }).populate([{
             path: 'employee',
