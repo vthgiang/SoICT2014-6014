@@ -1624,6 +1624,11 @@ export default {
                 creator: 'Người thiết lập',
                 informed: 'Người quan sát',
 
+                responsible_role: 'Thực hiện',
+                accountable_role: 'Phê duyệt',
+                consulted_role: 'Hỗ trợ',
+                informed_role: 'Quan sát',
+
                 add_task: 'Thêm mới',
                 add_title: 'Thêm mới một công việc',
                 add_subtask: 'Thêm công việc con',
@@ -1686,7 +1691,7 @@ export default {
                 next: 'Sau',
                 tasks_calendar: 'Lịch công việc chi tiết',
                 model_detail_task_title: 'Thông tin chi tiết công việc',
-                collaborative_tasks: 'Công việc chung',
+                collaborative_tasks: 'Nhiều người thực hiện',
                 in_time: 'Đúng tiến độ',
                 delayed_time: 'Trễ tiến độ',
                 not_achieved: 'Quá hạn',

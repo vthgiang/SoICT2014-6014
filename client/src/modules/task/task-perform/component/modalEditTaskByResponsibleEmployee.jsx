@@ -486,8 +486,8 @@ class ModalEditTaskByResponsibleEmployee extends Component {
                                     <div
                                         className={`form-group ${errorTaskDescription === undefined ? "" : "has-error"}`}>
                                         <label>{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
-                                        <input
-                                            type="text"
+                                        <textarea
+                                            row="4"
                                             value={taskDescription}
                                             className="form-control" onChange={this.handleTaskDescriptionChange}
                                         />

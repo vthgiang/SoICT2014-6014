@@ -35,8 +35,8 @@ exports.getAllXmlDiagram = async (query, body) => {
                         {
                             $and: [
                                 {
-                                  $expr: {
-                                      $eq: ["$resourceId", "$$id"]
+                                    $expr: {
+                                        $eq: ["$resourceId", "$$id"]
                                     }
                                 },
                                 {
@@ -52,9 +52,9 @@ exports.getAllXmlDiagram = async (query, body) => {
         { $unwind: "$privileges" },
         {
             $facet: {
-                processes: [ { $sort: { 'createdAt': 1 } },
-                    ...noResultsPerPage === 0 ? [] : [{ $limit: noResultsPerPage * pageNumber }],
-                    ...noResultsPerPage === 0 ? [] : [{ $skip: noResultsPerPage * (pageNumber - 1) }]
+                processes: [{ $sort: { 'createdAt': 1 } },
+                ...noResultsPerPage === 0 ? [] : [{ $limit: noResultsPerPage * pageNumber }],
+                ...noResultsPerPage === 0 ? [] : [{ $skip: noResultsPerPage * (pageNumber - 1) }]
                 ],
                 totalCount: [
                     {
@@ -94,7 +94,25 @@ exports.getXmlDiagramById = (params) => {
 exports.createXmlDiagram = async (body) => {
     let info = [];
     for (const x in body.info) {
-        if(Object.keys(body.info[x]).length !== 0) {
+        if (Object.keys(body.info[x]).length !== 0) {
+            body.info[x].taskActions = body.info[x].taskActions.map(item => {
+                return {
+                    name: item.name,
+                    description: item.description,
+                    mandatory: item.mandatory,
+                }
+            }),
+            body.info[x].taskInformations = body.info[x].taskInformations.map((item, key) => {
+                return {
+                    code: "p" + parseInt(key + 1),
+                    name: item.name,
+                    description: item.description,
+                    filledByAccountableEmployeesOnly: item.filledByAccountableEmployeesOnly,
+                    type: item.type,
+                    extra: item.extra,
+                }
+            })
+
             info.push(body.info[x])
         }
     }
@@ -119,7 +137,7 @@ exports.createXmlDiagram = async (body) => {
 
     let flag;
     let reads = role.map(item => item._id);     // lấy ra danh sách role có quyền xem ( thứ tự cùng với roleParent)
-    
+
     for (let n in reads) {
         flag = 0;
         let parent = [];
@@ -165,20 +183,41 @@ exports.createXmlDiagram = async (body) => {
  */
 exports.editXmlDiagram = async (params, body) => {
     let info = [];
-    for (const x in body.infoTask) {
-        info.push(body.infoTask[x])
+    for (let x in body.info) {
+        console.log(body.info[x]);
+        if (Object.keys(body.info[x]).length !== 0) {
+            body.info[x].taskActions = body.info[x].taskActions.map(item => {
+                return {
+                    name: item.name,
+                    description: item.description,
+                    mandatory: item.mandatory,
+                }
+            }),
+            body.info[x].taskInformations = body.info[x].taskInformations.map((item, key) => {
+                return {
+                    code: "p" + parseInt(key + 1),
+                    name: item.name,
+                    description: item.description,
+                    filledByAccountableEmployeesOnly: item.filledByAccountableEmployeesOnly,
+                    type: item.type,
+                    extra: item.extra,
+                }
+            })
+
+            info.push(body.info[x])
+        }
     }
     let data = await TaskProcess.findByIdAndUpdate(params.diagramId,
         {
-          $set: {
-              xmlDiagram: body.xmlDiagram,
-              infoTask: info,
-              processDescription: body.processDescription,
-              processName: body.processName,
-              creator: body.creator,
-              viewer: body.viewer,
-              manager: body.manager,
-          }
+            $set: {
+                xmlDiagram: body.xmlDiagram,
+                infoTask: info,
+                processDescription: body.processDescription,
+                processName: body.processName,
+                creator: body.creator,
+                viewer: body.viewer,
+                manager: body.manager,
+            }
         }
     )
     let data1 = await TaskProcess.find().populate({ path: 'creator', model: User, select: 'name' });
@@ -193,7 +232,7 @@ exports.deleteXmlDiagram = async (diagramId) => {
     await TaskProcess.findOneAndDelete({
         _id: diagramId,
     });
-    await Privilege.findOneAndDelete({resourceId: diagramId, resourceType: "TaskProcess"})
+    await Privilege.findOneAndDelete({ resourceId: diagramId, resourceType: "TaskProcess" })
     let data = await TaskProcess.find().populate({ path: 'creator', model: User, select: 'name' });
     return data;
 }
@@ -214,11 +253,11 @@ exports.createTaskByProcess = async (processId, body) => {
 
     for (let i in data) {
         let taskTemplate, taskActions, cloneActions = [];
-        
+
         if (data[i].taskTemplate !== "") {
             taskTemplate = await TaskTemplate.findById(data[i].taskTemplate);
             taskActions = taskTemplate.taskActions;
-    
+
             for (let i in taskActions) {
                 cloneActions[i] = {
                     mandatory: taskActions[i].mandatory,
