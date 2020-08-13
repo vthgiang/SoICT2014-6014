@@ -13,11 +13,11 @@ export const AnnualLeaveService = {
 
 /**
  * Lấy danh sách nghỉ phép
- * @data : dữ liệu key tìm kiếm
+ * @data : Dữ liệu key tìm kiếm
  */
 function searchAnnualLeaves(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/annualLeaves`,
+        url: `${ LOCAL_SERVER_API }/annualLeave/annualLeaves`,
         method: 'GET',
         params: {
             numberMonth: data.numberMonth,
@@ -38,7 +38,7 @@ function searchAnnualLeaves(data) {
  */
 function createAnnualLeave(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/annualLeaves`,
+        url: `${ LOCAL_SERVER_API }/annualLeave/annualLeaves`,
         method: 'POST',
         data: data
     }, true, true, 'human_resource.annual_leave');
@@ -46,22 +46,22 @@ function createAnnualLeave(data) {
 
 /**
  * Xoá thông tin nghỉ phép
- * @id: Id nghỉ phép cần xoá
+ * @id : Id nghỉ phép cần xoá
  */
 function deleteAnnualLeave(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/annualLeaves/${id}`,
+        url: `${ LOCAL_SERVER_API }/annualLeave/annualLeaves/${id}`,
         method: 'DELETE',
     }, true, true, 'human_resource.annual_leave');
 }
 /**
  * Cập nhật thông tin nghỉ phép
  * @id : Id nghỉ phép cần cập nhật 
- * @data  : dữ liệu cập nhật nghỉ phép
+ * @data  : Dữ liệu cập nhật nghỉ phép
  */
 function updateAnnualLeave(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/annualLeaves/${id}`,
+        url: `${ LOCAL_SERVER_API }/annualLeave/annualLeaves/${id}`,
         method: 'PATCH',
         data: data
     }, true, true, 'human_resource.annual_leave');
