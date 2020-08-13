@@ -52,6 +52,7 @@ class TaskProcessManagement extends Component {
   }
 
   viewProcess = async (item) => {
+    console.log(item)
     this.setState(state => {
       return {
         ...state,
