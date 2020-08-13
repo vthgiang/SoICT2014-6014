@@ -644,6 +644,7 @@ export default {
             kpi_unit_evaluate: 'Evaluate unit KPI',
             kpi_unit_overview: 'Overview unit KPI',
             kpi_unit_dashboard: 'Dashboard unit KPI',
+            kpi_unit_statistic: 'Statistic unit KPI',
             kpi_unit_manager: 'Manage unit KPI',
             kpi_member_manager: 'Evaluate Employee KPI',
             kpi_member_dashboard: 'DashBoard KPI Member',
@@ -1930,7 +1931,7 @@ export default {
                         request_approval: 'Request for approval',
                         cancel_request_approval: 'Cancel request for approval',
                         not_initialize_organiztional_unit_kpi: 'Cannot initialize kpi on this month bacause your unit has not initialized kpi on this month yet, please contact the manager of your unit',
-                        not_activate_organiztional_unit_kpi: 'Cannot initialize kpi on this month bacause your unit has not activated kpi on this month yet, please contact the manager of your unit',
+                        not_activate_organiztional_unit_kpi: 'Your unit has not activated kpi on this month yet, please contact the manager of your unit',
 
                         // Nhóm dành cho các trạng thái tập KPI
                         kpi_status: {

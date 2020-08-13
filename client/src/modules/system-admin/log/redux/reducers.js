@@ -20,6 +20,18 @@ export function log(state = initState, action) {
                 isLoading: false
             };
 
+        case LogConstants.RESTORE_DATABASE_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            }
+
+        case LogConstants.RESTORE_DATABASE_SUCCESS:
+            return {
+                ...state,
+                isLoading: false
+            };
+
         default:
             return state;
     }

@@ -12,22 +12,38 @@ import 'c3/c3.css';
 
 var translate ='';
 class DistributionOfEmployeeKpiChart extends Component {
+
     constructor(props) {
         super(props);
+
         translate = this.props.translate;
+
+        let currentDate = new Date();
+        let currentYear = currentDate.getFullYear();
+        let currentMonth = currentDate.getMonth();
+
         this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
 
         this.state = {
-            month: undefined,
+            month: currentYear + '-' + (currentMonth + 1),
             dataStatus: this.DATA_STATUS.QUERYING
         };
+    }
 
+    componentDidMount = () => {
         // Lấy Kpi của cá nhân hiện tại
-        this.props.getEmployeeKpiSet();
+        this.props.getEmployeeKpiSet(this.state.month);
+
+        this.setState(state => {
+            return {
+                ...state,
+                dataStatus: this.DATA_STATUS.QUERYING,
+            };
+        });
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        if(nextState.month !== this.state.month) {
+        if (nextState.month !== this.state.month) {
             await this.props.getEmployeeKpiSet(nextState.month);
 
             this.setState(state => {
@@ -68,7 +84,7 @@ class DistributionOfEmployeeKpiChart extends Component {
     /**Thiết lập dữ liệu biểu đồ */
     setDataPieChart = () => {
         const { createEmployeeKpiSet } = this.props;
-        var listEmployeeKpi, dataPieChart;
+        let listEmployeeKpi, dataPieChart;
 
         if (createEmployeeKpiSet.currentKPI && createEmployeeKpiSet.currentKPI.kpis) {
             listEmployeeKpi = createEmployeeKpiSet.currentKPI.kpis
@@ -95,7 +111,7 @@ class DistributionOfEmployeeKpiChart extends Component {
         this.removePreviousChart();
 
         // Tạo mảng dữ liệu
-        var dataPieChart;
+        let dataPieChart;
         dataPieChart = this.setDataPieChart(); 
 
         this.chart = c3.generate({
@@ -117,7 +133,7 @@ class DistributionOfEmployeeKpiChart extends Component {
     }
 
     handleSelectMonth = async (value) => {
-        var month = value.slice(3,7) + '-' + value.slice(0,2);
+        let month = value.slice(3,7) + '-' + value.slice(0,2);
         this.setState(state => {
             return {
                 ...state,
@@ -128,13 +144,13 @@ class DistributionOfEmployeeKpiChart extends Component {
 
     render() {
         const { createEmployeeKpiSet } = this.props;
-        var currentEmployeeKpiSet;
+        let currentEmployeeKpiSet;
 
         if(createEmployeeKpiSet) {
             currentEmployeeKpiSet = createEmployeeKpiSet.currentKPI
         }
 
-        var d = new Date(),
+        let d = new Date(),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
         year = d.getFullYear();
@@ -143,7 +159,7 @@ class DistributionOfEmployeeKpiChart extends Component {
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
-        var defaultDate = [month, year].join('-');
+        let defaultDate = [month, year].join('-');
 
         return (
             <React.Fragment>

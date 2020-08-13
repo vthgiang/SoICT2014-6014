@@ -14,11 +14,13 @@ import { DialogModal, SelectBox, ErrorLabel } from '../../../../common-component
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import './tasktemplate.css';
+import { getStorage } from '../../../../config';
 
 class AddTaskTemplate extends Component {
     constructor(props) {
         super(props);
 console.log('quangconstructor');
+        let userId = getStorage("userId")
         this.state = {
             newTemplate: {
                 organizationalUnit: '',
@@ -29,7 +31,7 @@ console.log('quangconstructor');
                 consultedEmployees: [],
                 informedEmployees: [],
                 description: '',
-                creator: '',
+                creator: userId,
                 formula: '',
                 priority: 3,
                 taskActions: [],
@@ -213,7 +215,7 @@ console.log('quangconstructor');
                 ...state,
             };
         });
-        this.props.handleChangeResponsible(value)
+        this.props.isProcess && this.props.handleChangeResponsible(value)
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
@@ -224,7 +226,7 @@ console.log('quangconstructor');
                 ...state,
             };
         });
-        this.props.handleChangeAccountable(value)
+        this.props.isProcess && this.props.handleChangeAccountable(value)
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
@@ -295,7 +297,7 @@ console.log('quangconstructor');
                         consultedEmployees: (info && info.consultedEmployees) ? info.consultedEmployees : [],
                         informedEmployees: (info && info.informedEmployees) ? info.informedEmployees : [],
                         description: (info && info.description) ? info.description : '',
-                        creator: (info && info.creator) ? info.creator : '',
+                        creator: (info && info.creator) ? info.creator : getStorage("userId"),
                         formula: (info && info.formula) ? info.formula : '',
                         priority: (info && info.priority) ? info.priority : 3,
                         taskActions: (info && info.taskActions) ? info.taskActions : [],

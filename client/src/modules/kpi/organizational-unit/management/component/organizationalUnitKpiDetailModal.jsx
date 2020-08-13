@@ -108,8 +108,10 @@ class ModalDetailKPI extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
+                    sheetTitle: fileName,
                     tables: [
                         {
+                            tableName : 'Thông tin chung KPI '+ unitKpiData[0].unitKpiName,
                             columns: [
                                 { key: "unitKpiName", value: "Tên KPI đơn vị" },
                                 { key: "unitKpiCriteria", value: "Tiêu chí đánh giá" },                                
@@ -122,6 +124,7 @@ class ModalDetailKPI extends Component {
                             data:unitKpiData
                         },
                         {
+                            tableName : 'Danh sách KPI con của '+ unitKpiData[0].unitKpiName,
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "creatorName", value: "Người tạo" },                                
@@ -187,7 +190,7 @@ class ModalDetailKPI extends Component {
                     })
                 }
                 return {
-                    sheetName : item.name,
+                    sheetName : "sheet"+ (index+1),
                     unitKpiData: unitKpiData,
                     detailData : detailData
                 };
@@ -199,8 +202,10 @@ class ModalDetailKPI extends Component {
             dataSheets: dataSheetsArray.map((item,index)=>{
                 return {
                     sheetName: item.sheetName,
+                    sheetTitle : 'Thông tin KPI '+ item.unitKpiData[0].unitKpiName,
                     tables: [
                         {
+                            tableName : 'Thông tin chung KPI '+ item.unitKpiData[0].unitKpiName,
                             columns: [
                                 { key: "unitKpiName", value: "Tên KPI đơn vị" },
                                 { key: "unitKpiCriteria", value: "Tiêu chí đánh giá" },                                
@@ -213,6 +218,7 @@ class ModalDetailKPI extends Component {
                             data:item.unitKpiData
                         },
                         {
+                            tableName : 'Danh sách KPI con của '+ item.unitKpiData[0].unitKpiName,
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "creatorName", value: "Người tạo" },                                

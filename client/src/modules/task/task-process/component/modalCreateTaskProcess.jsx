@@ -313,7 +313,7 @@ class ModalCreateTaskProcess extends Component {
          else {
             return { ...state, showInfo: false, type: element.type, name: '', id: element.businessObject.id, }
          }
-      }, () => console.log(this.state))
+      })
    }
 
    deleteElements = (event) => {
@@ -347,26 +347,34 @@ class ModalCreateTaskProcess extends Component {
             xmlDiagram: xmlStr,
          }
       })
-      let data = this.state.info
-      console.table(data)
+      let data = {
+         info: this.state.info,
+         xmlDiagram: this.state.xmlDiagram,
+         processName: this.state.processName,
+         processDescription: this.state.processDescription,
+         manager: this.state.manager,
+         viewer: this.state.viewer,
+         creator: getStorage("userId")
+      }
+      console.log(data)
       // for (const i in data.infoTask) {
       //    if (!data.infoTask[i].organizationalUnit) {
       //       data.infoTask[i].organizationalUnit = department.list[0]._id
       //    }
       // }
       await this.props.createXmlDiagram(data)
-      this.setState(state => {
-         return {
-            ...state,
-            processName: null,
-            processDescription: '',
-            viewer: undefined,
-            manager: undefined,
-            save: true,
-            selectedCreate: 'info',
-            showInfo: false
-         }
-      });
+      // this.setState(state => {
+      //    return {
+      //       ...state,
+      //       processName: null,
+      //       processDescription: '',
+      //       viewer: undefined,
+      //       manager: undefined,
+      //       save: true,
+      //       selectedCreate: 'info',
+      //       showInfo: false
+      //    }
+      // });
    }
 
    downloadAsSVG = () => {

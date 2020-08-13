@@ -1,4 +1,4 @@
-const {backupDatabase} = require('../../../helpers/backupDatabase');
+const {backupDatabase, restoreDatabase} = require('../../../helpers/backupDatabase');
 const {time} = require('cron');
 
 exports.backup = async (data, params) => {
@@ -40,3 +40,14 @@ exports.backup = async (data, params) => {
             break;
     }
 };
+
+exports.restore = async (data, params) => {
+    await restoreDatabase({
+        host: process.env.DB_HOST,
+        dbName: process.env.DB_NAME,
+        dbPort: "27017",
+        store: SERVER_BACKUP_PATH,
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD
+    });
+}
