@@ -12,20 +12,6 @@ export default {
             number_decisions_required: 'Số ra quyết định không được để trống',
             number_decisions_have_exist: 'Số ra quyết định đã tồn tại',
             unit_decisions_required: 'Cấp ra quyết định không được để trống',
-            // Quản lý nghỉ phép
-            // TODO: Xoá sau
-            start_date_annual_leave_required: 'Ngày bắt đầu không được để trống',
-            end_date_annual_leave_required: 'Ngày kết thúc không được để trống',
-            reason_annual_leave_required: 'Lý do không được để trống',
-            status_annual_leave_required: 'Trạng thái không được để trống',
-            get_annual_leave_success: 'Lấy thông tin nghỉ phép thành công',
-            get_annual_leave_faile: 'Lấy thông tin nghỉ phép thất bại',
-            create_annual_leave_success: 'Thêm đơn xin nghỉ phép thành công',
-            create_annual_leave_faile: 'Thêm đơn xin nghỉ phép thất bại',
-            delete_annual_leave_success: 'Xoá đơn xin nghỉ phép thành công',
-            delete_annual_leave_faile: 'Xoá đơn xin nghỉ phép thất bại',
-            edit_annual_leave_success: 'Chỉnh sửa đơn xin nghỉ phép thành công',
-            edit_annual_leave_faile: 'Chỉnh sửa đơn xin nghỉ phép thất bại',
             // Quản lý khen thưởng
             // TODO: Xoá sau
             type_commendations_required: 'Hình thức khen thưởng không được để trống',
@@ -817,28 +803,6 @@ export default {
             edit_success: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
         },
-        // Quản lý nghỉ phép
-        sabbatical: {
-            list_sabbatical: 'Danh sách đơn xin nghỉ',
-            add_sabbatical: 'Thêm đơn xin nghỉ',
-            add_sabbatical_title: 'Thêm mới đơn xin nghỉ phép',
-            edit_sabbatical: 'Chỉnh sửa thông tin nghỉ phép',
-            delete_sabbatical: 'Xoá thông tin nghỉ phép',
-            start_date: 'Ngày bắt đầu',
-            end_date: 'Ngày kết thúc',
-            reason: 'Lý do',
-            check_null_msnv: 'Mã nhân viên không được để trống',
-            check_msnv: 'Mã nhân viên không tồn tại',
-            check_start_day: 'Ngày bắt đầu không được để trống',
-            check_end_day: 'Ngày kết thúc không được để trống',
-            check_reason: 'Lý do không được để trống',
-            pass: 'Đã chấp nhận',
-            faile: 'Không chấp nhận',
-            process: 'Chờ phê duyệt',
-            all: '--Tất cả--',
-            edit_succes: 'Chỉnh sửa thành công',
-            edit_faile: 'Chỉnh sửa thất bại',
-        },
         // Quản lý khen thưởng, kỷ luật
         discipline: { // TODO: Xoá sau
             list_discipline: 'Danh sách kỷ luật',
@@ -1091,6 +1055,8 @@ export default {
             number_decisions_required: 'Số ra quyết định không được để trống',
             number_decisions_have_exist: 'Số ra quyết định đã tồn tại',
             unit_decisions_required: 'Cấp ra quyết định không được để trống',
+            start_date_before_end_date: 'Ngày bắt đầu phải trước ngày kết thúc',
+            end_date_after_start_date: 'Ngày kết thúc phải sau ngày bắt đầu',
 
             // Quản lý lương nhân viên
             salary: {
@@ -1168,6 +1134,8 @@ export default {
                 add_annual_leave_title: 'Thêm mới đơn xin nghỉ phép',
 
                 // Thông điệp trả về từ server
+                employee_code_duplicated: 'Mã số nhân viên bị trùng lặp',
+                employee_name_required: 'Tên nhân viên không được để trống',
                 employee_number_required: 'Mã nhân viên không được để trống',
                 staff_code_not_special: 'Mã nhân viên không được chứ ký tự đặc biệt',
                 staff_code_not_find: 'Mã nhân viên không tồn tại',
@@ -2640,7 +2608,7 @@ export default {
             }
         },
 
-        
+
         //manager order
         manage_order: {
             index: "Số thứ tự",

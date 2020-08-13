@@ -72,7 +72,7 @@ class SalaryTab extends Component {
      * @param {*} data : Dữ liệu thông tin lương cần thêm
      */
     handleAddSalary = async (data) => {
-        console.log(data);
+        const { translate } = this.props;
         let { salaries } = this.state;
         let check = [];
         check = salaries.filter(x => (x.month === data.month));
@@ -81,7 +81,7 @@ class SalaryTab extends Component {
                 <ServerResponseAlert
                     type='error'
                     title={'general.error'}
-                    content={['Tháng lương đã tồn tại']}
+                    content={[translate('human_resource.salary.month_salary_have_exist')]}
                 />,
                 { containerId: 'toast-notification' }
             );
@@ -100,14 +100,12 @@ class SalaryTab extends Component {
      * @param {*} data : Thông tin lương cần chỉnh sửa
      */
     handleEditSalary = async (data) => {
-        console.log(data);
         let { salaries } = this.state;
         salaries[data.index] = data;
-        console.log(salaries);
         await this.setState({
             salaries: salaries
         })
-        this.props.handleEditSalary(this.state.salaries, data);
+        this.props.handleEditSalary(salaries, data);
     }
 
     /**
@@ -115,7 +113,6 @@ class SalaryTab extends Component {
      * @param {*} index : Số thứ tự thông tin lương cần xoá
      */
     handleDeleteSalary = async (index) => {
-        console.log(index);
         let { salaries } = this.state;
         let data = salaries[index];
         salaries.splice(index, 1);
@@ -247,10 +244,10 @@ class SalaryTab extends Component {
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                 <thead>
                                     <tr>
-                                        <th>{translate('table.start_date')}</th>
-                                        <th>{translate('table.end_date')}</th>
-                                        <th>{translate('sabbatical.reason')}</th>
-                                        <th>{translate('table.status')}</th>
+                                        <th>{translate('human_resource.annual_leave.table.start_date')}</th>
+                                        <th>{translate('human_resource.annual_leave.table.end_date')}</th>
+                                        <th>{translate('human_resource.annual_leave.table.reason')}</th>
+                                        <th>{translate('human_resource.status')}</th>
                                         <th style={{ width: '120px' }}>{translate('table.action')}</th>
                                     </tr>
                                 </thead>
@@ -261,9 +258,9 @@ class SalaryTab extends Component {
                                                 <td>{this.formatDate(x.startDate)}</td>
                                                 <td>{this.formatDate(x.endDate)}</td>
                                                 <td>{x.reason}</td>
-                                                <td>{translate(`sabbatical.${x.status}`)}</td>
+                                                <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
                                                 <td >
-                                                    <a onClick={() => this.handleViewEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('discipline.edit_praise')}><i className="material-icons">edit</i></a>
+                                                    <a onClick={() => this.handleViewEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.annual_leave.edit_annual_leave')}><i className="material-icons">edit</i></a>
                                                     <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteAnnualLeave(index)}><i className="material-icons"></i></a>
                                                 </td>
                                             </tr>
@@ -277,7 +274,7 @@ class SalaryTab extends Component {
                     </div>
                 </div>
                 {
-                    this.state.currentRow !== undefined &&
+                    currentRow !== undefined &&
                     <SalaryEditModal
                         id={`editSalary${currentRow.index}`}
                         _id={currentRow._id}
@@ -290,7 +287,7 @@ class SalaryTab extends Component {
                     />
                 }
                 {
-                    this.state.currentRowSabbatical !== undefined &&
+                    currentRowSabbatical !== undefined &&
                     <AnnualLeaveEditModal
                         id={`editSabbatical${currentRowSabbatical.index}`}
                         _id={currentRowSabbatical._id}

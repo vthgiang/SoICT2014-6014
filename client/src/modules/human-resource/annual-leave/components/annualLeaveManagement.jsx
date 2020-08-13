@@ -17,6 +17,7 @@ class AnnualLeaveManagement extends Component {
         let keySearch = 'organizationalUnits';
         let keySearch2 = 'month';
         let organizationalUnits = null, month = null;
+
         for (let n in search) {
             let index = search[n].lastIndexOf(keySearch);
             if (index !== -1) {
@@ -102,8 +103,10 @@ class AnnualLeaveManagement extends Component {
      * @param {*} value :Tháng tìm kiếm
      */
     handleMonthChange = (value) => {
-        let partMonth = value.split('-');
-        value = [partMonth[1], partMonth[0]].join('-');
+        if (value) {
+            let partMonth = value.split('-');
+            value = [partMonth[1], partMonth[0]].join('-');
+        }
         this.setState({
             ...this.state,
             month: value
@@ -154,17 +157,18 @@ class AnnualLeaveManagement extends Component {
 
     /** Function bắt sự kiện tìm kiếm */
     handleSunmitSearch = async () => {
-        if (this.state.month === null) {
+        let { month } = this.state;
+        if (month) {
             let partMonth = this.formatDate(Date.now(), true).split('-');
             let month = [partMonth[1], partMonth[0]].join('-');
             await this.setState({
                 ...this.state,
                 month: month
             })
-        } else if (this.state.month === "-") {
+        } else {
             await this.setState({
                 ...this.state,
-                month: ""
+                month: month
             })
         }
         this.props.searchAnnualLeaves(this.state);
@@ -186,7 +190,8 @@ class AnnualLeaveManagement extends Component {
      * @param {*} pageNumber : Số trạng hiện tại cần hiện thị
      */
     setPage = async (pageNumber) => {
-        var page = (pageNumber - 1) * this.state.limit;
+        let { limit } = this.state;
+        let page = (pageNumber - 1) * limit;
         await this.setState({
             page: parseInt(page),
 
@@ -361,7 +366,7 @@ class AnnualLeaveManagement extends Component {
                                             translate('human_resource.position'),
                                             translate('human_resource.status')
                                         ]}
-                                        limit={this.state.limit}
+                                        limit={limit}
                                         setLimit={this.setLimit}
                                         hideColumnOption={true}
                                     />
@@ -412,12 +417,12 @@ class AnnualLeaveManagement extends Component {
                 {
                     currentRow &&
                     <AnnualLeaveEditForm
-                        _id={this.state.currentRow._id}
-                        employeeNumber={this.state.currentRow.employee.employeeNumber}
-                        endDate={this.formatDate(this.state.currentRow.endDate)}
-                        startDate={this.formatDate(this.state.currentRow.startDate)}
-                        reason={this.state.currentRow.reason}
-                        status={this.state.currentRow.status}
+                        _id={currentRow._id}
+                        employeeNumber={currentRow.employee.employeeNumber}
+                        endDate={this.formatDate(currentRow.endDate)}
+                        startDate={this.formatDate(currentRow.startDate)}
+                        reason={currentRow.reason}
+                        status={currentRow.status}
                     />
                 }
             </div >

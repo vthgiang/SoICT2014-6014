@@ -5,12 +5,14 @@ import {
 export const AnnualLeaveFormValidator = {
     validateEmployeeNumber,
     validateReason,
-    validateStartDate,
-    validateEndDate
 
 }
 
-// Kiểm tra mã nhân viên nhập vào
+/**
+ * Kiểm tra mã nhân viên nhập vào
+ * @param {*} value : Mã nhân viên
+ * @param {*} translate : Props song ngữ
+ */
 function validateEmployeeNumber(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
@@ -20,24 +22,16 @@ function validateEmployeeNumber(value, translate) {
     }
     return msg;
 }
+
+/**
+ * Kiểm tra mã lý do nhập vào
+ * @param {*} value : Lý do nghỉ
+ * @param {*} translate : Props song ngữ
+ */
 function validateReason(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = translate('human_resource.annual_leave.reason_annual_leave_required');
-    }
-    return msg;
-}
-function validateStartDate(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = translate('human_resource.annual_leave.start_date_annual_leave_required');
-    }
-    return msg;
-}
-function validateEndDate(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = translate('human_resource.annual_leave.end_date_annual_leave_required');
     }
     return msg;
 }
