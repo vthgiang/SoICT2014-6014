@@ -4,7 +4,8 @@ export function createEmployeeKpiSet(state = {}, action) {
   switch (action.type) {
     case createKpiSetConstants.GET_EMPLOYEE_KPI_SET_REQUEST:
       return {
-        loading: true,
+        ...state,
+        currentKPI: null,
         isLoading: true
       };
     case createKpiSetConstants.GET_EMPLOYEE_KPI_SET_SUCCESS:
@@ -21,8 +22,8 @@ export function createEmployeeKpiSet(state = {}, action) {
       };
     case createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_BY_MONTH_REQUEST:
       return {
+        ...state,
         employeeKpiSetByMonth: null,
-        loading: true,
         isLoading: true
       };
     case createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_BY_MONTH_SUCCESS:

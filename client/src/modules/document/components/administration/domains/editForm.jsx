@@ -80,9 +80,9 @@ class EditForm extends Component {
     }
 
     render() {
-        const {translate, documents}=this.props;
-        const {tree,list} = documents.administration.domains;
-        const {domainId, domainName, domainDescription, domainParent, errorName} = this.state;
+        const { translate, documents } = this.props;
+        const { tree,list } = documents.administration.domains;
+        const { domainId, domainName, domainDescription, domainParent, errorName } = this.state;
         
         return ( 
             <div id="edit-document-domain">

@@ -2,24 +2,24 @@ import { LogServices } from "./services";
 import { LogConstants } from "./constants";
 
 export const LogActions = {
-    getLogState,
-    toggleLogState
+    backupDatabase,
+    restoreDatabase
 }
 
-function getLogState() {
+function backupDatabase() {
     return dispatch => {
-        dispatch({ type: LogConstants.GET_LOG_STATE_REQUEST });
+        dispatch({ type: LogConstants.BACKUP_DATABASE_REQUEST });
 
-        LogServices.getLogState()
+        LogServices.backupDatabase()
             .then(res => {
                 dispatch({
-                    type: LogConstants.GET_LOG_STATE_SUCCESS,
+                    type: LogConstants.BACKUP_DATABASE_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: LogConstants.GET_LOG_STATE_FAILURE,
+                    type: LogConstants.BACKUP_DATABASE_FAILURE,
                     payload: error
                 })
                 
@@ -27,20 +27,20 @@ function getLogState() {
     }
 }
 
-function toggleLogState() {
+function restoreDatabase() {
     return dispatch => {
-        dispatch({ type: LogConstants.TOGGLE_LOG_STATE_REQUEST });
+        dispatch({ type: LogConstants.RESTORE_DATABASE_REQUEST });
 
-        LogServices.toggleLogState()
+        LogServices.restoreDatabase()
             .then(res => {
                 dispatch({
-                    type: LogConstants.TOGGLE_LOG_STATE_SUCCESS,
+                    type: LogConstants.RESTORE_DATABASE_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: LogConstants.TOGGLE_LOG_STATE_FAILURE,
+                    type: LogConstants.RESTORE_DATABASE_FAILURE,
                     payload: error
                 })
                 
