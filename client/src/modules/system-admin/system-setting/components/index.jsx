@@ -31,7 +31,7 @@ class SystemSetting extends Component {
                 </ul>
                 <div className="tab-content">
                     <div className="tab-pane active" id="backup">
-                        <div className="div">
+                        <React.Fragment>
                             <div className="form-group">
                                 <label>Tự động sao lưu</label>
                                 <SelectBox
@@ -72,7 +72,7 @@ class SystemSetting extends Component {
                                 </React.Fragment>:
                                 <button className="btn btn-success" onClick={()=>this.props.backup({auto: 'off'})}>Lưu</button>
                             }
-                        </div>
+                        </React.Fragment>
                     </div>
                     <div className="tab-pane" id="restore">
                         <button className="btn btn-success pull-right" style={{marginBottom: '10px'}} onClick={()=>{this.props.backup()}} title={"Thêm bản sao dữ liệu mới nhất"}>Thêm</button>
@@ -81,7 +81,6 @@ class SystemSetting extends Component {
                                 <tr>
                                     <th>Phiên bản</th>
                                     <th>Mô tả</th>
-                                    <th>Path</th>
                                     <th style={{width: '100px'}}>Hành động</th>
                                 </tr>
                             </thead>
@@ -91,7 +90,6 @@ class SystemSetting extends Component {
                                         <tr key={ `restore-version-${i}` }>
                                             <td> { data.version } </td>
                                             <td> { data.description } </td>
-                                            <td> { data.path } </td>
                                             <td>
                                                 <ConfirmNotification
                                                     icon="question"
@@ -107,7 +105,7 @@ class SystemSetting extends Component {
                                                     content="<h3>Delete this backup data</h3>"
                                                     name="delete_outline"
                                                     className="text-red"
-                                                    func={this.deleteBackup}
+                                                    func={()=>this.deleteBackup(data.version)}
                                                 />
                                             </td>
                                         </tr>       
@@ -164,8 +162,8 @@ class SystemSetting extends Component {
         console.log("restore", content);
     }
 
-    deleteBackup = () => {
-        console.log("delete backup");
+    deleteBackup = (version) => {
+        this.props.deleteBackup(version)
     }
 }
  
@@ -175,6 +173,7 @@ function mapState(state) {
 }
 const actions = {
     backup: SystemSettingActions.backup,
+    deleteBackup: SystemSettingActions.deleteBackup,
     getRestoreData: SystemSettingActions.getRestoreData,
     restore: SystemSettingActions.restore
 }

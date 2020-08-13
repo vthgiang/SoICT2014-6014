@@ -1,6 +1,7 @@
 const {backup, restore} = require('../../../helpers/backupHelper');
 const {time} = require('cron');
 const fs = require('fs');
+const exec = require('child_process').exec;
 
 exports.backup = async (data, params) => {
     const {auto, schedule} = params;
@@ -43,6 +44,17 @@ exports.backup = async (data, params) => {
     return null;
 };
 
+exports.deleteBackup = async (version) => {
+    const path = `${SERVER_BACKUP_DIR}/${version}`;
+    console.log("path:", path)
+
+    if (fs.existsSync(path)) {
+        exec("rm -rf " + path, function (err) { });
+            return version;
+        }
+    return null;
+}
+
 exports.restore = async (data, params) => {
     await restore({
         host: process.env.DB_HOST,
@@ -55,20 +67,20 @@ exports.restore = async (data, params) => {
 }
 
 exports.getRestoreData = async () => {
-    const dirPath = `${SERVER_BACKUP_DIR}/database`;
-    if (!fs.existsSync(dirPath)) {
-        fs.mkdirSync(dirPath, {
+    if (!fs.existsSync(SERVER_BACKUP_DIR)) {
+        fs.mkdirSync(SERVER_BACKUP_DIR, {
             recursive: true
         });
     };
-    const list = await fs.readdirSync(dirPath);
+    const list = await fs.readdirSync(SERVER_BACKUP_DIR);
+    console.log("listbackup:", list)
     const backupedList = list.map( dir => {
-        const subPath = `${dirPath}/${dir}/README.txt`;
+        const subPath = `${SERVER_BACKUP_DIR}/${dir}/README.txt`;
         const description = fs.readFileSync(subPath, {encoding:'utf8', flag:'r'});
         
         return {
             version: dir,
-            path: `${dirPath}/${dir}/${process.env.DB_NAME}`,
+            path: `${SERVER_BACKUP_DIR}/${dir}`,
             description
         }
     })

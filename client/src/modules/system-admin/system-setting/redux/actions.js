@@ -3,6 +3,7 @@ import { SystemSettingConstants } from "./constants";
 
 export const SystemSettingActions = {
     backup,
+    deleteBackup,
     getRestoreData,
     restore
 }
@@ -42,6 +43,27 @@ function backup(params=undefined, data=undefined) {
                 }) 
             })
         }
+    }
+}
+
+function deleteBackup(version) {
+    return dispatch => {
+        dispatch({ type: SystemSettingConstants.DELETE_BACKUP_REQUEST });
+
+        SystemSettingServices.deleteBackup(version)
+            .then(res => {
+                dispatch({
+                    type: SystemSettingConstants.DELETE_BACKUP_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: SystemSettingConstants.DELETE_BACKUP_FAILE,
+                    payload: error
+                })
+                
+            })
     }
 }
 

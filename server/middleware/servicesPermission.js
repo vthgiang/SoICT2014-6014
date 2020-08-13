@@ -95,8 +95,8 @@ exports.data = [
     { path: '/system-admin/system-component/system-components/:systemComponentId', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/components-default-management/role/:roleId/link/:linkId', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
-    { path: '/system-admin/system-setting/database/backup', method: 'PATCH', roles: ['System Admin'] },
-    { path: '/system-admin/system-setting/database/restore', method: 'PATCH', roles: ['System Admin'] },
+    { path: '/system-admin/system-setting/backup', method: 'PATCH', roles: ['System Admin'] },
+    { path: '/system-admin/system-setting/restore', method: 'PATCH', roles: ['System Admin'] },
 
     { path: '/user/users', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 

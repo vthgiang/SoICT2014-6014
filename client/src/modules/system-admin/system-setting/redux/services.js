@@ -3,29 +3,37 @@ import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const SystemSettingServices = {
     backup,
+    deleteBackup,
     getRestoreData,
     restore
 };
 
 function backup(params=undefined, data=undefined) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/system-setting/database/backup`,
+        url: `${LOCAL_SERVER_API}/system-admin/system-setting/backup`,
         method: 'PATCH',
         params,
         data,
     }, true, true, 'system_admin.company');
 }
 
+function deleteBackup(version) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/system-admin/system-setting/backup/${version}`,
+        method: 'DELETE'
+    }, true, true, 'system_admin.company');
+}
+
 function getRestoreData() {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/system-setting/database/restore-data`,
+        url: `${LOCAL_SERVER_API}/system-admin/system-setting/restore-data`,
         method: 'GET'
     }, false, true, 'system_admin.company');
 }
 
 function restore(params, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/system-setting/database/restore`,
+        url: `${LOCAL_SERVER_API}/system-admin/system-setting/restore`,
         method: 'PATCH',
         params,
         data,

@@ -1,5 +1,15 @@
 import { SystemSettingConstants } from "./constants";
 
+var findVersion = (arrayVersion, version) => {
+    var result = -1;
+    arrayVersion.forEach((value, index) => {
+        if(value.version === version){
+            result = index;
+        }
+    });
+    return result;
+}
+
 const initState = {
     backup: {
         isLoading: false
@@ -11,7 +21,7 @@ const initState = {
 }
 
 export function systemSetting(state = initState, action) {
-
+    var index = -1;
     switch (action.type) {
 
         case SystemSettingConstants.SET_SCHEDULE_BACKUP_AUTOMATIC_REQUEST:
@@ -84,6 +94,37 @@ export function systemSetting(state = initState, action) {
                 restore: {
                     ...state.restore,
                     list: action.payload,
+                    isLoading: false
+                }
+            }
+
+        case SystemSettingConstants.DELETE_BACKUP_REQUEST:
+            return {
+                ...state,
+                restore: {
+                    ...state.restore,
+                    isLoading: true
+                }
+            }
+        
+        case SystemSettingConstants.DELETE_BACKUP_FAILE:
+            return {
+                ...state,
+                restore: {
+                    ...state.restore,
+                    isLoading: false
+                }
+            }
+
+        case SystemSettingConstants.DELETE_BACKUP_SUCCESS:
+            index = findVersion(state.restore.list, action.payload);
+            if(index !== -1){
+                state.restore.list.splice(index, 1);
+            }
+            return {
+                ...state,
+                restore: {
+                    ...state.restore,
                     isLoading: false
                 }
             }
