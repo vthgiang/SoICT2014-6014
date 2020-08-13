@@ -19,7 +19,7 @@ import Home from '../modules/home/components';
 
 import { Notifications } from "../modules/combine-modules";
 
-import { LogSystem } from '../modules/system-admin/log/components';
+import { SystemSetting } from '../modules/system-admin/system-setting/components';
 import { Company } from '../modules/system-admin/company/components';
 import { ManageLinkSystem } from '../modules/system-admin/system-link/components';
 import ManageRoleDefault from '../modules/system-admin/root-role/components';
@@ -114,7 +114,7 @@ class Routes extends Component {
                         path={ '/system/settings' }
                         pageName={ 'manage_system' }
                         layout={ Layout }
-                        component={ LogSystem }
+                        component={ SystemSetting }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.rootRoles.isLoading }

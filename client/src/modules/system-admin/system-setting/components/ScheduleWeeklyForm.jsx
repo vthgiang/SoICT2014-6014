@@ -2,16 +2,17 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import {SelectBox} from '../../../../common-components';
-import { LogActions } from '../redux/actions';
+import { SystemSettingActions } from '../redux/actions';
 
 class ScheduleWeeklyForm extends Component {
     constructor(props) {
         super(props);
         this.state = {  }
     }
+
     render() { 
-        const {period, hour, minute, second} = this.state;
-        
+        console.log("state weekly", this.state)
+
         return (<React.Fragment>
             <div className="row">
                 <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
@@ -30,8 +31,7 @@ class ScheduleWeeklyForm extends Component {
                                 {value: '6', text: 'Thứ 7'},
                                 {value: '0', text: 'Chủ nhật'},
                             ]}
-                            value={'0'}
-                            onChange={this.handlePeriod}
+                            onChange={this.handleDay}
                             multiple={false}
                         />
                     </div>
@@ -69,7 +69,6 @@ class ScheduleWeeklyForm extends Component {
                                 {value: '22', text: '22'},
                                 {value: '23', text: '23'},
                             ]}
-                            value={'0'}
                             onChange={this.hanldeHour}
                             multiple={false}
                         />
@@ -144,7 +143,6 @@ class ScheduleWeeklyForm extends Component {
                                 {value: '58', text: '58'},
                                 {value: '59', text: '59'},
                             ]}
-                            value={'0'}
                             onChange={this.hanldeMinute}
                             multiple={false}
                         />
@@ -219,7 +217,6 @@ class ScheduleWeeklyForm extends Component {
                                 {value: '58', text: '58'},
                                 {value: '59', text: '59'},
                             ]}
-                            value={'0'}
                             onChange={this.hanldeSecond}
                             multiple={false}
                         />
@@ -227,15 +224,13 @@ class ScheduleWeeklyForm extends Component {
                 </div>
             
             </div>
-            <button className="btn btn-success" onClick={()=>this.props.backupDatabase({
-                auto: 'on'
-            },{ period, hour, minute, second })}>Lưu</button>
+            <button className="btn btn-success" disabled={!this.isFormValid ? true : false} onClick={this.save}>Lưu</button>
         </React.Fragment>);
     }
 
-    handlePeriod = (value) => {
+    handleDay = (value) => {
         this.setState({
-            period: value[0]
+            day: value[0]
         })
     }
 
@@ -256,13 +251,34 @@ class ScheduleWeeklyForm extends Component {
             second: value[0]
         })
     }
+
+    isFormValid = () => {
+        const {date, hour, minute, second} = this.state;
+
+        if(date !== undefined && hour !== undefined && minute !== undefined && second !== undefined){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    save = () => {
+        const {schedule} = this.props;
+        const {date, hour, minute, second} = this.state;
+
+        if(this.isFormValid){
+            return this.props.backupDatabase({auto: 'on', schedule},{
+                date, hour, minute, second
+            })
+        }
+    }
 }
  
 function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-    backupDatabase: LogActions.backupDatabase
+    backupDatabase: SystemSettingActions.backupDatabase
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ScheduleWeeklyForm));
