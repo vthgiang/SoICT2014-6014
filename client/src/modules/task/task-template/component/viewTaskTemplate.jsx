@@ -11,11 +11,34 @@ class ViewTaskTemplate extends Component {
 
     }
     render() {
-        const { translate } = this.props;
-        const { taskTemplate, isProcess } = this.props;
-
+        const { translate, department } = this.props;
+        const { taskTemplate, isProcess, listUser } = this.props;
+        let listUserAccountable = [], listUserResponsible = []
+        let organizationalUnitProcess
         let priority = "";
-
+        if (isProcess) {
+            if (listUser) {
+                listUser.forEach(x => {
+                    if (taskTemplate?.accountableEmployees.some(y => y === x._id)) {
+                        listUserAccountable.push({ value: x._id, name: x.name })
+                    }
+                })
+                listUser.forEach(x => {
+                    if (taskTemplate?.responsibleEmployees.some(y => y === x._id)) {
+                        listUserResponsible.push({ value: x._id, name: x.name })
+                    }
+                })
+                department.list.forEach(x => {
+                    if (taskTemplate?.organizationalUnit === x._id) {
+                        organizationalUnitProcess = x.name
+                    }
+                })
+            }
+        }
+        let organizationalUnit = isProcess ? organizationalUnitProcess : taskTemplate?.organizationalUnit?.name
+        let accountableEmployees = isProcess ? listUserAccountable : taskTemplate?.accountableEmployees
+        let responsibleEmployees = isProcess ? listUserResponsible : taskTemplate?.listUserResponsible
+        console.log(responsibleEmployees)
         switch (taskTemplate?.priority) {
             case 1: priority = translate('task_template.low'); break;
             case 2: priority = translate('task_template.medium'); break;
@@ -25,7 +48,7 @@ class ViewTaskTemplate extends Component {
             <React.Fragment>
                 {/* Modal Body */}
                 <div className="row row-equal-height" >
-                    <div className={`${isProcess ? "col-lg-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }}>
+                    <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }}>
                         <div className="box box-solid description">
                             <div className="box-header with-border">
                                 {translate('task_template.general_information')}
@@ -34,7 +57,7 @@ class ViewTaskTemplate extends Component {
 
                                 {/**Các thông tin của mẫu công việc */}
                                 <dt>{translate('task_template.unit')}</dt>
-                                <dd>{taskTemplate?.organizationalUnit && taskTemplate?.organizationalUnit.name}</dd>
+                                <dd>{organizationalUnit}</dd>
 
                                 <dt>{translate('task_template.description')}</dt>
                                 <dd>{taskTemplate?.description}</dd>
@@ -58,31 +81,33 @@ class ViewTaskTemplate extends Component {
                         </div>
                     </div>
 
-                    <div className={`${isProcess ? "col-lg-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }} >
+                    <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }} >
                         <div className="box box-solid description">
                             <div className="box-header with-border">
                                 {translate('task_template.roles')}
                             </div>
                             <div className="box-body">
                                 <dl>
-
-                                    {/**Người được xem mẫu công việc */}
-                                    <dt>{translate('task_template.permission_view')}</dt>
-                                    <dd>
-                                        <ul>
-                                            {taskTemplate?.readByEmployees && taskTemplate?.readByEmployees.map((item, index) => {
-                                                return <li key={index}>{item.name}</li>
-                                            })}
-                                        </ul>
-                                    </dd>
-
+                                    {!isProcess &&
+                                        <React.Fragment>
+                                            {/**Người được xem mẫu công việc */}
+                                            <dt>{translate('task_template.permission_view')}</dt>
+                                            <dd>
+                                                <ul>
+                                                    {taskTemplate?.readByEmployees && taskTemplate?.readByEmployees.map((item, index) => {
+                                                        return <li key={index}>{item.name}</li>
+                                                    })}
+                                                </ul>
+                                            </dd>
+                                        </React.Fragment>
+                                    }
                                     {/**Người thực hiện mẫu công việc */}
-                                    {taskTemplate?.responsibleEmployees && taskTemplate?.responsibleEmployees.length > 0 &&
+                                    {responsibleEmployees && responsibleEmployees.length > 0 &&
                                         <React.Fragment>
                                             <dt>{translate('task_template.performer')}</dt>
                                             <dd>
                                                 <ul>
-                                                    {taskTemplate?.responsibleEmployees.map((item, index) => {
+                                                    {responsibleEmployees.map((item, index) => {
                                                         return <li key={index}>{item.name}</li>
                                                     })}
                                                 </ul>
@@ -91,12 +116,12 @@ class ViewTaskTemplate extends Component {
                                     }
 
                                     {/**Người phê duyệt mẫu công việc */}
-                                    {taskTemplate?.accountableEmployees && taskTemplate?.accountableEmployees.length > 0 &&
+                                    {accountableEmployees && accountableEmployees.length > 0 &&
                                         <React.Fragment>
                                             <dt>{translate('task_template.approver')}</dt>
                                             <dd>
                                                 <ul>
-                                                    {taskTemplate?.accountableEmployees.map((item, index) => {
+                                                    {accountableEmployees.map((item, index) => {
                                                         return <li key={index}>{item.name}</li>
                                                     })}
                                                 </ul>
@@ -138,7 +163,7 @@ class ViewTaskTemplate extends Component {
                 </div>
 
                 <div className="row row-equal-height">
-                    <div className={`${isProcess ? "col-lg-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }} >
+                    <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }} >
                         <div className="box box-solid description">
                             <div className="box-header with-border">
                                 {translate('task_template.activity_list')}
@@ -159,7 +184,7 @@ class ViewTaskTemplate extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className={`${isProcess ? "col-lg-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }}>
+                    <div className={`${isProcess ? "col-lg-12 col-sm-12" : "col-xs-12 col-sm-12 col-md-6 col-lg-6"}`} style={{ padding: 10 }}>
                         <div className="box box-solid description">
                             <div className="box-header with-border">
                                 {translate('task_template.information_list')}
@@ -187,8 +212,8 @@ class ViewTaskTemplate extends Component {
 }
 
 function mapState(state) {
-    const { tasktemplates } = state;
-    return { tasktemplates };
+    const { tasktemplates, department } = state;
+    return { tasktemplates, department };
 }
 
 const actionCreators = {

@@ -11,7 +11,7 @@ multer({
   dest: "upload/avatars",
 });
 require("dotenv").config();
-global.AUTO_BACKUP_DATABASE = require("./helpers/backupDatabase").backupScheduler;
+global.AUTO_BACKUP_DATABASE = require("./helpers/backupHelper").backupAutomatic;
 AUTO_BACKUP_DATABASE.start();
 
 // Application Modules
@@ -20,7 +20,7 @@ const auth = require("./modules/auth/auth.route");
 
 const documents = require("./modules/document/document.route");
 
-const annualLeaves = require("./modules/human-resource/annual-leave/annualLeave.route");
+const annualLeave = require("./modules/human-resource/annual-leave/annualLeave.route");
 const commendations = require("./modules/human-resource/commendation/commendation.route");
 const disciplines = require("./modules/human-resource/discipline/discipline.route");
 const holidays = require("./modules/human-resource/holiday/holiday.route");
@@ -47,7 +47,6 @@ const role = require("./modules/super-admin/role/role.route");
 const user = require("./modules/super-admin/user/user.route");
 
 const company = require("./modules/system-admin/company/company.route");
-const log = require("./modules/system-admin/log/log.route");
 const systemComponent = require("./modules/system-admin/system-component/systemComponent.route");
 const systemLink = require("./modules/system-admin/system-link/systemLink.route");
 const rootRole = require("./modules/system-admin/root-role/rootRole.route");
@@ -126,7 +125,7 @@ app.use("/auth", auth);
 
 app.use("/documents", documents);
 
-app.use("/annualLeaves", annualLeaves);
+app.use("/annualLeave", annualLeave);
 app.use("/commendations", commendations);
 app.use("/disciplines", disciplines);
 app.use("/holidays", holidays);
@@ -153,7 +152,6 @@ app.use("/role", role);
 app.use("/user", user);
 
 app.use("/system-admin/company", company);
-app.use("/system-admin/log", log);
 app.use("/system-admin/system-component", systemComponent);
 app.use("/system-admin/system-link", systemLink);
 app.use("/system-admin/root-role", rootRole);

@@ -1,7 +1,7 @@
 const exec = require('child_process').exec;
 const CronJob = require('cron').CronJob;
 require('dotenv').config('../.env');
-const BACKUP_TIME = '0 0 2 15 * *'; // chạy tự động: ngày 15 lúc 2 giờ sáng (hàng tháng)
+const BACKUP_TIME = '55 50 14 * * *'; // chạy tự động: ngày 15 lúc 2 giờ sáng (hàng tháng)
 const fs = require('fs');
 
 const option = {
@@ -13,6 +13,9 @@ const option = {
     password: process.env.DB_PASSWORD
 };
 
+/**
+ * Lấy string đặt tên cho thư mục backup từ date hiện tại
+ */
 getTimeMDY = () => {
     const time = new Date(),
     month = time.getMonth() + 1,
@@ -25,6 +28,10 @@ getTimeMDY = () => {
     return `${date}-${month}-${year}_${hour}h${minute}m${second}s`;
 }
 
+
+/**
+ * Tạo đường dẫn lưu dữ liệu backup
+ */
 createServerBackupDatabasePath = () => {
     const time = getTimeMDY();
     const path = `${SERVER_BACKUP_DIR}/database/${time}`;
@@ -37,56 +44,70 @@ createServerBackupDatabasePath = () => {
     return path;
 }
 
-exports.restoreDB = (option) => {
-    console.log("RESTORE DATABASE");
+/**
+ * Restore dữ liệu
+ */
+exports.restore = async (option) => {
+
     const command = process.env.DB_AUTHENTICATION === 'true' ?
         `mongorestore --drop --host="${option.host}" --port="${option.dbPort}" --username="${option.username}" --password="${option.password}" -d ${option.dbName} ${SERVER_BACKUP_DIR}/${option.dbName}` :
         `mongorestore --drop --host="${option.host}" --port="${option.dbPort}" -d ${option.dbName} ${SERVER_BACKUP_DIR}/${option.dbName}`;
-    exec(command, function (error, stdout, stderr) {
-        if(error !== null){
-            console.log("RESTORE DATABASE ERROR", error, stdout, stderr);
-        }else{
-            console.log("RESTORE DATABASE SUCCESSFULLY");
-        }
+    await exec(command, (error, stdout, stderr) => {
+        if(error !== null) console.log(error);
     })
 }
 
-backupDB = (option) => {
-    console.log("BACKUP DATABASE");
+/**
+ * Backup dữ liệu
+ */
+exports.backup = async (option) => {
     const serverBackupStorePath = createServerBackupDatabasePath();
-    fs.appendFile(serverBackupStorePath+'/README.txt', `Backup database ${option.dbName} at ${getTimeMDY()}`, function (err) {
-        if (err) throw err;
-        console.log('Created description backup database: ', serverBackupStorePath+'/README.txt');
-    });
+    const versionTime = getTimeMDY();
+    const descriptionBackupDB = `Backup database ${option.dbName} at ${versionTime}`;
     const command = process.env.DB_AUTHENTICATION === 'true' ?
         `mongodump --host="${option.host}" --port="${option.dbPort}" --out="${serverBackupStorePath}" --db="${option.dbName}" --username="${option.username}" --password="${option.password}"` :
         `mongodump --host="${option.host}" --port="${option.dbPort}" --out="${serverBackupStorePath}" --db="${option.dbName}"`;
-    exec(command, function (error, stdout, stderr) {
-        if(error !== null){
-            console.log("BACKUP DATABASE ERROR", error, stdout, stderr);
-        }else{
-            console.log("BACKUP DATABASE SUCCESSFULLY");
-        }
-    })
+    
+    // 1. Backup database
+    await exec(command, (error, stdout, stderr) => {
+        if(error !== null) console.log(error);
+    });
+    fs.appendFile(serverBackupStorePath+'/README.txt', descriptionBackupDB, err => { 
+        if(err) throw err;
+    });
+
+    // 2. Backup file dữ liệu trong thư mục upload
+    // await exec();
+
+    return {
+        version: versionTime,
+        description: descriptionBackupDB,
+        path: serverBackupStorePath+'/'+process.env.DB_NAME
+    }
 }
 
-exports.backupScheduler = new CronJob(BACKUP_TIME, function(){
-    console.log("START BACKUP DATABASE AUTOMATIC");
+
+/**
+ * Backup dữ liệu tự động
+ */
+exports.backupAutomatic = new CronJob(BACKUP_TIME, async function(){
+
     const serverBackupStorePath = createServerBackupDatabasePath();
-    fs.appendFile(serverBackupStorePath+'/README.txt', `Backup database ${option.dbName} at ${getTimeMDY()}`, function (err) {
-        if (err) throw err;
-        console.log('Created description backup database: ', serverBackupStorePath+'/README.txt');
-    });
+    const versionTime = getTimeMDY();
+    const descriptionBackupDB = `Backup database ${option.dbName} at ${versionTime}`;
     const command = process.env.DB_AUTHENTICATION === 'true' ?
         `mongodump --host="${option.host}" --port="${option.dbPort}" --out="${serverBackupStorePath}" --db="${option.dbName}" --username="${option.username}" --password="${option.password}"` :
         `mongodump --host="${option.host}" --port="${option.dbPort}" --out="${serverBackupStorePath}" --db="${option.dbName}"`;
-    exec(command, function (error, stdout, stderr) {
-        if(error !== null){
-            console.log("BACKUP DATABASE AUTOMATIC ERROR: ", error, stdout, stderr);
-        }else{
-            console.log("BACKUP DATABASE SUCCESSFULLY");
-        }
-    })
-}, function() {
-    console.log("STOP BACKUP DATABASE AUTOMATIC")
-}, false, 'Asia/Ho_Chi_Minh');
+    
+    // 1. Backup database
+    await exec(command, (error, stdout, stderr) => {
+        if(error !== null) console.log(error);
+    });
+    fs.appendFile(serverBackupStorePath+'/README.txt', descriptionBackupDB, err => { 
+        if(err) throw err;
+    });
+
+    // 2. Backup file dữ liệu trong thư mục upload
+    // await exec();
+
+}, null, false, 'Asia/Ho_Chi_Minh');
