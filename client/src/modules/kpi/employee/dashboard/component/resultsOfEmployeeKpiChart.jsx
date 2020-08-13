@@ -6,27 +6,44 @@ import { ExportExcel } from '../../../../../common-components';
 
 import { createKpiSetActions } from '../../creation/redux/actions';
 
+import { DatePicker } from '../../../../../common-components';
+
+import Swal from 'sweetalert2';
 import c3 from 'c3';
 import 'c3/c3.css';
 
 
 var translate ='';
 class ResultsOfEmployeeKpiChart extends Component {
+
     constructor(props) {
         super(props);
+
         translate = this.props.translate;
+
+        let currentDate = new Date();
+        let currentYear = currentDate.getFullYear();
+        let currentMonth = currentDate.getMonth();
+
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
-        this.TODAY = new Date();
+        this.INFO_SEARCH = {
+            startMonth: currentYear + '-' + 1,
+            endMonth: currentYear + '-' + (currentMonth + 2)
+        }
 
         this.state = {
             dataStatus: this.DATA_STATUS.QUERYING,
-            userId: localStorage.getItem("userId")
+
+            userId: localStorage.getItem("userId"),
+
+            startMonth: this.INFO_SEARCH.startMonth,
+            endMonth: this.INFO_SEARCH.endMonth
         };
     }
 
     componentDidMount = () => {
-        this.props.getAllEmployeeKpiSetByMonth(this.state.userId, this.props.startDate, this.props.endDate);
+        this.props.getAllEmployeeKpiSetByMonth(this.state.userId, this.state.startMonth, this.state.endMonth);
 
         this.setState(state => {
             return {
@@ -37,9 +54,9 @@ class ResultsOfEmployeeKpiChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        if(nextProps.startDate !== this.state.startDate || nextProps.endDate !== this.state.endDate) {
+        if(nextState.startMonth !== this.state.startMonth || nextState.endMonth !== this.state.endMonth) {
             // Cầ đặt await, và phải đặt trước setState để kịp thiết lập createEmployeeKpiSet.employeeKpiSetByMonth là null khi gọi service
-            await this.props.getAllEmployeeKpiSetByMonth(this.state.userId, nextProps.startDate, nextProps.endDate);
+            await this.props.getAllEmployeeKpiSetByMonth(this.state.userId, nextState.startMonth, nextState.endMonth);
        
             this.setState(state => {
                 return {
@@ -77,22 +94,56 @@ class ResultsOfEmployeeKpiChart extends Component {
         return false;
     }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        if(nextProps.startDate !== prevState.startDate || nextProps.endDate !== prevState.endDate) {
-            return {
-                ...prevState,
-                startDate: nextProps.startDate,
-                endDate: nextProps.endDate
-            }
-        } else{
-            return null;
+    /**
+     * 
+     * Chọn các thông tin để vẽ biểu đồ
+     */
+
+    handleSelectMonthStart = (value) => {
+        let month = value.slice(3,7) + '-' + value.slice(0,2);
+
+        this.INFO_SEARCH.startMonth = month;
+    }
+
+    handleSelectMonthEnd = (value) => {
+        let month;
+
+        if (value.slice(0,2)<12) {
+            month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
+        } else {
+            month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
+        }
+
+        this.INFO_SEARCH.endMonth = month;
+    }
+
+    /**Gửi req và vẽ biểu đồ */
+    handleSearchData = async () => {
+        let startMonth = new Date(this.INFO_SEARCH.startMonth);
+        let endMonth = new Date(this.INFO_SEARCH.endMonth);
+
+        if (startMonth.getTime() >= endMonth.getTime()) {
+            Swal.fire({
+                title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText:  translate('kpi.evaluation.employee_evaluation.confirm')
+            })
+        } else {
+            await this.setState(state => {
+                return {
+                    ...state,
+                    startMonth: this.INFO_SEARCH.startMonth,
+                    endMonth: this.INFO_SEARCH.endMonth
+                }
+            })
         }
     }
 
     /**Thiết lập dữ liệu biểu đồ */
     setDataMultiLineChart = () => {
         const { createEmployeeKpiSet } = this.props;
-        var listEmployeeKpiSetEachYear, automaticPoint, employeePoint, approvedPoint, date, dataMultiLineChart;
+        let listEmployeeKpiSetEachYear, automaticPoint, employeePoint, approvedPoint, date, dataMultiLineChart;
 
         if(createEmployeeKpiSet.employeeKpiSetByMonth) {
             listEmployeeKpiSetEachYear = createEmployeeKpiSet.employeeKpiSetByMonth
@@ -110,7 +161,7 @@ class ResultsOfEmployeeKpiChart extends Component {
                 employeePoint.push(x.employeePoint);
                 approvedPoint.push(x.approvedPoint);
 
-                var newDate = new Date(x.date);
+                let newDate = new Date(x.date);
                 newDate = newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-" + (newDate.getDate() - 1);
                 date.push(newDate);
             });
@@ -134,7 +185,7 @@ class ResultsOfEmployeeKpiChart extends Component {
         this.removePreviosMultiLineChart();
         
         // Tạo mảng dữ liệu
-        var dataMultiLineChart = this.setDataMultiLineChart();
+        let dataMultiLineChart = this.setDataMultiLineChart();
 
         this.chart = c3.generate({
             bindto: this.refs.chart,       // Đẩy chart vào thẻ div có id="multiLineChart"
@@ -224,19 +275,69 @@ class ResultsOfEmployeeKpiChart extends Component {
     }
 
     render() {
-        let exportData,listEmployeeKpiSetEachYear;
         const { createEmployeeKpiSet } = this.props;
-        if(createEmployeeKpiSet.employeeKpiSetByMonth) {
+
+        let exportData,listEmployeeKpiSetEachYear;
+        
+        if (createEmployeeKpiSet.employeeKpiSetByMonth) {
             listEmployeeKpiSetEachYear = createEmployeeKpiSet.employeeKpiSetByMonth;
             exportData =this.convertDataToExportData(listEmployeeKpiSetEachYear);
         }
+
+        let d = new Date(),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+        let defaultendMonth = [month, year].join('-');
+        let defaultstartMonth = ['01', year].join('-');
+
         return (
             <React.Fragment>
-                <div>
-                {exportData&&<ExportExcel id="export-employee-kpi-result-dashboard" exportData={exportData} style={{ marginRight: 15, marginTop:5 }} />}
-                </div>
-                
-                <div ref="chart"></div>
+                {/**Chọn ngày bắt đầu */}
+                <section className="form-inline">
+                    <div className="form-group">
+                        <label>{translate('kpi.evaluation.employee_evaluation.from')}</label>
+                        <DatePicker 
+                            id="monthStartInDashBoardEmployeeKpiSet"      
+                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
+                            value={defaultstartMonth}                 // giá trị mặc định cho datePicker    
+                            onChange={this.handleSelectMonthStart}
+                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                        />
+                    </div>
+                </section>
+
+                {/**Chọn ngày kết thúc */}
+                <section className="form-inline">
+                    <div className="form-group">
+                        <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
+                        <DatePicker 
+                            id="monthEndInDashBoardEmployeeKpiSet"      
+                            dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
+                            value={defaultendMonth}                 // giá trị mặc định cho datePicker    
+                            onChange={this.handleSelectMonthEnd}
+                            disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
+                        />
+                    </div>
+
+                    {/**button tìm kiếm data để vẽ biểu đồ */}
+                    <div className="form-group">
+                        <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
+                    </div>
+
+                    {exportData &&
+                        <div className="form-group">
+                            <ExportExcel id="export-employee-kpi-result-dashboard" exportData={exportData}/>
+                        </div>
+                    }
+                </section>
+
+                <section ref="chart"></section>
             </React.Fragment>
         )
     }

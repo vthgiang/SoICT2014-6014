@@ -12,20 +12,6 @@ export default {
             number_decisions_required: 'Số ra quyết định không được để trống',
             number_decisions_have_exist: 'Số ra quyết định đã tồn tại',
             unit_decisions_required: 'Cấp ra quyết định không được để trống',
-            // Quản lý nghỉ phép
-            // TODO: Xoá sau
-            start_date_annual_leave_required: 'Ngày bắt đầu không được để trống',
-            end_date_annual_leave_required: 'Ngày kết thúc không được để trống',
-            reason_annual_leave_required: 'Lý do không được để trống',
-            status_annual_leave_required: 'Trạng thái không được để trống',
-            get_annual_leave_success: 'Lấy thông tin nghỉ phép thành công',
-            get_annual_leave_faile: 'Lấy thông tin nghỉ phép thất bại',
-            create_annual_leave_success: 'Thêm đơn xin nghỉ phép thành công',
-            create_annual_leave_faile: 'Thêm đơn xin nghỉ phép thất bại',
-            delete_annual_leave_success: 'Xoá đơn xin nghỉ phép thành công',
-            delete_annual_leave_faile: 'Xoá đơn xin nghỉ phép thất bại',
-            edit_annual_leave_success: 'Chỉnh sửa đơn xin nghỉ phép thành công',
-            edit_annual_leave_faile: 'Chỉnh sửa đơn xin nghỉ phép thất bại',
             // Quản lý khen thưởng
             // TODO: Xoá sau
             type_commendations_required: 'Hình thức khen thưởng không được để trống',
@@ -643,6 +629,7 @@ export default {
             kpi_unit_evaluate: 'Dữ liệu KPI đơn vị',
             kpi_unit_overview: 'Tổng quan KPI đơn vị',
             kpi_unit_dashboard: 'Dashboard KPI đơn vị',
+            kpi_unit_statistic: 'Thống kê KPI đơn vị',
             kpi_unit_manager: 'Quản lý KPI đơn vị',
             kpi_member_manager: 'Đánh giá KPI nhân viên',
             kpi_member_dashboard: 'DashBoard KPI nhân viên',
@@ -689,6 +676,10 @@ export default {
             // QUẢN LÝ BÁO CÁO
             report_management: 'Quản lý báo cáo',
             task_report: 'Quản lý báo cáo công việc',
+
+            //QUẢN LÝ ĐƠN HÀNG
+            manage_orders: "Quản lý đơn hàng",
+            manage_list_orders: "Danh sách đơn hàng",
         },
 
         manage_system: {
@@ -811,28 +802,6 @@ export default {
             add_success: 'Thêm mới thành công',
             add_faile: 'Thêm mới thất bại',
             edit_success: 'Chỉnh sửa thành công',
-            edit_faile: 'Chỉnh sửa thất bại',
-        },
-        // Quản lý nghỉ phép
-        sabbatical: {
-            list_sabbatical: 'Danh sách đơn xin nghỉ',
-            add_sabbatical: 'Thêm đơn xin nghỉ',
-            add_sabbatical_title: 'Thêm mới đơn xin nghỉ phép',
-            edit_sabbatical: 'Chỉnh sửa thông tin nghỉ phép',
-            delete_sabbatical: 'Xoá thông tin nghỉ phép',
-            start_date: 'Ngày bắt đầu',
-            end_date: 'Ngày kết thúc',
-            reason: 'Lý do',
-            check_null_msnv: 'Mã nhân viên không được để trống',
-            check_msnv: 'Mã nhân viên không tồn tại',
-            check_start_day: 'Ngày bắt đầu không được để trống',
-            check_end_day: 'Ngày kết thúc không được để trống',
-            check_reason: 'Lý do không được để trống',
-            pass: 'Đã chấp nhận',
-            faile: 'Không chấp nhận',
-            process: 'Chờ phê duyệt',
-            all: '--Tất cả--',
-            edit_succes: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
         },
         // Quản lý khen thưởng, kỷ luật
@@ -1087,6 +1056,8 @@ export default {
             number_decisions_required: 'Số ra quyết định không được để trống',
             number_decisions_have_exist: 'Số ra quyết định đã tồn tại',
             unit_decisions_required: 'Cấp ra quyết định không được để trống',
+            start_date_before_end_date: 'Ngày bắt đầu phải trước ngày kết thúc',
+            end_date_after_start_date: 'Ngày kết thúc phải sau ngày bắt đầu',
 
             // Quản lý lương nhân viên
             salary: {
@@ -1164,6 +1135,8 @@ export default {
                 add_annual_leave_title: 'Thêm mới đơn xin nghỉ phép',
 
                 // Thông điệp trả về từ server
+                employee_code_duplicated: 'Mã số nhân viên bị trùng lặp',
+                employee_name_required: 'Tên nhân viên không được để trống',
                 employee_number_required: 'Mã nhân viên không được để trống',
                 staff_code_not_special: 'Mã nhân viên không được chứ ký tự đặc biệt',
                 staff_code_not_find: 'Mã nhân viên không tồn tại',
@@ -2087,7 +2060,7 @@ export default {
                         request_approval: 'Yêu cầu phê duyệt',
                         cancel_request_approval: 'Hủy yêu cầu phê duyệt',
                         not_initialize_organiztional_unit_kpi: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa thiết lập KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
-                        not_activate_organiztional_unit_kpi: 'Chưa thể khởi tạo KPI tháng này cho bạn do đơn vị của bạn chưa kích hoạt KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
+                        not_activate_organiztional_unit_kpi: 'Đơn vị của bạn chưa kích hoạt KPI. Liên hệ với trưởng đơn vị để hỏi thêm',
                         // Nhóm dành cho các trạng thái tập KPI
                         kpi_status: {
                             status: 'Trạng thái KPI',
@@ -2639,6 +2612,29 @@ export default {
             dashboard_material: {
 
             }
+        },
+
+
+        //manager order
+        manage_order: {
+            index: "Số thứ tự",
+            add_order: "Thêm đơn hàng",
+            add_title: "Thêm mới đơn hàng",
+            edit_title: "Chỉnh sửa đơn hàng",
+            add_success: "Thêm đơn hàng thành công",
+            add_failure: "Đơn hàng không hợp lệ",
+            edit_success: "Đơn hàng đã được cập nhật",
+            edit_failure: "Xảy ra lỗi trong cập nhật đơn hàng",
+            delete_success: "Đơn hàng đã được xóa",
+            delete_failure: "Chưa thể xóa đơn hàng",
+            get_success: "Đã lấy dữ liệu",
+            get_failure: "Không lấy được dữ liệu",
+            code: "Mã đơn hàng",
+            quantity: "Số lượng",
+            amount: "Tổng tiền",
+            code_placeholder: "Nhập vào mã đơn hàng",
+            edit_order: "Chỉnh sửa đơn hàng",
+            delete_order: "Xóa đơn hàng",
         },
 
         report_manager: {

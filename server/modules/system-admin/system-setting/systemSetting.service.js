@@ -1,4 +1,4 @@
-const {backupDatabase} = require('../../../helpers/backupDatabase');
+const {backupDB, restoreDB} = require('../../../helpers/backupDatabase');
 const {time} = require('cron');
 
 exports.backup = async (data, params) => {
@@ -24,19 +24,34 @@ exports.backup = async (data, params) => {
             break;
             
         case 'off':
-            await AUTO_BACKUP_DATABASE.stop();
+            AUTO_BACKUP_DATABASE.stop();
             break;
 
         default:
             console.log("Sao lưu dữ liệu trực tiếp")
-            await backupDatabase({
+            backupDB({
                 host: process.env.DB_HOST,
                 dbName: process.env.DB_NAME,
                 dbPort: "27017",
-                store: SERVER_BACKUP_PATH,
+                store: SERVER_BACKUP_DIR,
                 username: process.env.DB_USERNAME,
                 password: process.env.DB_PASSWORD
             });
             break;
     }
 };
+
+exports.restore = async (data, params) => {
+    restoreDB({
+        host: process.env.DB_HOST,
+        dbName: process.env.DB_NAME,
+        dbPort: "27017",
+        store: SERVER_BACKUP_DIR,
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD
+    });
+}
+
+exports.backupedList = async () => {
+    
+}

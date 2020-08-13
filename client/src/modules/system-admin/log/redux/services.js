@@ -1,24 +1,25 @@
 import { LOCAL_SERVER_API } from '../../../../env';
-import { AuthenticateHeader } from '../../../../config';
 import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const LogServices = {
-    getLogState,
-    toggleLogState
+    backupDatabase,
+    restoreDatabase
 };
 
-function getLogState() {
+function backupDatabase(params, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/system-admin/log/logs`,
-        method: 'GET',
-        headers: AuthenticateHeader()
-    }, false, false)
+        url: `${LOCAL_SERVER_API}/system-admin/system-setting/database/backup`,
+        method: 'PATCH',
+        params,
+        data,
+    }, true, true, 'system_admin.company');
 }
 
-function toggleLogState() {
+function restoreDatabase(params, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/system-admin/log/logs`,
+        url: `${LOCAL_SERVER_API}/system-admin/system-setting/database/restore`,
         method: 'PATCH',
-        headers: AuthenticateHeader()
-    }, false, false)
+        params,
+        data,
+    }, true, true, 'system_admin.company');
 }

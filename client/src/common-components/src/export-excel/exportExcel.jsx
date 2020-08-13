@@ -11,6 +11,9 @@ class ExportExcel extends Component {
         this.state = {};
     }
 
+    /**
+     * Function bắt sự kiện click xuất báo cáo
+     */
     handleExportExcel = () => {
         const { exportData } = this.state;
         let workbook = new Excel.Workbook();

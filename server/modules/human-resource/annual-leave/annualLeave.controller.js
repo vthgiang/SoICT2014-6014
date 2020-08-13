@@ -4,9 +4,7 @@ const {
     LogError
 } = require('../../../logs');
 
-/**
- *  Lấy danh sách nghỉ phép
- */
+/** Lấy danh sách nghỉ phép */
 exports.searchAnnualLeaves = async (req, res) => {
     try {
         let data = {};
@@ -45,9 +43,7 @@ exports.searchAnnualLeaves = async (req, res) => {
     }
 }
 
-/**
- * Tạo mới thông tin nghỉ phép
- */
+/** Tạo mới thông tin nghỉ phép */
 exports.createAnnualLeave = async (req, res) => {
     try {
         // Kiểm tra dữ liệu truyền vào
@@ -97,7 +93,7 @@ exports.createAnnualLeave = async (req, res) => {
                 }
             });
         } else {
-            var newAnnualLeave = await AnnualLeaveService.createAnnualLeave(req.body, req.user.company._id);
+            let newAnnualLeave = await AnnualLeaveService.createAnnualLeave(req.body, req.user.company._id);
             // Kiểm tra sự tồn tại của mã nhân viên
             if (newAnnualLeave === null) {
                 await LogError(req.user.email, 'CREATE_ANNUALLEAVE', req.user.company);
@@ -129,12 +125,10 @@ exports.createAnnualLeave = async (req, res) => {
     }
 }
 
-/**
- * Xoá thông tin nghỉ phép
- */
+/** Xoá thông tin nghỉ phép */
 exports.deleteAnnualLeave = async (req, res) => {
     try {
-        var annualleaveDelete = await AnnualLeaveService.deleteAnnualLeave(req.params.id);
+        let annualleaveDelete = await AnnualLeaveService.deleteAnnualLeave(req.params.id);
         await LogInfo(req.user.email, 'DELETE_ANNUALLEAVE', req.user.company);
         res.status(200).json({
             success: true,
@@ -153,9 +147,7 @@ exports.deleteAnnualLeave = async (req, res) => {
     }
 }
 
-/**
- * Cập nhật thông tin nghỉ phép
- */
+/** Cập nhật thông tin nghỉ phép */
 exports.updateAnnualLeave = async (req, res) => {
     try {
         // Kiểm tra dữ liệu tryền vào
@@ -205,7 +197,7 @@ exports.updateAnnualLeave = async (req, res) => {
                 }
             });
         } else {
-            var annualleaveUpdate = await AnnualLeaveService.updateAnnualLeave(req.params.id, req.body);
+            let annualleaveUpdate = await AnnualLeaveService.updateAnnualLeave(req.params.id, req.body);
             // Kiểm tra sự tồn tại của mã nhân viên
             if (annualleaveUpdate === null) {
                 await LogError(req.user.email, 'EDIT_ANNUALLEAVE', req.user.company);

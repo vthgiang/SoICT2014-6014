@@ -12,20 +12,6 @@ export default {
             number_decisions_required: 'Decis number required',
             number_decisions_have_exist: 'Decis number have exist',
             unit_decisions_required: 'Decis unit required',
-            // Quản lý nghỉ phép
-            // TODO: Xoá sau
-            start_date_annual_leave_required: 'Start date annual leave required',
-            end_date_annual_leave_required: 'End date annual leave required',
-            reason_annual_leave_required: 'Reason annual leave required',
-            status_annual_leave_required: 'Status annual leave required',
-            get_annual_leave_success: 'Get annual leave success',
-            get_annual_leave_faile: 'Get annual leave faile',
-            create_annual_leave_success: 'Create annual leave success',
-            create_annual_leave_faile: 'Create annual leave faile',
-            delete_annual_leave_success: 'Delete annual leave success',
-            delete_annual_leave_faile: 'Delete annual leave faile',
-            edit_annual_leave_success: 'Edit annual leave success',
-            edit_annual_leave_faile: 'Edit annual leave faile',
             // Quản lý khen thưởng
             // TODO: Xoá sau
             type_commendations_required: 'Reward forms required',
@@ -644,6 +630,7 @@ export default {
             kpi_unit_evaluate: 'Evaluate unit KPI',
             kpi_unit_overview: 'Overview unit KPI',
             kpi_unit_dashboard: 'Dashboard unit KPI',
+            kpi_unit_statistic: 'Statistic unit KPI',
             kpi_unit_manager: 'Manage unit KPI',
             kpi_member_manager: 'Evaluate Employee KPI',
             kpi_member_dashboard: 'DashBoard KPI Member',
@@ -688,6 +675,10 @@ export default {
             // QUẢN LÝ BÁO CÁO
             report_management: 'Report management',
             task_report: 'Manage task reports',
+
+            //QUẢN LÝ ĐƠN HÀNG
+            manage_orders: "Manage Orders",
+            manage_list_orders: "Manage List Orders",
         },
 
         manage_system: {
@@ -813,29 +804,6 @@ export default {
             edit_faile: 'Edit failed!',
         },
 
-        // Quản lý nghỉ phép
-        sabbatical: {
-            list_sabbatical: 'List of staff sabbatical',
-            add_sabbatical: 'Add sabbatical',
-            add_sabbatical_title: 'Add new sabbatical',
-            edit_sabbatical: 'Edit Sabbatical',
-            delete_sabbatical: 'Delete sabbatical',
-            start_date: 'Start date',
-            end_date: 'End date',
-            reason: 'Reason',
-            check_null_msnv: 'Staff code required',
-            check_msnv: 'Not find staff code',
-            check_start_day: 'Start day required',
-            check_end_day: 'End day required',
-            check_reason: 'Reason required',
-            check_status: 'Status required',
-            pass: 'Accepted',
-            faile: 'Refused',
-            process: 'Awaiting approval',
-            all: '--All--',
-            edit_succes: 'Edit sabbatical success',
-            edit_faile: 'Edit sabbatical faile',
-        },
         // Quản lý khen thưởng, kỷ luật
         discipline: {
             list_discipline: 'List of staff discipline',
@@ -1088,6 +1056,8 @@ export default {
             number_decisions_required: 'Decis number required',
             number_decisions_have_exist: 'Decis number have exist',
             unit_decisions_required: 'Decis unit required',
+            start_date_before_end_date: 'The start date must be before the end date',
+            end_date_after_start_date: 'The end date must be after the start date',
 
 
             // Quản lý lương nhân viên
@@ -1166,6 +1136,11 @@ export default {
                 add_annual_leave_title: 'Add new annual leave',
 
                 // Thông điệp trả về từ server
+                employee_code_duplicated: 'Staff code is duplicated',
+                employee_name_required: 'Staff name required',
+                employee_number_required: 'Staff code required',
+                staff_code_not_special: 'Staff code does not contain special characters',
+                staff_code_not_find: 'Staff code does not exist',
                 start_date_annual_leave_required: 'Start date annual leave required',
                 end_date_annual_leave_required: 'End date annual leave required',
                 reason_annual_leave_required: 'Reason annual leave required',
@@ -1931,7 +1906,7 @@ export default {
                         request_approval: 'Request for approval',
                         cancel_request_approval: 'Cancel request for approval',
                         not_initialize_organiztional_unit_kpi: 'Cannot initialize kpi on this month bacause your unit has not initialized kpi on this month yet, please contact the manager of your unit',
-                        not_activate_organiztional_unit_kpi: 'Cannot initialize kpi on this month bacause your unit has not activated kpi on this month yet, please contact the manager of your unit',
+                        not_activate_organiztional_unit_kpi: 'Your unit has not activated kpi on this month yet, please contact the manager of your unit',
 
                         // Nhóm dành cho các trạng thái tập KPI
                         kpi_status: {
@@ -2480,6 +2455,28 @@ export default {
             dashboard_material: {
 
             }
+        },
+
+        // manage order
+        manage_order: {
+            index: "Index",
+            add_order: "Add order",
+            add_title: "Add new order",
+            edit_title: "Edit order",
+            add_success: "Add new order successfully",
+            add_failure: "Add new order failed",
+            edit_success: "Order updated",
+            edit_failure: "Update failed",
+            delete_success: "Order deleted",
+            delete_failure: "Delete failed",
+            get_success: "Get data success",
+            get_failure: "Can not get data",
+            code: "Order code",
+            quantity: "Quantity",
+            amount: "Amount",
+            code_placeholder: "input order code",
+            edit_order: "Edit order",
+            delete_order: "Delete Order",
         },
 
         report_manager: {
