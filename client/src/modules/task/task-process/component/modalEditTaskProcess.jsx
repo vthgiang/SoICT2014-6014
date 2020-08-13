@@ -69,7 +69,7 @@ class ModalEditTaskProcess extends Component {
 
         this.modeler.attachTo('#' + this.generateId);
 
-
+        
         var eventBus = this.modeler.get('eventBus');
 
         //Vo hieu hoa double click edit label
@@ -88,9 +88,9 @@ class ModalEditTaskProcess extends Component {
         ], 250, (e) => {
             this.modeler.get('directEditing').cancel()
         });
-
+        
         this.modeler.on('element.click', 1000, (e) => this.interactPopup(e));
-
+        
         this.modeler.on('shape.remove', 1000, (e) => this.deleteElements(e));
 
         this.modeler.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
