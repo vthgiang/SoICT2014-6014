@@ -7,6 +7,7 @@ import { getStorage } from '../../../../config';
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskProcessActions } from "../redux/actions";
 import { withTranslate } from "react-redux-multilingual";
+import { ViewTaskTemplate } from "../../task-template/component/viewTaskTemplate";
 
 var zlevel = 1;
 class ModalViewTaskProcess extends Component {
@@ -29,7 +30,13 @@ class ModalViewTaskProcess extends Component {
 
     interactPopup = async (event) => {
         let element = event.element;
-        console.log(element)
+        let { infoTask } = this.props
+        this.setState(state => {
+            return {
+                ...state,
+                id: element.businessObject.id
+            }
+        });
     }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.idProcess !== prevState.idProcess) {
@@ -130,7 +137,7 @@ class ModalViewTaskProcess extends Component {
         const { translate, role } = this.props;
         const { listOrganizationalUnit } = this.props
         const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedView } = this.state;
-
+        console.log(info)
         let listRole = [];
         if (role && role.list.length !== 0) listRole = role.list;
         let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
@@ -250,13 +257,12 @@ class ModalViewTaskProcess extends Component {
                                                     <div>
                                                         <h1>Option {name}</h1>
                                                     </div>
-                                                    <FormInfoTask
-                                                        disabled={true}
-                                                        listOrganizationalUnit={listOrganizationalUnit}
-                                                        action='view'
-                                                        id={id}
-                                                        info={(info && info[`${id}`]) && info[`${id}`]}
-                                                    />
+                                                    <ViewTaskTemplate
+                                                        isProcess = {true}
+                                                        taskTemplate = {info?.[`${id}`]}
+                                                    >
+
+                                                    </ViewTaskTemplate>
                                                 </div>
                                             }
                                         </div>
