@@ -118,6 +118,7 @@ class ModalDetailKPIPersonal extends Component {
                 automaticPoint: (dataKpi.automaticPoint === null) ? "Chưa đánh giá" : parseInt(dataKpi.automaticPoint),
                 employeePoint: (dataKpi.employeePoint === null) ? "Chưa đánh giá" : parseInt(dataKpi.employeePoint),
                 approverPoint: (dataKpi.approvedPoint === null) ? "Chưa đánh giá" : parseInt(dataKpi.approvedPoint),
+                sheetTitle : "Thông tin chi tiết KPI " + dataKpi.name
             }
             kpiData.push(dataObject);
         }
@@ -162,7 +163,8 @@ class ModalDetailKPIPersonal extends Component {
                     startApproveDate: startApproveTime,
                     endApproveDate: endApproveTime,
                     contributionPoint: contributionPoint,
-                    importantLevel: importantLevel
+                    importantLevel: importantLevel,
+                   
                 };
             })
         }
@@ -172,8 +174,10 @@ class ModalDetailKPIPersonal extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
+                    sheetTitle : kpiData[0].sheetTitle,
                     tables: [
                         {
+                            tableName : 'Thông tin chung KPI '+ kpiData[0].kpiName,
                             columns: [
                                 { key: "kpiName", value: "Tên KPI cá nhân" },
                                 { key: "kpiCriteria", value: "Tiêu chí đánh giá" },
@@ -185,6 +189,7 @@ class ModalDetailKPIPersonal extends Component {
                             data: kpiData
                         },
                         {
+                            tableName : 'Danh sách công việc của KPI: ',
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "startTaskDate", value: "Ngày bắt đầu công việc" },

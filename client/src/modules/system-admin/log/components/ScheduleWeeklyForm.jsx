@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
 import {SelectBox} from '../../../../common-components';
+import { LogActions } from '../redux/actions';
 
 class ScheduleWeeklyForm extends Component {
     constructor(props) {
@@ -7,6 +10,8 @@ class ScheduleWeeklyForm extends Component {
         this.state = {  }
     }
     render() { 
+        const {period, hour, minute, second} = this.state;
+        
         return (<React.Fragment>
             <div className="row">
                 <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
@@ -26,7 +31,7 @@ class ScheduleWeeklyForm extends Component {
                                 {value: '0', text: 'Chủ nhật'},
                             ]}
                             value={'0'}
-                            onChange={this.hanldeDate}
+                            onChange={this.handlePeriod}
                             multiple={false}
                         />
                     </div>
@@ -222,9 +227,42 @@ class ScheduleWeeklyForm extends Component {
                 </div>
             
             </div>
-            <button className="btn btn-success">Save</button>
+            <button className="btn btn-success" onClick={()=>this.props.backupDatabase({
+                auto: 'on'
+            },{ period, hour, minute, second })}>Lưu</button>
         </React.Fragment>);
+    }
+
+    handlePeriod = (value) => {
+        this.setState({
+            period: value[0]
+        })
+    }
+
+    hanldeHour = (value) => {
+        this.setState({
+            hour: value[0]
+        })
+    }
+
+    hanldeMinute = (value) => {
+        this.setState({
+            minute: value[0]
+        })
+    }
+
+    hanldeSecond = (value) => {
+        this.setState({
+            second: value[0]
+        })
     }
 }
  
-export default ScheduleWeeklyForm;
+function mapStateToProps(state) {
+}
+
+const mapDispatchToProps = {
+    backupDatabase: LogActions.backupDatabase
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ScheduleWeeklyForm));

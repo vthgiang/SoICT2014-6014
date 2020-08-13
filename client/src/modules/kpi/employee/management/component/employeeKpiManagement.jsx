@@ -214,6 +214,7 @@ class KPIPersonalManager extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
+                    sheetTitle : fileName,
                     tables: [
                         {
                             columns: [

@@ -8,24 +8,27 @@ const initState = {
 export function log(state = initState, action) {
 
     switch (action.type) {
-        case LogConstants.GET_LOG_STATE_REQUEST:
-        case LogConstants.TOGGLE_LOG_STATE_REQUEST:
+        case LogConstants.BACKUP_DATABASE_REQUEST:
             return {
                 ...state,
                 isLoading: true
             }
 
-        case LogConstants.GET_LOG_STATE_SUCCESS:
+        case LogConstants.BACKUP_DATABASE_SUCCESS:
             return {
                 ...state,
-                status: action.payload,
                 isLoading: false
             };
 
-        case LogConstants.TOGGLE_LOG_STATE_SUCCESS:
+        case LogConstants.RESTORE_DATABASE_REQUEST:
             return {
                 ...state,
-                status: action.payload ? !state.status : state.status,
+                isLoading: true
+            }
+
+        case LogConstants.RESTORE_DATABASE_SUCCESS:
+            return {
+                ...state,
                 isLoading: false
             };
 
