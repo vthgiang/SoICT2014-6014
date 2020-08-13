@@ -78,7 +78,6 @@ class EditTaskTemplate extends Component {
         if (nextProps.isProcess && nextProps.id !== this.state.id) {
             let { info, listOrganizationalUnit } = nextProps;
             this.setState(state => {
-                console.log('info', info);
                 return {
                     id: nextProps.id,
                     editingTemplate: {
@@ -227,6 +226,7 @@ class EditTaskTemplate extends Component {
     }
     handleTaskTemplateName = (event) => {
         let value = event.target.value;
+        this.props.isProcess && this.props.handleChangeName(value)
         this.validateTaskTemplateName(value, true);
     }
     validateTaskTemplateName = (value, willUpdateState = true) => {
@@ -361,6 +361,7 @@ class EditTaskTemplate extends Component {
                 ...state,
             };
         });
+        this.props.isProcess && this.props.handleChangeResponsible(value)
         this.props.onChangeTemplateData(this.state.editingTemplate);
     }
     handleTaskTemplateAccountable = (value) => {
@@ -370,6 +371,7 @@ class EditTaskTemplate extends Component {
                 ...state,
             };
         });
+        this.props.isProcess && this.props.handleChangeAccountable(value)
         this.props.onChangeTemplateData(this.state.editingTemplate);
     }
     handleTaskTemplateConsult = (value) => {
@@ -408,12 +410,12 @@ class EditTaskTemplate extends Component {
     }
 
     handleTaskInformationsChange = (data) => {
-        let { newTemplate } = this.state;
+        let { editingTemplate } = this.state;
         this.setState(state => {
             return {
                 ...state,
-                newTemplate: {
-                    ...newTemplate,
+                editingTemplate: {
+                    ...editingTemplate,
                     taskInformations: data
                 },
             }
@@ -421,11 +423,21 @@ class EditTaskTemplate extends Component {
         this.props.onChangeTemplateData(this.state.editingTemplate);
     }
 
+    clickShowMore = () => {
+        this.setState(state => {
+            return {
+                ...state,
+                showMore: !state.showMore,
+            }
+        });
+    }
+
     render() {
         var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean, listRoles = [];
-        var { editingTemplate } = this.state;
+        var { editingTemplate, id, showMore } = this.state;
 
         const { department, user, translate, tasktemplates } = this.props;
+        const { isProcess } = this.props;
         if (editingTemplate && editingTemplate.taskActions) taskActions = editingTemplate.taskActions;
         if (editingTemplate && editingTemplate.taskInformations) taskInformations = editingTemplate.taskInformations;
 
@@ -463,7 +475,7 @@ class EditTaskTemplate extends Component {
             <React.Fragment>
                 {/**Form chứa thông tin của mẫu công việc đang sửa */}
                 <div className="row">
-                    <div className="col-sm-6">
+                    <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                         {/**Đơn vị của mẫu công việc */}
                         <div className={`form-group ${editingTemplate.errorOnUnit === undefined ? "" : "has-error"}`} >
                             <label className="control-label">{translate('task_template.unit')}*:</label>
@@ -486,31 +498,35 @@ class EditTaskTemplate extends Component {
                             <ErrorLabel content={this.state.editingTemplate.errorOnUnit} />
                         </div>
                     </div>
-                    <div className="col-sm-6">
-                        {/**Role có quyền xem mẫu công việc này */}
-                        <div className={`form-group ${this.state.editingTemplate.errorOnRead === undefined ? "" : "has-error"}`} >
-                            <label className="control-label">{translate('task_template.permission_view')}*</label>
-                            {listRole && editingTemplate.readByEmployees &&
-                                <SelectBox
-                                    id={`edit-read-select-box-${editingTemplate._id}`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={
-                                        listRoles.map(x => { return { value: x._id, text: x.name } })
-                                    }
-                                    onChange={this.handleTaskTemplateRead}
-                                    value={editingTemplate.readByEmployees}
-                                    multiple={true}
-                                    options={{ placeholder: `${translate('task_template.permission_view')}` }}
-                                />
-                            }
-                            <ErrorLabel content={this.state.editingTemplate.errorOnRead} />
+                    {
+                        !isProcess &&
+                        <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                            {/**Role có quyền xem mẫu công việc này */}
+                            <div className={`form-group ${this.state.editingTemplate.errorOnRead === undefined ? "" : "has-error"}`} >
+                                <label className="control-label">{translate('task_template.permission_view')}*</label>
+                                {listRole && editingTemplate.readByEmployees &&
+                                    <SelectBox
+                                        id={`edit-read-select-box-${editingTemplate._id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={
+                                            listRoles.map(x => { return { value: x._id, text: x.name } })
+                                        }
+                                        onChange={this.handleTaskTemplateRead}
+                                        value={editingTemplate.readByEmployees}
+                                        multiple={true}
+                                        options={{ placeholder: `${translate('task_template.permission_view')}` }}
+                                    />
+                                }
+                                <ErrorLabel content={this.state.editingTemplate.errorOnRead} />
+                            </div>
                         </div>
-                    </div>
+                    }
+
                 </div>
 
                 <div className="row">
-                    <div className="col-sm-6">
+                    <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
 
                         {/**Tên mẫu công việc này */}
                         <div className={`form-group ${this.state.editingTemplate.errorOnName === undefined ? "" : "has-error"}`} >
@@ -530,7 +546,7 @@ class EditTaskTemplate extends Component {
                         </div>
                     </div>
 
-                    <div className="col-sm-6">
+                    <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
 
                         {/**Mô tả mẫu công việc này */}
                         <div className={`form-group ${this.state.editingTemplate.errorOnDescription === undefined ? "" : "has-error"}`} >
@@ -542,14 +558,14 @@ class EditTaskTemplate extends Component {
                 </div>
 
                 <div className="row">
-                    <div className="col-sm-6">
+                    <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                         <div className='form-group' >
 
                             {/**Người thực hiện mẫu công việc này */}
                             <label className="control-label" >{translate('task_template.performer')}</label>
                             {unitMembers && editingTemplate.responsibleEmployees &&
                                 <SelectBox
-                                    id={`edit-responsible-select-box-${editingTemplate._id}`}
+                                    id={isProcess ? `edit-responsible-select-box-${editingTemplate._id}-${id}` : "edit-responsible-select-box"}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={unitMembers}
@@ -566,7 +582,7 @@ class EditTaskTemplate extends Component {
                             <label className="control-label">{translate('task_template.approver')}</label>
                             {unitMembers && editingTemplate.accountableEmployees &&
                                 <SelectBox
-                                    id={`edit-accounatable-select-box-${editingTemplate._id}`}
+                                    id={isProcess ? `edit-accountable-select-box-${editingTemplate._id}-${id}` : "edit-accountable-select-box"}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={unitMembers}
@@ -577,78 +593,84 @@ class EditTaskTemplate extends Component {
                                 />
                             }
                         </div>
-                        <div className='form-group' >
+                        {
+                            showMore &&
+                            <div>
+                                <div className='form-group' >
+                                    {/**Người hỗ trọ mẫu công việc này */}
+                                    <label className="control-label">{translate('task_template.supporter')}</label>
+                                    {allUnitsMember && editingTemplate.consultedEmployees &&
+                                        <SelectBox
+                                            id={isProcess ? `edit-consulted-select-box-${editingTemplate._id}-${id}` : "edit-consulted-select-box"}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={allUnitsMember}
+                                            onChange={this.handleTaskTemplateConsult}
+                                            value={editingTemplate.consultedEmployees}
+                                            multiple={true}
+                                            options={{ placeholder: `${translate('task_template.supporter')}` }}
+                                        />
+                                    }
+                                </div>
+                                <div className='form-group' >
 
-                            {/**Người hỗ trọ mẫu công việc này */}
-                            <label className="control-label">{translate('task_template.supporter')}</label>
-                            {allUnitsMember && editingTemplate.consultedEmployees &&
-                                <SelectBox
-                                    id={`edit-consulted-select-box-${editingTemplate._id}`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={allUnitsMember}
-                                    onChange={this.handleTaskTemplateConsult}
-                                    value={editingTemplate.consultedEmployees}
-                                    multiple={true}
-                                    options={{ placeholder: `${translate('task_template.supporter')}` }}
-                                />
-                            }
-                        </div>
-                        <div className='form-group' >
+                                    {/**Người quan sát mẫu công việc này */}
+                                    <label className="control-label">{translate('task_template.observer')}</label>
+                                    {allUnitsMember && editingTemplate.informedEmployees &&
+                                        <SelectBox
+                                            id={isProcess ? `edit-informed-select-box-${editingTemplate._id}-${id}` : "edit-informed-select-box"}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={allUnitsMember}
+                                            onChange={this.handleTaskTemplateInform}
+                                            multiple={true}
+                                            value={editingTemplate.informedEmployees}
+                                            options={{ placeholder: `${translate('task_template.observer')}` }}
+                                        />
+                                    }
+                                </div>
+                            </div>
 
-                            {/**Người quan sát mẫu công việc này */}
-                            <label className="control-label">{translate('task_template.observer')}</label>
-                            {allUnitsMember && editingTemplate.informedEmployees &&
-                                <SelectBox
-                                    id={`edit-informed-select-box-${editingTemplate._id}`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={allUnitsMember}
-                                    onChange={this.handleTaskTemplateInform}
-                                    multiple={true}
-                                    value={editingTemplate.informedEmployees}
-                                    options={{ placeholder: `${translate('task_template.observer')}` }}
-                                />
-                            }
-                        </div>
+                        }
                     </div>
+                    {showMore &&
+                        <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                            {/**Công thức tính điểm mẫu công việc này */}
+                            <div className={`form-group ${this.state.editingTemplate.errorOnFormula === undefined ? "" : "has-error"}`} >
+                                <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}*</label>
+                                <input type="text" className="form-control" id="inputFormula" placeholder="progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100*(1-p1/p2)" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
+                                <ErrorLabel content={this.state.editingTemplate.errorOnFormula} />
 
-                    <div className="col-sm-6">
-                        {/**Công thức tính điểm mẫu công việc này */}
-                        <div className={`form-group ${this.state.editingTemplate.errorOnFormula === undefined ? "" : "has-error"}`} >
-                            <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}*</label>
-                            <input type="text" className="form-control" id="inputFormula" placeholder="progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100*(1-p1/p2)" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
-                            <ErrorLabel content={this.state.editingTemplate.errorOnFormula} />
-
-                            <br />
-                            <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100*(1-p1/p2)</div>
-                            <br />
-                            <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
-                            <div><span style={{ fontWeight: 600 }}>overdueDate</span> - Thời gian quá hạn (ngày)</div>
-                            <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
-                            <div><span style={{ fontWeight: 600 }}>totalDay</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
-                            <div><span style={{ fontWeight: 600 }}>averageActionRating</span> -  Trung bình cộng điểm đánh giá hoạt động (1-10)</div>
-                            <div><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</div>
-                            <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
+                                <br />
+                                <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100*(1-p1/p2)</div>
+                                <br />
+                                <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
+                                <div><span style={{ fontWeight: 600 }}>overdueDate</span> - Thời gian quá hạn (ngày)</div>
+                                <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
+                                <div><span style={{ fontWeight: 600 }}>totalDay</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
+                                <div><span style={{ fontWeight: 600 }}>averageActionRating</span> -  Trung bình cộng điểm đánh giá hoạt động (1-10)</div>
+                                <div><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</div>
+                                <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
+                            </div>
                         </div>
-                    </div>
+                    }
                 </div>
 
-
-                <div className="row">
-                    <div className="col-sm-6">
-                        {/**Các hoạt động mẫu công việc này */}
-                        {this.state.showActionForm &&
-                            <ActionForm initialData={editingTemplate.taskActions} onDataChange={this.handleTaskActionsChange} />
-                        }
-                    </div>
-                    <div className="col-sm-6">
-                        {/**Các hoạt động mẫu công việc này */}
-                        {this.state.showActionForm &&
-                            <InformationForm initialData={taskInformations} onDataChange={this.handleTaskInformationsChange} />
-                        }
-                    </div>
-                    {/* <div className="col-sm-6">
+                {showMore &&
+                    <div className="row">
+                        <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                            {/**Các hoạt động mẫu công việc này */}
+                            {this.state.showActionForm &&
+                                <ActionForm initialData={editingTemplate.taskActions} onDataChange={this.handleTaskActionsChange} />
+                            }
+                        </div>
+                        <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                            {/**Các hoạt động mẫu công việc này */}
+                            {this.state.showActionForm &&
+                                <InformationForm initialData={editingTemplate.taskInformations} onDataChange={this.handleTaskInformationsChange} />
+                            }
+                        </div>
+                        {/* <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                         <fieldset className="scheduler-border">
                             <legend className="scheduler-border">{translate('task_template.information_list')}</legend>
                             {
@@ -666,7 +688,24 @@ class EditTaskTemplate extends Component {
                             }
                         </fieldset>
                     </div> */}
-                </div>
+                    </div>
+                }
+                {
+                    isProcess &&
+                    <div>
+                        <a style={{ cursor: "pointer" }} onClick={this.clickShowMore}>
+                            {showMore ?
+                                <span>
+                                    Show less <i className="fa fa-angle-double-up"></i>
+                                </span>
+                                : <span>
+                                    Show more <i className="fa fa-angle-double-down"></i>
+                                </span>
+                            }
+                        </a>
+                        <br />
+                    </div>
+                }
             </React.Fragment>
         );
     }

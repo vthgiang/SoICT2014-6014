@@ -34,7 +34,6 @@ class ModalEditTaskProcess extends Component {
     constructor(props) {
         super(props);
         let { data } = this.props;
-        console.log('data', data);
         this.state = {
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
@@ -102,21 +101,20 @@ class ModalEditTaskProcess extends Component {
         if (nextProps.idProcess !== prevState.idProcess) {
             let info = {};
             let infoTask = nextProps.data.infoTask;
-            console.log('quang', infoTask);
+
             for (let i in infoTask) {
-                console.log('quang', infoTask[i]);
                 if (!infoTask[i].organizationalUnit) {
                     infoTask[i].organizationalUnit = nextProps.listOrganizationalUnit[0]?._id;
                 }
                 info[`${infoTask[i].code}`] = infoTask[i];
             }
-            console.log('info', info);
+
             return {
                 ...prevState,
                 idProcess: nextProps.idProcess,
                 showInfo: false,
                 info: info,
-                processDescription: nextProps.data.description ? nextProps.data.description : '',
+                processDescription: nextProps.data.processDescription ? nextProps.data.processDescription : '',
                 processName: nextProps.data.processName ? nextProps.data.processName : '',
                 viewer: nextProps.data.viewer ? nextProps.data.viewer : [],
                 manager: nextProps.data.manager ? nextProps.data.manager : [],
@@ -128,13 +126,13 @@ class ModalEditTaskProcess extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.idProcess !== this.state.idProcess) { 
+        if (nextProps.idProcess !== this.state.idProcess) {
             let { infoTask } = this.props
             for (const x in infoTask) {
                 if (x !== undefined) {
                     const modeling = this.modeler.get('modeling');
                     let element1 = this.modeler.get('elementRegistry').get(x);
-                    if(element1) {
+                    if (element1) {
                         modeling.updateProperties(element1, {
                             info: infoTask[x],
                         });
@@ -184,16 +182,6 @@ class ModalEditTaskProcess extends Component {
     }
 
     handleChangeName = async (value) => {
-        await this.setState(state => {
-            state.info[`${state.id}`] = {
-                ...state.info[`${state.id}`],
-                code: state.id,
-                nameTask: value,
-            }
-            return {
-                ...state,
-            }
-        })
         const modeling = this.modeler.get('modeling');
         let element1 = this.modeler.get('elementRegistry').get(this.state.id);
         modeling.updateProperties(element1, {
@@ -216,54 +204,34 @@ class ModalEditTaskProcess extends Component {
     }
 
     handleChangeResponsible = async (value) => {
-        let { role } = this.props
+        let { user } = this.props
         let responsible = []
-
-        role.list.forEach(x => {
-            value.forEach(y => {
-                if (y === x._id) {
-                    responsible.push(x.name)
-                }
-            })
-        })
-
-        await this.setState(state => {
-            state.info[`${state.id}`] = {
-                ...state.info[`${state.id}`],
-                code: state.id,
-                responsible: value,
-                responsibleName: responsible
-            }
-            return {
-                ...state,
+        user.usercompanys.forEach(x => {
+            if (value.some(y => y === x._id)) {
+                responsible.push(x.name)
             }
         })
-        this.handleUpdateElement();
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        modeling.updateProperties(element1, {
+            responsibleName: responsible
+        });
     }
 
     handleChangeAccountable = async (value) => {
-        let { role } = this.props
+        let { user } = this.props
         let accountable = []
-
-        role.list.forEach(x => {
-            value.forEach(y => {
-                if (y === x._id) {
-                    accountable.push(x.name)
-                }
-            })
+        user.usercompanys.forEach(x => {
+            if (value.some(y => y === x._id)) {
+                accountable.push(x.name)
+            }
         })
-        await this.setState(state => {
-            state.info[`${state.id}`] = {
-                ...state.info[`${state.id}`],
-                code: state.id,
-                accountable: value,
-                accountableName: accountable
-            }
-            return {
-                ...state,
-            }
-        }, console.log(this.state.info))
-        this.handleUpdateElement();
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        modeling.updateProperties(element1, {
+            accountableName: accountable
+        });
+        
     }
 
     handleChangeOrganizationalUnit = async (value) => {
@@ -302,7 +270,7 @@ class ModalEditTaskProcess extends Component {
                 viewer: value,
             }
         })
-        console.log('state', this.state);
+
     }
 
     handleChangeManager = async (value) => {
@@ -313,7 +281,6 @@ class ModalEditTaskProcess extends Component {
                 manager: value,
             }
         })
-        console.log('state', this.state);
     }
 
 
@@ -375,7 +342,7 @@ class ModalEditTaskProcess extends Component {
     save = async () => {
         let xmlStr;
         this.modeler.saveXML({ format: true }, function (err, xml) {
-            console.log(xml);
+            
             xmlStr = xml;
         });
         await this.setState(state => {
@@ -384,18 +351,19 @@ class ModalEditTaskProcess extends Component {
                 xmlDiagram: xmlStr,
             }
         })
-        let data = {
-            processName: this.state.processName,
-            description: this.state.processDescription,
-            viewer: this.state.viewer,
-            manager: this.state.manager,
-            creator: this.state.userId,
-            xmlDiagram: this.state.xmlDiagram,
-            infoTask: this.state.info
-        }
 
+        let data = {
+           info: this.state.info,
+           xmlDiagram: this.state.xmlDiagram,
+           processName: this.state.processName,
+           processDescription: this.state.processDescription,
+           manager: this.state.manager,
+           viewer: this.state.viewer,
+           creator: getStorage("userId")
+        }
         this.props.editXmlDiagram(this.state.idProcess, data)
     }
+
     done = (e) => {
         e.preventDefault()
         let element1 = this.modeler.get('elementRegistry').get(this.state.id);
@@ -520,15 +488,11 @@ class ModalEditTaskProcess extends Component {
         canvas.zoom(zlevel, 'auto');
         // zlevel = canvas?._cachedViewbox?.scale;
 
-        console.log(canvas);
         // update our zoom level on viewbox change
         await eventBus.on('canvas.viewbox.changed', function (evt) {
             zlevel = evt.viewbox.scale;
-            console.log('scale', zlevel, evt.viewbox.scale);
         });
-        console.log('zzz', zlevel);
         zlevel = Math.max(zlevel - zstep, zstep);
-        console.log('zlevel', zlevel);
         canvas.zoom(zlevel, 'auto');
     }
 
@@ -536,7 +500,6 @@ class ModalEditTaskProcess extends Component {
         console.log('click zoom reset');
 
         let canvas = this.modeler.get('canvas');
-        console.log('canvas', canvas);
         canvas.zoom('fit-viewport');
     }
 
@@ -551,9 +514,7 @@ class ModalEditTaskProcess extends Component {
         // update our zoom level on viewbox change
         await eventBus.on('canvas.viewbox.changed', function (evt) {
             zlevel = evt.viewbox.scale;
-            console.log('scale', zlevel, evt.viewbox.scale);
         });
-        console.log('zzzIIII', zlevel);
 
         zlevel = Math.min(zlevel + zstep, 7);
         canvas.zoom(zlevel, 'auto');
@@ -580,22 +541,21 @@ class ModalEditTaskProcess extends Component {
 
     handleChangeInfo = (value) => {
         let info = {
-           ...value,
-           codeId: this.state.id
+            ...value,
+            code: this.state.id
+            
         }
-  
         this.setState(
-           state => {
-              state.info[`${state.id}`] = value
-           })
-  
-     }
+            state => {
+                state.info[`${state.id}`] = info
+            })
+    }
 
     render() {
         const { translate, role } = this.props;
         const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedEdit } = this.state;
         const { listOrganizationalUnit } = this.props
-console.log('------edit0', info);
+
         let listRole = [];
         if (role && role.list.length !== 0) listRole = role.list;
         let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
@@ -706,28 +666,14 @@ console.log('------edit0', info);
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className={showInfo ? 'col-md-4' : undefined}>
+                                        <div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
                                             {
                                                 (showInfo) &&
                                                 <div>
                                                     <div>
                                                         <h2>Option {name}</h2>
                                                     </div>
-                                                    {/* <FormInfoProcess
-                                                        listOrganizationalUnit={listOrganizationalUnit}
-                                                        action='edit'
-                                                        id={id}
-                                                        astemplate = {true}
-                                                        info={(info && info[`${id}`]) && info[`${id}`]}
-                                                        handleChangeName={this.handleChangeName}
-                                                        handleChangeDescription={this.handleChangeDescription}
-                                                        handleChangeResponsible={this.handleChangeResponsible}
-                                                        handleChangeAccountable={this.handleChangeAccountable}
-                                                        handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
-                                                        handleChangeTemplate={this.handleChangeTemplate}
-                                                        done={this.done}
-                                                        save={this.save}
-                                                    /> */}
+
                                                     <EditTaskTemplate
                                                         isProcess={true}
                                                         id={id}
