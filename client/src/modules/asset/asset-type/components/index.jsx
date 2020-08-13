@@ -87,7 +87,7 @@ class AdministrationAssetTypes extends Component {
                 <div className="box-header with-border">
                     {/* Xóa */}
                     {
-                        deleteNode.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteDomains}>Xóa</button>
+                        deleteNode.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteDomains}>{translate('asset.general_information.delete')}</button>
                     }
 
                     {/* Thêm */}
