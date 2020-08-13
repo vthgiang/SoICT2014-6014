@@ -360,7 +360,7 @@ class AddTaskTemplate extends Component {
     render() {
 
         var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean, listRoles = [];
-        const { newTemplate, showMore, accountableEmployees, responsibleEmployees, } = this.state;
+        const { newTemplate, showMore, accountableEmployees, responsibleEmployees,id } = this.state;
         const { department, user, translate, tasktemplates, isProcess } = this.props;
         if (newTemplate.taskActions) taskActions = newTemplate.taskActions;
         if (newTemplate.taskInformations) taskInformations = newTemplate.taskInformations;
@@ -492,7 +492,7 @@ class AddTaskTemplate extends Component {
 
                                 {unitMembers &&
                                     <SelectBox
-                                        id={`responsible-select-box`}
+                                        id={isProcess ? `responsible-select-box-${id}` : "responsible-select-box"}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={unitMembers}
@@ -508,7 +508,7 @@ class AddTaskTemplate extends Component {
                                 <label className="control-label">{translate('task_template.approver')}</label>
                                 {unitMembers &&
                                     <SelectBox
-                                        id={`accounatable-select-box`}
+                                        id={isProcess ? `accountable-select-box-${id}` : "accountable-select-box"}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         items={unitMembers}
@@ -527,7 +527,7 @@ class AddTaskTemplate extends Component {
                                         <label className="ontrol-label">{translate('task_template.supporter')}</label>
                                         {allUnitsMember &&
                                             <SelectBox
-                                                id={`consulted-select-box`}
+                                                id={isProcess ? `consulted-select-box-${id}` : "consulted-select-box"}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 items={allUnitsMember}
