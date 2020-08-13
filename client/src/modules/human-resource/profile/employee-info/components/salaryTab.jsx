@@ -102,26 +102,26 @@ class SalaryTab extends Component {
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                             <thead>
                                 <tr>
-                                    <th>{translate('table.start_date')}</th>
-                                    <th>{translate('table.end_date')}</th>
-                                    <th>{translate('sabbatical.reason')}</th>
-                                    <th>{translate('table.status')}</th>
+                                    <th>{translate('human_resource.annual_leave.table.start_date')}</th>
+                                    <th>{translate('human_resource.annual_leave.table.end_date')}</th>
+                                    <th>{translate('human_resource.annual_leave.table.reason')}</th>
+                                    <th>{translate('human_resource.status')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof annualLeaves !== 'undefined' && annualLeaves.length !== 0) &&
+                                {annualLeaves && annualLeaves.length !== 0 &&
                                     annualLeaves.map((x, index) => (
                                         <tr key={index}>
                                             <td>{this.formatDate(x.startDate)}</td>
                                             <td>{this.formatDate(x.endDate)}</td>
                                             <td>{x.reason}</td>
-                                            <td>{translate(`sabbatical.${x.status}`)}</td>
+                                            <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
                                         </tr>
                                     ))}
                             </tbody>
                         </table>
                         {
-                            (typeof annualLeaves === 'undefined' || annualLeaves.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!annualLeaves || annualLeaves.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                 </div>

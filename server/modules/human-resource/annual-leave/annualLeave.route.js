@@ -6,24 +6,12 @@ const {
 
 const AnnualLeaveController = require("./annualLeave.controller");
 
-/**
- * Lấy danh sách nghỉ phép
- */
-router.get('/', auth, AnnualLeaveController.searchAnnualLeaves);
 
-/**
- * thêm mới kỷ luật
- */
-router.post('/', auth, AnnualLeaveController.createAnnualLeave);
+router.get('/annualLeaves', auth, AnnualLeaveController.searchAnnualLeaves);
 
-/**
- * Xoá bẳng thông tin kỷ luật
- */
-router.delete('/:id', auth, AnnualLeaveController.deleteAnnualLeave);
+router.post('/annualLeaves', auth, AnnualLeaveController.createAnnualLeave);
 
-/**
- * Cập nhật thông tin nghỉ phép
- */
-router.patch('/:id', auth, AnnualLeaveController.updateAnnualLeave);
+router.patch('/annualLeaves/:id', auth, AnnualLeaveController.updateAnnualLeave);
+router.delete('/annualLeaves/:id', auth, AnnualLeaveController.deleteAnnualLeave);
 
 module.exports = router;

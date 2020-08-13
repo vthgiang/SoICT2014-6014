@@ -98,7 +98,8 @@ exports.getAllEmployeeOfUnitByIds = async (id) => {
 
     for (let i = 0; i < id.length; i++) {
         let organizationalUnit = await OrganizationalUnit.findById(id[i]);
-        let employees = await UserRole.find({ roleId: { $in: organizationalUnit.employees } }).populate('userId roleId');
+        let allRoles = [...organizationalUnit.employees, ...organizationalUnit.deans, ...organizationalUnit.viceDeans];
+        let employees = await UserRole.find({ roleId: { $in: allRoles } }).populate('userId roleId');
         data = data.concat(employees);
     };
 
@@ -485,10 +486,8 @@ _getAllUsersInOrganizationalUnits = async (data) => {
 }
 
 exports.getAllUsersWithRole = async () => {
-    console.log
     let users = await UserRole.find({})
-            .populate({ path: "userId", model: User, select: 'name email avatar' })
+        .populate({ path: "userId", model: User, select: 'name email avatar' })
 
-       console.log(users)     
     return users
 }

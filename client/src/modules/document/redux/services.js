@@ -204,7 +204,7 @@ function createDocumentArchives(data) {
 function editDocumentArchives(id, data) {
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/document-domains/${id}`,
+        url: `${LOCAL_SERVER_API}/documents/document-archives/${id}`,
         method: 'PATCH',
         data,
     }, true, true, 'document');
@@ -213,16 +213,16 @@ function editDocumentArchives(id, data) {
 function deleteDocumentArchives(id) {
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/document-domains/${id}`,
+        url: `${LOCAL_SERVER_API}/documents/document-archives/${id}`,
         method: 'DELETE',
-    }, true, true, 'documen');
+    }, true, true, 'document');
 }
 
 function deleteManyDocumentArchives(array) {
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/document-domains/delete-many`,
+        url: `${LOCAL_SERVER_API}/documents/document-archives/delete-many`,
         method: 'POST',
         data: { array }
-    }.true, true, 'document');
+    }, true, true, 'document');
 }

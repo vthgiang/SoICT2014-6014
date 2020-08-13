@@ -182,11 +182,12 @@ class TaskTemplate extends Component {
     }
 
     /**Mở modal chỉnh sửa 1 mẫu công việc */
-    handleEdit = async (taskTemplateId) => {
+    handleEdit = async (taskTemplate) => {
         await this.setState(state => {
             return {
                 ...state,
-                currentEditRow: taskTemplateId,
+                currentEditRow: taskTemplate,
+                currentEditRowId: taskTemplate._id,
             }
         })
         window.$('#modal-edit-task-template').modal('show');
@@ -195,14 +196,12 @@ class TaskTemplate extends Component {
     /**Mở modal import file excel */
     handImportFile = (event) => {
         event.preventDefault();
-        console.log('opennnnn')
         window.$('#modal_import_file').modal('show');
     }
 
     /**Mở modal thêm mới 1 mẫu công việc */
     handleAddTaskTemplate = (event) => {
         event.preventDefault();
-        console.log('oenene');
         window.$('#modal-add-task-template').modal('show');
     }
 
@@ -404,7 +403,7 @@ class TaskTemplate extends Component {
             <div className="box">
                 <div className="box-body qlcv" id="table-task-template">
                     {<ModalViewTaskTemplate taskTemplateId={this.state.currentViewRow} />}
-                    {<ModalEditTaskTemplate taskTemplateId={this.state.currentEditRow} />}
+                    {<ModalEditTaskTemplate taskTemplate={this.state.currentEditRow} taskTemplateId={this.state.currentEditRowId} />}
 
                     {<TaskTemplateImportForm />}
                     {<ExportExcel id="export-taskTemplate" exportData={exportData} style={{ marginLeft: 5 }} />}
@@ -490,7 +489,7 @@ class TaskTemplate extends Component {
                                                 {/**Check quyền xem có được xóa hay sửa mẫu công việc không */}
                                                 {this.checkPermisson(item.organizationalUnit.deans) &&
                                                     <React.Fragment>
-                                                        <a href="cursor:{'pointer'}" onClick={() => this.handleEdit(item._id)} className="edit" title={translate('task_template.edit_this_task_template')}>
+                                                        <a href="cursor:{'pointer'}" onClick={() => this.handleEdit(item)} className="edit" title={translate('task_template.edit_this_task_template')}>
                                                             <i className="material-icons">edit</i>
                                                         </a>
                                                         <a href="cursor:{'pointer'}" onClick={() => this.handleDelete(item._id, item.numberOfUse)} className="delete" title={translate('task_template.delete_this_task_template')}>
