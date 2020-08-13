@@ -9,33 +9,30 @@ class PinnedPanel extends Component {
         this.state = {}
     }
 
-    static panels = {};
-    static addPanel = (id, panel) => {
-        PinnedPanel.panels[id] = panel;
-    }
-
-
     render() {
         return (
             <React.Fragment>
                 {
-                    Object.keys(PinnedPanel.panels).map(id =>
-                        <Draggable
-                            cancel="textarea, a, i, button"
-                            handle={`#${id}`}
-                            key={id}
-                            defaultPosition={{ x: 0, y: 0 }}
-                            position={null}
-                            allowAnyClick={true}
-                            grid={[1, 1]}
-                            onStart={this.handleStart}
-                            onDrag={this.handleDrag}
-                            onStop={this.handleStop}>
-                            <div id={id} className="pinned-panel">
-                                {PinnedPanel.panels[id]}
-                            </div>
-                        </Draggable>
-                    )
+                    React.Children.map(this.props.children, (child, index) => {
+                        let id = `draggable-${index}`;
+                        return (
+                            <Draggable
+                                cancel="textarea, a, i, button"
+                                handle={`#${id}`}
+                                key={id}
+                                defaultPosition={{ x: 0, y: 0 }}
+                                position={null}
+                                allowAnyClick={true}
+                                grid={[1, 1]}
+                                onStart={this.handleStart}
+                                onDrag={this.handleDrag}
+                                onStop={this.handleStop}>
+                                <div id={id} className="pinned-panel">
+                                    {child}
+                                </div>
+                            </Draggable>
+                        )
+                    })
                 }
             </React.Fragment>
         );

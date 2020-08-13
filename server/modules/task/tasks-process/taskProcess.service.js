@@ -92,7 +92,6 @@ exports.getXmlDiagramById = (params) => {
  * @param {*} body dữ liệu diagram cần tạo
  */
 exports.createXmlDiagram = async (body) => {
-    console.log(body.info)
     let info = [];
     for (const x in body.info) {
         if(Object.keys(body.info[x]).length !== 0) {
@@ -107,7 +106,7 @@ exports.createXmlDiagram = async (body) => {
         manager: body.manager,
         viewer: body.viewer,
         infoTask: info,
-        creator: body.creator
+        creator: body.creator,
     })
 
 

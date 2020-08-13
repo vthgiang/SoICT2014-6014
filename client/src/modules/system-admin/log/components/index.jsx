@@ -60,7 +60,7 @@ class LogSystem extends Component {
                                                     {value: 'on', text: 'Bật'},
                                                     {value: 'off', text: 'Tắt'}
                                                 ]}
-                                                value={'on'}
+                                                value={autoBackup}
                                                 onChange={this.handleBackupAutoStatus}
                                                 multiple={false}
                                             />
@@ -102,7 +102,13 @@ class LogSystem extends Component {
                                 <h3 className="box-title"><i className="fa fa-refresh text-green" /> Restore dữ liệu</h3>
                             </div>
                             <div className="box-body">
-                             
+                                <div className="row">
+                                    <div className="col-xs-12 text-center">
+                                        <button type="button" className="btn btn-default btn-lrg ajax" title="Ajax Request" onClick={this.props.restoreDatabase}>
+                                            <i className="fa fa-spin fa-refresh" />&nbsp; Sao lưu dữ liệu
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -152,7 +158,8 @@ function mapState(state) {
     return { log }
 }
 const actions = {
-    backupDatabase: LogActions.backupDatabase
+    backupDatabase: LogActions.backupDatabase,
+    restoreDatabase: LogActions.restoreDatabase
 }
 
 const connectedLogSystem = connect(mapState, actions)(withTranslate(LogSystem));

@@ -163,7 +163,6 @@ class ModalAddTaskTemplate extends Component {
     render() {
         const { user, translate } = this.props;
 
-        console.log('state', this.state);
         return (                    
             <React.Fragment>
                 <DialogModal

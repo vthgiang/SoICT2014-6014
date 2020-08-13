@@ -29,6 +29,9 @@ const TaskProcessSchema = new Schema({
     ref: User,
   },
   infoTask: [{
+    code: {
+      type: String,
+    },
     organizationalUnit: {
       type: Schema.Types.ObjectId,
       ref: OrganizationalUnit,

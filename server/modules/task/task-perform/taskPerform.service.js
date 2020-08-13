@@ -6,7 +6,6 @@ const TaskTemplateInformation = require('../../../models/task/taskResultInformat
 const TaskResultInformation = require('../../../models/task/taskResultInformation.model');
 const TaskResult = require('../../../models/task/taskResult.model');
 const User = require('../../../models/auth/user.model');
-const { evaluationAction } = require("./taskPerform.controller");
 const fs = require('fs');
 const moment = require("moment");
 

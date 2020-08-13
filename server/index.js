@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
-global.SERVER_BACKUP_PATH = __dirname + "/../backup";
+global.SERVER_BACKUP_DIR = __dirname + "/../backup";
 
 multer({
   dest: "upload/avatars",
@@ -96,7 +96,7 @@ app.use(
 app.use("/upload/avatars", express.static("upload/avatars"));
 app.use("/upload/asset/pictures", express.static("upload/asset/pictures"));
 
-const db = process.env.DATABASE;
+const db = process.env.DATABASE || `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`;
 const optionConnectDB =
   process.env.DB_AUTHENTICATION === "true"
     ? {

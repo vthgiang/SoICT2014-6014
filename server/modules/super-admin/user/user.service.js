@@ -485,10 +485,8 @@ _getAllUsersInOrganizationalUnits = async (data) => {
 }
 
 exports.getAllUsersWithRole = async () => {
-    console.log
     let users = await UserRole.find({})
             .populate({ path: "userId", model: User, select: 'name email avatar' })
 
-       console.log(users)     
     return users
 }

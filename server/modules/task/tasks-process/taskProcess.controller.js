@@ -63,8 +63,8 @@ exports.createXmlDiagram = async (req, res) => {
   //     messages: ['abc'],
   //     content: error
   //   });
-  // }
 }
+
 /**
  * chỉnh sửa mới diagram
  */

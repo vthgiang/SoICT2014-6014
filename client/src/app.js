@@ -34,8 +34,6 @@ class App extends Component {
             localStorage.setItem('lang', 'vn');
             store.dispatch(IntlActions.setLocale('vn'));
         }
-
-        PinnedPanel.addPanel("task-timesheet-Log", <TaskTimesheetLog/>)
     }
     render() {
         return (
@@ -43,7 +41,9 @@ class App extends Component {
                 <Router history={history}>
                     <Routes/>
                 </Router>
-                <PinnedPanel />
+                <PinnedPanel>
+                    <TaskTimesheetLog />
+                </PinnedPanel>
             </React.Fragment>
         );
     }

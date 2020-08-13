@@ -14,6 +14,7 @@ import { TaskProcessActions } from "../redux/actions";
 import customModule from './custom'
 
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
+import { EditTaskTemplate } from "../../task-template/component/editTaskTemplate";
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -33,6 +34,7 @@ class ModalEditTaskProcess extends Component {
     constructor(props) {
         super(props);
         let { data } = this.props;
+        console.log('data', data);
         this.state = {
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
@@ -100,7 +102,9 @@ class ModalEditTaskProcess extends Component {
         if (nextProps.idProcess !== prevState.idProcess) {
             let info = {};
             let infoTask = nextProps.data.infoTask;
+            console.log('quang', infoTask);
             for (let i in infoTask) {
+                console.log('quang', infoTask[i]);
                 if (!infoTask[i].organizationalUnit) {
                     infoTask[i].organizationalUnit = nextProps.listOrganizationalUnit[0]?._id;
                 }
@@ -574,11 +578,24 @@ class ModalEditTaskProcess extends Component {
         })
     }
 
+    handleChangeInfo = (value) => {
+        let info = {
+           ...value,
+           codeId: this.state.id
+        }
+  
+        this.setState(
+           state => {
+              state.info[`${state.id}`] = value
+           })
+  
+     }
+
     render() {
         const { translate, role } = this.props;
         const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedEdit } = this.state;
         const { listOrganizationalUnit } = this.props
-
+console.log('------edit0', info);
         let listRole = [];
         if (role && role.list.length !== 0) listRole = role.list;
         let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
@@ -694,9 +711,9 @@ class ModalEditTaskProcess extends Component {
                                                 (showInfo) &&
                                                 <div>
                                                     <div>
-                                                        <h1>Option {name}</h1>
+                                                        <h2>Option {name}</h2>
                                                     </div>
-                                                    <FormInfoProcess
+                                                    {/* <FormInfoProcess
                                                         listOrganizationalUnit={listOrganizationalUnit}
                                                         action='edit'
                                                         id={id}
@@ -710,6 +727,15 @@ class ModalEditTaskProcess extends Component {
                                                         handleChangeTemplate={this.handleChangeTemplate}
                                                         done={this.done}
                                                         save={this.save}
+                                                    /> */}
+                                                    <EditTaskTemplate
+                                                        isProcess={true}
+                                                        id={id}
+                                                        info={(info && info[`${id}`]) && info[`${id}`]}
+                                                        onChangeTemplateData={this.handleChangeInfo}
+                                                        handleChangeName={this.handleChangeName} // cập nhật tên vào diagram
+                                                        handleChangeResponsible={this.handleChangeResponsible} // cập nhật hiển thi diagram
+                                                        handleChangeAccountable={this.handleChangeAccountable} // cập nhật hiển thị diagram
                                                     />
                                                 </div>
                                             }
