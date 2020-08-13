@@ -1031,6 +1031,7 @@ export default {
         human_resource: {
 
             // Nhóm dùng chung cho module quản lý nhân sự
+            stt: 'STT',
             unit: 'Đơn vị',
             position: 'Chức vụ',
             month: 'Tháng',
@@ -1158,12 +1159,14 @@ export default {
             commendation_discipline: {
                 // Quản lý khen thưởng
                 commendation: {
-                    list_praise: 'Danh sách khen thưởng',
-                    list_praise_title: 'Danh sách nhân viên được khen thưởng',
+                    list_commendation: 'Danh sách khen thưởng',
+                    list_commendation_title: 'Danh sách nhân viên được khen thưởng',
+                    file_name_export: 'Bảng thống kê khen thưởng',
 
                     // Nhóm dành cho table
                     table: {
                         decision_date: 'Ngày ra quyết định',
+                        decision_number: 'Số ra quyết định',
                         decision_unit: 'Cấp ra quyết định',
                         reward_forms: 'Hình thức khen thưởng',
                         reason_praise: 'Thành tích (Lý do)',
@@ -1171,10 +1174,10 @@ export default {
                     },
 
                     // Nhóm dành cho action
-                    add_praise: 'Thêm khen thưởng',
-                    add_praise_title: 'Thêm mới khen thưởng',
-                    edit_praise: 'Chỉnh sửa thông tin khen thưởng',
-                    delete_praise: 'Xoá thông tin khen thưởng',
+                    add_commendation: 'Thêm khen thưởng',
+                    add_commendation_title: 'Thêm mới khen thưởng',
+                    edit_commendation: 'Chỉnh sửa thông tin khen thưởng',
+                    delete_commendation: 'Xoá thông tin khen thưởng',
 
                     // Thông điệp trả về từ server
                     employee_number_required: 'Mã nhân viên không được để trống',
@@ -1200,6 +1203,7 @@ export default {
                 discipline: {
                     list_discipline: 'Danh sách kỷ luật',
                     list_discipline_title: 'Danh sách nhân viên bị kỷ luật',
+                    file_name_export: 'Bảng thống kê kỷ luật',
 
                     // Nhóm dành cho table
                     table: {

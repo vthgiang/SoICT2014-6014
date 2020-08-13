@@ -614,7 +614,7 @@ export default {
             detail_employee: 'Personal Information',
             update_employee: 'Update Personal Information',
             dashboard_employee: 'DashBoard Manage Staffs ',
-            discipline: 'Manage Reward And Discipline',
+            discipline: 'Manage Commendation And Discipline',
             annual_leave: 'Manage Annual Leave',
             salary_employee: 'Manage Salary',
             time_keeping: 'Attendance Staff',
@@ -1030,6 +1030,7 @@ export default {
         human_resource: {
 
             // Nhóm dùng chung cho module quản lý nhân sự
+            stt: 'Count',
             unit: 'Unit',
             position: 'Position',
             month: 'Month',
@@ -1159,23 +1160,25 @@ export default {
             commendation_discipline: {
                 // Quản lý khen thưởng
                 commendation: {
-                    list_praise: 'List of staff reward',
-                    list_praise_title: 'List of staff reward',
+                    list_commendation: 'List of staff commendation',
+                    list_commendation_title: 'List of staff commendation',
+                    file_name_export: 'Commendation statistics table',
 
                     // Nhóm dành cho table
                     table: {
-                        decision_date: 'Decis date',
+                        decision_date: 'Decision date',
+                        decision_number: 'Decision number',
                         decision_unit: 'Decis unit',
-                        reward_forms: 'Reward forms',
+                        reward_forms: 'Commendation forms',
                         reason_praise: 'Reason',
 
                     },
 
                     // Nhóm dành cho action
-                    add_praise: 'Add reward',
-                    add_praise_title: 'Add new reward',
-                    edit_praise: 'Edit Reward',
-                    delete_praise: 'Delete reward',
+                    add_commendation: 'Add commendation',
+                    add_commendation_title: 'Add new commendation',
+                    edit_commendation: 'Edit commendation',
+                    delete_commendation: 'Delete commendation',
 
                     // Thông điệp trả về từ server
                     employee_number_required: 'Staff code required',
@@ -1184,23 +1187,24 @@ export default {
                     number_decisions_required: 'Decis number required',
                     number_decisions_have_exist: 'Decis number have exist',
                     unit_decisions_required: 'Decis unit required',
-                    type_commendations_required: 'Reward forms required',
+                    type_commendations_required: 'Commendation forms required',
                     reason_commendations_required: 'Reason required',
                     decisions_date_required: 'Decis day required',
-                    get_commendations_success: 'Get Reward success',
-                    get_commendations_faile: 'Get Reward faile',
-                    create_commendations_success: 'Create Reward success',
-                    create_commendations_faile: 'Create Reward faile',
-                    delete_commendations_success: 'Delete Reward success',
-                    delete_commendations_faile: 'Delete Reward faile',
-                    edit_commendations_success: 'Edit Reward success',
-                    edit_commendations_faile: 'Edit Reward faile',
+                    get_commendations_success: 'Get commendation success',
+                    get_commendations_faile: 'Get commendation faile',
+                    create_commendations_success: 'Create commendation success',
+                    create_commendations_faile: 'Create commendation faile',
+                    delete_commendations_success: 'Delete commendation success',
+                    delete_commendations_faile: 'Delete commendation faile',
+                    edit_commendations_success: 'Edit commendation success',
+                    edit_commendations_faile: 'Edit commendation faile',
                 },
 
                 // Quản lý ky luật
                 discipline: {
                     list_discipline: 'List of staff discipline',
                     list_discipline_title: 'List of staff discipline',
+                    file_name_export: 'Discipline statistics table',
 
                     // Nhóm dành cho table
                     table: {
