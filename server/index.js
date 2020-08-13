@@ -5,13 +5,13 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
-global.SERVER_BACKUP_PATH = __dirname + "/../backup";
+global.SERVER_BACKUP_DIR = __dirname + "/../backup";
 
 multer({
   dest: "upload/avatars",
 });
 require("dotenv").config();
-global.AUTO_BACKUP_DATABASE = require("./helpers/backupDatabase").backupScheduler;
+global.AUTO_BACKUP_DATABASE = require("./helpers/backupHelper").backupAutomatic;
 AUTO_BACKUP_DATABASE.start();
 
 // Application Modules
@@ -20,8 +20,8 @@ const auth = require("./modules/auth/auth.route");
 
 const documents = require("./modules/document/document.route");
 
-const annualLeaves = require("./modules/human-resource/annual-leave/annualLeave.route");
-const commendations = require("./modules/human-resource/commendation/commendation.route");
+const annualLeave = require("./modules/human-resource/annual-leave/annualLeave.route");
+const commendation = require("./modules/human-resource/commendation/commendation.route");
 const disciplines = require("./modules/human-resource/discipline/discipline.route");
 const holidays = require("./modules/human-resource/holiday/holiday.route");
 const profile = require("./modules/human-resource/profile/profile.route");
@@ -47,7 +47,6 @@ const role = require("./modules/super-admin/role/role.route");
 const user = require("./modules/super-admin/user/user.route");
 
 const company = require("./modules/system-admin/company/company.route");
-const log = require("./modules/system-admin/log/log.route");
 const systemComponent = require("./modules/system-admin/system-component/systemComponent.route");
 const systemLink = require("./modules/system-admin/system-link/systemLink.route");
 const rootRole = require("./modules/system-admin/root-role/rootRole.route");
@@ -96,7 +95,7 @@ app.use(
 app.use("/upload/avatars", express.static("upload/avatars"));
 app.use("/upload/asset/pictures", express.static("upload/asset/pictures"));
 
-const db = process.env.DATABASE;
+const db = process.env.DATABASE || `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`;
 const optionConnectDB =
   process.env.DB_AUTHENTICATION === "true"
     ? {
@@ -126,8 +125,8 @@ app.use("/auth", auth);
 
 app.use("/documents", documents);
 
-app.use("/annualLeaves", annualLeaves);
-app.use("/commendations", commendations);
+app.use("/annualLeave", annualLeave);
+app.use("/commendation", commendation);
 app.use("/disciplines", disciplines);
 app.use("/holidays", holidays);
 app.use("/employees", profile);
@@ -153,7 +152,6 @@ app.use("/role", role);
 app.use("/user", user);
 
 app.use("/system-admin/company", company);
-app.use("/system-admin/log", log);
 app.use("/system-admin/system-component", systemComponent);
 app.use("/system-admin/system-link", systemLink);
 app.use("/system-admin/root-role", rootRole);

@@ -67,6 +67,7 @@ class AdministrationDocumentDomains extends Component {
         const { domainParent, deleteNode } = this.state;
         const { translate } = this.props;
         const { list } = this.props.documents.administration.domains;
+        console.log('domainnnn', domainParent, deleteNode);
         const dataTree = list.map(node => {
             return {
                 ...node,

@@ -357,11 +357,6 @@ class ModalCreateTaskProcess extends Component {
          creator: getStorage("userId")
       }
       console.log(data)
-      // for (const i in data.infoTask) {
-      //    if (!data.infoTask[i].organizationalUnit) {
-      //       data.infoTask[i].organizationalUnit = department.list[0]._id
-      //    }
-      // }
       await this.props.createXmlDiagram(data)
       // this.setState(state => {
       //    return {
@@ -525,12 +520,12 @@ class ModalCreateTaskProcess extends Component {
    handleChangeInfo = (value) => {
       let info = {
          ...value,
-         codeId: this.state.id
+         code: this.state.id
       }
 
       this.setState(
          state => {
-            state.info[`${state.id}`] = value
+            state.info[`${state.id}`] = info
          })
 
    }
@@ -653,7 +648,7 @@ class ModalCreateTaskProcess extends Component {
                                        </div>
                                     </div>
                                  </div>
-                                 <div style={{overflow: "auto", height: "650px"}} className={showInfo ? 'col-md-4' : undefined}>
+                                 <div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
                                     {
                                        (showInfo) &&
                                        <div>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { SlimScroll } from '../../../common-components'
 
 class ConFigImportFile extends Component {
@@ -12,7 +13,10 @@ class ConFigImportFile extends Component {
         };
     }
 
-    // Chuyển đổi dữ liệu file cấu hình (object) thành String
+    /**
+     *Chuyển đổi dữ liệu file cấu hình (object) thành String
+     * @param {*} configData : Dữ liệu file cấu hình
+     */
     convertConfigurationToString = (configData) => {
         let stringData = "{";
         let config = { ...configData }, headerTable = [];
@@ -41,7 +45,11 @@ class ConFigImportFile extends Component {
         return stringData;
     }
 
-    // Chuyển đổi dữ liệu người dùng nhập vào ở textarea (String) thành object
+    /**
+     * Chuyển đổi dữ liệu người dùng nhập vào ở textarea (String) thành object
+     * @param {*} data : Dữ liệu textarea
+     * @param {*} configData : Dữ liệu cấu hình file import
+     */
     convertStringToObject = (data, configData) => {
         let config = { ...configData };
         delete config.file;
@@ -68,7 +76,7 @@ class ConFigImportFile extends Component {
         }
     }
 
-    // Bắt sự kiện thay đổi (textarea);
+    /** Bắt sự kiện thay đổi (textarea) */
     handleChange = (e) => {
         const { configData, handleChangeConfig } = this.props;
         const { value } = e.target;
@@ -89,14 +97,18 @@ class ConFigImportFile extends Component {
     }
 
     render() {
-        const { textareaValue, configData } = this.state;
+        const { translate } = this.props;
         const { id, scrollTableWidth = 1000, scrollTable = true, textareaRow = 10 } = this.props;
+
+        const { textareaValue, configData } = this.state;
+
         let config = [];
         for (let key in configData) {
             if (key !== "file" && key != "rowHeader" && key !== "sheets") {
                 config = [...config, configData[key]];
             }
         }
+
         return (
             <React.Fragment>
                 <button type="button" data-toggle="collapse" data-target={`#confic_import_file-${id}`} className="pull-right"

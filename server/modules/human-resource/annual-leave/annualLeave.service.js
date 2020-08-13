@@ -27,8 +27,8 @@ exports.getTotalAnnualLeave = async (company, organizationalUnits, month) => {
         }
     }
     if (keySearchEmployee !== undefined) {
-        var employeeinfo = await Employee.find(keySearchEmployee);
-        var employee = employeeinfo.map(employeeinfo => employeeinfo._id);
+        let employeeinfo = await Employee.find(keySearchEmployee);
+        let employee = employeeinfo.map(employeeinfo => employeeinfo._id);
         keySearch = {
             ...keySearch,
             employee: {
@@ -217,8 +217,8 @@ exports.searchAnnualLeaves = async (params, company) => {
         }
     }
     if (keySearchEmployee !== undefined) {
-        var employeeinfo = await Employee.find(keySearchEmployee);
-        var employee = employeeinfo.map(employeeinfo => employeeinfo._id);
+        let employeeinfo = await Employee.find(keySearchEmployee);
+        let employee = employeeinfo.map(employeeinfo => employeeinfo._id);
         keySearch = {
             ...keySearch,
             employee: {
@@ -239,9 +239,9 @@ exports.searchAnnualLeaves = async (params, company) => {
 
     // Bắt sựu kiện tháng tìm kiếm khác "", undefined
     if (params.month !== undefined && params.month.length !== 0) {
-        var date = new Date(params.month);
-        var firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-        var lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
+        let date = new Date(params.month);
+        let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+        let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 1);
         keySearch = {
             ...keySearch,
             "$or": [{
@@ -257,11 +257,11 @@ exports.searchAnnualLeaves = async (params, company) => {
             }]
         }
     };
-    var totalList = await AnnualLeave.count(keySearch);
-    var listAnnualLeaves = await AnnualLeave.find(keySearch).populate({
-        path: 'employee',
-        model: Employee
-    })
+    let totalList = await AnnualLeave.count(keySearch);
+    let listAnnualLeaves = await AnnualLeave.find(keySearch).populate({
+            path: 'employee',
+            model: Employee
+        })
         .sort({
             'createdAt': 'desc'
         }).skip(params.page).limit(params.limit);
@@ -286,7 +286,7 @@ exports.searchAnnualLeaves = async (params, company) => {
  */
 exports.createAnnualLeave = async (data, company) => {
     // Lấy thông tin nhân viên theo mã số nhân viên
-    var employeeInfo = await Employee.findOne({
+    let employeeInfo = await Employee.findOne({
         employeeNumber: data.employeeNumber,
         company: company
     }, {
@@ -295,7 +295,7 @@ exports.createAnnualLeave = async (data, company) => {
     });
     if (employeeInfo !== null) {
         // Tạo mới thông tin nghỉ phép vào database
-        var createAnnualLeave = await AnnualLeave.create({
+        let createAnnualLeave = await AnnualLeave.create({
             employee: employeeInfo._id,
             company: company,
             startDate: data.startDate,
@@ -308,7 +308,7 @@ exports.createAnnualLeave = async (data, company) => {
         let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailInCompany);
 
         // Lấy thông tin nghỉ phép vừa tạo 
-        var newAnnualLeave = await AnnualLeave.findOne({
+        let newAnnualLeave = await AnnualLeave.findOne({
             _id: createAnnualLeave._id
         }).populate([{
             path: 'employee',
@@ -339,14 +339,14 @@ exports.deleteAnnualLeave = async (id) => {
  */
 exports.updateAnnualLeave = async (id, data) => {
     // Lấy thông tin nhân viên theo mã số nhân viên
-    var employeeInfo = await Employee.findOne({
+    let employeeInfo = await Employee.findOne({
         employeeNumber: data.employeeNumber
     }, {
         _id: 1,
         emailInCompany: 1
     });
     if (employeeInfo !== null) {
-        var AnnualLeaveChange = {
+        let AnnualLeaveChange = {
             startDate: data.startDate,
             endDate: data.endDate,
             status: data.status,
@@ -364,7 +364,7 @@ exports.updateAnnualLeave = async (id, data) => {
         let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailInCompany);
 
         // Lấy thông tin nghỉ phép vừa cập nhật
-        var updateAnnualLeave = await AnnualLeave.findOne({
+        let updateAnnualLeave = await AnnualLeave.findOne({
             _id: id
         }).populate([{
             path: 'employee',

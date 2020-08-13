@@ -12,20 +12,6 @@ export default {
             number_decisions_required: 'Decis number required',
             number_decisions_have_exist: 'Decis number have exist',
             unit_decisions_required: 'Decis unit required',
-            // Quản lý nghỉ phép
-            // TODO: Xoá sau
-            start_date_annual_leave_required: 'Start date annual leave required',
-            end_date_annual_leave_required: 'End date annual leave required',
-            reason_annual_leave_required: 'Reason annual leave required',
-            status_annual_leave_required: 'Status annual leave required',
-            get_annual_leave_success: 'Get annual leave success',
-            get_annual_leave_faile: 'Get annual leave faile',
-            create_annual_leave_success: 'Create annual leave success',
-            create_annual_leave_faile: 'Create annual leave faile',
-            delete_annual_leave_success: 'Delete annual leave success',
-            delete_annual_leave_faile: 'Delete annual leave faile',
-            edit_annual_leave_success: 'Edit annual leave success',
-            edit_annual_leave_faile: 'Edit annual leave faile',
             // Quản lý khen thưởng
             // TODO: Xoá sau
             type_commendations_required: 'Reward forms required',
@@ -628,7 +614,7 @@ export default {
             detail_employee: 'Personal Information',
             update_employee: 'Update Personal Information',
             dashboard_employee: 'DashBoard Manage Staffs ',
-            discipline: 'Manage Reward And Discipline',
+            discipline: 'Manage Commendation And Discipline',
             annual_leave: 'Manage Annual Leave',
             salary_employee: 'Manage Salary',
             time_keeping: 'Attendance Staff',
@@ -818,29 +804,6 @@ export default {
             edit_faile: 'Edit failed!',
         },
 
-        // Quản lý nghỉ phép
-        sabbatical: {
-            list_sabbatical: 'List of staff sabbatical',
-            add_sabbatical: 'Add sabbatical',
-            add_sabbatical_title: 'Add new sabbatical',
-            edit_sabbatical: 'Edit Sabbatical',
-            delete_sabbatical: 'Delete sabbatical',
-            start_date: 'Start date',
-            end_date: 'End date',
-            reason: 'Reason',
-            check_null_msnv: 'Staff code required',
-            check_msnv: 'Not find staff code',
-            check_start_day: 'Start day required',
-            check_end_day: 'End day required',
-            check_reason: 'Reason required',
-            check_status: 'Status required',
-            pass: 'Accepted',
-            faile: 'Refused',
-            process: 'Awaiting approval',
-            all: '--All--',
-            edit_succes: 'Edit sabbatical success',
-            edit_faile: 'Edit sabbatical faile',
-        },
         // Quản lý khen thưởng, kỷ luật
         discipline: {
             list_discipline: 'List of staff discipline',
@@ -1067,6 +1030,7 @@ export default {
         human_resource: {
 
             // Nhóm dùng chung cho module quản lý nhân sự
+            stt: 'Count',
             unit: 'Unit',
             position: 'Position',
             month: 'Month',
@@ -1093,6 +1057,8 @@ export default {
             number_decisions_required: 'Decis number required',
             number_decisions_have_exist: 'Decis number have exist',
             unit_decisions_required: 'Decis unit required',
+            start_date_before_end_date: 'The start date must be before the end date',
+            end_date_after_start_date: 'The end date must be after the start date',
 
 
             // Quản lý lương nhân viên
@@ -1171,6 +1137,11 @@ export default {
                 add_annual_leave_title: 'Add new annual leave',
 
                 // Thông điệp trả về từ server
+                employee_code_duplicated: 'Staff code is duplicated',
+                employee_name_required: 'Staff name required',
+                employee_number_required: 'Staff code required',
+                staff_code_not_special: 'Staff code does not contain special characters',
+                staff_code_not_find: 'Staff code does not exist',
                 start_date_annual_leave_required: 'Start date annual leave required',
                 end_date_annual_leave_required: 'End date annual leave required',
                 reason_annual_leave_required: 'Reason annual leave required',
@@ -1189,23 +1160,25 @@ export default {
             commendation_discipline: {
                 // Quản lý khen thưởng
                 commendation: {
-                    list_praise: 'List of staff reward',
-                    list_praise_title: 'List of staff reward',
+                    list_commendation: 'List of staff commendation',
+                    list_commendation_title: 'List of staff commendation',
+                    file_name_export: 'Commendation statistics table',
 
                     // Nhóm dành cho table
                     table: {
-                        decision_date: 'Decis date',
+                        decision_date: 'Decision date',
+                        decision_number: 'Decision number',
                         decision_unit: 'Decis unit',
-                        reward_forms: 'Reward forms',
+                        reward_forms: 'Commendation forms',
                         reason_praise: 'Reason',
 
                     },
 
                     // Nhóm dành cho action
-                    add_praise: 'Add reward',
-                    add_praise_title: 'Add new reward',
-                    edit_praise: 'Edit Reward',
-                    delete_praise: 'Delete reward',
+                    add_commendation: 'Add commendation',
+                    add_commendation_title: 'Add new commendation',
+                    edit_commendation: 'Edit commendation',
+                    delete_commendation: 'Delete commendation',
 
                     // Thông điệp trả về từ server
                     employee_number_required: 'Staff code required',
@@ -1214,23 +1187,24 @@ export default {
                     number_decisions_required: 'Decis number required',
                     number_decisions_have_exist: 'Decis number have exist',
                     unit_decisions_required: 'Decis unit required',
-                    type_commendations_required: 'Reward forms required',
+                    type_commendations_required: 'Commendation forms required',
                     reason_commendations_required: 'Reason required',
                     decisions_date_required: 'Decis day required',
-                    get_commendations_success: 'Get Reward success',
-                    get_commendations_faile: 'Get Reward faile',
-                    create_commendations_success: 'Create Reward success',
-                    create_commendations_faile: 'Create Reward faile',
-                    delete_commendations_success: 'Delete Reward success',
-                    delete_commendations_faile: 'Delete Reward faile',
-                    edit_commendations_success: 'Edit Reward success',
-                    edit_commendations_faile: 'Edit Reward faile',
+                    get_commendations_success: 'Get commendation success',
+                    get_commendations_faile: 'Get commendation faile',
+                    create_commendations_success: 'Create commendation success',
+                    create_commendations_faile: 'Create commendation faile',
+                    delete_commendations_success: 'Delete commendation success',
+                    delete_commendations_faile: 'Delete commendation faile',
+                    edit_commendations_success: 'Edit commendation success',
+                    edit_commendations_faile: 'Edit commendation faile',
                 },
 
                 // Quản lý ky luật
                 discipline: {
                     list_discipline: 'List of staff discipline',
                     list_discipline_title: 'List of staff discipline',
+                    file_name_export: 'Discipline statistics table',
 
                     // Nhóm dành cho table
                     table: {
@@ -1730,6 +1704,11 @@ export default {
                 creator: 'Creator',
                 informed: 'Informed',
 
+                responsible_role: 'Responsible',
+                accountable_role: 'Acountable',
+                consulted_role: 'Consulted',
+                informed_role: 'Informed',
+
                 add_task: 'Add task',
                 add_title: 'Add a new task',
                 add_subtask: 'Add sub task',
@@ -1777,7 +1756,7 @@ export default {
                 next: 'Next',
                 tasks_calendar: 'Tasks Calendar',
                 model_detail_task_title: 'Detail task',
-                collaborative_tasks: 'Collaborative tasks',
+                collaborative_tasks: 'Multiple employees',
                 in_time: 'In time',
                 delayed_time: 'Delayed',
                 not_achieved: 'Overdue',

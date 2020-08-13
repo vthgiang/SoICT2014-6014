@@ -6,24 +6,12 @@ const {
 
 const CommendationController = require("./commendation.controller");
 
-/**
- * Lấy danh sách khen thưởng
- */
-router.get('/', auth, CommendationController.searchCommendations);
 
-/**
- * Thêm mới khen thưởng
- */
-router.post('/', auth, CommendationController.createCommendation);
+router.get('/commendations', auth, CommendationController.searchCommendations);
 
-/**
- * Xoá bẳng thông tin khen thưởng
- */
-router.delete('/:id', auth, CommendationController.deleteCommendation);
+router.post('/commendations', auth, CommendationController.createCommendation);
 
-/**
- * Chỉnh sửa thông tin khen thưởng
- */
-router.patch('/:id', auth, CommendationController.updateCommendation);
+router.patch('/commendations/:id', auth, CommendationController.updateCommendation);
+router.delete('/commendations/:id', auth, CommendationController.deleteCommendation);
 
 module.exports = router;

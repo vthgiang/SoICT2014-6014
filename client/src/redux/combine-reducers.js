@@ -1,7 +1,7 @@
 import { IntlReducer as Intl } from 'react-redux-multilingual';
 import { clearStorage } from '../config';
 import { combineReducers } from 'redux';
-import { log } from '../modules/system-admin/log/redux/reducers';
+import { systemSetting } from '../modules/system-admin/system-setting/redux/reducers';
 import { auth } from '../modules/auth/redux/reducers';
 import { company } from '../modules/system-admin/company/redux/reducers';
 import { systemLinks } from '../modules/system-admin/system-link/redux/reducers';
@@ -63,7 +63,7 @@ import { order } from "../modules/order/redux/reducers";
 
 const appReducer = combineReducers(Object.assign({
     //system
-    log,
+    systemSetting,
     company,
     systemLinks,
     rootRoles,
