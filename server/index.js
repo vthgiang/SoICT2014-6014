@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
+global.SERVER_DIR = __dirname;
 global.SERVER_BACKUP_DIR = __dirname + "/../backup";
 
 multer({
