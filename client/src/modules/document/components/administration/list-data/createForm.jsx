@@ -33,6 +33,9 @@ class CreateForm extends Component {
     handleDomains = value => {
         this.setState({ documentDomains: value });
     }
+    handleArchives = value => {
+        this.setState({ documentArchives: value });
+    }
 
     handleDescription = (e) => {
         const { value } = e.target;
@@ -376,20 +379,25 @@ class CreateForm extends Component {
 
         this.props.createDocument(formData);
     }
+    findPath = (archives, select) => {
+        let archive = archives.filter(arch => arch._id === select);
+        return archive[0].path;
+    }
 
     render() {
         const { translate, role, documents, department } = this.props;
         const { list } = documents.administration.domains;
         const { errorName, errorIssuingBody, errorOfficialNumber, errorSigner, errorVersionName,
             errorDocumentFile, errorDocumentFileScan, errorIssuingDate, errorEffectiveDate,
-            errorExpiredDate, errorCategory } = this.state;
+            errorExpiredDate, errorCategory, documentArchives } = this.state;
         const archives = documents.administration.archives.list;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
-
-        console.log('domainnssss', list);
-        console.log('archivesss', archives);
+        console.log('rrrrrr', archives);
         const documentRoles = role.list.map(role => { return { value: role._id, text: role.name } });
-        const relationshipDocs = documents.administration.data.list.map(doc => { return { value: doc._id, text: doc.name } })
+        const relationshipDocs = documents.administration.data.list.map(doc => { return { value: doc._id, text: doc.name } });
+        console.log('eeeeeeee', documentArchives)
+        console.log('uuuuuuu', documentArchives ? this.findPath(archives, documentArchives[0]) : "");
+        let path = documentArchives ? this.findPath(archives, documentArchives[0]) : "";
         return (
             <React.Fragment>
                 <ButtonModal modalID="modal-create-document" button_name={translate('general.add')} title={translate('manage_user.add_title')} />
@@ -451,7 +459,7 @@ class CreateForm extends Component {
                                             </div>
                                             <div className="form-group">
                                                 <label>Lưu trữ</label>
-                                                <TreeSelect data={archives} handleChange={this.handleDomains} mode="hierarchical" />
+                                                <TreeSelect data={archives} handleChange={this.handleArchives} value={path} mode="hierarchical" />
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.description')}</label>
