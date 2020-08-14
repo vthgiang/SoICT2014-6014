@@ -3,6 +3,8 @@ export const taskReportFormValidator = {
     validateNameTaskReport,
     validateDescriptionTaskReport,
     validateTasktemplateReport,
+    validateTaskStartDate,
+    validateTaskTemplate,
 }
 
 function validateNameTaskReport(value) {
@@ -30,6 +32,26 @@ function validateTasktemplateReport(value) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Mẫu báo cáo không được để trống";
+    }
+    return msg;
+}
+
+
+function validateTaskStartDate(startDate, translate) {
+    let msg = undefined;
+
+    if (startDate.trim() === "") {
+        msg = 'Ngày bắt đầu thống kê không được để trống';
+    }
+    return msg;
+}
+
+
+function validateTaskTemplate(taskTemplate) {
+    let msg = undefined;
+
+    if (taskTemplate.trim() === "") {
+        msg = 'Mẫu công việc không được để trống';
     }
     return msg;
 }

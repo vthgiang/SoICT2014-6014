@@ -27,7 +27,6 @@ class TaskReportCreateForm extends Component {
                 startDate: '',
                 endDate: '',
                 frequency: 'month',
-                coefficient: 1,
                 // listCheckBox: [],
 
             },
@@ -35,15 +34,6 @@ class TaskReportCreateForm extends Component {
         }
     }
 
-    /**
-     * Hàm kiểm tra đã validate chưa
-     */
-    isFormValidated = () => {
-        let result =
-            this.validateNameTaskReport(this.state.newReport.nameTaskReport, false) &&
-            this.validateDescriptionTaskReport(this.state.newReport.descriptionTaskReport, false);
-        return result;
-    }
 
     /**
      * Hàm bắt sự kiên thay đổi input NameTaskReport
@@ -67,9 +57,10 @@ class TaskReportCreateForm extends Component {
                     ...state,
                     newReport: {
                         ...this.state.newReport,
-                        errorOnNameTaskReport: msg,
                         nameTaskReport: value,
-                    }
+                    },
+                    errorOnNameTaskReport: msg,
+
                 }
             });
         }
@@ -90,9 +81,9 @@ class TaskReportCreateForm extends Component {
                     newReport: {
                         ...this.state.newReport,
                         errorOnDescriptiontTaskReport: msg,
-                        descriptionTaskReport: value,
 
-                    }
+                    },
+                    descriptionTaskReport: value,
                 }
             });
         }
@@ -131,11 +122,14 @@ class TaskReportCreateForm extends Component {
                         taskTemplate: '',
                         errorOnDescriptiontTaskReport: undefined,
                         errorOnNameTaskReport: undefined,
+                        errorOnStartDate: undefined,
                     }
                 }
             });
         }
     }
+
+
     /**
      * Hàm xử lý khi thay đổi mẫu công việc
      * @param {*} e 
@@ -157,6 +151,7 @@ class TaskReportCreateForm extends Component {
                         accountableEmployees: [],
                         errorOnDescriptiontTaskReport: undefined,
                         errorOnNameTaskReport: undefined,
+                        errorOnStartDate: undefined,
                     }
                 }
             });
@@ -172,6 +167,7 @@ class TaskReportCreateForm extends Component {
                         ...value,
                         charType: '0',
                         aggregationType: '0',
+                        coefficient: 1,
                         showInReport: false,
                     }
                 }
@@ -192,9 +188,12 @@ class TaskReportCreateForm extends Component {
             })
         }
     }
+
+
     shouldComponentUpdate = (nextProps, nextState) => {
         const { user } = this.props;
         const { newReport } = this.state;
+
         if (newReport.organizationalUnit === "" && user.organizationalUnitsOfUser) {
             let defaultUnit = user.organizationalUnitsOfUser.find(item =>
                 item.dean === this.state.currentRole
@@ -218,20 +217,31 @@ class TaskReportCreateForm extends Component {
         return true;
     }
 
+
     /**
      * Hàm xử lý ngày bắt đầu thay đổi
      * @param {*} value 
      */
     handleChangeStartDate = (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                newReport: {
-                    ...this.state.newReport,
-                    startDate: value,
+        this.validateTaskStartDate(value, true);
+
+    }
+
+    validateTaskStartDate = (value, willUpdateState = true) => {
+        let msg = taskReportFormValidator.validateTaskStartDate(value);
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    newReport: {
+                        ...this.state.newReport,
+                        startDate: value,
+                    },
+                    errorOnStartDate: msg,
                 }
-            }
-        })
+            })
+        }
+        return msg === undefined;
     }
 
     /**
@@ -285,30 +295,22 @@ class TaskReportCreateForm extends Component {
     /**
      * Hàm xử lý khi nhập hệ số
      * @param {*} e 
-     */
-    handleChangeCoefficient = (e) => {
+  e   */
+    handleChangeCoefficient = (index, e) => {
         let { value } = e.target;
-        if (value === '') {
-            this.setState(state => {
-                return {
-                    ...state,
-                    newReport: {
-                        ...this.state.newReport,
-                    }
-                }
-            })
-        } else {
-            this.setState(state => {
-                return {
-                    ...state,
-                    newReport: {
-                        ...this.state.newReport,
-                        coefficient: value,
-                    }
-                }
-            })
-        }
+        let { newReport } = this.state;
+        let taskInformations = newReport.taskInformations;
+        taskInformations[index] = { ...taskInformations[index], coefficient: value }
+
+        this.setState({
+            newReport: {
+                ...newReport,
+                taskInformations: taskInformations,
+            }
+        })
     }
+
+
     /**
      * hàm xử lý khi chọn cách tính
      * @param {*} value 
@@ -436,29 +438,21 @@ class TaskReportCreateForm extends Component {
      */
     handleView = () => {
 
-        console.log('state', this.state.newReport)
         const { newReport } = this.state;
-        let data = {
-            accountableEmployees: newReport.accountableEmployees,
-            responsibleEmployees: newReport.responsibleEmployees,
-            aggregationType: newReport.aggregationType,
-            chartType: newReport.chartType,
-            coefficient: newReport.coefficient,
-            nameTaskReport: newReport.nameTaskReport,
-            descriptionTaskReport: newReport.descriptionTaskReport,
-            endDate: newReport.endDate,
-            frequency: newReport.frequency,
-            organizationalUnit: newReport.organizationalUnit,
 
-            startDate: newReport.startDate,
-            status: newReport.status,
-            taskTemplate: newReport.taskTemplate,
-            taskInformations: newReport.taskInformations,
-        }
-
-        this.props.getTaskEvaluations(data);
-
+        this.props.getTaskEvaluations(newReport);
         window.$('#modal-view-taskreport').modal('show');
+    }
+
+    /**
+    * Hàm kiểm tra đã validate chưa
+    */
+    isFormValidated = () => {
+        let result =
+            this.validateNameTaskReport(this.state.newReport.nameTaskReport, false) &&
+            this.validateDescriptionTaskReport(this.state.newReport.descriptionTaskReport, false) &&
+            this.validateTaskStartDate(this.state.newReport.startDate, false);
+        return result;
     }
 
 
@@ -483,8 +477,7 @@ class TaskReportCreateForm extends Component {
 
     render() {
         const { translate, reports, tasktemplates, user, tasks } = this.props;
-        const { newReport, } = this.state;
-        const { errorOnNameTaskReport, errorOnDescriptiontTaskReport, } = this.state.newReport;
+        const { newReport, errorOnNameTaskReport, errorOnDescriptiontTaskReport, errorOnStartDate } = this.state;
         let listTaskTemplate, units, taskInformations = newReport.taskInformations, listRole, listRoles = [];
 
         // Lấy ra list task template theo đơn vị
@@ -502,6 +495,7 @@ class TaskReportCreateForm extends Component {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
 
+        // lấy list chức danh theo đơn vị hiện tại
         if (user.roledepartments) {
             listRole = user.roledepartments;
             for (let x in listRole.deans)
@@ -524,7 +518,8 @@ class TaskReportCreateForm extends Component {
                     size={100}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <TaskReportViewForm passState={newReport.listCheckBox} startDate={newReport.startDate} endDate={newReport.endDate} />
+                    <TaskReportViewForm taskInformations={newReport.taskInformations} coefficient={newReport.coefficient}
+                    />
                     <div className="row" >
                         <div className="col-md-12 col-lg-12" style={{ display: 'flex', justifyContent: 'flex-end' }}>
                             <div className="form-inline d-flex justify-content-end">
@@ -694,16 +689,17 @@ class TaskReportCreateForm extends Component {
                     </div>
 
                     <div className="row">
-                        <div className="col-md-6">
+                        <div className={`col-md-6 ${!errorOnStartDate ? "" : "has-error"}`}>
                             {/* Thống kê từ ngày */}
-                            <div className="form-group">
-                                <label>Thống kê từ ngày</label>
+                            <div className={`form-group`}>
+                                <label className="control-label ">Thống kê từ ngày <span className="text-red">*</span></label>
                                 <DatePicker
                                     id="start-date"
                                     value={this.state.startDate}
                                     onChange={this.handleChangeStartDate}
                                     disabled={false}
                                 />
+                                <ErrorLabel content={errorOnStartDate} />
                             </div>
                         </div>
 
@@ -724,8 +720,7 @@ class TaskReportCreateForm extends Component {
                     {/* Form show thông tin mẫu công việc */}
                     {
                         (newReport.taskTemplate !== '') &&
-                        <div className="row" id="showTable">
-                            <hr />
+                        <div className="row" id="showTable" style={{ marginTop: '15px' }}>
                             <div className="col-md-12">
                                 <table className="table table-hover table-striped table-bordered" id="report_manager">
                                     <thead>
@@ -736,6 +731,7 @@ class TaskReportCreateForm extends Component {
                                             <th>Điều kiện lọc</th>
                                             <th>Hiển thị trong báo cáo</th>
                                             <th>Tên mới</th>
+                                            <th>Hệ số</th>
                                             <th>Cách tính</th>
                                             <th>Dạng biểu đồ</th>
                                         </tr>
@@ -763,6 +759,9 @@ class TaskReportCreateForm extends Component {
                                                             <input className="form-control" style={{ width: '100%' }} type="text" onChange={(e) => this.handleChangeNewName(index, e)} /> : ''
                                                         }
 
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" className="form-control" style={{ width: '100%' }} onChange={(e) => this.handleChangeCoefficient(index, e)} />
                                                     </td>
                                                     <td>
                                                         {(item2.type === 'Number') ?
