@@ -574,6 +574,12 @@ class SideBar extends Component {
                                                 <Link to="/kpi-units/manager">{translate(`menu.kpi_unit_manager`)}</Link>
                                             </li>
                                         }
+                                        {
+                                            (this.checkURL('/kpi-units/statistic', links) === true) &&
+                                            <li className={window.location.pathname === "/kpi-units/statistic" ? "active" : ""}>
+                                                <Link to="/kpi-units/statistic">{translate(`menu.kpi_unit_statistic`)}</Link>
+                                            </li>
+                                        }
 
                                         {
                                             (this.checkURL('/kpi-member/dashboard', links) === true) &&
