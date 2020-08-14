@@ -958,15 +958,6 @@ export default {
             historySalary: 'History of salary',
             sabbatical: 'Sabbatical information'
         },
-        // Quản lý kê hoạch làm việc
-        holiday: {
-            start_date: 'Start day',
-            end_Date: 'End day',
-            description: 'Description',
-            check_start_Date: 'Start day required',
-            check_end_Date: 'End day required',
-            check_description: 'Description required'
-        },
 
         // Module Quản lý nhân sự
         human_resource: {
@@ -993,13 +984,10 @@ export default {
             name_button_export: 'Export report',
             choose_decision_unit: 'Choose a decision-making unit',
 
-            // Thông điệp trả về từ server dung chung cho module quản lý nhân sự
+            // Validator dung chung cho module quản lý nhân sự
             employee_number_required: 'Staff code required',
             staff_code_not_special: 'Staff code does not contain special characters',
             staff_code_not_find: 'Staff code does not exist',
-            number_decisions_required: 'Decis number required',
-            number_decisions_have_exist: 'Decis number have exist',
-            unit_decisions_required: 'Decis unit required',
             start_date_before_end_date: 'The start date must be before the end date',
             end_date_after_start_date: 'The end date must be after the start date',
 
@@ -1099,6 +1087,7 @@ export default {
                 edit_annual_leave_faile: 'Edit annual leave faile',
 
             },
+
             // Quản lý khen thưởng kỷ luật
             commendation_discipline: {
                 // Quản lý khen thưởng
@@ -1276,6 +1265,24 @@ export default {
 
             // Quản lý chấm công nhân viên
             timesheets: {
+                file_name_export: 'Timesheets',
+                symbol: ' Symbol',
+                not_work: 'Not work',
+                do_work: 'Do work',
+                total_timesheets: 'Total work date',
+                work_date_in_month: 'Work date in month',
+                shift_work: 'Shift work',
+                shifts1: 'shifts 1',
+                shifts2: 'shifts 2',
+
+                // Nhóm dành cho action
+                edit_timesheets: 'Edit timesheets',
+                delete_timesheets: 'Delete timesheets',
+                add_timesheets: 'Add timesheets',
+                add_timesheets_title: 'Add new timesheets',
+                add_by_hand: 'Add one timesheets',
+                add_import: 'Import file excel',
+
                 // Thông điệp trả về từ server
                 employee_number_required: "Staff code required",
                 month_timesheets_required: "Month timesheets required",
@@ -1291,7 +1298,6 @@ export default {
                 delete_timesheets_faile: "Delete timesheets faile",
                 import_timesheets_success: "Import timesheets success",
                 import_timesheets_faile: "Import timesheets faile",
-
             },
         },
 

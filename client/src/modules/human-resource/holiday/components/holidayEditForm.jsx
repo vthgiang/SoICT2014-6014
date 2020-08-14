@@ -175,7 +175,7 @@ class HolidayEditForm extends Component {
                             </div>
                         </div>
                         {/* Mô tả */}
-                        <div className={`form-group ${errorOnDescription === undefined ? "" : "has-error"}`}>
+                        <div className={`form-group ${errorOnDescription && "has-error"}`}>
                             <label htmlFor="description">{translate('human_resource.holiday.table.describe_timeline')}<span className="text-red">&#42;</span></label>
                             <textarea className="form-control" rows="3" style={{ height: 72 }} name="description" value={description} onChange={this.handleDescriptionChange}></textarea>
                             <ErrorLabel content={errorOnDescription} />

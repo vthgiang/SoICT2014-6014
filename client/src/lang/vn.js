@@ -959,16 +959,6 @@ export default {
             sabbatical: 'Thông tin nghỉ phép',
         },
 
-        // Quản lý kê hoạch làm việc
-        holiday: {
-            start_date: 'Ngày bắt đầu',
-            end_Date: 'Ngày kết thúc',
-            description: 'Mô tả lịch nghỉ',
-            check_start_Date: 'Bạn chưa nhập ngày bắt đầu',
-            check_end_Date: 'Bạn chưa nhập ngày kết thúc',
-            check_description: 'Bạn chưa nhập mô tả lịch nghỉ'
-        },
-
         // Modules Quản lý nhân sự
         human_resource: {
 
@@ -993,13 +983,10 @@ export default {
             name_button_export: 'Xuất báo cáo',
             choose_decision_unit: 'Chọn cấp ra quyết định',
 
-            // Thông điệp trả về từ server dung chung cho module quản lý nhân sự
+            // Validator dung chung cho module quản lý nhân sự
             employee_number_required: 'Mã nhân viên không được để trống',
             staff_code_not_special: 'Mã nhân viên không được chứ ký tự đặc biệt',
             staff_code_not_find: 'Mã nhân viên không tồn tại',
-            number_decisions_required: 'Số ra quyết định không được để trống',
-            number_decisions_have_exist: 'Số ra quyết định đã tồn tại',
-            unit_decisions_required: 'Cấp ra quyết định không được để trống',
             start_date_before_end_date: 'Ngày bắt đầu phải trước ngày kết thúc',
             end_date_after_start_date: 'Ngày kết thúc phải sau ngày bắt đầu',
 
@@ -1274,6 +1261,24 @@ export default {
 
             // Quản lý chấm công nhân viên
             timesheets: {
+                file_name_export: 'Bảng chấm công',
+                symbol: ' Ký hiệu',
+                not_work: 'Nghỉ làm',
+                do_work: 'Có đi làm',
+                total_timesheets: 'Tổng số công',
+                work_date_in_month: 'Công làm việc trong tháng',
+                shift_work: 'Ca làm việc',
+                shifts1: 'ca 1',
+                shifts2: 'ca 2',
+
+                // Nhóm dành cho action
+                edit_timesheets: 'Chỉnh sửa thông tin chấm công',
+                delete_timesheets: 'Xoá thông tin chấm công',
+                add_timesheets: 'Thêm mới',
+                add_timesheets_title: 'Thêm mới thông tin chấm công',
+                add_by_hand: 'Thêm một bảng công',
+                add_import: 'Import file excel',
+
                 // Thông điệp trả về từ server
                 employee_number_required: "Mã nhân viên không được để trống",
                 month_timesheets_required: "Tháng chấm công không được để trống",
