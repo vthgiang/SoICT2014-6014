@@ -1,9 +1,11 @@
 import {
     DisciplineConstants
 } from "./constants";
+
 import {
     DisciplineService
 } from "./services";
+
 export const DisciplineActions = {
     getListDiscipline,
     createNewDiscipline,
@@ -15,10 +17,10 @@ export const DisciplineActions = {
     deletePraise,
     updatePraise,
 };
+
 /**************************
  * Start
  * Quản lý kỷ luật
- * 
  **************************/
 
 /**

@@ -7,7 +7,11 @@ export const TimesheetsFormValidator = {
     validateMonth,
 }
 
-// Function kiểm tra mã nhân viên
+/**
+ * Function kiểm tra mã nhân viên
+ * @param {*} value : Mã nhân viên
+ * @param {*} translate : Props song ngữ
+ */
 function validateEmployeeNumber(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
@@ -18,11 +22,15 @@ function validateEmployeeNumber(value, translate) {
     return msg;
 }
 
-// Function kiểm tra tháng chấm công
+/**
+ * Function kiểm tra tháng chấm công
+ * @param {*} value : Tháng chấm công
+ * @param {*} translate : Props song ngữ
+ */
 function validateMonth(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = "Tháng chấm công không được để trống";
+        msg = translate('human_resource.timesheets.month_timesheets_required');
     }
     return msg;
 }

@@ -213,7 +213,8 @@ class PraiseCreateForm extends Component {
                             {/* Số quyết định */}
                             <div className={`col-sm-6 col-xs-12 form-group ${errorOnDecisionNumber && "has-error"}`}>
                                 <label>{translate('human_resource.commendation_discipline.commendation.table.decision_number')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="number" value={decisionNumber} onChange={this.handleDecisionNumberChange} autoComplete="off" placeholder={translate('human_resource.commendation_discipline.commendation.table.decision_number')} />
+                                <input type="text" className="form-control" name="number" value={decisionNumber} onChange={this.handleDecisionNumberChange}
+                                    autoComplete="off" placeholder={translate('human_resource.commendation_discipline.commendation.table.decision_number')} />
                                 <ErrorLabel content={errorOnDecisionNumber} />
                             </div>
                             {/* Cấp ra quyết định */}
@@ -224,7 +225,7 @@ class PraiseCreateForm extends Component {
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={organizationalUnit}
-                                    items={[...department.list.map((u, i) => { return { value: u._id, text: u.name } }), { value: '', text: 'Chọn cấp ra quyết định' }]}
+                                    items={[...department.list.map((u, i) => { return { value: u._id, text: u.name } }), { value: '', text: translate('human_resource.choose_decision_unit') }]}
                                     onChange={this.handleOrganizationalUnitChange}
                                 />
                                 <ErrorLabel content={errorOnOrganizationalUnit} />

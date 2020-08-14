@@ -225,7 +225,7 @@ class ContractTab extends Component {
                                     <th >{translate('manage_employee.start_date')}</th>
                                     <th >{translate('manage_employee.end_date_certificate')}</th>
                                     <th >{translate('manage_employee.attached_files')}</th>
-                                    <th style={{ width: '120px' }}>{translate('table.action')}</th>
+                                    <th style={{ width: '120px' }}>{translate('general.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>

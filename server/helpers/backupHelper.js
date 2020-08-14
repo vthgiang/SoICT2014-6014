@@ -77,7 +77,10 @@ exports.backup = async (option) => {
     });
 
     // 2. Backup file dữ liệu trong thư mục upload
-    // await exec();
+    const commandBackupDataUpload  = `cp -r "${SERVER_DIR}/upload" "${serverBackupStorePath}"`
+    await exec(commandBackupDataUpload, (error, stdout, stderr) => {
+        if(error !== null) console.log(error);
+    });
 
     return {
         version: versionTime,
@@ -108,6 +111,9 @@ exports.backupAutomatic = new CronJob(BACKUP_TIME, async function(){
     });
 
     // 2. Backup file dữ liệu trong thư mục upload
-    // await exec();
+    const commandBackupDataUpload  = `cp -r "${SERVER_DIR}/upload" "${serverBackupStorePath}"`
+    await exec(commandBackupDataUpload, (error, stdout, stderr) => {
+        if(error !== null) console.log(error);
+    });
 
 }, null, false, 'Asia/Ho_Chi_Minh');

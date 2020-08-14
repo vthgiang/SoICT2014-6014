@@ -145,7 +145,7 @@ class CertificateTab extends Component {
                                     <th>{translate('manage_employee.graduation_year')}</th>
                                     <th>{translate('manage_employee.ranking_learning')}</th>
                                     <th>{translate('manage_employee.attached_files')}</th>
-                                    <th style={{ width: '120px' }}>{translate('table.action')}</th>
+                                    <th style={{ width: '120px' }}>{translate('general.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -186,7 +186,7 @@ class CertificateTab extends Component {
                                     <th>{translate('manage_employee.date_issued')}</th>
                                     <th>{translate('manage_employee.end_date_certificate')}</th>
                                     <th>{translate('manage_employee.attached_files')}</th>
-                                    <th style={{ width: '120px' }}>{translate('table.action')}</th>
+                                    <th style={{ width: '120px' }}>{translate('general.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
