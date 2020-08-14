@@ -13,7 +13,7 @@ import Swal from 'sweetalert2';
 import { ModalAddTaskTemplate } from './addTaskTemplateModal';
 import { ModalViewTaskTemplate } from './viewTaskTemplateModal';
 import { ModalEditTaskTemplate } from './editTaskTemplateModal';
-import { TaskTemplateImportForm } from './taskTemplateImportForm';
+import { TaskTemplateImportForm } from './importDemo';
 
 class TaskTemplate extends Component {
     constructor(props) {
