@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { AssetAssignedManager } from './AssetAssignedManager';
 import { AssetCrashManager } from './AssetCrashManager';
 

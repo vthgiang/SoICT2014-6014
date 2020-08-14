@@ -5,6 +5,10 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../redux/actions';
+<<<<<<< HEAD
+=======
+import { EditTaskTemplate } from './editTaskTemplate';
+>>>>>>> e92fefb9d50cd956e274b2607e05a1ebb33a1df8
 
 import { ActionForm } from '../component/actionsTemplate';
 import { DialogModal, SelectBox, ErrorLabel } from '../../../../common-components';
@@ -40,80 +44,42 @@ class ModalEditTaskTemplate extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    componentDidMount() {
-        // get department of current user 
-        this.props.getDepartment();
-        // lấy tất cả nhân viên của công ty
-        this.props.getAllUserOfCompany();
-        // Lấy tất cả vai trò cùng phòng ban
-        this.props.getRoleSameDepartment(localStorage.getItem("currentRole"));
-        // Lấy tất cả các role là dean 
-        this.props.getDepartmentsThatUserIsDean();
-        // Lấy tất cả nhân viên trong công ty
-        this.props.getAllUserInAllUnitsOfCompany();
-    }
-
-    static getDerivedStateFromProps = (nextProps, prevState) => {
-        if (nextProps.taskTemplateId !== prevState.taskTemplateId) {
-            return {
-                ...prevState,
+    shouldComponentUpdate ( nextProps, nextState) {
+        if(nextProps.taskTemplateId !== this.props.taskTemplateId) {
+            
+            this.setState({
                 taskTemplateId: nextProps.taskTemplateId,
-                errorOnName: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
-                errorOnDescription: undefined,
-                errorOnRead: undefined,
-                errorOnFormula: undefined,
-                errorOnUnit: undefined,
-                showActionForm: undefined
-            }
-        } else {
-            return null;
-        }
-    }
-
-    shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextProps.taskTemplateId !== this.state.taskTemplateId) {
-            this.props.getTaskTemplate(nextProps.taskTemplateId); // Gửi truy vấn lấy dữ liệu
-            return false;
-        }
-
-        let newDataArrived = nextProps.tasktemplates.taskTemplate !== undefined && nextProps.tasktemplates.taskTemplate !== null;
-        if (!newDataArrived) {
-            return false; // Đang lấy dữ liệu, không cần render
-        }
-        if (this.props.tasktemplates.taskTemplate) {
-            newDataArrived = newDataArrived && (nextProps.tasktemplates.taskTemplate._id !== this.props.tasktemplates.taskTemplate._id);
-        }
-        if (newDataArrived) { // Dữ liệu đã về vầ được bind vào prop
-            let taskTemplate = nextProps.tasktemplates.taskTemplate;
-
-            this.props.getChildrenOfOrganizationalUnits(taskTemplate.organizationalUnit._id);
-
-            let editingTemplate = { // Những trường đã populate sẽ bỏ đi, chỉ lấy lại id
-                ...taskTemplate,
-                organizationalUnit: taskTemplate.organizationalUnit._id,
-                accountableEmployees: taskTemplate.accountableEmployees.map(item => item._id),
-                consultedEmployees: taskTemplate.consultedEmployees.map(item => item._id),
-                informedEmployees: taskTemplate.informedEmployees.map(item => item._id),
-                readByEmployees: taskTemplate.readByEmployees.map(item => item._id),
-                responsibleEmployees: taskTemplate.responsibleEmployees.map(item => item._id),
-            };
-            this.setState(state => {
-                return {
-                    ...state,
-                    editingTemplate: editingTemplate,
-                    showActionForm: true,
-                };
+                taskTemplate: nextProps.taskTemplate,
+                editingTemplate: {
+                    _id: nextProps.taskTemplate._id,
+                    organizationalUnit: nextProps.taskTemplate.organizationalUnit._id,
+                    name: nextProps.taskTemplate.name,
+                    readByEmployees: nextProps.taskTemplate.readByEmployees.map(item => item._id),
+                    responsibleEmployees: nextProps.taskTemplate.responsibleEmployees.map(item => item._id),
+                    accountableEmployees: nextProps.taskTemplate.accountableEmployees.map(item => item._id),
+                    consultedEmployees: nextProps.taskTemplate.consultedEmployees.map(item => item._id),
+                    informedEmployees: nextProps.taskTemplate.informedEmployees.map(item => item._id),
+                    description: nextProps.taskTemplate.description,
+                    formula: nextProps.taskTemplate.formula,
+                    priority: nextProps.taskTemplate.priority,
+                    taskActions: nextProps.taskTemplate.taskActions,
+                    taskInformations: nextProps.taskTemplate.taskInformations,
+                },
+                showActionForm: true,
             });
-            return true; // Cần cập nhật lại state, không cần render
+            return true;
         }
-
         return true;
     }
 
     /**Gửi req sửa mẫu công việc này */
     handleSubmit = async (event) => {
         const { editingTemplate } = this.state;
+<<<<<<< HEAD
 
+=======
+        console.log('editing', editingTemplate);
+>>>>>>> e92fefb9d50cd956e274b2607e05a1ebb33a1df8
         this.props.editTaskTemplate(editingTemplate._id, editingTemplate);
     }
 
@@ -131,10 +97,7 @@ class ModalEditTaskTemplate extends Component {
             this.validateTaskTemplateUnit(this.state.editingTemplate.organizationalUnit, false);
         return result;
     }
-    handleTaskTemplateName = (event) => {
-        let value = event.target.value;
-        this.validateTaskTemplateName(value, true);
-    }
+    
     validateTaskTemplateName = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateName(value);
 
@@ -150,10 +113,6 @@ class ModalEditTaskTemplate extends Component {
         return msg == undefined;
     }
 
-    handleTaskTemplateDesc = (event) => {
-        let value = event.target.value;
-        this.validateTaskTemplateDesc(value, true);
-    }
     validateTaskTemplateDesc = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateDescription(value);
 
@@ -169,10 +128,6 @@ class ModalEditTaskTemplate extends Component {
         return msg == undefined;
     }
 
-    handleTaskTemplateFormula = (event) => {
-        let value = event.target.value;
-        this.validateTaskTemplateFormula(value, true);
-    }
     validateTaskTemplateFormula = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value);
 
@@ -187,29 +142,7 @@ class ModalEditTaskTemplate extends Component {
         }
         return msg == undefined;
     }
-    handleChangeTaskPriority = (event) => {
-        this.state.editingTemplate.priority = event.target.value;
-        this.setState(state => {
-            return {
-                ...state,
-            };
-        });
-    }
-    handleTaskTemplateUnit = (value) => {
-        let singleValue = value[0]; // SelectBox một lựa chọn
-        if (this.validateTaskTemplateUnit(singleValue, true)) {
-            const { department } = this.props;
-
-            if (department !== undefined && department.departmentsThatUserIsDean !== undefined) {
-                // Khi đổi department, cần lấy lại dữ liệu cho các selectbox (ai được xem, các vai trò)
-                let dept = department.departmentsThatUserIsDean.find(item => item._id === singleValue);
-                if (dept) {
-                    this.props.getChildrenOfOrganizationalUnits(singleValue);
-                    this.props.getRoleSameDepartment(dept.dean);
-                }
-            }
-        }
-    }
+   
     validateTaskTemplateUnit = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateUnit(value);
 
@@ -233,10 +166,6 @@ class ModalEditTaskTemplate extends Component {
         return msg == undefined;
     }
 
-    handleTaskTemplateRead = (value) => {
-
-        this.validateTaskTemplateRead(value, true);
-    }
     validateTaskTemplateRead = (value, willUpdateState = true) => {
         let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
 
@@ -252,6 +181,7 @@ class ModalEditTaskTemplate extends Component {
         return msg == undefined;
     }
 
+<<<<<<< HEAD
     handleTaskTemplateResponsible = (value) => {
         this.state.editingTemplate.responsibleEmployees = value;
 
@@ -298,47 +228,17 @@ class ModalEditTaskTemplate extends Component {
                     taskActions: data
                 },
             }
+=======
+    onChangeTemplateData = (value) => {
+        this.setState({
+            editingTemplate: value
+>>>>>>> e92fefb9d50cd956e274b2607e05a1ebb33a1df8
         })
     }
 
-
     render() {
-        var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean, listRoles = [];
-        var { editingTemplate } = this.state;
-
         const { department, user, translate, tasktemplates } = this.props;
-        if (editingTemplate && editingTemplate.taskActions) taskActions = editingTemplate.taskActions;
-        if (editingTemplate && editingTemplate.taskInformations) taskInformations = editingTemplate.taskInformations;
-
-        if (user.organizationalUnitsOfUser) {
-            units = user.organizationalUnitsOfUser;
-        }
-        if (department.departmentsThatUserIsDean) {
-            departmentsThatUserIsDean = department.departmentsThatUserIsDean;
-        }
-        if (user.roledepartments) {
-            listRole = user.roledepartments;
-            for (let x in listRole.deans)
-                listRoles[x] = listRole.deans[x];
-            for (let x in listRole.viceDeans)
-                listRoles.push(listRole.viceDeans[x]);
-            for (let x in listRole.employees)
-                listRoles.push(listRole.employees[x]);
-        }
-        if (user.usercompanys) usercompanys = user.usercompanys;
-        if (user.userdepartments) userdepartments = user.userdepartments;
-
-        var usersOfChildrenOrganizationalUnit;
-        if (user && user.usersOfChildrenOrganizationalUnit) {
-            usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
-        }
-        var usersInUnitsOfCompany;
-        if (user && user.usersInUnitsOfCompany) {
-            usersInUnitsOfCompany = user.usersInUnitsOfCompany;
-        }
-
-        var allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
-        let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+        const { taskTemplate, taskTemplateId } = this.props;
 
         console.log('readByEmployees', editingTemplate.readByEmployees)
         return (
@@ -350,6 +250,7 @@ class ModalEditTaskTemplate extends Component {
                 disableSubmit={!this.isTaskTemplateFormValidated()}
                 size={100}
             >
+<<<<<<< HEAD
                 {/**Form chứa thông tin của mẫu công việc đang sửa */}
                 <div className="row">
                     <div className="col-sm-6">
@@ -551,6 +452,11 @@ class ModalEditTaskTemplate extends Component {
                         </fieldset>
                     </div>
                 </div>
+=======
+                <React.Fragment>
+                    <EditTaskTemplate isTaskTemplate={true} taskTemplate={taskTemplate} taskTemplateId={taskTemplateId} onChangeTemplateData={this.onChangeTemplateData} />
+                </React.Fragment>
+>>>>>>> e92fefb9d50cd956e274b2607e05a1ebb33a1df8
             </DialogModal>
         );
     }

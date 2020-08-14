@@ -7,6 +7,9 @@ import { getStorage } from '../../../../config';
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskProcessActions } from "../redux/actions";
 import { withTranslate } from "react-redux-multilingual";
+import { ViewTaskTemplate } from "../../task-template/component/viewTaskTemplate";
+
+// import readOnlyModule from './read-only'
 
 var zlevel = 1;
 class ModalViewTaskProcess extends Component {
@@ -22,14 +25,24 @@ class ModalViewTaskProcess extends Component {
             info: data.infoTask,
             xmlDiagram: data.xmlDiagram,
         }
-        this.viewer = new BpmnViewer();
+        this.viewer = new BpmnViewer({
+            // additionalModules: [
+            //     readOnlyModule
+            // ]
+        });
         this.generateId = 'viewprocess';
         this.viewer.importXML(this.props.xmlDiagram)
     }
 
     interactPopup = async (event) => {
         let element = event.element;
-        console.log(element)
+        let { infoTask } = this.props
+        this.setState(state => {
+            return {
+                ...state,
+                id: element.businessObject.id
+            }
+        });
     }
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.idProcess !== prevState.idProcess) {
@@ -61,6 +74,7 @@ class ModalViewTaskProcess extends Component {
         return true;
     }
     componentDidMount() {
+        this.props.getAllUsers();
         this.viewer.attachTo('#' + this.generateId);
         this.viewer.on('element.click', 1000, (e) => this.interactPopup(e));
     }
@@ -69,7 +83,7 @@ class ModalViewTaskProcess extends Component {
         var element = event.element;
         let nameStr = element.type.split(':');
         this.setState(state => {
-            if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process' && element.type !== 'bpmn:StartEvent' && element.type !== 'bpmn:EndEvent') {
+            if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process' && element.type !== 'bpmn:StartEvent' && element.type !== 'bpmn:EndEvent' && element.type !== 'bpmn:SequenceFlow') {
                 return { ...state, showInfo: true, type: element.type, name: nameStr[1], taskName: element.businessObject.name, id: `${element.businessObject.id}`, }
             }
             else {
@@ -127,11 +141,11 @@ class ModalViewTaskProcess extends Component {
         canvas.zoom(zlevel, 'auto');
     }
     render() {
-        const { translate, role } = this.props;
+        const { translate, role, user } = this.props;
         const { listOrganizationalUnit } = this.props
         const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedView } = this.state;
-
         let listRole = [];
+        let listUser = user.list
         if (role && role.list.length !== 0) listRole = role.list;
         let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
             .map(item => { return { text: item.name, value: item._id } });
@@ -225,17 +239,17 @@ class ModalViewTaskProcess extends Component {
                                                 <div className="io-zoom-controls">
                                                     <ul className="io-zoom-reset io-control io-control-list">
                                                         <li>
-                                                            <a style={{cursor: "pointer"}} title="Reset zoom" onClick={this.handleZoomReset}>
+                                                            <a style={{ cursor: "pointer" }} title="Reset zoom" onClick={this.handleZoomReset}>
                                                                 <i className="fa fa-crosshairs"></i>
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a style={{cursor: "pointer"}} title="Zoom in" onClick={this.handleZoomIn}>
+                                                            <a style={{ cursor: "pointer" }} title="Zoom in" onClick={this.handleZoomIn}>
                                                                 <i className="fa fa-plus"></i>
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a style={{cursor: "pointer"}} title="Zoom out" onClick={this.handleZoomOut}>
+                                                            <a style={{ cursor: "pointer" }} title="Zoom out" onClick={this.handleZoomOut}>
                                                                 <i className="fa fa-minus"></i>
                                                             </a>
                                                         </li>
@@ -250,13 +264,13 @@ class ModalViewTaskProcess extends Component {
                                                     <div>
                                                         <h1>Option {name}</h1>
                                                     </div>
-                                                    <FormInfoTask
-                                                        disabled={true}
-                                                        listOrganizationalUnit={listOrganizationalUnit}
-                                                        action='view'
-                                                        id={id}
-                                                        info={(info && info[`${id}`]) && info[`${id}`]}
-                                                    />
+                                                    <ViewTaskTemplate
+                                                        isProcess={true}
+                                                        taskTemplate={info?.[`${id}`]}
+                                                        listUser={listUser}
+                                                    >
+
+                                                    </ViewTaskTemplate>
                                                 </div>
                                             }
                                         </div>
@@ -282,6 +296,7 @@ const actionCreators = {
     createXmlDiagram: TaskProcessActions.createXmlDiagram,
     getXmlDiagramById: TaskProcessActions.getXmlDiagramById,
     editXmlDiagram: TaskProcessActions.editXmlDiagram,
+    getAllUsers: UserActions.get
 };
 const connectedModalAddProcess = connect(mapState, actionCreators)(withTranslate(ModalViewTaskProcess));
 export { connectedModalAddProcess as ModalViewTaskProcess };

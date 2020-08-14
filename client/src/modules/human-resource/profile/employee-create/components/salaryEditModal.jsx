@@ -225,13 +225,13 @@ class SalaryEditModal extends Component {
                         </div>
                         {/* Các loại lương thưởng khác*/}
                         <div className={`form-group ${(errorOnNameSalary || errorOnMoreMoneySalary) && "has-error"}`}>
-                            <label>{translate('human_resource.salary.table.other_salary')}:<a title={translate('salary_employee.add_more_salary')}><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }} onClick={this.handleAddBonus} /></a></label>
+                            <label>{translate('human_resource.salary.table.other_salary')}:<a title={translate('human_resource.salary.add_more_salary')}><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }} onClick={this.handleAddBonus} /></a></label>
                             <table className="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>{translate('human_resource.salary.table.name_salary')}</th>
                                         <th>{translate('human_resource.salary.table.money_salary')}</th>
-                                        <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
+                                        <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>

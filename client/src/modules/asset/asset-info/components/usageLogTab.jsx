@@ -55,16 +55,16 @@ class UsageLogTab extends Component {
                 <div className="box-body qlcv">
                     {/* Lịch sử cấp phát - điều chuyển - thu hồi */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">Lịch sử cấp phát - điều chuyển - thu hồi</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.usage_logs')}</h4></legend>
 
                         {/* Bảng thông tin sử dụng */}
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>Người sử dụng</th>
-                                    <th>Ngày bắt đầu sử dụng</th>
-                                    <th>Ngày kết thúc sử dụng</th>
-                                    <th>Nội dung</th>
+                                    <th>{translate('asset.general_information.user')}</th>
+                                    <th>{translate('asset.general_information.handover_from_date')}</th>
+                                    <th>{translate('asset.general_information.handover_to_date')}</th>
+                                    <th>{translate('asset.general_information.content')}</th>
                                 </tr>
                             </thead>
                             <tbody>

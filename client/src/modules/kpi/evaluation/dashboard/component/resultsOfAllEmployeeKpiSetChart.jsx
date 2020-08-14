@@ -358,7 +358,7 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
                 </section>
                 <section className="form-inline">
                     <div>
-                    {exportData&&<ExportExcel id="export-employee-kpi-evaluate-result-dashboard" exportData={exportData} style={{ marginTop:5 }} />}
+                    {exportData&&<ExportExcel id="export-all-employee-kpi-evaluate-result-dashboard" exportData={exportData} style={{ marginTop:5 }} />}
                     </div>
                     <div className="form-group">
                         <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>

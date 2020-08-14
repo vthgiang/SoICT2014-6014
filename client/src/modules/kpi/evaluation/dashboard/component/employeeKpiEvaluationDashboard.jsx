@@ -64,7 +64,6 @@ class EmployeeKpiEvaluationDashboard extends Component {
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(new Date(currentYear, currentMonth - 11, 1))
         }
-
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
         this.props.getEmployeeKPISets(infosearch);
         this.props.getAllEmployeeKpiSetOfUnitByRole(localStorage.getItem("currentRole"));
@@ -72,9 +71,10 @@ class EmployeeKpiEvaluationDashboard extends Component {
         this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
     }
 
-    shouldComponentUpdate = (nextProps, nextState) => {
+    shouldComponentUpdate = async (nextProps, nextState) => {
         if (!this.state.ids && this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
-            this.setState((state) => {
+
+            await this.setState((state) => {
                 return {
                     ...state,
                     ids: [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id],
@@ -84,6 +84,8 @@ class EmployeeKpiEvaluationDashboard extends Component {
                     organizationalUnitIds: [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]
                 }
             });
+
+            this.props.getAllEmployeeOfUnitByIds(this.state.ids);
             return false;
         }
 
@@ -105,17 +107,17 @@ class EmployeeKpiEvaluationDashboard extends Component {
                         ...state,
                         infosearch: {
                             ...state.infosearch,
-                            userId: unitMembers[0].value[2].value
+                            userId: unitMembers[0].value[2] ? unitMembers[0].value[2].value : (unitMembers[0].value[0] ? unitMembers[0].value[0].value : null)
                         },
                         organizationalUnitIds: this.IDS
                     }
                 });
-                this.INFO_SEARCH.userId = unitMembers[0].value[2].value;
+                this.INFO_SEARCH.userId = unitMembers[0].value[2] ? unitMembers[0].value[2].value : (unitMembers[0].value[0] ? unitMembers[0].value[0].value : null);
             }
 
             return true
         }
-        
+
         return true;
     }
 
@@ -205,8 +207,8 @@ class EmployeeKpiEvaluationDashboard extends Component {
                 this.props.getAllUserOfDepartment(this.IDS);
             }
         }
-        
-        
+
+
     }
 
     handleSelectEmployee = (value) => {
@@ -220,10 +222,11 @@ class EmployeeKpiEvaluationDashboard extends Component {
     }
 
     handleSelectMonthEnd = (value) => {
+        let month;
         if (value.slice(0, 2) < 12) {
-            var month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
+            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
         } else {
-            var month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
+            month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
         }
 
         this.INFO_SEARCH.endMonth = month;
@@ -257,20 +260,22 @@ class EmployeeKpiEvaluationDashboard extends Component {
     }
 
     render() {
-        const { user, kpimembers } = this.props;
+        const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = this.props;
         const { translate } = this.props;
+
         let { dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids, organizationalUnitIds } = this.state;
 
         let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee;
         let queue = [], childrenOrganizationalUnit = [];
-        let userdepartments, unitMembers;
-        let listkpi, kpiApproved, kpimember;
+        let userdepartments, unitMembers, kpimember;
+        let listkpi, kpiApproved;
+        let currentUnit = dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
 
         let currentDate = new Date();
         let currentYear = currentDate.getFullYear();
         let currentMonth = currentDate.getMonth();
 
-        
+
         if (this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets) {
             employeeKpiSets = this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
             lastMonthEmployeeKpiSets = employeeKpiSets.filter(item => this.formatDate(item.date) == dateOfExcellentEmployees);
@@ -287,10 +292,19 @@ class EmployeeKpiEvaluationDashboard extends Component {
             activatedKpi = currentMonthEmployeeKpiSets.filter(item => item.status == 2);
             activatedKpi = activatedKpi.length;
         }
-        if (this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
-            numberOfEmployee = this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.employees.length;
-        }
+        if (user.employees) {
+            let allEmployeesUnit = [], idOfEmployees = [];
+            let set;
 
+            allEmployeesUnit = user.employees;
+            allEmployeesUnit.map(employee => {
+                idOfEmployees.push(employee.userId.id)
+            })
+
+            set = new Set(idOfEmployees);
+            allEmployeesUnit = Array.from(set);
+            numberOfEmployee = allEmployeesUnit.length;
+        }
 
         if (this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
             let currentOrganizationalUnit = this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
@@ -317,7 +331,6 @@ class EmployeeKpiEvaluationDashboard extends Component {
             }
             unitMembers = getEmployeeSelectBoxItems(userdepartments);
             unitMembers = [...unitMembers];
-            console.log( "\n\n\n\n\n\n",unitMembers)
         }
 
 
@@ -429,10 +442,10 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                                 <label className="form-control-static">{translate('kpi.evaluation.dashboard.month')}</label>
                                                 <DatePicker
                                                     id="kpi_month"
-                                                    dateFormat="month-year"             
-                                                    value={dateOfExcellentEmployees}     
+                                                    dateFormat="month-year"
+                                                    value={dateOfExcellentEmployees}
                                                     onChange={this.handleChangeDate}
-                                                    disabled={false}                     
+                                                    disabled={false}
                                                 />
                                             </div>
                                             <div className="form-group">
@@ -481,20 +494,20 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                         <label>{translate('kpi.evaluation.employee_evaluation.from')}</label>
                                         <DatePicker
                                             id="monthStartInEmployeeKpiEvaluation"
-                                            dateFormat="month-year"             
-                                            value={defaultStartMonth}                    
+                                            dateFormat="month-year"
+                                            value={defaultStartMonth}
                                             onChange={this.handleSelectMonthStart}
-                                            disabled={false}                   
+                                            disabled={false}
                                         />
                                     </div>
                                     <div className="col-sm-6 col-xs-12 form-group" >
                                         <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
                                         <DatePicker
                                             id="monthEndInEmployeeKpiEvaluation"
-                                            dateFormat="month-year"             
-                                            value={defaultEndMonth}                    
+                                            dateFormat="month-year"
+                                            value={defaultEndMonth}
                                             onChange={this.handleSelectMonthEnd}
-                                            disabled={false}                   
+                                            disabled={false}
                                         />
                                     </div>
                                 </div>
@@ -509,7 +522,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                                 items={unitMembers}
                                                 multiple={false}
                                                 onChange={this.handleSelectEmployee}
-                                                value={unitMembers[0].value[2].value}
+                                                value={unitMembers[0].value[2] ? unitMembers[0].value[2].value : (unitMembers[0].value[0] ? unitMembers[0].value[0].value : null)}
                                             />
                                         </div>
                                     }
@@ -525,7 +538,8 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                             userId={infosearch.userId}
                                             startMonth={infosearch.startMonth}
                                             endMonth={infosearch.endMonth}
-                                            info = {infosearch}
+                                            info={infosearch}
+                                            unitId={currentUnit}
                                         />
                                     }
                                 </div>
@@ -563,6 +577,7 @@ function mapState(state) {
 const actionCreators = {
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getAllUserOfDepartment: UserActions.getAllUserOfDepartment,
+    getDepartment: UserActions.getDepartmentOfUser,
     getEmployeeKPISets: kpiMemberActions.getEmployeeKPISets,
     getAllEmployeeKpiSetOfUnitByRole: DashboardEvaluationEmployeeKpiSetAction.getAllEmployeeKpiSetOfUnitByRole,
     getAllEmployeeOfUnitByRole: UserActions.getAllEmployeeOfUnitByRole,

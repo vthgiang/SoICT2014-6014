@@ -259,7 +259,7 @@ class SalaryAddModal extends Component {
                                     <tr>
                                         <th>{translate('human_resource.salary.table.name_salary')}</th>
                                         <th>{translate('human_resource.salary.table.money_salary')}</th>
-                                        <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
+                                        <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>

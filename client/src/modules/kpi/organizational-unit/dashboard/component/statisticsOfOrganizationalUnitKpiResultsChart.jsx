@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 
+import { ExportExcel } from '../../../../../common-components';
+
 import { withTranslate } from 'react-redux-multilingual';
 
 import c3 from 'c3';
@@ -247,27 +249,75 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         })
     }
 
+    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    convertDataToExportData = (data, month) => {
+        let fileName = "Thống kê kết quả KPI đơn vị " + ( month?("tháng "+month):"" );
+        if (data) {           
+            data = data.map((x, index) => {
+               
+                let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
+                let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
+                let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);           
+
+                return {
+                    automaticPoint: automaticPoint,
+                    employeePoint: employeePoint,
+                    approverPoint: approverPoint,                 
+                };
+            })
+        }
+
+        let exportData = {
+            fileName: fileName,
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    sheetTitle : fileName,
+                    tables: [
+                        {
+                            tableName : 'Dữ liệu để vẽ biểu đồ '+ fileName,
+                            columns: [
+                                { key: "automaticPoint", value: "Điểm tự động" },
+                                { key: "employeePoint", value: "Điểm tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm được đánh giá" }
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData;        
+       
+    }
+
     render() {
-        const { dashboardOrganizationalUnitKpi, translate } = this.props;
-        let listEmployeeKpiSet;
+        const { dashboardOrganizationalUnitKpi, translate,month } = this.props;
+        let listEmployeeKpiSet, exportData;
 
         if (dashboardOrganizationalUnitKpi.employeeKpiSets) {
             listEmployeeKpiSet = dashboardOrganizationalUnitKpi.employeeKpiSets
+            exportData =this.convertDataToExportData(listEmployeeKpiSet,month);
         }
 
-        return (
-            <React.Fragment>
+        return (            
+            <React.Fragment>           
+                               
                 {listEmployeeKpiSet && (listEmployeeKpiSet.length !== 0) ?
-                    <section className="box-body" style={{ textAlign: "right" }}>
+                    <section className="box-body " style={{ textAlign: "right" }}>
+                        <a>
+                        {exportData&&<ExportExcel id="export-statistics-organizational-unit-kpi-results-chart" exportData={exportData} style={{ marginLeft:10 }} />}
+                        </a>  
                         <section className="btn-group">
                             <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.AUTOMATIC)}>Automatic Point</button>
                             <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.EMPLOYEE)}>Employee Point</button>
                             <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.APPROVED)}>Approved Point</button>
                         </section>
-
+                                        
                         <section ref="chart"></section>
                     </section>
                     : <section>{translate('kpi.organizational_unit.dashboard.no_data')}</section>
+                 
                 }
             </React.Fragment>
         )

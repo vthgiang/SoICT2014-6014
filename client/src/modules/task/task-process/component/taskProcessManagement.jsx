@@ -19,7 +19,7 @@ class TaskProcessManagement extends Component {
     super(props);
     this.state = {
       currentRow: {},
-      pageNumber: 1, 
+      pageNumber: 1,
       noResultsPerPage: 5,
     };
 
@@ -48,10 +48,11 @@ class TaskProcessManagement extends Component {
   }
 
   deleteDiagram = async (xmlId) => {
-    this.props.deleteXmlDiagram(xmlId)
+    this.props.deleteXmlDiagram(xmlId, this.state.pageNumber, this.state.noResultsPerPage, "");
   }
 
   viewProcess = async (item) => {
+    console.log(item)
     this.setState(state => {
       return {
         ...state,
@@ -90,29 +91,35 @@ class TaskProcessManagement extends Component {
   setPage = async (pageTotal) => {
     let oldCurrentPage = this.state.pageNumber;
     await this.setState(state => {
-        return {
-            ...state,
-            pageNumber: pageTotal
-        }
+      return {
+        ...state,
+        pageNumber: pageTotal
+      }
     })
     let newCurrentPage = this.state.pageNumber;
     this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
   }
-  setLimit =  (pageTotal) => {
-    if(pageTotal !== this.state.noResultsPerPage) {
+  setLimit = (pageTotal) => {
+    if (pageTotal !== this.state.noResultsPerPage) {
       this.setState(state => {
         return {
-            ...state,
-            noResultsPerPage: pageTotal
+          ...state,
+          noResultsPerPage: pageTotal
         }
-    })
-    this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
+      })
+      this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
     }
   }
   render() {
-    const { translate, taskProcess,department } = this.props
+    const { translate, taskProcess, department } = this.props
     const { showModalCreateProcess, currentRow } = this.state
-    let listDiagram = taskProcess && taskProcess.xmlDiagram;
+    let listDiagram = [];
+    if (taskProcess && taskProcess.xmlDiagram) {
+      listDiagram = taskProcess.xmlDiagram.filter((item) => {
+        return listDiagram.find(e => e._id === item._id) ? '' : listDiagram.push(item)
+      });
+    }
+
     let totalPage = taskProcess.totalPage
     let listOrganizationalUnit = department?.list
     return (
@@ -122,12 +129,12 @@ class TaskProcessManagement extends Component {
             this.state.currentRow !== undefined &&
             <ModalViewTaskProcess
               title={'Xem quy trình công việc'}
-              listOrganizationalUnit= {listOrganizationalUnit}
+              listOrganizationalUnit={listOrganizationalUnit}
               data={currentRow}
               idProcess={currentRow._id}
               xmlDiagram={currentRow.xmlDiagram}
-              nameProcess={currentRow.nameProcess}
-              description={currentRow.description}
+              processName={currentRow.processName}
+              processDescription={currentRow.processDescription}
               infoTask={currentRow.infoTask}
               creator={currentRow.creator}
             />
@@ -137,13 +144,17 @@ class TaskProcessManagement extends Component {
             <ModalEditTaskProcess
               title={'Sửa quy trình công việc'}
               data={currentRow}
-              listOrganizationalUnit= {listOrganizationalUnit}
+              listOrganizationalUnit={listOrganizationalUnit}
               idProcess={currentRow._id}
               xmlDiagram={currentRow.xmlDiagram}
-              nameProcess={currentRow.nameProcess}
-              description={currentRow.description}
+              processName={currentRow.processName}
+              processDescription={currentRow.processDescription}
               infoTask={currentRow.infoTask}
               creator={currentRow.creator}
+
+              pageNumber={this.state.pageNumber}
+              noResultsPerPage={this.state.noResultsPerPage}
+              name={""}
             />
           }
           {
@@ -151,11 +162,11 @@ class TaskProcessManagement extends Component {
             <ModalCreateTaskByProcess
               title={'Tạo chuỗi công việc theo quy trình'}
               data={currentRow}
-              listOrganizationalUnit= {listOrganizationalUnit}
+              listOrganizationalUnit={listOrganizationalUnit}
               idProcess={currentRow._id}
               xmlDiagram={currentRow.xmlDiagram}
-              nameProcess={currentRow.nameProcess}
-              description={currentRow.description}
+              processName={currentRow.processName}
+              processDescription={currentRow.processDescription}
               infoTask={currentRow.infoTask}
               creator={currentRow.creator}
             />
@@ -186,13 +197,6 @@ class TaskProcessManagement extends Component {
           <div className="form-inline">
             <div className="form-group">
               <label className="form-control-static">{translate('task_template.unit')}</label>
-              {/* {units &&
-                      <SelectMulti id="multiSelectUnit"
-                          defaultValue={units.map(item => { return item._id })}
-                          items={units.map(item => { return { value: item._id, text: item.name } })}
-                          options={{ nonSelectedText: translate('task_template.select_all_units'), allSelectedText: "Tất cả các đơn vị" }}>
-                      </SelectMulti>
-                    } */}
               <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
             </div>
           </div>
@@ -218,10 +222,10 @@ class TaskProcessManagement extends Component {
             </thead>
             <tbody className="task-table">
               {
-                listDiagram && listDiagram.map((item, key) => {
+                (listDiagram && listDiagram.length !== 0) ? listDiagram.map((item, key) => {
                   return <tr key={key} >
-                    <td>{item.nameProcess}</td>
-                    <td>{item.description}</td>
+                    <td>{item.processName}</td>
+                    <td>{item.processDescription}</td>
                     <td>{item.creator?.name}</td>
                     <td>
                       <a onClick={() => { this.viewProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>
@@ -233,12 +237,12 @@ class TaskProcessManagement extends Component {
                       <a className="delete" onClick={() => { this.deleteDiagram(item._id) }} title={translate('task_template.delete_this_task_template')}>
                         <i className="material-icons"></i>
                       </a>
-                      <a className="delete" onClick= {()=> { this.showModalCreateTask(item)}} title={translate('task_template.delete_this_task_template')}>
+                      <a className="" style={{ color: "#008D4C" }} onClick={() => { this.showModalCreateTask(item) }} title={translate('task_template.delete_this_task_template')}>
                         <i className="material-icons">add_box</i>
                       </a>
                     </td>
                   </tr>
-                })
+                }) : <tr><td colSpan={4}>Không có dữ liệu</td></tr>
               }
             </tbody>
           </table>

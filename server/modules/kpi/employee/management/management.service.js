@@ -24,7 +24,7 @@ exports.getAllKPIEmployeeSetsInOrganizationByMonth = async (data) => {
     let kpiSets = await EmployeeKpiSet.find({
         creator: userId,
         organizationalUnit: departmentId
-    }).populate({ path: 'kpis', select: 'name' });
+    }).populate({ path: 'kpis', select: 'name type' });
 
     let kpiSetsByMonth = kpiSets.find(e => (e.date.getMonth() === monthOfParams && e.date.getFullYear() === yearOfParams));
 
@@ -146,7 +146,8 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
         },
         {
             $addFields: {
-                'employeeKpis.parentName': "$organizationalUnitKpis.name"
+                'employeeKpis.parentName': "$organizationalUnitKpis.name",
+                'employeeKpis.parentWeight': "$organizationalUnitKpis.weight"
             }
         },
         
@@ -161,7 +162,8 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
         },
         {
             $addFields: {
-                'employeeKpis.parentNameOfUnitKpi': "$parentNameOfUnitKpi.name"
+                'employeeKpis.parentNameOfUnitKpi': "$parentNameOfUnitKpi.name",
+                'employeeKpis.parentOfUnitKpi': "$organizationalUnitKpis.parent"
             }
         },
 
@@ -273,9 +275,8 @@ exports.getAllEmployeeKpiSetInOrganizationalUnit = async (query) => {
  * Lấy tất cả các đơn vị con của 1 đơn vị xếp vào 1 mảng 
  */
 exports.getAllChildrenOrganizational = async (companyId, roleId, organizationalUnitId) => {
-
+    
     let arrayTreeOranizationalUnit = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(companyId, roleId, organizationalUnitId);
-
     let childrenOrganizationalUnits, temporaryChild, deg = 0;
 
     temporaryChild = arrayTreeOranizationalUnit.children;

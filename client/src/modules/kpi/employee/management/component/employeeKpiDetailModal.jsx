@@ -5,6 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../../common-components/index';
 import { DataTableSetting, ExportExcel } from '../../../../../common-components';
 
+import { TaskDialog } from '../../../evaluation/employee-evaluation/component/taskImpotanceDialog';
 import { ModalDetailTask } from '../../../../task/task-management/component/task-dashboard/modalDetailTask';
 import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions';
 
@@ -117,6 +118,7 @@ class ModalDetailKPIPersonal extends Component {
                 automaticPoint: (dataKpi.automaticPoint === null) ? "Chưa đánh giá" : parseInt(dataKpi.automaticPoint),
                 employeePoint: (dataKpi.employeePoint === null) ? "Chưa đánh giá" : parseInt(dataKpi.employeePoint),
                 approverPoint: (dataKpi.approvedPoint === null) ? "Chưa đánh giá" : parseInt(dataKpi.approvedPoint),
+                sheetTitle : "Thông tin chi tiết KPI " + dataKpi.name
             }
             kpiData.push(dataObject);
         }
@@ -161,7 +163,8 @@ class ModalDetailKPIPersonal extends Component {
                     startApproveDate: startApproveTime,
                     endApproveDate: endApproveTime,
                     contributionPoint: contributionPoint,
-                    importantLevel: importantLevel
+                    importantLevel: importantLevel,
+                   
                 };
             })
         }
@@ -171,8 +174,10 @@ class ModalDetailKPIPersonal extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
+                    sheetTitle : kpiData[0].sheetTitle,
                     tables: [
                         {
+                            tableName : 'Thông tin chung KPI '+ kpiData[0].kpiName,
                             columns: [
                                 { key: "kpiName", value: "Tên KPI cá nhân" },
                                 { key: "kpiCriteria", value: "Tiêu chí đánh giá" },
@@ -184,6 +189,7 @@ class ModalDetailKPIPersonal extends Component {
                             data: kpiData
                         },
                         {
+                            tableName : 'Danh sách công việc của KPI: ',
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "startTaskDate", value: "Ngày bắt đầu công việc" },
@@ -216,14 +222,23 @@ class ModalDetailKPIPersonal extends Component {
         });
         window.$(`#modal-detail-task`).modal('show');
     }
+    showDetailTaskImportanceCal = async (item) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                taskImportanceDetail: item
+            }
+        })
 
+        window.$(`#modal-taskimportance-auto`).modal('show')
+    }
     render() {
         var kpimember;
         var list, myTask = [];
         let exportData, content = this.state.content;
         const { kpimembers, translate } = this.props;
         let { employeeKpiSet } = this.props;
-        const { taskId } = this.state;
+        const { taskId, taskImportanceDetail } = this.state;
         if (kpimembers.tasks !== 'undefined' && kpimembers.tasks !== null) myTask = kpimembers.tasks;
         kpimember = kpimembers && kpimembers.kpimembers;
 
@@ -233,7 +248,6 @@ class ModalDetailKPIPersonal extends Component {
 
         if (myTask) {
             let dataKpi;
-            console.log('listtttt', list);
             if (list) {
                 for (let i = 0; i < list.length; i++) {
                     if (list[i]._id === content) {
@@ -356,13 +370,22 @@ class ModalDetailKPIPersonal extends Component {
                                                                     {translate('kpi.evaluation.employee_evaluation.evaluated_value')}: {itemTask.results.taskImportanceLevel}
                                                                 </div>
                                                                 <div>
-                                                                    {translate('kpi.evaluation.employee_evaluation.auto_value')}: {itemTask.taskImportanceLevelCal}
+                                                                    <a href="#modal-taskimportance-auto" onClick={() => this.showDetailTaskImportanceCal(itemTask)}>
+                                                                        {translate('kpi.evaluation.employee_evaluation.auto_value')}: {itemTask.taskImportanceLevelCal}
+                                                                    </a>
                                                                 </div>
                                                             </td>
                                                         </tr>)) : <tr><td colSpan={8}>{translate('general.no_data')}</td></tr>
                                             }
                                         </tbody>
                                     </table>
+                                    {
+                                        taskImportanceDetail &&
+                                        <TaskDialog
+                                            task={taskImportanceDetail}
+                                        />
+
+                                    }
                                 </React.Fragment>);
                             return true;
                         })}

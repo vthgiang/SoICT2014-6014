@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
-import { FormInfoTask } from "./formInfoTask";
+import { FormInfoProcess } from "./formInfoProcess";
 import { DialogModal, SelectBox } from "../../../../common-components";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { getStorage } from '../../../../config';
@@ -21,6 +21,7 @@ import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import { isExpanded } from 'bpmn-js/lib/util/DiUtil';
 import ElementFactory from 'bpmn-js/lib/features/modeling/ElementFactory';
 import LabelEditingProvider from 'bpmn-js/lib/features/label-editing/LabelEditingProvider'
+import { AddTaskTemplate } from "../../task-template/component/addTaskTemplate";
 
 
 ElementFactory.prototype._getDefaultSize = function (semantic) {
@@ -92,7 +93,8 @@ class ModalCreateTaskProcess extends Component {
          showInfo: false,
          selectedCreate: 'info',
          info: {},
-         save: false
+         save: false,
+         indexRenderer: 0,
       }
       this.initialDiagram = initialDiagram
       this.modeler = new BpmnModeler({
@@ -126,7 +128,6 @@ class ModalCreateTaskProcess extends Component {
    }
 
    handleUpdateElement = (abc) => {
-      console.log("hihihihi")
       const modeling = this.modeler.get('modeling');
       let element1 = this.modeler.get('elementRegistry').get(this.state.id);
       modeling.updateProperties(element1, {
@@ -135,22 +136,10 @@ class ModalCreateTaskProcess extends Component {
    }
 
    handleChangeName = async (value) => {
-      let { listOrganizationalUnit } = this.props
-      await this.setState(state => {
-         state.info[`${state.id}`] = {
-            ...state.info[`${state.id}`],
-            code: state.id,
-            nameTask: value,
-         }
-         return {
-            ...state,
-         }
-      })
       const modeling = this.modeler.get('modeling');
       let element1 = this.modeler.get('elementRegistry').get(this.state.id);
       modeling.updateProperties(element1, {
          name: value,
-         info: this.state.info,
       });
    }
 
@@ -197,26 +186,11 @@ class ModalCreateTaskProcess extends Component {
    }
 
    handleChangeResponsible = async (value) => {
-      // let { value } = e.target;
-      let { role } = this.props
+      let { user } = this.props
       let responsible = []
-     
-      role.list.forEach(x => {
-         value.forEach(y => {
-            if(y === x._id) {
-               responsible.push(x.name)
-            }
-         })
-      })
-      await this.setState(state => {
-         state.info[`${state.id}`] = {
-            ...state.info[`${state.id}`],
-            code: state.id,
-            responsible: value,
-            responsibleName: responsible
-         }
-         return {
-            ...state,
+      user.usercompanys.forEach(x => {
+         if (value.some(y => y === x._id)) {
+            responsible.push(x.name)
          }
       })
       const modeling = this.modeler.get('modeling');
@@ -227,25 +201,11 @@ class ModalCreateTaskProcess extends Component {
    }
 
    handleChangeAccountable = async (value) => {
-      let { role } = this.props
+      let { user } = this.props
       let accountable = []
-     
-      role.list.forEach(x => {
-         value.forEach(y => {
-            if(y === x._id) {
-               accountable.push(x.name)
-            }
-         })
-      })
-      await this.setState(state => {
-         state.info[`${state.id}`] = {
-            ...state.info[`${state.id}`],
-            code: state.id,
-            accountable: value,
-            
-         }
-         return {
-            ...state,
+      user.usercompanys.forEach(x => {
+         if (value.some(y => y === x._id)) {
+            accountable.push(x.name)
          }
       })
       const modeling = this.modeler.get('modeling');
@@ -340,8 +300,6 @@ class ModalCreateTaskProcess extends Component {
                state.info[`${element.businessObject.id}`] = {
                   ...state.info[`${element.businessObject.id}`],
                   organizationalUnit: this.props.listOrganizationalUnit[0]?._id,
-                  // followingTask: source,
-                  // proceedTask: destination
                }
             }
             return {
@@ -361,7 +319,16 @@ class ModalCreateTaskProcess extends Component {
 
    deleteElements = (event) => {
       var element = event.element;
-   }
+      console.log(element);
+      this.setState(state => {
+          delete state.info[`${state.id}`];
+          return {
+              ...state,
+              showInfo: false,
+          }
+      })
+      console.log(this.state);
+  }
 
    handleUndoDeleteElement = (event) => {
       var element = event.context.shape;
@@ -391,32 +358,29 @@ class ModalCreateTaskProcess extends Component {
          }
       })
       let data = {
-         nameProcess: this.state.processName,
-         description: this.state.processDescription,
-         creator: this.state.userId,
-         viewer: this.state.viewer,
-         manager: this.state.manager,
+         info: this.state.info,
          xmlDiagram: this.state.xmlDiagram,
-         infoTask: this.state.info
+         processName: this.state.processName,
+         processDescription: this.state.processDescription,
+         manager: this.state.manager,
+         viewer: this.state.viewer,
+         creator: getStorage("userId")
       }
-      for (const i in data.infoTask) {
-         if (!data.infoTask[i].organizationalUnit) {
-            data.infoTask[i].organizationalUnit = department.list[0]._id
-         }
-      }
+      console.log(data)
       await this.props.createXmlDiagram(data)
       this.setState(state => {
          return {
             ...state,
+            indexRenderer: state.indexRenderer + 1,
             processName: null,
             processDescription: '',
             viewer: undefined,
             manager: undefined,
             save: true,
-            selectedCreate: 'info',
             showInfo: false
          }
       });
+      this.modeler.importXML(this.initialDiagram);
    }
 
    downloadAsSVG = () => {
@@ -564,9 +528,22 @@ class ModalCreateTaskProcess extends Component {
       })
    }
 
+   handleChangeInfo = (value) => {
+      let info = {
+         ...value,
+         code: this.state.id
+      }
+
+      this.setState(
+         state => {
+            state.info[`${state.id}`] = info
+         })
+
+   }
+
    render() {
       const { translate, department, role } = this.props;
-      const { id, name, info, showInfo, processDescription, processName, viewer, manager, selectedCreate } = this.state;
+      const { id, name, info, showInfo, processDescription, processName, viewer, manager, selectedCreate, indexRenderer } = this.state;
       const { listOrganizationalUnit } = this.props;
 
       let listRole = [];
@@ -609,7 +586,7 @@ class ModalCreateTaskProcess extends Component {
                                        <label htmlFor="" >Người được phép xem</label>
                                        {
                                           <SelectBox
-                                             id={`select-viewer-employee-create`}
+                                             id={`select-viewer-employee-create-${indexRenderer}`}
                                              className="form-control select2"
                                              style={{ width: "100%" }}
                                              items={listItem}
@@ -623,14 +600,13 @@ class ModalCreateTaskProcess extends Component {
                                        <label htmlFor="" >Người quản lý quy trình</label>
                                        {
                                           <SelectBox
-                                             id={`select-manager-employee-create`}
+                                             id={`select-manager-employee-create-${indexRenderer}`}
                                              className="form-control select2"
                                              style={{ width: "100%" }}
                                              items={listItem}
                                              onChange={this.handleChangeManager}
                                              multiple={true}
                                              value={manager}
-
                                           />
                                        }
                                     </div>
@@ -683,14 +659,15 @@ class ModalCreateTaskProcess extends Component {
                                        </div>
                                     </div>
                                  </div>
-                                 <div className={showInfo ? 'col-md-4' : undefined}>
+                                 <div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
                                     {
                                        (showInfo) &&
                                        <div>
                                           <div>
                                              <h1>Option {name}</h1>
                                           </div>
-                                          <FormInfoTask
+                                          {/*
+                                          <FormInfoProcess
                                              listOrganizationalUnit={listOrganizationalUnit}
                                              action='create'
                                              id={id}
@@ -704,6 +681,15 @@ class ModalCreateTaskProcess extends Component {
                                              handleChangeTemplate={this.handleChangeTemplate}
                                              save={this.save}
                                              done={this.done}
+                                          /> */}
+                                          <AddTaskTemplate
+                                             isProcess={true}
+                                             id={id}
+                                             info={(info && info[`${id}`]) && info[`${id}`]}
+                                             onChangeTemplateData={this.handleChangeInfo}
+                                             handleChangeName={this.handleChangeName} // cập nhật tên vào diagram
+                                             handleChangeResponsible={this.handleChangeResponsible} // cập nhật hiển thi diagram
+                                             handleChangeAccountable={this.handleChangeAccountable} // cập nhật hiển thị diagram
                                           />
                                        </div>
                                     }

@@ -4,9 +4,7 @@ const {
     LogError
 } = require('../../../logs');
 
-/**
- * Lấy danh sách khen thưởng
- */
+/** Lấy danh sách khen thưởng */
 exports.searchCommendations = async (req, res) => {
     try {
         let data = {};
@@ -41,9 +39,7 @@ exports.searchCommendations = async (req, res) => {
         });
     }
 }
-/**
- * Tạo mới khen thưởng của nhân viên
- */
+/** Tạo mới khen thưởng của nhân viên */
 exports.createCommendation = async (req, res) => {
     try {
         // Kiểm tra dữ liệu truyền vào
@@ -102,7 +98,7 @@ exports.createCommendation = async (req, res) => {
                 }
             });
         } else {
-            var createCommendation = await CommendationService.createCommendation(req.body, req.user.company._id);
+            let createCommendation = await CommendationService.createCommendation(req.body, req.user.company._id);
             // Kiểm tra sự tồn tại của mã số nhân viên
             if (createCommendation === null) {
                 await LogError(req.user.email, 'CREATE_COMMENDATIONS', req.user.company);
@@ -143,12 +139,10 @@ exports.createCommendation = async (req, res) => {
         });
     }
 }
-/**
- * Xoá thông tin khen thưởng
- */
+/** Xoá thông tin khen thưởng */
 exports.deleteCommendation = async (req, res) => {
     try {
-        var commendationDelete = await CommendationService.deleteCommendation(req.params.id);
+        let commendationDelete = await CommendationService.deleteCommendation(req.params.id);
         await LogInfo(req.user.email, 'DELETE_COMMENDATIONS', req.user.company);
         res.status(200).json({
             success: true,
@@ -166,9 +160,7 @@ exports.deleteCommendation = async (req, res) => {
         });
     }
 }
-/**
- * Chỉnh sửa thông tin khen thưởng
- */
+/** Chỉnh sửa thông tin khen thưởng */
 exports.updateCommendation = async (req, res) => {
     try {
         // Kiểm tra dữ liệu truyền vào
@@ -227,7 +219,7 @@ exports.updateCommendation = async (req, res) => {
                 }
             });
         } else { 
-            var commendationUpdate = await CommendationService.updateCommendation(req.params.id, req.body, req.user.company._id);
+            let commendationUpdate = await CommendationService.updateCommendation(req.params.id, req.body, req.user.company._id);
             // Kiểm tra sự tồn tại của mã nhân viên
             if (commendationUpdate === null) {
                 await LogError(req.user.email, 'EDIT_COMMENDATIONS', req.user.company);

@@ -1,22 +1,26 @@
-import { DisciplineConstants } from './constants';
+import {
+    DisciplineConstants
+} from './constants';
 
 const initState = {
     isLoading: false,
     totalListDiscipline: 0,
     listDisciplines: [],
-    totalListCommendation: 0,
+
     totalListDisciplineOfYear: 0,
     totalListCommendationOfYear: 0,
+
+    totalListCommendation: 0,
     listCommendations: [],
     error: ""
 }
 
 export function discipline(state = initState, action) {
     switch (action.type) {
-        /**
+        /**************************
          * Start
          * Reducer quản lý kỷ luật
-         */
+         **************************/
         case DisciplineConstants.GET_DISCIPLINE_REQUEST:
         case DisciplineConstants.CREATE_DISCIPLINE_REQUEST:
         case DisciplineConstants.DELETE_DISCIPLINE_REQUEST:
@@ -29,27 +33,27 @@ export function discipline(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listDisciplines: action.payload.listDisciplines !== undefined ? action.payload.listDisciplines : [],
-                totalListDiscipline: action.payload.totalList,
-                totalListDisciplineOfYear: action.payload.totalListOfYear? action.payload.totalListOfYear: 0
+                    listDisciplines: action.payload.listDisciplines !== undefined ? action.payload.listDisciplines : [],
+                    totalListDiscipline: action.payload.totalList,
+                    totalListDisciplineOfYear: action.payload.totalListOfYear ? action.payload.totalListOfYear : 0
             };
         case DisciplineConstants.CREATE_DISCIPLINE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listDisciplines: [...state.listDisciplines, action.payload]
+                    listDisciplines: [...state.listDisciplines, action.payload]
             };
         case DisciplineConstants.DELETE_DISCIPLINE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listDisciplines: state.listDisciplines.filter(discipline => (discipline._id !== action.payload._id))
+                    listDisciplines: state.listDisciplines.filter(discipline => (discipline._id !== action.payload._id))
             };
         case DisciplineConstants.UPDATE_DISCIPLINE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listDisciplines: state.listDisciplines.map(discipline =>(discipline._id === action.payload._id) ? action.payload : discipline)
+                    listDisciplines: state.listDisciplines.map(discipline => (discipline._id === action.payload._id) ? action.payload : discipline)
             };
         case DisciplineConstants.GET_DISCIPLINE_FAILURE:
         case DisciplineConstants.CREATE_DISCIPLINE_FAILURE:
@@ -58,17 +62,17 @@ export function discipline(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                error: action.error
+                    error: action.error
             };
-            /**
-             * Start
-             * Reducer quản lý kỷ luật
-             */
+        /**************************
+         * End
+         * Reducer quản lý kỷ luật
+         **************************/
 
-            /**
-             * Start
-             * Reducer quản lý khen thưởng
-             */
+        /**************************
+         * Start
+         * Reducer quản lý khen thưởng
+         **************************/
         case DisciplineConstants.GET_PRAISE_REQUEST:
         case DisciplineConstants.CREATE_PRAISE_REQUEST:
         case DisciplineConstants.DELETE_PRAISE_REQUEST:
@@ -81,27 +85,27 @@ export function discipline(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listCommendations: action.payload.listCommendations !== undefined ? action.payload.listCommendations : [],
-                totalListCommendation: action.payload.totalList,
-                totalListCommendationOfYear: action.payload.totalListOfYear? action.payload.totalListOfYear: 0
+                    listCommendations: action.payload.listCommendations !== undefined ? action.payload.listCommendations : [],
+                    totalListCommendation: action.payload.totalList,
+                    totalListCommendationOfYear: action.payload.totalListOfYear ? action.payload.totalListOfYear : 0
             };
         case DisciplineConstants.CREATE_PRAISE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listCommendations: [...state.listCommendations, action.payload],
+                    listCommendations: [...state.listCommendations, action.payload],
             };
         case DisciplineConstants.DELETE_PRAISE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listCommendations: state.listCommendations.filter(commendation => (commendation._id !== action.payload._id))
+                    listCommendations: state.listCommendations.filter(commendation => (commendation._id !== action.payload._id))
             };
         case DisciplineConstants.UPDATE_PRAISE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listCommendations: state.listCommendations.map(commendation =>(commendation._id === action.payload._id) ? action.payload : commendation),
+                    listCommendations: state.listCommendations.map(commendation => (commendation._id === action.payload._id) ? action.payload : commendation),
             };
         case DisciplineConstants.GET_PRAISE_FAILURE:
         case DisciplineConstants.CREATE_PRAISE_FAILURE:
@@ -110,9 +114,13 @@ export function discipline(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                error: action.error
+                    error: action.error
             };
         default:
-            return state
+            return state;
+        /**************************
+         * Start
+         * Reducer quản lý khen thưởng
+         **************************/
     }
 }

@@ -1,5 +1,3 @@
-const Log = require('../models/system-admin/log.model');
-
 const { RoleType, Role, RootRole, SystemLink, SystemComponent, Link, Privilege, User, UserRole} = require('../models').schema;
 
 require('dotenv').config({path: '../.env'});
@@ -10,7 +8,7 @@ const bcrypt = require("bcryptjs");
 const {DATA} = require("./locations");
 
 // DB Config
-const db = process.env.DATABASE;
+const db = process.env.DATABASE || `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`;
 
 const seedDatabase = async () => {
     await console.log("Bắt đầu khởi tạo dữ liệu mẫu ...");

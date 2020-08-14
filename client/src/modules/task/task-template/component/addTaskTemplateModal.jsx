@@ -14,6 +14,7 @@ import { DialogModal, SelectBox, ErrorLabel } from '../../../../common-component
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import './tasktemplate.css';
+import { AddTaskTemplate } from './addTaskTemplate';
 
 class ModalAddTaskTemplate extends Component {
     constructor(props) {
@@ -69,12 +70,17 @@ class ModalAddTaskTemplate extends Component {
             this.validateTaskTemplateFormula(this.state.newTemplate.formula, false);
         return result;
     }
+<<<<<<< HEAD
     handleTaskTemplateName = (event) => {
         let value = event.target.value;
         this.validateTaskTemplateName(value, true);
     }
 
     validateTaskTemplateName = (value, willUpdateState = true) => {
+=======
+    
+    validateTaskTemplateName = (value, willUpdateState=true) => {
+>>>>>>> e92fefb9d50cd956e274b2607e05a1ebb33a1df8
         let msg = TaskTemplateFormValidator.validateTaskTemplateName(value);
 
         if (willUpdateState) {
@@ -89,12 +95,16 @@ class ModalAddTaskTemplate extends Component {
         return msg === undefined;
     }
 
+<<<<<<< HEAD
     handleTaskTemplateDesc = (event) => {
         let value = event.target.value;
         this.validateTaskTemplateDescription(value, true);
     }
 
     validateTaskTemplateDescription = (value, willUpdateState = true) => {
+=======
+    validateTaskTemplateDescription = (value, willUpdateState=true) => {
+>>>>>>> e92fefb9d50cd956e274b2607e05a1ebb33a1df8
         let msg = TaskTemplateFormValidator.validateTaskTemplateDescription(value);
 
         if (willUpdateState) {
@@ -109,12 +119,16 @@ class ModalAddTaskTemplate extends Component {
         return msg === undefined;
     }
 
+<<<<<<< HEAD
     handleTaskTemplateFormula = (event) => {
         let value = event.target.value;
         this.validateTaskTemplateFormula(value, true);
     }
 
     validateTaskTemplateFormula = (value, willUpdateState = true) => {
+=======
+    validateTaskTemplateFormula = (value, willUpdateState=true) => {
+>>>>>>> e92fefb9d50cd956e274b2607e05a1ebb33a1df8
         let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value);
 
         if (willUpdateState) {
@@ -129,6 +143,7 @@ class ModalAddTaskTemplate extends Component {
         return msg === undefined;
     }
 
+<<<<<<< HEAD
     handleChangeTaskPriority = (event) => {
         this.state.newTemplate.priority = event.target.value;
         this.setState(state => {
@@ -155,6 +170,9 @@ class ModalAddTaskTemplate extends Component {
     }
 
     validateTaskTemplateUnit = (value, willUpdateState = true) => {
+=======
+    validateTaskTemplateUnit = (value, willUpdateState=true) => {
+>>>>>>> e92fefb9d50cd956e274b2607e05a1ebb33a1df8
         let msg = TaskTemplateFormValidator.validateTaskTemplateUnit(value);
 
         if (willUpdateState) {
@@ -177,11 +195,15 @@ class ModalAddTaskTemplate extends Component {
         return msg === undefined;
     }
 
+<<<<<<< HEAD
     handleTaskTemplateRead = (value) => {
         this.validateTaskTemplateRead(value, true);
     }
 
     validateTaskTemplateRead = (value, willUpdateState = true) => {
+=======
+    validateTaskTemplateRead = (value, willUpdateState=true) => {
+>>>>>>> e92fefb9d50cd956e274b2607e05a1ebb33a1df8
         let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
 
         if (willUpdateState) {
@@ -196,6 +218,7 @@ class ModalAddTaskTemplate extends Component {
         return msg === undefined;
     }
 
+<<<<<<< HEAD
     handleTaskTemplateResponsible = (value) => {
         this.state.newTemplate.responsibleEmployees = value;
         this.setState(state => {
@@ -290,8 +313,18 @@ class ModalAddTaskTemplate extends Component {
         return true;
     }
 
+=======
+    onChangeTemplateData = (value) => {
+        this.setState({
+            newTemplate: value
+        })
+    }
+    
+>>>>>>> e92fefb9d50cd956e274b2607e05a1ebb33a1df8
     render() {
+        const { user, translate } = this.props;
 
+<<<<<<< HEAD
         var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean, listRoles = [];
         const { newTemplate } = this.state;
         const { department, user, translate, tasktemplates } = this.props;
@@ -329,6 +362,9 @@ class ModalAddTaskTemplate extends Component {
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
         return (
+=======
+        return (                    
+>>>>>>> e92fefb9d50cd956e274b2607e05a1ebb33a1df8
             <React.Fragment>
                 <DialogModal
                     modalID="modal-add-task-template" isLoading={user.isLoading}
@@ -338,6 +374,7 @@ class ModalAddTaskTemplate extends Component {
                     disableSubmit={!this.isTaskTemplateFormValidated()}
                     size={100}
                 >
+<<<<<<< HEAD
                     {/**Form chứa các thông tin của 1 task template */}
 
                     <div className="row">
@@ -511,6 +548,9 @@ class ModalAddTaskTemplate extends Component {
                             <InformationForm initialData={taskInformations} onDataChange={this.handleTaskInformationsChange} />
                         </div>
                     </div>
+=======
+                    <AddTaskTemplate onChangeTemplateData={this.onChangeTemplateData}/>
+>>>>>>> e92fefb9d50cd956e274b2607e05a1ebb33a1df8
                 </DialogModal>
             </React.Fragment>
         );

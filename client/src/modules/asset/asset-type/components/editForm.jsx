@@ -108,34 +108,34 @@ class EditForm extends Component {
             <div id="edit-asset-type">
                 {/* Mã loại tài sản */}
                 <div className="form-group">
-                    <label>Mã loại tài sản<span className="text-red">*</span></label>
+                    <label>{translate('asset.asset_type.asset_type_code')}<span className="text-red">*</span></label>
                     <input type="text" className="form-control" onChange={this.handleCode} value={domainCode} />
                 </div>
 
                 {/* Tên loại tài sản */}
                 <div className="form-group">
-                    <label>Tên loại tài sản<span className="text-red">*</span></label>
+                    <label>{translate('asset.asset_type.asset_type_name')}<span className="text-red">*</span></label>
                     <input type="text" className="form-control" onChange={this.handleName} value={domainName} />
                 </div>
 
                 {/* Loại tài sản cha */}
                 <div className="form-group">
-                    <label>Loại tài sản cha<span className="text-red">*</span></label>
+                    <label>{translate('asset.asset_type.parent_asset_type')}<span className="text-red">*</span></label>
                     <TreeSelect data={dataList} value={[domainParent]} handleChange={this.handleParent} mode="radioSelect" />
                 </div>
 
                 {/* Mô tả */}
                 <div className="form-group">
-                    <label>Mô tả<span className="text-red">*</span></label>
+                    <label>{translate('asset.general_information.description')}<span className="text-red">*</span></label>
                     <textarea style={{ minHeight: '120px' }} type="text" className="form-control" onChange={this.handleDescription} value={domainDescription} />
                 </div>
 
                 {/* Button */}
                 <div className="form-group">
-                    <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} onClick={this.save}>Lưu</button>
+                    <button className="btn btn-success pull-right" style={{ marginLeft: '5px' }} onClick={this.save}>{translate('asset.general_information.save')}</button>
                     <button className="btn btn-danger" onClick={() => {
                         window.$(`#edit-asset-type`).slideUp()
-                    }}>Đóng</button>
+                    }}>{translate('asset.general_information.cancel')}</button>
                 </div>
             </div>
         );
