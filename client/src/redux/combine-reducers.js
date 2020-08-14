@@ -1,7 +1,7 @@
 import { IntlReducer as Intl } from 'react-redux-multilingual';
 import { clearStorage } from '../config';
 import { combineReducers } from 'redux';
-import { log } from '../modules/system-admin/log/redux/reducers';
+import { systemSetting } from '../modules/system-admin/system-setting/redux/reducers';
 import { auth } from '../modules/auth/redux/reducers';
 import { company } from '../modules/system-admin/company/redux/reducers';
 import { systemLinks } from '../modules/system-admin/system-link/redux/reducers';
@@ -27,6 +27,7 @@ import {documents} from '../modules/document/redux/reducers';
 import { createKpiUnit } from "../modules/kpi/organizational-unit/creation/redux/reducers";
 import { dashboardOrganizationalUnitKpi } from "../modules/kpi/organizational-unit/dashboard/redux/reducers";
 import { managerKpiUnit } from "../modules/kpi/organizational-unit/management/redux/reducers";
+import { statisticsOfOrganizationalUnitKpi } from "../modules/kpi/statistic/redux/reducers";
 
 import {createEmployeeKpiSet} from "../modules/kpi/employee/creation/redux/reducers"
 import {KPIPersonalManager} from "../modules/kpi/employee/management/redux/reducers"
@@ -58,9 +59,12 @@ import { materials } from "../modules/warehouse-manager/material-manager/redux/r
 //customer
 import {customer} from "../modules/customer/redux/reducers";
 
+//order
+import { order } from "../modules/order/redux/reducers";
+
 const appReducer = combineReducers(Object.assign({
     //system
-    log,
+    systemSetting,
     company,
     systemLinks,
     rootRoles,
@@ -95,6 +99,7 @@ const appReducer = combineReducers(Object.assign({
     createKpiUnit,
     dashboardOrganizationalUnitKpi,
     managerKpiUnit,
+    statisticsOfOrganizationalUnitKpi,
 
     //kpi-personal
     createEmployeeKpiSet,
@@ -126,7 +131,10 @@ const appReducer = combineReducers(Object.assign({
     materials,
 
     // customer management
-    customer
+    customer,
+
+    //order
+    order,
     
 }, { Intl }));
 

@@ -19,7 +19,7 @@ import Home from '../modules/home/components';
 
 import { Notifications } from "../modules/combine-modules";
 
-import { LogSystem } from '../modules/system-admin/log/components';
+import { SystemSetting } from '../modules/system-admin/system-setting/components';
 import { Company } from '../modules/system-admin/company/components';
 import { ManageLinkSystem } from '../modules/system-admin/system-link/components';
 import ManageRoleDefault from '../modules/system-admin/root-role/components';
@@ -49,7 +49,8 @@ import { TrainingPlan} from '../modules/training/course/components/course';
 import {OrganizationalUnitKpiCreate} from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate";
 import {OrganizationalUnitKpiDashboard} from "../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard";
 import {KPIUnitManager} from "../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview";
-import {KPIUnitEvaluate} from "../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation";
+import { KPIUnitEvaluate } from "../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation";
+import { StatisticsOfOrganizationalUnitKpi } from "../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi";
 
 import {CreateEmployeeKpiSet} from "../modules/kpi/employee/creation/component/employeeKpiCreate";
 import {KPIPersonalManager} from "../modules/kpi/employee/management/component/employeeKpiManagement";
@@ -90,6 +91,9 @@ import MaterialManager from '../modules/warehouse-manager/material-manager/compo
 // Customer Management
 import Customer from '../modules/customer/components';
 
+//orders
+import OrderManagement from "../modules/order/components";
+
 class Routes extends Component {
 
     render() {
@@ -111,7 +115,7 @@ class Routes extends Component {
                         path={ '/system/settings' }
                         pageName={ 'manage_system' }
                         layout={ Layout }
-                        component={ LogSystem }
+                        component={ SystemSetting }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.rootRoles.isLoading }
@@ -533,6 +537,21 @@ class Routes extends Component {
                         pageName={ 'kpi_unit_dashboard' }
                         layout={ Layout }
                         component={ OrganizationalUnitKpiDashboard }
+                    />
+                    <PrivateRoute
+                        isLoading={ this.props.statisticsOfOrganizationalUnitKpi.isLoading }
+                        key={ 'kpi-unit-statistic' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/kpi-units/statistic', name: 'kpi_unit_statistic', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/kpi-units/statistic' }
+                        path={ '/kpi-units/statistic' }
+                        pageName={ 'kpi_unit_statistic' }
+                        layout={ Layout }
+                        component={ StatisticsOfOrganizationalUnitKpi }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.managerKpiUnit.isLoading }
@@ -988,6 +1007,28 @@ class Routes extends Component {
                         pageName={ 'customer' }
                         layout={ Layout }
                         component={ Customer }
+                    />
+
+                    {/* Orders Management */}
+                    
+                    <PrivateRoute
+                        isLoading={this.props.order.isLoading}
+                        key={"manage-orders"}
+                        arrPage={[
+                        { link: "/", name: "home", icon: "fa fa-home" },
+                        {
+                            link: "/manage-orders",
+                            name: "manage_orders",
+                            icon: "fa fa-address-card",
+                        },
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={"/manage-orders"}
+                        path={"/manage-orders"}
+                        pageName={"manage-orders"}
+                        layout={Layout}
+                        component={OrderManagement}
                     />
 
                     {/* NOT FOUND */}

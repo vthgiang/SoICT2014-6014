@@ -55,13 +55,22 @@ class OrganizationalUnitKpiCreate extends Component {
         }
     }
 
-    handleEditKPi = async () => {
-        await this.setState(state => {
-            return {
-                ...state,
-                editing: !state.editing,
-            }
-        })
+    handleEditKPi = async (status) => {
+        if (status === 1) {
+            Swal.fire({
+                title: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm_approving'),
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm'),
+            })
+        } else {
+            await this.setState(state => {
+                return {
+                    ...state,
+                    editing: !state.editing,
+                }
+            })
+        }
     }
 
     saveEdit = async (id, organizationalUnit) => {
@@ -193,6 +202,15 @@ class OrganizationalUnitKpiCreate extends Component {
         }
     }
     
+    swalOfUnitKpiActivated = () => {
+        Swal.fire({
+            title: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm_approving'),
+            type: 'warning',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: translate('kpi.organizational_unit.create_organizational_unit_kpi_set.confirm'),
+        })
+    }
+
     formatDate(date) {
         var d = new Date(date),
             month = '' + (d.getMonth() + 1),
@@ -229,20 +247,22 @@ class OrganizationalUnitKpiCreate extends Component {
     }
 
     checkStartKpiUnit = (currentUnit) => {
-        let parentUnit = currentUnit[0].parent; 
-        let parentKpi = this.props.createKpiUnit.parent;
+        if (currentUnit) {
+            let parentUnit = currentUnit[0].parent; 
+            let parentKpi = this.props.createKpiUnit.parent;
 
-        if (parentUnit == null) {
-            return true;
-        } else {
-            if (parentKpi == null) {
-                return false;
-            }
-            else if (parentKpi.status !== 1) {
-                return false;
-            }
-            else {
+            if (parentUnit == null) {
                 return true;
+            } else {
+                if (parentKpi == null) {
+                    return false;
+                }
+                else if (parentKpi.status !== 1) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
             }
         }
     }
@@ -258,7 +278,7 @@ class OrganizationalUnitKpiCreate extends Component {
             })
         } else {
             Swal.fire({
-                title: 'Chưa thể khởi tạo KPI cho đơn vị bạn tháng này, do đơn vị cấp trên của đơn vị bạn chưa kích hoạt KPI!',
+                title: 'Đơn vị cấp trên của đơn vị bạn chưa kích hoạt KPI!',
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Đồng ý'
@@ -291,8 +311,8 @@ class OrganizationalUnitKpiCreate extends Component {
                     {currentKPI ?
                         <div>
                             {this.checkPermisson(currentUnit && currentUnit[0].deans) &&
-                               <div style={{marginLeft: "-10px"}}>
-                                   {/* Form sửa KPI tháng */}
+                                <div style={{marginLeft: "-10px"}}>
+                                    {/* Form sửa KPI tháng */}
                                     {editing ?
                                         <React.Fragment>
                                             <a className="btn btn-app" onClick={() => this.saveEdit(currentKPI._id, currentUnit && currentUnit[0]._id)} title="Lưu thông tin chỉnh sửa">
@@ -301,28 +321,50 @@ class OrganizationalUnitKpiCreate extends Component {
                                             <a className="btn btn-app" onClick={() => this.cancelEdit()} title="Hủy bỏ chỉnh sửa">
                                                 <i className="fa fa-ban" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.cancel')}
                                             </a>
-                                        </React.Fragment> :
-                                        <a className="btn btn-app" onClick={() => this.handleEditKPi()} title="Chỉnh sửa thông tin chung">
-                                            <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.edit')}
-                                        </a>
+                                        </React.Fragment>
+                                        : <React.Fragment>
+                                            <a className="btn btn-app" onClick={this.checkStartKpiUnit(currentUnit) ? () => this.handleEditKPi(currentKPI.status) : () => this.startKpiUnitError()} title="Chỉnh sửa thông tin chung">
+                                                <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.edit')}
+                                            </a>
+                                        </React.Fragment>
                                     }
+                                
                                     {/* Xóa KPI tháng */}
-                                    <a className="btn btn-app" onClick={() => this.deleteKPI(currentKPI.status, currentKPI._id)} title="Xóa KPI tháng">
+                                    <a className="btn btn-app" onClick={this.checkStartKpiUnit(currentUnit) ? () => this.deleteKPI(currentKPI.status, currentKPI._id) : () => this.startKpiUnitError()} title="Xóa KPI tháng">
                                         <i className="fa fa-trash" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.delete')}
                                     </a>
+                                
                                     {/* Kich hoạt KPI tháng */}
                                     {currentKPI.status === 0 ?
-                                        <a className="btn btn-app" onClick={(event) => this.approveKPIUnit(event,currentKPI.status, currentKPI, 1)}>
+                                        <a className="btn btn-app" onClick={this.checkStartKpiUnit(currentUnit) ? (event) => this.approveKPIUnit(event, currentKPI.status, currentKPI, 1) : () => this.startKpiUnitError()}>
                                             <i className="fa fa-rocket" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.approve')}
                                         </a> :
-                                        <a className="btn btn-app" onClick={(event) => this.cancelKPIUnit(event, currentKPI._id, 0)}>
+                                        <a className="btn btn-app" onClick={this.checkStartKpiUnit(currentUnit) ? (event) => this.cancelKPIUnit(event, currentKPI._id, 0) : () => this.startKpiUnitError()}>
                                             <i className="fa fa-lock" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.cancel_approve')}
                                         </a>
                                     }
-                                    <a className="btn btn-app" data-toggle="modal" data-target="#modal-add-target" data-backdrop="static" data-keyboard="false">
-                                        <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.add_target')}
-                                    </a>
-                                    <OrganizationalUnitKpiAddTargetModal organizationalUnitKpiSetId={currentKPI._id} organizationalUnit={currentKPI.organizationalUnit} />
+                                
+                                    {/* Thêm mục tiêu */}
+                                    {this.checkStartKpiUnit(currentUnit) ?
+                                        <span>
+                                            {currentKPI.status === 1 ?
+                                                <a className="btn btn-app" onClick={() => this.swalOfUnitKpiActivated()}>
+                                                    <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.add_target')}
+                                                </a>
+                                                : <span>
+                                                    <a className="btn btn-app" data-toggle="modal" data-target="#modal-add-target" data-backdrop="static" data-keyboard="false">
+                                                        <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.add_target')}
+                                                    </a>
+                                                    <OrganizationalUnitKpiAddTargetModal organizationalUnitKpiSetId={currentKPI._id} organizationalUnit={currentKPI.organizationalUnit} />
+                                                </span>
+                                            }
+                                        </span>
+                                        : <span>
+                                            <a className="btn btn-app" onClick={() => this.startKpiUnitError()}>
+                                                <i className="fa fa-plus-circle" style={{ fontSize: "16px" }}></i>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.add_target')}
+                                            </a>
+                                        </span>
+                                    }
                                 </div>
                             }
                             <div className="">
@@ -380,20 +422,31 @@ class OrganizationalUnitKpiCreate extends Component {
                                                     <td title={item.weight}>{item.weight}</td>
                                                     {this.checkPermisson(currentUnit && currentUnit[0].deans) &&
                                                         <td>
-                                                            <a href="#abc" className="edit" title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.edit')} data-toggle="modal" data-target={`#editTargetKPIUnit${item._id}`} data-backdrop="static" data-keyboard="false"><i className="material-icons"></i></a>
-                                                            <OrganizationalUnitKpiEditTargetModal target={item} organizationalUnit={currentUnit && currentUnit[0]} />
+                                                            {this.checkStartKpiUnit(currentUnit) ?
+                                                                <span>
+                                                                    {currentKPI.status === 1 ?
+                                                                        <a href="#abc" className="edit" title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.edit')} onClick={() => this.swalOfUnitKpiActivated()}><i className="material-icons"></i></a>
+                                                                        :<span>
+                                                                            <a href="#abc" className="edit" title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.edit')} data-toggle="modal" data-target={`#editTargetKPIUnit${item._id}`} data-backdrop="static" data-keyboard="false"><i className="material-icons"></i></a>
+                                                                            <OrganizationalUnitKpiEditTargetModal target={item} organizationalUnit={currentUnit && currentUnit[0]} />
+                                                                        </span>
+                                                                    }
+                                                                </span>
+                                                                : <a href="#abc" className="edit" title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.edit')} onClick={() => this.startKpiUnitError()}><i className="material-icons"></i></a>
+                                                            }
+                                                            
                                                             {item.type === 0 ?
-                                                                <a href="#abc" className="delete" title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.delete_title')} onClick={() => this.deleteTargetKPIUnit(currentKPI.status, item._id, currentKPI._id)}>
+                                                                <a href="#abc" className="delete" title={translate('kpi.organizational_unit.create_organizational_unit_kpi_set.delete_title')} onClick={this.checkStartKpiUnit(currentUnit) ? () => this.deleteTargetKPIUnit(currentKPI.status, item._id, currentKPI._id) : () => this.startKpiUnitError()}>
                                                                     <i className="material-icons"></i>
                                                                 </a> :
-                                                                <div className="tooltip2">
+                                                                <span className="tooltip2">
                                                                     <a>
                                                                         <i className="material-icons">help</i>
                                                                     </a>
                                                                     <span className="tooltip2text" style={{right: "0px"}}>
-                                                                    {translate('kpi.organizational_unit.create_organizational_unit_kpi_set.content')}
+                                                                        {translate('kpi.organizational_unit.create_organizational_unit_kpi_set.content')}
                                                                     </span>
-                                                                </div>
+                                                                </span>
 
                                                                 
                                                             }

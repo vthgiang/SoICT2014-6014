@@ -72,7 +72,8 @@ class SalaryTab extends Component {
      * @param {*} data : Dữ liệu thông tin lương cần thêm
      */
     handleAddSalary = async (data) => {
-        const { salaries } = this.state;
+        const { translate } = this.props;
+        let { salaries } = this.state;
         let check = [];
         check = salaries.filter(x => (x.month === data.month));
         if (check.length !== 0) {
@@ -80,7 +81,7 @@ class SalaryTab extends Component {
                 <ServerResponseAlert
                     type='error'
                     title={'general.error'}
-                    content={['Tháng lương đã tồn tại']}
+                    content={[translate('human_resource.salary.month_salary_have_exist')]}
                 />,
                 { containerId: 'toast-notification' }
             );
@@ -90,7 +91,7 @@ class SalaryTab extends Component {
                     ...data
                 }]
             })
-            this.props.handleAddSalary(salaries, data);
+            this.props.handleAddSalary(this.state.salaries, data);
         }
     }
 
@@ -99,7 +100,7 @@ class SalaryTab extends Component {
      * @param {*} data : Thông tin lương cần chỉnh sửa
      */
     handleEditSalary = async (data) => {
-        const { salaries } = this.state;
+        let { salaries } = this.state;
         salaries[data.index] = data;
         await this.setState({
             salaries: salaries
@@ -180,7 +181,7 @@ class SalaryTab extends Component {
     render() {
         const { id, translate } = this.props;
 
-        const { annualLeaves, salaries } = this.state;
+        let { annualLeaves, salaries, currentRow, currentRowSabbatical } = this.state;
 
         let formater = new Intl.NumberFormat();
 
@@ -243,10 +244,10 @@ class SalaryTab extends Component {
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                 <thead>
                                     <tr>
-                                        <th>{translate('table.start_date')}</th>
-                                        <th>{translate('table.end_date')}</th>
-                                        <th>{translate('sabbatical.reason')}</th>
-                                        <th>{translate('table.status')}</th>
+                                        <th>{translate('human_resource.annual_leave.table.start_date')}</th>
+                                        <th>{translate('human_resource.annual_leave.table.end_date')}</th>
+                                        <th>{translate('human_resource.annual_leave.table.reason')}</th>
+                                        <th>{translate('human_resource.status')}</th>
                                         <th style={{ width: '120px' }}>{translate('table.action')}</th>
                                     </tr>
                                 </thead>
@@ -257,9 +258,9 @@ class SalaryTab extends Component {
                                                 <td>{this.formatDate(x.startDate)}</td>
                                                 <td>{this.formatDate(x.endDate)}</td>
                                                 <td>{x.reason}</td>
-                                                <td>{translate(`sabbatical.${x.status}`)}</td>
+                                                <td>{translate(`human_resource.annual_leave.status.${x.status}`)}</td>
                                                 <td >
-                                                    <a onClick={() => this.handleViewEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('discipline.edit_praise')}><i className="material-icons">edit</i></a>
+                                                    <a onClick={() => this.handleViewEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.annual_leave.edit_annual_leave')}><i className="material-icons">edit</i></a>
                                                     <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteAnnualLeave(index)}><i className="material-icons"></i></a>
                                                 </td>
                                             </tr>
@@ -273,27 +274,28 @@ class SalaryTab extends Component {
                     </div>
                 </div>
                 {
-                    this.state.currentRow !== undefined &&
+                    currentRow !== undefined &&
                     <SalaryEditModal
-                        id={`editSalary${this.state.currentRow.index}`}
-                        _id={this.state.currentRow._id}
-                        unit={this.state.currentRow.unit}
-                        month={this.formatDate(this.state.currentRow.month, true)}
-                        mainSalary={this.state.currentRow.mainSalary}
-                        bonus={this.state.currentRow.bonus}
+                        id={`editSalary${currentRow.index}`}
+                        _id={currentRow._id}
+                        index={currentRow.index}
+                        unit={currentRow.unit}
+                        month={this.formatDate(currentRow.month, true)}
+                        mainSalary={currentRow.mainSalary}
+                        bonus={currentRow.bonus}
                         handleChange={this.handleEditSalary}
                     />
                 }
                 {
-                    this.state.currentRowSabbatical !== undefined &&
+                    currentRowSabbatical !== undefined &&
                     <AnnualLeaveEditModal
-                        id={`editSabbatical${this.state.currentRowSabbatical.index}`}
-                        _id={this.state.currentRowSabbatical._id}
-                        index={this.state.currentRowSabbatical.index}
-                        startDate={this.formatDate(this.state.currentRowSabbatical.startDate)}
-                        endDate={this.formatDate(this.state.currentRowSabbatical.endDate)}
-                        reason={this.state.currentRowSabbatical.reason}
-                        status={this.state.currentRowSabbatical.status}
+                        id={`editSabbatical${currentRowSabbatical.index}`}
+                        _id={currentRowSabbatical._id}
+                        index={currentRowSabbatical.index}
+                        startDate={this.formatDate(currentRowSabbatical.startDate)}
+                        endDate={this.formatDate(currentRowSabbatical.endDate)}
+                        reason={currentRowSabbatical.reason}
+                        status={currentRowSabbatical.status}
                         handleChange={this.handleEditAnnualLeave}
                     />
                 }

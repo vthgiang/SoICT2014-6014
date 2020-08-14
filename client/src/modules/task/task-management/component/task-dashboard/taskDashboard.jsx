@@ -43,11 +43,16 @@ class TaskDashboard extends Component {
 
     componentDidMount = async () => {
         // unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false
-        await this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
-        await this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
-        await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
-        await this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
-        await this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
+        await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null, null, null, false);
+        await this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
+        await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
+        await this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
+        await this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
+        // await this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
+        // await this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
+        // await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
+        // await this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
+        // await this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
         let data = {
             type: "user"
         }
@@ -382,7 +387,7 @@ class TaskDashboard extends Component {
                                                                 <i className="fa fa-ellipsis-v" />
                                                                 <i className="fa fa-ellipsis-v" />
                                                             </span>
-                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" />{item.task.name}</span>
+                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
                                                             <small className="label label-warning"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
                                                         </li>
                                                     ) : "Không có công việc nào sắp hết hạn"

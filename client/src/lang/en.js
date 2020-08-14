@@ -12,47 +12,6 @@ export default {
             number_decisions_required: 'Decis number required',
             number_decisions_have_exist: 'Decis number have exist',
             unit_decisions_required: 'Decis unit required',
-            // Quản lý nghỉ phép
-            // TODO: Xoá sau
-            start_date_annual_leave_required: 'Start date annual leave required',
-            end_date_annual_leave_required: 'End date annual leave required',
-            reason_annual_leave_required: 'Reason annual leave required',
-            status_annual_leave_required: 'Status annual leave required',
-            get_annual_leave_success: 'Get annual leave success',
-            get_annual_leave_faile: 'Get annual leave faile',
-            create_annual_leave_success: 'Create annual leave success',
-            create_annual_leave_faile: 'Create annual leave faile',
-            delete_annual_leave_success: 'Delete annual leave success',
-            delete_annual_leave_faile: 'Delete annual leave faile',
-            edit_annual_leave_success: 'Edit annual leave success',
-            edit_annual_leave_faile: 'Edit annual leave faile',
-            // Quản lý khen thưởng
-            // TODO: Xoá sau
-            type_commendations_required: 'Reward forms required',
-            reason_commendations_required: 'Reason required',
-            decisions_date_required: 'Decis day required',
-            get_commendations_success: 'Get Reward success',
-            get_commendations_faile: 'Get Reward faile',
-            create_commendations_success: 'Create Reward success',
-            create_commendations_faile: 'Create Reward faile',
-            delete_commendations_success: 'Delete Reward success',
-            delete_commendations_faile: 'Delete Reward faile',
-            edit_commendations_success: 'Edit Reward success',
-            edit_commendations_faile: 'Edit Reward faile',
-            // Quản lý kỷ luật
-            // TODO: Xoá sau
-            type_discipline_required: 'Discipline forms required',
-            reason_discipline_required: 'Reason required',
-            start_date_discipline_required: 'Effective date required',
-            end_date_discipline_required: 'Expiration date required',
-            get_discipline_success: 'Get discipline success',
-            get_discipline_faile: 'Get discipline faile',
-            create_discipline_success: 'Create discipline success',
-            create_discipline_faile: 'Create discipline faile',
-            delete_discipline_success: 'Delete discipline success',
-            delete_discipline_faile: 'Delete discipline faile',
-            edit_discipline_success: 'Edit discipline success',
-            edit_discipline_faile: 'Edit discipline faile',
             // Quản lý thông tin cá nhân
             // TODO: Xoá sau
             get_infor_personal_success: 'Get information personal success',
@@ -628,7 +587,7 @@ export default {
             detail_employee: 'Personal Information',
             update_employee: 'Update Personal Information',
             dashboard_employee: 'DashBoard Manage Staffs ',
-            discipline: 'Manage Reward And Discipline',
+            discipline: 'Manage Commendation And Discipline',
             annual_leave: 'Manage Annual Leave',
             salary_employee: 'Manage Salary',
             time_keeping: 'Attendance Staff',
@@ -644,6 +603,7 @@ export default {
             kpi_unit_evaluate: 'Evaluate unit KPI',
             kpi_unit_overview: 'Overview unit KPI',
             kpi_unit_dashboard: 'Dashboard unit KPI',
+            kpi_unit_statistic: 'Statistic unit KPI',
             kpi_unit_manager: 'Manage unit KPI',
             kpi_member_manager: 'Evaluate Employee KPI',
             kpi_member_dashboard: 'DashBoard KPI Member',
@@ -688,6 +648,10 @@ export default {
             // QUẢN LÝ BÁO CÁO
             report_management: 'Report management',
             task_report: 'Manage task reports',
+
+            //QUẢN LÝ ĐƠN HÀNG
+            manage_orders: "Manage Orders",
+            manage_list_orders: "Manage List Orders",
         },
 
         manage_system: {
@@ -813,60 +777,6 @@ export default {
             edit_faile: 'Edit failed!',
         },
 
-        // Quản lý nghỉ phép
-        sabbatical: {
-            list_sabbatical: 'List of staff sabbatical',
-            add_sabbatical: 'Add sabbatical',
-            add_sabbatical_title: 'Add new sabbatical',
-            edit_sabbatical: 'Edit Sabbatical',
-            delete_sabbatical: 'Delete sabbatical',
-            start_date: 'Start date',
-            end_date: 'End date',
-            reason: 'Reason',
-            check_null_msnv: 'Staff code required',
-            check_msnv: 'Not find staff code',
-            check_start_day: 'Start day required',
-            check_end_day: 'End day required',
-            check_reason: 'Reason required',
-            check_status: 'Status required',
-            pass: 'Accepted',
-            faile: 'Refused',
-            process: 'Awaiting approval',
-            all: '--All--',
-            edit_succes: 'Edit sabbatical success',
-            edit_faile: 'Edit sabbatical faile',
-        },
-        // Quản lý khen thưởng, kỷ luật
-        discipline: {
-            list_discipline: 'List of staff discipline',
-            list_discipline_title: 'List of staff discipline',
-            add_discipline: 'Add discipline',
-            add_discipline_title: 'Add new discipline',
-            edit_discipline: 'Edit Discipline',
-            delete_discipline: 'Delete discipline',
-            start_date: 'Effective date',
-            end_date: 'Expiration date',
-            discipline_forms: 'Discipline forms',
-            reason_discipline: 'Reason',
-            check_null_msnv: 'Staff code required',
-            check_msnv: 'Not find staff code',
-            check_number: 'Decis number required',
-            check_unit: 'Decis unit required',
-            check_start_day: 'Effective date required',
-            check_end_day: 'Expiration date required',
-            check_reason_discipline: 'Reason required',
-            check_type_discipline: 'Discipline forms required',
-            list_praise: 'List of staff reward',
-            list_praise_title: 'List of staff reward',
-            add_praise: 'Add reward',
-            add_praise_title: 'Add new reward',
-            edit_praise: 'Edit Reward',
-            delete_praise: 'Delete reward',
-            decision_day: 'Decis day',
-            decision_unit: 'Decis unit',
-            reward_forms: 'Reward forms',
-            reason_praise: 'Reason',
-        },
         // Quản lý nhân sự các đơn vị
         manage_unit: {
             list_unit: 'List of units',
@@ -1062,6 +972,7 @@ export default {
         human_resource: {
 
             // Nhóm dùng chung cho module quản lý nhân sự
+            stt: 'Count',
             unit: 'Unit',
             position: 'Position',
             month: 'Month',
@@ -1080,6 +991,7 @@ export default {
             download_file: 'Download the sample import file',
             choose_file: 'Choose file',
             name_button_export: 'Export report',
+            choose_decision_unit: 'Choose a decision-making unit',
 
             // Thông điệp trả về từ server dung chung cho module quản lý nhân sự
             employee_number_required: 'Staff code required',
@@ -1088,6 +1000,8 @@ export default {
             number_decisions_required: 'Decis number required',
             number_decisions_have_exist: 'Decis number have exist',
             unit_decisions_required: 'Decis unit required',
+            start_date_before_end_date: 'The start date must be before the end date',
+            end_date_after_start_date: 'The end date must be after the start date',
 
 
             // Quản lý lương nhân viên
@@ -1166,6 +1080,11 @@ export default {
                 add_annual_leave_title: 'Add new annual leave',
 
                 // Thông điệp trả về từ server
+                employee_code_duplicated: 'Staff code is duplicated',
+                employee_name_required: 'Staff name required',
+                employee_number_required: 'Staff code required',
+                staff_code_not_special: 'Staff code does not contain special characters',
+                staff_code_not_find: 'Staff code does not exist',
                 start_date_annual_leave_required: 'Start date annual leave required',
                 end_date_annual_leave_required: 'End date annual leave required',
                 reason_annual_leave_required: 'Reason annual leave required',
@@ -1184,48 +1103,53 @@ export default {
             commendation_discipline: {
                 // Quản lý khen thưởng
                 commendation: {
-                    list_praise: 'List of staff reward',
-                    list_praise_title: 'List of staff reward',
+                    list_commendation: 'List of staff commendation',
+                    list_commendation_title: 'List of staff commendation',
+                    file_name_export: 'Commendation statistics table',
 
                     // Nhóm dành cho table
                     table: {
-                        decision_date: 'Decis date',
-                        decision_unit: 'Decis unit',
-                        reward_forms: 'Reward forms',
+                        decision_date: 'Decision date',
+                        decision_number: 'Decision number',
+                        decision_unit: 'Decision unit',
+                        reward_forms: 'Commendation forms',
                         reason_praise: 'Reason',
 
                     },
 
                     // Nhóm dành cho action
-                    add_praise: 'Add reward',
-                    add_praise_title: 'Add new reward',
-                    edit_praise: 'Edit Reward',
-                    delete_praise: 'Delete reward',
+                    add_commendation: 'Add commendation',
+                    add_commendation_title: 'Add new commendation',
+                    edit_commendation: 'Edit commendation',
+                    delete_commendation: 'Delete commendation',
 
                     // Thông điệp trả về từ server
                     employee_number_required: 'Staff code required',
                     staff_code_not_special: 'Staff code does not contain special characters',
                     staff_code_not_find: 'Staff code does not exist',
-                    number_decisions_required: 'Decis number required',
-                    number_decisions_have_exist: 'Decis number have exist',
-                    unit_decisions_required: 'Decis unit required',
-                    type_commendations_required: 'Reward forms required',
+                    number_decisions_required: 'Decision number required',
+                    number_decisions_have_exist: 'Decision number have exist',
+                    unit_decisions_required: 'Decision unit required',
+                    type_commendations_required: 'Commendation forms required',
                     reason_commendations_required: 'Reason required',
-                    decisions_date_required: 'Decis day required',
-                    get_commendations_success: 'Get Reward success',
-                    get_commendations_faile: 'Get Reward faile',
-                    create_commendations_success: 'Create Reward success',
-                    create_commendations_faile: 'Create Reward faile',
-                    delete_commendations_success: 'Delete Reward success',
-                    delete_commendations_faile: 'Delete Reward faile',
-                    edit_commendations_success: 'Edit Reward success',
-                    edit_commendations_faile: 'Edit Reward faile',
+                    decisions_date_required: 'Decision date required',
+                    get_commendations_success: 'Get commendation success',
+                    get_commendations_faile: 'Get commendation faile',
+                    create_commendations_success: 'Create commendation success',
+                    create_commendations_faile: 'Create commendation faile',
+                    delete_commendations_success: 'Delete commendation success',
+                    delete_commendations_faile: 'Delete commendation faile',
+                    edit_commendations_success: 'Edit commendation success',
+                    edit_commendations_faile: 'Edit commendation faile',
                 },
 
                 // Quản lý ky luật
                 discipline: {
                     list_discipline: 'List of staff discipline',
                     list_discipline_title: 'List of staff discipline',
+                    file_name_export: 'Discipline statistics table',
+                    start_date_before_end_date: 'The effective date must be before the expiration date',
+                    end_date_after_start_date: 'The expiration date must be after the effective date',
 
                     // Nhóm dành cho table
                     table: {
@@ -1245,9 +1169,9 @@ export default {
                     employee_number_required: 'Staff code required',
                     staff_code_not_special: 'Staff code does not contain special characters',
                     staff_code_not_find: 'Staff code does not exist',
-                    number_decisions_required: 'Decis number required',
-                    number_decisions_have_exist: 'Decis number have exist',
-                    unit_decisions_required: 'Decis unit required',
+                    number_decisions_required: 'Decision number required',
+                    number_decisions_have_exist: 'Decision number have exist',
+                    unit_decisions_required: 'Decision unit required',
                     type_discipline_required: 'Discipline forms required',
                     reason_discipline_required: 'Reason required',
                     start_date_discipline_required: 'Effective date required',
@@ -1403,6 +1327,234 @@ export default {
             }
         },
 
+        // Modules Quản lý tài sản
+        asset: {
+            general_information: {
+                search: 'Search',
+                add: 'Add asset',
+                basic_information: 'Basic infomation',
+                detail_information: 'Detail information',
+                view: 'View asset information',
+                edit_info: 'Edit asset information',
+                delete_info: 'Delete asset information',
+                save: 'Save',
+                edit: 'Edit',
+                delete: 'Delete',
+                cancel: 'Cancel',
+
+                select_asset_type: 'Select asset type',
+                select_all_asset_type: 'Select all asset type',
+                select_all_status: 'Select all status',
+                ready_use: 'Ready to use',
+                using: 'Using',
+                damaged: 'Damaged',
+                lost: 'Lost',
+                disposal: 'Disposal',
+                select_register: 'Select the right to register',
+                select_all_register: 'Select all the right to register',
+                can_register: 'Can register to use',
+                cant_register: "Can't register to use",
+
+                asset_code: 'Asset code',
+                asset_name: 'Asset name',
+                asset_type: 'Asset type',
+                purchase_date: 'Date of purchase',
+                manager: 'Manager',
+                user: 'User',
+                handover_from_date: 'Handover from date',
+                handover_to_date: 'Handover to date',
+                status: 'Status',
+                action: 'Action',
+
+                general_information: 'General information',
+                usage_information: 'Usage information',
+                maintainance_information: 'Maintenance information',
+                depreciation_information: 'Depreciation information',
+                incident_information: 'Incident information',
+                disposal_information: 'Disposal information',
+                attach_infomation: 'Attached information',
+
+                serial_number: 'Serial number',
+                warranty_expiration_date: 'Warrant expiration date',
+                asset_location: 'Asset location',
+                description: 'Description',
+                can_register: 'Can register',
+                can_register_for_use: 'Can register to use',
+                select_image: 'Select image',
+                content: 'Content',
+                form_code: 'Form code',
+                create_date: 'Create date',
+                type: 'Classify',
+                start_date: 'Start date of repair',
+                end_date: 'End date of repair',
+                expense: 'Cost',
+                original_price: 'Original price ',
+                residual_price: 'Estimated recovery price',
+                start_depreciation: 'Start date of depreciation',
+                depreciation_type: 'Depreciation type',
+
+                incident_code: 'Incident code',
+                reported_by: 'Announcer',
+                date_incident: 'Ngày phát hiện',
+
+                disposal_date: 'Disposal date',
+                disposal_type: 'Disposal type',
+                disposal_price: 'Disposal price',
+                disposal_content: 'Disposal content',
+
+                store_location: 'Hard copy storage location',
+                file_name: 'File name',
+                number: 'Amount',
+                attached_file: 'Attached files',
+            },
+
+            //  Quản lý loại tài sản
+            asset_type: {
+                asset_type_code: 'Asset type code',
+                asset_type_name: 'Asset type name',
+                parent_asset_type: 'Parent asset type',
+                    
+                //Thông điệp trả về từ server
+                get_asset_type_success: 'Lấy thông tin loại tài sản thành công',
+                get_asset_type_faile: 'Lấy thông tin loại tài sản thất bại',
+                create_asset_type_success: 'Thêm loại tài sản thành công',
+                create_asset_type_faile: 'Thêm loại tài sản thất bại',
+                delete_asset_type_success: 'Xoá loại tài sản thành công',
+                delete_asset_type_faile: 'Xoá loại tài sản thất bại',
+                edit_asset_type_success: 'Chỉnh sửa thông tin loại tài sản thành công',
+                edit_asset_type_faile: 'Chỉnh sửa thông tin loại tài sản thất bại',
+            },
+
+            // Quản lý thông tin tài sản
+            asset_info: {
+
+                //Thông điệp trả về từ server
+                get_list_asset_success: 'Lấy thông tin tài sản thành công',
+                get_list_asset_faile: 'Lấy thông tin tài sản thất bại',
+                create_asset_success: 'Thêm tài sản thành công',
+                create_asset_faile: 'Thêm tài sản thất bại',
+                delete_asset_success: 'Xoá tài sản thành công',
+                delete_asset_faile: 'Xoá tài sản thất bại',
+                edit_asset_success: 'Chỉnh sửa thông tin tài sản thành công',
+                edit_asset_faile: 'Chỉnh sửa thông tin tài sản thất bại',
+
+            },
+
+            // Quản lý bảo trì
+            maintainance: {
+
+                //Thông điệp trả về từ server
+                get_maintainance_success: 'Lấy thông tin bảo trì thành công',
+                get_maintainance_faile: 'Lấy thông tin thông tin bảo trì thất bại',
+                create_maintainance_success: 'Thêm phiếu bảo trì thành công',
+                create_maintainance_faile: 'Thêm phiếu bảo trì thất bại',
+                delete_maintainance_success: 'Xoá phiếu bảo trì thành công',
+                delete_maintainance_faile: 'Xoá phiếu bảo trì thất bại',
+                edit_maintainance_success: 'Chỉnh sửa thông tin phiếu bảo trì thành công',
+                edit_maintainance_faile: 'Chỉnh sửa thông tin phiếu bảo trì thất bại',
+            },
+
+            // Quản lý sử dụng
+            usage: {
+
+                //Thông điệp trả về từ server
+                get_usage_success: 'Lấy thông tin sử dụng thành công',
+                get_usage_faile: 'Lấy thông tin sử dụng thất bại',
+                create_usage_success: 'Thêm hoạt động sử dụng tài sản thành công',
+                create_usage_faile: 'Thêm hoạt động sử dụng tài sản thất bại',
+                delete_usage_success: 'Xoá hoạt động sử dụng tài sản thành công',
+                delete_usage_faile: 'Xoá hoạt động sử dụng tài sản thất bại',
+                edit_usage_success: 'Chỉnh sửa thông tin hoạt động sử dụng tài sản thành công',
+                edit_usage_faile: 'Chỉnh sửa thông tin hoạt động sử dụng tài sản thất bại',
+            },
+
+            // Quản lý khấu hao
+            depreciation: {
+
+                //Thông điệp trả về từ server
+                get_depreciation_success: 'Lấy thông tin khấu hao thành công',
+                get_depreciation_faile: 'Lấy thông tin khấu hao thất bại',
+                create_depreciation_success: 'Thêm thông tin khấu hao tài sản thành công',
+                create_depreciation_faile: 'Thêm thông tin khấu hao tài sản thất bại',
+                delete_depreciation_success: 'Xoá thông tin khấu hao tài sản thành công',
+                delete_depreciation_faile: 'Xoá thông tin khấu hao tài sản thất bại',
+                edit_depreciation_success: 'Chỉnh sửa thông tin khấu hao tài sản thành công',
+                edit_depreciation_faile: 'Chỉnh sửa thông tin khấu hao tài sản thất bại',
+            },
+
+            // Quản lý sự cố
+            incident: {
+
+                //Thông điệp trả về từ server
+                get_incident_success: 'Lấy thông tin sự cố tài sản thành công',
+                get_incident_faile: 'Lấy thông tin sự cố tài sản thất bại',
+                create_incident_success: 'Thêm sự cố tài sản thành công',
+                create_incident_faile: 'Thêm sự cố tài sản thất bại',
+                delete_incident_success: 'Xoá thông tin sự cố tài sản thành công',
+                delete_incident_faile: 'Xoá thông tin sự cố tài sản thất bại',
+                edit_incident_success: 'Chỉnh sửa thông tin sự cố tài sản thành công',
+                edit_incident_faile: 'Chỉnh sửa thông tin sự cố tài sản thất bại',
+            },
+
+            // Quản lý đề nghị mua sắm thiết bị
+            manage_recommend_procure: {
+
+                //Thông điệp trả về từ server
+                get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
+                get_recommend_procure_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
+                create_recommend_procure_success: 'Thêm phiếu đề nghị mua sắm thiết bị thành công',
+                create_recommend_procure_faile: 'Thêm phiếu đề nghị mua sắm thiết bị thất bại',
+                delete_recommend_procure_success: 'Xoá phiếu đề nghị mua sắm thiết bị thành công',
+                delete_recommend_procure_faile: 'Xoá phiếu đề nghị mua sắm thiết bị thất bại',
+                edit_recommend_procure_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_recommend_procure_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+            },
+
+            // Quản lý đề nghị cấp phát
+            manage_recommend_distribute: {
+
+                //Thông điệp trả về từ server
+                get_recommend_distribute_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
+                get_recommend_distribute_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
+                create_recommend_distribute_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
+                create_recommend_distribute_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
+                delete_recommend_distribute_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
+                delete_recommend_distribute_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
+                edit_recommend_distribute_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_recommend_distribute_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+
+            },
+
+            // Đăng ký mua sắm thiết bị
+            recommend_procure: {
+
+                //Thông điệp trả về từ server
+                get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
+                get_recommend_procure_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
+                create_recommend_procure_success: 'Thêm phiếu đề nghị mua sắm thiết bị thành công',
+                create_recommend_procure_faile: 'Thêm phiếu đề nghị mua sắm thiết bị thất bại',
+                delete_recommend_procure_success: 'Xoá phiếu đề nghị mua sắm thiết bị thành công',
+                delete_recommend_procure_faile: 'Xoá phiếu đề nghị mua sắm thiết bị thất bại',
+                edit_recommend_procure_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_recommend_procure_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+            },
+
+            // Đăng ký sử dụng thiết bị
+            recommend_distribute: {
+
+                //Thông điệp trả về từ server
+                get_recommend_distribute_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
+                get_recommend_distribute_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
+                create_recommend_distribute_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
+                create_recommend_distribute_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
+                delete_recommend_distribute_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
+                delete_recommend_distribute_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
+                edit_recommend_distribute_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_recommend_distribute_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+            },
+
+        },
+
         // Task template
         task_template: {
             search: 'Search',
@@ -1497,6 +1649,11 @@ export default {
                 creator: 'Creator',
                 informed: 'Informed',
 
+                responsible_role: 'Responsible',
+                accountable_role: 'Acountable',
+                consulted_role: 'Consulted',
+                informed_role: 'Informed',
+
                 add_task: 'Add task',
                 add_title: 'Add a new task',
                 add_subtask: 'Add sub task',
@@ -1544,7 +1701,7 @@ export default {
                 next: 'Next',
                 tasks_calendar: 'Tasks Calendar',
                 model_detail_task_title: 'Detail task',
-                collaborative_tasks: 'Collaborative tasks',
+                collaborative_tasks: 'Multiple employees',
                 in_time: 'In time',
                 delayed_time: 'Delayed',
                 not_achieved: 'Overdue',
@@ -1926,7 +2083,7 @@ export default {
                         request_approval: 'Request for approval',
                         cancel_request_approval: 'Cancel request for approval',
                         not_initialize_organiztional_unit_kpi: 'Cannot initialize kpi on this month bacause your unit has not initialized kpi on this month yet, please contact the manager of your unit',
-                        not_activate_organiztional_unit_kpi: 'Cannot initialize kpi on this month bacause your unit has not activated kpi on this month yet, please contact the manager of your unit',
+                        not_activate_organiztional_unit_kpi: 'Your unit has not activated kpi on this month yet, please contact the manager of your unit',
 
                         // Nhóm dành cho các trạng thái tập KPI
                         kpi_status: {
@@ -2475,6 +2632,28 @@ export default {
             dashboard_material: {
 
             }
+        },
+
+        // manage order
+        manage_order: {
+            index: "Index",
+            add_order: "Add order",
+            add_title: "Add new order",
+            edit_title: "Edit order",
+            add_success: "Add new order successfully",
+            add_failure: "Add new order failed",
+            edit_success: "Order updated",
+            edit_failure: "Update failed",
+            delete_success: "Order deleted",
+            delete_failure: "Delete failed",
+            get_success: "Get data success",
+            get_failure: "Can not get data",
+            code: "Order code",
+            quantity: "Quantity",
+            amount: "Amount",
+            code_placeholder: "input order code",
+            edit_order: "Edit order",
+            delete_order: "Delete Order",
         },
 
         report_manager: {

@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { ButtonModal, DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
+import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
 import { RecommendDistributeFromValidator } from './RecommendDistributeFromValidator';
+
 import { RecommendDistributeActions } from '../redux/actions';
 import { AssetManagerActions } from '../../asset-management/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
+
 class RecommendDistributeCreateForm extends Component {
     constructor(props) {
         super(props);
@@ -28,10 +32,13 @@ class RecommendDistributeCreateForm extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         return [day, month, year].join('-');
     }
@@ -54,6 +61,7 @@ class RecommendDistributeCreateForm extends Component {
         }
         return msg === undefined;
     }
+
     validateExitsRecommendNumber = (value) => {
         return this.props.recommendDistribute.listRecommendDistributes.some(item => item.recommendNumber === value);
     }
@@ -152,12 +160,12 @@ class RecommendDistributeCreateForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result =
-            this.validateRecommendNumber(this.state.recommendNumber, false) &&
+        let result = this.validateRecommendNumber(this.state.recommendNumber, false) &&
             this.validateDateCreate(this.state.dateCreate, false) &&
             this.validateReqContent(this.state.reqContent, false) &&
             this.validateDateStartUse(this.state.dateCreate, false) &&
             this.validateDateEndUse(this.state.dateCreate, false)
+
         return result;
     }
 
@@ -182,17 +190,18 @@ class RecommendDistributeCreateForm extends Component {
     }
 
     render() {
-        const { _id, translate, recommendDistribute, assetsManager, user, auth } = this.props;
-        var assetlist = assetsManager.listAssets;
-        var userlist = user.list;
+        const { _id } = this.props;
+        const { translate, recommendDistribute, assetsManager, user, auth } = this.props;
         const {
             recommendNumber, dateCreate, proponent, asset, reqContent, dateStartUse, dateEndUse, approver, positionApprover, status, note,
             errorOnRecommendNumber, errorOnDateCreate, errorOnReqContent, errorOnDateStartUse, errorOnDateEndUse
         } = this.state;
-        console.log(this.state, 'this.state')
+
+        var assetlist = assetsManager.listAssets;
+        var userlist = user.list;
+
         return (
             <React.Fragment>
-                {/* <ButtonModal modalID="modal-create-recommenddistribute" button_name="Thêm mới phiếu" title="Thêm mới phiếu đề nghị"/> */}
                 <DialogModal
                     size='50' modalID="modal-create-recommenddistribute" isLoading={recommendDistribute.isLoading}
                     formID="form-create-recommenddistribute"
@@ -200,16 +209,21 @@ class RecommendDistributeCreateForm extends Component {
                     func={this.save}
                     disableSubmit={!this.isFormValidated() || this.validateExitsRecommendNumber(recommendNumber)}
                 >
+                    {/* Form thêm mới phiếu đăng ký sử dụng thiết bị */}
                     <form className="form-group" id="form-create-recommenddistribute">
                         <div className="col-md-12">
+
                             <div className="col-sm-6">
-                                <div className={`form-group ${errorOnRecommendNumber === undefined ? "" : "has-error"}`}>
+                                {/* Mã phiếu */}
+                                <div className={`form-group ${!errorOnRecommendNumber ? "" : "has-error"}`}>
                                     <label>Mã phiếu<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} autoComplete="off" placeholder="Mã phiếu" />
                                     <ErrorLabel content={errorOnRecommendNumber} />
                                     <ErrorLabel content={this.validateExitsRecommendNumber(recommendNumber) ? <span className="text-red">Mã phiếu đã tồn tại</span> : ''} />
                                 </div>
-                                <div className={`form-group ${errorOnDateCreate === undefined ? "" : "has-error"}`}>
+
+                                {/* Ngày lập */}
+                                <div className={`form-group ${!errorOnDateCreate ? "" : "has-error"}`}>
                                     <label>Ngày lập<span className="text-red">*</span></label>
                                     <DatePicker
                                         id="create_start_date"
@@ -218,6 +232,8 @@ class RecommendDistributeCreateForm extends Component {
                                     />
                                     <ErrorLabel content={errorOnDateCreate} />
                                 </div>
+
+                                {/* Người đề nghị */}
                                 <div className={`form-group`}>
                                     <label>Người đề nghị</label>
                                     <div>
@@ -237,13 +253,17 @@ class RecommendDistributeCreateForm extends Component {
                                         </div>
                                     </div>
                                 </div>
-                                <div className={`form-group ${errorOnReqContent === undefined ? "" : "has-error"}`}>
+
+                                {/* Nội dung đề nghị */}
+                                <div className={`form-group ${!errorOnReqContent ? "" : "has-error"}`}>
                                     <label>Nội dung đề nghị<span className="text-red">*</span></label>
                                     <textarea className="form-control" rows="3" style={{ height: 34 }} name="reqContent" value={reqContent} onChange={this.handleReqContentChange} autoComplete="off" placeholder="Nội dung đề nghị"></textarea>
                                     <ErrorLabel content={errorOnReqContent} />
                                 </div>
                             </div>
+
                             <div className="col-sm-6">
+                                {/* Tài sản */}
                                 <div className={`form-group`}>
                                     <label>Tài sản</label>
                                     <div>
@@ -263,6 +283,8 @@ class RecommendDistributeCreateForm extends Component {
                                         </div>
                                     </div>
                                 </div>
+
+                                {/* Thời gian đăng ký sử dụng từ ngày */}
                                 <div className={`form-group ${errorOnDateStartUse === undefined ? "" : "has-error"}`}>
                                     <label>Thời gian đăng ký sử dụng từ ngày<span className="text-red">*</span></label>
                                     <DatePicker
@@ -272,6 +294,8 @@ class RecommendDistributeCreateForm extends Component {
                                     />
                                     <ErrorLabel content={errorOnDateStartUse} />
                                 </div>
+
+                                {/* Thời gian đăng ký sử dụng đến ngày */}
                                 <div className={`form-group ${errorOnDateEndUse === undefined ? "" : "has-error"}`}>
                                     <label>Thời gian đăng ký sử dụng đến ngày<span className="text-red">*</span></label>
                                     <DatePicker

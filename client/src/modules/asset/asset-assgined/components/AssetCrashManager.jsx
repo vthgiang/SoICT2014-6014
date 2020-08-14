@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
-// import {IncidentCreateForm} from './incidentCreateForm';
+
 import { IncidentEditForm } from './incidentEditForm';
+
 import { IncidentActions } from '../redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { AssetManagerActions } from '../../asset-management/redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
+
 class AssetCrashManager extends Component {
     constructor(props) {
         super(props);
@@ -18,9 +21,7 @@ class AssetCrashManager extends Component {
             month: null,
             status: "",
             page: 0,
-            // limit: 5,
         }
-        this.handleSubmitSearch = this.handleSubmitSearch.bind(this);
     }
 
     componentDidMount() {
@@ -33,7 +34,6 @@ class AssetCrashManager extends Component {
             month: null,
             status: "",
             page: 0,
-            // limit: 5,
         });
     }
 
@@ -56,14 +56,19 @@ class AssetCrashManager extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         if (monthYear === true) {
             return [month, year].join('-');
-        } else return [day, month, year].join('-');
+        } else {
+            return [day, month, year].join('-');
+        }
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -73,10 +78,13 @@ class AssetCrashManager extends Component {
             day = '' + d.getDate(),
             year = d.getFullYear();
 
-        if (month.length < 2)
+        if (month.length < 2) {
             month = '0' + month;
-        if (day.length < 2)
+        }
+
+        if (day.length < 2) {
             day = '0' + day;
+        }
 
         return [month, year].join('-');
     }
@@ -87,7 +95,6 @@ class AssetCrashManager extends Component {
         this.setState({
             [name]: value
         });
-
     }
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
@@ -96,7 +103,6 @@ class AssetCrashManager extends Component {
         this.setState({
             [name]: value
         });
-
     }
 
     // Function lưu giá trị tháng vào state khi thay đổi
@@ -112,7 +118,7 @@ class AssetCrashManager extends Component {
         if (value.length === 0) {
             value = null
         }
-        ;
+
         this.setState({
             ...this.state,
             type: value
@@ -163,36 +169,44 @@ class AssetCrashManager extends Component {
 
     render() {
         const { translate, assetsManager, assetType, user, auth } = this.props;
+        const { page, limit, currentRow } = this.state;
+
         var lists = "";
         var userlist = user.list;
         var assettypelist = assetType.listAssetTypes;
         var formater = new Intl.NumberFormat();
-        if (this.props.assetsManager.isLoading === false) {
-            lists = this.props.assetsManager.listAssets;
+        if (assetsManager.isLoading === false) {
+            lists = assetsManager.listAssets;
         }
 
-        var pageTotal = ((this.props.assetsManager.totalList % this.state.limit) === 0) ?
-            parseInt(this.props.assetsManager.totalList / this.state.limit) :
-            parseInt((this.props.assetsManager.totalList / this.state.limit) + 1);
-        var page = parseInt((this.state.page / this.state.limit) + 1);
-        console.log('assetsManager', assetsManager);
+        var pageTotal = ((assetsManager.totalList % limit) === 0) ?
+            parseInt(assetsManager.totalList / limit) :
+            parseInt((assetsManager.totalList / limit) + 1);
+
+        var currentPage = parseInt((page / limit) + 1);
+
         return (
             <div id="assetcrash" className="tab-pane">
                 <div className="box-body qlcv">
-                    <div className="form-group">
-                        <h4 className="box-title">Danh sách sự cố thiết bị: </h4>
-                    </div>
+
+                    {/* Thanh tìm kiếm */}
                     <div className="form-inline">
+
+                        {/* Mã tài sản */}
                         <div className="form-group">
                             <label className="form-control-static">Mã tài sản</label>
                             <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off" />
                         </div>
+
+                        {/* Tên tài sản */}
                         <div className="form-group">
                             <label className="form-control-static">Tên tài sản</label>
                             <input type="text" className="form-control" name="assetName" onChange={this.handleRepairNumberChange} placeholder="Mã phiếu" autoComplete="off" />
                         </div>
                     </div>
+
                     <div className="form-inline" style={{ marginBottom: 10 }}>
+                        {/* Phân loại */}
                         <div className="form-group">
                             <label className="form-control-static">Phân loại</label>
                             <SelectMulti id={`multiSelectType1`} multiple="multiple"
@@ -205,6 +219,8 @@ class AssetCrashManager extends Component {
                             >
                             </SelectMulti>
                         </div>
+
+                        {/* Tháng */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.month')}</label>
                             <DatePicker
@@ -214,11 +230,14 @@ class AssetCrashManager extends Component {
                                 onChange={this.handleMonthChange}
                             />
                         </div>
+
+                        {/* Button tìm kiếm */}
                         <div className="form-group">
-                            {/* <label></label> */}
                             <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={() => this.handleSubmitSearch()}>Tìm kiếm</button>
                         </div>
                     </div>
+
+                    {/* Bảng thông tin sự cố */}
                     <table id="incident-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
@@ -243,7 +262,7 @@ class AssetCrashManager extends Component {
                                             "Nội dung sự cố",
                                             "Trạng thái",
                                         ]}
-                                        limit={this.state.limit}
+                                        limit={limit}
                                         setLimit={this.setLimit}
                                         hideColumnOption={true}
                                     />
@@ -251,16 +270,15 @@ class AssetCrashManager extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof lists !== 'undefined' && lists.length) &&
+                            {(lists && lists.length) &&
                                 lists.filter(item => item.assignedTo === auth.user._id).map(asset => {
                                     return asset.incidentLogs.filter(item => item.reportedBy === auth.user._id).map((x, index) => (
-                                        // return asset.incidentLogs.map((x, index) => (
                                         <tr key={index}>
                                             <td>{asset.code}</td>
                                             <td>{asset.assetName}</td>
                                             <td>{x.incidentCode}</td>
                                             <td>{x.type}</td>
-                                            <td>{x.reportedBy !== null && userlist.length ? userlist.filter(item => item._id === x.reportedBy).pop().name : ''}</td>
+                                            <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted'}</td>
                                             <td>{this.formatDate2(x.dateOfIncident)}</td>
                                             <td>{x.description}</td>
                                             <td>{x.statusIncident}</td>
@@ -276,7 +294,8 @@ class AssetCrashManager extends Component {
                                                     func={() => this.deleteIncident(asset._id, x._id)}
                                                 />
                                             </td>
-                                        </tr>))
+                                        </tr>
+                                    ))
                                 })
 
                             }
@@ -284,22 +303,25 @@ class AssetCrashManager extends Component {
                     </table>
                     {assetsManager.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={page} func={this.setPage} />
+
+                    {/* PaginateBar */}
+                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
 
+                {/* Form chỉnh sửa thông tin sự cố */}
                 {
-                    this.state.currentRow !== undefined &&
+                    currentRow &&
                     <IncidentEditForm
-                        _id={this.state.currentRow._id}
-                        asset={this.state.currentRow.asset}
-                        incidentCode={this.state.currentRow.incidentCode}
-                        type={this.state.currentRow.type}
-                        reportedBy={this.state.currentRow.reportedBy}
-                        dateOfIncident={this.formatDate2(this.state.currentRow.dateOfIncident)}
-                        description={this.state.currentRow.description}
-                        statusIncident={this.state.currentRow.statusIncident}
+                        _id={currentRow._id}
+                        asset={currentRow.asset}
+                        incidentCode={currentRow.incidentCode}
+                        type={currentRow.type}
+                        reportedBy={currentRow.reportedBy}
+                        dateOfIncident={this.formatDate2(currentRow.dateOfIncident)}
+                        description={currentRow.description}
+                        statusIncident={currentRow.statusIncident}
                     />
                 }
             </div>

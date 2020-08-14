@@ -209,8 +209,10 @@ class EmployeeKpiManagement extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
+                    sheetTitle : fileName,
                     tables: [
                         {
+                            tableName : 'Danh sách KPI ',
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "time", value: "Thời gian" },

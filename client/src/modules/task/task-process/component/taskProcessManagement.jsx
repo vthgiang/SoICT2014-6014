@@ -52,6 +52,7 @@ class TaskProcessManagement extends Component {
   }
 
   viewProcess = async (item) => {
+    console.log(item)
     this.setState(state => {
       return {
         ...state,
@@ -126,8 +127,8 @@ class TaskProcessManagement extends Component {
               data={currentRow}
               idProcess={currentRow._id}
               xmlDiagram={currentRow.xmlDiagram}
-              nameProcess={currentRow.nameProcess}
-              description={currentRow.description}
+              processName={currentRow.processName}
+              processDescription={currentRow.processDescription}
               infoTask={currentRow.infoTask}
               creator={currentRow.creator}
             />
@@ -140,8 +141,8 @@ class TaskProcessManagement extends Component {
               listOrganizationalUnit= {listOrganizationalUnit}
               idProcess={currentRow._id}
               xmlDiagram={currentRow.xmlDiagram}
-              nameProcess={currentRow.nameProcess}
-              description={currentRow.description}
+              processName={currentRow.processName}
+              processDescription={currentRow.processDescription}
               infoTask={currentRow.infoTask}
               creator={currentRow.creator}
             />
@@ -154,8 +155,8 @@ class TaskProcessManagement extends Component {
               listOrganizationalUnit= {listOrganizationalUnit}
               idProcess={currentRow._id}
               xmlDiagram={currentRow.xmlDiagram}
-              nameProcess={currentRow.nameProcess}
-              description={currentRow.description}
+              processName={currentRow.processName}
+              processDescription={currentRow.processDescription}
               infoTask={currentRow.infoTask}
               creator={currentRow.creator}
             />
@@ -186,13 +187,6 @@ class TaskProcessManagement extends Component {
           <div className="form-inline">
             <div className="form-group">
               <label className="form-control-static">{translate('task_template.unit')}</label>
-              {/* {units &&
-                      <SelectMulti id="multiSelectUnit"
-                          defaultValue={units.map(item => { return item._id })}
-                          items={units.map(item => { return { value: item._id, text: item.name } })}
-                          options={{ nonSelectedText: translate('task_template.select_all_units'), allSelectedText: "Tất cả các đơn vị" }}>
-                      </SelectMulti>
-                    } */}
               <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
             </div>
           </div>
@@ -220,8 +214,8 @@ class TaskProcessManagement extends Component {
               {
                 listDiagram && listDiagram.map((item, key) => {
                   return <tr key={key} >
-                    <td>{item.nameProcess}</td>
-                    <td>{item.description}</td>
+                    <td>{item.processName}</td>
+                    <td>{item.processDescription}</td>
                     <td>{item.creator?.name}</td>
                     <td>
                       <a onClick={() => { this.viewProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>
@@ -233,7 +227,7 @@ class TaskProcessManagement extends Component {
                       <a className="delete" onClick={() => { this.deleteDiagram(item._id) }} title={translate('task_template.delete_this_task_template')}>
                         <i className="material-icons"></i>
                       </a>
-                      <a className="delete" onClick= {()=> { this.showModalCreateTask(item)}} title={translate('task_template.delete_this_task_template')}>
+                      <a className="" style={{color: "#008D4C"}} onClick= {()=> { this.showModalCreateTask(item)}} title={translate('task_template.delete_this_task_template')}>
                         <i className="material-icons">add_box</i>
                       </a>
                     </td>

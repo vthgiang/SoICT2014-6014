@@ -5,6 +5,7 @@ const initState = {
     isLoading: false,
     listAnnualLeaves: [],
     totalList: 0,
+
     totalListAnnualLeavesOfYear: 0,
     arrMonth: [],
     listAnnualLeaveOfNumberMonth: [],

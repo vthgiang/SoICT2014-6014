@@ -438,7 +438,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
         }
 
         dataChart.unshift(titleX);
-        console.log("999", dataChart)
+        
         this.chart = c3.generate({
             bindto: this.refs.chart,                
 

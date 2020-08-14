@@ -64,6 +64,11 @@ class SideBar extends Component {
             path2: "/material-manager",
         };
 
+        const url3 = {
+            path1: "/manage-orders", // quản lý đơn hàng
+            path2: "/manage-list-orders", //Quản lý danh sách đơn hàng
+          };
+
         const { translate, auth } = this.props;
         const { user, links } = this.props.auth;
         return (
@@ -569,6 +574,12 @@ class SideBar extends Component {
                                                 <Link to="/kpi-units/manager">{translate(`menu.kpi_unit_manager`)}</Link>
                                             </li>
                                         }
+                                        {
+                                            (this.checkURL('/kpi-units/statistic', links) === true) &&
+                                            <li className={window.location.pathname === "/kpi-units/statistic" ? "active" : ""}>
+                                                <Link to="/kpi-units/statistic">{translate(`menu.kpi_unit_statistic`)}</Link>
+                                            </li>
+                                        }
 
                                         {
                                             (this.checkURL('/kpi-member/dashboard', links) === true) &&
@@ -612,6 +623,52 @@ class SideBar extends Component {
                                     </ul>
                                 </li>
                             }
+
+                            {/* Quản lý đơn hàng */}
+                            {(this.checkURL(url3.path1, links) === true ||
+                                this.checkURL(url3.path2, links) === true) && (
+                                <li className="treeview">
+                                <a href="">
+                                    <i className="fa  fa-reorder " />{" "}
+                                    <span>{translate(`menu.manage_orders`)}</span>
+                                    <span className="pull-right-container">
+                                    <i className="fa fa-angle-left pull-right" />
+                                    </span>
+                                </a>
+                                <ul className="treeview-menu">
+                                    {/**Quản lý danh sách đơn hàng */}
+                                    {this.checkURL(url3.path1, links) === true && (
+                                    <li
+                                        className={
+                                        window.location.pathname === url3.path1
+                                            ? "active"
+                                            : ""
+                                        }
+                                    >
+                                        <Link to={url3.path1}>
+                                        <i className="fa  fa-reorder" />
+                                        {translate(`menu.manage_list_orders`)}
+                                        </Link>
+                                    </li>
+                                    )}
+
+                                    {this.checkURL(url3.path2, links) === true && (
+                                    <li
+                                        className={
+                                        window.location.pathname === url3.path2
+                                            ? "active"
+                                            : ""
+                                        }
+                                    >
+                                        <Link to={url3.path2}>
+                                        <i className="fa  fa-reorder" />
+                                        {translate(`menu.manage_list_orders`)}
+                                        </Link>
+                                    </li>
+                                    )}
+                                </ul>
+                                </li>
+                            )}
 
 
                             {

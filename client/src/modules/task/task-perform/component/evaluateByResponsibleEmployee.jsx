@@ -196,11 +196,11 @@ class EvaluateByResponsibleEmployee extends Component {
             if (evaluation.results.length !== 0) {
                 let tmp = evaluation.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Responsible"));
                 if (tmp) {
-                    if( tmp.organizationalUnit ){
-                        unit =  tmp.organizationalUnit._id;
+                    if (tmp.organizationalUnit) {
+                        unit = tmp.organizationalUnit._id;
                     };
                     let kpi = tmp.kpis;
-    
+
                     for (let i in kpi) {
                         cloneKpi.push(kpi[i]._id);
                     }
@@ -239,7 +239,6 @@ class EvaluateByResponsibleEmployee extends Component {
                     else if (infoEval[i].type === "SetOfValues") {
                         let splitSetOfValues = infoEval[i].extra.split('\n');
                         if (infoEval[i].value) {
-                            console.log('Qiamh1');
                             info[`${infoEval[i].code}`] = {
                                 value: [infoEval[i].value],
                                 code: infoEval[i].code,
@@ -278,7 +277,7 @@ class EvaluateByResponsibleEmployee extends Component {
             //     date = this.formatDate(evaluation.date);
 
             // }
-           
+
         }
 
         let taskInfo = {
@@ -468,17 +467,17 @@ class EvaluateByResponsibleEmployee extends Component {
     // hàm cập nhật ngày đánh giá
     handleDateChange = (value) => {
         // indexReRender = indexReRender + 1;
-        let { translate } = this.props; 
+        let { translate } = this.props;
         let { idUser, task } = this.state;
 
         let endOfMonth = new moment().endOf("month").toDate();
         let startOfMonth = new moment().startOf("month").toDate();
-        
+
         let startDate = new Date(task.startDate);
         let endDate = new Date(task.endDate);
 
         let splitter = value.split('-');
-        let dateValue = new Date(splitter[2], splitter[1]-1, splitter[0]);
+        let dateValue = new Date(splitter[2], splitter[1] - 1, splitter[0]);
 
         let de = (endOfMonth.getTime() - dateValue.getTime()); // < 0 -> err
         let ds = (dateValue.getTime() - startOfMonth.getTime()); // < 0 -> err
@@ -493,7 +492,7 @@ class EvaluateByResponsibleEmployee extends Component {
         else if (dst < 0) {
             err = translate('task.task_management.err_eval_start');
         }
-        else if (de < 0 || ds < 0){
+        else if (de < 0 || ds < 0) {
             err = translate('task.task_management.err_eval_on_month');
         }
 
@@ -850,7 +849,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
         this.handleAddTaskLog();
 
-        this.setState(state=>{
+        this.setState(state => {
             return {
                 ...state,
                 oldAutoPoint: state.autoPoint,
@@ -863,9 +862,9 @@ class EvaluateByResponsibleEmployee extends Component {
         let { date } = this.props;
         let splitter = date.split("-");
         let isoDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-        let now = new Date ();
+        let now = new Date();
 
-        if(now.getMonth() === isoDate.getMonth() && now.getFullYear() === isoDate.getFullYear()) {
+        if (now.getMonth() === isoDate.getMonth() && now.getFullYear() === isoDate.getFullYear()) {
             return false; // là tháng hiện tại
         }
         return true // khác tháng hiện tại
@@ -873,7 +872,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
     // hàm kiểm tra khác null, undefined - tránh TH chỉ muốn check x là null hoặc undefined nếu chỉ kiểm tra if(!x) -> sai nếu x = 0;
     checkNullUndefined = (x) => {
-        if( x === null || x === undefined ) {
+        if (x === null || x === undefined) {
             return false;
         }
         else return true;
@@ -890,9 +889,11 @@ class EvaluateByResponsibleEmployee extends Component {
             listKpi = KPIPersonalManager.kpiSets.kpis;
         }
 
+
+
         let listUnits = [];
-        if ( user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0 ) {
-            listUnits = user.organizationalUnitsOfUser.map( x => {return {value: x._id, text: x.name}});
+        if (user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
+            listUnits = user.organizationalUnitsOfUser.map(x => { return { value: x._id, text: x.name } });
         }
 
         let taskActions = task.taskActions;
@@ -920,20 +921,20 @@ class EvaluateByResponsibleEmployee extends Component {
                     <div>
                         {/* Thông báo về thời gian đánh giá */}
                         <div>
-                            {checkNoteMonth && (dentaDate <= 7 && dentaDate > 0) && <p style={{color: "red"}}>{translate('task.task_management.note_eval')}{8 - dentaDate}.</p>}
-                            {checkNoteMonth && (dentaDate > 7) && <p style={{color: "red"}}>{translate('task.task_management.note_not_eval')}</p>}
+                            {checkNoteMonth && (dentaDate <= 7 && dentaDate > 0) && <p style={{ color: "red" }}>{translate('task.task_management.note_eval')}{8 - dentaDate}.</p>}
+                            {checkNoteMonth && (dentaDate > 7) && <p style={{ color: "red" }}>{translate('task.task_management.note_not_eval')}</p>}
                         </div>
 
                         {/* Nút lưu */}
                         {!(checkNoteMonth && (dentaDate > 7)) &&
-                        <div className="pull-right">
-                            {/* <button disabled={disabled} style={{ marginRight: "5px" }} className="btn btn-primary" onClick={this.updateInfo}>{translate('task.task_management.btn_get_info')}</button> */}
-                            <button disabled={disabled || disableSubmit} className="btn btn-success" onClick={this.save}>{translate('task.task_management.btn_save_eval')}</button>
-                        </div>
+                            <div className="pull-right">
+                                {/* <button disabled={disabled} style={{ marginRight: "5px" }} className="btn btn-primary" onClick={this.updateInfo}>{translate('task.task_management.btn_get_info')}</button> */}
+                                <button disabled={disabled || disableSubmit} className="btn btn-success" onClick={this.save}>{translate('task.task_management.btn_save_eval')}</button>
+                            </div>
                         }
                     </div>
 
-                    
+
                     <div>
                         {/* Đánh giá từ ngày ... đến ngày ... */}
                         <form id={`form-evaluate-task-by-${role}`}>
@@ -957,8 +958,8 @@ class EvaluateByResponsibleEmployee extends Component {
                                                 id={`create_date_${id}_${perform}`}
                                                 value={date}
                                                 onChange={this.handleDateChange}
-                                                disabled={disabled} 
-                                                // || (checkNoteMonth && (dentaDate <= 20 && dentaDate > 0))
+                                                disabled={disabled}
+                                            // || (checkNoteMonth && (dentaDate <= 20 && dentaDate > 0))
                                             />
                                             <ErrorLabel content={errorOnDate} />
                                         </div>
@@ -969,7 +970,7 @@ class EvaluateByResponsibleEmployee extends Component {
                                 <div className="form-group">
                                     <label>{translate('task.task_management.unit_evaluate')}</label>
                                     {
-                                        <SelectBox 
+                                        <SelectBox
                                             id={`select-organizational-unit-evaluate-${perform}-${role}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
@@ -977,7 +978,7 @@ class EvaluateByResponsibleEmployee extends Component {
                                             onChange={this.handleChangeUnit}
                                             multiple={false}
                                             value={unit}
-                                            disabled={disabled} 
+                                            disabled={disabled}
                                         />
                                     }
                                 </div>
@@ -990,11 +991,15 @@ class EvaluateByResponsibleEmployee extends Component {
                                             id={`select-kpi-personal-evaluate-${perform}-${role}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={((KPIPersonalManager && KPIPersonalManager.kpiSets) ? KPIPersonalManager.kpiSets.kpis : []).map(x => { return { value: x._id, text: x.name } })}
+                                            items={
+                                                (KPIPersonalManager && KPIPersonalManager.kpiSets) ?
+                                                    (KPIPersonalManager.kpiSets.kpis.filter(e => { return e.type === 0 }).map(x => { return { value: x._id, text: x.name } }))
+                                                    : []
+                                            }
                                             onChange={this.handleKpiChange}
                                             multiple={true}
                                             value={kpi}
-                                            disabled={disabled} 
+                                            disabled={disabled}
                                         />
                                     }
                                 </div>
@@ -1032,7 +1037,7 @@ class EvaluateByResponsibleEmployee extends Component {
 
                                     indexReRender={indexReRender}
 
-                                    disabled={disabled} 
+                                    disabled={disabled}
                                     role={role}
                                     perform={perform}
                                     id={id}
@@ -1043,7 +1048,7 @@ class EvaluateByResponsibleEmployee extends Component {
                             {/* Thông tin điểm tự động */}
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('task.task_management.auto_point_field')}</legend>
-                                <div style={{lineHeight: "3"}}>
+                                <div style={{ lineHeight: "3" }}>
                                     <div>
                                         <strong>{translate('task.task_management.detail_auto_point')}: &nbsp;</strong>
                                         <a style={{ cursor: "pointer" }} id={`autoPoint-${perform}`} onClick={() => this.handleShowAutomaticPointInfo()}>

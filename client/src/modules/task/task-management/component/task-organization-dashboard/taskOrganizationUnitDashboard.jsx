@@ -38,7 +38,7 @@ class TaskOrganizationUnitDashboard extends Component {
             callAction: false,
 
             checkUnit: 0,
-            startMonth: [year, month-3].join('-'),
+            startMonth: [year, month - 3].join('-'),
             endMonth: [year, month].join('-')
         };
 
@@ -90,9 +90,10 @@ class TaskOrganizationUnitDashboard extends Component {
                 type: organizationUnit,
             }
 
-            await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, this.state.startMonth, this.state.endMonth);
+            if (this.state.idsUnit.length) {
+                await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, this.state.startMonth, this.state.endMonth);
+            }
             await this.props.getTaskByUser(data);
-
         } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.tasks.organizationUnitTasks) {
                 return false;
@@ -132,7 +133,7 @@ class TaskOrganizationUnitDashboard extends Component {
 
     handleSelectMonthStart = async (value) => {
         let month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
-        
+
         await this.setState(state => {
             return {
                 ...state,
@@ -175,8 +176,6 @@ class TaskOrganizationUnitDashboard extends Component {
             day = '0' + day;
         let defaultEndMonth = [month, year].join('-');
         let defaultStartMonth = [month - 3, year].join('-');
-
-        console.log("this", this.state.startMonth, this.state.endMonth);
 
         if (this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
             let currentOrganizationalUnit = this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
@@ -319,7 +318,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                                                 <i className="fa fa-ellipsis-v" />
                                                                 <i className="fa fa-ellipsis-v" />
                                                             </span>
-                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" />{item.task.name}</span>
+                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" >{item.task.name}</a></span>
                                                             <small className="label label-warning"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
                                                         </li>
                                                     ) : "Không có công việc nào sắp hết hạn"

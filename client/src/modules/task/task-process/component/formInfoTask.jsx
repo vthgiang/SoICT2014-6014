@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { SelectBox, DatePicker } from './../../../../common-components/index';
+import { SelectBox,  } from './../../../../common-components/index';
 import { withTranslate } from "react-redux-multilingual";
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { UserActions } from '../../../super-admin/user/redux/actions';
@@ -19,9 +19,8 @@ class FormInfoTask extends Component {
             description: (info && info.description) ? info.description : '',
             organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
             taskTemplate: (info && info.taskTemplate) ? info.taskTemplate : "",
-            responsible: (info && info.responsible) ? info.responsible : [],
-            accountable: (info && info.accountable) ? info.accountable : [],
-            // listRoles: [...listOrganizationalUnit[0]?.deans, ...listOrganizationalUnit[0]?.viceDeans, ...listOrganizationalUnit[0]?.employees]
+            responsible: (info && info.responsibleName) ? info.responsibleName : [],
+            accountable: (info && info.accountableName) ? info.accountableName : [],
         }
     }
 
@@ -42,8 +41,8 @@ class FormInfoTask extends Component {
                     description: (info && info.description) ? info.description : '',
                     organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
                     taskTemplate: (info && info.taskTemplate) ? info.taskTemplate : "",
-                    responsible: (info && info.responsible) ? info.responsible : [],
-                    accountable: (info && info.accountable) ? info.accountable : [],
+                    responsible: (info && info.responsibleName) ? info.responsibleName : [],
+                    accountable: (info && info.accountableName) ? info.accountableName : [],
                 }
             })
             return false;
@@ -77,7 +76,7 @@ class FormInfoTask extends Component {
         });
         this.props.handleChangeTemplate(value[0])
     }
-    handleChangeResponsible = (value, a) => {
+    handleChangeResponsible = (value) => {
         this.setState({
             responsible: value,
         })
@@ -86,7 +85,7 @@ class FormInfoTask extends Component {
     handleChangeAccountable = (value) => {
         this.setState({
             accountable: value,
-        })
+        },()=> console.log(this.state))
         this.props.handleChangeAccountable(value);
     }
 
@@ -119,35 +118,27 @@ class FormInfoTask extends Component {
 
     render() {
         const { user, translate, role, tasktemplates } = this.props;
-        const { nameTask, description, responsible, accountable, organizationalUnit, taskTemplate, startDate, endDate, priority } = this.state;
-        const { id, info, action, listOrganizationalUnit, disabled, listUser, astemplate } = this.props;
+        const { id, info, action, listOrganizationalUnit, disabled, template, listUser, task, } = this.props;
+
+        const { nameTask, description, organizationalUnit, taskTemplate, startDate, endDate, priority,responsible,accountable } = this.state;
+        console.log(info)
         let usersOfChildrenOrganizationalUnit, listTaskTemplate, listUserAccountable = [], listUserResponsible = [];
         if (user && user.usersOfChildrenOrganizationalUnit) {
             usersOfChildrenOrganizationalUnit = user.usersOfChildrenOrganizationalUnit;
         }
+
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
         let listRoles = [];
+        let listItem = [];
         listOrganizationalUnit.forEach(x => {
             if (x._id === info?.organizationalUnit) {
                 listRoles = [...x.deans, ...x.viceDeans, ...x.employees]
             }
         })
-        let listItem = listRoles.map(x => {
+        listItem = listRoles.map(x => {
             return { text: x.name, value: x._id }
         })
 
-        if (tasktemplates.items && organizationalUnit) {
-            listTaskTemplate = tasktemplates.items.filter(function (taskTemplate) {
-                return taskTemplate.organizationalUnit._id === organizationalUnit;
-            });
-        }
-        // list template
-        let listTemp = [{ value: "", text: "--Chọn mẫu công việc--" }];
-        if (listTaskTemplate && listTaskTemplate.length !== 0) {
-            listTaskTemplate.map(item => {
-                listTemp.push({ value: item._id, text: item.name })
-            })
-        }
         //Xử lí khởi tạo quy trình
         if (listUser) {
             listUser.forEach(x => {
@@ -159,6 +150,14 @@ class FormInfoTask extends Component {
                 if (info?.responsible.some(y => y === x.roleId)) {
                     listUserResponsible.push({ value: x.userId._id, text: x.userId.name })
                 }
+            })
+        }
+
+        // list template
+        let listTemp = [{ value: "", text: "--Chọn mẫu công việc--" }];
+        if (listTaskTemplate && listTaskTemplate.length !== 0) {
+            listTaskTemplate.map(item => {
+                listTemp.push({ value: item._id, text: item.name })
             })
         }
         return (
@@ -224,7 +223,7 @@ class FormInfoTask extends Component {
                                 className="form-control select2"
                                 style={{ width: "100%" }}
                                 // items={unitMembers}
-                                items={astemplate ? listItem : listUserResponsible}
+                                items={listUserResponsible}
                                 onChange={this.handleChangeResponsible}
                                 multiple={true}
                                 value={responsible}
@@ -241,8 +240,8 @@ class FormInfoTask extends Component {
                                 id={`select-accountable-employee-${id}-${action}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                // items={unitMembers}
-                                items={astemplate ? listItem : listUserAccountable}
+
+                                items={listUserAccountable}
                                 onChange={this.handleChangeAccountable}
                                 multiple={true}
                                 value={accountable}
@@ -251,41 +250,7 @@ class FormInfoTask extends Component {
                         }
                     </div>
 
-                    {/* Ngay bat dau - ngay ket thuc */}
-                    <div className=" row form-group">
-                        <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12}`}>
-                            <label className="control-label">{translate('task.task_management.start_date')}*</label>
-                            <DatePicker
-                                id={`datepicker1-${id}`}
-                                dateFormat="day-month-year"
-                                value={startDate}
-                                onChange={this.handleChangeTaskStartDate}
-                            />
-                            {/* <ErrorLabel content={errorOnStartDate} /> */}
-                        </div>
-                        <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 }`}>
-                            <label className="control-label">{translate('task.task_management.end_date')}*</label>
-                            <DatePicker
-                                id={`datepicker2-${id}`}
-                                value={endDate}
-                                onChange={this.handleChangeTaskEndDate}
-                            />
-                            {/* <ErrorLabel content={errorOnEndDate} /> */}
-                        </div>
-                    </div>
-
-                    <div className="form-group">
-                        <label className="control-label">{translate('task.task_management.detail_priority')}*</label>
-                        <select className="form-control"
-                            value={priority}
-                            onChange={this.handleChangeTaskPriority}
-                        >
-                            <option value={3}>{translate('task.task_management.high')}</option>
-                            <option value={2}>{translate('task.task_management.normal')}</option>
-                            <option value={1}>{translate('task.task_management.low')}</option>
-                        </select>
-                    </div>
-
+    
                     <button className='btn btn-primary' onClick={this.props.done}> Hoàn thành</button>
                 </form>
             </div>

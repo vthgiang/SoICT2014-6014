@@ -1,5 +1,9 @@
-import { AnnualLeaveConstants } from "./constants";
-import { AnnualLeaveService } from "./services";
+import {
+    AnnualLeaveConstants
+} from "./constants";
+import {
+    AnnualLeaveService
+} from "./services";
 export const AnnualLeaveActions = {
     searchAnnualLeaves,
     createAnnualLeave,
@@ -9,8 +13,8 @@ export const AnnualLeaveActions = {
 
 /**
  * Lấy danh sách nghỉ phép
- * @data : dữ liệu key tìm kiếm
- */ 
+ * @data : Dữ liệu key tìm kiếm
+ */
 function searchAnnualLeaves(data) {
     return dispatch => {
         dispatch({
@@ -59,7 +63,7 @@ function createAnnualLeave(data) {
 
 /**
  * Xoá thông tin nghỉ phép
- * @id: Id nghỉ phép cần xoá
+ * @id : Id nghỉ phép cần xoá
  */
 function deleteAnnualLeave(id) {
     return dispatch => {
@@ -85,7 +89,7 @@ function deleteAnnualLeave(id) {
 /**
  * Cập nhật thông tin nghỉ phép
  * @id : Id nghỉ phép cần cập nhật 
- * @data  : dữ liệu cập nhật nghỉ phép
+ * @data  : Dữ liệu cập nhật nghỉ phép
  */
 function updateAnnualLeave(id, infoSabbatical) {
     return dispatch => {

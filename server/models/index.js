@@ -68,6 +68,9 @@ const CustomerCare = require('./customer/customerCare.model');
 const CustomerGroup = require('./customer/customerGroup.model');
 const CustomerLiability = require('./customer/customerLiability.model');
 
+//order
+const Order = require("./order/order.model");
+
 const Location = require('./common/location.model');
 
 exports.schema = {
@@ -79,6 +82,7 @@ exports.schema = {
     Document,
     DocumentCategory,
     DocumentDomain,
+    DocumentArchive,
 
     AnnualLeave,
     Commendation,
@@ -137,4 +141,6 @@ exports.schema = {
     CustomerLiability,
 
     Location,
+
+    Order,
 } 
