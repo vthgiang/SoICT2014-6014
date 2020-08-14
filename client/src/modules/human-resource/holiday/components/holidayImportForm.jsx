@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ImportFileExcel, ConFigImportFile, ShowImportData, PaginateBar, DatePicker } from '../../../../common-components';
+
+import { DialogModal, ImportFileExcel, ConFigImportFile, ShowImportData } from '../../../../common-components';
+
 import { configurationHoliday } from './fileConfigurationImportHoliday';
 
-import { AuthActions } from '../../../auth/redux/actions';
 import { HolidayActions } from '../redux/actions';
+import { AuthActions } from '../../../auth/redux/actions';
+
 
 class HolidayImportForm extends Component {
     constructor(props) {
@@ -20,12 +23,16 @@ class HolidayImportForm extends Component {
             page: 0
         };
     }
+
     componentDidUpdate() {
         const { holiday } = this.props;
         holiday.importStatus && window.$(`#modal_import_file`).modal("hide");
     }
 
-    // Function Thay đổi cấu hình file import
+    /**
+     * Function Thay đổi cấu hình file import
+     * @param {*} value : Dữ liệu cấu hình file import
+     */
     handleChangeConfig = (value) => {
         this.setState({
             configData: value,
@@ -33,7 +40,10 @@ class HolidayImportForm extends Component {
         })
     }
 
-    // Convert dữ liệu date trong excel thành dạng dd-mm-yyyy
+    /**
+     * Convert dữ liệu date trong excel thành dạng dd-mm-yyyy
+     * @param {*} serial : seri ngày cần format
+     */
     convertExcelDateToJSDate = (serial) => {
         let utc_days = Math.floor(serial - 25569);
         let utc_value = utc_days * 86400;
@@ -47,8 +57,13 @@ class HolidayImportForm extends Component {
         return [day, month, date_info.getFullYear()].join('-');
     }
 
-    // Function thay đổi file import
+    /**
+     * Function thay đổi file import
+     * @param {*} value : Dữ liệu import
+     * @param {*} checkFileImport : true file import hợp lệ, false file import không hợp lệ
+     */
     handleImportExcel = (value, checkFileImport) => {
+        const { translate } = this.props;
         value = value.map(x => {
             let startDate = typeof x.startDate === 'string' ? x.startDate : this.convertExcelDateToJSDate(x.startDate);
             let endDate = typeof x.endDate === 'string' ? x.endDate : this.convertExcelDateToJSDate(x.endDate);
@@ -57,7 +72,6 @@ class HolidayImportForm extends Component {
 
         if (checkFileImport) {
             let rowError = [];
-            // Check dữ liệu import có hợp lệ hay không
             value = value.map((x, index) => {
                 let errorAlert = [];
                 if (x.startDate === null || x.endDate === null || x.reason === null) {
@@ -65,17 +79,18 @@ class HolidayImportForm extends Component {
                     x = { ...x, error: true }
                 };
                 if (x.startDate === null) {
-                    errorAlert = [...errorAlert, 'Ngày bắt đầu không được để trống'];
+                    errorAlert = [...errorAlert, translate('human_resource.holiday.start_date_required')];
                 };
                 if (x.endDate === null) {
-                    errorAlert = [...errorAlert, 'Ngày kết thúc không được để trống'];
+                    errorAlert = [...errorAlert, translate('human_resource.holiday.end_date_required')];
                 };
                 if (x.reason === null) {
-                    errorAlert = [...errorAlert, 'Mô tả lịch nghỉ không được để trống'];
+                    errorAlert = [...errorAlert, translate('human_resource.holiday.reason_required')];
                 };
                 x = { ...x, errorAlert: errorAlert }
                 return x;
             });
+
             this.setState({
                 importData: value,
                 rowError: rowError,
@@ -88,7 +103,7 @@ class HolidayImportForm extends Component {
         }
     }
 
-
+    /** Function kiểm tra lỗi của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
         let { rowError, importData } = this.state;
         const { holiday } = this.props;
@@ -101,6 +116,7 @@ class HolidayImportForm extends Component {
         } return false
     }
 
+    /** function import dữ liệu */
     save = () => {
         let { importData } = this.state;
         let data = importData;
@@ -114,6 +130,12 @@ class HolidayImportForm extends Component {
         this.props.importHoliday(data);
     }
 
+    /**
+     * Function dowload file import mẫu
+     * @param {*} e 
+     * @param {*} path : Đường dẫn file
+     * @param {*} fileName : Tên file dùng đê lưu
+     */
     requestDownloadFile = (e, path, fileName) => {
         e.preventDefault()
         this.props.downloadFile(path, fileName)
@@ -121,23 +143,27 @@ class HolidayImportForm extends Component {
 
     render() {
         const { translate, holiday } = this.props;
+
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
+
         if (holiday.error.rowError !== undefined) {
             rowError = holiday.error.rowError;
             importData = holiday.error.data
         }
+
         return (
             <React.Fragment>
                 <DialogModal
                     modalID={`modal_import_file`} isLoading={false}
                     formID={`form_import_file`}
-                    title='Thêm dữ liệu bằng việc Import file excel'
+                    title={translate('human_resource.add_data_by_excel')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                     closeOnSave={false}
                     size={75}
                 >
                     <form className="form-group" id={`form_import_file`}>
+                        {/* Cấu hình file import */}
                         <ConFigImportFile
                             id="import_salary_config"
                             configData={configData}
@@ -146,19 +172,22 @@ class HolidayImportForm extends Component {
                             handleChangeConfig={this.handleChangeConfig}
                         />
                         <div className="row">
+                            {/* Chọn file import */}
                             <div className="form-group col-md-4 col-xs-12">
                                 <ImportFileExcel
                                     configData={configData}
                                     handleImportExcel={this.handleImportExcel}
                                 />
                             </div>
+                            {/* File import mẫu */}
                             <div className="form-group col-md-4 col-xs-12">
                                 <label></label>
                                 <a className='pull-right'
                                     style={{ cursor: "pointer" }}
                                     onClick={(e) => this.requestDownloadFile(e, `.${configData.file.fileUrl}`, configData.file.fileName)}>
-                                    <i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
+                                    <i className="fa fa-download"> &nbsp;{translate('human_resource.download_file')}</i></a>
                             </div>
+                            {/* Hiện thị dữ liệu import */}
                             <div className="form-group col-md-12 col-xs-12">
                                 <ShowImportData
                                     id="import_salary_show_data"

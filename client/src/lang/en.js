@@ -1006,7 +1006,7 @@ export default {
 
             // Quản lý lương nhân viên
             salary: {
-                list_salary: 'List of staff salary',
+                // list_salary: 'List of staff salary',
                 file_name_export: 'Salary tracking table',
 
                 // Nhóm dành cho table
@@ -1056,7 +1056,7 @@ export default {
 
             // Quản lý nghỉ phép
             annual_leave: {
-                list_annual_leave: 'List of staff annual leave',
+                // list_annual_leave: 'List of staff annual leave',
 
                 // Nhóm dành cho table
                 table: {
@@ -1238,23 +1238,39 @@ export default {
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             holiday: {
+                file_name_export: 'Work plan',
+                // Nhóm dành cho table
+                table: {
+                    timeline: 'Timelines',
+                    start_date: 'Start date',
+                    end_date: 'End date',
+                    describe_timeline: 'Description',
+                },
+
+                // Nhóm dành cho action
+                edit_holiday: 'Edit work schedule',
+                delete_holiday: 'Delete work schedule',
+                add_holiday: 'Add work schedule',
+                add_holiday_title: 'Add new work schedule',
+                add_by_hand: 'Add one work schedule',
+                add_import: 'Import file excel',
 
                 // Thông điệp trả về từ server
                 start_date_required: 'Start date required',
                 end_date_required: 'End date required',
-                reason_required: 'Reason required',
+                reason_required: 'Description required',
                 holiday_duplicate_required: 'Time is overlapping',
 
-                get_holiday_success: 'Get holiday success',
-                get_holiday_faile: 'Get holiday faile',
-                create_holiday_success: 'Create holiday success',
-                create_holiday_faile: 'Create holiday faile',
-                delete_holiday_success: 'Delete holiday success',
-                delete_holiday_faile: 'Delete holiday faile',
-                edit_holiday_success: 'Edit holiday success',
-                edit_holiday_faile: 'Edit holiday faile',
-                import_holiday_success: 'Import holiday success',
-                import_holiday_faile: 'Import holiday faile',
+                get_holiday_success: 'Get work schedule success',
+                get_holiday_faile: 'Get work schedule faile',
+                create_holiday_success: 'Create work schedule success',
+                create_holiday_faile: 'Create work schedule faile',
+                delete_holiday_success: 'Delete work schedule success',
+                delete_holiday_faile: 'Delete work schedule faile',
+                edit_holiday_success: 'Edit work schedule success',
+                edit_holiday_faile: 'Edit work schedule faile',
+                import_holiday_success: 'Import work schedule success',
+                import_holiday_faile: 'Import work schedule faile',
 
             },
 
@@ -1413,7 +1429,7 @@ export default {
                 asset_type_code: 'Asset type code',
                 asset_type_name: 'Asset type name',
                 parent_asset_type: 'Parent asset type',
-                    
+
                 //Thông điệp trả về từ server
                 get_asset_type_success: 'Lấy thông tin loại tài sản thành công',
                 get_asset_type_faile: 'Lấy thông tin loại tài sản thất bại',

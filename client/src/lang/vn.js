@@ -1005,7 +1005,7 @@ export default {
 
             // Quản lý lương nhân viên
             salary: {
-                list_salary: 'Danh sách bảng lương nhân viên',
+                // list_salary: 'Danh sách bảng lương nhân viên',
                 file_name_export: 'Bảng theo dõi lương thưởng',
 
                 // Nhóm dành cho table
@@ -1055,7 +1055,7 @@ export default {
 
             // Quản lý nghỉ phép
             annual_leave: {
-                list_annual_leave: 'Danh sách đơn xin nghỉ',
+                // list_annual_leave: 'Danh sách đơn xin nghỉ',
 
                 // Nhóm dành cho table
                 table: {
@@ -1236,6 +1236,23 @@ export default {
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             holiday: {
+                file_name_export: 'Kế hoạch làm việc',
+
+                // Nhóm dành cho table
+                table: {
+                    timeline: 'Các mốc thời gian',
+                    start_date: 'Ngày bắt đầu',
+                    end_date: 'Ngày kết thúc',
+                    describe_timeline: 'Mô tả',
+                },
+
+                // Nhóm dành cho action
+                edit_holiday: 'Chỉnh sửa lịch làm việc',
+                delete_holiday: 'Xoá lịch làm việc',
+                add_holiday: 'Thêm mới',
+                add_holiday_title: 'Thêm mới lịch làm việc',
+                add_by_hand: 'Thêm một lịch làm việc',
+                add_import: 'Import file excel',
 
                 // Thông điệp trả về từ server
                 start_date_required: 'Thời gian bắt đầu không được để trống',
