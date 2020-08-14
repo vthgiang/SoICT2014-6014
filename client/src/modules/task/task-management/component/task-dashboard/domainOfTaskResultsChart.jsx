@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { taskManagementActions } from '../../redux/actions';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
 
 import { SelectBox } from '../../../../../common-components/index';
 
@@ -72,6 +73,7 @@ class DomainOfTaskResultsChart extends Component {
                 if (this.props.units) {
                     if (this.props.units.length)
                         await this.props.getTaskInOrganizationUnitByMonth(this.props.units, nextProps.startMonth, nextProps.endMonth);
+                    await this.props.getAllEmployeeOfUnitByIds(this.props.units)
                 }
             }
             else {
@@ -385,6 +387,8 @@ const actions = {
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
     getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
+    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
+
 }
 
 const connectedDomainOfTaskResultsChart = connect(mapState, actions)(withTranslate(DomainOfTaskResultsChart));

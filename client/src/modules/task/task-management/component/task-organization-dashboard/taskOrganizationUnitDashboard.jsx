@@ -11,6 +11,7 @@ import { DashboardEvaluationEmployeeKpiSetAction } from '../../../../kpi/evaluat
 
 import { withTranslate } from 'react-redux-multilingual';
 import { SelectBox, SelectMulti, DatePicker } from '../../../../../common-components/index';
+import { DistributionOfEmployee } from './distributionOfEmployee';
 
 class TaskOrganizationUnitDashboard extends Component {
     constructor(props) {
@@ -233,7 +234,9 @@ class TaskOrganizationUnitDashboard extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-12">
+                </div>
+                <div className="row">
+                    <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_area_result')}</div>
@@ -251,7 +254,7 @@ class TaskOrganizationUnitDashboard extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-12">
+                    <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.detail_status')}</div>
@@ -271,7 +274,22 @@ class TaskOrganizationUnitDashboard extends Component {
                         </div>
                     </div>
                 </div>
-
+                <div className="row">
+                    <div className="col-xs-12">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">Biểu đồ đóng góp của nhân viên </div>
+                            </div>
+                            <div className="box-body qlcv">
+                                {this.state.callAction &&
+                                    <DistributionOfEmployee
+                                        units={idsUnit}
+                                    />
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div className="row">
                     <div className="col-xs-6">
                         <div className="box box-primary">
@@ -340,7 +358,6 @@ class TaskOrganizationUnitDashboard extends Component {
                             <TasksSchedule
                                 callAction={!this.state.willUpdate}
                                 TaskOrganizationUnitDashboard={true}
-                                // tasksInUnit={tasks.organizationUnitTasks && tasks.organizationUnitTasks}
                                 units={idsUnit}
                                 willUpdate={true}
                             />
