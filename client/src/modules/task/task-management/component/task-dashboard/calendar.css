@@ -48,9 +48,11 @@
     background: #bbb;
     border-bottom: 1px solid #bbb;
   }
-  .rct-header-root > div{
+  #rct-header-text{
     background-color: #f0f0f0;
     border-bottom: 1px solid #bbb;
+    font-weight: 600;
+    padding: 20px 0px 0px 5px;
   }
   .rct-items .rct-item {
     background: #ECF0F5 !important;

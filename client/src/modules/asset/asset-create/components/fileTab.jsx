@@ -119,14 +119,14 @@ class FileTab extends Component {
                     {/* Nơi lưu trữ bản cứng */}
                     <div className="col-md-4">
                         <div className="form-group">
-                            <label>Nơi lưu trữ bản cứng</label>
-                            <input type="text" className="form-control" name="archivedRecordNumber" value={archivedRecordNumber} onChange={this.handleArchivedRecordNumberChange} placeholder="Nơi lưu trữ bản cứng" autoComplete="off" />
+                            <label>{translate('asset.general_information.store_location')}</label>
+                            <input type="text" className="form-control" name="archivedRecordNumber" value={archivedRecordNumber} onChange={this.handleArchivedRecordNumberChange} placeholder={translate('asset.general_information.store_location')} autoComplete="off" />
                         </div>
                     </div>
 
                     {/* Danh sách tài liệu đính kèm */}
                     <div className="col-md-12">
-                        <h4 className="row col-md-6 col-xs-8">Danh sách tài liệu đính kèm:</h4>
+                        <h4 className="row col-md-6 col-xs-8">{translate('asset.asset_info.file_list')}:</h4>
 
                         {/* Form thêm tài liệu đính kèm */}
                         <FileAddModal handleChange={this.handleAddFile} id={`addFile${id}`} />
@@ -137,11 +137,11 @@ class FileTab extends Component {
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
-                                    <th>Tên tài liệu</th>
-                                    <th>Mô tả</th>
-                                    <th>Số lượng</th>
-                                    <th>File đính kèm</th>
-                                    <th style={{ width: '120px' }}>Hành động</th>
+                                    <th>{translate('asset.general_information.file_name')}</th>
+                                    <th>{translate('asset.general_information.description')}</th>
+                                    <th>{translate('asset.general_information.number')}</th>
+                                    <th>{translate('asset.general_information.attached_file')}</th>
+                                    <th style={{ width: '120px' }}>{translate('table.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>

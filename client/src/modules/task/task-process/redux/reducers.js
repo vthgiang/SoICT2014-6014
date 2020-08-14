@@ -57,9 +57,14 @@ export function taskProcess(state = {}, action) {
         isLoading: true
       };
     case TaskProcessConstants.EDIT_XML_DIAGRAM_SUCCESS:
+      // return {
+      //   ...state,
+      //   xmlDiagram: action.payload.content
+      // };
       return {
         ...state,
-        xmlDiagram: action.payload.content
+        xmlDiagram: action.payload.content.data,
+        totalPage: action.payload.content.pageTotal
       };
     case TaskProcessConstants.EDIT_XML_DIAGRAM_FAIL:
       return {
@@ -72,11 +77,31 @@ export function taskProcess(state = {}, action) {
         isLoading: true
       };
     case TaskProcessConstants.DELETE_XML_DIAGRAM_SUCCESS:
+      // return {
+      //   ...state,
+      //   xmlDiagram: action.payload.content
+      // };
+      return {
+        ...state,
+        xmlDiagram: action.payload.content.data,
+        totalPage: action.payload.content.pageTotal
+      };
+    case TaskProcessConstants.DELETE_XML_DIAGRAM_FAIL:
+      return {
+        error: action.error,
+        isLoading: false
+      };
+    case TaskProcessConstants.CREATE_TASK_BY_PROCESS_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      };
+    case TaskProcessConstants.CREATE_TASK_BY_PROCESS_SUCCESS:
       return {
         ...state,
         xmlDiagram: action.payload.content
       };
-    case TaskProcessConstants.DELETE_XML_DIAGRAM_FAIL:
+    case TaskProcessConstants.CREATE_TASK_BY_PROCESS_FAIL:
       return {
         error: action.error,
         isLoading: false

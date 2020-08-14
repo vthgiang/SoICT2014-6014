@@ -174,7 +174,7 @@ class FileTab extends Component {
                                     <th>{translate('manage_employee.number')}</th>
                                     <th>{translate('table.status')}</th>
                                     <th>{translate('manage_employee.attached_files')}</th>
-                                    <th style={{ width: '120px' }}>{translate('table.action')}</th>
+                                    <th style={{ width: '120px' }}>{translate('general.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>

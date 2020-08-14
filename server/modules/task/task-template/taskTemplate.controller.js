@@ -187,19 +187,23 @@ exports.editTaskTemplate = async(req, res) => {
  * @param {*} res 
  */
 exports.importTaskTemplate = async(req, res)=>{
-   // try{
-        let data = await TaskTemplateService.importTaskTemplate(req.body, req.user._id);
+    try {
+        var data = await TaskTemplateService.importTaskTemplate(req.body, req.user._id);
+        await LogInfo(req.user.email, 'Import task template', req.user.company);
         res.status(200).json({
             success: true,
-            message: [`import_task_template_success`],
+            messages: ["import_task_template_success"],
             content: data
         });
-    // }catch(error){
-    //     res.status(400).json({
-    //         success: false,
-    //         message:[`import_task_template_faile`],
-    //         content: error
-    //     });
-    // }
+    } catch (error) {
+        await LogError(req.user.email, 'Import task template', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ["import_task_template_faile"],
+            content: {
+                error: error
+            }
+        });
+    }
 }
 

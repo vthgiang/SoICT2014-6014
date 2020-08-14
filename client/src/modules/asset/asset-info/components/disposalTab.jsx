@@ -58,22 +58,22 @@ class DisposalTab extends Component {
                 <div className="box-body">
                     {/* Thông tin thanh lý */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">Thông tin thanh lý</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('asset.general_information.disposal_information')}</h4></legend>
 
                         <div className="form-group">
-                            <strong>Thời gian thanh lý:&emsp; </strong>
+                            <strong>{translate('asset.general_information.disposal_date')}&emsp; </strong>
                             {disposalDate ? this.formatDate(disposalDate) : ''}
                         </div>
                         <div className="form-group">
-                            <strong>Hình thức thanh lý:&emsp; </strong>
+                            <strong>{translate('asset.general_information.disposal_type')}&emsp; </strong>
                             {disposalType}
                         </div>
                         <div className="form-group">
-                            <strong>Giá trị thanh lý:&emsp; </strong>
+                            <strong>{translate('asset.general_information.disposal_price')}&emsp; </strong>
                             {disposalCost ? formater.format(parseInt(disposalCost)) : ''} VNĐ
                         </div>
                         <div className="form-group">
-                            <strong>Nội dung thanh lý:&emsp; </strong>
+                            <strong>{translate('asset.general_information.disposal_content')}&emsp; </strong>
                             {disposalDesc}
                         </div>
                     </fieldset>

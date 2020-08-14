@@ -29,6 +29,9 @@ const TaskProcessSchema = new Schema({
     ref: User,
   },
   infoTask: [{
+    code: {
+      type: String,
+    },
     organizationalUnit: {
       type: Schema.Types.ObjectId,
       ref: OrganizationalUnit,
@@ -131,7 +134,12 @@ const TaskProcessSchema = new Schema({
       default: 0,
       required: true
     }
-  }]
+  }],
+  numberOfUse: {
+      type: Number,
+      default: 0,
+      required: true
+  },
 });
 
 module.exports = TaskHistory = mongoose.model("task_process", TaskProcessSchema);

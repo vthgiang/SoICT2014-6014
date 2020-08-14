@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { HolidayFormValidator } from './combinedContent';
 
 import { DialogModal, DatePicker, ErrorLabel } from '../../../../common-components';
+
+import { HolidayFormValidator } from './combinedContent';
 
 import { HolidayActions } from '../redux/actions';
 
@@ -13,13 +14,14 @@ class HolidayEditForm extends Component {
         this.state = {}
     }
 
-    // Bắt sự kiện thay đổi lý do nghỉ
+    /** Bắt sự kiện thay đổi lý do nghỉ */
     handleDescriptionChange = (e) => {
         const { value } = e.target;
         this.validateDescription(value, true);
     }
     validateDescription = (value, willUpdateState = true) => {
-        let msg = HolidayFormValidator.validateDescription(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = HolidayFormValidator.validateDescription(value, translate);
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -32,9 +34,14 @@ class HolidayEditForm extends Component {
         return msg === undefined;
     }
 
-    // Bắt sự kiện thay đổi thời gian bắt đầu
+    /**
+     * Bắt sự kiện thay đổi thời gian bắt đầu
+     * @param {*} value : Ngày bắt đầu
+     */
     handleStartDateChange = (value) => {
+        const { translate } = this.props;
         let { errorOnEndDate, endDate } = this.state;
+
         let errorOnStartDate;
         let partValue = value.split('-');
         let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
@@ -43,10 +50,11 @@ class HolidayEditForm extends Component {
         let d = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
 
         if (date.getTime() > d.getTime()) {
-            errorOnStartDate = "Thời gian bắt đầu phải trước thời gian kết thúc";
+            errorOnStartDate = translate('human_resource.start_date_before_end_date');
         } else {
-            errorOnEndDate = errorOnEndDate === 'Thời gian kết thúc phải sau thời gian bắt đầu' ? undefined : errorOnEndDate
+            errorOnEndDate = undefined;
         }
+
         this.setState({
             startDate: value,
             errorOnStartDate: errorOnStartDate,
@@ -54,20 +62,27 @@ class HolidayEditForm extends Component {
         })
     }
 
-    // Bắt sự kiện thay đổi thời gian kết thúc
+    /**
+     * Bắt sự kiện thay đổi thời gian kết thúc
+     * @param {*} value : Ngày kết thúc
+     */
     handleEndDateChange = (value) => {
+        const { translate } = this.props;
         let { startDate, errorOnStartDate } = this.state;
+
+        let errorOnEndDate;
         let partValue = value.split('-');
         let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
 
         let partStartDate = startDate.split('-');
         let d = new Date([partStartDate[2], partStartDate[1], partStartDate[0]].join('-'));
-        let errorOnEndDate;
+
         if (d.getTime() > date.getTime()) {
-            errorOnEndDate = "Thời gian kết thúc phải sau thời gian bắt đầu";
+            errorOnEndDate = translate('human_resource.end_date_after_start_date');
         } else {
-            errorOnStartDate = errorOnStartDate === 'Thời gian bắt đầu phải trước thời gian kết thúc' ? undefined : errorOnStartDate
+            errorOnStartDate = undefined;
         }
+
         this.setState({
             endDate: value,
             errorOnStartDate: errorOnStartDate,
@@ -75,26 +90,28 @@ class HolidayEditForm extends Component {
         })
     }
 
-    // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
+    /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
-        let result = this.validateDescription(this.state.description, false);
-        let partStart = this.state.startDate.split('-');
-        let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
-        let partEnd = this.state.endDate.split('-');
-        let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
-        if (new Date(startDate).getTime() <= new Date(endDate).getTime()) {
+        const { description, startDate, endDate } = this.state;
+        let result = this.validateDescription(description, false);
+        let partStart = startDate.split('-');
+        let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
+        let partEnd = endDate.split('-');
+        let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        if (new Date(startDateNew).getTime() <= new Date(endDateNew).getTime()) {
             return result;
         } else return false;
     }
 
-    // Bắt sự kiện submit form
+    /** Bắt sự kiện submit form */
     save = () => {
-        let partStart = this.state.startDate.split('-');
-        let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
-        let partEnd = this.state.endDate.split('-');
-        let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        const { startDate, endDate, _id } = this.state;
+        let partStart = startDate.split('-');
+        let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
+        let partEnd = endDate.split('-');
+        let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         if (this.isFormValidated()) {
-            this.props.updateHoliday(this.state._id, { ...this.state, startDate: startDate, endDate: endDate });
+            this.props.updateHoliday(_id, { ...this.state, startDate: startDateNew, endDate: endDateNew });
         }
     }
 
@@ -119,21 +136,24 @@ class HolidayEditForm extends Component {
 
     render() {
         const { translate, holiday } = this.props;
+
         const { startDate, endDate, description, errorOnStartDate, errorOnEndDate, errorOnDescription, _id } = this.state;
+
         return (
             <React.Fragment>
                 <DialogModal
                     modalID="modal-edit-holiday" isLoading={holiday.isLoading}
                     formID="form-edit-holiday"
-                    title="Chỉnh sửa lịch nghỉ"
+                    title={translate('human_resource.holiday.edit_holiday')}
                     func={this.save}
                     size={50}
                     maxWidth={500}
                 >
                     <form className="form-group" id="form-edit-holiday" >
                         <div className="row">
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                <label>Thời gian bắt đầu<span className="text-red">*</span></label>
+                            {/* Ngày bắt đầu */}
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
+                                <label>{translate('human_resource.holiday.table.start_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit_start_date${_id}`}
                                     deleteValue={false}
@@ -142,8 +162,9 @@ class HolidayEditForm extends Component {
                                 />
                                 <ErrorLabel content={errorOnStartDate} />
                             </div>
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                <label>Thời gian kết thúc<span className="text-red">*</span></label>
+                            {/* Ngày kết thúc */}
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate && "has-error"}`}>
+                                <label>{translate('human_resource.holiday.table.end_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit_end_date${_id}`}
                                     deleteValue={false}
@@ -153,8 +174,9 @@ class HolidayEditForm extends Component {
                                 <ErrorLabel content={errorOnEndDate} />
                             </div>
                         </div>
-                        <div className={`form-group ${errorOnDescription === undefined ? "" : "has-error"}`}>
-                            <label htmlFor="description">Mô tả lịch nghỉ<span className="text-red">&#42;</span></label>
+                        {/* Mô tả */}
+                        <div className={`form-group ${errorOnDescription && "has-error"}`}>
+                            <label htmlFor="description">{translate('human_resource.holiday.table.describe_timeline')}<span className="text-red">&#42;</span></label>
                             <textarea className="form-control" rows="3" style={{ height: 72 }} name="description" value={description} onChange={this.handleDescriptionChange}></textarea>
                             <ErrorLabel content={errorOnDescription} />
                         </div>
@@ -164,6 +186,7 @@ class HolidayEditForm extends Component {
         );
     }
 };
+
 function mapState(state) {
     const { holiday } = state;
     return { holiday };

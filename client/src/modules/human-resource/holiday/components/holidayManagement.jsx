@@ -3,17 +3,22 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DeleteNotification, ExportExcel } from '../../../../common-components';
+
 import { HolidayEditForm, HolidayCreateForm, HolidayImportForm } from './combinedContent'
 
 import { HolidayActions } from '../redux/actions';
+
 class ManageHoliday extends Component {
     constructor(props) {
         super(props);
         this.state = {}
     }
+
     componentDidMount() {
         this.props.getListHoliday();
     }
+
+    /** Bắt sự kiện import kế hoạch làm việc */
     handleImport = async () => {
         await this.setState({
             importHoliday: true
@@ -21,6 +26,7 @@ class ManageHoliday extends Component {
         window.$('#modal_import_file').modal('show');
     }
 
+    /** Function bắt sự kiện thêm mới lịch làm việc */
     createHoliday = async () => {
         await this.setState({
             createHoliday: true
@@ -28,32 +34,50 @@ class ManageHoliday extends Component {
         window.$('#modal-create-holiday').modal('show');
     }
 
+    /**
+     * Function format ngày hiện tại thành dạnh dd/mm/yyyy
+     * @param {*} date : Ngày muốn format
+     */
     formatDate(date) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        return [day, month, year].join('/');
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+            return [day, month, year].join('/');
+        }
+        return date;
     }
 
+    /**
+     * Function format ngày hiện tại thành dạnh dd-mm-yyyy
+     * @param {*} date : Ngày muốn format
+     */
     formatDate2(date) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
-        return [day, month, year].join('-');
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
+            return [day, month, year].join('-');
+        }
+        return date;
     }
-    // Function bắt sự kiện chỉnh sửa thông tin nhân viên
+
+    /**
+     * Function bắt sự kiện chỉnh sửa lịch làm việc
+     * @param {*} value : Thông tin lịch làm việc
+     */
     handleEdit = async (value) => {
         await this.setState({
             ...this.state,
@@ -62,21 +86,32 @@ class ManageHoliday extends Component {
         window.$('#modal-edit-holiday').modal('show');
     }
 
-    // Function chyển đổi dữ liệu kế hoạch làm việc thành dạng dữ liệu dùng export
+    /**
+     * Function chyển đổi dữ liệu kế hoạch làm việc thành dạng dữ liệu dùng export
+     * @param {*} data 
+     */
     convertDataToExportData = (data) => {
-
+        const { translate } = this.props;
+        data = data.map((x, index) => {
+            return {
+                STT: index + 1,
+                startDate: new Date(x.startDate),
+                endDate: new Date(x.endDate),
+                description: x.description,
+            }
+        });
         let exportData = {
-            fileName: "Bảng chấm công",
+            fileName: translate('human_resource.holiday.file_name_export'),
             dataSheets: [
                 {
                     sheetName: "sheet1",
                     tables: [
                         {
                             columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "employeeNumber", value: "Mã số nhân viên" },
-                                { key: "fullName", value: "Họ và tên" },
-                                { key: "total", value: "Tổng số công", type: "Number" },
+                                { key: "STT", value: translate('human_resource.stt') },
+                                { key: "startDate", value: translate('human_resource.holiday.table.start_date') },
+                                { key: "endDate", value: translate('human_resource.holiday.table.end_date') },
+                                { key: "description", value: translate('human_resource.holiday.table.describe_timeline'), },
                             ],
                             data: data
                         }
@@ -89,24 +124,26 @@ class ManageHoliday extends Component {
 
 
     render() {
-        const { translate } = this.props;
-        const { holiday } = this.props;
+        const { translate, holiday } = this.props;
 
-        let { importHoliday, createHoliday } = this.state;
+        let { importHoliday, createHoliday, currentRow } = this.state;
 
         let listHoliday = [];
         if (holiday.listHoliday.length !== 0) {
             listHoliday = holiday.listHoliday;
         }
         let exportData = this.convertDataToExportData(listHoliday);
+
         return (
             <div className="box">
                 <div className="box-body qlcv">
+                    {/* Button thêm lịch làm việc */}
                     <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
-                        <button type="button" className="btn btn-success pull-right dropdown-toggle" data-toggle="dropdown" aria-expanded="true" title="Thêm mới kế hoạch làm việc" >Thêm mới</button>
+                        <button type="button" className="btn btn-success pull-right dropdown-toggle" data-toggle="dropdown" aria-expanded="true"
+                            title={translate('human_resource.holiday.add_holiday_title')} >{translate('human_resource.holiday.add_holiday')}</button>
                         <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }} >
-                            <li><a title={'Thêm mới thông tin chấm công từ file excel'} onClick={this.handleImport}>Import file Excel</a></li>
-                            <li><a title={'Thêm mới thông tin chấm công'} onClick={this.createHoliday}>Thêm bằng tay</a></li>
+                            <li><a title={translate('human_resource.holiday.add_data_by_excel')} onClick={this.handleImport}>{translate('human_resource.holiday.add_import')}</a></li>
+                            <li><a title={translate('human_resource.holiday.add_holiday_title')} onClick={this.createHoliday}>{translate('human_resource.holiday.add_by_hand')}</a></li>
                         </ul>
                     </div>
 
@@ -114,14 +151,14 @@ class ManageHoliday extends Component {
                     <table className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th style={{ width: "5%" }}>STT</th>
-                                <th style={{ width: "30%" }}>Các mốc thời gian</th>
-                                <th style={{ width: "55%" }}>Mô tả các mốc thời gian</th>
-                                <th style={{ width: 120 }}>Hành động</th>
+                                <th style={{ width: "5%" }}>{translate('human_resource.stt')}</th>
+                                <th style={{ width: "30%" }}>{translate('human_resource.holiday.table.timeline')}</th>
+                                <th style={{ width: "55%" }}>{translate('human_resource.holiday.table.describe_timeline')}</th>
+                                <th style={{ width: 120 }}>{translate('general.action')}</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof listHoliday === 'undefined' || listHoliday.length === 0) ? <tr><td colSpan={4}><center>{translate('table.no_data')}</center></td></tr> :
+                            {listHoliday && listHoliday.length !== 0 &&
                                 listHoliday.map((x, index) => (
                                     <tr key={index}>
                                         <td>{index + 1}</td>
@@ -142,23 +179,33 @@ class ManageHoliday extends Component {
                                 )}
                         </tbody>
                     </table>
+                    {
+                        holiday.isLoading ?
+                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                            (!listHoliday || listHoliday.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    }
                 </div>
 
-                {importHoliday && <HolidayImportForm />}
-                {createHoliday && <HolidayCreateForm />}
-                {
-                    this.state.currentRow !== undefined &&
+                { /* Form import lịch làm việc */
+                    importHoliday && <HolidayImportForm />
+                }
+                { /* Form thêm lịch làm việc*/
+                    createHoliday && <HolidayCreateForm />
+                }
+                { /* Form chỉnh sửa lịch làm việc*/
+                    currentRow !== undefined &&
                     <HolidayEditForm
-                        _id={this.state.currentRow._id}
-                        startDate={this.formatDate2(this.state.currentRow.startDate)}
-                        endDate={this.formatDate2(this.state.currentRow.endDate)}
-                        description={this.state.currentRow.description}
+                        _id={currentRow._id}
+                        startDate={this.formatDate2(currentRow.startDate)}
+                        endDate={this.formatDate2(currentRow.endDate)}
+                        description={currentRow.description}
                     />
                 }
             </div>
         );
     }
 };
+
 function mapState(state) {
     const { holiday } = state;
     return { holiday };
@@ -168,5 +215,6 @@ const actionCreators = {
     deleteHoliday: HolidayActions.deleteHoliday,
     getListHoliday: HolidayActions.getListHoliday
 };
+
 const listHoliday = connect(mapState, actionCreators)(withTranslate(ManageHoliday));
 export { listHoliday as ManageHoliday };

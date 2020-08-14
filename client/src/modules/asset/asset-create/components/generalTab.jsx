@@ -498,42 +498,42 @@ class GeneralTab extends Component {
                     <br />
                     {/* Thông tin cơ bản */}
                     <div className="col-md-8">
-                        <label>Thông tin cơ bản:</label>
+                        <label>{translate('asset.general_information.basic_information')}:</label>
                         <div>
                             <div id="form-create-asset-type" className="col-md-6">
                                 {/* Mã tài sản */}
                                 <div className={`form-group ${!errorOnCode ? "" : "has-error"} `}>
-                                    <label htmlFor="code">Mã tài sản<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="code" value={code} onChange={this.handleCodeChange} placeholder="Mã tài sản"
+                                    <label htmlFor="code">{translate('asset.general_information.asset_code')}<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" name="code" value={code} onChange={this.handleCodeChange} placeholder={translate('asset.general_information.asset_code')}
                                         autoComplete="off" />
                                     <ErrorLabel content={errorOnCode} />
                                 </div>
 
                                 {/* Tên tài sản */}
                                 <div className={`form-group ${!errorOnAssetName ? "" : "has-error"} `}>
-                                    <label htmlFor="assetName">Tên tài sản<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="assetName" value={assetName} onChange={this.handleAssetNameChange} placeholder="Tên tài sản"
+                                    <label htmlFor="assetName">{translate('asset.general_information.asset_name')}<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" name="assetName" value={assetName} onChange={this.handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')}
                                         autoComplete="off" />
                                     <ErrorLabel content={errorOnAssetName} />
                                 </div>
 
                                 {/* Số serial */}
                                 <div className={`form-group ${!errorOnSerial ? "" : "has-error"} `}>
-                                    <label htmlFor="serial">Số serial<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="serial" value={serial} onChange={this.handleSerialChange} placeholder="Số serial"
+                                    <label htmlFor="serial">{translate('asset.general_information.serial_number')}<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" name="serial" value={serial} onChange={this.handleSerialChange} placeholder={translate('asset.general_information.serial_number')}
                                         autoComplete="off" />
                                     <ErrorLabel content={errorOnSerial} />
                                 </div>
 
                                 {/* Loại tài sản */}
                                 <div className={`form-group${!errorOnAssetType ? "" : "has-error"}`}>
-                                    <label>Loại tài sản<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.asset_type')}<span className="text-red">*</span></label>
                                     <TreeSelect data={dataList} value={[assetTypes]} handleChange={this.handleAssetTypeChange} mode="radioSelect" />
                                 </div>
 
                                 {/* Ngày nhập */}
                                 <div className={`form-group ${!errorOnPurchaseDate ? "" : "has-error"}`}>
-                                    <label htmlFor="purchaseDate">Ngày nhập<span className="text-red">*</span></label>
+                                    <label htmlFor="purchaseDate">{translate('asset.general_information.purchase_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`purchaseDate${_id}`}
                                         value={purchaseDate ? this.formatDate(purchaseDate): ''}
@@ -544,7 +544,7 @@ class GeneralTab extends Component {
 
                                 {/* Ngày bảo hành */}
                                 <div className={`form-group ${!errorOnWarrantyExpirationDate ? "" : "has-error"}`}>
-                                    <label htmlFor="warrantyExpirationDate">Ngày bảo hành<span className="text-red">*</span></label>
+                                    <label htmlFor="warrantyExpirationDate">{translate('asset.general_information.warranty_expiration_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`warrantyExpirationDate${_id}`}
                                         value={warrantyExpirationDate ? this.formatDate(warrantyExpirationDate): ''}
@@ -555,7 +555,7 @@ class GeneralTab extends Component {
 
                                 {/* Người quản lý */}
                                 <div className={`form-group${!errorOnManagedBy ? "" : "has-error"}`}>
-                                    <label>Người quản lý<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.manager')}<span className="text-red">*</span></label>
                                     <div id="managedByBox">
                                         <SelectBox
                                             id={`managedBy${_id}`}
@@ -574,7 +574,7 @@ class GeneralTab extends Component {
                             {/* Người sử dụng */}
                             <div className="col-md-6">
                                 <div className={`form-group`}>
-                                    <label>Người sử dụng</label>
+                                    <label>{translate('asset.general_information.user')}</label>
                                     <div>
                                         <div id="assignedToBox">
                                             <SelectBox
@@ -592,7 +592,7 @@ class GeneralTab extends Component {
 
                                 {/* Thời gian sử dụng từ ngày */}
                                 <div className="form-group">
-                                    <label htmlFor="handoverFromDate">Thời gian sử dụng từ ngày</label>
+                                    <label htmlFor="handoverFromDate">{translate('asset.general_information.handover_from_date')}</label>
                                     <DatePicker
                                         id={`handoverFromDate${_id}`}
                                         value={handoverFromDate ? this.formatDate(handoverFromDate) : ''}
@@ -602,7 +602,7 @@ class GeneralTab extends Component {
 
                                 {/* Thời gian sử dụng đến ngày */}
                                 <div className="form-group">
-                                    <label htmlFor="handoverToDate">Thời gian sử dụng đến ngày</label>
+                                    <label htmlFor="handoverToDate">{translate('asset.general_information.handover_to_date')}</label>
                                     <DatePicker
                                         id={`handoverToDate${_id}`}
                                         value={handoverToDate ? this.formatDate(handoverToDate) : ''}
@@ -612,7 +612,7 @@ class GeneralTab extends Component {
 
                                 {/* Vị trí tài sản */}
                                 <div className={`form-group ${!errorOnLocation ? "" : "has-error"}`}>
-                                    <label htmlFor="location">Vị trí tài sản<span className="text-red">*</span></label>
+                                    <label htmlFor="location">{translate('asset.general_information.asset_location')}<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="location" value={location} onChange={this.handleLocationChange} placeholder="Vị trí tài sản"
                                         autoComplete="off" />
                                     <ErrorLabel content={errorOnLocation} />
@@ -620,14 +620,14 @@ class GeneralTab extends Component {
 
                                 {/* Mô tả */}
                                 <div className="form-group">
-                                    <label htmlFor="description">Mô tả</label>
+                                    <label htmlFor="description">{translate('asset.general_information.description')}</label>
                                     <input type="text" className="form-control" name="description" value={description} onChange={this.handleDescriptionChange} placeholder="Mô tả"
                                         autoComplete="off" />
                                 </div>
 
                                 {/* Trạng thái */}
                                 <div className="form-group">
-                                    <label>Trạng thái<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.status')}<span className="text-red">*</span></label>
                                     <SelectBox
                                         id={`status${_id}`}
                                         className="form-control select2"
@@ -635,11 +635,11 @@ class GeneralTab extends Component {
                                         value={status}
                                         items={[
                                             { value: '', text: '---Chọn trạng thái---' },
-                                            { value: 'Sẵn sàng sử dụng', text: 'Sẵn sàng sử dụng' },
-                                            { value: 'Đang sử dụng', text: 'Đang sử dụng' },
-                                            { value: 'Hỏng hóc', text: 'Hỏng hóc' },
-                                            { value: 'Mất', text: 'Mất' },
-                                            { value: 'Thanh lý', text: 'Thanh lý' },
+                                            { value: 'Sẵn sàng sử dụng', text: translate('asset.general_information.ready_use') },
+                                            { value: 'Đang sử dụng', text: translate('asset.general_information.using') },
+                                            { value: 'Hỏng hóc', text: translate('asset.general_information.damaged') },
+                                            { value: 'Mất', text: translate('asset.general_information.lost') },
+                                            { value: 'Thanh lý', text: translate('asset.general_information.disposal') },
                                         ]}
                                         onChange={this.handleStatusChange}
                                     />
@@ -647,7 +647,7 @@ class GeneralTab extends Component {
 
                                 {/* Quyền đăng ký sử dụng */}
                                 <div className="form-group">
-                                    <label>Quyền đăng ký sử dụng<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.can_register_for_use')}<span className="text-red">*</span></label>
                                     <SelectBox
                                         id={`canRegisterForUse${_id}`}
                                         className="form-control select2"
@@ -655,8 +655,8 @@ class GeneralTab extends Component {
                                         value={canRegisterForUse}
                                         items={[
                                             { value: '', text: '---Chọn quyền sử dụng---' },
-                                            { value: true, text: 'Được phép đăng ký sử dụng' },
-                                            { value: false, text: 'Không được phép đăng ký sử dụng' },
+                                            { value: true, text: translate('asset.general_information.can_register') },
+                                            { value: false, text: translate('asset.general_information.cant_register') },
                                         ]}
                                         onChange={this.handleCanRegisterForUseChange}
                                     />
@@ -666,7 +666,7 @@ class GeneralTab extends Component {
 
                         {/* Thông tin chi tiết */}
                         <div className="col-md-12">
-                            <label>Thông tin chi tiết:<a title="Thông tin chi tiết"><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }}
+                            <label>{translate('asset.general_information.detail_information')}:<a title={translate('asset.general_information.detail_information')}><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }}
                                 onClick={this.handleAddDetailInfo} /></a></label>
                             <div className={`form-group ${(!errorOnNameField && !errorOnValue) ? "" : "has-error"}`}>
 
@@ -674,8 +674,8 @@ class GeneralTab extends Component {
                                 <table className="table table-bordered">
                                     <thead>
                                         <tr>
-                                            <th>Tên trường dữ liệu</th>
-                                            <th>Giá trị</th>
+                                            <th>{translate('asset.asset_info.field_name')}</th>
+                                            <th>{translate('asset.asset_info.value')}</th>
                                             <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
                                         </tr>
                                     </thead>

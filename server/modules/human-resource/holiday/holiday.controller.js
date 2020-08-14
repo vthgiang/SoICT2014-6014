@@ -4,8 +4,11 @@ const {
     LogError
 } = require('../../../logs');
 
+
 /**
- * Hàm tiện ích kiểm tra trùng lặp thời gian nghỉ lễ tết
+ * Hàm tiện ích kiểm tra trùng lặp thời gian lịch làm việc
+ * @param {*} data : Thông tin lịch làm việc
+ * @param {*} array : Danh sách lịch làm việc
  */
 exports.checkForFuplicate = (data, array) => {
     let startDate = new Date(data.startDate);
@@ -23,9 +26,7 @@ exports.checkForFuplicate = (data, array) => {
     return checkData
 }
 
-/**
- * Lấy danh sách nghỉ lễ tết
- */
+/** Lấy danh sách lịch làm việc */
 exports.getAllHolidays = async (req, res) => {
     try {
         let data = await HolidayService.getAllHolidays(req.user.company._id);
@@ -47,9 +48,7 @@ exports.getAllHolidays = async (req, res) => {
     }
 }
 
-/**
- * Tạo mới thông tin nghỉ lễ tết
- */
+/** Tạo mới thông tin lịch làm việc */
 exports.createHoliday = async (req, res) => {
     try {
         // Kiểm tra dữ liệu đầu vào
@@ -81,7 +80,7 @@ exports.createHoliday = async (req, res) => {
                 }
             });
         } else {
-            // Tạo mới thông tin nghỉ lễ
+            // Tạo mới thông tin lịch làm việc
             let holidays = await HolidayService.getAllHolidays(req.user.company._id);
             let checkData = this.checkForFuplicate(req.body, holidays);
             if (checkData) {
@@ -115,9 +114,7 @@ exports.createHoliday = async (req, res) => {
     }
 }
 
-/**
- * Xoá thông tin nghỉ lễ tết
- */
+/** Xoá thông tin lịch làm việc */
 exports.deleteHoliday = async (req, res) => {
     try {
         let data = await HolidayService.deleteHoliday(req.params.id);
@@ -139,9 +136,7 @@ exports.deleteHoliday = async (req, res) => {
     }
 }
 
-/**
- * chỉnh sửa thông tin nghỉ lễ tết
- */
+/** Chỉnh sửa thông tin lịch làm việc */
 exports.updateHoliday = async (req, res) => {
     try {
         // Kiểm tra thông tin truyền vào
@@ -173,7 +168,7 @@ exports.updateHoliday = async (req, res) => {
                 }
             });
         } else {
-            // Chỉnh sửa thông tin nghỉ lễ
+            // Chỉnh sửa thông tin lịch làm việc
             let holidays = await HolidayService.getAllHolidays(req.user.company._id);
             holidays = holidays.filter(x => x._id.toString() !== req.params.id);
             let checkData = this.checkForFuplicate(req.body, holidays);
@@ -208,10 +203,10 @@ exports.updateHoliday = async (req, res) => {
     }
 };
 
-// Import dữ liệu nghỉ lễ tết
+/** Import dữ liệu lịch làm việc */
 exports.importHolidays = async (req, res) => {
     try {
-        var data = await HolidayService.importHolidays(req.body, req.user.company._id);
+        let data = await HolidayService.importHolidays(req.body, req.user.company._id);
         if (data.rowError !== undefined) {
             await LogError(req.user.email, 'IMPORT_HOLIDAY', req.user.company);
             res.status(400).json({

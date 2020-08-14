@@ -6,24 +6,14 @@ const {
 
 const DisciplineController = require("./discipline.controller");
 
-/**
- * Lấy danh sách kỷ luật
- */
-router.get('/', auth, DisciplineController.searchDisciplines);
 
-/**
- * Thêm mới kỷ luật
- */
-router.post('/', auth, DisciplineController.createDiscipline);
+router.get('/disciplines', auth, DisciplineController.searchDisciplines);
 
-/**
- * Xoá bẳng thông tin kỷ luật
- */
-router.delete('/:id', auth, DisciplineController.deleteDiscipline);
+router.post('/disciplines', auth, DisciplineController.createDiscipline);
 
-/**
- * Chỉnh sửa thông tin kỷ luật
- */
-router.patch('/:id', auth, DisciplineController.updateDiscipline);
+router.patch('/disciplines/:id', auth, DisciplineController.updateDiscipline);
+router.delete('/disciplines/:id', auth, DisciplineController.deleteDiscipline);
+
+
 
 module.exports = router;
