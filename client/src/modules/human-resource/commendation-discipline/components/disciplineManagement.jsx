@@ -318,9 +318,9 @@ class DisciplineManager extends Component {
                                             </React.Fragment>
                                         )) : null}</td>
                                         <td style={{ textAlign: 'center' }}>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('discipline.edit_discipline')}><i className="material-icons">edit</i></a>
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.commendation_discipline.discipline.edit_discipline')}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
-                                                content={translate('discipline.delete_discipline')}
+                                                content={translate('human_resource.commendation_discipline.discipline.delete_discipline')}
                                                 data={{
                                                     id: x._id,
                                                     info: x.employee.employeeNumber + " - " + translate('page.number_decisions') + ": " + x.decisionNumber

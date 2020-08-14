@@ -22,7 +22,7 @@ const documents = require("./modules/document/document.route");
 
 const annualLeave = require("./modules/human-resource/annual-leave/annualLeave.route");
 const commendation = require("./modules/human-resource/commendation/commendation.route");
-const disciplines = require("./modules/human-resource/discipline/discipline.route");
+const discipline = require("./modules/human-resource/discipline/discipline.route");
 const holidays = require("./modules/human-resource/holiday/holiday.route");
 const profile = require("./modules/human-resource/profile/profile.route");
 const salary = require("./modules/human-resource/salary/salary.route");
@@ -127,7 +127,7 @@ app.use("/documents", documents);
 
 app.use("/annualLeave", annualLeave);
 app.use("/commendation", commendation);
-app.use("/disciplines", disciplines);
+app.use("/discipline", discipline);
 app.use("/holidays", holidays);
 app.use("/employees", profile);
 app.use("/salary", salary);

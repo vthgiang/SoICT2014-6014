@@ -12,33 +12,6 @@ export default {
             number_decisions_required: 'Số ra quyết định không được để trống',
             number_decisions_have_exist: 'Số ra quyết định đã tồn tại',
             unit_decisions_required: 'Cấp ra quyết định không được để trống',
-            // Quản lý khen thưởng
-            // TODO: Xoá sau
-            type_commendations_required: 'Hình thức khen thưởng không được để trống',
-            reason_commendations_required: 'Thành tích (lý do) khen thưởng không được để trống',
-            decisions_date_required: 'Ngày ra quyết định không được để trống',
-            get_commendations_success: 'Lấy danh sách khen thưởng thành công',
-            get_commendations_faile: 'Lấy danh sách khen thưởng thất bại',
-            create_commendations_success: 'Thêm mới khen thưởng thành công',
-            create_commendations_faile: 'Thêm mới khen thưởng thất bại',
-            delete_commendations_success: 'Xoá khen thưởng thành công',
-            delete_commendations_faile: 'Xoá khen thưởng thất bại',
-            edit_commendations_success: 'Chỉnh sửa khen thưởng thành công',
-            edit_commendations_faile: 'Chỉnh sửa khen thưởng thất bại',
-            // Quản lý kỷ luật
-            // TODO: Xoá sau
-            type_discipline_required: 'Hình thức kỷ luật không được để trống',
-            reason_discipline_required: 'Lý do kỷ luật không được để trống',
-            start_date_discipline_required: 'Ngày có hiệu lực không được để trống',
-            end_date_discipline_required: 'Ngày hết hiệu lực không được để trống',
-            get_discipline_success: 'Lấy danh sách kỷ luật thành công',
-            get_discipline_faile: 'Lấy danh sách kỷ luật thất bại',
-            create_discipline_success: 'Thêm mới kỷ luật thành công',
-            create_discipline_faile: 'Thêm mới kỷ luật thất bại',
-            delete_discipline_success: 'Xoá kỷ luật thành công',
-            delete_discipline_faile: 'Xoá kỷ luật thất bại',
-            edit_discipline_success: 'Chỉnh sửa kỷ luật thành công',
-            edit_discipline_faile: 'Chỉnh sửa kỷ luật thất bại',
             // Quản lý thông tin cá nhân
             // TODO: Xoá sau
             get_infor_personal_success: 'Lấy thông tin cá nhân thành công',
@@ -804,37 +777,6 @@ export default {
             edit_success: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
         },
-        // Quản lý khen thưởng, kỷ luật
-        discipline: { // TODO: Xoá sau
-            list_discipline: 'Danh sách kỷ luật',
-            list_discipline_title: 'Danh sách nhân viên bị kỷ luật',
-            add_discipline: 'Thêm kỷ luật',
-            add_discipline_title: 'Thêm mới kỷ luật',
-            edit_discipline: 'Chỉnh sửa thông tin kỷ luật',
-            delete_discipline: 'Xoá thông tin kỷ luật',
-            start_date: 'Ngày có hiệu lực',
-            end_date: 'Ngày hết hiệu lực',
-            discipline_forms: 'Hình thức kỷ luật',
-            reason_discipline: 'Lý do kỷ luật',
-            check_null_msnv: 'Bạn chưa nhập mã nhân viên',
-            check_msnv: 'Mã số nhân viên không tồn tại',
-            check_number: 'Bạn chưa nhập số quyết định',
-            check_unit: 'Bạn chưa nhập cấp ra quyết định',
-            check_start_day: 'Bạn chưa nhập ngày có hiệu lực',
-            check_end_day: 'Bạn chưa nhập ngày hết hiệu lực',
-            check_reason_discipline: 'Bạn chưa nhập lý do kỷ luật',
-            check_type_discipline: 'Bạn chưa nhập hình thức kỷ luật',
-            list_praise: 'Danh sách khen thưởng',
-            list_praise_title: 'Danh sách nhân viên được khen thưởng',
-            add_praise: 'Thêm khen thưởng',
-            add_praise_title: 'Thêm mới khen thưởng',
-            edit_praise: 'Chỉnh sửa thông tin khen thưởng',
-            delete_praise: 'Xoá thông tin khen thưởng',
-            decision_day: 'Ngày ra quyết định',
-            decision_unit: 'Cấp ra quyết định',
-            reward_forms: 'Hình thức khen thưởng',
-            reason_praise: 'Thành tích (Lý do)',
-        },
         // Quản lý nhân sự các đơn vị
         manage_unit: {
             list_unit: 'Danh sách các đơn vị',
@@ -1049,6 +991,7 @@ export default {
             download_file: 'Download file import mẫu!',
             choose_file: 'Chọn file',
             name_button_export: 'Xuất báo cáo',
+            choose_decision_unit: 'Chọn cấp ra quyết định',
 
             // Thông điệp trả về từ server dung chung cho module quản lý nhân sự
             employee_number_required: 'Mã nhân viên không được để trống',
@@ -1204,6 +1147,8 @@ export default {
                     list_discipline: 'Danh sách kỷ luật',
                     list_discipline_title: 'Danh sách nhân viên bị kỷ luật',
                     file_name_export: 'Bảng thống kê kỷ luật',
+                    start_date_before_end_date: 'Ngày có hiệu lực phải trước ngày hết hiệu lực',
+                    end_date_after_start_date: 'Ngày hết hiệu lực phải sau ngày có hiệu lực',
 
                     // Nhóm dành cho table
                     table: {

@@ -28,7 +28,7 @@ export const DisciplineService = {
  */
 function getListDiscipline(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/disciplines`,
+        url: `${ LOCAL_SERVER_API }/discipline/disciplines`,
         method: 'GET',
         params: {
             organizationalUnits: data.organizationalUnits,
@@ -48,7 +48,7 @@ function getListDiscipline(data) {
  */
 function createNewDiscipline(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/disciplines`,
+        url: `${ LOCAL_SERVER_API }/discipline/disciplines`,
         method: 'POST',
         data: data
     }, true, true, 'human_resource.commendation_discipline.discipline');
@@ -60,7 +60,7 @@ function createNewDiscipline(data) {
  */
 function deleteDiscipline(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/disciplines/${id}`,
+        url: `${ LOCAL_SERVER_API }/discipline/disciplines/${id}`,
         method: 'DELETE',
     }, true, true, 'human_resource.commendation_discipline.discipline');
 }
@@ -72,7 +72,7 @@ function deleteDiscipline(id) {
  */
 function updateDiscipline(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/disciplines/${id}`,
+        url: `${ LOCAL_SERVER_API }/discipline/disciplines/${id}`,
         method: 'PATCH',
         data: data,
     }, true, true, 'human_resource.commendation_discipline.discipline');

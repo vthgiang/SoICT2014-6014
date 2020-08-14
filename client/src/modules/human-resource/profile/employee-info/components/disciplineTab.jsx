@@ -8,22 +8,32 @@ class DisciplineTab extends Component {
         this.state = {
         };
     }
-    // Function format dữ liệu Date thành string
+
+    /**
+     * Function format dữ liệu Date thành string
+     * @param {*} date : Ngày muốn format
+     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
+     */
     formatDate(date, monthYear = false) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
 
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else return [day, month, year].join('-');
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        }
+        return date;
+
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -39,25 +49,30 @@ class DisciplineTab extends Component {
 
 
     render() {
-        const { id, translate, department } = this.props;
+        const { translate, department } = this.props;
+
+        const { id } = this.props;
+
         const { commendations, disciplines } = this.state;
+
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
+                    {/* Danh sách khen thưởng */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.Reward')}</h4></legend>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
-                                    <th>{translate('page.number_decisions')}</th>
-                                    <th>{translate('discipline.decision_day')}</th>
-                                    <th>{translate('discipline.decision_unit')}</th>
-                                    <th>{translate('discipline.reward_forms')}</th>
-                                    <th>{translate('discipline.reason_praise')}</th>
+                                    <th>{translate('human_resource.commendation_discipline.commendation.table.decision_number')}</th>
+                                    <th>{translate('human_resource.commendation_discipline.commendation.table.decision_date')}</th>
+                                    <th>{translate('human_resource.commendation_discipline.commendation.table.decision_unit')}</th>
+                                    <th>{translate('human_resource.commendation_discipline.commendation.table.reward_forms')}</th>
+                                    <th>{translate('human_resource.commendation_discipline.commendation.table.reason_praise')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof commendations !== 'undefined' && commendations.length !== 0) &&
+                                {commendations && commendations.length !== 0 &&
                                     commendations.map((x, index) => {
                                         let nameUnit;
                                         department.list.forEach(u => {
@@ -79,24 +94,25 @@ class DisciplineTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof commendations === 'undefined' || commendations.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!commendations || commendations.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
+                    {/* Danh sách kỷ luật */}
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.discipline')}</h4></legend>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
-                                    <th>{translate('page.number_decisions')}</th>
-                                    <th>{translate('discipline.start_date')}</th>
-                                    <th>{translate('discipline.end_date')}</th>
-                                    <th>{translate('discipline.decision_unit')}</th>
-                                    <th>{translate('discipline.discipline_forms')}</th>
-                                    <th>{translate('discipline.reason_discipline')}</th>
+                                    <th>{translate('human_resource.commendation_discipline.commendation.table.decision_number')}</th>
+                                    <th>{translate('human_resource.commendation_discipline.discipline.table.start_date')}</th>
+                                    <th>{translate('human_resource.commendation_discipline.discipline.table.end_date')}</th>
+                                    <th>{translate('human_resource.commendation_discipline.commendation.table.decision_unit')}</th>
+                                    <th>{translate('human_resource.commendation_discipline.discipline.table.discipline_forms')}</th>
+                                    <th>{translate('human_resource.commendation_discipline.discipline.table.reason_discipline')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof disciplines !== 'undefined' && disciplines.length !== 0) &&
+                                {disciplines && disciplines.length !== 0 &&
                                     disciplines.map((x, index) => {
                                         let nameUnit;
                                         department.list.forEach(u => {
@@ -118,10 +134,9 @@ class DisciplineTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof disciplines === 'undefined' || disciplines.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!disciplines || disciplines.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
-
                 </div>
             </div>
         );

@@ -314,7 +314,7 @@ class CommendationManagement extends Component {
                                             </React.Fragment>
                                         )) : null}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('discipline.edit_praise')}><i className="material-icons">edit</i></a>
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.commendation_discipline.commendation.edit_commendation')}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
                                                 content={translate('human_resource.commendation_discipline.commendation.delete_commendation')}
                                                 data={{
