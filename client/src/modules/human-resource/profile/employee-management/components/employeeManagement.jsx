@@ -819,7 +819,7 @@ class EmployeeManagement extends Component {
                                 <th>Đơn vị</th>
                                 <th>Chức vụ</th>
                                 <th>Trạng thái</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
                                     <DataTableSetting
                                         tableId="employee-table"
                                         columnArr={[

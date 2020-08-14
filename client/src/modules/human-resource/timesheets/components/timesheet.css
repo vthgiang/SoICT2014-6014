@@ -2,6 +2,7 @@
     height: 74px;
     max-height: 74px !important;
 }
+
 .sticky {
     position: -webkit-sticky;
     position: sticky;
@@ -9,6 +10,7 @@
     background-color: white;
     z-index: 3;
 }
+
 .timekeeping td {
     height: 37px;
 }

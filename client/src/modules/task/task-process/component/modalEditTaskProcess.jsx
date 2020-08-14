@@ -45,9 +45,11 @@ class ModalEditTaskProcess extends Component {
         }
         this.modeler = new BpmnModeler({
             additionalModules: [
-                customModule,
-            ]
-        });
+               customModule,
+               // { moveCanvas: [ 'value', null ] },
+               { zoomScroll: ['value', ''] }
+            ],
+         });
         this.modeling = this.modeler.get('modeling')
         this.generateId = 'editprocess';
         this.initialDiagram = data.xmlDiagram;
@@ -359,7 +361,12 @@ class ModalEditTaskProcess extends Component {
            processDescription: this.state.processDescription,
            manager: this.state.manager,
            viewer: this.state.viewer,
-           creator: getStorage("userId")
+           creator: getStorage("userId"),
+           
+           userId: getStorage("userId"),
+           pageNumber: this.props.pageNumber,
+           noResultsPerPage: this.props.noResultsPerPage,
+           name: this.props.name,
         }
         this.props.editXmlDiagram(this.state.idProcess, data)
     }

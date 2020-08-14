@@ -7,7 +7,7 @@ const { LogInfo, LogError } = require('../../../logs');
  */
 exports.getAllXmlDiagrams = async (req, res) => {
   try {
-    var data = await TaskProcessService.getAllXmlDiagram(req.query, req.body);
+    var data = await TaskProcessService.getAllXmlDiagram(req.query);
     await LogInfo(req.user.email, `get all xml diagram `, req.user.company);
     res.status(200).json({
       success: true,
@@ -93,7 +93,7 @@ exports.editXmlDiagram = async (req, res) => {
  */
 exports.deleteXmlDiagram = async (req, res) => {
   try {
-    var data = await TaskProcessService.deleteXmlDiagram(req.params.diagramId);
+    var data = await TaskProcessService.deleteXmlDiagram(req.params.diagramId, req.query);
 
     await LogInfo(req.user.email, `delete xml diagram `, req.user.company);
     res.status(200).json({

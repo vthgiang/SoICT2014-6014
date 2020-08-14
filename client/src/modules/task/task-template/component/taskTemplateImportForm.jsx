@@ -9,7 +9,7 @@ import {taskTemplateActions} from '../redux/actions'
 import { DialogModal, SlimScroll } from '../../../../common-components';
 import { configTaskTempalte } from './fileConfigurationImportTaskTemplate';
 
-class TaskTemplateImportForm extends Component {
+class TaskTemplateImportForms extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,6 +17,7 @@ class TaskTemplateImportForm extends Component {
             importData: [],
             configData: this.convertConfigurationToString(configTaskTempalte),
             importConfiguration: null,
+            limit: 100,
             page: 0
         };
     }

@@ -12,33 +12,6 @@ export default {
             number_decisions_required: 'Decis number required',
             number_decisions_have_exist: 'Decis number have exist',
             unit_decisions_required: 'Decis unit required',
-            // Quản lý khen thưởng
-            // TODO: Xoá sau
-            type_commendations_required: 'Reward forms required',
-            reason_commendations_required: 'Reason required',
-            decisions_date_required: 'Decis day required',
-            get_commendations_success: 'Get Reward success',
-            get_commendations_faile: 'Get Reward faile',
-            create_commendations_success: 'Create Reward success',
-            create_commendations_faile: 'Create Reward faile',
-            delete_commendations_success: 'Delete Reward success',
-            delete_commendations_faile: 'Delete Reward faile',
-            edit_commendations_success: 'Edit Reward success',
-            edit_commendations_faile: 'Edit Reward faile',
-            // Quản lý kỷ luật
-            // TODO: Xoá sau
-            type_discipline_required: 'Discipline forms required',
-            reason_discipline_required: 'Reason required',
-            start_date_discipline_required: 'Effective date required',
-            end_date_discipline_required: 'Expiration date required',
-            get_discipline_success: 'Get discipline success',
-            get_discipline_faile: 'Get discipline faile',
-            create_discipline_success: 'Create discipline success',
-            create_discipline_faile: 'Create discipline faile',
-            delete_discipline_success: 'Delete discipline success',
-            delete_discipline_faile: 'Delete discipline faile',
-            edit_discipline_success: 'Edit discipline success',
-            edit_discipline_faile: 'Edit discipline faile',
             // Quản lý thông tin cá nhân
             // TODO: Xoá sau
             get_infor_personal_success: 'Get information personal success',
@@ -807,37 +780,6 @@ export default {
             edit_faile: 'Edit failed!',
         },
 
-        // Quản lý khen thưởng, kỷ luật
-        discipline: {
-            list_discipline: 'List of staff discipline',
-            list_discipline_title: 'List of staff discipline',
-            add_discipline: 'Add discipline',
-            add_discipline_title: 'Add new discipline',
-            edit_discipline: 'Edit Discipline',
-            delete_discipline: 'Delete discipline',
-            start_date: 'Effective date',
-            end_date: 'Expiration date',
-            discipline_forms: 'Discipline forms',
-            reason_discipline: 'Reason',
-            check_null_msnv: 'Staff code required',
-            check_msnv: 'Not find staff code',
-            check_number: 'Decis number required',
-            check_unit: 'Decis unit required',
-            check_start_day: 'Effective date required',
-            check_end_day: 'Expiration date required',
-            check_reason_discipline: 'Reason required',
-            check_type_discipline: 'Discipline forms required',
-            list_praise: 'List of staff reward',
-            list_praise_title: 'List of staff reward',
-            add_praise: 'Add reward',
-            add_praise_title: 'Add new reward',
-            edit_praise: 'Edit Reward',
-            delete_praise: 'Delete reward',
-            decision_day: 'Decis day',
-            decision_unit: 'Decis unit',
-            reward_forms: 'Reward forms',
-            reason_praise: 'Reason',
-        },
         // Quản lý nhân sự các đơn vị
         manage_unit: {
             list_unit: 'List of units',
@@ -1019,15 +961,6 @@ export default {
             historySalary: 'History of salary',
             sabbatical: 'Sabbatical information'
         },
-        // Quản lý kê hoạch làm việc
-        holiday: {
-            start_date: 'Start day',
-            end_Date: 'End day',
-            description: 'Description',
-            check_start_Date: 'Start day required',
-            check_end_Date: 'End day required',
-            check_description: 'Description required'
-        },
 
         // Module Quản lý nhân sự
         human_resource: {
@@ -1052,21 +985,19 @@ export default {
             download_file: 'Download the sample import file',
             choose_file: 'Choose file',
             name_button_export: 'Export report',
+            choose_decision_unit: 'Choose a decision-making unit',
 
-            // Thông điệp trả về từ server dung chung cho module quản lý nhân sự
+            // Validator dung chung cho module quản lý nhân sự
             employee_number_required: 'Staff code required',
             staff_code_not_special: 'Staff code does not contain special characters',
             staff_code_not_find: 'Staff code does not exist',
-            number_decisions_required: 'Decis number required',
-            number_decisions_have_exist: 'Decis number have exist',
-            unit_decisions_required: 'Decis unit required',
             start_date_before_end_date: 'The start date must be before the end date',
             end_date_after_start_date: 'The end date must be after the start date',
 
 
             // Quản lý lương nhân viên
             salary: {
-                list_salary: 'List of staff salary',
+                // list_salary: 'List of staff salary',
                 file_name_export: 'Salary tracking table',
 
                 // Nhóm dành cho table
@@ -1116,7 +1047,7 @@ export default {
 
             // Quản lý nghỉ phép
             annual_leave: {
-                list_annual_leave: 'List of staff annual leave',
+                // list_annual_leave: 'List of staff annual leave',
 
                 // Nhóm dành cho table
                 table: {
@@ -1159,6 +1090,7 @@ export default {
                 edit_annual_leave_faile: 'Edit annual leave faile',
 
             },
+
             // Quản lý khen thưởng kỷ luật
             commendation_discipline: {
                 // Quản lý khen thưởng
@@ -1171,7 +1103,7 @@ export default {
                     table: {
                         decision_date: 'Decision date',
                         decision_number: 'Decision number',
-                        decision_unit: 'Decis unit',
+                        decision_unit: 'Decision unit',
                         reward_forms: 'Commendation forms',
                         reason_praise: 'Reason',
 
@@ -1187,12 +1119,12 @@ export default {
                     employee_number_required: 'Staff code required',
                     staff_code_not_special: 'Staff code does not contain special characters',
                     staff_code_not_find: 'Staff code does not exist',
-                    number_decisions_required: 'Decis number required',
-                    number_decisions_have_exist: 'Decis number have exist',
-                    unit_decisions_required: 'Decis unit required',
+                    number_decisions_required: 'Decision number required',
+                    number_decisions_have_exist: 'Decision number have exist',
+                    unit_decisions_required: 'Decision unit required',
                     type_commendations_required: 'Commendation forms required',
                     reason_commendations_required: 'Reason required',
-                    decisions_date_required: 'Decis day required',
+                    decisions_date_required: 'Decision date required',
                     get_commendations_success: 'Get commendation success',
                     get_commendations_faile: 'Get commendation faile',
                     create_commendations_success: 'Create commendation success',
@@ -1208,6 +1140,8 @@ export default {
                     list_discipline: 'List of staff discipline',
                     list_discipline_title: 'List of staff discipline',
                     file_name_export: 'Discipline statistics table',
+                    start_date_before_end_date: 'The effective date must be before the expiration date',
+                    end_date_after_start_date: 'The expiration date must be after the effective date',
 
                     // Nhóm dành cho table
                     table: {
@@ -1227,9 +1161,9 @@ export default {
                     employee_number_required: 'Staff code required',
                     staff_code_not_special: 'Staff code does not contain special characters',
                     staff_code_not_find: 'Staff code does not exist',
-                    number_decisions_required: 'Decis number required',
-                    number_decisions_have_exist: 'Decis number have exist',
-                    unit_decisions_required: 'Decis unit required',
+                    number_decisions_required: 'Decision number required',
+                    number_decisions_have_exist: 'Decision number have exist',
+                    unit_decisions_required: 'Decision unit required',
                     type_discipline_required: 'Discipline forms required',
                     reason_discipline_required: 'Reason required',
                     start_date_discipline_required: 'Effective date required',
@@ -1296,28 +1230,62 @@ export default {
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             holiday: {
+                file_name_export: 'Work plan',
+                // Nhóm dành cho table
+                table: {
+                    timeline: 'Timelines',
+                    start_date: 'Start date',
+                    end_date: 'End date',
+                    describe_timeline: 'Description',
+                },
+
+                // Nhóm dành cho action
+                edit_holiday: 'Edit work schedule',
+                delete_holiday: 'Delete work schedule',
+                add_holiday: 'Add work schedule',
+                add_holiday_title: 'Add new work schedule',
+                add_by_hand: 'Add one work schedule',
+                add_import: 'Import file excel',
 
                 // Thông điệp trả về từ server
                 start_date_required: 'Start date required',
                 end_date_required: 'End date required',
-                reason_required: 'Reason required',
+                reason_required: 'Description required',
                 holiday_duplicate_required: 'Time is overlapping',
 
-                get_holiday_success: 'Get holiday success',
-                get_holiday_faile: 'Get holiday faile',
-                create_holiday_success: 'Create holiday success',
-                create_holiday_faile: 'Create holiday faile',
-                delete_holiday_success: 'Delete holiday success',
-                delete_holiday_faile: 'Delete holiday faile',
-                edit_holiday_success: 'Edit holiday success',
-                edit_holiday_faile: 'Edit holiday faile',
-                import_holiday_success: 'Import holiday success',
-                import_holiday_faile: 'Import holiday faile',
+                get_holiday_success: 'Get work schedule success',
+                get_holiday_faile: 'Get work schedule faile',
+                create_holiday_success: 'Create work schedule success',
+                create_holiday_faile: 'Create work schedule faile',
+                delete_holiday_success: 'Delete work schedule success',
+                delete_holiday_faile: 'Delete work schedule faile',
+                edit_holiday_success: 'Edit work schedule success',
+                edit_holiday_faile: 'Edit work schedule faile',
+                import_holiday_success: 'Import work schedule success',
+                import_holiday_faile: 'Import work schedule faile',
 
             },
 
             // Quản lý chấm công nhân viên
             timesheets: {
+                file_name_export: 'Timesheets',
+                symbol: ' Symbol',
+                not_work: 'Not work',
+                do_work: 'Do work',
+                total_timesheets: 'Total work date',
+                work_date_in_month: 'Work date in month',
+                shift_work: 'Shift work',
+                shifts1: 'shifts 1',
+                shifts2: 'shifts 2',
+
+                // Nhóm dành cho action
+                edit_timesheets: 'Edit timesheets',
+                delete_timesheets: 'Delete timesheets',
+                add_timesheets: 'Add timesheets',
+                add_timesheets_title: 'Add new timesheets',
+                add_by_hand: 'Add one timesheets',
+                add_import: 'Import file excel',
+
                 // Thông điệp trả về từ server
                 employee_number_required: "Staff code required",
                 month_timesheets_required: "Month timesheets required",
@@ -1333,7 +1301,6 @@ export default {
                 delete_timesheets_faile: "Delete timesheets faile",
                 import_timesheets_success: "Import timesheets success",
                 import_timesheets_faile: "Import timesheets faile",
-
             },
         },
 
