@@ -651,21 +651,24 @@ export default {
             //*******START */
             // Quản lý tài sản
             // QUẢN LÝ
-            dashboard_asset: 'DashBoard quản lý tài sản',
-            manage_asset: 'Quản lý tài sản',
-            manage_type_asset: 'Quản lý loại tài sản',
+
             add_asset: 'Thêm tài sản',
-            manage_info_asset: 'Quản lý thông tin tài sản',
-            manage_maintainance_asset: 'Quản lý bảo trì tài sản',
             manage_repair_asset: 'Quản lý sửa chữa, thay thế',
             manage_usage_asset: 'Quản lý sử dụng tài sản',
             manage_distribute_asset: 'Quản lý cấp phát, điều chuyển',
+            manage_room_asset: 'Quản lý phòng & trang thiết bị',
+            manage_crash_asset: 'Quản lý sự cố tài sản',
+
+            manage_asset: 'Quản lý tài sản',
+            dashboard_asset: 'DashBoard quản lý tài sản',
+            manage_type_asset: 'Quản lý loại tài sản',
+            manage_info_asset: 'Quản lý thông tin tài sản',
+            manage_maintainance_asset: 'Quản lý bảo trì tài sản',
             manage_depreciation_asset: 'Quản lý khấu hao tài sản',
             manage_incident_asset: 'Quản lý sự cố tài sản',
-            manage_room_asset: 'Quản lý phòng & trang thiết bị',
             manage_recommend_procure: 'Quản lý đề nghị mua sắm',
             manage_recommend_distribute_asset: 'Quản lý đăng ký sử dụng',
-            manage_crash_asset: 'Quản lý sự cố tài sản',
+            
 
             // NHÂN VIÊN
             recommend_equipment_procurement: 'Đăng ký mua sắm thiết bị',
@@ -1387,7 +1390,7 @@ export default {
         asset: {
             general_information: {
                 search: 'Tìm kiếm',
-                add: 'Thêm tài sản',
+                add: 'Thêm',
                 basic_information: 'Thông tin cơ bản',
                 detail_information: 'Thông tin chi tiết',
                 view: 'Xem thông tin tài sản',
@@ -1406,6 +1409,8 @@ export default {
                 damaged: 'Hỏng hóc',
                 lost: 'Mất',
                 disposal: 'Thanh lý',
+                waiting: 'Chờ xử lý',
+                processed: 'Đã xử lý',
                 select_register: 'Chọn quyền đăng ký',
                 select_all_register: 'Chọn tất cả quyền đăng ký',
                 can_register: 'Được phép đăng ký sử dụng',
@@ -1447,10 +1452,12 @@ export default {
                 original_price: 'Nguyên giá',
                 residual_price: 'Giá trị thu hồi ước tính',
                 start_depreciation: 'Thời gian bắt đầu trích khấu hao',
+                end_depreciation: 'Thời gian kết thúc trích khấu hao',
                 depreciation_type: 'Phương pháp khấu hao',
 
                 incident_code: 'Mã sự cố',
                 reported_by: 'Người báo cáo',
+                incident_type: 'Loại sự cố',
                 date_incident: 'Ngày phát hiện',
 
                 disposal_date: 'Thời gian thanh lý',
@@ -1483,7 +1490,33 @@ export default {
 
             // Quản lý thông tin tài sản
             asset_info: {
+                asset_info: 'Thông tin tài sản',
+                field_name: 'Tên trường dữ liệu',
+                value: 'Giá trị',
 
+                usage_logs: 'Lịch sử cấp phát - điều chuyển - thu hồi',
+                maintainance_logs: 'Lịch sử sửa chữa - thay thế - nâng cấp',
+                incident_list: 'Danh sách sự cố tài sản',
+                file_list: 'Danh sách tài liệu đính kèm',
+                add_usage_info: 'Thêm mới thông tin cấp phát sử dụng',
+                edit_usage_info: 'Chỉnh sửa thông tin cấp phát sử dụng',
+                add_maintenance_card: 'Thêm mới phiếu bảo trì',
+                edit_maintenance_card: 'Chỉnh sửa phiếu bảo trì',
+                add_incident_info: 'Thêm mới thông tin sự cố',
+                edit_incident_info: 'Chỉnh sửa thông tin sự cố',
+
+                usage_time: 'Thời gian sử dụng',
+                annual_depreciation: 'Mức độ khấu hao trung bình hằng năm',
+                monthly_depreciation: 'Mức độ khấu hao trung bình hằng tháng',
+                repair: 'Sửa chữa',
+                replace: 'Thay thế',
+                upgrade: 'Nâng cấp',
+                made: 'Đã thực hiện',
+                processing: 'Đang thực hiện',
+                unfulfilled: 'Chưa thực hiện',
+                destruction: 'Tiêu hủy',
+                sale: 'Nhượng bán',
+                give: 'Tặng',
 
                 //Thông điệp trả về từ server
                 get_list_asset_success: 'Lấy thông tin tài sản thành công',
