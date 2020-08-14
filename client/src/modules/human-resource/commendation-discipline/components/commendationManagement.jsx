@@ -277,7 +277,7 @@ class CommendationManagement extends Component {
                                 <th >{translate('human_resource.commendation_discipline.commendation.table.decision_number')}</th>
                                 <th>{translate('human_resource.unit')}</th>
                                 <th >{translate('human_resource.position')}</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
                                     <DataTableSetting
                                         tableId="praise-table"
                                         columnArr={[
@@ -314,7 +314,7 @@ class CommendationManagement extends Component {
                                             </React.Fragment>
                                         )) : null}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('discipline.edit_praise')}><i className="material-icons">edit</i></a>
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.commendation_discipline.commendation.edit_commendation')}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
                                                 content={translate('human_resource.commendation_discipline.commendation.delete_commendation')}
                                                 data={{

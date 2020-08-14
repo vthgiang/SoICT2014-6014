@@ -248,7 +248,7 @@ class SalaryTab extends Component {
                                         <th>{translate('human_resource.annual_leave.table.end_date')}</th>
                                         <th>{translate('human_resource.annual_leave.table.reason')}</th>
                                         <th>{translate('human_resource.status')}</th>
-                                        <th style={{ width: '120px' }}>{translate('table.action')}</th>
+                                        <th style={{ width: '120px' }}>{translate('general.action')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>

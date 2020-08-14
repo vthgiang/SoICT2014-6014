@@ -3,9 +3,8 @@ const {
     LogInfo,
     LogError
 } = require('../../../logs');
-/**
- * Lấy danh sách kỷ luật
- */
+
+/** Lấy danh sách kỷ luật */
 exports.searchDisciplines = async (req, res) => {
     try {
         let data = {};
@@ -41,9 +40,7 @@ exports.searchDisciplines = async (req, res) => {
     }
 }
 
-/**
- * Tạo mới kỷ luật của nhân viên
- */
+/** Tạo mới kỷ luật của nhân viên */
 exports.createDiscipline = async (req, res) => {
     try {
         // Kiểm tra dữ liệu truyền vào
@@ -111,7 +108,7 @@ exports.createDiscipline = async (req, res) => {
                 }
             });
         } else {
-            var createDiscipline = await DisciplineService.createDiscipline(req.body, req.user.company._id, req.user.company._id);
+            let createDiscipline = await DisciplineService.createDiscipline(req.body, req.user.company._id, req.user.company._id);
             // Kiểm tra sự tồn tại của mã nhân viên
             if (createDiscipline === null) {
                 await LogError(req.user.email, 'CREATE_DISCIPLINE', req.user.company);
@@ -152,12 +149,10 @@ exports.createDiscipline = async (req, res) => {
     }
 }
 
-/**
- * Xoá thông tin kỷ luật
- */
+/** Xoá thông tin kỷ luật */
 exports.deleteDiscipline = async (req, res) => {
     try {
-        var disciplineDelete = await DisciplineService.deleteDiscipline(req.params.id);
+        let disciplineDelete = await DisciplineService.deleteDiscipline(req.params.id);
         await LogInfo(req.user.email, 'DELETE_DISCIPLINE', req.user.company);
         res.status(200).json({
             success: true,
@@ -176,9 +171,7 @@ exports.deleteDiscipline = async (req, res) => {
     }
 }
 
-/**
- * Chỉnh sửa thông tin kỷ luật
- */
+/** Chỉnh sửa thông tin kỷ luật */
 exports.updateDiscipline = async (req, res) => {
     try {
         // Kiểm tra dữ liệu truyền vào
@@ -246,7 +239,7 @@ exports.updateDiscipline = async (req, res) => {
                 }
             });
         } else {
-            var disciplineUpdate = await DisciplineService.updateDiscipline(req.params.id, req.body, req.user.company._id);
+            let disciplineUpdate = await DisciplineService.updateDiscipline(req.params.id, req.body, req.user.company._id);
             // Kiểm tra sự tồn tại của mã nhân viên
             if (disciplineUpdate === null) {
                 await LogError(req.user.email, 'EDIT_DISCIPLINE', req.user.company);

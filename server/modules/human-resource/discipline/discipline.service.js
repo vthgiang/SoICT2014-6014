@@ -93,7 +93,7 @@ exports.getTotalDiscipline = async (company, organizationalUnits, month) => {
  * @company : Id công ty người tìm kiếm
  */
 exports.searchDisciplines = async (params, company) => {
-    var keySearchEmployee, keySearch = {
+    let keySearchEmployee, keySearch = {
         company: company
     };
 
@@ -119,8 +119,8 @@ exports.searchDisciplines = async (params, company) => {
         }
     }
     if (keySearchEmployee !== undefined) {
-        var employeeinfo = await Employee.find(keySearchEmployee);
-        var employee = employeeinfo.map(employeeinfo => employeeinfo._id);
+        let employeeinfo = await Employee.find(keySearchEmployee);
+        let employee = employeeinfo.map(employeeinfo => employeeinfo._id);
         keySearch = {
             ...keySearch,
             employee: {
@@ -141,8 +141,8 @@ exports.searchDisciplines = async (params, company) => {
     };
 
     // Lấy danh sách kỷ luật
-    var totalList = await Discipline.count(keySearch);
-    var listDisciplines = await Discipline.find(keySearch).populate({
+    let totalList = await Discipline.count(keySearch);
+    let listDisciplines = await Discipline.find(keySearch).populate({
             path: 'employee',
             model: Employee
         })
@@ -177,7 +177,7 @@ exports.createDiscipline = async (data, company) => {
         emailInCompany: 1
     });
     if (employeeInfo !== null) {
-        var isDiscipline = await Discipline.findOne({
+        let isDiscipline = await Discipline.findOne({
             employee: employeeInfo._id,
             company: company,
             decisionNumber: data.decisionNumber
@@ -188,11 +188,11 @@ exports.createDiscipline = async (data, company) => {
             return "have_exist"
         } else {
             // Thêm kỷ luật vào database
-            var partStart = data.startDate.split('-');
-            var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
-            var partEnd = data.endDate.split('-');
-            var endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
-            var createDiscipline = await Discipline.create({
+            let partStart = data.startDate.split('-');
+            let startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
+            let partEnd = data.endDate.split('-');
+            let endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
+            let createDiscipline = await Discipline.create({
                 employee: employeeInfo._id,
                 company: company,
                 decisionNumber: data.decisionNumber,
@@ -248,10 +248,10 @@ exports.updateDiscipline = async (id, data, company) => {
         emailInCompany: 1
     });
     if (employeeInfo !== null) {
-        var partStart = data.startDate.split('-');
-        var startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
-        var partEnd = data.endDate.split('-');
-        var endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
+        let partStart = data.startDate.split('-');
+        let startDate = new Date(partStart[2], partStart[1] - 1, partStart[0]);
+        let partEnd = data.endDate.split('-');
+        let endDate = new Date(partEnd[2], partEnd[1] - 1, partEnd[0]);
         let DisciplineChange = {
             organizationalUnit: data.organizationalUnit,
             startDate: startDate,
@@ -271,7 +271,7 @@ exports.updateDiscipline = async (id, data, company) => {
         let value = await EmployeeService.getAllPositionRolesAndOrganizationalUnitsOfUser(employeeInfo.emailInCompany);
 
         // Lấy thông tin kỷ luật vừa cập nhật
-        var updateDiscipline = await Discipline.findOne({
+        let updateDiscipline = await Discipline.findOne({
             _id: id
         }).populate([{
             path: 'employee',

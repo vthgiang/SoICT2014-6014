@@ -191,7 +191,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                             <tr>
                                                 <th>{translate('table.employee_name')}</th>
                                                 <th>{translate('manage_unit.email_employee')}</th>
-                                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
+                                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>

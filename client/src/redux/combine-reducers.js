@@ -27,6 +27,7 @@ import {documents} from '../modules/document/redux/reducers';
 import { createKpiUnit } from "../modules/kpi/organizational-unit/creation/redux/reducers";
 import { dashboardOrganizationalUnitKpi } from "../modules/kpi/organizational-unit/dashboard/redux/reducers";
 import { managerKpiUnit } from "../modules/kpi/organizational-unit/management/redux/reducers";
+import { statisticsOfOrganizationalUnitKpi } from "../modules/kpi/statistic/redux/reducers";
 
 import {createEmployeeKpiSet} from "../modules/kpi/employee/creation/redux/reducers"
 import {KPIPersonalManager} from "../modules/kpi/employee/management/redux/reducers"
@@ -98,6 +99,7 @@ const appReducer = combineReducers(Object.assign({
     createKpiUnit,
     dashboardOrganizationalUnitKpi,
     managerKpiUnit,
+    statisticsOfOrganizationalUnitKpi,
 
     //kpi-personal
     createEmployeeKpiSet,
