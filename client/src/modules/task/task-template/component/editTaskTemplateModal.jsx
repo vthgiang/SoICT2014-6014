@@ -4,12 +4,12 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
-import  {taskTemplateActions} from '../redux/actions';
+import { taskTemplateActions } from '../redux/actions';
 
-import {ActionForm} from '../component/actionsTemplate';
-import {DialogModal, SelectBox, ErrorLabel} from '../../../../common-components';
+import { ActionForm } from '../component/actionsTemplate';
+import { DialogModal, SelectBox, ErrorLabel } from '../../../../common-components';
 
-import { TaskTemplateFormValidator} from './taskTemplateFormValidator';
+import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import './tasktemplate.css';
 
@@ -113,10 +113,10 @@ class ModalEditTaskTemplate extends Component {
     /**Gửi req sửa mẫu công việc này */
     handleSubmit = async (event) => {
         const { editingTemplate } = this.state;
-  
+
         this.props.editTaskTemplate(editingTemplate._id, editingTemplate);
     }
-    
+
     /**
      * Xử lý form lớn tasktemplate
      */
@@ -286,8 +286,8 @@ class ModalEditTaskTemplate extends Component {
             };
         });
     }
-    
-    handleTaskActionsChange =(data) =>{
+
+    handleTaskActionsChange = (data) => {
         let { editingTemplate } = this.state;
         this.setState(state => {
 
@@ -340,6 +340,7 @@ class ModalEditTaskTemplate extends Component {
         var allUnitsMember = getEmployeeSelectBoxItems(usersInUnitsOfCompany);
         let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
 
+        console.log('readByEmployees', editingTemplate.readByEmployees)
         return (
             <DialogModal
                 modalID="modal-edit-task-template" isLoading={user.isLoading}
@@ -353,7 +354,7 @@ class ModalEditTaskTemplate extends Component {
                 <div className="row">
                     <div className="col-sm-6">
                         {/**Đơn vị của mẫu công việc */}
-                        <div className={`form-group ${editingTemplate.errorOnUnit===undefined?"":"has-error"}`} >
+                        <div className={`form-group ${editingTemplate.errorOnUnit === undefined ? "" : "has-error"}`} >
                             <label className="control-label">{translate('task_template.unit')}*:</label>
                             {departmentsThatUserIsDean !== undefined && editingTemplate.organizationalUnit !== "" &&
                                 <SelectBox
@@ -376,7 +377,7 @@ class ModalEditTaskTemplate extends Component {
                     </div>
                     <div className="col-sm-6">
                         {/**Role có quyền xem mẫu công việc này */}
-                        <div className={`form-group ${this.state.editingTemplate.errorOnRead===undefined?"":"has-error"}`} >
+                        <div className={`form-group ${this.state.editingTemplate.errorOnRead === undefined ? "" : "has-error"}`} >
                             <label className="control-label">{translate('task_template.permission_view')}*</label>
                             {listRole && editingTemplate.readByEmployees &&
                                 <SelectBox
@@ -401,7 +402,7 @@ class ModalEditTaskTemplate extends Component {
                     <div className="col-sm-6">
 
                         {/**Tên mẫu công việc này */}
-                        <div className={`form-group ${this.state.editingTemplate.errorOnName===undefined?"":"has-error"}`} >
+                        <div className={`form-group ${this.state.editingTemplate.errorOnName === undefined ? "" : "has-error"}`} >
                             <label className="control-label">{translate('task_template.tasktemplate_name')}*</label>
                             <input type="Name" className="form-control" placeholder={translate('task_template.tasktemplate_name')} value={editingTemplate.name} onChange={this.handleTaskTemplateName} />
                             <ErrorLabel content={this.state.editingTemplate.errorOnName} />
@@ -421,7 +422,7 @@ class ModalEditTaskTemplate extends Component {
                     <div className="col-sm-6">
 
                         {/**Mô tả mẫu công việc này */}
-                        <div className={`form-group ${this.state.editingTemplate.errorOnDescription===undefined?"":"has-error"}`} >
+                        <div className={`form-group ${this.state.editingTemplate.errorOnDescription === undefined ? "" : "has-error"}`} >
                             <label className="control-label" htmlFor="inputDescriptionTaskTemplate">{translate('task_template.description')}*</label>
                             <textarea rows={5} type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder={translate('task_template.description')} value={editingTemplate.description} onChange={this.handleTaskTemplateDesc} />
                             <ErrorLabel content={this.state.editingTemplate.errorOnDescription} />
@@ -503,7 +504,7 @@ class ModalEditTaskTemplate extends Component {
 
                     <div className="col-sm-6">
                         {/**Công thức tính điểm mẫu công việc này */}
-                        <div className={`form-group ${this.state.editingTemplate.errorOnFormula===undefined?"":"has-error"}`} >
+                        <div className={`form-group ${this.state.editingTemplate.errorOnFormula === undefined ? "" : "has-error"}`} >
                             <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}*</label>
                             <input type="text" className="form-control" id="inputFormula" placeholder="progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100*(1-p1/p2)" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
                             <ErrorLabel content={this.state.editingTemplate.errorOnFormula} />
@@ -526,9 +527,9 @@ class ModalEditTaskTemplate extends Component {
                 <div className="row">
                     <div className="col-sm-6">
                         {/**Các hoạt động mẫu công việc này */}
-                        { this.state.showActionForm &&                        
-                            <ActionForm initialData ={editingTemplate.taskActions} onDataChange={this.handleTaskActionsChange} /> 
-                        }    
+                        {this.state.showActionForm &&
+                            <ActionForm initialData={editingTemplate.taskActions} onDataChange={this.handleTaskActionsChange} />
+                        }
                     </div>
                     <div className="col-sm-6">
                         <fieldset className="scheduler-border">

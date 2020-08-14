@@ -80,10 +80,9 @@ class TaskReportCreateForm extends Component {
                     ...state,
                     newReport: {
                         ...this.state.newReport,
-                        errorOnDescriptiontTaskReport: msg,
-
+                        descriptionTaskReport: value,
                     },
-                    descriptionTaskReport: value,
+                    errorOnDescriptiontTaskReport: msg,
                 }
             });
         }
