@@ -180,8 +180,11 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
 
     removePreviosMultiLineChart = () => {
         const chart =  this.refs.chart;
-        while(chart.hasChildNodes()) {
-            chart.removeChild(chart.lastChild)
+
+        if (chart) {
+            while(chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild)
+            }
         }
     }
 
@@ -190,7 +193,7 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
         const {translate} = this.props;
 
         let dataMultiLineChart = this.setDataMultiLineChart();
-
+        
         this.chart = c3.generate({
             bindto: this.refs.chart,       
 

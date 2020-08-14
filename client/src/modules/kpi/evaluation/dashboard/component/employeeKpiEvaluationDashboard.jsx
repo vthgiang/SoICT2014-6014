@@ -84,7 +84,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
                     organizationalUnitIds: [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id]
                 }
             });
-            console.log("========", this.state.ids);
+
             this.props.getAllEmployeeOfUnitByIds(this.state.ids);
             return false;
         }
@@ -107,12 +107,12 @@ class EmployeeKpiEvaluationDashboard extends Component {
                         ...state,
                         infosearch: {
                             ...state.infosearch,
-                            userId: unitMembers[0].value[2].value
+                            userId: unitMembers[0].value[2] ? unitMembers[0].value[2].value : (unitMembers[0].value[0] ? unitMembers[0].value[0].value : null)
                         },
                         organizationalUnitIds: this.IDS
                     }
                 });
-                this.INFO_SEARCH.userId = unitMembers[0].value[2].value;
+                this.INFO_SEARCH.userId = unitMembers[0].value[2] ? unitMembers[0].value[2].value : (unitMembers[0].value[0] ? unitMembers[0].value[0].value : null);
             }
 
             return true
@@ -222,10 +222,11 @@ class EmployeeKpiEvaluationDashboard extends Component {
     }
 
     handleSelectMonthEnd = (value) => {
+        let month;
         if (value.slice(0, 2) < 12) {
-            var month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
+            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
         } else {
-            var month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
+            month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
         }
 
         this.INFO_SEARCH.endMonth = month;
@@ -261,7 +262,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
     render() {
         const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = this.props;
         const { translate } = this.props;
-        // console.log("=========", this.props)
+
         let { dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids, organizationalUnitIds } = this.state;
 
         let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee;
@@ -330,7 +331,6 @@ class EmployeeKpiEvaluationDashboard extends Component {
             }
             unitMembers = getEmployeeSelectBoxItems(userdepartments);
             unitMembers = [...unitMembers];
-            // console.log( "\n\n\n\n\n\n",unitMembers)
         }
 
 
@@ -522,7 +522,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                                 items={unitMembers}
                                                 multiple={false}
                                                 onChange={this.handleSelectEmployee}
-                                                value={unitMembers[0].value[2].value}
+                                                value={unitMembers[0].value[2] ? unitMembers[0].value[2].value : (unitMembers[0].value[0] ? unitMembers[0].value[0].value : null)}
                                             />
                                         </div>
                                     }
