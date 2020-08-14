@@ -34,7 +34,7 @@ getTimeMDY = () => {
  */
 createServerBackupDatabasePath = () => {
     const time = getTimeMDY();
-    const path = `${SERVER_BACKUP_DIR}/database/${time}`;
+    const path = `${SERVER_BACKUP_DIR}/${time}`;
     if (!fs.existsSync(path)) {
         fs.mkdirSync(path, {
             recursive: true
@@ -82,7 +82,7 @@ exports.backup = async (option) => {
     return {
         version: versionTime,
         description: descriptionBackupDB,
-        path: serverBackupStorePath+'/'+process.env.DB_NAME
+        path: serverBackupStorePath
     }
 }
 

@@ -1327,6 +1327,234 @@ export default {
             }
         },
 
+        // Modules Quản lý tài sản
+        asset: {
+            general_information: {
+                search: 'Search',
+                add: 'Add asset',
+                basic_information: 'Basic infomation',
+                detail_information: 'Detail information',
+                view: 'View asset information',
+                edit_info: 'Edit asset information',
+                delete_info: 'Delete asset information',
+                save: 'Save',
+                edit: 'Edit',
+                delete: 'Delete',
+                cancel: 'Cancel',
+
+                select_asset_type: 'Select asset type',
+                select_all_asset_type: 'Select all asset type',
+                select_all_status: 'Select all status',
+                ready_use: 'Ready to use',
+                using: 'Using',
+                damaged: 'Damaged',
+                lost: 'Lost',
+                disposal: 'Disposal',
+                select_register: 'Select the right to register',
+                select_all_register: 'Select all the right to register',
+                can_register: 'Can register to use',
+                cant_register: "Can't register to use",
+
+                asset_code: 'Asset code',
+                asset_name: 'Asset name',
+                asset_type: 'Asset type',
+                purchase_date: 'Date of purchase',
+                manager: 'Manager',
+                user: 'User',
+                handover_from_date: 'Handover from date',
+                handover_to_date: 'Handover to date',
+                status: 'Status',
+                action: 'Action',
+
+                general_information: 'General information',
+                usage_information: 'Usage information',
+                maintainance_information: 'Maintenance information',
+                depreciation_information: 'Depreciation information',
+                incident_information: 'Incident information',
+                disposal_information: 'Disposal information',
+                attach_infomation: 'Attached information',
+
+                serial_number: 'Serial number',
+                warranty_expiration_date: 'Warrant expiration date',
+                asset_location: 'Asset location',
+                description: 'Description',
+                can_register: 'Can register',
+                can_register_for_use: 'Can register to use',
+                select_image: 'Select image',
+                content: 'Content',
+                form_code: 'Form code',
+                create_date: 'Create date',
+                type: 'Classify',
+                start_date: 'Start date of repair',
+                end_date: 'End date of repair',
+                expense: 'Cost',
+                original_price: 'Original price ',
+                residual_price: 'Estimated recovery price',
+                start_depreciation: 'Start date of depreciation',
+                depreciation_type: 'Depreciation type',
+
+                incident_code: 'Incident code',
+                reported_by: 'Announcer',
+                date_incident: 'Ngày phát hiện',
+
+                disposal_date: 'Disposal date',
+                disposal_type: 'Disposal type',
+                disposal_price: 'Disposal price',
+                disposal_content: 'Disposal content',
+
+                store_location: 'Hard copy storage location',
+                file_name: 'File name',
+                number: 'Amount',
+                attached_file: 'Attached files',
+            },
+
+            //  Quản lý loại tài sản
+            asset_type: {
+                asset_type_code: 'Asset type code',
+                asset_type_name: 'Asset type name',
+                parent_asset_type: 'Parent asset type',
+                    
+                //Thông điệp trả về từ server
+                get_asset_type_success: 'Lấy thông tin loại tài sản thành công',
+                get_asset_type_faile: 'Lấy thông tin loại tài sản thất bại',
+                create_asset_type_success: 'Thêm loại tài sản thành công',
+                create_asset_type_faile: 'Thêm loại tài sản thất bại',
+                delete_asset_type_success: 'Xoá loại tài sản thành công',
+                delete_asset_type_faile: 'Xoá loại tài sản thất bại',
+                edit_asset_type_success: 'Chỉnh sửa thông tin loại tài sản thành công',
+                edit_asset_type_faile: 'Chỉnh sửa thông tin loại tài sản thất bại',
+            },
+
+            // Quản lý thông tin tài sản
+            asset_info: {
+
+                //Thông điệp trả về từ server
+                get_list_asset_success: 'Lấy thông tin tài sản thành công',
+                get_list_asset_faile: 'Lấy thông tin tài sản thất bại',
+                create_asset_success: 'Thêm tài sản thành công',
+                create_asset_faile: 'Thêm tài sản thất bại',
+                delete_asset_success: 'Xoá tài sản thành công',
+                delete_asset_faile: 'Xoá tài sản thất bại',
+                edit_asset_success: 'Chỉnh sửa thông tin tài sản thành công',
+                edit_asset_faile: 'Chỉnh sửa thông tin tài sản thất bại',
+
+            },
+
+            // Quản lý bảo trì
+            maintainance: {
+
+                //Thông điệp trả về từ server
+                get_maintainance_success: 'Lấy thông tin bảo trì thành công',
+                get_maintainance_faile: 'Lấy thông tin thông tin bảo trì thất bại',
+                create_maintainance_success: 'Thêm phiếu bảo trì thành công',
+                create_maintainance_faile: 'Thêm phiếu bảo trì thất bại',
+                delete_maintainance_success: 'Xoá phiếu bảo trì thành công',
+                delete_maintainance_faile: 'Xoá phiếu bảo trì thất bại',
+                edit_maintainance_success: 'Chỉnh sửa thông tin phiếu bảo trì thành công',
+                edit_maintainance_faile: 'Chỉnh sửa thông tin phiếu bảo trì thất bại',
+            },
+
+            // Quản lý sử dụng
+            usage: {
+
+                //Thông điệp trả về từ server
+                get_usage_success: 'Lấy thông tin sử dụng thành công',
+                get_usage_faile: 'Lấy thông tin sử dụng thất bại',
+                create_usage_success: 'Thêm hoạt động sử dụng tài sản thành công',
+                create_usage_faile: 'Thêm hoạt động sử dụng tài sản thất bại',
+                delete_usage_success: 'Xoá hoạt động sử dụng tài sản thành công',
+                delete_usage_faile: 'Xoá hoạt động sử dụng tài sản thất bại',
+                edit_usage_success: 'Chỉnh sửa thông tin hoạt động sử dụng tài sản thành công',
+                edit_usage_faile: 'Chỉnh sửa thông tin hoạt động sử dụng tài sản thất bại',
+            },
+
+            // Quản lý khấu hao
+            depreciation: {
+
+                //Thông điệp trả về từ server
+                get_depreciation_success: 'Lấy thông tin khấu hao thành công',
+                get_depreciation_faile: 'Lấy thông tin khấu hao thất bại',
+                create_depreciation_success: 'Thêm thông tin khấu hao tài sản thành công',
+                create_depreciation_faile: 'Thêm thông tin khấu hao tài sản thất bại',
+                delete_depreciation_success: 'Xoá thông tin khấu hao tài sản thành công',
+                delete_depreciation_faile: 'Xoá thông tin khấu hao tài sản thất bại',
+                edit_depreciation_success: 'Chỉnh sửa thông tin khấu hao tài sản thành công',
+                edit_depreciation_faile: 'Chỉnh sửa thông tin khấu hao tài sản thất bại',
+            },
+
+            // Quản lý sự cố
+            incident: {
+
+                //Thông điệp trả về từ server
+                get_incident_success: 'Lấy thông tin sự cố tài sản thành công',
+                get_incident_faile: 'Lấy thông tin sự cố tài sản thất bại',
+                create_incident_success: 'Thêm sự cố tài sản thành công',
+                create_incident_faile: 'Thêm sự cố tài sản thất bại',
+                delete_incident_success: 'Xoá thông tin sự cố tài sản thành công',
+                delete_incident_faile: 'Xoá thông tin sự cố tài sản thất bại',
+                edit_incident_success: 'Chỉnh sửa thông tin sự cố tài sản thành công',
+                edit_incident_faile: 'Chỉnh sửa thông tin sự cố tài sản thất bại',
+            },
+
+            // Quản lý đề nghị mua sắm thiết bị
+            manage_recommend_procure: {
+
+                //Thông điệp trả về từ server
+                get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
+                get_recommend_procure_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
+                create_recommend_procure_success: 'Thêm phiếu đề nghị mua sắm thiết bị thành công',
+                create_recommend_procure_faile: 'Thêm phiếu đề nghị mua sắm thiết bị thất bại',
+                delete_recommend_procure_success: 'Xoá phiếu đề nghị mua sắm thiết bị thành công',
+                delete_recommend_procure_faile: 'Xoá phiếu đề nghị mua sắm thiết bị thất bại',
+                edit_recommend_procure_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_recommend_procure_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+            },
+
+            // Quản lý đề nghị cấp phát
+            manage_recommend_distribute: {
+
+                //Thông điệp trả về từ server
+                get_recommend_distribute_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
+                get_recommend_distribute_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
+                create_recommend_distribute_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
+                create_recommend_distribute_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
+                delete_recommend_distribute_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
+                delete_recommend_distribute_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
+                edit_recommend_distribute_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_recommend_distribute_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+
+            },
+
+            // Đăng ký mua sắm thiết bị
+            recommend_procure: {
+
+                //Thông điệp trả về từ server
+                get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
+                get_recommend_procure_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
+                create_recommend_procure_success: 'Thêm phiếu đề nghị mua sắm thiết bị thành công',
+                create_recommend_procure_faile: 'Thêm phiếu đề nghị mua sắm thiết bị thất bại',
+                delete_recommend_procure_success: 'Xoá phiếu đề nghị mua sắm thiết bị thành công',
+                delete_recommend_procure_faile: 'Xoá phiếu đề nghị mua sắm thiết bị thất bại',
+                edit_recommend_procure_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_recommend_procure_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+            },
+
+            // Đăng ký sử dụng thiết bị
+            recommend_distribute: {
+
+                //Thông điệp trả về từ server
+                get_recommend_distribute_success: 'Lấy thông tin đề nghị cấp phát thiết bị thành công',
+                get_recommend_distribute_faile: 'Lấy thông tin đề nghị cấp phát thiết bị thất bại',
+                create_recommend_distribute_success: 'Thêm phiếu đề nghị cấp phát thiết bị thành công',
+                create_recommend_distribute_faile: 'Thêm phiếu đề nghị cấp phát thiết bị thất bại',
+                delete_recommend_distribute_success: 'Xoá phiếu đề nghị cấp phát thiết bị thành công',
+                delete_recommend_distribute_faile: 'Xoá phiếu đề nghị cấp phát thiết bị thất bại',
+                edit_recommend_distribute_success: 'Chỉnh sửa thông tin phiếu thành công',
+                edit_recommend_distribute_faile: 'Chỉnh sửa thông tin phiếu thất bại',
+            },
+
+        },
+
         // Task template
         task_template: {
             search: 'Search',

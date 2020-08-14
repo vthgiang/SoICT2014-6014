@@ -20,6 +20,26 @@ exports.backup = async(req, res) => {
     }
 };
 
+exports.deleteBackup = async(req, res) => {
+    try {
+        const content = await SystemSettingServices.deleteBackup(req.params.version);
+        
+        // LogInfo(req.user.email, 'BACKUP_SCHEDULE');
+        res.status(200).json({
+            success: true,
+            messages: ['delete_backup_success'],
+            content
+        });
+    } catch (error) {
+        console.log("backup error:", error)
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['delete_backup_faile'],
+            content: error
+        });
+    }
+};
+
 exports.restore = async(req, res) => {
     try {
         await SystemSettingServices.restore(req.body, req.query);

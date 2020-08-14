@@ -1330,8 +1330,90 @@ export default {
 
         // Modules Quản lý tài sản
         asset: {
-            //Quản lý loại tài sản
+            general_information: {
+                search: 'Tìm kiếm',
+                add: 'Thêm tài sản',
+                basic_information: 'Thông tin cơ bản',
+                detail_information: 'Thông tin chi tiết',
+                view: 'Xem thông tin tài sản',
+                edit_info: 'Chỉnh sửa thông tin tài sản',
+                delete_info: 'Xóa thông tin tài sản',
+                save: 'Lưu',
+                edit: 'Chỉnh sửa',
+                delete: 'Xóa',
+                cancel: 'Hủy',
+
+                select_asset_type: 'Chọn loại tài sản',
+                select_all_asset_type: 'Chọn tất cả loại tài sản',
+                select_all_status: 'Chọn tất cả trạng thái',
+                ready_use: 'Sẵn sàng sử dụng',
+                using: 'Đang sử dụng',
+                damaged: 'Hỏng hóc',
+                lost: 'Mất',
+                disposal: 'Thanh lý',
+                select_register: 'Chọn quyền đăng ký',
+                select_all_register: 'Chọn tất cả quyền đăng ký',
+                can_register: 'Được phép đăng ký sử dụng',
+                cant_register: 'Không được phép đăng ký sử dụng',
+
+                asset_code: 'Mã tài sản',
+                asset_name: 'Tên tài sản',
+                asset_type: 'Loại tài sản',
+                purchase_date: 'Ngày nhập',
+                manager: 'Người quản lý',
+                user: 'Người sử dụng',
+                handover_from_date: 'Thời gian bắt đầu sử dụng',
+                handover_to_date: 'Thời gian kết thúc sử dụng',
+                status: 'Trạng thái',
+                action: 'Hành động',
+
+                general_information: 'Thông tin chung',
+                usage_information: 'Thông tin sử dụng',
+                maintainance_information: 'Thông tin bảo trì',
+                depreciation_information: 'Thông tin khấu hao',
+                incident_information: 'Thông tin sự cố',
+                disposal_information: 'Thông tin thanh lý',
+                attach_infomation: 'Thông tin đính kèm',
+
+                serial_number: 'Số serial',
+                warranty_expiration_date: 'Ngày bảo hành',
+                asset_location: 'Vị trí tài sản',
+                description: 'Mô tả',
+                can_register: 'Quyền đăng ký',
+                can_register_for_use: 'Quyền đăng ký sử dụng',
+                select_image: 'Chọn ảnh',
+                content: 'Nội dung',
+                form_code: 'Mã phiếu',
+                create_date: 'Ngày lập',
+                type: 'Phân loại',
+                start_date: 'Ngày bắt đầu sửa chữa',
+                end_date: 'Ngày hoàn thành',
+                expense: 'Chi phí',
+                original_price: 'Nguyên giá',
+                residual_price: 'Giá trị thu hồi ước tính',
+                start_depreciation: 'Thời gian bắt đầu trích khấu hao',
+                depreciation_type: 'Phương pháp khấu hao',
+
+                incident_code: 'Mã sự cố',
+                reported_by: 'Người báo cáo',
+                date_incident: 'Ngày phát hiện',
+
+                disposal_date: 'Thời gian thanh lý',
+                disposal_type: 'Hình thức thanh lý',
+                disposal_price: 'Giá trị thanh lý',
+                disposal_content: 'Nội dung thanh lý',
+
+                store_location: 'Nơi lưu trữ bản cứng',
+                file_name: 'Tên tài liệu',
+                number: 'Số lượng',
+                attached_file: 'File đính kèm',
+            },
+
+            //  Quản lý loại tài sản
             asset_type: {
+                asset_type_code: 'Mã loại tài sản',
+                asset_type_name: 'Tên loại tài sản',
+                parent_asset_type: 'Loại tài sản cha',
 
                 //Thông điệp trả về từ server
                 get_asset_type_success: 'Lấy thông tin loại tài sản thành công',
@@ -1346,6 +1428,7 @@ export default {
 
             // Quản lý thông tin tài sản
             asset_info: {
+
 
                 //Thông điệp trả về từ server
                 get_list_asset_success: 'Lấy thông tin tài sản thành công',
