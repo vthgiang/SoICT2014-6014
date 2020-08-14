@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
+global.SERVER_DIR = __dirname;
 global.SERVER_BACKUP_DIR = __dirname + "/../backup";
 
 multer({
@@ -23,7 +24,7 @@ const documents = require("./modules/document/document.route");
 const annualLeave = require("./modules/human-resource/annual-leave/annualLeave.route");
 const commendation = require("./modules/human-resource/commendation/commendation.route");
 const discipline = require("./modules/human-resource/discipline/discipline.route");
-const holidays = require("./modules/human-resource/holiday/holiday.route");
+const holiday = require("./modules/human-resource/holiday/holiday.route");
 const profile = require("./modules/human-resource/profile/profile.route");
 const salary = require("./modules/human-resource/salary/salary.route");
 const timesheets = require("./modules/human-resource/timesheets/timesheets.route");
@@ -128,7 +129,7 @@ app.use("/documents", documents);
 app.use("/annualLeave", annualLeave);
 app.use("/commendation", commendation);
 app.use("/discipline", discipline);
-app.use("/holidays", holidays);
+app.use("/holiday", holiday);
 app.use("/employees", profile);
 app.use("/salary", salary);
 app.use("/timesheets", timesheets);

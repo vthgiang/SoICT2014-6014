@@ -119,7 +119,6 @@ class DocumentInformation extends Component {
     }
 
     findDocumentRole(roles, arr_id) {
-        console.log('hihihiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii', roles, arr_id)
         let data = arr_id.map(id => {
             let name = roles.filter(role => id && id === role.value);
             return name.map(x => x.text);

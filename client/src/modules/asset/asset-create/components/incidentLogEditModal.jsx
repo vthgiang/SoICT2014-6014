@@ -173,7 +173,7 @@ class IncidentLogEditModal extends Component {
                 <DialogModal
                     size='50' modalID={`modal-edit-incident-${id}`} isLoading={false}
                     formID={`form-edit-incident-${id}`}
-                    title="Chỉnh sửa thông tin sự cố"
+                    title={translate('asset.asset_info.edit_incident_info')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -182,23 +182,23 @@ class IncidentLogEditModal extends Component {
                         <div className="col-md-12">
                             {/* Mã sự cố */}
                             <div className={`form-group ${!errorOnIncidentCode ? "" : "has-error"}`}>
-                                <label>Mã sự cố<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="incidentCode" value={incidentCode} onChange={this.handleIncidentCodeChange} autoComplete="off" placeholder="Mã sự cố" />
+                                <label>{translate('asset.general_information.incident_code')}<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" name="incidentCode" value={incidentCode} onChange={this.handleIncidentCodeChange} autoComplete="off" placeholder={translate('asset.general_information.incident_code')} />
                                 <ErrorLabel content={errorOnIncidentCode} />
                             </div>
 
                             {/* Phân loại */}
                             <div className="form-group">
-                                <label>Phân loại</label>
+                                <label>{translate('asset.general_information.incident_type')}</label>
                                 <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
-                                    <option value="Hỏng hóc">Hỏng hóc</option>
-                                    <option value="Mất">Mất</option>
+                                    <option value="Hỏng hóc">{translate('asset.general_information.damaged')}</option>
+                                    <option value="Mất">{translate('asset.general_information.lost')}</option>
                                 </select>
                             </div>
 
                             {/* Người báo cáo */}
                             <div className={`form-group`}>
-                                <label>Người báo cáo</label>
+                                <label>{translate('asset.general_information.reported_by')}</label>
                                 <div>
                                     <div id="reportedByBox">
                                         <SelectBox
@@ -216,7 +216,7 @@ class IncidentLogEditModal extends Component {
 
                             {/* Thời gian phát hiện sự cố */}
                             <div className="form-group">
-                                <label>Thời gian phát hiện sự cố</label>
+                                <label>{translate('asset.general_information.date_incident')}</label>
                                 <DatePicker
                                     id={`edit-dateOfIncident-${id}`}
                                     value={dateOfIncident}
@@ -226,18 +226,18 @@ class IncidentLogEditModal extends Component {
 
                             {/* Nội dung */}
                             <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
-                                <label>Nội dung<span className="text-red">*</span></label>
+                                <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
                                 <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
-                                    placeholder="Nội dung"></textarea>
+                                    placeholder={translate('asset.general_information.content')}></textarea>
                                 <ErrorLabel content={errorOnDescription} />
                             </div>
 
                             {/* Trạng thái */}
                             <div className="form-group">
-                                <label>Trạng thái</label>
+                                <label>{translate('asset.general_information.status')}</label>
                                 <select className="form-control" value={statusIncident} name="type" onChange={this.handleStatusIncidentChange}>
-                                    <option value="Chờ xử lý">Chờ xử lý</option>
-                                    <option value="Đã xử lý">Đã xử lý</option>
+                                    <option value="Chờ xử lý">{translate('asset.general_information.waiting')}</option>
+                                    <option value="Đã xử lý">{translate('asset.general_information.processed')}</option>
                                 </select>
                             </div>
                         </div>

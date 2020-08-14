@@ -230,7 +230,7 @@ class DisciplineTab extends Component {
                                     <th>{translate('human_resource.commendation_discipline.commendation.table.decision_unit')}</th>
                                     <th>{translate('human_resource.commendation_discipline.discipline.table.discipline_forms')}</th>
                                     <th>{translate('human_resource.commendation_discipline.discipline.table.reason_discipline')}</th>
-                                    <th style={{ width: '120px' }}>{translate('table.action')}</th>
+                                    <th style={{ width: '120px' }}>{translate('general.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>

@@ -3,7 +3,7 @@ const {
 } = require('../../../models').schema;
 
 /**
- * Lấy danh sách ngày nghỉ lễ tết
+ * Lấy danh sách lịch làm việc
  * @company : Id công ty
  */
 exports.getAllHolidays = async (company) => {
@@ -15,8 +15,8 @@ exports.getAllHolidays = async (company) => {
 }
 
 /**
- * Thêm mới ngày nghỉ lễ tết
- * @data : dữ liệu ngày nghỉ lễ tết cần thêm
+ * Thêm mới lịch làm việc
+ * @data : dữ liệu lịch làm việc cần thêm
  * @company : id công ty cần thêm
  */
 exports.createHoliday = async (data, company) => {
@@ -29,8 +29,8 @@ exports.createHoliday = async (data, company) => {
 }
 
 /**
- * Xoá thông tin nghỉ lễ tết
- * @id : id thông tin nghỉ lễ tết cần xoá
+ * Xoá thông tin lịch làm việc
+ * @id : id thông tin lịch làm việc cần xoá
  */
 exports.deleteHoliday = async (id) => {
     return await Holiday.findOneAndDelete({
@@ -39,9 +39,9 @@ exports.deleteHoliday = async (id) => {
 }
 
 /**
- * Cập nhật thông tin nghỉ lễ tết
- * @id : id thông tin nghỉ lễ tết cần chỉnh sửa
- * @data : dữ liệu chỉnh sửa thông tin nghỉ lễ tết
+ * Cập nhật thông tin lịch làm việc
+ * @id : id thông tin lịch làm việc cần chỉnh sửa
+ * @data : dữ liệu chỉnh sửa thông tin lịch làm việc
  */
 exports.updateHoliday = async (id, data) => {
     let holidayChange = {

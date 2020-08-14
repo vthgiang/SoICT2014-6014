@@ -277,7 +277,7 @@ class CommendationManagement extends Component {
                                 <th >{translate('human_resource.commendation_discipline.commendation.table.decision_number')}</th>
                                 <th>{translate('human_resource.unit')}</th>
                                 <th >{translate('human_resource.position')}</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
                                     <DataTableSetting
                                         tableId="praise-table"
                                         columnArr={[

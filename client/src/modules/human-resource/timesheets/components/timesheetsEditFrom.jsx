@@ -11,15 +11,12 @@ class TimesheetsEditForm extends Component {
         super(props);
         this.state = {}
     }
-    componentDidMount() {
-        let outer = window.$(`#edit-croll-table`);
-        let inner = window.$(`#edit-timesheets`);
-        outer.addClass("StyleScrollDiv");
-        inner.width(1500);
-        inner.css("maxWidth", 1500);
-    }
 
-    // Function bắt sự kiện thay đổi chấm công nhân viên (checkbox)
+    /**
+     * Function bắt sự kiện thay đổi chấm công nhân viên (checkbox)
+     * @param {*} workSession : Dữ liệu ca chấm công
+     * @param {*} index : Số thứ tự công thay đổi
+     */
     handleCheckBoxChange = (workSession, index) => {
         let { workSession1, workSession2 } = this.state;
         if (workSession === "workSession1") {
@@ -51,33 +48,37 @@ class TimesheetsEditForm extends Component {
         }
     }
 
-    // Bắt sự kiện chỉnh sửa thông tin chấm công
+    /** Function bắt sự kiện lưu bảng chấm công */
     save = () => {
-        var partMonth = this.state.month.split('-');
-        var month = [partMonth[1], partMonth[0]].join('-');
-        this.props.updateTimesheets(this.state._id, { ...this.state, month: month });
+        const { month, _id } = this.state;
+        let partMonth = month.split('-');
+        let monthNew = [partMonth[1], partMonth[0]].join('-');
+        this.props.updateTimesheets(_id, { ...this.state, month: monthNew });
     }
 
     render() {
         const { timesheets, translate } = this.props;
+
         const { _id, errorOnEmployeeNumber, errorOnMonthSalary, month, employeeNumber, allDayOfMonth, workSession1, workSession2 } = this.state;
-        console.log(this.state);
+
         return (
             <React.Fragment>
                 <DialogModal
                     size='50' modalID="modal-edit-timesheets" isLoading={timesheets.isLoading}
                     formID="form-edit-timesheets"
-                    title="Chỉnh sửa thông tin chấm công"
+                    title={translate('human_resource.timesheets.edit_timesheets')}
                     func={this.save}
                     disableSubmit={false}
                 >
                     <form className="form-group" id="form-edit-timesheets">
-                        <div className={`form-group ${!errorOnEmployeeNumber ? "" : "has-error"}`}>
+                        {/* Mã số nhân viên*/}
+                        <div className={`form-group ${errorOnEmployeeNumber && "has-error"}`}>
                             <label>{translate('human_resource.staff_number')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} disabled />
                             <ErrorLabel content={errorOnEmployeeNumber} />
                         </div>
-                        <div className={`form-group ${!errorOnMonthSalary ? "" : "has-error"}`}>
+                        {/* Tháng */}
+                        <div className={`form-group ${errorOnMonthSalary && "has-error"}`}>
                             <label>{translate('human_resource.month')}<span className="text-red">*</span></label>
                             <DatePicker
                                 id={`edit_month${_id}`}
@@ -88,12 +89,13 @@ class TimesheetsEditForm extends Component {
                             />
                             <ErrorLabel content={errorOnMonthSalary} />
                         </div>
+                        {/* Công các ngày trong tháng */}
                         <div className="form-group" id="edit-croll-table">
-                            <label>Công làm việc trong tháng</label>
+                            <label>{translate('human_resource.timesheets.work_date_in_month')}</label>
                             <table id="edit-timesheets" className="table table-striped table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th style={{ width: 100 }}>Ca làm việc</th>
+                                        <th style={{ width: 100 }}>{translate('human_resource.timesheets.shift_work')}</th>
                                         {allDayOfMonth.map((x, index) => (
                                             <th key={index}>{x.day}&nbsp; {x.date}</th>
                                         ))}
@@ -101,7 +103,7 @@ class TimesheetsEditForm extends Component {
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Ca sáng</td>
+                                        <td>{translate('human_resource.timesheets.shifts1')}</td>
                                         {allDayOfMonth.map((x, index) => (
                                             <th key={index}>
                                                 <div className="checkbox" style={{ textAlign: 'center' }}>
@@ -112,7 +114,7 @@ class TimesheetsEditForm extends Component {
                                         ))}
                                     </tr>
                                     <tr>
-                                        <td>Ca chiều</td>
+                                        <td>{translate('human_resource.timesheets.shifts2')}</td>
                                         {allDayOfMonth.map((x, index) => (
                                             <th key={index}>
                                                 <div className="checkbox" style={{ textAlign: 'center' }}>
@@ -124,7 +126,7 @@ class TimesheetsEditForm extends Component {
                                     </tr>
                                 </tbody>
                             </table>
-                            {/* <SlimScroll outerComponentId='edit-croll-table' innerComponentId='edit-timesheets' innerComponentWidth={1500} activate={true} /> */}
+                            <SlimScroll outerComponentId='edit-croll-table' innerComponentId='edit-timesheets' innerComponentWidth={1500} activate={true} />
                         </div>
                     </form>
                 </DialogModal>

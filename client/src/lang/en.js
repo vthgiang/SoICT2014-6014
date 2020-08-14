@@ -624,20 +624,23 @@ export default {
             //*******START */
             // Quản lý tài sản
             // QUẢN LÝ
-            dashboard_asset: 'DashBoard quản lý tài sản',
-            manage_asset: 'Quản lý tài sản',
-            manage_type_asset: 'Quản lý loại tài sản',
+
             add_asset: 'Thêm tài sản',
-            manage_info_asset: 'Quản lý thông tin tài sản',
-            manage_history_asset: 'Quản lý lịch sử hoạt động',
             manage_repair_asset: 'Quản lý sửa chữa, thay thế',
-            manage_maintain_asset: 'Quản lý bảo trì, bảo dưỡng',
+            manage_usage_asset: 'Quản lý sử dụng tài sản',
             manage_distribute_asset: 'Quản lý cấp phát, điều chuyển',
-            manage_depreciation_asset: 'Quản lý khấu hao tài sản',
             manage_room_asset: 'Quản lý phòng & trang thiết bị',
-            manage_recommend_procure: 'Quản lý đề nghị mua sắm',
-            manage_recommend_distribute_asset: 'Quản lý đề nghị cấp phát',
             manage_crash_asset: 'Quản lý sự cố tài sản',
+
+            manage_asset: 'Manage assets',
+            dashboard_asset: 'DashBoard manage assets',
+            manage_type_asset: 'Manage type assets',
+            manage_info_asset: 'Manage infomation assets',
+            manage_maintainance_asset: 'Manage maintainance assets',
+            manage_depreciation_asset: 'Manage depreciation assets',
+            manage_incident_asset: 'Manage incident assets',
+            manage_recommend_procure: 'Manage recommend procure',
+            manage_recommend_distribute_asset: 'Manage recommend distribute',
 
             // NHÂN VIÊN
             recommend_equipment_procurement: 'Đăng ký mua sắm thiết bị',
@@ -958,15 +961,6 @@ export default {
             historySalary: 'History of salary',
             sabbatical: 'Sabbatical information'
         },
-        // Quản lý kê hoạch làm việc
-        holiday: {
-            start_date: 'Start day',
-            end_Date: 'End day',
-            description: 'Description',
-            check_start_Date: 'Start day required',
-            check_end_Date: 'End day required',
-            check_description: 'Description required'
-        },
 
         // Module Quản lý nhân sự
         human_resource: {
@@ -993,20 +987,17 @@ export default {
             name_button_export: 'Export report',
             choose_decision_unit: 'Choose a decision-making unit',
 
-            // Thông điệp trả về từ server dung chung cho module quản lý nhân sự
+            // Validator dung chung cho module quản lý nhân sự
             employee_number_required: 'Staff code required',
             staff_code_not_special: 'Staff code does not contain special characters',
             staff_code_not_find: 'Staff code does not exist',
-            number_decisions_required: 'Decis number required',
-            number_decisions_have_exist: 'Decis number have exist',
-            unit_decisions_required: 'Decis unit required',
             start_date_before_end_date: 'The start date must be before the end date',
             end_date_after_start_date: 'The end date must be after the start date',
 
 
             // Quản lý lương nhân viên
             salary: {
-                list_salary: 'List of staff salary',
+                // list_salary: 'List of staff salary',
                 file_name_export: 'Salary tracking table',
 
                 // Nhóm dành cho table
@@ -1056,7 +1047,7 @@ export default {
 
             // Quản lý nghỉ phép
             annual_leave: {
-                list_annual_leave: 'List of staff annual leave',
+                // list_annual_leave: 'List of staff annual leave',
 
                 // Nhóm dành cho table
                 table: {
@@ -1099,6 +1090,7 @@ export default {
                 edit_annual_leave_faile: 'Edit annual leave faile',
 
             },
+
             // Quản lý khen thưởng kỷ luật
             commendation_discipline: {
                 // Quản lý khen thưởng
@@ -1238,28 +1230,62 @@ export default {
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             holiday: {
+                file_name_export: 'Work plan',
+                // Nhóm dành cho table
+                table: {
+                    timeline: 'Timelines',
+                    start_date: 'Start date',
+                    end_date: 'End date',
+                    describe_timeline: 'Description',
+                },
+
+                // Nhóm dành cho action
+                edit_holiday: 'Edit work schedule',
+                delete_holiday: 'Delete work schedule',
+                add_holiday: 'Add work schedule',
+                add_holiday_title: 'Add new work schedule',
+                add_by_hand: 'Add one work schedule',
+                add_import: 'Import file excel',
 
                 // Thông điệp trả về từ server
                 start_date_required: 'Start date required',
                 end_date_required: 'End date required',
-                reason_required: 'Reason required',
+                reason_required: 'Description required',
                 holiday_duplicate_required: 'Time is overlapping',
 
-                get_holiday_success: 'Get holiday success',
-                get_holiday_faile: 'Get holiday faile',
-                create_holiday_success: 'Create holiday success',
-                create_holiday_faile: 'Create holiday faile',
-                delete_holiday_success: 'Delete holiday success',
-                delete_holiday_faile: 'Delete holiday faile',
-                edit_holiday_success: 'Edit holiday success',
-                edit_holiday_faile: 'Edit holiday faile',
-                import_holiday_success: 'Import holiday success',
-                import_holiday_faile: 'Import holiday faile',
+                get_holiday_success: 'Get work schedule success',
+                get_holiday_faile: 'Get work schedule faile',
+                create_holiday_success: 'Create work schedule success',
+                create_holiday_faile: 'Create work schedule faile',
+                delete_holiday_success: 'Delete work schedule success',
+                delete_holiday_faile: 'Delete work schedule faile',
+                edit_holiday_success: 'Edit work schedule success',
+                edit_holiday_faile: 'Edit work schedule faile',
+                import_holiday_success: 'Import work schedule success',
+                import_holiday_faile: 'Import work schedule faile',
 
             },
 
             // Quản lý chấm công nhân viên
             timesheets: {
+                file_name_export: 'Timesheets',
+                symbol: ' Symbol',
+                not_work: 'Not work',
+                do_work: 'Do work',
+                total_timesheets: 'Total work date',
+                work_date_in_month: 'Work date in month',
+                shift_work: 'Shift work',
+                shifts1: 'shifts 1',
+                shifts2: 'shifts 2',
+
+                // Nhóm dành cho action
+                edit_timesheets: 'Edit timesheets',
+                delete_timesheets: 'Delete timesheets',
+                add_timesheets: 'Add timesheets',
+                add_timesheets_title: 'Add new timesheets',
+                add_by_hand: 'Add one timesheets',
+                add_import: 'Import file excel',
+
                 // Thông điệp trả về từ server
                 employee_number_required: "Staff code required",
                 month_timesheets_required: "Month timesheets required",
@@ -1275,7 +1301,6 @@ export default {
                 delete_timesheets_faile: "Delete timesheets faile",
                 import_timesheets_success: "Import timesheets success",
                 import_timesheets_faile: "Import timesheets faile",
-
             },
         },
 
@@ -1331,7 +1356,7 @@ export default {
         asset: {
             general_information: {
                 search: 'Search',
-                add: 'Add asset',
+                add: 'Add',
                 basic_information: 'Basic infomation',
                 detail_information: 'Detail information',
                 view: 'View asset information',
@@ -1350,6 +1375,8 @@ export default {
                 damaged: 'Damaged',
                 lost: 'Lost',
                 disposal: 'Disposal',
+                waiting: 'Waiting for progressing',
+                processed: 'Processed',
                 select_register: 'Select the right to register',
                 select_all_register: 'Select all the right to register',
                 can_register: 'Can register to use',
@@ -1391,11 +1418,13 @@ export default {
                 original_price: 'Original price ',
                 residual_price: 'Estimated recovery price',
                 start_depreciation: 'Start date of depreciation',
+                end_depreciation: 'End date of depreciation',
                 depreciation_type: 'Depreciation type',
 
                 incident_code: 'Incident code',
                 reported_by: 'Announcer',
-                date_incident: 'Ngày phát hiện',
+                incident_type: 'Incident type',
+                date_incident: 'Date of incident',
 
                 disposal_date: 'Disposal date',
                 disposal_type: 'Disposal type',
@@ -1413,7 +1442,7 @@ export default {
                 asset_type_code: 'Asset type code',
                 asset_type_name: 'Asset type name',
                 parent_asset_type: 'Parent asset type',
-                    
+
                 //Thông điệp trả về từ server
                 get_asset_type_success: 'Lấy thông tin loại tài sản thành công',
                 get_asset_type_faile: 'Lấy thông tin loại tài sản thất bại',
@@ -1427,6 +1456,33 @@ export default {
 
             // Quản lý thông tin tài sản
             asset_info: {
+                asset_info: 'Asset infomation',
+                field_name: 'Name of data field',
+                value: 'Value',
+
+                usage_logs: 'Allocation history - transfer - withdrawal',
+                maintainance_logs: 'Repair history - replacement - upgrade',
+                incident_list: 'Asset incident list',
+                file_list: 'List of documents attached',
+                add_usage_info: 'Add new asset usage infomation',
+                edit_usage_info: 'Edit asset usage infomation',
+                add_maintenance_card: 'Add new maintenance card',
+                edit_maintenance_card: 'Edit new maintenance card',
+                add_incident_info: 'Add new incident infomation',
+                edit_incident_info: 'Edit incident infomation',
+
+                usage_time: 'Usage time',
+                annual_depreciation: 'Annual average rate of depreciation',
+                monthly_depreciation: 'Monthly average rate of depreciation',
+                repair: 'Repair',
+                replace: 'Replace',
+                upgrade: 'Upgrade',
+                made: 'Made',
+                processing: 'Processing',
+                unfulfilled: 'Unfulfilled',
+                destruction: 'Destruction',
+                sale: 'Sale',
+                give: 'Give',
 
                 //Thông điệp trả về từ server
                 get_list_asset_success: 'Lấy thông tin tài sản thành công',

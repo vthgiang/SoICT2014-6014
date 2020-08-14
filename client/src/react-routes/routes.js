@@ -49,7 +49,8 @@ import { TrainingPlan} from '../modules/training/course/components/course';
 import {OrganizationalUnitKpiCreate} from "../modules/kpi/organizational-unit/creation/component/organizationalUnitKpiCreate";
 import {OrganizationalUnitKpiDashboard} from "../modules/kpi/organizational-unit/dashboard/component/organizationalUnitKpiDashboard";
 import {KPIUnitManager} from "../modules/kpi/organizational-unit/management/component/organizationalUnitKpiOverview";
-import {KPIUnitEvaluate} from "../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation";
+import { KPIUnitEvaluate } from "../modules/kpi/organizational-unit/evaluation/component/organizationalUnitKpiEvaluation";
+import { StatisticsOfOrganizationalUnitKpi } from "../modules/kpi/statistic/component/statisticsOfOrganizationalUnitKpi";
 
 import {CreateEmployeeKpiSet} from "../modules/kpi/employee/creation/component/employeeKpiCreate";
 import {KPIPersonalManager} from "../modules/kpi/employee/management/component/employeeKpiManagement";
@@ -536,6 +537,21 @@ class Routes extends Component {
                         pageName={ 'kpi_unit_dashboard' }
                         layout={ Layout }
                         component={ OrganizationalUnitKpiDashboard }
+                    />
+                    <PrivateRoute
+                        isLoading={ this.props.statisticsOfOrganizationalUnitKpi.isLoading }
+                        key={ 'kpi-unit-statistic' }
+                        arrPage={[
+                            { link: '/', name:'home', icon: 'fa fa-home'},
+                            { link: '/kpi-units/statistic', name: 'kpi_unit_statistic', icon:'' }
+                        ]}
+                        auth={ auth }
+                        exact={ true }
+                        link={ '/kpi-units/statistic' }
+                        path={ '/kpi-units/statistic' }
+                        pageName={ 'kpi_unit_statistic' }
+                        layout={ Layout }
+                        component={ StatisticsOfOrganizationalUnitKpi }
                     />
                     <PrivateRoute 
                         isLoading={ this.props.managerKpiUnit.isLoading }
