@@ -760,7 +760,10 @@ class TaskReportCreateForm extends Component {
 
                                                     </td>
                                                     <td>
-                                                        <input type="text" className="form-control" style={{ width: '100%' }} onChange={(e) => this.handleChangeCoefficient(index, e)} />
+                                                        {(item2.type === 'Number') ?
+                                                            <input type="text" className="form-control" style={{ width: '100%' }} onChange={(e) => this.handleChangeCoefficient(index, e)} />
+                                                            : ""
+                                                        }
                                                     </td>
                                                     <td>
                                                         {(item2.type === 'Number') ?
