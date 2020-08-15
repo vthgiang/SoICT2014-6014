@@ -625,7 +625,7 @@ export default {
             // Quản lý tài sản
             // QUẢN LÝ
 
-            add_asset: 'Thêm tài sản',
+            add_asset: 'Add asset',
             manage_repair_asset: 'Quản lý sửa chữa, thay thế',
             manage_usage_asset: 'Quản lý sử dụng tài sản',
             manage_distribute_asset: 'Quản lý cấp phát, điều chuyển',
@@ -1355,6 +1355,7 @@ export default {
         // Modules Quản lý tài sản
         asset: {
             general_information: {
+                asset: 'Asset',
                 search: 'Search',
                 add: 'Add',
                 basic_information: 'Basic infomation',
@@ -1466,10 +1467,13 @@ export default {
                 file_list: 'List of documents attached',
                 add_usage_info: 'Add new asset usage infomation',
                 edit_usage_info: 'Edit asset usage infomation',
+                delete_usage_info: 'Delete asset usage infomation',
                 add_maintenance_card: 'Add new maintenance card',
                 edit_maintenance_card: 'Edit new maintenance card',
+                delete_maintenance_card: 'Delete maintenance card',
                 add_incident_info: 'Add new incident infomation',
                 edit_incident_info: 'Edit incident infomation',
+                delete_incident_info: 'Delete incident infomation',
 
                 usage_time: 'Usage time',
                 annual_depreciation: 'Annual average rate of depreciation',
@@ -1512,6 +1516,12 @@ export default {
 
             // Quản lý sử dụng
             usage: {
+                approved: 'Approved',
+                waiting_approval: 'Waiting for approval',
+                not_approved: 'Not approved',
+                proponent: 'Proponent',
+                accountable: 'Accountable',
+                note: 'Note',
 
                 //Thông điệp trả về từ server
                 get_usage_success: 'Lấy thông tin sử dụng thành công',
@@ -1526,6 +1536,10 @@ export default {
 
             // Quản lý khấu hao
             depreciation: {
+                depreciation_time: 'Depreciation time',
+                accumulated_value: 'Accumulated depreciation value',
+                remaining_value: 'Remaining value', 
+                edit_depreciation: 'Edit asset depreciation information',
 
                 //Thông điệp trả về từ server
                 get_depreciation_success: 'Lấy thông tin khấu hao thành công',

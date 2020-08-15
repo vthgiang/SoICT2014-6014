@@ -1356,6 +1356,7 @@ export default {
         // Modules Quản lý tài sản
         asset: {
             general_information: {
+                asset: 'Tài sản',
                 search: 'Tìm kiếm',
                 add: 'Thêm',
                 basic_information: 'Thông tin cơ bản',
@@ -1467,10 +1468,13 @@ export default {
                 file_list: 'Danh sách tài liệu đính kèm',
                 add_usage_info: 'Thêm mới thông tin cấp phát sử dụng',
                 edit_usage_info: 'Chỉnh sửa thông tin cấp phát sử dụng',
+                delete_usage_info: 'Xóa thông tin cấp phát sử dụng',
                 add_maintenance_card: 'Thêm mới phiếu bảo trì',
                 edit_maintenance_card: 'Chỉnh sửa phiếu bảo trì',
+                delete_maintenance_card: 'Xóa phiếu bảo trì',
                 add_incident_info: 'Thêm mới thông tin sự cố',
                 edit_incident_info: 'Chỉnh sửa thông tin sự cố',
+                delete_incident_info: 'Xóa thông tin sự cố',
 
                 usage_time: 'Thời gian sử dụng',
                 annual_depreciation: 'Mức độ khấu hao trung bình hằng năm',
@@ -1513,7 +1517,13 @@ export default {
 
             // Quản lý sử dụng
             usage: {
-
+                approved: 'Đã phê duyệt',
+                waiting_approval: 'Chờ phê duyệt',
+                not_approved: 'Không phê duyệt',
+                proponent: 'Người đề nghị',
+                accountable: 'Người phê duyệt',
+                note: 'Ghi chú',
+                
                 //Thông điệp trả về từ server
                 get_usage_success: 'Lấy thông tin sử dụng thành công',
                 get_usage_faile: 'Lấy thông tin sử dụng thất bại',
@@ -1527,6 +1537,10 @@ export default {
 
             // Quản lý khấu hao
             depreciation: {
+                depreciation_time: 'Thời gian trích khấu hao',
+                accumulated_value: 'Giá trị hao mòn lũy kế',
+                remaining_value: 'Giá trị còn lại',
+                edit_depreciation: 'Chỉnh sửa thông tin kháu hao tài sản',
 
                 //Thông điệp trả về từ server
                 get_depreciation_success: 'Lấy thông tin khấu hao thành công',

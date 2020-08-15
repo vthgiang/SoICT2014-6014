@@ -207,7 +207,7 @@ class DepreciationEditForm extends Component {
                 <DialogModal
                     size='50' modalID="modal-edit-depreciation"
                     formID="form-edit-depreciation"
-                    title="Chỉnh sửa thông tin khấu hao tài sản"
+                    title={translate('asset.depreciation.edit_depreciation')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -216,7 +216,7 @@ class DepreciationEditForm extends Component {
                         {/* Tài sản */}
                         <div className="col-md-12">
                             <div className={`form-group`}>
-                                <label>Tài sản</label>
+                                <label>{translate('asset.general_information.asset')}</label>
                                 <div>
                                     <div id="assetUBox">
                                         <SelectBox
@@ -235,30 +235,30 @@ class DepreciationEditForm extends Component {
 
                             {/* Nguyên giá */}
                             <div className={`form-group ${!errorOnCost ? "" : "has-error"} `}>
-                                <label htmlFor="cost">Nguyên giá (VNĐ)<span className="text-red">*</span></label><br />
+                                <label htmlFor="cost">{translate('asset.general_information.original_price')} (VNĐ)<span className="text-red">*</span></label><br />
                                 <input type="number" className="form-control" name="cost" value={cost} onChange={this.handleCostChange}
-                                    placeholder="Nguyên giá" autoComplete="off" />
+                                    placeholder={translate('asset.general_information.original_price')} autoComplete="off" />
                                 <ErrorLabel content={errorOnCost} />
                             </div>
 
                             {/* Giá trị thu hồi ước tính */}
                             <div className={`form-group`}>
-                                <label htmlFor="residualValue">Giá trị thu hồi ước tính (VNĐ)</label><br />
+                                <label htmlFor="residualValue">{translate('asset.general_information.residual_price')} (VNĐ)</label><br />
                                 <input type="number" className="form-control" name="residualValue" value={residualValue} onChange={this.handleResidualValueChange}
-                                    placeholder="Giá trị thu hồi ước tính" autoComplete="off" />
+                                    placeholder={translate('asset.general_information.residual_price')} autoComplete="off" />
                             </div>
 
                             {/* Thời gian sử dụng */}
                             <div className={`form-group ${!errorOnUsefulLife ? "" : "has-error"} `}>
-                                <label htmlFor="usefulLife">Thời gian sử dụng (Tháng)<span className="text-red">*</span></label>
+                                <label htmlFor="usefulLife">{translate('asset.asset_info.usage_time')} (Tháng)<span className="text-red">*</span></label>
                                 <input type="number" className="form-control" name="usefulLife" value={usefulLife} onChange={this.handleUsefulLifeChange}
-                                    placeholder="Thời gian trích khấu hao" autoComplete="off" />
+                                    placeholder={translate('asset.asset_info.usage_time')} autoComplete="off" />
                                 <ErrorLabel content={errorOnUsefulLife} />
                             </div>
 
                             {/* Thời gian bắt đầu trích khấu hao */}
                             <div className={`form-group ${!errorOnStartDepreciation ? "" : "has-error"} `}>
-                                <label htmlFor="startDepreciation">Thời gian bắt đầu trích khấu hao<span className="text-red">*</span></label>
+                                <label htmlFor="startDepreciation">{translate('asset.general_information.start_depreciation')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`startDepreciation${_id}`}
                                     value={startDepreciation}
@@ -269,7 +269,7 @@ class DepreciationEditForm extends Component {
 
                             {/* Phương pháp khấu hao */}
                             <div className={`form-group ${!errorOnDepreciationType ? "" : "has-error"}`}>
-                                <label htmlFor="depreciationType">Phương pháp khấu hao<span className="text-red">*</span></label>
+                                <label htmlFor="depreciationType">{translate('asset.general_information.depreciation_type')}<span className="text-red">*</span></label>
                                 <SelectBox
                                     id={`depreciationType${_id}`}
                                     className="form-control select2"

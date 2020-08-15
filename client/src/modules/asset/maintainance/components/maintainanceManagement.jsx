@@ -203,27 +203,27 @@ class MaintainanceManagement extends Component {
                     <div className="form-inline">
                         {/* Mã phiếu */}
                         <div className="form-group">
-                            <label className="form-control-static">Mã phiếu</label>
-                            <input type="text" className="form-control" name="maintainceCode" onChange={this.handleMaintainanceCodeChange} placeholder="Mã phiếu" autoComplete="off" />
+                            <label className="form-control-static">{translate('asset.general_information.form_code')}</label>
+                            <input type="text" className="form-control" name="maintainceCode" onChange={this.handleMaintainanceCodeChange} placeholder={translate('asset.general_information.form_code')} autoComplete="off" />
                         </div>
 
                         {/* Mã tài sản */}
                         <div className="form-group">
-                            <label className="form-control-static">Mã tài sản</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off" />
+                            <label className="form-control-static">{translate('asset.general_information.asset_code')}</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder={translate('asset.general_information.asset_code')} autoComplete="off" />
                         </div>
                     </div>
                     <div className="form-inline">
                         {/* Phân loại */}
                         <div className="form-group">
-                            <label className="form-control-static">Phân loại</label>
+                            <label className="form-control-static">{translate('asset.general_information.type')}</label>
                             <SelectMulti id={`multiSelectType`} multiple="multiple"
                                 options={{ nonSelectedText: "Chọn loại phiếu", allSelectedText: "Chọn tất cả các loại phiếu" }}
                                 onChange={this.handleTypeChange}
                                 items={[
-                                    { value: "Sửa chữa", text: "Sửa chữa" },
-                                    { value: "Thay thế", text: "Thay thế" },
-                                    { value: "Nâng cấp", text: "Nâng cấp" }
+                                    { value: "Sửa chữa", text: translate('asset.asset_info.repair') },
+                                    { value: "Thay thế", text: translate('asset.asset_info.replace') },
+                                    { value: "Nâng cấp", text: translate('asset.asset_info.upgrade') }
                                 ]}
                             >
                             </SelectMulti>
@@ -248,9 +248,9 @@ class MaintainanceManagement extends Component {
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "Đã thực hiện", text: "Đã thực hiện" },
-                                    { value: "Đang thực hiện", text: "Đang thực hiện" },
-                                    { value: "Chưa thực hiện", text: "Chưa thực hiện" }
+                                    { value: "Đã thực hiện", text: translate('asset.asset_info.made') },
+                                    { value: "Đang thực hiện", text: translate('asset.asset_info.processing') },
+                                    { value: "Chưa thực hiện", text: translate('asset.asset_info.unfulfilled') }
                                 ]}
                             >
                             </SelectMulti>
@@ -259,7 +259,7 @@ class MaintainanceManagement extends Component {
                         {/* Button tìm kiếm */}
                         <div className="form-group">
                             <label></label>
-                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={() => this.handleSubmitSearch()}>Tìm kiếm</button>
+                            <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={() => this.handleSubmitSearch()}>{translate('asset.general_information.search')}</button>
                         </div>
                     </div>
 
@@ -267,30 +267,30 @@ class MaintainanceManagement extends Component {
                     <table id="maintainance-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th style={{ width: "10%" }}>Mã phiếu</th>
-                                <th style={{ width: "10%" }}>Ngày lập</th>
-                                <th style={{ width: "10%" }}>Phân loại</th>
-                                <th style={{ width: "8%" }}>Mã tài sản</th>
-                                <th style={{ width: "10%" }}>Tên tài sản</th>
-                                <th style={{ width: "10%" }}>Nội dung</th>
-                                <th style={{ width: "10%" }}>Ngày thực hiện</th>
-                                <th style={{ width: "10%" }}>Ngày hoàn thành</th>
-                                <th style={{ width: "10%" }}>Chi phí</th>
-                                <th style={{ width: "10%" }}>Trạng thái</th>
-                                <th style={{ width: '100px', textAlign: 'center' }}>Hành động
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.form_code')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.create_date')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.type')}</th>
+                                <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.start_date')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.end_date')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.expense')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
+                                <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}
                                 <DataTableSetting
                                         tableId="maintainance-table"
                                         columnArr={[
-                                            "Mã phiếu",
-                                            "Ngày lập",
-                                            "Phân loại",
-                                            "Mã tài sản",
-                                            "Tên tài sản",
-                                            "Nội dung",
-                                            "Ngày thực hiện",
-                                            "Ngày hoàn thành",
-                                            "Chi phí",
-                                            "Trạng thái"
+                                            translate('asset.general_information.form_code'),
+                                            translate('asset.general_information.create_date'),
+                                            translate('asset.general_information.type'),
+                                            translate('asset.general_information.asset_code'),
+                                            translate('asset.general_information.asset_name'),
+                                            translate('asset.general_information.content'),
+                                            translate('asset.general_information.start_date'),
+                                            translate('asset.general_information.end_date'),
+                                            translate('asset.general_information.expense'),
+                                            translate('asset.general_information.status')
                                         ]}
                                         limit={limit}
                                         setLimit={this.setLimit}
@@ -315,10 +315,10 @@ class MaintainanceManagement extends Component {
                                             <td>{x.expense ? formater.format(parseInt(x.expense)) : ''} VNĐ</td>
                                             <td>{x.status}</td>
                                             <td style={{ textAlign: "center" }}>
-                                                <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin phiếu"><i
+                                                <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_maintenance_card')}><i
                                                     className="material-icons">edit</i></a>
                                                 <DeleteNotification
-                                                    content="Xóa thông tin phiếu"
+                                                    content={translate('asset.asset_info.delete_maintenance_card')}
                                                     data={{
                                                         id: x._id,
                                                         info: x.maintainanceCode ? x.maintainanceCode : '' + " - "
