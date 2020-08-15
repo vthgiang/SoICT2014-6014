@@ -12,7 +12,7 @@ import 'c3/c3.css';
 import * as d3 from "d3";
 
 class ResultsOfAllOrganizationalUnitKpiChart extends Component {
-    
+
     constructor(props) {
         super(props);
 
@@ -25,8 +25,8 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
             endDate: currentYear + '-' + (currentMonth + 2)
         }
 
-        this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
-        this.KIND_OF_POINT = { AUTOMATIC: 1, EMPLOYEE: 2, APPROVED: 3};
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+        this.KIND_OF_POINT = { AUTOMATIC: 1, EMPLOYEE: 2, APPROVED: 3 };
 
         this.state = {
             userRoleId: localStorage.getItem("currentRole"),
@@ -40,9 +40,9 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        if(nextState.startDate !== this.state.startDate || nextState.endDate !== this.state.endDate) {
+        if (nextState.startDate !== this.state.startDate || nextState.endDate !== this.state.endDate) {
             await this.props.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(this.state.userRoleId, nextState.startDate, nextState.endDate);
-            
+
             this.setState(state => {
                 return {
                     ...state,
@@ -53,18 +53,18 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
             return false;
         }
 
-        if(nextState.kindOfPoint !== this.state.kindOfPoint) {
-            await this.setState(state =>{
+        if (nextState.kindOfPoint !== this.state.kindOfPoint) {
+            await this.setState(state => {
                 return {
                     ...state,
                     kindOfPoint: nextState.kindOfPoint,
                 };
             });
-            
+
             this.multiLineChart();
         }
 
-        if(nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
+        if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
             this.props.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(this.state.userRoleId, this.state.startDate, this.state.endDate)
 
             this.setState(state => {
@@ -74,8 +74,8 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
                 }
             })
             return false;
-        } else if(nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if(!nextProps.createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
+        } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+            if (!nextProps.createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
                 return false
             }
 
@@ -85,10 +85,10 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
                     dataStatus: this.DATA_STATUS.AVAILABLE
                 }
             })
-        } else if(nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
-            
+        } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
+
             this.multiLineChart();
-            
+
             this.setState(state => {
                 return {
                     ...state,
@@ -101,7 +101,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     }
 
     handleSelectKindOfPoint = (value) => {
-        if(Number(value) !== this.state.kindOfPoint) {
+        if (Number(value) !== this.state.kindOfPoint) {
             this.setState(state => {
                 return {
                     ...state,
@@ -112,7 +112,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     }
 
     handleSelectMonthStart = (value) => {
-        let month = value.slice(3,7) + '-' + value.slice(0,2);
+        let month = value.slice(3, 7) + '-' + value.slice(0, 2);
 
         this.INFO_SEARCH.startDate = month;
     }
@@ -120,8 +120,8 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     handleSelectMonthEnd = async (value) => {
         let month;
 
-        if(value.slice(0,2)<12) {
-            month = value.slice(3,7) + '-' + (new Number(value.slice(0,2)) + 1);
+        if (value.slice(0, 2) < 12) {
+            month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
         } else {
             month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
         }
@@ -132,10 +132,10 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
     handleSearchData = async () => {
         let startDate = new Date(this.INFO_SEARCH.startDate);
         let endDate = new Date(this.INFO_SEARCH.endDate);
-        const {translate} = this.props;
+        const { translate } = this.props;
         if (startDate.getTime() >= endDate.getTime()) {
             Swal.fire({
-                title:  translate('kpi.organizational_unit.dashboard.alert_search.search'),
+                title: translate('kpi.organizational_unit.dashboard.alert_search.search'),
                 type: 'warning',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: translate('kpi.organizational_unit.dashboard.alert_search.confirm')
@@ -157,17 +157,17 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         dateAxisX.push('date-' + arrayPoint[0].name);
         point.push(arrayPoint[0].name);
 
-        for(let i=1; i<arrayPoint.length; i++) {
+        for (let i = 1; i < arrayPoint.length; i++) {
             let newDate = new Date(arrayPoint[i].date);
             newDate = newDate.getFullYear() + "-" + (newDate.getMonth() + 1) + "-" + (newDate.getDate() - 1);
 
             dateAxisX.push(newDate);
 
-            if(this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC) {
+            if (this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC) {
                 point.push(arrayPoint[i].automaticPoint);
-            } else if(this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE) {
+            } else if (this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE) {
                 point.push(arrayPoint[i].employeePoint);
-            } else if(this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED) {
+            } else if (this.state.kindOfPoint === this.KIND_OF_POINT.APPROVED) {
                 point.push(arrayPoint[i].approvedPoint);
             }
         }
@@ -182,12 +182,12 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         const { createKpiUnit } = this.props;
         let organizationalUnitKpiSetsOfChildUnit, point = [];
 
-        if(createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
+        if (createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
             organizationalUnitKpiSetsOfChildUnit = createKpiUnit.organizationalUnitKpiSetsOfChildUnit;
         }
 
-        if(organizationalUnitKpiSetsOfChildUnit) {
-            for(let i=0; i<organizationalUnitKpiSetsOfChildUnit.length; i++) {
+        if (organizationalUnitKpiSetsOfChildUnit) {
+            for (let i = 0; i < organizationalUnitKpiSetsOfChildUnit.length; i++) {
                 point = point.concat(this.filterAndSetDataPoint(organizationalUnitKpiSetsOfChildUnit[i]));
             }
         }
@@ -197,42 +197,42 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
     removePreviosChart = () => {
         const chart = this.refs.chart;
-        while(chart.hasChildNodes()) {
+        while (chart.hasChildNodes()) {
             chart.removeChild(chart.lastChild);
         }
     }
 
     multiLineChart = () => {
         this.removePreviosChart();
-        
+
         let dataChart, xs = {};
-        const {translate}= this.props;
+        const { translate } = this.props;
         dataChart = this.setDataMultiLineChart();
-        
-        for(let i=0; i<dataChart.length; i=i+2) {
+
+        for (let i = 0; i < dataChart.length; i = i + 2) {
             let temporary = {};
-            temporary[dataChart[i+1][0]] = dataChart[i][0]; 
+            temporary[dataChart[i + 1][0]] = dataChart[i][0];
             xs = Object.assign(xs, temporary);
         }
 
         this.chart = c3.generate({
             bindto: this.refs.chart,
 
-            padding: {                              
+            padding: {
                 top: 20,
                 bottom: 20,
                 right: 20
             },
 
-            data: {                                 
+            data: {
                 xs: xs,
                 columns: dataChart,
                 type: 'spline'
             },
 
-            axis: {                                
+            axis: {
                 x: {
-                    type : 'timeseries',
+                    type: 'timeseries',
                     tick: {
                         format: function (x) { return (x.getMonth() + 1) + "-" + x.getFullYear(); }
                     }
@@ -258,14 +258,14 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         const { createKpiUnit, translate } = this.props;
         let organizationalUnitKpiSetsOfChildUnit;
 
-        if(createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
+        if (createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
             organizationalUnitKpiSetsOfChildUnit = createKpiUnit.organizationalUnitKpiSetsOfChildUnit;
         }
 
         let d = new Date(),
-        month = '' + (d.getMonth() + 1),
-        day = '' + d.getDate(),
-        year = d.getFullYear();
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
 
         if (month.length < 2)
             month = '0' + month;
@@ -280,24 +280,24 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
                 <section className="form-inline">
                     <div className="form-group">
                         <label>{translate('kpi.organizational_unit.dashboard.start_date')}</label>
-                        <DatePicker 
-                            id="monthStartInResultsOfAllOrganizationalUnitKpiChart"      
-                            dateFormat="month-year"             
-                            value={defaultStartDate}                
+                        <DatePicker
+                            id="monthStartInResultsOfAllOrganizationalUnitKpiChart"
+                            dateFormat="month-year"
+                            value={defaultStartDate}
                             onChange={this.handleSelectMonthStart}
-                            disabled={false}                    
+                            disabled={false}
                         />
                     </div>
                 </section>
                 <section className="form-inline">
                     <div className="form-group">
                         <label>{translate('kpi.organizational_unit.dashboard.end_date')}</label>
-                        <DatePicker 
-                            id="monthEndInResultsOfAllOrganizationalUnitKpiChart"      
-                            dateFormat="month-year"             
-                            value={defaultEndDate}                   
+                        <DatePicker
+                            id="monthEndInResultsOfAllOrganizationalUnitKpiChart"
+                            dateFormat="month-year"
+                            value={defaultEndDate}
                             onChange={this.handleSelectMonthEnd}
-                            disabled={false}                    
+                            disabled={false}
                         />
                     </div>
                     <div className="form-group">
@@ -305,7 +305,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
                     </div>
                 </section>
 
-                <section className="box-body" style={{textAlign: "right"}}>
+                <section className="box-body" style={{ textAlign: "right" }}>
                     <div className="btn-group">
                         <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.AUTOMATIC)}>Automatic Point</button>
                         <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.EMPLOYEE)}>Employee Point</button>
