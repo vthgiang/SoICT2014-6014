@@ -1,5 +1,11 @@
-import { DisciplineConstants } from "./constants";
-import { DisciplineService } from "./services";
+import {
+    DisciplineConstants
+} from "./constants";
+
+import {
+    DisciplineService
+} from "./services";
+
 export const DisciplineActions = {
     getListDiscipline,
     createNewDiscipline,
@@ -11,15 +17,15 @@ export const DisciplineActions = {
     deletePraise,
     updatePraise,
 };
-/**
+
+/**************************
  * Start
  * Quản lý kỷ luật
- * 
- */
+ **************************/
 
 /**
  * Lấy danh sách kỷ luật
- * @data : dữ liệu key tìm kiếm 
+ * @data : Dữ liệu key tìm kiếm 
  */
 function getListDiscipline(data) {
     return dispatch => {
@@ -44,7 +50,7 @@ function getListDiscipline(data) {
 
 /**
  * Thêm mới kỷ luật của nhân viên
- * @data : dữ liệu kỷ luật cần thêm 
+ * @data : Dữ liệu kỷ luật cần thêm 
  */
 function createNewDiscipline(data) {
     return dispatch => {
@@ -95,7 +101,7 @@ function deleteDiscipline(id) {
 /**
  * Cập nhật thông tin kỷ luật của nhân viên
  * @id : Id kỷ luật cần cập nhật 
- * @data  : dữ liệu cập nhật
+ * @data  : Dữ liệu cập nhật
  */
 function updateDiscipline(id, data) {
     return dispatch => {
@@ -117,15 +123,18 @@ function updateDiscipline(id, data) {
             })
     }
 }
-/**
+/*************************
  * End
  * Quản lý kỷ luật
- */
+ *************************/
 
-/**
+
+
+
+/*************************
  * Start
  * Quản lý khen thưởng
- */
+ *************************/
 
 /**
  * Lấy danh sách khen thưởng
@@ -227,7 +236,7 @@ function updatePraise(id, data) {
             })
     }
 }
-/**
+/**************************
  * End
  * Quản lý khen thưởng
- */
+ **************************/

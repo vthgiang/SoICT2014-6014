@@ -196,10 +196,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
             }
         }
 
-        return {
-            point : point,
-            exportData : exportData
-        }
+        return point ;
     }
 
     removePreviosChart = () => {
@@ -215,7 +212,6 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
         let dataChart, xs = {};
         const {translate}= this.props;
         dataChart = this.setDataMultiLineChart();
-        dataChart = dataChart.point;
         
         for(let i=0; i<dataChart.length; i=i+2) {
             let temporary = {};

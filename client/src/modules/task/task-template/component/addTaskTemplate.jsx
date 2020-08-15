@@ -14,11 +14,13 @@ import { DialogModal, SelectBox, ErrorLabel } from '../../../../common-component
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import { TaskTemplateFormValidator } from './taskTemplateFormValidator';
 import './tasktemplate.css';
+import { getStorage } from '../../../../config';
 
 class AddTaskTemplate extends Component {
     constructor(props) {
         super(props);
-console.log('quangconstructor');
+        console.log('quangconstructor');
+        let userId = getStorage("userId")
         this.state = {
             newTemplate: {
                 organizationalUnit: '',
@@ -29,7 +31,7 @@ console.log('quangconstructor');
                 consultedEmployees: [],
                 informedEmployees: [],
                 description: '',
-                creator: '',
+                creator: userId,
                 formula: '',
                 priority: 3,
                 taskActions: [],
@@ -72,7 +74,7 @@ console.log('quangconstructor');
     }
     handleTaskTemplateName = (event) => {
         let value = event.target.value;
-        let { isProcess} = this.props
+        let { isProcess } = this.props
         isProcess && this.props.handleChangeName(value)
         this.validateTaskTemplateName(value, true);
     }
@@ -213,7 +215,7 @@ console.log('quangconstructor');
                 ...state,
             };
         });
-        this.props.handleChangeResponsible(value)
+        this.props.isProcess && this.props.handleChangeResponsible(value)
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
@@ -224,7 +226,7 @@ console.log('quangconstructor');
                 ...state,
             };
         });
-        this.props.handleChangeAccountable(value)
+        this.props.isProcess && this.props.handleChangeAccountable(value)
         this.props.onChangeTemplateData(this.state.newTemplate);
     }
 
@@ -295,7 +297,7 @@ console.log('quangconstructor');
                         consultedEmployees: (info && info.consultedEmployees) ? info.consultedEmployees : [],
                         informedEmployees: (info && info.informedEmployees) ? info.informedEmployees : [],
                         description: (info && info.description) ? info.description : '',
-                        creator: (info && info.creator) ? info.creator : '',
+                        creator: (info && info.creator) ? info.creator : getStorage("userId"),
                         formula: (info && info.formula) ? info.formula : '',
                         priority: (info && info.priority) ? info.priority : 3,
                         taskActions: (info && info.taskActions) ? info.taskActions : [],
@@ -358,7 +360,7 @@ console.log('quangconstructor');
     render() {
 
         var units, taskActions, taskInformations, listRole, usercompanys, userdepartments, departmentsThatUserIsDean, listRoles = [];
-        const { newTemplate, showMore, accountableEmployees, responsibleEmployees,  } = this.state;
+        const { newTemplate, showMore, accountableEmployees, responsibleEmployees, id } = this.state;
         const { department, user, translate, tasktemplates, isProcess } = this.props;
         if (newTemplate.taskActions) taskActions = newTemplate.taskActions;
         if (newTemplate.taskInformations) taskInformations = newTemplate.taskInformations;
@@ -423,30 +425,30 @@ console.log('quangconstructor');
                         </div>
                     </div>
 
-                        {/**Những Role có quyền xem mẫu công việc này*/}
-                        {!isProcess &&
-                            <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
-                            <div className={`form-group ${this.state.newTemplate.errorOnRead===undefined?"":"has-error"}`} >
+                    {/**Những Role có quyền xem mẫu công việc này*/}
+                    {!isProcess &&
+                        <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                            <div className={`form-group ${this.state.newTemplate.errorOnRead === undefined ? "" : "has-error"}`} >
                                 <label className="control-label">{translate('task_template.permission_view')}*</label>
                                 {listRoles &&
                                     <SelectBox
                                         id={`read-select-box`}
                                         className="form-control select2"
-                                        style={{width: "100%"}}
+                                        style={{ width: "100%" }}
                                         items={
-                                            listRoles.map( x => { return { value : x._id, text : x.name}})
+                                            listRoles.map(x => { return { value: x._id, text: x.name } })
                                         }
                                         value={newTemplate.readByEmployees}
                                         onChange={this.handleTaskTemplateRead}
                                         multiple={true}
-                                        options={{placeholder: `${translate('task_template.permission_view')}`}}
+                                        options={{ placeholder: `${translate('task_template.permission_view')}` }}
                                     />
                                 }
-                                <ErrorLabel content={this.state.newTemplate.errorOnRead}/>
+                                <ErrorLabel content={this.state.newTemplate.errorOnRead} />
                             </div>
                         </div>
-                        }
-                    </div>
+                    }
+                </div>
                 {/* </div> */}
 
 
@@ -479,49 +481,51 @@ console.log('quangconstructor');
                     </div>
                 </div>
 
-                {showMore &&
-                    <div>
-                        <div className="row">
-                            <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
-                                {/**Người chịu trách nhiệm mẫu công việc */}
-                                <div className='form-group' >
-                                    <label className="control-label">{translate('task_template.performer')}</label>
+                <div className="row">
+                    <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
 
-                                    {unitMembers &&
-                                        <SelectBox
-                                            id={`responsible-select-box`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={unitMembers}
-                                            value={newTemplate.responsibleEmployees}
-                                            onChange={this.handleTaskTemplateResponsible}
-                                            multiple={true}
-                                            options={{ placeholder: `${translate('task_template.performer')}` }}
-                                        />
-                                    }
-                                </div>
-                                {/**Người phê duyệt mẫu công việc */}
-                                <div className='form-group' >
-                                    <label className="control-label">{translate('task_template.approver')}</label>
-                                    {unitMembers &&
-                                        <SelectBox
-                                            id={`accounatable-select-box`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={unitMembers}
-                                            value={newTemplate.accountableEmployees}
-                                            onChange={this.handleTaskTemplateAccountable}
-                                            multiple={true}
-                                            options={{ placeholder: `${translate('task_template.approver')}` }}
-                                        />
-                                    }
-                                </div>
+                        {/**Người chịu trách nhiệm mẫu công việc */}
+                        <div className='form-group' >
+                            <label className="control-label">{translate('task_template.performer')}</label>
+
+                            {unitMembers &&
+                                <SelectBox
+                                    id={isProcess ? `responsible-select-box-${id}` : "responsible-select-box"}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={unitMembers}
+                                    value={newTemplate.responsibleEmployees}
+                                    onChange={this.handleTaskTemplateResponsible}
+                                    multiple={true}
+                                    options={{ placeholder: `${translate('task_template.performer')}` }}
+                                />
+                            }
+                        </div>
+                        {/**Người phê duyệt mẫu công việc */}
+                        <div className='form-group' >
+                            <label className="control-label">{translate('task_template.approver')}</label>
+                            {unitMembers &&
+                                <SelectBox
+                                    id={isProcess ? `accountable-select-box-${id}` : "accountable-select-box"}
+                                    className="form-control select2"
+                                    style={{ width: "100%" }}
+                                    items={unitMembers}
+                                    value={newTemplate.accountableEmployees}
+                                    onChange={this.handleTaskTemplateAccountable}
+                                    multiple={true}
+                                    options={{ placeholder: `${translate('task_template.approver')}` }}
+                                />
+                            }
+                        </div>
+
+                        {showMore &&
+                            <div>
                                 {/**Người hỗ trợ mẫu công việc */}
                                 <div className='form-group' >
-                                    <label className="ontrol-label">{translate('task_template.supporter')}</label>
+                                    <label className="control-label">{translate('task_template.supporter')}</label>
                                     {allUnitsMember &&
                                         <SelectBox
-                                            id={`consulted-select-box`}
+                                            id={isProcess ? `consulted-select-box-${id}` : "consulted-select-box"}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={allUnitsMember}
@@ -537,7 +541,7 @@ console.log('quangconstructor');
                                     <label className="control-label">{translate('task_template.observer')}</label>
                                     {allUnitsMember &&
                                         <SelectBox
-                                            id={`informed-select-box`}
+                                            id={isProcess ? `informed-select-box-${id}` : "informed-select-box"}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={allUnitsMember}
@@ -549,45 +553,58 @@ console.log('quangconstructor');
                                     }
                                 </div>
                             </div>
+                        }
+                    </div>
 
-                            <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
-                                {/**Công thức tính của mẫu công việc */}
-                                <div className={`form-group ${this.state.newTemplate.errorOnFormula === undefined ? "" : "has-error"}`} >
-                                    <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}*</label>
-                                    <input type="text" className="form-control" id="inputFormula" placeholder="progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100*(1-p1/p2)" value={newTemplate.formula} onChange={this.handleTaskTemplateFormula} />
-                                    <ErrorLabel content={this.state.newTemplate.errorOnFormula} />
+                    {showMore &&
+                        <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                            {/**Công thức tính của mẫu công việc */}
+                            <div className={`form-group ${this.state.newTemplate.errorOnFormula === undefined ? "" : "has-error"}`} >
+                                <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}*</label>
+                                <input type="text" className="form-control" id="inputFormula" placeholder="progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100*(1-p1/p2)" value={newTemplate.formula} onChange={this.handleTaskTemplateFormula} />
+                                <ErrorLabel content={this.state.newTemplate.errorOnFormula} />
 
-                                    <br />
-                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100*(1-p1/p2)</div>
-                                    <br />
-                                    <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
-                                    <div><span style={{ fontWeight: 600 }}>overdueDate</span> - Thời gian quá hạn (ngày)</div>
-                                    <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
-                                    <div><span style={{ fontWeight: 600 }}>totalDay</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
-                                    <div><span style={{ fontWeight: 600 }}>averageActionRating</span> -  Trung bình cộng điểm đánh giá hoạt động (1-10)</div>
-                                    <div><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</div>
-                                    <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
-                                </div>
+                                <br />
+                                <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100*(1-p1/p2)</div>
+                                <br />
+                                <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
+                                <div><span style={{ fontWeight: 600 }}>overdueDate</span> - Thời gian quá hạn (ngày)</div>
+                                <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
+                                <div><span style={{ fontWeight: 600 }}>totalDay</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
+                                <div><span style={{ fontWeight: 600 }}>averageActionRating</span> -  Trung bình cộng điểm đánh giá hoạt động (1-10)</div>
+                                <div><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</div>
+                                <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
                             </div>
                         </div>
-
-                        <div className="row">
-                            {/**Các hoạt động trong mẫu công việc */}
-                            <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
-                                <ActionForm initialData={taskActions} onDataChange={this.handleTaskActionsChange} />
-                            </div>
-                            {/**Các thông tin cần có mẫu công việc */}
-                            <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
-                                <InformationForm initialData={taskInformations} onDataChange={this.handleTaskInformationsChange} />
-                            </div>
+                    }
+                </div>
+                {showMore &&
+                    <div className="row">
+                        {/**Các hoạt động trong mẫu công việc */}
+                        <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                            <ActionForm initialData={taskActions} onDataChange={this.handleTaskActionsChange} />
                         </div>
-
+                        {/**Các thông tin cần có mẫu công việc */}
+                        <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                            <InformationForm initialData={taskInformations} onDataChange={this.handleTaskInformationsChange} />
+                        </div>
                     </div>
                 }
+
                 {
                     isProcess &&
                     <div>
-                        <a style={{ cursor: "pointer" }} onClick={this.clickShowMore}>{showMore ? "Hide" : "Show more"}</a>
+                        <a style={{ cursor: "pointer" }} onClick={this.clickShowMore}>
+                            {showMore ?
+                                <span>
+                                    Show less <i className="fa fa-angle-double-up"></i>
+                                </span>
+                                : <span>
+                                    Show more <i className="fa fa-angle-double-down"></i>
+                                </span>
+                            }
+                        </a>
+                        <br />
                     </div>
                 }
             </React.Fragment>
@@ -601,7 +618,7 @@ function mapState(state) {
     return { adding, department, user, tasktemplates };
 }
 
-const actionCreators = {                                                    
+const actionCreators = {
     addNewTemplate: taskTemplateActions.addTaskTemplate,
     getDepartment: UserActions.getDepartmentOfUser,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,

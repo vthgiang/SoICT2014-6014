@@ -87,25 +87,25 @@ class CreateForm extends Component {
                     <form id="form-create-asset-type">
                         {/* Mã loại tài sản */}
                         <div className="form-group">
-                            <label>Mã loại tài sản<span className="text-red">*</span></label>
+                            <label>{translate('asset.asset_type.asset_type_code')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleCode} />
                         </div>
 
                         {/* Tên loại tài sản */}
                         <div className="form-group">
-                            <label>Tên loại tài sản<span className="text-red">*</span></label>
+                            <label>{translate('asset.asset_type.asset_type_name')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleName} />
                         </div>
 
                         {/* Loại tài sản cha */}
                         <div className="form-group">
-                            <label>Loại tài sản cha</label>
+                            <label>{translate('asset.asset_type.parent_asset_type')}</label>
                             <TreeSelect data={dataList} value={[domainParent]} handleChange={this.handleParent} mode="radioSelect" />
                         </div>
 
                         {/* Mô tả */}
                         <div className="form-group">
-                            <label>Mô tả</label>
+                            <label>{translate('asset.general_information.description')}</label>
                             <textarea style={{ minHeight: '100px' }} type="text" className="form-control" onChange={this.handleDescription} />
                         </div>
                     </form>

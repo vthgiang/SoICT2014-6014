@@ -6,27 +6,15 @@ const {
 
 const HolidayController = require("./holiday.controller");
 
-/**
- * Lấy danh sách nghỉ lễ tết
- */
-router.get('/', auth, HolidayController.getAllHolidays);
 
-/**
- * Thêm mới thông tin nghỉ lễ tết
- */
-router.post('/', auth, HolidayController.createHoliday);
+router.get('/holidays', auth, HolidayController.getAllHolidays);
 
-/**
- * Xoá thông tin nghỉ lễ tết
- */
-router.delete('/:id', auth, HolidayController.deleteHoliday);
+router.post('/holidays', auth, HolidayController.createHoliday);
 
-/**
- * chỉnh thông tin nghỉ lễ tết
- */
-router.put('/:id', auth, HolidayController.updateHoliday);
+router.put('/holidays/:id', auth, HolidayController.updateHoliday);
+router.delete('/holidays/:id', auth, HolidayController.deleteHoliday);
 
-// Import thông tin nghỉ lễ tết
-router.post('/import', auth, HolidayController.importHolidays);
+// Import thông tin lịch làm việc
+router.post('/holidays/import', auth, HolidayController.importHolidays);
 
 module.exports = router;

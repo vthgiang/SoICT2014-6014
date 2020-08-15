@@ -8,6 +8,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
  * @company id của công ty
  */
 exports.getDocuments = async (company, query) => {
+    console.log('ttt', query);
     var page = query.page;
     var limit = query.limit;
 
@@ -20,9 +21,15 @@ exports.getDocuments = async (company, query) => {
             { path: "downloads.downloader", model: User, select: 'name id' },
         ]);
     } else {
-        const option = (query.key !== undefined && query.value !== undefined)
-            ? Object.assign({ company }, { [`${query.key}`]: new RegExp(query.value, "i") })
-            : { company };
+        let option = {
+            company: company,
+        };
+        // const option = (query.key !== undefined && query.value !== undefined)
+        //     ? Object.assign({ company }, { [`${query.key}`]: new RegExp(query.value, "i") })
+        //     : { company };
+        if (query.category) option.category = query.category;
+        if (query.domains) option.domains = query.domains;
+        if (query.archives) option.archives = query.archives
         console.log("option: ", option);
         return await Document.paginate(option, {
             page,
@@ -432,9 +439,10 @@ exports.createDocumentArchive = async (company, data) => {
         name: data.name,
         description: data.description,
     }
-    if (data.parent.length) {
-        query.parent = data.parent
+    if (data.parent && data.parent.length) {
+        query.parent = data.parent;
     }
+    query.path = await findPath(data);
     await DocumentArchive.create(query);
     return await this.getDocumentArchives(company);
 }
@@ -455,10 +463,33 @@ exports.deleteManyDocumentArchive = async (array, company) => {
 
 exports.editDocumentArchive = async (id, data) => {
     const archive = await DocumentArchive.findById(id);
-    archive.name = data.name,
-        archive.description = data.description;
+    archive.name = data.name;
+    archive.description = data.description;
     archive.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
+    archive.path = await findPath(data)
     await archive.save();
 
     return archive;
+}
+
+async function findPath(data) {
+    console.log('name', data.name)
+    let path = "";
+    if (data.parent && data.parent.length) {
+        let arrayParent = [];
+        let parent = data.parent;
+        while (parent) {
+            let tmp = await DocumentArchive.findById(parent);
+            arrayParent.push(tmp.name);
+            parent = tmp.parent;
+        }
+
+        while (arrayParent && arrayParent.length) {
+            let tmp = arrayParent.pop();
+            path = path + `${tmp} - `;
+        }
+    }
+    path = path + data.name;
+    console.log('pathhh', path)
+    return path;
 }

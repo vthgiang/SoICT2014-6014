@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
-import Swal from 'sweetalert2';
+
 import { DocumentActions } from '../../../redux/actions';
 import { Tree, SlimScroll } from '../../../../../common-components';
+
 import CreateForm from './createForm';
 import EditForm from './editForm';
+
+import { withTranslate } from 'react-redux-multilingual';
+import Swal from 'sweetalert2';
 import './domains.css'
 class AdministrationDocumentDomains extends Component {
     constructor(props) {
@@ -64,6 +67,7 @@ class AdministrationDocumentDomains extends Component {
         const { domainParent, deleteNode } = this.state;
         const { translate } = this.props;
         const { list } = this.props.documents.administration.domains;
+        console.log('domainnnn', domainParent, deleteNode);
         const dataTree = list.map(node => {
             return {
                 ...node,
@@ -72,7 +76,8 @@ class AdministrationDocumentDomains extends Component {
                 parent: node.parent ? node.parent.toString() : "#"
             }
         })
-        return (
+        
+        return ( 
             <React.Fragment>
                 <button className="btn btn-success" onClick={() => {
                     window.$('#modal-create-document-domain').modal('show');

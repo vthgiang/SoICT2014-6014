@@ -101,7 +101,7 @@ class MaintainanceLogTab extends Component {
                 <div className="box-body qlcv">
                     {/* Lịch sử bảo trì */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">Lịch sử bảo trì</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.maintainance_logs')}</h4></legend>
 
                         {/* Form thêm thông tin bảo trì */}
                         <MaintainanceLogAddModal handleChange={this.handleAddMaintainance} id={`addMaintainance${id}`} />
@@ -110,15 +110,15 @@ class MaintainanceLogTab extends Component {
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th style={{ width: "8%" }}>Mã phiếu</th>
-                                    <th style={{ width: "10%" }}>Ngày lập</th>
-                                    <th style={{ width: "10%" }}>Phân loại</th>
-                                    <th style={{ width: "10%" }}>Nội dung</th>
-                                    <th style={{ width: "10%" }}>Ngày bắt đầu sửa chữa</th>
-                                    <th style={{ width: "12%" }}>Ngày hoàn thành</th>
-                                    <th style={{ width: "10%" }}>Chi phí</th>
-                                    <th style={{ width: "10%" }}>Trạng thái</th>
-                                    <th style={{ width: '120px', textAlign: 'center' }}>Hành động</th>
+                                    <th style={{ width: "8%" }}>{translate('asset.general_information.form_code')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.create_date')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.type')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.start_date')}</th>
+                                    <th style={{ width: "12%" }}>{translate('asset.general_information.end_date')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.expense')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
+                                    <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -134,7 +134,7 @@ class MaintainanceLogTab extends Component {
                                             <td>{x.expense ? formater.format(parseInt(x.expense)) : ''} VNĐ</td>
                                             <td>{x.status}</td>
                                             <td>
-                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin phiếu"><i
+                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_maintenance_card')}><i
                                                     className="material-icons">edit</i></a>
                                                 <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteMaintainance(index)}><i className="material-icons"></i></a>
                                             </td>

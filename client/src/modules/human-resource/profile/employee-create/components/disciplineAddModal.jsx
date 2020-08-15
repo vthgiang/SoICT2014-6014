@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker, SelectBox } from '../../../../../common-components';
+
 import { DisciplineFromValidator } from '../../../commendation-discipline/components/combinedContent';
 class DisciplineAddModal extends Component {
     constructor(props) {
@@ -15,31 +17,37 @@ class DisciplineAddModal extends Component {
             reason: "",
         };
     }
+
     /**
      * Function format ngày hiện tại thành dạnh dd-mm-yyyy
+     * @param {*} date : Ngày muốn format
      */
     formatDate = (date) => {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
 
-        return [day, month, year].join('-');
+            return [day, month, year].join('-');
+        }
+        return date;
+
     }
-    /**
-     * Bắt sự kiện thay đổi số quyết định
-     */
+
+    /** Bắt sự kiện thay đổi số quyết định */
     handleNumberChange = (e) => {
-        let value = e.target.value;
+        let { value } = e.target;
         this.validateDecisionNumber(value, true);
-    }
+    };
     validateDecisionNumber = (value, willUpdateState = true) => {
-        let msg = DisciplineFromValidator.validateDecisionNumber(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = DisciplineFromValidator.validateDecisionNumber(value, translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -54,12 +62,14 @@ class DisciplineAddModal extends Component {
 
     /**
      * Bắt sự kiện thay đổi cấp ra quyết định
+     * @param {*} value : Cấp ra quyết định
      */
     handleUnitChange = (value) => {
         this.validateOrganizationalUnit(value[0], true);
     }
     validateOrganizationalUnit = (value, willUpdateState = true) => {
-        let msg = DisciplineFromValidator.validateOrganizationalUnit(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = DisciplineFromValidator.validateOrganizationalUnit(value, translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -71,11 +81,15 @@ class DisciplineAddModal extends Component {
         }
         return msg === undefined;
     }
+
     /**
      * Bắt sự kiện thay đổi ngày có hiệu lực
+     * @param {*} value : ngày có hiệu lực
      */
     handleStartDateChange = (value) => {
+        const { translate } = this.props;
         let { errorOnEndDate, endDate } = this.state;
+
         let errorOnStartDate;
         let partValue = value.split('-');
         let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
@@ -84,10 +98,11 @@ class DisciplineAddModal extends Component {
         let d = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
 
         if (date.getTime() > d.getTime()) {
-            errorOnStartDate = "Ngày có hiệu lực phải trước ngày hết hiệu lực";
+            errorOnStartDate = translate('human_resource.commendation_discipline.discipline.start_date_before_end_date');
         } else {
-            errorOnEndDate = errorOnEndDate === 'Ngày hết hiệu lực phải sau ngày có hiệu lực' ? undefined : errorOnEndDate
+            errorOnEndDate = undefined;
         }
+
         this.setState({
             startDate: value,
             errorOnStartDate: errorOnStartDate,
@@ -97,20 +112,25 @@ class DisciplineAddModal extends Component {
 
     /**
      * Bắt sự kiện thay đổi ngày hết hiệu lực
+     * @param {*} value 
      */
     handleEndDateChange = (value) => {
+        const { translate } = this.props;
         let { startDate, errorOnStartDate } = this.state;
+
+        let errorOnEndDate;
         let partValue = value.split('-');
         let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
 
         let partStartDate = startDate.split('-');
         let d = new Date([partStartDate[2], partStartDate[1], partStartDate[0]].join('-'));
-        let errorOnEndDate;
+
         if (d.getTime() > date.getTime()) {
-            errorOnEndDate = "Ngày hết hiệu lực phải sau ngày có hiệu lực";
+            errorOnEndDate = translate('human_resource.commendation_discipline.discipline.end_date_after_start_date');
         } else {
-            errorOnStartDate = errorOnStartDate === 'Ngày có hiệu lực phải trước ngày hết hiệu lực' ? undefined : errorOnStartDate
+            errorOnStartDate = undefined;
         }
+
         this.setState({
             endDate: value,
             errorOnStartDate: errorOnStartDate,
@@ -118,15 +138,14 @@ class DisciplineAddModal extends Component {
         })
     }
 
-    /**
-     * Bắt sự kiện thay đổi hình thức khen thưởng
-     */
+    /** Bắt sự kiện thay đổi hình thức khen thưởng */
     handleTypeChange = (e) => {
-        let value = e.target.value;
+        let { value } = e.target;
         this.validateType(value, true);
     }
     validateType = (value, willUpdateState = true) => {
-        let msg = DisciplineFromValidator.validateType(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = DisciplineFromValidator.validateType(value, translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -139,15 +158,14 @@ class DisciplineAddModal extends Component {
         return msg === undefined;
     }
 
-    /**
-     *  Bắt sự kiện thay đổi thành tich(lý do) khen thưởng
-     */
+    /** Bắt sự kiện thay đổi thành tich(lý do) khen thưởng */
     handleReasonChange = (e) => {
-        let value = e.target.value;
+        let { value } = e.target;
         this.validateReason(value, true);
     }
     validateReason = (value, willUpdateState = true) => {
-        let msg = DisciplineFromValidator.validateReason(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = DisciplineFromValidator.validateReason(value, translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -160,70 +178,77 @@ class DisciplineAddModal extends Component {
         return msg === undefined;
     }
 
-    /**
-     * Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
-     */
+    /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
-        let result = this.validateDecisionNumber(this.state.decisionNumber, false) && this.validateOrganizationalUnit(this.state.organizationalUnit, false) &&
-            this.validateType(this.state.reason, false) && this.validateReason(this.state.reason, false);
-        let partStart = this.state.startDate.split('-');
-        let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
-        let partEnd = this.state.endDate.split('-');
-        let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
-        if (new Date(startDate).getTime() <= new Date(endDate).getTime()) {
+        const { decisionNumber, type, organizationalUnit, reason, startDate, endDate } = this.state;
+        let result = this.validateDecisionNumber(decisionNumber, false) && this.validateOrganizationalUnit(organizationalUnit, false) &&
+            this.validateType(type, false) && this.validateReason(reason, false);
+        let partStart = startDate.split('-');
+        let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
+        let partEnd = endDate.split('-');
+        let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        if (new Date(startDateNew).getTime() <= new Date(endDateNew).getTime()) {
             return result;
         } else return false;
     }
 
-    /**
-     * Bắt sự kiện submit form
-     */
+    /** Bắt sự kiện submit form */
     save = async () => {
-        let partStart = this.state.startDate.split('-');
-        let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
-        let partEnd = this.state.endDate.split('-');
-        let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        const { startDate, endDate } = this.state;
+        let partStart = startDate.split('-');
+        let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
+        let partEnd = endDate.split('-');
+        let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         if (this.isFormValidated()) {
-            return this.props.handleChange({ ...this.state, startDate: startDate, endDate: endDate });
+            return this.props.handleChange({ ...this.state, startDate: startDateNew, endDate: endDateNew });
         }
     }
+
     render() {
-        const { translate, id, department } = this.props;
+        const { translate, department } = this.props;
+
+        const { id } = this.props;
+
         const { startDate, endDate, reason, decisionNumber, organizationalUnit, type, errorOnEndDate, errorOnStartDate,
             errorOnNumber, errorOnUnit, errorOnType, errorOnReason } = this.state;
+
         return (
             <React.Fragment>
-                <ButtonModal modalID={`modal-create-discipline${id}`} button_name={translate('modal.create')} title={translate('discipline.add_discipline_title')} />
+                <ButtonModal modalID={`modal-create-discipline${id}`} button_name={translate('modal.create')} title={translate('human_resource.commendation_discipline.discipline.add_discipline_title')} />
                 <DialogModal
                     size='50' modalID={`modal-create-discipline${id}`} isLoading={false}
                     formID={`form-create-discipline${id}`}
-                    title={translate('discipline.add_discipline_title')}
+                    title={translate('human_resource.commendation_discipline.discipline.add_discipline_title')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-create-discipline${id}`}>
                         <div className="row">
-                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnNumber === undefined ? "" : "has-error"}`}>
-                                <label>{translate('page.number_decisions')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="decisionNumber" value={decisionNumber} onChange={this.handleNumberChange} autoComplete="off" placeholder={translate('page.number_decisions')} />
+                            {/* Số ra quyết định */}
+                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnNumber && "has-error"}`}>
+                                <label>{translate('human_resource.commendation_discipline.commendation.table.decision_number')}<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" name="decisionNumber" value={decisionNumber} onChange={this.handleNumberChange}
+                                    autoComplete="off" placeholder={translate('human_resource.commendation_discipline.commendation.table.decision_number')} />
                                 <ErrorLabel content={errorOnNumber} />
                             </div>
-                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
-                                <label>{translate('discipline.decision_unit')}<span className="text-red">*</span></label>
+                            {/* Cấp ra quyết định*/}
+                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnUnit && "has-error"}`}>
+                                <label>{translate('human_resource.commendation_discipline.commendation.table.decision_unit')}<span className="text-red">*</span></label>
                                 <SelectBox
                                     id={`create_discipline${id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={organizationalUnit}
-                                    items={[...department.list.map((u, i) => { return { value: u._id, text: u.name } }), { value: '', text: 'Chọn cấp ra quyết định' }]}
+                                    items={[...department.list.map((u, i) => { return { value: u._id, text: u.name } }), { value: '', text: translate('human_resource.choose_decision_unit') }]}
                                     onChange={this.handleUnitChange}
                                 />
                                 <ErrorLabel content={errorOnUnit} />
                             </div>
                         </div>
                         <div className="row">
-                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                <label>{translate('discipline.start_date')}<span className="text-red">*</span></label>
+                            {/* Ngày có hiệu lực*/}
+                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnStartDate && "has-error"}`}>
+                                <label>{translate('human_resource.commendation_discipline.discipline.table.start_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`create_discipline_start_date${id}`}
                                     deleteValue={false}
@@ -232,8 +257,9 @@ class DisciplineAddModal extends Component {
                                 />
                                 <ErrorLabel content={errorOnStartDate} />
                             </div>
-                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                <label>{translate('discipline.end_date')}<span className="text-red">*</span></label>
+                            {/* Ngày hết hiệu lực*/}
+                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnEndDate && "has-error"}`}>
+                                <label>{translate('human_resource.commendation_discipline.discipline.table.end_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`create_discipline_end_date${id}`}
                                     deleteValue={false}
@@ -243,13 +269,16 @@ class DisciplineAddModal extends Component {
                                 <ErrorLabel content={errorOnEndDate} />
                             </div>
                         </div>
-                        <div className={`form-group ${errorOnType === undefined ? "" : "has-error"}`}>
-                            <label>{translate('discipline.discipline_forms')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="type" value={type} onChange={this.handleTypeChange} autoComplete="off" placeholder={translate('discipline.discipline_forms')} />
+                        {/* Hình thức kỷ luật*/}
+                        <div className={`form-group ${errorOnType && "has-error"}`}>
+                            <label>{translate('human_resource.commendation_discipline.discipline.table.discipline_forms')}<span className="text-red">*</span></label>
+                            <input type="text" className="form-control" name="type" value={type} onChange={this.handleTypeChange}
+                                autoComplete="off" placeholder={translate('human_resource.commendation_discipline.discipline.table.discipline_forms')} />
                             <ErrorLabel content={errorOnType} />
                         </div>
-                        <div className={`form-group ${errorOnReason === undefined ? "" : "has-error"}`}>
-                            <label>{translate('discipline.reason_discipline')}<span className="text-red">*</span></label>
+                        {/* Lý do kỷ luật*/}
+                        <div className={`form-group ${errorOnReason && "has-error"}`}>
+                            <label>{translate('human_resource.commendation_discipline.discipline.table.reason_discipline')}<span className="text-red">*</span></label>
                             <textarea className="form-control" rows="3" name="reason" value={reason} onChange={this.handleReasonChange} placeholder="Enter ..." autoComplete="off" ></textarea>
                             <ErrorLabel content={errorOnReason} />
                         </div>

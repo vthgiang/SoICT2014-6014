@@ -356,20 +356,20 @@ class AssetEditForm extends Component {
                 <DialogModal
                     size='75' modalID="modal-edit-asset" isLoading={assetsManager.isLoading}
                     formID="form-edit-asset"
-                    title="Chỉnh sửa thông tin tài sản"
+                    title={translate('asset.general_information.edit_info')} 
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
                     {/* Nav-tabs */}
                     <div className="nav-tabs-custom" style={{ marginTop: '-15px' }}>
                         <ul className="nav nav-tabs">
-                            <li className="active"><a title="Thông tin chung" data-toggle="tab" href={`#edit_general${_id}`}>Thông tin chung</a></li>
-                            <li><a title="Thông tin sử dụng" data-toggle="tab" href={`#edit_usage${_id}`}>Thông tin sử dụng</a></li>
-                            <li><a title="Thông tin bảo trì" data-toggle="tab" href={`#edit_maintainance${_id}`}>Thông tin bảo trì</a></li>
-                            <li><a title="Thông tin khấu hao" data-toggle="tab" href={`#edit_depreciation${_id}`}>Thông tin khấu hao</a></li>
-                            <li><a title="Thông tin sự cố" data-toggle="tab" href={`#edit_incident${_id}`}>Thông tin sự cố</a></li>
-                            <li><a title="Thông tin thanh lý" data-toggle="tab" href={`#edit_disposal${_id}`}>Thông tin thanh lý</a></li>
-                            <li><a title="Tài liệu đính kèm" data-toggle="tab" href={`#edit_attachments${_id}`}>Tài liệu đính kèm</a></li>
+                            <li className="active"><a title={translate('asset.general_information.general_information')} data-toggle="tab" href={`#edit_general${_id}`}>{translate('asset.general_information.general_information')}</a></li>
+                            <li><a title={translate('asset.general_information.usage_information')} data-toggle="tab" href={`#edit_usage${_id}`}>{translate('asset.general_information.usage_information')}</a></li>
+                            <li><a title={translate('asset.general_information.maintainance_information')} data-toggle="tab" href={`#edit_maintainance${_id}`}>{translate('asset.general_information.maintainance_information')}</a></li>
+                            <li><a title={translate('asset.general_information.depreciation_information')} data-toggle="tab" href={`#edit_depreciation${_id}`}>{translate('asset.general_information.depreciation_information')}</a></li>
+                            <li><a title={translate('asset.general_information.incident_information')} data-toggle="tab" href={`#edit_incident${_id}`}>{translate('asset.general_information.incident_information')}</a></li>
+                            <li><a title={translate('asset.general_information.disposal_information')} data-toggle="tab" href={`#edit_disposal${_id}`}>{translate('asset.general_information.disposal_information')}</a></li>
+                            <li><a title={translate('asset.general_information.attach_infomation')} data-toggle="tab" href={`#edit_attachments${_id}`}>{translate('asset.general_information.attach_infomation')}</a></li>
                         </ul>
 
                         < div className="tab-content">

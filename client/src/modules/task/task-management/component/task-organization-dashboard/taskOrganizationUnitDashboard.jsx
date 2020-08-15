@@ -11,6 +11,7 @@ import { DashboardEvaluationEmployeeKpiSetAction } from '../../../../kpi/evaluat
 
 import { withTranslate } from 'react-redux-multilingual';
 import { SelectBox, SelectMulti, DatePicker } from '../../../../../common-components/index';
+import { DistributionOfEmployee } from './distributionOfEmployee';
 
 class TaskOrganizationUnitDashboard extends Component {
     constructor(props) {
@@ -84,7 +85,7 @@ class TaskOrganizationUnitDashboard extends Component {
                     idsUnit: idsUnit,
                 }
             });
-
+            await this.props.getAllEmployeeOfUnitByIds(this.state.idsUnit);
             data = {
                 organizationUnitId: this.state.idsUnit,
                 type: organizationUnit,
@@ -93,7 +94,9 @@ class TaskOrganizationUnitDashboard extends Component {
             if (this.state.idsUnit.length) {
                 await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, this.state.startMonth, this.state.endMonth);
             }
+ 
             await this.props.getTaskByUser(data);
+            
         } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.tasks.organizationUnitTasks) {
                 return false;
@@ -233,7 +236,9 @@ class TaskOrganizationUnitDashboard extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-12">
+                </div>
+                <div className="row">
+                    <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.dashboard_area_result')}</div>
@@ -251,7 +256,7 @@ class TaskOrganizationUnitDashboard extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-12">
+                    <div className="col-xs-6">
                         <div className="box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('task.task_management.detail_status')}</div>
@@ -271,7 +276,24 @@ class TaskOrganizationUnitDashboard extends Component {
                         </div>
                     </div>
                 </div>
-
+                <div className="row">
+                    <div className="col-xs-12">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">Biểu đồ đóng góp của nhân viên </div>
+                            </div>
+                            <div className="box-body qlcv">
+                                {this.state.callAction && tasks &&tasks.organizationUnitTasks &&
+                                    <DistributionOfEmployee
+                                        tasks= {tasks.organizationUnitTasks}
+                                        listEmployee = {user.employees}
+                                        units={idsUnit}
+                                    />
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div className="row">
                     <div className="col-xs-6">
                         <div className="box box-primary">
@@ -318,7 +340,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                                                 <i className="fa fa-ellipsis-v" />
                                                                 <i className="fa fa-ellipsis-v" />
                                                             </span>
-                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" />{item.task.name}</span>
+                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" >{item.task.name}</a></span>
                                                             <small className="label label-warning"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
                                                         </li>
                                                     ) : "Không có công việc nào sắp hết hạn"
@@ -340,7 +362,6 @@ class TaskOrganizationUnitDashboard extends Component {
                             <TasksSchedule
                                 callAction={!this.state.willUpdate}
                                 TaskOrganizationUnitDashboard={true}
-                                // tasksInUnit={tasks.organizationUnitTasks && tasks.organizationUnitTasks}
                                 units={idsUnit}
                                 willUpdate={true}
                             />
@@ -364,7 +385,7 @@ const actionCreators = {
     getDepartment: UserActions.getDepartmentOfUser,
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
-
+    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
 
 };
 

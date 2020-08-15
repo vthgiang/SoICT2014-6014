@@ -162,7 +162,8 @@ class SalaryManagement extends Component {
      * @param {*} pageNumber : Số trang cần xem
      */
     setPage = async (pageNumber) => {
-        var page = (pageNumber - 1) * (this.state.limit);
+        let { limit } = this.state;
+        let page = (pageNumber - 1) * (limit);
         await this.setState({
             page: parseInt(page),
         });
@@ -203,7 +204,6 @@ class SalaryManagement extends Component {
                             }
                         })
                     };
-                    total = total + parseInt(x.mainSalary);
                 }
 
                 return {
@@ -216,7 +216,7 @@ class SalaryManagement extends Component {
                     gender: x.employee.gender === 'male' ? "Nam" : "Nữ",
                     organizationalUnits: organizationalUnits.join(', '),
                     position: position.join(', '),
-                    total: total,
+                    total: total + parseInt(x.mainSalary),
                     month: month,
                     year: year,
                     ...bonus
@@ -280,7 +280,7 @@ class SalaryManagement extends Component {
     render() {
         const { translate, salary, department } = this.props;
 
-        const { limit, page, organizationalUnit } = this.state;
+        const { limit, page, organizationalUnit, importSalary, currentRow } = this.state;
 
         let formater = new Intl.NumberFormat();
         let { list } = department;
@@ -383,7 +383,7 @@ class SalaryManagement extends Component {
                                             translate('human_resource.unit'),
                                             translate('human_resource.position'),
                                         ]}
-                                        limit={this.state.limit}
+                                        limit={limit}
                                         setLimit={this.setLimit}
                                         hideColumnOption={true}
                                     />
@@ -393,16 +393,16 @@ class SalaryManagement extends Component {
                         <tbody>
                             {(listSalarys && listSalarys.length !== 0) &&
                                 listSalarys.map((x, index) => {
+                                    let total = 0;
                                     if (x.bonus.length !== 0) {
-                                        var total = 0;
                                         for (let count in x.bonus) {
                                             total = total + parseInt(x.bonus[count].number)
                                         }
                                     }
                                     return (
                                         <tr key={index}>
-                                            <td>{x.employee.employeeNumber}</td>
-                                            <td>{x.employee.fullName}</td>
+                                            <td>{x.employee ? x.employee.employeeNumber : null}</td>
+                                            <td>{x.employee ? x.employee.fullName : null}</td>
                                             <td>{this.formatDate(x.month, true)}</td>
                                             <td>
                                                 {
@@ -449,17 +449,17 @@ class SalaryManagement extends Component {
                 <SalaryCreateForm />
 
                 {/* Form Thêm thông tin bảng lương bằng import file */}
-                {this.state.importSalary && <SalaryImportForm />}
+                {importSalary && <SalaryImportForm />}
 
                 {/* Form chỉnh sửa thông tin bảng lương */
-                    this.state.currentRow &&
+                    currentRow &&
                     <SalaryEditForm
-                        _id={this.state.currentRow._id}
-                        unit={this.state.currentRow.unit}
-                        employeeNumber={this.state.currentRow.employee.employeeNumber}
-                        month={this.formatDate(this.state.currentRow.month, true)}
-                        mainSalary={this.state.currentRow.mainSalary}
-                        bonus={this.state.currentRow.bonus}
+                        _id={currentRow._id}
+                        unit={currentRow.unit}
+                        employeeNumber={currentRow.employee ? currentRow.employee.employeeNumber : null}
+                        month={this.formatDate(currentRow.month, true)}
+                        mainSalary={currentRow.mainSalary}
+                        bonus={currentRow.bonus}
                     />
                 }
             </div>

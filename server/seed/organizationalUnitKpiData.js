@@ -14,7 +14,7 @@ require('dotenv').config({
 });
 
 // DB CONFIG
-var db = process.env.DATABASE;
+const db = process.env.DATABASE || `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`;
 const optionDatabase = process.env.DB_AUTHENTICATION === 'true' ?
 {
     useNewUrlParser: true,

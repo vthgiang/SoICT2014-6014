@@ -182,7 +182,7 @@ class ExperienceTab extends Component {
                                     <th>{translate('manage_employee.to_month_year')}</th>
                                     <th>{translate('manage_employee.unit')}</th>
                                     <th>{translate('table.position')}</th>
-                                    <th style={{ width: '120px' }}>{translate('table.action')}</th>
+                                    <th style={{ width: '120px' }}>{translate('general.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
