@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { createKpiSetActions } from '../../../employee/creation/redux/actions';
+import { UserActions } from "../../../../super-admin/user/redux/actions";
 
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -19,6 +20,7 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
 
         this.state = {
             dataStatus: this.DATA_STATUS.QUERYING,
+            exportData : null
         };
     }
 
@@ -74,10 +76,12 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
 
     setDataMultiLineChart = () => {
         const { createEmployeeKpiSet, translate } = this.props;
-        let listEmployeeKpiSet, dataMultiLineChart, automaticPoint, employeePoint, approvedPoint, date;
+        let listEmployeeKpiSet, dataMultiLineChart, automaticPoint, employeePoint, approvedPoint, date,exportData;
         
-        if (createEmployeeKpiSet) {
+        if (createEmployeeKpiSet.employeeKpiSetByMonth) {
             listEmployeeKpiSet = createEmployeeKpiSet.employeeKpiSetByMonth
+            exportData =this.convertDataToExportData(listEmployeeKpiSet);
+            this.handleExportData(exportData);
         }
 
         if (listEmployeeKpiSet) {
@@ -144,10 +148,65 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
         })
     }
 
+    handleExportData =(exportData)=>
+    {
+        this.setState(state => {
+            return {
+                ...state,
+                exportData : exportData            }
+        })
+    }
+
+    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    convertDataToExportData = (data) => {
+        let fileName = "Thống kê kết quả KPI nhân viên " ;
+        if (data) {           
+            data = data.map((x, index) => {
+                
+                let date = new Date(x.date);
+                let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
+                let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
+                let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);           
+
+                return {
+                    date : date,
+                    automaticPoint: automaticPoint,
+                    employeePoint: employeePoint,
+                    approverPoint: approverPoint,                 
+                };
+            })
+        }
+
+        let exportData = {
+            fileName: fileName,
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    sheetTitle : fileName,
+                    tables: [
+                        {
+                            tableName : 'Dữ liệu để vẽ biểu đồ '+ fileName,
+                            columns: [
+                                { key: "date", value: "Thời gian" },
+                                { key: "automaticPoint", value: "Điểm tự động" },
+                                { key: "employeePoint", value: "Điểm tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm được đánh giá" }
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData;        
+       
+    }
+
     render() {
-        console.log("|n\n\n\n\n\n\n",this.props.info)
+        let  { exportData } =this.state;
         return (
             <React.Fragment>
+                {exportData&&<ExportExcel id="export-statistic-of-employee-kpi-set-chart" exportData={exportData} style={{ marginTop:5 }} />}
                 <div ref="chart"></div>
             </React.Fragment>
         )
@@ -155,11 +214,12 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
 }
 
 function mapState(state) {
-    const { createEmployeeKpiSet } = state;
-    return { createEmployeeKpiSet };
+    const { createEmployeeKpiSet,user } = state;
+    return { createEmployeeKpiSet,user };
 }
 const actions = {
-    getAllEmployeeKpiSetByMonth: createKpiSetActions.getAllEmployeeKpiSetByMonth
+    getAllEmployeeKpiSetByMonth: createKpiSetActions.getAllEmployeeKpiSetByMonth,
+    
 }
 
 const connectedStatisticsOfEmployeeKpiSetChart = connect(mapState, actions)(withTranslate(StatisticsOfEmployeeKpiSetChart));
