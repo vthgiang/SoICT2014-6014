@@ -12,22 +12,85 @@ import 'c3/c3.css';
 class DistributionOfEmployee extends Component {
     constructor(props) {
         super(props);
-
+        this.state = {
+            listNameEmployee: []
+        }
     }
     componentDidMount() {
-        this.pieChart();
+        if(this.props.listEmployee)
+            this.pieChart();
 
     }
 
-    setDataPieChart = () => {
-        let dataPieChart = [
-            [3, 5, 5, 1, 0, 4, 3, 2, 1, 2, 2, 3, 5],
-            [3, 5, 5, 1, 0, 4, 3, 1, 6, 2, 1, 4, 0],
-            [4, 0, 3, 5, 5, 4, 3, 2, 1, 0, 4, 9, 3],
-            [9, 3, 5, 5, 1, 0, 4, 3, 2, 5, 8, 3, 5]
+    getData = async () => {
+        const { tasks, user } = this.props;
+        let taskList = this.props.tasks.organizationUnitTasks, listEmployee;
+        let point = [], point1= [], point2=[], point3=[], nameEmployee=[];
 
-        ];
-        return dataPieChart;
+        listEmployee = this.props.listEmployee
+    
+        let accountableEmployees = 0, consultedEmployees = 0, responsibleEmployees = 0, informedEmployees = 0;
+        let taskListEmployee = [];
+
+        for (let i in listEmployee){
+            taskList && taskList.tasks.length && taskList.tasks.map(task => {
+                for(let j in task.accountableEmployees){
+                    if(listEmployee[i].userId._id == task.accountableEmployees[j] )
+                    accountableEmployees +=1 ;
+                }
+
+                for(let j in task.consultedEmployees)
+                     if(listEmployee[i].userId._id == task.consultedEmployees[j] )
+                         consultedEmployees +=1 ;
+                 for(let j in task.responsibleEmployees)
+                     if(listEmployee[i].userId._id == task.responsibleEmployees[j]._id )
+                     responsibleEmployees +=1 ;
+                 for(let j in task.informedEmployees)
+                     if(listEmployee[i].userId._id == task.informedEmployees[j] )
+                         informedEmployees +=1 ;
+            })
+            let employee = {
+                infor: listEmployee[i],
+                accountableEmployees: accountableEmployees,
+                consultedEmployees: consultedEmployees,
+                responsibleEmployees : responsibleEmployees,
+                informedEmployees: informedEmployees,
+            }
+            taskListEmployee.push(employee);
+            accountableEmployees = 0;
+            consultedEmployees = 0;
+            responsibleEmployees = 0;
+            informedEmployees = 0;
+        }
+        for (let i in taskListEmployee){
+            point.push(taskListEmployee[i].accountableEmployees)
+            point1.push(taskListEmployee[i].consultedEmployees)
+            point2.push(taskListEmployee[i].responsibleEmployees)
+            point3.push(taskListEmployee[i].informedEmployees)
+            nameEmployee.push(taskListEmployee[i].infor.userId.name)
+        }
+        await this.setState (state =>{
+            return {
+                ...state,
+                listNameEmployee: nameEmployee
+            }
+        })
+        let data = {
+            nameEmployee: nameEmployee,
+            point: [point, point1, point2, point3] 
+        }
+
+        return data;
+    }
+
+    setDataPieChart = async () => {
+        let dataPieChart    
+
+        if(this.props.listEmployee){
+            dataPieChart =  await this.getData();
+        }
+
+        return dataPieChart.point;
     }
 
     // removePreviosChart = () => {
@@ -37,11 +100,12 @@ class DistributionOfEmployee extends Component {
     //     }
     // }
 
-    pieChart = () => {
+    pieChart = async () => {
 
-        // this.removePreviosChart();
+        // this.removePreviosChart();\
+        let data = await this.getData();
+        let dataPieChart = await this.setDataPieChart();
 
-        let dataPieChart = this.setDataPieChart();
         let maxLength = 0;
         for (let i = 0; i < dataPieChart.length; i++) {
             if (dataPieChart[i].length > maxLength) {
@@ -53,6 +117,7 @@ class DistributionOfEmployee extends Component {
         let employeesEachChart;
         let j = 1;
         let rep = true;
+
         // nếu số nhân viên nhiều thì chia thành nhiều biểu đồ
         while (rep) {
             employeesEachChart = Math.ceil(maxLength / j);
@@ -99,7 +164,7 @@ class DistributionOfEmployee extends Component {
                 axis: {
                     x: {
                         type: 'category',
-                        categories: ['Nguyễn văn An', 'Nguyễn văn Bình', 'Nguyễn văn Cúc', 'Nguyễn văn Danh', 'Nguyễn văn Đức', 'Nguyễn văn Én', 'Nguyễn văn An', 'Nguyễn văn Bình', 'Nguyễn văn Cúc', 'Nguyễn văn Danh', 'Nguyễn văn Đức', 'Nguyễn văn Én', 'Nguyễn văn An', 'Nguyễn văn An', 'Nguyễn văn Bình', 'Nguyễn văn Cúc', 'Nguyễn văn Danh', 'Nguyễn văn Đức', 'Nguyễn văn Én', 'Nguyễn văn Bình', 'Nguyễn văn Cúc', 'Nguyễn văn Danh', 'Nguyễn văn Đức', 'Nguyễn văn Én', 'Phước', 'Giang', 'Hoàng', 'Kha', 'Linh']
+                        categories: data.nameEmployee
                     }
                 }
             });
@@ -108,9 +173,7 @@ class DistributionOfEmployee extends Component {
 
     }
     render() {
-        const { tasks, user } = this.props;
-        let taskList = tasks && tasks.organizationUnitTasks;
-
+        
         // let d = document.createElement('div');
         // d.setAttribute('id', 'distributionOfEmployee')
         // for (let i = 0; i < 2; i++) {

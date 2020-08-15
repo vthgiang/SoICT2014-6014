@@ -85,7 +85,7 @@ class TaskOrganizationUnitDashboard extends Component {
                     idsUnit: idsUnit,
                 }
             });
-
+            await this.props.getAllEmployeeOfUnitByIds(this.state.idsUnit);
             data = {
                 organizationUnitId: this.state.idsUnit,
                 type: organizationUnit,
@@ -94,7 +94,9 @@ class TaskOrganizationUnitDashboard extends Component {
             if (this.state.idsUnit.length) {
                 await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, this.state.startMonth, this.state.endMonth);
             }
+ 
             await this.props.getTaskByUser(data);
+            
         } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.tasks.organizationUnitTasks) {
                 return false;
@@ -281,8 +283,10 @@ class TaskOrganizationUnitDashboard extends Component {
                                 <div className="box-title">Biểu đồ đóng góp của nhân viên </div>
                             </div>
                             <div className="box-body qlcv">
-                                {this.state.callAction &&
+                                {this.state.callAction && tasks &&tasks.organizationUnitTasks &&
                                     <DistributionOfEmployee
+                                        tasks= {tasks.organizationUnitTasks}
+                                        listEmployee = {user.employees}
                                         units={idsUnit}
                                     />
                                 }
@@ -381,7 +385,7 @@ const actionCreators = {
     getDepartment: UserActions.getDepartmentOfUser,
     getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
-
+    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
 
 };
 

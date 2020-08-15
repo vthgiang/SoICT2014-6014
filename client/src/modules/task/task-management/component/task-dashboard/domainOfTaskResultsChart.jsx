@@ -73,7 +73,6 @@ class DomainOfTaskResultsChart extends Component {
                 if (this.props.units) {
                     if (this.props.units.length)
                         await this.props.getTaskInOrganizationUnitByMonth(this.props.units, nextProps.startMonth, nextProps.endMonth);
-                    await this.props.getAllEmployeeOfUnitByIds(this.props.units)
                 }
             }
             else {
