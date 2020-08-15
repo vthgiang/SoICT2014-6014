@@ -369,6 +369,7 @@ export function tasks(state = {}, action) {
         case taskManagementConstants.GET_TASK_EVALUATION_REQUEST:
             return {
                 ...state,
+                listTaskEvaluations: null,
                 isLoading: true
             };
         case taskManagementConstants.GET_TASK_EVALUATION_SUCCESS:

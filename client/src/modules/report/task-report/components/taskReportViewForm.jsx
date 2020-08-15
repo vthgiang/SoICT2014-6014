@@ -10,7 +10,8 @@ class TaskReportViewForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            charType: '',
+            aggregationType: '',
         }
     }
 
@@ -27,11 +28,23 @@ class TaskReportViewForm extends Component {
         return `${y}-${m + 1}`;
     }
 
+
+
     render() {
         const { tasks, user, reports, translate } = this.props;
+        const { taskInformations } = this.props; // Lấy dữ liệu từ form cha
         let formater = new Intl.NumberFormat();
         let listTaskEvaluation = tasks.listTaskEvaluations;
-        let taskInfoName, headTable = [];
+        let taskInfoName, headTable = [], aggregationType, charType, coefficient;
+
+        //  Lấy loại bản đồ và cách tính từ form tạo mới
+        if (taskInformations) {
+            // taskInformations = taskInformations[0];
+            aggregationType = taskInformations[0].aggregationType;
+            charType = taskInformations[0].charType;
+            coefficient = taskInformations[0].coefficient;
+        }
+
 
         // hiển thị trường thông tin hiện trong báo cáo
         if (listTaskEvaluation && listTaskEvaluation.length !== 0) {
@@ -44,20 +57,25 @@ class TaskReportViewForm extends Component {
         }
 
         let newlistTaskEvaluation;
+
+        // Lọc lấy các trường cần thiết.
         if (listTaskEvaluation) {
             newlistTaskEvaluation = listTaskEvaluation.map(item => {
                 return {
                     time: this.convertMonthYear(item.date),
-                    task: item.taskInformations.map(task => {
-                        return {
-                            code: task.code,
-                            value: task.value,
-                        }
+                    task: item.taskInformations.filter(task => {
+                        if (task.type === 'Number')
+                            return {
+                                code: task.code,
+                                value: task.value,
+                            }
                     })
                 }
             });
         }
 
+
+        //Gom nhóm công việc theo tháng-năm
         let groupDataByMonth;
         if (newlistTaskEvaluation) {
             groupDataByMonth = newlistTaskEvaluation.reduce((groups, item) => {
@@ -66,23 +84,42 @@ class TaskReportViewForm extends Component {
             }, {});
         }
 
+
         let output;
         if (groupDataByMonth) {
             output = Object.entries(groupDataByMonth).map(([time, datapoints]) => {
-                const codes = {}
-                const allTasks = datapoints.flatMap(point => point.task);
-                for (const { code, value } of allTasks) {
-                    codes[code] = (codes[code] || 0) + value;
-                }
-                return {
-                    time,
-                    tasks: Object.entries(codes).map(([code, value]) => ({ code, value }))
-                }
-            }
-            )
-        }
+                let allTasks = datapoints.flatMap(point => point.task);
+                let groupByCode = allTasks.reduce((arr, item) => { // gom công việc cùng trường thông tin (code)
+                    if (!arr[item.code]) {
+                        arr[item.code] = [];
+                    }
+                    arr[item.code].push(item.value);
+                    return arr;
 
-        console.log('output', output);
+                }, {});
+
+                if (coefficient && aggregationType && aggregationType === '0') {
+                    // Tính trung bình cộng
+                    let valueSum = Object.entries(groupByCode).map(([key, value]) => [ // Convert groupByCode từ object sang mảng để dùng map
+                        key, value.reduce((a, e) => a + e, 0) / value.length // Dùng reduce tính trung bình cộng
+                    ])
+                    return {
+                        time,
+                        tasks: valueSum.map(([code, value]) => ({ code, value }))
+                    }
+
+                } else {
+                    // Tính tổng
+                    let valueAvg = Object.entries(groupByCode).map(([key, value]) => [
+                        key, value.reduce((a, e) => a + e, 0) // dùng reduce tính tổng array value
+                    ])
+                    return {
+                        time,
+                        tasks: valueAvg.map(([code, value]) => ({ code, value }))
+                    }
+                }
+            })
+        }
 
         return (
             <React.Fragment>
@@ -97,8 +134,8 @@ class TaskReportViewForm extends Component {
                     {/* Modal Body */}
                     <div className="row">
                         {
-                            <div className=" col-lg-6 col-md-6 col-md-sm-12 col-xs-12">
-                                <TwoBarChart nameData={headTable.map(x => x)} data={output} nameChart={'Báo cáo công việc '} />
+                            <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
+                                <TwoBarChart nameData={headTable.map(x => x)} data={output} charType={charType ? charType : null} nameChart={'Báo cáo công việc '} />
                             </div>
 
                         }

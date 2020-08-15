@@ -641,7 +641,7 @@ export default {
             manage_incident_asset: 'Quản lý sự cố tài sản',
             manage_recommend_procure: 'Quản lý đề nghị mua sắm',
             manage_recommend_distribute_asset: 'Quản lý đăng ký sử dụng',
-            
+
 
             // NHÂN VIÊN
             recommend_equipment_procurement: 'Đăng ký mua sắm thiết bị',
@@ -1725,6 +1725,7 @@ export default {
                 accountable_role: 'Phê duyệt',
                 consulted_role: 'Hỗ trợ',
                 informed_role: 'Quan sát',
+                distribution_Of_Employee: 'Đóng góp công việc',
 
                 add_task: 'Thêm mới',
                 add_title: 'Thêm mới một công việc',

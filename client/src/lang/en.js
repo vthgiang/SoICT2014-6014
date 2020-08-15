@@ -1723,7 +1723,7 @@ export default {
                 accountable_role: 'Acountable',
                 consulted_role: 'Consulted',
                 informed_role: 'Informed',
-
+                distribution_Of_Employee: 'Distribution of Employees',
                 add_task: 'Add task',
                 add_title: 'Add a new task',
                 add_subtask: 'Add sub task',
