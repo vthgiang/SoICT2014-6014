@@ -171,12 +171,12 @@ class RecommendDistributeManagerEditForm extends Component {
             this.validateReqContent(this.state.reqContent, false) &&
             this.validateDateStartUse(this.state.dateCreate, false) &&
             this.validateDateEndUse(this.state.dateCreate, false)
-        
+
         return result;
     }
 
     save = () => {
-        let dataToSubmit = {...this.state, approver: this.props.auth.user._id};
+        let dataToSubmit = { ...this.state, approver: this.props.auth.user._id };
         if (this.isFormValidated()) {
             return this.props.updateRecommendDistribute(this.state._id, dataToSubmit);
         }
@@ -224,7 +224,7 @@ class RecommendDistributeManagerEditForm extends Component {
                 <DialogModal
                     size='50' modalID="modal-edit-recommenddistributemanage" isLoading={recommendDistribute.isLoading}
                     formID="form-edit-recommenddistributemanage"
-                    title="Cập nhật phiếu đăng ký sử dụng tài sản"
+                    title={translate('asset.asset_info.edit_usage_info')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -235,14 +235,14 @@ class RecommendDistributeManagerEditForm extends Component {
                             <div className="col-sm-6">
                                 {/* Mã phiếu */}
                                 <div className={`form-group ${!errorOnRecommendNumber ? "" : "has-error"}`}>
-                                    <label>Mã phiếu<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} autoComplete="off" placeholder="Mã phiếu" />
+                                    <label>{translate('asset.general_information.form_code')}<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} autoComplete="off" placeholder={translate('asset.general_information.form_code')} />
                                     <ErrorLabel content={errorOnRecommendNumber} />
                                 </div>
 
                                 {/* Ngày lập */}
                                 <div className={`form-group ${!errorOnDateCreate ? "" : "has-error"}`}>
-                                    <label>Ngày lập<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.create_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit_start_date${_id}`}
                                         value={dateCreate}
@@ -253,7 +253,7 @@ class RecommendDistributeManagerEditForm extends Component {
 
                                 {/* Người đề nghị */}
                                 <div className={`form-group`}>
-                                    <label>Người đề nghị</label>
+                                    <label>{translate('asset.usage.proponent')}</label>
                                     <div>
                                         <div id="proponentBox">
                                             <SelectBox
@@ -266,7 +266,7 @@ class RecommendDistributeManagerEditForm extends Component {
                                                 onChange={this.handleProponentChange}
                                                 value={proponent ? proponent._id : null}
                                                 multiple={false}
-                                            disabled
+                                                disabled
                                             />
                                         </div>
                                     </div>
@@ -274,14 +274,14 @@ class RecommendDistributeManagerEditForm extends Component {
 
                                 {/* Nội dung đề nghị */}
                                 <div className={`form-group ${!errorOnReqContent ? "" : "has-error"}`}>
-                                    <label>Nội dung đề nghị<span className="text-red">*</span></label>
-                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="reqContent" value={reqContent} onChange={this.handleReqContentChange} autoComplete="off" placeholder="Nội dung đề nghị" ></textarea>
+                                    <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
+                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="reqContent" value={reqContent} onChange={this.handleReqContentChange} autoComplete="off" placeholder={translate('asset.general_information.content')} ></textarea>
                                     <ErrorLabel content={errorOnReqContent} />
                                 </div>
 
                                 {/* Tài sản */}
                                 <div className={`form-group`}>
-                                    <label>Tài sản</label>
+                                    <label>{translate('asset.general_information.asset')}</label>
                                     <div>
                                         <div id="edit_asset">
                                             <SelectBox
@@ -304,7 +304,7 @@ class RecommendDistributeManagerEditForm extends Component {
                             <div className="col-sm-6">
                                 {/* Thời gian đăng ký sử dụng từ ngày */}
                                 <div className={`form-group ${!errorOnDateStartUse ? "" : "has-error"}`}>
-                                    <label>Thời gian đăng ký sử dụng từ ngày<span className="text-red">*</span></label>
+                                    <label>T{translate('asset.general_information.handover_from_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit_start_use${_id}`}
                                         value={dateStartUse}
@@ -315,7 +315,7 @@ class RecommendDistributeManagerEditForm extends Component {
 
                                 {/* Thời gian đăng ký sử dụng đến ngày */}
                                 <div className={`form-group ${!errorOnDateEndUse ? "" : "has-error"}`}>
-                                    <label>Thời gian đăng ký sử dụng đến ngày<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.handover_to_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit_end_use${_id}`}
                                         value={dateEndUse}
@@ -326,7 +326,7 @@ class RecommendDistributeManagerEditForm extends Component {
 
                                 {/* Người phê duyệt */}
                                 <div className={`form-group`}>
-                                    <label>Người phê duyệt</label>
+                                    <label>{translate('asset.usage.accountable')}</label>
                                     <div>
                                         <div id="approver">
                                             <SelectBox
@@ -347,16 +347,16 @@ class RecommendDistributeManagerEditForm extends Component {
 
                                 {/* Trạng thái */}
                                 <div className="form-group">
-                                    <label>Trạng thái</label>
+                                    <label>{translate('asset.general_information.status')}</label>
                                     <SelectBox
                                         id={`status${_id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={status}
                                         items={[
-                                            { value: 'Đã phê duyệt', text: 'Đã phê duyệt' },
-                                            { value: 'Chờ phê duyệt', text: 'Chờ phê duyệt' },
-                                            { value: 'Không phê duyệt', text: 'Không phê duyệt' },
+                                            { value: 'Đã phê duyệt', text: translate('asset.usage.approved') },
+                                            { value: 'Chờ phê duyệt', text: translate('asset.usage.waiting_approval') },
+                                            { value: 'Không phê duyệt', text: translate('asset.usage.not_approved') },
                                         ]}
                                         onChange={this.handleStatusChange}
                                     />
@@ -364,7 +364,7 @@ class RecommendDistributeManagerEditForm extends Component {
 
                                 {/* Ghi chú */}
                                 <div className="form-group">
-                                    <label>Ghi chú</label>
+                                    <label>{translate('asset.usage.note')}</label>
                                     <textarea className="form-control" rows="3" style={{ height: 34 }} name="note" value={note} onChange={this.handleNoteChange}></textarea>
                                 </div>
 

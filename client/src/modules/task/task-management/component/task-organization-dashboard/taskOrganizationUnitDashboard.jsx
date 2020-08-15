@@ -73,7 +73,10 @@ class TaskOrganizationUnitDashboard extends Component {
 
         let data, organizationUnit = "organizationUnit";
 
-        if (!this.state.idsUnit.length && this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit || (nextState.checkUnit !== this.state.checkUnit || nextState.startMonth !== this.state.startMonth || nextState.endMonth !== this.state.endMonth)) {
+        if (!this.state.idsUnit.length && this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit
+            || (nextState.checkUnit !== this.state.checkUnit
+                || nextState.startMonth !== this.state.startMonth
+                || nextState.endMonth !== this.state.endMonth)) {
             let idsUnit = !this.state.idsUnit.length ? [this.props.dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit.id] : nextState.idsUnit;
 
             await this.setState((state) => {
@@ -85,6 +88,7 @@ class TaskOrganizationUnitDashboard extends Component {
                     idsUnit: idsUnit,
                 }
             });
+            console.log('goji den 91');
             await this.props.getAllEmployeeOfUnitByIds(this.state.idsUnit);
             data = {
                 organizationUnitId: this.state.idsUnit,
@@ -94,9 +98,9 @@ class TaskOrganizationUnitDashboard extends Component {
             if (this.state.idsUnit.length) {
                 await this.props.getTaskInOrganizationUnitByMonth(this.state.idsUnit, this.state.startMonth, this.state.endMonth);
             }
- 
+
             await this.props.getTaskByUser(data);
-            
+
         } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.tasks.organizationUnitTasks) {
                 return false;
@@ -280,13 +284,13 @@ class TaskOrganizationUnitDashboard extends Component {
                     <div className="col-xs-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">Biểu đồ đóng góp của nhân viên </div>
+                                <div className="box-title">{translate('task.task_management.distribution_Of_Employee')}</div>
                             </div>
                             <div className="box-body qlcv">
-                                {this.state.callAction && tasks &&tasks.organizationUnitTasks &&
+                                {this.state.callAction && tasks && tasks.organizationUnitTasks &&
                                     <DistributionOfEmployee
-                                        tasks= {tasks.organizationUnitTasks}
-                                        listEmployee = {user.employees}
+                                        tasks={tasks.organizationUnitTasks}
+                                        listEmployee={user.employees}
                                         units={idsUnit}
                                     />
                                 }

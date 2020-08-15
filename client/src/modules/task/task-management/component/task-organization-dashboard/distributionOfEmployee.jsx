@@ -16,44 +16,44 @@ class DistributionOfEmployee extends Component {
             listNameEmployee: []
         }
     }
-    componentDidMount() {
-        if(this.props.listEmployee)
-            this.pieChart();
 
+    shouldComponentUpdate() {
+        if (!this.props.listEmployee) return false;
+        else {
+            this.pieChart();
+        }
     }
 
     getData = async () => {
-        const { tasks, user } = this.props;
-        let taskList = this.props.tasks.organizationUnitTasks, listEmployee;
-        let point = [], point1= [], point2=[], point3=[], nameEmployee=[];
-
+        const { tasks } = this.props;
+        let taskList = tasks.organizationUnitTasks, listEmployee;
+        let numOfAccountableTask = [], numOfConsultedTask = [], numOfResponsibleTask = [], numOfInformedTask = [], nameEmployee = [];
         listEmployee = this.props.listEmployee
-    
         let accountableEmployees = 0, consultedEmployees = 0, responsibleEmployees = 0, informedEmployees = 0;
         let taskListEmployee = [];
 
-        for (let i in listEmployee){
+        for (let i in listEmployee) {
             taskList && taskList.tasks.length && taskList.tasks.map(task => {
-                for(let j in task.accountableEmployees){
-                    if(listEmployee[i].userId._id == task.accountableEmployees[j] )
-                    accountableEmployees +=1 ;
+                for (let j in task.accountableEmployees) {
+                    if (listEmployee[i].userId._id == task.accountableEmployees[j])
+                        accountableEmployees += 1;
                 }
 
-                for(let j in task.consultedEmployees)
-                     if(listEmployee[i].userId._id == task.consultedEmployees[j] )
-                         consultedEmployees +=1 ;
-                 for(let j in task.responsibleEmployees)
-                     if(listEmployee[i].userId._id == task.responsibleEmployees[j]._id )
-                     responsibleEmployees +=1 ;
-                 for(let j in task.informedEmployees)
-                     if(listEmployee[i].userId._id == task.informedEmployees[j] )
-                         informedEmployees +=1 ;
+                for (let j in task.consultedEmployees)
+                    if (listEmployee[i].userId._id == task.consultedEmployees[j])
+                        consultedEmployees += 1;
+                for (let j in task.responsibleEmployees)
+                    if (listEmployee[i].userId._id == task.responsibleEmployees[j]._id)
+                        responsibleEmployees += 1;
+                for (let j in task.informedEmployees)
+                    if (listEmployee[i].userId._id == task.informedEmployees[j])
+                        informedEmployees += 1;
             })
             let employee = {
                 infor: listEmployee[i],
                 accountableEmployees: accountableEmployees,
                 consultedEmployees: consultedEmployees,
-                responsibleEmployees : responsibleEmployees,
+                responsibleEmployees: responsibleEmployees,
                 informedEmployees: informedEmployees,
             }
             taskListEmployee.push(employee);
@@ -62,35 +62,20 @@ class DistributionOfEmployee extends Component {
             responsibleEmployees = 0;
             informedEmployees = 0;
         }
-        for (let i in taskListEmployee){
-            point.push(taskListEmployee[i].accountableEmployees)
-            point1.push(taskListEmployee[i].consultedEmployees)
-            point2.push(taskListEmployee[i].responsibleEmployees)
-            point3.push(taskListEmployee[i].informedEmployees)
+        for (let i in taskListEmployee) {
+            numOfAccountableTask.push(taskListEmployee[i].accountableEmployees)
+            numOfConsultedTask.push(taskListEmployee[i].consultedEmployees)
+            numOfResponsibleTask.push(taskListEmployee[i].responsibleEmployees)
+            numOfInformedTask.push(taskListEmployee[i].informedEmployees)
             nameEmployee.push(taskListEmployee[i].infor.userId.name)
         }
-        await this.setState (state =>{
-            return {
-                ...state,
-                listNameEmployee: nameEmployee
-            }
-        })
+
         let data = {
             nameEmployee: nameEmployee,
-            point: [point, point1, point2, point3] 
+            taskCount: [numOfResponsibleTask, numOfAccountableTask, numOfConsultedTask, numOfInformedTask]
         }
 
         return data;
-    }
-
-    setDataPieChart = async () => {
-        let dataPieChart    
-
-        if(this.props.listEmployee){
-            dataPieChart =  await this.getData();
-        }
-
-        return dataPieChart.point;
     }
 
     // removePreviosChart = () => {
@@ -101,10 +86,10 @@ class DistributionOfEmployee extends Component {
     // }
 
     pieChart = async () => {
-
-        // this.removePreviosChart();\
+        const { translate } = this.props;
+        // this.removePreviosChart();
         let data = await this.getData();
-        let dataPieChart = await this.setDataPieChart();
+        let dataPieChart = data.taskCount;
 
         let maxLength = 0;
         for (let i = 0; i < dataPieChart.length; i++) {
@@ -127,26 +112,32 @@ class DistributionOfEmployee extends Component {
             else j++;
         }
         let numOfChart = Math.ceil(maxLength / employeesEachChart);
+
         for (let i = 0; i < numOfChart; i++) {
             let res = dataPieChart[0].slice(employeesEachChart * i, employeesEachChart * (i + 1));
             let acc = dataPieChart[1].slice(employeesEachChart * i, employeesEachChart * (i + 1));
             let con = dataPieChart[2].slice(employeesEachChart * i, employeesEachChart * (i + 1));
             let inf = dataPieChart[3].slice(employeesEachChart * i, employeesEachChart * (i + 1));
-            res.unshift('Thực hiện');
-            acc.unshift('Phê duyệt');
-            con.unshift('Hỗ trợ');
-            inf.unshift('Quan sát');
+
+            res.unshift(`${translate('task.task_management.responsible_role')}`);
+            acc.unshift(`${translate('task.task_management.accountable_role')}`);
+            con.unshift(`${translate('task.task_management.consulted_role')}`);
+            inf.unshift(`${translate('task.task_management.informed_role')}`);
             dataPieChartSlice[i] = [res, acc, con, inf];
 
             let nameChart = 'distribution_chart' + i;
             let legend = i === (numOfChart - 1) ? true : false;
+
             this.chart = c3.generate({
                 bindto: document.getElementById(nameChart),
                 data: {
                     columns: dataPieChartSlice[i],
                     type: 'bar',
                     groups: [
-                        ['Thực hiện', 'Phê duyệt', 'Hỗ trợ', 'Quan sát']
+                        [`${translate('task.task_management.responsible_role')}`,
+                        `${translate('task.task_management.accountable_role')}`,
+                        `${translate('task.task_management.consulted_role')}`,
+                        `${translate('task.task_management.informed_role')}`]
                     ]
                 },
 
@@ -166,14 +157,18 @@ class DistributionOfEmployee extends Component {
                         type: 'category',
                         categories: data.nameEmployee
                     }
-                }
+                },
+                // color: {
+                //     pattern: ['#2E66B0', '#FF6508', '#972CA3', '#00E073']
+                // }
+
             });
         }
 
 
     }
     render() {
-        
+
         // let d = document.createElement('div');
         // d.setAttribute('id', 'distributionOfEmployee')
         // for (let i = 0; i < 2; i++) {
@@ -200,14 +195,7 @@ function mapState(state) {
 }
 
 const actions = {
-    getTaskByUser: taskManagementActions.getTasksByUser,
-    getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
-    getAllTasksByUserIds: taskManagementActions.getAllTasksByUserIds,
-
-    getDepartment: UserActions.getDepartmentOfUser,
-    getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
-    getChildrenOfOrganizationalUnitsAsTree: DashboardEvaluationEmployeeKpiSetAction.getChildrenOfOrganizationalUnitsAsTree,
 };
 
 const connectedDistributionOfEmployee = connect(mapState, actions)(withTranslate(DistributionOfEmployee));

@@ -232,7 +232,7 @@ class MaintainanceEditForm extends Component {
                 <DialogModal
                     size='50' modalID="modal-edit-maintainance" isLoading={false}
                     formID="form-create-maintainance"
-                    title="Chỉnh sửa phiếu bảo trì"
+                    title={translate('asset.asset_info.edit_maintenance_card')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -243,14 +243,14 @@ class MaintainanceEditForm extends Component {
                             <div className="col-sm-6">
                                 {/* Mã phiếu */}
                                 <div className={`form-group ${!errorOnMaintainanceCode ? "" : "has-error"}`}>
-                                    <label>Mã phiếu<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="maintainanceCode" value={maintainanceCode} onChange={this.handleMaintainanceCodeChange} autoComplete="off" placeholder="Mã phiếu" />
+                                    <label>{translate('asset.general_information.form_code')}<span className="text-red">*</span></label>
+                                    <input type="text" className="form-control" name="maintainanceCode" value={maintainanceCode} onChange={this.handleMaintainanceCodeChange} autoComplete="off" placeholder={translate('asset.general_information.form_code')} />
                                     <ErrorLabel content={errorOnMaintainanceCode} />
                                 </div>
 
                                 {/* Ngày lập */}
                                 <div className={`form-group ${!errorOnCreateDate ? "" : "has-error"}`}>
-                                    <label>Ngày lập<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.create_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit-create-date${_id}`}
                                         value={createDate}
@@ -261,17 +261,17 @@ class MaintainanceEditForm extends Component {
 
                                 {/* Phân loại */}
                                 <div className="form-group">
-                                    <label>Phân loại</label>
+                                    <label>{translate('asset.general_information.type')}</label>
                                     <select className="form-control" value={type} name="type" onChange={this.handleTypeChange}>
-                                        <option value="Sửa chữa">Sửa chữa</option>
-                                        <option value="Thay thế">Thay thế</option>
-                                        <option value="Nâng cấp">Nâng cấp</option>
+                                        <option value="Sửa chữa">{translate('asset.asset_info.repair')}</option>
+                                        <option value="Thay thế">{translate('asset.asset_info.replace')}</option>
+                                        <option value="Nâng cấp">{translate('asset.asset_info.upgrade')}</option>
                                     </select>
                                 </div>
 
                                 {/* Tài sản */}
                                 <div className={`form-group`}>
-                                    <label>Tài sản</label>
+                                    <label>{translate('asset.general_information.asset')}</label>
                                     <div>
                                         <div id="edit-assetBox">
                                             <SelectBox
@@ -290,8 +290,8 @@ class MaintainanceEditForm extends Component {
                                 
                                 {/* Nội dung */}
                                 <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
-                                    <label>Nội dung<span className="text-red">*</span></label>
-                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off" placeholder="Nội dung"></textarea>
+                                    <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
+                                    <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off" placeholder={translate('asset.general_information.content')}></textarea>
                                     <ErrorLabel content={errorOnDescription} />
                                 </div>
                             </div>
@@ -299,7 +299,7 @@ class MaintainanceEditForm extends Component {
                             <div className="col-sm-6">
                                 {/* Ngày thực hiện */}
                                 <div className={`form-group ${!errorOnStartDate ? "" : "has-error"}`}>
-                                    <label>Ngày thực hiện<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.start_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit-start-date${_id}`}
                                         value={startDate}
@@ -310,7 +310,7 @@ class MaintainanceEditForm extends Component {
 
                                 {/* Ngày hoàn thành */}
                                 <div className="form-group">
-                                    <label>Ngày hoàn thành</label>
+                                    <label>{translate('asset.general_information.end_date')}</label>
                                     <DatePicker
                                         id={`edit-end-date${_id}`}
                                         value={endDate}
@@ -320,18 +320,18 @@ class MaintainanceEditForm extends Component {
 
                                 {/* Chi phí */}
                                 <div className={`form-group ${!errorOnExpense ? "" : "has-error"}`}>
-                                    <label>Chi phí (VNĐ)<span className="text-red">*</span></label>
-                                    <input type="number" className="form-control" name="expense" value={expense} onChange={this.handleExpenseChange} autoComplete="off" placeholder="Chi phí" />
+                                    <label>{translate('asset.general_information.expense')} (VNĐ)<span className="text-red">*</span></label>
+                                    <input type="number" className="form-control" name="expense" value={expense} onChange={this.handleExpenseChange} autoComplete="off" placeholder={translate('asset.general_information.expense')} />
                                     <ErrorLabel content={errorOnExpense} />
                                 </div>
 
                                 {/* Trạng thái */}
                                 <div className="form-group">
-                                    <label>Trạng thái</label>
+                                    <label>{translate('asset.general_information.status')}</label>
                                     <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                        <option value="Đã thực hiện">Đã thực hiện</option>
-                                        <option value="Đang thực hiện">Đang thực hiện</option>
-                                        <option value="Chưa thực hiện">Chưa thực hiện</option>
+                                        <option value="Đã thực hiện">{translate('asset.asset_info.made')}</option>
+                                        <option value="Đang thực hiện">{translate('asset.asset_info.processing')}</option>
+                                        <option value="Chưa thực hiện">{translate('asset.asset_info.unfulfilled')}</option>
                                     </select>
                                 </div>
                             </div>
