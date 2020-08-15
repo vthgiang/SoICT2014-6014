@@ -22,6 +22,16 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
         };
     }
 
+    componentDidMount = async () => {
+        await this.props.getAllEmployeeKpiSetByMonth(this.state.userId, this.state.startMonth, this.state.endMonth);
+
+        this.setState(state => {
+            return {
+                ...state,
+                dataStatus: this.DATA_STATUS.QUERYING
+            }
+        });
+    }
     shouldComponentUpdate = async (nextProps, nextState) => {
         const { userId, startMonth, endMonth } = this.state;
         if (nextProps.userId !== userId || nextProps.startMonth !== startMonth || nextProps.endMonth !== endMonth) {
@@ -36,7 +46,17 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
             return false;
         }
 
-        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+        if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
+            await this.props.getAllEmployeeKpiSetByMonth(this.state.userId, this.state.startMonth, this.state.endMonth);
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    dataStatus: this.DATA_STATUS.QUERYING
+                }
+            });
+            return false;
+        } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.createEmployeeKpiSet.employeeKpiSetByMonth)
                 return false;
             this.setState(state => {
@@ -47,7 +67,6 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
             });
             return false;
         } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
-
             this.multiLineChart();
             this.setState(state => {
                 return {
@@ -145,7 +164,6 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
     }
 
     render() {
-        console.log("|n\n\n\n\n\n\n",this.props.info)
         return (
             <React.Fragment>
                 <div ref="chart"></div>
