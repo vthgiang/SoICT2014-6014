@@ -173,16 +173,30 @@ exports.uploadFile = (arrData, type) => {
         })
     }
 
+    const staticPath = [
+        "/avatars",
+        "/human-resource/avatars",
+        "/asset/pictures",
+    ];
+
     const getFile = multer({
         storage: multer.diskStorage({
             destination: (req, file, cb) => {
                 checkExistUploads(req.user.company);
                 if (type === 'single' || type === 'array') {
-                    cb(null, `./upload/private/${req.user.company.shortName+req.user.company._id}${arrData[0].path}`);
+                    if(staticPath.indexOf(arrData[0].path) !== -1) {
+                        cb(null, `./upload${arrData[0].path}`);
+                    }else{
+                        cb(null, `./upload/private/${req.user.company.shortName+req.user.company._id}${arrData[0].path}`);
+                    }
                 } else if (type === 'fields') {
                     for (let n in arrData) {
                         if (file.fieldname === arrData[n].name) {
-                            cb(null, `./upload/private/${req.user.company.shortName+req.user.company._id}${arrData[n].path}`);
+                            if(staticPath.indexOf(arrData[n].path) !== -1) {
+                                cb(null, `./upload${arrData[n].path}`);
+                            }else{
+                                cb(null, `./upload/private/${req.user.company.shortName+req.user.company._id}${arrData[n].path}`);
+                            }
                             break;
                         }
                     }
