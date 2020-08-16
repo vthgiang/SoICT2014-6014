@@ -42,7 +42,7 @@ exports.deleteBackup = async(req, res) => {
 
 exports.restore = async(req, res) => {
     try {
-        await SystemSettingServices.restore(req.body, req.query);
+        await SystemSettingServices.restore(req.query.backupVersion);
         
         // LogInfo(req.user.email, 'BACKUP_SCHEDULE');
         res.status(200).json({
