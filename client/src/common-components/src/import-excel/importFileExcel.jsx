@@ -14,7 +14,7 @@ class ImportFileExcel extends Component {
     handleChangeFileImport = (e) => {
         let { configData } = this.props;
         let sheets = configData.sheets.value;
-        let rowHeader = configData.rowHeader ? configData.rowHeader.value : 1;
+        let rowHeader = configData.rowHeader ? Number(configData.rowHeader.value) : 1;
         let file = e.target.files[0];
 
         if (file !== undefined) {
@@ -48,9 +48,9 @@ class ImportFileExcel extends Component {
                 sheet_lists.length !== 0 && sheet_lists.forEach(x => {
                     let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: false, defval: null });
                     // Lấy index của các tiều đề cột mà người dùng muốn import
-                    for (let i = 0; i < data.length; i++) {
+                    for (let i = 0; i < data.length - rowHeader; i++) {
                         let indexKey = { ...indexKeyImport };
-                        for (let j = 0; j < Number(rowHeader); j++) {
+                        for (let j = 0; j < rowHeader; j++) {
                             data[i + j].forEach((x, index) => {
                                 if (x !== null) {
                                     for (let key in configData) {
@@ -106,7 +106,7 @@ class ImportFileExcel extends Component {
                     }
 
                     // Convert dữ liệu thành dạng array json theo key trong configData
-                    data.splice(0, Number(rowHeader));
+                    data.splice(0, rowHeader);
                     data.forEach((x, index) => {
                         let rowData;
                         for (let n in indexKeyImport) {

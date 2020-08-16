@@ -1,7 +1,7 @@
 export const configurationSalary = {
     rowHeader: {
         description: "Số dòng tiêu đề của bảng",
-        value: 1
+        value: 2
     },
     sheets: {
         description: "Tên các sheet",
@@ -25,7 +25,7 @@ export const configurationSalary = {
     bonus: {
         columnName: "Lương thưởng khác",
         description: "Tên tiêu để ứng với lương thưởng khác",
-        value: ["Thưởng đầu hộp SanFoVet", "Thưởng đầu hộp ViaVet", "Thưởng quý", "Lương CTV"],
+        value: ["Thưởng đầu hộp SanFoVet", "Thưởng đầu hộp ViaVet"],
     },
     file: {
         fileName: 'templateImportSalary',
