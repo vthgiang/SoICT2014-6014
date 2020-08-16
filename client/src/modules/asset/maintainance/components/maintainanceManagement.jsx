@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
+import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti,ExportExcel } from '../../../../common-components';
 
 import { MaintainanceCreateForm } from './maintainanceCreateForm';
 import { MaintainanceEditForm } from './maintainanceEditForm';
@@ -177,14 +177,93 @@ class MaintainanceManagement extends Component {
         });
     }
 
+    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    convertDataToExportData = (data) => {
+        let fileName = "Bảng quản lý thông tin bảo trì tài sản ";
+        let convertedData=[];
+        if (data) {           
+            data = data.forEach(asset => {     
+                if(asset.maintainanceLogs.length!==0)
+                {
+                    let assetLog= asset.maintainanceLogs.map((x,index)=>{
+                        let code =x.maintainanceCode;
+                        let assetName = asset.assetName;  
+                        let type =x.type;   
+                        let description = x.description;          
+                        let createDate = this.formatDate2(x.createDate)
+                        let startDate =this.formatDate2(x.startDate);
+                        let endDate =this.formatDate2(x.endDate);
+                        let cost =parseInt(x.expense);
+                        let assetCode = asset.code;
+                        let status = x.status; 
+        
+                        return  {
+                            index : index+1,
+                            code : code,
+                            createDate:createDate,    
+                            type: type,                
+                            assetName: assetName,
+                            assetCode:assetCode,
+                            des:description,
+                            createDate:createDate,
+                            startDate:startDate,
+                            endDate:endDate,
+                            cost:cost,
+                            status:status
+        
+                        }
+                    })
+                    for(let i=0;i<assetLog.length;i++){
+                        convertedData.push(assetLog[i]);
+                    }
+                }              
+                
+            })
+        }
+
+        let exportData = {
+            fileName: fileName,
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    sheetTitle : fileName,
+                    tables: [
+                        {
+                            tableName : fileName,
+                            tableTitle: fileName,
+                            rowHeader: 2,
+                            columns: [
+                                { key: "index", value: "STT" },
+                                { key: "code", value: "Mã phiếu" },
+                                { key: "createDate", value: "Ngày tạo" },                                
+                                { key: "type", value: "Phân loại" },
+                                { key: "assetCode", value: "Mã tài sản" },
+                                { key: "assetName", value: "Tên tài sản" },
+                                { key : "des", value : "Nội dung"},
+                                { key: "startDate", value: "Ngày bắt đầu" },
+                                { key: "endDate", value: "Ngày kết thúc" },
+                                { key: "cost", value: "chi phí" },                               
+                                { key: "status", value: "Trạng thái" },
+                            ],
+                            data: convertedData
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData;        
+       
+    }
+
     render() {
         const { translate, assetsManager } = this.props;
         const { page, limit, currentRow } = this.state;
 
-        var lists = "";
+        var lists = "", exportData;
         var formater = new Intl.NumberFormat();
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
+            exportData=this.convertDataToExportData(lists);
         }
 
         var pageTotal = ((assetsManager.totalList % limit) === 0) ?
@@ -261,6 +340,7 @@ class MaintainanceManagement extends Component {
                             <label></label>
                             <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={() => this.handleSubmitSearch()}>{translate('asset.general_information.search')}</button>
                         </div>
+                        {exportData&&<ExportExcel id="export-asset-maintainance-management" exportData={exportData} style={{ marginRight:10 }} />}
                     </div>
 
                     {/* Bảng thông tin bảo trì tài sản */}
