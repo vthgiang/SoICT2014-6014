@@ -178,14 +178,14 @@ class UsageManagement extends Component {
                     <div className="form-inline">
                         {/* Mã tài sản */}
                         <div className="form-group">
-                            <label className="form-control-static">Mã tài sản</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off" />
+                            <label className="form-control-static">{translate('asset.general_information.asset_code')}</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder={translate('asset.general_information.asset_code')} autoComplete="off" />
                         </div>
 
                         {/* Tên tài sản */}
                         <div className="form-group">
-                            <label className="form-control-static">Tên tài sản</label>
-                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off" />
+                            <label className="form-control-static">{translate('asset.general_information.asset_name')}</label>
+                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
                         </div>
                     </div>
                     <div className="form-inline" style={{ marginBottom: 10 }}>
@@ -203,7 +203,7 @@ class UsageManagement extends Component {
                         {/* Button tìm kiếm */}
                         <div className="form-group">
                             <label></label>
-                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={() => this.handleSubmitSearch()}>Tìm kiếm</button>
+                            <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={() => this.handleSubmitSearch()}>{translate('asset.general_information.search')}</button>
                         </div>
                     </div>
 
@@ -211,27 +211,26 @@ class UsageManagement extends Component {
                     <table id="usage-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th style={{ width: "10%" }}>Mã tài sản</th>
-                                <th style={{ width: "10%" }}>Tên tài sản</th>
-                                <th style={{ width: "10%" }}>Loại tài sản</th>
-                                <th style={{ width: "8%" }}>Người sử dụng</th>
-                                <th style={{ width: "10%" }}>Thời gian bắt đầu sử dụng</th>
-                                <th style={{ width: "10%" }}>Thời gian kết thúc sử dụng</th>
-                                <th style={{ width: "10%" }}>Vị trí tài sản</th>
-                                <th style={{ width: "10%" }}>Trạng thái</th>
-                                <th style={{ width: '100px', textAlign: 'center' }}>Hành động
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_code')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_type')}</th>
+                                <th style={{ width: "8%" }}>{translate('asset.general_information.user')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.handover_from_date')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.handover_to_date')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_location')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
+                                <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}
                                 <DataTableSetting
                                         tableId="usage-table"
                                         columnArr={[
-                                            "Mã tài sản",
-                                            "Tên tài sản",
-                                            "Loại tài sản",
-                                            "Người sử dụng",
-                                            "Thời gian bắt đầu sử dụng",
-                                            "Thời gian kết thúc sử dụng",
-                                            // "Nội dung",
-                                            "Vị trí tài sản",
-                                            "Trạng thái",
+                                            translate('asset.general_information.asset_code'),
+                                            translate('asset.general_information.asset_name'),
+                                            translate('asset.general_information.asset_type'),
+                                            translate('asset.general_information.user'),
+                                            translate('asset.general_information.handover_from_date'),
+                                            translate('asset.general_information.handover_to_date'),
+                                            translate('asset.general_information.asset_location'),
+                                            translate('asset.general_information.status'),
                                         ]}
                                         limit={limit}
                                         setLimit={this.setLimit}
@@ -253,7 +252,7 @@ class UsageManagement extends Component {
                                         <td>{x.location}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin sử dụng tài sản"><i className="material-icons">edit</i></a>
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_usage_info')}><i className="material-icons">edit</i></a>
                                         </td>
                                     </tr>
                                 ))

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { taskManagementActions } from '../../redux/actions';
+import { UserActions } from '../../../../super-admin/user/redux/actions';
 
 import { SelectBox } from '../../../../../common-components/index';
 
@@ -385,6 +386,8 @@ const actions = {
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
     getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
+    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
+
 }
 
 const connectedDomainOfTaskResultsChart = connect(mapState, actions)(withTranslate(DomainOfTaskResultsChart));

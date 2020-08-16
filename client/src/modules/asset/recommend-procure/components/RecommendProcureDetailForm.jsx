@@ -43,7 +43,7 @@ class RecommendProcureDetailForm extends Component {
                 <DialogModal
                     size='50' modalID="modal-view-recommendprocure" isLoading={recommendProcure}
                     formID="form-view-recommendprocure"
-                    title="Thông tin phiếu đề nghị mua sắm thiết bị"
+                    title={translate('asset.manage_recommend_procure.view_recommend_card')}
                     hasSaveButton={false}
                 >
                     {/* Form xem chi tiết phiếu đăng ký mua sắm tài sản */}
@@ -53,37 +53,37 @@ class RecommendProcureDetailForm extends Component {
                             {/* Mã phiếu */}
                             <div className="col-sm-6">
                                 <div className="form-group">
-                                    <strong>Mã phiếu:&emsp; </strong>
+                                    <strong>{translate('asset.general_information.form_code')}&emsp; </strong>
                                     {recommendNumber}
                                 </div>
 
                                 {/* Ngày lập */}
                                 <div className="form-group">
-                                    <strong>Ngày lập:&emsp; </strong>
+                                    <strong>{translate('asset.general_information.create_date')}&emsp; </strong>
                                     {dateCreate}
                                 </div>
 
                                 {/* Người đề nghị */}
                                 <div className="form-group">
-                                    <strong>Người đề nghị:&emsp; </strong>
+                                    <strong>{translate('asset.usage.proponent')}&emsp; </strong>
                                     {proponent ? proponent.name : 'User is deleted'}
                                 </div>
 
                                 {/* Thiết bị đề nghị mua */}
                                 <div className={`form-group`}>
-                                    <strong>Thiết bị đề nghị mua:&emsp; </strong>
+                                    <strong>{translate('asset.manage_recommend_procure.asset_recommend')}&emsp; </strong>
                                     {equipment}
                                 </div>
 
                                 {/* Nhà cung cấp */}
                                 <div className="form-group">
-                                    <strong>Nhà cung cấp:&emsp; </strong>
+                                    <strong>{translate('asset.manage_recommend_procure.supplier')}&emsp; </strong>
                                     {supplier}
                                 </div>
 
                                 {/* Số lượng */}
                                 <div className={`form-group `}>
-                                    <strong>Số lượng:&emsp; </strong>
+                                    <strong>{translate('asset.general_information.number')}&emsp; </strong>
                                     {total}
                                 </div>
                             </div>
@@ -91,31 +91,31 @@ class RecommendProcureDetailForm extends Component {
                             <div className="col-sm-6">
                                 {/* Đơn vị tính */}
                                 <div className={`form-group `}>
-                                    <strong>Đơn vị tính:&emsp; </strong>
+                                    <strong>{translate('asset.manage_recommend_procure.unit')}&emsp; </strong>
                                     {unit}
                                 </div>
 
                                 {/* Giá trị dự tính */}
                                 <div className="form-group">
-                                    <strong>Giá trị dự tính:&emsp; </strong>
+                                    <strong>{translate('asset.manage_recommend_procure.expected_value')}&emsp; </strong>
                                     {estimatePrice ? formater.format(parseInt(estimatePrice)) : ''} VNĐ
                                 </div>
 
                                 {/* Người phê duyệt */}
                                 <div className="form-group">
-                                    <strong>Người phê duyệt:&emsp; </strong>
+                                    <strong>{translate('asset.usage.accountable')}&emsp; </strong>
                                     {approver ? approver.name : 'User is deleted'}
                                 </div>
 
                                 {/* Trạng thái */}
                                 <div className="form-group">
-                                    <strong>Trạng thái:&emsp; </strong>
+                                    <strong>{translate('asset.general_information.status')}&emsp; </strong>
                                     {status}
                                 </div>
 
                                 {/* Ghi chú */}
                                 <div className="form-group">
-                                    <strong>Ghi chú:&emsp; </strong>
+                                    <strong>{translate('asset.usage.note')}&emsp; </strong>
                                     {note}
                                 </div>
                             </div>

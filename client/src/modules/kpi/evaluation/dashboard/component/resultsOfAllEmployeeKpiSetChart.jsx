@@ -35,6 +35,7 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
 
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
             kindOfPoint: this.KIND_OF_POINT.AUTOMATIC,
+            exportData : null
         }
     }
 
@@ -193,10 +194,12 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
 
     setDataMultiLineChart = () => {
         const { createEmployeeKpiSet } = this.props;
-        let employeeKpiSetsInOrganizationalUnitByMonth, point = [];
+        let employeeKpiSetsInOrganizationalUnitByMonth, point = [], exportData;
 
         if (createEmployeeKpiSet.employeeKpiSetsInOrganizationalUnitByMonth) {
             employeeKpiSetsInOrganizationalUnitByMonth = createEmployeeKpiSet.employeeKpiSetsInOrganizationalUnitByMonth
+            exportData = this.convertDataToExportData(employeeKpiSetsInOrganizationalUnitByMonth)
+            this.handleExportData(exportData);
         }
         
         if(employeeKpiSetsInOrganizationalUnitByMonth) {
@@ -206,61 +209,6 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
         }
 
         return point;
-    }
-
-    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    convertDataToExportData = (data) => {
-        let fileName = "Biểu đồ theo dõi kết quả KPI nhân viên toàn đơn vị";
-
-        if (data) {           
-            data = data.map((item, index) => {
-                let dataEmployeeKpi;
-                if(item.employeeKpi && (item.employeeKpi.length !== 0)){
-                    dataEmployeeKpi = item.employeeKpi.map((x,index)=>{
-                        let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
-                        let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
-                        let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);
-                        let d = new Date(x.date),
-                        month = '' + (d.getMonth() + 1),
-                        year = d.getFullYear(),
-                        date =month+'-'+year;
-
-                        return {              
-                            automaticPoint: automaticPoint,
-                            employeePoint: employeePoint,
-                            approverPoint: approverPoint,
-                            time : date,                
-                        };
-                    })
-                }
-                return {
-                    sheetName : item._id,
-                    dataInSheet : dataEmployeeKpi
-                }
-            })
-        }
-
-        let exportData = {
-            fileName: fileName,
-            dataSheets: data.map((x,index)=>{
-                return {
-                    sheetName: x.sheetName,
-                    tables: [
-                        {
-                            columns: [                            
-                                { key: "time", value: "Thời gian" },
-                                { key: "automaticPoint", value: "Điểm tự động" },
-                                { key: "employeePoint", value: "Điểm tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm được đánh giá" }
-                            ],
-                            data: x.dataInSheet
-                        }
-                    ]
-                }
-            })
-        }
-        return exportData;        
-       
     }
 
     removePreviousChart = () => {
@@ -321,14 +269,80 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
         })
     }
 
+    handleExportData =(exportData)=>
+    {
+        this.setState(state => {
+            return {
+                ...state,
+                exportData : exportData            }
+        })
+    }
+
+    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    convertDataToExportData = (data) => {
+        let fileName = "Biểu đồ theo dõi kết quả KPI nhân viên toàn đơn vị";
+
+        if (data) {           
+            data = data.map((item, index) => {
+                let dataEmployeeKpi;
+                if(item.employeeKpi && (item.employeeKpi.length !== 0)){
+                    dataEmployeeKpi = item.employeeKpi.map((x,index)=>{
+                        let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
+                        let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
+                        let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);
+                        let d = new Date(x.date),
+                        month = '' + (d.getMonth() + 1),
+                        year = d.getFullYear(),
+                        date =month+'-'+year;
+
+                        return {              
+                            automaticPoint: automaticPoint,
+                            employeePoint: employeePoint,
+                            approverPoint: approverPoint,
+                            time : date,                
+                        };
+                    })
+                }
+                return {
+                    sheetName : item._id,
+                    dataInSheet : dataEmployeeKpi
+                }
+            })
+        }
+
+        let exportData = {
+            fileName: fileName,
+            dataSheets: data.map((x,index)=>{
+                return {
+                    sheetName: x.sheetName,
+                    sheetTitle : "Thống kê kết quả KPI của " + x.sheetName,
+                    tables: [
+                        {
+                            tableTitle:"Bảng thống kê kết quả KPI của " + x.sheetName,
+                            columns: [                            
+                                { key: "time", value: "Thời gian" },
+                                { key: "automaticPoint", value: "Điểm tự động" },
+                                { key: "employeePoint", value: "Điểm tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm được đánh giá" }
+                            ],
+                            data: x.dataInSheet
+                        }
+                    ]
+                }
+            })
+        }
+        return exportData;        
+       
+    }
+
     render() {
-        let exportData;
+        let { exportData } =this.state;
         const { createEmployeeKpiSet,translate } = this.props;
+
         let employeeKpiSetsInOrganizationalUnitByMonth;
 
         if (createEmployeeKpiSet.employeeKpiSetsInOrganizationalUnitByMonth) {
             employeeKpiSetsInOrganizationalUnitByMonth = createEmployeeKpiSet.employeeKpiSetsInOrganizationalUnitByMonth;
-            exportData =this.convertDataToExportData(employeeKpiSetsInOrganizationalUnitByMonth);
         }
         let d = new Date(),
             month = '' + (d.getMonth() + 1),

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
+import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti,ExportExcel } from '../../../../common-components';
 
 import { RecommendDistributeManagerEditForm } from './RecommendDistributeManagerEditForm';
 import { UsageCreateForm } from './usageCreateForm';
@@ -155,16 +155,80 @@ class RecommendDistributeManager extends Component {
         this.props.searchRecommendDistributes(this.state);
     }
 
+    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    convertDataToExportData = (data) => {
+        let fileName = "Bảng quản lý thông tin đăng kí sử dụng tài sản ";
+        if (data) {           
+            data = data.map((x, index) => {     
+
+                let code =x.recommendNumber;
+                let assetName =(x.asset)?x.asset.assetName:"";               
+                let approver =(x.approver)?x.approver.email:'';
+                let assigner =(x.proponent)?x.proponent.email:"";
+                let createDate = x.dateCreate
+                let dateStartUse =x.dateStartUse;
+                let dateEndUse =x.dateEndUse;
+                let assetCode = (x.asset) ? x.asset.code : ''
+                let status = x.status; 
+
+                return  {
+                    index : index+1,
+                    code : code,
+                    createDate:createDate,                    
+                    assigner:assigner,
+                    assetName: assetName,
+                    assetCode:assetCode,
+                    dateStartUse:dateStartUse,
+                    dateEndUse:dateEndUse,
+                    approver:approver,
+                    status:status
+
+                }
+                
+            })
+        }
+
+        let exportData = {
+            fileName: fileName,
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    sheetTitle : fileName,
+                    tables: [
+                        {
+                            tableName : fileName,
+                            tableTitle: fileName,
+                            rowHeader: 2,
+                            columns: [
+                                { key: "index", value: "STT" },
+                                { key: "code", value: "Mã phiếu" },
+                                { key: "createDate", value: "Ngày tạo" },                                
+                                { key: "assigner", value: "Người đăng kí" },
+                                { key: "assetName", value: "Tên tài sản" },
+                                { key: "assetCode", value: "Mã tài sản" },
+                                { key: "dateStartUse", value: "Ngày bắt đầu sử dụng" },
+                                { key: "dateEndUse", value: "Ngày kết thúc sử dụng" },
+                                { key: "appprover", value: "Người phê duyệt" },                               
+                                { key: "status", value: "Trạng thái" },
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData;        
+       
+    }
+
     render() {
         const { translate, recommendDistribute, assetsManager, assetType, user, auth } = this.props;
         const { page, limit, currentRow, currentRowAdd } = this.state;
 
-        var listRecommendDistributes = "";
-        var lists = "";
-        var userlist = user.list;
-        var assettypelist = assetType.listAssetTypes;
+        var listRecommendDistributes = "", exportData;
         if (recommendDistribute.isLoading === false) {
             listRecommendDistributes = recommendDistribute.listRecommendDistributes;
+            exportData =this.convertDataToExportData(listRecommendDistributes);
         }
 
         var pageTotal = ((recommendDistribute.totalList % limit) === 0) ?
@@ -179,8 +243,8 @@ class RecommendDistributeManager extends Component {
                     <div className="form-inline">
                         {/* Mã phiếu */}
                         <div className="form-group">
-                            <label className="form-control-static">Mã phiếu:</label>
-                            <input type="text" className="form-control" name="recommendNumber" onChange={this.handleRecommendNumberChange} placeholder="Mã phiếu" autoComplete="off" />
+                            <label className="form-control-static">{translate('asset.general_information.form_code')}</label>
+                            <input type="text" className="form-control" name="recommendNumber" onChange={this.handleRecommendNumberChange} placeholder={translate('asset.general_information.form_code')} autoComplete="off" />
                         </div>
 
                         {/* Tháng */}
@@ -202,9 +266,9 @@ class RecommendDistributeManager extends Component {
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "Đã phê duyệt", text: "Đã phê duyệt" },
-                                    { value: "Chờ phê duyệt", text: "Chờ phê duyệt" },
-                                    { value: "Không phê duyệt", text: "Không phê duyệt" }
+                                    { value: "Đã phê duyệt", text: translate('asset.usage.approved') },
+                                    { value: "Chờ phê duyệt", text: translate('asset.usage.waiting_approval') },
+                                    { value: "Không phê duyệt", text: translate('asset.usage.not_approved') }
                                 ]}
                             >
                             </SelectMulti>
@@ -215,34 +279,35 @@ class RecommendDistributeManager extends Component {
                             <label></label>
                             <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSubmitSearch()} >{translate('page.add_search')}</button>
                         </div>
+                        {exportData&&<ExportExcel id="export-asset-recommened-distribute-management" exportData={exportData} style={{ marginRight:10 }} />}
                     </div>
 
                     {/* Bảng thông tin đăng kí sử dụng tài sản */}
                     <table id="recommenddistributemanager-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th style={{ width: "10%" }}>Mã phiếu</th>
-                                <th style={{ width: "15%" }}>Ngày lập</th>
-                                <th style={{ width: "15%" }}>Người đề nghị</th>
-                                <th style={{ width: "17%" }}>Mã tài sản</th>
-                                <th style={{ width: "15%" }}>Tên tài sản</th>
-                                <th style={{ width: "17%" }}>Thời gian đăng ký sử dụng từ ngày</th>
-                                <th style={{ width: "17%" }}>Thời gian đăng ký sử dụng đến ngày</th>
-                                <th style={{ width: "17%" }}>Người phê duyệt</th>
-                                <th style={{ width: "11%" }}>Trạng thái</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>Hành động
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.form_code')}</th>
+                                <th style={{ width: "15%" }}>{translate('asset.general_information.create_date')}</th>
+                                <th style={{ width: "15%" }}>{translate('asset.usage.proponent')}</th>
+                                <th style={{ width: "17%" }}>{translate('asset.general_information.asset_code')}</th>
+                                <th style={{ width: "15%" }}>{translate('asset.general_information.asset_name')}</th>
+                                <th style={{ width: "17%" }}>{translate('asset.general_information.handover_from_date')}</th>
+                                <th style={{ width: "17%" }}>{translate('asset.general_information.handover_to_date')}</th>
+                                <th style={{ width: "17%" }}>{translate('asset.usage.accountable')}</th>
+                                <th style={{ width: "11%" }}>{translate('asset.general_information.status')}</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
                                     <DataTableSetting
                                         tableId="recommenddistributemanager-table"
                                         columnArr={[
-                                            "Mã phiếu",
-                                            "Ngày lập",
-                                            "Người đề nghị",
-                                            "Mã tài sản",
-                                            "Tên tài sản",
-                                            "Thời gian đăng ký sử dụng từ ngày",
-                                            "Thời gian đăng ký sử dụng đến ngày",
-                                            "Người phê duyệt",
-                                            "Trạng thái",
+                                            translate('asset.general_information.form_code'),
+                                            translate('asset.general_information.create_date'),
+                                            translate('asset.usage.proponent'),
+                                            translate('asset.general_information.asset_code'),
+                                            translate('asset.general_information.asset_name'),
+                                            translate('asset.general_information.handover_from_date'),
+                                            translate('asset.general_information.handover_to_date'),
+                                            translate('asset.usage.accountable'),
+                                            translate('asset.general_information.status'),
                                         ]}
                                         limit={limit}
                                         setLimit={this.setLimit}
@@ -265,11 +330,11 @@ class RecommendDistributeManager extends Component {
                                         <td>{x.approver ? x.approver.name : 'User is deleted'}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleAddUsage(x, x.asset)} className="post_add text-green" style={{ width: '5px' }} title="Thêm mới thông tin sử dụng tài sản"><i
+                                            <a onClick={() => this.handleAddUsage(x, x.asset)} className="post_add text-green" style={{ width: '5px' }} title={translate('asset.asset_info.add_usage_info')}><i
                                                 className="material-icons">post_add</i></a>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Cập nhật thông tin phiếu đăng ký sử dụng tài sản"><i className="material-icons">edit</i></a>
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_usage_info')}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
-                                                content="Xóa thông tin phiếu"
+                                                content={translate('asset.asset_info.delete_usage_info')}
                                                 data={{
                                                     id: x._id,
                                                     info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")

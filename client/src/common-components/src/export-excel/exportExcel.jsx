@@ -127,6 +127,18 @@ class ExportExcel extends Component {
                     // Thêm dữ liệu vào body table
                     worksheet.addRows(y.data);
                     y.data.forEach((obj, index) => {
+                        if (obj.merges && typeof obj.merges === 'object') {
+                            let keyColumns = columns.map(col => col.key);
+                            let merges = obj.merges;
+                            for (let n in merges) {
+                                if (merges[n] > 1) {
+                                    let startMergeCell = worksheet.getRow(currentRow + index).getCell(keyColumns.indexOf(n) + 1).address;
+                                    let endMergeRow = startMergeCell;
+                                    endMergeRow = endMergeRow.replace(/[0-9]/gi, '').trim();
+                                    worksheet.mergeCells(`${startMergeCell}:${endMergeRow}${currentRow + index + merges[n] - 1}`);
+                                }
+                            }
+                        }
                         worksheet.getRow(currentRow + index).font = { name: 'Arial' };
                         worksheet.getRow(currentRow + index).alignment = { wrapText: true };
                     })

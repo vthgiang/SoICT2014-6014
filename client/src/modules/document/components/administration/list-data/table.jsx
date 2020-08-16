@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
-import { DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, ToolTip } from '../../../../../common-components';
+import { DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, SelectBox } from '../../../../../common-components';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import DocumentInformation from '../../user/documents/documentInformation';
@@ -28,7 +28,18 @@ const getIndex = (array, id) => {
 class Table extends Component {
     constructor(props) {
         super(props);
-        this.state = { option: 'name', value: '', limit: 5, page: 1 }
+        this.state = {
+            category: "",
+            domain: "",
+            archive: "",
+            option: {
+                category: "",
+                domain: "",
+                archive: "",
+            },
+            limit: 5,
+            page: 1
+        }
     }
 
     componentDidMount() {
@@ -114,12 +125,51 @@ class Table extends Component {
 
         return result;
     }
+    handleCategoryChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                category: value,
+            }
+        })
+    }
+    handleDomainChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                domain: value,
+            }
+        })
+    }
+    handleArchiveChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                archive: value,
+            }
+        })
+    }
+    convertData = (data) => {
+        let array = data.map(item => {
+            return {
+                value: item.id,
+                text: item.name,
+            }
+        })
+        array.unshift({ value: "", text: "Tất cả các loại" });
+        return array;
+    }
     render() {
         const { translate } = this.props;
         const docs = this.props.documents.administration.data;
+        const { domains, categories, archives } = this.props.documents.administration;
         const { paginate } = docs;
         const { isLoading } = this.props.documents;
-        const { currentRow } = this.state;
+        const { currentRow, archive, domain, category } = this.state;
+        const listDomain = this.convertData(domains.list)
+        const listCategory = this.convertData(categories.list)
+        const listArchive = this.convertData(archives.list);
+        console.log('bbbbbb', currentRow);
 
         return (
             <React.Fragment>
@@ -144,6 +194,7 @@ class Table extends Component {
                         documentDescription={currentRow.description}
                         documentCategory={currentRow.category._id}
                         documentDomains={currentRow.domains.map(domain => domain._id)}
+                        documentArchives={currentRow.archives.map(archive => archive._id)}
                         documentIssuingBody={currentRow.issuingBody}
                         documentOfficialNumber={currentRow.officialNumber}
                         documentSigner={currentRow.signer}
@@ -183,15 +234,58 @@ class Table extends Component {
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
                     />
                 }
-                <SearchBar
-                    columns={[
-                        { title: translate('document.name'), value: 'name' },
-                        { title: translate('document.description'), value: 'description' }
-                    ]}
-                    option={this.state.option}
-                    setOption={this.setOption}
-                    search={this.searchWithOption}
-                />
+
+                <div className="form-inline">
+                    <div className="form-group">
+                        <label>{translate('document.category')}:</label>
+                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                            id={`stattus-category`}
+                            style={{ width: "100%" }}
+                            items={listCategory}
+                            onChange={this.handleCategoryChange}
+                            value={category}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Lưu trữ:</label>
+                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                            id={`status-archive`}
+                            style={{ width: "100%" }}
+                            items={listArchive}
+                            onChange={this.handleArchiveChange}
+                            value={archive}
+                        />
+                    </div>
+                </div>
+                <div className="form-inline">
+                    <div className="form-group">
+                        <label>{translate('document.domain')}:</label>
+                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                            id={`status-domain`}
+                            style={{ width: "100%" }}
+                            items={listDomain}
+                            onChange={this.handleDomainChange}
+                            value={domain}
+                        />
+                    </div>
+                    {/* <SearchBar
+                        columns={[
+                            { title: translate('document.name'), value: 'name' },
+                            { title: translate('document.description'), value: 'description' }
+                        ]}
+                        option={this.state.option}
+                        setOption={this.setOption}
+                        search={this.searchWithOption}
+                    /> */}
+                    <div className="form-group">
+                        <button type="button" className="btn btn-success" onClick={() => this.searchWithOption()}>{
+                            translate('kpi.organizational_unit.management.over_view.search')}</button>
+                    </div>
+                </div>
+                <div className="form-inline">
+
+                </div>
+
                 <table className="table table-hover table-striped table-bordered" id="table-manage-document-list">
                     <thead>
                         <tr>
@@ -290,8 +384,12 @@ class Table extends Component {
         const data = {
             limit: this.state.limit,
             page: 1,
-            key: this.state.option,
-            value: this.state.value
+            // key: this.state.option,
+            // value: this.state.value
+            // name : this.state.name,
+            category: this.state.category[0],
+            domains: this.state.domain[0],
+            archives: this.state.archive[0],
         };
         await this.props.getAllDocuments(data);
     }

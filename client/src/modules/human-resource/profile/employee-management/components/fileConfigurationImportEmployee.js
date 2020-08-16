@@ -1,5 +1,9 @@
 // Cấu hình file import thông tin cơ bản của nhân viên
 export const configurationEmployeeInfo = {
+    rowHeader: {
+        description: "Số dòng tiêu đề của bảng",
+        value: 1
+    },
     sheets: {
         description: "Tên các sheet",
         value: ["1.Nhân viên"]
@@ -237,6 +241,10 @@ export const configurationEmployeeInfo = {
 
 // Cấu hình file import kinh nghiệm làm việc của nhân viên
 export const configurationExperience = {
+    rowHeader: {
+        description: "Số dòng tiêu đề của bảng",
+        value: 1
+    },
     sheets: {
         description: "Tên các sheet",
         value: ["2.HS Nhân viên - Kinh nghiệm"]
@@ -279,6 +287,10 @@ export const configurationExperience = {
 
 // Cấu hình file import thông tin bằng cấp
 export const configurationDegree = {
+    rowHeader: {
+        description: "Số dòng tiêu đề của bảng",
+        value: 1
+    },
     sheets: {
         description: "Tên các sheet",
         value: ["3.HS Nhân viên - Bằng cấp"]
@@ -321,6 +333,10 @@ export const configurationDegree = {
 
 // Cấu hình file import thông tin chứng chỉ
 export const configurationCertificate = {
+    rowHeader: {
+        description: "Số dòng tiêu đề của bảng",
+        value: 1
+    },
     sheets: {
         description: "Tên các sheet",
         value: ["4.HS Nhân viên - Chứng chỉ"]
@@ -363,6 +379,10 @@ export const configurationCertificate = {
 
 // Cấu hình file import hợp đồng lao động
 export const configurationContract = {
+    rowHeader: {
+        description: "Số dòng tiêu đề của bảng",
+        value: 1
+    },
     sheets: {
         description: "Tên các sheet",
         value: ["5.HS Nhân viên - Hợp đồng"]
@@ -405,6 +425,10 @@ export const configurationContract = {
 
 // Cấu hình file import quá trình đóng bảo hiểm của nhân viên
 export const configurationSocialInsuranceDetails = {
+    rowHeader: {
+        description: "Số dòng tiêu đề của bảng",
+        value: 1
+    },
     sheets: {
         description: "Tên các sheet",
         value: ["6.HS Nhân viên - Bảo hiểm XH"]
@@ -447,6 +471,10 @@ export const configurationSocialInsuranceDetails = {
 
 // Cấu hình file import tài liệu đính kèm
 export const configurationFile = {
+    rowHeader: {
+        description: "Số dòng tiêu đề của bảng",
+        value: 1
+    },
     sheets: {
         description: "Tên các sheet",
         value: ["7.HS Nhân viên - Tài liệu"]

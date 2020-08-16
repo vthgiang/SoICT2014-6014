@@ -16,8 +16,8 @@ class ManagerAssetAssignedCrash extends Component {
         return (
             <div className="nav-tabs-custom">
                 <ul className="nav nav-tabs">
-                    <li className="active"><a title="Quản lý thiết bị bàn giao" data-toggle="tab" href="#assetassigned">Quản lý thiết bị bàn giao</a></li>
-                    <li><a title="Sự cố thiết bị" data-toggle="tab" href="#assetcrash">Sự cố thiết bị</a></li>
+                    <li className="active"><a title={translate('menu.manage_assigned_asset')} data-toggle="tab" href="#assetassigned">{translate('menu.manage_assigned_asset')}</a></li>
+                    <li><a title={translate('asset.incident.incident')} data-toggle="tab" href="#assetcrash">{translate('asset.incident.incident')}</a></li>
                 </ul>
                 <div className="tab-content" style={{ padding: 0 }}>
                     <AssetAssignedManager />

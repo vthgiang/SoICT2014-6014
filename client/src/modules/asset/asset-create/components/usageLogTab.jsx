@@ -152,7 +152,7 @@ class UsageLogTab extends Component {
                 <div className="box-body qlcv">
                     {/* Lịch sử sử dụng */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">Lịch sử sử dụng</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.usage_logs')}</h4></legend>
 
                         {/* Form thêm thông tin sử dụng */}
                         <UsageLogAddModal handleChange={this.handleAddUsage} id={`addUsage${id}`} />
@@ -161,11 +161,11 @@ class UsageLogTab extends Component {
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th style={{ width: "10%" }}>Người sử dụng</th>
-                                    <th style={{ width: "10%" }}>Ngày bắt đầu sử dụng</th>
-                                    <th style={{ width: "10%" }}>Ngày kết thúc sử dụng</th>
-                                    <th style={{ width: "10%" }}>Nội dung</th>
-                                    <th style={{ width: '100px', textAlign: 'center' }}>Hành động</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.user')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.handover_from_date')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.handover_to_date')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
+                                    <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
