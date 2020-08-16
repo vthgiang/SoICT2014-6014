@@ -185,7 +185,7 @@ class UsageCreateForm extends Component {
                 <DialogModal
                     size='50' modalID={`modal-create-usage`} isLoading={false}
                     formID={`form-create-usage`}
-                    title="Thêm mới thông tin sử dụng tài sản"
+                    title={translate('asset.asset_info.add_usage_info')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -194,7 +194,7 @@ class UsageCreateForm extends Component {
                         <div className="col-md-12">
                             {/* Tài sản */}
                             <div className={`form-group`}>
-                                <label>Tài sản</label>
+                                <label>{translate('asset.general_information.asset')}</label>
                                 <div>
                                     <div id="assetUBox">
                                         <SelectBox
@@ -215,7 +215,7 @@ class UsageCreateForm extends Component {
 
                             {/* Người sử dụng */}
                             <div className={`form-group`}>
-                                <label>Người sử dụng</label>
+                                <label>{translate('asset.general_information.user')}</label>
                                 <div>
                                     <div id="usedByUBox">
                                         <SelectBox
@@ -236,7 +236,7 @@ class UsageCreateForm extends Component {
 
                             {/* Thời gian bắt đầu sử dụng */}
                             <div className={`form-group ${!errorOnStartDate ? "" : "has-error"}`}>
-                                <label>Thời gian bắt đầu sử dụng<span className="text-red">*</span></label>
+                                <label>{translate('asset.general_information.handover_from_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`add-start-date${_id}`}
                                     value={startDate}
@@ -247,7 +247,7 @@ class UsageCreateForm extends Component {
 
                             {/* Thời gian kết thúc sử dụng */}
                             <div className="form-group">
-                                <label>Thời gian kết thúc sử dụng</label>
+                                <label>T{translate('asset.general_information.handover_to_date')}</label>
                                 <DatePicker
                                     id={`add-end-date${_id}`}
                                     value={endDate}
@@ -257,9 +257,9 @@ class UsageCreateForm extends Component {
 
                             {/* Nội dung */}
                             <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
-                                <label>Nội dung<span className="text-red">*</span></label>
+                                <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
                                 <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
-                                    placeholder="Nội dung"></textarea>
+                                    placeholder={translate('asset.general_information.content')}></textarea>
                                 <ErrorLabel content={errorOnDescription} />
                             </div>
                         </div>

@@ -7,8 +7,8 @@ import { AuthActions } from '../../../modules/auth/redux/actions';
 class Roles extends Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            currentRole: getStorage("currentRole") ? getStorage("currentRole") : null 
+        this.state = {
+            currentRole: getStorage("currentRole") ? getStorage("currentRole") : null
         }
         this.selectRole = this.selectRole.bind(this);
     }
@@ -17,12 +17,12 @@ class Roles extends Component {
         this.setState({ currentRole: e.target.value });
         setStorage("currentRole", e.target.value);
         await this.props.getLinksOfRole(e.target.value);
-        var {links} = this.props.auth;
+        var { links } = this.props.auth;
         var path = window.location.pathname;
         var linkId;
         for (let index = 0; index < links.length; index++) {
             const element = links[index];
-            if(element.url === path){
+            if (element.url === path) {
                 linkId = element._id;
                 break;
             }
@@ -30,11 +30,11 @@ class Roles extends Component {
         var currentRole = getStorage("currentRole");
         await this.props.getComponentsOfUserInLink(currentRole, linkId);
     }
-    
-    render() { 
-        const {auth}=this.props;
+
+    render() {
+        const { auth } = this.props;
         const { currentRole } = this.state;
-        return ( 
+        return (
             <li>
                 {
                     auth.user.roles && auth.user.roles.length > 0 &&
@@ -56,10 +56,10 @@ class Roles extends Component {
                     </select>
                 }
             </li>
-         );
+        );
     }
 }
- 
+
 const mapStateToProps = state => {
     return state;
 }

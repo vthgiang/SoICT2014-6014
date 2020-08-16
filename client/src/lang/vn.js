@@ -641,7 +641,7 @@ export default {
             manage_incident_asset: 'Quản lý sự cố tài sản',
             manage_recommend_procure: 'Quản lý đề nghị mua sắm',
             manage_recommend_distribute_asset: 'Quản lý đăng ký sử dụng',
-            
+
 
             // NHÂN VIÊN
             recommend_equipment_procurement: 'Đăng ký mua sắm thiết bị',
@@ -1356,6 +1356,8 @@ export default {
         // Modules Quản lý tài sản
         asset: {
             general_information: {
+                asset: 'Tài sản',
+                asset_list: 'Dang sách tài sản',
                 search: 'Tìm kiếm',
                 add: 'Thêm',
                 basic_information: 'Thông tin cơ bản',
@@ -1393,6 +1395,7 @@ export default {
                 handover_to_date: 'Thời gian kết thúc sử dụng',
                 status: 'Trạng thái',
                 action: 'Hành động',
+                asset_value: 'Giá trị tài sản',
 
                 general_information: 'Thông tin chung',
                 usage_information: 'Thông tin sử dụng',
@@ -1467,10 +1470,13 @@ export default {
                 file_list: 'Danh sách tài liệu đính kèm',
                 add_usage_info: 'Thêm mới thông tin cấp phát sử dụng',
                 edit_usage_info: 'Chỉnh sửa thông tin cấp phát sử dụng',
+                delete_usage_info: 'Xóa thông tin cấp phát sử dụng',
                 add_maintenance_card: 'Thêm mới phiếu bảo trì',
                 edit_maintenance_card: 'Chỉnh sửa phiếu bảo trì',
+                delete_maintenance_card: 'Xóa phiếu bảo trì',
                 add_incident_info: 'Thêm mới thông tin sự cố',
                 edit_incident_info: 'Chỉnh sửa thông tin sự cố',
+                delete_incident_info: 'Xóa thông tin sự cố',
 
                 usage_time: 'Thời gian sử dụng',
                 annual_depreciation: 'Mức độ khấu hao trung bình hằng năm',
@@ -1513,7 +1519,13 @@ export default {
 
             // Quản lý sử dụng
             usage: {
-
+                approved: 'Đã phê duyệt',
+                waiting_approval: 'Chờ phê duyệt',
+                not_approved: 'Không phê duyệt',
+                proponent: 'Người đề nghị',
+                accountable: 'Người phê duyệt',
+                note: 'Ghi chú',
+                
                 //Thông điệp trả về từ server
                 get_usage_success: 'Lấy thông tin sử dụng thành công',
                 get_usage_faile: 'Lấy thông tin sử dụng thất bại',
@@ -1527,6 +1539,10 @@ export default {
 
             // Quản lý khấu hao
             depreciation: {
+                depreciation_time: 'Thời gian trích khấu hao',
+                accumulated_value: 'Giá trị hao mòn lũy kế',
+                remaining_value: 'Giá trị còn lại',
+                edit_depreciation: 'Chỉnh sửa thông tin kháu hao tài sản',
 
                 //Thông điệp trả về từ server
                 get_depreciation_success: 'Lấy thông tin khấu hao thành công',
@@ -1541,7 +1557,9 @@ export default {
 
             // Quản lý sự cố
             incident: {
-
+                incident: 'Sự cố tài sản',
+                report_incident: 'Báo cáo sự cố tài sản',
+                
                 //Thông điệp trả về từ server
                 get_incident_success: 'Lấy thông tin sự cố tài sản thành công',
                 get_incident_faile: 'Lấy thông tin sự cố tài sản thất bại',
@@ -1555,6 +1573,14 @@ export default {
 
             // Quản lý đề nghị mua sắm thiết bị
             manage_recommend_procure: {
+                asset_recommend: 'Thiết bị đề nghị mua sắm',
+                add_recommend_card: 'Thêm mới phiếu đề nghị mua sắm tài sản',
+                view_recommend_card: 'Xem thông tin phiếu đề nghị mua sắm tài sản',
+                edit_recommend_card: 'Chỉnh sửa phiếu đề nghị mua sắm tài sản',
+                delete_recommend_card: 'Xóa phiếu đề nghị mua sắm tài sản',
+                supplier: 'Nhà cung cấp',
+                unit: 'Đơn vị tính',
+                expected_value: 'Giá trị dự tính',
 
                 //Thông điệp trả về từ server
                 get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
@@ -1711,6 +1737,7 @@ export default {
                 accountable_role: 'Phê duyệt',
                 consulted_role: 'Hỗ trợ',
                 informed_role: 'Quan sát',
+                distribution_Of_Employee: 'Đóng góp công việc',
 
                 add_task: 'Thêm mới',
                 add_title: 'Thêm mới một công việc',

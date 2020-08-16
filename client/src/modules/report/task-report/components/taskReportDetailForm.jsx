@@ -126,7 +126,6 @@ class TaskReportDetailForm extends Component {
                                         <dd>
                                             <ul>
                                                 {listTaskReportById && listTaskReportById.readByEmployees.map((item, index) => {
-                                                    console.log('item', item);
                                                     return <li key={index}>{item.name}</li>
                                                 })}
                                             </ul>

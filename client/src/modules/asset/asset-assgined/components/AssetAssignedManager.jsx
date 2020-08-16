@@ -186,23 +186,23 @@ class AssetAssignedManager extends Component {
 
                         {/* Mã tài sản */}
                         <div className="form-group">
-                            <label className="form-control-static">Mã tài sản</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off" />
+                            <label className="form-control-static">{translate('asset.general_information.asset_code')}</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder={translate('asset.general_information.asset_code')} autoComplete="off" />
                         </div>
 
                         {/* Tên tài sản */}
                         <div className="form-group">
-                            <label className="form-control-static">Tên tài sản</label>
-                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off" />
+                            <label className="form-control-static">{translate('asset.general_information.asset_name')}</label>
+                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
                         </div>
                     </div>
 
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Phân loại */}
                         <div className="form-group">
-                            <label className="form-control-static">Phân loại</label>
+                            <label className="form-control-static">{translate('asset.general_information.type')}</label>
                             <SelectMulti id={`multiSelectType`} multiple="multiple"
-                                options={{ nonSelectedText: "Chọn loại tài sản", allSelectedText: "Chọn tất cả các loại tài sản" }}
+                                options={{ nonSelectedText: translate('asset.general_information.select_asset_type'), allSelectedText: translate('asset.general_information.select_all_asset_type') }}
                                 onChange={this.handleTypeChange}
                                 items={[]}
                             >
@@ -213,12 +213,12 @@ class AssetAssignedManager extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
                             <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
-                                options={{ nonSelectedText: translate('page.non_status'), allSelectedText: "Chọn tất cả trạng thái" }}
+                                options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "Đang sử dụng", text: "Đang sử dụng" },
-                                    { value: "Hỏng hóc", text: "Hỏng hóc" },
-                                    { value: "Mất", text: "Mất" }
+                                    { value: "Đang sử dụng", text: translate('asset.general_information.using') },
+                                    { value: "Hỏng hóc", text: translate('asset.general_information.damaged') },
+                                    { value: "Mất", text: translate('asset.general_information.lost') }
                                 ]}
                             >
                             </SelectMulti>
@@ -226,7 +226,7 @@ class AssetAssignedManager extends Component {
 
                         {/* Button tìm kiếm */}
                         <div className="form-group">
-                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={() => this.handleSubmitSearch()}>Tìm kiếm</button>
+                            <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={() => this.handleSubmitSearch()}>{translate('asset.general_information.search')}</button>
                         </div>
                     </div>
 
@@ -234,24 +234,24 @@ class AssetAssignedManager extends Component {
                     <table id="assetassigned-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th style={{ width: "8%" }}>Mã tài sản</th>
-                                <th style={{ width: "10%" }}>Tên tài sản</th>
-                                <th style={{ width: "10%" }}>Loại tài sản</th>
-                                <th style={{ width: "10%" }}>Giá trị tài sản</th>
-                                <th style={{ width: "20%" }}>Thời gian bắt đầu sử dụng</th>
-                                <th style={{ width: "20%" }}>Thời gian kết thúc sử dụng</th>
-                                <th style={{ width: "10%" }}>Trạng thái</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>Hành động
+                                <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_type')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_value')}</th>
+                                <th style={{ width: "20%" }}>{translate('asset.general_information.handover_from_date')}</th>
+                                <th style={{ width: "20%" }}>{translate('asset.usage.accountable')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
                                 <DataTableSetting
                                         tableId="assetassigned-table"
                                         columnArr={[
-                                            "Mã tài sản",
-                                            "Tên tài sản",
-                                            "Loại tài sản",
-                                            "Giá trị tài sản",
-                                            "Thời gian bắt đầu sử dụng",
-                                            "Thời gian kết thúc sử dụng",
-                                            "Trạng thái"
+                                            translate('asset.general_information.asset_code'),
+                                            translate('asset.general_information.asset_name'),
+                                            translate('asset.general_information.asset_type'),
+                                            translate('asset.general_information.asset_value'),
+                                            translate('asset.general_information.handover_from_date'),
+                                            translate('asset.usage.accountable'),
+                                            translate('asset.general_information.status')
                                         ]}
                                         limit={limit}
                                         setLimit={this.setLimit}
@@ -272,8 +272,8 @@ class AssetAssignedManager extends Component {
                                         <td>{this.formatDate2(x.handoverToDate)}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
-                                            <a onClick={() => this.handleReport(x, x)} className="edit text-red" style={{ width: '5px' }} title="Báo cáo sự cố thiết bị"><i
+                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
+                                            <a onClick={() => this.handleReport(x, x)} className="edit text-red" style={{ width: '5px' }} title={translate('asset.incident.report_incident')}><i
                                                 className="material-icons">notification_important</i></a>
                                         </td>
                                     </tr>

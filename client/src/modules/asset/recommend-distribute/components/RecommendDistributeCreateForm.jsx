@@ -205,7 +205,7 @@ class RecommendDistributeCreateForm extends Component {
                 <DialogModal
                     size='50' modalID="modal-create-recommenddistribute" isLoading={recommendDistribute.isLoading}
                     formID="form-create-recommenddistribute"
-                    title="Thêm mới phiếu đăng ký sử dụng thiết bị"
+                    title={translate('asset.asset_info.add_usage_info')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated() || this.validateExitsRecommendNumber(recommendNumber)}
                 >
@@ -216,7 +216,7 @@ class RecommendDistributeCreateForm extends Component {
                             <div className="col-sm-6">
                                 {/* Mã phiếu */}
                                 <div className={`form-group ${!errorOnRecommendNumber ? "" : "has-error"}`}>
-                                    <label>Mã phiếu<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.form_code')}<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} autoComplete="off" placeholder="Mã phiếu" />
                                     <ErrorLabel content={errorOnRecommendNumber} />
                                     <ErrorLabel content={this.validateExitsRecommendNumber(recommendNumber) ? <span className="text-red">Mã phiếu đã tồn tại</span> : ''} />
@@ -224,7 +224,7 @@ class RecommendDistributeCreateForm extends Component {
 
                                 {/* Ngày lập */}
                                 <div className={`form-group ${!errorOnDateCreate ? "" : "has-error"}`}>
-                                    <label>Ngày lập<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.create_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id="create_start_date"
                                         value={dateCreate}
@@ -235,7 +235,7 @@ class RecommendDistributeCreateForm extends Component {
 
                                 {/* Người đề nghị */}
                                 <div className={`form-group`}>
-                                    <label>Người đề nghị</label>
+                                    <label>{translate('asset.usage.proponent')}</label>
                                     <div>
                                         <div id="proponentBox">
                                             <SelectBox
@@ -256,7 +256,7 @@ class RecommendDistributeCreateForm extends Component {
 
                                 {/* Nội dung đề nghị */}
                                 <div className={`form-group ${!errorOnReqContent ? "" : "has-error"}`}>
-                                    <label>Nội dung đề nghị<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
                                     <textarea className="form-control" rows="3" style={{ height: 34 }} name="reqContent" value={reqContent} onChange={this.handleReqContentChange} autoComplete="off" placeholder="Nội dung đề nghị"></textarea>
                                     <ErrorLabel content={errorOnReqContent} />
                                 </div>
@@ -265,7 +265,7 @@ class RecommendDistributeCreateForm extends Component {
                             <div className="col-sm-6">
                                 {/* Tài sản */}
                                 <div className={`form-group`}>
-                                    <label>Tài sản</label>
+                                    <label>{translate('asset.general_information.asset')}</label>
                                     <div>
                                         <div id="assetUBox">
                                             <SelectBox
@@ -286,7 +286,7 @@ class RecommendDistributeCreateForm extends Component {
 
                                 {/* Thời gian đăng ký sử dụng từ ngày */}
                                 <div className={`form-group ${errorOnDateStartUse === undefined ? "" : "has-error"}`}>
-                                    <label>Thời gian đăng ký sử dụng từ ngày<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.handover_from_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id="create_start_use"
                                         value={dateStartUse}
@@ -297,7 +297,7 @@ class RecommendDistributeCreateForm extends Component {
 
                                 {/* Thời gian đăng ký sử dụng đến ngày */}
                                 <div className={`form-group ${errorOnDateEndUse === undefined ? "" : "has-error"}`}>
-                                    <label>Thời gian đăng ký sử dụng đến ngày<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.handover_to_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id="create_end_use"
                                         value={dateEndUse}

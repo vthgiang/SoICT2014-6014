@@ -95,14 +95,26 @@ exports.getAllEmployeeOfUnitByRole = async (role) => {
  */
 exports.getAllEmployeeOfUnitByIds = async (id) => {
     let data = [];
-
     for (let i = 0; i < id.length; i++) {
         let organizationalUnit = await OrganizationalUnit.findById(id[i]);
         let allRoles = [...organizationalUnit.employees, ...organizationalUnit.deans, ...organizationalUnit.viceDeans];
         let employees = await UserRole.find({ roleId: { $in: allRoles } }).populate('userId roleId');
-        data = data.concat(employees);
-    };
 
+        for (let j in employees) {
+
+            let check = 0;
+            for (let k in data) {
+                if (String(employees[j].userId._id) == String(data[k].userId._id)) {
+                    check = 1;
+                    break;
+                }
+
+            }
+            if (check == 0) {
+                data.push(employees[j]);
+            }
+        }
+    };
     return data;
 }
 

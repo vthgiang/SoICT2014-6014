@@ -625,7 +625,7 @@ export default {
             // Quản lý tài sản
             // QUẢN LÝ
 
-            add_asset: 'Thêm tài sản',
+            add_asset: 'Add asset',
             manage_repair_asset: 'Quản lý sửa chữa, thay thế',
             manage_usage_asset: 'Quản lý sử dụng tài sản',
             manage_distribute_asset: 'Quản lý cấp phát, điều chuyển',
@@ -644,8 +644,8 @@ export default {
 
             // NHÂN VIÊN
             recommend_equipment_procurement: 'Đăng ký mua sắm thiết bị',
-            recommend_distribute_asset: 'Đăng ký cấp phát thiết bị',
-            manage_assigned_asset: 'Quản lý thiết bị bàn giao',
+            recommend_distribute_asset: 'Recommend distribute asset',
+            manage_assigned_asset: 'Manage assigned assets',
             //******END */
 
             // QUẢN LÝ BÁO CÁO
@@ -1355,6 +1355,8 @@ export default {
         // Modules Quản lý tài sản
         asset: {
             general_information: {
+                asset: 'Asset',
+                asset_list: 'Assets list',
                 search: 'Search',
                 add: 'Add',
                 basic_information: 'Basic infomation',
@@ -1392,6 +1394,7 @@ export default {
                 handover_to_date: 'Handover to date',
                 status: 'Status',
                 action: 'Action',
+                asset_value: 'Asset value',
 
                 general_information: 'General information',
                 usage_information: 'Usage information',
@@ -1466,10 +1469,13 @@ export default {
                 file_list: 'List of documents attached',
                 add_usage_info: 'Add new asset usage infomation',
                 edit_usage_info: 'Edit asset usage infomation',
+                delete_usage_info: 'Delete asset usage infomation',
                 add_maintenance_card: 'Add new maintenance card',
                 edit_maintenance_card: 'Edit new maintenance card',
+                delete_maintenance_card: 'Delete maintenance card',
                 add_incident_info: 'Add new incident infomation',
                 edit_incident_info: 'Edit incident infomation',
+                delete_incident_info: 'Delete incident infomation',
 
                 usage_time: 'Usage time',
                 annual_depreciation: 'Annual average rate of depreciation',
@@ -1512,6 +1518,12 @@ export default {
 
             // Quản lý sử dụng
             usage: {
+                approved: 'Approved',
+                waiting_approval: 'Waiting for approval',
+                not_approved: 'Not approved',
+                proponent: 'Proponent',
+                accountable: 'Accountable',
+                note: 'Note',
 
                 //Thông điệp trả về từ server
                 get_usage_success: 'Lấy thông tin sử dụng thành công',
@@ -1526,6 +1538,10 @@ export default {
 
             // Quản lý khấu hao
             depreciation: {
+                depreciation_time: 'Depreciation time',
+                accumulated_value: 'Accumulated depreciation value',
+                remaining_value: 'Remaining value', 
+                edit_depreciation: 'Edit asset depreciation information',
 
                 //Thông điệp trả về từ server
                 get_depreciation_success: 'Lấy thông tin khấu hao thành công',
@@ -1540,7 +1556,9 @@ export default {
 
             // Quản lý sự cố
             incident: {
-
+                incident: 'Asset incident',
+                report_incident: 'Report asset incident',
+                
                 //Thông điệp trả về từ server
                 get_incident_success: 'Lấy thông tin sự cố tài sản thành công',
                 get_incident_faile: 'Lấy thông tin sự cố tài sản thất bại',
@@ -1554,7 +1572,15 @@ export default {
 
             // Quản lý đề nghị mua sắm thiết bị
             manage_recommend_procure: {
-
+                asset_recommend: 'Asset recommend procure',
+                add_recommend_card: 'Add new form recommend procure asset',
+                view_recommend_card: 'View form recommend procure asset',
+                edit_recommend_card: 'Edit form recommend procure asset',
+                delete_recommend_card: 'Delete form recommend procure asset',
+                supplier: 'Supplier',
+                unit: 'Unit',
+                expected_value: 'Expected value',
+                    
                 //Thông điệp trả về từ server
                 get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
                 get_recommend_procure_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
@@ -1709,7 +1735,7 @@ export default {
                 accountable_role: 'Acountable',
                 consulted_role: 'Consulted',
                 informed_role: 'Informed',
-
+                distribution_Of_Employee: 'Distribution of Employees',
                 add_task: 'Add task',
                 add_title: 'Add a new task',
                 add_subtask: 'Add sub task',
