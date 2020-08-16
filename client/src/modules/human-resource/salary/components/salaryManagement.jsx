@@ -207,6 +207,7 @@ class SalaryManagement extends Component {
                 }
 
                 return {
+                    // merges: index % 2 == 0 ? { employeeNumber: 2, fullName: 2 } : null,
                     STT: index + 1,
                     employeeNumber: x.employee.employeeNumber,
                     fullName: x.employee.fullName,
@@ -223,18 +224,42 @@ class SalaryManagement extends Component {
                 };
             })
         }
+        let columns = [{ key: 'bonus0', value: 0 }];
+        if (otherSalary.length !== 0) {
+            columns = otherSalary.map((x, index) => {
+                return { key: `bonus${index}`, value: x, }
+            })
+        }
+        let merges = [{
+            key: "other",
+            columnName: "Lương thưởng khác",
+            keyMerge: 'bonus0',
+            colspan: columns.length
+        }]
 
-        let columns = otherSalary.map((x, index) => {
-            return { key: `bonus${index}`, value: x, type: "Number" }
-        })
         let exportData = {
             fileName: translate('human_resource.salary.file_name_export'),
             dataSheets: [
                 {
-                    sheetName: "sheet1",
+                    sheetName: "Sheet1",
                     sheetTitle: translate('human_resource.salary.file_name_export'),
                     tables: [
                         {
+<<<<<<< HEAD
+                            tableName: "Bảng lương 1",
+                            merges: [{
+                                key: "other",
+                                columnName: "Lương thưởng 123",
+                                keyMerge: 'gender',
+                                colspan: 2
+                            }, {
+                                key: "other1",
+                                columnName: "Lương thưởng 124",
+                                keyMerge: 'organizationalUnits',
+                                colspan: 2
+                            }],
+                            rowHeader: 3,
+=======
                             // tableName: "Bảng lương 1",
                             // merges: [{
                             //     key: "other",
@@ -252,7 +277,9 @@ class SalaryManagement extends Component {
                             //     keyMerge: 'other1',
                             //     colspan: 4
                             // }],
-                            // rowHeader: 3,
+                            rowHeader: 2,
+                            merges: merges,
+>>>>>>> 8a6d6ef164d40183980f8fed3a9d7ca7d40e7c23
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "month", value: "Tháng" },

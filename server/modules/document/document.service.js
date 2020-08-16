@@ -1,4 +1,4 @@
-const { DocumentCategory, DocumentDomain, DocumentArchive, Role, User, UserRole } = require('../../models').schema;
+const { DocumentCategory, DocumentDomain, DocumentArchive, Role, User, UserRole, OrganizationalUnit } = require('../../models').schema;
 const arrayToTree = require('array-to-tree');
 const fs = require('fs');
 const ObjectId = require('mongoose').Types.ObjectId;
@@ -19,6 +19,7 @@ exports.getDocuments = async (company, query) => {
             { path: 'domains', model: DocumentDomain },
             { path: 'views.viewer', model: User, select: 'name id' },
             { path: "downloads.downloader", model: User, select: 'name id' },
+            { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
         ]);
     } else {
         let option = {
@@ -37,8 +38,10 @@ exports.getDocuments = async (company, query) => {
             populate: [
                 { path: 'category', model: DocumentCategory },
                 { path: 'domains', model: DocumentDomain },
+                { path: 'archives', model: DocumentArchive },
                 { path: 'views.viewer', model: User, select: 'name id' },
                 { path: "downloads.downloader", model: User, select: 'name id' },
+                { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
             ]
         });
     }
@@ -50,7 +53,7 @@ exports.getDocuments = async (company, query) => {
 exports.showDocument = async (id, viewer) => {
     const doc = await Document.findById(id).populate([
         { path: 'category', model: DocumentCategory },
-        { path: 'domains', model: DocumentDomain },
+        { path: 'archives', model: DocumentArchive },
 
     ]);
     doc.numberOfView += 1;
@@ -102,10 +105,12 @@ exports.increaseNumberView = async (id, viewer) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (company, data) => {
+    console.log(data);
     const newDoc = {
         company,
         name: data.name,
         domains: data.domains,
+        archives: data.archives,
         category: data.category,
         description: data.description,
         issuingBody: data.issuingBody,
@@ -131,6 +136,7 @@ exports.createDocument = async (company, data) => {
     return await Document.findById(doc._id).populate([
         { path: 'category', model: DocumentCategory },
         { path: 'domains', model: DocumentDomain },
+        { path: 'archives', model: DocumentArchive },
     ]);
 }
 
@@ -138,6 +144,8 @@ exports.createDocument = async (company, data) => {
  * Chỉnh sửa thông tin tài liệu văn bản
  */
 exports.editDocument = async (id, data, query = undefined) => {
+    console.log('data', data);
+    console.log('querry', query);
     if (query !== undefined && Object.keys(query).length > 0) {
 
         const doc = await Document.findById(id);
@@ -161,6 +169,7 @@ exports.editDocument = async (id, data, query = undefined) => {
         const doc = await Document.findById(id);
         doc.name = data.name
         doc.domains = data.domains
+        doc.archives = data.archives
         doc.category = data.category
         doc.description = data.description
         doc.issuingBody = data.issuingBody
@@ -172,10 +181,12 @@ exports.editDocument = async (id, data, query = undefined) => {
 
         doc.roles = data.roles
 
-        if (data.archivedRecordPlaceInfo !== 'undefined' && data.archivedRecordPlaceInfo !== undefined)
-            doc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo
-        if (data.archivedRecordPlaceOrganizationalUnit !== 'undefined' && data.archivedRecordPlaceOrganizationalUnit !== undefined)
+        // if (data.archivedRecordPlaceInfo !== 'undefined' && data.archivedRecordPlaceInfo !== undefined)
+        //     doc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo
+        if (data.archivedRecordPlaceOrganizationalUnit !== 'undefined' && data.archivedRecordPlaceOrganizationalUnit !== undefined && data.archivedRecordPlaceOrganizationalUnit !== "[object Object]") {
+            console.log(data.archivedRecordPlaceOrganizationalUnit)
             doc.archivedRecordPlaceOrganizationalUnit = data.archivedRecordPlaceOrganizationalUnit
+        }
         if (data.archivedRecordPlaceManager !== 'undefined' && data.archivedRecordPlaceManager !== undefined)
             doc.archivedRecordPlaceManager = data.archivedRecordPlaceManager
 
@@ -332,9 +343,11 @@ exports.getDocumentsThatRoleCanView = async (company, query) => {
         }).populate([
             { path: 'category', model: DocumentCategory },
             { path: 'domains', model: DocumentDomain },
+            { path: 'archives', model: DocumentArchive },
             { path: 'relationshipDocuments', model: Document },
             { path: 'views.viewer', model: User, select: 'name id' },
             { path: "downloads.downloader", model: User, select: 'name id' },
+            { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
         ]);
     } else {
         const option = (query.key !== undefined && query.value !== undefined)
@@ -347,9 +360,11 @@ exports.getDocumentsThatRoleCanView = async (company, query) => {
             populate: [
                 { path: 'category', model: DocumentCategory },
                 { path: 'domains', model: DocumentDomain },
+                { path: 'archives', model: DocumentArchive },
                 { path: 'relationshipDocuments', model: Document },
                 { path: 'views.viewer', model: User, select: 'name id' },
                 { path: "downloads.downloader", model: User, select: 'name id' },
+                { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
             ]
         });
     }
@@ -365,6 +380,7 @@ exports.getDocumentsUserStatistical = async (userId, query) => {
             return await Document.find({ "downloads.downloader": userId }).populate([
                 { path: 'category', model: DocumentCategory },
                 { path: 'domains', model: DocumentDomain },
+                { path: 'archives', model: DocumentArchive },
             ]).limit(10);
         case 'common': //những tài liệu phổ biến - được xem và tải nhiều nhất gần đây
             return await Document.find({
@@ -372,6 +388,7 @@ exports.getDocumentsUserStatistical = async (userId, query) => {
             }).populate([
                 { path: 'category', model: DocumentCategory },
                 { path: 'domains', model: DocumentDomain },
+                { path: 'archives', model: DocumentArchive },
             ]).sort({ numberOfView: -1 }).limit(10);
         case 'latest': //những tài liệu văn bản mà người dùng chưa xem qua lần nào
             return await Document.find({
@@ -380,6 +397,7 @@ exports.getDocumentsUserStatistical = async (userId, query) => {
             }).populate([
                 { path: 'category', model: DocumentCategory },
                 { path: 'domains', model: DocumentDomain },
+                { path: 'archives', model: DocumentArchive },
             ]);
         default:
             return null;

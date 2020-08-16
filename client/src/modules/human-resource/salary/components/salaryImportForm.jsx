@@ -84,6 +84,7 @@ class SalaryImportForm extends Component {
                 }
                 return x;
             })
+
             this.setState({
                 ...this.state,
                 importData: importData,
@@ -136,8 +137,9 @@ class SalaryImportForm extends Component {
      * Function Thay đổi cấu hình file import
      * @param {*} value : Dữ liệu cấu hình file import
      */
-    handleChangeConfig = (value) => {
-        this.setState({
+    handleChangeConfig = async (value) => {
+        console.log(value);
+        await this.setState({
             configData: value,
             importData: [],
         })
@@ -149,6 +151,7 @@ class SalaryImportForm extends Component {
      * @param {*} checkFileImport : true - file import đúng định dạng, false - file import sai định dạng
      */
     handleImportExcel = (value, checkFileImport) => {
+        console.log(value);
         const { translate } = this.props;
         if (checkFileImport) {
             let rowError = [];
@@ -196,10 +199,11 @@ class SalaryImportForm extends Component {
     }
 
     render() {
+
         const { translate, salary } = this.props;
 
         let { limit, page, importData, rowError, configData, changeMonth, month, checkFileImport } = this.state;
-
+        console.log(configData);
         if (salary.error.rowError && changeMonth === false) {
             rowError = salary.error.rowError;
             importData = salary.error.data
