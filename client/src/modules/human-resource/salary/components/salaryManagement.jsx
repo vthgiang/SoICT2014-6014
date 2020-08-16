@@ -245,21 +245,6 @@ class SalaryManagement extends Component {
                     sheetTitle: translate('human_resource.salary.file_name_export'),
                     tables: [
                         {
-<<<<<<< HEAD
-                            tableName: "Bảng lương 1",
-                            merges: [{
-                                key: "other",
-                                columnName: "Lương thưởng 123",
-                                keyMerge: 'gender',
-                                colspan: 2
-                            }, {
-                                key: "other1",
-                                columnName: "Lương thưởng 124",
-                                keyMerge: 'organizationalUnits',
-                                colspan: 2
-                            }],
-                            rowHeader: 3,
-=======
                             // tableName: "Bảng lương 1",
                             // merges: [{
                             //     key: "other",
@@ -279,7 +264,6 @@ class SalaryManagement extends Component {
                             // }],
                             rowHeader: 2,
                             merges: merges,
->>>>>>> 8a6d6ef164d40183980f8fed3a9d7ca7d40e7c23
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "month", value: "Tháng" },
