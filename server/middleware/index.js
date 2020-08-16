@@ -163,14 +163,15 @@ exports.uploadFile = (arrData, type) => {
     var name, arrFile;
     // Tạo folder chứa file khi chưa có folder
     const checkExistUploads = async(company) => {
-        return await arrData.forEach(x => {
-            let dir = `./upload/private/${company.shortName+company._id}${x.path}`;
-            if (!fs.existsSync(dir)) {
-                fs.mkdirSync(dir, {
-                    recursive: true
-                });
-            }
-        })
+        if(company !== undefined)
+            return await arrData.forEach(x => {
+                let dir = `./upload/private/${company.shortName+company._id}${x.path}`;
+                if (!fs.existsSync(dir)) {
+                    fs.mkdirSync(dir, {
+                        recursive: true
+                    });
+                }
+            })
     }
 
     const staticPath = [
