@@ -87,10 +87,10 @@ class CreateForm extends Component {
         this.setState({ documentRoles: value });
     }
 
-    handleArchivedRecordPlaceInfo = (e) => {
-        const { value } = e.target;
-        this.setState({ documentArchivedRecordPlaceInfo: value });
-    }
+    // handleArchivedRecordPlaceInfo = (e) => {
+    //     const { value } = e.target;
+    //     this.setState({ documentArchivedRecordPlaceInfo: value });
+    // }
 
     handleArchivedRecordPlaceOrganizationalUnit = (value) => {
         this.setState({ documentArchivedRecordPlaceOrganizationalUnit: value });
@@ -340,7 +340,7 @@ class CreateForm extends Component {
             documentRelationshipDescription,
             documentRelationshipDocuments,
             documentRoles,
-            documentArchivedRecordPlaceInfo,
+            //documentArchivedRecordPlaceInfo,
             documentArchivedRecordPlaceOrganizationalUnit,
             documentArchivedRecordPlaceManager,
         } = this.state;
@@ -351,7 +351,7 @@ class CreateForm extends Component {
             formData.append('domains[]', documentDomains[i]);
         }
         if (documentArchives) for (let i = 0; i < documentArchives.length; i++) {
-            formData.append('domains[]', documentArchives[i]);
+            formData.append('archives[]', documentArchives[i]);
         }
         formData.append('description', documentDescription);
         formData.append('issuingBody', documentIssuingBody);
@@ -373,7 +373,7 @@ class CreateForm extends Component {
             formData.append('roles[]', documentRoles[i]);
         }
 
-        formData.append('archivedRecordPlaceInfo', documentArchivedRecordPlaceInfo);
+        //formData.append('archivedRecordPlaceInfo', documentArchivedRecordPlaceInfo);
         formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
         formData.append('archivedRecordPlaceManager', documentArchivedRecordPlaceManager);
 
@@ -457,10 +457,10 @@ class CreateForm extends Component {
                                                 <label>{translate('document.domain')}</label>
                                                 <TreeSelect data={list} handleChange={this.handleDomains} mode="hierarchical" />
                                             </div>
-                                            <div className="form-group">
+                                            {/* <div className="form-group">
                                                 <label>Lưu trữ</label>
                                                 <TreeSelect data={archives} handleChange={this.handleArchives} value={path} mode="hierarchical" />
-                                            </div>
+                                            </div> */}
                                             <div className="form-group">
                                                 <label>{translate('document.description')}</label>
                                                 <textarea style={{ height: '100px' }} type="text" className="form-control" onChange={this.handleDescription} />
@@ -545,9 +545,13 @@ class CreateForm extends Component {
                                             </div>
                                         </div>
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <div className="form-group">
+                                            {/* <div className="form-group">
                                                 <label>{translate('document.store.information')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleArchivedRecordPlaceInfo} placeholder="VD: Tủ 301" />
+                                            </div> */}
+                                            <div className="form-group">
+                                                <label>{translate('document.store.information')}</label>
+                                                <TreeSelect data={archives} handleChange={this.handleArchives} value={path} mode="hierarchical" />
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.store.organizational_unit_manage')}</label>

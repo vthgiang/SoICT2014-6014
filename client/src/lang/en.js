@@ -644,8 +644,8 @@ export default {
 
             // NHÂN VIÊN
             recommend_equipment_procurement: 'Đăng ký mua sắm thiết bị',
-            recommend_distribute_asset: 'Đăng ký cấp phát thiết bị',
-            manage_assigned_asset: 'Quản lý thiết bị bàn giao',
+            recommend_distribute_asset: 'Recommend distribute asset',
+            manage_assigned_asset: 'Manage assigned assets',
             //******END */
 
             // QUẢN LÝ BÁO CÁO
@@ -1356,6 +1356,7 @@ export default {
         asset: {
             general_information: {
                 asset: 'Asset',
+                asset_list: 'Assets list',
                 search: 'Search',
                 add: 'Add',
                 basic_information: 'Basic infomation',
@@ -1393,6 +1394,7 @@ export default {
                 handover_to_date: 'Handover to date',
                 status: 'Status',
                 action: 'Action',
+                asset_value: 'Asset value',
 
                 general_information: 'General information',
                 usage_information: 'Usage information',
@@ -1554,7 +1556,9 @@ export default {
 
             // Quản lý sự cố
             incident: {
-
+                incident: 'Asset incident',
+                report_incident: 'Report asset incident',
+                
                 //Thông điệp trả về từ server
                 get_incident_success: 'Lấy thông tin sự cố tài sản thành công',
                 get_incident_faile: 'Lấy thông tin sự cố tài sản thất bại',
@@ -1568,7 +1572,15 @@ export default {
 
             // Quản lý đề nghị mua sắm thiết bị
             manage_recommend_procure: {
-
+                asset_recommend: 'Asset recommend procure',
+                add_recommend_card: 'Add new form recommend procure asset',
+                view_recommend_card: 'View form recommend procure asset',
+                edit_recommend_card: 'Edit form recommend procure asset',
+                delete_recommend_card: 'Delete form recommend procure asset',
+                supplier: 'Supplier',
+                unit: 'Unit',
+                expected_value: 'Expected value',
+                    
                 //Thông điệp trả về từ server
                 get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
                 get_recommend_procure_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',

@@ -152,7 +152,7 @@ class UsageLogEditModal extends Component {
                 <DialogModal
                     size='50' modalID={`modal-edit-usage-${id}`} isLoading={false}
                     formID={`form-edit-usage-${id}`}
-                    title={translate('asset.asset_info.edit_usage_info')} 
+                    title={translate('asset.asset_info.edit_usage_info')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >

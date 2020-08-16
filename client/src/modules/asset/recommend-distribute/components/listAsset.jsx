@@ -192,23 +192,23 @@ class ListAsset extends Component {
                     <div className="form-inline">
                         {/* Mã tài sản */}
                         <div className="form-group">
-                            <label className="form-control-static">Mã tài sản</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off" />
+                            <label className="form-control-static">{translate('asset.general_information.asset_code')}</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder={translate('asset.general_information.asset_code')} autoComplete="off" />
                         </div>
 
                         {/* Tên tài sản */}
                         <div className="form-group">
-                            <label className="form-control-static">Tên tài sản</label>
-                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off" />
+                            <label className="form-control-static">{translate('asset.general_information.asset_name')}</label>
+                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
                         </div>
                     </div>
 
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Phân loại */}
                         <div className="form-group">
-                            <label className="form-control-static">Phân loại</label>
+                            <label className="form-control-static">{translate('asset.general_information.type')}</label>
                             <SelectMulti id={`multiSelectType`} multiple="multiple"
-                                options={{ nonSelectedText: "Chọn loại tài sản", allSelectedText: "Chọn tất cả các loại tài sản" }}
+                                options={{ nonSelectedText: translate('asset.general_information.select_asset_type'), allSelectedText: translate('asset.general_information.select_all_asset_type') }}
                                 onChange={this.handleTypeChange}
                                 items={[]}
                             >
@@ -219,14 +219,14 @@ class ListAsset extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
                             <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
-                                options={{ nonSelectedText: translate('page.non_status'), allSelectedText: "Chọn tất cả trạng thái" }}
+                                options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "Sẵn sàng sử dụng", text: "Sẵn sàng sử dụng" },
-                                    { value: "Đang sử dụng", text: "Đang sử dụng" },
-                                    { value: "Hỏng hóc", text: "Hỏng hóc" },
-                                    { value: "Mất", text: "Mất" },
-                                    { value: "Thanh lý", text: "Thanh lý" }
+                                    { value: "Sẵn sàng sử dụng", text: translate('asset.general_information.ready_use') },
+                                    { value: "Đang sử dụng", text: translate('asset.general_information.using') },
+                                    { value: "Hỏng hóc", text: translate('asset.general_information.damaged') },
+                                    { value: "Mất", text: translate('asset.general_information.lost') },
+                                    { value: "Thanh lý", text: translate('asset.general_information.disposal') }
                                 ]}
                             >
                             </SelectMulti>
@@ -234,7 +234,7 @@ class ListAsset extends Component {
 
                         {/* Button tìm kiếm */}
                         <div className="form-group">
-                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={() => this.handleSubmitSearch()} >Tìm kiếm</button>
+                            <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={this.handleSubmitSearch}>{translate('asset.general_information.search')}</button>
                         </div>
                     </div>
 
@@ -242,24 +242,24 @@ class ListAsset extends Component {
                     <table id="asset-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th style={{ width: "8%" }}>Mã tài sản</th>
-                                <th style={{ width: "10%" }}>Tên tài sản</th>
-                                <th style={{ width: "10%" }}>Loại tài sản</th>
-                                <th style={{ width: "10%" }}>Người được giao sử dụng</th>
-                                <th style={{ width: "20%" }}>Thời gian sử dụng từ ngày</th>
-                                <th style={{ width: "20%" }}>Thời gian sử dụng đến ngày</th>
-                                <th style={{ width: "10%" }}>Trạng thái</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>Hành động
+                                <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_type')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.user')}</th>
+                                <th style={{ width: "20%" }}>{translate('asset.general_information.handover_from_date')}</th>
+                                <th style={{ width: "20%" }}>{translate('asset.general_information.handover_to_date')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('asset.general_information.action')}
                                     <DataTableSetting
                                         tableId="asset-table"
                                         columnArr={[
-                                            "Mã tài sản",
-                                            "Tên tài sản",
-                                            "Loại tài sản",
-                                            "Người được giao sử dụng",
-                                            "Thời gian sử dụng từ ngày",
-                                            "Thời gian sử dụng đến ngày",
-                                            "Trạng thái"
+                                            translate('asset.general_information.asset_code'),
+                                            translate('asset.general_information.asset_name'),
+                                            translate('asset.general_information.asset_type'),
+                                            translate('asset.general_information.user'),
+                                            translate('asset.general_information.handover_from_date'),
+                                            translate('asset.general_information.handover_to_date'),
+                                            translate('asset.general_information.status')
                                         ]}
                                         limit={limit}
                                         setLimit={this.setLimit}
@@ -280,8 +280,8 @@ class ListAsset extends Component {
                                         <td>{x.handoverToDate ? this.formatDate2(x.handoverToDate) : ''}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
-                                            <a onClick={() => this.handleCreateRecommend(x)} className="post_add" style={{ width: '5px' }} title="Đăng ký sử dụng thiết bị"><i className="material-icons">post_add</i></a>
+                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
+                                            <a onClick={() => this.handleCreateRecommend(x)} className="post_add" style={{ width: '5px' }} title={translate('menu.recommend_distribute_asset')}><i className="material-icons">post_add</i></a>
                                         </td>
                                     </tr>
                                 ))

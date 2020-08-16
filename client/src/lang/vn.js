@@ -1357,6 +1357,7 @@ export default {
         asset: {
             general_information: {
                 asset: 'Tài sản',
+                asset_list: 'Dang sách tài sản',
                 search: 'Tìm kiếm',
                 add: 'Thêm',
                 basic_information: 'Thông tin cơ bản',
@@ -1394,6 +1395,7 @@ export default {
                 handover_to_date: 'Thời gian kết thúc sử dụng',
                 status: 'Trạng thái',
                 action: 'Hành động',
+                asset_value: 'Giá trị tài sản',
 
                 general_information: 'Thông tin chung',
                 usage_information: 'Thông tin sử dụng',
@@ -1555,7 +1557,9 @@ export default {
 
             // Quản lý sự cố
             incident: {
-
+                incident: 'Sự cố tài sản',
+                report_incident: 'Báo cáo sự cố tài sản',
+                
                 //Thông điệp trả về từ server
                 get_incident_success: 'Lấy thông tin sự cố tài sản thành công',
                 get_incident_faile: 'Lấy thông tin sự cố tài sản thất bại',
@@ -1569,6 +1573,14 @@ export default {
 
             // Quản lý đề nghị mua sắm thiết bị
             manage_recommend_procure: {
+                asset_recommend: 'Thiết bị đề nghị mua sắm',
+                add_recommend_card: 'Thêm mới phiếu đề nghị mua sắm tài sản',
+                view_recommend_card: 'Xem thông tin phiếu đề nghị mua sắm tài sản',
+                edit_recommend_card: 'Chỉnh sửa phiếu đề nghị mua sắm tài sản',
+                delete_recommend_card: 'Xóa phiếu đề nghị mua sắm tài sản',
+                supplier: 'Nhà cung cấp',
+                unit: 'Đơn vị tính',
+                expected_value: 'Giá trị dự tính',
 
                 //Thông điệp trả về từ server
                 get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',

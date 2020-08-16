@@ -194,27 +194,27 @@ class AssetCrashManager extends Component {
 
                         {/* Mã tài sản */}
                         <div className="form-group">
-                            <label className="form-control-static">Mã tài sản</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off" />
+                            <label className="form-control-static">{translate('asset.general_information.asset_code')}</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder={translate('asset.general_information.asset_code')} autoComplete="off" />
                         </div>
 
                         {/* Tên tài sản */}
                         <div className="form-group">
-                            <label className="form-control-static">Tên tài sản</label>
-                            <input type="text" className="form-control" name="assetName" onChange={this.handleRepairNumberChange} placeholder="Mã phiếu" autoComplete="off" />
+                            <label className="form-control-static">{translate('asset.general_information.asset_name')}</label>
+                            <input type="text" className="form-control" name="assetName" onChange={this.handleRepairNumberChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
                         </div>
                     </div>
 
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Phân loại */}
                         <div className="form-group">
-                            <label className="form-control-static">Phân loại</label>
+                            <label className="form-control-static">{translate('asset.general_information.type')}</label>
                             <SelectMulti id={`multiSelectType1`} multiple="multiple"
                                 options={{ nonSelectedText: "Chọn loại sự cố", allSelectedText: "Chọn tất cả sự cố" }}
                                 onChange={this.handleTypeChange}
                                 items={[
-                                    { value: "Báo hỏng", text: "Báo hỏng" },
-                                    { value: "Báo mất", text: "Báo mất" }
+                                    { value: "Báo hỏng", text: translate('asset.general_information.damaged') },
+                                    { value: "Báo mất", text: translate('asset.general_information.lost') }
                                 ]}
                             >
                             </SelectMulti>
@@ -233,7 +233,7 @@ class AssetCrashManager extends Component {
 
                         {/* Button tìm kiếm */}
                         <div className="form-group">
-                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={() => this.handleSubmitSearch()}>Tìm kiếm</button>
+                            <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={() => this.handleSubmitSearch()}>{translate('asset.general_information.search')}</button>
                         </div>
                     </div>
 
@@ -241,26 +241,26 @@ class AssetCrashManager extends Component {
                     <table id="incident-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th style={{ width: "10%" }}>Mã tài sản</th>
-                                <th style={{ width: "10%" }}>Tên tài sản</th>
-                                <th style={{ width: "10%" }}>Mã sự cố</th>
-                                <th style={{ width: "10%" }}>Phân loại</th>
-                                <th style={{ width: "8%" }}>Người báo cáo</th>
-                                <th style={{ width: "10%" }}>Thời gian phát hiện sự cố</th>
-                                <th style={{ width: "10%" }}>Nội dung sự cố</th>
-                                <th style={{ width: "10%" }}>Trạng thái</th>
-                                <th style={{ width: '100px', textAlign: 'center' }}>Hành động
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_code')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.incident_code')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.incident_type')}</th>
+                                <th style={{ width: "8%" }}>{translate('asset.general_information.reported_by')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.date_incident')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
+                                <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}
                                 <DataTableSetting
                                         tableId="incident-table"
                                         columnArr={[
-                                            "Mã tài sản",
-                                            "Tên tài sản",
-                                            "Mã sự cố",
-                                            "Phân loại",
-                                            "Người báo cáo",
-                                            "Thời gian phát hiện sự cố",
-                                            "Nội dung sự cố",
-                                            "Trạng thái",
+                                            translate('asset.general_information.asset_code'),
+                                            translate('asset.general_information.asset_name'),
+                                            translate('asset.general_information.incident_code'),
+                                            translate('asset.general_information.incident_type'),
+                                            translate('asset.general_information.reported_by'),
+                                            translate('asset.general_information.date_incident'),
+                                            translate('asset.general_information.content'),
+                                            translate('asset.general_information.status'),
                                         ]}
                                         limit={limit}
                                         setLimit={this.setLimit}
@@ -283,10 +283,10 @@ class AssetCrashManager extends Component {
                                             <td>{x.description}</td>
                                             <td>{x.statusIncident}</td>
                                             <td style={{ textAlign: "center" }}>
-                                                <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin sự cố tài sản"><i
+                                                <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_incident_info')}><i
                                                     className="material-icons">edit</i></a>
                                                 <DeleteNotification
-                                                    content="Xóa thông tin sự cố của tài sản"
+                                                    content={translate('asset.asset_info.delete_incident_info')}
                                                     data={{
                                                         id: x._id,
                                                         info: asset.code + " - " + x.incidentCode
