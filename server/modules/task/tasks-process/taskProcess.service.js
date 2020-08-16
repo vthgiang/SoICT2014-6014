@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 /**
  * Lấy tất cả xml diagram
  */
-exports.getAllXmlDiagram = async (query, body) => {
+exports.getAllXmlDiagram = async (query) => {
     let userId = query.userId;
     let name = query.name;
     let pageNumber = query.pageNumber;
@@ -220,20 +220,39 @@ exports.editXmlDiagram = async (params, body) => {
             }
         }
     )
-    let data1 = await TaskProcess.find().populate({ path: 'creator', model: User, select: 'name' });
+
+    let queryData = {
+        userId: body.userId,
+        name : body.name,
+        pageNumber : body.pageNumber,
+        noResultsPerPage : body.noResultsPerPage,
+    }
+    let data1 = await this.getAllXmlDiagram(queryData);
+    console.table(data1);
+    // let data1 = await TaskProcess.find().populate({ path: 'creator', model: User, select: 'name' });
     return data1;
 }
 
 /**
- * Xóa diagram theo id
+ * Xóa diagram theo id { data: taskProcesses, pageTotal: totalPages };
  * @param {ObjectId} diagramId 
  */
-exports.deleteXmlDiagram = async (diagramId) => {
+exports.deleteXmlDiagram = async (diagramId, query) => {
     await TaskProcess.findOneAndDelete({
         _id: diagramId,
     });
     await Privilege.findOneAndDelete({ resourceId: diagramId, resourceType: "TaskProcess" })
-    let data = await TaskProcess.find().populate({ path: 'creator', model: User, select: 'name' });
+    
+    let queryData = {
+        userId: query.userId,
+        name : query.name,
+        // pageNumber : query.pageNumber,
+        pageNumber : 1,
+        noResultsPerPage : query.noResultsPerPage,
+    }
+
+    let data = await this.getAllXmlDiagram(queryData);
+    console.table(data);
     return data;
 }
 
@@ -285,4 +304,5 @@ exports.createTaskByProcess = async (processId, body) => {
             informedEmployees: data[i].informedEmployees,
         });
     }
+    await TaskProcess.findByIdAndUpdate(processId, { $inc: { 'numberOfUse': 1 } }, { new: true });
 }

@@ -109,7 +109,8 @@ class EmployeeKpiEvaluationDashboard extends Component {
                             ...state.infosearch,
                             userId: unitMembers[0].value[2] ? unitMembers[0].value[2].value : (unitMembers[0].value[0] ? unitMembers[0].value[0].value : null)
                         },
-                        organizationalUnitIds: this.IDS
+                        organizationalUnitIds: this.IDS,
+                        unitMembers: unitMembers
                     }
                 });
                 this.INFO_SEARCH.userId = unitMembers[0].value[2] ? unitMembers[0].value[2].value : (unitMembers[0].value[0] ? unitMembers[0].value[0].value : null);
@@ -263,11 +264,11 @@ class EmployeeKpiEvaluationDashboard extends Component {
         const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = this.props;
         const { translate } = this.props;
 
-        let { dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids, organizationalUnitIds } = this.state;
+        const { unitMembers, dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids, organizationalUnitIds } = this.state;
 
         let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee;
         let queue = [], childrenOrganizationalUnit = [];
-        let userdepartments, unitMembers, kpimember;
+        let kpimember;
         let listkpi, kpiApproved;
         let currentUnit = dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
 
@@ -322,17 +323,6 @@ class EmployeeKpiEvaluationDashboard extends Component {
                 }
             }
         }
-
-
-        if (user.userdepartments) userdepartments = user.userdepartments;
-        if (userdepartments) {
-            if (!Array.isArray(userdepartments)) {
-                userdepartments = [userdepartments]
-            }
-            unitMembers = getEmployeeSelectBoxItems(userdepartments);
-            unitMembers = [...unitMembers];
-        }
-
 
         if (kpimembers.kpimembers) {
             kpimember = kpimembers.kpimembers;

@@ -624,25 +624,28 @@ export default {
             //*******START */
             // Quản lý tài sản
             // QUẢN LÝ
-            dashboard_asset: 'DashBoard quản lý tài sản',
-            manage_asset: 'Quản lý tài sản',
-            manage_type_asset: 'Quản lý loại tài sản',
-            add_asset: 'Thêm tài sản',
-            manage_info_asset: 'Quản lý thông tin tài sản',
-            manage_history_asset: 'Quản lý lịch sử hoạt động',
+
+            add_asset: 'Add asset',
             manage_repair_asset: 'Quản lý sửa chữa, thay thế',
-            manage_maintain_asset: 'Quản lý bảo trì, bảo dưỡng',
+            manage_usage_asset: 'Quản lý sử dụng tài sản',
             manage_distribute_asset: 'Quản lý cấp phát, điều chuyển',
-            manage_depreciation_asset: 'Quản lý khấu hao tài sản',
             manage_room_asset: 'Quản lý phòng & trang thiết bị',
-            manage_recommend_procure: 'Quản lý đề nghị mua sắm',
-            manage_recommend_distribute_asset: 'Quản lý đề nghị cấp phát',
             manage_crash_asset: 'Quản lý sự cố tài sản',
+
+            manage_asset: 'Manage assets',
+            dashboard_asset: 'DashBoard manage assets',
+            manage_type_asset: 'Manage type assets',
+            manage_info_asset: 'Manage infomation assets',
+            manage_maintainance_asset: 'Manage maintainance assets',
+            manage_depreciation_asset: 'Manage depreciation assets',
+            manage_incident_asset: 'Manage incident assets',
+            manage_recommend_procure: 'Manage recommend procure',
+            manage_recommend_distribute_asset: 'Manage recommend distribute',
 
             // NHÂN VIÊN
             recommend_equipment_procurement: 'Đăng ký mua sắm thiết bị',
-            recommend_distribute_asset: 'Đăng ký cấp phát thiết bị',
-            manage_assigned_asset: 'Quản lý thiết bị bàn giao',
+            recommend_distribute_asset: 'Recommend distribute asset',
+            manage_assigned_asset: 'Manage assigned assets',
             //******END */
 
             // QUẢN LÝ BÁO CÁO
@@ -1352,8 +1355,10 @@ export default {
         // Modules Quản lý tài sản
         asset: {
             general_information: {
+                asset: 'Asset',
+                asset_list: 'Assets list',
                 search: 'Search',
-                add: 'Add asset',
+                add: 'Add',
                 basic_information: 'Basic infomation',
                 detail_information: 'Detail information',
                 view: 'View asset information',
@@ -1372,6 +1377,8 @@ export default {
                 damaged: 'Damaged',
                 lost: 'Lost',
                 disposal: 'Disposal',
+                waiting: 'Waiting for progressing',
+                processed: 'Processed',
                 select_register: 'Select the right to register',
                 select_all_register: 'Select all the right to register',
                 can_register: 'Can register to use',
@@ -1387,6 +1394,7 @@ export default {
                 handover_to_date: 'Handover to date',
                 status: 'Status',
                 action: 'Action',
+                asset_value: 'Asset value',
 
                 general_information: 'General information',
                 usage_information: 'Usage information',
@@ -1413,11 +1421,13 @@ export default {
                 original_price: 'Original price ',
                 residual_price: 'Estimated recovery price',
                 start_depreciation: 'Start date of depreciation',
+                end_depreciation: 'End date of depreciation',
                 depreciation_type: 'Depreciation type',
 
                 incident_code: 'Incident code',
                 reported_by: 'Announcer',
-                date_incident: 'Ngày phát hiện',
+                incident_type: 'Incident type',
+                date_incident: 'Date of incident',
 
                 disposal_date: 'Disposal date',
                 disposal_type: 'Disposal type',
@@ -1449,6 +1459,36 @@ export default {
 
             // Quản lý thông tin tài sản
             asset_info: {
+                asset_info: 'Asset infomation',
+                field_name: 'Name of data field',
+                value: 'Value',
+
+                usage_logs: 'Allocation history - transfer - withdrawal',
+                maintainance_logs: 'Repair history - replacement - upgrade',
+                incident_list: 'Asset incident list',
+                file_list: 'List of documents attached',
+                add_usage_info: 'Add new asset usage infomation',
+                edit_usage_info: 'Edit asset usage infomation',
+                delete_usage_info: 'Delete asset usage infomation',
+                add_maintenance_card: 'Add new maintenance card',
+                edit_maintenance_card: 'Edit new maintenance card',
+                delete_maintenance_card: 'Delete maintenance card',
+                add_incident_info: 'Add new incident infomation',
+                edit_incident_info: 'Edit incident infomation',
+                delete_incident_info: 'Delete incident infomation',
+
+                usage_time: 'Usage time',
+                annual_depreciation: 'Annual average rate of depreciation',
+                monthly_depreciation: 'Monthly average rate of depreciation',
+                repair: 'Repair',
+                replace: 'Replace',
+                upgrade: 'Upgrade',
+                made: 'Made',
+                processing: 'Processing',
+                unfulfilled: 'Unfulfilled',
+                destruction: 'Destruction',
+                sale: 'Sale',
+                give: 'Give',
 
                 //Thông điệp trả về từ server
                 get_list_asset_success: 'Lấy thông tin tài sản thành công',
@@ -1478,6 +1518,12 @@ export default {
 
             // Quản lý sử dụng
             usage: {
+                approved: 'Approved',
+                waiting_approval: 'Waiting for approval',
+                not_approved: 'Not approved',
+                proponent: 'Proponent',
+                accountable: 'Accountable',
+                note: 'Note',
 
                 //Thông điệp trả về từ server
                 get_usage_success: 'Lấy thông tin sử dụng thành công',
@@ -1492,6 +1538,10 @@ export default {
 
             // Quản lý khấu hao
             depreciation: {
+                depreciation_time: 'Depreciation time',
+                accumulated_value: 'Accumulated depreciation value',
+                remaining_value: 'Remaining value', 
+                edit_depreciation: 'Edit asset depreciation information',
 
                 //Thông điệp trả về từ server
                 get_depreciation_success: 'Lấy thông tin khấu hao thành công',
@@ -1506,7 +1556,9 @@ export default {
 
             // Quản lý sự cố
             incident: {
-
+                incident: 'Asset incident',
+                report_incident: 'Report asset incident',
+                
                 //Thông điệp trả về từ server
                 get_incident_success: 'Lấy thông tin sự cố tài sản thành công',
                 get_incident_faile: 'Lấy thông tin sự cố tài sản thất bại',
@@ -1520,7 +1572,15 @@ export default {
 
             // Quản lý đề nghị mua sắm thiết bị
             manage_recommend_procure: {
-
+                asset_recommend: 'Asset recommend procure',
+                add_recommend_card: 'Add new form recommend procure asset',
+                view_recommend_card: 'View form recommend procure asset',
+                edit_recommend_card: 'Edit form recommend procure asset',
+                delete_recommend_card: 'Delete form recommend procure asset',
+                supplier: 'Supplier',
+                unit: 'Unit',
+                expected_value: 'Expected value',
+                    
                 //Thông điệp trả về từ server
                 get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
                 get_recommend_procure_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
@@ -1675,7 +1735,7 @@ export default {
                 accountable_role: 'Acountable',
                 consulted_role: 'Consulted',
                 informed_role: 'Informed',
-
+                distribution_Of_Employee: 'Distribution of Employees',
                 add_task: 'Add task',
                 add_title: 'Add a new task',
                 add_subtask: 'Add sub task',

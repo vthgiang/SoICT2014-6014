@@ -102,7 +102,7 @@ class IncidentLogTab extends Component {
                 <div className="box-body qlcv">
                     {/* Lịch sử sự cố */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">Lịch sử sự cố</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.incident_list')}</h4></legend>
 
                         {/* Form thêm thông tin sự cố */}
                         <IncidentLogAddModal handleChange={this.handleAddIncident} id={`addIncident${id}`} />
@@ -111,13 +111,13 @@ class IncidentLogTab extends Component {
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th style={{ width: "10%" }}>Mã sự cố</th>
-                                    <th style={{ width: "10%" }}>Phân loại</th>
-                                    <th style={{ width: "10%" }}>Người báo cáo</th>
-                                    <th style={{ width: "10%" }}>Ngày phát hiện</th>
-                                    <th style={{ width: "10%" }}>Nội dung</th>
-                                    <th style={{ width: "10%" }}>Trạng thái</th>
-                                    <th style={{ width: '100px', textAlign: 'center' }}>Hành động</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.incident_code')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.incident_type')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.reported_by')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.date_incident')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
+                                    <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -131,7 +131,7 @@ class IncidentLogTab extends Component {
                                             <td>{x.description}</td>
                                             <td>{x.statusIncident}</td>
                                             <td>
-                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin sự cố"><i
+                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_incident_info')}><i
                                                     className="material-icons">edit</i></a>
                                                 <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteIncident(index)}><i className="material-icons"></i></a>
                                             </td>

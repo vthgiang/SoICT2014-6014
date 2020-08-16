@@ -14,9 +14,9 @@ class RecommendDistributeAsset extends Component {
         const { translate } = this.props;
         return (
             <div className="nav-tabs-custom">
-            <ul className="nav nav-tabs">
-                <li className="active"><a title="Danh sách tài sản" data-toggle="tab" href="#listasset">Danh sách các tài sản</a></li>
-                <li><a title="Đăng ký sử dụng tài sản" data-toggle="tab" href="#recommenddistribute">Đăng ký sử dụng tài sản</a></li>
+                <ul className="nav nav-tabs">
+                    <li className="active"><a title={translate('asset.general_information.asset_list')} data-toggle="tab" href="#listasset">{translate('asset.general_information.asset_list')}</a></li>
+                    <li><a title={translate('menu.recommend_distribute_asset')} data-toggle="tab" href="#recommenddistribute">{translate('menu.recommend_distribute_asset')}</a></li>
             </ul>
             <div className="tab-content" style={{ padding: 0 }}>
                 <ListAsset />

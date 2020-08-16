@@ -99,6 +99,11 @@
     height: calc(100vh - 230px);
 }
 
+.right-content-create {
+    overflow: auto;
+    height: calc(100vh - 360px);
+}
+
 #createprocess > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2) {
     display: none;
 }

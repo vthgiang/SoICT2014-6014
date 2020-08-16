@@ -128,7 +128,7 @@ class FileAddModal extends Component {
                 <DialogModal
                     size='50' modalID={`modal-create-file-${id}`} isLoading={false}
                     formID={`form-create-file-${id}`}
-                    title="Thêm tài liệu đính kèm"
+                    title={translate('manage_employee.add_file')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -136,28 +136,28 @@ class FileAddModal extends Component {
                     <form className="form-group" id={`form-create-file-${id}`}>
                         {/* Tên tài liệu */}
                         <div className={`form-group ${!errorOnNameFile ? "" : "has-error"}`}>
-                            <label>Tên tài liệu<span className="text-red">*</span></label>
+                            <label>{translate('asset.general_information.file_name')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="name" value={name} onChange={this.handleNameFileChange} autoComplete="off" />
                             <ErrorLabel content={errorOnNameFile} />
                         </div>
 
                         {/* Mô tả */}
                         <div className={`form-group ${!errorOnDiscFile ? "" : "has-error"}`}>
-                            <label>Mô tả<span className="text-red">*</span></label>
+                            <label>{translate('asset.general_information.description')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="description" value={description} onChange={this.handleDiscFileChange} autoComplete="off" />
                             <ErrorLabel content={errorOnDiscFile} />
                         </div>
 
                         {/* Số lượng */}
                         <div className={`form-group ${!errorOnNumberFile ? "" : "has-error"}`}>
-                            <label>Số lượng<span className="text-red">*</span></label>
+                            <label>{translate('asset.general_information.number')}<span className="text-red">*</span></label>
                             <input type="number" className="form-control" name="number" value={number} onChange={this.handleNumberChange} autoComplete="off" />
                             <ErrorLabel content={errorOnNumberFile} />
                         </div>
 
                         {/* File đính kèm */}
                         <div className="form-group">
-                            <label htmlFor="file">File đính kèm</label>
+                            <label htmlFor="file">{translate('asset.general_information.attached_file')}</label>
                             <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} />
                         </div>
                     </form>

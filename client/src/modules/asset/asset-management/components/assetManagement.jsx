@@ -186,6 +186,7 @@ class AssetManagement extends Component {
         var assettypelist = assetType.listAssetTypes;
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
+            console.log("\n\n\n\n\n\n\n\n\n\n",lists)
         }
 
         var pageTotal = ((assetsManager.totalList % limit) === 0) ?
@@ -259,7 +260,6 @@ class AssetManagement extends Component {
                             </SelectMulti>
                         </div>
                         <div className="form-group">
-                            {/* <label></label> */}
                             <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={this.handleSubmitSearch}>{translate('asset.general_information.search')}</button>
                         </div>
                     </div>

@@ -142,11 +142,11 @@ class UsageLogAddModal extends Component {
 
         return (
             <React.Fragment>
-                <ButtonModal modalID={`modal-create-usage-${id}`} button_name="Thêm mới" title="Thêm mới thông tin cấp phát sử dụng" />
+                <ButtonModal modalID={`modal-create-usage-${id}`} button_name={translate('asset.general_information.add')} title={translate('asset.asset_info.add_usage_info')} />
                 <DialogModal
                     size='50' modalID={`modal-create-usage-${id}`} isLoading={false}
                     formID={`form-create-usage-${id}`}
-                    title="Thêm mới thông tin cấp phát sử dụng"
+                    title={translate('asset.asset_info.add_usage_info')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -156,7 +156,7 @@ class UsageLogAddModal extends Component {
 
                             {/* Người sử dụng */}
                             <div className={`form-group`}>
-                                <label>Người sử dụng</label>
+                                <label>{translate('asset.general_information.user')}</label>
                                 <div>
                                     <div id="usedByBox">
                                         <SelectBox
@@ -174,7 +174,7 @@ class UsageLogAddModal extends Component {
 
                             {/* Thời gian bắt đầu sử dụng */}
                             <div className="form-group">
-                                <label>Thời gian bắt đầu sử dụng</label>
+                                <label>{translate('asset.general_information.handover_from_date')}</label>
                                 <DatePicker
                                     id={`add-start-date-${id}`}
                                     value={startDate}
@@ -184,7 +184,7 @@ class UsageLogAddModal extends Component {
 
                             {/* Thời gian kết thúc sử dụng */}
                             <div className="form-group">
-                                <label>Thời gian kết thúc sử dụng</label>
+                                <label>{translate('asset.general_information.handover_to_date')}</label>
                                 <DatePicker
                                     id={`add-end-date-${id}`}
                                     value={endDate}
@@ -194,9 +194,9 @@ class UsageLogAddModal extends Component {
 
                             {/* Nội dung */}
                             <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
-                                <label>Nội dung<span className="text-red">*</span></label>
+                                <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
                                 <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
-                                    placeholder="Nội dung"></textarea>
+                                    placeholder={translate('asset.general_information.content')}></textarea>
                                 <ErrorLabel content={errorOnDescription} />
                             </div>
                         </div>

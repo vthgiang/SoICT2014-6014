@@ -184,6 +184,7 @@ class ModalEditTaskTemplate extends Component {
         const { department, user, translate, tasktemplates } = this.props;
         const { taskTemplate, taskTemplateId } = this.props;
 
+        // console.log('readByEmployees', editingTemplate.readByEmployees)
         return (
             <DialogModal
                 modalID="modal-edit-task-template" isLoading={user.isLoading}

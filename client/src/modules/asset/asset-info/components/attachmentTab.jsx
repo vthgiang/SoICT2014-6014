@@ -34,23 +34,23 @@ class AttachmentTab extends Component {
                     {/* Nơi lưu trữ bản cứng */}
                     <div className="col-md-4">
                         <div className="form-group">
-                            <strong>Nơi lưu trữ bản cứng:&emsp;</strong>
+                            <strong>{translate('asset.general_information.store_location')}&emsp;</strong>
                             {archivedRecordNumber}
                         </div>
                     </div>
 
                     {/* Danh sách tài liệu đính kèm */}
                     <div className="col-md-12">
-                        <h4 className="row col-md-6">Danh sách tài liệu đính kèm:</h4>
+                        <h4 className="row col-md-6">{translate('asset.asset_info.file_list')}:</h4>
 
                         {/* Bảng tài liệu đính kèm */}
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
-                                    <th>Tên tài liệu</th>
-                                    <th>Mô tả</th>
-                                    <th>Số lượng</th>
-                                    <th>File đính kèm</th>
+                                    <th>{translate('asset.general_information.file_name')}</th>
+                                    <th>{translate('asset.general_information.description')}</th>
+                                    <th>{translate('asset.general_information.number')}</th>
+                                    <th>{translate('asset.general_information.attached_file')}</th>
                                 </tr>
                             </thead>
                             <tbody>

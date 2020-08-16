@@ -195,23 +195,23 @@ class DepreciationManager extends Component {
                     <div className="form-inline">
                         {/* Mã tài sản */}
                         <div className="form-group">
-                            <label className="form-control-static">Mã tài sản</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off" />
+                            <label className="form-control-static">{translate('asset.general_information.asset_code')}</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder={translate('asset.general_information.asset_code')} autoComplete="off" />
                         </div>
 
                         {/* Tên tài sản */}
                         <div className="form-group">
-                            <label className="form-control-static">Tên tài sản</label>
-                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off" />
+                            <label className="form-control-static">{translate('asset.general_information.asset_name')}</label>
+                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
                         </div>
                     </div>
 
                     <div className="form-inline" style={{ marginBottom: 10 }}>
                         {/* Phân loại */}
                         <div className="form-group">
-                            <label className="form-control-static">Phân loại</label>
+                            <label className="form-control-static">{translate('asset.general_information.type')}</label>
                             <SelectMulti id={`multiSelectType`} multiple="multiple"
-                                options={{ nonSelectedText: "Chọn loại tài sản", allSelectedText: "Chọn tất cả các loại tài sản" }}
+                                options={{ nonSelectedText: translate('asset.general_information.select_asset_type'), allSelectedText: translate('asset.general_information.select_all_asset_type') }}
                                 onChange={this.handleTypeChange}
                                 items={[]}
                             >
@@ -220,7 +220,7 @@ class DepreciationManager extends Component {
 
                         {/* Tháng */}
                         <div className="form-group">
-                            <label className="form-control-static">Tháng</label>
+                            <label className="form-control-static">{translate('page.month')}</label>
                             <DatePicker
                                 id="month1"
                                 dateFormat="month-year"
@@ -231,7 +231,7 @@ class DepreciationManager extends Component {
 
                         {/* Button tìm kiếm */}
                         <div className="form-group">
-                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={() => this.handleSubmitSearch()}>Tìm kiếm</button>
+                            <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={() => this.handleSubmitSearch()}>{translate('asset.general_information.search')}</button>
                         </div>
                     </div>
 
@@ -239,32 +239,32 @@ class DepreciationManager extends Component {
                     <table id="depreciation-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th style={{ width: "8%" }}>Mã tài sản</th>
-                                <th style={{ width: "10%" }}>Tên tài sản</th>
-                                <th style={{ width: "10%" }}>Loại tài sản</th>
-                                <th style={{ width: "10%" }}>Nguyên giá</th>
-                                <th style={{ width: "10%" }}>Thời gian bắt đầu trích khấu hao</th>
-                                <th style={{ width: "10%" }}>Thời gian trích khấu hao</th>
-                                <th style={{ width: "10%" }}>Mức độ KH trung bình năm</th>
-                                <th style={{ width: "10%" }}>Mức độ KH trung bình tháng</th>
-                                <th style={{ width: "10%" }}>Giá trị hao mòn lũy kế</th>
-                                <th style={{ width: "10%" }}>Giá trị còn lại</th>
-                                <th style={{ width: "10%" }}>Thời gian kết thúc trích khấu hao</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>Hành động
+                                <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_type')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.original_price')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.start_depreciation')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.depreciation.depreciation_time')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.asset_info.annual_depreciation')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.asset_info.monthly_depreciation')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.depreciation.accumulated_value')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.depreciation.remaining_value')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.end_depreciation')}</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('asset.general_information.action')}
                                 <DataTableSetting
                                         tableId="depreciation-table"
                                         columnArr={[
-                                            "Mã tài sản",
-                                            "Tên tài sản",
-                                            "Loại tài sản",
-                                            "Nguyên giá",
-                                            "Thời gian bắt đầu trích khấu hao",
-                                            "Thời gian trích khấu hao",
-                                            "Mức độ KH trung bình năm",
-                                            "Mức độ KH trung bình tháng",
-                                            "Giá trị hao mòn lũy kế",
-                                            "Giá trị còn lại",
-                                            "Thời gian kết thúc trích khấu hao"
+                                            translate('asset.general_information.asset_code'),
+                                            translate('asset.general_information.asset_name'),
+                                            translate('asset.general_information.asset_type'),
+                                            translate('asset.general_information.original_price'),
+                                            translate('asset.general_information.start_depreciation'),
+                                            translate('asset.depreciation.depreciation_time'),
+                                            translate('asset.asset_info.annual_depreciation'),
+                                            translate('asset.asset_info.monthly_depreciation'),
+                                            translate('asset.depreciation.accumulated_value'),
+                                            translate('asset.depreciation.remaining_value'),
+                                            translate('asset.general_information.end_depreciation')
                                         ]}
                                         limit={limit}
                                         setLimit={this.setLimit}
@@ -289,8 +289,8 @@ class DepreciationManager extends Component {
                                         <td>{formater.format(parseInt(x.cost - ((x.cost / x.usefulLife)) * ((new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(x.startDepreciation).getFullYear() * 12 + new Date(x.startDepreciation).getMonth()))))} VNĐ</td>
                                         <td>{this.addMonth(x.startDepreciation, x.usefulLife)}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin khấu hao tài sản"><i
+                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.depreciation.edit_depreciation')}><i
                                                 className="material-icons">edit</i></a>
                                         </td>
                                     </tr>
