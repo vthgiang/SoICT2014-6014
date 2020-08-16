@@ -29,7 +29,7 @@ function backup(params=undefined, data=undefined) {
     } else {
         return dispatch => {
             dispatch({ type: SystemSettingConstants.SET_SCHEDULE_BACKUP_AUTOMATIC_REQUEST });
-            SystemSettingServices.backup()
+            SystemSettingServices.backup(params, data)
             .then(res => {
                 dispatch({
                     type: SystemSettingConstants.SET_SCHEDULE_BACKUP_AUTOMATIC_SUCCESS,

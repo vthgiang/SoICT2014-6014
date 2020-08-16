@@ -5,6 +5,7 @@ const exec = require('child_process').exec;
 
 exports.backup = async (data, params) => {
     const {auto, schedule} = params;
+    console.log("params", auto, schedule)
     switch(auto) {
         case 'on':
             switch(schedule) {
