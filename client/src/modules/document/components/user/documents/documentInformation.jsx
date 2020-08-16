@@ -33,7 +33,7 @@ class DocumentInformation extends Component {
             documentArchivedRecordPlaceOrganizationalUnit,
             documentArchivedRecordPlaceManager,
         } = this.state;
-
+        console.log('============================', documentArchivedRecordPlaceOrganizationalUnit)
         const formData = new FormData();
         formData.append('name', documentName);
         formData.append('category', documentCategory);
@@ -143,7 +143,7 @@ class DocumentInformation extends Component {
         let roles = this.findDocumentRole(roleList, documentRoles);
         let category = categories.filter(category => category.value === documentCategory)[0];
         let domain = domains.filter(domain => domain.value === documentDomains[0])[0];
-        console.log('111111111111111', documentRelationshipDocuments)
+        console.log('111111111111111', documentArchivedRecordPlaceOrganizationalUnit)
         return (
             <React.Fragment>
                 <DialogModal
@@ -278,7 +278,7 @@ class DocumentInformation extends Component {
                             </div>
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('document.store.organizational_unit_manage')}&emsp; </strong>
-                                {documentArchivedRecordPlaceOrganizationalUnit}
+                                {documentArchivedRecordPlaceOrganizationalUnit ? documentArchivedRecordPlaceOrganizationalUnit.name : ""}
                             </div>
 
                             {/* <div className="form-group">
