@@ -643,7 +643,7 @@ export default {
             manage_recommend_distribute_asset: 'Manage recommend distribute',
 
             // NHÂN VIÊN
-            recommend_equipment_procurement: 'Đăng ký mua sắm thiết bị',
+            recommend_equipment_procurement: 'Recommend equipment procurement',
             recommend_distribute_asset: 'Recommend distribute asset',
             manage_assigned_asset: 'Manage assigned assets',
             //******END */

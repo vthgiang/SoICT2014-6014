@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti } from '../../../../common-components';
+import { DeleteNotification, DatePicker, PaginateBar, DataTableSetting, SelectMulti,ExportExcel } from '../../../../common-components';
 
 import { RecommendDistributeManagerEditForm } from './RecommendDistributeManagerEditForm';
 import { UsageCreateForm } from './usageCreateForm';
@@ -155,16 +155,80 @@ class RecommendDistributeManager extends Component {
         this.props.searchRecommendDistributes(this.state);
     }
 
+    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    convertDataToExportData = (data) => {
+        let fileName = "Bảng quản lý thông tin đăng kí sử dụng tài sản ";
+        if (data) {           
+            data = data.map((x, index) => {     
+
+                let code =x.recommendNumber;
+                let assetName =(x.asset)?x.asset.assetName:"";               
+                let approver =(x.approver)?x.approver.email:'';
+                let assigner =(x.proponent)?x.proponent.email:"";
+                let createDate = x.dateCreate
+                let dateStartUse =x.dateStartUse;
+                let dateEndUse =x.dateEndUse;
+                let assetCode = (x.asset) ? x.asset.code : ''
+                let status = x.status; 
+
+                return  {
+                    index : index+1,
+                    code : code,
+                    createDate:createDate,                    
+                    assigner:assigner,
+                    assetName: assetName,
+                    assetCode:assetCode,
+                    dateStartUse:dateStartUse,
+                    dateEndUse:dateEndUse,
+                    approver:approver,
+                    status:status
+
+                }
+                
+            })
+        }
+
+        let exportData = {
+            fileName: fileName,
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    sheetTitle : fileName,
+                    tables: [
+                        {
+                            tableName : fileName,
+                            tableTitle: fileName,
+                            rowHeader: 2,
+                            columns: [
+                                { key: "index", value: "STT" },
+                                { key: "code", value: "Mã phiếu" },
+                                { key: "createDate", value: "Ngày tạo" },                                
+                                { key: "assigner", value: "Người đăng kí" },
+                                { key: "assetName", value: "Tên tài sản" },
+                                { key: "assetCode", value: "Mã tài sản" },
+                                { key: "dateStartUse", value: "Ngày bắt đầu sử dụng" },
+                                { key: "dateEndUse", value: "Ngày kết thúc sử dụng" },
+                                { key: "appprover", value: "Người phê duyệt" },                               
+                                { key: "status", value: "Trạng thái" },
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData;        
+       
+    }
+
     render() {
         const { translate, recommendDistribute, assetsManager, assetType, user, auth } = this.props;
         const { page, limit, currentRow, currentRowAdd } = this.state;
 
-        var listRecommendDistributes = "";
-        var lists = "";
-        var userlist = user.list;
-        var assettypelist = assetType.listAssetTypes;
+        var listRecommendDistributes = "", exportData;
         if (recommendDistribute.isLoading === false) {
             listRecommendDistributes = recommendDistribute.listRecommendDistributes;
+            exportData =this.convertDataToExportData(listRecommendDistributes);
         }
 
         var pageTotal = ((recommendDistribute.totalList % limit) === 0) ?
@@ -215,6 +279,7 @@ class RecommendDistributeManager extends Component {
                             <label></label>
                             <button type="button" className="btn btn-success" title={translate('page.add_search')} onClick={() => this.handleSubmitSearch()} >{translate('page.add_search')}</button>
                         </div>
+                        {exportData&&<ExportExcel id="export-asset-recommened-distribute-management" exportData={exportData} style={{ marginRight:10 }} />}
                     </div>
 
                     {/* Bảng thông tin đăng kí sử dụng tài sản */}

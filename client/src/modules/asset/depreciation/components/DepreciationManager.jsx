@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DataTableSetting, DatePicker, PaginateBar, SelectMulti } from '../../../../common-components';
+import { DataTableSetting, DatePicker, PaginateBar, SelectMulti,ExportExcel } from '../../../../common-components';
 
 import { AssetManagerActions } from '../../asset-management/redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
@@ -171,11 +171,85 @@ class DepreciationManager extends Component {
         return this.formatDate(newDate);
     };
 
+    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    convertDataToExportData = (data,assettypelist) => {
+        let fileName = "Bảng quản lý khấu hao tài sản ";
+        let formater = new Intl.NumberFormat();
+
+        if (data) {           
+
+            data = data.map((x, index) => {     
+
+                let code =x.code;
+                let assetName =x.assetName;    
+                let type = assettypelist && assettypelist.filter(item => item._id === x.assetType).pop() ? assettypelist.filter(item => item._id === x.assetType).pop().typeName : ''           
+                let cost = formater.format(parseInt(x.cost));
+                let startDepreciation = this.formatDate(x.startDepreciation);
+                let month = x.usefulLife;
+                let depreciationPerYear = formater.format(parseInt(12 * (x.cost / x.usefulLife)));
+                let depreciationPerMonth = formater.format(parseInt((x.cost / x.usefulLife)));
+                let accumulatedValue = formater.format(parseInt(((x.cost / x.usefulLife)) * ((new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(x.startDepreciation).getFullYear() * 12 + new Date(x.startDepreciation).getMonth()))));
+                let remainingValue =formater.format(parseInt(x.cost - ((x.cost / x.usefulLife)) * ((new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(x.startDepreciation).getFullYear() * 12 + new Date(x.startDepreciation).getMonth()))));
+                let endDepreciation = this.addMonth(x.startDepreciation, x.usefulLife);
+
+                return  {
+                    index : index+1,
+                    code : code,
+                    assetName: assetName,
+                    type: type,
+                    cost:cost,
+                    startDepreciation:startDepreciation,
+                    month :month,
+                    depreciationPerYear:depreciationPerYear,
+                    depreciationPerMonth:depreciationPerMonth,
+                    accumulatedValue:accumulatedValue,
+                    remainingValue:remainingValue,
+                    endDepreciation :endDepreciation
+
+                }
+                
+            })
+        }
+
+        let exportData = {
+            fileName: fileName,
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    sheetTitle : fileName,
+                    tables: [
+                        {
+                            tableName : fileName,
+                            rowHeader: 2,
+                            columns: [
+                                { key: "index", value: "STT" },
+                                { key: "code", value: "Mã tài sản" },
+                                { key: "assetName", value: "Tên tài sản" },
+                                { key: "type", value: "Loại tài sản" },
+                                { key: "cost", value: "Nguyên giá (VNĐ)" },
+                                { key: "startDepreciation", value: "Thời gian bắt đầu trích khấu hao" },
+                                { key: "month", value: "Thời gian chích khấu hao" },                               
+                                { key: "depreciationPerYear", value: "Mức độ khấu hao trung bình hàng năm" },
+                                { key: "depreciationPerMonth", value: "Mức độ khấu hao trung bình hàng tháng" },
+                                { key: "accumulatedValue", value: "Giá trị hao mòn lũy kế" },
+                                { key: "remainingValue", value: "Giá trị còn lại" },
+                                { key: "endDepreciation", value: "Thời gian kết thúc trích khấu hao" },
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData;        
+       
+    }
+
     render() {
         const { translate, assetsManager, assetType } = this.props;
         const { page, limit, currentRowView, currentRow } = this.state;
 
-        var lists = "";
+        var lists = "",exportData;
         var assettypelist = assetType.listAssetTypes;
         var formater = new Intl.NumberFormat();
         if (assetsManager.isLoading === false) {
@@ -186,6 +260,10 @@ class DepreciationManager extends Component {
             parseInt(assetsManager.totalList / limit) :
             parseInt((assetsManager.totalList / limit) + 1);
         var currentPage = parseInt((page / limit) + 1);
+
+        if(lists&&assettypelist){
+            exportData =this.convertDataToExportData(lists,assettypelist);
+        }
 
         return (
             <div className="box">
@@ -233,6 +311,7 @@ class DepreciationManager extends Component {
                         <div className="form-group">
                             <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={() => this.handleSubmitSearch()}>{translate('asset.general_information.search')}</button>
                         </div>
+                        {exportData&&<ExportExcel id="export-asset-depreciation-management" exportData={exportData} style={{ marginRight:10 }} />}
                     </div>
 
                     {/* Bảng thông tin khấu hao */}

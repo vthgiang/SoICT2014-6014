@@ -1,18 +1,13 @@
 // NODE_MODULES
 const express = require("express");
-const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const multer = require("multer");
-global.SERVER_DIR = __dirname;
-global.SERVER_BACKUP_DIR = __dirname + "/../backup";
 
-multer({
-  dest: "upload/avatars",
-});
+require('./globalVariables');
 require("dotenv").config();
-global.AUTO_BACKUP_DATABASE = require("./helpers/backupHelper").backupAutomatic;
+require('./connectDatabase');
+
 AUTO_BACKUP_DATABASE.start();
 
 // Application Modules
@@ -96,28 +91,7 @@ app.use(
 app.use("/upload/avatars", express.static("upload/avatars"));
 app.use("/upload/asset/pictures", express.static("upload/asset/pictures"));
 
-const db = process.env.DATABASE || `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`;
-const optionConnectDB =
-  process.env.DB_AUTHENTICATION === "true"
-    ? {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false,
-        user: process.env.DB_USERNAME,
-        pass: process.env.DB_PASSWORD,
-      }
-    : {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false,
-      };
 
-mongoose // Connect to MongoDB
-  .connect(db, optionConnectDB)
-  .then(() => console.log("MongoDB successfully connected"))
-  .catch((err) => console.log(err));
 
 // Function gọi Api vào thời gian xác định
 schedulerController.chedulesCallApi();
@@ -184,5 +158,5 @@ app.use("/orders", order);
 app.use("/customer", customer);
 
 // Start server
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8000;
 app.listen(port, () => console.log(`Server up and running on: ${port} !`));
