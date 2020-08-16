@@ -84,6 +84,7 @@ class SalaryImportForm extends Component {
                 }
                 return x;
             })
+
             this.setState({
                 ...this.state,
                 importData: importData,
