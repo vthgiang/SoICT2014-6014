@@ -186,6 +186,7 @@ class AssetManagement extends Component {
         var assettypelist = assetType.listAssetTypes;
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
+            console.log("\n\n\n\n\n\n\n\n\n\n",lists)
         }
 
         var pageTotal = ((assetsManager.totalList % limit) === 0) ?
