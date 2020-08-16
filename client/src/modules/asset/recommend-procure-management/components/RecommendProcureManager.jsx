@@ -166,8 +166,8 @@ class RecommendProcureManager extends Component {
                     <div className="form-inline">
                         {/* Mã phiếu */}
                         <div className="form-group">
-                            <label className="form-control-static">Mã phiếu</label>
-                            <input type="text" className="form-control" name="recommendNumber" onChange={this.handleRecommendNumberChange} placeholder="Mã phiếu" autoComplete="off" />
+                            <label className="form-control-static">{translate('asset.general_information.form_code')}</label>
+                            <input type="text" className="form-control" name="recommendNumber" onChange={this.handleRecommendNumberChange} placeholder={translate('asset.general_information.form_code')} autoComplete="off" />
                         </div>
 
                         {/* Tháng */}
@@ -191,9 +191,9 @@ class RecommendProcureManager extends Component {
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "Đã phê duyệt", text: "Đã phê duyệt" },
-                                    { value: "Chờ phê duyệt", text: "Chờ phê duyệt" },
-                                    { value: "Không phê duyệt", text: "Không phê duyệt" }
+                                    { value: "Đã phê duyệt", text: translate('asset.usage.approved') },
+                                    { value: "Chờ phê duyệt", text: translate('asset.usage.waiting_approval') },
+                                    { value: "Không phê duyệt", text: translate('asset.usage.not_approved') }
                                 ]}
                             >
                             </SelectMulti>
@@ -210,24 +210,24 @@ class RecommendProcureManager extends Component {
                     <table id="recommendprocuremanage-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th style={{ width: "10%" }}>Mã phiếu</th>
-                                <th style={{ width: "15%" }}>Ngày lập</th>
-                                <th style={{ width: "15%" }}>Người đề nghị</th>
-                                <th style={{ width: "17%" }}>Thiết bị đề nghị mua sắm</th>
-                                <th style={{ width: "15%" }}>Người phê duyệt</th>
-                                <th style={{ width: "17%" }}>Ghi chú</th>
-                                <th style={{ width: "11%" }}>Trạng thái</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>Hành động
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.form_code')}</th>
+                                <th style={{ width: "15%" }}>{translate('asset.general_information.create_date')}</th>
+                                <th style={{ width: "15%" }}>{translate('asset.usage.proponent')}</th>
+                                <th style={{ width: "17%" }}>{translate('asset.manage_recommend_procure.asset_recommend')}</th>
+                                <th style={{ width: "15%" }}>{translate('asset.usage.accountable')}</th>
+                                <th style={{ width: "17%" }}>{translate('asset.usage.note')}</th>
+                                <th style={{ width: "11%" }}>{translate('asset.general_information.status')}</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('asset.general_information.action')}
                                     <DataTableSetting
                                         tableId="recommendprocuremanage-table"
                                         columnArr={[
-                                            "Mã phiếu",
-                                            "Ngày lập",
-                                            "Người đề nghị",
-                                            "Thiết bị đề nghị mua sắm",
-                                            "Người phê duyệt",
-                                            "Ghi chú",
-                                            "Trạng thái",
+                                            translate('asset.general_information.form_code'),
+                                            translate('asset.general_information.create_date'),
+                                            translate('asset.usage.proponent'),
+                                            translate('asset.manage_recommend_procure.asset_recommend'),
+                                            translate('asset.usage.accountable'),
+                                            translate('asset.usage.note'),
+                                            translate('asset.general_information.status'),
                                         ]}
                                         limit={limit}
                                         setLimit={this.setLimit}
@@ -248,10 +248,10 @@ class RecommendProcureManager extends Component {
                                         <td>{x.note}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin Phiếu đề nghị mua sắm"><i className="material-icons">view_list</i></a>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Cập nhật thông tin phiếu đề nghị"><i className="material-icons">edit</i></a>
+                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.manage_recommend_procure.view_recommend_card')}><i className="material-icons">view_list</i></a>
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.manage_recommend_procure.edit_recommend_card')}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
-                                                content="Xóa thông tin phiếu"
+                                                content={translate('asset.manage_recommend_procure.delete_recommend_card')}
                                                 data={{
                                                     id: x._id,
                                                     info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")

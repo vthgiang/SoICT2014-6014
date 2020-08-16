@@ -304,7 +304,7 @@ class RecommendDistributeManagerEditForm extends Component {
                             <div className="col-sm-6">
                                 {/* Thời gian đăng ký sử dụng từ ngày */}
                                 <div className={`form-group ${!errorOnDateStartUse ? "" : "has-error"}`}>
-                                    <label>T{translate('asset.general_information.handover_from_date')}<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.handover_from_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit_start_use${_id}`}
                                         value={dateStartUse}

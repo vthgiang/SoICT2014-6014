@@ -259,7 +259,6 @@ class AssetManagement extends Component {
                             </SelectMulti>
                         </div>
                         <div className="form-group">
-                            {/* <label></label> */}
                             <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={this.handleSubmitSearch}>{translate('asset.general_information.search')}</button>
                         </div>
                     </div>
