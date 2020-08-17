@@ -60,9 +60,9 @@ exports.restore = async (backupVersion, option) => {
     const uploadPathServer = `${SERVER_DIR}/upload`;
     const uploadRestore = `${SERVER_BACKUP_DIR}/${backupVersion}/upload`;
     if (fs.existsSync(uploadPathServer)) {
-        exec("rm -rf " + uploadPathServer, function (err) { });
+        exec(`rm -rf ${uploadPathServer}`, function (err) { });
         if(fs.existsSync(uploadRestore)){
-            exec(`cp -r ${uploadRestore} ${uploadPathServer}`, function (err) { });
+            exec(`cp -r ${uploadRestore} ${SERVER_DIR}`, function (err) { });
         }
     }
 }
@@ -91,11 +91,13 @@ exports.backup = async (option) => {
     await exec(commandBackupDataUpload, (error, stdout, stderr) => {
         if(error !== null) console.log(error);
     });
+    const folderInfo = fs.statSync(`${SERVER_BACKUP_DIR}/${versionTime}`);
 
     return {
         version: versionTime,
         description: descriptionBackupDB,
-        path: serverBackupStorePath
+        path: serverBackupStorePath,
+        createdAt: folderInfo.ctime
     }
 }
 
@@ -104,7 +106,6 @@ exports.backup = async (option) => {
  * Backup dữ liệu tự động
  */
 exports.backupAutomatic = new CronJob(SERVER_BAKUP_TIME, async function(){
-
     const serverBackupStorePath = createServerBackupDatabasePath();
     const versionTime = getTimeMDY();
     const descriptionBackupDB = `Backup database ${option.dbName} at ${versionTime}`;
@@ -125,5 +126,28 @@ exports.backupAutomatic = new CronJob(SERVER_BAKUP_TIME, async function(){
     await exec(commandBackupDataUpload, (error, stdout, stderr) => {
         if(error !== null) console.log(error);
     });
+
+    // 3. Kiểm tra giới hạn số phiên bản backup - xóa những phiên bản thừa
+    const list = await fs.readdirSync(SERVER_BACKUP_DIR);
+    const newList = list.map( folder => {
+        const folderInfo = fs.statSync(`${SERVER_BACKUP_DIR}/${folder}`);
+        return {
+            version: folder,
+            createdAt: folderInfo.ctime
+        }
+    });
+    newList.sort(function(a, b){
+        const dateA = new Date(a.createdAt);
+        const dateB = new Date(b.createdAt);
+        if(dateA > dateB) return -1;
+        if(dateA < dateB) return 1;
+        return 0;
+    });
+    if(SERVER_BACKUP_LIMIT > 0 && newList.length > SERVER_BACKUP_LIMIT)
+    for (let i = 0; i < newList.length; i++) {
+        if(i > SERVER_BACKUP_LIMIT - 1){ //phiên bản cũ vượt quá số lượng backup lưu trữ (SERVER_BACKUP_LIMIT)
+            exec(`rm -rf ${SERVER_BACKUP_DIR}/${newList[i].version}`, function (err) { }); // xóa version backup cũ
+        }
+    }
 
 }, null, false, 'Asia/Ho_Chi_Minh');
