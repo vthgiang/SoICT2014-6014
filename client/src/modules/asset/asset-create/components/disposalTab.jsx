@@ -116,11 +116,11 @@ class DisposalTab extends Component {
                 <div className="box-body">
                     {/* Thông tin thanh lý */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">Thông tin thanh lý</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('asset.general_information.disposal_information')}</h4></legend>
 
                         {/* Thời gian thanh lý */}
                         <div className={`form-group`}>
-                            <label htmlFor="disposalDate">Thời gian thanh lý</label>
+                            <label htmlFor="disposalDate">{translate('asset.general_information.disposal_date')}</label>
                             <DatePicker
                                 id={`disposalDate${id}`}
                                 value={disposalDate ? this.formatDate(disposalDate) : ''}
@@ -130,7 +130,7 @@ class DisposalTab extends Component {
 
                         {/* Hình thức thanh lý */}
                         <div className="form-group">
-                            <label htmlFor="disposalType">Hình thức thanh lý</label>
+                            <label htmlFor="disposalType">{translate('asset.general_information.disposal_type')}</label>
                             <SelectBox
                                 id={`disposalType${id}`}
                                 className="form-control select2"
@@ -138,9 +138,9 @@ class DisposalTab extends Component {
                                 value={disposalType}
                                 items={[
                                     { value: '', text: '---Chọn hình thức thanh lý---' },
-                                    { value: 'Tiêu hủy', text: 'Tiêu hủy' },
-                                    { value: 'Nhượng bán', text: 'Nhượng bán' },
-                                    { value: 'Tặng', text: 'Tặng' },
+                                    { value: 'Tiêu hủy', text: translate('asset.asset_info.destruction') },
+                                    { value: 'Nhượng bán', text: translate('asset.asset_info.sale') },
+                                    { value: 'Tặng', text: translate('asset.asset_info.give') },
                                 ]}
                                 onChange={this.handleDisposalTypeChange}
                             />
@@ -148,16 +148,16 @@ class DisposalTab extends Component {
 
                         {/* Giá trị thanh lý */}
                         <div className={`form-group`}>
-                            <label htmlFor="disposalCost">Giá trị thanh lý (VNĐ)</label><br />
+                            <label htmlFor="disposalCost">{translate('asset.general_information.disposal_price')} (VNĐ)</label><br />
                             <input type="number" className="form-control" name="disposalCost" value={disposalCost} onChange={this.handleDisposalCostChange}
-                                placeholder="Giá trị thanh lý" autoComplete="off" />
+                                placeholder={translate('asset.general_information.disposal_price')} autoComplete="off" />
                         </div>
 
                         {/* Nội dung thanh */}
                         <div className={`form-group`}>
-                            <label htmlFor="disposalDesc">Nội dung thanh lý</label><br />
+                            <label htmlFor="disposalDesc">{translate('asset.general_information.disposal_content')}</label><br />
                             <input type="text" className="form-control" name="disposalDesc" value={disposalDesc} onChange={this.handleDisposalDescriptionChange}
-                                placeholder="Nội dung thanh lý" autoComplete="off" />
+                                placeholder={translate('asset.general_information.disposal_content')} autoComplete="off" />
                         </div>
                     </fieldset>
                 </div>

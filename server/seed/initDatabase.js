@@ -1,4 +1,4 @@
-const { RoleType, Role, RootRole, SystemLink, SystemComponent, Link, Privilege, User, UserRole} = require('../models').schema;
+const { RoleType, Role, RootRole, SystemLink, SystemComponent, Link, Privilege, User, UserRole, Configuration} = require('../models').schema;
 
 require('dotenv').config({path: '../.env'});
 
@@ -37,6 +37,13 @@ const seedDatabase = async () => {
     mongoose.connection.db.dropDatabase(
         console.log(`Dữ liệu cũ của ${mongoose.connection.db.databaseName} đã được xóa.`)
     );
+
+    await Configuration.create({
+        database: process.env.DB_NAME,
+        backup: {
+            limit: 10
+        }
+    });
     
     // Step 3: Tạo các roletype trong hệ thống
     const roleType = await RoleType.insertMany([
@@ -71,27 +78,33 @@ const seedDatabase = async () => {
     var links = await Link.insertMany([
         {
             url: '/',
-            description: 'Trang chủ'
+            description: 'Trang chủ',
+            deleteSoft: false
         },
         {
             url: '/system/settings',
-            description: 'Quản lý thiết lập hệ thống'
+            description: 'Quản lý thiết lập hệ thống',
+            deleteSoft: false
         },
         {
             url: '/system/companies-management',
-            description: 'Quản lý thông tin doanh nghiệp/công ty'
+            description: 'Quản lý thông tin doanh nghiệp/công ty',
+            deleteSoft: false
         },
         {
             url: '/system/links-default-management',
-            description: 'Quản lý các trang mặc định khi khởi tạo 1 công ty'
+            description: 'Quản lý các trang mặc định khi khởi tạo 1 công ty',
+            deleteSoft: false
         },
         {
             url: '/system/components-default-management',
-            description: 'Quản lý các thành phần UI mặc định khi khởi tạo cho 1 công ty'
+            description: 'Quản lý các thành phần UI mặc định khi khởi tạo cho 1 công ty',
+            deleteSoft: false
         },
         {
             url: '/system/roles-default-management',
-            description: 'Thông tin về các role default trong csdl'
+            description: 'Thông tin về các role default trong csdl',
+            deleteSoft: false
         }
     ]);
     await Privilege.insertMany([

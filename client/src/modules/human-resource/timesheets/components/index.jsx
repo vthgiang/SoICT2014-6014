@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { TimesheetsManagement } from './combinedContent';
 
 class TimesheetsManager extends Component {
@@ -8,6 +9,7 @@ class TimesheetsManager extends Component {
         super(props);
         this.state = {}
     }
+
     render() {
         return (
             <React.Fragment>

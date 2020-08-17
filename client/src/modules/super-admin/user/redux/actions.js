@@ -409,13 +409,13 @@ function getAllUsersWithRole() {
             type: UserConstants.GET_ALL_USERS_WITH_ROLE_REQUEST
         });
         UserServices.getAllUsersWithRole()
-        .then(
-            payload => {
-                dispatch({ type: UserConstants.GET_ALL_USERS_WITH_ROLE_SUCCESS, payload });
-            },
-            error => {
-                dispatch({ type: UserConstants.GET_ALL_USERS_WITH_ROLE_FAIL, error });
-            }
-        );
+            .then(
+                payload => {
+                    dispatch({ type: UserConstants.GET_ALL_USERS_WITH_ROLE_SUCCESS, payload });
+                },
+                error => {
+                    dispatch({ type: UserConstants.GET_ALL_USERS_WITH_ROLE_FAIL, error });
+                }
+            );
     }
 }

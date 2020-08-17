@@ -14,7 +14,7 @@ class ImportFileExcel extends Component {
     handleChangeFileImport = (e) => {
         let { configData } = this.props;
         let sheets = configData.sheets.value;
-        let rowHeader;
+        let rowHeader = configData.rowHeader ? Number(configData.rowHeader.value) : 1;
         let file = e.target.files[0];
 
         if (file !== undefined) {
@@ -24,13 +24,12 @@ class ImportFileExcel extends Component {
                 let sheet_lists = [];
                 const fileImport = evt.target.result;
                 const workbook = XLSX.read(fileImport, { type: 'binary' });
-                // Lấy danh sách các sheet của file import
                 let sheet_name_list = workbook.SheetNames;
+
                 // Kiểm tra lọc lấy các sheet tồn tại mà người dùng muốn import
                 for (let n in sheets) {
                     sheet_lists = sheet_lists.concat(sheet_name_list.filter(x => x.trim().toLowerCase() === sheets[n].trim().toLowerCase()));
                 }
-
                 let indexKeyImport = {}, importData = [];
                 for (let key in configData) {
                     if (key !== 'sheets' && key !== 'rowHeader' && key !== 'file') {
@@ -45,62 +44,69 @@ class ImportFileExcel extends Component {
                     }
                 }
 
+                let checkFileImport = false;
                 sheet_lists.length !== 0 && sheet_lists.forEach(x => {
                     let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: false, defval: null });
                     // Lấy index của các tiều đề cột mà người dùng muốn import
-                    for (let i = 0; i < data.length; i++) {
-                        data[i].forEach((x, index) => {
-                            if (x !== null) {
-                                for (let key in configData) {
-                                    let config = configData[key];
-                                    if (key !== 'sheets' && key !== 'rowHeader' && key !== 'file' && Array.isArray(config.value)) {
-                                        let arr = indexKeyImport[key];
-                                        arr = arr.map(y => {
-                                            if (typeof y === 'string' && x.toString().trim().toLowerCase() === y.toString().trim().toLowerCase()) {
-                                                return index
-                                            } else {
-                                                return y
-                                            }
-                                        });
-                                        indexKeyImport[key] = arr;
-                                        break;
-                                    } else if (key !== 'sheets' && key !== 'rowHeader' && key !== 'file') {
-                                        if (!Array.isArray(config.value) && x.toString().trim().toLowerCase() === config.value.toString().trim().toLowerCase()) {
-                                            if (config.colspan) {
-                                                let arr = [];
-                                                for (let i = 0; i < Number(config.colspan); i++) {
-                                                    arr = [...arr, i + index];
+                    for (let i = 0; i < data.length - rowHeader; i++) {
+                        let indexKey = { ...indexKeyImport };
+                        for (let j = 0; j < rowHeader; j++) {
+                            data[i + j].forEach((x, index) => {
+                                if (x !== null) {
+                                    for (let key in configData) {
+                                        let config = configData[key];
+                                        if (key !== 'sheets' && key !== 'rowHeader' && key !== 'file' && Array.isArray(config.value)) {
+                                            let arr = indexKey[key];
+                                            arr = arr.map(y => {
+                                                if (typeof y === 'string' && x.toString().trim().toLowerCase() === y.toString().trim().toLowerCase()) {
+                                                    return index
+                                                } else {
+                                                    return y
                                                 }
-                                                indexKeyImport[key] = arr;
-                                            } else {
-                                                indexKeyImport[key] = index;
-                                            }
+                                            });
+                                            indexKey[key] = arr;
                                             break;
+                                        } else if (key !== 'sheets' && key !== 'rowHeader' && key !== 'file') {
+                                            if (!Array.isArray(config.value) && x.toString().trim().toLowerCase() === config.value.toString().trim().toLowerCase()) {
+                                                if (config.colspan) {
+                                                    let arr = [];
+                                                    for (let i = 0; i < Number(config.colspan); i++) {
+                                                        arr = [...arr, i + index];
+                                                    }
+                                                    indexKey[key] = arr;
+                                                    rowHeader += 1;
+                                                } else {
+                                                    indexKey[key] = index;
+                                                }
+                                                break;
+                                            }
                                         }
                                     }
                                 }
-                            }
-                        });
+                            });
+                        }
                         let done = true;
-                        for (let key in indexKeyImport) {
-                            if (Array.isArray(indexKeyImport[key])) {
-                                indexKeyImport[key].forEach(y => {
+                        for (let key in indexKey) {
+                            if (Array.isArray(indexKey[key])) {
+                                indexKey[key].forEach(y => {
                                     if (typeof y !== 'number') {
                                         done = false;
                                     }
                                 })
-                            } else if (typeof indexKeyImport[key] !== 'number') {
+                            } else if (typeof indexKey[key] !== 'number') {
                                 done = false;
                             }
                         };
                         if (done) {
-                            rowHeader = i + 1;
+                            checkFileImport = true;
+                            indexKeyImport = indexKey;
+                            rowHeader = rowHeader + i;
                             break;
                         }
                     }
 
                     // Convert dữ liệu thành dạng array json theo key trong configData
-                    data.splice(0, Number(rowHeader));
+                    data.splice(0, rowHeader);
                     data.forEach((x, index) => {
                         let rowData;
                         for (let n in indexKeyImport) {
@@ -115,19 +121,6 @@ class ImportFileExcel extends Component {
                     })
                     importData = importData.concat(data);
                 })
-                let checkFileImport = true;
-                if (importData.length !== 0) {
-                    importData.forEach(x => {
-                        for (let n in x) {
-                            if (x[n] === undefined || x[n] === "") {
-                                checkFileImport = false;
-                                break;
-                            }
-                        }
-                    })
-                } else {
-                    checkFileImport = false
-                }
 
                 this.props.handleImportExcel(importData, checkFileImport);
             };

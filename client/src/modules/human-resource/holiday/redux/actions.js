@@ -1,9 +1,11 @@
 import {
     HolidayConstants
 } from "./constants";
+
 import {
     HolidayService
 } from "./services";
+
 export const HolidayActions = {
     getListHoliday,
     createNewHoliday,
@@ -13,7 +15,7 @@ export const HolidayActions = {
 };
 
 /**
- * Lấy danh sách lịch nghỉ lễ tết
+ * Lấy danh sách lịch làm việc
  */
 function getListHoliday() {
     return dispatch => {
@@ -37,8 +39,8 @@ function getListHoliday() {
 }
 
 /**
- * Thêm mới thông tin nghỉ lễ tết
- * @param {*} data : dữ liệu thông tin nghỉ lễ tết cần tạo
+ * Thêm mới thông tin lịch làm việc
+ * @param {*} data : Dữ liệu thông tin lịch làm việc
  */
 function createNewHoliday(data) {
     return dispatch => {
@@ -62,8 +64,8 @@ function createNewHoliday(data) {
 }
 
 /**
- * Xoá thông tin nghỉ lễ tết
- * @param {*} id :id thông tin nghỉ lễ tết cần xoá
+ * Xoá thông tin lịch làm việc
+ * @param {*} id : Id thông tin lịch làm việc cần xoá
  */
 function deleteHoliday(id) {
     return dispatch => {
@@ -88,9 +90,9 @@ function deleteHoliday(id) {
 }
 
 /**
- * Chỉnh sửa thông tin nghỉ lễ tết
- * @param {*} id : id thông tin nghỉ lễ tết cần chỉnh sửa
- * @param {*} data : dữ liệu chỉnh sửa thông tin nghỉ lễ têt
+ * Chỉnh sửa thông tin lịch làm việc
+ * @param {*} id : id thông tin lịch làm việc cần chỉnh sửa
+ * @param {*} data : dữ liệu chỉnh sửa thông tin lịch làm việc
  */
 function updateHoliday(id, infoHoliday) {
     return dispatch => {
@@ -115,8 +117,8 @@ function updateHoliday(id, infoHoliday) {
 }
 
 /**
- * Import dữ liệu nghỉ lễ tết
- * @param {*} data : array thông tin nghỉ lễ tết
+ * Import dữ liệu lịch làm việc
+ * @param {*} data : Array thông tin lịch làm việc
  */
 function importHoliday(data) {
     return dispatch => {

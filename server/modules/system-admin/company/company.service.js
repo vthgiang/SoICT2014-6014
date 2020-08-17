@@ -194,26 +194,46 @@ exports.createCompanySuperAdminAccount = async (companyId, companyName, userEmai
  * @roleArr mảng các RootRole của công ty đó
  */
 exports.createCompanyLinks = async (companyId, linkArr, roleArr) => {
+    const checkIndex = (link, arr) => {
+        let resIndex =-1;
+        arr.forEach((node, i) => {
+            if(node.url === link.url){
+                resIndex = i;
+            }
+        });
 
-    const systemLinks = await SystemLink.find({ _id: { $in: linkArr } })
+        return resIndex;
+    }
+    const allLinks = await SystemLink.find()
+        .populate({ path: 'roles', model: RootRole });;
+    const activeLinks = await SystemLink.find({ _id: { $in: linkArr } })
         .populate({ path: 'roles', model: RootRole });
-
-    const dataLinks = systemLinks.map(link => {
-        return {
+    
+    const dataLinks = allLinks.map( link => {
+        if(checkIndex(link, activeLinks) === -1)
+            return {
+                url: link.url,
+                category: link.category,
+                description: link.description,
+                company: companyId
+            }
+        else return {
             url: link.url,
             category: link.category,
             description: link.description,
-            company: companyId
-        };
+            company: companyId,
+            deleteSoft: false
+        }
     })
+
     const links = await Link.insertMany(dataLinks);
 
     const dataPrivilege = [];
     for (let i = 0; i < links.length; i++) {
         const link = links[i];
 
-        for (let j = 0; j < systemLinks.length; j++) {
-            const systemLink = systemLinks[j];
+        for (let j = 0; j < allLinks.length; j++) {
+            const systemLink = allLinks[j];
 
             if (link.url === systemLink.url) {
                 for (let x = 0; x < systemLink.roles.length; x++) {
@@ -446,12 +466,12 @@ exports.getCompanyLinks = async (companyId, query) => {
     if (!page && !limit) {
 
         return await Link
-            .find({ company: companyId })
+            .find({ company: companyId, deleteSoft: false })
             .populate({ path: 'roles', model: Privilege, populate: { path: 'roleId', model: Role } });
     } else {
         const option = (query.key && query.value)
-            ? Object.assign({ company: companyId }, { [`${query.key}`]: new RegExp(query.value, "i") })
-            : { company: companyId };
+            ? Object.assign({ company: companyId, deleteSoft: false }, { [`${query.key}`]: new RegExp(query.value, "i") })
+            : { company: companyId, deleteSoft: false };
 
         return await Link.paginate( 
             option, 

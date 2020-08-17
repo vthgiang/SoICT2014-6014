@@ -10,6 +10,7 @@ export const TaskProcessService = {
     getXmlDiagramById,
     editXmlDiagram,
     deleteXmlDiagram,
+    createTaskByProcess,
 };
 
 
@@ -18,7 +19,6 @@ export const TaskProcessService = {
  */
 function getAllXmlDiagram( pageNumber, noResultsPerPage, name ) {
     let userId = getStorage("userId");
-    console.log('00000', pageNumber, noResultsPerPage, name);
     return sendRequest({
         url: `${LOCAL_SERVER_API}/taskprocess/diagrams`,
         method: 'GET',
@@ -70,9 +70,29 @@ function editXmlDiagram(diagramId,data) {
  * Sửa xml diagram
  * @param {Object} diagramId id của diagram 
  */
-function deleteXmlDiagram(diagramId) {
+function deleteXmlDiagram(diagramId, pageNumber, noResultsPerPage, name) {
+    let userId = getStorage("userId");
     return sendRequest({
         url: `${LOCAL_SERVER_API}/taskprocess/diagrams/${diagramId}`,
         method: 'DELETE',
+        params: {
+            userId: userId,
+            pageNumber: pageNumber,
+            noResultsPerPage: noResultsPerPage,
+            name: name,
+        },
     }, false, true, 'task.task_process');
+}
+
+/**
+ * Tạo công việc theo quy trình
+ * @param {Object} data dữ liệu gửi lên body 
+ * @param {String} processId id của process
+ */
+function createTaskByProcess(data, processId) {
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/taskprocess/processes/${processId}/tasks/create`,
+        method: 'POST',
+        data: data,
+    }, true, true, 'task.task_process');
 }

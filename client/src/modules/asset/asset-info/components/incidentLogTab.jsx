@@ -60,17 +60,17 @@ class IncidentLogTab extends Component {
                 <div className="box-body qlcv">
                     {/* Danh sách sự cố tài sản */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">Danh sách sự cố tài sản</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.incident_list')}</h4></legend>
 
                         {/* Bảng thông tin sự cố */}
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>Mã sự cố</th>
-                                    <th>Loại sự cố</th>
-                                    <th>Người báo cáo</th>
-                                    <th>Ngày phát hiện sự cố</th>
-                                    <th>Nội dung</th>
+                                    <th>{translate('asset.general_information.incident_code')}</th>
+                                    <th>{translate('asset.general_information.incident_type')}</th>
+                                    <th>{translate('asset.general_information.reported_by')}</th>
+                                    <th>{translate('asset.general_information.date_incident')}</th>
+                                    <th>{translate('asset.general_information.content')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -83,8 +83,7 @@ class IncidentLogTab extends Component {
                                             <td>{x.dateOfIncident ? this.formatDate(x.dateOfIncident): ''}</td>
                                             <td>{x.description}</td>
                                         </tr>
-                                    )
-                                    )
+                                    ))
                                 }
                             </tbody>
                         </table>

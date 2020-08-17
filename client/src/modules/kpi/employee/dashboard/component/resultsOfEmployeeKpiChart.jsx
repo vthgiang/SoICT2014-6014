@@ -256,8 +256,10 @@ class ResultsOfEmployeeKpiChart extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
+                    sheetTitle: fileName,
                     tables: [
                         {
+                            tableTitle: "Dữ liệu để vẽ biểu đồ "+ fileName,
                             columns: [                            
                                 { key: "time", value: "Thời gian" },
                                 { key: "automaticPoint", value: "Điểm tự động" },

@@ -1,14 +1,17 @@
 import {
     TimesheetsConstants
 } from './constants';
+
 const initState = {
     isLoading: false,
     listTimesheets: [],
     totalList: 0,
+
     importTimesheets: [],
     importStatus: false,
     error: "",
 }
+
 export function timesheets(state = initState, action) {
     switch (action.type) {
         case TimesheetsConstants.GET_TIMESHEETS_REQUEST:
@@ -24,8 +27,8 @@ export function timesheets(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listTimesheets: action.payload.listTimesheets,
-                totalList: action.payload.totalList,
+                    listTimesheets: action.payload.listTimesheets,
+                    totalList: action.payload.totalList,
             };
 
         case TimesheetsConstants.CREATE_TIMESHEETS_SUCCESS:
@@ -40,28 +43,28 @@ export function timesheets(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                listTimesheets: listTimesheets
+                    listTimesheets: listTimesheets
             };
         case TimesheetsConstants.UPDATE_TIMESHEETS_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listTimesheets: state.listTimesheets.map(timesheets => timesheets._id === action.payload._id ? action.payload : timesheets)
+                    listTimesheets: state.listTimesheets.map(timesheets => timesheets._id === action.payload._id ? action.payload : timesheets)
             };
         case TimesheetsConstants.DELETE_TIMESHEETS_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                listTimesheets: state.listTimesheets.filter(timesheets => (timesheets._id !== action.payload._id)),
+                    listTimesheets: state.listTimesheets.filter(timesheets => (timesheets._id !== action.payload._id)),
             };
-            case TimesheetsConstants.IMPORT_TIMESHEETS_SUCCESS:
-                return {
-                    ...state,
-                    isLoading: false,
+        case TimesheetsConstants.IMPORT_TIMESHEETS_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
                     importStatus: true,
                     importTimesheets: action.payload.content,
-                    error:""
-                };
+                    error: ""
+            };
         case TimesheetsConstants.GET_TIMESHEETS_FAILURE:
         case TimesheetsConstants.CREATE_TIMESHEETS_FAILURE:
         case TimesheetsConstants.UPDATE_TIMESHEETS_FAILURE:
@@ -70,7 +73,7 @@ export function timesheets(state = initState, action) {
             return {
                 ...state,
                 isLoading: false,
-                error: action.error
+                    error: action.error
             };
 
         default:

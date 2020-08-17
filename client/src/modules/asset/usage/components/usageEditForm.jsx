@@ -177,7 +177,7 @@ class UsageEditForm extends Component {
                 <DialogModal
                     size='50' modalID={`modal-edit-usage`} isLoading={false}
                     formID={`form-edit-usage`}
-                    title="Chỉnh sửa thông tin sử dụng tài sản"
+                    title={translate('asset.asset_info.edit_usage_info')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -186,7 +186,7 @@ class UsageEditForm extends Component {
                         <div className="col-md-12">
                             {/* Tài sản */}
                             <div className={`form-group`}>
-                                <label>Tài sản</label>
+                                <label>{translate('asset.general_information.asset')}</label>
                                 <div>
                                     <div id="assetBox">
                                         <SelectBox
@@ -204,7 +204,7 @@ class UsageEditForm extends Component {
 
                             {/* Người sử dụng */}
                             <div className={`form-group`}>
-                                <label>Người sử dụng</label>
+                                <label>{translate('asset.general_information.user')}</label>
                                 <div>
                                     <div id="usedByUBox">
                                         <SelectBox
@@ -224,7 +224,7 @@ class UsageEditForm extends Component {
 
                             {/* Thời gian bắt đầu sử dụng */}
                             <div className={`form-group ${!errorOnStartDate ? "" : "has-error"}`}>
-                                <label>Thời gian bắt đầu sử dụng<span className="text-red">*</span></label>
+                                <label>{translate('asset.general_information.handover_from_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit-start-date${id}`}
                                     value={this.formatDate(startDate)}
@@ -235,7 +235,7 @@ class UsageEditForm extends Component {
 
                             {/* Thời gian kết thúc sử dụng */}
                             <div className="form-group">
-                                <label>Thời gian kết thúc sử dụng</label>
+                                <label>{translate('asset.general_information.handover_to_date')}</label>
                                 <DatePicker
                                     id={`edit-end-date${id}`}
                                     value={this.formatDate(endDate)}
@@ -245,9 +245,9 @@ class UsageEditForm extends Component {
 
                             {/* Nội dung */}
                             <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
-                                <label>Nội dung<span className="text-red">*</span></label>
+                                <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
                                 <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
-                                    placeholder="Nội dung"></textarea>
+                                    placeholder={translate('asset.general_information.content')}></textarea>
                                 <ErrorLabel content={errorOnDescription} />
                             </div>
                         </div>

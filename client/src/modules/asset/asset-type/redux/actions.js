@@ -29,7 +29,7 @@ function searchAssetTypes(data) {
             .catch(err => {
                 dispatch({
                     type: AssetTypeConstants.GET_ASSET_TYPE_FAILURE,
-                    error: err.response.data
+                    // error: err.response.data
                 });
             })
     }

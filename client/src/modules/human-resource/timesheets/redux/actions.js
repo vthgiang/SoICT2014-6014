@@ -1,5 +1,11 @@
-import { TimesheetsConstants } from "./constants";
-import { TimesheetsService } from "./services";
+import {
+    TimesheetsConstants
+} from "./constants";
+
+import {
+    TimesheetsService
+} from "./services";
+
 export const TimesheetsActions = {
     searchTimesheets,
     createTimesheets,
@@ -11,7 +17,7 @@ export const TimesheetsActions = {
 /**
  * Lấy danh sách chấm công
  * @data : Dữ liệu key tìm kiếm
- */ 
+ */
 function searchTimesheets(data) {
     return dispatch => {
         dispatch({
@@ -109,7 +115,10 @@ function updateTimesheets(id, data) {
     }
 }
 
-// Import thông tin chấm công
+/**
+ * Import thông tin chấm công
+ * @param {*} data : Dữ liệu import
+ */
 function importTimesheets(data) {
     return dispatch => {
         dispatch({
@@ -130,4 +139,3 @@ function importTimesheets(data) {
             })
     };
 }
-

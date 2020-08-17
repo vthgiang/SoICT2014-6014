@@ -7,7 +7,7 @@ const { LogInfo, LogError } = require('../../../logs');
  */
 exports.getAllXmlDiagrams = async (req, res) => {
   try {
-    var data = await TaskProcessService.getAllXmlDiagram(req.query, req.body);
+    var data = await TaskProcessService.getAllXmlDiagram(req.query);
     await LogInfo(req.user.email, `get all xml diagram `, req.user.company);
     res.status(200).json({
       success: true,
@@ -48,7 +48,7 @@ exports.getXmlDiagramById = async (req, res) => {
  * tạo mới diagram
  */
 exports.createXmlDiagram = async (req, res) => {
-  try {
+  // try {
     var data = await TaskProcessService.createXmlDiagram(req.body);
     await LogInfo(req.user.email, `create xml diagram `, req.user.company);
     res.status(200).json({
@@ -56,14 +56,14 @@ exports.createXmlDiagram = async (req, res) => {
       messages: ['export thanh công'],
       content: data
     });
-  } catch (error) {
-    await LogError(req.user.email, `create xml diagram `, req.user.company);
-    res.status(400).json({
-      success: false,
-      messages: ['abc'],
-      content: error
-    });
-  }
+  // } catch (error) {
+  //   await LogError(req.user.email, `create xml diagram `, req.user.company);
+  //   res.status(400).json({
+  //     success: false,
+  //     messages: ['abc'],
+  //     content: error
+  //   });
+  // }
 }
 
 /**
@@ -93,7 +93,7 @@ exports.editXmlDiagram = async (req, res) => {
  */
 exports.deleteXmlDiagram = async (req, res) => {
   try {
-    var data = await TaskProcessService.deleteXmlDiagram(req.params.diagramId);
+    var data = await TaskProcessService.deleteXmlDiagram(req.params.diagramId, req.query);
 
     await LogInfo(req.user.email, `delete xml diagram `, req.user.company);
     res.status(200).json({
@@ -112,7 +112,8 @@ exports.deleteXmlDiagram = async (req, res) => {
 }
 
 exports.createTaskByProcess = async (req, res) => {
-  try {
+  // try {
+    console.log("controller")
     var data = await TaskProcessService.createTaskByProcess(req.params.processId, req.body);
     await LogInfo(req.user.email, `create_task_by_process`, req.user.company);
     res.status(200).json({
@@ -120,12 +121,12 @@ exports.createTaskByProcess = async (req, res) => {
       messages: ['create_task_by_process_success'],
       content: data,
     });
-  } catch (error) {
-    await LogError(req.user.email, `create_task_by_process`, req.user.company);
-    res.status(400).json({
-      success: false,
-      messages: ['create_task_by_process_fail'],
-      content: error,
-    });
-  }
+  // } catch (error) {
+  //   await LogError(req.user.email, `create_task_by_process`, req.user.company);
+  //   res.status(400).json({
+  //     success: false,
+  //     messages: ['create_task_by_process_fail'],
+  //     content: error,
+  //   });
+  // }
 }

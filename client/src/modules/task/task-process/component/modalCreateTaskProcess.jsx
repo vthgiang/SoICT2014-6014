@@ -93,7 +93,8 @@ class ModalCreateTaskProcess extends Component {
          showInfo: false,
          selectedCreate: 'info',
          info: {},
-         save: false
+         save: false,
+         indexRenderer: 0,
       }
       this.initialDiagram = initialDiagram
       this.modeler = new BpmnModeler({
@@ -318,6 +319,15 @@ class ModalCreateTaskProcess extends Component {
 
    deleteElements = (event) => {
       var element = event.element;
+      console.log(element);
+      this.setState(state => {
+         delete state.info[`${state.id}`];
+         return {
+            ...state,
+            showInfo: false,
+         }
+      })
+      console.log(this.state);
    }
 
    handleUndoDeleteElement = (event) => {
@@ -336,17 +346,61 @@ class ModalCreateTaskProcess extends Component {
       })
    }
    save = async () => {
-      let { department } = this.props
+      let elementList = this.modeler.get('elementRegistry')._elements
+      let { info } = this.state;
+      let { department } = this.props;
+
+      // console.log('elem', elementList);
       let xmlStr;
       this.modeler.saveXML({ format: true }, function (err, xml) {
          xmlStr = xml;
       });
+
       await this.setState(state => {
+         for (let j in info) {
+            if (Object.keys(info[j]).length !== 0) {
+               info[j].followingTasks = [];
+               info[j].precedingTasks = [];
+
+               for (let i in elementList) {
+                  let elem = elementList[i].element;
+                  if (info[j].code === elem.id) {
+                     if (elem.businessObject.incoming) {
+                        let incoming = elem.businessObject.incoming;
+                        for (let x in incoming) {
+                           info[j].precedingTasks.push({ // các công việc trc công việc hiện tại
+                              task: {
+                                 code: incoming[x].sourceRef.id,
+                                 name: incoming[x].sourceRef.name,
+                              },
+                              label: incoming[x].name,
+                           })
+                        }
+                     }
+                     if (elem.businessObject.outgoing) {
+                        let outgoing = elem.businessObject.outgoing;
+                        for (let y in outgoing) {
+                           info[j].followingTasks.push({ // các công việc sau công việc hiện tại
+                              task: {
+                                 code: outgoing[y].targetRef.id,
+                                 name: outgoing[y].targetRef.name,
+                              },
+                              label: outgoing[y].name,
+                           })
+                        }
+                     }
+                  }
+               }
+            }
+         }
          return {
             ...state,
             xmlDiagram: xmlStr,
          }
       })
+
+      console.log('infooo', info);
+
       let data = {
          info: this.state.info,
          xmlDiagram: this.state.xmlDiagram,
@@ -361,15 +415,16 @@ class ModalCreateTaskProcess extends Component {
       // this.setState(state => {
       //    return {
       //       ...state,
+      //       indexRenderer: state.indexRenderer + 1,
       //       processName: null,
       //       processDescription: '',
       //       viewer: undefined,
       //       manager: undefined,
       //       save: true,
-      //       selectedCreate: 'info',
       //       showInfo: false
       //    }
       // });
+      // this.modeler.importXML(this.initialDiagram);
    }
 
    downloadAsSVG = () => {
@@ -532,7 +587,7 @@ class ModalCreateTaskProcess extends Component {
 
    render() {
       const { translate, department, role } = this.props;
-      const { id, name, info, showInfo, processDescription, processName, viewer, manager, selectedCreate } = this.state;
+      const { id, name, info, showInfo, processDescription, processName, viewer, manager, selectedCreate, indexRenderer } = this.state;
       const { listOrganizationalUnit } = this.props;
 
       let listRole = [];
@@ -575,7 +630,7 @@ class ModalCreateTaskProcess extends Component {
                                        <label htmlFor="" >Người được phép xem</label>
                                        {
                                           <SelectBox
-                                             id={`select-viewer-employee-create`}
+                                             id={`select-viewer-employee-create-${indexRenderer}`}
                                              className="form-control select2"
                                              style={{ width: "100%" }}
                                              items={listItem}
@@ -589,7 +644,7 @@ class ModalCreateTaskProcess extends Component {
                                        <label htmlFor="" >Người quản lý quy trình</label>
                                        {
                                           <SelectBox
-                                             id={`select-manager-employee-create`}
+                                             id={`select-manager-employee-create-${indexRenderer}`}
                                              className="form-control select2"
                                              style={{ width: "100%" }}
                                              items={listItem}

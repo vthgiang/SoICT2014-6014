@@ -624,25 +624,28 @@ export default {
             //*******START */
             // Quản lý tài sản
             // QUẢN LÝ
-            dashboard_asset: 'DashBoard quản lý tài sản',
-            manage_asset: 'Quản lý tài sản',
-            manage_type_asset: 'Quản lý loại tài sản',
-            add_asset: 'Thêm tài sản',
-            manage_info_asset: 'Quản lý thông tin tài sản',
-            manage_history_asset: 'Quản lý lịch sử hoạt động',
+
+            add_asset: 'Add asset',
             manage_repair_asset: 'Quản lý sửa chữa, thay thế',
-            manage_maintain_asset: 'Quản lý bảo trì, bảo dưỡng',
+            manage_usage_asset: 'Quản lý sử dụng tài sản',
             manage_distribute_asset: 'Quản lý cấp phát, điều chuyển',
-            manage_depreciation_asset: 'Quản lý khấu hao tài sản',
             manage_room_asset: 'Quản lý phòng & trang thiết bị',
-            manage_recommend_procure: 'Quản lý đề nghị mua sắm',
-            manage_recommend_distribute_asset: 'Quản lý đề nghị cấp phát',
             manage_crash_asset: 'Quản lý sự cố tài sản',
 
+            manage_asset: 'Manage assets',
+            dashboard_asset: 'DashBoard manage assets',
+            manage_type_asset: 'Manage type assets',
+            manage_info_asset: 'Manage infomation assets',
+            manage_maintainance_asset: 'Manage maintainance assets',
+            manage_depreciation_asset: 'Manage depreciation assets',
+            manage_incident_asset: 'Manage incident assets',
+            manage_recommend_procure: 'Manage recommend procure',
+            manage_recommend_distribute_asset: 'Manage recommend distribute',
+
             // NHÂN VIÊN
-            recommend_equipment_procurement: 'Đăng ký mua sắm thiết bị',
-            recommend_distribute_asset: 'Đăng ký cấp phát thiết bị',
-            manage_assigned_asset: 'Quản lý thiết bị bàn giao',
+            recommend_equipment_procurement: 'Recommend equipment procurement',
+            recommend_distribute_asset: 'Recommend distribute asset',
+            manage_assigned_asset: 'Manage assigned assets',
             //******END */
 
             // QUẢN LÝ BÁO CÁO
@@ -777,19 +780,6 @@ export default {
             edit_faile: 'Edit failed!',
         },
 
-        // Quản lý nhân sự các đơn vị
-        manage_unit: {
-            list_unit: 'List of units',
-            list_employee_unit: 'List of units staff',
-            edit_unit: 'Edit units staff',
-            edit_sucsess: 'Edit units staff sucsess',
-            edit_faile: 'Edit units staff faile',
-            dean_unit: 'Head of unit',
-            vice_dean_unit: 'Deputy unit',
-            employee_unit: 'Unit staff',
-            email_employee: 'Email',
-            add_employee_unit: 'Add staff to the unit',
-        },
         // Quản lý thông tin nhân viên
         manage_employee: {
             note_page_personal: 'I hereby certify that all of the above statements are true and I am responsible for them.',
@@ -808,6 +798,7 @@ export default {
             menu_reward_discipline: 'Reward - Discipline',
             menu_salary_sabbatical: 'Salary - Sabbatical',
             menu_attachments: 'Attachments',
+
             menu_general_infor_title: 'General information',
             menu_contact_infor_title: 'Contact information',
             menu_education_experience_title: 'Education - Experience',
@@ -818,6 +809,7 @@ export default {
             menu_reward_discipline_title: 'Reward - Discipline',
             menu_salary_sabbatical_title: 'Salary - Sabbatical',
             menu_attachments_title: 'Attachments',
+
             add_staff: 'Add new staffs',
             staff_number: 'Staff code',
             full_name: 'Full name',
@@ -851,9 +843,10 @@ export default {
             permanent_address: 'Permanent address',
             current_residence: 'Current residence',
             wards: 'Wards/Commune',
-            district: 'District/County',
+            district: 'County/District',
             province: 'Province/City',
             nation: 'Nation',
+
             academic_level: 'Academic level',
             educational_level: 'Educational level',
             language_level: 'Language level',
@@ -958,19 +951,9 @@ export default {
             historySalary: 'History of salary',
             sabbatical: 'Sabbatical information'
         },
-        // Quản lý kê hoạch làm việc
-        holiday: {
-            start_date: 'Start day',
-            end_Date: 'End day',
-            description: 'Description',
-            check_start_Date: 'Start day required',
-            check_end_Date: 'End day required',
-            check_description: 'Description required'
-        },
 
         // Module Quản lý nhân sự
         human_resource: {
-
             // Nhóm dùng chung cho module quản lý nhân sự
             stt: 'Count',
             unit: 'Unit',
@@ -993,20 +976,20 @@ export default {
             name_button_export: 'Export report',
             choose_decision_unit: 'Choose a decision-making unit',
 
-            // Thông điệp trả về từ server dung chung cho module quản lý nhân sự
+            note_file_import: 'Import file is not in the correct format',
+            error_row: 'An error occurred in the lines',
+
+            // Validator dung chung cho module quản lý nhân sự
             employee_number_required: 'Staff code required',
             staff_code_not_special: 'Staff code does not contain special characters',
             staff_code_not_find: 'Staff code does not exist',
-            number_decisions_required: 'Decis number required',
-            number_decisions_have_exist: 'Decis number have exist',
-            unit_decisions_required: 'Decis unit required',
             start_date_before_end_date: 'The start date must be before the end date',
             end_date_after_start_date: 'The end date must be after the start date',
 
 
             // Quản lý lương nhân viên
             salary: {
-                list_salary: 'List of staff salary',
+                // list_salary: 'List of staff salary',
                 file_name_export: 'Salary tracking table',
 
                 // Nhóm dành cho table
@@ -1056,7 +1039,7 @@ export default {
 
             // Quản lý nghỉ phép
             annual_leave: {
-                list_annual_leave: 'List of staff annual leave',
+                // list_annual_leave: 'List of staff annual leave',
 
                 // Nhóm dành cho table
                 table: {
@@ -1099,6 +1082,7 @@ export default {
                 edit_annual_leave_faile: 'Edit annual leave faile',
 
             },
+
             // Quản lý khen thưởng kỷ luật
             commendation_discipline: {
                 // Quản lý khen thưởng
@@ -1190,10 +1174,183 @@ export default {
             // Quản lý thông tin nhân viên
             profile: {
                 // Nhóm dùng chung cho chưc năng quản lý tông tin nhân viên
+                tab_name: {
+                    menu_basic_infor: 'Basic information',
+                    menu_general_infor: 'General information',
+                    menu_contact_infor: 'Contact information',
+                    menu_education_experience: 'Education - Experience',
+                    menu_diploma_certificate: 'Diploma - Certificate',
+                    menu_account_tax: 'Account - Tax',
+                    menu_insurrance_infor: 'Insurrance information',
+                    menu_contract_training: 'Contract - Training',
+                    menu_reward_discipline: 'Reward - Discipline',
+                    menu_salary_sabbatical: 'Salary - Sabbatical',
+                    menu_attachments: 'Attachments',
+
+                    menu_general_infor_title: 'General information',
+                    menu_contact_infor_title: 'Contact information',
+                    menu_education_experience_title: 'Education - Experience',
+                    menu_diploma_certificate_title: 'Diploma - Certificate',
+                    menu_account_tax_title: 'Account - Tax',
+                    menu_insurrance_infor_title: 'Insurrance information',
+                    menu_contract_training_title: 'Contract - Training',
+                    menu_reward_discipline_title: 'Reward - Discipline',
+                    menu_salary_sabbatical_title: 'Salary - Sabbatical',
+                    menu_attachments_title: 'Attachments',
+                },
+
+                add_staff: 'Add new staffs',
+                staff_number: 'Staff code',
+                full_name: 'Full name',
+                attendance_code: 'Attendance code',
+                gender: 'Gender',
+                male: 'Male',
+                female: 'Female',
+                date_birth: 'Date of birth',
+                place_birth: 'Place of birth',
+                email: 'Email',
+                email_company: 'Email company',
+                relationship: 'Relationship',
+                single: 'Single',
+                married: 'Married',
+                upload: 'Upload',
+                id_card: 'ID card/Passport',
+                date_issued: 'Date issued',
+                issued_by: 'Issued by',
+                ethnic: 'Ethnic group',
+                nationality: 'Nationality',
+                religion: 'Religion',
+                mobile_phone: 'Mobile phone',
+                mobile_phone_1: 'Mobile phone 1',
+                mobile_phone_2: 'Mobile phone 2',
+                personal_email_1: 'Personal email 1',
+                personal_email_2: 'Personal email 2',
+                home_phone: 'Home phone',
+                emergency_contact: 'Emergency contact',
+                nexus: 'Nexus',
+                address: 'Address',
+                permanent_address: 'Permanent address',
+                current_residence: 'Current residence',
+                wards: 'Wards/Commune',
+                district: 'County/District',
+                province: 'Province/City',
+                nation: 'Nation',
+
+                academic_level: 'Academic level',
+                educational_level: 'Educational level',
+                language_level: 'Language level',
+                qualification: 'Qualification',
+                intermediate_degree: 'Intermediate degree',
+                colleges: 'Colleges',
+                university: 'University',
+                master_degree: "Maste degree",
+                phd: 'Ph.D',
+                unavailable: 'Unavailable',
+                work_experience: 'Work experience',
+                unit: 'Unit',
+                from_month_year: 'From month/year',
+                to_month_year: 'To month/year',
+                edit_experience: 'Edit work experience',
+                add_experience: 'Add work experience',
+
+                diploma: 'Diploma',
+                certificate: 'Certificate',
+                name_diploma: 'Name of diploma',
+                name_certificate: 'Name of certificate',
+                diploma_issued_by: 'Issued by',
+                graduation_year: 'Graduation year',
+                ranking_learning: 'Ranking of learning',
+                attached_files: 'Attached files',
+                end_date_certificate: 'Expiration date',
+                edit_certificate: 'Edit certificate',
+                edit_diploma: 'Edit diploma',
+                add_certificate: 'Add certificate',
+                add_diploma: 'Add diploma',
+                excellent: 'Excellent',
+                very_good: 'Very good',
+                good: 'Good',
+                average_good: 'Average good',
+                ordinary: 'Ordinary',
+
+                bank_account: 'Bank account',
+                personal_income_tax: 'Personal income tax',
+                account_number: 'Account number',
+                bank_name: 'Bank name',
+                bank_branch: 'Bank branch',
+                tax_number: 'Tax number',
+                representative: 'Representative',
+                day_active: 'Day active',
+                managed_by: 'Managed by',
+
+                bhyt: 'Health Insurance',
+                number_BHYT: 'Health insurance code',
+                bhxh: 'Social insurance',
+                number_BHXH: 'Social insurance code',
+                bhxh_process: 'Process of social insurance payment',
+                edit_bhxh: 'Edit social insurance',
+                add_bhxh: 'Add social insurance',
+
+                labor_contract: 'Labor contract',
+                training_process: 'Training process',
+                name_contract: 'Contract name',
+                type_contract: 'Type of contract',
+                start_date: 'Effective date',
+                course_name: 'Course name',
+                start_day: 'Start day',
+                end_date: 'End day',
+                type_education: 'Type of education',
+                cost: 'Cost',
+                edit_contract: 'Edit labor contract',
+                add_contract: 'Add labor contract',
+
+                list_attachments: 'List of attached documents',
+                attachments_code: 'Attachments code',
+                file_name: 'File name',
+                number: 'Number',
+                add_default: 'Add default',
+                add_default_title: 'Add the default document',
+                edit_file: 'Edit attached documents',
+                add_file: 'Add attached documents',
+                no_submitted: 'Not submitted',
+                submitted: 'Submitted',
+                returned: 'Returned',
+                no_files: 'No files yet',
+                disc_diploma: 'Highest degree diploma',
+                curriculum_vitae: 'Curriculum vitae',
+                disc_curriculum_vitae: 'Notarized resume',
+                img: 'Image',
+                disc_img: 'Image 4x6 ',
+                copy_id_card: 'Copy of ID card / Passport',
+                disc_copy_id_card: 'Certified copy of identity card or passport',
+                health_certificate: 'Health certificate',
+                disc_health_certificate: 'Notarized health certificate',
+                birth_certificate: 'Birth certificate',
+                disc_birth_certificate: 'Notarized birth certificate',
+                job_application: 'Job application',
+                disc_job_application: 'Handwritten application letter',
+                commitment: 'Commitment',
+                disc_commitment: 'Commitment to work',
+                temporary_residence_card: 'Temporary residence card',
+                disc_temporary_residence_card: 'Certificate of temporary absence',
+
+
+
+                Reward: 'Reward',
+                discipline: 'Discipline',
+                historySalary: 'History of salary',
+                sabbatical: 'Sabbatical information',
+                start_date_before_end_date: 'The issue date must be before the expiration date',
+                end_date_after_start_date: 'The expiration date must be after the issue date',
+                time_contract_duplicate: 'The labor contract period is being duplicated',
 
                 // Quản lý thông tin cá nhân
                 employee_info: {
                     // Nhóm dành cho UI
+                    note_page_personal: 'I hereby certify that all of the above statements are true and I am responsible for them.',
+                    contact_other: '(Other information please contact the relevant parties to be processed)',
+                    update_infor_personal: 'Update staff information',
+                    no_data_personal: 'No personal information yet',
+
                     guaranteed_infor_to_update: 'You have not guaranteed information to update',
                     no_change_data: 'No information changed',
 
@@ -1238,29 +1395,66 @@ export default {
 
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             holiday: {
+                file_name_export: 'Work plan',
+                // Nhóm dành cho table
+                table: {
+                    timeline: 'Timelines',
+                    start_date: 'Start date',
+                    end_date: 'End date',
+                    describe_timeline: 'Description',
+                },
+
+                // Nhóm dành cho action
+                edit_holiday: 'Edit work schedule',
+                delete_holiday: 'Delete work schedule',
+                add_holiday: 'Add work schedule',
+                add_holiday_title: 'Add new work schedule',
+                add_by_hand: 'Add one work schedule',
+                add_import: 'Import file excel',
 
                 // Thông điệp trả về từ server
                 start_date_required: 'Start date required',
                 end_date_required: 'End date required',
-                reason_required: 'Reason required',
+                reason_required: 'Description required',
                 holiday_duplicate_required: 'Time is overlapping',
 
-                get_holiday_success: 'Get holiday success',
-                get_holiday_faile: 'Get holiday faile',
-                create_holiday_success: 'Create holiday success',
-                create_holiday_faile: 'Create holiday faile',
-                delete_holiday_success: 'Delete holiday success',
-                delete_holiday_faile: 'Delete holiday faile',
-                edit_holiday_success: 'Edit holiday success',
-                edit_holiday_faile: 'Edit holiday faile',
-                import_holiday_success: 'Import holiday success',
-                import_holiday_faile: 'Import holiday faile',
+                get_holiday_success: 'Get work schedule success',
+                get_holiday_faile: 'Get work schedule faile',
+                create_holiday_success: 'Create work schedule success',
+                create_holiday_faile: 'Create work schedule faile',
+                delete_holiday_success: 'Delete work schedule success',
+                delete_holiday_faile: 'Delete work schedule faile',
+                edit_holiday_success: 'Edit work schedule success',
+                edit_holiday_faile: 'Edit work schedule faile',
+                import_holiday_success: 'Import work schedule success',
+                import_holiday_faile: 'Import work schedule faile',
 
             },
 
             // Quản lý chấm công nhân viên
             timesheets: {
+                file_name_export: 'Timesheets',
+                symbol: ' Symbol',
+                not_work: 'Not work',
+                do_work: 'Do work',
+                total_timesheets: 'Total work date',
+                work_date_in_month: 'Work date in month',
+                shift_work: 'Shift work',
+                shifts1: 'shifts 1',
+                shifts2: 'shifts 2',
+                date_of_month: 'The days of the month',
+
+                // Nhóm dành cho action
+                edit_timesheets: 'Edit timesheets',
+                delete_timesheets: 'Delete timesheets',
+                add_timesheets: 'Add timesheets',
+                add_timesheets_title: 'Add new timesheets',
+                add_by_hand: 'Add one timesheets',
+                add_import: 'Import file excel',
+
                 // Thông điệp trả về từ server
+                employee_code_duplicated: 'Staff code is duplicated',
+                employee_name_required: 'Staff name required',
                 employee_number_required: "Staff code required",
                 month_timesheets_required: "Month timesheets required",
                 staff_code_not_find: "Staff code does not exist",
@@ -1275,7 +1469,16 @@ export default {
                 delete_timesheets_faile: "Delete timesheets faile",
                 import_timesheets_success: "Import timesheets success",
                 import_timesheets_faile: "Import timesheets faile",
+            },
 
+            // Quản lý nhân sự các đơn vị
+            manage_department: {
+                edit_unit: 'Edit units staff',
+                dean_unit: 'Head of unit',
+                vice_dean_unit: 'Deputy unit',
+                employee_unit: 'Unit staff',
+                email_employee: 'Email',
+                add_employee_unit: 'Add staff',
             },
         },
 
@@ -1330,8 +1533,10 @@ export default {
         // Modules Quản lý tài sản
         asset: {
             general_information: {
+                asset: 'Asset',
+                asset_list: 'Assets list',
                 search: 'Search',
-                add: 'Add asset',
+                add: 'Add',
                 basic_information: 'Basic infomation',
                 detail_information: 'Detail information',
                 view: 'View asset information',
@@ -1350,6 +1555,8 @@ export default {
                 damaged: 'Damaged',
                 lost: 'Lost',
                 disposal: 'Disposal',
+                waiting: 'Waiting for progressing',
+                processed: 'Processed',
                 select_register: 'Select the right to register',
                 select_all_register: 'Select all the right to register',
                 can_register: 'Can register to use',
@@ -1365,6 +1572,7 @@ export default {
                 handover_to_date: 'Handover to date',
                 status: 'Status',
                 action: 'Action',
+                asset_value: 'Asset value',
 
                 general_information: 'General information',
                 usage_information: 'Usage information',
@@ -1391,11 +1599,13 @@ export default {
                 original_price: 'Original price ',
                 residual_price: 'Estimated recovery price',
                 start_depreciation: 'Start date of depreciation',
+                end_depreciation: 'End date of depreciation',
                 depreciation_type: 'Depreciation type',
 
                 incident_code: 'Incident code',
                 reported_by: 'Announcer',
-                date_incident: 'Ngày phát hiện',
+                incident_type: 'Incident type',
+                date_incident: 'Date of incident',
 
                 disposal_date: 'Disposal date',
                 disposal_type: 'Disposal type',
@@ -1413,7 +1623,7 @@ export default {
                 asset_type_code: 'Asset type code',
                 asset_type_name: 'Asset type name',
                 parent_asset_type: 'Parent asset type',
-                    
+
                 //Thông điệp trả về từ server
                 get_asset_type_success: 'Lấy thông tin loại tài sản thành công',
                 get_asset_type_faile: 'Lấy thông tin loại tài sản thất bại',
@@ -1427,6 +1637,36 @@ export default {
 
             // Quản lý thông tin tài sản
             asset_info: {
+                asset_info: 'Asset infomation',
+                field_name: 'Name of data field',
+                value: 'Value',
+
+                usage_logs: 'Allocation history - transfer - withdrawal',
+                maintainance_logs: 'Repair history - replacement - upgrade',
+                incident_list: 'Asset incident list',
+                file_list: 'List of documents attached',
+                add_usage_info: 'Add new asset usage infomation',
+                edit_usage_info: 'Edit asset usage infomation',
+                delete_usage_info: 'Delete asset usage infomation',
+                add_maintenance_card: 'Add new maintenance card',
+                edit_maintenance_card: 'Edit new maintenance card',
+                delete_maintenance_card: 'Delete maintenance card',
+                add_incident_info: 'Add new incident infomation',
+                edit_incident_info: 'Edit incident infomation',
+                delete_incident_info: 'Delete incident infomation',
+
+                usage_time: 'Usage time',
+                annual_depreciation: 'Annual average rate of depreciation',
+                monthly_depreciation: 'Monthly average rate of depreciation',
+                repair: 'Repair',
+                replace: 'Replace',
+                upgrade: 'Upgrade',
+                made: 'Made',
+                processing: 'Processing',
+                unfulfilled: 'Unfulfilled',
+                destruction: 'Destruction',
+                sale: 'Sale',
+                give: 'Give',
 
                 //Thông điệp trả về từ server
                 get_list_asset_success: 'Lấy thông tin tài sản thành công',
@@ -1442,6 +1682,7 @@ export default {
 
             // Quản lý bảo trì
             maintainance: {
+                total_cost: 'Total cost',
 
                 //Thông điệp trả về từ server
                 get_maintainance_success: 'Lấy thông tin bảo trì thành công',
@@ -1456,6 +1697,12 @@ export default {
 
             // Quản lý sử dụng
             usage: {
+                approved: 'Approved',
+                waiting_approval: 'Waiting for approval',
+                not_approved: 'Not approved',
+                proponent: 'Proponent',
+                accountable: 'Accountable',
+                note: 'Note',
 
                 //Thông điệp trả về từ server
                 get_usage_success: 'Lấy thông tin sử dụng thành công',
@@ -1470,6 +1717,10 @@ export default {
 
             // Quản lý khấu hao
             depreciation: {
+                depreciation_time: 'Depreciation time',
+                accumulated_value: 'Accumulated depreciation value',
+                remaining_value: 'Remaining value',
+                edit_depreciation: 'Edit asset depreciation information',
 
                 //Thông điệp trả về từ server
                 get_depreciation_success: 'Lấy thông tin khấu hao thành công',
@@ -1484,6 +1735,8 @@ export default {
 
             // Quản lý sự cố
             incident: {
+                incident: 'Asset incident',
+                report_incident: 'Report asset incident',
 
                 //Thông điệp trả về từ server
                 get_incident_success: 'Lấy thông tin sự cố tài sản thành công',
@@ -1498,6 +1751,14 @@ export default {
 
             // Quản lý đề nghị mua sắm thiết bị
             manage_recommend_procure: {
+                asset_recommend: 'Asset recommend procure',
+                add_recommend_card: 'Add new form recommend procure asset',
+                view_recommend_card: 'View form recommend procure asset',
+                edit_recommend_card: 'Edit form recommend procure asset',
+                delete_recommend_card: 'Delete form recommend procure asset',
+                supplier: 'Supplier',
+                unit: 'Unit',
+                expected_value: 'Expected value',
 
                 //Thông điệp trả về từ server
                 get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
@@ -1653,7 +1914,8 @@ export default {
                 accountable_role: 'Acountable',
                 consulted_role: 'Consulted',
                 informed_role: 'Informed',
-
+                distribution_Of_Employee: 'Distribution of Employees',
+                employees_each_chart: 'Max employee in a chart',
                 add_task: 'Add task',
                 add_title: 'Add a new task',
                 add_subtask: 'Add sub task',

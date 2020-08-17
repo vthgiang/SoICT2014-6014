@@ -1,5 +1,9 @@
-import { LOCAL_SERVER_API } from '../../../../env';
-import { sendRequest } from '../../../../helpers/requestHelper';
+import {
+    LOCAL_SERVER_API
+} from '../../../../env';
+import {
+    sendRequest
+} from '../../../../helpers/requestHelper';
 export const TimesheetsService = {
     searchTimesheets,
     createTimesheets,
@@ -11,10 +15,10 @@ export const TimesheetsService = {
 /**
  * Lấy danh sách chấm công
  * @data : Dữ liệu key tìm kiếm
- */ 
+ */
 function searchTimesheets(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/timesheets`,
+        url: `${ LOCAL_SERVER_API }/timesheet/timesheets`,
         method: 'GET',
         params: {
             organizationalUnit: data.organizationalUnit,
@@ -33,7 +37,7 @@ function searchTimesheets(data) {
  */
 function createTimesheets(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/timesheets`,
+        url: `${ LOCAL_SERVER_API }/timesheet/timesheets`,
         method: 'POST',
         data: data,
     }, true, true, 'human_resource.timesheets');
@@ -45,7 +49,7 @@ function createTimesheets(data) {
  */
 function deleteTimesheets(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/timesheets/${id}`,
+        url: `${ LOCAL_SERVER_API }/timesheet/timesheets/${id}`,
         method: 'DELETE',
     }, true, true, 'human_resource.timesheets');
 }
@@ -57,7 +61,7 @@ function deleteTimesheets(id) {
  */
 function updateTimesheets(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/timesheets/${id}`,
+        url: `${ LOCAL_SERVER_API }/timesheet/timesheets/${id}`,
         method: 'PATCH',
         data: data,
     }, true, true, 'human_resource.timesheets');
@@ -69,9 +73,8 @@ function updateTimesheets(id, data) {
  */
 function importTimesheets(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/timesheets/import`,
+        url: `${ LOCAL_SERVER_API }/timesheet/timesheets/import`,
         method: 'POST',
         data: data,
     }, true, false, 'human_resource.timesheets');
 }
-

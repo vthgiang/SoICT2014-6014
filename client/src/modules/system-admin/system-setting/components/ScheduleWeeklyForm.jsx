@@ -7,10 +7,16 @@ import { SystemSettingActions } from '../redux/actions';
 class ScheduleWeeklyForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = { 
+            day: '0',
+            hour: '0',
+            minute: '0',
+            second: '0'
+         }
     }
 
     render() { 
+        const {day, hour, minute, second} = this.state;
         console.log("state weekly", this.state)
 
         return (<React.Fragment>
@@ -31,6 +37,7 @@ class ScheduleWeeklyForm extends Component {
                                 {value: '6', text: 'Thứ 7'},
                                 {value: '0', text: 'Chủ nhật'},
                             ]}
+                            value={day}
                             onChange={this.handleDay}
                             multiple={false}
                         />
@@ -70,6 +77,7 @@ class ScheduleWeeklyForm extends Component {
                                 {value: '23', text: '23'},
                             ]}
                             onChange={this.hanldeHour}
+                            value={hour}
                             multiple={false}
                         />
                     </div>
@@ -143,6 +151,7 @@ class ScheduleWeeklyForm extends Component {
                                 {value: '58', text: '58'},
                                 {value: '59', text: '59'},
                             ]}
+                            value={minute}
                             onChange={this.hanldeMinute}
                             multiple={false}
                         />
@@ -217,6 +226,7 @@ class ScheduleWeeklyForm extends Component {
                                 {value: '58', text: '58'},
                                 {value: '59', text: '59'},
                             ]}
+                            value={second}
                             onChange={this.hanldeSecond}
                             multiple={false}
                         />
@@ -224,7 +234,7 @@ class ScheduleWeeklyForm extends Component {
                 </div>
             
             </div>
-            <button className="btn btn-success" disabled={!this.isFormValid ? true : false} onClick={this.save}>Lưu</button>
+            <button className="btn btn-success" onClick={this.save}>Lưu</button>
         </React.Fragment>);
     }
 
@@ -252,33 +262,24 @@ class ScheduleWeeklyForm extends Component {
         })
     }
 
-    isFormValid = () => {
-        const {date, hour, minute, second} = this.state;
-
-        if(date !== undefined && hour !== undefined && minute !== undefined && second !== undefined){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
     save = () => {
-        const {schedule} = this.props;
-        const {date, hour, minute, second} = this.state;
+        const {schedule, limit} = this.props;
+        const {day, hour, minute, second} = this.state;
 
-        if(this.isFormValid){
-            return this.props.backupDatabase({auto: 'on', schedule},{
-                date, hour, minute, second
-            })
-        }
+        return this.props.backup({auto: 'on', schedule},{
+            limit,
+            day, hour, minute, second
+        })
     }
 }
  
-function mapStateToProps(state) {
+function mapState(state) {
+    const { systemSetting } = state;
+    return { systemSetting }
 }
 
 const mapDispatchToProps = {
-    backupDatabase: SystemSettingActions.backupDatabase
+    backup: SystemSettingActions.backup
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ScheduleWeeklyForm));
+export default connect(mapState, mapDispatchToProps)(withTranslate(ScheduleWeeklyForm));

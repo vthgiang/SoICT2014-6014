@@ -76,20 +76,3 @@ function validateReason(value, translate) {
     }
     return msg;
 }
-
-// // Kiểm tra ngày có hiệu lực
-// function validateStartDate(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = translate('human_resource.commendation_discipline.discipline.start_date_discipline_required');
-//     }
-//     return msg;
-// }
-// // Kiểm tra ngày hết hiệu lực
-// function validateEndDate(value, translate) {
-//     let msg = undefined;
-//     if (value.trim() === "") {
-//         msg = translate('human_resource.commendation_discipline.discipline.end_date_discipline_required');
-//     }
-//     return msg;
-// }

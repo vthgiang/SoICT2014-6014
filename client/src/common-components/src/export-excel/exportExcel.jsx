@@ -119,14 +119,25 @@ class ExportExcel extends Component {
                         }
                         currentRow += 1;
                     };
-
                     worksheet.columns = columns.map(col => {
-                        return { key: col.key, width: 15 }
+                        return { key: col.key, width: col.width ? Number(col.width) : 15 }
                     });
 
                     // Thêm dữ liệu vào body table
                     worksheet.addRows(y.data);
                     y.data.forEach((obj, index) => {
+                        if (obj.merges && typeof obj.merges === 'object') {
+                            let keyColumns = columns.map(col => col.key);
+                            let merges = obj.merges;
+                            for (let n in merges) {
+                                if (merges[n] > 1) {
+                                    let startMergeCell = worksheet.getRow(currentRow + index).getCell(keyColumns.indexOf(n) + 1).address;
+                                    let endMergeRow = startMergeCell;
+                                    endMergeRow = endMergeRow.replace(/[0-9]/gi, '').trim();
+                                    worksheet.mergeCells(`${startMergeCell}:${endMergeRow}${currentRow + index + merges[n] - 1}`);
+                                }
+                            }
+                        }
                         worksheet.getRow(currentRow + index).font = { name: 'Arial' };
                         worksheet.getRow(currentRow + index).alignment = { wrapText: true };
                     })
@@ -149,10 +160,15 @@ class ExportExcel extends Component {
 
     render() {
         const { translate } = this.props;
-        const { buttonName = translate('human_resource.name_button_export'), style = {}, className = "btn btn-primary pull-right", title = "" } = this.props;
+        const { type = 'button', buttonName = translate('human_resource.name_button_export'), style = {}, className = "btn btn-primary pull-right", title = "" } = this.props;
         return (
             <React.Fragment>
-                <button type="button" style={style} className={className} title={title} onClick={this.handleExportExcel} >{buttonName}</button>
+                {type === 'button' && <button type="button" style={style} className={className} title={title} onClick={this.handleExportExcel} >{buttonName}</button>}
+                {type === 'link' &&
+                    < a className='pull-right' style={{ cursor: "pointer" }} onClick={this.handleExportExcel}>
+                        <i className="fa fa-download">{buttonName}</i>
+                    </a>
+                }
             </React.Fragment>
         )
     }

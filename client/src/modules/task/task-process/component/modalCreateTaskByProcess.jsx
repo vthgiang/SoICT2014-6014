@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
 import { FormInfoTask } from "./formInfoTask";
-import { DialogModal, SelectBox } from "../../../../common-components";
+import { DialogModal, SelectBox, DatePicker } from "../../../../common-components";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { getStorage } from '../../../../config';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
@@ -13,6 +13,7 @@ import './processDiagram.css'
 import { TaskProcessActions } from "../redux/actions";
 import customModule from './custom'
 import { TaskFormValidator } from "../../task-management/component/taskFormValidator";
+import { FormCreateTaskByProcess } from "./formCreateTaskByProcess";
 //bpmn-nyan
 // import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
 // import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
@@ -46,8 +47,10 @@ class ModalCreateTaskByProcess extends Component {
         }
         this.modeler = new BpmnModeler({
             additionalModules: [
-                customModule
-            ]
+                customModule,
+                // { moveCanvas: [ 'value', null ] },
+                { zoomScroll: ['value', ''] }
+            ],
         });
         this.generateId = 'createtaskbyprocess';
         this.initialDiagram = data.xmlDiagram;
@@ -284,11 +287,11 @@ class ModalCreateTaskByProcess extends Component {
     }
     validateTaskStartDate = (value, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = TaskFormValidator.validateTaskStartDate(value, this.state.info[`${this.state.id}`].endDate ? this.state.info[`${this.state.id}`].endDate : "", translate);
+        let msg = TaskFormValidator.validateTaskStartDate(value, this.state.endDate ? this.state.endDate : "", translate);
 
         if (willUpdateState) {
-            this.state.info[`${this.state.id}`].startDate = value;
-            this.state.info[`${this.state.id}`].errorOnStartDate = msg;
+            this.state.startDate = value;
+            this.state.errorOnStartDate = msg;
             this.setState(state => {
                 return {
                     ...state,
@@ -303,11 +306,11 @@ class ModalCreateTaskByProcess extends Component {
     }
     validateTaskEndDate = (value, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = TaskFormValidator.validateTaskEndDate(this.state.info[`${this.state.id}`].startDate ? this.state.info[`${this.state.id}`].startDate : "", value, translate);
+        let msg = TaskFormValidator.validateTaskEndDate(this.state.startDate ? this.state.startDate : "", value, translate);
 
         if (willUpdateState) {
-            this.state.info[`${this.state.id}`].endDate = value;
-            this.state.info[`${this.state.id}`].errorOnEndDate = msg;
+            this.state.endDate = value;
+            this.state.errorOnEndDate = msg;
             this.setState(state => {
                 return {
                     ...state,
@@ -381,27 +384,14 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     save = async () => {
-        let xmlStr;
-        this.modeler.saveXML({ format: true }, function (err, xml) {
-            xmlStr = xml;
-        });
-        await this.setState(state => {
-            return {
-                ...state,
-                xmlDiagram: xmlStr,
-            }
-        })
         let data = {
-            nameProcess: this.state.processName,
-            description: this.state.processDescription,
-            viewer: this.state.viewer,
-            manager: this.state.manager,
             creator: this.state.userId,
-            xmlDiagram: this.state.xmlDiagram,
-            infoTask: this.state.info
+            taskList: this.state.info,
+            startDate: this.state.startDate,
+            endDate: this.state.endDate,
         }
-
-        this.props.editXmlDiagram(this.state.idProcess, data)
+        console.log('000', data);
+        this.props.createTaskByProcess(data, this.state.idProcess);
     }
 
     downloadAsSVG = () => {
@@ -536,9 +526,22 @@ class ModalCreateTaskByProcess extends Component {
         })
     }
 
+    handleChangeInfo = (value) => {
+        let info = {
+            ...value,
+            code: this.state.id
+
+        }
+        this.setState(
+            state => {
+                state.info[`${state.id}`] = info
+            })
+    }
+
     render() {
         const { translate, role, user } = this.props;
-        const { name, id, idProcess, info, showInfo, processDescription, processName, viewer, manager, selectedEdit, infoTask } = this.state;
+        const { name, id, idProcess, info, taskName, showInfo, startDate, endDate, errorOnEndDate, errorOnStartDate,
+            processDescription, processName, viewer, manager, selectedEdit, infoTask } = this.state;
         const { listOrganizationalUnit } = this.props
         let listUser = user.usersWithRole
         let listRole = [];
@@ -556,47 +559,73 @@ class ModalCreateTaskByProcess extends Component {
                     func={this.save}
                     bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
                 >
-                    <div>
-                        <div className="">
-                            {/* Quy trình công việc */}
-                            <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}>
-                                <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
-                                    <button onClick={this.exportDiagram}>Export XML</button>
-                                    <button onClick={this.downloadAsSVG}>Save SVG</button>
-                                    <button onClick={this.downloadAsImage}>Save Image</button>
-                                    <button onClick={this.downloadAsBpmn}>Download BPMN</button>
-                                </div>
-                                <div id={this.generateId}></div>
-                                <div className="row">
-                                    <div className="io-zoom-controls">
-                                        <ul className="io-zoom-reset io-control io-control-list">
-                                            <li>
-                                                <a style={{ cursor: "pointer" }} title="Reset zoom" onClick={this.handleZoomReset}>
-                                                    <i className="fa fa-crosshairs"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a style={{ cursor: "pointer" }} title="Zoom in" onClick={this.handleZoomIn}>
-                                                    <i className="fa fa-plus"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a style={{ cursor: "pointer" }} title="Zoom out" onClick={this.handleZoomOut}>
-                                                    <i className="fa fa-minus"></i>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
+
+                    <div className="">
+                        {/* Quy trình công việc */}
+                        {/* <div className={`contain-border ${showInfo ? 'col-md-8' : 'col-md-12'}`}> */}
+                        <div className={`contain-border col-md-8`} style={{ marginTop: "20px" }}>
+                            <div className="tool-bar-xml" style={{ /*position: "absolute", right: 5, top: 5*/ }}>
+                                <button onClick={this.exportDiagram}>Export XML</button>
+                                <button onClick={this.downloadAsSVG}>Save SVG</button>
+                                <button onClick={this.downloadAsImage}>Save Image</button>
+                                <button onClick={this.downloadAsBpmn}>Download BPMN</button>
+                            </div>
+                            <div id={this.generateId}></div>
+                            <div className="row">
+                                <div className="io-zoom-controls">
+                                    <ul className="io-zoom-reset io-control io-control-list">
+                                        <li>
+                                            <a style={{ cursor: "pointer" }} title="Reset zoom" onClick={this.handleZoomReset}>
+                                                <i className="fa fa-crosshairs"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a style={{ cursor: "pointer" }} title="Zoom in" onClick={this.handleZoomIn}>
+                                                <i className="fa fa-plus"></i>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a style={{ cursor: "pointer" }} title="Zoom out" onClick={this.handleZoomOut}>
+                                                <i className="fa fa-minus"></i>
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </div>
                             </div>
-                            <div className={showInfo ? 'col-md-4' : undefined}>
-                                {
-                                    (showInfo) &&
+                        </div>
+                        {/* Ngày bắt đầu và kết thúc của cả quy trình */}
+                        <div className="row form-group col-md-4">
+                            <div>
+                                <h3 style={{marginLeft: "10px"}}>Thông tin thời gian quy trình</h3>
+                            </div>
+
+                            <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
+                                <label className="control-label">{translate('task.task_management.start_date')}*</label>
+                                <DatePicker
+                                    id={`datepicker1-process-${idProcess}`}
+                                    dateFormat="day-month-year"
+                                    value={startDate}
+                                    onChange={this.handleChangeTaskStartDate}
+                                />
+                            </div>
+                            <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
+                                <label className="control-label">{translate('task.task_management.end_date')}*</label>
+                                <DatePicker
+                                    id={`datepicker2-process-${idProcess}`}
+                                    value={endDate}
+                                    onChange={this.handleChangeTaskEndDate}
+                                />
+                            </div>
+                        </div>
+                        <div className={`right-content-create col-md-4`}>
+                            {/* style={{ display: "flex", flexDirection: "column" }} */}
+                            {
+                                (showInfo) &&
+                                <div>
                                     <div>
-                                        <div>
-                                            <h1>Option {name}</h1>
-                                        </div>
-                                        <FormInfoTask
+                                        <h3>Tạo công việc với mẫu {taskName}</h3>
+                                    </div>
+                                    {/* <FormInfoTask
                                             listOrganizationalUnit={listOrganizationalUnit}
                                             action='create-task'
                                             id={id}
@@ -614,12 +643,21 @@ class ModalCreateTaskByProcess extends Component {
                                             handleChangeTaskEndDate={this.handleChangeTaskEndDate}
 
                                             save={this.save}
-                                        />
-                                    </div>
-                                }
-                            </div>
+                                        /> */}
+                                    <FormCreateTaskByProcess
+                                        isProcess={true}
+                                        id={id}
+                                        info={(info && info[`${id}`]) && info[`${id}`]}
+                                        onChangeTemplateData={this.handleChangeInfo}
+                                        handleChangeName={this.handleChangeName} // cập nhật tên vào diagram
+                                        handleChangeResponsible={this.handleChangeResponsible} // cập nhật hiển thi diagram
+                                        handleChangeAccountable={this.handleChangeAccountable} // cập nhật hiển thị diagram
+                                    />
+                                </div>
+                            }
                         </div>
                     </div>
+
                 </DialogModal>
             </React.Fragment>
         )
@@ -637,7 +675,7 @@ const actionCreators = {
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     createXmlDiagram: TaskProcessActions.createXmlDiagram,
     getXmlDiagramById: TaskProcessActions.getXmlDiagramById,
-    editXmlDiagram: TaskProcessActions.editXmlDiagram,
+    createTaskByProcess: TaskProcessActions.createTaskByProcess,
     getAllUsersWithRole: UserActions.getAllUsersWithRole
 };
 const connectedModalCreateProcess = connect(mapState, actionCreators)(withTranslate(ModalCreateTaskByProcess));

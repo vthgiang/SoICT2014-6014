@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
+
+import { DialogModal, SelectBox } from '../../../../common-components';
 
 import { UserActions } from '../../../super-admin/user/redux/actions';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
+
 import './employeeInOrganizationalUnit.css'
 
 class EmployeeInOrganizationalUnitEditForm extends Component {
@@ -14,20 +16,20 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
             searchItems: [],
         };
     }
+
     componentDidMount() {
         this.props.getUser();
-        this.props.getUser({ name: "ad" });
     }
-    changeSearch = async (value) => {
 
-        console.log("gshagdhwd");
+    /** Function bắt sự kiện tìm kiếm người dùng trong select Box */
+    changeSearch = async (value) => {
         await this.props.getUser({ name: value })
         await this.setState({
             textSearch: value
         });
     }
 
-    // Bắt sự kiện xoá nhân viên đơn vị
+    /** Bắt sự kiện xoá nhân viên đơn vị */
     handleDelete = (userId, roleId) => {
         let { roleEmployees } = this.state;
         roleEmployees = roleEmployees.map(x => {
@@ -39,10 +41,9 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
         this.setState({
             roleEmployees: roleEmployees
         })
-
     }
 
-    // Bắt sự kiện thêm nhân viên đơn vị
+    /** Bắt sự kiện thêm nhân viên đơn vị */
     handleAdd = (id) => {
         let { roleEmployees } = this.state;
         let userEmployees = this.refs[`employees${id}`].getValue();
@@ -58,8 +59,9 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
         window.$(`#employee-unit-${id}`).val(null).trigger("change");
     }
 
+    /** Function bắt sự lưu thay đổi cơ cấu tổ chức*/
     save = () => {
-        var { roleDeans, roleViceDeans, roleEmployees } = this.state;
+        let { roleDeans, roleViceDeans, roleEmployees } = this.state;
         roleDeans.forEach(x => {
             let users = this.refs[`deans${x.id}`].getValue();
             x = { ...x, users: users, showAlert: false }
@@ -83,6 +85,7 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
             this.props.edit(x);
         });
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {
             let roleDeans = nextProps.department[0].deans.map(x => {
@@ -109,25 +112,25 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
         }
     }
 
-
     render() {
         let { translate, user } = this.props;
+
         const { _id, roleEmployees, roleDeans, roleViceDeans, textSearch } = this.state;
+
         let userlist = user.list, searchUses = user.searchUses;
         return (
             <React.Fragment>
                 <DialogModal
                     size='50' modalID={`modal-edit-unit${_id}`} isLoading={false}
                     formID={`form-edit-unit${_id}`}
-                    title={translate('manage_unit.edit_unit')}
-                    msg_success={translate('manage_unit.edit_sucsess')}
-                    msg_faile={translate('manage_unit.edit_faile')}
+                    title={translate('human_resource.manage_department.edit_unit')}
                     func={this.save}
                     disableSubmit={false}
                 >
                     <form className="form-group" id={`form-edit-unit${_id}`}>
+                        {/* Trưởng đơn vị */}
                         <fieldset className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
-                            <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('manage_unit.dean_unit')}</h4></legend>
+                            <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('human_resource.manage_department.dean_unit')}</h4></legend>
                             {roleDeans !== undefined && roleDeans.map((x, index) => (
                                 < div className="form-group" key={index} style={{ marginBottom: 0 }}>
                                     <label>{x.name}</label>
@@ -143,8 +146,9 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                 </div>
                             ))}
                         </fieldset>
+                        {/* Phó đơn vị */}
                         <fieldset className="scheduler-border" style={{ marginBottom: 10, paddingBottom: 10 }}>
-                            <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('manage_unit.vice_dean_unit')}</h4></legend>
+                            <legend className="scheduler-border" style={{ marginBottom: 0 }}><h4 className="box-title">{translate('human_resource.manage_department.vice_dean_unit')}</h4></legend>
                             {roleViceDeans !== undefined && roleViceDeans.map((x, index) => (
                                 < div className="form-group" key={index} style={{ marginBottom: 0 }}>
                                     <label>{x.name}</label>
@@ -160,7 +164,8 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                 </div>
                             ))}
                         </fieldset>
-                        <h4 style={{ marginBottom: 0, marginTop: 40 }}>{translate('manage_unit.employee_unit')}</h4>
+                        {/* Nhân viên đơn vị */}
+                        <h4 style={{ marginBottom: 0, marginTop: 40 }}>{translate('human_resource.manage_department.employee_unit')}</h4>
                         {roleEmployees !== undefined && roleEmployees.map((x, index) => {
                             let infoEmployee = [], users = x.users;
                             for (let n in users) {
@@ -184,14 +189,14 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
                                                 items={user.list.map(y => { return { value: y._id, text: `${y.name} (${y.email})` } })}
                                             />
                                         </div>
-                                        <button type="button" className="btn btn-success pull-right" style={{ marginBottom: 5 }} onClick={() => this.handleAdd(x.id)} title={translate('manage_unit.add_employee_unit')}>{translate('manage_employee.add_staff')}</button>
+                                        <button type="button" className="btn btn-success pull-right" style={{ marginBottom: 5 }} onClick={() => this.handleAdd(x.id)}>{translate('human_resource.manage_department.add_employee_unit')}</button>
                                     </div>
                                     <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                         <thead>
                                             <tr>
                                                 <th>{translate('table.employee_name')}</th>
-                                                <th>{translate('manage_unit.email_employee')}</th>
-                                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
+                                                <th>{translate('human_resource.manage_department.email_employee')}</th>
+                                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -222,8 +227,9 @@ class EmployeeInOrganizationalUnitEditForm extends Component {
         );
     }
 };
+
 function mapState(state) {
-    var { user } = state;
+    const { user } = state;
     return { user };
 };
 
