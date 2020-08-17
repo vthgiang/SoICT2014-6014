@@ -66,6 +66,31 @@ class DepreciationTab extends Component {
         }
     };
 
+    /**
+     * Hàm để tính các giá trị khấu hao cho tài sản
+     * @param {*} depreciationType Phương pháp khấu hao
+     * @param {*} cost Nguyên giá
+     * @param {*} usefulLife Thời gian trích khấu hao
+     * @param {*} startDepreciation Thời gian bắt đầu trích khấu hao
+     */
+    calculateDepreciation = (depreciationType, cost, usefulLife, startDepreciation) => {
+        let annualDepreciation, monthlyDepreciation, remainingValue = cost;
+
+        var formater = new Intl.NumberFormat();
+
+        if (depreciationType === "Đường thẳng") { // Phương pháp khấu hao theo đường thẳng
+            annualDepreciation = formater.format(parseInt(((12 * cost) / usefulLife)));
+            monthlyDepreciation = formater.format(cost / usefulLife);
+            remainingValue = formater.format(parseInt(cost - ((cost / usefulLife)) * ((new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(startDepreciation).getFullYear() * 12 + new Date(startDepreciation).getMonth()))));
+
+        } else if (depreciationType === "Số dư giảm dần") { // Phương pháp khấu hao theo số dư giảm dần
+            
+        } else if (depreciationType === "Sản lượng") { // Phương pháp khấu hao theo sản lượng
+            
+        }
+
+        return [annualDepreciation, monthlyDepreciation, remainingValue];
+    }
 
     render() {
         const { id } = this.props;
@@ -73,6 +98,14 @@ class DepreciationTab extends Component {
         const { cost, residualValue, startDepreciation, usefulLife, depreciationType, endDepreciation, annualDepreciationValue, monthlyDepreciationValue } = this.state;
         
         var formater = new Intl.NumberFormat();
+
+        let annualDepreciation, monthlyDepreciation, remainingValue = cost;
+        let result = this.calculateDepreciation(depreciationType, cost, usefulLife, startDepreciation);
+        annualDepreciation = result[0];
+        monthlyDepreciation = result[1];
+        remainingValue = result[2];
+
+        console.log("depreciationType depreciationType depreciationType depreciationType ***", depreciationType);
 
         return (
             <div id={id} className="tab-pane">
@@ -83,7 +116,6 @@ class DepreciationTab extends Component {
                         <div className="form-group">
                             <strong>{translate('asset.general_information.original_price')}&emsp; </strong>
                             {formater.format(parseInt(cost))} VNĐ
-
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.general_information.residual_price')}&emsp; </strong>
@@ -109,19 +141,19 @@ class DepreciationTab extends Component {
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.asset_info.annual_depreciation')}&emsp; </strong>
-                            {formater.format(parseInt(((12 * cost) / usefulLife)))} VNĐ/năm
+                            {annualDepreciation} VNĐ/năm
 
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.asset_info.monthly_depreciation')}&emsp; </strong>
-                            {formater.format(cost / usefulLife)} VNĐ/tháng
+                            {monthlyDepreciation} VNĐ/tháng
 
                         </div>
 
                         {/* Giá trị hiện tại */}
                         <div className="form-group">
                             <strong>{translate('asset.depreciation.remaining_value')}&emsp; </strong>
-                            {formater.format(parseInt(cost - ((cost / usefulLife)) * ((new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(startDepreciation).getFullYear() * 12 + new Date(startDepreciation).getMonth()))))} VNĐ
+                            {remainingValue} VNĐ
                         </div>
                     </fieldset>
                 </div>

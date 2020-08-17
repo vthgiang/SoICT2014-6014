@@ -265,6 +265,8 @@ class DepreciationManager extends Component {
             exportData = this.convertDataToExportData(lists, assettypelist);
         }
 
+        console.log("#####", lists);
+        
         return (
             <div className="box">
                 <div className="box-body qlcv">
