@@ -392,11 +392,11 @@ class CreateForm extends Component {
             errorExpiredDate, errorCategory, documentArchives } = this.state;
         const archives = documents.administration.archives.list;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
-        console.log('rrrrrr', archives);
+        // console.log('rrrrrr', archives);
         const documentRoles = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.map(doc => { return { value: doc._id, text: doc.name } });
-        console.log('eeeeeeee', documentArchives)
-        console.log('uuuuuuu', documentArchives ? this.findPath(archives, documentArchives[0]) : "");
+        // console.log('eeeeeeee', documentArchives)
+        // console.log('uuuuuuu', documentArchives ? this.findPath(archives, documentArchives[0]) : "");
         let path = documentArchives ? this.findPath(archives, documentArchives[0]) : "";
         return (
             <React.Fragment>
@@ -475,12 +475,12 @@ class CreateForm extends Component {
                                                 <ErrorLabel content={errorVersionName} />
                                             </div>
                                             <div className={`form-group ${!errorDocumentFile ? "" : "has-error"}`}>
-                                                <label>{translate('document.doc_version.file')}<span className="text-red">*</span></label>
+                                                <label>{translate('document.upload_file')}<span className="text-red">*</span></label>
                                                 <input type="file" onChange={this.handleUploadFile} />
                                                 <ErrorLabel content={errorDocumentFile} />
                                             </div>
                                             <div className={`form-group ${!errorDocumentFileScan ? "" : "has-error"}`}>
-                                                <label>{translate('document.doc_version.scanned_file_of_signed_document')}<span className="text-red">*</span></label>
+                                                <label>{translate('document.upload_file_scan')}<span className="text-red">*</span></label>
                                                 <input type="file" onChange={this.handleUploadFileScan} />
                                                 <ErrorLabel content={errorDocumentFileScan} />
                                             </div>
@@ -551,7 +551,11 @@ class CreateForm extends Component {
                                             </div> */}
                                             <div className="form-group">
                                                 <label>{translate('document.store.information')}</label>
-                                                <TreeSelect data={archives} handleChange={this.handleArchives} value={path} mode="hierarchical" />
+                                                <TreeSelect data={archives} handleChange={this.handleArchives} value={documentArchives} mode="hierarchical" />
+                                            </div>
+                                            <div className="form-group">
+                                                <label>Đường dẫn chi tiết</label>
+                                                <textarea style={{ height: '30px' }} type="text" className="form-control" value={path} disable />
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.store.organizational_unit_manage')}</label>
