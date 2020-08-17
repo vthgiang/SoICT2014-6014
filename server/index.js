@@ -22,7 +22,7 @@ const discipline = require("./modules/human-resource/discipline/discipline.route
 const holiday = require("./modules/human-resource/holiday/holiday.route");
 const profile = require("./modules/human-resource/profile/profile.route");
 const salary = require("./modules/human-resource/salary/salary.route");
-const timesheets = require("./modules/human-resource/timesheets/timesheets.route");
+const timesheet = require("./modules/human-resource/timesheets/timesheets.route");
 
 const employeeKpiCreation = require("./modules/kpi/employee/creation/creation.route");
 const employeeKpiDashboard = require("./modules/kpi/employee/dashboard/dashboard.route");
@@ -106,7 +106,7 @@ app.use("/discipline", discipline);
 app.use("/holiday", holiday);
 app.use("/employees", profile);
 app.use("/salary", salary);
-app.use("/timesheets", timesheets);
+app.use("/timesheet", timesheet);
 
 app.use("/kpi/employee/creation", employeeKpiCreation);
 app.use("/kpi/employee/dashboard", employeeKpiDashboard);

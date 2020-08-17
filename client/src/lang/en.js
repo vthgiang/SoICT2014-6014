@@ -987,6 +987,9 @@ export default {
             name_button_export: 'Export report',
             choose_decision_unit: 'Choose a decision-making unit',
 
+            note_file_import: 'Import file is not in the correct format',
+            error_row: 'An error occurred in the lines',
+
             // Validator dung chung cho module quản lý nhân sự
             employee_number_required: 'Staff code required',
             staff_code_not_special: 'Staff code does not contain special characters',
@@ -1277,6 +1280,7 @@ export default {
                 shift_work: 'Shift work',
                 shifts1: 'shifts 1',
                 shifts2: 'shifts 2',
+                date_of_month: 'The days of the month',
 
                 // Nhóm dành cho action
                 edit_timesheets: 'Edit timesheets',
@@ -1287,6 +1291,8 @@ export default {
                 add_import: 'Import file excel',
 
                 // Thông điệp trả về từ server
+                employee_code_duplicated: 'Staff code is duplicated',
+                employee_name_required: 'Staff name required',
                 employee_number_required: "Staff code required",
                 month_timesheets_required: "Month timesheets required",
                 staff_code_not_find: "Staff code does not exist",
@@ -1540,7 +1546,7 @@ export default {
             depreciation: {
                 depreciation_time: 'Depreciation time',
                 accumulated_value: 'Accumulated depreciation value',
-                remaining_value: 'Remaining value', 
+                remaining_value: 'Remaining value',
                 edit_depreciation: 'Edit asset depreciation information',
 
                 //Thông điệp trả về từ server
@@ -1558,7 +1564,7 @@ export default {
             incident: {
                 incident: 'Asset incident',
                 report_incident: 'Report asset incident',
-                
+
                 //Thông điệp trả về từ server
                 get_incident_success: 'Lấy thông tin sự cố tài sản thành công',
                 get_incident_faile: 'Lấy thông tin sự cố tài sản thất bại',
@@ -1580,7 +1586,7 @@ export default {
                 supplier: 'Supplier',
                 unit: 'Unit',
                 expected_value: 'Expected value',
-                    
+
                 //Thông điệp trả về từ server
                 get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
                 get_recommend_procure_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',

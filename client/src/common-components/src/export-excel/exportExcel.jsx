@@ -119,7 +119,6 @@ class ExportExcel extends Component {
                         }
                         currentRow += 1;
                     };
-
                     worksheet.columns = columns.map(col => {
                         return { key: col.key, width: 15 }
                     });

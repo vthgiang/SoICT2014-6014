@@ -986,6 +986,9 @@ export default {
             name_button_export: 'Xuất báo cáo',
             choose_decision_unit: 'Chọn cấp ra quyết định',
 
+            note_file_import: 'File import không đúng định dạng',
+            error_row: 'Có lỗi xảy ra ở các dòng',
+
             // Validator dung chung cho module quản lý nhân sự
             employee_number_required: 'Mã nhân viên không được để trống',
             staff_code_not_special: 'Mã nhân viên không được chứ ký tự đặc biệt',
@@ -1273,6 +1276,7 @@ export default {
                 shift_work: 'Ca làm việc',
                 shifts1: 'ca 1',
                 shifts2: 'ca 2',
+                date_of_month: 'Các ngày trong tháng',
 
                 // Nhóm dành cho action
                 edit_timesheets: 'Chỉnh sửa thông tin chấm công',
@@ -1283,6 +1287,8 @@ export default {
                 add_import: 'Import file excel',
 
                 // Thông điệp trả về từ server
+                employee_code_duplicated: 'Mã số nhân viên bị trùng lặp',
+                employee_name_required: 'Tên nhân viên không được để trống',
                 employee_number_required: "Mã nhân viên không được để trống",
                 month_timesheets_required: "Tháng chấm công không được để trống",
                 staff_code_not_find: "Mã nhân viên không tồn tại",
@@ -1525,7 +1531,7 @@ export default {
                 proponent: 'Người đề nghị',
                 accountable: 'Người phê duyệt',
                 note: 'Ghi chú',
-                
+
                 //Thông điệp trả về từ server
                 get_usage_success: 'Lấy thông tin sử dụng thành công',
                 get_usage_faile: 'Lấy thông tin sử dụng thất bại',
@@ -1559,7 +1565,7 @@ export default {
             incident: {
                 incident: 'Sự cố tài sản',
                 report_incident: 'Báo cáo sự cố tài sản',
-                
+
                 //Thông điệp trả về từ server
                 get_incident_success: 'Lấy thông tin sự cố tài sản thành công',
                 get_incident_faile: 'Lấy thông tin sự cố tài sản thất bại',
