@@ -34,19 +34,38 @@ class EditForm extends Component {
 
     handleIssuingBody = (e) => {
         const value = e.target.value;
-        this.validateIssuingBody(value, true);
+        // this.validateIssuingBody(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentIssuingBody: value.trim(),
+                //errorIssuingBody: msg,
+            }
+        })
     }
-
     handleOfficialNumber = (e) => {
         const value = e.target.value;
-        this.validateOfficialNumber(value, true);
+        // this.validateOfficialNumber(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentOfficialNumber: value.trim(),
+                // errorOfficialNumber: msg,
+            }
+        })
     }
 
     handleSigner = (e) => {
         const value = e.target.value;
-        this.validateSinger(value, true);
+        // this.validateSinger(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentSigner: value.trim(),
+                //  errorSigner: msg,
+            }
+        })
     }
-
     handleRelationshipDescription = (e) => {
         const { value } = e.target;
         this.setState({ documentRelationshipDescription: value });
@@ -102,19 +121,47 @@ class EditForm extends Component {
 
     handleVersionName = (e) => {
         const value = e.target.value;
-        this.validateVersionName(value, true);
+        // this.validateVersionName(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentVersionName: value.trim(),
+                // errorVersionName: msg,
+            }
+        })
     }
 
     handleIssuingDate = (value) => {
-        this.validateIssuingDate(value, true);
+        // this.validateIssuingDate(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentIssuingDate: value,
+                //  errorIssuingDate: msg,
+            }
+        })
     }
 
     handleEffectiveDate = (value) => {
-        this.validateEffectiveDate(value, true);
+        // this.validateEffectiveDate(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentEffectiveDate: value,
+                // errorEffectiveDate: msg,
+            }
+        })
     }
 
     handleExpiredDate = (value) => {
-        this.validateExpiredDate(value, true);
+        //this.validateExpiredDate(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentExpiredDate: value,
+                //  errorExpiredDate: msg,
+            }
+        })
     }
     handleUploadFile = (e) => {
         this.setState({ documentFile: e.target.files[0] });
@@ -323,14 +370,14 @@ class EditForm extends Component {
     }
 
     isValidateForm = () => {
-        console.log('tttttttttttt', this.validateName(this.state.documentName, false), this.validateCategory(this.state.documentCategory, false),
-            this.validateOfficialNumber(this.state.documentOfficialNumber, false), this.validateSinger(this.state.documentSigner, false),
-            this.validateIssuingBody(this.state.documentIssuingBody, false))
+        // console.log('tttttttttttt', this.validateName(this.state.documentName, false), this.validateCategory(this.state.documentCategory, false),
+        //     this.validateOfficialNumber(this.state.documentOfficialNumber, false), this.validateSinger(this.state.documentSigner, false),
+        //     this.validateIssuingBody(this.state.documentIssuingBody, false))
         return this.validateName(this.state.documentName, false)
             && this.validateCategory(this.state.documentCategory, false)
-            && this.validateOfficialNumber(this.state.documentOfficialNumber, false)
-            && this.validateSinger(this.state.documentSigner, false)
-            && this.validateIssuingBody(this.state.documentIssuingBody, false);
+        // && this.validateOfficialNumber(this.state.documentOfficialNumber, false)
+        // && this.validateSinger(this.state.documentSigner, false)
+        // && this.validateIssuingBody(this.state.documentIssuingBody, false);
     }
     save = () => {
         const {
@@ -360,12 +407,22 @@ class EditForm extends Component {
         if (documentArchives) for (var i = 0; i < documentArchives.length; i++) {
             formData.append('archives[]', documentArchives[i]);
         }
-        formData.append('description', documentDescription);
-        formData.append('issuingBody', documentIssuingBody);
-        formData.append('officialNumber', documentOfficialNumber);
-        formData.append('signer', documentSigner);
+        if (documentDescription) {
+            formData.append('description', documentDescription);
+        }
+        if (documentIssuingBody) {
+            formData.append('issuingBody', documentIssuingBody);
+        }
+        if (documentOfficialNumber) {
+            formData.append('officialNumber', documentOfficialNumber);
+        }
+        if (documentSigner) {
+            formData.append('signer', documentSigner);
+        }
 
-        formData.append('relationshipDescription', documentRelationshipDescription);
+        if (documentRelationshipDocuments) {
+            formData.append('relationshipDescription', documentRelationshipDescription);
+        }
         if (documentRelationshipDocuments) for (var i = 0; i < documentRelationshipDocuments.length; i++) {
             formData.append('relationshipDocuments[]', documentRelationshipDocuments[i]);
         }
@@ -373,9 +430,12 @@ class EditForm extends Component {
             formData.append('roles[]', documentRoles[i]);
         }
 
-        formData.append('archivedRecordPlaceInfo', documentArchivedRecordPlaceInfo);
-        formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
-        formData.append('archivedRecordPlaceManager', documentArchivedRecordPlaceManager);
+        if (documentArchivedRecordPlaceOrganizationalUnit) {
+            formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
+        }
+        if (documentArchivedRecordPlaceOrganizationalUnit) {
+            formData.append('archivedRecordPlaceManager', documentArchivedRecordPlaceManager);
+        }
         //console.log('ererererer', formData.getAll());
         this.props.editDocument(documentId, formData);
     }
@@ -513,17 +573,17 @@ class EditForm extends Component {
                                                 <ErrorLabel content={errorName} />
                                             </div>
                                             <div className={`form-group ${!errorIssuingBody ? "" : "has-error"}`}>
-                                                <label>{translate('document.doc_version.issuing_body')}<span className="text-red">*</span></label>
+                                                <label>{translate('document.doc_version.issuing_body')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleIssuingBody} value={documentIssuingBody} />
                                                 <ErrorLabel content={errorIssuingBody} />
                                             </div>
                                             <div className={`form-group ${!errorOfficialNumber ? "" : "has-error"}`}>
-                                                <label>{translate('document.doc_version.official_number')}<span className="text-red">*</span></label>
+                                                <label>{translate('document.doc_version.official_number')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleOfficialNumber} value={documentOfficialNumber} />
                                                 <ErrorLabel content={errorOfficialNumber} />
                                             </div>
                                             <div className={`form-group ${!errorSigner ? "" : "has-error"}`}>
-                                                <label>{translate('document.doc_version.signer')}<span className="text-red">*</span></label>
+                                                <label>{translate('document.doc_version.signer')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleSigner} value={documentSigner} />
                                                 <ErrorLabel content={errorSigner} />
                                             </div>
@@ -555,15 +615,7 @@ class EditForm extends Component {
                                                 <label>{translate('document.description')}</label>
                                                 <textarea type="text" className="form-control" onChange={this.handleDescription} value={documentDescription ? documentDescription : ""} />
                                             </div>
-                                            <div className="form-group">
-                                                <label>Lưu trữ</label>
-                                                <TreeSelect
-                                                    data={archives}
-                                                    value={documentArchives}
-                                                    handleChange={this.handleArchives}
-                                                    mode="hierarchical"
-                                                />
-                                            </div>
+
 
                                         </div>
                                     </div>
@@ -606,7 +658,7 @@ class EditForm extends Component {
                                                         />
                                                     </div>
                                                     <div className="form-group">
-                                                        <label>{translate('document.doc_version.expired_date')}<span className="text-red">*</span></label>
+                                                        <label>{translate('document.doc_version.expired_date')}</label>
                                                         <DatePicker
                                                             id={`document-edit-version-expired-date-${documentId}`}
                                                             onChange={this.handleExpiredDate}
@@ -679,7 +731,16 @@ class EditForm extends Component {
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                             <div className="form-group">
                                                 <label>{translate('document.store.information')}</label>
-                                                <input type="text" className="form-control" onChange={this.handleArchivedRecordPlaceInformation} value={documentArchivedRecordPlaceInfo} />
+                                                <TreeSelect
+                                                    data={archives}
+                                                    value={documentArchives}
+                                                    handleChange={this.handleArchives}
+                                                    mode="hierarchical"
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label>Đường dẫn chi tiết</label>
+                                                <textarea style={{ height: '30px' }} type="text" className="form-control" value={path} disable />
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.store.organizational_unit_manage')}</label>
