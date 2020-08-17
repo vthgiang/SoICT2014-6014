@@ -33,17 +33,22 @@ exports.getTaskEvaluations = async (data) => {
 
     let endTime = endDate.split("-");
     let end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
+
+    let frequency = data.frequency.toString();
     let filterDate = {};
 
     if (data.responsibleEmployees) {
         responsible = data.responsibleEmployees;
     }
 
+
     if (data.accountableEmployees) {
         accountable = data.accountableEmployees;
     }
 
+
     (taskStatus === 1) ? taskStatus = "Finished" : (taskStatus === 2 ? taskStatus = "Inprocess" : "");
+
 
     // Lọc nếu ngày bắt đầu và kết thức có giá trị
     if (startDate && endDate) {
@@ -64,6 +69,7 @@ exports.getTaskEvaluations = async (data) => {
 
     }
 
+
     //  Lọc nếu có ngày bắt đầu, không có ngày kết thúc 
     if (!startDate && endDate) {
         filterDate = {
@@ -72,6 +78,7 @@ exports.getTaskEvaluations = async (data) => {
             }
         }
     }
+
 
     let condition = [
         { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
@@ -90,8 +97,8 @@ exports.getTaskEvaluations = async (data) => {
         },
     ];
 
+
     if (!startDate && !endDate) {
-        console.log('1')
         condition = [
             ...condition,
             { $match: { status: taskStatus } },
@@ -99,7 +106,6 @@ exports.getTaskEvaluations = async (data) => {
         ]
     } else {
         if (taskStatus === 0) { // Lọc tất cả các coong việc không theo đặc thù
-            console.log('2')
             condition = [
                 ...condition,
                 filterDate
@@ -108,7 +114,6 @@ exports.getTaskEvaluations = async (data) => {
         } else
             // nếu không lọc theo người thực hiện và người phê duyệt
             if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
-                console.log('3')
                 condition = [
                     { $match: { status: taskStatus } },
                     ...condition,
@@ -116,7 +121,6 @@ exports.getTaskEvaluations = async (data) => {
                 ]
 
             } else {
-                console.log('4')
                 condition = [
                     { $match: { status: taskStatus } },
                     { $match: { responsibleEmployees: { $in: [...responsible.map(x => mongoose.Types.ObjectId(x.toString()))] } } },
@@ -128,9 +132,45 @@ exports.getTaskEvaluations = async (data) => {
             }
     }
 
+
     let result = await Task.aggregate(condition);
 
-    return result;
+    let taskInfo = data.taskInformations;
+    taskInfo = taskInfo.map(item => JSON.parse(item));
+
+    let configurations = [];
+    // Lấy các điều kiện lọc cuarcasc trường thông tin từ client gửi về.
+    for (let [index, value] of taskInfo.entries()) { // tương tự for in
+        configurations[index] = {
+            filter: value.filter,
+            newName: value.newName,
+            charType: value.charType,
+            coefficient: value.coefficient,
+            showInReport: value.showInReport,
+            aggregationType: value.aggregationType,
+        }
+    }
+
+    // Add thêm các trường điều kiện lọc vào result
+    let newResult = result.map((item) => {
+        let taskInformations = item.taskInformations;
+        let taskMerge = taskInformations.map((item, index) => Object.assign({}, item, configurations[index]))
+
+        return { // Lấy các trường cần thiết
+            _id: item._id,
+            name: item.name,
+            accountableEmployees: item.accountableEmployees,
+            responsibleEmployees: item.responsibleEmployees,
+            status: item.status,
+            date: item.date,
+            startDate: item.startDate,
+            endDate: item.endDate,
+            priority: item.priority,
+            frequency: frequency,
+            taskInformations: taskMerge,
+        };
+    })
+    return newResult;
 
 
 }

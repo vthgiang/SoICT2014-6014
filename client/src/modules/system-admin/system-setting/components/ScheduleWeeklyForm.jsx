@@ -263,10 +263,11 @@ class ScheduleWeeklyForm extends Component {
     }
 
     save = () => {
-        const {schedule} = this.props;
+        const {schedule, limit} = this.props;
         const {day, hour, minute, second} = this.state;
 
         return this.props.backup({auto: 'on', schedule},{
+            limit,
             day, hour, minute, second
         })
     }

@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ImportFileExcel, ConFigImportFile, ShowImportData, DatePicker } from '../../../../common-components';
+import { DialogModal, ImportFileExcel, ConFigImportFile, ShowImportData, DatePicker, ExportExcel } from '../../../../common-components';
 
-import { configurationSalary } from './fileConfigurationImportSalary';
+import { configurationSalary, templateImportSalary } from './fileConfigurationImportSalary';
 
 import { SalaryActions } from '../redux/actions';
 import { AuthActions } from '../../../auth/redux/actions';
@@ -265,10 +265,8 @@ class SalaryImportForm extends Component {
                             {/* Dowload file import mẫu */}
                             <div className="form-group col-md-4 col-xs-12">
                                 <label></label>
-                                <a className='pull-right'
-                                    style={{ cursor: "pointer" }}
-                                    onClick={(e) => this.requestDownloadFile(e, `.${configData.file.fileUrl}`, configData.file.fileName)}>
-                                    <i className="fa fa-download"> &nbsp;{translate('human_resource.download_file')}</i></a>
+                                <ExportExcel id="download_template_salary" type='link' exportData={templateImportSalary}
+                                    buttonName={` ${translate('human_resource.download_file')}`} />
                             </div>
                             <div className="form-group col-md-12 col-xs-12">
                                 {/* Form hiện thì dữ liệu sẽ import */}

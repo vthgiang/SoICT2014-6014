@@ -207,7 +207,7 @@ class SalaryManagement extends Component {
                 }
 
                 return {
-                    // merges: index % 2 == 0 ? { employeeNumber: 2, fullName: 2 } : null,
+                    // merges:{ employeeNumber: 2, fullName: 2 } ,
                     STT: index + 1,
                     employeeNumber: x.employee.employeeNumber,
                     fullName: x.employee.fullName,
