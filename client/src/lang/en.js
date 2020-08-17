@@ -780,19 +780,19 @@ export default {
             edit_faile: 'Edit failed!',
         },
 
-        // Quản lý nhân sự các đơn vị
-        manage_unit: {
-            list_unit: 'List of units',
-            list_employee_unit: 'List of units staff',
-            edit_unit: 'Edit units staff',
-            edit_sucsess: 'Edit units staff sucsess',
-            edit_faile: 'Edit units staff faile',
-            dean_unit: 'Head of unit',
-            vice_dean_unit: 'Deputy unit',
-            employee_unit: 'Unit staff',
-            email_employee: 'Email',
-            add_employee_unit: 'Add staff to the unit',
-        },
+        // // Quản lý nhân sự các đơn vị
+        // manage_unit: {
+        //     list_unit: 'List of units',
+        //     list_employee_unit: 'List of units staff',
+        //     edit_unit: 'Edit units staff',
+        //     edit_sucsess: 'Edit units staff sucsess',
+        //     edit_faile: 'Edit units staff faile',
+        //     dean_unit: 'Head of unit',
+        //     vice_dean_unit: 'Deputy unit',
+        //     employee_unit: 'Unit staff',
+        //     email_employee: 'Email',
+        //     add_employee_unit: 'Add staff to the unit',
+        // },
         // Quản lý thông tin nhân viên
         manage_employee: {
             note_page_personal: 'I hereby certify that all of the above statements are true and I am responsible for them.',
@@ -964,7 +964,6 @@ export default {
 
         // Module Quản lý nhân sự
         human_resource: {
-
             // Nhóm dùng chung cho module quản lý nhân sự
             stt: 'Count',
             unit: 'Unit',
@@ -1307,6 +1306,16 @@ export default {
                 delete_timesheets_faile: "Delete timesheets faile",
                 import_timesheets_success: "Import timesheets success",
                 import_timesheets_faile: "Import timesheets faile",
+            },
+
+            // Quản lý nhân sự các đơn vị
+            manage_department: {
+                edit_unit: 'Edit units staff',
+                dean_unit: 'Head of unit',
+                vice_dean_unit: 'Deputy unit',
+                employee_unit: 'Unit staff',
+                email_employee: 'Email',
+                add_employee_unit: 'Add staff',
             },
         },
 

@@ -215,7 +215,6 @@ class TimesheetsManagement extends Component {
      */
     convertDataToExportData = (data) => {
         const { translate } = this.props;
-        console.log(data);
         let dataExport = [];
         data.map((x, index) => {
             let total = 0;

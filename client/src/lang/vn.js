@@ -780,19 +780,19 @@ export default {
             edit_success: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
         },
-        // Quản lý nhân sự các đơn vị
-        manage_unit: {
-            list_unit: 'Danh sách các đơn vị',
-            list_employee_unit: 'Danh sách nhân viên đơn vị',
-            edit_unit: 'Chỉnh sửa nhân sự đơn vị',
-            edit_sucsess: 'Chỉnh sửa nhân sự đơn vị thành công',
-            edit_faile: 'Chỉnh sửa nhân sự đơn vị thất bại',
-            dean_unit: 'Trưởng đơn vị',
-            vice_dean_unit: 'Phó đơn vị',
-            employee_unit: 'Nhân viên đơn vị',
-            email_employee: 'Email nhân viên',
-            add_employee_unit: 'Thêm nhân viên vào đơn vị',
-        },
+        // // Quản lý nhân sự các đơn vị
+        // manage_unit: {
+        //     list_unit: 'Danh sách các đơn vị',
+        //     list_employee_unit: 'Danh sách nhân viên đơn vị',
+        //     edit_unit: 'Chỉnh sửa nhân sự đơn vị',
+        //     edit_sucsess: 'Chỉnh sửa nhân sự đơn vị thành công',
+        //     edit_faile: 'Chỉnh sửa nhân sự đơn vị thất bại',
+        //     dean_unit: 'Trưởng đơn vị',
+        //     vice_dean_unit: 'Phó đơn vị',
+        //     employee_unit: 'Nhân viên đơn vị',
+        //     email_employee: 'Email nhân viên',
+        //     add_employee_unit: 'Thêm nhân viên vào đơn vị',
+        // },
         // Quản lý thông tin nhân viên
         manage_employee: {
             note_page_personal: 'Tôi xin cam đoan những lời khai trên đây là đúng sự thật và chịu trách nhiệm cho những lời khai này.',
@@ -964,7 +964,6 @@ export default {
 
         // Modules Quản lý nhân sự
         human_resource: {
-
             // Nhóm dùng chung cho module quản lý nhân sự
             stt: 'STT',
             unit: 'Đơn vị',
@@ -1304,6 +1303,16 @@ export default {
                 import_timesheets_success: "Import thông tin chấm công thành công",
                 import_timesheets_faile: "Import thông tin chấm công thất bại",
 
+            },
+
+            // Quản lý nhân sự các đơn vị
+            manage_department: {
+                edit_unit: 'Chỉnh sửa nhân sự đơn vị',
+                dean_unit: 'Trưởng đơn vị',
+                vice_dean_unit: 'Phó đơn vị',
+                employee_unit: 'Nhân viên đơn vị',
+                email_employee: 'Email nhân viên',
+                add_employee_unit: 'Thêm nhân viên',
             },
 
         },
