@@ -1,5 +1,24 @@
 const SystemSettingServices = require('./systemSetting.service');
 
+exports.getBackupSetting = async(req, res) => {
+    try {
+        const content = await SystemSettingServices.getBackupSetting();
+        
+        // LogInfo(req.user.email, 'BACKUP_SCHEDULE');
+        res.status(200).json({
+            success: true,
+            messages: ['get_backup_setting_success'],
+            content
+        });
+    } catch (error) {
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_backup_setting_faile'],
+            content: error
+        });
+    }
+}
+
 exports.backup = async(req, res) => {
     try {
         const content = await SystemSettingServices.backup(req.body, req.query);
@@ -11,7 +30,6 @@ exports.backup = async(req, res) => {
             content
         });
     } catch (error) {
-        console.log("backup error:", error)
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['backup_faile'],
@@ -31,7 +49,6 @@ exports.deleteBackup = async(req, res) => {
             content
         });
     } catch (error) {
-        console.log("backup error:", error)
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['delete_backup_faile'],
@@ -71,7 +88,6 @@ exports.getRestoreData = async(req, res) => {
         });
     } catch (error) {
         // LogError(req.user.email, 'BACKUP');
-        console.log("error", error)
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['get_restore_data_faile'],

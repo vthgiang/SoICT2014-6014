@@ -39,8 +39,8 @@ const seedDatabase = async () => {
     );
 
     await Configuration.create({
+        database: process.env.DB_NAME,
         backup: {
-            time: '0 0 2 15 * *',
             limit: 10
         }
     });

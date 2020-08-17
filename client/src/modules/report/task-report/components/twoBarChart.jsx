@@ -4,8 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import c3 from 'c3';
 import 'c3/c3.css';
-// import * as d3 from "d3";
-// import { format } from 'd3';
+
 class TwoBarChart extends Component {
     constructor(props) {
         super(props);
@@ -15,19 +14,26 @@ class TwoBarChart extends Component {
         }
     }
 
-    setDataMultiChart = (data) => {
+    setDataMultiChart = (data, type) => {
         // const { data } = this.props;
-        let dataConvert = [], dateConvert = [], valueConvert = [];
+        let dataConvert = [], dateConvert = [], valueConvert = [], axisXType;
         if (data) {
             data.forEach(x => {
                 let date = new Date(x.time);
-                let getYear = date.getFullYear();
-                let getMonth = date.getMonth() + 1;
-                let newDate = `${getYear}-${getMonth}-1`;
-                return dateConvert = [...dateConvert, newDate];
+                if (isNaN(date)) {
+                    axisXType = 'category';
+                    return dateConvert = [...dateConvert, x.time.toString()];
+                } else {
+                    axisXType = 'timeseries';
+                    let getYear = date.getFullYear();
+                    let getMonth = date.getMonth() + 1;
+                    let newDate = `${getYear}-${getMonth}-1`;
+                    return dateConvert = [...dateConvert, newDate];
+                }
             })
         }
         dateConvert.unshift("x");
+
         valueConvert = Object.values(data.flatMap(x => x.tasks).reduce((a, i) => {
             if (typeof i.value === 'number') {
                 a[i.code] = a[i.code] || [i.code];
@@ -37,7 +43,7 @@ class TwoBarChart extends Component {
         }, {}));
 
         dataConvert = [...[dateConvert], ...valueConvert];
-        return dataConvert;
+        return { dataConvert, axisXType };
     }
 
 
@@ -88,13 +94,14 @@ class TwoBarChart extends Component {
     renderBarChart = (data) => {
         this.removePreviousBarChart();
         data = this.setDataMultiChart(data);
-        let newPiedata = [...data];
-        newPiedata.shift();
+        let newData = data.dataConvert;
+        let type = data.axisXType;
+
         this.chart = c3.generate({
             bindto: this.refs.barChart,
             data: {
                 x: 'x',
-                columns: data,
+                columns: newData,
                 type: 'bar',
 
             },
@@ -103,7 +110,7 @@ class TwoBarChart extends Component {
             },
             axis: {
                 x: {
-                    type: 'timeseries',
+                    type: type,
                     tick: {
                         format: '%m - %Y',
                         outer: false,
@@ -120,16 +127,19 @@ class TwoBarChart extends Component {
     renderLineChart = (data) => {
         this.removePrceviousLineChart();
         data = this.setDataMultiChart(data);
+        let newData = data.dataConvert;
+        let type = data.axisXType;
+
         this.chart = c3.generate({
             bindto: this.refs.lineChart,
             data: {
                 x: 'x',
-                columns: data,
+                columns: newData,
                 type: 'spline'
             },
             axis: {
                 x: {
-                    type: 'timeseries',
+                    type: type,
                     tick: {
                         format: function (x) { return (x.getMonth() + 1) + "-" + x.getFullYear(); },
                         outer: false,
@@ -145,10 +155,12 @@ class TwoBarChart extends Component {
     }
 
     renderPieChart = (data) => {
-        data = this.setDataMultiChart(data);
-        let newPiedata = [...data];
-        newPiedata.shift();
         this.removePrceviousPieChart();
+        data = this.setDataMultiChart(data);
+        let newData = data.dataConvert;
+        let newPiedata = [...newData];
+        newPiedata.shift();
+
         this.chart = c3.generate({
             bindto: this.refs.pieChart,
             // Căn lề biểu đồ
@@ -172,35 +184,42 @@ class TwoBarChart extends Component {
         return (
             <React.Fragment>
                 <div className="row">
-
-                    <div className="col-md-6">
-                        <div className="box-header with-border">
-                            <h3 className="box-title">{}</h3>
+                    {
+                        (charType) && charType === '0' &&
+                        <div className="col-md-6">
+                            <div className="box-header with-border">
+                                <h3 className="box-title">{}</h3>
+                            </div>
+                            <div className="box-body dashboard_box_body">
+                                <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
+                                <div ref="barChart"></div>
+                            </div>
                         </div>
-                        <div className="box-body dashboard_box_body">
-                            <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
-                            <div ref="barChart"></div>
+                    }
+                    {
+                        charType && charType === '1' &&
+                        <div className="col-md-6">
+                            <div className="box-header with-border">
+                                <h3 className="box-title">{}</h3>
+                            </div>
+                            <div className="box-body dashboard_box_body">
+                                <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
+                                <div ref="pieChart"></div>
+                            </div>
                         </div>
-                    </div>
-                    <div className="col-md-6">
-                        <div className="box-header with-border">
-                            <h3 className="box-title">{}</h3>
+                    }
+                    {
+                        charType && charType === '2' &&
+                        <div className="col-md-6">
+                            <div className="box-header with-border">
+                                <h3 className="box-title">{}</h3>
+                            </div>
+                            <div className="box-body dashboard_box_body">
+                                <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
+                                <div ref="lineChart"></div>
+                            </div>
                         </div>
-                        <div className="box-body dashboard_box_body">
-                            <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
-                            <div ref="pieChart"></div>
-                        </div>
-                    </div>
-                    <div className="col-md-6">
-                        <div className="box-header with-border">
-                            <h3 className="box-title">{}</h3>
-                        </div>
-                        <div className="box-body dashboard_box_body">
-                            <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
-                            <div ref="lineChart"></div>
-                        </div>
-                    </div>
-
+                    }
 
 
                 </div>

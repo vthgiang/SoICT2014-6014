@@ -1,7 +1,7 @@
 const EmployeeService = require('../profile/profile.service');
 const {
     Employee,
-    Timesheets
+    Timesheet
 } = require('../../../models').schema;
 
 /**
@@ -55,8 +55,8 @@ exports.searchTimesheets = async (params, company) => {
     };
 
     // Lấy danh sách chấm công
-    let totalList = await Timesheets.count(keySearch);
-    let listTimesheets = await Timesheets.find(keySearch).populate({
+    let totalList = await Timesheet.count(keySearch);
+    let listTimesheets = await Timesheet.find(keySearch).populate({
             path: 'employee',
             model: Employee,
             select: 'employeeNumber fullName'
@@ -87,7 +87,7 @@ exports.createTimesheets = async (data, company) => {
     });
     let month = new Date(data.month);
     if (employeeInfo !== null) {
-        let isSalary = await Timesheets.findOne({
+        let isSalary = await Timesheet.findOne({
             employee: employeeInfo._id,
             company: company,
             month: month
@@ -98,7 +98,7 @@ exports.createTimesheets = async (data, company) => {
             return "have_exist"
         } else {
             // Thêm thông tin chấm công
-            let createTimesheets = await Timesheets.create({
+            let createTimesheets = await Timesheet.create({
                 employee: employeeInfo._id,
                 company: company,
                 month: month,
@@ -106,7 +106,7 @@ exports.createTimesheets = async (data, company) => {
                 workSession2: data.workSession2,
             });
             // Lấy thông tin chấm công vừa cập nhật
-            let newTimesheets = await Timesheets.findOne({
+            let newTimesheets = await Timesheet.findOne({
                 _id: createTimesheets._id
             }).populate([{
                 path: 'employee',
@@ -124,7 +124,7 @@ exports.createTimesheets = async (data, company) => {
  * @id : Id thông tin chấm công
  */
 exports.deleteTimesheets = async (id) => {
-    return await Timesheets.findOneAndDelete({
+    return await Timesheet.findOneAndDelete({
         _id: id
     });
 }
@@ -136,13 +136,13 @@ exports.deleteTimesheets = async (id) => {
  */
 exports.updateTimesheets = async (id, data) => {
     // Cập nhật thông tin chấm công
-    let infoTimesheets = await Timesheets.findById(id);
+    let infoTimesheets = await Timesheet.findById(id);
     infoTimesheets.workSession1 = data.workSession1;
     infoTimesheets.workSession2 = data.workSession2;
     await infoTimesheets.save();
 
     // Lấy thông tin chấm công vừa cập nhật
-    let updateTimesheets = await Timesheets.findOne({
+    let updateTimesheets = await Timesheet.findOne({
         _id: id
     }).populate([{
         path: 'employee',
@@ -156,9 +156,8 @@ exports.updateTimesheets = async (id, data) => {
 /**
  * import thông tin chấm công
  */
-
 exports.importTimesheets = async (data, company) => {
-    let timesheetsExisted = await Timesheets.find({
+    let timesheetsExisted = await Timesheet.find({
         month: data[0].month,
         company: company
     })
@@ -205,6 +204,6 @@ exports.importTimesheets = async (data, company) => {
             rowError
         }
     } else {
-        return await Timesheets.insertMany(data);
+        return await Timesheet.insertMany(data);
     }
 }

@@ -1,20 +1,26 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
-import { RoleActions } from '../../../super-admin/role/redux/actions';
-import { EmployeeInOrganizationalUnitEditForm } from './employeeInOrganizationalUnitEditForm';
+
 import { TreeTable } from '../../../../common-components';
+
+import { EmployeeInOrganizationalUnitEditForm } from './employeeInOrganizationalUnitEditForm';
+
+import { RoleActions } from '../../../super-admin/role/redux/actions';
+import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
 
 class DepartmentManage extends Component {
     constructor(props) {
         super(props);
         this.state = {}
     }
+
     componentDidMount() {
         this.props.getDepartment();
         this.props.getRole();
     }
+
+    /** Function bắt sự kiện chỉnh sửa nhân sự các đơn vị */
     handleShowEdit = async (id) => {
         await this.setState({
             ...this.state,
@@ -22,16 +28,19 @@ class DepartmentManage extends Component {
         })
         window.$(`#modal-edit-unit${id}`).modal('show');
     }
+
     render() {
-        var data = [];
         const { translate, department } = this.props;
+
+        let data = [];
         if (department.list.length !== 0) {
             data = department.list;
             for (let n in data) {
                 data[n] = { ...data[n], action: ["edit"] }
             }
         }
-        var column = [{ name: translate('manage_department.name'), key: "name" }, { name: translate('manage_department.description'), key: "description" }];
+        let column = [{ name: translate('manage_department.name'), key: "name" }, { name: translate('manage_department.description'), key: "description" }];
+
         return (
             <div className="box">
                 <div className="box-body qlcv">
@@ -40,12 +49,13 @@ class DepartmentManage extends Component {
                         column={column}
                         data={data}
                         titleAction={{
-                            edit: translate('manage_unit.edit_unit'),
+                            edit: translate('human_resource.manage_department.edit_unit'),
                         }}
                         funcEdit={this.handleShowEdit}
                     />
                 </div>
-                {
+
+                { /** Form chỉnh sửa nhân sự các đơn vị */
                     this.state.currentRow !== undefined &&
                     <EmployeeInOrganizationalUnitEditForm
                         _id={this.state.currentRow}
@@ -66,6 +76,6 @@ const actionCreators = {
     getDepartment: DepartmentActions.get,
     getRole: RoleActions.get,
 }
-const departmentManage = connect(mapState, actionCreators)(withTranslate(DepartmentManage));
 
+const departmentManage = connect(mapState, actionCreators)(withTranslate(DepartmentManage));
 export { departmentManage as DepartmentManage };

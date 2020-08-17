@@ -582,12 +582,12 @@ class EditForm extends Component {
                                                         <input type="text" className="form-control" />
                                                     </div>
                                                     <div className="form-group">
-                                                        <label>{translate('document.doc_version.file')}</label>
+                                                        <label>{translate('document.upload_file')}</label>
                                                         <input type="file" onChange={this.handleUploadFile} />
                                                         <ErrorLabel content={errorDocumentFile} />
                                                     </div>
                                                     <div className="form-group">
-                                                        <label>{translate('document.doc_version.scanned_file_of_signed_document')}</label>
+                                                        <label>{translate('document.upload_file_scan')}</label>
                                                         <input type="file" onChange={this.handleUploadFileScan} />
                                                         <ErrorLabel content={errorDocumentFileScan} />
                                                     </div>

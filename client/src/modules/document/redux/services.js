@@ -62,7 +62,6 @@ function increaseNumberView(id) {
 }
 
 function editDocument(id, data, option = undefined) {
-    console.log('servicessssss', data);
     return sendRequest({
         url: `${LOCAL_SERVER_API}/documents/documents/${id}`,
         method: 'PATCH',
