@@ -6,27 +6,16 @@ const {
 
 const TimsheetsController = require("./timesheets.controller");
 
-/**
- * Lấy danh sách thông tin chấm công
- */
-router.get('/', auth, TimsheetsController.searchTimesheets);
 
-/**
- *  Thêm mới thông tin chấm công
- */
-router.post('/', auth, TimsheetsController.createTimesheets);
+router.get('/timesheets', auth, TimsheetsController.searchTimesheets);
 
-/**
- * Xoá thông tin chấm công
- */
-router.delete('/:id', auth, TimsheetsController.deleteTimesheets);
 
-/**
- * Chỉnh sửa thông tin chấm công
- */
-router.patch('/:id', auth, TimsheetsController.updateTimesheets);
+router.post('/timesheets', auth, TimsheetsController.createTimesheets);
+
+router.patch('/timesheets/:id', auth, TimsheetsController.updateTimesheets);
+router.delete('/timesheets/:id', auth, TimsheetsController.deleteTimesheets);
 
 // Import chấm công
-router.post('/import', auth, TimsheetsController.importTimesheets);
+router.post('/timesheets/import', auth, TimsheetsController.importTimesheets);
 
 module.exports = router;

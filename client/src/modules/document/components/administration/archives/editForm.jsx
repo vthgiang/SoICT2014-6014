@@ -13,11 +13,9 @@ class EditForm extends Component {
         }
     }
 
-    handleName = (e) => {
+    handleValidateName = (e) => {
         const value = e.target.value;
-        this.setState({
-            archiveName: value
-        })
+        this.validateName(value, true);
     }
 
     handleDescription = (e) => {
@@ -70,17 +68,19 @@ class EditForm extends Component {
                 archiveName: nextProps.archiveName,
                 archiveDescription: nextProps.archiveDescription,
                 archiveParent: nextProps.archiveParent,
+                archivePath: nextProps.archivePath,
                 errorName: undefined,
             }
         } else {
             return null;
         }
     }
+
     render() {
         const { translate, documents } = this.props;
         const { tree, list } = documents.administration.archives;
-        const { archiveId, archiveName, archiveDescription, archiveParent, errorName } = this.state;
-
+        const { archiveId, archiveName, archiveDescription, archiveParent, archivePath, errorName } = this.state;
+        const archives = documents.administration.archives.list;
         return (
             <div id="edit-document-archive">
                 <div className={`form-group ${errorName === undefined ? "" : "has-error"}`}>
@@ -91,6 +91,10 @@ class EditForm extends Component {
                 <div className="form-group">
                     <label>Nút cha</label>
                     <TreeSelect data={list} value={[archiveParent]} handleChange={this.handleParent} mode="radioSelect" />
+                </div>
+                <div className="form-group">
+                    <label>Đường dẫn</label>
+                    <textarea style={{ minHeight: '30px' }} type="text" className="form-control" value={archivePath} disable />
                 </div>
                 <div className="form-group">
                     <label>Mô tả</label>

@@ -27,7 +27,6 @@ class TaskReportCreateForm extends Component {
                 startDate: '',
                 endDate: '',
                 frequency: 'month',
-                // listCheckBox: [],
 
             },
             currentRole: getStorage('currentRole'),
@@ -119,10 +118,10 @@ class TaskReportCreateForm extends Component {
                         responsibleEmployees: [],
                         accountableEmployees: [],
                         taskTemplate: '',
-                        errorOnDescriptiontTaskReport: undefined,
-                        errorOnNameTaskReport: undefined,
-                        errorOnStartDate: undefined,
-                    }
+                    },
+                    errorOnDescriptiontTaskReport: undefined,
+                    errorOnNameTaskReport: undefined,
+                    errorOnStartDate: undefined,
                 }
             });
         }
@@ -148,10 +147,10 @@ class TaskReportCreateForm extends Component {
                         status: '',
                         responsibleEmployees: [],
                         accountableEmployees: [],
-                        errorOnDescriptiontTaskReport: undefined,
-                        errorOnNameTaskReport: undefined,
-                        errorOnStartDate: undefined,
-                    }
+                    },
+                    errorOnDescriptiontTaskReport: undefined,
+                    errorOnNameTaskReport: undefined,
+                    errorOnStartDate: undefined,
                 }
             });
         } else {
@@ -435,11 +434,11 @@ class TaskReportCreateForm extends Component {
     /**
      * Xử lý hiện form view
      */
-    handleView = () => {
+    handleView = async () => {
 
         const { newReport } = this.state;
 
-        this.props.getTaskEvaluations(newReport);
+        await this.props.getTaskEvaluations(newReport);
         window.$('#modal-view-taskreport').modal('show');
     }
 
@@ -463,6 +462,7 @@ class TaskReportCreateForm extends Component {
             this.props.createTaskReport(this.state.newReport);
         }
     }
+
 
     componentDidMount() {
         this.props.getTaskTemplateByUser("1", "0", "[]");
@@ -517,7 +517,7 @@ class TaskReportCreateForm extends Component {
                     size={100}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <TaskReportViewForm taskInformations={newReport.taskInformations} coefficient={newReport.coefficient}
+                    <TaskReportViewForm taskInformations={newReport.taskInformations} frequency={newReport.frequency}
                     />
                     <div className="row" >
                         <div className="col-md-12 col-lg-12" style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -761,8 +761,7 @@ class TaskReportCreateForm extends Component {
                                                     </td>
                                                     <td>
                                                         {(item2.type === 'Number') ?
-                                                            <input type="text" className="form-control" style={{ width: '100%' }} onChange={(e) => this.handleChangeCoefficient(index, e)} />
-                                                            : ""
+                                                            <input type="text" className="form-control" style={{ width: '100%' }} onChange={(e) => this.handleChangeCoefficient(index, e)} /> : ''
                                                         }
                                                     </td>
                                                     <td>

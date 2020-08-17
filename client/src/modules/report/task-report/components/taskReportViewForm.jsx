@@ -21,13 +21,28 @@ class TaskReportViewForm extends Component {
         if (data === 3) return "Cao";
     }
 
+    // hamf convert month-year gom nhóm công viêc theo tháng
     convertMonthYear = (data) => {
         const time = new Date(data);
-        const m = time.getMonth();
-        const y = time.getFullYear();
-        return `${y}-${m + 1}`;
+        const month = time.getMonth();
+        const year = time.getFullYear();
+        return `${year}-${month + 1}`;
     }
 
+    // Hmaf convert year, gom nhóm công việc theo năm
+    convertYear = (data) => {
+        const time = new Date(data);
+        const year = time.getFullYear();
+        return `${year}`;
+    }
+
+    //Hàm convert gom nhóm công việc theo quý
+    getQuarter = (data) => {
+        const time = new Date(data);
+        let quarter = Math.floor((time.getMonth() + 3) / 3);
+        let year = time.getFullYear() + (`-quy${quarter}`);
+        return `${year}`;
+    }
 
 
     render() {
@@ -35,11 +50,10 @@ class TaskReportViewForm extends Component {
         const { taskInformations } = this.props; // Lấy dữ liệu từ form cha
         let formater = new Intl.NumberFormat();
         let listTaskEvaluation = tasks.listTaskEvaluations;
-        let taskInfoName, headTable = [], aggregationType, charType, coefficient;
+        let taskInfoName, headTable = [], aggregationType, charType, coefficient, frequency, newlistTaskEvaluation;
 
         //  Lấy loại bản đồ và cách tính từ form tạo mới
         if (taskInformations) {
-            // taskInformations = taskInformations[0];
             aggregationType = taskInformations[0].aggregationType;
             charType = taskInformations[0].charType;
             coefficient = taskInformations[0].coefficient;
@@ -56,23 +70,53 @@ class TaskReportViewForm extends Component {
             })
         }
 
-        let newlistTaskEvaluation;
+        // Lấy tần suất từ server gửi
+        if (listTaskEvaluation) {
+            frequency = listTaskEvaluation[0].frequency;
+        }
 
         // Lọc lấy các trường cần thiết.
         if (listTaskEvaluation) {
             newlistTaskEvaluation = listTaskEvaluation.map(item => {
-                return {
-                    time: this.convertMonthYear(item.date),
-                    task: item.taskInformations.filter(task => {
-                        if (task.type === 'Number')
-                            return {
-                                code: task.code,
-                                value: task.value,
-                            }
-                    })
+                if (frequency && frequency === 'month') {
+                    return {
+                        time: this.convertMonthYear(item.date),
+                        task: item.taskInformations.filter(task => {
+                            if (task.type === 'Number')
+                                return {
+                                    code: task.code,
+                                    value: task.value,
+                                }
+                        })
+                    }
+                } else if (frequency && frequency === 'quarter') {
+                    return {
+                        time: this.getQuarter(item.date),
+                        task: item.taskInformations.filter(task => {
+                            if (task.type === 'Number')
+                                return {
+                                    code: task.code,
+                                    value: task.value,
+                                }
+                        })
+                    }
+
+                } else {
+                    return {
+                        time: this.convertYear(item.date),
+                        task: item.taskInformations.filter(task => {
+                            if (task.type === 'Number')
+                                return {
+                                    code: task.code,
+                                    value: task.value,
+                                }
+                        })
+                    }
                 }
+
             });
         }
+
 
 
         //Gom nhóm công việc theo tháng-năm
@@ -103,9 +147,12 @@ class TaskReportViewForm extends Component {
                     let valueSum = Object.entries(groupByCode).map(([key, value]) => [ // Convert groupByCode từ object sang mảng để dùng map
                         key, value.reduce((a, e) => a + e, 0) / value.length // Dùng reduce tính trung bình cộng
                     ])
+
+                    // nhân với hệ số 
+                    let value = valueSum.map(([key, value]) => [key, value * coefficient]);
                     return {
                         time,
-                        tasks: valueSum.map(([code, value]) => ({ code, value }))
+                        tasks: value.map(([code, value]) => ({ code, value }))
                     }
 
                 } else {
@@ -113,13 +160,17 @@ class TaskReportViewForm extends Component {
                     let valueAvg = Object.entries(groupByCode).map(([key, value]) => [
                         key, value.reduce((a, e) => a + e, 0) // dùng reduce tính tổng array value
                     ])
+
+                    // Nhân với hệ số
+                    let value = valueAvg.map(([key, value]) => [key, value * coefficient]);
                     return {
                         time,
-                        tasks: valueAvg.map(([code, value]) => ({ code, value }))
+                        tasks: value.map(([code, value]) => ({ code, value }))
                     }
                 }
             })
         }
+
 
         return (
             <React.Fragment>

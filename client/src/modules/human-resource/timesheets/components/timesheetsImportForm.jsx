@@ -97,7 +97,6 @@ class TimesheetsImportForm extends Component {
      * @param {*} checkFileImport : true file import hợp lệ, false file import không hợp lệ
      */
     handleImportExcel = (value, checkFileImport) => {
-        console.log(value);
         if (checkFileImport) {
             let importData = [], rowError = [];
             for (let i = 0; i < value.length; i = i + 2) {
@@ -117,13 +116,13 @@ class TimesheetsImportForm extends Component {
                     x = { ...x, error: true }
                 }
                 if (x.employeeNumber === null) {
-                    errorAlert = [...errorAlert, 'Mã nhân viên không được để trống'];
+                    errorAlert = [...errorAlert, 'employee_number_required'];
                 } else {
                     if (checkImportData.filter(y => y.employeeNumber === x.employeeNumber).length > 1)
-                        errorAlert = [...errorAlert, 'Mã nhân viên bị trùng lặp'];
+                        errorAlert = [...errorAlert, 'employee_code_duplicated'];
                 };
                 if (x.employeeName === null)
-                    errorAlert = [...errorAlert, 'Tên nhân viên không được để trống'];
+                    errorAlert = [...errorAlert, 'employee_name_required'];
 
                 x = { ...x, errorAlert: errorAlert }
                 return x;
@@ -208,6 +207,13 @@ class TimesheetsImportForm extends Component {
             importData = timesheets.error.data
         }
 
+        importData = importData.map(x => {
+            return {
+                ...x,
+                errorAlert: x.errorAlert.map(y => translate(`human_resource.timesheets.${y}`))
+            }
+        })
+
         let pageTotal = (importData.length % limit === 0) ?
             parseInt(importData.length / limit) :
             parseInt((importData.length / limit) + 1);
@@ -264,7 +270,7 @@ class TimesheetsImportForm extends Component {
 
                             <div className="form-group col-md-12 col-xs-12">
                                 {
-                                    !checkFileImport && <span style={{ fontWeight: "bold", color: "red" }}>File import không đúng định dạng </span>
+                                    !checkFileImport && <span style={{ fontWeight: "bold", color: "red" }}>{translate('human_resource.note_file_import')}</span>
                                 }
                                 {
                                     importDataCurrentPage.length !== 0 && (
@@ -277,7 +283,7 @@ class TimesheetsImportForm extends Component {
                                             />
                                             {rowError.length !== 0 && (
                                                 <React.Fragment>
-                                                    <span style={{ fontWeight: "bold", color: "red" }}>Có lỗi xảy ra ở các dòng: {rowError.join(', ')}</span>
+                                                    <span style={{ fontWeight: "bold", color: "red" }}>{translate('human_resource.error_row')}:{rowError.join(', ')}</span>
                                                 </React.Fragment>
                                             )}
                                             <div id="croll-table-import">
