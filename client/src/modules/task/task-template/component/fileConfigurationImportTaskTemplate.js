@@ -3,6 +3,10 @@ export const configTaskTempalte = {
         description: "Tên các sheet",
         value: ["Sheet1"]
     },
+    rowHeader: {
+        description: "Số tiêu đề của bảng",
+        value: 2
+    },
     name: {
         columnName: "Tên mẫu",
         description: "Tên tiêu đề ứng với tên mẫu",
@@ -53,43 +57,18 @@ export const configTaskTempalte = {
         description: "Tên tiêu đề ứng với công thức tính điểm",
         value: "Công thức tính điểm"
     },
-    nameTaskActions: {
-        columnName: "Tên hoạt động",
+    taskActions: {
+        columnName: "Danh sách hoạt động",
         description: "Tên tiêu đề ứng với tên hoạt động",
-        value: "Tên hoạt động"
+        value: ["Tên hoạt động", "Mô tả hoạt động", "Bắt buộc"]
     },
-    descriptionTaskAction: {
-        columnName: "Mô tả hoạt động",
-        description: "Tên tiêu đề ứng với mô tả hoạt động",
-        value: "Mô tả hoạt động"
-    },
-    mandatory: {
-        columnName: "Bắt buộc",
-        description: "Tên tiêu đề ứng với bắt buộc",
-        value: "Bắt buộc",
-    },
-    nameTaskInformation: {
-        columnName: "Tên thông tin",
+    taskInformations: {
+        columnName: "Danh sách thông tin",
         description: "Tên tiêu đề ứng với tên thông tin",
-        value: "Tên thông tin"
-    },
-    descriptionTaskInformation: {
-        columnName: "Mô tả thông tin",
-        description: "Tên tiêu đề ứng với mô tả thông tin",
-        value: "Mô tả thông tin"
-    },
-    type: {
-        columnName: "Kiểu dữ liệu",
-        description: "Tên tiêu đề ứng với kiểu dữ liệu",
-        value: "Kiểu dữ liệu"
-    },
-    filledByAccountableEmployeesOnly: {
-        columnName: "Chỉ quản lý được điền",
-        description: "Tên tiêu đề ứng với chỉ quản lý được điền",
-        value: "Chỉ quản lý được điền"
+        value: ["Tên thông tin", "Mô tả thông tin", "Kiểu dữ liệu", "Chỉ quản lý được điền"]
     },
     file: {
-        fileName: 'taskTemplate',
-        fileUrl: '/upload/task/taskTemplateImportForm/template_mau-cong-viec.xlsx'
+        fileName: 'templateImportTaskTemplate',
+        fileUrl: '/upload/task/taskTemplateImportForm/templateImportTaskTemplate.xlsx'
     }
 }
