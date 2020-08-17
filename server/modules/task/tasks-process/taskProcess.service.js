@@ -94,7 +94,7 @@ exports.getXmlDiagramById = (params) => {
 exports.createXmlDiagram = async (body) => {
     let info = [];
     for (const x in body.info) {
-        if (Object.keys(body.info[x]).length !== 0) {
+        if (Object.keys(body.info[x]).length > 4) {
             body.info[x].taskActions = body.info[x].taskActions.map(item => {
                 return {
                     name: item.name,
@@ -185,7 +185,7 @@ exports.editXmlDiagram = async (params, body) => {
     let info = [];
     for (let x in body.info) {
         console.log(body.info[x]);
-        if (Object.keys(body.info[x]).length !== 0) {
+        if (Object.keys(body.info[x]).length > 4) {
             body.info[x].taskActions = body.info[x].taskActions.map(item => {
                 return {
                     name: item.name,
@@ -193,16 +193,16 @@ exports.editXmlDiagram = async (params, body) => {
                     mandatory: item.mandatory,
                 }
             }),
-            body.info[x].taskInformations = body.info[x].taskInformations.map((item, key) => {
-                return {
-                    code: "p" + parseInt(key + 1),
-                    name: item.name,
-                    description: item.description,
-                    filledByAccountableEmployeesOnly: item.filledByAccountableEmployeesOnly,
-                    type: item.type,
-                    extra: item.extra,
-                }
-            })
+                body.info[x].taskInformations = body.info[x].taskInformations.map((item, key) => {
+                    return {
+                        code: "p" + parseInt(key + 1),
+                        name: item.name,
+                        description: item.description,
+                        filledByAccountableEmployeesOnly: item.filledByAccountableEmployeesOnly,
+                        type: item.type,
+                        extra: item.extra,
+                    }
+                })
 
             info.push(body.info[x])
         }
@@ -223,9 +223,9 @@ exports.editXmlDiagram = async (params, body) => {
 
     let queryData = {
         userId: body.userId,
-        name : body.name,
-        pageNumber : body.pageNumber,
-        noResultsPerPage : body.noResultsPerPage,
+        name: body.name,
+        pageNumber: body.pageNumber,
+        noResultsPerPage: body.noResultsPerPage,
     }
     let data1 = await this.getAllXmlDiagram(queryData);
     console.table(data1);
@@ -242,13 +242,13 @@ exports.deleteXmlDiagram = async (diagramId, query) => {
         _id: diagramId,
     });
     await Privilege.findOneAndDelete({ resourceId: diagramId, resourceType: "TaskProcess" })
-    
+
     let queryData = {
         userId: query.userId,
-        name : query.name,
+        name: query.name,
         // pageNumber : query.pageNumber,
-        pageNumber : 1,
-        noResultsPerPage : query.noResultsPerPage,
+        pageNumber: 1,
+        noResultsPerPage: query.noResultsPerPage,
     }
 
     let data = await this.getAllXmlDiagram(queryData);
@@ -261,31 +261,45 @@ exports.deleteXmlDiagram = async (diagramId, query) => {
  * 
  */
 exports.createTaskByProcess = async (processId, body) => {
-    let data = body.infoTask;
+    console.log('----', body);
+    let data = body.taskList;
+    // let startDate = body.startDate;
+    // let endDate = body.endDate;
     let level;
 
-    let splitter = data.startDate.split("-");
-    let startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-    splitter = data.endDate.split("-");
-    let endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
-
+    let splitter = body.startDate.split("-");
+    let startDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+    splitter = body.endDate.split("-");
+    let endDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
 
     for (let i in data) {
-        let taskTemplate, taskActions, cloneActions = [];
+        let taskInformations, taskActions, cloneActions = [];
 
-        if (data[i].taskTemplate !== "") {
-            taskTemplate = await TaskTemplate.findById(data[i].taskTemplate);
-            taskActions = taskTemplate.taskActions;
+        let splitter = data[i].startDate.split("-");
+        let startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+        splitter = data[i].endDate.split("-");
+        let endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
 
-            for (let i in taskActions) {
-                cloneActions[i] = {
-                    mandatory: taskActions[i].mandatory,
-                    name: taskActions[i].name,
-                    description: taskActions[i].description,
-                }
+        // if (data[i].taskTemplate !== "") {
+        taskInformations = data[i].taskInformations;
+        taskActions = data[i].taskActions;
+
+        for (let i in taskActions) {
+            cloneActions[i] = {
+                mandatory: taskActions[i].mandatory,
+                name: taskActions[i].name,
+                description: taskActions[i].description,
             }
         }
+        // }
+
+        let process = {
+            processId: processId,
+            followingTask: [],
+            precedingTask: [],
+        }
         await Task.create({
+            process: process,
             organizationalUnit: data[i].organizationalUnit,
             creator: data[i].creator, //id của người tạo
             name: data[i].name,
@@ -293,11 +307,11 @@ exports.createTaskByProcess = async (processId, body) => {
             startDate: startDate,
             endDate: endDate,
             priority: data[i].priority,
-            taskTemplate: taskTemplate ? taskTemplate : null,
-            taskInformations: taskTemplate ? taskTemplate.taskInformations : [],
-            taskActions: taskTemplate ? cloneActions : [],
-            parent: (task.parent === "") ? null : task.parent,
-            level: level,
+            taskTemplate: null,
+            taskInformations: taskInformations,
+            taskActions: cloneActions,
+            parent: null,
+            level: 1,
             responsibleEmployees: data[i].responsibleEmployees,
             accountableEmployees: data[i].accountableEmployees,
             consultedEmployees: data[i].consultedEmployees,
@@ -305,4 +319,5 @@ exports.createTaskByProcess = async (processId, body) => {
         });
     }
     await TaskProcess.findByIdAndUpdate(processId, { $inc: { 'numberOfUse': 1 } }, { new: true });
+    return await TaskProcess.find().populate({ path: 'creator', model: User, select: 'name' });;
 }

@@ -20,6 +20,10 @@ const ComponentSchema = new Schema({
     company: {
         type: Schema.Types.ObjectId,
         ref: 'companies'
+    },
+    deleteSoft: {
+        type: Boolean,
+        default: true
     }
 },{
     timestamps: true,

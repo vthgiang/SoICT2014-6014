@@ -26,6 +26,10 @@ const LinkSchema = new Schema({
     company: {
         type: Schema.Types.ObjectId,
         ref: Company
+    },
+    deleteSoft: {
+        type: Boolean,
+        default: true
     }
 },{
     timestamps: true,

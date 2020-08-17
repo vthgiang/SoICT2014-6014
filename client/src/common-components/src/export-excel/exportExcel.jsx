@@ -119,9 +119,8 @@ class ExportExcel extends Component {
                         }
                         currentRow += 1;
                     };
-
                     worksheet.columns = columns.map(col => {
-                        return { key: col.key, width: 15 }
+                        return { key: col.key, width: col.width ? Number(col.width) : 15 }
                     });
 
                     // Thêm dữ liệu vào body table
@@ -161,10 +160,15 @@ class ExportExcel extends Component {
 
     render() {
         const { translate } = this.props;
-        const { buttonName = translate('human_resource.name_button_export'), style = {}, className = "btn btn-primary pull-right", title = "" } = this.props;
+        const { type = 'button', buttonName = translate('human_resource.name_button_export'), style = {}, className = "btn btn-primary pull-right", title = "" } = this.props;
         return (
             <React.Fragment>
-                <button type="button" style={style} className={className} title={title} onClick={this.handleExportExcel} >{buttonName}</button>
+                {type === 'button' && <button type="button" style={style} className={className} title={title} onClick={this.handleExportExcel} >{buttonName}</button>}
+                {type === 'link' &&
+                    < a className='pull-right' style={{ cursor: "pointer" }} onClick={this.handleExportExcel}>
+                        <i className="fa fa-download">{buttonName}</i>
+                    </a>
+                }
             </React.Fragment>
         )
     }

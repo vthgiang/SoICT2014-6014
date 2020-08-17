@@ -8,9 +8,9 @@ export const configurationTimesheets = {
         value: ["Sheet1"]
     },
     employeeNumber: {
-        columnName: "Mã số nhân viên",
+        columnName: "Mã nhân viên",
         description: "Tên tiêu đề ứng với mã số nhân viên",
-        value: "Mã số nhân viên"
+        value: "Mã nhân viên"
     },
     employeeName: {
         columnName: "Họ và tên",

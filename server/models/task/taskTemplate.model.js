@@ -25,6 +25,10 @@ const TaskTemplateSchema = new Schema({
         type: Number,
         required: true
     },
+    numberOfDaysTaken: {
+        type: Number,
+        default: 0,
+    },
     taskActions: [{
         name: {
             type: String,
