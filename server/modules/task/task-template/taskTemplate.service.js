@@ -338,25 +338,17 @@ exports.editTaskTemplate = async (data, id) => {
  * @param {*} id : id user
  */
 exports.importTaskTemplate = async (data,id) => {
-    // console.log(data.taskActions);
     for (let i = 0; i < data.length; i++) {
-        // console.log(data[i].taskActions);
-        // console.log(data[i]);
         // chuyen dia chi email sang id
         for (let j = 0; j < data[i].accountableEmployees.length; j++) {
-            // console.log(data[i].accountableEmployees[j]);
             let accountableEmployees = await User.findOne({ email: data[i].accountableEmployees[j] });
             data[i].accountableEmployees[j] = String(accountableEmployees._id);
         };
         let read = [];
-        console.log(data[i].readByEmployees);
         for (let j = 0; j < data[i].readByEmployees.length; j++) {
-            console.log(data[i].readByEmployees[j]);
-            let readByEmployees = await Role.find({ name: data[i].readByEmployees[j] });
-            // chuyen tu user qua role
-            // readByEmployees = readByEmployees._id;
-            read = readByEmployees.map( x => x._id);
-            // read = read.concat(role);
+            let readByEmployees = await Role.findOne({ name: data[i].readByEmployees[j] });
+            readByEmployees = readByEmployees._id;
+            read = [...read, readByEmployees];
         }
         data[i].readByEmployees = read;
         for (let j = 0; j < data[i].consultedEmployees.length; j++) {
@@ -406,10 +398,8 @@ exports.importTaskTemplate = async (data,id) => {
                 data[i].taskInformations.splice(j,1);
             }
         }
-        // console.log(data[i]);
         for (let j = 0; j < data[i].taskActions.length; j++) {
             if (data[i].taskActions[j][0]) {
-                // console.log(data[i].taskActions[j]);
                 if (data[i].taskActions[j][2] === "Bắt buộc")
                     data[i].taskActions[j]["mandatory"] = true;
                 else data[i].taskActions[j]["mandatory"] = false;
@@ -419,12 +409,10 @@ exports.importTaskTemplate = async (data,id) => {
                 data[i].taskActions.splice(j,1);
             }
         }
-        console.log(data[i]);
         let unit = await OrganizationalUnit.findOne({name: data[i].organizationalUnit});
         data[i].organizationalUnit = String(unit._id);
         data[i].creator = id;
         let result = await this.createTaskTemplate(data[i]);
-        console.log(result);
     };
 
 }

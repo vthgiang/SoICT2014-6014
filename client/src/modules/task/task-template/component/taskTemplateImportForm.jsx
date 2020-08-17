@@ -76,15 +76,16 @@ class TaskTemplateImportForm extends Component {
                     "taskInformations": [x.taskInformations],
                     "filledByAccountableEmployeesOnly": x.filledByAccountableEmployeesOnly }];
             } else {
-                if (x.taskActions) {
-                    values[k].taskActions = [...values[k].taskActions, x.taskActions];
-                    valueShow[k].taskActions = [...valueShow[k].taskActions, x.taskActions];
+                if (k >= 0) {
+                    if (x.taskActions) {
+                        values[k].taskActions = [...values[k].taskActions, x.taskActions];
+                        valueShow[k].taskActions = [...valueShow[k].taskActions, x.taskActions];
+                    }
+                    if (x.taskInformations) {
+                        valueShow[k].taskInformations = [...valueShow[k].taskInformations, x.taskInformations];
+                        values[k].taskInformations = [...values[k].taskInformations, x.taskInformations];
+                    }
                 }
-                if (x.taskInformations) {
-                    valueShow[k].taskInformations = [...valueShow[k].taskInformations, x.taskInformations];
-                    values[k].taskInformations = [...values[k].taskInformations, x.taskInformations];
-                }
-                
             }
         }
 
