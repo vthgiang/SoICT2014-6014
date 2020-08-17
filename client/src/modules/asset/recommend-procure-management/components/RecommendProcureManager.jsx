@@ -186,7 +186,6 @@ class RecommendProcureManager extends Component {
                     tables: [
                         {
                             tableName : fileName,
-                            tableTitle: fileName,
                             rowHeader: 2,
                             columns: [
                                 { key: "index", value: "STT" },

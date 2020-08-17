@@ -29,7 +29,7 @@ function backup(params=undefined, data=undefined) {
     } else {
         return dispatch => {
             dispatch({ type: SystemSettingConstants.SET_SCHEDULE_BACKUP_AUTOMATIC_REQUEST });
-            SystemSettingServices.backup()
+            SystemSettingServices.backup(params, data)
             .then(res => {
                 dispatch({
                     type: SystemSettingConstants.SET_SCHEDULE_BACKUP_AUTOMATIC_SUCCESS,
@@ -88,20 +88,20 @@ function getRestoreData() {
     }
 }
 
-function restore() {
+function restore(version) {
     return dispatch => {
-        dispatch({ type: SystemSettingConstants.RESTORE_DATABASE_REQUEST });
+        dispatch({ type: SystemSettingConstants.RESTORE_REQUEST });
 
-        SystemSettingServices.restore()
+        SystemSettingServices.restore(version)
             .then(res => {
                 dispatch({
-                    type: SystemSettingConstants.RESTORE_DATABASE_SUCCESS,
+                    type: SystemSettingConstants.RESTORE_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: SystemSettingConstants.RESTORE_DATABASE_FAILE,
+                    type: SystemSettingConstants.RESTORE_FAILE,
                     payload: error
                 })
                 

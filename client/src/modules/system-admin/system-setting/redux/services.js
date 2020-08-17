@@ -31,11 +31,12 @@ function getRestoreData() {
     }, false, true, 'system_admin.company');
 }
 
-function restore(params, data) {
+function restore(backupVersion) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/system-admin/system-setting/restore`,
         method: 'PATCH',
-        params,
-        data,
+        params: {
+            backupVersion
+        }
     }, true, true, 'system_admin.company');
 }

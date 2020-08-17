@@ -219,8 +219,7 @@ class DepreciationManager extends Component {
                     sheetTitle: fileName,
                     tables: [
                         {
-                            tableName: fileName,
-                            tableTitle: fileName,
+                            tableName : fileName,
                             rowHeader: 2,
                             columns: [
                                 { key: "index", value: "STT" },

@@ -1,12 +1,21 @@
 import React, { Component } from 'react';
 import {SelectBox} from '../../../../common-components';
-
+import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { SystemSettingActions } from '../redux/actions';
 class ScheduleMonthlyForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = { 
+            date: '15',
+            hour: '2',
+            minute: '0',
+            second: '0'
+         }
     }
     render() { 
+        const {date, hour, minute, second} = this.state;
+        
         return (<React.Fragment>
             <div className="row">
                 <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
@@ -49,7 +58,8 @@ class ScheduleMonthlyForm extends Component {
                                 {value: '30', text: '30'},
                                 {value: '31', text: '31'},
                             ]}
-                            onChange={this.hanldeDay}
+                            value={date}
+                            onChange={this.handleDate}
                             multiple={false}
                         />
                     </div>
@@ -87,8 +97,8 @@ class ScheduleMonthlyForm extends Component {
                                 {value: '22', text: '22'},
                                 {value: '23', text: '23'},
                             ]}
-                            value={'0'}
-                            onChange={this.hanldeHour}
+                            value={hour}
+                            onChange={this.handleHour}
                             multiple={false}
                         />
                     </div>
@@ -162,8 +172,8 @@ class ScheduleMonthlyForm extends Component {
                                 {value: '58', text: '58'},
                                 {value: '59', text: '59'},
                             ]}
-                            value={'0'}
-                            onChange={this.hanldeMinute}
+                            value={minute}
+                            onChange={this.handleMinute}
                             multiple={false}
                         />
                     </div>
@@ -237,17 +247,59 @@ class ScheduleMonthlyForm extends Component {
                                 {value: '58', text: '58'},
                                 {value: '59', text: '59'},
                             ]}
-                            value={'0'}
-                            onChange={this.hanldeSecond}
+                            value={second}
+                            onChange={this.handleSecond}
                             multiple={false}
                         />
                     </div>
                 </div>
             
             </div>
-            <button className="btn btn-success">Save</button>
+            <button className="btn btn-success" onClick={this.save}>Lưu</button>
         </React.Fragment>); 
+    }
+
+    handleDate = (value) => {
+        this.setState({
+            date: value[0]
+        })
+    }
+
+    handleHour = (value) => {
+        this.setState({
+            hour: value[0]
+        })
+    }
+
+    handleMinute = (value) => {
+        this.setState({
+            minute: value[0]
+        })
+    }
+
+    handleSecond = (value) => {
+        this.setState({
+            second: value[0]
+        })
+    }
+
+    save = () => {
+        const {schedule} = this.props;
+        const {date, hour, minute, second} = this.state;
+
+        return this.props.backup({auto: 'on', schedule},{
+            date, hour, minute, second
+        })
     }
 }
  
-export default ScheduleMonthlyForm;
+function mapState(state) {
+    const { systemSetting } = state;
+    return { systemSetting }
+}
+
+const mapDispatchToProps = {
+    backup: SystemSettingActions.backup
+}
+
+export default connect(mapState, mapDispatchToProps)(withTranslate(ScheduleMonthlyForm));
