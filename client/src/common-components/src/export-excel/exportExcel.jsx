@@ -120,7 +120,7 @@ class ExportExcel extends Component {
                         currentRow += 1;
                     };
                     worksheet.columns = columns.map(col => {
-                        return { key: col.key, width: 15 }
+                        return { key: col.key, width: col.width ? Number(col.width) : 15 }
                     });
 
                     // Thêm dữ liệu vào body table
