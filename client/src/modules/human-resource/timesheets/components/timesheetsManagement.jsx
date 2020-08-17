@@ -270,7 +270,8 @@ class TimesheetsManagement extends Component {
             fileName: translate('human_resource.timesheets.file_name_export'),
             dataSheets: [
                 {
-                    sheetName: "sheet1",
+                    sheetName: "Sheet1",
+                    sheetTitle: translate('human_resource.timesheets.file_name_export'),
                     tables: [
                         {
                             merges: [{

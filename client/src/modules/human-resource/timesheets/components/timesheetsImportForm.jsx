@@ -97,7 +97,6 @@ class TimesheetsImportForm extends Component {
      * @param {*} checkFileImport : true file import hợp lệ, false file import không hợp lệ
      */
     handleImportExcel = (value, checkFileImport) => {
-        console.log(value);
         if (checkFileImport) {
             let importData = [], rowError = [];
             for (let i = 0; i < value.length; i = i + 2) {

@@ -10,7 +10,7 @@ export const configurationTimesheets = {
     employeeNumber: {
         columnName: "Mã nhân viên",
         description: "Tên tiêu đề ứng với mã số nhân viên",
-        value: "Mã số nhân viên"
+        value: "Mã nhân viên"
     },
     employeeName: {
         columnName: "Họ và tên",
