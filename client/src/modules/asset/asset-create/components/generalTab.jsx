@@ -476,8 +476,11 @@ class GeneralTab extends Component {
                 ...node,
                 id: node._id,
                 name: node.typeName,
+                parent: node.parent ? node.parent._id : null,
             }
         })
+
+        console.log("11111111111111111111111111111111111111", dataList);
 
         return (
             <div id={_id} className="tab-pane active">
