@@ -169,7 +169,6 @@ class Table extends Component {
         const listDomain = this.convertData(domains.list)
         const listCategory = this.convertData(categories.list)
         const listArchive = this.convertData(archives.list);
-        console.log('bbbbbb', domains.list);
 
         return (
             <React.Fragment>
@@ -194,6 +193,7 @@ class Table extends Component {
                         documentDescription={currentRow.description}
                         documentCategory={currentRow.category._id}
                         documentDomains={currentRow.domains.map(domain => domain._id)}
+                        documentArchives={currentRow.archives.map(archive => archive._id)}
                         documentIssuingBody={currentRow.issuingBody}
                         documentOfficialNumber={currentRow.officialNumber}
                         documentSigner={currentRow.signer}
@@ -267,6 +267,15 @@ class Table extends Component {
                             value={domain}
                         />
                     </div>
+                    {/* <SearchBar
+                        columns={[
+                            { title: translate('document.name'), value: 'name' },
+                            { title: translate('document.description'), value: 'description' }
+                        ]}
+                        option={this.state.option}
+                        setOption={this.setOption}
+                        search={this.searchWithOption}
+                    /> */}
                     <div className="form-group">
                         <button type="button" className="btn btn-success" onClick={() => this.searchWithOption()}>{
                             translate('kpi.organizational_unit.management.over_view.search')}</button>
@@ -376,6 +385,7 @@ class Table extends Component {
             page: 1,
             // key: this.state.option,
             // value: this.state.value
+            // name : this.state.name,
             category: this.state.category[0],
             domains: this.state.domain[0],
             archives: this.state.archive[0],

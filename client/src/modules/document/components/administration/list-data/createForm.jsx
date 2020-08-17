@@ -87,10 +87,10 @@ class CreateForm extends Component {
         this.setState({ documentRoles: value });
     }
 
-    handleArchivedRecordPlaceInfo = (e) => {
-        const { value } = e.target;
-        this.setState({ documentArchivedRecordPlaceInfo: value });
-    }
+    // handleArchivedRecordPlaceInfo = (e) => {
+    //     const { value } = e.target;
+    //     this.setState({ documentArchivedRecordPlaceInfo: value });
+    // }
 
     handleArchivedRecordPlaceOrganizationalUnit = (value) => {
         this.setState({ documentArchivedRecordPlaceOrganizationalUnit: value });
@@ -340,7 +340,7 @@ class CreateForm extends Component {
             documentRelationshipDescription,
             documentRelationshipDocuments,
             documentRoles,
-            documentArchivedRecordPlaceInfo,
+            //documentArchivedRecordPlaceInfo,
             documentArchivedRecordPlaceOrganizationalUnit,
             documentArchivedRecordPlaceManager,
         } = this.state;
@@ -351,7 +351,7 @@ class CreateForm extends Component {
             formData.append('domains[]', documentDomains[i]);
         }
         if (documentArchives) for (let i = 0; i < documentArchives.length; i++) {
-            formData.append('domains[]', documentArchives[i]);
+            formData.append('archives[]', documentArchives[i]);
         }
         formData.append('description', documentDescription);
         formData.append('issuingBody', documentIssuingBody);
@@ -373,7 +373,7 @@ class CreateForm extends Component {
             formData.append('roles[]', documentRoles[i]);
         }
 
-        formData.append('archivedRecordPlaceInfo', documentArchivedRecordPlaceInfo);
+        //formData.append('archivedRecordPlaceInfo', documentArchivedRecordPlaceInfo);
         formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
         formData.append('archivedRecordPlaceManager', documentArchivedRecordPlaceManager);
 
@@ -392,11 +392,11 @@ class CreateForm extends Component {
             errorExpiredDate, errorCategory, documentArchives } = this.state;
         const archives = documents.administration.archives.list;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
-        console.log('rrrrrr', archives);
+        // console.log('rrrrrr', archives);
         const documentRoles = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.map(doc => { return { value: doc._id, text: doc.name } });
-        console.log('eeeeeeee', documentArchives)
-        console.log('uuuuuuu', documentArchives ? this.findPath(archives, documentArchives[0]) : "");
+        // console.log('eeeeeeee', documentArchives)
+        // console.log('uuuuuuu', documentArchives ? this.findPath(archives, documentArchives[0]) : "");
         let path = documentArchives ? this.findPath(archives, documentArchives[0]) : "";
         return (
             <React.Fragment>
@@ -457,10 +457,10 @@ class CreateForm extends Component {
                                                 <label>{translate('document.domain')}</label>
                                                 <TreeSelect data={list} handleChange={this.handleDomains} mode="hierarchical" />
                                             </div>
-                                            <div className="form-group">
+                                            {/* <div className="form-group">
                                                 <label>Lưu trữ</label>
                                                 <TreeSelect data={archives} handleChange={this.handleArchives} value={path} mode="hierarchical" />
-                                            </div>
+                                            </div> */}
                                             <div className="form-group">
                                                 <label>{translate('document.description')}</label>
                                                 <textarea style={{ height: '100px' }} type="text" className="form-control" onChange={this.handleDescription} />
@@ -475,12 +475,12 @@ class CreateForm extends Component {
                                                 <ErrorLabel content={errorVersionName} />
                                             </div>
                                             <div className={`form-group ${!errorDocumentFile ? "" : "has-error"}`}>
-                                                <label>{translate('document.doc_version.file')}<span className="text-red">*</span></label>
+                                                <label>{translate('document.upload_file')}<span className="text-red">*</span></label>
                                                 <input type="file" onChange={this.handleUploadFile} />
                                                 <ErrorLabel content={errorDocumentFile} />
                                             </div>
                                             <div className={`form-group ${!errorDocumentFileScan ? "" : "has-error"}`}>
-                                                <label>{translate('document.doc_version.scanned_file_of_signed_document')}<span className="text-red">*</span></label>
+                                                <label>{translate('document.upload_file_scan')}<span className="text-red">*</span></label>
                                                 <input type="file" onChange={this.handleUploadFileScan} />
                                                 <ErrorLabel content={errorDocumentFileScan} />
                                             </div>
@@ -545,9 +545,17 @@ class CreateForm extends Component {
                                             </div>
                                         </div>
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <div className="form-group">
+                                            {/* <div className="form-group">
                                                 <label>{translate('document.store.information')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleArchivedRecordPlaceInfo} placeholder="VD: Tủ 301" />
+                                            </div> */}
+                                            <div className="form-group">
+                                                <label>{translate('document.store.information')}</label>
+                                                <TreeSelect data={archives} handleChange={this.handleArchives} value={documentArchives} mode="hierarchical" />
+                                            </div>
+                                            <div className="form-group">
+                                                <label>Đường dẫn chi tiết</label>
+                                                <textarea style={{ height: '30px' }} type="text" className="form-control" value={path} disable />
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.store.organizational_unit_manage')}</label>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar } from '../../../../common-components';
+import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar,ExportExcel } from '../../../../common-components';
 
 import { MaintainanceCreateForm } from './maintainanceCreateForm';
 import { IncidentEditForm } from '../../asset-assgined/components/incidentEditForm';
@@ -171,11 +171,81 @@ class IncidentManagement extends Component {
         });
     }
 
+    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    convertDataToExportData = (data,userlist) => {
+        let fileName = "Bảng quản lý thông tin sự cố tài sản ";
+        let convertedData=[];
+        if (data) {           
+            data = data.forEach(asset => {     
+                if(asset.incidentLogs.length!==0)
+                {
+                    let assetLog= asset.incidentLogs.map((x,index)=>{
+                        let code =x.incidentCode;
+                        let assetName = asset.assetName;  
+                        let assetCode =asset.code;
+                        let type =x.type;   
+                        let reporter = (x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop()) ? userlist.filter(item => item._id === x.reportedBy).pop().email : '';  
+                        let createDate = (x.dateOfIncident) ? this.formatDate2(x.dateOfIncident) : ''
+                        let status = x.incidentCode;
+                        let description = x.description;
+        
+                        return  {
+                            index : index+1,
+                            assetCode : assetCode,
+                            assetName: assetName,
+                            code :code,
+                            type: type,  
+                            reporter:reporter,
+                            createDate:createDate,
+                            des: description,
+                            status:status
+        
+                        }
+                    })
+                    for(let i=0;i<assetLog.length;i++){
+                        convertedData.push(assetLog[i]);
+                    }
+                }              
+                
+            })
+        }
+
+        let exportData = {
+            fileName: fileName,
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    sheetTitle : fileName,
+                    tables: [
+                        {
+                            tableName : fileName,
+                            rowHeader: 2,
+                            columns: [
+                                { key: "index", value: "STT" },
+                                { key: "assetCode", value: "Mã tài sản" },
+                                { key: "assetName", value: "Tên tài sản" },
+                                { key: "code", value: "Mã sự cố" },                               
+                                { key: "type", value: "Loại sự cố" },
+                                { key: "reporter", value: "Người báo cáo" },
+                                { key:"des", value : "Nội dung"},
+                                { key: "createDate", value: "Ngày phát hiện" },                  
+                                { key: "status", value: "Trạng thái" },
+                            ],
+                            data: convertedData
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData;        
+       
+    }
+
     render() {
         const { translate, assetsManager, assetType, user, auth } = this.props;
         const { page, limit, currentRow, currentRowAdd } = this.state;
 
-        var lists = "";
+        var lists = "",exportData;
         var userlist = user.list;
         var assettypelist = assetType.listAssetTypes;
         var formater = new Intl.NumberFormat();
@@ -187,7 +257,10 @@ class IncidentManagement extends Component {
             parseInt(assetsManager.totalList / limit) :
             parseInt((assetsManager.totalList / limit) + 1);
         var currentPage = parseInt((page / limit) + 1);
-        console.log('assetsManager', assetsManager);
+        
+        if(lists&&userlist){
+            exportData =this.convertDataToExportData(lists,userlist);
+        }
 
         return (
             <div className="box">
@@ -220,6 +293,7 @@ class IncidentManagement extends Component {
                             <label></label>
                             <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={() => this.handleSubmitSearch()}>{translate('asset.general_information.search')}</button>
                         </div>
+                        {exportData&&<ExportExcel id="export-asset-incident-management" exportData={exportData} style={{ marginRight:10 }} />}
                     </div>
 
                     {/* Bảng danh sách sự cố tài sản */}

@@ -87,6 +87,12 @@ class MaintainanceLogTab extends Component {
                                 }
                             </tbody>
                         </table>
+
+                        <div className="form-group">
+                            <strong>{translate('asset.maintainance.total_cost')}:&emsp; </strong>
+                            {(maintainanceLogs && maintainanceLogs.length !== 0) && maintainanceLogs.map(item => parseInt(item.expense)).reduce((sum, number) => sum + number, 0)} VNĐ
+                        </div>
+
                         {
                             (!maintainanceLogs || maintainanceLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }

@@ -23,6 +23,9 @@ class EditForm extends Component {
     handleDomains = value => {
         this.setState({ documentDomains: value });
     }
+    handleArchives = value => {
+        this.setState({ documentArchives: value });
+    }
 
     handleDescription = (e) => {
         const { value } = e.target;
@@ -58,18 +61,18 @@ class EditForm extends Component {
         this.setState({ documentRoles: value });
     }
 
-    handleArchivedRecordPlaceInformation = (e) => {
-        const { value } = e.target;
-        this.setState(state => {
-            return {
-                ...state,
-                documentArchivedRecordPlace: {
-                    ...state.documentArchivedRecordPlace,
-                    information: value
-                }
-            }
-        });
-    }
+    // handleArchivedRecordPlaceInformation = (e) => {
+    //     const { value } = e.target;
+    //     this.setState(state => {
+    //         return {
+    //             ...state,
+    //             documentArchivedRecordPlace: {
+    //                 ...state.documentArchivedRecordPlace,
+    //                 information: value
+    //             }
+    //         }
+    //     });
+    // }
 
     handleArchivedRecordPlaceOrganizationalUnit = (e) => {
         const { value } = e.target;
@@ -335,6 +338,7 @@ class EditForm extends Component {
             documentName,
             documentCategory,
             documentDomains,
+            documentArchives,
             documentDescription,
             documentIssuingBody,
             documentOfficialNumber,
@@ -353,6 +357,9 @@ class EditForm extends Component {
         if (documentDomains) for (var i = 0; i < documentDomains.length; i++) {
             formData.append('domains[]', documentDomains[i]);
         }
+        if (documentArchives) for (var i = 0; i < documentArchives.length; i++) {
+            formData.append('archives[]', documentArchives[i]);
+        }
         formData.append('description', documentDescription);
         formData.append('issuingBody', documentIssuingBody);
         formData.append('officialNumber', documentOfficialNumber);
@@ -369,7 +376,7 @@ class EditForm extends Component {
         formData.append('archivedRecordPlaceInfo', documentArchivedRecordPlaceInfo);
         formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
         formData.append('archivedRecordPlaceManager', documentArchivedRecordPlaceManager);
-
+        //console.log('ererererer', formData.getAll());
         this.props.editDocument(documentId, formData);
     }
 
@@ -406,6 +413,7 @@ class EditForm extends Component {
                 documentDescription: nextProps.documentDescription,
                 documentCategory: nextProps.documentCategory,
                 documentDomains: nextProps.documentDomains,
+                documentArchives: nextProps.documentArchives,
                 documentIssuingBody: nextProps.documentIssuingBody,
                 documentOfficialNumber: nextProps.documentOfficialNumber,
                 documentSigner: nextProps.documentSigner,
@@ -451,13 +459,20 @@ class EditForm extends Component {
     requestDownloadDocumentFileScan = (id, fileName, numberVersion) => {
         this.props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
-
+    findPath = (archives, select) => {
+        console.log(archives, select);
+        if (select) {
+            let archive = archives.filter(arch => arch._id === select);
+            return [archive[0].path];
+        }
+        else return null;
+    }
     render() {
         const {
             documentId, documentName, documentDescription, documentCategory, documentDomains,
             documentIssuingBody, documentOfficialNumber, documentSigner, documentVersions,
             documentRelationshipDescription, documentRelationshipDocuments,
-            documentRoles,
+            documentRoles, documentArchives,
             documentArchivedRecordPlaceInfo, documentArchivedRecordPlaceOrganizationalUnit,
         } = this.state;
         const { errorName, errorIssuingBody, errorOfficialNumber, errorSigner, errorVersionName, errorDocumentFile, errorDocumentFileScan, } = this.state;
@@ -466,8 +481,11 @@ class EditForm extends Component {
         const { list } = documents.administration.domains;
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
+        const archives = documents.administration.archives.list;
+        let path = documentArchives ? this.findPath(archives, documentArchives[0]) : "";
+        console.log('pathhhh', path, documentArchives);
 
-        console.log("STATE:", !this.isValidateForm());
+        console.log("STATE:", this.state);
 
         return (
             <React.Fragment>
@@ -537,6 +555,16 @@ class EditForm extends Component {
                                                 <label>{translate('document.description')}</label>
                                                 <textarea type="text" className="form-control" onChange={this.handleDescription} value={documentDescription ? documentDescription : ""} />
                                             </div>
+                                            <div className="form-group">
+                                                <label>Lưu trữ</label>
+                                                <TreeSelect
+                                                    data={archives}
+                                                    value={documentArchives}
+                                                    handleChange={this.handleArchives}
+                                                    mode="hierarchical"
+                                                />
+                                            </div>
+
                                         </div>
                                     </div>
                                     <div className="row">
@@ -554,12 +582,12 @@ class EditForm extends Component {
                                                         <input type="text" className="form-control" />
                                                     </div>
                                                     <div className="form-group">
-                                                        <label>{translate('document.doc_version.file')}</label>
+                                                        <label>{translate('document.upload_file')}</label>
                                                         <input type="file" onChange={this.handleUploadFile} />
                                                         <ErrorLabel content={errorDocumentFile} />
                                                     </div>
                                                     <div className="form-group">
-                                                        <label>{translate('document.doc_version.scanned_file_of_signed_document')}</label>
+                                                        <label>{translate('document.upload_file_scan')}</label>
                                                         <input type="file" onChange={this.handleUploadFileScan} />
                                                         <ErrorLabel content={errorDocumentFileScan} />
                                                     </div>

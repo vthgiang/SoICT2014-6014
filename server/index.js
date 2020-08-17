@@ -1,19 +1,12 @@
 // NODE_MODULES
 const express = require("express");
-const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const multer = require("multer");
-global.SERVER_DIR = __dirname;
-global.SERVER_BACKUP_DIR = __dirname + "/../backup";
 
-multer({
-  dest: "upload/avatars",
-});
 require("dotenv").config();
-global.AUTO_BACKUP_DATABASE = require("./helpers/backupHelper").backupAutomatic;
-AUTO_BACKUP_DATABASE.start();
+require('./connectDatabase');
+require('./globalVariables');
 
 // Application Modules
 const schedulerController = require("./modules/scheduler/scheduler.controller");
@@ -27,7 +20,7 @@ const discipline = require("./modules/human-resource/discipline/discipline.route
 const holiday = require("./modules/human-resource/holiday/holiday.route");
 const profile = require("./modules/human-resource/profile/profile.route");
 const salary = require("./modules/human-resource/salary/salary.route");
-const timesheets = require("./modules/human-resource/timesheets/timesheets.route");
+const timesheet = require("./modules/human-resource/timesheets/timesheets.route");
 
 const employeeKpiCreation = require("./modules/kpi/employee/creation/creation.route");
 const employeeKpiDashboard = require("./modules/kpi/employee/dashboard/dashboard.route");
@@ -96,28 +89,7 @@ app.use(
 app.use("/upload/avatars", express.static("upload/avatars"));
 app.use("/upload/asset/pictures", express.static("upload/asset/pictures"));
 
-const db = process.env.DATABASE || `mongodb://${process.env.DB_HOST}:${process.env.DB_PORT || '27017'}/${process.env.DB_NAME}`;
-const optionConnectDB =
-  process.env.DB_AUTHENTICATION === "true"
-    ? {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false,
-        user: process.env.DB_USERNAME,
-        pass: process.env.DB_PASSWORD,
-      }
-    : {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        useCreateIndex: true,
-        useFindAndModify: false,
-      };
 
-mongoose // Connect to MongoDB
-  .connect(db, optionConnectDB)
-  .then(() => console.log("MongoDB successfully connected"))
-  .catch((err) => console.log(err));
 
 // Function gọi Api vào thời gian xác định
 schedulerController.chedulesCallApi();
@@ -132,7 +104,7 @@ app.use("/discipline", discipline);
 app.use("/holiday", holiday);
 app.use("/employees", profile);
 app.use("/salary", salary);
-app.use("/timesheets", timesheets);
+app.use("/timesheet", timesheet);
 
 app.use("/kpi/employee/creation", employeeKpiCreation);
 app.use("/kpi/employee/dashboard", employeeKpiDashboard);
@@ -184,5 +156,5 @@ app.use("/orders", order);
 app.use("/customer", customer);
 
 // Start server
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8000;
 app.listen(port, () => console.log(`Server up and running on: ${port} !`));

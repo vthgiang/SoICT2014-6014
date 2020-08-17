@@ -215,40 +215,81 @@ class TimesheetsManagement extends Component {
      */
     convertDataToExportData = (data) => {
         const { translate } = this.props;
-        data = data.map((x, index) => {
+        console.log(data);
+        let dataExport = [];
+        data.map((x, index) => {
             let total = 0;
-            x.workSession1.forEach(x => {
-                if (x) {
+            let shifts1 = x.workSession1;
+            let shifts2 = x.workSession2;
+            let colShifts1 = {}, colShifts2 = {};
+            shifts1.forEach((y, key) => {
+                if (y === true) {
+                    colShifts1 = { ...colShifts1, [`date${key + 1}`]: 'X' };
                     total += 1;
+                } else {
+                    colShifts1 = { ...colShifts1, [`date${key + 1}`]: '' }
                 }
             })
-            x.workSession2.forEach(x => {
-                if (x) {
+            shifts2.forEach((y, key) => {
+                if (y === true) {
+                    colShifts2 = { ...colShifts2, [`date${key + 1}`]: 'X' };
                     total += 1;
+                } else {
+                    colShifts2 = { ...colShifts2, [`date${key + 1}`]: '' }
                 }
             })
-            return {
-                STT: index + 1,
-                employeeNumber: x.employee ? x.employee.employeeNumber : "",
-                fullName: x.employee ? x.employee.fullName : "",
-                total: total / 2,
-            };
 
-        })
+            let row = [
+                {
+                    merges: { STT: 2, employeeNumber: 2, fullName: 2, total: 2 },
+                    STT: index + 1,
+                    fullName: x.employee ? x.employee.fullName : "",
+                    employeeNumber: x.employee ? x.employee.employeeNumber : "",
+                    space: translate('human_resource.timesheets.shifts1'),
+                    ...colShifts1,
+                    total: total / 2,
+                }, {
+                    STT: "",
+                    fullName: "",
+                    employeeNumber: "",
+                    space: translate('human_resource.timesheets.shifts2'),
+                    ...colShifts2,
+                    total: "",
+                },
+            ]
+            dataExport = dataExport.concat(row);
+        });
+
+
+        let addColumns = [];
+        for (let n = 1; n <= 31; n++) {
+            addColumns = [...addColumns, { key: `date${n}`, value: n, width: 4 }]
+        }
+
         let exportData = {
             fileName: translate('human_resource.timesheets.file_name_export'),
             dataSheets: [
                 {
-                    sheetName: "sheet1",
+                    sheetName: "Sheet1",
+                    sheetTitle: translate('human_resource.timesheets.file_name_export'),
                     tables: [
                         {
+                            merges: [{
+                                key: "other",
+                                columnName: translate('human_resource.timesheets.date_of_month'),
+                                keyMerge: 'date1',
+                                colspan: 31
+                            }],
+                            rowHeader: 2,
                             columns: [
-                                { key: "STT", value: translate('human_resource.stt') },
+                                { key: "STT", value: translate('human_resource.stt'), width: 5 },
                                 { key: "employeeNumber", value: translate('human_resource.staff_number') },
                                 { key: "fullName", value: translate('human_resource.staff_name') },
+                                { key: "space", value: "", width: '10' },
+                                ...addColumns,
                                 { key: "total", value: translate('human_resource.timesheets.total_timesheets') },
                             ],
-                            data: data
+                            data: dataExport
                         }
                     ]
                 },

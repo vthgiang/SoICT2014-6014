@@ -14,7 +14,7 @@ const Discipline = require('./human-resource/discipline.model');
 const Employee = require('./human-resource/employee.model');
 const Holiday = require('./human-resource/holiday.model');
 const Salary = require('./human-resource/salary.model');
-const Timesheets = require('./human-resource/timesheets.model');
+const Timesheet = require('./human-resource/timesheet.model');
 
 const EmployeeKpi = require('./kpi/employeeKpi.model');
 const EmployeeKpiSet = require('./kpi/employeeKpiSet.model');
@@ -31,7 +31,7 @@ const OrganizationalUnit = require('./super-admin/organizationalUnit.model');
 const RoleType = require('./super-admin/roleType.model');
 
 const Company = require('./system-admin/company.model');
-const Log = require('./system-admin/log.model');
+const Configuration = require('./system-admin/configuration.model');
 const SystemComponent = require('./system-admin/systemComponent.model');
 const SystemLink = require('./system-admin/systemLink.model');
 const RootRole = require('./system-admin/rootRole.model');
@@ -90,7 +90,7 @@ exports.schema = {
     Employee,
     Holiday,
     Salary,
-    Timesheets,
+    Timesheet,
 
     EmployeeKpi,
     EmployeeKpiSet,
@@ -107,7 +107,7 @@ exports.schema = {
     RoleType,
 
     Company,
-    Log,
+    Configuration,
     SystemComponent,
     SystemLink,
     RootRole,
@@ -143,4 +143,4 @@ exports.schema = {
     Location,
 
     Order,
-} 
+}
