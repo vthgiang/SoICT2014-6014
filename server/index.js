@@ -4,11 +4,9 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
-require('./globalVariables');
 require("dotenv").config();
 require('./connectDatabase');
-
-AUTO_BACKUP_DATABASE.start();
+require('./globalVariables');
 
 // Application Modules
 const schedulerController = require("./modules/scheduler/scheduler.controller");

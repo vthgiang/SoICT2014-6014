@@ -60,7 +60,7 @@ exports.restore = async (backupVersion, option) => {
     const uploadPathServer = `${SERVER_DIR}/upload`;
     const uploadRestore = `${SERVER_BACKUP_DIR}/${backupVersion}/upload`;
     if (fs.existsSync(uploadPathServer)) {
-        exec("rm -rf " + uploadPathServer, function (err) { });
+        exec(`rm -rf ${uploadPathServer}/*`, function (err) { });
         if(fs.existsSync(uploadRestore)){
             exec(`cp -r ${uploadRestore} ${uploadPathServer}`, function (err) { });
         }
@@ -104,7 +104,7 @@ exports.backup = async (option) => {
  * Backup dữ liệu tự động
  */
 exports.backupAutomatic = new CronJob(SERVER_BAKUP_TIME, async function(){
-
+    console.log("SERVER_BAKUP_TIME", SERVER_BAKUP_TIME)
     const serverBackupStorePath = createServerBackupDatabasePath();
     const versionTime = getTimeMDY();
     const descriptionBackupDB = `Backup database ${option.dbName} at ${versionTime}`;

@@ -1,4 +1,4 @@
-const { RoleType, Role, RootRole, SystemLink, SystemComponent, Link, Privilege, User, UserRole} = require('../models').schema;
+const { RoleType, Role, RootRole, SystemLink, SystemComponent, Link, Privilege, User, UserRole, Configuration} = require('../models').schema;
 
 require('dotenv').config({path: '../.env'});
 
@@ -37,6 +37,13 @@ const seedDatabase = async () => {
     mongoose.connection.db.dropDatabase(
         console.log(`Dữ liệu cũ của ${mongoose.connection.db.databaseName} đã được xóa.`)
     );
+
+    await Configuration.create({
+        backup: {
+            time: '0 0 2 15 * *',
+            limit: 10
+        }
+    });
     
     // Step 3: Tạo các roletype trong hệ thống
     const roleType = await RoleType.insertMany([
