@@ -105,6 +105,7 @@ class AdministrationDocumentArchives extends Component {
                                 archiveName={this.state.currentArchive.text}
                                 archiveDescription={this.state.currentArchive.original.description ? this.state.currentArchive.original.description : ""}
                                 archiveParent={this.state.currentArchive.parent}
+                                archivePath={this.state.currentArchive.original.path}
                             />
                         }
                     </div>

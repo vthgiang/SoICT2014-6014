@@ -169,7 +169,6 @@ class Table extends Component {
         const listDomain = this.convertData(domains.list)
         const listCategory = this.convertData(categories.list)
         const listArchive = this.convertData(archives.list);
-        console.log('bbbbbb', currentRow);
 
         return (
             <React.Fragment>

@@ -117,6 +117,12 @@ class DepreciationTab extends Component {
                             {formater.format(cost / usefulLife)} VNĐ/tháng
 
                         </div>
+
+                        {/* Giá trị hiện tại */}
+                        <div className="form-group">
+                            <strong>{translate('asset.depreciation.remaining_value')}&emsp; </strong>
+                            {formater.format(parseInt(cost - ((cost / usefulLife)) * ((new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(startDepreciation).getFullYear() * 12 + new Date(startDepreciation).getMonth()))))} VNĐ
+                        </div>
                     </fieldset>
                 </div>
             </div>
