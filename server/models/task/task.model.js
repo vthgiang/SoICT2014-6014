@@ -18,7 +18,7 @@ const TaskSchema = new Schema({
             type: Schema.Types.ObjectId,
             replies: this,
         }],
-        ProceedingTask: [{
+        precedingTask: [{
             type: Schema.Types.ObjectId,
             replies: this,
         }],
