@@ -1541,7 +1541,7 @@ export default {
             depreciation: {
                 depreciation_time: 'Depreciation time',
                 accumulated_value: 'Accumulated depreciation value',
-                remaining_value: 'Remaining value', 
+                remaining_value: 'Remaining value',
                 edit_depreciation: 'Edit asset depreciation information',
 
                 //Thông điệp trả về từ server
@@ -1559,7 +1559,7 @@ export default {
             incident: {
                 incident: 'Asset incident',
                 report_incident: 'Report asset incident',
-                
+
                 //Thông điệp trả về từ server
                 get_incident_success: 'Lấy thông tin sự cố tài sản thành công',
                 get_incident_faile: 'Lấy thông tin sự cố tài sản thất bại',
@@ -1581,7 +1581,7 @@ export default {
                 supplier: 'Supplier',
                 unit: 'Unit',
                 expected_value: 'Expected value',
-                    
+
                 //Thông điệp trả về từ server
                 get_recommend_procure_success: 'Lấy thông tin đề nghị mua sắm thiết bị thành công',
                 get_recommend_procure_faile: 'Lấy thông tin đề nghị mua sắm thiết bị thất bại',
@@ -1737,6 +1737,7 @@ export default {
                 consulted_role: 'Consulted',
                 informed_role: 'Informed',
                 distribution_Of_Employee: 'Distribution of Employees',
+                employees_each_chart: 'Max employee in a chart',
                 add_task: 'Add task',
                 add_title: 'Add a new task',
                 add_subtask: 'Add sub task',

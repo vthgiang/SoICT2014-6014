@@ -1526,7 +1526,7 @@ export default {
                 proponent: 'Người đề nghị',
                 accountable: 'Người phê duyệt',
                 note: 'Ghi chú',
-                
+
                 //Thông điệp trả về từ server
                 get_usage_success: 'Lấy thông tin sử dụng thành công',
                 get_usage_faile: 'Lấy thông tin sử dụng thất bại',
@@ -1560,7 +1560,7 @@ export default {
             incident: {
                 incident: 'Sự cố tài sản',
                 report_incident: 'Báo cáo sự cố tài sản',
-                
+
                 //Thông điệp trả về từ server
                 get_incident_success: 'Lấy thông tin sự cố tài sản thành công',
                 get_incident_faile: 'Lấy thông tin sự cố tài sản thất bại',
@@ -1739,6 +1739,8 @@ export default {
                 consulted_role: 'Hỗ trợ',
                 informed_role: 'Quan sát',
                 distribution_Of_Employee: 'Đóng góp công việc',
+                employees_each_chart: 'Số nhân viên tối đa mỗi biểu đồ',
+
 
                 add_task: 'Thêm mới',
                 add_title: 'Thêm mới một công việc',

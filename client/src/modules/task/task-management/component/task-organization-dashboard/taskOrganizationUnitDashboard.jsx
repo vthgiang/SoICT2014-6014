@@ -88,7 +88,6 @@ class TaskOrganizationUnitDashboard extends Component {
                     idsUnit: idsUnit,
                 }
             });
-            console.log('goji den 91');
             await this.props.getAllEmployeeOfUnitByIds(this.state.idsUnit);
             data = {
                 organizationUnitId: this.state.idsUnit,
