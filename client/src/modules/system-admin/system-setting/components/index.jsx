@@ -126,7 +126,7 @@ class SystemSetting extends Component {
                                                     content="<h3>Restore this backup data</h3>"
                                                     name="restore"
                                                     className="text-green"
-                                                    func={()=>this.restore("confirm restore data")}
+                                                    func={()=>this.restore(data.version)}
                                                 />
                                                 <ConfirmNotification
                                                     icon="warning"
@@ -187,8 +187,9 @@ class SystemSetting extends Component {
         })
     }
 
-    restore = (content) => {
-        console.log("restore", content);
+    restore = (version) => {
+        console.log("restore", version);
+        this.props.restore(version);
     }
 
     deleteBackup = (version) => {

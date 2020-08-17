@@ -5,6 +5,7 @@ const exec = require('child_process').exec;
 
 exports.backup = async (data, params) => {
     const {auto, schedule} = params;
+    console.log("params", auto, schedule)
     switch(auto) {
         case 'on':
             switch(schedule) {
@@ -50,13 +51,13 @@ exports.deleteBackup = async (version) => {
 
     if (fs.existsSync(path)) {
         exec("rm -rf " + path, function (err) { });
-            return version;
-        }
+        return version;
+    }
     return null;
 }
 
-exports.restore = async (data, params) => {
-    await restore({
+exports.restore = async (backupVersion) => {
+    await restore(backupVersion, {
         host: process.env.DB_HOST,
         dbName: process.env.DB_NAME,
         dbPort: process.env.DB_PORT || '27017',

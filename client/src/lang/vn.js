@@ -1505,6 +1505,7 @@ export default {
 
             // Quản lý bảo trì
             maintainance: {
+                total_cost: 'Tổng chi phí',
 
                 //Thông điệp trả về từ server
                 get_maintainance_success: 'Lấy thông tin bảo trì thành công',

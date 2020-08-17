@@ -1,7 +1,6 @@
 const exec = require('child_process').exec;
 const CronJob = require('cron').CronJob;
 require('dotenv').config('../.env');
-const BACKUP_TIME = '55 50 14 * * *'; // chạy tự động: ngày 15 lúc 2 giờ sáng (hàng tháng)
 const fs = require('fs');
 
 const option = {
@@ -47,14 +46,25 @@ createServerBackupDatabasePath = () => {
 /**
  * Restore dữ liệu
  */
-exports.restore = async (option) => {
+exports.restore = async (backupVersion, option) => {
 
+    // 1. Restore database
     const command = process.env.DB_AUTHENTICATION === 'true' ?
-        `mongorestore --drop --host="${option.host}" --port="${option.dbPort}" --username="${option.username}" --password="${option.password}" -d ${option.dbName} ${SERVER_BACKUP_DIR}/${option.dbName}` :
-        `mongorestore --drop --host="${option.host}" --port="${option.dbPort}" -d ${option.dbName} ${SERVER_BACKUP_DIR}/${option.dbName}`;
+        `mongorestore --drop --host="${option.host}" --port="${option.dbPort}" --username="${option.username}" --password="${option.password}" -d ${option.dbName} ${SERVER_BACKUP_DIR}/${backupVersion}/${option.dbName}` :
+        `mongorestore --drop --host="${option.host}" --port="${option.dbPort}" -d ${option.dbName} ${SERVER_BACKUP_DIR}/${backupVersion}/${option.dbName}`;
     await exec(command, (error, stdout, stderr) => {
         if(error !== null) console.log(error);
     })
+
+    // 2.Restore file data
+    const uploadPathServer = `${SERVER_DIR}/upload`;
+    const uploadRestore = `${SERVER_BACKUP_DIR}/${backupVersion}/upload`;
+    if (fs.existsSync(uploadPathServer)) {
+        exec(`rm -rf ${uploadPathServer}/*`, function (err) { });
+        if(fs.existsSync(uploadRestore)){
+            exec(`cp -r ${uploadRestore} ${uploadPathServer}`, function (err) { });
+        }
+    }
 }
 
 /**
@@ -93,8 +103,8 @@ exports.backup = async (option) => {
 /**
  * Backup dữ liệu tự động
  */
-exports.backupAutomatic = new CronJob(BACKUP_TIME, async function(){
-
+exports.backupAutomatic = new CronJob(SERVER_BAKUP_TIME, async function(){
+    console.log("SERVER_BAKUP_TIME", SERVER_BAKUP_TIME)
     const serverBackupStorePath = createServerBackupDatabasePath();
     const versionTime = getTimeMDY();
     const descriptionBackupDB = `Backup database ${option.dbName} at ${versionTime}`;
