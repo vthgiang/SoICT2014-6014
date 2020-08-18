@@ -16,7 +16,7 @@ class AssetDetailForm extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps._id !== prevState._id) {
+        if (nextProps._id !== prevState._id || nextProps.depreciationType !== prevState.depreciationType) {
             return {
                 ...prevState,
                 _id: nextProps._id,
