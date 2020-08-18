@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { LOCAL_SERVER_API } from '../../../../../env';
-import { DialogModal } from '../../../../../common-components';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
+
+import { DialogModal } from '../../../../../common-components';
 
 import {
     GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab,
@@ -12,20 +13,30 @@ import {
 } from '../../employee-create/components/combinedContent';
 
 import { EmployeeManagerActions } from '../redux/actions';
+
 class EmployeeEditFrom extends Component {
     constructor(props) {
         super(props);
         this.state = {};
     }
 
-    // Function upload avatar 
+    /**
+     * Function upload avatar 
+     * @param {*} img 
+     * @param {*} avatar 
+     */
     handleUpload = (img, avatar) => {
         this.setState({
             img: img,
             avatar: avatar
         })
     }
-    // Function lưu các trường thông tin vào state
+
+    /**
+     * Function lưu các trường thông tin vào state
+     * @param {*} name : Tên trường
+     * @param {*} value : Giá trị của trường
+     */
     handleChange = (name, value) => {
         const { employee } = this.state;
         if (name === 'startingDate' || name === 'leavingDate' || name === 'birthdate' || name === 'identityCardDate' || name === 'taxDateOfIssue' || name === 'healthInsuranceStartDate' || name === 'healthInsuranceEndDate') {
@@ -41,17 +52,27 @@ class EmployeeEditFrom extends Component {
     }
 
 
-    // Function thêm kinh nghiệm làm việc
+    /**
+     * Function thêm kinh nghiệm làm việc
+     * @param {*} data : Dữ liệu thông tin kinh nghiệm làm việc
+     * @param {*} addData : Kinh nghiệm làm việc muốn thêm
+     */
     handleCreateExperiences = (data, addData) => {
         this.setState({
             experiences: data
         })
     }
-    // Function chỉnh sửa kinh nghiệm làm việc
+
+    /**
+     * Function chỉnh sửa kinh nghiệm làm việc
+     * @param {*} data : Dữ liệu thông tin kinh nghiệm làm việc
+     * @param {*} editData : Kinh nghiệm làm việc muốn chỉnh sửa
+     */
     handleEditExperiences = (data, editData) => {
-        if (editData._id !== undefined) {
+        const { editExperiences } = this.state;
+        if (editData._id) {
             this.setState({
-                editExperiences: [...this.state.editExperiences, editData]
+                editExperiences: [...editExperiences, editData]
             })
         } else {
             this.setState({
@@ -59,12 +80,18 @@ class EmployeeEditFrom extends Component {
             })
         }
     }
-    // Function xoá kinh nghiệm làm việc
+
+    /**
+     * Function xoá kinh nghiệm làm việc
+     * @param {*} data : Dữ liệu thông tin kinh nghiệm làm việc
+     * @param {*} deleteData : Kinh nghiệm làm việc muốn xoá
+     */
     handleDeleteExperiences = (data, deleteData) => {
-        if (deleteData._id !== undefined) {
+        const { deleteExperiences, editExperiences } = this.state;
+        if (deleteData._id) {
             this.setState({
-                deleteExperiences: [...this.state.deleteExperiences, deleteData],
-                editExperiences: this.state.editExperiences.filter(x => x._id !== deleteData._id)
+                deleteExperiences: [...deleteExperiences, deleteData],
+                editExperiences: editExperiences.filter(x => x._id !== deleteData._id)
             })
         } else {
             this.setState({
@@ -74,17 +101,27 @@ class EmployeeEditFrom extends Component {
     }
 
 
-    // Function thêm thông tin bằng cấp
+    /**
+     * Function thêm thông tin bằng cấp
+     * @param {*} data : Dữ liệu thông tin bằng cấp
+     * @param {*} addData : Bằng cấp muốn thêm 
+     */
     handleCreateDegree = (data, addData) => {
         this.setState({
             degrees: data
         })
     }
-    // Function chỉnh sửa thông tin bằng cấp
+
+    /**
+     * Function chỉnh sửa thông tin bằng cấp
+     * @param {*} data : Dữ liệu thông tin bằng cấp
+     * @param {*} editData : bằng cấp muốn chỉnh sửa
+     */
     handleEditDegree = (data, editData) => {
-        if (editData._id !== undefined) {
+        const { editDegrees } = this.state;
+        if (editData._id) {
             this.setState({
-                editDegrees: [...this.state.editDegrees, editData]
+                editDegrees: [...editDegrees, editData]
             })
         } else {
             this.setState({
@@ -92,12 +129,18 @@ class EmployeeEditFrom extends Component {
             })
         }
     }
-    // Function xoá thông tin bằng cấp
+
+    /**
+     * Function xoá thông tin bằng cấp
+     * @param {*} data : Dữ liệu thông tin bằng cấp
+     * @param {*} deleteData : Bằng cấp muốn xoá
+     */
     handleDeleteDegree = (data, deleteData) => {
-        if (deleteData._id !== undefined) {
+        const { deleteDegrees, editDegrees } = this.state;
+        if (deleteData._id) {
             this.setState({
-                deleteDegrees: [...this.state.deleteDegrees, deleteData],
-                editDegrees: this.state.editDegrees.filter(x => x._id !== deleteData._id)
+                deleteDegrees: [...deleteDegrees, deleteData],
+                editDegrees: editDegrees.filter(x => x._id !== deleteData._id)
             })
         } else {
             this.setState({
@@ -107,17 +150,27 @@ class EmployeeEditFrom extends Component {
     }
 
 
-    // Function thêm thông tin chứng chỉ
+    /**
+     * Function thêm thông tin chứng chỉ
+     * @param {*} data : Dữ liệu thông tin chứng chỉ
+     * @param {*} addData : Chứng chỉ muốn thêm
+     */
     handleCreateCertificate = (data, addData) => {
         this.setState({
             certificates: data
         })
     }
-    // Function chỉnh sửa thông tin chứng chỉ
+
+    /**
+     * Function chỉnh sửa thông tin chứng chỉ
+     * @param {*} data : Dữ liệu thông tin chứng chỉ
+     * @param {*} editData : Chứng chỉ muốn chỉnh sửa
+     */
     handleEditCertificate = (data, editData) => {
-        if (editData._id !== undefined) {
+        const { editCertificates } = this.state;
+        if (editData._id) {
             this.setState({
-                editCertificates: [...this.state.editCertificates, editData]
+                editCertificates: [...editCertificates, editData]
             })
         } else {
             this.setState({
@@ -125,12 +178,18 @@ class EmployeeEditFrom extends Component {
             })
         }
     }
-    // Function xoá thông tin chứng chỉ
+
+    /**
+     * Function xoá thông tin chứng chỉ
+     * @param {*} data : Dữ liệu thông tin chứng chỉ
+     * @param {*} deleteData : Chứng chỉ muốn xoá
+     */
     handleDeleteCertificate = (data, deleteData) => {
-        if (deleteData._id !== undefined) {
+        const { deleteCertificates, editCertificates } = this.state;
+        if (deleteData._id) {
             this.setState({
-                deleteCertificates: [...this.state.deleteCertificates, deleteData],
-                editCertificates: this.state.editCertificates.filter(x => x._id !== deleteData._id)
+                deleteCertificates: [...deleteCertificates, deleteData],
+                editCertificates: editCertificates.filter(x => x._id !== deleteData._id)
             })
         } else {
             this.setState({
@@ -140,17 +199,27 @@ class EmployeeEditFrom extends Component {
     }
 
 
-    // Function thêm thông tin đóng bảo hiểm xã hội
+    /**
+     * Function thêm quá trình đóng bảo hiểm xã hội
+     * @param {*} data : Dữ liệu quá trình đóng bảo hiểm xã hội
+     * @param {*} addData : Quá trình bảo hiểm xã hội muốn thêm
+     */
     handleCreateBHXH = (data, addData) => {
         this.setState({
             socialInsuranceDetails: data
         })
     }
-    // Function chỉnh sửa thông tin đóng bảo hiểm xã hội
+
+    /**
+     * Function chỉnh sửa quá trình đóng bảo hiểm xã hội
+     * @param {*} data : Dữ liệu quá trình đóng bảo hiểm xã hội
+     * @param {*} editData : Quá trình đóng bảo hiểm xã hội muốn thêm
+     */
     handleEditBHXH = (data, editData) => {
-        if (editData._id !== undefined) {
+        const { editSocialInsuranceDetails } = this.state;
+        if (editData._id) {
             this.setState({
-                editSocialInsuranceDetails: [...this.state.editSocialInsuranceDetails, editData]
+                editSocialInsuranceDetails: [...editSocialInsuranceDetails, editData]
             })
         } else {
             this.setState({
@@ -158,12 +227,18 @@ class EmployeeEditFrom extends Component {
             })
         }
     }
-    // Function xoá thông tin đóng bảo hiểm xã hội
+
+    /**
+     * Function xoá quá trình đóng bảo hiểm xã hội
+     * @param {*} data : Dữ liệu quá trình đóng bảo hiểm xã hội
+     * @param {*} deleteData : Quá trình đóng bảo hiểm xã hội muốn xoá
+     */
     handleDeleteBHXH = (data, deleteData) => {
-        if (deleteData._id !== undefined) {
+        const { deleteSocialInsuranceDetails, editSocialInsuranceDetails } = this.state;
+        if (deleteData._id) {
             this.setState({
-                deleteSocialInsuranceDetails: [...this.state.deleteSocialInsuranceDetails, deleteData],
-                editSocialInsuranceDetails: this.state.editSocialInsuranceDetails.filter(x => x._id !== deleteData._id)
+                deleteSocialInsuranceDetails: [...deleteSocialInsuranceDetails, deleteData],
+                editSocialInsuranceDetails: editSocialInsuranceDetails.filter(x => x._id !== deleteData._id)
             })
         } else {
             this.setState({
@@ -173,17 +248,27 @@ class EmployeeEditFrom extends Component {
     }
 
 
-    // Function thêm thông tin hợp đồng lao động
+    /**
+     * Function thêm thông tin hợp đồng lao động
+     * @param {*} data : Dữ liệu hợp đồng lao động
+     * @param {*} addData : Hợp đồng lao động muốn thêm
+     */
     handleCreateContract = (data, addData) => {
         this.setState({
             contracts: data
         })
     }
-    // Function chỉnh sửa thông tin hợp đồng lao động
+
+    /**
+     * Function chỉnh sửa thông tin hợp đồng lao động
+     * @param {*} data : Dữ liệu thông tin hợp đồng lao động
+     * @param {*} editData : Hợp đồng lao động muốn chỉnh sửa
+     */
     handleEditContract = (data, editData) => {
-        if (editData._id !== undefined) {
+        const { editContracts } = this.state;
+        if (editData._id) {
             this.setState({
-                editContracts: [...this.state.editContracts, editData]
+                editContracts: [...editContracts, editData]
             })
         } else {
             this.setState({
@@ -191,12 +276,18 @@ class EmployeeEditFrom extends Component {
             })
         }
     }
-    // Function xoá thông tin hợp đồng lao động
+
+    /**
+     * Function xoá thông tin hợp đồng lao động
+     * @param {*} data : Dữ liệu thông tin hợp đồng lao động
+     * @param {*} deleteData : Hợp đồng lao động muốn xoá
+     */
     handleDeleteContract = (data, deleteData) => {
-        if (deleteData._id !== undefined) {
+        const { deleteContracts, editContracts } = this.state;
+        if (deleteData._id) {
             this.setState({
-                deleteContracts: [...this.state.deleteContracts, deleteData],
-                editContracts: this.state.editContracts.filter(x => x._id !== deleteData._id)
+                deleteContracts: [...deleteContracts, deleteData],
+                editContracts: editContracts.filter(x => x._id !== deleteData._id)
             })
         } else {
             this.setState({
@@ -206,17 +297,27 @@ class EmployeeEditFrom extends Component {
     }
 
 
-    // Function thêm thông tin khen thưởng
+    /**
+     * Function thêm thông tin khen thưởng
+     * @param {*} data : Dữ liệu thông tin khen thưởng
+     * @param {*} addData : Khen thưởng muốn thêm
+     */
     handleCreateConmmendation = (data, addData) => {
         this.setState({
             commendations: data
         })
     }
-    // Function chỉnh sửa thông tin khen thưởng
+
+    /**
+     * Function chỉnh sửa thông tin khen thưởng
+     * @param {*} data : Dữ liệu thông tin khen thưởng
+     * @param {*} editData : Khen thưởng muốn chỉnh sửa
+     */
     handleEditConmmendation = (data, editData) => {
-        if (editData._id !== undefined) {
+        const { editConmmendations } = this.state;
+        if (editData._id) {
             this.setState({
-                editConmmendations: [...this.state.editConmmendations, editData]
+                editConmmendations: [...editConmmendations, editData]
             })
         } else {
             this.setState({
@@ -224,12 +325,18 @@ class EmployeeEditFrom extends Component {
             })
         }
     }
-    // Function xoá thông tin khen thưởng
+
+    /**
+     * Function xoá thông tin khen thưởng
+     * @param {*} data : Dữ liệu thông tin khen thưởng
+     * @param {*} deleteData : Khen thưởng muốn xoá
+     */
     handleDeleteConmmendation = (data, deleteData) => {
-        if (deleteData._id !== undefined) {
+        const { editConmmendations, deleteConmmendations } = this.state;
+        if (deleteData._id) {
             this.setState({
-                deleteConmmendations: [...this.state.deleteConmmendations, deleteData],
-                editConmmendations: this.state.editConmmendations.filter(x => x._id !== deleteData._id)
+                deleteConmmendations: [...deleteConmmendations, deleteData],
+                editConmmendations: editConmmendations.filter(x => x._id !== deleteData._id)
             })
         } else {
             this.setState({
@@ -239,17 +346,27 @@ class EmployeeEditFrom extends Component {
     }
 
 
-    // Function thêm thông tin kỷ luật
+    /**
+     * Function thêm thông tin kỷ luật
+     * @param {*} data : Dữ liệu thông tin kỷ luật
+     * @param {*} addData : Kỷ luật muốn thêm
+     */
     handleCreateDiscipline = (data, addData) => {
         this.setState({
             disciplines: data
         })
     }
-    // Function chỉnh sửa thông tin kỷ luật
+
+    /**
+     * Function chỉnh sửa thông tin kỷ luật
+     * @param {*} data : Dữ liệu thông tin kỷ luật
+     * @param {*} editData : Kỷ luật muốn chỉnh sửa
+     */
     handleEditDiscipline = (data, editData) => {
-        if (editData._id !== undefined) {
+        const { editDisciplines } = this.state;
+        if (editData._id) {
             this.setState({
-                editDisciplines: [...this.state.editDisciplines, editData]
+                editDisciplines: [...editDisciplines, editData]
             })
         } else {
             this.setState({
@@ -257,12 +374,18 @@ class EmployeeEditFrom extends Component {
             })
         }
     }
-    // Function xoá thông tin kỷ luật
+
+    /**
+     *  Function xoá thông tin kỷ luật
+     * @param {*} data : Dữ liệu thông tin kỷ luật
+     * @param {*} deleteData : Kỷ luật muốn xoá
+     */
     handleDeleteDiscipline = (data, deleteData) => {
-        if (deleteData._id !== undefined) {
+        const { editDisciplines, deleteDisciplines } = this.state;
+        if (deleteData._id) {
             this.setState({
-                deleteDisciplines: [...this.state.deleteDisciplines, deleteData],
-                editDisciplines: this.state.editDisciplines.filter(x => x._id !== deleteData._id)
+                deleteDisciplines: [...deleteDisciplines, deleteData],
+                editDisciplines: editDisciplines.filter(x => x._id !== deleteData._id)
             })
         } else {
             this.setState({
@@ -272,17 +395,27 @@ class EmployeeEditFrom extends Component {
     }
 
 
-    // Function thêm thông tin lịch sử lương
+    /**
+     * Function thêm thông tin lịch sử lương
+     * @param {*} data : Dữ liệu thông tin lịch sử lương
+     * @param {*} addData : Lịch sử lương muốn thêm
+     */
     handleCreateSalary = (data, addData) => {
         this.setState({
             salaries: data
         })
     }
-    // Function chỉnh sửa thông tin lịch sử lương
+
+    /**
+     * Function chỉnh sửa thông tin lịch sử lương
+     * @param {*} data : Dữ liệu thông tin lịch sử lương
+     * @param {*} editData : Lịch sử lương muốn chỉnh sửa
+     */
     handleEditSalary = (data, editData) => {
-        if (editData._id !== undefined) {
+        const { editSalaries } = this.state;
+        if (editData._id) {
             this.setState({
-                editSalaries: [...this.state.editSalaries, editData]
+                editSalaries: [...editSalaries, editData]
             })
         } else {
             this.setState({
@@ -290,12 +423,18 @@ class EmployeeEditFrom extends Component {
             })
         }
     }
-    // Function xoá thông tin lịch sử lương
+
+    /**
+     * Function xoá thông tin lịch sử lương
+     * @param {*} data : Dữ liệu thông tin lịch sử lương
+     * @param {*} deleteData : Lịch sử lương muốn xoá
+     */
     handleDeleteSalary = (data, deleteData) => {
-        if (deleteData._id !== undefined) {
+        const { editSalaries, deleteSalaries } = this.state;
+        if (deleteData._id) {
             this.setState({
-                deleteSalaries: [...this.state.deleteSalaries, deleteData],
-                editSalaries: this.state.editSalaries.filter(x => x._id !== deleteData._id)
+                deleteSalaries: [...deleteSalaries, deleteData],
+                editSalaries: editSalaries.filter(x => x._id !== deleteData._id)
             })
         } else {
             this.setState({
@@ -305,17 +444,27 @@ class EmployeeEditFrom extends Component {
     }
 
 
-    // Function thêm thông tin nghỉ phép
+    /**
+     * Function thêm thông tin nghỉ phép
+     * @param {*} data : Dữ liệu thông tin nghỉ phép
+     * @param {*} addData : Nghỉ phép muốn thêm
+     */
     handleCreateAnnualLeave = (data, addData) => {
         this.setState({
             annualLeaves: data
         })
     }
-    // Function chỉnh sửa thông tin nghỉ phép
+
+    /**
+     * Function chỉnh sửa thông tin nghỉ phép
+     * @param {*} data : Dữ liệu thông tin nghỉ phép
+     * @param {*} editData : Nghỉ phép muốn chỉnh sửa
+     */
     handleEditAnnualLeave = (data, editData) => {
-        if (editData._id !== undefined) {
+        const { editAnnualLeaves } = this.state;
+        if (editData._id) {
             this.setState({
-                editAnnualLeaves: [...this.state.editAnnualLeaves, editData]
+                editAnnualLeaves: [...editAnnualLeaves, editData]
             })
         } else {
             this.setState({
@@ -323,12 +472,18 @@ class EmployeeEditFrom extends Component {
             })
         }
     }
-    // Function xoá thông tin nghỉ phép
+
+    /**
+     * Function xoá thông tin nghỉ phép
+     * @param {*} data : Dữ liệu thông tin nghỉ phép
+     * @param {*} deleteData : Nghỉ phép muốn xoá
+     */
     handleDeleteAnnualLeave = (data, deleteData) => {
-        if (deleteData._id !== undefined) {
+        const { editAnnualLeaves, deleteAnnualLeaves } = this.state;
+        if (deleteData._id) {
             this.setState({
-                deleteAnnualLeaves: [...this.state.deleteAnnualLeaves, deleteData],
-                editAnnualLeaves: this.state.editAnnualLeaves.filter(x => x._id !== deleteData._id)
+                deleteAnnualLeaves: [...deleteAnnualLeaves, deleteData],
+                editAnnualLeaves: editAnnualLeaves.filter(x => x._id !== deleteData._id)
             })
         } else {
             this.setState({
@@ -338,30 +493,27 @@ class EmployeeEditFrom extends Component {
     }
 
 
-    // Function thêm thông tin nghỉ phép
+    /**
+     * Function thêm tài liệu đính kèm
+     * @param {*} data : Dữ liệu tài liệu đính kềm
+     * @param {*} addData : Tài liệu đính kèm muốn thêm
+     */
     handleCreateFile = (data, addData) => {
         this.setState({
             files: data
         })
     }
-    // Function chỉnh sửa thông tin nghỉ phép
+
+    /**
+     * Function chỉnh sửa tài liệu đính kèm
+     * @param {*} data : Dữ liệu tài liệu đính kèm
+     * @param {*} editData : Tài liệu đính kèm muốn chỉnh sửa
+     */
     handleEditFile = (data, editData) => {
-        if (editData._id !== undefined) {
+        const { editFiles } = this.state;
+        if (editData._id) {
             this.setState({
-                editFiles: [...this.state.editFiles, editData]
-            })
-        } else {
-            this.setState({
-                files: data
-            })
-        }
-    }
-    // Function xoá thông tin nghỉ phép
-    handleDeleteFile = (data, deleteData) => {
-        if (deleteData._id !== undefined) {
-            this.setState({
-                deleteFiles: [...this.state.deleteFiles, deleteData],
-                editFiles: this.state.editFiles.filter(x => x._id !== deleteData._id)
+                editFiles: [...editFiles, editData]
             })
         } else {
             this.setState({
@@ -370,17 +522,47 @@ class EmployeeEditFrom extends Component {
         }
     }
 
-    // Function thêm thông tin quá trình đào tạo
+    /**
+     * Function xoá tài liệu đính kèm
+     * @param {*} data : Dữ liệu tài liệu đính kèm
+     * @param {*} deleteData : Tài liệu đính kèm muốn xoá
+     */
+    handleDeleteFile = (data, deleteData) => {
+        const { editFiles, deleteFiles } = this.state;
+        if (deleteData._id) {
+            this.setState({
+                deleteFiles: [...deleteFiles, deleteData],
+                editFiles: editFiles.filter(x => x._id !== deleteData._id)
+            })
+        } else {
+            this.setState({
+                files: data
+            })
+        }
+    }
+
+
+    /**
+     * Function thêm thông tin quá trình đào tạo
+     * @param {*} data : Dữ liệu quá trình đào tạo
+     * @param {*} addData : Quá trình đào tạo muốn thêm
+     */
     handleCreateCourse = (data, addData) => {
         this.setState({
             courses: data
         })
     }
-    // Function chỉnh sửa thông tin quá trình đào tạo
+
+    /**
+     * Function chỉnh sửa thông tin quá trình đào tạo
+     * @param {*} data : Dữ liệu quá trình đào tạo
+     * @param {*} editData : Quá trình đào tạo muốn chỉnh sửa
+     */
     handleEditCourse = (data, editData) => {
-        if (editData._id !== undefined) {
+        const { editCourses } = this.state;
+        if (editData._id) {
             this.setState({
-                editCourses: [...this.state.editCourses, editData]
+                editCourses: [...editCourses, editData]
             })
         } else {
             this.setState({
@@ -388,12 +570,18 @@ class EmployeeEditFrom extends Component {
             })
         }
     }
-    // Function xoá thông tin quá trình đào tạo
+
+    /**
+     * Function xoá thông tin quá trình đào tạo
+     * @param {*} data : Dữ liệu quá trình đào tạo
+     * @param {*} deleteData : Quá trình đào tạo muốn xoá
+     */
     handleDeleteCourse = (data, deleteData) => {
-        if (deleteData._id !== undefined) {
+        const { editCourses, deleteCourses } = this.state;
+        if (deleteData._id) {
             this.setState({
-                deleteCourses: [...this.state.deleteCourses, deleteData],
-                editCourses: this.state.editCourses.filter(x => x._id !== deleteData._id)
+                deleteCourses: [...deleteCourses, deleteData],
+                editCourses: editCourses.filter(x => x._id !== deleteData._id)
             })
         } else {
             this.setState({
@@ -404,14 +592,18 @@ class EmployeeEditFrom extends Component {
 
 
 
-    // function kiểm tra các trường bắt buộc phải nhập
+    /**
+     * Function kiểm tra các trường bắt buộc phải nhập
+     * @param {*} value : Giá trị của trường cần kiểm tra
+     */
     validatorInput = (value) => {
-        if (value !== undefined && value.toString().trim() !== '') {
+        if (value && value.toString().trim() !== '') {
             return true;
         }
         return false;
     }
-    // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
+
+    /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
         const { employee } = this.state;
         let result = this.validatorInput(employee.employeeNumber) && this.validatorInput(employee.employeeTimesheetId) &&
@@ -442,8 +634,9 @@ class EmployeeEditFrom extends Component {
 
 
     save = async () => {
-        let { experiences, degrees, certificates, contracts, files,
+        let { _id, experiences, degrees, certificates, contracts, files, avatar,
             disciplines, commendations, salaries, annualLeaves, socialInsuranceDetails, courses } = this.state;
+
         await this.setState({
             createExperiences: experiences.filter(x => x._id === undefined),
             createDegrees: degrees.filter(x => x._id === undefined),
@@ -456,7 +649,8 @@ class EmployeeEditFrom extends Component {
             createCourses: courses.filter(x => x._id === undefined),
             createSocialInsuranceDetails: socialInsuranceDetails.filter(x => x._id === undefined),
             createFiles: files.filter(x => x._id === undefined),
-        })
+        });
+
         let formData = convertJsonObjectToFormData(this.state);
         degrees.forEach(x => {
             formData.append("fileDegree", x.fileUpload);
@@ -470,25 +664,36 @@ class EmployeeEditFrom extends Component {
         files.forEach(x => {
             formData.append("file", x.fileUpload);
         })
-        formData.append("fileAvatar", this.state.avatar);
-        this.props.updateInformationEmployee(this.state._id, formData);
+        formData.append("fileAvatar", avatar);
+
+        this.props.updateInformationEmployee(_id, formData);
     }
-    // Function format dữ liệu Date thành string
+
+    /**
+     * Function format dữ liệu Date thành string
+     * @param {*} date : Ngày muốn format
+     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
+     */
     formatDate(date, monthYear = false) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
 
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else return [day, month, year].join('-');
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        }
+        return date;
+
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id) {
             return {
@@ -539,10 +744,13 @@ class EmployeeEditFrom extends Component {
             return null;
         }
     }
+
     render() {
         const { translate, employeesManager } = this.props;
-        const { _id } = this.state;
-        console.log(this.state);
+
+        const { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,
+            organizationalUnits, roles, commendations, disciplines, salaries, annualLeaves, files } = this.state;
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -555,43 +763,47 @@ class EmployeeEditFrom extends Component {
                     {/* <form className="form-group" id="form-edit-employee"> */}
                     <div className="nav-tabs-custom row" style={{ marginTop: '-15px' }} >
                         <ul className="nav nav-tabs">
-                            <li className="active"><a title={translate('manage_employee.menu_general_infor_title')} data-toggle="tab" href={`#edit_general${_id}`}>{translate('manage_employee.menu_general_infor')}</a></li>
-                            <li><a title={translate('manage_employee.menu_contact_infor_title')} data-toggle="tab" href={`#edit_contact${_id}`}>{translate('manage_employee.menu_contact_infor')}</a></li>
-                            <li><a title={translate('manage_employee.menu_education_experience_title')} data-toggle="tab" href={`#edit_experience${_id}`}>{translate('manage_employee.menu_education_experience')}</a></li>
-                            <li><a title={translate('manage_employee.menu_diploma_certificate_title')} data-toggle="tab" href={`#edit_diploma${_id}`}>{translate('manage_employee.menu_diploma_certificate')}</a></li>
-                            <li><a title={translate('manage_employee.menu_account_tax_title')} data-toggle="tab" href={`#edit_account${_id}`}>{translate('manage_employee.menu_account_tax')}</a></li>
-                            <li><a title={translate('manage_employee.menu_insurrance_infor_title')} data-toggle="tab" href={`#edit_insurrance${_id}`}>{translate('manage_employee.menu_insurrance_infor')}</a></li>
-                            <li><a title={translate('manage_employee.menu_contract_training_title')} data-toggle="tab" href={`#edit_contract${_id}`}>{translate('manage_employee.menu_contract_training')}</a></li>
-                            <li><a title={translate('manage_employee.menu_reward_discipline_title')} data-toggle="tab" href={`#edit_reward${_id}`}>{translate('manage_employee.menu_reward_discipline')}</a></li>
-                            <li><a title={translate('manage_employee.menu_salary_sabbatical_title')} data-toggle="tab" href={`#edit_salary${_id}`}>{translate('manage_employee.menu_salary_sabbatical')}</a></li>
-                            <li><a title={translate('manage_employee.menu_attachments_title')} data-toggle="tab" href={`#edit_attachments${_id}`}>{translate('manage_employee.menu_attachments')}</a></li>
+                            <li className="active"><a title={translate('human_resource.profile.tab_name.menu_general_infor_title')} data-toggle="tab" href={`#edit_general${_id}`}>{translate('human_resource.profile.tab_name.menu_general_infor')}</a></li>
+                            <li><a title={translate('human_resource.profile.tab_name.menu_contact_infor_title')} data-toggle="tab" href={`#edit_contact${_id}`}>{translate('human_resource.profile.tab_name.menu_contact_infor')}</a></li>
+                            <li><a title={translate('human_resource.profile.tab_name.menu_education_experience_title')} data-toggle="tab" href={`#edit_experience${_id}`}>{translate('human_resource.profile.tab_name.menu_education_experience')}</a></li>
+                            <li><a title={translate('human_resource.profile.tab_name.menu_diploma_certificate_title')} data-toggle="tab" href={`#edit_diploma${_id}`}>{translate('human_resource.profile.tab_name.menu_diploma_certificate')}</a></li>
+                            <li><a title={translate('human_resource.profile.tab_name.menu_account_tax_title')} data-toggle="tab" href={`#edit_account${_id}`}>{translate('human_resource.profile.tab_name.menu_account_tax')}</a></li>
+                            <li><a title={translate('human_resource.profile.tab_name.menu_insurrance_infor_title')} data-toggle="tab" href={`#edit_insurrance${_id}`}>{translate('human_resource.profile.tab_name.menu_insurrance_infor')}</a></li>
+                            <li><a title={translate('human_resource.profile.tab_name.menu_contract_training_title')} data-toggle="tab" href={`#edit_contract${_id}`}>{translate('human_resource.profile.tab_name.menu_contract_training')}</a></li>
+                            <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href={`#edit_reward${_id}`}>{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
+                            <li><a title={translate('human_resource.profile.tab_name.menu_salary_sabbatical_title')} data-toggle="tab" href={`#edit_salary${_id}`}>{translate('human_resource.profile.tab_name.menu_salary_sabbatical')}</a></li>
+                            <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href={`#edit_attachments${_id}`}>{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
                         </ul>
                         < div className="tab-content">
+                            {/* Tab thông tin chung */}
                             <GeneralTab
                                 id={`edit_general${_id}`}
-                                img={this.state.img}
+                                img={img}
                                 handleChange={this.handleChange}
                                 handleUpload={this.handleUpload}
-                                employee={this.state.employee}
+                                employee={employee}
                             />
+                            {/* Tab thông tin liên hệ */}
                             <ContactTab
                                 id={`edit_contact${_id}`}
                                 handleChange={this.handleChange}
-                                employee={this.state.employee}
+                                employee={employee}
                             />
+                            {/* Tab học vấn - kinh nghiệm */}
                             <ExperienceTab
                                 id={`edit_experience${_id}`}
-                                employee={this.state.employee}
+                                employee={employee}
                                 handleChange={this.handleChange}
 
                                 handleAddExperience={this.handleCreateExperiences}
                                 handleEditExperience={this.handleEditExperiences}
                                 handleDeleteExperience={this.handleDeleteExperiences}
                             />
+                            {/* Tab bằng cấp - chứng chỉ */}
                             <CertificateTab
                                 id={`edit_diploma${_id}`}
-                                degrees={this.state.degrees}
-                                certificates={this.state.certificates}
+                                degrees={degrees}
+                                certificates={certificates}
 
                                 handleAddDegree={this.handleCreateDegree}
                                 handleEditDegree={this.handleEditDegree}
@@ -601,27 +813,30 @@ class EmployeeEditFrom extends Component {
                                 handleEditCertificate={this.handleEditCertificate}
                                 handleDeleteCertificate={this.handleDeleteCertificate}
                             />
+                            {/* Tab Tài khoản - thuế */}
                             <TaxTab
                                 id={`edit_account${_id}`}
-                                employee={this.state.employee}
+                                employee={employee}
                                 handleChange={this.handleChange} />
+                            {/* Tab thông tin bảo hiểm */}
                             <InsurranceTab
                                 id={`edit_insurrance${_id}`}
-                                socialInsuranceDetails={this.state.socialInsuranceDetails}
-                                employee={this.state.employee}
+                                socialInsuranceDetails={socialInsuranceDetails}
+                                employee={employee}
                                 handleChange={this.handleChange}
 
                                 handleAddBHXH={this.handleCreateBHXH}
                                 handleEditBHXH={this.handleEditBHXH}
                                 handleDeleteBHXH={this.handleDeleteBHXH}
                             />
+                            {/* Tab hợp đồng - quá trình đào tạo*/}
                             <ContractTab
                                 id={`edit_contract${_id}`}
                                 pageCreate={false}
-                                contracts={this.state.contracts}
-                                courses={this.state.courses}
-                                organizationalUnits={this.state.organizationalUnits}
-                                roles={this.state.roles}
+                                contracts={contracts}
+                                courses={courses}
+                                organizationalUnits={organizationalUnits}
+                                roles={roles}
 
                                 handleAddContract={this.handleCreateContract}
                                 handleEditContract={this.handleEditContract}
@@ -631,10 +846,11 @@ class EmployeeEditFrom extends Component {
                                 handleEditCourse={this.handleEditCourse}
                                 handleDeleteCourse={this.handleDeleteCourse}
                             />
+                            {/* Tab khen thưởng - kỷ luật*/}
                             <DisciplineTab
                                 id={`edit_reward${_id}`}
-                                commendations={this.state.commendations}
-                                disciplines={this.state.disciplines}
+                                commendations={commendations}
+                                disciplines={disciplines}
                                 handleAddConmmendation={this.handleCreateConmmendation}
                                 handleEditConmmendation={this.handleEditConmmendation}
                                 handleDeleteConmmendation={this.handleDeleteConmmendation}
@@ -643,10 +859,11 @@ class EmployeeEditFrom extends Component {
                                 handleEditDiscipline={this.handleEditDiscipline}
                                 handleDeleteDiscipline={this.handleDeleteDiscipline}
                             />
+                            {/* Tab lương thưởng - nghỉ phép*/}
                             <SalaryTab
                                 id={`edit_salary${_id}`}
-                                salaries={this.state.salaries}
-                                annualLeaves={this.state.annualLeaves}
+                                salaries={salaries}
+                                annualLeaves={annualLeaves}
                                 handleAddSalary={this.handleCreateSalary}
                                 handleEditSalary={this.handleEditSalary}
                                 handleDeleteSalary={this.handleDeleteSalary}
@@ -655,10 +872,11 @@ class EmployeeEditFrom extends Component {
                                 handleEditAnnualLeave={this.handleEditAnnualLeave}
                                 handleDeleteAnnualLeave={this.handleDeleteAnnualLeave}
                             />
+                            {/* Tab tài liệu đính kèm */}
                             <FileTab
                                 id={`edit_attachments${_id}`}
-                                files={this.state.files}
-                                employee={this.state.employee}
+                                files={files}
+                                employee={employee}
                                 handleChange={this.handleChange}
 
                                 handleAddFile={this.handleCreateFile}
@@ -673,6 +891,7 @@ class EmployeeEditFrom extends Component {
         )
     }
 };
+
 function mapState(state) {
     const { employeesInfo, employeesManager } = state;
     return { employeesInfo, employeesManager };
@@ -681,5 +900,6 @@ function mapState(state) {
 const actionCreators = {
     updateInformationEmployee: EmployeeManagerActions.updateInformationEmployee,
 };
+
 const editFrom = connect(mapState, actionCreators)(withTranslate(EmployeeEditFrom));
 export { editFrom as EmployeeEditFrom };

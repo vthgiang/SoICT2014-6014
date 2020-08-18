@@ -1,27 +1,27 @@
-const { Privilege, Role, Link, Component } = require('../../../models').schema;
+const { Privilege, Role, Link, Component } = require(SERVER_MODELS_DIR).schema;
 
 /**
  * Lấy danh sách các component của công ty
  * @id id của công ty
  */
 exports.getComponents = async (company, query) => {
-    var page = query.page;
-    var limit = query.limit;
-    var currentRole = query.currentRole;
-    var linkId = query.linkId;
-    
+    let {page, limit, currentRole, linkId, type} = query;
+    console.log("query:", page, limit, currentRole, linkId, type)
+    let optionExpression = (type === 'active') ? {company, deleteSoft: false} : {company};
+
+
     if (!page && !limit && !currentRole && !linkId){
         return await Component
-            .find({ company })
+            .find(optionExpression)
             .populate([
                 { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } },
                 { path: 'link', model: Link },
             ]);
     } else if (page && limit && !currentRole && !linkId) {
-        const option = (query.key && query.value)
-            ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
-            : {company};
-        console.log("option: ", option);
+        let option = (query.key && query.value)
+            ? Object.assign(optionExpression, {[`${query.key}`]: new RegExp(query.value, "i")})
+            : optionExpression;
+        
         return await Component
             .paginate( option , { 
                 page, 
@@ -32,22 +32,23 @@ exports.getComponents = async (company, query) => {
                 ]
             });
     } else if (!page && !limit && currentRole && linkId) {
-        const role = await Role.findById(currentRole);
+        let role = await Role.findById(currentRole);
         let roleArr = [role._id];
         roleArr = roleArr.concat(role.parents);
         
-        const link = await Link.findById(linkId)
+        let link = await Link.findOne({_id: linkId, deleteSoft: false})
             .populate([
                 { path: 'components', model: Component }
             ]);
+        if(link === null) throw ['link_access_invalid'];
             
-        const data = await Privilege.find({
+        let data = await Privilege.find({
             roleId: { $in: roleArr },
             resourceType: 'Component',
             resourceId: { $in: link.components }
         }).distinct('resourceId');
 
-        const components = await Component.find({ _id: { $in: data } });
+        let components = await Component.find({ _id: { $in: data }, deleteSoft: false });
 
         return components;
     }
@@ -71,7 +72,7 @@ exports.getComponent = async (id) => {
  * @data dữ liệu component
  */
 exports.createComponent = async(data) => {
-    const check = await Component.findOne({name: data.name});
+    let check = await Component.findOne({name: data.name});
 
     if(check) {
         throw ['component_name_exist'];
@@ -80,7 +81,8 @@ exports.createComponent = async(data) => {
     return await Component.create({
         name: data.name,
         description: data.description,
-        company: data.company
+        company: data.company,
+        deleteSoft: false
     });
 }
 
@@ -90,8 +92,7 @@ exports.createComponent = async(data) => {
  * @data dữ liệu
  */
 exports.editComponent = async(id, data) => {
-    console.log("data component: ", data)
-    const component = await Component
+    let component = await Component
         .findById(id)
         .populate({ path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } });
 
@@ -108,14 +109,20 @@ exports.editComponent = async(id, data) => {
  * Xóa component
  * @id id component
  */
-exports.deleteComponent = async(id) => {
-    const relationshiopDelete = await Privilege.deleteMany({
-        resourceId: id,
-        resourceType: 'Component'
-    });
-    const deleteComponent = await Component.deleteOne({ _id: id });
+exports.deleteComponent = async(id, type) => {
+    if(type === 'soft'){
+        let component = await Component.findById(id);
+        component.deleteSoft = true;
+        await component.save();
+    } else {
+        await Privilege.deleteMany({
+            resourceId: id,
+            resourceType: 'Component'
+        });
+        await Component.deleteOne({ _id: id });
+    }
 
-    return {relationshiopDelete, deleteComponent};
+    return id;
 }
 
 /**
@@ -129,7 +136,7 @@ exports.relationshipComponentRole = async(componentId, roleArr) => {
         resourceType: 'Component'
     });
 
-    const data = roleArr.map( role => {
+    let data = roleArr.map( role => {
         return {
             resourceId: componentId,
             resourceType: 'Component',
@@ -137,7 +144,15 @@ exports.relationshipComponentRole = async(componentId, roleArr) => {
         };
     });
 
-    const privilege = await Privilege.insertMany(data);
+    let privilege = await Privilege.insertMany(data);
 
     return privilege;
+}
+
+exports.updateCompanyComponents = async (data) => {
+    for (let i = 0; i < data.length; i++) {
+        await Component.updateOne({_id: data[i]._id}, {deleteSoft: data[i].deleteSoft});
+    }
+
+    return true;
 }

@@ -38,7 +38,7 @@ class ModalEditTaskProcess extends Component {
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
             showInfo: false,
-            info: data.taskList, // TODO: đổi tên -> taskList
+            info: data.tasks, // TODO: đổi tên -> taskList
             xmlDiagram: data.xmlDiagram,
             selectedEdit: 'info',
             zlevel: 1,
@@ -102,7 +102,7 @@ class ModalEditTaskProcess extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.idProcess !== prevState.idProcess) {
             let info = {};
-            let infoTask = nextProps.data.taskList; // TODO TaskList
+            let infoTask = nextProps.data.tasks; // TODO TaskList
 
             for (let i in infoTask) {
                 if (!infoTask[i].organizationalUnit) {
@@ -353,7 +353,7 @@ class ModalEditTaskProcess extends Component {
             for (let j in info) {
                 if (Object.keys(info[j]).length !== 0) {
                     info[j].followingTasks = [];
-                    info[j].precedingTasks = [];
+                    info[j].preceedingTasks = [];
 
                     for (let i in elementList) {
                         let elem = elementList[i].element;
@@ -361,12 +361,9 @@ class ModalEditTaskProcess extends Component {
                             if (elem.businessObject.incoming) {
                                 let incoming = elem.businessObject.incoming;
                                 for (let x in incoming) {
-                                    info[j].precedingTasks.push({ // các công việc trc công việc hiện tại
-                                        task: {
-                                            code: incoming[x].sourceRef.id,
-                                            name: incoming[x].sourceRef.name,
-                                        },
-                                        label: incoming[x].name,
+                                    info[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
+                                        task: incoming[x].sourceRef.id,
+                                        link: incoming[x].name,
                                     })
                                 }
                             }
@@ -374,11 +371,8 @@ class ModalEditTaskProcess extends Component {
                                 let outgoing = elem.businessObject.outgoing;
                                 for (let y in outgoing) {
                                     info[j].followingTasks.push({ // các công việc sau công việc hiện tại
-                                        task: {
-                                            code: outgoing[y].targetRef.id,
-                                            name: outgoing[y].targetRef.name,
-                                        },
-                                        label: outgoing[y].name,
+                                        task: outgoing[y].targetRef.id,
+                                        link: outgoing[y].name,
                                     })
                                 }
                             }

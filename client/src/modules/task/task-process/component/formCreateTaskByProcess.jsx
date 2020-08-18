@@ -78,6 +78,7 @@ class FormCreateTaskByProcess extends Component {
                 return {
                     id: nextProps.id,
                     editingTemplate: {
+                        // code: (info && info.code) ? info.code : "",
                         startDate: (info && info.startDate) ? info.startDate : "",
                         endDate: (info && info.endDate) ? info.endDate : "",
                         organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
@@ -92,6 +93,8 @@ class FormCreateTaskByProcess extends Component {
                         priority: (info && info.priority) ? info.priority : 3,
                         taskActions: (info && info.taskActions) ? info.taskActions : [],
                         taskInformations: (info && info.taskInformations) ? info.taskInformations : [],
+                        followingTasks: (info && info.followingTasks) ? info.followingTasks : [],
+                        preceedingTasks: (info && info.preceedingTasks) ? info.preceedingTasks : [],
                     },
                     showMore: this.props.isProcess ? false : true,
                     showActionForm: true,
@@ -112,32 +115,32 @@ class FormCreateTaskByProcess extends Component {
             return false;
         }
 
-        if (nextProps.isTaskTemplate && nextProps.taskTemplateId !== this.props.taskTemplateId) {
+        // if (nextProps.isTaskTemplate && nextProps.taskTemplateId !== this.props.taskTemplateId) {
 
-            this.setState({
-                taskTemplateId: nextProps.taskTemplateId,
-                taskTemplate: nextProps.taskTemplate,
-                editingTemplate: {
-                    _id: nextProps.taskTemplate._id,
-                    organizationalUnit: nextProps.taskTemplate.organizationalUnit._id,
-                    name: nextProps.taskTemplate.name,
-                    readByEmployees: nextProps.taskTemplate.readByEmployees.map(item => item._id),
-                    responsibleEmployees: nextProps.taskTemplate.responsibleEmployees.map(item => item._id),
-                    accountableEmployees: nextProps.taskTemplate.accountableEmployees.map(item => item._id),
-                    consultedEmployees: nextProps.taskTemplate.consultedEmployees.map(item => item._id),
-                    informedEmployees: nextProps.taskTemplate.informedEmployees.map(item => item._id),
-                    description: nextProps.taskTemplate.description,
-                    formula: nextProps.taskTemplate.formula,
-                    priority: nextProps.taskTemplate.priority,
-                    taskActions: nextProps.taskTemplate.taskActions,
-                    taskInformations: nextProps.taskTemplate.taskInformations,
-                    startDate: nextProps.taskTemplate.startDate,
-                    endDate: nextProps.taskTemplate.endDate,
-                },
-                showActionForm: true,
-            });
-            return true;
-        }
+        //     this.setState({
+        //         taskTemplateId: nextProps.taskTemplateId,
+        //         taskTemplate: nextProps.taskTemplate,
+        //         editingTemplate: {
+        //             _id: nextProps.taskTemplate._id,
+        //             organizationalUnit: nextProps.taskTemplate.organizationalUnit._id,
+        //             name: nextProps.taskTemplate.name,
+        //             readByEmployees: nextProps.taskTemplate.readByEmployees.map(item => item._id),
+        //             responsibleEmployees: nextProps.taskTemplate.responsibleEmployees.map(item => item._id),
+        //             accountableEmployees: nextProps.taskTemplate.accountableEmployees.map(item => item._id),
+        //             consultedEmployees: nextProps.taskTemplate.consultedEmployees.map(item => item._id),
+        //             informedEmployees: nextProps.taskTemplate.informedEmployees.map(item => item._id),
+        //             description: nextProps.taskTemplate.description,
+        //             formula: nextProps.taskTemplate.formula,
+        //             priority: nextProps.taskTemplate.priority,
+        //             taskActions: nextProps.taskTemplate.taskActions,
+        //             taskInformations: nextProps.taskTemplate.taskInformations,
+        //             startDate: nextProps.taskTemplate.startDate,
+        //             endDate: nextProps.taskTemplate.endDate,
+        //         },
+        //         showActionForm: true,
+        //     });
+        //     return true;
+        // }
 
         // Khi truy vấn lấy các đơn vị mà user là dean đã có kết quả, và thuộc tính đơn vị của newTemplate chưa được thiết lập
         if (editingTemplate.organizationalUnit === "" && department.departmentsThatUserIsDean) {

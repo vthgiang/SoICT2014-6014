@@ -81,7 +81,7 @@ class CourseAddModal extends Component {
                                 <span className="text-red">Nhân viên chưa thuộc phòng ban nào</span>
                             </div>
                         }
-                        <div className={`col-sm-12 col-xs-12 form-group ${errorOnCourseId === undefined ? "" : "has-error"}`}>
+                        <div className={`col-sm-12 col-xs-12 form-group ${errorOnCourseId && "has-error"}`}>
                             <label>Mã khoá đào tạo<span className="text-red">*</span></label>
                             <SelectBox
                                 id={`create_courseID_course${id}`}

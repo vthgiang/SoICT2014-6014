@@ -480,8 +480,6 @@ class GeneralTab extends Component {
             }
         })
 
-        console.log("11111111111111111111111111111111111111", dataList);
-
         return (
             <div id={_id} className="tab-pane active">
                 <div className="row">

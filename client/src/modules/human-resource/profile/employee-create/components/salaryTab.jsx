@@ -191,7 +191,7 @@ class SalaryTab extends Component {
                     <div className=" row col-md-12">
                         {/* Table lịch sử lương */}
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border" ><h4 className="box-title">{translate('manage_employee.historySalary')}</h4></legend>
+                            <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.historySalary')}</h4></legend>
                             <SalaryAddModal handleChange={this.handleAddSalary} id={`addSalary${id}`} />
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                                 <thead>
@@ -239,7 +239,7 @@ class SalaryTab extends Component {
 
                         {/* Table thông tin nghỉ phép */}
                         <fieldset className="scheduler-border">
-                            <legend className="scheduler-border" ><h4 className="box-title">{translate('manage_employee.sabbatical')}</h4></legend>
+                            <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.sabbatical')}</h4></legend>
                             <AnnualLeaveAddModal handleChange={this.handleAddAnnualLeave} id={`addSabbatical${id}`} />
                             <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                                 <thead>

@@ -22,7 +22,7 @@ class ModalViewTaskProcess extends Component {
             currentRole: getStorage('currentRole'),
             showInfo: false,
             selectedView: 'info',
-            info: data.taskList, // TODO đổi thành taskList
+            info: data.tasks, // TODO đổi thành taskList
             xmlDiagram: data.xmlDiagram,
         }
         this.viewer = new BpmnViewer({
@@ -47,7 +47,7 @@ class ModalViewTaskProcess extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.idProcess !== prevState.idProcess) {
             let info = {};
-            let infoTask = nextProps.data.taskList; // TODO task list
+            let infoTask = nextProps.data.tasks; // TODO task list
             for (let i in infoTask) {
                 info[`${infoTask[i].code}`] = infoTask[i];
             }
@@ -56,8 +56,8 @@ class ModalViewTaskProcess extends Component {
                 idProcess: nextProps.idProcess,
                 showInfo: false,
                 info: info,
-                processDescription: nextProps.data.description ? nextProps.data.description : '',
-                processName: nextProps.data.nameProcess ? nextProps.data.nameProcess : '',
+                processDescription: nextProps.data.processDescription ? nextProps.data.processDescription : '',
+                processName: nextProps.data.processName ? nextProps.data.processName : '',
                 viewer: nextProps.data.viewer ? nextProps.data.viewer : [],
                 manager: nextProps.data.manager ? nextProps.data.manager : [],
                 xmlDiagram: nextProps.data.xmlDiagram,
@@ -263,7 +263,7 @@ class ModalViewTaskProcess extends Component {
                                                 <div>
                                                     <div>
                                                         <h1>Option {name}</h1>
-                                                    </div>
+                                                    </div> 
                                                     <ViewTaskTemplate
                                                         isProcess={true}
                                                         taskTemplate={info?.[`${id}`]}

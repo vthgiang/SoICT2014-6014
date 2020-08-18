@@ -40,7 +40,7 @@ class ModalCreateTaskByProcess extends Component {
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
             showInfo: false,
-            info: data.taskList,
+            info: data.tasks,
             xmlDiagram: data.xmlDiagram,
             selectedEdit: 'info',
             zlevel: 1,
@@ -85,7 +85,7 @@ class ModalCreateTaskByProcess extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.idProcess !== prevState.idProcess) {
             let info = {};
-            let infoTask = nextProps.data.taskList;
+            let infoTask = nextProps.data.tasks;
             for (let i in infoTask) {
                 if (!infoTask[i].organizationalUnit) {
                     infoTask[i].organizationalUnit = nextProps.listOrganizationalUnit[0]?._id;

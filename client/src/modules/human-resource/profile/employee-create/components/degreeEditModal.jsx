@@ -1,20 +1,24 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DialogModal, ErrorLabel } from '../../../../../common-components';
+
 import { EmployeeCreateValidator } from './combinedContent';
+
 class DegreeEditModal extends Component {
     constructor(props) {
         super(props);
         this.state = {}
     }
-    // Bắt sự kiện thay đổi file đính kèm
+
+    /** Bắt sự kiện thay đổi file đính kèm */
     handleChangeFile = (e) => {
         const { name } = e.target;
-        var file = e.target.files[0];
+        let file = e.target.files[0];
         if (file !== undefined) {
-            var url = URL.createObjectURL(file);
-            var fileLoad = new FileReader();
+            let url = URL.createObjectURL(file);
+            let fileLoad = new FileReader();
             fileLoad.readAsDataURL(file);
             fileLoad.onload = () => {
                 this.setState({
@@ -31,13 +35,15 @@ class DegreeEditModal extends Component {
             })
         }
     }
-    // Bắt sự kiên thay đổi tên bằng cấp
+
+    /** Bắt sự kiên thay đổi tên bằng cấp */
     handleNameChange = (e) => {
         let { value } = e.target;
         this.validateName(value, true);
     }
     validateName = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateNameDegree(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateNameDegree(value, translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -49,13 +55,15 @@ class DegreeEditModal extends Component {
         }
         return msg === undefined;
     }
-    // Bắt sự kiện thay đổi nơi đào tạo
+
+    /** Bắt sự kiện thay đổi nơi đào tạo */
     handleIssuedByChange = (e) => {
         let { value } = e.target;
         this.validateIssuedBy(value, true);
     }
     validateIssuedBy = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateIssuedByDegree(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateIssuedByDegree(value, translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -67,13 +75,15 @@ class DegreeEditModal extends Component {
         }
         return msg === undefined;
     }
-    // Bắt sự kiện thay đổi năm tốt nghiệp
+
+    /** Bắt sự kiện thay đổi năm tốt nghiệp */
     handleYearChange = (e) => {
         let { value } = e.target;
         this.validateYear(value, true);
     }
     validateYear = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateYearDegree(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateYearDegree(value, translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -85,26 +95,31 @@ class DegreeEditModal extends Component {
         }
         return msg === undefined;
     }
-    // Bắt sự kiện thay đổi xếp loại
+
+    /** Bắt sự kiện thay đổi xếp loại */
     handleDegreeTypeChange = (e) => {
         let { name, value } = e.target;
         this.setState({
             [name]: value
         });
     }
-    // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
+
+    /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
+        const { name, issuedBy, year } = this.state;
         let result =
-            this.validateName(this.state.name, false) && this.validateIssuedBy(this.state.issuedBy, false) &&
-            this.validateYear(this.state.year, false);
+            this.validateName(name, false) && this.validateIssuedBy(issuedBy, false) &&
+            this.validateYear(year, false);
         return result;
     }
-    // Bắt sự kiện submit form
+
+    /** Bắt sự kiện submit form */
     save = () => {
         if (this.isFormValidated()) {
             return this.props.handleChange(this.state);
         }
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -128,48 +143,58 @@ class DegreeEditModal extends Component {
             return null;
         }
     }
+
     render() {
-        const { id, translate } = this.props;
+        const { translate } = this.props;
+
+        const { id } = this.props;
+
         const { name, issuedBy, year, degreeType, errorOnName, errorOnIssuedBy, errorOnYear } = this.state;
+
         return (
             <React.Fragment>
                 <DialogModal
                     size='50' modalID={`modal-edit-certificate-${id}`} isLoading={false}
                     formID={`form-edit-certificate-${id}`}
-                    title={translate('manage_employee.edit_diploma')}
+                    title={translate('human_resource.profile.edit_diploma')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-edit-certificate-${id}`}>
-                        <div className={`form-group ${errorOnName === undefined ? "" : "has-error"}`}>
-                            <label>{translate('manage_employee.name_diploma')}<span className="text-red">*</span></label>
+                        {/* Tên bằng cấp */}
+                        <div className={`form-group ${errorOnName && "has-error"}`}>
+                            <label>{translate('human_resource.profile.name_diploma')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="name" value={name} onChange={this.handleNameChange} autoComplete="off" />
                             <ErrorLabel content={errorOnName} />
                         </div>
-                        <div className={`form-group ${errorOnIssuedBy === undefined ? "" : "has-error"}`}>
-                            <label>{translate('manage_employee.diploma_issued_by')}<span className="text-red">*</span></label>
+                        {/* Nơi đào tạo */}
+                        <div className={`form-group ${errorOnIssuedBy && "has-error"}`}>
+                            <label>{translate('human_resource.profile.diploma_issued_by')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="issuedBy" value={issuedBy} onChange={this.handleIssuedByChange} autoComplete="off" />
                             <ErrorLabel content={errorOnIssuedBy} />
                         </div>
                         <div className="row">
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnYear === undefined ? "" : "has-error"}`}>
-                                <label>{translate('manage_employee.graduation_year')}<span className="text-red">*</span></label>
+                            {/* Năm tốt nghiệp */}
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnYear && "has-error"}`}>
+                                <label>{translate('human_resource.profile.graduation_year')}<span className="text-red">*</span></label>
                                 <input type="text" className="form-control" name="year" value={year} onChange={this.handleYearChange} autoComplete="off" />
                                 <ErrorLabel content={errorOnYear} />
                             </div>
+                            {/* Loại bằng cấp */}
                             <div className="form-group col-sm-6 col-xs-12">
-                                <label>{translate('manage_employee.ranking_learning')}<span className="text-red">*</span></label>
+                                <label>{translate('human_resource.profile.ranking_learning')}<span className="text-red">*</span></label>
                                 <select className="form-control" value={degreeType} name="degreeType" onChange={this.handleDegreeTypeChange}>
-                                    <option value="excellent">{translate('manage_employee.excellent')}</option>
-                                    <option value="very_good">{translate('manage_employee.very_good')}</option>
-                                    <option value="good">{translate('manage_employee.good')}</option>
-                                    <option value="average_good">{translate('manage_employee.average_good')}</option>
-                                    <option value="ordinary">{translate('manage_employee.ordinary')}</option>
+                                    <option value="excellent">{translate('human_resource.profile.excellent')}</option>
+                                    <option value="very_good">{translate('human_resource.profile.very_good')}</option>
+                                    <option value="good">{translate('human_resource.profile.good')}</option>
+                                    <option value="average_good">{translate('human_resource.profile.average_good')}</option>
+                                    <option value="ordinary">{translate('human_resource.profile.ordinary')}</option>
                                 </select>
                             </div>
                         </div>
+                        {/* File đính kèm */}
                         <div className="form-group">
-                            <label htmlFor="file">{translate('manage_employee.attached_files')}</label>
+                            <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
                             <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} />
                         </div>
                     </form>
@@ -178,5 +203,6 @@ class DegreeEditModal extends Component {
         );
     }
 };
+
 const editModal = connect(null, null)(withTranslate(DegreeEditModal));
 export { editModal as DegreeEditModal };
