@@ -1,5 +1,5 @@
 const { TaskProcess } = require('../../../models').schema;
-const { User, Privilege, TaskTemplate } = require('../../../models/index').schema;
+const { User, Privilege, TaskTemplate, Task } = require('../../../models/index').schema;
 const mongoose = require('mongoose');
 
 /**
@@ -123,7 +123,7 @@ exports.createXmlDiagram = async (body) => {
         processDescription: body.processDescription,
         manager: body.manager,
         viewer: body.viewer,
-        taskList: info,
+        tasks: info,
         creator: body.creator,
     })
 
@@ -184,7 +184,6 @@ exports.createXmlDiagram = async (body) => {
 exports.editXmlDiagram = async (params, body) => {
     let info = [];
     for (let x in body.info) {
-        console.log(body.info[x]);
         if (Object.keys(body.info[x]).length > 4) {
             body.info[x].taskActions = (body.info[x].taskActions) ? body.info[x].taskActions.map(item => {
                 return {
@@ -211,7 +210,7 @@ exports.editXmlDiagram = async (params, body) => {
         {
             $set: {
                 xmlDiagram: body.xmlDiagram,
-                taskList: info,
+                tasks: info,
                 processDescription: body.processDescription,
                 processName: body.processName,
                 creator: body.creator,
@@ -228,7 +227,6 @@ exports.editXmlDiagram = async (params, body) => {
         noResultsPerPage: body.noResultsPerPage,
     }
     let data1 = await this.getAllXmlDiagram(queryData);
-    console.table(data1);
     // let data1 = await TaskProcess.find().populate({ path: 'creator', model: User, select: 'name' });
     return data1;
 }
@@ -252,7 +250,6 @@ exports.deleteXmlDiagram = async (diagramId, query) => {
     }
 
     let data = await this.getAllXmlDiagram(queryData);
-    console.table(data);
     return data;
 }
 
@@ -293,13 +290,11 @@ exports.createTaskByProcess = async (processId, body) => {
         }
         // }
 
-        let process = {
-            processId: processId,
-            followingTask: [],
-            precedingTask: [],
-        }
+        let process = processId;
+
         await Task.create({
             process: process,
+            codeInProcess: data[i].code,
             organizationalUnit: data[i].organizationalUnit,
             creator: data[i].creator, //id của người tạo
             name: data[i].name,
@@ -318,6 +313,43 @@ exports.createTaskByProcess = async (processId, body) => {
             informedEmployees: data[i].informedEmployees,
         });
     }
+
+    for (let x in data) {
+        let listFollowingTask = [];
+        let listPreceedingTask = [];
+        for (let i in data[x].followingTasks) {
+            let item = await Task.findOne({ process: processId, codeInProcess: data[x].followingTasks[i].task });
+
+            if (item) {
+                listFollowingTask.push({
+                    task: item._id,
+                    link: data[x].followingTasks[i].link,
+                })
+            }
+        }
+        for (let i in data[x].preceedingTasks) {
+            let item = await Task.findOne({ process: processId, codeInProcess: data[x].preceedingTasks[i].task });
+            if (item) {
+                listPreceedingTask.push({
+                    task: item._id,
+                    link: data[x].preceedingTasks[i].link,
+                })
+            }
+
+        }
+
+        await Task.findOneAndUpdate(
+            { process: processId, codeInProcess: data[x].code },
+            {
+                $set: {
+                    followingTasks: listFollowingTask,
+                    preceedingTasks: listPreceedingTask,
+                }
+            },
+            { new: true }
+        )
+    }
+
     await TaskProcess.findByIdAndUpdate(processId, { $inc: { 'numberOfUse': 1 } }, { new: true });
     return await TaskProcess.find().populate({ path: 'creator', model: User, select: 'name' });;
 }
