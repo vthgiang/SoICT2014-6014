@@ -284,7 +284,8 @@ exports.createCompanyComponents = async (companyId, linkArr) => {
                 name: systemComponent.name,
                 description: systemComponent.description,
                 link: link._id,
-                company: companyId
+                company: companyId,
+                deleteSoft: false
             });
             let updateLink = await Link.findById(link._id);
             updateLink.components = [component._id, ...updateLink.components];

@@ -10,7 +10,7 @@ exports.getComponents = async (req, res) => {
     try {
         let {company} = req.query;
         let components = await ComponentService.getComponents(company, req.query);
-        
+        console.log("components",components)
         await LogInfo(req.user.email, 'GET_ALL_COMPONENTS', req.user.company);
         res.status(200).json({
             success: true,

@@ -5,22 +5,22 @@ const { Privilege, Role, Link, Component } = require('../../../models').schema;
  * @id id của công ty
  */
 exports.getComponents = async (company, query) => {
-    let page = query.page;
-    let limit = query.limit;
-    let currentRole = query.currentRole;
-    let linkId = query.linkId;
-    
+    let {page, limit, currentRole, linkId, type} = query;
+    console.log("query:", page, limit, currentRole, linkId, type)
+    let optionExpression = (type === 'active') ? {company, deleteSoft: false} : {company};
+
+
     if (!page && !limit && !currentRole && !linkId){
         return await Component
-            .find({ company })
+            .find(optionExpression)
             .populate([
                 { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } },
                 { path: 'link', model: Link },
             ]);
     } else if (page && limit && !currentRole && !linkId) {
         let option = (query.key && query.value)
-            ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
-            : {company};
+            ? Object.assign(optionExpression, {[`${query.key}`]: new RegExp(query.value, "i")})
+            : optionExpression;
         
         return await Component
             .paginate( option , { 
@@ -36,10 +36,11 @@ exports.getComponents = async (company, query) => {
         let roleArr = [role._id];
         roleArr = roleArr.concat(role.parents);
         
-        let link = await Link.findById(linkId)
+        let link = await Link.findOne({_id: linkId, deleteSoft: false})
             .populate([
                 { path: 'components', model: Component }
             ]);
+        if(link === null) throw ['link_access_invalid'];
             
         let data = await Privilege.find({
             roleId: { $in: roleArr },
@@ -47,7 +48,7 @@ exports.getComponents = async (company, query) => {
             resourceId: { $in: link.components }
         }).distinct('resourceId');
 
-        let components = await Component.find({ _id: { $in: data } });
+        let components = await Component.find({ _id: { $in: data }, deleteSoft: false });
 
         return components;
     }

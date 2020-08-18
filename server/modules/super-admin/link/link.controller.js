@@ -9,7 +9,7 @@ exports.getLinks = async (req, res) => {
     try {
         let {company} = req.query;
         let links = await LinkService.getLinks(company, req.query);
-        console.log("links",links)
+ 
         await LogInfo(req.user.email, 'GET_ALL_LINKS', req.user.company);
         res.status(200).json({
             success: true,
@@ -17,7 +17,7 @@ exports.getLinks = async (req, res) => {
             content: links
         });
     } catch (error) {
-        console.log(error)
+ 
         await LogError(req.user.email, 'GET_ALL_LINKS', req.user.company);
         res.status(400).json({
             success: false,

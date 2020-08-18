@@ -68,7 +68,7 @@ exports.createSystemLink = async (url, description, roles, category) => {
     const companyList = await Company.find();
     for (let i = 0; i < companyList.length; i++) {
         let link = await Link.create({
-            company: companyList[i], 
+            company: companyList[i]._id, 
             url, 
             description, 
             category
@@ -124,9 +124,7 @@ exports.deleteSystemLink = async (systemLinkId) => {
         resourceType: 'Link',
         resourceId: { $in: priDel }
     });
-    console.log("url", link.url)
     const deleteLink = await Link.deleteMany({url: systemLink.url});
-    console.log("fdfsdf", deleteLink)
 
     // 2. Xóa system link 
     return await SystemLink.deleteOne({ _id: systemLinkId });

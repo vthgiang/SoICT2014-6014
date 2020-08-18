@@ -7,7 +7,6 @@ const {LINK_CATEGORY} = require(SERVER_SEED_DIR+'/terms.js');
  */
 exports.getLinks = async (company, query) => {
     let {type, page, limit} = query;
-    console.log("query", type,page,limit)
     
     let options = (type === 'active') ? {company, deleteSoft: false} : {company};
 
