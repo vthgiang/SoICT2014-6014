@@ -15,6 +15,8 @@ export const CompanyActions = {
     getImportConfiguration,
     createImportConfiguration,
     editImportConfiguration,
+
+    updateCompanyLinks,
 };
 
 /**
@@ -224,12 +226,12 @@ function deleteCompanyComponent(companyId, componentId) {
  * Lấy danh sách tất cả các link của công ty
  * @companyId id của công ty muốn lấy danh sách các link
  */
-function getCompanyLinks(companyId, data) {
-    if(data === undefined) {
+function getCompanyLinks(params) {
+    if(params.page === undefined && params.limit === undefined) {
         return dispatch => {
             dispatch({ type: CompanyConstants.GET_LINKS_LIST_OF_COMPANY_REQUEST });
 
-            CompanyServices.getCompanyLinks(companyId)
+            CompanyServices.getCompanyLinks(params)
                 .then(res => {
                     dispatch({
                         type: CompanyConstants.GET_LINKS_LIST_OF_COMPANY_SUCCESS,
@@ -247,7 +249,7 @@ function getCompanyLinks(companyId, data) {
         return dispatch => {
             dispatch({ type: CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_REQUEST });
 
-            CompanyServices.getCompanyLinks(companyId, data)
+            CompanyServices.getCompanyLinks(params)
                 .then(res => {
                     dispatch({
                         type: CompanyConstants.GET_LINKS_PAGINATE_OF_COMPANY_SUCCESS,
@@ -268,12 +270,12 @@ function getCompanyLinks(companyId, data) {
  * Lấy danh sách các component của công ty
  * @companyId id của công ty
  */
-function getCompanyComponents(companyId, data) {
-    if(data === undefined) {
+function getCompanyComponents(params) {
+    if(params.page === undefined && params.limit === undefined) {
         return dispatch => {
             dispatch({ type: CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_REQUEST });
 
-            CompanyServices.getCompanyComponents(companyId)
+            CompanyServices.getCompanyComponents(params)
                 .then(res => {
                     dispatch({
                         type: CompanyConstants.GET_COMPONENTS_LIST_OF_COMPANY_SUCCESS,
@@ -291,7 +293,7 @@ function getCompanyComponents(companyId, data) {
         return dispatch => {
             dispatch({ type: CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_REQUEST });
 
-            CompanyServices.getCompanyComponents(companyId, data)
+            CompanyServices.getCompanyComponents(params)
                 .then(res => {
                     dispatch({
                         type: CompanyConstants.GET_COMPONENTS_PAGINATE_OF_COMPANY_SUCCESS,
@@ -378,5 +380,26 @@ function editImportConfiguration(data) {
                     payload: error
                 });
             })
+    }
+}
+
+function updateCompanyLinks(data) {
+    return dispatch => {
+        dispatch({ type: CompanyConstants.UPDATE_COMPANY_LINKS_REQUEST });
+
+        CompanyServices.updateCompanyLinks(data)
+            .then(res => {
+                dispatch({
+                    type: CompanyConstants.UPDATE_COMPANY_LINKS_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ 
+                    type: CompanyConstants.UPDATE_COMPANY_LINKS_FAILE,
+                    payload: error
+                });
+            })
+        
     }
 }

@@ -1,23 +1,25 @@
-const Link = require('../../../models/super-admin/link.model');
-const Privilege = require('../../../models/auth/privilege.model');
+const {Link, Privilege} = require(SERVER_MODELS_DIR).schema;
+const {LINK_CATEGORY} = require(SERVER_SEED_DIR+'/terms.js');
 
 /**
  * Lấy danh sách tất cả các link của 1 công ty
  * @company id của công ty
  */
 exports.getLinks = async (company, query) => {
-    var page = query.page;
-    var limit = query.limit;
+    let {type, page, limit} = query;
+    console.log("query", type,page,limit)
     
+    let options = (type === 'active') ? {company, deleteSoft: false} : {company};
+
     if (!page && !limit) {
         return await Link
-            .find({ company })
+            .find(options)
             .populate({ path: 'roles', model: Privilege });
     } else {
-        const option = (query.key && query.value)
-            ? Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")})
-            : {company};
-        console.log("link option: ", option);
+        let option = (query.key && query.value)
+            ? Object.assign(options, {[`${query.key}`]: new RegExp(query.value, "i")})
+            : options;
+
         return await Link
         .paginate( option , { 
             page, 
@@ -49,7 +51,7 @@ exports.createLink = async(data, companyId) => {
         throw ['cannot_create_this_url', 'this_url_cannot_be_use'];
     }
 
-    const check = await Link.findOne({company: componentId, url: data.url});
+    let check = await Link.findOne({company: componentId, url: data.url});
 
     if(check !== null) {
         throw ['url_exist'];
@@ -58,7 +60,8 @@ exports.createLink = async(data, companyId) => {
     return await Link.create({
         url: data.url,
         description: data.description,
-        company: companyId
+        company: companyId,
+        deleteSoft: false
     });
 }
 
@@ -68,7 +71,7 @@ exports.createLink = async(data, companyId) => {
  * @data dữ liệu về link
  */
 exports.editLink = async(id, data) => {
-    const link = await Link.findById(id);
+    let link = await Link.findById(id);
 
     link.url = data.url;
     link.description = data.description;
@@ -79,18 +82,24 @@ exports.editLink = async(id, data) => {
 }
 
 /**
- * Xóa link
+ * Xóa link (chỉ xóa tạm thời - không xóa hẳn)
  * @id id link
  */
-exports.deleteLink = async(id) => {
-    var relationshiopDelete = await Privilege.deleteMany({
-        resourceId: id,
-        resourceType: 'Link'
-    });
-    
-    var deleteRole = await Link.deleteOne({ _id: id});
+exports.deleteLink = async(id, type) => {
+    if(type === 'soft') {
+        let link = await Link.findById(id);
+        link.deleteSoft = true;
+        await link.save();
+    } else {
+        await Privilege.deleteMany({
+            resourceId: id,
+            resourceType: 'Link'
+        });
+        await Link.deleteOne({ _id: id});
+    }
 
-    return {relationshiopDelete, deleteRole};
+    return id;
+
 }
 
 /**
@@ -103,14 +112,14 @@ exports.relationshipLinkRole = async(linkId, roleArr) => {
         resourceId: linkId,
         resourceType: 'Link'
     });
-    var data = roleArr.map( role => {
+    let data = roleArr.map( role => {
         return {
             resourceId: linkId,
             resourceType: 'Link',
             roleId: role
         };
     });
-    var privilege = await Privilege.insertMany(data);
+    let privilege = await Privilege.insertMany(data);
 
     return privilege;
 }
@@ -121,12 +130,28 @@ exports.relationshipLinkRole = async(linkId, roleArr) => {
  * @componentId id component
  */
 exports.addComponentOfLink = async(id, componentId) => {
-    var link = await Link
+    let link = await Link
         .findById(id)
         .populate({ path: 'roles', model: Privilege });
 
     link.components.push(componentId);
-    link.save();
+    await link.save();
 
     return link;
+}
+
+/**
+ * Lấy thông tin link theo id
+ * @id id link
+ */
+exports.getLinkCategories = async (id) => {
+    return LINK_CATEGORY;
+}
+
+exports.updateCompanyLinks = async (data) => {
+    for (let i = 0; i < data.length; i++) {
+        await Link.updateOne({_id: data[i]._id}, {deleteSoft: data[i].deleteSoft});
+    }
+
+    return true;
 }
