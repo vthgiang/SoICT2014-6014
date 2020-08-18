@@ -476,6 +476,7 @@ class GeneralTab extends Component {
                 ...node,
                 id: node._id,
                 name: node.typeName,
+                parent: node.parent ? node.parent._id : null,
             }
         })
 

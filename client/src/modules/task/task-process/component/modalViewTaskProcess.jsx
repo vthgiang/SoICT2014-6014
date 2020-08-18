@@ -22,7 +22,7 @@ class ModalViewTaskProcess extends Component {
             currentRole: getStorage('currentRole'),
             showInfo: false,
             selectedView: 'info',
-            info: data.infoTask,
+            info: data.tasks, // TODO đổi thành taskList
             xmlDiagram: data.xmlDiagram,
         }
         this.viewer = new BpmnViewer({
@@ -36,7 +36,7 @@ class ModalViewTaskProcess extends Component {
 
     interactPopup = async (event) => {
         let element = event.element;
-        let { infoTask } = this.props
+
         this.setState(state => {
             return {
                 ...state,
@@ -47,7 +47,7 @@ class ModalViewTaskProcess extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.idProcess !== prevState.idProcess) {
             let info = {};
-            let infoTask = nextProps.data.infoTask;
+            let infoTask = nextProps.data.tasks; // TODO task list
             for (let i in infoTask) {
                 info[`${infoTask[i].code}`] = infoTask[i];
             }
@@ -56,8 +56,8 @@ class ModalViewTaskProcess extends Component {
                 idProcess: nextProps.idProcess,
                 showInfo: false,
                 info: info,
-                processDescription: nextProps.data.description ? nextProps.data.description : '',
-                processName: nextProps.data.nameProcess ? nextProps.data.nameProcess : '',
+                processDescription: nextProps.data.processDescription ? nextProps.data.processDescription : '',
+                processName: nextProps.data.processName ? nextProps.data.processName : '',
                 viewer: nextProps.data.viewer ? nextProps.data.viewer : [],
                 manager: nextProps.data.manager ? nextProps.data.manager : [],
                 xmlDiagram: nextProps.data.xmlDiagram,
@@ -257,13 +257,13 @@ class ModalViewTaskProcess extends Component {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className={showInfo ? 'col-md-4' : undefined}>
+                                        <div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
                                             {
                                                 (showInfo) &&
                                                 <div>
                                                     <div>
                                                         <h1>Option {name}</h1>
-                                                    </div>
+                                                    </div> 
                                                     <ViewTaskTemplate
                                                         isProcess={true}
                                                         taskTemplate={info?.[`${id}`]}

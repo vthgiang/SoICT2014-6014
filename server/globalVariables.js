@@ -5,6 +5,8 @@ global.SERVER_MODELS_DIR = SERVER_DIR + "/models";
 global.SERVER_MODULES_DIR = SERVER_DIR + "/modules";
 global.SERVER_HELPERS_DIR = SERVER_DIR + "/helpers";
 global.SERVER_MIDDLEWARE_DIR = SERVER_DIR + "/middleware";
+global.SERVER_SEED_DIR = SERVER_DIR + "/seed";
+global.SERVER_LOGS_DIR = SERVER_DIR + "/logs";
 
 // Init backup automatic
 global.SERVER_BAKUP_TIME = '0 0 2 1 * *';

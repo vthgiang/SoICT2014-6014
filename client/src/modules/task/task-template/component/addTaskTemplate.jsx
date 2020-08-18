@@ -487,7 +487,6 @@ class AddTaskTemplate extends Component {
                         {/**Người chịu trách nhiệm mẫu công việc */}
                         <div className='form-group' >
                             <label className="control-label">{translate('task_template.performer')}</label>
-
                             {unitMembers &&
                                 <SelectBox
                                     id={isProcess ? `responsible-select-box-${id}` : "responsible-select-box"}

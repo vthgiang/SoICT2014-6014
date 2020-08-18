@@ -33,6 +33,7 @@ const checkErrorAuth = (code) => {
         'service_off',
         'fingerprint_invalid',
         'service_permisson_denied',
+        'url_invalid'
     ];
 
     if (error_auth.indexOf(code) !== -1) return true;

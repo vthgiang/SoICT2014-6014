@@ -321,14 +321,14 @@ class ModalCreateTaskProcess extends Component {
       var element = event.element;
       console.log(element);
       this.setState(state => {
-          delete state.info[`${state.id}`];
-          return {
-              ...state,
-              showInfo: false,
-          }
+         delete state.info[`${state.id}`];
+         return {
+            ...state,
+            showInfo: false,
+         }
       })
       console.log(this.state);
-  }
+   }
 
    handleUndoDeleteElement = (event) => {
       var element = event.context.shape;
@@ -346,17 +346,60 @@ class ModalCreateTaskProcess extends Component {
       })
    }
    save = async () => {
-      let { department } = this.props
+      let elementList = this.modeler.get('elementRegistry')._elements
+      let { info } = this.state;
+      let { department } = this.props;
+
+      // console.log('elem', elementList);
       let xmlStr;
       this.modeler.saveXML({ format: true }, function (err, xml) {
          xmlStr = xml;
       });
+
       await this.setState(state => {
+         for (let j in info) {
+            if (Object.keys(info[j]).length !== 0) {
+               info[j].followingTasks = [];
+               info[j].preceedingTasks = [];
+
+               for (let i in elementList) {
+                  let elem = elementList[i].element;
+                  if (info[j].code === elem.id) {
+                     if (elem.businessObject.incoming) {
+                        let incoming = elem.businessObject.incoming;
+                        for (let x in incoming) {
+                           info[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
+                              // task: {
+                              //    code: incoming[x].sourceRef.id,
+                              //    name: incoming[x].sourceRef.name,
+                              // },
+                              task: incoming[x].sourceRef.id,
+                              link: incoming[x].name,
+                           })
+                        }
+                     }
+                     if (elem.businessObject.outgoing) {
+                        let outgoing = elem.businessObject.outgoing;
+                        for (let y in outgoing) {
+                           info[j].followingTasks.push({ // các công việc sau công việc hiện tại
+                              task: outgoing[y].targetRef.id,
+                                 // name: outgoing[y].targetRef.name,
+                              link: outgoing[y].name,
+                           })
+                        }
+                     }
+                  }
+               }
+            }
+         }
          return {
             ...state,
             xmlDiagram: xmlStr,
          }
       })
+
+      console.log('infooo', info);
+
       let data = {
          info: this.state.info,
          xmlDiagram: this.state.xmlDiagram,
@@ -368,19 +411,19 @@ class ModalCreateTaskProcess extends Component {
       }
       console.log(data)
       await this.props.createXmlDiagram(data)
-      this.setState(state => {
-         return {
-            ...state,
-            indexRenderer: state.indexRenderer + 1,
-            processName: null,
-            processDescription: '',
-            viewer: undefined,
-            manager: undefined,
-            save: true,
-            showInfo: false
-         }
-      });
-      this.modeler.importXML(this.initialDiagram);
+      // this.setState(state => {
+      //    return {
+      //       ...state,
+      //       indexRenderer: state.indexRenderer + 1,
+      //       processName: null,
+      //       processDescription: '',
+      //       viewer: undefined,
+      //       manager: undefined,
+      //       save: true,
+      //       showInfo: false
+      //    }
+      // });
+      // this.modeler.importXML(this.initialDiagram);
    }
 
    downloadAsSVG = () => {

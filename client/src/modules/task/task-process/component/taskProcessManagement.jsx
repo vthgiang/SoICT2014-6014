@@ -135,7 +135,7 @@ class TaskProcessManagement extends Component {
               xmlDiagram={currentRow.xmlDiagram}
               processName={currentRow.processName}
               processDescription={currentRow.processDescription}
-              infoTask={currentRow.infoTask}
+              infoTask={currentRow.taskList}
               creator={currentRow.creator}
             />
           }
@@ -149,7 +149,7 @@ class TaskProcessManagement extends Component {
               xmlDiagram={currentRow.xmlDiagram}
               processName={currentRow.processName}
               processDescription={currentRow.processDescription}
-              infoTask={currentRow.infoTask}
+              infoTask={currentRow.taskList}
               creator={currentRow.creator}
 
               pageNumber={this.state.pageNumber}
@@ -167,7 +167,7 @@ class TaskProcessManagement extends Component {
               xmlDiagram={currentRow.xmlDiagram}
               processName={currentRow.processName}
               processDescription={currentRow.processDescription}
-              infoTask={currentRow.infoTask}
+              infoTask={currentRow.taskList}
               creator={currentRow.creator}
             />
           }

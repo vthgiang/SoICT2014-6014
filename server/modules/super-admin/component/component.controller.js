@@ -8,8 +8,9 @@ const { LogInfo, LogError } = require('../../../logs');
 
 exports.getComponents = async (req, res) => {
     try {
-        const components = await ComponentService.getComponents(req.user.company? req.user.company._id: null, req.query);
-        
+        let {company} = req.query;
+        let components = await ComponentService.getComponents(company, req.query);
+        console.log("components",components)
         await LogInfo(req.user.email, 'GET_ALL_COMPONENTS', req.user.company);
         res.status(200).json({
             success: true,
@@ -29,7 +30,8 @@ exports.getComponents = async (req, res) => {
 
 exports.getComponent = async (req, res) => {
     try {
-        const component = await ComponentService.getComponent(req.params.id);
+        let {id} = req.params;
+        let component = await ComponentService.getComponent(id);
         
         await LogInfo(req.user.email, 'GET_COMPONENT_BY_ID', req.user.company);
         res.status(200).json({
@@ -50,10 +52,11 @@ exports.getComponent = async (req, res) => {
 
 exports.createComponent = async (req, res) => {
     try {
-        req.body.company = req.user.company._id;
-        const createComponent = await ComponentService.createComponent(req.body);
+        let {company} = req.query;
+        req.body.company = company;
+        let createComponent = await ComponentService.createComponent(req.body);
         await ComponentService.relationshipComponentRole(createComponent._id, req.body.roles);
-        const component = await ComponentService.getComponent(createComponent._id);
+        let component = await ComponentService.getComponent(createComponent._id);
         await LinkServices.addComponentOfLink(req.body.linkId, createComponent._id); // Thêm component đó vào trang
 
         await LogInfo(req.user.email, 'CREATE_COMPONENT', req.user.company);
@@ -76,8 +79,8 @@ exports.createComponent = async (req, res) => {
 exports.editComponent = async (req, res) => {
     try {
         await ComponentService.relationshipComponentRole(req.params.id, req.body.roles);
-        const component = await ComponentService.editComponent(req.params.id, req.body);
-        const resComponent = await ComponentService.getComponent(component._id);
+        let component = await ComponentService.editComponent(req.params.id, req.body);
+        let resComponent = await ComponentService.getComponent(component._id);
 
         await LogInfo(req.user.email, 'EDIT_COMPONENT', req.user.company);
         res.status(200).json({
@@ -98,7 +101,9 @@ exports.editComponent = async (req, res) => {
 
 exports.deleteComponent = async (req, res) => {
     try {
-        const component = await ComponentService.deleteComponent(req.params.id );
+        let {id} = req.params;
+        let {type} = req.query;
+        let component = await ComponentService.deleteComponent(id, type);
         
         await LogInfo(req.user.email, 'DELETE_COMPONENT', req.user.company);
         res.status(200).json({
