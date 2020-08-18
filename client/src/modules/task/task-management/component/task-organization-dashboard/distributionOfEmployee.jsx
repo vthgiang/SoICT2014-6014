@@ -1,10 +1,9 @@
 import React, { Component, createElement } from 'react';
 import { connect } from 'react-redux';
 
-import { taskManagementActions } from '../../redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
-import { DashboardEvaluationEmployeeKpiSetAction } from '../../../../kpi/evaluation/dashboard/redux/actions';
 
+import { SelectBox, SelectMulti } from '../../../../../common-components/index';
 import { withTranslate } from 'react-redux-multilingual';
 
 import c3 from 'c3';
@@ -12,33 +11,99 @@ import 'c3/c3.css';
 class DistributionOfEmployee extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
-            listNameEmployee: []
+            listNameEmployee: [],
+            status: ["Inprocess", "WaitForApproval", "Finished", "Delayed", "Canceled"],
+            maxEmployee: 10,
+            numOfChart: 10
         }
     }
 
-    shouldComponentUpdate() {
+    shouldComponentUpdate(nextState) {
         if (!this.props.listEmployee) return false;
+
+        else if (nextState.maxEmployee !== this.state.maxEmployee) {
+            this.pieChart();
+            return true;
+        }
+
         else {
             this.pieChart();
         }
     }
 
+    handleSelectStatus = async (value) => {
+        if (value.length === 0) {
+            value = ["Inprocess", "WaitForApproval", "Finished", "Delayed", "Canceled"];
+        }
+
+        await this.setState(state => {
+            return {
+                ...state,
+                status: value
+            }
+        });
+
+        this.pieChart();
+    }
+
+    handleSelectNumOfEmployee = async (maxEmployee) => {
+        let data = await this.getData();
+        let dataPieChart = data.taskCount;
+        let maxLength = 0;
+
+        for (let i = 0; i < dataPieChart.length; i++) {
+            if (dataPieChart[i].length > maxLength) {
+                maxLength = dataPieChart[i].length;
+            }
+
+        }
+        let employeesEachChart;
+        let j = 1;
+        let rep = true;
+
+        // nếu số nhân viên nhiều thì chia thành nhiều biểu đồ
+        while (rep) {
+            employeesEachChart = Math.ceil(maxLength / j);
+            if (employeesEachChart <= maxEmployee) { // số nhân viên tối đa trong mỗi biểu đồ
+                rep = false;
+            }
+            else j++;
+        }
+        await this.setState(state => {
+            return {
+                ...state,
+                maxEmployee: maxEmployee,
+                numOfChart: j
+            }
+        })
+    }
+
+    filterByStatus(task) {
+        let stt = this.state.status;
+        for (let i in stt) {
+            if (task.status === stt[i]) return true;
+        }
+    }
+
     getData = async () => {
         const { tasks } = this.props;
-        let taskList = tasks.organizationUnitTasks, listEmployee;
-        let numOfAccountableTask = [], numOfConsultedTask = [], numOfResponsibleTask = [], numOfInformedTask = [], nameEmployee = [];
-        listEmployee = this.props.listEmployee
+        const { listEmployee } = this.props;
+        const { status } = this.state;
+        let organizationUnitTasks = tasks.organizationUnitTasks, taskListByStatus;
+        let taskListEmployee = [], numOfAccountableTask = [], numOfConsultedTask = [], numOfResponsibleTask = [], numOfInformedTask = [], nameEmployee = [];
         let accountableEmployees = 0, consultedEmployees = 0, responsibleEmployees = 0, informedEmployees = 0;
-        let taskListEmployee = [];
+
+        if (status) {
+            taskListByStatus = organizationUnitTasks.tasks.filter(task => this.filterByStatus(task))
+        }
 
         for (let i in listEmployee) {
-            taskList && taskList.tasks.length && taskList.tasks.map(task => {
-                for (let j in task.accountableEmployees) {
+            taskListByStatus && taskListByStatus.map(task => {
+                for (let j in task.accountableEmployees)
                     if (listEmployee[i].userId._id == task.accountableEmployees[j])
                         accountableEmployees += 1;
-                }
-
                 for (let j in task.consultedEmployees)
                     if (listEmployee[i].userId._id == task.consultedEmployees[j])
                         consultedEmployees += 1;
@@ -79,24 +144,24 @@ class DistributionOfEmployee extends Component {
     }
 
     // removePreviosChart = () => {
-    //     const chart = this.refs.distribution_chart1;
-    //     while (chart.hasChildNodes()) {
-    //         chart.removeChild(chart.lastChild);
+    //     let chart;
+    //     for (let i = 0; i < 10; i++) {
+    //         let idChart = 'distribution_chart' + i;
+    //         chart = document.getElementById(idChart)
+    //         if (chart) { chart.remove() }
     //     }
     // }
 
     pieChart = async () => {
         const { translate } = this.props;
-        // this.removePreviosChart();
         let data = await this.getData();
         let dataPieChart = data.taskCount;
-
         let maxLength = 0;
+
         for (let i = 0; i < dataPieChart.length; i++) {
             if (dataPieChart[i].length > maxLength) {
                 maxLength = dataPieChart[i].length;
             }
-
         }
         let dataPieChartSlice = [];
         let employeesEachChart;
@@ -106,13 +171,12 @@ class DistributionOfEmployee extends Component {
         // nếu số nhân viên nhiều thì chia thành nhiều biểu đồ
         while (rep) {
             employeesEachChart = Math.ceil(maxLength / j);
-            if (employeesEachChart <= 15) { // số nhân viên tối đa trong mỗi biểu đồ
+            if (employeesEachChart <= this.state.maxEmployee) { // số nhân viên tối đa trong mỗi biểu đồ
                 rep = false;
             }
             else j++;
         }
         let numOfChart = Math.ceil(maxLength / employeesEachChart);
-
         for (let i = 0; i < numOfChart; i++) {
             let res = dataPieChart[0].slice(employeesEachChart * i, employeesEachChart * (i + 1));
             let acc = dataPieChart[1].slice(employeesEachChart * i, employeesEachChart * (i + 1));
@@ -125,8 +189,8 @@ class DistributionOfEmployee extends Component {
             inf.unshift(`${translate('task.task_management.informed_role')}`);
             dataPieChartSlice[i] = [res, acc, con, inf];
 
+            let nameInChart = data.nameEmployee.slice(employeesEachChart * i, employeesEachChart * (i + 1));
             let nameChart = 'distribution_chart' + i;
-            let legend = i === (numOfChart - 1) ? true : false;
 
             this.chart = c3.generate({
                 bindto: document.getElementById(nameChart),
@@ -142,7 +206,7 @@ class DistributionOfEmployee extends Component {
                 },
 
                 legend: {                             // Ẩn chú thích biểu đồ
-                    show: legend
+                    show: true
                 },
 
                 padding: {
@@ -155,7 +219,7 @@ class DistributionOfEmployee extends Component {
                 axis: {
                     x: {
                         type: 'category',
-                        categories: data.nameEmployee
+                        categories: nameInChart
                     }
                 },
                 // color: {
@@ -168,22 +232,56 @@ class DistributionOfEmployee extends Component {
 
     }
     render() {
+        let { translate } = this.props;
+        let idArr = [];
+        let numOfChart = this.state.numOfChart;
 
-        // let d = document.createElement('div');
-        // d.setAttribute('id', 'distributionOfEmployee')
-        // for (let i = 0; i < 2; i++) {
-        //     let id = 'distribution_chart' + i;
-        //     let sec = document.createElement('section');
-        //     sec.setAttribute('id', id);
-        //     d.appendChild(sec);
-        // }
-        // console.log(d);
+        for (let i = 0; i < numOfChart; i++) {
+            let idName = 'distribution_chart' + i;
+            idArr.push(idName);
+        }
         return (
             <React.Fragment>
-                <section id="distribution_chart0"></section>
-                <section id="distribution_chart1"></section>
-                <section id="distribution_chart2"></section>
-                <section id="distribution_chart3"></section>
+                <section className="form-inline" style={{ textAlign: "right" }}>
+                    {/* Chọn trạng thái công việc */}
+                    <div className="form-group">
+                        <label>{translate('task.task_management.status')}</label>
+                        <SelectMulti id="multiSelectStatusInDistribution"
+                            items={[
+                                { value: "Inprocess", text: translate('task.task_management.inprocess') },
+                                { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
+                                { value: "Finished", text: translate('task.task_management.finished') },
+                                { value: "Delayed", text: translate('task.task_management.delayed') },
+                                { value: "Canceled", text: translate('task.task_management.canceled') }
+                            ]}
+                            onChange={this.handleSelectStatus}
+                            options={{ nonSelectedText: translate('task.task_management.select_status'), allSelectedText: translate('task.task_management.select_all_status') }}>
+                        </SelectMulti>
+                    </div>
+                    {/* Chọn số lượng nhân viên tối đa trong mỗi biểu đồ */}
+                    <div className="form-group">
+                        <label style={{ width: "200px" }}>{translate('task.task_management.employees_each_chart')}</label>
+                        <SelectBox
+                            id={`numberOfEmployeeInDistribution`}
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={[
+                                { text: 5, value: 5 },
+                                { text: 10, value: 10 },
+                                { text: 20, value: 20 },
+                                { text: 30, value: 30 },
+                            ]}
+                            multiple={false}
+                            onChange={this.handleSelectNumOfEmployee}
+                            value={10}
+                        />
+                    </div>
+                </section>
+                {
+                    idArr.map(id => {
+                        return <section id={id}></section>
+                    })
+                }
             </React.Fragment>
         )
     }

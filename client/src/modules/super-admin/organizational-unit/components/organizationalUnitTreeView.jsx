@@ -114,7 +114,7 @@ class DepartmentTreeView extends Component {
                 let deans = x.deans.map( item => item.name);
                 let viceDeans = x.viceDeans.map( item => item.name);
                 let employees = x.employees.map( item => item.name);
-                let parent = "Là đơn vị gốc";
+                let parent = "";
                 if (x.parentName){
                     parent = x.parentName;
                 }
@@ -141,7 +141,7 @@ class DepartmentTreeView extends Component {
                                 { key: "name", value: "Tên đơn vị" },
                                 { key: "description", value: "Mô tả đơn vị" },
                                 { key: "parent", value: "Đơn vị cha"},
-                                { key: "deans", value: "Tên chức danh của trưởng đơn vị" },
+                                { key: "deans", value: "Tên các chức danh trưởng đơn vị" },
                                 { key: "viceDeans", value: "Tên chức danh của phó đơn vị"},
                                 { key: "employees", value: "Tên chức danh của nhân viên đơn vị"}
                             ],

@@ -1,297 +1,178 @@
 import React, { Component } from 'react';
+import { configTaskTempalte, templateImportTaskTemplate } from './fileConfigurationImportTaskTemplate';
+import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../common-components';
+import { taskTemplateActions } from '../redux/actions';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import XLSX from 'xlsx';
+import { AuthActions } from '../../../auth/redux/actions';
 
-import { LOCAL_SERVER_API } from '../../../../env';
-import {taskTemplateActions} from '../redux/actions'
-
-import { DialogModal, SlimScroll } from '../../../../common-components';
-import { configTaskTempalte } from './fileConfigurationImportTaskTemplate';
-
-class TaskTemplateImportForms extends Component {
+class TaskTemplateImportForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            rowEror: [],
+            configData: configTaskTempalte,
+            checkFileImport: true,
+            rowError: [],
             importData: [],
-            configData: this.convertConfigurationToString(configTaskTempalte),
-            importConfiguration: null,
+            importShowData: [],
             limit: 100,
             page: 0
         };
     }
-
-    /**Chuyển đổi dữ liệu file cấu hình để truyền vào state (rồi truyền vào textarea); */
-    convertConfigurationToString = (data) => {
-        let sheets = data.sheets, bonus = data.bonus;
-        if (sheets.length > 1) {
-            sheets = sheets.map(x => `"${x}"`);
-            sheets = sheets.join(', ');
-        } else sheets = `"${sheets}"`
-        let stringData = `{
-            "${'Số dòng tiêu đề của bảng'}": ${data.rowHeader},
-            "${"Tên các sheet"}": [${sheets}],
-            "${"Tên tiêu đề ứng với đơn vị"}": "${data.organizationalUnit}",
-            "${"Tên tiêu để ứng với người được xem"}": "${data.readByEmployees}",
-            "${"Tên tiêu để ứng với tên mẫu"}": "${data.name}",
-            "${"Tên tiêu để ứng với độ ưu tiên"}": "${data.priority}",
-            "${"Tên tiêu để ứng với mô tả"}": "${data.description}",
-            "${"Tên tiêu để ứng với người thực hiện"}": "${data.responsibleEmployees}",
-            "${"Tên tiêu để ứng với người phê duyệt"}": "${data.accountableEmployees}",
-            "${"Tên tiêu để ứng với người hỗ trợ"}": "${data.consultedEmployees}",
-            "${"Tên tiêu để ứng với người quan sát"}": "${data.informedEmployees}",
-            "${"Tên tiêu để ứng với công thức tính điểm"}": "${data.formula}",
-            "${"Tên tiêu để ứng với danh sách hoạt động"}": "${data.taskActions}",
-            "${"Tên tiêu để ứng với mô tả"}": "${data.descriptionTaskAction}",
-            "${"Tên tiêu để ứng với bắt buộc"}": "${data.mandatory}",
-            "${"Tên tiêu để ứng với danh sách thông tin"}": "${data.taskInformations}",
-            "${"Tên tiêu để ứng với tên thông tin"}": "${data.nameTaskInformation}",
-            "${"Tên tiêu để ứng với mô tả thông tin"}": "${data.descriptionTaskInformation}",
-            "${"Tên tiêu để ứng với kiểu dữ liệu"}": "${data.type}",
-            "${"Tên tiêu để ứng với chỉ quản lí được điền"}": "${data.filledByAccountableEmployeesOnly}",
-        }`
-        return stringData;
-    }
-
-    convertStringToObject = (data) => {
-        try {
-            data = data.substring(1, data.length - 1); // xoá dấu "{" và "}"" ở đầu và cuối String
-            data = data.split(',').map(x => x.trim()); // xoá các space dư thừa
-            data = data.join(',');
-            if (data[data.length - 1] === ',') {    // xoá dấu "," nếu tồn tại ở cuối chuỗi để chuyển đổi dc về dạng string
-                data = data.substring(0, data.length - 1);
-            }
-            data = JSON.parse(`{${data}}`);
-            let obj = {};
-            for (let index in data) {
-                if (index === "Số dòng tiêu đề của bảng") obj = { ...obj, rowHeader: data[index] };
-                if (index === "Tên các sheet") obj = { ...obj, sheets: data[index] };
-                if (index === "Tên tiêu đề ứng với đơn vị") obj = { ...obj, organizationalUnit: data[index] };
-                if (index === "Tên tiêu để ứng với người được xem") obj = { ...obj, readByEmployees: data[index] };
-                if (index === "Tên tiêu để ứng với tên mẫu") obj = { ...obj, name: data[index] };
-                if (index === "Tên tiêu để ứng với độ ưu tiên") obj = { ...obj, priority: data[index] };
-                if (index === "Tên tiêu để ứng với mô tả") obj = { ...obj, description: data[index] };
-                if (index === "Tên tiêu để ứng với người thực hiện") obj = { ...obj, responsibleEmployees: data[index] };
-                if (index === "Tên tiêu để ứng với người phê duyệt") obj = { ...obj, accountableEmployees: data[index] };
-                if (index === "Tên tiêu để ứng với người hỗ trợ") obj = { ...obj, consultedEmployees: data[index] };
-                if (index === "Tên tiêu để ứng với người quan sát") obj = { ...obj, informedEmployees: data[index] };
-                if (index === "Tên tiêu để ứng với công thức tính điểm") obj = { ...obj, formula: data[index] };
-                if (index === "Tên tiêu để ứng với danh sách hoạt động") obj = { ...obj, nameTaskActions: data[index] };
-                if (index === "Tên tiêu để ứng với mô tả") obj = { ...obj, descriptionTaskAction: data[index] };
-                if (index === "Tên tiêu để ứng với bắt buộc") obj = { ...obj, mandatory: data[index] };
-                if (index === "Tên tiêu để ứng với danh sách thông tin") obj = { ...obj, taskInformations: data[index] };
-                if (index === "Tên tiêu để ứng với tên thông tin") obj = { ...obj, nameTaskInformation: data[index] };
-                if (index === "Tên tiêu để ứng với mô tả thông tin") obj = { ...obj, descriptionTaskInformation: data[index] };
-                if (index === "Tên tiêu để ứng với kiểu dữ liệu") obj = { ...obj, type: data[index] };
-                if (index === "Tên tiêu để ứng với chỉ quản lí được điền") obj = { ...obj, filledByAccountableEmployeesOnly: data[index] }
-            }
-            return obj
-        } catch (error) {
-            return null
-        }
-    }
-    /**bắt sự kiện thay đổi trong text area */
-    handleChange = (e) => {
-        const { value } = e.target;
+    
+    // Function thay đổi cấu hình file import
+    handleChangeConfig = (value) => {
         this.setState({
             configData: value,
-            importConfiguration: this.convertStringToObject(value) !== null ?
-                this.convertStringToObject(value) : this.state.importConfiguration,
+            importData: [],
         })
     }
-    
-    /**Khi người dùng thay đổi file excel */
-    handleChangeFile = (e) => {
-        const { importConfiguration } = this.state;
-        let configData = importConfiguration !== null ? importConfiguration : configTaskTempalte;
-        let sheets = configData.sheets;
-        let file = e.target.files[0];
 
-        if (file !== undefined) {
-            const reader = new FileReader();
-            reader.readAsBinaryString(file);
-            reader.onload = (evt) => {
-                let sheet_lists = [];
-                const fileImport = evt.target.result;
-                const workbook = XLSX.read(fileImport, { type: 'binary' });
-                // lấy danh sách các sheet của file import
-                let sheet_name_list = workbook.SheetNames;
-                // kiểm tra lọc các sheet tồn tại mà người dùng muốn import
-                for (let n in sheets) {
-                    sheet_lists = sheet_lists.concat(sheet_name_list.filter(x => x.trim().toLowerCase() === sheets[n].trim().toLowerCase()));
+    handleImportExcel = (value, checkFileImport) => {
+        let values = [];
+        let valueShow = [];
+        let k = -1;
+        for ( let i = 0; i < value.length; i++){
+            let x = value[i];
+            if (x.name) {
+                let readByEmployees, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
+                k = k + 1;
+                readByEmployees = x.readByEmployees.split(',');
+                readByEmployees = readByEmployees.map( x => x.trim());
+                responsibleEmployees = x.responsibleEmployees.split(',');
+                responsibleEmployees = responsibleEmployees.map( x => x.trim());
+                accountableEmployees = x.accountableEmployees.split(',');
+                accountableEmployees = accountableEmployees.map( x => x.trim());
+                consultedEmployees = x.consultedEmployees.split(',');
+                consultedEmployees = consultedEmployees.map( x => x.trim());
+                informedEmployees = x.consultedEmployees.split(',');
+                informedEmployees = informedEmployees.map( x=> x.trim());
+                values = [...values, {
+                    "name": x.name, 
+                    "description": x.description,
+                    "organizationalUnit": x.organizationalUnit,
+                    "readByEmployees": readByEmployees,
+                    "priority": x.priority,
+                    "responsibleEmployees": responsibleEmployees,
+                    "accountableEmployees": accountableEmployees,
+                    "consultedEmployees": consultedEmployees,
+                    "informedEmployees": informedEmployees,
+                    "formula": x.formula,
+                    "taskActions": [x.taskActions],
+                    "taskInformations": [x.taskInformations],
+                    "filledByAccountableEmployeesOnly": x.filledByAccountableEmployeesOnly }];
+                valueShow = [...valueShow, {
+                    "name": x.name, 
+                    "description": x.description,
+                    "organizationalUnit": x.organizationalUnit,
+                    "readByEmployees": readByEmployees,
+                    "priority": x.priority,
+                    "responsibleEmployees": responsibleEmployees,
+                    "accountableEmployees": accountableEmployees,
+                    "consultedEmployees": consultedEmployees,
+                    "informedEmployees": informedEmployees,
+                    "formula": x.formula,
+                    "taskActions": [x.taskActions],
+                    "taskInformations": [x.taskInformations],
+                    "filledByAccountableEmployeesOnly": x.filledByAccountableEmployeesOnly }];
+            } else {
+                if (k >= 0) {
+                    if (x.taskActions) {
+                        values[k].taskActions = [...values[k].taskActions, x.taskActions];
+                        valueShow[k].taskActions = [...valueShow[k].taskActions, x.taskActions];
+                    }
+                    if (x.taskInformations) {
+                        valueShow[k].taskInformations = [...valueShow[k].taskInformations, x.taskInformations];
+                        values[k].taskInformations = [...values[k].taskInformations, x.taskInformations];
+                    }
                 }
-                let importData = []; let rowError = [];
-                sheet_lists.length !== 0 && sheet_lists.forEach(x => {
-                    let data = XLSX.utils.sheet_to_json(workbook.Sheets[x], { header: 1, blankrows: true, defval: null });
-                    console.log(data);
-                    var indexUnit, indexViewer, indexName, indexPriority, indexDescription, indexResponsibleEmployees, indexAccountableEmployee,
-                        indexConsultedEmpoloyees, indexInformedEmployees, indexFormula, indexTaskAction, indexDescriptionTaskAction, indexMandatory, indexTaskInformation,
-                        indexNameTaskInformation, indexDescriptionTaskInformation, indexTypeTaskInformation, indexOnlyManager, indexNameTaskAction;
-
-                    // lấy index của các tiều đề cột mà người dùng muốn import
-                    for (let i = 0; i < Number(configData.rowHeader); i++) {
-                        data[i].forEach((x, index) => {
-                            if (x !== null) {
-                                if (x.trim().toLowerCase() === configData.organizationalUnit.trim().toLowerCase())
-                                    indexUnit = index;
-                                if (x.trim().toLowerCase() === configData.readByEmployees.trim().toLowerCase())
-                                    indexViewer = index;
-                                if (x.trim().toLowerCase() === configData.name.trim().toLowerCase()) {
-                                    indexName = index;
-                                }
-                                if (x.trim().toLowerCase() === configData.priority.trim().toLowerCase()) {
-                                    indexPriority = index;
-                                }
-                                if (x.trim().toLowerCase() === configData.description.trim().toLowerCase()) {
-                                    indexDescription = index;
-                                }
-                                if (x.trim().toLowerCase() === configData.responsibleEmployees.trim().toLowerCase()) {
-                                    indexResponsibleEmployees = index;
-                                }
-                                if (x.trim().toLowerCase() === configData.accountableEmployees.trim().toLowerCase()) {
-                                    indexAccountableEmployee = index;
-                                }
-                                if (x.trim().toLowerCase() === configData.consultedEmployees.trim().toLowerCase()) {
-                                    indexConsultedEmpoloyees = index;
-                                }
-                                if (x.trim().toLowerCase() === configData.informedEmployees.trim().toLowerCase()) {
-                                    indexInformedEmployees = index;
-                                }
-                                if (x.trim().toLowerCase() === configData.formula.trim().toLowerCase()) {
-                                    indexFormula = index;
-                                }
-                                if (x.trim().toLowerCase() === configData.taskActions.trim().toLowerCase()) {
-                                    indexTaskAction = index;
-                                }
-                                if (x.trim().toLowerCase() === configData.nameTaskActions.trim().toLowerCase()) {
-                                    indexNameTaskAction = index;
-                                }
-                                if (x.trim().toLowerCase() === configData.taskInformations.trim().toLowerCase()) {
-                                    indexTaskInformation = index;
-                                }
-                                if (x.trim().toLowerCase() === configData.nameTaskInformation.trim().toLowerCase()) {
-                                    indexNameTaskInformation = index;
-                                }
-                                if (x.trim().toLowerCase() === configData.descriptionTaskAction.trim().toLowerCase()) {
-                                    indexDescriptionTaskAction = index;
-                                }
-                                if (x.trim().toLowerCase() === configData.mandatory.trim().toLowerCase()) {
-                                    indexMandatory = index;
-                                }
-                                if (x.trim().toLowerCase() === configData.type.trim().toLowerCase()) {
-                                    indexTypeTaskInformation = index;
-                                }
-                                if (x.trim().toLowerCase() === configData.filledByAccountableEmployeesOnly.trim().toLowerCase()) {
-                                    indexOnlyManager = index;
-                                }
-                                if (x.trim().toLowerCase() === configData.descriptionTaskInformation.trim().toLowerCase()) {
-                                    indexDescriptionTaskInformation = index;
-                                }
-                            }
-                        }
-                        )
-                    }
-
-                    // convert dữ liệu thành dạng array json mong muốn để gửi lên server
-                    data.splice(0, Number(configData.rowHeader));
-                    let dataConvert = [];
-                    let organizationalUnit, name, priority, description, formula;
-                    let readByEmployees = [], responsibleEmployees = [], consultedEmployees = [], informedEmployees = [],
-                        accountableEmployees = [], taskActions = [], nameTaskAction, descriptionTaskAction, mandatory, taskInformations = [],
-                        nameTaskInformation, descriptionTaskInformation, type, filledByAccountableEmployeesOnly;
-                        let taskActionChange = false, taskInforChange = false;
-                    for (let i = 0; i < data.length; i++) {
-
-                        if (data[i][indexName] !== null) {
-
-                            organizationalUnit = data[i][indexUnit];
-                            name = data[i][indexName];
-                            priority = data[i][indexPriority];
-                            description = data[i][indexDescription];
-                            formula = data[i][indexFormula];
-
-                            readByEmployees.push(data[i][indexViewer]);
-                            responsibleEmployees.push(data[i][indexResponsibleEmployees]);
-                            accountableEmployees.push(data[i][indexAccountableEmployee]);
-                            consultedEmployees.push(data[i][indexConsultedEmpoloyees]);
-                            informedEmployees.push(data[i][indexInformedEmployees]);
-
-                            nameTaskAction = data[i][indexNameTaskAction];
-                            descriptionTaskAction = data[i][indexDescriptionTaskAction];
-                            mandatory = data[i][indexMandatory];
-                            taskActions = [...taskActions, {name: nameTaskAction,description: descriptionTaskAction, mandatory }];
-
-                            if (data[i][indexNameTaskInformation]) {
-                                nameTaskInformation = data[i][indexNameTaskInformation];
-                                descriptionTaskInformation = data[i][indexDescriptionTaskInformation];
-                                type = data[i][indexTypeTaskInformation];
-                                filledByAccountableEmployeesOnly = data[i][indexOnlyManager];
-                                taskInformations = [...taskInformations, {name: nameTaskInformation,description: descriptionTaskInformation, type, filledByAccountableEmployeesOnly }]
-                            }
-
-                        } else {
-                            if (data[i][indexViewer] !== null) readByEmployees.push(data[i][indexViewer]);
-                            if (data[i][indexResponsibleEmployees] !== null)
-                                responsibleEmployees.push(data[i][indexResponsibleEmployees]);
-                            if (data[i][indexAccountableEmployee])
-                                accountableEmployees.push(data[i][indexAccountableEmployee]);
-                            if (data[i][indexConsultedEmpoloyees])
-                                consultedEmployees.push(data[i][indexConsultedEmpoloyees]);
-                            if (data[i][indexInformedEmployees])
-                                informedEmployees.push(data[i][indexInformedEmployees]);
-
-                            if (data[i][indexNameTaskAction]) {
-                                nameTaskAction = data[i][indexNameTaskAction];
-                                descriptionTaskAction = data[i][indexDescriptionTaskAction];
-                                mandatory = data[i][indexMandatory];
-                                taskActionChange = true;
-                                taskActions = [...taskActions, {name: nameTaskAction,description: descriptionTaskAction, mandatory }];
-                            }
-
-                            if (data[i][indexNameTaskInformation]) {
-                                nameTaskInformation = data[i][indexNameTaskInformation];
-                                descriptionTaskInformation = data[i][indexDescriptionTaskInformation];
-                                type = data[i][indexTypeTaskInformation];
-                                filledByAccountableEmployeesOnly = data[i][indexOnlyManager];
-                                taskInforChange = true;
-                                taskInformations = [...taskInformations, {name: nameTaskInformation,description: descriptionTaskInformation, type, filledByAccountableEmployeesOnly }]
-                            }
-
-                        }
-                        if (i + 1 < data.length) {
-                            console.log('rer',data[i + 1][indexName]);
-                            if (data[i + 1][indexName] !== null) {
-                                dataConvert = [...dataConvert, { organizationalUnit, readByEmployees, name, priority, description, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, formula, taskActions, taskInformations }]
-                               console.log('ddd',dataConvert);
-                               readByEmployees = []; responsibleEmployees = []; consultedEmployees = []; informedEmployees = [];
-                        accountableEmployees = []; taskActions = []; taskInformations = [];
-                            }
-
-                        }
-                    }
-                    dataConvert = [...dataConvert, { organizationalUnit, readByEmployees, name, priority, description, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, formula, taskActions, taskInformations }]
-                    importData = importData.concat(dataConvert);
-                })
-                
-                this.setState({
-                    importData: importData,
-                })
             }
+        }
+
+        for (let i = 0; i < values.length; i++) {
+            let taskActions = [[],[],[]], taskInformations = [[],[],[],[]];
+            for (let j = 0; j < values[i].taskActions.length; j++) {
+                let k = values[i].taskActions[j][0];
+                taskActions[0] = [...taskActions[0], k];
+                k = values[i].taskActions[j][1];
+                taskActions[1] = [...taskActions[1], k];
+                k = values[i].taskActions[j][2]
+                taskActions[2] = [...taskActions[2], k];
+            }
+            values[i].taskActions = taskActions;
+            for (let j = 0; j < values[i].taskInformations.length; j++) {
+                let k;
+                k = values[i].taskInformations[j][0];
+                taskInformations[0] = [...taskInformations[0], k];
+                k = values[i].taskInformations[j][1]
+                taskInformations[1] = [...taskInformations[1], k];
+                k = values[i].taskInformations[j][2]
+                taskInformations[2] = [...taskInformations[2], k];
+                k = values[i].taskInformations[j][3]
+                taskInformations[3] = [...taskInformations[3], k];
+            }
+            values[i].taskInformations = taskInformations;
+        }
+        value = values;
+        
+        if (checkFileImport) {
+            let rowError = [];
+            for ( let i = 0; i < value.length; i++){
+                let x = value[i];
+                let errorAlert = [];
+                if (x.name === null || x.description === null || x.organizationalUnit === null || x.readByEmployees === null || x.formula === null){
+                    rowError = [...rowError, i+1];
+                    x = { ...x, error: true};
+                }
+                if (x.name === null) {
+                    errorAlert = [...errorAlert, 'Tên mẫu công việc không được để trống'];
+                }
+                if (x.organizationalUnit === null) {
+                    errorAlert = [...errorAlert, 'Tên phòng ban không được để trống'];
+                }
+                if (x.description === null) {
+                    errorAlert = [...errorAlert, 'Tên mô tả mẫu công việc không được để trống'];
+                }
+                if (x.readByEmployees === null) {
+                    errorAlert = [...errorAlert, 'Tên người được xem không được để trống'];
+                }
+                if (x.formula === null) {
+                    errorAlert = [...errorAlert, 'Tên công thức tính điểm không được để trống'];
+                }
+                x = { ...x, errorAlert: errorAlert };
+                value[i] = x;
+            };
+            // convert dữ liệu thành dạng array json mong muốn để gửi lên server
+
+            this.setState({
+                importData: value,
+                importShowData: valueShow,
+                rowError: rowError,
+                checkFileImport: checkFileImport,
+            })
+        } else {
+            this.setState({
+                checkFileImport: checkFileImport,
+            })
         }
     }
 
-    /**Gửi req thêm mới 1 mẫu công việc */
-    save = ()=>{
-        let {importData} = this.state;
-        this.props.importTaskTemplate(importData);
+    save = () => {
+        let { importShowData } = this.state;
+        this.props.importTaskTemplate(importShowData);
+    }
+
+    requestDownloadFile = (e, path, fileName) => {
+        e.preventDefault()
+        this.props.downloadFile(path, fileName)
     }
 
     render() {
-        let { importConfiguration, configData } = this.state;
+        const { translate } = this.props;
+        let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
         return (
             <React.Fragment>
-                <DialogModal
+                <DialogModal 
                     modalID={`modal_import_file`} isLoading={false}
                     formID={`form_import_file`}
                     title="Thêm mẫu công việc bằng import file excel"
@@ -300,121 +181,53 @@ class TaskTemplateImportForms extends Component {
                     size={75}
                 >
                     <form className="form-group" id={`form_import_file`}>
-                        <div>
-                            <button type="button" data-toggle="collapse" data-target="#confic_import_file" className="pull-right" ><i className="fa fa-gear" style={{ fontSize: "19px" }}></i></button>
-                            <div id="confic_import_file" className="box box-solid box-default collapse col-sm-12 col-xs-12" style={{ padding: 0 }}>
-                                <div className="box-header with-border">
-                                    <h3 className="box-title">Cấu hình file import</h3>
-                                    <div className="box-tools pull-right">
-                                        <button type="button" className="btn btn-box-tool" data-toggle="collapse"
-                                            data-target={`#confic_import_file`} ><i className="fa fa-times"></i></button>
-                                    </div>
-                                </div>
-                                <div className="box-body row">
-                                    <div className="form-group col-sm-12 col-xs-12">
-                                        <textarea className="form-control" rows="8" name="reason"
-                                            value={configData} onChange={this.handleChange}></textarea>
-                                    </div>
-                                    {
-                                        importConfiguration !== null && (
-                                            <div className="form-group col-sm-12 col-xs-12">
-                                                <label>Cấu hình file import của bạn như sau:</label><br />
-                                                <span>File import có</span>
-                                                <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;{importConfiguration.rowHeader}&nbsp;</span>
-                                                <span>dòng tiêu đề và đọc dữ liệu các sheet: </span>
-                                                <span className="text-success" style={{ fontWeight: "bold" }}>&nbsp;{importConfiguration.sheets.length > 1 ? importConfiguration.sheets.join(', ') : importConfiguration.sheets}</span>
-
-                                                <div id="croll-table" style={{ marginTop: 5 }}>
-                                                    <table id="importConfig" className="table table-bordered table-striped table-hover">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Tên các thuộc tính</th>
-                                                                <th>Đơn vị</th>
-                                                                <th>Người được xem</th>
-                                                                <th>Tên mẫu</th>
-                                                                <th>Độ ưu tiên</th>
-                                                                <th>Mô tả</th>
-                                                                <th>Người thực hiện</th>
-                                                                <th>Người phê duyệt</th>
-                                                                <th>Người hỗ trợ</th>
-                                                                <th>Người quan sát</th>
-                                                                <th>Công thức tính điểm</th>
-                                                                <th>Danh sách hoạt động</th>
-                                                                <th>Tên hoạt động</th>
-                                                                <th>Mô tả</th>
-                                                                <th>Bắt buộc</th>
-                                                                <th>Danh sách thông tin</th>
-                                                                <th>Tên thông tin</th>
-                                                                <th>Mô tả thông tin</th>
-                                                                <th>Kiểu dữ liệu</th>
-                                                                <th>Chỉ quản lí được điền</th>
-
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <th>Tiêu đề tương ứng</th>
-                                                                <td>{importConfiguration.organizationalUnit}</td>
-                                                                <td>{importConfiguration.readByEmployees}</td>
-                                                                <td>{importConfiguration.name}</td>
-                                                                <td>{importConfiguration.priority}</td>
-                                                                <td>{importConfiguration.description}</td>
-                                                                <td>{importConfiguration.responsibleEmployees}</td>
-                                                                <td>{importConfiguration.accountableEmployees}</td>
-                                                                <td>{importConfiguration.consultedEmployees}</td>
-                                                                <td>{importConfiguration.informedEmployees}</td>
-                                                                <td>{importConfiguration.formula}</td>
-                                                                <td>{importConfiguration.taskActions}</td>
-                                                                <td>{importConfiguration.nameTaskActions}</td>
-                                                                <td>{importConfiguration.descriptionTaskAction}</td>
-                                                                <td>{importConfiguration.mandatory}</td>
-                                                                <td>{importConfiguration.taskInformations}</td>
-                                                                <td>{importConfiguration.nameTaskActions}</td>
-                                                                <td>{importConfiguration.descriptionTaskAction}</td>
-                                                                <td>{importConfiguration.type}</td>
-                                                                <td>{importConfiguration.filledByAccountableEmployeesOnly}</td>
-
-
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        )
-                                    }
-                                    <SlimScroll outerComponentId="croll-table" innerComponentId="importConfig" innerComponentWidth={1000} activate={true} />
-                                </div>
+                        <ConFigImportFile
+                            id="import_taskTemplate_config"
+                            configData={configData}
+                            // textareaRow={8}
+                            scrollTable={false}
+                            handleChangeConfig={this.handleChangeConfig}
+                        />
+                        <div className="row">
+                            <div className="form-group col-md-4 col-xs-12">
+                                <ImportFileExcel
+                                    configData={configData}
+                                    handleImportExcel={this.handleImportExcel}
+                                />
                             </div>
-                            <div className="row">
-                                <div className="form-group col-md-4 col-xs-12">
-                                    <label>File excel cần import</label>
-                                    <input type="file" className="form-control"
-                                        accept=".xlms,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                                        onChange={this.handleChangeFile} />
-                                </div>
-                                <div className="form-group col-md-4 col-xs-12">
-                                    <label></label>
-                                    <a className='pull-right' href={LOCAL_SERVER_API + configTaskTempalte.file.fileUrl} target="_blank" style={{ paddingTop: 15 }}
-                                        download={configTaskTempalte.file.fileName}><i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
-                                </div>
-                                <SlimScroll outerComponentId="croll-table-import" innerComponentId="importData" innerComponentWidth={1000} activate={true} />
-                                
+                            <div className="form-group col-md-4 col-xs-12">
+                                <label></label>
+                                <ExportExcel id="download_template_task_template" type='link' exportData={templateImportTaskTemplate}
+                                    buttonName='Download file import mẫu' />
+                            </div>
+                            <div className="form-group col-md-12 col-xs-12">
+                                <ShowImportData
+                                    id="import_taskTemplate_show_data"
+                                    configData={configData}
+                                    importData={importData}
+                                    rowError={rowError}
+                                    scrollTable={false}
+                                    checkFileImport={checkFileImport}
+                                    limit={limit}
+                                    page={page}
+                                />
                             </div>
                         </div>
                     </form>
-
                 </DialogModal>
             </React.Fragment>
         )
     }
-};
+
+}
 
 function mapState(state) {
     const { taskTemplate } = state;
     return { taskTemplate };
 };
 const actionCreators = {
-    importTaskTemplate: taskTemplateActions.importTaskTemplate
+    importTaskTemplate: taskTemplateActions.importTaskTemplate,
+    downloadFile: AuthActions.downloadFile,
 };
 const importFileExcel = connect(mapState, actionCreators)(withTranslate(TaskTemplateImportForm));
 export { importFileExcel as TaskTemplateImportForm };

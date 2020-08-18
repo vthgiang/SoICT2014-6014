@@ -1915,6 +1915,11 @@ export default {
                 consulted_role: 'Consulted',
                 informed_role: 'Informed',
                 distribution_Of_Employee: 'Distribution of Employees',
+                employees_each_chart: 'Max employee in a chart',
+                task_is_not_linked_up_with_monthly_kpi: 'Tasks are not linked up with monthly KPI',
+                no_task_is_not_linked: 'There is no task is not linked up with monthly KPI',
+                loading_data: 'Loading data',
+
                 add_task: 'Add task',
                 add_title: 'Add a new task',
                 add_subtask: 'Add sub task',

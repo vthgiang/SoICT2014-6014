@@ -65,7 +65,7 @@ class ImportFileExcel extends Component {
                                                 }
                                             });
                                             indexKey[key] = arr;
-                                            break;
+                                            // break;
                                         } else if (key !== 'sheets' && key !== 'rowHeader' && key !== 'file') {
                                             if (!Array.isArray(config.value) && x.toString().trim().toLowerCase() === config.value.toString().trim().toLowerCase()) {
                                                 if (config.colspan) {
@@ -78,7 +78,7 @@ class ImportFileExcel extends Component {
                                                 } else {
                                                     indexKey[key] = index;
                                                 }
-                                                break;
+                                                // break;
                                             }
                                         }
                                     }
