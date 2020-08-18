@@ -1,15 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { FileAddModal, FileEditModal } from './combinedContent';
 
 import { AuthActions } from '../../../../auth/redux/actions';
+
 class FileTab extends Component {
     constructor(props) {
         super(props);
         this.state = {};
     }
-    // Bắt sự kiện click edit khen thưởng
+
+    /**
+     * Bắt sự kiện click edit tài liệu đính kèm
+     * @param {*} value : Tài liệu đính kèm cần chỉnh sửa
+     * @param {*} index : Số thứ tự tài liệu đính kèm cần chỉnh sửa
+     */
     handleEdit = async (value, index) => {
         await this.setState(state => {
             return {
@@ -19,33 +26,39 @@ class FileTab extends Component {
         });
         window.$(`#modal-edit-file-editFile${index}`).modal('show');
     }
-    // Function lưu các trường thông tin vào state
+
+    /** Function lưu các trường thông tin vào state */
     handleChange = (e) => {
         const { name, value } = e.target;
         this.props.handleChange(name, value);
     }
-    // Function thêm tài liệu đính kèm mặc định
+
+    /** Function thêm tài liệu đính kèm mặc định */
     defaulteClick = async (e) => {
-        var { translate } = this.props;
+        let { translate } = this.props;
         e.preventDefault();
         const defaulteFile = [
-            { name: translate('manage_employee.diploma'), description: translate('manage_employee.disc_diploma'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
-            { name: translate('manage_employee.curriculum_vitae'), description: translate('manage_employee.disc_curriculum_vitae'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
-            { name: translate('manage_employee.img'), description: translate('manage_employee.disc_img'), number: "3", status: "submitted", file: "", urlFile: "", fileUpload: "" },
-            { name: translate('manage_employee.copy_id_card'), description: translate('manage_employee.disc_copy_id_card'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
-            { name: translate('manage_employee.health_certificate'), description: translate('manage_employee.disc_health_certificate'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
-            { name: translate('manage_employee.birth_certificate'), description: translate('manage_employee.disc_birth_certificate'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
-            { name: translate('manage_employee.job_application'), description: translate('manage_employee.disc_job_application'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
-            { name: translate('manage_employee.commitment'), description: translate('manage_employee.disc_commitment'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
-            { name: translate('manage_employee.temporary_residence_card'), description: translate('manage_employee.disc_temporary_residence_card'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" }
+            { name: translate('human_resource.profile.diploma'), description: translate('human_resource.profile.disc_diploma'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
+            { name: translate('human_resource.profile.curriculum_vitae'), description: translate('human_resource.profile.disc_curriculum_vitae'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
+            { name: translate('human_resource.profile.img'), description: translate('human_resource.profile.disc_img'), number: "3", status: "submitted", file: "", urlFile: "", fileUpload: "" },
+            { name: translate('human_resource.profile.copy_id_card'), description: translate('human_resource.profile.disc_copy_id_card'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
+            { name: translate('human_resource.profile.health_certificate'), description: translate('human_resource.profile.disc_health_certificate'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
+            { name: translate('human_resource.profile.birth_certificate'), description: translate('human_resource.profile.disc_birth_certificate'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
+            { name: translate('human_resource.profile.job_application'), description: translate('human_resource.profile.disc_job_application'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
+            { name: translate('human_resource.profile.commitment'), description: translate('human_resource.profile.disc_commitment'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" },
+            { name: translate('human_resource.profile.temporary_residence_card'), description: translate('human_resource.profile.disc_temporary_residence_card'), number: "1", status: "submitted", file: "", urlFile: "", fileUpload: "" }
         ]
+
         await this.setState({
             files: [...this.state.files, ...defaulteFile]
         })
         this.props.handleAddFile(this.state.files)
     }
 
-    // Function thêm thông tin tài liệu đính kèm
+    /**
+     * Function thêm thông tin tài liệu đính kèm 
+     * @param {*} data : Dữ liệu thông tin tài liệu đính kèm cần thêm
+     */
     handleAddFile = async (data) => {
         const { files } = this.state;
         await this.setState({
@@ -56,7 +69,11 @@ class FileTab extends Component {
         this.props.handleAddFile(this.state.files, data)
 
     }
-    // Function chỉnh sửa thông tin tài liệu đính kèm
+
+    /**
+     * Function chỉnh sửa thông tin tài liệu đính kèm
+     * @param {*} data : Dữ liệu thông tin tài liệu đính kèm cần chỉnh sửa
+     */
     handleEditFile = async (data) => {
         const { files } = this.state;
         files[data.index] = data;
@@ -65,10 +82,14 @@ class FileTab extends Component {
         })
         this.props.handleEditFile(this.state.files, data)
     }
-    // Function xoá kinh nghiệm làm việc
+
+    /**
+     * Function xoá kinh nghiệm làm việc
+     * @param {*} index : Số thứ tự kinh nghiệm làm việc muốn xoá
+     */
     handleDeleteFile = async (index) => {
-        var { files } = this.state;
-        var data = files[index];
+        let { files } = this.state;
+        let data = files[index];
         files.splice(index, 1);
         await this.setState({
             ...this.state,
@@ -77,7 +98,7 @@ class FileTab extends Component {
         this.props.handleDeleteFile(this.state.files, data)
     }
 
-    // So sánh 2 đồi tượng
+    /** Hàm tiện ích so sánh 2 đồi tượng */
     static isEqual(objA, objB) {
         // Tạo các mảng chứa tên các property
         let aProps = Object.getOwnPropertyNames(objA);
@@ -92,7 +113,6 @@ class FileTab extends Component {
                 return false;
             }
         }
-
         return true;
     }
 
@@ -110,14 +130,15 @@ class FileTab extends Component {
         }
     }
 
-    // Function kiểm tra các trường bắt buộc phải nhập
+    /** Function kiểm tra các trường bắt buộc phải nhập */
     validatorInput = (value) => {
-        if (value !== undefined && value.toString().trim() !== '') {
+        if (value && value.toString().trim() !== '') {
             return true;
         }
         return false;
     }
 
+    /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
         const { employee } = this.state;
         let result = this.validatorInput(employee.employeeNumber) && this.validatorInput(employee.employeeTimesheetId) &&
@@ -127,6 +148,7 @@ class FileTab extends Component {
             this.validatorInput(employee.phoneNumber) && this.validatorInput(employee.temporaryResidence) &&
             this.validatorInput(employee.taxRepresentative) && this.validatorInput(employee.taxNumber) &&
             this.validatorInput(employee.taxDateOfIssue) && this.validatorInput(employee.taxAuthority);
+
         if (employee.healthInsuranceStartDate && employee.healthInsuranceEndDate) {
             if (new Date(employee.healthInsuranceEndDate).getTime() < new Date(employee.healthInsuranceStartDate).getTime()) {
                 return false;
@@ -142,50 +164,63 @@ class FileTab extends Component {
         } else if (employee.leavingDate && !employee.startingDate) {
             return false;
         }
+
         return result;
     }
 
+    /**
+     * Function dowload file
+     * @param {*} e 
+     * @param {*} path : Đường dẫn file
+     * @param {*} fileName : Tên file dùng để lưu
+     */
     requestDownloadFile = (e, path, fileName) => {
         e.preventDefault()
         this.props.downloadFile(path, fileName)
     }
 
     render() {
-        const { id, translate } = this.props;
-        const { files, archivedRecordNumber } = this.state;
+        const { translate } = this.props;
+
+        const { id } = this.props;
+
+        const { files, archivedRecordNumber, currentRow } = this.state;
+
         return (
             <div id={id} className="tab-pane">
                 <div className=" row box-body">
+                    {/* Nơi lưu trữ bảng cứng */}
                     <div className="col-md-4">
                         <div className="form-group">
-                            <label>{translate('manage_employee.attachments_code')}</label>
-                            <input type="text" className="form-control" name="archivedRecordNumber" value={archivedRecordNumber} onChange={this.handleChange} placeholder={translate('manage_employee.attachments_code')} autoComplete="off" />
+                            <label>{translate('human_resource.profile.attachments_code')}</label>
+                            <input type="text" className="form-control" name="archivedRecordNumber" value={archivedRecordNumber} onChange={this.handleChange} placeholder={translate('human_resource.profile.attachments_code')} autoComplete="off" />
                         </div>
                     </div>
+                    {/* Danh sách tài liệu đính kèm */}
                     <div className="col-md-12">
-                        <h4 className="row col-md-6 col-xs-8">{translate('manage_employee.list_attachments')}:</h4>
+                        <h4 className="row col-md-6 col-xs-8">{translate('human_resource.profile.list_attachments')}:</h4>
                         <FileAddModal handleChange={this.handleAddFile} id={`addFile${id}`} />
-                        <button style={{ marginTop: 2, marginBottom: 10, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={this.defaulteClick} title={translate('manage_employee.add_default_title')}>{translate('manage_employee.add_default')}</button>
+                        <button style={{ marginTop: 2, marginBottom: 10, marginRight: 15 }} type="submit" className="btn btn-primary pull-right" onClick={this.defaulteClick} title={translate('human_resource.profile.add_default_title')}>{translate('human_resource.profile.add_default')}</button>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
-                                    <th>{translate('manage_employee.file_name')}</th>
+                                    <th>{translate('human_resource.profile.file_name')}</th>
                                     <th>{translate('table.description')}</th>
-                                    <th>{translate('manage_employee.number')}</th>
+                                    <th>{translate('human_resource.profile.number')}</th>
                                     <th>{translate('table.status')}</th>
-                                    <th>{translate('manage_employee.attached_files')}</th>
+                                    <th>{translate('human_resource.profile.attached_files')}</th>
                                     <th style={{ width: '120px' }}>{translate('general.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof files !== 'undefined' && files.length !== 0) &&
+                                {files && files.length !== 0 &&
                                     files.map((x, index) => {
                                         return <tr key={index}>
                                             <td>{x.name}</td>
                                             <td>{x.description}</td>
                                             <td>{x.number}</td>
-                                            <td>{translate(`manage_employee.${x.status}`)}</td>
-                                            <td>{!x.urlFile ? translate('manage_employee.no_files') :
+                                            <td>{translate(`human_resource.profile.${x.status}`)}</td>
+                                            <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
                                                 <a className='intable'
                                                     style={{ cursor: "pointer" }}
                                                     onClick={(e) => this.requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
@@ -193,7 +228,7 @@ class FileTab extends Component {
                                                 </a>
                                             }</td>
                                             <td >
-                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_file')}><i className="material-icons">edit</i></a>
+                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_file')}><i className="material-icons">edit</i></a>
                                                 <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteFile(index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
@@ -203,30 +238,30 @@ class FileTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof files === 'undefined' || files.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!files || files.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </div>
                 </div>
                 {
                     id === "pageAttachments" &&
                     <div className=" box-footer">
-                        <button type="reset" disabled={!this.isFormValidated()} title="Thêm nhân viên mới" className="btn btn-success col-md-2 pull-right btnuser" onClick={() => this.props.handleSubmit()}>{translate('manage_employee.add_staff')}</button>
+                        <button type="reset" disabled={!this.isFormValidated()} className="btn btn-success col-md-2 pull-right btnuser" onClick={() => this.props.handleSubmit()}>{translate('human_resource.profile.add_staff')}</button>
                     </div>
                 }
 
-                {
-                    this.state.currentRow !== undefined &&
+                { /** Form chỉnh sửa tài liệu đính kèm*/
+                    currentRow &&
                     <FileEditModal
-                        id={`editFile${this.state.currentRow.index}`}
-                        _id={this.state.currentRow._id}
-                        index={this.state.currentRow.index}
-                        name={this.state.currentRow.name}
-                        description={this.state.currentRow.description}
-                        number={this.state.currentRow.number}
-                        status={this.state.currentRow.status}
-                        file={this.state.currentRow.file}
-                        urlFile={this.state.currentRow.urlFile}
-                        fileUpload={this.state.currentRow.fileUpload}
+                        id={`editFile${currentRow.index}`}
+                        _id={currentRow._id}
+                        index={currentRow.index}
+                        name={currentRow.name}
+                        description={currentRow.description}
+                        number={currentRow.number}
+                        status={currentRow.status}
+                        file={currentRow.file}
+                        urlFile={currentRow.urlFile}
+                        fileUpload={currentRow.fileUpload}
                         handleChange={this.handleEditFile}
                     />
                 }

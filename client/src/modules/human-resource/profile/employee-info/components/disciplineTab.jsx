@@ -60,7 +60,7 @@ class DisciplineTab extends Component {
                 <div className="box-body">
                     {/* Danh sách khen thưởng */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.Reward')}</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.reward')}</h4></legend>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>

@@ -1207,6 +1207,8 @@ export default {
                 place_birth: 'Nơi sinh',
                 email: 'Email',
                 email_company: 'Email công ty',
+                starting_date: 'Ngày bắt đầu làm việc',
+                leaving_date: 'Ngày nghỉ việc',
                 relationship: 'Tình trạng hôn nhân',
                 single: 'Độc thân',
                 married: 'Đã kết hôn',
@@ -1217,6 +1219,9 @@ export default {
                 ethnic: 'Dân tộc',
                 nationality: 'Quốc tịch',
                 religion: 'Tôn giáo',
+                active: 'Đang làm việc',
+                leave: 'Đã nghỉ làm',
+
                 mobile_phone: 'Điện thoại di động',
                 mobile_phone_1: 'Điện thoại di động 1',
                 mobile_phone_2: 'Điện thoại di động 2',
@@ -1330,14 +1335,25 @@ export default {
                 disc_commitment: 'Giấy cam kết làm việc',
                 temporary_residence_card: 'Tạm trú tạm vắng',
                 disc_temporary_residence_card: 'Giấy xác nhận tạm trú tạm vắng',
+                add_staff: 'Thêm nhân viên',
 
-                Reward: 'Khen thưởng',
+                reward: 'Khen thưởng',
                 discipline: 'Kỷ luật',
                 historySalary: 'Lịch sử tăng giảm lương',
                 sabbatical: 'Thông tin nghỉ phép',
+
+                // Validator dữ liệu nhập bên client
                 start_date_before_end_date: 'Ngày cấp phải trước ngày hết hạn',
                 end_date_after_start_date: 'Ngày hết hạn phải sau ngày cấp',
+                time_experience_duplicate: 'Thời gian làm việc bị trùng lặp',
                 time_contract_duplicate: 'Thời gian hợp đồng lao động bị trùng lặp',
+                time_BHXH_duplicate: 'Quá trình đóng bảo hiểm bị trùng lặp',
+                start_month_before_end_month: 'Từ tháng/năm phải trước đến tháng/năm',
+                end_month_after_start_month: 'Đến tháng/năm phải sau từ tháng/năm',
+                start_date_insurance_required: 'Ngày có hiệu lực chưa được nhập',
+                starting_date_before_leaving_date: 'Thời gian bắt đầu làm việc phải trước thời gian nghỉ việc',
+                leaving_date_after_starting_date: 'Thời gian nghỉ việc phải sau thời gian bắt đầu làm việc',
+                starting_date_required: 'Ngày bắt đầu làm việc chưa được nhập',
 
                 // Quản lý thông tin cá nhân
                 employee_info: {

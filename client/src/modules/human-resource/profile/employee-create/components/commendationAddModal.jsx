@@ -225,7 +225,7 @@ class CommendationAddModal extends Component {
                             </div>
                         </div>
                         {/* Lý do khen thưởng */}
-                        <div className={`form-group ${errorOnReason === undefined ? "" : "has-error"}`}>
+                        <div className={`form-group ${errorOnReason && "has-error"}`}>
                             <label>{translate('human_resource.commendation_discipline.commendation.table.reason_praise')}<span className="text-red">*</span></label>
                             <textarea className="form-control" rows="3" name="reason" value={reason} onChange={this.handleReasonChange} placeholder="Enter ..." autoComplete="off" ></textarea>
                             <ErrorLabel content={errorOnReason} />
