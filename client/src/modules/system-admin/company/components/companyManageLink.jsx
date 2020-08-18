@@ -21,9 +21,11 @@ class CompanyManageLinks extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         if (
             nextProps.companyId !== prevState.companyId || 
+            nextProps.company.item.links.listPaginate.length !== prevState.linkPaginate.length ||
             nextProps.company.item.links.limit !== prevState.linkLimit || 
             nextProps.company.item.links.page !== prevState.linkPage
         ) {
+            console.log("thay doi")
             return {
                 ...prevState,
                 checkedAll: false,
@@ -33,6 +35,7 @@ class CompanyManageLinks extends Component {
                 linkLimit: nextProps.company.item.links.limit,
             } 
         } else {
+            console.log("KHONG thay doi")
             return null;
         }
     }
