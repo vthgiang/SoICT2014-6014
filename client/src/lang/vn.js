@@ -1916,7 +1916,9 @@ export default {
                 informed_role: 'Quan sát',
                 distribution_Of_Employee: 'Đóng góp công việc',
                 employees_each_chart: 'Số nhân viên tối đa mỗi biểu đồ',
-
+                task_is_not_linked_up_with_monthly_kpi: 'Công việc chưa được liên kết KPI tháng',
+                no_task_is_not_linked: 'Không có công việc nào ',
+                loading_data: 'Đang tải dữ liệu',
 
                 add_task: 'Thêm mới',
                 add_title: 'Thêm mới một công việc',

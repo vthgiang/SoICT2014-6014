@@ -11,6 +11,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DatePicker } from '../../../../../common-components';
 import Swal from 'sweetalert2';
+import { TasksIsNotLinked } from './TasksIsNotLinked';
 
 class TaskDashboard extends Component {
 
@@ -229,7 +230,6 @@ class TaskDashboard extends Component {
             day = '0' + day;
         let defaultEndMonth = [month, year].join('-');
         let defaultStartMonth = ['01', year].join('-');
-
         return (
             <React.Fragment>
                 <div className="qlcv">
@@ -398,8 +398,11 @@ class TaskDashboard extends Component {
 
                         </div>
                     </div>
+                    <TasksIsNotLinked />
+
 
                 </div>
+                {/* Lịch công việc chi tiết */}
                 <div className="row">
                     <div className="col-xs-12">
                         <div className="box box-primary">
