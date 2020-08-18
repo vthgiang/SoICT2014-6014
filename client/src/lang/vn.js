@@ -1935,6 +1935,8 @@ export default {
                 task_is_not_linked_up_with_monthly_kpi: 'Công việc chưa được liên kết KPI tháng',
                 no_task_is_not_linked: 'Không có công việc nào ',
                 loading_data: 'Đang tải dữ liệu',
+                task_has_action_not_evaluated: 'Công việc có hoạt động chưa đánh giá',
+                no_task_has_action_not_evaluated: 'Không có công việc nào',
 
                 add_task: 'Thêm mới',
                 add_title: 'Thêm mới một công việc',
