@@ -16,33 +16,43 @@ export const ComponentActions = {
 /**
  * Lấy danh sách các component của công ty
  */
-function get(data) {
-    if (data) {
+function get(params) {
+    if(params.page !== undefined && params.limit !== undefined) {
         return dispatch => {
             dispatch({
                 type: ComponentConstants.GET_COMPONENTS_PAGINATE_REQUEST
             });
-            ComponentServices.get(data)
+            ComponentServices.get(params)
                 .then(res => {
                     dispatch({
                         type: ComponentConstants.GET_COMPONENTS_PAGINATE_SUCCESS,
                         payload: res.data.content
                     })
                 })
-        }
-    }
-
-    return dispatch => {
-        dispatch({
-            type: ComponentConstants.GET_COMPONENTS_REQUEST
-        });
-        ComponentServices.get()
-            .then(res => {
-                dispatch({
-                    type: ComponentConstants.GET_COMPONENTS_SUCCESS,
-                    payload: res.data.content
+                .catch(err => {
+                    dispatch({
+                        type: ComponentConstants.GET_COMPONENTS_PAGINATE_FAILE
+                    })
                 })
-            })
+        }
+    } else {
+        return dispatch => {
+            dispatch({
+                type: ComponentConstants.GET_COMPONENTS_REQUEST
+            });
+            ComponentServices.get(params)
+                .then(res => {
+                    dispatch({
+                        type: ComponentConstants.GET_COMPONENTS_SUCCESS,
+                        payload: res.data.content
+                    })
+                })
+                .catch(err => {
+                    dispatch({
+                        type: ComponentConstants.GET_COMPONENTS_FAILE
+                    })
+                })
+        }
     }
 }
 

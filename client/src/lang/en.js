@@ -1199,7 +1199,6 @@ export default {
                     menu_attachments_title: 'Attachments',
                 },
 
-                add_staff: 'Add new staffs',
                 staff_number: 'Staff code',
                 full_name: 'Full name',
                 attendance_code: 'Attendance code',
@@ -1210,6 +1209,8 @@ export default {
                 place_birth: 'Place of birth',
                 email: 'Email',
                 email_company: 'Email company',
+                starting_date: 'Starting Date',
+                leaving_date: 'Leave Date',
                 relationship: 'Relationship',
                 single: 'Single',
                 married: 'Married',
@@ -1220,6 +1221,9 @@ export default {
                 ethnic: 'Ethnic group',
                 nationality: 'Nationality',
                 religion: 'Religion',
+                active: 'Working',
+                leave: 'Quit job',
+
                 mobile_phone: 'Mobile phone',
                 mobile_phone_1: 'Mobile phone 1',
                 mobile_phone_2: 'Mobile phone 2',
@@ -1332,16 +1336,27 @@ export default {
                 disc_commitment: 'Commitment to work',
                 temporary_residence_card: 'Temporary residence card',
                 disc_temporary_residence_card: 'Certificate of temporary absence',
+                add_staff: 'Add new staffs',
 
 
 
-                Reward: 'Reward',
+                reward: 'Reward',
                 discipline: 'Discipline',
                 historySalary: 'History of salary',
                 sabbatical: 'Sabbatical information',
+
+                // Validator dữ liệu nhập bên client
                 start_date_before_end_date: 'The issue date must be before the expiration date',
                 end_date_after_start_date: 'The expiration date must be after the issue date',
                 time_contract_duplicate: 'The labor contract period is being duplicated',
+                time_experience_duplicate: 'Work experience is duplicated',
+                time_BHXH_duplicate: 'The process of paying social insurance is duplicated',
+                start_month_before_end_month: 'From month/year must be before to month/year',
+                end_month_after_start_month: 'To month/year must be after from month/year',
+                start_date_insurance_required: 'Effective date required',
+                starting_date_before_leaving_date: 'The starting time of work must be before the time off work',
+                leaving_date_after_starting_date: 'The time off work must be after the time of starting work',
+                starting_date_required: 'The work start date has not been entered',
 
                 // Quản lý thông tin cá nhân
                 employee_info: {
@@ -1919,6 +1934,8 @@ export default {
                 task_is_not_linked_up_with_monthly_kpi: 'Tasks are not linked up with monthly KPI',
                 no_task_is_not_linked: 'There is no task is not linked up with monthly KPI',
                 loading_data: 'Loading data',
+                task_has_action_not_evaluated: 'Tasks have action not evaluated',
+                no_task_has_action_not_evaluated: 'There is no task has action not evaluated',
 
                 add_task: 'Add task',
                 add_title: 'Add a new task',

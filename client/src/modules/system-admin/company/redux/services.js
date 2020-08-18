@@ -6,13 +6,11 @@ export const CompanyServices = {
     createCompany,
     editCompany,
 
-    addCompanyLink,
-    deleteCompanyLink,  
     getCompanyLinks,
+    updateCompanyLinks,
 
-    addCompanyComponent,
-    deleteCompanyComponent,
     getCompanyComponents,
+    updateCompanyComponents,
 
     getImportConfiguration,
     createImportConfiguration,
@@ -62,23 +60,21 @@ function editCompany(companyId, data) {
     * @linkUrl đường dẫn cho link muốn tạo
     * @linkDescription mô tả về link
  */
-function addCompanyLink(companyId, data) {
+function updateCompanyLinks(data) {
+
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/companies/${companyId}/links`,
-        method: 'POST',
-        data,
+        url: `${LOCAL_SERVER_API}/link/links/company/update`,
+        method: 'PATCH',
+        data
     }, true, true, 'system_admin.company');
 }
 
-/**
- * Xóa 1 link của công ty
- * @companyId id của công ty
- * @linkId id của link muốn xóa
- */
-function deleteCompanyLink(companyId, linkId) {
+function updateCompanyComponents(data) {
+
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/companies/${companyId}/links/${linkId}`,
-        method: 'DELETE',
+        url: `${LOCAL_SERVER_API}/component/components/company/update`,
+        method: 'PATCH',
+        data
     }, true, true, 'system_admin.company');
 }
 
@@ -86,9 +82,9 @@ function deleteCompanyLink(companyId, linkId) {
  * Lấy danh sách tất cả các link của công ty
  * @companyId id của công ty muốn lấy danh sách các link
  */
-function getCompanyLinks(companyId, params) {
+function getCompanyLinks(params) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/companies/${companyId}/links`,
+        url: `${LOCAL_SERVER_API}/link/links`,
         method: 'GET',
         params
     }, false, true, 'system_admin.company');
@@ -126,9 +122,9 @@ function deleteCompanyComponent(companyId, componentId) {
  * Lấy danh sách các component của công ty
  * @companyId id của công ty
  */
-function getCompanyComponents(companyId, params) {
+function getCompanyComponents(params) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/companies/${companyId}/components`,
+        url: `${LOCAL_SERVER_API}/component/components`,
         method: 'GET',
         params
     }, false, true, 'system_admin.company');

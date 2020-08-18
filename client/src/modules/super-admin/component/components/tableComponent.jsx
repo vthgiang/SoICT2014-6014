@@ -9,6 +9,7 @@ import { LinkActions } from '../../link/redux/actions';
 import { RoleActions } from '../../role/redux/actions';
 
 import ComponentInfoForm from './componentInfoForm';
+import { getStorage } from '../../../../config';
 
 class TableComponent extends Component {
     constructor(props) {
@@ -22,9 +23,11 @@ class TableComponent extends Component {
     }
 
     componentDidMount() {
-        this.props.getLinks();
-        this.props.get();
-        this.props.get({ page: this.state.page, limit: this.state.limit });
+        let company = getStorage('companyId');
+        let {page, limit} = this.state;
+        this.props.getLinks({ company, type: "active" });
+        this.props.get({ company, type: "active" });
+        this.props.get({ company, type: "active", page, limit });
         this.props.getRoles();
     }
 
@@ -114,36 +117,48 @@ class TableComponent extends Component {
         });
     }
 
-    searchWithOption = async () => {
-        const data = {
-            limit: this.state.limit,
+    searchWithOption = () => {
+        let {option, limit, value} = this.state;
+        let company = getStorage('companyId');
+        const params = {
+            type: "active",
+            company,
+            limit,
             page: 1,
-            key: this.state.option,
-            value: this.state.value
+            key: option,
+            value
         };
-        await this.props.get(data);
+        this.props.get(params);
     }
 
     setPage = (page) => {
         this.setState({ page });
-        const data = {
-            limit: this.state.limit,
-            page: page,
-            key: this.state.option,
-            value: this.state.value
+        let {option, limit, value} = this.state;
+        let company = getStorage('companyId');
+        const params = {
+            type: "active",
+            company,
+            limit,
+            page,
+            key: option,
+            value
         };
-        this.props.get(data);
+        this.props.get(params);
     }
 
     setLimit = (number) => {
         this.setState({ limit: number });
-        const data = {
+        let {option, value, page} = this.state;
+        let company = getStorage('companyId');
+        const params = {
+            type: "active",
+            company,
             limit: number,
-            page: this.state.page,
-            key: this.state.option,
-            value: this.state.value
+            page,
+            key: option,
+            value
         };
-        this.props.get(data);
+        this.props.get(params);
     }
 
     // Cac ham xu ly du lieu voi modal

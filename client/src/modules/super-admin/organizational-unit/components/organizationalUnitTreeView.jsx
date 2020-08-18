@@ -11,6 +11,7 @@ import { DepartmentActions } from '../redux/actions';
 import DepartmentCreateForm from './organizationalUnitCreateForm';
 import DepartmentEditForm from './organizationalUnitEditForm';
 import DepartmentCreateWithParent from './organizationalUnitCreateWithParent';
+import { DepartmentImportForm } from './organizationalUnitImportForm';
 
 
 class DepartmentTreeView extends Component {
@@ -37,10 +38,18 @@ class DepartmentTreeView extends Component {
 
         return (
             <React.Fragment>
-                {<ExportExcel id="export-organizationalUnit" exportData={exportData} style={{ marginLeft: 5, marginTop: 2 }}/>}
+                {<ExportExcel id="export-organizationalUnit" exportData={exportData} style={{ marginLeft: 5 }}/>}
                 {/* Button thêm mới một phòng ban */}
-                <div className="pull-right">
-                    <DepartmentCreateForm />
+                <DepartmentCreateForm />
+                <DepartmentImportForm />
+                <div className="form-inline">
+                    <div className="dropdown pull-right" >
+                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('manage_department.add_title')}</button>
+                        <ul className="dropdown-menu pull-right">
+                            <li><a href="#modal-create-department" title="ImportForm" onClick={(event) => { this.handleCreate(event) }}>{translate('manage_department.add_title')}</a></li>
+                            <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
+                        </ul>
+                    </div>
                 </div>
 
                 {/* Kiểm tra có dữ liệu về các đơn vị, phòng ban hay không */}
@@ -133,6 +142,8 @@ class DepartmentTreeView extends Component {
             fileName: "Bảng thống kê cơ cấu tổ chức",
             dataSheets: [
                 {
+                    tableName: "Bảng thống kê cơ cấu tổ chức",
+                    rowHeader: 1,
                     sheetName: "sheet1",
                     tables: [
                         {
@@ -142,8 +153,8 @@ class DepartmentTreeView extends Component {
                                 { key: "description", value: "Mô tả đơn vị" },
                                 { key: "parent", value: "Đơn vị cha"},
                                 { key: "deans", value: "Tên các chức danh trưởng đơn vị" },
-                                { key: "viceDeans", value: "Tên chức danh của phó đơn vị"},
-                                { key: "employees", value: "Tên chức danh của nhân viên đơn vị"}
+                                { key: "viceDeans", value: "Tên các chức danh phó đơn vị"},
+                                { key: "employees", value: "Tên các chức danh nhân viên đơn vị"}
                             ],
                             data: data
                         }
@@ -165,6 +176,16 @@ class DepartmentTreeView extends Component {
             listData = [...listData,tree];
             return listData;
         }
+    }
+
+    handleCreate = (event) => {
+        event.preventDefault();
+        window.$('#modal-create-department').modal('show');
+    }
+
+    handImportFile = (event) => {
+        event.preventDefault();
+        window.$('#modal_import_file').modal('show');
     }
     handleEdit = async (department) => {
         await this.setState(state => {

@@ -174,7 +174,7 @@ class DisciplineTab extends Component {
                 <div className="box-body">
                     {/* Danh sách khen thưởng */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border" ><h4 className="box-title">{translate('manage_employee.Reward')}</h4></legend>
+                        <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.reward')}</h4></legend>
                         <CommendationAddModal handleChange={this.handleAddConmmendation} id={`addPraise${id}`} />
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
@@ -219,7 +219,7 @@ class DisciplineTab extends Component {
                     </fieldset>
                     {/* Danh sách kỷ luật */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.discipline')}</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.discipline')}</h4></legend>
                         <DisciplineAddModal handleChange={this.handleAddDiscipline} id={`addDiscipline${id}`} />
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>

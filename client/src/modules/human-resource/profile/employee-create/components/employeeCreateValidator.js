@@ -4,7 +4,6 @@ import {
 export const EmployeeCreateValidator = {
     validateEmployeeNumber,
     validateBrithday,
-    // validateStartingDate,
     validateMSCC,
     validateFullName,
     validateEmailCompany,

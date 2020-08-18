@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { EmployeeCreatePage } from './combinedContent';
 
 class EmployeeCreate extends Component {
@@ -8,6 +9,7 @@ class EmployeeCreate extends Component {
         super(props);
         this.state = {}
     }
+
     render() {
         return (
             <React.Fragment>
