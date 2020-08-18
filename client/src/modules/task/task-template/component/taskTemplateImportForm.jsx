@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { configTaskTempalte } from './fileConfigurationImportTaskTemplate';
-import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile } from '../../../../common-components';
+import { configTaskTempalte, templateImportTaskTemplate } from './fileConfigurationImportTaskTemplate';
+import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../common-components';
 import { taskTemplateActions } from '../redux/actions';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
@@ -197,10 +197,8 @@ class TaskTemplateImportForm extends Component {
                             </div>
                             <div className="form-group col-md-4 col-xs-12">
                                 <label></label>
-                                <a className='pull-right'
-                                    style={{ cursor: "pointer" }}
-                                    onClick={(e) => this.requestDownloadFile(e, `.${configData.file.fileUrl}`, configData.file.fileName)}>
-                                    <i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
+                                <ExportExcel id="download_template_task_template" type='link' exportData={templateImportTaskTemplate}
+                                    buttonName='Download file import mẫu' />
                             </div>
                             <div className="form-group col-md-12 col-xs-12">
                                 <ShowImportData
