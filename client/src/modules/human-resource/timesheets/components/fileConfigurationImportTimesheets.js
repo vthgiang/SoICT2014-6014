@@ -1,12 +1,16 @@
 export const configurationTimesheets = {
+    rowHeader: {
+        description: "Số dòng tiêu đề của bảng",
+        value: 2
+    },
     sheets: {
         description: "Tên các sheet",
         value: ["Sheet1"]
     },
     employeeNumber: {
-        columnName: "Mã số nhân viên",
+        columnName: "Mã nhân viên",
         description: "Tên tiêu đề ứng với mã số nhân viên",
-        value: "Mã số nhân viên"
+        value: "Mã nhân viên"
     },
     employeeName: {
         columnName: "Họ và tên",

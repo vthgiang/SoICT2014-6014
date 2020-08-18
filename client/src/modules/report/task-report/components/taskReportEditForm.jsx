@@ -501,19 +501,22 @@ class TaskReportEditForm extends Component {
 
     //format date sang string
     formatDate(date, monthYear = false) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
 
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else return [day, month, year].join('-');
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        }
+        return date
     }
 
     render() {
@@ -548,7 +551,7 @@ class TaskReportEditForm extends Component {
                 return taskTemplate.organizationalUnit._id === editingReport.organizationalUnit
             })
         }
-
+        console.log('editingReport.startDate', editingReport.startDate)
         return (
             <React.Fragment>
                 <DialogModal
@@ -748,7 +751,7 @@ class TaskReportEditForm extends Component {
                                     <label>Thống kê từ ngày</label>
                                     <DatePicker
                                         id="start-date"
-                                        value={(editingReport.startDate) ? editingReport.startDate : ''}
+                                        value={editingReport.startDate}
                                         onChange={this.handleEditStartDate}
                                         disabled={false}
 
@@ -764,7 +767,7 @@ class TaskReportEditForm extends Component {
                                     <label>Thống kê đến ngày </label>
                                     <DatePicker
                                         id="end-date"
-                                        value={(editingReport.endDate) ? editingReport.endDate : ''}
+                                        value={editingReport.endDate}
                                         onChange={this.handleEditEndDate}
                                         disabled={false}
                                     />

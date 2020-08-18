@@ -1,46 +1,106 @@
 import React, { Component } from 'react';
+import {SelectBox} from '../../../../common-components';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import {SelectBox} from '../../../../common-components';
-import { LogActions } from '../redux/actions';
+import { SystemSettingActions } from '../redux/actions';
 
-class ScheduleWeeklyForm extends Component {
+class ScheduleYearlyForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+        this.state = { 
+            month: '12',
+            date: '31',
+            hour: '23',
+            minute: '59',
+            second: '59'
+         }
     }
     render() { 
-        const {period, hour, minute, second} = this.state;
+        const {month, date, hour, minute, second} = this.state;
         
         return (<React.Fragment>
             <div className="row">
                 <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
                     <div className="form-group">
-                        <label>Ngày</label>
+                        <label>Tháng</label>
                         <SelectBox
-                            id="schedule-weekly-day"
+                            id="schedule-yearly-month"
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[
-                                {value: '1', text: 'Thứ 2'},
-                                {value: '2', text: 'Thứ 3'},
-                                {value: '3', text: 'Thứ 4'},
-                                {value: '4', text: 'Thứ 5'},
-                                {value: '5', text: 'Thứ 6'},
-                                {value: '6', text: 'Thứ 7'},
-                                {value: '0', text: 'Chủ nhật'},
+                                {value: '0', text: 'Tháng 1'},
+                                {value: '1', text: 'Tháng 2'},
+                                {value: '2', text: 'Tháng 3'},
+                                {value: '3', text: 'Tháng 4'},
+                                {value: '4', text: 'Tháng 5'},
+                                {value: '5', text: 'Tháng 6'},
+                                {value: '6', text: 'Tháng 7'},
+                                {value: '7', text: 'Tháng 8'},
+                                {value: '8', text: 'Tháng 9'},
+                                {value: '9', text: 'Tháng 10'},
+                                {value: '10', text: 'Tháng 11'},
+                                {value: '11', text: 'Tháng 12'},
                             ]}
-                            value={'0'}
-                            onChange={this.handlePeriod}
+                            value={month}
+                            onChange={this.handleMonth}
                             multiple={false}
                         />
                     </div>
                 </div>
                 <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
                     <div className="form-group">
+                        <label>Ngày</label>
+                        <SelectBox
+                            id="schedule-yearly-day"
+                            className="form-control select2"
+                            style={{ width: "100%" }}
+                            items={[
+                                {value: '1', text: '1'},
+                                {value: '2', text: '2'},
+                                {value: '3', text: '3'},
+                                {value: '4', text: '4'},
+                                {value: '5', text: '5'},
+                                {value: '6', text: '6'},
+                                {value: '7', text: '7'},
+                                {value: '8', text: '8'},
+                                {value: '9', text: '9'},
+                                {value: '10', text: '10'},
+                                {value: '11', text: '11'},
+                                {value: '12', text: '12'},
+                                {value: '13', text: '13'},
+                                {value: '14', text: '14'},
+                                {value: '15', text: '15'},
+                                {value: '16', text: '16'},
+                                {value: '17', text: '17'},
+                                {value: '18', text: '18'},
+                                {value: '19', text: '19'},
+                                {value: '20', text: '20'},
+                                {value: '21', text: '21'},
+                                {value: '22', text: '22'},
+                                {value: '23', text: '23'},
+                                {value: '24', text: '24'},
+                                {value: '25', text: '25'},
+                                {value: '26', text: '26'},
+                                {value: '27', text: '27'},
+                                {value: '28', text: '28'},
+                                {value: '29', text: '29'},
+                                {value: '30', text: '30'},
+                                {value: '31', text: '31'},
+                            ]}
+                            value={date}
+                            onChange={this.handleDate}
+                            multiple={false}
+                        />
+                    </div>
+                </div>
+            </div>
+            
+            <div className="row">
+                <div className="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                    <div className="form-group">
                         <label>Giờ</label>
                         <SelectBox
-                            id="schedule-weekly-hour"
+                            id="schedule-yearly-hour"
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[
@@ -69,8 +129,8 @@ class ScheduleWeeklyForm extends Component {
                                 {value: '22', text: '22'},
                                 {value: '23', text: '23'},
                             ]}
-                            value={'0'}
-                            onChange={this.hanldeHour}
+                            value={hour}
+                            onChange={this.handleHour}
                             multiple={false}
                         />
                     </div>
@@ -79,7 +139,7 @@ class ScheduleWeeklyForm extends Component {
                     <div className="form-group">
                         <label>Phút</label>
                         <SelectBox
-                            id="schedule-weekly-minute"
+                            id="schedule-yearly-minute"
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[
@@ -144,8 +204,8 @@ class ScheduleWeeklyForm extends Component {
                                 {value: '58', text: '58'},
                                 {value: '59', text: '59'},
                             ]}
-                            value={'0'}
-                            onChange={this.hanldeMinute}
+                            value={minute}
+                            onChange={this.handleMinute}
                             multiple={false}
                         />
                     </div>
@@ -154,7 +214,7 @@ class ScheduleWeeklyForm extends Component {
                     <div className="form-group">
                         <label>Giây</label>
                         <SelectBox
-                            id="schedule-weekly-second"
+                            id="schedule-yearly-second"
                             className="form-control select2"
                             style={{ width: "100%" }}
                             items={[
@@ -219,50 +279,65 @@ class ScheduleWeeklyForm extends Component {
                                 {value: '58', text: '58'},
                                 {value: '59', text: '59'},
                             ]}
-                            value={'0'}
-                            onChange={this.hanldeSecond}
+                            value={second}
+                            onChange={this.handleSecond}
                             multiple={false}
                         />
                     </div>
                 </div>
-            
             </div>
-            <button className="btn btn-success" onClick={()=>this.props.backupDatabase({
-                auto: 'on'
-            },{ period, hour, minute, second })}>Lưu</button>
+            
+            <button className="btn btn-success" onClick={this.save}>Lưu</button>
         </React.Fragment>);
     }
 
-    handlePeriod = (value) => {
+    handleMonth = (value) => {
         this.setState({
-            period: value[0]
+            month: value[0]
         })
     }
 
-    hanldeHour = (value) => {
+    handleDate = (value) => {
+        this.setState({
+            date: value[0]
+        })
+    }
+
+    handleHour = (value) => {
         this.setState({
             hour: value[0]
         })
     }
 
-    hanldeMinute = (value) => {
+    handleMinute = (value) => {
         this.setState({
             minute: value[0]
         })
     }
 
-    hanldeSecond = (value) => {
+    handleSecond = (value) => {
         this.setState({
             second: value[0]
         })
     }
+
+    save = () => {
+        const {schedule} = this.props;
+        const {month, date, hour, minute, second} = this.state;
+
+        return this.props.backup({auto: 'on', schedule},{
+            month, date, hour, minute, second
+        })
+    }
 }
  
-function mapStateToProps(state) {
+function mapState(state) {
+    const { systemSetting } = state;
+    return { systemSetting }
 }
 
 const mapDispatchToProps = {
-    backupDatabase: LogActions.backupDatabase
+    backup: SystemSettingActions.backup
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(ScheduleWeeklyForm));
+export default connect(mapState, mapDispatchToProps)(withTranslate(ScheduleYearlyForm));

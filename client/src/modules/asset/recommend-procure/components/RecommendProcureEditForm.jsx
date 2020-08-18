@@ -182,7 +182,7 @@ class RecommendProcureEditForm extends Component {
                 <DialogModal
                     size='50' modalID="modal-edit-recommendprocure" isLoading={recommendProcure.isLoading}
                     formID="form-edit-recommendprocure"
-                    title="Chỉnh sửa thông tin phiếu đăng ký mua sắm thiết bị"
+                    title={translate('asset.manage_recommend_procure.edit_recommend_card')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -193,13 +193,13 @@ class RecommendProcureEditForm extends Component {
                             <div className="col-sm-6">
                                 {/* Mã phiếu */}
                                 <div className="form-group">
-                                    <label>Mã phiếu<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.form_code')}<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="recommendNumber" value={recommendNumber} onChange={this.handleRecommendNumberChange} />
                                 </div>
 
                                 {/* Ngày lập */}
                                 <div className="form-group">
-                                    <label>Ngày lập<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.create_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`edit_start_date${_id}`}
                                         value={dateCreate}
@@ -209,7 +209,7 @@ class RecommendProcureEditForm extends Component {
 
                                 {/* Người đề nghị */}
                                 <div className={`form-group`}>
-                                    <label>Người đề nghị</label>
+                                    <label>{translate('asset.usage.proponent')}</label>
                                     <div>
                                         <div id="proponentBox">
                                             <SelectBox
@@ -230,7 +230,7 @@ class RecommendProcureEditForm extends Component {
 
                                 {/* Thiết bị đề nghị mua */}
                                 <div className={`form-group ${!errorOnEquipment ? "" : "has-error"}`}>
-                                    <label>Thiết bị đề nghị mua<span className="text-red">*</span></label>
+                                    <label>{translate('asset.manage_recommend_procure.asset_recommend')}<span className="text-red">*</span></label>
                                     <textarea className="form-control" rows="3" style={{ height: 34 }} name="equipment" value={equipment} onChange={this.handleEquipmentChange}></textarea>
                                     <ErrorLabel content={errorOnEquipment} />
                                 </div>
@@ -239,27 +239,27 @@ class RecommendProcureEditForm extends Component {
                             <div className="col-sm-6">
                                 {/* Nhà cung cấp */}
                                 <div className="form-group">
-                                    <label>Nhà cung cấp</label>
+                                    <label>{translate('asset.manage_recommend_procure.supplier')}</label>
                                     <input type="text" className="form-control" name="supplier" value={supplier} onChange={this.handleSupplierChange} />
                                 </div>
 
                                 {/* Số lượng */}
                                 <div className={`form-group ${!errorOnTotal ? "" : "has-error"}`}>
-                                    <label>Số lượng<span className="text-red">*</span></label>
+                                    <label>{translate('asset.general_information.number')}<span className="text-red">*</span></label>
                                     <input type="number" className="form-control" name="total" value={total} onChange={this.handleTotalChange} />
                                     <ErrorLabel content={errorOnTotal} />
                                 </div>
 
                                 {/* Đơn vị tính */}
                                 <div className={`form-group ${!errorOnUnit ? "" : "has-error"}`}>
-                                    <label>Đơn vị tính<span className="text-red">*</span></label>
+                                    <label>{translate('asset.manage_recommend_procure.unit')}<span className="text-red">*</span></label>
                                     <input type="text" className="form-control" name="unit" value={unit} onChange={this.handleUnitChange} autoComplete="off" placeholder="Đơn vị tính" />
                                     <ErrorLabel content={errorOnUnit} />
                                 </div>
 
                                 {/* Giá trị dự tính */}
                                 <div className="form-group">
-                                    <label>Giá trị dự tính (VNĐ)</label>
+                                    <label>{translate('asset.manage_recommend_procure.expected_value')} (VNĐ)</label>
                                     <input type="number" className="form-control" name="estimatePrice" value={estimatePrice} onChange={this.handleEstimatePriceChange} />
                                 </div>
                             </div>

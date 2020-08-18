@@ -5,11 +5,35 @@ const User = require('../auth/user.model');
 const EmployeeKpi = require('../kpi/employeeKpi.model');
 const OrganizationalUnit = require('../super-admin/organizationalUnit.model');
 const TaskTemplate = require('./taskTemplate.model');
-const TaskFile = require('./taskFile.model');
-const TaskResultInformation = require('./taskResultInformation.model');
+const TaskProcess = require('./taskProcess.model');
 
 // Model quản lý thông tin của một công việc và liên kết với tài liệu, kết quả thực hiện công việc
 const TaskSchema = new Schema({
+    process: {
+        type: Schema.Types.ObjectId,
+        ref: TaskProcess,
+    },
+    codeInProcess: {
+        type: String,
+    },
+    followingTasks: [{
+        task: {
+            type: Schema.Types.ObjectId,
+            replies: this,
+        },
+        link: {
+            type: String
+        }
+    }],
+    preceedingTasks: [{
+        task: {
+            type: Schema.Types.ObjectId,
+            replies: this,
+        },
+        link: {
+            type: String
+        }
+    }],
     organizationalUnit: {
         type: Schema.Types.ObjectId,
         ref: OrganizationalUnit,
@@ -95,7 +119,7 @@ const TaskSchema = new Schema({
             default: 0,
         },
         results: [{ // Kết quả thực hiện công việc trong tháng đánh giá nói trên
-            employee:{ // Người được đánh giá
+            employee: { // Người được đánh giá
                 type: Schema.Types.ObjectId,
                 ref: User,
                 required: true
@@ -104,7 +128,7 @@ const TaskSchema = new Schema({
                 type: Schema.Types.ObjectId,
                 ref: OrganizationalUnit,
             },
-            role:{ // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
+            role: { // người thực hiện: responsible, người hỗ trợ: consulted, người phê duyệt: accountable
                 type: String,
                 required: true,
                 enum: ["Responsible", "Consulted", "Accountable"]
@@ -188,7 +212,7 @@ const TaskSchema = new Schema({
             ref: User,
         },
     }],
-    timesheetLogs:[{
+    timesheetLogs: [{
         creator: { // Người thực hiện nào tiến hành bấm giờ
             type: Schema.Types.ObjectId,
             ref: User,
@@ -203,8 +227,8 @@ const TaskSchema = new Schema({
         description: { // Mô tả ngắn gọn việc đã làm khi log 
             type: String,
         },
-        duration:{
-            type:Number
+        duration: {
+            type: Number
         }
     }],
     totalLoggedTime: { // Tổng thời gian timesheetLog. Cập nhật mỗi khi người dùng lưu lại thời gian bấm giờ (khi họ nhấn nút stop)
@@ -243,9 +267,9 @@ const TaskSchema = new Schema({
         }
     }],
     taskActions: [{ // Khi task theo tempate nào đó, sẽ copy hết actions trong template vào đây
-        creator:{ // Trường này không bắt buộc. Khi người thực hiện task (loại task theo teamplate) xác nhận xong action thì mới điền id người đó vào trường này
-            type:Schema.Types.ObjectId,
-            ref : User,
+        creator: { // Trường này không bắt buộc. Khi người thực hiện task (loại task theo teamplate) xác nhận xong action thì mới điền id người đó vào trường này
+            type: Schema.Types.ObjectId,
+            ref: User,
         },
         name: {
             type: String,
@@ -258,11 +282,11 @@ const TaskSchema = new Schema({
             type: Boolean,
             default: true,
         },
-        createdAt:{
+        createdAt: {
             type: Date,
             default: Date.now
         },
-        updatedAt:{
+        updatedAt: {
             type: Date,
             default: Date.now
         },
@@ -279,17 +303,17 @@ const TaskSchema = new Schema({
                 required: true
             }
         }],
-        evaluations:[{ // Đánh giá actions (Dù là người quản lý, phê duyệt, hỗ trợ, ai cũng có thể đánh giá, nhưng chỉ tính đánh gía của người phê duyệt)
+        evaluations: [{ // Đánh giá actions (Dù là người quản lý, phê duyệt, hỗ trợ, ai cũng có thể đánh giá, nhưng chỉ tính đánh gía của người phê duyệt)
             creator: {
                 type: Schema.Types.ObjectId,
                 ref: User,
                 required: true
             },
-            createdAt:{
+            createdAt: {
                 type: Date,
                 default: Date.now
             },
-            updatedAt:{
+            updatedAt: {
                 type: Date,
                 default: Date.now
             },
@@ -312,7 +336,7 @@ const TaskSchema = new Schema({
                 default: Date.now
             },
             updatedAt: {
-                type : Date,
+                type: Date,
                 default: Date.now
             },
             files: [{ // Các file đi kèm comments
@@ -340,7 +364,7 @@ const TaskSchema = new Schema({
             default: Date.now
         },
         updatedAt: {
-            type : Date,
+            type: Date,
             default: Date.now
         },
         createdAt: {
@@ -348,7 +372,7 @@ const TaskSchema = new Schema({
             default: Date.now
         },
         updatedAt: {
-            type : Date,
+            type: Date,
             default: Date.now
         },
         files: [{ // Các file đi kèm comments
@@ -374,7 +398,7 @@ const TaskSchema = new Schema({
                 default: Date.now
             },
             updatedAt: {
-                type : Date,
+                type: Date,
                 default: Date.now
             },
             files: [{ // Các file đi kèm comments

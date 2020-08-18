@@ -66,6 +66,31 @@ class DepreciationTab extends Component {
         }
     };
 
+    /**
+     * Hàm để tính các giá trị khấu hao cho tài sản
+     * @param {*} depreciationType Phương pháp khấu hao
+     * @param {*} cost Nguyên giá
+     * @param {*} usefulLife Thời gian trích khấu hao
+     * @param {*} startDepreciation Thời gian bắt đầu trích khấu hao
+     */
+    calculateDepreciation = (depreciationType, cost, usefulLife, startDepreciation) => {
+        let annualDepreciation, monthlyDepreciation, remainingValue = cost;
+
+        var formater = new Intl.NumberFormat();
+
+        if (depreciationType === "Đường thẳng") { // Phương pháp khấu hao theo đường thẳng
+            annualDepreciation = formater.format(parseInt(((12 * cost) / usefulLife)));
+            monthlyDepreciation = formater.format(cost / usefulLife);
+            remainingValue = formater.format(parseInt(cost - ((cost / usefulLife)) * ((new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(startDepreciation).getFullYear() * 12 + new Date(startDepreciation).getMonth()))));
+
+        } else if (depreciationType === "Số dư giảm dần") { // Phương pháp khấu hao theo số dư giảm dần
+            
+        } else if (depreciationType === "Sản lượng") { // Phương pháp khấu hao theo sản lượng
+            
+        }
+
+        return [annualDepreciation, monthlyDepreciation, remainingValue];
+    }
 
     render() {
         const { id } = this.props;
@@ -74,48 +99,61 @@ class DepreciationTab extends Component {
         
         var formater = new Intl.NumberFormat();
 
+        let annualDepreciation, monthlyDepreciation, remainingValue = cost;
+        let result = this.calculateDepreciation(depreciationType, cost, usefulLife, startDepreciation);
+        annualDepreciation = result[0];
+        monthlyDepreciation = result[1];
+        remainingValue = result[2];
+
+        console.log("depreciationType depreciationType depreciationType depreciationType ***", depreciationType);
+
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
                     {/* Thông tin khấu hao */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">Thông tin khấu hao</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('asset.general_information.depreciation_information')}</h4></legend>
                         <div className="form-group">
-                            <strong>Nguyên giá:&emsp; </strong>
+                            <strong>{translate('asset.general_information.original_price')}&emsp; </strong>
                             {formater.format(parseInt(cost))} VNĐ
-
                         </div>
                         <div className="form-group">
-                            <strong>Giá trị thu hồi ước tính:&emsp; </strong>
+                            <strong>{translate('asset.general_information.residual_price')}&emsp; </strong>
                             {residualValue ? formater.format(parseInt(residualValue)) : ''} VNĐ
 
                         </div>
                         <div className={`form-group`}>
-                            <strong>Thời gian bắt đầu trích khấu hao:&emsp; </strong>
+                            <strong>{translate('asset.general_information.start_depreciation')}&emsp; </strong>
                             {this.formatDate(startDepreciation)}
                         </div>
                         <div className={`form-group`}>
-                            <strong>Thời gian sử dụng:&emsp; </strong>
+                            <strong>{translate('asset.asset_info.usage_time')}&emsp; </strong>
                             {usefulLife} tháng
 
                         </div>
                         <div className="form-group">
-                            <strong>Thời gian kết thúc trích khấu hao:&emsp; </strong>
+                            <strong>{translate('asset.general_information.end_depreciation')}&emsp; </strong>
                             {startDepreciation ? this.addMonthToEndDepreciation(this.formatDate(startDepreciation)) : ""}
                         </div>
                         <div className="form-group">
-                            <strong>Phương pháp trích khấu hao:&emsp; </strong>
+                            <strong>{translate('asset.general_information.depreciation_type')}&emsp; </strong>
                             {depreciationType}
                         </div>
                         <div className="form-group">
-                            <strong>Mức độ khấu hao trung bình hằng năm:&emsp; </strong>
-                            {formater.format(parseInt(((12 * cost) / usefulLife)))} VNĐ/năm
+                            <strong>{translate('asset.asset_info.annual_depreciation')}&emsp; </strong>
+                            {annualDepreciation} VNĐ/năm
 
                         </div>
                         <div className="form-group">
-                            <strong>Mức độ khấu hao trung bình hằng tháng:&emsp; </strong>
-                            {formater.format(cost / usefulLife)} VNĐ/tháng
+                            <strong>{translate('asset.asset_info.monthly_depreciation')}&emsp; </strong>
+                            {monthlyDepreciation} VNĐ/tháng
 
+                        </div>
+
+                        {/* Giá trị hiện tại */}
+                        <div className="form-group">
+                            <strong>{translate('asset.depreciation.remaining_value')}&emsp; </strong>
+                            {remainingValue} VNĐ
                         </div>
                     </fieldset>
                 </div>

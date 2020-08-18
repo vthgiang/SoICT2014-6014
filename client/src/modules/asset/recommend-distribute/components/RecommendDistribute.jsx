@@ -161,8 +161,8 @@ class RecommendDistribute extends Component {
                     <div className="form-inline">
                         {/* Mã phiếu */}
                         <div className="form-group">
-                            <label className="form-control-static">Mã phiếu</label>
-                            <input type="text" className="form-control" name="recommendNumber" onChange={this.handleRecommendNumberChange} placeholder="Mã phiếu" autoComplete="off" />
+                            <label className="form-control-static">{translate('asset.general_information.form_code')}</label>
+                            <input type="text" className="form-control" name="recommendNumber" onChange={this.handleRecommendNumberChange} placeholder={translate('asset.general_information.form_code')} autoComplete="off" />
                         </div>
 
                         {/* Tháng */}
@@ -185,9 +185,9 @@ class RecommendDistribute extends Component {
                                 options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('page.all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "Đã phê duyệt", text: "Đã phê duyệt" },
-                                    { value: "Chờ phê duyệt", text: "Chờ phê duyệt" },
-                                    { value: "Không phê duyệt", text: "Không phê duyệt" }
+                                    { value: "Đã phê duyệt", text: translate('asset.usage.approved') },
+                                    { value: "Chờ phê duyệt", text: translate('asset.usage.waiting_approval') },
+                                    { value: "Không phê duyệt", text: translate('asset.usage.not_approved') }
                                 ]}
                             >
                             </SelectMulti>
@@ -204,28 +204,28 @@ class RecommendDistribute extends Component {
                     <table id="recommenddistribute-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th style={{ width: "10%" }}>Mã phiếu</th>
-                                <th style={{ width: "15%" }}>Ngày lập</th>
-                                <th style={{ width: "15%" }}>Người đề nghị</th>
-                                <th style={{ width: "17%" }}>Mã tài sản</th>
-                                <th style={{ width: "15%" }}>Tên tài sản</th>
-                                <th style={{ width: "17%" }}>Thời gian đăng ký sử dụng từ ngày</th>
-                                <th style={{ width: "17%" }}>Thời gian đăng ký sử dụng đến ngày</th>
-                                <th style={{ width: "17%" }}>Người phê duyệt</th>
-                                <th style={{ width: "11%" }}>Trạng thái</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>Hành động
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.form_code')}</th>
+                                <th style={{ width: "15%" }}>{translate('asset.general_information.create_date')}</th>
+                                <th style={{ width: "15%" }}>{translate('asset.usage.proponent')}</th>
+                                <th style={{ width: "17%" }}>{translate('asset.general_information.asset_code')}</th>
+                                <th style={{ width: "15%" }}>{translate('asset.general_information.asset_name')}</th>
+                                <th style={{ width: "17%" }}>{translate('asset.general_information.handover_from_date')}</th>
+                                <th style={{ width: "17%" }}>{translate('asset.general_information.handover_to_date')}</th>
+                                <th style={{ width: "17%" }}>{translate('asset.usage.accountable')}</th>
+                                <th style={{ width: "11%" }}>{translate('asset.general_information.status')}</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
                                     <DataTableSetting
                                         tableId="recommenddistribute-table"
                                         columnArr={[
-                                            "Mã phiếu",
-                                            "Ngày lập",
-                                            "Người đề nghị",
-                                            "Mã tài sản",
-                                            "Tên tài sản",
-                                            "Thời gian đăng ký sử dụng từ ngày",
-                                            "Thời gian đăng ký sử dụng đến ngày",
-                                            "Người phê duyệt",
-                                            "Trạng thái",
+                                            translate('asset.general_information.form_code'),
+                                            translate('asset.general_information.create_date'),
+                                            translate('asset.usage.proponent'),
+                                            translate('asset.general_information.asset_code'),
+                                            translate('asset.general_information.asset_name'),
+                                            translate('asset.general_information.handover_from_date'),
+                                            translate('asset.general_information.handover_to_date'),
+                                            translate('asset.usage.accountable'),
+                                            translate('asset.general_information.status'),
                                         ]}
                                         limit={limit}
                                         setLimit={this.setLimit}
@@ -249,9 +249,9 @@ class RecommendDistribute extends Component {
                                             <td>{x.approver ? x.approver.name : 'User is deleted'}</td>
                                             <td>{x.status}</td>
                                             <td style={{ textAlign: "center" }}>
-                                                <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin phiếu đăng ký cấp phát"><i className="material-icons">edit</i></a>
+                                                <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_usage_info')}><i className="material-icons">edit</i></a>
                                                 <DeleteNotification
-                                                    content="Xóa thông tin phiếu"
+                                                    content={translate('asset.asset_info.delete_usage_info')}
                                                     data={{
                                                         id: x._id,
                                                         info: x.recommendNumber + " - " + x.dateCreate.replace(/-/gi, "/")

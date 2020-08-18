@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DegreeAddModal, CertificateAddModal, DegreeEditModal, CertificateEditModal } from './combinedContent';
 
 import { AuthActions } from '../../../../auth/redux/actions';
@@ -10,23 +11,36 @@ class CertificateTab extends Component {
         super(props);
         this.state = {};
     }
-    // Function format dữ liệu Date thành string
+
+    /**
+     *  Function format dữ liệu Date thành string
+     * @param {*} date : Ngày muốn format
+     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
+     */
     formatDate(date, monthYear = false) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
 
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else return [day, month, year].join('-');
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        }
+        return date;
     }
-    // Bắt sự kiện click edit bằng cấp
+
+    /**
+     * Bắt sự kiện click edit bằng cấp
+     * @param {*} value : Dữ liệu bằng cấp
+     * @param {*} index : Số thứ tự bằng cấp muốn chỉnh sửa
+     */
     handleEdit = async (value, index) => {
         await this.setState(state => {
             return {
@@ -36,7 +50,12 @@ class CertificateTab extends Component {
         });
         window.$(`#modal-edit-certificate-editCertificate${index}`).modal('show');
     }
-    // Bắt sự kiện click edit chứng chỉ
+
+    /**
+     * Bắt sự kiện click edit chứng chỉ
+     * @param {*} value : Dữ liệu chứng chỉ
+     * @param {*} index : Số thứ tự chứng chỉ muốn chỉnh sửa
+     */
     handleEditShort = async (value, index) => {
         await this.setState(state => {
             return {
@@ -47,7 +66,10 @@ class CertificateTab extends Component {
         window.$(`#modal-edit-certificateShort-editCertificateShort${index}`).modal('show');
     }
 
-    // Function thêm thông tin bằng cấp
+    /**
+     * Function thêm thông tin bằng cấp
+     * @param {*} data : Dữ liệu thông tin bằng cấp thêm
+     */
     handleAddDegree = async (data) => {
         let { degrees } = this.state;
         await this.setState({
@@ -58,17 +80,24 @@ class CertificateTab extends Component {
         this.props.handleAddDegree(this.state.degrees, data)
 
     }
-    // Function chỉnh sửa thông tin bằng cấp
+
+    /**
+     * Function chỉnh sửa thông tin bằng cấp
+     * @param {*} data : Dữ liệu thông tin bằng cấp
+     */
     handleEditDegree = async (data) => {
-        const { degrees } = this.state;
+        let { degrees } = this.state;
         degrees[data.index] = data;
         await this.setState({
             degrees: degrees
         })
-        this.props.handleEditDegree(this.state.degrees, data)
+        this.props.handleEditDegree(degrees, data)
     }
 
-    // Function thêm thông tin chứng chỉ
+    /**
+     * Function thêm thông tin chứng chỉ
+     * @param {*} data : Dữ liệu thông tin chứng chỉ muốn thêm
+     */
     handleAddCertificate = async (data) => {
         let { certificates } = this.state;
         await this.setState({
@@ -78,36 +107,48 @@ class CertificateTab extends Component {
         })
         this.props.handleAddCertificate(this.state.certificates, data)
     }
-    // Function chỉnh sửa thông tin chứng chỉ
+
+    /**
+     * Function chỉnh sửa thông tin chứng chỉ
+     * @param {*} data : Dữ liệu thông tin chứng chỉ muốn chỉnh sửa
+     */
     handleEditCertificate = async (data) => {
-        const { certificates } = this.state;
+        let { certificates } = this.state;
         certificates[data.index] = data;
         await this.setState({
             certificates: certificates
         })
-        this.props.handleEditCertificate(this.state.certificates, data)
+        this.props.handleEditCertificate(certificates, data)
     }
-    // Function xoá bằng cấp
+
+    /**
+     * Function xoá bằng cấp
+     * @param {*} index : Số thứ tự bằng cấp muốn xoá
+     */
     handleDeleteDegree = async (index) => {
-        var { degrees } = this.state;
-        var data = degrees[index];
+        let { degrees } = this.state;
+        let data = degrees[index];
         degrees.splice(index, 1);
         await this.setState({
             ...this.state,
             degrees: [...degrees]
         })
-        this.props.handleDeleteDegree(this.state.degrees, data)
+        this.props.handleDeleteDegree(degrees, data)
     }
-    // Function xoá chứng chỉ
+
+    /**
+     * Function xoá chứng chỉ
+     * @param {*} index : Số thứ tự chứng chỉ muốn xoá
+     */
     handleDeleteCertificate = async (index) => {
-        var { certificates } = this.state;
-        var data = certificates[index];
+        let { certificates } = this.state;
+        let data = certificates[index];
         certificates.splice(index, 1);
         await this.setState({
             ...this.state,
             certificates: [...certificates]
         })
-        this.props.handleDeleteCertificate(this.state.certificates, data)
+        this.props.handleDeleteCertificate(certificates, data)
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -123,40 +164,51 @@ class CertificateTab extends Component {
         }
     }
 
+    /**
+     * function dowload file
+     * @param {*} e 
+     * @param {*} path : Đường dẫn file
+     * @param {*} fileName : Tên file dùng để lưu
+     */
     requestDownloadFile = (e, path, fileName) => {
         e.preventDefault()
         this.props.downloadFile(path, fileName)
     }
 
     render() {
-        const { id, translate } = this.props;
-        const { degrees, certificates } = this.state;
+        const { translate } = this.props;
+
+        const { id } = this.props;
+
+        const { degrees, certificates, currentRow, currentRowCertificates } = this.state;
+
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
+                    {/* Danh sách bằng cấp */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.diploma')}</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.diploma')}</h4></legend>
                         <DegreeAddModal handleChange={this.handleAddDegree} id={`addCertificate${id}`} />
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                             <thead>
                                 <tr>
-                                    <th>{translate('manage_employee.name_diploma')}</th>
-                                    <th>{translate('manage_employee.diploma_issued_by')}</th>
-                                    <th>{translate('manage_employee.graduation_year')}</th>
-                                    <th>{translate('manage_employee.ranking_learning')}</th>
-                                    <th>{translate('manage_employee.attached_files')}</th>
-                                    <th style={{ width: '120px' }}>{translate('table.action')}</th>
+                                    <th>{translate('human_resource.profile.name_diploma')}</th>
+                                    <th>{translate('human_resource.profile.diploma_issued_by')}</th>
+                                    <th>{translate('human_resource.profile.graduation_year')}</th>
+                                    <th>{translate('human_resource.profile.ranking_learning')}</th>
+                                    <th>{translate('human_resource.profile.attached_files')}</th>
+                                    <th style={{ width: '120px' }}>{translate('general.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof degrees !== 'undefined' && degrees.length !== 0) &&
+                                {degrees && degrees.length !== 0 &&
                                     degrees.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.name}</td>
                                             <td>{x.issuedBy}</td>
                                             <td>{x.year}</td>
-                                            <td>{translate(`manage_employee.${x.degreeType}`)}</td>
-                                            <td>{!x.urlFile ? translate('manage_employee.no_files') :
+                                            <td>{translate(`human_resource.profile.${x.degreeType}`)}</td>
+                                            <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
                                                 <a className='intable'
                                                     style={{ cursor: "pointer" }}
                                                     onClick={(e) => this.requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
@@ -164,7 +216,7 @@ class CertificateTab extends Component {
                                                 </a>
                                             }</td>
                                             <td>
-                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_diploma')}><i className="material-icons">edit</i></a>
+                                                <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_diploma')}><i className="material-icons">edit</i></a>
                                                 <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteDegree(index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
@@ -172,32 +224,34 @@ class CertificateTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof degrees === 'undefined' || degrees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!degrees || degrees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
+
+                    {/* Danh sách chứng chỉ */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.certificate')}</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.certificate')}</h4></legend>
                         <CertificateAddModal handleChange={this.handleAddCertificate} id={`addCertificateShort${id}`} />
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
-                                    <th>{translate('manage_employee.name_certificate')}</th>
-                                    <th>{translate('manage_employee.issued_by')}</th>
-                                    <th>{translate('manage_employee.date_issued')}</th>
-                                    <th>{translate('manage_employee.end_date_certificate')}</th>
-                                    <th>{translate('manage_employee.attached_files')}</th>
-                                    <th style={{ width: '120px' }}>{translate('table.action')}</th>
+                                    <th>{translate('human_resource.profile.name_certificate')}</th>
+                                    <th>{translate('human_resource.profile.issued_by')}</th>
+                                    <th>{translate('human_resource.profile.date_issued')}</th>
+                                    <th>{translate('human_resource.profile.end_date_certificate')}</th>
+                                    <th>{translate('human_resource.profile.attached_files')}</th>
+                                    <th style={{ width: '120px' }}>{translate('general.action')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {(certificates && certificates.length !== 0) &&
+                                {certificates && certificates.length !== 0 &&
                                     certificates.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.name}</td>
                                             <td>{x.issuedBy}</td>
                                             <td>{this.formatDate(x.startDate)}</td>
                                             <td>{this.formatDate(x.endDate)}</td>
-                                            <td>{!x.urlFile ? translate('manage_employee.no_files') :
+                                            <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
                                                 <a className='intable'
                                                     style={{ cursor: "pointer" }}
                                                     onClick={(e) => this.requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
@@ -205,7 +259,7 @@ class CertificateTab extends Component {
                                                 </a>
                                             }</td>
                                             <td>
-                                                <a onClick={() => this.handleEditShort(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_certificate')}><i className="material-icons">edit</i></a>
+                                                <a onClick={() => this.handleEditShort(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_certificate')}><i className="material-icons">edit</i></a>
                                                 <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteCertificate(index)}><i className="material-icons"></i></a>
                                             </td>
                                         </tr>
@@ -217,35 +271,35 @@ class CertificateTab extends Component {
                         }
                     </fieldset>
                 </div>
-                {
-                    this.state.currentRow !== undefined &&
+                {   /** Form chỉnh sửa thông tin bằng cấp */
+                    currentRow !== undefined &&
                     <DegreeEditModal
-                        id={`editCertificate${this.state.currentRow.index}`}
-                        _id={this.state.currentRow._id}
-                        index={this.state.currentRow.index}
-                        name={this.state.currentRow.name}
-                        issuedBy={this.state.currentRow.issuedBy}
-                        year={this.state.currentRow.year}
-                        degreeType={this.state.currentRow.degreeType}
-                        file={this.state.currentRow.file}
-                        urlFile={this.state.currentRow.urlFile}
-                        fileUpload={this.state.currentRow.fileUpload}
+                        id={`editCertificate${currentRow.index}`}
+                        _id={currentRow._id}
+                        index={currentRow.index}
+                        name={currentRow.name}
+                        issuedBy={currentRow.issuedBy}
+                        year={currentRow.year}
+                        degreeType={currentRow.degreeType}
+                        file={currentRow.file}
+                        urlFile={currentRow.urlFile}
+                        fileUpload={currentRow.fileUpload}
                         handleChange={this.handleEditDegree}
                     />
                 }
-                {
-                    this.state.currentRowCertificates !== undefined &&
+                {   /** Form chỉnh sửa thông tin chứng chỉ*/
+                    currentRowCertificates !== undefined &&
                     <CertificateEditModal
-                        id={`editCertificateShort${this.state.currentRowCertificates.index}`}
-                        _id={this.state.currentRowCertificates._id}
-                        index={this.state.currentRowCertificates.index}
-                        name={this.state.currentRowCertificates.name}
-                        issuedBy={this.state.currentRowCertificates.issuedBy}
-                        startDate={this.formatDate(this.state.currentRowCertificates.startDate)}
-                        endDate={this.formatDate(this.state.currentRowCertificates.endDate)}
-                        file={this.state.currentRowCertificates.file}
-                        urlFile={this.state.currentRowCertificates.urlFile}
-                        fileUpload={this.state.currentRowCertificates.fileUpload}
+                        id={`editCertificateShort${currentRowCertificates.index}`}
+                        _id={currentRowCertificates._id}
+                        index={currentRowCertificates.index}
+                        name={currentRowCertificates.name}
+                        issuedBy={currentRowCertificates.issuedBy}
+                        startDate={this.formatDate(currentRowCertificates.startDate)}
+                        endDate={this.formatDate(currentRowCertificates.endDate)}
+                        file={currentRowCertificates.file}
+                        urlFile={currentRowCertificates.urlFile}
+                        fileUpload={currentRowCertificates.fileUpload}
                         handleChange={this.handleEditCertificate}
                     />
                 }

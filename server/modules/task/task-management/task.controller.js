@@ -37,7 +37,7 @@ exports.getTasks = async (req, res) => {
     }
     else if (req.query.type === "task_in_unit") {
         getAllTaskOfOrganizationalUnitByMonth(req, res);
-    } 
+    }
     else if (req.query.type === "get_all_task_of_children_organizational_unit") {
         getAllTaskOfChildrenOrganizationalUnit(req, res)
     }
@@ -78,6 +78,7 @@ getAllTasks = async (req, res) => {
 exports.getTaskEvaluations = async (req, res) => {
     try {
         let taskEvaluation = await TaskManagementService.getTaskEvaluations(req.query);
+        console.log('taskEvaluation', taskEvaluation);
         res.status(200).json({
             success: true,
             messages: ['get_task_evaluation_success'],
@@ -569,7 +570,7 @@ getTasksByUser = async (req, res) => {
 getAllTaskOfOrganizationalUnit = async (req, res) => {
     try {
         let tasksOfOrganizationalUnit = await TaskManagementService.getAllTaskOfOrganizationalUnit(req.query.roleId, req.query.organizationalUnitId, req.query.month);
-        
+
         LogInfo(req.user.email, ' get all task of organizational unit ', req.user.company);
         res.status(200).json({
             success: true,
@@ -590,7 +591,7 @@ getAllTaskOfOrganizationalUnit = async (req, res) => {
 getAllTaskOfChildrenOrganizationalUnit = async (req, res) => {
     try {
         let tasksOfChildrenOrganizationalUnit = await TaskManagementService.getAllTaskOfChildrenOrganizationalUnit(req.user.company._id, req.query.roleId, req.query.month, req.query.organizationalUnitId);
-        
+
         LogInfo(req.user.email, ' get all task of children organizational unit ', req.user.company);
         res.status(200).json({
             success: true,

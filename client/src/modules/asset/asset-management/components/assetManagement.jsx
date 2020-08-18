@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti } from '../../../../common-components';
+import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti, ExportExcel } from '../../../../common-components';
 
 import { AssetManagerActions } from '../redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { UserActions } from '../../../super-admin/user/redux/actions';
 
 import { AssetCreateForm, AssetDetailForm, AssetEditForm } from './combinedContent';
+import { configTaskTempalte } from '../../../task/task-template/component/fileConfigurationImportTaskTemplate';
 
 class AssetManagement extends Component {
     constructor(props) {
@@ -177,21 +178,140 @@ class AssetManagement extends Component {
         this.props.getAllAsset(this.state);
     }
 
+    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    convertDataToExportData = (data,assettypelist,userlist) => {
+        let fileName = "Bảng quản lý thông tin tài sản ";
+        let length =0;
+        let convertedData= [];
+        if (data) {           
+            data = data.map((x, index) => {     
+
+                let code =x.code;
+                let name =x.assetName;   
+                let description =x.description;             
+                let type = x.assetType && assettypelist.length && assettypelist.find(item => item._id === x.assetType) ? assettypelist.find(item => item._id === x.assetType).typeName : 'Asset is deleted';
+                let purchaseDate = this.formatDate(x.purchaseDate);
+                let manager =x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).email : 'User is deleted';
+                let assigner =x.assignedTo ? (userlist.length && userlist.find(item => item._id === x.assignedTo) ? userlist.find(item => item._id === x.assignedTo).email : 'User is deleted') : ''
+                let handoverFromDate = x.handoverFromDate ? this.formatDate(x.handoverFromDate) : '';
+                let handoverToDate= x.handoverToDate ? this.formatDate(x.handoverToDate) : ''   ;      
+                let status = x.status; 
+                length = x.detailInfo.length;
+                let info = (length)? (x.detailInfo.map((item,index)=>{
+                    return {
+                        infoName :item.nameField,
+                        value : item.value
+                    }
+                })):"";
+                let infoName = info[0]?info[0].infoName:"";
+                let value =length?(info[0].value):"";
+                
+
+                let dataOneRow = {
+                    index : index+1,
+                    code : code,
+                    name:name,
+                    description:description,
+                    type: type,
+                    purchaseDate : purchaseDate,
+                    manager : manager,
+                    assigner : assigner,
+                    handoverFromDate:handoverFromDate,
+                    handoverToDate: handoverToDate,
+                    status : status,
+                    infoName : infoName,
+                    value : value
+
+                }
+                convertedData =[...convertedData,dataOneRow];
+                if(length>1)
+                {
+                    for(let i=1;i<length;i++)
+                    {
+                        dataOneRow = {
+                            index : "",
+                            code : "",
+                            name: "",
+                            description:"",
+                            type: "",
+                            purchaseDate : "",
+                            manager : "",
+                            assigner : "",
+                            handoverFromDate:"",
+                            handoverToDate: "",
+                            status : "",
+                            infoName : info[i].infoName,
+                            value : info[i].value       
+                        }
+                        convertedData = [...convertedData,dataOneRow];
+                    }
+                }
+            })
+        }
+
+        let exportData = {
+            fileName: fileName,
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    sheetTitle : fileName,
+                    tables: [
+                        {
+                            tableName : fileName,
+                            tableTitle: fileName,
+                            merges: [{
+                                key: "detailInfo",
+                                columnName: "Danh sách các trường thông tin chi tiết",
+                                keyMerge: 'infoName',
+                                colspan: 2
+                            }],
+                            rowHeader: 2,
+                            columns: [
+                                { key: "index", value: "STT" },
+                                { key: "code", value: "Mã tài sản" },
+                                { key: "name", value: "Họ và tên" },                                
+                                { key: "description", value: "Mô tả" },
+                                { key: "type", value: "Loại tài sản" },
+                                { key: "purchaseDate", value: "Ngày nhập" },
+                                { key: "manager", value: "Người quản lý" },
+                                { key: "assigner", value: "Người sử dụng" },
+                                { key: "handoverFromDate", value: "Thời gian bắt đầu sử dụng" },
+                                { key: "handoverToDate", value: "Thời gian kết thúc sử dụng" },
+                                { key: "status", value: "Trạng thái" },
+                                { key: "infoName", value: "Tên trường thông tin" },
+                                { key: "value", value: "Giá trị" }
+                            ],
+                            data: convertedData
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData;        
+       
+    }
+
     render() {
         var { assetsManager, assetType, translate, user } = this.props;
         var { page, limit, currentRowView, currentRow } = this.state;
 
-        var lists = "";
+        var lists = "", exportData;
         var userlist = user.list;
         var assettypelist = assetType.listAssetTypes;
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
+            
         }
 
         var pageTotal = ((assetsManager.totalList % limit) === 0) ?
             parseInt(assetsManager.totalList / limit) :
             parseInt((assetsManager.totalList / limit) + 1);
         var currentPage = parseInt((page / limit) + 1);
+
+        if(userlist&&lists&&assettypelist)
+        {
+            exportData = this.convertDataToExportData(lists,assettypelist,userlist);
+        }
 
         return (
             <div className="box">
@@ -202,19 +322,19 @@ class AssetManagement extends Component {
                     {/* Thanh tìm kiếm */}
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Mã tài sản</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder="Mã tài sản" autoComplete="off" />
+                            <label className="form-control-static">{translate('asset.general_information.asset_code')}</label>
+                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder={translate('asset.general_information.asset_code')} autoComplete="off" />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">Tên tài sản</label>
-                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder="Tên tài sản" autoComplete="off" />
+                            <label className="form-control-static">{translate('asset.general_information.asset_name')}</label>
+                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
                         </div>
                     </div>
                     <div className="form-inline">
                         <div className="form-group">
-                            <label className="form-control-static">Phân loại</label>
+                            <label className="form-control-static">{translate('asset.general_information.type')}</label>
                             <SelectMulti id={`multiSelectType2`} multiple="multiple"
-                                options={{ nonSelectedText: "Chọn loại tài sản", allSelectedText: "Chọn tất cả các loại tài sản" }}
+                                options={{ nonSelectedText: translate('asset.general_information.select_asset_type'), allSelectedText: translate('asset.general_information.select_all_asset_type') }}
                                 onChange={this.handleTypeChange}
                                 items={[]}
                             >
@@ -234,61 +354,62 @@ class AssetManagement extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
                             <SelectMulti id={`multiSelectStatus1`} multiple="multiple"
-                                options={{ nonSelectedText: translate('page.non_status'), allSelectedText: "Chọn tất cả trạng thái" }}
+                                options={{ nonSelectedText: translate('page.non_status'), allSelectedText: translate('asset.general_information.select_all_status') }}
                                 onChange={this.handleStatusChange}
                                 items={[
-                                    { value: "Sẵn sàng sử dụng", text: "Sẵn sàng sử dụng" },
-                                    { value: "Đang sử dụng", text: "Đang sử dụng" },
-                                    { value: "Hỏng hóc", text: "Hỏng hóc" },
-                                    { value: "Mất", text: "Mất" },
-                                    { value: "Thanh lý", text: "Thanh lý" }
+                                    { value: "Sẵn sàng sử dụng", text: translate('asset.general_information.ready_use') },
+                                    { value: "Đang sử dụng", text: translate('asset.general_information.using') },
+                                    { value: "Hỏng hóc", text: translate('asset.general_information.damaged') },
+                                    { value: "Mất", text: translate('asset.general_information.lost') },
+                                    { value: "Thanh lý", text: translate('asset.general_information.disposal') }
                                 ]}
                             >
                             </SelectMulti>
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">Quyền đăng ký</label>
+                            <label className="form-control-static">{translate('asset.general_information.can_register')}</label>
                             <SelectMulti id={`multiSelectStatus3`} multiple="multiple"
-                                options={{ nonSelectedText: "Chọn quyền đăng ký", allSelectedText: "Chọn tất cả quyền đăng ký" }}
+                                options={{ nonSelectedText: translate('asset.general_information.select_register'), allSelectedText: translate('asset.general_information.select_all_register') }}
                                 onChange={this.handleCanRegisterForUseChange}
                                 items={[
-                                    { value: true, text: "Được phép đăng ký sử dụng" },
-                                    { value: false, text: "Không được phép đăng ký sử dụng" },
+                                    { value: true, text: translate('asset.general_information.can_register') },
+                                    { value: false, text: translate('asset.general_information.cant_register') },
                                 ]}
                             >
                             </SelectMulti>
                         </div>
                         <div className="form-group">
-                            {/* <label></label> */}
-                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSubmitSearch}>Tìm kiếm</button>
+                            <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={this.handleSubmitSearch}>{translate('asset.general_information.search')}</button>
                         </div>
+                        {exportData&&<ExportExcel id="export-asset-info-management" exportData={exportData} style={{ marginRight:10 }} />}
                     </div>
 
                     {/* Bảng các tài sản */}
                     <table id="asset-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th style={{ width: "8%" }}>Mã tài sản</th>
-                                <th style={{ width: "10%" }}>Tên tài sản</th>
-                                <th style={{ width: "10%" }}>Loại tài sản</th>
-                                <th style={{ width: "10%" }}>Ngày nhập</th>
-                                <th style={{ width: "10%" }}>Người quản lý</th>
-                                <th style={{ width: "10%" }}>Người sử dụng</th>
-                                <th style={{ width: "10%" }}>Thời gian bắt đầu sử dụng</th>
-                                <th style={{ width: "10%" }}>Thời gian kết thúc sử dụng</th>
-                                <th style={{ width: "10%" }}>Trạng thái</th>
-                                <th style={{ width: '120px', textAlign: 'center' }}>Hành động
+                                <th style={{ width: "8%" }}>{translate('asset.general_information.asset_code')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_type')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.purchase_date')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.manager')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.user')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.handover_from_date')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.handover_to_date')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>{translate('asset.general_information.action')}
                                 <DataTableSetting
                                         tableId="asset-table"
                                         columnArr={[
-                                            "Mã tài sản",
-                                            "Tên tài sản",
-                                            "Loại tài sản",
-                                            "Ngày nhập",
-                                            "Người quản lý",
-                                            "Người sử dụng",
-                                            "Thời gian bắt đầu sử dụng",
-                                            "Trạng thái"
+                                            translate('asset.general_information.asset_code'),
+                                            translate('asset.general_information.asset_name'),
+                                            translate('asset.general_information.asset_type'),
+                                            translate('asset.general_information.purchase_date'),
+                                            translate('asset.general_information.manager'),
+                                            translate('asset.general_information.user'),
+                                            translate('asset.general_information.handover_from_date'),
+                                            translate('asset.general_information.handover_to_date'),
+                                            translate('asset.general_information.status')
                                         ]}
                                         limit={limit}
                                         setLimit={this.setLimit}
@@ -311,10 +432,10 @@ class AssetManagement extends Component {
                                         <td>{x.handoverToDate ? this.formatDate(x.handoverToDate) : ''}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin tài sản"><i className="material-icons">view_list</i></a>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin tài sản"><i className="material-icons">edit</i></a>
+                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.general_information.edit_info')}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
-                                                content="Xóa thông tin tài sản"
+                                                content={translate('asset.general_information.delete_info')}
                                                 data={{
                                                     id: x._id,
                                                     info: x.code + " - " + x.assetName
@@ -328,7 +449,7 @@ class AssetManagement extends Component {
                     </table>
                     {assetsManager.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
 
                     {/* PaginateBar */}

@@ -335,35 +335,33 @@ exports.editTaskTemplate = async (data, id) => {
 /**
  * Thêm mẫu công việc mới từ file excel
  * @param {*} data 
- * @param {*} id 
+ * @param {*} id : id user
  */
 exports.importTaskTemplate = async (data,id) => {
-
     for (let i = 0; i < data.length; i++) {
         // chuyen dia chi email sang id
         for (let j = 0; j < data[i].accountableEmployees.length; j++) {
             let accountableEmployees = await User.findOne({ email: data[i].accountableEmployees[j] });
             data[i].accountableEmployees[j] = String(accountableEmployees._id);
         };
+        let read = [];
         for (let j = 0; j < data[i].readByEmployees.length; j++) {
-            let readByEmployees = await User.findOne({ email: data[i].readByEmployees[j] });
-            data[i].readByEmployees[j] = String(readByEmployees._id);
-
+            let readByEmployees = await Role.findOne({ name: data[i].readByEmployees[j] });
+            readByEmployees = readByEmployees._id;
+            read = [...read, readByEmployees];
         }
+        data[i].readByEmployees = read;
         for (let j = 0; j < data[i].consultedEmployees.length; j++) {
             let consultedEmployees = await User.findOne({ email: data[i].consultedEmployees[j] });
             data[i].consultedEmployees[j] = String(consultedEmployees._id);
-
         };
         for (let j = 0; j < data[i].informedEmployees.length; j++) {
             let informedEmployees = await User.findOne({ email: data[i].informedEmployees[j] });
             data[i].informedEmployees[j] = String(informedEmployees._id);
-
         };
         for (let j = 0; j < data[i].responsibleEmployees.length; j++) {
             let responsibleEmployees = await User.findOne({ email: data[i].responsibleEmployees[j] });
-            data[i].responsibleEmployees[j] = String(responsibleEmployees._id);
-            console.log(typeof data[i].responsibleEmployees[j]);
+            data[i].responsibleEmployees[j] = String(responsibleEmployees._id);            
         };
         // xu ly thong tin priority
         if (data[i].priority === "Cao") data[i].priority = 1;
@@ -371,35 +369,50 @@ exports.importTaskTemplate = async (data,id) => {
         else data[i].priority = 2;
         // xu ly thong tin filledByAccountableEmployeesOnly 
         for (let j = 0; j < data[i].taskInformations.length; j++) {
-            // format thong tin "chi qua ly duoc dien"
-            if (data[i].taskInformations[j].filledByAccountableEmployeesOnly == 'Đúng')
-                data[i].taskInformations[j].filledByAccountableEmployeesOnly = true;
-            else data[i].taskInformations[j].filledByAccountableEmployeesOnly = false;
-            // formart thong tin kieu du lieu
-            console.log('------------------',data[i].taskInformations[j].type);
-            if (data[i].taskInformations[j].type == "Số")
-                data[i].taskInformations[j].type = 'Number';
-            if (data[i].taskInformations[j].type == "Văn bản")
-                data[i].taskInformations[j].type = 'Text';
-            if (data[i].taskInformations[j].type == "Boolean")
-                data[i].taskInformations[j].type = 'Boolean';
-            if (data[i].taskInformations[j].type == "Ngày tháng")
-                data[i].taskInformations[j].type = 'Date';
-            else
-                data[i].taskInformations[j].type = "SetOfValues";
-
+            if (data[i].taskInformations[j][0]) {
+                // format thong tin "chi qua ly duoc dien"
+                if (data[i].taskInformations[j][3] === 'Đúng')
+                    data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = true;
+                else data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = false;
+                // formart thong tin kieu du lieu
+                if (data[i].taskInformations[j][2] == "Số") {
+                    data[i].taskInformations[j]["type"] = 'Number';
+                } else {
+                    if (data[i].taskInformations[j][2] == "Văn bản") {
+                        data[i].taskInformations[j]["type"] = 'Text';
+                    } else {
+                        if (data[i].taskInformations[j][2] == "Boolean") {
+                            data[i].taskInformations[j]["type"] = 'Boolean';
+                        } else {
+                            if (data[i].taskInformations[j][2] == "Ngày tháng") {
+                                data[i].taskInformations[j]["type"] = 'Date';
+                            } else {
+                                data[i].taskInformations[j]["type"] = "SetOfValues";
+                            }
+                        }
+                    }
+                }
+                data[i].taskInformations[j]["name"] = data[i].taskInformations[j][0];
+                data[i].taskInformations[j]["description"] = data[i].taskInformations[j][1];
+            } else {
+                data[i].taskInformations.splice(j,1);
+            }
         }
         for (let j = 0; j < data[i].taskActions.length; j++) {
-            if (data[i].taskActions[j].mandatory === "Bắt buộc")
-                data[i].taskActions[j].mandatory = true;
-            else data[i].taskActions[j].mandatory = false;
+            if (data[i].taskActions[j][0]) {
+                if (data[i].taskActions[j][2] === "Bắt buộc")
+                    data[i].taskActions[j]["mandatory"] = true;
+                else data[i].taskActions[j]["mandatory"] = false;
+                data[i].taskActions[j]["name"] = data[i].taskActions[j][0];
+                data[i].taskActions[j]["description"] = data[i].taskActions[j][1];
+            } else {
+                data[i].taskActions.splice(j,1);
+            }
         }
         let unit = await OrganizationalUnit.findOne({name: data[i].organizationalUnit});
         data[i].organizationalUnit = String(unit._id);
         data[i].creator = id;
-        
         let result = await this.createTaskTemplate(data[i]);
-        console.log(result);
     };
 
 }

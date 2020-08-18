@@ -21,3 +21,4 @@ export * from './src/import-excel/importFileExcel';
 export * from './src/import-excel/showImportData';
 export * from './src/import-excel/configImportFile';
 export * from './src/export-excel/exportExcel';
+export * from './src/confirm-notification';

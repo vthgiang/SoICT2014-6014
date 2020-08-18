@@ -207,6 +207,7 @@ class SalaryManagement extends Component {
                 }
 
                 return {
+                    // merges:{ employeeNumber: 2, fullName: 2 } ,
                     STT: index + 1,
                     employeeNumber: x.employee.employeeNumber,
                     fullName: x.employee.fullName,
@@ -223,15 +224,24 @@ class SalaryManagement extends Component {
                 };
             })
         }
+        let columns = [{ key: 'bonus0', value: 0 }];
+        if (otherSalary.length !== 0) {
+            columns = otherSalary.map((x, index) => {
+                return { key: `bonus${index}`, value: x, }
+            })
+        }
+        let merges = [{
+            key: "other",
+            columnName: "Lương thưởng khác",
+            keyMerge: 'bonus0',
+            colspan: columns.length
+        }]
 
-        let columns = otherSalary.map((x, index) => {
-            return { key: `bonus${index}`, value: x, type: "Number" }
-        })
         let exportData = {
             fileName: translate('human_resource.salary.file_name_export'),
             dataSheets: [
                 {
-                    sheetName: "sheet1",
+                    sheetName: "Sheet1",
                     sheetTitle: translate('human_resource.salary.file_name_export'),
                     tables: [
                         {
@@ -252,7 +262,8 @@ class SalaryManagement extends Component {
                             //     keyMerge: 'other1',
                             //     colspan: 4
                             // }],
-                            // rowHeader: 3,
+                            rowHeader: 2,
+                            merges: merges,
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "month", value: "Tháng" },

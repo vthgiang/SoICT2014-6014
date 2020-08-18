@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { createUnitKpiActions } from '../../creation/redux/actions';
 
-import { DatePicker } from '../../../../../common-components';
+import { DatePicker,ExportExcel } from '../../../../../common-components';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
@@ -33,7 +33,8 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
             startDate: this.INFO_SEARCH.startDate,
             endDate: this.INFO_SEARCH.endDate,
             dataStatus: this.DATA_STATUS.QUERYING,
-            kindOfPoint: this.KIND_OF_POINT.AUTOMATIC
+            kindOfPoint: this.KIND_OF_POINT.AUTOMATIC,
+            exportData : null
         };
 
         this.props.getAllOrganizationalUnitKpiSetByTimeOfChildUnit(this.state.userRoleId, this.state.startDate, this.state.endDate);
@@ -180,10 +181,13 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
     setDataMultiLineChart = () => {
         const { createKpiUnit } = this.props;
-        let organizationalUnitKpiSetsOfChildUnit, point = [];
+        let {startDate, endDate}= this.state;
+        let organizationalUnitKpiSetsOfChildUnit, point = [], exportData;
 
         if(createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
             organizationalUnitKpiSetsOfChildUnit = createKpiUnit.organizationalUnitKpiSetsOfChildUnit;
+            exportData = this.convertDataToExportData(organizationalUnitKpiSetsOfChildUnit, startDate, endDate);
+            this.handleExportData(exportData);
         }
 
         if(organizationalUnitKpiSetsOfChildUnit) {
@@ -192,7 +196,7 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
             }
         }
 
-        return point
+        return point ;
     }
 
     removePreviosChart = () => {
@@ -254,8 +258,77 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
     }
 
+    handleExportData =(exportData)=>{
+        this.setState(state => {
+            return {
+                ...state,
+                exportData: exportData
+            }
+        })
+    }
+
+    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    convertDataToExportData = (data, startDate, endDate) => {
+        let fileName = "Kết quả KPI đơn vị từ " + (startDate?startDate:"")+" đến "+(endDate?endDate:"");
+        let unitKpiArray=[];
+        if (data) {           
+           for(let i=0; i< data.length;i++){
+               if(data[i].length >1){
+                   for(let j = 1 ; j< data[i].length ; j++){
+                       data[i][j]["unitName"]=data[i][0].name;
+                       unitKpiArray.push(data[i][j]);
+                   }
+               }
+           }
+        }
+        console.log("\n\n\n\n\n\n\n",unitKpiArray);
+        if (unitKpiArray.length>0) {           
+            unitKpiArray = unitKpiArray.map((x, index) => {
+               
+                let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
+                let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
+                let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);           
+                let date =x.date;
+                let unitName = x.unitName;
+                return {
+                    automaticPoint: automaticPoint,
+                    employeePoint: employeePoint,
+                    approverPoint: approverPoint,
+                    date : date,
+                    unitName :unitName                 
+                };
+            })
+        }
+
+        let exportData = {
+            fileName: fileName,
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    sheetTitle : fileName,
+                    tables: [
+                        {
+                            tableName : 'Dữ liệu để vẽ biểu đồ '+ fileName,
+                            columns: [
+                                { key: "unitName", value: "Tên đơn vị"},
+                                { key: "date", value: "Thời gian" },
+                                { key: "automaticPoint", value: "Điểm tự động" },
+                                { key: "employeePoint", value: "Điểm tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm được đánh giá" }
+                            ],
+                            data: unitKpiArray
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData;        
+       
+    }
+
     render() {
         const { createKpiUnit, translate } = this.props;
+        let { startDate, endDate,exportData } =this.state;
         let organizationalUnitKpiSetsOfChildUnit;
 
         if(createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
@@ -278,6 +351,9 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
             <React.Fragment>
                 {/* Search data trong một khoảng thời gian */}
                 <section className="form-inline">
+                    <div>
+                        {exportData&&<ExportExcel id="export-all-organizational-unit-kpi-results-chart" exportData={exportData} style={{ marginLeft:10 }} />}
+                    </div>
                     <div className="form-group">
                         <label>{translate('kpi.organizational_unit.dashboard.start_date')}</label>
                         <DatePicker 

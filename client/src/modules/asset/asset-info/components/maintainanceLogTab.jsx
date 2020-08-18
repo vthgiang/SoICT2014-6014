@@ -55,20 +55,20 @@ class MaintainanceLogTab extends Component {
                 <div className="box-body qlcv">
                     {/* Lịch sử sửa chữa - thay thế - nâng cấp */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">Lịch sử sửa chữa - thay thế - nâng cấp</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.maintainance_logs')}</h4></legend>
 
                         {/* Bảng thông tin bảo trì */}
                         <table className="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
-                                    <th>Mã phiếu</th>
-                                    <th>Ngày lập</th>
-                                    <th>Phân loại</th>
-                                    <th>Ngày thực hiện</th>
-                                    <th>Ngày hoàn thành</th>
-                                    <th>Nội dung</th>
-                                    <th>Chi phí</th>
-                                    <th>Trạng thái</th>
+                                    <th>{translate('asset.general_information.form_code')}</th>
+                                    <th>{translate('asset.general_information.create_date')}</th>
+                                    <th>{translate('asset.general_information.type')}</th>
+                                    <th>{translate('asset.general_information.start_date')}</th>
+                                    <th>{translate('asset.general_information.end_date')}</th>
+                                    <th>{translate('asset.general_information.content')}</th>
+                                    <th>{translate('asset.general_information.expense')}</th>
+                                    <th>{translate('asset.general_information.status')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -87,6 +87,12 @@ class MaintainanceLogTab extends Component {
                                 }
                             </tbody>
                         </table>
+
+                        <div className="form-group">
+                            <strong>{translate('asset.maintainance.total_cost')}:&emsp; </strong>
+                            {(maintainanceLogs && maintainanceLogs.length !== 0) && maintainanceLogs.map(item => parseInt(item.expense)).reduce((sum, number) => sum + number, 0)} VNĐ
+                        </div>
+
                         {
                             (!maintainanceLogs || maintainanceLogs.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }

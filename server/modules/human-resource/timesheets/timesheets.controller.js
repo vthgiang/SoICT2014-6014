@@ -4,9 +4,7 @@ const {
     LogError
 } = require('../../../logs');
 
-/**
- * Lấy danh sách thông tin chấm công
- */
+/** Lấy danh sách thông tin chấm công */
 exports.searchTimesheets = async (req, res) => {
     try {
         let data = {};
@@ -38,9 +36,8 @@ exports.searchTimesheets = async (req, res) => {
         });
     }
 }
-/**
- * Tạo mới thông tin chấm công
- */
+
+/** Tạo mới thông tin chấm công */
 exports.createTimesheets = async (req, res) => {
     try {
         // Kiểm tra dữ liệu đầu vào
@@ -104,9 +101,7 @@ exports.createTimesheets = async (req, res) => {
     }
 }
 
-/**
- * Xoá thông tin chấm công
- */
+/** Xoá thông tin chấm công */
 exports.deleteTimesheets = async (req, res) => {
     try {
         let timesheetsDelete = await TimesheetService.deleteTimesheets(req.params.id);
@@ -127,9 +122,8 @@ exports.deleteTimesheets = async (req, res) => {
         });
     }
 }
-/**
- * Chỉnh sửa thông tin chấm công
- */
+
+/** Chỉnh sửa thông tin chấm công */
 exports.updateTimesheets = async (req, res) => {
     try {
         // Kiểm tra dữ liệu truyền vào
@@ -184,22 +178,22 @@ exports.updateTimesheets = async (req, res) => {
     }
 }
 
-// Import dữ liệu chấm công
+/** Import dữ liệu chấm công */
 exports.importTimesheets = async (req, res) => {
     try {
         var data = await TimesheetService.importTimesheets(req.body, req.user.company._id);
-        if(data.rowError!==undefined){
+        if (data.rowError !== undefined) {
             await LogError(req.user.email, 'IMPORT_TIMESHEETS', req.user.company);
             res.status(400).json({
                 success: false,
-                messages:["import_timesheets_faile"],
+                messages: ["import_timesheets_faile"],
                 content: data
             });
-        }else{
+        } else {
             await LogInfo(req.user.email, 'IMPORT_TIMESHEETS', req.user.company);
             res.status(200).json({
                 success: true,
-                messages:["import_timesheets_success"],
+                messages: ["import_timesheets_success"],
                 content: data
             });
         }
@@ -207,8 +201,10 @@ exports.importTimesheets = async (req, res) => {
         await LogError(req.user.email, 'IMPORT_TIMESHEETS', req.user.company);
         res.status(400).json({
             success: false,
-            messages:["import_timesheets_faile"],
-            content: {error: error}
+            messages: ["import_timesheets_faile"],
+            content: {
+                error: error
+            }
         });
     }
 }

@@ -1,6 +1,7 @@
 import {
     HolidayConstants
 } from './constants';
+
 const initState = {
     listHoliday: [],
     isLoading: false,
@@ -24,7 +25,7 @@ export function holiday(state = initState, action) {
             return {
                 ...state,
                 listHoliday: action.payload,
-                isLoading: false,
+                    isLoading: false,
             };
         case HolidayConstants.CREATE_HOLIDAY_SUCCESS:
             return {
@@ -33,13 +34,13 @@ export function holiday(state = initState, action) {
                         ...state.listHoliday,
                         action.payload
                     ],
-                isLoading: false,
+                    isLoading: false,
             };
         case HolidayConstants.DELETE_HOLIDAY_SUCCESS:
             return {
                 ...state,
                 listHoliday: state.listHoliday.filter(holiday => (holiday._id !== action.payload._id)),
-                isLoading: false,
+                    isLoading: false,
             };
         case HolidayConstants.UPDATE_HOLIDAY_SUCCESS:
             return {
@@ -48,14 +49,14 @@ export function holiday(state = initState, action) {
                         (holiday._id === action.payload._id) ?
                         action.payload : holiday
                     ),
-                isLoading: false,
+                    isLoading: false,
             };
         case HolidayConstants.IMPORT_HOLIDAY_SUCCESS:
             return {
                 ...state,
                 isLoading: false,
-                importStatus: true,
-                listHoliday: action.payload.content,
+                    importStatus: true,
+                    listHoliday: action.payload.content,
             }
             case HolidayConstants.GET_HOLIDAY_FAILURE:
             case HolidayConstants.CREATE_HOLIDAY_FAILURE:
@@ -65,7 +66,7 @@ export function holiday(state = initState, action) {
                 return {
                     ...state,
                     isLoading: false,
-                    error: action.error
+                        error: action.error
                 };
             default:
                 return state

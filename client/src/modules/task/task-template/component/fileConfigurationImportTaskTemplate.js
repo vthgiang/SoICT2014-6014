@@ -1,27 +1,137 @@
-export const configTaskTempalte= {
-    rowHeader : 2,
-    sheets : ["Sheet1", "Sheet 2"],
-    organizationalUnit : "Đơn vị",
-    readByEmployees : "Người được xem",
-    name: "Tên mẫu",
-    priority: "Độ ưu tiên",
-    description : "Mô tả",
-    responsibleEmployees : "Người thực hiện",
-    accountableEmployees: "Người phê duyệt",
-    consultedEmployees: "Người hỗ trợ",
-    informedEmployees :"Người quan sát",
-    formula: "Công thức tính điểm",
-    taskActions: "Danh sách hoạt động",
-    nameTaskActions: "Tên hoạt động",
-    descriptionTaskAction: "Mô tả",
-    mandatory : "Bắt buộc",
-    taskInformations: "Danh sách thông tin",
-    nameTaskInformation : "Tên thông tin",
-    descriptionTaskInformation: "Mô tả thông tin",
-    type: "Kiểu dữ liệu",
-    filledByAccountableEmployeesOnly: "Chỉ quản lý được điền",
+export const configTaskTempalte = {
+    sheets: {
+        description: "Tên các sheet",
+        value: ["Sheet1"]
+    },
+    rowHeader: {
+        description: "Số tiêu đề của bảng",
+        value: 2
+    },
+    name: {
+        columnName: "Tên mẫu",
+        description: "Tên tiêu đề ứng với tên mẫu",
+        value: "Tên mẫu"
+    },
+    description: {
+        columnName: "Mô tả",
+        description: "Tên tiêu đề ứng với mô tả",
+        value: "Mô tả"
+    },
+    organizationalUnit: {
+        columnName: "Đơn vị",
+        description: "Tên tiêu đề ứng với đơn vị",
+        value: "Đơn vị"
+    },
+    readByEmployees: {
+        columnName: "Người được xem",
+        description: "Tên tiêu đề ứng với người được xem",
+        value: "Người được xem"
+    },
+    priority: {
+        columnName: "Độ ưu tiên",
+        description: "Tên tiêu đề ứng với độ ưu tiên",
+        value: "Độ ưu tiên"
+    },
+    responsibleEmployees: {
+        columnName: "Người thực hiện",
+        description: "Tên tiêu đề ứng với người thực hiện",
+        value: "Người thực hiện"
+    },
+    accountableEmployees: {
+        columnName: "Người phê duyệt",
+        description: "Tên tiêu đề ứng với người phê duyệt",
+        value: "Người phê duyệt"
+    },
+    consultedEmployees: {
+        columnName: "Người hỗ trợ",
+        description: "Tên tiêu đề ứng với người hỗ trợ",
+        value: "Người hỗ trợ"
+    },
+    informedEmployees: {
+        columnName: "Người quan sát",
+        description: "Tên tiêu đề ứng với người quan sát",
+        value: "Người quan sát"
+    },
+    formula: {
+        columnName: "Công thức tính điểm",
+        description: "Tên tiêu đề ứng với công thức tính điểm",
+        value: "Công thức tính điểm"
+    },
+    taskActions: {
+        columnName: "Danh sách hoạt động",
+        description: "Tên tiêu đề ứng với tên hoạt động",
+        value: ["Tên hoạt động", "Mô tả hoạt động", "Bắt buộc"]
+    },
+    taskInformations: {
+        columnName: "Danh sách thông tin",
+        description: "Tên tiêu đề ứng với tên thông tin",
+        value: ["Tên thông tin", "Mô tả thông tin", "Kiểu dữ liệu", "Chỉ quản lý được điền"]
+    },
     file: {
-        fileName: 'taskTemplate',
-        fileUrl: '/upload/task/taskTemplateImportForm/template_mau-cong-viec.xlsx'
+        fileName: 'templateImportTaskTemplate',
+        fileUrl: '/upload/task/taskTemplateImportForm/templateImportTaskTemplate.xlsx'
     }
+}
+
+export const templateImportTaskTemplate = {
+    fileName: "Mẫu import mẫu công việc",
+    dataSheets: [{
+        sheetName: "Sheet1",
+        sheetTitle: '',
+        tables: [{
+            tableName: "Bảng thống kê mẫu công việc",
+            rowHeader: 2,
+            merges: [{
+                key: "taskActions",
+                columnName: "Danh sách hoạt động",
+                keyMerge: 'actionName',
+                colspan: 3
+            }, {
+                key: "taskInfo",
+                columnName: "Danh sách thông tin",
+                keyMerge: 'infoName',
+                colspan: 4
+            }],
+            columns: [
+                { key: "STT", value: "STT" },
+                { key: "name", value: "Tên mẫu" },
+                { key: "description", value: "Mô tả" },
+                { key: "organizationalUnits", value: "Đơn vị" },
+                { key: "priority", value: "Độ ưu tiên" },
+                { key: "readByEmployees", value: "Người được xem" },
+                { key: "responsibleEmployees", value: "Người thực hiện" },
+                { key: "accountableEmployees", value: "Người phê duyệt" },
+                { key: "consultedEmployees", value: "Người hỗ trợ" },
+                { key: "informedEmployees", value: "Người quan sát" },
+                { key: "formula", value: "Công thức tính điểm" },
+                { key: "actionName", value: "Tên hoạt động" },
+                { key: "actionDescription", value: "Mô tả hoạt động" },
+                { key: "mandatory", value: "Bắt buộc" },
+                { key: "infoName", value: "Tên thông tin" },
+                { key: "infoDescription", value: "Mô tả thông tin" },
+                { key: "infoType", value: "Kiểu dữ liệu" },
+                { key: "infoFill", value: "Chỉ quản lý được điền" }
+            ],
+            data: [{
+                STT: 1,
+                name: "Mẫu 1",
+                description: "Mẫu công việc 1",
+                organizationalUnits: "Phòng kinh doanh",
+                readByEmployees: "Trưởng phòng kinh doanh, Nhân viên phòng kinh doanh",
+                priority: "Cao",
+                responsibleEmployees: "pdp.vnist@gmail.com",
+                accountableEmployees: "nvd.vnist@gmail.com",
+                consultedEmployees: "nvd.vnist@gmail.com",
+                informedEmployees: "nvd.vnist@gmail.com",
+                formula: 80,
+                actionName:"Hoạt động 1",
+                actionDescription: "Đây là hoạt động 1",
+                mandatory: "Bắt buộc",
+                infoName: "Thông tin 1",
+                infoDescription: "Thông tin dữ liệu",
+                infoType: "Văn bản",
+                infoFill: "Đúng"
+            }]
+        }]
+    }]
 }

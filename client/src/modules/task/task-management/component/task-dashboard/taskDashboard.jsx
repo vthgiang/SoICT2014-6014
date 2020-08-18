@@ -11,6 +11,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DatePicker } from '../../../../../common-components';
 import Swal from 'sweetalert2';
+import { TasksIsNotLinked } from './tasksIsNotLinked';
 
 class TaskDashboard extends Component {
 
@@ -229,7 +230,6 @@ class TaskDashboard extends Component {
             day = '0' + day;
         let defaultEndMonth = [month, year].join('-');
         let defaultStartMonth = ['01', year].join('-');
-
         return (
             <React.Fragment>
                 <div className="qlcv">
@@ -387,7 +387,7 @@ class TaskDashboard extends Component {
                                                                 <i className="fa fa-ellipsis-v" />
                                                                 <i className="fa fa-ellipsis-v" />
                                                             </span>
-                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank" />{item.task.name}</span>
+                                                            <span className="text"><a href={`/task?taskId=${item.task._id}`} target="_blank">{item.task.name}</a></span>
                                                             <small className="label label-warning"><i className="fa fa-clock-o" /> &nbsp;{item.totalDays} {translate('task.task_management.calc_days')}</small>
                                                         </li>
                                                     ) : "Không có công việc nào sắp hết hạn"
@@ -398,8 +398,11 @@ class TaskDashboard extends Component {
 
                         </div>
                     </div>
+                    <TasksIsNotLinked />
+
 
                 </div>
+                {/* Lịch công việc chi tiết */}
                 <div className="row">
                     <div className="col-xs-12">
                         <div className="box box-primary">

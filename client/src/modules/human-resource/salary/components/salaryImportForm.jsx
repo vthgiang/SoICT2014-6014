@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ImportFileExcel, ConFigImportFile, ShowImportData, DatePicker } from '../../../../common-components';
+import { DialogModal, ImportFileExcel, ConFigImportFile, ShowImportData, DatePicker, ExportExcel } from '../../../../common-components';
 
-import { configurationSalary } from './fileConfigurationImportSalary';
+import { configurationSalary, templateImportSalary } from './fileConfigurationImportSalary';
 
 import { SalaryActions } from '../redux/actions';
 import { AuthActions } from '../../../auth/redux/actions';
@@ -84,6 +84,7 @@ class SalaryImportForm extends Component {
                 }
                 return x;
             })
+
             this.setState({
                 ...this.state,
                 importData: importData,
@@ -136,8 +137,9 @@ class SalaryImportForm extends Component {
      * Function Thay đổi cấu hình file import
      * @param {*} value : Dữ liệu cấu hình file import
      */
-    handleChangeConfig = (value) => {
-        this.setState({
+    handleChangeConfig = async (value) => {
+        console.log(value);
+        await this.setState({
             configData: value,
             importData: [],
         })
@@ -149,6 +151,7 @@ class SalaryImportForm extends Component {
      * @param {*} checkFileImport : true - file import đúng định dạng, false - file import sai định dạng
      */
     handleImportExcel = (value, checkFileImport) => {
+        console.log(value);
         const { translate } = this.props;
         if (checkFileImport) {
             let rowError = [];
@@ -196,10 +199,11 @@ class SalaryImportForm extends Component {
     }
 
     render() {
+
         const { translate, salary } = this.props;
 
         let { limit, page, importData, rowError, configData, changeMonth, month, checkFileImport } = this.state;
-
+        console.log(configData);
         if (salary.error.rowError && changeMonth === false) {
             rowError = salary.error.rowError;
             importData = salary.error.data
@@ -261,10 +265,8 @@ class SalaryImportForm extends Component {
                             {/* Dowload file import mẫu */}
                             <div className="form-group col-md-4 col-xs-12">
                                 <label></label>
-                                <a className='pull-right'
-                                    style={{ cursor: "pointer" }}
-                                    onClick={(e) => this.requestDownloadFile(e, `.${configData.file.fileUrl}`, configData.file.fileName)}>
-                                    <i className="fa fa-download"> &nbsp;{translate('human_resource.download_file')}</i></a>
+                                <ExportExcel id="download_template_salary" type='link' exportData={templateImportSalary}
+                                    buttonName={` ${translate('human_resource.download_file')}`} />
                             </div>
                             <div className="form-group col-md-12 col-xs-12">
                                 {/* Form hiện thì dữ liệu sẽ import */}

@@ -10,23 +10,22 @@ import 'c3/c3.css';
 class AdministrationStatisticsReport extends Component {
     constructor(props) {
         super(props);
-        this.DATA_STATUS = {NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3};
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         this.state = {
             dataStatus: this.DATA_STATUS.QUERYING
-         }
-         this.props.getAllDocuments();
+        }
     }
 
     // componentDidMount(){
     //     this.props.getAllDocuments();
     // }
 
-    shouldComponentUpdate(nextProps, nextState){
-        if(nextState.dataStatus === this.DATA_STATUS.QUERYING){
-            if(nextProps. documents.administration.categories.list.length && nextProps.documents.administration.data.list.length){
-               // console.log('aaaaaaaaaaaaaaa',nextProps. documents.administration.categories.list)
-                this.setState(state =>{
+    shouldComponentUpdate(nextProps, nextState) {
+        if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+            if (nextProps.documents.administration.categories.list.length && nextProps.documents.administration.data.list.length) {
+                // console.log('aaaaaaaaaaaaaaa',nextProps. documents.administration.categories.list)
+                this.setState(state => {
                     return {
                         ...state,
                         dataStatus: this.DATA_STATUS.AVAILABLE
@@ -35,16 +34,16 @@ class AdministrationStatisticsReport extends Component {
             }
             return false;
         }
-        else if(nextState.dataStatus === this.DATA_STATUS.AVAILABLE){
+        else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
             this.pieChart();
             this.barChart();
-            this.setState(state =>{
+            this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.FINISHED
                 }
             })
-           
+
         }
         return false;
     }
@@ -53,7 +52,7 @@ class AdministrationStatisticsReport extends Component {
         const { documents } = this.props;
         const categoryList = documents.administration.categories.list;
         const docList = documents.administration.data.list;
-        const data = categoryList.map( category =>{
+        const data = categoryList.map(category => {
             let docs = docList.filter(doc => doc.category !== undefined && doc.category.name === category.name).length;
             return [
                 category.name,
@@ -63,7 +62,7 @@ class AdministrationStatisticsReport extends Component {
         return data;
     }
 
-    pieChart = ()=>{
+    pieChart = () => {
         this.removePreviousPieChart();
         let dataChart = this.getDataDocumentAnalys();
         //console.log('pieeeeeeeee', dataChart);
@@ -80,7 +79,8 @@ class AdministrationStatisticsReport extends Component {
 
             data: {                                 // Dữ liệu biểu đồ
                 columns: dataChart,
-                type : 'pie',
+                type: 'pie',
+                labels: true,
             }
         })
     }
@@ -89,7 +89,7 @@ class AdministrationStatisticsReport extends Component {
         const { documents } = this.props;
         const categoryList = documents.administration.categories.list;
         const docList = documents.administration.data.list;
-    
+
         const data = categoryList.map(category => {
             let docs = docList.filter(doc => doc.category !== undefined && doc.category.name === category.name);
             let totalDownload = 0;
@@ -107,7 +107,7 @@ class AdministrationStatisticsReport extends Component {
         });
         return data;
     }
-    barChart = ()=>{
+    barChart = () => {
         this.removePreviousBarChart();
         let dataChart = this.getDataViewDownloadBarChart();
         let x = ["Xem", "Download"];
@@ -124,63 +124,63 @@ class AdministrationStatisticsReport extends Component {
 
             data: {                                 // Dữ liệu biểu đồ
                 columns: dataChart,
-                type : 'bar',
+                type: 'bar',
             },
-            axis:{
+            axis: {
                 type: 'category',
-                value:  x,
+                value: x,
             }
         })
     }
-    removePreviousPieChart(){
+    removePreviousPieChart() {
         const chart = this.refs.piechart;
-        if(chart){
-            while(chart.hasChildNodes()){
+        if (chart) {
+            while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
             }
         }
-    } 
-    removePreviousBarChart(){
+    }
+    removePreviousBarChart() {
         const chart = this.refs.barchart;
-        if(chart){
-            while(chart.hasChildNodes()){
+        if (chart) {
+            while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
             }
         }
-    } 
+    }
 
-    render() { 
+    render() {
         const { documents, translate } = this.props;
         const categoryList = documents.administration.categories.list;
         const docList = documents.administration.data.list;
         console.log('props', categoryList)
         console.log('stataeee', docList)
-        
+
         return <React.Fragment>
-                
-                <div className="row">
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <b className="text-left" style={{fontSize: '20px'}}>{translate('document.statistical_document')}</b>
-                        
-                        <div ref="piechart"></div>
-                    </div>
-                    
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{marginTop: '50px', paddingTop: '10px'}}>
-                        <b className="text-left" style={{fontSize: '20px'}}>{translate('document.statistical_view_down')}</b>
-                        
-                        <div ref="barchart"></div>
-                    </div>
+
+            <div className="row">
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                    <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_document')}</b>
+
+                    <div ref="piechart"></div>
                 </div>
-                
-            </React.Fragment>;
-        
+
+                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ marginTop: '50px', paddingTop: '10px' }}>
+                    <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_view_down')}</b>
+
+                    <div ref="barchart"></div>
+                </div>
+            </div>
+
+        </React.Fragment>;
+
     }
 }
-  
+
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
     getAllDocuments: DocumentActions.getDocuments
 }
 
-export default connect( mapStateToProps, mapDispatchToProps )( withTranslate(AdministrationStatisticsReport) );
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(AdministrationStatisticsReport));

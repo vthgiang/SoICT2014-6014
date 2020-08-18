@@ -53,8 +53,15 @@ div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > d
 /* Ghi đè CSS AdminLTE */
 .treeview-menu > li > a {
     padding: 5px 5px 5px 25px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
-
+.sidebar-menu > li >a {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
 
 
@@ -73,13 +80,22 @@ a:hover, a:active, a:focus {
 /* CSS cho C3 Chart */
 .c3-tooltip-container {
     max-height: none !important;
-    width: 50%;
+    width: 30%;
 }
 
 .c3-tooltip {
     box-shadow: none;
     width: 100%;
 }
+
+.c3-tooltip .name {
+    text-align: left;
+    width: 70%;
+}
+.c3-tooltip .value {
+    width: 30%;
+}
+
 
 text.c3-axis-x-label, text.c3-axis-y-label {
     font-weight: bold;

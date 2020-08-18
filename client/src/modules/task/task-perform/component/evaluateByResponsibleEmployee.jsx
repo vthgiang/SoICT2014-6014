@@ -239,7 +239,6 @@ class EvaluateByResponsibleEmployee extends Component {
                     else if (infoEval[i].type === "SetOfValues") {
                         let splitSetOfValues = infoEval[i].extra.split('\n');
                         if (infoEval[i].value) {
-                            console.log('Qiamh1');
                             info[`${infoEval[i].code}`] = {
                                 value: [infoEval[i].value],
                                 code: infoEval[i].code,

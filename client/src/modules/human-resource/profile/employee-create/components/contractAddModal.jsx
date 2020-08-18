@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../../common-components';
 import { EmployeeCreateValidator } from './combinedContent';
 class ContractAddModal extends Component {
@@ -16,28 +17,35 @@ class ContractAddModal extends Component {
             fileUpload: ""
         }
     }
-    // Function format ngày hiện tại thành dạnh mm-yyyy
+
+    /**
+    * Function format ngày hiện tại thành dạnh mm-yyyy
+    * @param {*} date : Ngày muốn format
+    */
     formatDate = (date) => {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
 
-        return [day, month, year].join('-');
+            return [day, month, year].join('-');
+        }
+        return date;
     }
 
-    // Bắt sự kiện thay đổi file đính kèm
+    /** Bắt sự kiện thay đổi file đính kèm */
     handleChangeFile = (e) => {
         const { name } = e.target;
-        var file = e.target.files[0];
+        let file = e.target.files[0];
         if (file !== undefined) {
-            var url = URL.createObjectURL(file);
-            var fileLoad = new FileReader();
+            let url = URL.createObjectURL(file);
+            let fileLoad = new FileReader();
             fileLoad.readAsDataURL(file);
             fileLoad.onload = () => {
                 this.setState({
@@ -54,13 +62,15 @@ class ContractAddModal extends Component {
             })
         }
     }
-    // Bắt sự kiện thay đổi tên hợp đồng lao động
+
+    /** Bắt sự kiện thay đổi tên hợp đồng lao động */
     handleNameContract = (e) => {
         let { value } = e.target;
         this.validateNameContract(value, true);
     }
     validateNameContract = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateNameContract(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateNameContract(value, translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -72,13 +82,15 @@ class ContractAddModal extends Component {
         }
         return msg === undefined;
     }
-    // Bắt sự kiện thay đổi tên hợp đồng lao động
+
+    /** Bắt sự kiện thay đổi tên hợp đồng lao động */
     handleTypeContract = (e) => {
         let { value } = e.target;
         this.validateTypeContract(value, true);
     }
     validateTypeContract = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateTypeContract(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateTypeContract(value, translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -92,9 +104,14 @@ class ContractAddModal extends Component {
     }
 
 
-    // Bắt sự kiện thay đổi ngày có hiệu lực
+    /**
+     * Bắt sự kiện thay đổi ngày có hiệu lực
+     * @param {*} value 
+     */
     handleStartDateChange = (value) => {
+        const { translate } = this.props;
         let { errorOnEndDate, endDate } = this.state;
+
         let errorOnStartDate;
         let partValue = value.split('-');
         let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
@@ -103,10 +120,11 @@ class ContractAddModal extends Component {
         let d = new Date([partEndDate[2], partEndDate[1], partEndDate[0]].join('-'));
 
         if (date.getTime() > d.getTime()) {
-            errorOnStartDate = "Ngày có hiệu lực phải trước ngày hết hiệu lực";
+            errorOnStartDate = translate('human_resource.commendation_discipline.discipline.start_date_before_end_date');
         } else {
-            errorOnEndDate = errorOnEndDate === 'Ngày hết hiệu lực phải sau ngày có hiệu lực' ? undefined : errorOnEndDate
+            errorOnEndDate = undefined;
         }
+
         this.setState({
             startDate: value,
             errorOnStartDate: errorOnStartDate,
@@ -114,20 +132,27 @@ class ContractAddModal extends Component {
         })
     }
 
-    // Bắt sự kiện thay đổi ngày hết hiệu lực
+    /**
+     * Bắt sự kiện thay đổi ngày hết hiệu lực
+     * @param {*} value : Ngày hết hiệu lực
+     */
     handleEndDateChange = (value) => {
+        const { translate } = this.props;
         let { startDate, errorOnStartDate } = this.state;
+
+        let errorOnEndDate;
         let partValue = value.split('-');
         let date = new Date([partValue[2], partValue[1], partValue[0]].join('-'));
 
         let partStartDate = startDate.split('-');
         let d = new Date([partStartDate[2], partStartDate[1], partStartDate[0]].join('-'));
-        let errorOnEndDate;
+
         if (d.getTime() > date.getTime()) {
-            errorOnEndDate = "Ngày hết hiệu lực phải sau ngày có hiệu lực";
+            errorOnEndDate = translate('human_resource.commendation_discipline.discipline.end_date_after_start_date');
         } else {
-            errorOnStartDate = errorOnStartDate === 'Ngày có hiệu lực phải trước ngày hết hiệu lực' ? undefined : errorOnStartDate
+            errorOnStartDate = undefined;
         }
+
         this.setState({
             endDate: value,
             errorOnStartDate: errorOnStartDate,
@@ -135,57 +160,66 @@ class ContractAddModal extends Component {
         })
     }
 
-
-
-    // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
+    /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
-        let result = this.validateNameContract(this.state.name, false) && this.validateTypeContract(this.state.contractType, false);
-        let partStart = this.state.startDate.split('-');
-        let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
-        let partEnd = this.state.endDate.split('-');
-        let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
-        if (new Date(startDate).getTime() <= new Date(endDate).getTime()) {
+        const { name, contractType, startDate, endDate } = this.state;
+        let result = this.validateNameContract(name, false) && this.validateTypeContract(contractType, false);
+        let partStart = startDate.split('-');
+        let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
+        let partEnd = endDate.split('-');
+        let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        if (new Date(startDateNew).getTime() <= new Date(endDateNew).getTime()) {
             return result;
         } else return false;
     }
-    // Bắt sự kiện submit form
+
+    /** Bắt sự kiện submit form */
     save = async () => {
-        let partStart = this.state.startDate.split('-');
-        let startDate = [partStart[2], partStart[1], partStart[0]].join('-');
-        let partEnd = this.state.endDate.split('-');
-        let endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        const { startDate, endDate } = this.state;
+        let partStart = startDate.split('-');
+        let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
+        let partEnd = endDate.split('-');
+        let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
         if (this.isFormValidated()) {
-            this.props.handleChange({ ...this.state, startDate: startDate, endDate: endDate });
+            this.props.handleChange({ ...this.state, startDate: startDateNew, endDate: endDateNew });
         }
     }
+
     render() {
-        const { id, translate } = this.props;
-        const { name, contractType, startDate, endDate,
-            errorOnNameContract, errorOnTypeContract, errorOnStartDate, errorOnEndDate } = this.state;
+        const { translate } = this.props;
+
+        const { id } = this.props;
+
+        const { name, contractType, startDate, endDate, errorOnNameContract,
+            errorOnTypeContract, errorOnStartDate, errorOnEndDate } = this.state;
+
         return (
             <React.Fragment>
-                <ButtonModal modalID={`modal-create-contract-${id}`} button_name={translate('modal.create')} title={translate('manage_employee.add_contract')} />
+                <ButtonModal modalID={`modal-create-contract-${id}`} button_name={translate('modal.create')} title={translate('human_resource.profile.add_contract')} />
                 <DialogModal
                     size='50' modalID={`modal-create-contract-${id}`} isLoading={false}
                     formID={`form-create-contract-${id}`}
-                    title={translate('manage_employee.add_contract')}
+                    title={translate('human_resource.profile.add_contract')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-create-contract-${id}`}>
-                        <div className={`form-group ${errorOnNameContract === undefined ? "" : "has-error"}`}>
-                            <label>{translate('manage_employee.name_contract')}<span className="text-red">*</span></label>
+                        {/* Tên hợp đồng */}
+                        <div className={`form-group ${errorOnNameContract && "has-error"}`}>
+                            <label>{translate('human_resource.profile.name_contract')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="name" value={name} onChange={this.handleNameContract} autoComplete="off" />
                             <ErrorLabel content={errorOnNameContract} />
                         </div>
-                        <div className={`form-group ${errorOnTypeContract === undefined ? "" : "has-error"}`}>
-                            <label>{translate('manage_employee.type_contract')}<span className="text-red">*</span></label>
+                        {/* Loại hợp đồng */}
+                        <div className={`form-group ${errorOnTypeContract && "has-error"}`}>
+                            <label>{translate('human_resource.profile.type_contract')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="contractType" value={contractType} onChange={this.handleTypeContract} autoComplete="off" />
                             <ErrorLabel content={errorOnTypeContract} />
                         </div>
                         <div className="row">
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                <label>{translate('manage_employee.start_date')}<span className="text-red">*</span></label>
+                            {/* Ngày có hiệu lực */}
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
+                                <label>{translate('human_resource.profile.start_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`add-start-date-${id}`}
                                     deleteValue={false}
@@ -194,8 +228,9 @@ class ContractAddModal extends Component {
                                 />
                                 <ErrorLabel content={errorOnStartDate} />
                             </div>
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                <label>{translate('manage_employee.end_date_certificate')}<span className="text-red">*</span></label>
+                            {/* Ngày hết hiệu lực */}
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate && "has-error"}`}>
+                                <label>{translate('human_resource.profile.end_date_certificate')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`add-end-date-${id}`}
                                     deleteValue={false}
@@ -205,16 +240,17 @@ class ContractAddModal extends Component {
                                 <ErrorLabel content={errorOnEndDate} />
                             </div>
                         </div>
+                        {/* File đính kèm */}
                         <div className="form-group">
-                            <label htmlFor="file">{translate('manage_employee.attached_files')}</label>
+                            <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
                             <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} />
                         </div>
-
                     </form>
                 </DialogModal>
             </React.Fragment>
         );
     }
 };
+
 const addModal = connect(null, null)(withTranslate(ContractAddModal));
 export { addModal as ContractAddModal };

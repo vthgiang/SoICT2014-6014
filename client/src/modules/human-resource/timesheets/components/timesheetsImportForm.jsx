@@ -22,12 +22,16 @@ class TimesheetsImportForm extends Component {
             page: 0
         };
     }
+
     componentDidUpdate() {
         const { timesheets } = this.props;
         timesheets.importStatus && window.$(`#modal_import_file`).modal("hide");
     }
 
-    // Function Thay đổi cấu hình file import
+    /**
+     * Function thay đổi cấu hình file import
+     * @param {*} value : Dữ liệu cấu hình file import
+     */
     handleChangeConfig = (value) => {
         this.setState({
             configData: value,
@@ -35,7 +39,10 @@ class TimesheetsImportForm extends Component {
         })
     }
 
-    // Function lấy danh sách các ngày trong tháng
+    /**
+     * Function lấy danh sách các ngày trong tháng
+     * @param {*} month : Tháng
+     */
     getAllDayOfMonth = (month) => {
         let partMonth = month.split('-');
         let lastDayOfmonth = new Date(partMonth[1], partMonth[0], 0);
@@ -50,15 +57,18 @@ class TimesheetsImportForm extends Component {
         return arrayDay
     }
 
-    // Bắt sự kiện thay đổi tháng
+    /**
+     * Bắt sự kiện thay đổi tháng
+     * @param {*} value : Tháng
+     */
     handleMonthChange = (value) => {
         const { timesheets } = this.props;
         let rowError = [], importData = [];
-        if (timesheets.error.rowError !== undefined) {
+        if (timesheets.error.rowError) {
             rowError = timesheets.error.rowError;
             importData = timesheets.error.data;
             importData = importData.map((x, index) => {
-                if (x.errorAlert.find(y => y === "month_timesheets_have_exist") !== undefined) {
+                if (x.errorAlert.find(y => y === "month_timesheets_have_exist")) {
                     x.errorAlert = x.errorAlert.filter(y => y !== "month_timesheets_have_exist");
                     x.error = false;
                     rowError = rowError.filter(y => y !== index + 1);
@@ -81,7 +91,11 @@ class TimesheetsImportForm extends Component {
         });
     }
 
-    // Function thay đổi file import
+    /**
+     * Function thay đổi file import
+     * @param {*} value : Dữ liệu import
+     * @param {*} checkFileImport : true file import hợp lệ, false file import không hợp lệ
+     */
     handleImportExcel = (value, checkFileImport) => {
         if (checkFileImport) {
             let importData = [], rowError = [];
@@ -102,13 +116,13 @@ class TimesheetsImportForm extends Component {
                     x = { ...x, error: true }
                 }
                 if (x.employeeNumber === null) {
-                    errorAlert = [...errorAlert, 'Mã nhân viên không được để trống'];
+                    errorAlert = [...errorAlert, 'employee_number_required'];
                 } else {
                     if (checkImportData.filter(y => y.employeeNumber === x.employeeNumber).length > 1)
-                        errorAlert = [...errorAlert, 'Mã nhân viên bị trùng lặp'];
+                        errorAlert = [...errorAlert, 'employee_code_duplicated'];
                 };
                 if (x.employeeName === null)
-                    errorAlert = [...errorAlert, 'Tên nhân viên không được để trống'];
+                    errorAlert = [...errorAlert, 'employee_name_required'];
 
                 x = { ...x, errorAlert: errorAlert }
                 return x;
@@ -125,25 +139,33 @@ class TimesheetsImportForm extends Component {
         }
     }
 
-    // Bắt sự kiện setting số dòng hiện thị trên một trang
+    /**
+     * Bắt sự kiện setting số dòng hiện thị trên một trang
+     * @param {*} number : Số dòng hiện thị 
+     */
     setLimit = async (number) => {
         await this.setState({
             limit: parseInt(number),
         });
     }
 
-    // Bắt sự kiện chuyển trang
+    /**
+     * Bắt sự kiện chuyển trang
+     * @param {*} pageNumber : Số trang muốn xem
+     */
     setPage = async (pageNumber) => {
-        var page = (pageNumber - 1) * (this.state.limit);
+        const { limit } = this.state;
+        let page = (pageNumber - 1) * (limit);
         await this.setState({
             page: parseInt(page),
         });
     }
 
+    /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form  */
     isFormValidated = () => {
         let { rowError, month, importData, changeMonth } = this.state;
         const { salary } = this.props;
-        if (salary.error.rowError !== undefined && changeMonth === false) {
+        if (salary.error.rowError && changeMonth === false) {
             rowError = salary.error.rowError;
             importData = salary.error.data
         }
@@ -152,6 +174,7 @@ class TimesheetsImportForm extends Component {
         } return false
     }
 
+    /** Function import dữ liệu */
     save = () => {
         let { importData, month } = this.state;
         let partMonth = month.split('-');
@@ -163,6 +186,12 @@ class TimesheetsImportForm extends Component {
         })
     }
 
+    /**
+     * Function downloadFile import mẫu
+     * @param {*} e 
+     * @param {*} path : Đường dẫn file
+     * @param {*} fileName : Tên file dùng để lưu
+     */
     requestDownloadFile = (e, path, fileName) => {
         e.preventDefault()
         this.props.downloadFile(path, fileName)
@@ -170,17 +199,25 @@ class TimesheetsImportForm extends Component {
 
     render() {
         const { translate, timesheets } = this.props;
+
         let { limit, page, importData, rowError, configData, changeMonth, month, allDayOfMonth, checkFileImport } = this.state;
 
-        if (timesheets.error.rowError !== undefined && changeMonth === false) {
+        if (timesheets.error.rowError && changeMonth === false) {
             rowError = timesheets.error.rowError;
             importData = timesheets.error.data
         }
 
-        var pageTotal = (importData.length % limit === 0) ?
+        importData = importData.map(x => {
+            return {
+                ...x,
+                errorAlert: x.errorAlert.map(y => translate(`human_resource.timesheets.${y}`))
+            }
+        })
+
+        let pageTotal = (importData.length % limit === 0) ?
             parseInt(importData.length / limit) :
             parseInt((importData.length / limit) + 1);
-        var currentPage = parseInt((page / limit) + 1);
+        let currentPage = parseInt((page / limit) + 1);
         let importDataCurrentPage = importData.slice(page, page + limit);
 
         return (
@@ -188,13 +225,14 @@ class TimesheetsImportForm extends Component {
                 <DialogModal
                     modalID={`modal_import_file`} isLoading={false}
                     formID={`form_import_file`}
-                    title='Thêm dữ liệu bằng việc Import file excel'
+                    title={translate('human_resource.add_data_by_excel')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                     closeOnSave={false}
                     size={75}
                 >
                     <form className="form-group" id={`form_import_file`}>
+                        {/* Cấu hình file import */}
                         <ConFigImportFile
                             id="import_timesheets_config"
                             configData={configData}
@@ -203,8 +241,9 @@ class TimesheetsImportForm extends Component {
                             handleChangeConfig={this.handleChangeConfig}
                         />
                         <div className="row">
+                            {/* Chọn file import */}
                             <div className="form-group col-md-4 col-xs-12">
-                                <label>Tháng</label>
+                                <label>{translate('human_resource.month')}</label>
                                 <DatePicker
                                     id="import_timesheets"
                                     dateFormat="month-year"
@@ -213,6 +252,7 @@ class TimesheetsImportForm extends Component {
                                     onChange={this.handleMonthChange}
                                 />
                             </div>
+                            {/* Hiện thị dữ liệu import */}
                             <div className="form-group col-md-4 col-xs-12">
                                 <ImportFileExcel
                                     configData={configData}
@@ -225,12 +265,12 @@ class TimesheetsImportForm extends Component {
                                 <a className='pull-right'
                                     style={{ cursor: "pointer" }}
                                     onClick={(e) => this.requestDownloadFile(e, `.${configData.file.fileUrl}`, configData.file.fileName)}>
-                                    <i className="fa fa-download"> &nbsp;Download file import mẫu!</i></a>
+                                    <i className="fa fa-download"> &nbsp;{translate('human_resource.download_file')}!</i></a>
                             </div>
 
                             <div className="form-group col-md-12 col-xs-12">
                                 {
-                                    !checkFileImport && <span style={{ fontWeight: "bold", color: "red" }}>File import không đúng định dạng </span>
+                                    !checkFileImport && <span style={{ fontWeight: "bold", color: "red" }}>{translate('human_resource.note_file_import')}</span>
                                 }
                                 {
                                     importDataCurrentPage.length !== 0 && (
@@ -243,16 +283,16 @@ class TimesheetsImportForm extends Component {
                                             />
                                             {rowError.length !== 0 && (
                                                 <React.Fragment>
-                                                    <span style={{ fontWeight: "bold", color: "red" }}>Có lỗi xảy ra ở các dòng: {rowError.join(', ')}</span>
+                                                    <span style={{ fontWeight: "bold", color: "red" }}>{translate('human_resource.error_row')}:{rowError.join(', ')}</span>
                                                 </React.Fragment>
                                             )}
                                             <div id="croll-table-import">
                                                 <table id="importData" className="table table-striped table-bordered table-hover">
                                                     <thead>
                                                         <tr>
-                                                            <th>STT</th>
-                                                            <th className="col-fixed" style={{ width: 120 }}>Mã số nhân viên</th>
-                                                            <th className="col-fixed" style={{ width: 120 }}>Tên nhân viên</th>
+                                                            <th>{translate('human_resource.stt')}</th>
+                                                            <th className="col-fixed" style={{ width: 120 }}>{translate('human_resource.staff_number')}</th>
+                                                            <th className="col-fixed" style={{ width: 120 }}>{translate('human_resource.staff_name')}</th>
                                                             {allDayOfMonth.map((x, index) => (
                                                                 <th key={index}>{x.day}&nbsp; {x.date}</th>
                                                             ))}

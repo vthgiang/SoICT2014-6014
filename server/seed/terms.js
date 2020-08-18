@@ -294,6 +294,14 @@ const LINKS = [
         ]
     },
     {
+        url: '/kpi-units/statistic',
+        description: 'Thống kê KPI đơn vị',
+        category: LINK_CATEGORY.KPI.name,
+        roles: [
+            ROOT_ROLES.DEAN.name,
+        ]
+    },
+    {
         url: '/kpi-member/manager',
         description: 'Quản lí kpi nhân viên',
         category: LINK_CATEGORY.KPI.name,

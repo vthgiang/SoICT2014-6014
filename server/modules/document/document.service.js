@@ -1,4 +1,4 @@
-const { DocumentCategory, DocumentDomain, DocumentArchive, Role, User, UserRole } = require('../../models').schema;
+const { DocumentCategory, DocumentDomain, DocumentArchive, Role, User, UserRole, OrganizationalUnit } = require('../../models').schema;
 const arrayToTree = require('array-to-tree');
 const fs = require('fs');
 const ObjectId = require('mongoose').Types.ObjectId;
@@ -8,6 +8,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
  * @company id của công ty
  */
 exports.getDocuments = async (company, query) => {
+    console.log('ttt', query);
     var page = query.page;
     var limit = query.limit;
 
@@ -18,11 +19,18 @@ exports.getDocuments = async (company, query) => {
             { path: 'domains', model: DocumentDomain },
             { path: 'views.viewer', model: User, select: 'name id' },
             { path: "downloads.downloader", model: User, select: 'name id' },
+            { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
         ]);
     } else {
-        const option = (query.key !== undefined && query.value !== undefined)
-            ? Object.assign({ company }, { [`${query.key}`]: new RegExp(query.value, "i") })
-            : { company };
+        let option = {
+            company: company,
+        };
+        // const option = (query.key !== undefined && query.value !== undefined)
+        //     ? Object.assign({ company }, { [`${query.key}`]: new RegExp(query.value, "i") })
+        //     : { company };
+        if (query.category) option.category = query.category;
+        if (query.domains) option.domains = query.domains;
+        if (query.archives) option.archives = query.archives
         console.log("option: ", option);
         return await Document.paginate(option, {
             page,
@@ -30,8 +38,10 @@ exports.getDocuments = async (company, query) => {
             populate: [
                 { path: 'category', model: DocumentCategory },
                 { path: 'domains', model: DocumentDomain },
+                { path: 'archives', model: DocumentArchive },
                 { path: 'views.viewer', model: User, select: 'name id' },
                 { path: "downloads.downloader", model: User, select: 'name id' },
+                { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
             ]
         });
     }
@@ -43,7 +53,7 @@ exports.getDocuments = async (company, query) => {
 exports.showDocument = async (id, viewer) => {
     const doc = await Document.findById(id).populate([
         { path: 'category', model: DocumentCategory },
-        { path: 'domains', model: DocumentDomain },
+        { path: 'archives', model: DocumentArchive },
 
     ]);
     doc.numberOfView += 1;
@@ -95,10 +105,12 @@ exports.increaseNumberView = async (id, viewer) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (company, data) => {
+    console.log(data);
     const newDoc = {
         company,
         name: data.name,
         domains: data.domains,
+        archives: data.archives,
         category: data.category,
         description: data.description,
         issuingBody: data.issuingBody,
@@ -124,6 +136,7 @@ exports.createDocument = async (company, data) => {
     return await Document.findById(doc._id).populate([
         { path: 'category', model: DocumentCategory },
         { path: 'domains', model: DocumentDomain },
+        { path: 'archives', model: DocumentArchive },
     ]);
 }
 
@@ -131,6 +144,8 @@ exports.createDocument = async (company, data) => {
  * Chỉnh sửa thông tin tài liệu văn bản
  */
 exports.editDocument = async (id, data, query = undefined) => {
+    console.log('data', data);
+    console.log('querry', query);
     if (query !== undefined && Object.keys(query).length > 0) {
 
         const doc = await Document.findById(id);
@@ -154,6 +169,7 @@ exports.editDocument = async (id, data, query = undefined) => {
         const doc = await Document.findById(id);
         doc.name = data.name
         doc.domains = data.domains
+        doc.archives = data.archives
         doc.category = data.category
         doc.description = data.description
         doc.issuingBody = data.issuingBody
@@ -165,10 +181,12 @@ exports.editDocument = async (id, data, query = undefined) => {
 
         doc.roles = data.roles
 
-        if (data.archivedRecordPlaceInfo !== 'undefined' && data.archivedRecordPlaceInfo !== undefined)
-            doc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo
-        if (data.archivedRecordPlaceOrganizationalUnit !== 'undefined' && data.archivedRecordPlaceOrganizationalUnit !== undefined)
+        // if (data.archivedRecordPlaceInfo !== 'undefined' && data.archivedRecordPlaceInfo !== undefined)
+        //     doc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo
+        if (data.archivedRecordPlaceOrganizationalUnit !== 'undefined' && data.archivedRecordPlaceOrganizationalUnit !== undefined && data.archivedRecordPlaceOrganizationalUnit !== "[object Object]") {
+            console.log(data.archivedRecordPlaceOrganizationalUnit)
             doc.archivedRecordPlaceOrganizationalUnit = data.archivedRecordPlaceOrganizationalUnit
+        }
         if (data.archivedRecordPlaceManager !== 'undefined' && data.archivedRecordPlaceManager !== undefined)
             doc.archivedRecordPlaceManager = data.archivedRecordPlaceManager
 
@@ -325,9 +343,11 @@ exports.getDocumentsThatRoleCanView = async (company, query) => {
         }).populate([
             { path: 'category', model: DocumentCategory },
             { path: 'domains', model: DocumentDomain },
+            { path: 'archives', model: DocumentArchive },
             { path: 'relationshipDocuments', model: Document },
             { path: 'views.viewer', model: User, select: 'name id' },
             { path: "downloads.downloader", model: User, select: 'name id' },
+            { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
         ]);
     } else {
         const option = (query.key !== undefined && query.value !== undefined)
@@ -340,9 +360,11 @@ exports.getDocumentsThatRoleCanView = async (company, query) => {
             populate: [
                 { path: 'category', model: DocumentCategory },
                 { path: 'domains', model: DocumentDomain },
+                { path: 'archives', model: DocumentArchive },
                 { path: 'relationshipDocuments', model: Document },
                 { path: 'views.viewer', model: User, select: 'name id' },
                 { path: "downloads.downloader", model: User, select: 'name id' },
+                { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
             ]
         });
     }
@@ -358,6 +380,7 @@ exports.getDocumentsUserStatistical = async (userId, query) => {
             return await Document.find({ "downloads.downloader": userId }).populate([
                 { path: 'category', model: DocumentCategory },
                 { path: 'domains', model: DocumentDomain },
+                { path: 'archives', model: DocumentArchive },
             ]).limit(10);
         case 'common': //những tài liệu phổ biến - được xem và tải nhiều nhất gần đây
             return await Document.find({
@@ -365,6 +388,7 @@ exports.getDocumentsUserStatistical = async (userId, query) => {
             }).populate([
                 { path: 'category', model: DocumentCategory },
                 { path: 'domains', model: DocumentDomain },
+                { path: 'archives', model: DocumentArchive },
             ]).sort({ numberOfView: -1 }).limit(10);
         case 'latest': //những tài liệu văn bản mà người dùng chưa xem qua lần nào
             return await Document.find({
@@ -373,6 +397,7 @@ exports.getDocumentsUserStatistical = async (userId, query) => {
             }).populate([
                 { path: 'category', model: DocumentCategory },
                 { path: 'domains', model: DocumentDomain },
+                { path: 'archives', model: DocumentArchive },
             ]);
         default:
             return null;
@@ -432,9 +457,10 @@ exports.createDocumentArchive = async (company, data) => {
         name: data.name,
         description: data.description,
     }
-    if (data.parent.length) {
-        query.parent = data.parent
+    if (data.parent && data.parent.length) {
+        query.parent = data.parent;
     }
+    query.path = await findPath(data);
     await DocumentArchive.create(query);
     return await this.getDocumentArchives(company);
 }
@@ -455,10 +481,33 @@ exports.deleteManyDocumentArchive = async (array, company) => {
 
 exports.editDocumentArchive = async (id, data) => {
     const archive = await DocumentArchive.findById(id);
-    archive.name = data.name,
-        archive.description = data.description;
+    archive.name = data.name;
+    archive.description = data.description;
     archive.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
+    archive.path = await findPath(data)
     await archive.save();
 
     return archive;
+}
+
+async function findPath(data) {
+    console.log('name', data.name)
+    let path = "";
+    if (data.parent && data.parent.length) {
+        let arrayParent = [];
+        let parent = data.parent;
+        while (parent) {
+            let tmp = await DocumentArchive.findById(parent);
+            arrayParent.push(tmp.name);
+            parent = tmp.parent;
+        }
+
+        while (arrayParent && arrayParent.length) {
+            let tmp = arrayParent.pop();
+            path = path + `${tmp} - `;
+        }
+    }
+    path = path + data.name;
+    console.log('pathhh', path)
+    return path;
 }
