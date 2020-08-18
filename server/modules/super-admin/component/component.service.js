@@ -1,4 +1,4 @@
-const { Privilege, Role, Link, Component } = require('../../../models').schema;
+const { Privilege, Role, Link, Component } = require(SERVER_MODELS_DIR).schema;
 
 /**
  * Lấy danh sách các component của công ty
@@ -147,4 +147,12 @@ exports.relationshipComponentRole = async(componentId, roleArr) => {
     let privilege = await Privilege.insertMany(data);
 
     return privilege;
+}
+
+exports.updateCompanyComponents = async (data) => {
+    for (let i = 0; i < data.length; i++) {
+        await Component.updateOne({_id: data[i]._id}, {deleteSoft: data[i].deleteSoft});
+    }
+
+    return true;
 }

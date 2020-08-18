@@ -1,6 +1,6 @@
 const ComponentService = require('./component.service');
 const LinkServices = require('../link/link.service');
-const { LogInfo, LogError } = require('../../../logs');
+const { LogInfo, LogError } = require(SERVER_LOGS_DIR);
 
 /**
  * Chú ý: tất cả các phương thức đều xét trong ngữ cảnh một công ty
@@ -117,6 +117,27 @@ exports.deleteComponent = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error)? error: ['delete_component_faile'],
+            content: error
+        });
+    }
+};
+
+exports.updateCompanyComponents = async (req, res) => {
+    try {
+        let data = req.body;
+        let content = await ComponentService.updateCompanyComponents(data);
+
+        await LogInfo(req.user.email, 'UPDATE_COMPANY_COMPONENTS');
+        res.status(200).json({
+            success: true,
+            messages: ['update_company_components_success'],
+            content
+        });
+    } catch (error) {
+        await LogInfo(req.user.email, 'UPDATE_COMPANY_COMPONENTS');
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['update_company_components_faile'],
             content: error
         });
     }

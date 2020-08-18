@@ -158,7 +158,7 @@ class CompanyManageComponent extends Component {
         console.log("state", this.state)
         return ( 
             <div style={{padding: '10px 0px 10px 0px'}}>
-                <a className="btn btn-success pull-right" onClick={this.showCreateComponentForm}>Thêm</a>
+                <a className="btn btn-success pull-right" onClick={this.updateCompanyComponents}>Cập nhật</a>
                 <SearchBar 
                     columns={[
                         { title: translate('manage_component.name'), value: 'name' },
@@ -207,23 +207,6 @@ class CompanyManageComponent extends Component {
                                 <tr><td colSpan='4'>{translate('confirm.no_data')}</td></tr>
                             )
                         }
-                        {/* {
-                            company.item.components.listPaginate.length > 0 ? 
-                            company.item.components.listPaginate.map(component => 
-                                <tr key={component._id}>
-                                    <td>{ component.name }</td>
-                                    <td>{ component.link ? component.link.url : null}</td>
-                                    <td>{ component.description }</td>
-                                    <td>
-                                        <a className="delete" onClick={() => this.deleteCompanyComponent(companyId, component._id)}><i className="material-icons">delete</i></a>
-                                    </td>
-                                </tr> 
-                            ) : (
-                                company.item.components.isLoading ?
-                                <tr><td colSpan='4'>{translate('confirm.loading')}</td></tr>:
-                                <tr><td colSpan='4'>{translate('confirm.no_data')}</td></tr>
-                            )
-                        } */}
                     </tbody>
                 </table>
 

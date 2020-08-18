@@ -10,6 +10,7 @@ export const CompanyServices = {
     updateCompanyLinks,
 
     getCompanyComponents,
+    updateCompanyComponents,
 
     getImportConfiguration,
     createImportConfiguration,
@@ -63,6 +64,15 @@ function updateCompanyLinks(data) {
 
     return sendRequest({
         url: `${LOCAL_SERVER_API}/link/links/company/update`,
+        method: 'PATCH',
+        data
+    }, true, true, 'system_admin.company');
+}
+
+function updateCompanyComponents(data) {
+
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/component/components/company/update`,
         method: 'PATCH',
         data
     }, true, true, 'system_admin.company');
