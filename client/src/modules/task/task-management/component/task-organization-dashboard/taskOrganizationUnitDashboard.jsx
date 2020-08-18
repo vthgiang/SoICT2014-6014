@@ -88,7 +88,6 @@ class TaskOrganizationUnitDashboard extends Component {
                     idsUnit: idsUnit,
                 }
             });
-            console.log('goji den 91');
             await this.props.getAllEmployeeOfUnitByIds(this.state.idsUnit);
             data = {
                 organizationUnitId: this.state.idsUnit,
@@ -280,24 +279,7 @@ class TaskOrganizationUnitDashboard extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col-xs-12">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.distribution_Of_Employee')}</div>
-                            </div>
-                            <div className="box-body qlcv">
-                                {this.state.callAction && tasks && tasks.organizationUnitTasks &&
-                                    <DistributionOfEmployee
-                                        tasks={tasks.organizationUnitTasks}
-                                        listEmployee={user.employees}
-                                        units={idsUnit}
-                                    />
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
                 <div className="row">
                     <div className="col-xs-6">
                         <div className="box box-primary">
@@ -356,6 +338,24 @@ class TaskOrganizationUnitDashboard extends Component {
                         </div>
                     </div>
 
+                </div>
+                <div className="row">
+                    <div className="col-xs-12">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">{translate('task.task_management.distribution_Of_Employee')}</div>
+                            </div>
+                            <div className="box-body qlcv">
+                                {this.state.callAction && tasks && tasks.organizationUnitTasks &&
+                                    <DistributionOfEmployee
+                                        tasks={tasks.organizationUnitTasks}
+                                        listEmployee={user.employees}
+                                        units={idsUnit}
+                                    />
+                                }
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div className="row">
                     <div className="col-xs-12">

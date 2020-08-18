@@ -352,6 +352,7 @@ const sampleCompanyData = async () => {
     let links = Terms.LINKS;
     for (let i = 0; i < links.length; ++i) {
         links[i].company = vnist._id;
+        links[i].deleteSoft = false;
     }
     let convertRoleNameToRoleId = (roleName) => { // Tạo nhanh hàm tiện ích chuyển đổi tên role thành id role
         if (roleName === Terms.ROOT_ROLES.SUPER_ADMIN.name) {
@@ -375,6 +376,7 @@ const sampleCompanyData = async () => {
             components = components.map(component => { // Liên kết với role
                 component.roles = component.roles.map(role => convertRoleNameToRoleId(role));
                 component.company = vnist._id;
+                component.deleteSoft = false;
                 return component;
             })
 

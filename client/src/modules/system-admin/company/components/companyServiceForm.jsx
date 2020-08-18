@@ -181,10 +181,7 @@ class CompanyServicesForm extends Component {
 
     render() { 
         const { translate, systemLinks, systemComponents, company } = this.props;
-        const {
-            // Phần edit nội dung của công ty
-            companyId,
-        } = this.state;
+        const {companyId} = this.state;
 
         return ( 
             <React.Fragment>
@@ -201,7 +198,7 @@ class CompanyServicesForm extends Component {
                         {/* Nav tabs */}
                         <ul className="nav nav-tabs" role="tablist">
                             <li role="presentation" className="active">
-                            <a href="#company_manage_link" aria-controls="home" role="tab" data-toggle="tab"><b>Links</b>{`(${company.item.links.list.length}/${systemLinks.list.length})`}</a>
+                            <a href="#company_manage_link" aria-controls="home" role="tab" data-toggle="tab"><b>Links</b>{`(${company.item.links.list.filter(link=>link.deleteSoft === false).length}/${systemLinks.list.length})`}</a>
                             </li>
                             <li role="presentation">
                             <a href="#company_manage_component" aria-controls="tab" role="tab" data-toggle="tab"><b>Component</b>{`(${company.item.components.list.length}/${systemComponents.list.length})`}</a>

@@ -38,18 +38,18 @@ class ModalEditTaskProcess extends Component {
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
             showInfo: false,
-            info: data.infoTask,
+            info: data.tasks, // TODO: đổi tên -> taskList
             xmlDiagram: data.xmlDiagram,
             selectedEdit: 'info',
             zlevel: 1,
         }
         this.modeler = new BpmnModeler({
             additionalModules: [
-               customModule,
-               // { moveCanvas: [ 'value', null ] },
-               { zoomScroll: ['value', ''] }
+                customModule,
+                // { moveCanvas: [ 'value', null ] },
+                { zoomScroll: ['value', ''] }
             ],
-         });
+        });
         this.modeling = this.modeler.get('modeling')
         this.generateId = 'editprocess';
         this.initialDiagram = data.xmlDiagram;
@@ -70,7 +70,7 @@ class ModalEditTaskProcess extends Component {
 
         this.modeler.attachTo('#' + this.generateId);
 
-        
+
         var eventBus = this.modeler.get('eventBus');
 
         //Vo hieu hoa double click edit label
@@ -89,9 +89,9 @@ class ModalEditTaskProcess extends Component {
         ], 250, (e) => {
             this.modeler.get('directEditing').cancel()
         });
-        
+
         this.modeler.on('element.click', 1000, (e) => this.interactPopup(e));
-        
+
         this.modeler.on('shape.remove', 1000, (e) => this.deleteElements(e));
 
         this.modeler.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
@@ -102,7 +102,7 @@ class ModalEditTaskProcess extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.idProcess !== prevState.idProcess) {
             let info = {};
-            let infoTask = nextProps.data.infoTask;
+            let infoTask = nextProps.data.tasks; // TODO TaskList
 
             for (let i in infoTask) {
                 if (!infoTask[i].organizationalUnit) {
@@ -233,7 +233,7 @@ class ModalEditTaskProcess extends Component {
         modeling.updateProperties(element1, {
             accountableName: accountable
         });
-        
+
     }
 
     handleChangeOrganizationalUnit = async (value) => {
@@ -292,8 +292,8 @@ class ModalEditTaskProcess extends Component {
         var element = event.element;
         let nameStr = element.type.split(':');
         this.setState(state => {
-            if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' ||
-                element.type === "bpmn:SequenceFlow" || element.type === "bpmn:IntermediateThrowEvent"
+            if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' 
+                // || element.type === "bpmn:SequenceFlow" || element.type === "bpmn:IntermediateThrowEvent"
                 // || element.type === 'bpmn:EndEvent' || element.type === "bpmn:StartEvent" 
             ) {
                 if (!state.info[`${element.businessObject.id}`] ||
@@ -342,31 +342,64 @@ class ModalEditTaskProcess extends Component {
     }
 
     save = async () => {
+        let elementList = this.modeler.get('elementRegistry')._elements;
+        let { info } = this.state;
         let xmlStr;
         this.modeler.saveXML({ format: true }, function (err, xml) {
-            
+
             xmlStr = xml;
         });
         await this.setState(state => {
+            for (let j in info) {
+                if (Object.keys(info[j]).length !== 0) {
+                    info[j].followingTasks = [];
+                    info[j].preceedingTasks = [];
+
+                    for (let i in elementList) {
+                        let elem = elementList[i].element;
+                        if (info[j].code === elem.id) {
+                            if (elem.businessObject.incoming) {
+                                let incoming = elem.businessObject.incoming;
+                                for (let x in incoming) {
+                                    info[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
+                                        task: incoming[x].sourceRef.id,
+                                        link: incoming[x].name,
+                                    })
+                                }
+                            }
+                            if (elem.businessObject.outgoing) {
+                                let outgoing = elem.businessObject.outgoing;
+                                for (let y in outgoing) {
+                                    info[j].followingTasks.push({ // các công việc sau công việc hiện tại
+                                        task: outgoing[y].targetRef.id,
+                                        link: outgoing[y].name,
+                                    })
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             return {
                 ...state,
                 xmlDiagram: xmlStr,
             }
         })
 
+        console.log('info-edit', info);
         let data = {
-           info: this.state.info,
-           xmlDiagram: this.state.xmlDiagram,
-           processName: this.state.processName,
-           processDescription: this.state.processDescription,
-           manager: this.state.manager,
-           viewer: this.state.viewer,
-           creator: getStorage("userId"),
-           
-           userId: getStorage("userId"),
-           pageNumber: this.props.pageNumber,
-           noResultsPerPage: this.props.noResultsPerPage,
-           name: this.props.name,
+            info: this.state.info,
+            xmlDiagram: this.state.xmlDiagram,
+            processName: this.state.processName,
+            processDescription: this.state.processDescription,
+            manager: this.state.manager,
+            viewer: this.state.viewer,
+            creator: getStorage("userId"),
+
+            userId: getStorage("userId"),
+            pageNumber: this.props.pageNumber,
+            noResultsPerPage: this.props.noResultsPerPage,
+            name: this.props.name,
         }
         this.props.editXmlDiagram(this.state.idProcess, data)
     }
@@ -550,7 +583,7 @@ class ModalEditTaskProcess extends Component {
         let info = {
             ...value,
             code: this.state.id
-            
+
         }
         this.setState(
             state => {

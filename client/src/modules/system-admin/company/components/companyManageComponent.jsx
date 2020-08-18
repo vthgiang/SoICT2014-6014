@@ -100,39 +100,44 @@ class CompanyManageComponent extends Component {
     }
 
     searchWithOption = async () => {
-        const data = {
+        const {companyId} = this.state;
+        const params = {
+            company: companyId,
             limit: this.state.limit,
             page: 1,
             key: this.state.option,
             value: this.state.value
         };
 
-        await this.props.getCompanyComponents(this.state.companyId, data);
+        await this.props.getCompanyComponents(params);
     }
 
     setPage = (page) => {
         this.setState({ page });
-        const data = {
+        const {companyId} = this.state;
+        const params = {
+            company: companyId,
             limit: this.state.limit,
             page: page,
             key: this.state.option,
             value: this.state.value
         };
 
-        this.props.getCompanyComponents(this.state.companyId, data);
+        this.props.getCompanyComponents(params);
     }
 
     setLimit = (number) => {
         this.setState({ limit: number });
-
-        const data = { 
+        const {companyId} = this.state;
+        const params = { 
+            company: companyId,
             limit: number, 
             page: this.state.page,
             key: this.state.option,
             value: this.state.value
         };
 
-        this.props.getCompanyComponents(this.state.companyId, data);
+        this.props.getCompanyComponents(params);
     }
 
     render() { 
