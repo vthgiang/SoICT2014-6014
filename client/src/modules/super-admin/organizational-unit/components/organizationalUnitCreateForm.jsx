@@ -75,9 +75,6 @@ class DepartmentCreateForm extends Component {
 
         return (
             <React.Fragment>
-                {/* Button thêm đơn vị mới */}
-                <ButtonModal modalID="modal-create-department" button_name={translate('manage_department.add')} title={translate('manage_department.add_title')} />
-
                 <DialogModal
                     isLoading={department.isLoading}
                     modalID="modal-create-department"

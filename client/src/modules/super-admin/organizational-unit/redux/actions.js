@@ -11,6 +11,7 @@ export const DepartmentActions = {
     create,
     edit,
     destroy,
+    importDepartment,
 }
 
 /**
@@ -136,4 +137,8 @@ function destroy(departmentId) {
                 });
             })
     }
+}
+
+function importDepartment(importData) {
+    
 }
