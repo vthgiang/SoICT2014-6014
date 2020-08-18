@@ -339,7 +339,6 @@ class ModalCreateTaskByProcess extends Component {
         this.setState(state => {
             if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' ||
                 element.type === "bpmn:SequenceFlow" || element.type === "bpmn:ServiceTask"
-                // || element.type === 'bpmn:EndEvent' || element.type === "bpmn:StartEvent" 
             ) {
                 if (!state.info[`${element.businessObject.id}`] ||
                     (state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
@@ -594,7 +593,7 @@ class ModalCreateTaskByProcess extends Component {
                             </div>
                         </div>
                         {/* Ngày bắt đầu và kết thúc của cả quy trình */}
-                        <div className="row form-group col-md-4">
+                        <div className="row form-group col-md-4" >
                             <div>
                                 <h3 style={{marginLeft: "10px"}}>Thông tin thời gian quy trình</h3>
                             </div>
@@ -615,8 +614,9 @@ class ModalCreateTaskByProcess extends Component {
                                     value={endDate}
                                     onChange={this.handleChangeTaskEndDate}
                                 />
-                            </div>
+                            </div>  
                         </div>
+                        
                         <div className={`right-content-create col-md-4`}>
                             {/* style={{ display: "flex", flexDirection: "column" }} */}
                             {
@@ -625,25 +625,6 @@ class ModalCreateTaskByProcess extends Component {
                                     <div>
                                         <h3>Tạo công việc với mẫu {taskName}</h3>
                                     </div>
-                                    {/* <FormInfoTask
-                                            listOrganizationalUnit={listOrganizationalUnit}
-                                            action='create-task'
-                                            id={id}
-                                            listUser={listUser}
-                                            info={(info && info[`${id}`]) && info[`${id}`]}
-                                            task={info?.[`${id}`]}
-                                            handleChangeName={this.handleChangeName}
-                                            handleChangeDescription={this.handleChangeDescription}
-                                            handleChangeResponsible={this.handleChangeResponsible}
-                                            handleChangeAccountable={this.handleChangeAccountable}
-                                            handleChangeOrganizationalUnit={this.handleChangeOrganizationalUnit}
-                                            handleChangeTemplate={this.handleChangeTemplate}
-                                            handleChangeTaskPriority={this.handleChangeTaskPriority}
-                                            handleChangeTaskStartDate={this.handleChangeTaskStartDate}
-                                            handleChangeTaskEndDate={this.handleChangeTaskEndDate}
-
-                                            save={this.save}
-                                        /> */}
                                     <FormCreateTaskByProcess
                                         isProcess={true}
                                         id={id}
