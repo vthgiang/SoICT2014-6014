@@ -17,6 +17,7 @@ export const CompanyActions = {
     editImportConfiguration,
 
     updateCompanyLinks,
+    updateCompanyComponents,
 };
 
 /**
@@ -397,6 +398,27 @@ function updateCompanyLinks(data) {
             .catch(error => {
                 dispatch({ 
                     type: CompanyConstants.UPDATE_COMPANY_LINKS_FAILE,
+                    payload: error
+                });
+            })
+        
+    }
+}
+
+function updateCompanyComponents(data) {
+    return dispatch => {
+        dispatch({ type: CompanyConstants.UPDATE_COMPANY_COMPONENTS_REQUEST });
+
+        CompanyServices.updateCompanyComponents(data)
+            .then(res => {
+                dispatch({
+                    type: CompanyConstants.UPDATE_COMPANY_COMPONENTS_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({ 
+                    type: CompanyConstants.UPDATE_COMPANY_COMPONENTS_FAILE,
                     payload: error
                 });
             })
