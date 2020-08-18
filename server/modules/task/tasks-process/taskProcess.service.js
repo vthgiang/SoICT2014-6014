@@ -95,14 +95,14 @@ exports.createXmlDiagram = async (body) => {
     let info = [];
     for (const x in body.info) {
         if (Object.keys(body.info[x]).length > 4) {
-            body.info[x].taskActions = body.info[x].taskActions.map(item => {
+            body.info[x].taskActions = (body.info[x].taskActions) ? body.info[x].taskActions.map(item => {
                 return {
                     name: item.name,
                     description: item.description,
                     mandatory: item.mandatory,
                 }
-            }),
-            body.info[x].taskInformations = body.info[x].taskInformations.map((item, key) => {
+            }) : [];
+            body.info[x].taskInformations = (body.info[x].taskInformations) ? body.info[x].taskInformations.map((item, key) => {
                 return {
                     code: "p" + parseInt(key + 1),
                     name: item.name,
@@ -111,7 +111,7 @@ exports.createXmlDiagram = async (body) => {
                     type: item.type,
                     extra: item.extra,
                 }
-            })
+            }) : [];
 
             info.push(body.info[x])
         }
@@ -123,7 +123,7 @@ exports.createXmlDiagram = async (body) => {
         processDescription: body.processDescription,
         manager: body.manager,
         viewer: body.viewer,
-        infoTask: info,
+        taskList: info,
         creator: body.creator,
     })
 
@@ -186,23 +186,23 @@ exports.editXmlDiagram = async (params, body) => {
     for (let x in body.info) {
         console.log(body.info[x]);
         if (Object.keys(body.info[x]).length > 4) {
-            body.info[x].taskActions = body.info[x].taskActions.map(item => {
+            body.info[x].taskActions = (body.info[x].taskActions) ? body.info[x].taskActions.map(item => {
                 return {
                     name: item.name,
                     description: item.description,
                     mandatory: item.mandatory,
                 }
-            }),
-                body.info[x].taskInformations = body.info[x].taskInformations.map((item, key) => {
-                    return {
-                        code: "p" + parseInt(key + 1),
-                        name: item.name,
-                        description: item.description,
-                        filledByAccountableEmployeesOnly: item.filledByAccountableEmployeesOnly,
-                        type: item.type,
-                        extra: item.extra,
-                    }
-                })
+            }) : [];
+            body.info[x].taskInformations = (body.info[x].taskInformations) ? body.info[x].taskInformations.map((item, key) => {
+                return {
+                    code: "p" + parseInt(key + 1),
+                    name: item.name,
+                    description: item.description,
+                    filledByAccountableEmployeesOnly: item.filledByAccountableEmployeesOnly,
+                    type: item.type,
+                    extra: item.extra,
+                }
+            }) : [];
 
             info.push(body.info[x])
         }
@@ -211,7 +211,7 @@ exports.editXmlDiagram = async (params, body) => {
         {
             $set: {
                 xmlDiagram: body.xmlDiagram,
-                infoTask: info,
+                taskList: info,
                 processDescription: body.processDescription,
                 processName: body.processName,
                 creator: body.creator,

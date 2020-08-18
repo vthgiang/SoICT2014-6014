@@ -28,7 +28,7 @@ const TaskProcessSchema = new Schema({
         required: true,
         ref: User,
     },
-    infoTask: [{
+    taskList: [{
         code: {
             type: String,
         },

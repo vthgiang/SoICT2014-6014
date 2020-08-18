@@ -22,7 +22,7 @@ class ModalViewTaskProcess extends Component {
             currentRole: getStorage('currentRole'),
             showInfo: false,
             selectedView: 'info',
-            info: data.infoTask,
+            info: data.taskList, // TODO đổi thành taskList
             xmlDiagram: data.xmlDiagram,
         }
         this.viewer = new BpmnViewer({
@@ -36,7 +36,7 @@ class ModalViewTaskProcess extends Component {
 
     interactPopup = async (event) => {
         let element = event.element;
-        let { infoTask } = this.props
+
         this.setState(state => {
             return {
                 ...state,
@@ -47,7 +47,7 @@ class ModalViewTaskProcess extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.idProcess !== prevState.idProcess) {
             let info = {};
-            let infoTask = nextProps.data.infoTask;
+            let infoTask = nextProps.data.taskList; // TODO task list
             for (let i in infoTask) {
                 info[`${infoTask[i].code}`] = infoTask[i];
             }
@@ -257,7 +257,7 @@ class ModalViewTaskProcess extends Component {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className={showInfo ? 'col-md-4' : undefined}>
+                                        <div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
                                             {
                                                 (showInfo) &&
                                                 <div>
