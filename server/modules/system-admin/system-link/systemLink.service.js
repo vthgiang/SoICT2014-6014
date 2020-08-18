@@ -124,7 +124,9 @@ exports.deleteSystemLink = async (systemLinkId) => {
         resourceType: 'Link',
         resourceId: { $in: priDel }
     });
-    await Link.deleteMany({url: link.url});
+    console.log("url", link.url)
+    const deleteLink = await Link.deleteMany({url: systemLink.url});
+    console.log("fdfsdf", deleteLink)
 
     // 2. Xóa system link 
     return await SystemLink.deleteOne({ _id: systemLinkId });
