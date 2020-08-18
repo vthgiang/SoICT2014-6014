@@ -257,13 +257,13 @@ class ModalViewTaskProcess extends Component {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className={showInfo ? 'col-md-4' : undefined}>
+                                        <div className={`right-content ${showInfo ? 'col-md-4' : undefined}`}>
                                             {
                                                 (showInfo) &&
                                                 <div>
                                                     <div>
                                                         <h1>Option {name}</h1>
-                                                    </div>
+                                                    </div> 
                                                     <ViewTaskTemplate
                                                         isProcess={true}
                                                         taskTemplate={info?.[`${id}`]}

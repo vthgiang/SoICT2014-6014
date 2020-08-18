@@ -531,7 +531,7 @@ class AddTaskTemplate extends Component {
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 items={allUnitsMember}
-                                                value={newTemplate.consultedEmployees}
+                                                value={newTemplate?.consultedEmployees}
                                                 onChange={this.handleTaskTemplateConsult}
                                                 multiple={true}
                                                 options={{ placeholder: `${translate('task_template.supporter')}` }}

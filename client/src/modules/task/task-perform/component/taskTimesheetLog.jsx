@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import moment from 'moment';
-import { DialogModal } from '../../../../common-components';
+import { DatePicker } from '../../../../common-components';
 import { getStorage } from "../../../../config";
 
 import { CallApiStatus } from '../../../auth/redux/reducers'
@@ -26,8 +26,14 @@ class TaskTimesheetLog extends Component {
         }
     }
 
-
+    componentDidUpdate = () => {
+        //Timepicker
+        window.$('#timepicker').timepicker({
+            showInputs: false
+        })
+    }
     componentDidMount = () => {
+        
         this.callApi();
     }
 
@@ -95,7 +101,12 @@ class TaskTimesheetLog extends Component {
             }
         });
     }
-
+    handleDateChange = async (value) => {
+        console.log(value)
+    }
+    abc = (value) => {
+        console.log(value)
+    }
     render() {
 
         const { translate, performtasks, auth } = this.props;
@@ -115,8 +126,28 @@ class TaskTimesheetLog extends Component {
                                 </span>
                                 <span>&nbsp; {moment.utc(a).format('HH:mm:ss')}</span>
                             </div>
+
                             {this.state.showModal === auth.user.id &&
                                 <React.Fragment>
+                                    {a > 20000 &&
+                                    <React.Fragment>
+                                        <DatePicker
+                                            id={"Thanh-dep-trai"}
+                                            onChange={this.handleDateChange}
+                                        />
+                                        <div className="bootstrap-timepicker">
+                                            <div className="form-group">
+                                            <label>Time picker:</label>
+                                            <div className="input-group">
+                                                <input type="text" id= "timepicker" className="form-control timepicker" onChange= {this.abc}  />
+                                                <div className="input-group-addon">
+                                                <i className="fa fa-clock-o"></i>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </div>
+                                    </React.Fragment>    
+                                    }
                                     <br />
                                     <label>Mô tả công việc đã làm (*)</label>
                                     <TextareaAutosize
