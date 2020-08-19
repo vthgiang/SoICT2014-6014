@@ -227,6 +227,7 @@ class Table extends Component {
         if ( isLoading === false ){
             list = docs.list;
         }
+        let exportData = this.convertDataToExportData(list);
         return (
             <div className="qlcv">
                 <CreateForm />
