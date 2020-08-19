@@ -113,6 +113,25 @@ export function department(state = initState, action) {
                 isLoading: false
             };
 
+        case DepartmentConstants.IMPORT_DEPARTMENT_REQUEST:
+            return{
+                ...state,
+                isLoading: true
+            };
+
+        case DepartmentConstants.IMPORT_DEPARTMENT_SUCCESS:
+            return{
+                ...state,
+                isLoading: false,
+            };
+
+        case DepartmentConstants.IMPORT_DEPARTMENT_FAILURE:
+            return{
+                ...state,
+                isLoading:false,
+                error: action.error
+            }
+            
         default:
             return {...state};
     }
