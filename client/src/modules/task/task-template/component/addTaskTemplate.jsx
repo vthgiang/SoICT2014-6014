@@ -19,7 +19,6 @@ import { getStorage } from '../../../../config';
 class AddTaskTemplate extends Component {
     constructor(props) {
         super(props);
-        console.log('quangconstructor');
         let userId = getStorage("userId")
         this.state = {
             newTemplate: {

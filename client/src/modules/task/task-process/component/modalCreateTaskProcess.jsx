@@ -350,7 +350,7 @@ class ModalCreateTaskProcess extends Component {
       let { info } = this.state;
       let { department } = this.props;
 
-      // console.log('elem', elementList);
+      console.log('elem', elementList);
       let xmlStr;
       this.modeler.saveXML({ format: true }, function (err, xml) {
          xmlStr = xml;
