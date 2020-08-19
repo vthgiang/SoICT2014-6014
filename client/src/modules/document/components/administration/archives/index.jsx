@@ -55,8 +55,14 @@ class AdministrationDocumentArchives extends Component {
             cancelButtonText: translate('general.no'),
             confirmButtonText: translate('general.yes'),
         }).then(result => {
-            if (result.value && deleteNode.length > 0) {
-                this.props.deleteDocumentArchive(archiveParent, deleteNode, "many");
+            if (result.value && archiveParent.length > 1) {
+                this.props.deleteDocumentArchive(archiveParent, "many");
+                this.setState({
+                    deleteNode: []
+                });
+            } else if (result.value && archiveParent.length === 1) {
+                console.log('iiiiiiiiiiii', archiveParent)
+                this.props.deleteDocumentArchive(archiveParent, 'single');
                 this.setState({
                     deleteNode: []
                 });

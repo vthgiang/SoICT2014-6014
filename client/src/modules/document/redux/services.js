@@ -211,21 +211,17 @@ function editDocumentArchives(id, data) {
 }
 
 function deleteDocumentArchives(id) {
-
     return sendRequest({
         url: `${LOCAL_SERVER_API}/documents/document-archives/${id}`,
         method: 'DELETE',
     }, true, true, 'document');
 }
 
-function deleteManyDocumentArchives(nodeDelete, nodeFix) {
+function deleteManyDocumentArchives(array) {
 
     return sendRequest({
         url: `${LOCAL_SERVER_API}/documents/document-archives/delete-many`,
         method: 'POST',
-        data: {
-            nodeDelete: nodeDelete,
-            nodeFix: nodeFix,
-        }
+        data: { array }
     }, true, true, 'document');
 }

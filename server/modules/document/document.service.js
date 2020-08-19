@@ -502,21 +502,22 @@ exports.createDocumentArchive = async (company, data) => {
 }
 
 exports.deleteDocumentArchive = async (id) => {
-    const archive = await DocumentArchive.find(id);
-    if (!archive) throw ['document_archive_not_found'];
-    await DocumentArchive.deleteOne({ _id: id });
-
+    const archive = await DocumentArchive.findById(id);
+    await deleteNode(id);
     return await this.getDocumentArchives(archive.company);
 }
 
 exports.deleteManyDocumentArchive = async (array, company) => {
-    await DocumentArchive.deleteMany({ _id: { $in: array } });
+    // console.log
+    // await DocumentArchive.deleteMany({ _id: { $in: array } });
+    for (let i = 0; i < array.length; i++) {
+        deleteNode(array[i]);
+    }
 
     return await this.getDocumentArchives(company);
 }
 
 exports.editDocumentArchive = async (id, data) => {
-    console.log('dataaaa', data);
     const archive = await DocumentArchive.findById(id);
     let array = data.array;
     archive.name = data.name;
@@ -525,12 +526,12 @@ exports.editDocumentArchive = async (id, data) => {
     archive.path = await findPath(data)
     await archive.save();
     for (let i = 0; i < array.length; i++) {
+
         const archive = await DocumentArchive.findById(array[i]);
         archive.path = await findPath(archive);
         archive.save();
     }
     const document = await this.getDocumentArchives(archive.company)
-    console.log('rrrrrr', document)
     return archive;
 }
 
@@ -550,4 +551,19 @@ async function findPath(data) {
     }
     path = arrayParent.reverse().join(" - ");
     return path;
+}
+
+async function deleteNode(id) {
+    const archive = await DocumentArchive.findById(id);
+    if (!archive) throw ['document_archive_not_found'];
+    let parent = archive.parent;
+    let archives = await DocumentArchive.find({ parent: id });
+    if (archives.length) {
+        for (let i = 0; i < archives.length; i++) {
+            archives[i].parent = parent;
+            archives[i].path = await findPath(archives[i]);
+            await archives[i].save();
+        }
+    }
+    await DocumentArchive.deleteOne({ _id: id });
 }
