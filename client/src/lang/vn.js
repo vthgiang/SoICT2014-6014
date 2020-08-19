@@ -421,7 +421,7 @@ export default {
             },
 
             category: 'Loại văn bản',
-            domain: 'Danh mục văn bản',
+            domain: 'Danh mục',
             data: 'Danh sách tài liệu văn bản',
             statistics_report: 'Thống kê báo cáo',
             history_report: 'Lịch sử thống kê',

@@ -171,7 +171,7 @@ class Table extends Component {
         const listArchive = this.convertData(archives.list);
 
         return (
-            <React.Fragment>
+            <div class="qlcv">
                 <CreateForm />
                 {
                     currentRow &&
@@ -236,7 +236,7 @@ class Table extends Component {
 
                 <div className="form-inline">
                     <div className="form-group">
-                        <label>{translate('document.category')}:</label>
+                        <label>{translate('document.category')}</label>
                         <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                             id={`stattus-category`}
                             style={{ width: "100%" }}
@@ -246,7 +246,7 @@ class Table extends Component {
                         />
                     </div>
                     <div className="form-group">
-                        <label>Lưu trữ:</label>
+                        <label>Lưu trữ</label>
                         <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                             id={`status-archive`}
                             style={{ width: "100%" }}
@@ -258,7 +258,7 @@ class Table extends Component {
                 </div>
                 <div className="form-inline">
                     <div className="form-group">
-                        <label>{translate('document.domain')}:</label>
+                        <label>{translate('document.domain')}</label>
                         <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                             id={`status-domain`}
                             style={{ width: "100%" }}
@@ -277,12 +277,10 @@ class Table extends Component {
                         search={this.searchWithOption}
                     /> */}
                     <div className="form-group">
+                        <label></label>
                         <button type="button" className="btn btn-success" onClick={() => this.searchWithOption()}>{
                             translate('kpi.organizational_unit.management.over_view.search')}</button>
                     </div>
-                </div>
-                <div className="form-inline">
-
                 </div>
 
                 <table className="table table-hover table-striped table-bordered" id="table-manage-document-list">
@@ -350,7 +348,7 @@ class Table extends Component {
                     </tbody>
                 </table>
                 <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={this.setPage} />
-            </React.Fragment>
+            </div>
         );
     }
 
