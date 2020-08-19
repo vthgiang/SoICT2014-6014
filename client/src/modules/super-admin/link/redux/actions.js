@@ -8,7 +8,6 @@ import {
 export const LinkActions = {
     get,
     show,
-    create,
     edit,
     destroy,
 };
@@ -16,32 +15,42 @@ export const LinkActions = {
 /**
  * Lấy danh sách tất cả các link của 1 công ty
  */
-function get(data) {
-    if (data) {
+function get(params) {
+    if (params.page !== undefined && params.limit !== undefined) {
         return dispatch => {
             dispatch({
                 type: LinkConstants.GET_LINKS_PAGINATE_REQUEST
             });
-            LinkServices.get(data)
+            LinkServices.get(params)
                 .then(res => {
                     dispatch({
                         type: LinkConstants.GET_LINKS_PAGINATE_SUCCESS,
                         payload: res.data.content
                     })
+                }).catch(err => {
+                    dispatch({
+                        type: LinkConstants.GET_LINKS_PAGINATE_FAILE,
+                    })
                 })
         }
-    }
-    return dispatch => {
-        dispatch({
-            type: LinkConstants.GET_LINKS_REQUEST
-        });
-        LinkServices.get()
-            .then(res => {
-                dispatch({
-                    type: LinkConstants.GET_LINKS_SUCCESS,
-                    payload: res.data.content
+    } else {
+        return dispatch => {
+            dispatch({
+                type: LinkConstants.GET_LINKS_REQUEST
+            });
+            LinkServices.get(params)
+                .then(res => {
+                    dispatch({
+                        type: LinkConstants.GET_LINKS_SUCCESS,
+                        payload: res.data.content
+                    })
                 })
-            })
+                .catch(err => {
+                    dispatch({
+                        type: LinkConstants.GET_LINKS_FAILE
+                    })
+                })
+        }
     }
 }
 
@@ -60,26 +69,10 @@ function show(id) {
                     type: LinkConstants.SHOW_LINK_SUCCESS,
                     payload: res.data.content
                 })
-            })
-    }
-}
-
-/**
- * Tạo link mới
- * @link dữ liệu về link
- */
-function create(link) {
-    return dispatch => {
-        dispatch({
-            type: LinkConstants.CREATE_LINK_REQUEST
-        });
-        LinkServices
-            .create(link)
-            .then(res => {
+            }).catch(err => {
                 dispatch({
-                    type: LinkConstants.CREATE_LINK_SUCCESS,
-                    payload: res.data.content
-                });
+                    type: LinkConstants.SHOW_LINK_FAILE
+                })
             })
     }
 }
@@ -100,6 +93,10 @@ function edit(id, link) {
                     type: LinkConstants.EDIT_LINK_SUCCESS,
                     payload: res.data.content
                 })
+            }).catch(err => {
+                dispatch({
+                    type: LinkConstants.EDIT_LINK_FAILE
+                })
             })
     }
 }
@@ -118,6 +115,10 @@ function destroy(id, link) {
                 dispatch({
                     type: LinkConstants.DELETE_LINK_SUCCESS,
                     payload: id
+                })
+            }).catch(err => {
+                dispatch({
+                    type: LinkConstants.DELETE_LINK_FAILE
                 })
             })
     }

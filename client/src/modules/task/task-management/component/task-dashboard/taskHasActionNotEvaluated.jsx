@@ -17,16 +17,15 @@ class TaskHasActionNotEvaluated extends Component {
     render() {
         let { tasks, translate } = this.props;
         let { currentMonth, currentYear, userId } = this.state;
-        let taskList = tasks && tasks.accountableTasks;
+        let accountableTasks = tasks && tasks.accountableTasks;
+        let responsibleTasks = tasks && tasks.responsibleTasks;
+        var TaskHasActionsAccountable = [];
+        var TaskHasActionsResponsible = [];
+        if (accountableTasks) {
+            let inprocessAccountableTask = accountableTasks.filter(task => task.status === "Inprocess")
 
-        if (taskList) {
-            let inprocessTask = taskList.filter(task => task.status === "Inprocess")
-
-            var TaskHasActionNotEvaluated = [];
-
-            inprocessTask.length && inprocessTask.map(x => {
+            inprocessAccountableTask.length && inprocessAccountableTask.map(x => {
                 let taskActions;
-                let currentActions = [];
 
                 taskActions = x.taskActions.length && x.taskActions;
                 for (let i in taskActions) {
@@ -34,13 +33,30 @@ class TaskHasActionNotEvaluated extends Component {
                     let year = taskActions[i].createdAt.slice(0, 4)
                     if (month == currentMonth && year == currentYear) {
                         if (taskActions[i].rating == -1) {
-                            TaskHasActionNotEvaluated.push(x);
+                            TaskHasActionsAccountable.push(x);
                             break;
                         }
                     }
                 }
             })
+        }
+        if (responsibleTasks) {
+            let inprocessResponsibleTasks = responsibleTasks.filter(task => task.status === "Inprocess")
+            inprocessResponsibleTasks.length && inprocessResponsibleTasks.map(x => {
+                let taskActions;
 
+                taskActions = x.taskActions.length && x.taskActions;
+                for (let i in taskActions) {
+                    let month = taskActions[i].createdAt.slice(5, 7);
+                    let year = taskActions[i].createdAt.slice(0, 4)
+                    if (month == currentMonth && year == currentYear) {
+                        if (taskActions[i].rating == -1) {
+                            TaskHasActionsResponsible.push(x);
+                            break;
+                        }
+                    }
+                }
+            })
         }
 
         return (
@@ -53,24 +69,48 @@ class TaskHasActionNotEvaluated extends Component {
                         </div>
                         <div className="box-body" style={{ height: "300px" }}>
                             {
-                                TaskHasActionNotEvaluated ?
-                                    <ul className="todo-list">
+                                TaskHasActionsAccountable || TaskHasActionsResponsible ?
+                                    <div>
                                         {
-                                            (TaskHasActionNotEvaluated.length !== 0) ?
-                                                TaskHasActionNotEvaluated.map((item, key) =>
-                                                    <li key={key}>
-                                                        <span className="handle">
-                                                            <i className="fa fa-ellipsis-v" />
-                                                            <i className="fa fa-ellipsis-v" />
-                                                        </span>
-                                                        <span className="text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
-                                                    </li>
-                                                ) : translate('task.task_management.no_task_has_action_not_evaluated')
+                                            (TaskHasActionsAccountable.length !== 0) || (TaskHasActionsResponsible.length !== 0) ?
+                                                <div>
+                                                    <ul className="todo-list">
+                                                        {
+                                                            (TaskHasActionsAccountable.length !== 0) &&
+                                                            TaskHasActionsAccountable.map((item, key) =>
+                                                                <li key={key}>
+                                                                    <span className="handle">
+                                                                        <i className="fa fa-ellipsis-v" />
+                                                                        <i className="fa fa-ellipsis-v" />
+                                                                    </span>
+                                                                    <span className="text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                                                    &nbsp;
+                                                                    <small className="label label-danger">{translate('task.task_management.approver')}</small>
+                                                                </li>
+                                                            )
+                                                        }
+                                                    </ul>
+                                                    <ul className="todo-list">
+                                                        {
+                                                            (TaskHasActionsResponsible.length !== 0) &&
+                                                            TaskHasActionsResponsible.map((item, key) =>
+                                                                <li key={key}>
+                                                                    <span className="handle">
+                                                                        <i className="fa fa-ellipsis-v" />
+                                                                        <i className="fa fa-ellipsis-v" />
+                                                                    </span>
+                                                                    <span className="text"><a href={`/task?taskId=${item._id}`} target="_blank">{item.name}</a></span>
+                                                                    &nbsp;
+                                                                    <small className="label label-warning">{translate('task.task_management.performer')}</small>
+                                                                </li>
+                                                            )
+                                                        }
+                                                    </ul>
+                                                </div> : translate('task.task_management.no_task_has_action_not_evaluated')
                                         }
-                                    </ul> : translate('task.task_management.loading_data')
+                                    </div> : translate('task.task_management.loading_data')
                             }
                         </div>
-
                     </div>
                 </div>
             </React.Fragment>

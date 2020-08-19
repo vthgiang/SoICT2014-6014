@@ -143,29 +143,26 @@ class DepartmentTreeView extends Component {
             dataSheets: [
                 {
                     tableName: "Bảng thống kê cơ cấu tổ chức",
-                    rowHeader: 1,
+                    rowHeader: 2,
                     sheetName: "sheet1",
-                    tables: [
-                        {
-                            columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "name", value: "Tên đơn vị" },
-                                { key: "description", value: "Mô tả đơn vị" },
-                                { key: "parent", value: "Đơn vị cha"},
-                                { key: "deans", value: "Tên các chức danh trưởng đơn vị" },
-                                { key: "viceDeans", value: "Tên các chức danh phó đơn vị"},
-                                { key: "employees", value: "Tên các chức danh nhân viên đơn vị"}
-                            ],
-                            data: data
-                        }
-                    ]
+                    tables: [{
+                        columns: [
+                            { key: "STT", value: "STT" },
+                            { key: "name", value: "Tên đơn vị" },
+                            { key: "description", value: "Mô tả đơn vị" },
+                            { key: "parent", value: "Đơn vị cha"},
+                            { key: "deans", value: "Tên các chức danh trưởng đơn vị" },
+                            { key: "viceDeans", value: "Tên các chức danh phó đơn vị"},
+                            { key: "employees", value: "Tên các chức danh nhân viên đơn vị"}
+                        ],
+                        data: data
+                    }]
                 },
             ]
         }
         return exportData
     }
     _duyet =  (tree, listData) => {
-        console.log(tree);
         if (tree.children){
             listData = [...listData,tree];
             for (let i in tree.children){

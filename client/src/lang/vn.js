@@ -1937,6 +1937,8 @@ export default {
                 loading_data: 'Đang tải dữ liệu',
                 task_has_action_not_evaluated: 'Công việc có hoạt động chưa đánh giá',
                 no_task_has_action_not_evaluated: 'Không có công việc nào',
+                performer: 'Người thực hiện',
+                approver: 'Người phê duyệt',
 
                 add_task: 'Thêm mới',
                 add_title: 'Thêm mới một công việc',
@@ -2322,7 +2324,7 @@ export default {
                     employee_point: 'Điểm tự đánh giá',
                     approved_point: 'Điểm quản lí đánh giá',
 
-                    responsible: 'Vai trog người thực hiện',
+                    responsible: 'Vai trò người thực hiện',
                     consulted: 'Vai trò người hỗ trợ',
                     accountable: 'Vai trò người phê duyệt',
 
