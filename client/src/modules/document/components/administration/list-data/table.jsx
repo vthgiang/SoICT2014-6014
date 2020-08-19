@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
-import { DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, SelectBox, ExportExcel } from '../../../../../common-components';
+import { DataTableSetting, DateTimeConverter, PaginateBar, TreeSelect, SelectBox, ExportExcel } from '../../../../../common-components';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import DocumentInformation from '../../user/documents/documentInformation';
@@ -219,16 +219,16 @@ class Table extends Component {
         const { paginate } = docs;
         const { isLoading } = this.props.documents;
         const { currentRow, archive, domain, category } = this.state;
-        const listDomain = this.convertData(domains.list)
+        const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
-        const listArchive = this.convertData(archives.list);
+        const listArchive = archives.list;
+        console.log('tttt', domains.tree);
         let list = [];
         if ( isLoading === false ){
             list = docs.list;
         }
-        let exportData = this.convertDataToExportData(list);
         return (
-            <div class="qlcv">
+            <div className="qlcv">
                 <CreateForm />
                 {
                     currentRow &&
@@ -290,55 +290,49 @@ class Table extends Component {
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
                     />
                 }
+
+
+                <div className="form-group" >
+                    <label>{translate('document.store.information')}</label>
+                    <TreeSelect
+                        data={listArchive}
+                        className="form-control select2"
+                        handleChange={this.handleArchiveChange}
+                        value={archive}
+                        mode="hierarchical"
+                        style={{ width: " 100%" }}
+                    />
+                </div>
                 {<ExportExcel id="export-document" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
-                <div className="form-inline">
-                    <div className="form-group">
-                        <label>{translate('document.category')}</label>
-                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                            id={`stattus-category`}
-                            style={{ width: "100%" }}
-                            items={listCategory}
-                            onChange={this.handleCategoryChange}
-                            value={category}
-                        />
-                    </div>
-                    <div className="form-group">
-                        <label>Lưu trữ</label>
-                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                            id={`status-archive`}
-                            style={{ width: "100%" }}
-                            items={listArchive}
-                            onChange={this.handleArchiveChange}
-                            value={archive}
-                        />
-                    </div>
+                <div className="form-group">
+                    <label>{translate('document.category')}</label>
+                    <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                        id={`stattus-category`}
+                        style={{ width: "100%" }}
+                        items={listCategory}
+                        onChange={this.handleCategoryChange}
+                        value={category}
+                    />
+
+
                 </div>
-                <div className="form-inline">
-                    <div className="form-group">
-                        <label>{translate('document.domain')}</label>
-                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                            id={`status-domain`}
-                            style={{ width: "100%" }}
-                            items={listDomain}
-                            onChange={this.handleDomainChange}
-                            value={domain}
-                        />
-                    </div>
-                    {/* <SearchBar
-                        columns={[
-                            { title: translate('document.name'), value: 'name' },
-                            { title: translate('document.description'), value: 'description' }
-                        ]}
-                        option={this.state.option}
-                        setOption={this.setOption}
-                        search={this.searchWithOption}
-                    /> */}
-                    <div className="form-group">
-                        <label></label>
-                        <button type="button" className="btn btn-success" onClick={() => this.searchWithOption()}>{
-                            translate('kpi.organizational_unit.management.over_view.search')}</button>
-                    </div>
+                <div className="form-group">
+                    <label>{translate('document.domain')}</label>
+                    <TreeSelect
+                        data={listDomain}
+                        className="form-control select2"
+                        handleChange={this.handleDomainChange}
+                        mode="hierarchical"
+                        value={domain}
+                        style={{ width: "100%" }}
+                    />
                 </div>
+
+                <div className="form-group">
+                    <button type="button" className="btn btn-success" onClick={() => this.searchWithOption()}>{
+                        translate('kpi.organizational_unit.management.over_view.search')}</button>
+                </div>
+
 
                 <table className="table table-hover table-striped table-bordered" id="table-manage-document-list">
                     <thead>
@@ -405,6 +399,7 @@ class Table extends Component {
                     </tbody>
                 </table>
                 <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={this.setPage} />
+
             </div>
         );
     }
