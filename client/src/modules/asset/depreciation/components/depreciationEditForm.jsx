@@ -180,9 +180,9 @@ class DepreciationEditForm extends Component {
     }
 
     /**
-     * Bắt sự kiện click thêm Thông tin chi tiết
+     * Bắt sự kiện click thêm thông tin sản lượng sản phẩm
      */
-    handleAddDetailInfo = () => {
+    handleAddUnitsProduced = () => {
         var unitsProducedDuringTheYears = this.state.unitsProducedDuringTheYears;
 
         if (unitsProducedDuringTheYears.length !== 0) {
@@ -211,7 +211,7 @@ class DepreciationEditForm extends Component {
     }
 
     /**
-     * Bắt sự kiện chỉnh sửa tên trường dữ liệu thông tin chi tiết
+     * Bắt sự kiện chỉnh sửa tên trường năm sản lượng sản phẩm
      */
     handleChangeYear = (e) => {
         var { value, className } = e.target;
@@ -235,7 +235,7 @@ class DepreciationEditForm extends Component {
     }
 
     /**
-     * Bắt sự kiện chỉnh sửa giá trị trường dữ liệu thông tin chi tiết
+     * Bắt sự kiện chỉnh sửa giá trị trường giá trị sản lượng sản phẩm
      */
     handleChangeValue = (e) => {
         var { value, className } = e.target;
@@ -258,7 +258,7 @@ class DepreciationEditForm extends Component {
     }
 
     /**
-     * Bắt sự kiện xóa thông tin chi tiết
+     * Bắt sự kiện xóa thông tin sản lượng sản phẩm
      */
     delete = (index) => {
         var { unitsProducedDuringTheYears } = this.state;
@@ -432,7 +432,7 @@ class DepreciationEditForm extends Component {
                                 depreciationType == 'Sản lượng' &&
                                 <div className="col-md-12">
                                     <label>Sản lượng sản phẩm trong các năm:<a title='Số lượng sản phẩm trong các năm'><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }}
-                                        onClick={this.handleAddDetailInfo} /></a></label>
+                                        onClick={this.handleAddUnitsProduced} /></a></label>
                                     <div className={`form-group ${(!errorOnYear && !errorOnValue) ? "" : "has-error"}`}>
 
                                         {/* Bảng thông tin chi tiết */}
