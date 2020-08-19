@@ -196,8 +196,6 @@ class RecommendDistributeManager extends Component {
                     sheetTitle : fileName,
                     tables: [
                         {
-                            tableName : fileName,
-                            tableTitle: fileName,
                             rowHeader: 2,
                             columns: [
                                 { key: "index", value: "STT" },

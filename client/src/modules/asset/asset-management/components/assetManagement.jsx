@@ -255,8 +255,6 @@ class AssetManagement extends Component {
                     sheetTitle: fileName,
                     tables: [
                         {
-                            tableName: fileName,
-                            tableTitle: fileName,
                             merges: [{
                                 key: "detailInfo",
                                 columnName: "Danh sách các trường thông tin chi tiết",
