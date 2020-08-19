@@ -72,7 +72,7 @@ getAllEmployeeOfUnitByIds = async (req, res) => {
 };
 
 exports.getUser = async (req, res) => {
-    console.log("ádasdsadasdasdas")
+
     try {
         var user = await UserService.getUser(req.params.id);
         LogInfo(req.user.email, 'SHOW_USER', req.user.company);

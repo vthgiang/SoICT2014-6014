@@ -110,10 +110,25 @@ class DepartmentTreeView extends Component {
     // Cac ham xu ly du lieu voi modal
     convertDataToExportData = (data) => {
         // chuyen du lieu cay ve du lieu bang
+        let listData = [];
         if (data) {
-            var listData = [];
-            for (let i in data){
-                listData = this._duyet(data[i], listData);
+            for (let i = 0; i < data.length; i++) {
+                listData = [...listData, data[i]];
+                if (data[i].children){
+                    let da = data[i].children;
+                    for ( let j in da){
+                        da[j]["parentName"] = data[i].name;
+                        listData = [...listData, da[j]];
+                        if (da[j].children){
+                            let datas = da[j].children;
+                            for ( let k in datas) {
+                                datas[k]["parentName"] = da[j].name;
+                                listData = [...listData, datas[k]];
+                            }
+                        }
+                    }
+                }
+                
             }
         }
         if (listData.length !== 0){
@@ -143,7 +158,7 @@ class DepartmentTreeView extends Component {
             dataSheets: [
                 {
                     tableName: "Bảng thống kê cơ cấu tổ chức",
-                    rowHeader: 2,
+                    rowHeader: 1,
                     sheetName: "sheet1",
                     tables: [{
                         columns: [
@@ -162,18 +177,22 @@ class DepartmentTreeView extends Component {
         }
         return exportData
     }
-    _duyet =  (tree, listData) => {
-        if (tree.children){
-            listData = [...listData,tree];
-            for (let i in tree.children){
-                tree.children[i]["parentName"] = tree.name;
-                return this._duyet(tree.children[i], listData);
-            }
-        } else {
-            listData = [...listData,tree];
-            return listData;
-        }
-    }
+    // _duyet =  (tree, listData) => {
+    //     console.log(tree);
+    //     listData = [...listData, tree];
+    //     let data = this.state.data;
+    //     data = [...data, tree];
+    //     if (tree.children){
+    //         // listData = [...listData,tree];
+    //         for (let i = 0; i < tree.children.length; i++){
+    //             tree.children[i]["parentName"] = tree.name;
+    //             this._duyet(tree.children[i], listData);
+    //         }
+    //     } else {
+    //         // listData = [...listData,tree];
+    //         // return listData;
+    //     }
+    // }
 
     handleCreate = (event) => {
         event.preventDefault();
