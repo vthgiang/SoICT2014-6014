@@ -78,7 +78,7 @@ getAllTasks = async (req, res) => {
 exports.getTaskEvaluations = async (req, res) => {
     try {
         let taskEvaluation = await TaskManagementService.getTaskEvaluations(req.query);
-        console.log('taskEvaluation', taskEvaluation);
+        // console.log('taskEvaluation', taskEvaluation);
         res.status(200).json({
             success: true,
             messages: ['get_task_evaluation_success'],
