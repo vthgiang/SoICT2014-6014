@@ -292,7 +292,7 @@ class Table extends Component {
                     />
                 }
 
-
+                {<ExportExcel id="export-document" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}     
                 <div className="form-group" >
                     <label>{translate('document.store.information')}</label>
                     <TreeSelect
@@ -304,7 +304,6 @@ class Table extends Component {
                         style={{ width: " 100%" }}
                     />
                 </div>
-                {<ExportExcel id="export-document" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
                 <div className="form-group">
                     <label>{translate('document.category')}</label>
                     <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
