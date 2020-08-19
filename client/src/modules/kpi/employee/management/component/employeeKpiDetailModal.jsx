@@ -126,24 +126,10 @@ class ModalDetailKPIPersonal extends Component {
         if (dataDetailKpi) {
             detailData = dataDetailKpi.map((x, index) => {
                 let name = x.name;
-                let startTaskD = new Date(x.startDate),
-                    startTaskDate = startTaskD.getDate(),
-                    startTaskMonth = (startTaskD.getMonth() + 1),
-                    startTaskYear = startTaskD.getFullYear(),
-                    startTaskTime = startTaskDate + '-' + startTaskMonth + '-' + startTaskYear
-                let endTaskD = new Date(x.endDate),
-                    endTaskDate = endTaskD.getDate(),
-                    endTaskMonth = (endTaskD.getMonth() + 1),
-                    endTaskYear = endTaskD.getFullYear(),
-                    endTaskTime = endTaskDate + '-' + endTaskMonth + '-' + endTaskYear
-                let startApproveD = new Date(x.preEvaDate),
-                    startApproveDate = startApproveD.getDate(),
-                    startApproveMonth = (startApproveD.getMonth() + 1),
-                    startApproveTime = startApproveDate + '-' + startApproveMonth + '-' + startApproveD.getFullYear()
-                let endApproveD = new Date(x.date),
-                    endApproveDate = endApproveD.getDate(),
-                    endApproveMonth = (endApproveD.getMonth() + 1),
-                    endApproveTime = endApproveDate + '-' + endApproveMonth + '-' + endApproveD.getFullYear()
+                let startTaskD = new Date(x.startDate);                   
+                let endTaskD = new Date(x.endDate);                    
+                let startApproveD = new Date(x.preEvaDate);                    
+                let endApproveD = new Date(x.date);                    
                 let automaticPoint = (x.results.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x.results.automaticPoint);
                 let employeePoint = (x.results.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.results.employeePoint);
                 let approverPoint = (x.results.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.results.approvedPoint);
@@ -158,10 +144,10 @@ class ModalDetailKPIPersonal extends Component {
                     status: status,
                     employeePoint: employeePoint,
                     approverPoint: approverPoint,
-                    startTaskDate: startTaskTime,
-                    endTaskDate: endTaskTime,
-                    startApproveDate: startApproveTime,
-                    endApproveDate: endApproveTime,
+                    startTaskDate: startTaskD,
+                    endTaskDate: endTaskD,
+                    startApproveDate: startApproveD,
+                    endApproveDate: endApproveD,
                     contributionPoint: contributionPoint,
                     importantLevel: importantLevel,
                    
@@ -189,9 +175,10 @@ class ModalDetailKPIPersonal extends Component {
                             data: kpiData
                         },
                         {
-                            tableName : 'Danh sách công việc của KPI: ',
+                            tableName : 'Danh sách công việc ứng với KPI: ',
                             columns: [
                                 { key: "STT", value: "STT" },
+                                { key: "name", value: "Tên hoạt động" },
                                 { key: "startTaskDate", value: "Ngày bắt đầu công việc" },
                                 { key: "endTaskDate", value: "Ngày kết thúc công việc" },
                                 { key: "startApproveDate", value: "Ngày bắt đầu đánh giá" },
@@ -200,7 +187,7 @@ class ModalDetailKPIPersonal extends Component {
                                 { key: "contributionPoint", value: "Đóng góp (%)" },
                                 { key: "automaticPoint", value: "Điểm tự động" },
                                 { key: "employeePoint", value: "Điểm tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm được đánh giá" },
+                                { key: "approverPoint", value: "Điểm được phê duyệt" },
                                 { key: "importantLevel", value: "Độ quan trọng" }
 
                             ],
