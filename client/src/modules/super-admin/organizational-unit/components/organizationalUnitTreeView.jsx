@@ -110,12 +110,17 @@ class DepartmentTreeView extends Component {
     // Cac ham xu ly du lieu voi modal
     convertDataToExportData = (data) => {
         // chuyen du lieu cay ve du lieu bang
+        console.log(data);
+        var listData = data;
         if (data) {
-            var listData = [];
-            for (let i in data){
-                listData = this._duyet(data[i], listData);
+            
+            for (let i = 0; i < data.length; i++) {
+                this._duyet(data[i], []);
+                // console.log(listData);
             }
         }
+        // listData = this.state.data;
+        // console.log(listData);
         if (listData.length !== 0){
             data = listData.map((x, index) => {
                 let name = x.name;
@@ -145,20 +150,18 @@ class DepartmentTreeView extends Component {
                     tableName: "Bảng thống kê cơ cấu tổ chức",
                     rowHeader: 1,
                     sheetName: "sheet1",
-                    tables: [
-                        {
-                            columns: [
-                                { key: "STT", value: "STT" },
-                                { key: "name", value: "Tên đơn vị" },
-                                { key: "description", value: "Mô tả đơn vị" },
-                                { key: "parent", value: "Đơn vị cha"},
-                                { key: "deans", value: "Tên các chức danh trưởng đơn vị" },
-                                { key: "viceDeans", value: "Tên các chức danh phó đơn vị"},
-                                { key: "employees", value: "Tên các chức danh nhân viên đơn vị"}
-                            ],
-                            data: data
-                        }
-                    ]
+                    tables: [{
+                        columns: [
+                            { key: "STT", value: "STT" },
+                            { key: "name", value: "Tên đơn vị" },
+                            { key: "description", value: "Mô tả đơn vị" },
+                            { key: "parent", value: "Đơn vị cha"},
+                            { key: "deans", value: "Tên các chức danh trưởng đơn vị" },
+                            { key: "viceDeans", value: "Tên các chức danh phó đơn vị"},
+                            { key: "employees", value: "Tên các chức danh nhân viên đơn vị"}
+                        ],
+                        data: data
+                    }]
                 },
             ]
         }
@@ -168,13 +171,13 @@ class DepartmentTreeView extends Component {
         console.log(tree);
         if (tree.children){
             listData = [...listData,tree];
-            for (let i in tree.children){
+            for (let i = 0; i < tree.children.length; i++){
                 tree.children[i]["parentName"] = tree.name;
-                return this._duyet(tree.children[i], listData);
+                this._duyet(tree.children[i], listData);
             }
         } else {
             listData = [...listData,tree];
-            return listData;
+            // return listData;
         }
     }
 

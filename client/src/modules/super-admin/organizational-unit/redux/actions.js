@@ -139,6 +139,23 @@ function destroy(departmentId) {
     }
 }
 
-function importDepartment(importData) {
-    
+function importDepartment(data) {
+    return dispatch => {
+        dispatch({
+            type: DepartmentConstants.IMPORT_DEPARTMENT_REQUEST
+        });
+        DepartmentServices.importDepartment(data)
+            .then(res => {
+                dispatch({
+                    type: DepartmentConstants.IMPORT_DEPARTMENT_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: DepartmentConstants.IMPORT_DEPARTMENT_FAILURE,
+                    error: err.response.data.content
+                });
+            })
+    };
 }

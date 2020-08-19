@@ -71,7 +71,6 @@ class DepartmentCreateForm extends Component {
     render() {
         const { translate, department } = this.props;
         const { departmentNameError, departmentDescriptionError } = this.state;
-        console.log("state deans:", this.state);
 
         return (
             <React.Fragment>

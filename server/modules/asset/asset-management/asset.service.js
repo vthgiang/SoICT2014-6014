@@ -262,6 +262,8 @@ exports.updateDepreciation = async (id, data) => {
         usefulLife: data.usefulLife,
         startDepreciation: data.startDepreciation,
         depreciationType: data.depreciationType,
+        estimatedTotalProduction: data.estimatedTotalProduction,
+        unitsProducedDuringTheYears: data.unitsProducedDuringTheYears,
     });
 }
 
