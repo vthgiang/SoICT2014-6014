@@ -360,7 +360,7 @@ class ModalCreateTaskProcess extends Component {
          for (let j in info) {
             if (Object.keys(info[j]).length !== 0) {
                info[j].followingTasks = [];
-               info[j].precedingTasks = [];
+               info[j].preceedingTasks = [];
 
                for (let i in elementList) {
                   let elem = elementList[i].element;
@@ -368,12 +368,13 @@ class ModalCreateTaskProcess extends Component {
                      if (elem.businessObject.incoming) {
                         let incoming = elem.businessObject.incoming;
                         for (let x in incoming) {
-                           info[j].precedingTasks.push({ // các công việc trc công việc hiện tại
-                              task: {
-                                 code: incoming[x].sourceRef.id,
-                                 name: incoming[x].sourceRef.name,
-                              },
-                              label: incoming[x].name,
+                           info[j].preceedingTasks.push({ // các công việc trc công việc hiện tại
+                              // task: {
+                              //    code: incoming[x].sourceRef.id,
+                              //    name: incoming[x].sourceRef.name,
+                              // },
+                              task: incoming[x].sourceRef.id,
+                              link: incoming[x].name,
                            })
                         }
                      }
@@ -381,11 +382,9 @@ class ModalCreateTaskProcess extends Component {
                         let outgoing = elem.businessObject.outgoing;
                         for (let y in outgoing) {
                            info[j].followingTasks.push({ // các công việc sau công việc hiện tại
-                              task: {
-                                 code: outgoing[y].targetRef.id,
-                                 name: outgoing[y].targetRef.name,
-                              },
-                              label: outgoing[y].name,
+                              task: outgoing[y].targetRef.id,
+                                 // name: outgoing[y].targetRef.name,
+                              link: outgoing[y].name,
                            })
                         }
                      }

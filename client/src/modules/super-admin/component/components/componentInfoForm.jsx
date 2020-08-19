@@ -21,7 +21,7 @@ class ComponentInfoForm extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    size='50' func={this.save}
+                    func={this.save}
                     modalID="modal-edit-component"
                     formID="form-edit-component"
                     title={translate('manage_component.edit')}

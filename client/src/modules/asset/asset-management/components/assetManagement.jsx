@@ -40,12 +40,12 @@ class AssetManagement extends Component {
             year = d.getFullYear();
 
         if (month.length < 2) {
-             month = '0' + month;
+            month = '0' + month;
         }
         if (day.length < 2) {
             day = '0' + day;
         }
-            
+
         return [month, year].join('-');
     }
 
@@ -59,7 +59,7 @@ class AssetManagement extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
@@ -179,71 +179,69 @@ class AssetManagement extends Component {
     }
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    convertDataToExportData = (data,assettypelist,userlist) => {
+    convertDataToExportData = (data, assettypelist, userlist) => {
         let fileName = "Bảng quản lý thông tin tài sản ";
-        let length =0;
-        let convertedData= [];
-        if (data) {           
-            data = data.map((x, index) => {     
+        let length = 0;
+        let convertedData = [];
+        if (data) {
+            data = data.map((x, index) => {
 
-                let code =x.code;
-                let name =x.assetName;   
-                let description =x.description;             
+                let code = x.code;
+                let name = x.assetName;
+                let description = x.description;
                 let type = x.assetType && assettypelist.length && assettypelist.find(item => item._id === x.assetType) ? assettypelist.find(item => item._id === x.assetType).typeName : 'Asset is deleted';
                 let purchaseDate = this.formatDate(x.purchaseDate);
-                let manager =x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).email : 'User is deleted';
-                let assigner =x.assignedTo ? (userlist.length && userlist.find(item => item._id === x.assignedTo) ? userlist.find(item => item._id === x.assignedTo).email : 'User is deleted') : ''
+                let manager = x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).email : 'User is deleted';
+                let assigner = x.assignedTo ? (userlist.length && userlist.find(item => item._id === x.assignedTo) ? userlist.find(item => item._id === x.assignedTo).email : 'User is deleted') : ''
                 let handoverFromDate = x.handoverFromDate ? this.formatDate(x.handoverFromDate) : '';
-                let handoverToDate= x.handoverToDate ? this.formatDate(x.handoverToDate) : ''   ;      
-                let status = x.status; 
+                let handoverToDate = x.handoverToDate ? this.formatDate(x.handoverToDate) : '';
+                let status = x.status;
                 length = x.detailInfo.length;
-                let info = (length)? (x.detailInfo.map((item,index)=>{
+                let info = (length) ? (x.detailInfo.map((item, index) => {
                     return {
-                        infoName :item.nameField,
-                        value : item.value
+                        infoName: item.nameField,
+                        value: item.value
                     }
-                })):"";
-                let infoName = info[0]?info[0].infoName:"";
-                let value =length?(info[0].value):"";
-                
+                })) : "";
+                let infoName = info[0] ? info[0].infoName : "";
+                let value = length ? (info[0].value) : "";
+
 
                 let dataOneRow = {
-                    index : index+1,
-                    code : code,
-                    name:name,
-                    description:description,
+                    index: index + 1,
+                    code: code,
+                    name: name,
+                    description: description,
                     type: type,
-                    purchaseDate : purchaseDate,
-                    manager : manager,
-                    assigner : assigner,
-                    handoverFromDate:handoverFromDate,
+                    purchaseDate: purchaseDate,
+                    manager: manager,
+                    assigner: assigner,
+                    handoverFromDate: handoverFromDate,
                     handoverToDate: handoverToDate,
-                    status : status,
-                    infoName : infoName,
-                    value : value
+                    status: status,
+                    infoName: infoName,
+                    value: value
 
                 }
-                convertedData =[...convertedData,dataOneRow];
-                if(length>1)
-                {
-                    for(let i=1;i<length;i++)
-                    {
+                convertedData = [...convertedData, dataOneRow];
+                if (length > 1) {
+                    for (let i = 1; i < length; i++) {
                         dataOneRow = {
-                            index : "",
-                            code : "",
+                            index: "",
+                            code: "",
                             name: "",
-                            description:"",
+                            description: "",
                             type: "",
-                            purchaseDate : "",
-                            manager : "",
-                            assigner : "",
-                            handoverFromDate:"",
+                            purchaseDate: "",
+                            manager: "",
+                            assigner: "",
+                            handoverFromDate: "",
                             handoverToDate: "",
-                            status : "",
-                            infoName : info[i].infoName,
-                            value : info[i].value       
+                            status: "",
+                            infoName: info[i].infoName,
+                            value: info[i].value
                         }
-                        convertedData = [...convertedData,dataOneRow];
+                        convertedData = [...convertedData, dataOneRow];
                     }
                 }
             })
@@ -254,11 +252,9 @@ class AssetManagement extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
-                    sheetTitle : fileName,
+                    sheetTitle: fileName,
                     tables: [
                         {
-                            tableName : fileName,
-                            tableTitle: fileName,
                             merges: [{
                                 key: "detailInfo",
                                 columnName: "Danh sách các trường thông tin chi tiết",
@@ -269,7 +265,7 @@ class AssetManagement extends Component {
                             columns: [
                                 { key: "index", value: "STT" },
                                 { key: "code", value: "Mã tài sản" },
-                                { key: "name", value: "Họ và tên" },                                
+                                { key: "name", value: "Họ và tên" },
                                 { key: "description", value: "Mô tả" },
                                 { key: "type", value: "Loại tài sản" },
                                 { key: "purchaseDate", value: "Ngày nhập" },
@@ -287,8 +283,8 @@ class AssetManagement extends Component {
                 },
             ]
         }
-        return exportData;        
-       
+        return exportData;
+
     }
 
     render() {
@@ -300,7 +296,7 @@ class AssetManagement extends Component {
         var assettypelist = assetType.listAssetTypes;
         if (assetsManager.isLoading === false) {
             lists = assetsManager.listAssets;
-            
+
         }
 
         var pageTotal = ((assetsManager.totalList % limit) === 0) ?
@@ -308,9 +304,8 @@ class AssetManagement extends Component {
             parseInt((assetsManager.totalList / limit) + 1);
         var currentPage = parseInt((page / limit) + 1);
 
-        if(userlist&&lists&&assettypelist)
-        {
-            exportData = this.convertDataToExportData(lists,assettypelist,userlist);
+        if (userlist && lists && assettypelist) {
+            exportData = this.convertDataToExportData(lists, assettypelist, userlist);
         }
 
         return (
@@ -381,7 +376,7 @@ class AssetManagement extends Component {
                         <div className="form-group">
                             <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={this.handleSubmitSearch}>{translate('asset.general_information.search')}</button>
                         </div>
-                        {exportData&&<ExportExcel id="export-asset-info-management" exportData={exportData} style={{ marginRight:10 }} />}
+                        {exportData && <ExportExcel id="export-asset-info-management" exportData={exportData} style={{ marginRight: 10 }} />}
                     </div>
 
                     {/* Bảng các tài sản */}
@@ -398,7 +393,7 @@ class AssetManagement extends Component {
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.handover_to_date')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('asset.general_information.action')}
-                                <DataTableSetting
+                                    <DataTableSetting
                                         tableId="asset-table"
                                         columnArr={[
                                             translate('asset.general_information.asset_code'),

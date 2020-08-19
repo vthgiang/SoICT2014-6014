@@ -293,10 +293,10 @@ class TaskTemplate extends Component {
                 if (length > 1) {
                     for ( let i = 1; i < length; i++){
                         out = {
-                            STT: 0,
+                            STT: "",
                             name: "",
                             description: "",
-                            numberOfUse: 0,
+                            numberOfUse: "",
                             creator: "",
                             readByEmployees: "",
                             responsibleEmployees: "",
@@ -305,7 +305,7 @@ class TaskTemplate extends Component {
                             informedEmployees: "",
                             organizationalUnits: "",
                             priority: "",
-                            formula: 0,
+                            formula: "",
                             actionName: actionName[i],
                             actionDescription: actionDescription[i],
                             mandatory: mandatory[i],

@@ -11,5 +11,7 @@ router.get("/organizational-units/:id", auth, OrganizationalUnitController.getOr
 router.patch("/organizational-units/:id", auth, OrganizationalUnitController.editOrganizationalUnit);
 router.delete("/organizational-units/:id", auth, OrganizationalUnitController.deleteOrganizationalUnit);
 
+router.post("/organizational-units/import", auth, OrganizationalUnitController.importOrganizationalUnits);
+
 
 module.exports = router;

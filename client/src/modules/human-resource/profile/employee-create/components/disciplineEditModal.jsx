@@ -247,7 +247,7 @@ class DisciplineEditModal extends Component {
                         </div>
                         <div className="row">
                             {/* Ngày có hiệu lực*/}
-                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnStartDate === undefined ? "" : "has-error"}`}>
+                            <div className={`col-sm-6 col-xs-12 form-group ${errorOnStartDate && "has-error"}`}>
                                 <label>{translate('human_resource.commendation_discipline.discipline.table.start_date')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`edit_discipline_start_date${id}`}

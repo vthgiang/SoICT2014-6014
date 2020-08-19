@@ -7,12 +7,23 @@ import { taskTemplateActions } from '../redux/actions';
 
 class ViewTaskTemplate extends Component {
     constructor(props) {
-        super(props);
+        super(props);   
+        this.state = {}
 
+    }
+
+    clickShowMore = () => {
+        this.setState(state => {
+            return {
+                ...state,
+                showMore: !state.showMore,
+            }
+        });
     }
     render() {
         const { translate, department } = this.props;
         const { taskTemplate, isProcess, listUser } = this.props;
+        const {showMore } = this.state
         let listUserAccountable = [], listUserResponsible = []
         let organizationalUnitProcess
         let priority = "";
@@ -128,7 +139,7 @@ class ViewTaskTemplate extends Component {
                                             </dd>
                                         </React.Fragment>
                                     }
-
+                                    {showMore}
                                     {/**Người quan sát mẫu công việc */}
                                     {taskTemplate?.consultedEmployees && taskTemplate?.consultedEmployees.length > 0 &&
                                         <React.Fragment>

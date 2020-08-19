@@ -19,12 +19,23 @@ class CompanyManageLinks extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.companyId !== prevState.companyId) {
+        if (
+            nextProps.companyId !== prevState.companyId || 
+            nextProps.company.item.links.listPaginate.length !== prevState.linkPaginate.length ||
+            nextProps.company.item.links.limit !== prevState.linkLimit || 
+            nextProps.company.item.links.page !== prevState.linkPage
+        ) {
+            console.log("thay doi")
             return {
                 ...prevState,
-                companyId: nextProps.companyId
+                checkedAll: false,
+                companyId: nextProps.companyId,
+                linkPaginate: nextProps.company.item.links.listPaginate,
+                linkPage: nextProps.company.item.links.page,
+                linkLimit: nextProps.company.item.links.limit,
             } 
         } else {
+            console.log("KHONG thay doi")
             return null;
         }
     }
@@ -58,47 +69,6 @@ class CompanyManageLinks extends Component {
             return false; 
         }
     }
-
-    showCreateLinkForm = () => {
-        window.$("#add-new-link-default").slideDown();
-    }
-
-    closeCreateLinkForm = () => {
-        window.$("#add-new-link-default").slideUp();
-    }
-
-    saveAndCloseLinkForm = async () => {
-        const {companyId, linkUrl, linkCategory, linkDescription} = this.state;
-        
-        await window.$("#add-new-link-default").slideUp();
-        return this.props.addCompanyLink(companyId, {
-            url: linkUrl,
-            category: linkCategory,
-            description: linkDescription
-        });
-    }
-
-    deleteCompanyLink = (companyId, linkId) => {
-        return this.props.deleteCompanyLink(companyId, linkId);
-    }
-    
-    // Xu ly thay doi va validate cho url link moi cho cong ty
-    handleLinkUrl= (e, systemLinks) => {
-        const value = e.target.value;
-
-        for (let index = 0; index < systemLinks.list.length; index++) {
-            const linkDefault = systemLinks.list[index];
-
-            if (value === linkDefault.url) {
-                this.setState({
-                    linkUrl: linkDefault.url,
-                    linkCategory: linkDefault.category,
-                    linkDescription: linkDefault.description
-                });
-            }
-        }
-        
-    }
     
     setOption = (title, option) => {
         this.setState({
@@ -107,49 +77,53 @@ class CompanyManageLinks extends Component {
     }
 
     searchWithOption = async () => {
-        const data = {
+        const{companyId} = this.state;
+        const params = {
+            company: companyId,
             limit: this.state.limit,
             page: 1,
             key: this.state.option,
             value: this.state.value
         };
 
-        await this.props.getCompanyLinks(this.state.companyId, data);
+        await this.props.getCompanyLinks(params);
     }
 
     setPage = (page) => {
         this.setState({ page });
-
-        const data = {
+        const {companyId} = this.state;
+        const params = {
+            company: companyId,
             limit: this.state.limit,
             page: page,
             key: this.state.option,
             value: this.state.value
         };
 
-        this.props.getCompanyLinks(this.state.companyId, data);
+        this.props.getCompanyLinks(params);
     }
 
     setLimit = (number) => {
         this.setState({ limit: number });
-
-        const data = { 
+        const {companyId} = this.state;
+        const params = { 
+            company: companyId,
             limit: number, 
             page: this.state.page,
             key: this.state.option,
             value: this.state.value
         };
 
-        this.props.getCompanyLinks(this.state.companyId, data);
+        this.props.getCompanyLinks(params);
     }
 
     render() { 
         const { translate, company, systemLinks } = this.props;
-        const { companyId } = this.state;
-        
+        const { companyId, linkPaginate, checkedAll } = this.state;
+        console.log("link paginate",linkPaginate);
         return ( 
             <div style={{padding: '10px 0px 10px 0px'}}>
-                <a className="btn btn-success pull-right" onClick={this.showCreateLinkForm}>Thêm</a>
+                <a className="btn btn-success pull-right" onClick={this.updateCompanyLinks}>Cập nhật</a>
                 <SearchBar 
                     columns={[
                         { title: translate('manage_link.url'), value: 'url' },
@@ -160,64 +134,38 @@ class CompanyManageLinks extends Component {
                     setOption={this.setOption}
                     search={this.searchWithOption}
                 />
-
+                <DataTableSetting 
+                    tableId="company-manage-link-table"
+                    setLimit={this.setLimit}
+                />
                 <table className="table table-hover table-striped table-bordered" id="company-manage-link-table">
                     <thead>
                         <tr>
+                            <th style={{width: '32px'}} className="col-fixed">
+                                <input type="checkbox" value="checkall" onChange={this.checkAll} checked={checkedAll}/>
+                            </th>
                             <th>{ translate('manage_link.url') }</th>
                             <th>{ translate('manage_link.category') }</th>
                             <th>{ translate('manage_link.description') }</th>
-                            <th style={{width: '120px'}}>
-                                {translate('table.action')}
-                                <DataTableSetting 
-                                    tableId="company-manage-link-table"
-                                    setLimit={this.setLimit}
-                                />
-                            </th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        <tr id="add-new-link-default" style={{display: "none"}}>
-                            <td>
-                                <select
-                                    className="form-control"
-                                    style={{width: '100%'}}
-                                    onChange={(e) => this.handleLinkUrl(e, systemLinks)}
-                                    value={this.state.linkUrl}
-                                >
-                                    <option key="noturl" value="noturl" disabled> --- Chọn url ---</option>
-                                    {
-                                        systemLinks.list.map(linkDefault => 
-                                        <option 
-                                            key={linkDefault._id} 
-                                            value={linkDefault.url}
-                                            disabled={this.companyHasLink(linkDefault.url, company.item.links.list)}
-                                        >{linkDefault.url}</option>)
-                                    }
-                                </select>
-                            </td>
-                            <td>{this.state.linkCategory}</td>
-                            <td>{this.state.linkDescription}</td>
-                            <td>
-                                {
-                                    this.isFormCreateLinkValidated() ?
-                                    <a className="save" onClick={this.saveAndCloseLinkForm}><i className="material-icons">save</i></a>:
-                                    <a className="delete" onClick={this.closeCreateLinkForm}><i className="material-icons">delete</i></a>
-                                }
-                            </td>
-                        </tr> 
-                        
                         {
-                            company.item.links.listPaginate.length > 0 ? 
-                            company.item.links.listPaginate.map( link => 
+                            linkPaginate.length > 0 ? 
+                            linkPaginate.map( link => 
                                 <tr key={link._id}>
+                                    <td>
+                                        <input 
+                                            type="checkbox" 
+                                            value={link._id} 
+                                            onChange={this.handleCheckbox} 
+                                            checked={!link.deleteSoft}
+                                        />
+                                    </td>
                                     <td>{ link.url }</td>
                                     <td>{ link.category }</td>
                                     <td>{ link.description }</td>
-                                    <td>
-                                        <a className="delete" onClick={() => this.deleteCompanyLink(companyId, link._id)}><i className="material-icons">delete</i></a>
-                                    </td>
                                 </tr> 
                             ) : (
                                 company.item.links.isLoading ?
@@ -233,6 +181,48 @@ class CompanyManageLinks extends Component {
             </div>
          );
     }
+
+    checkAll = (e) => {
+        let {linkPaginate} = this.state;
+        let {checked} = e.target;
+        
+        const linkArr = linkPaginate.map(link=>{
+            return {
+                ...link,
+                deleteSoft: !checked
+            }
+        });
+        this.setState({
+            checkedAll: checked,
+            linkPaginate: linkArr
+        })
+    }
+
+    handleCheckbox = (e) => {
+        const {linkPaginate} = this.state;
+        const {value, checked} = e.target;
+        for (let i = 0; i < linkPaginate.length; i++) {
+            if(value === linkPaginate[i]._id){
+                linkPaginate[i].deleteSoft = !checked;
+                this.setState({
+                    linkPaginate
+                })
+                break;
+            }
+        }
+    }
+
+    updateCompanyLinks = () => {
+        let {linkPaginate} = this.state;
+        let data = linkPaginate.map(link=>{
+            return {
+                _id: link._id,
+                deleteSoft: link.deleteSoft
+            }
+        });
+
+        this.props.updateCompanyLinks(data);
+    }
 }
 
 function mapState(state) {
@@ -240,9 +230,8 @@ function mapState(state) {
     return { company, systemLinks };
 }
 const action = {
-    addCompanyLink: CompanyActions.addCompanyLink,
-    deleteCompanyLink: CompanyActions.deleteCompanyLink,
-    getCompanyLinks: CompanyActions.getCompanyLinks
+    getCompanyLinks: CompanyActions.getCompanyLinks,
+    updateCompanyLinks: CompanyActions.updateCompanyLinks
 }
 
 const connectedCompanyManageLinks = connect(mapState, action)(withTranslate(CompanyManageLinks))

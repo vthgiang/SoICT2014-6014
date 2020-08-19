@@ -63,12 +63,6 @@ exports.authFunc = (checkPage = true) => {
                  */
                 if (verified.fingerprint !== fingerprint) throw ['fingerprint_invalid']; // phát hiện lỗi client copy jwt và paste vào localstorage của trình duyệt để không phải đăng nhập
 
-                /**
-                 * Kiểm tra xem token có còn hoạt động hay không ?
-                 * Nghĩa là JWT chỉ được coi là hoạt động nếu như nó vẫn còn được lưu lại trong CSDL của người dùng.
-                 * Nếu như người tạo ra JWT này đã đăng xuất thì JWT này sẽ được xóa đi khỏi CSDL của người dùng.
-                 * Lần đăng nhập sau server sẽ tạo ra một JWT mới khác cho người dùng
-                 */
                 const userToken = await User.findById(req.user._id);
                 if (userToken.numberDevice === 0) throw ['acc_log_out'];
 
@@ -110,7 +104,8 @@ exports.authFunc = (checkPage = true) => {
                 const link = role.name !== 'System Admin' ?
                     await Link.findOne({
                         url,
-                        company: req.user.company._id
+                        company: req.user.company._id,
+                        deleteSoft: false
                     }) :
                     await Link.findOne({
                         url,

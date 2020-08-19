@@ -28,7 +28,7 @@ const TaskProcessSchema = new Schema({
         required: true,
         ref: User,
     },
-    infoTask: [{
+    tasks: [{
         code: {
             type: String,
         },
@@ -137,30 +137,20 @@ const TaskProcessSchema = new Schema({
             default: 0,
             required: true
         },
-        precedingTasks: [{
+        preceedingTasks: [{
             task: {
-              code: {
                 type: String,
-              },
-              name: {
-                type: String,
-              },
             },
-            label: {
-              type: String
+            link: {
+                type: String
             }
         }],
         followingTasks: [{
             task: {
-              code: {
                 type: String,
-              },
-              name: {
-                type: String,
-              },
             },
-            label: {
-              type: String
+            link: {
+                type: String
             }
         }],
     }],

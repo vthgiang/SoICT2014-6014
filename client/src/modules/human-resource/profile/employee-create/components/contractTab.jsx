@@ -140,7 +140,7 @@ class ContractTab extends Component {
         let { contracts } = this.state;
 
         let contractsNew = [...contracts];
-        let checkData = this.checkForDuplicate(data, contractsNew.splice(data.index, 1));
+        let checkData = this.checkForDuplicate(data, contractsNew.filter((x, index) => index !== data.index));
         if (checkData) {
             contracts[data.index] = data;
             await this.setState({

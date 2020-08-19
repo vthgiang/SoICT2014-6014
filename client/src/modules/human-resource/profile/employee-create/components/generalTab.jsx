@@ -1,17 +1,24 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DatePicker, ErrorLabel, SelectBox } from '../../../../../common-components';
+
 import { EmployeeCreateValidator } from './employeeCreateValidator';
-import { LOCAL_SERVER_API } from '../../../../../env';
+
 import "./addEmployee.css";
+
 class GeneralTab extends Component {
     constructor(props) {
         super(props);
         this.state = {};
     }
 
-    // Function format dữ liệu Date thành string
+    /**
+     * Function format dữ liệu Date thành string
+     * @param {*} date : Ngày muốn format
+     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
+     */
     static formatDate(date, monthYear = false) {
         if (date) {
             let d = new Date(date),
@@ -28,16 +35,15 @@ class GeneralTab extends Component {
                 return [month, year].join('-');
             } else return [day, month, year].join('-');
         } else {
-            return "";
+            return date;
         }
-
     }
 
-    // Function upload avatar 
+    /** Function upload avatar  */
     handleUpload = (e) => {
-        var file = e.target.files[0];
+        let file = e.target.files[0];
         if (file !== undefined) {
-            var fileLoad = new FileReader();
+            let fileLoad = new FileReader();
             fileLoad.readAsDataURL(file);
             fileLoad.onload = () => {
                 this.setState({
@@ -48,7 +54,7 @@ class GeneralTab extends Component {
         }
     }
 
-    // Function lưu các trường thông tin vào state
+    /** Function lưu các trường thông tin vào state */
     handleChange = (e) => {
         const { name, value } = e.target;
         this.setState({
@@ -56,7 +62,11 @@ class GeneralTab extends Component {
         })
         this.props.handleChange(name, value);
     }
-    //Funtion bắt sự kiện thay đổi trạng thái làm việc
+
+    /**
+     * Funtion bắt sự kiện thay đổi trạng thái làm việc
+     * @param {*} value : Trạng thái làm việc
+     */
     handleChangeStatus = (value) => {
         this.setState({
             status: value[0]
@@ -64,7 +74,7 @@ class GeneralTab extends Component {
         this.props.handleChange('status', value[0]);
     }
 
-    // Funtion bắt sự kiện thay đổi giới tính
+    /** Funtion bắt sự kiện thay đổi giới tính */
     handleGenderChange = (e) => {
         const { value } = e.target;
         this.setState({
@@ -73,7 +83,7 @@ class GeneralTab extends Component {
         this.props.handleChange('gender', value);
     }
 
-    // Funtion bắt sự kiện thay đổi tình trạng quan hệ
+    /** Funtion bắt sự kiện thay đổi tình trạng quan hệ */
     handleMaritalStatusChange = (e) => {
         const { value } = e.target;
         this.setState({
@@ -82,13 +92,14 @@ class GeneralTab extends Component {
         this.props.handleChange('maritalStatus', value);
     }
 
-    // Function bắt sự kiện thay đổi mã nhân viên
+    /** Function bắt sự kiện thay đổi mã nhân viên */
     handleMSNVChange = (e) => {
         const { value } = e.target;
         this.validateEmployeeNumber(value, true);
     }
     validateEmployeeNumber = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateEmployeeNumber(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateEmployeeNumber(value, translate)
         if (willUpdateState) {
             this.setState({
                 errorOnEmployeeNumber: msg,
@@ -99,13 +110,14 @@ class GeneralTab extends Component {
         return msg === undefined;
     }
 
-    // Function bắt sự kiện thay đổi mã chấm công
+    /** Function bắt sự kiện thay đổi mã chấm công */
     handleMSCCChange = (e) => {
         const { value } = e.target;
         this.validateMSCC(value, true);
     }
     validateMSCC = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateMSCC(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateMSCC(value, translate)
         if (willUpdateState) {
 
             this.setState(state => {
@@ -120,13 +132,14 @@ class GeneralTab extends Component {
         return msg === undefined;
     }
 
-    // Function bắt sự kiện thay đổi Họ và tên
+    /** Function bắt sự kiện thay đổi Họ và tên */
     handleFullNameChange = (e) => {
         const { value } = e.target;
         this.validateFullName(value, true);
     }
     validateFullName = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateFullName(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateFullName(value, translate)
         if (willUpdateState) {
 
             this.setState(state => {
@@ -141,13 +154,14 @@ class GeneralTab extends Component {
         return msg === undefined;
     }
 
-    // Function bắt sự kiện thay đổi Email công ty
+    /** Function bắt sự kiện thay đổi Email công ty */
     handleEmailCompanyChange = (e) => {
         const { value } = e.target;
         this.validateEmailCompany(value, true);
     }
     validateEmailCompany = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateEmailCompany(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateEmailCompany(value, translate)
         if (willUpdateState) {
 
             this.setState(state => {
@@ -162,13 +176,14 @@ class GeneralTab extends Component {
         return msg === undefined;
     }
 
-    // Function bắt sự kiện thay đổi số CMND
+    /** Function bắt sự kiện thay đổi số CMND */
     handleCMNDChange = (e) => {
         const { value } = e.target;
         this.validateCMND(value, true);
     }
     validateCMND = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateCMND(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateCMND(value, translate)
         if (willUpdateState) {
 
             this.setState(state => {
@@ -183,13 +198,14 @@ class GeneralTab extends Component {
         return msg === undefined;
     }
 
-    // Function bắt sự kiện thay đổi nơi cấp
+    /** Function bắt sự kiện thay đổi nơi cấp */
     handleAddressCMNDChange = (e) => {
         const { value } = e.target;
         this.validateAddressCMND(value, true);
     }
     validateAddressCMND = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateAddressCMND(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateAddressCMND(value, translate)
         if (willUpdateState) {
 
             this.setState(state => {
@@ -204,12 +220,16 @@ class GeneralTab extends Component {
         return msg === undefined;
     }
 
-    // Function bắt sự kiện thay đổi ngày sinh
+    /**
+     * Function bắt sự kiện thay đổi ngày sinh
+     * @param {*} value : Ngày sinh
+     */
     handleBrithdayChange = (value) => {
         this.validateBrithday(value, true)
     }
     validateBrithday = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateBrithday(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateBrithday(value, translate)
         if (willUpdateState) {
 
             this.setState(state => {
@@ -224,9 +244,14 @@ class GeneralTab extends Component {
         return msg === undefined;
     }
 
-    // Function bắt sự kiện thay đổi ngày bắt đầu làm việc
+    /**
+     * Function bắt sự kiện thay đổi ngày bắt đầu làm việc
+     * @param {*} value 
+     */
     handleStartingDateChange = (value) => {
+        const { translate } = this.props;
         let { errorOnLeavingDate, leavingDate } = this.state;
+
         let errorOnStartingDate = undefined;
         let startDate;
         if (value) {
@@ -238,27 +263,33 @@ class GeneralTab extends Component {
                 endDate = [endDate[2], endDate[1], endDate[0]].join('-');
                 let d = new Date(endDate);
                 if (date.getTime() >= d.getTime()) {
-                    errorOnStartingDate = "Thời gian bắt đầu làm việc phải trước thời gian nghỉ việc";
+                    errorOnStartingDate = translate('human_resource.profile.starting_date_before_leaving_date');
                 } else {
-                    errorOnLeavingDate = errorOnLeavingDate === 'Thời gian nghỉ việc phải sau thời gian bắt đầu làm việc' ? undefined : errorOnLeavingDate
+                    errorOnLeavingDate = errorOnLeavingDate === translate('human_resource.profile.leaving_date_after_starting_date') ? undefined : errorOnLeavingDate
                 }
             }
         } else {
             this.props.handleChange("leavingDate", "");
             errorOnLeavingDate = undefined
         }
+
         this.setState({
             startingDate: value,
             leavingDate: value ? leavingDate : "",
             errorOnStartingDate: errorOnStartingDate,
-            errorOnLeavingDate: errorOnLeavingDate === 'Ngày bắt đầu làm việc chưa được nhập' ? undefined : errorOnLeavingDate
+            errorOnLeavingDate: errorOnLeavingDate === translate('human_resource.profile.starting_date_required') ? undefined : errorOnLeavingDate
         })
         this.props.handleChange("startingDate", value);
     }
 
-    // Function bắt sự kiện thay đổi ngày nghỉ việc
+    /**
+     * Function bắt sự kiện thay đổi ngày nghỉ việc
+     * @param {*} value 
+     */
     handleLeavingDateChange = (value) => {
+        const { translate } = this.props;
         let { startingDate } = this.state;
+
         if (value) {
             let partValue = value.split('-');
             let endDate = [partValue[2], partValue[1], partValue[0]].join('-');
@@ -270,7 +301,7 @@ class GeneralTab extends Component {
                 if (d.getTime() >= date.getTime()) {
                     this.setState({
                         leavingDate: value,
-                        errorOnLeavingDate: "Thời gian nghỉ việc phải sau thời gian bắt đầu làm việc",
+                        errorOnLeavingDate: translate('human_resource.profile.leaving_date_after_starting_date'),
                     })
                 } else {
                     this.setState({
@@ -282,7 +313,7 @@ class GeneralTab extends Component {
             } else {
                 this.setState({
                     leavingDate: value,
-                    errorOnLeavingDate: "Ngày bắt đầu làm việc chưa được nhập",
+                    errorOnLeavingDate: translate('human_resource.profile.starting_date_required'),
                 })
             }
         } else {
@@ -294,13 +325,16 @@ class GeneralTab extends Component {
         this.props.handleChange("leavingDate", value);
     }
 
-    // Function bắt sự kiện thay đổi ngày cấp CMND
+    /**
+     * Function bắt sự kiện thay đổi ngày cấp CMND
+     * @param {*} value : Ngày cấp CMND
+     */
     handleDateCMNDChange = (value) => {
         this.validateCMNDDate(value, true);
     }
-
     validateCMNDDate = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateCMNDDate(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateCMNDDate(value, translate)
         if (willUpdateState) {
 
             this.setState(state => {
@@ -356,14 +390,19 @@ class GeneralTab extends Component {
     }
 
     render() {
-        const { id, translate } = this.props;
+        const { translate } = this.props;
+
+        const { id } = this.props;
+
         const { birthdate, identityCardDate, img, employeeNumber, employeeTimesheetId, fullName, gender, birthplace, status,
             startingDate, leavingDate, emailInCompany, maritalStatus, identityCardNumber, identityCardAddress, ethnic, religion, nationality,
             errorOnBrithdate, errorOnDateCMND, errorOnEmployeeNumber, errorOnMSCC, errorOnFullName, errorOnEmailCompany, errorOnStartingDate,
             errorOnCMND, errorOnAddressCMND, errorOnLeavingDate } = this.state;
+
         return (
             <div id={id} className="tab-pane active">
                 <div className="row box-body">
+                    {/* Ảnh đại diện */}
                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                         <div>
                             <a href={img} target="_blank">
@@ -371,10 +410,11 @@ class GeneralTab extends Component {
                             </a>
                         </div>
                         <div className="upload btn btn-default ">
-                            {translate('manage_employee.upload')}
+                            {translate('human_resource.profile.upload')}
                             <input className="upload" type="file" name="file" onChange={this.handleUpload} />
                         </div>
                     </div>
+
                     <div className="pull-right col-lg-8 col-md-8 col-ms-12  ">
                         {
                             id === 'page_general' &&
@@ -384,42 +424,47 @@ class GeneralTab extends Component {
                         }
 
                         <div className="row">
-                            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEmployeeNumber === undefined ? "" : "has-error"}`}>
-                                <label>{translate('manage_employee.staff_number')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} autoComplete="off" placeholder={translate('manage_employee.staff_number')} onChange={this.handleMSNVChange} />
+                            {/* Mã số nhân viên */}
+                            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEmployeeNumber && "has-error"}`}>
+                                <label>{translate('human_resource.profile.staff_number')}<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" name="employeeNumber" value={employeeNumber} autoComplete="off" placeholder={translate('human_resource.profile.staff_number')} onChange={this.handleMSNVChange} />
                                 <ErrorLabel content={errorOnEmployeeNumber} />
                             </div>
-                            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnMSCC === undefined ? "" : "has-error"}`}>
-                                <label htmlFor="MSCC">{translate('manage_employee.attendance_code')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" placeholder={translate('manage_employee.attendance_code')} name="employeeTimesheetId" value={employeeTimesheetId} onChange={this.handleMSCCChange} autoComplete="off" />
+                            {/* Mã số chấm công */}
+                            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnMSCC && "has-error"}`}>
+                                <label htmlFor="MSCC">{translate('human_resource.profile.attendance_code')}<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" placeholder={translate('human_resource.profile.attendance_code')} name="employeeTimesheetId" value={employeeTimesheetId} onChange={this.handleMSCCChange} autoComplete="off" />
                                 <ErrorLabel content={errorOnMSCC} />
                             </div>
                         </div>
                         <div className="row">
-                            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnFullName === undefined ? "" : "has-error"}`}>
-                                <label htmlFor="fullname">{translate('manage_employee.full_name')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="fullName" value={fullName} placeholder={translate('manage_employee.full_name')} onChange={this.handleFullNameChange} autoComplete="off" />
+                            {/* Tên nhân viên */}
+                            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnFullName && "has-error"}`}>
+                                <label htmlFor="fullname">{translate('human_resource.profile.full_name')}<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" name="fullName" value={fullName} placeholder={translate('human_resource.profile.full_name')} onChange={this.handleFullNameChange} autoComplete="off" />
                                 <ErrorLabel content={errorOnFullName} />
                             </div>
+                            {/* Giới tính */}
                             <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
-                                <label>{translate('manage_employee.gender')}<span className="text-red">*</span></label>
+                                <label>{translate('human_resource.profile.gender')}<span className="text-red">*</span></label>
                                 <div>
                                     <div className="radio-inline">
                                         <label>
                                             <input type="radio" name={`gender${id}`} value="male" onChange={this.handleGenderChange}
-                                                checked={gender === "male" ? true : false} />{translate('manage_employee.male')}</label>
+                                                checked={gender === "male" ? true : false} />{translate('human_resource.profile.male')}</label>
                                     </div>
                                     <div className="radio-inline">
                                         <label>
                                             <input type="radio" name={`gender${id}`} value="female" onChange={this.handleGenderChange}
-                                                checked={gender === "female" ? true : false} />{translate('manage_employee.female')}</label>
+                                                checked={gender === "female" ? true : false} />{translate('human_resource.profile.female')}</label>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div className="row">
-                            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnBrithdate === undefined ? "" : "has-error"}`}>
-                                <label >{translate('manage_employee.date_birth')}<span className="text-red">*</span></label>
+                            {/* Ngày sinh */}
+                            <div className={`form-group col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnBrithdate && "has-error"}`}>
+                                <label >{translate('human_resource.profile.date_birth')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`brithday${id}`}
                                     value={birthdate}
@@ -427,33 +472,36 @@ class GeneralTab extends Component {
                                 />
                                 <ErrorLabel content={errorOnBrithdate} />
                             </div>
+                            {/* Nơi sinh */}
                             <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
-                                <label htmlFor="birthplace">{translate('manage_employee.place_birth')}</label>
-                                <input type="text" className="form-control" name="birthplace" value={birthplace} onChange={this.handleChange} placeholder={translate('manage_employee.place_birth')} autoComplete="off" />
+                                <label htmlFor="birthplace">{translate('human_resource.profile.place_birth')}</label>
+                                <input type="text" className="form-control" name="birthplace" value={birthplace} onChange={this.handleChange} placeholder={translate('human_resource.profile.place_birth')} autoComplete="off" />
                             </div>
                         </div>
                         <div className="row">
+                            {/* Trạng thái làm việc */}
                             <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
-                                <label>Trạng thái</label>
+                                <label>{translate('human_resource.status')}</label>
                                 <SelectBox
                                     id={`status${id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     value={status}
-                                    items={[{ value: 'active', text: 'Đang làm việc' }, { value: 'leave', text: 'Đã nghỉ làm' }]}
+                                    items={[{ value: 'active', text: translate('human_resource.profile.active') }, { value: 'leave', text: translate('human_resource.profile.leave') }]}
                                     onChange={this.handleChangeStatus}
                                 />
                             </div>
+                            {/* Tình trạng hôn nhân */}
                             <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
-                                <label>{translate('manage_employee.relationship')}</label>
+                                <label>{translate('human_resource.profile.relationship')}</label>
                                 <div>
                                     <div className="radio-inline">
                                         <label>
-                                            <input type="radio" name={`maritalStatus${id}`} value="single" onChange={this.handleMaritalStatusChange} checked={maritalStatus === "single" ? true : false} />{translate('manage_employee.single')}</label>
+                                            <input type="radio" name={`maritalStatus${id}`} value="single" onChange={this.handleMaritalStatusChange} checked={maritalStatus === "single" ? true : false} />{translate('human_resource.profile.single')}</label>
                                     </div>
                                     <div className="radio-inline">
                                         <label>
-                                            <input type="radio" name={`maritalStatus${id}`} value="married" onChange={this.handleMaritalStatusChange} checked={maritalStatus === "married" ? true : false} />{translate('manage_employee.married')}</label>
+                                            <input type="radio" name={`maritalStatus${id}`} value="married" onChange={this.handleMaritalStatusChange} checked={maritalStatus === "married" ? true : false} />{translate('human_resource.profile.married')}</label>
                                     </div>
                                 </div>
                             </div>
@@ -462,13 +510,15 @@ class GeneralTab extends Component {
                     </div>
                     <div className="form-group col-lg-12 col-md-12 col-ms-12 col-xs-12">
                         <div className="row">
-                            <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnEmailCompany === undefined ? "" : "has-error"}`}>
-                                <label htmlFor="emailCompany">{translate('manage_employee.email')}<span className="text-red">*</span></label>
-                                <input type="email" className="form-control" placeholder={translate('manage_employee.email_company')} name="emailInCompany" value={emailInCompany} onChange={this.handleEmailCompanyChange} autoComplete="off" />
+                            {/* Email công ty */}
+                            <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnEmailCompany && "has-error"}`}>
+                                <label htmlFor="emailCompany">{translate('human_resource.profile.email')}<span className="text-red">*</span></label>
+                                <input type="email" className="form-control" placeholder={translate('human_resource.profile.email_company')} name="emailInCompany" value={emailInCompany} onChange={this.handleEmailCompanyChange} autoComplete="off" />
                                 <ErrorLabel content={errorOnEmailCompany} />
                             </div>
-                            <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnStartingDate === undefined ? "" : "has-error"}`}>
-                                <label >Ngày bắt đầu làm việc</label>
+                            {/* Ngày bắt đầu làm việc */}
+                            <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnStartingDate && "has-error"}`}>
+                                <label >{translate('human_resource.profile.starting_date')}</label>
                                 <DatePicker
                                     id={`startingDate${id}`}
                                     deleteValue={leavingDate ? false : true}
@@ -477,8 +527,9 @@ class GeneralTab extends Component {
                                 />
                                 <ErrorLabel content={errorOnStartingDate} />
                             </div>
-                            <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnLeavingDate === undefined ? "" : "has-error"}`}>
-                                <label >Ngày nghỉ việc</label>
+                            {/* Ngày nghỉ việc */}
+                            <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnLeavingDate && "has-error"}`}>
+                                <label >{translate('human_resource.profile.leaving_date')}</label>
                                 <DatePicker
                                     id={`leavingDate${id}`}
                                     value={leavingDate}
@@ -488,13 +539,15 @@ class GeneralTab extends Component {
                             </div>
                         </div>
                         <div className="row">
-                            <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnCMND === undefined ? "" : "has-error"}`}>
-                                <label htmlFor="CMND">{translate('manage_employee.id_card')}<span className="text-red">*</span></label>
-                                <input type="number" className="form-control" name="identityCardNumber" value={identityCardNumber} onChange={this.handleCMNDChange} placeholder={translate('manage_employee.id_card')} autoComplete="off" />
+                            {/* Số CMND */}
+                            <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnCMND && "has-error"}`}>
+                                <label htmlFor="CMND">{translate('human_resource.profile.id_card')}<span className="text-red">*</span></label>
+                                <input type="number" className="form-control" name="identityCardNumber" value={identityCardNumber} onChange={this.handleCMNDChange} placeholder={translate('human_resource.profile.id_card')} autoComplete="off" />
                                 <ErrorLabel content={errorOnCMND} />
                             </div>
-                            <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnDateCMND === undefined ? "" : "has-error"}`}>
-                                <label >{translate('manage_employee.date_issued')}<span className="text-red">*</span></label>
+                            {/* Ngày cấp */}
+                            <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnDateCMND && "has-error"}`}>
+                                <label >{translate('human_resource.profile.date_issued')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`dateCMND${id}`}
                                     value={identityCardDate}
@@ -502,24 +555,28 @@ class GeneralTab extends Component {
                                 />
                                 <ErrorLabel content={errorOnDateCMND} />
                             </div>
-                            <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnAddressCMND === undefined ? "" : "has-error"}`}>
-                                <label htmlFor="addressCMND">{translate('manage_employee.issued_by')}<span className="text-red">*</span></label>
-                                <input type="text" className="form-control" name="identityCardAddress" value={identityCardAddress} onChange={this.handleAddressCMNDChange} placeholder={translate('manage_employee.issued_by')} autoComplete="off" />
+                            {/* Nơi cấp */}
+                            <div className={`form-group col-lg-4 col-md-4 col-ms-12 col-xs-12 ${errorOnAddressCMND && "has-error"}`}>
+                                <label htmlFor="addressCMND">{translate('human_resource.profile.issued_by')}<span className="text-red">*</span></label>
+                                <input type="text" className="form-control" name="identityCardAddress" value={identityCardAddress} onChange={this.handleAddressCMNDChange} placeholder={translate('human_resource.profile.issued_by')} autoComplete="off" />
                                 <ErrorLabel content={errorOnAddressCMND} />
                             </div>
                         </div>
                         <div className="row">
+                            {/* Dân tộc */}
                             <div className="form-group col-lg-4 col-md-4 col-ms-12 col-xs-12">
-                                <label htmlFor="national">{translate('manage_employee.ethnic')}</label>
-                                <input type="text" className="form-control" name="ethnic" value={ethnic} onChange={this.handleChange} placeholder={translate('manage_employee.ethnic')} autoComplete="off" />
+                                <label htmlFor="national">{translate('human_resource.profile.ethnic')}</label>
+                                <input type="text" className="form-control" name="ethnic" value={ethnic} onChange={this.handleChange} placeholder={translate('human_resource.profile.ethnic')} autoComplete="off" />
                             </div>
+                            {/* Tôn giáo */}
                             <div className="form-group col-lg-4 col-md-4 col-ms-12 col-xs-12">
-                                <label htmlFor="religion">{translate('manage_employee.religion')}</label>
-                                <input type="text" className="form-control" name="religion" value={religion} onChange={this.handleChange} placeholder={translate('manage_employee.religion')} autoComplete="off" />
+                                <label htmlFor="religion">{translate('human_resource.profile.religion')}</label>
+                                <input type="text" className="form-control" name="religion" value={religion} onChange={this.handleChange} placeholder={translate('human_resource.profile.religion')} autoComplete="off" />
                             </div>
+                            {/* Quốc tịch */}
                             <div className="form-group col-lg-4 col-md-4 col-ms-12 col-xs-12">
-                                <label htmlFor="nation">{translate('manage_employee.nationality')}</label>
-                                <input type="text" className="form-control" name="nationality" value={nationality} onChange={this.handleChange} placeholder={translate('manage_employee.nationality')} autoComplete="off" />
+                                <label htmlFor="nation">{translate('human_resource.profile.nationality')}</label>
+                                <input type="text" className="form-control" name="nationality" value={nationality} onChange={this.handleChange} placeholder={translate('human_resource.profile.nationality')} autoComplete="off" />
                             </div>
                         </div>
                     </div>
@@ -528,5 +585,6 @@ class GeneralTab extends Component {
         );
     }
 };
+
 const generalTab = connect(null, null)(withTranslate(GeneralTab));
 export { generalTab as GeneralTab };

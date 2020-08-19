@@ -92,9 +92,3 @@ exports.getCustomerLiabilities = async (company, query) => {
             });
     }
 }
-
-exports.getLocations = async () => {
-    const result = await axios.get('https://thongtindoanhnghiep.co/api/city');
-
-    return result.data.LtsItem;
-}
