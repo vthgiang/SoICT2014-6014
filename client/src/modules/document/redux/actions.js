@@ -466,12 +466,12 @@ function editDocumentArchive(id, data) {
     }
 };
 
-function deleteDocumentArchive(data, type = "single") {
+function deleteDocumentArchive(nodeDelete, nodeFix, type = "single") {
 
     return dispatch => {
         dispatch({ type: DocumentConstants.DELETE_DOCUMENT_ARCHIVE_REQUEST });
         if (type !== 'single') {
-            DocumentServices.deleteManyDocumentArchives(data)
+            DocumentServices.deleteManyDocumentArchives(nodeDelete, nodeFix)
                 .then(res => {
                     dispatch({
                         type: DocumentConstants.DELETE_DOCUMENT_ARCHIVE_SUCCESS,
@@ -485,7 +485,7 @@ function deleteDocumentArchive(data, type = "single") {
                     dispatch({ type: DocumentConstants.DELETE_DOCUMENT_ARCHIVE_FAILE });
                 })
         } else {
-            DocumentServices.deleteDocumentArchives(data)
+            DocumentServices.deleteDocumentArchives(nodeDelete, nodeFix)
                 .then(res => {
                     dispatch({
                         type: DocumentConstants.DELETE_DOCUMENT_ARCHIVE_SUCCESS,

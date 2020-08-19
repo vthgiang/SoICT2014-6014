@@ -23,6 +23,7 @@ class AdministrationDocumentArchives extends Component {
     onChanged = async (e, data) => {
         await this.setState({
             currentArchive: data.node,
+
         })
         window.$(`#edit-document-archive`).slideDown();
     }
@@ -44,7 +45,7 @@ class AdministrationDocumentArchives extends Component {
 
     deleteArchive = () => {
         const { translate } = this.props;
-        const { deleteNode } = this.state;
+        const { deleteNode, archiveParent } = this.state;
         Swal.fire({
             html: `<h4 style="color: red"><div>Xóa lưu trữ</div>?</h4>`,
             icon: 'warning',
@@ -55,7 +56,7 @@ class AdministrationDocumentArchives extends Component {
             confirmButtonText: translate('general.yes'),
         }).then(result => {
             if (result.value && deleteNode.length > 0) {
-                this.props.deleteDocumentArchive(deleteNode, "many");
+                this.props.deleteDocumentArchive(archiveParent, deleteNode, "many");
                 this.setState({
                     deleteNode: []
                 });
@@ -66,7 +67,9 @@ class AdministrationDocumentArchives extends Component {
     render() {
         const { archiveParent, deleteNode } = this.state;
         const { translate } = this.props;
-        const { list } = this.props.documents.administration.archives;
+        const { list, tree } = this.props.documents.administration.archives;
+        console.log('deleteNOde', deleteNode);
+        console.log('alo', archiveParent);
         const dataTree = list.map(node => {
             return {
                 ...node,
@@ -81,7 +84,7 @@ class AdministrationDocumentArchives extends Component {
                     window.$('#modal-create-document-archive').modal('show');
                 }} title={`Thêm`} disable={archiveParent.length > 1 ? true : false}>Thêm</button>
                 {
-                    deleteNode.length > 0 && <button class="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteArchive}>Xóa</button>
+                    archiveParent.length > 0 && <button class="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteArchive}>Xóa</button>
                 }
                 <CreateForm domainParent={this.state.archiveParent[0]} />
                 <div className="row">
@@ -106,6 +109,7 @@ class AdministrationDocumentArchives extends Component {
                                 archiveDescription={this.state.currentArchive.original.description ? this.state.currentArchive.original.description : ""}
                                 archiveParent={this.state.currentArchive.parent}
                                 archivePath={this.state.currentArchive.original.path}
+                                tree={tree}
                             />
                         }
                     </div>

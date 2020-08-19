@@ -218,11 +218,14 @@ function deleteDocumentArchives(id) {
     }, true, true, 'document');
 }
 
-function deleteManyDocumentArchives(array) {
+function deleteManyDocumentArchives(nodeDelete, nodeFix) {
 
     return sendRequest({
         url: `${LOCAL_SERVER_API}/documents/document-archives/delete-many`,
         method: 'POST',
-        data: { array }
+        data: {
+            nodeDelete: nodeDelete,
+            nodeFix: nodeFix,
+        }
     }, true, true, 'document');
 }

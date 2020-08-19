@@ -145,7 +145,24 @@ exports.createDocument = async (company, data) => {
  */
 exports.editDocument = async (id, data, query = undefined) => {
     console.log('data', data);
+    // thêm lịch sử chỉnh sửa
     console.log('querry', query);
+    let { creator, title, descriptions } = data;
+    let log = {
+        creator: creator,
+        title: title,
+        description: descriptions,
+        //createdAt: Date.now,
+    }
+    let document = await Document.findByIdAndUpdate(
+        id,
+        {
+            $push: { logs: log }
+        },
+        { new: true }
+    )
+
+    // chỉnh sửa
     if (query !== undefined && Object.keys(query).length > 0) {
 
         const doc = await Document.findById(id);
@@ -192,7 +209,8 @@ exports.editDocument = async (id, data, query = undefined) => {
 
         await doc.save();
 
-        return doc;
+        let docs = doc.logs.reverse();
+        return docs;
     }
 }
 
@@ -208,6 +226,24 @@ exports.deleteDocument = async (id) => {
     return doc;
 }
 
+// exports.addDocumentLog = async (params, body) => {
+//     let { creator, title, description } = body;
+//     let log = {
+//         creator: creator,
+//         title: title,
+//         description: description,
+//         createdAt: Date.now,
+//     }
+//     let document = await Document.findByIdAndUpdate(
+//         params.id,
+//         {
+//             $push: { logs: log }
+//         },
+//         { new: true }
+//     ).populate({ path: "logs.creator", model: User, select: "name id" })
+//     let documentLog = document.logs.reserve();
+//     return documentLog;
+// }
 exports.downloadDocumentFile = async (data) => {
     const doc = await Document.findById(data.id);
     if (doc.versions.length < data.numberVersion) throw ['cannot_download_doc_file', 'version_not_found'];
@@ -480,21 +516,30 @@ exports.deleteManyDocumentArchive = async (array, company) => {
 }
 
 exports.editDocumentArchive = async (id, data) => {
+    console.log('dataaaa', data);
     const archive = await DocumentArchive.findById(id);
+    let array = data.array;
     archive.name = data.name;
     archive.description = data.description;
     archive.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
     archive.path = await findPath(data)
     await archive.save();
-
+    for (let i = 0; i < array.length; i++) {
+        const archive = await DocumentArchive.findById(array[i]);
+        archive.path = await findPath(archive);
+        archive.save();
+    }
+    const document = await this.getDocumentArchives(archive.company)
+    console.log('rrrrrr', document)
     return archive;
 }
 
 async function findPath(data) {
-    console.log('name', data.name)
     let path = "";
-    if (data.parent && data.parent.length) {
-        let arrayParent = [];
+    let arrayParent = [];
+    arrayParent.push(data.name);
+    if (data.parent && data.parent !== "#") {
+
         let parent = data.parent;
         while (parent) {
             let tmp = await DocumentArchive.findById(parent);
@@ -502,12 +547,7 @@ async function findPath(data) {
             parent = tmp.parent;
         }
 
-        while (arrayParent && arrayParent.length) {
-            let tmp = arrayParent.pop();
-            path = path + `${tmp} - `;
-        }
     }
-    path = path + data.name;
-    console.log('pathhh', path)
+    path = arrayParent.reverse().join(" - ");
     return path;
 }
