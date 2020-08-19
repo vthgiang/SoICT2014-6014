@@ -417,10 +417,10 @@ class GeneralTab extends Component {
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps._id !== prevState._id) {
+        if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
-                _id: nextProps._id,
+                id: nextProps.id,
                 img: nextProps.img,
                 avatar: nextProps.avatar,
                 code: nextProps.code,
@@ -458,7 +458,7 @@ class GeneralTab extends Component {
     }
 
     render() {
-        const { _id } = this.props;
+        const { id } = this.props;
         const { translate, user, assetType } = this.props;
 
         const {
@@ -474,14 +474,14 @@ class GeneralTab extends Component {
         let dataList = assettypelist.map(node => {
             return {
                 ...node,
-                id: node._id,
+                id: node.id,
                 name: node.typeName,
-                parent: node.parent ? node.parent._id : null,
+                parent: node.parent ? node.parent.id : null,
             }
         })
 
         return (
-            <div id={_id} className="tab-pane active">
+            <div id={id} className="tab-pane active">
                 <div className="row">
                     {/* Ảnh tài sản */}
                     <div className="col-md-4" style={{ textAlign: 'center' }}>
@@ -536,7 +536,7 @@ class GeneralTab extends Component {
                                 <div className={`form-group ${!errorOnPurchaseDate ? "" : "has-error"}`}>
                                     <label htmlFor="purchaseDate">{translate('asset.general_information.purchase_date')}<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id={`purchaseDate${_id}`}
+                                        id={`purchaseDate${id}`}
                                         value={purchaseDate ? this.formatDate(purchaseDate): ''}
                                         onChange={this.handlePurchaseDateChange}
                                     />
@@ -547,7 +547,7 @@ class GeneralTab extends Component {
                                 <div className={`form-group ${!errorOnWarrantyExpirationDate ? "" : "has-error"}`}>
                                     <label htmlFor="warrantyExpirationDate">{translate('asset.general_information.warranty_expiration_date')}<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id={`warrantyExpirationDate${_id}`}
+                                        id={`warrantyExpirationDate${id}`}
                                         value={warrantyExpirationDate ? this.formatDate(warrantyExpirationDate): ''}
                                         onChange={this.handleWarrantyExpirationDateChange}
                                     />
@@ -559,10 +559,10 @@ class GeneralTab extends Component {
                                     <label>{translate('asset.general_information.manager')}<span className="text-red">*</span></label>
                                     <div id="managedByBox">
                                         <SelectBox
-                                            id={`managedBy${_id}`}
+                                            id={`managedBy${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })}
+                                            items={userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })}
                                             onChange={this.handleManagedByChange}
                                             value={managedBy}
                                             multiple={false}
@@ -579,10 +579,10 @@ class GeneralTab extends Component {
                                     <div>
                                         <div id="assignedToBox">
                                             <SelectBox
-                                                id={`assignedTo${_id}`}
+                                                id={`assignedTo${id}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
-                                                items={[{ value: 'null', text: '---Chọn người được giao sử dụng---' }, ...userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })]}
+                                                items={[{ value: 'null', text: '---Chọn người được giao sử dụng---' }, ...userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })]}
                                                 onChange={this.handleAssignedToChange}
                                                 value={assignedTo}
                                                 multiple={false}
@@ -595,7 +595,7 @@ class GeneralTab extends Component {
                                 <div className="form-group">
                                     <label htmlFor="handoverFromDate">{translate('asset.general_information.handover_from_date')}</label>
                                     <DatePicker
-                                        id={`handoverFromDate${_id}`}
+                                        id={`handoverFromDate${id}`}
                                         value={handoverFromDate ? this.formatDate(handoverFromDate) : ''}
                                         onChange={this.handleHandoverFromDateChange}
                                     />
@@ -605,7 +605,7 @@ class GeneralTab extends Component {
                                 <div className="form-group">
                                     <label htmlFor="handoverToDate">{translate('asset.general_information.handover_to_date')}</label>
                                     <DatePicker
-                                        id={`handoverToDate${_id}`}
+                                        id={`handoverToDate${id}`}
                                         value={handoverToDate ? this.formatDate(handoverToDate) : ''}
                                         onChange={this.handleHandoverToDateChange}
                                     />
@@ -630,7 +630,7 @@ class GeneralTab extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.status')}<span className="text-red">*</span></label>
                                     <SelectBox
-                                        id={`status${_id}`}
+                                        id={`status${id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={status}
@@ -650,7 +650,7 @@ class GeneralTab extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.can_register_for_use')}<span className="text-red">*</span></label>
                                     <SelectBox
-                                        id={`canRegisterForUse${_id}`}
+                                        id={`canRegisterForUse${id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={canRegisterForUse}
