@@ -474,9 +474,9 @@ class GeneralTab extends Component {
         let dataList = assettypelist.map(node => {
             return {
                 ...node,
-                id: node.id,
+                id: node._id,
                 name: node.typeName,
-                parent: node.parent ? node.parent.id : null,
+                parent: node.parent ? node.parent._id : null,
             }
         })
 

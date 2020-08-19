@@ -184,7 +184,6 @@ function destroy(id) {
 }
 
 function getAllUsersWithRole() {
-    console.log("hihihihihihihi")
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/user/users/roles/abc`,
         method: 'GET',

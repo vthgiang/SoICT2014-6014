@@ -78,9 +78,10 @@ class FormCreateTaskByProcess extends Component {
                 return {
                     id: nextProps.id,
                     editingTemplate: {
+                        numberOfDaysTaken: (info && info.numberOfDaysTaken) ? info.numberOfDaysTaken : 0,
                         // code: (info && info.code) ? info.code : "",
-                        startDate: (info && info.startDate) ? info.startDate : "",
-                        endDate: (info && info.endDate) ? info.endDate : "",
+                        startDate: (info && info.startDate) ? info.startDate : nextProps.startDate,
+                        endDate: (info && info.endDate) ? info.endDate : nextProps.endDate,
                         organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
                         name: (info && info.name) ? info.name : '',
                         responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees : [],
@@ -114,33 +115,6 @@ class FormCreateTaskByProcess extends Component {
             this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
             return false;
         }
-
-        // if (nextProps.isTaskTemplate && nextProps.taskTemplateId !== this.props.taskTemplateId) {
-
-        //     this.setState({
-        //         taskTemplateId: nextProps.taskTemplateId,
-        //         taskTemplate: nextProps.taskTemplate,
-        //         editingTemplate: {
-        //             _id: nextProps.taskTemplate._id,
-        //             organizationalUnit: nextProps.taskTemplate.organizationalUnit._id,
-        //             name: nextProps.taskTemplate.name,
-        //             readByEmployees: nextProps.taskTemplate.readByEmployees.map(item => item._id),
-        //             responsibleEmployees: nextProps.taskTemplate.responsibleEmployees.map(item => item._id),
-        //             accountableEmployees: nextProps.taskTemplate.accountableEmployees.map(item => item._id),
-        //             consultedEmployees: nextProps.taskTemplate.consultedEmployees.map(item => item._id),
-        //             informedEmployees: nextProps.taskTemplate.informedEmployees.map(item => item._id),
-        //             description: nextProps.taskTemplate.description,
-        //             formula: nextProps.taskTemplate.formula,
-        //             priority: nextProps.taskTemplate.priority,
-        //             taskActions: nextProps.taskTemplate.taskActions,
-        //             taskInformations: nextProps.taskTemplate.taskInformations,
-        //             startDate: nextProps.taskTemplate.startDate,
-        //             endDate: nextProps.taskTemplate.endDate,
-        //         },
-        //         showActionForm: true,
-        //     });
-        //     return true;
-        // }
 
         // Khi truy vấn lấy các đơn vị mà user là dean đã có kết quả, và thuộc tính đơn vị của newTemplate chưa được thiết lập
         if (editingTemplate.organizationalUnit === "" && department.departmentsThatUserIsDean) {
@@ -371,6 +345,33 @@ class FormCreateTaskByProcess extends Component {
     // }
 
 
+    formatDate(date) {
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [day, month, year].join('-');
+    }
+    formatMonth(date) {
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [month, year].join('-');
+    }
+
     handleChangeTaskStartDate = (value) => {
         this.validateTaskStartDate(value, true);
     }
@@ -379,7 +380,15 @@ class FormCreateTaskByProcess extends Component {
         let msg = TaskFormValidator.validateTaskStartDate(value, this.state.editingTemplate.endDate ? this.state.editingTemplate.endDate : "", translate);
 
         if (willUpdateState) {
+            let splitter = value.split('-');
+            let startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+            let timer = startDate.getTime() + this.state.editingTemplate.numberOfDaysTaken * 24 * 60 * 60 * 1000;
+
+            let endDateISO = new Date(timer).toISOString();
+            let endDate = this.formatDate(endDateISO);
+
             this.state.editingTemplate.startDate = value;
+            this.state.editingTemplate.endDate = endDate;
             this.state.editingTemplate.errorOnStartDate = msg;
             this.setState(state => {
                 return {
@@ -388,7 +397,7 @@ class FormCreateTaskByProcess extends Component {
             });
             this.props.onChangeTemplateData(this.state.editingTemplate);
         }
-        
+
         return msg === undefined;
     }
 
@@ -400,7 +409,15 @@ class FormCreateTaskByProcess extends Component {
         let msg = TaskFormValidator.validateTaskEndDate(this.state.editingTemplate.startDate ? this.state.editingTemplate.startDate : "", value, translate);
 
         if (willUpdateState) {
+            let splitter = value.split('-');
+            let endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+            let timer = endDate.getTime() - this.state.editingTemplate.numberOfDaysTaken * 24 * 60 * 60 * 1000;
+
+            let startDateISO = new Date(timer).toISOString();
+            let startDate = this.formatDate(startDateISO);
+
             this.state.editingTemplate.endDate = value;
+            this.state.editingTemplate.startDate = startDate;
             this.state.editingTemplate.errorOnEndDate = msg;
             this.setState(state => {
                 return {
