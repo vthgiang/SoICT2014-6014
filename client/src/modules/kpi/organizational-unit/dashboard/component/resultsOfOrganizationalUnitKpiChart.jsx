@@ -245,15 +245,13 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
                 let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
                 let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
                 let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);           
-                let d = new Date(x.date),
-                    month = '' + (d.getMonth() + 1),
-                    year = d.getFullYear(),
-                    date =month + '-' + year;
+                let d = new Date(x.date);
+                   
                 return {
                     automaticPoint: automaticPoint,
                     employeePoint: employeePoint,
                     approverPoint: approverPoint,
-                    date : date                 
+                    date : d               
                 };
             })
         }
@@ -266,12 +264,11 @@ class ResultsOfOrganizationalUnitKpiChart extends Component {
                     sheetTitle : fileName,
                     tables: [
                         {
-                            tableName : 'Dữ liệu để vẽ biểu đồ '+ fileName,
                             columns: [
                                 { key: "date", value: "Thời gian" },
                                 { key: "automaticPoint", value: "Điểm tự động" },
                                 { key: "employeePoint", value: "Điểm tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm được đánh giá" }
+                                { key: "approverPoint", value: "Điểm được phê duyệt" }
                             ],
                             data: data
                         }

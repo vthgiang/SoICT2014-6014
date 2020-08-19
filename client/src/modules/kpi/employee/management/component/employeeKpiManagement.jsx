@@ -190,9 +190,7 @@ class KPIPersonalManager extends Component {
                 let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
                 let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
                 let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);
-                let d = new Date(x.date),
-                    month = '' + (d.getMonth() + 1),
-                    year = d.getFullYear();
+                let date = new Date(x.date);                   
                 let status = this.checkStatusKPI(x.status);
                 let numberTarget =parseInt(x.kpis.length);               
 
@@ -202,8 +200,7 @@ class KPIPersonalManager extends Component {
                     status: status,
                     employeePoint: employeePoint,
                     approverPoint: approverPoint,
-                    month: month,
-                    year: year,
+                    date :date,
                     numberTarget:numberTarget                   
                 };
             })
@@ -219,13 +216,12 @@ class KPIPersonalManager extends Component {
                         {
                             columns: [
                                 { key: "STT", value: "STT" },
-                                { key: "month", value: "Tháng" },
-                                { key: "year", value: "Năm" },          
+                                { key: "date", value: "Thời gian" },    
                                 { key: "status", value: "Trạng thái mục tiêu" },                     
                                 { key: "numberTarget", value: "Số lượng mục tiêu" },
                                 { key: "automaticPoint", value: "Điểm tự động" },
                                 { key: "employeePoint", value: "Điểm tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm được đánh giá" }
+                                { key: "approverPoint", value: "Điểm được phê duyệt" }
                             ],
                             data: data
                         }

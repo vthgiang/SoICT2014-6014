@@ -269,8 +269,9 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
     convertDataToExportData = (data, startDate, endDate) => {
-        let fileName = "Kết quả KPI đơn vị từ " + (startDate?startDate:"")+" đến "+(endDate?endDate:"");
+        let fileName = "Kết quả KPI các đơn vị từ " + (startDate?startDate:"")+" đến "+(endDate?endDate:"");
         let unitKpiArray=[];
+        let convertedData ={},finalData;
         if (data) {           
            for(let i=0; i< data.length;i++){
                if(data[i].length >1){
@@ -281,46 +282,62 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
                }
            }
         }
-        console.log("\n\n\n\n\n\n\n",unitKpiArray);
         if (unitKpiArray.length>0) {           
             unitKpiArray = unitKpiArray.map((x, index) => {
                
                 let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
                 let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
                 let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);           
-                let date =x.date;
+                let date =new Date(x.date);
+                let time = ( date.getMonth() +1 )+"-"+date.getFullYear();
                 let unitName = x.unitName;
                 return {
                     automaticPoint: automaticPoint,
                     employeePoint: employeePoint,
                     approverPoint: approverPoint,
                     date : date,
-                    unitName :unitName                 
+                    unitName :unitName  ,
+                    time:time              
                 };
             })
         }
+        for(let i=0;i<unitKpiArray.length;i++){
+            let objectName = unitKpiArray[i].time;
+            let checkDuplicate = (Object.keys(convertedData)).find(element => element === objectName);
+            if(!checkDuplicate)
+            {
+                convertedData[objectName]=[];
+                convertedData[objectName].push(unitKpiArray[i]);
+            }
+            else {
+                convertedData[objectName].push(unitKpiArray[i]);
+            }
+
+        }
+        finalData =Object.values(convertedData);        
 
         let exportData = {
             fileName: fileName,
-            dataSheets: [
-                {
-                    sheetName: "sheet1",
-                    sheetTitle : fileName,
+            dataSheets: finalData.map((x,index) => {
+
+                return {
+                    sheetName: (x[0].time)?x[0].time:("sheet "+index),
+                    sheetTitle : "Kết quả KPI các đơn vị "+ ((x[0].time)?x[0].time:"") ,
                     tables: [
                         {
-                            tableName : 'Dữ liệu để vẽ biểu đồ '+ fileName,
                             columns: [
                                 { key: "unitName", value: "Tên đơn vị"},
                                 { key: "date", value: "Thời gian" },
                                 { key: "automaticPoint", value: "Điểm tự động" },
                                 { key: "employeePoint", value: "Điểm tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm được đánh giá" }
+                                { key: "approverPoint", value: "Điểm được phê duyệt" }
                             ],
-                            data: unitKpiArray
+                            data: x
                         }
                     ]
-                },
-            ]
+                }
+            })
+                
         }
         return exportData;        
        

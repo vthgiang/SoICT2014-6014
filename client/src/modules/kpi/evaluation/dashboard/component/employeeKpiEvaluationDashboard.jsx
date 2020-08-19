@@ -267,7 +267,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
         const { unitMembers, dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids, organizationalUnitIds } = this.state;
 
         let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee;
-        let queue = [], childrenOrganizationalUnit = [];
+        let queue = [], childrenOrganizationalUnit = [],userName;
         let kpimember;
         let listkpi, kpiApproved;
         let currentUnit = dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
@@ -276,6 +276,16 @@ class EmployeeKpiEvaluationDashboard extends Component {
         let currentYear = currentDate.getFullYear();
         let currentMonth = currentDate.getMonth();
 
+        if(unitMembers&&infosearch)
+        {
+            for(let i=0;i<unitMembers[0].value.length;i++)
+            {
+                let arr = unitMembers[0].value
+                if(arr[i].value === infosearch.userId){
+                    userName = arr[i].text
+                }
+            }
+        }
 
         if (this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets) {
             employeeKpiSets = this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
@@ -530,6 +540,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                             endMonth={infosearch.endMonth}
                                             info={infosearch}
                                             unitId={currentUnit}
+                                            userName = {userName}
                                         />
                                     }
                                 </div>

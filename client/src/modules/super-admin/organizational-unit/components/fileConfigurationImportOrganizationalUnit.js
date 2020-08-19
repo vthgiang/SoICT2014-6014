@@ -5,7 +5,7 @@ export const configDepartment = {
     },
     rowHeader: {
         description: "Số tiêu đề của bảng",
-        value: 2
+        value: 1
     },
     name: {
         columnName: "Tên đơn vị",
@@ -44,7 +44,7 @@ export const templateImportDepartment = {
     dataSheets: [
         {
             tableName: "Bảng thống kê cơ cấu tổ chức",
-            rowHeader: 2,
+            rowHeader: 1,
             sheetName: "sheet1",
             tables: [{
                 columns: [
