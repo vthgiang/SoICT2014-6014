@@ -14,7 +14,12 @@ class InsurranceTab extends Component {
         super(props);
         this.state = {};
     }
-    // Function format dữ liệu Date thành string
+
+    /**
+     * Function format dữ liệu Date thành string
+     * @param {*} date : Ngày muốn format
+     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
+     */
     formatDate(date, monthYear = false) {
         if (date) {
             let d = new Date(date),
@@ -32,10 +37,13 @@ class InsurranceTab extends Component {
             } else return [day, month, year].join('-');
         }
         return date;
-
     }
 
-    // Bắt sự kiện click edit BHXH
+    /**
+     * Bắt sự kiện click edit BHXH
+     * @param {*} value : BHXH cần chỉnh sửa
+     * @param {*} index : Số thứ tự BHXH cần chỉnh sửa
+     */
     handleEdit = async (value, index) => {
         await this.setState(state => {
             return {
@@ -47,6 +55,7 @@ class InsurranceTab extends Component {
     }
 
 
+    /** Function bắt sự kiện thay đổi mã số BHYT, BHXH*/
     handleChange = (e) => {
         const { name, value } = e.target;
         this.setState({
@@ -54,9 +63,15 @@ class InsurranceTab extends Component {
         })
         this.props.handleChange(name, value);
     }
-    // Bắt sự kiện thay đổi ngày có hiệu lực
+
+    /**
+     * Bắt sự kiện thay đổi ngày có hiệu lực
+     * @param {*} value : Ngày có hiệu lực
+     */
     handleStartDateBHYTChange = (value) => {
+        const { translate } = this.props;
         let { errorOnHealthInsuranceEndDate, healthInsuranceEndDate } = this.state;
+
         let errorOnHealthInsuranceStartDate = undefined;
         let startDate;
         if (value) {
@@ -68,23 +83,29 @@ class InsurranceTab extends Component {
                 endDate = [endDate[2], endDate[1], endDate[0]].join('-');
                 let d = new Date(endDate);
                 if (date.getTime() >= d.getTime()) {
-                    errorOnHealthInsuranceStartDate = "Thời gian bắt đầu phải trước thời gian kết thúc";
+                    errorOnHealthInsuranceStartDate = translate('human_resource.commendation_discipline.discipline.start_date_before_end_date');
                 } else {
-                    errorOnHealthInsuranceEndDate = errorOnHealthInsuranceEndDate === 'Thời gian kết thúc phải sau thời gian bắt đầu' ? undefined : errorOnHealthInsuranceEndDate
+                    errorOnHealthInsuranceEndDate = translate('human_resource.commendation_discipline.discipline.end_date_after_start_date') ? undefined : errorOnHealthInsuranceEndDate
                 }
             }
         }
         this.setState({
             healthInsuranceStartDate: startDate,
             errorOnHealthInsuranceStartDate: errorOnHealthInsuranceStartDate,
-            errorOnHealthInsuranceEndDate: errorOnHealthInsuranceEndDate === 'Ngày có hiệu lực chưa được nhập' ? undefined : errorOnHealthInsuranceEndDate
+            errorOnHealthInsuranceEndDate: errorOnHealthInsuranceEndDate === translate('human_resource.profile.start_date_insurance_required') ? undefined : errorOnHealthInsuranceEndDate
         })
         this.props.handleChange("healthInsuranceStartDate", value)
 
     }
-    // Bắt sự kiện thay dổi ngày hêt hạn
+
+    /**
+     * Bắt sự kiện thay dổi ngày hêt hiệu lực
+     * @param {*} value : Ngày hết hiệu lực
+     */
     handleEndDateBHYTChange = (value) => {
+        const { translate } = this.props;
         let { healthInsuranceStartDate } = this.state;
+
         if (value) {
             let partValue = value.split('-');
             let endDate = [partValue[2], partValue[1], partValue[0]].join('-');
@@ -96,7 +117,7 @@ class InsurranceTab extends Component {
                 if (d.getTime() >= date.getTime()) {
                     this.setState({
                         healthInsuranceEndDate: endDate,
-                        errorOnHealthInsuranceEndDate: "Thời gian kết thúc phải sau thời gian bắt đầu",
+                        errorOnHealthInsuranceEndDate: translate('human_resource.commendation_discipline.discipline.end_date_after_start_date'),
                     })
                 } else {
                     this.setState({
@@ -109,7 +130,7 @@ class InsurranceTab extends Component {
             } else {
                 this.setState({
                     healthInsuranceEndDate: endDate,
-                    errorOnHealthInsuranceEndDate: "Ngày có hiệu lực chưa được nhập",
+                    errorOnHealthInsuranceEndDate: translate('human_resource.profile.start_date_insurance_required'),
                 })
             }
         } else {
@@ -118,24 +139,40 @@ class InsurranceTab extends Component {
                 errorOnHealthInsuranceEndDate: undefined,
             })
         }
+
         this.props.handleChange("healthInsuranceEndDate", value)
     }
-    // function thêm thông tin quá trình đóng BHXH
-    handleAddBHXH = async (data) => {
-        let { socialInsuranceDetails } = this.state;
+
+    /**
+     * Function kiểm tra trùng lặp thời gian đóng bảo hiểm
+     * @param {*} data : Dữ liệu quá trình đóng bảo hiểm muốn thêm, chỉnh sửa
+     * @param {*} array : Danh sách quá trình đóng baoe hiểm
+     */
+    checkForDuplicate = (data, array) => {
         let startDate = new Date(data.startDate);
         let endDate = new Date(data.endDate);
         let checkData = true;
-        // Kiểm tra trùng lặp quá trình đống bảo hiểm xã hộihội
-        for (let n in socialInsuranceDetails) {
-            let date1 = new Date(socialInsuranceDetails[n].startDate);
-            let date2 = new Date(socialInsuranceDetails[n].endDate);
+        for (let n in array) {
+            let date1 = new Date(array[n].startDate);
+            let date2 = new Date(array[n].endDate);
             if (date1.getTime() === startDate.getTime() || (startDate.getTime() < date1.getTime() && endDate.getTime() > date1.getTime()) ||
                 (startDate.getTime() < date2.getTime() && endDate.getTime() > date1.getTime())) {
                 checkData = false;
                 break;
             }
         }
+        return checkData
+    }
+
+    /**
+     * Function thêm thông tin quá trình đóng BHXH
+     * @param {*} data : Dữ liệu quá trình đóng BHXH muốn thêm
+     */
+    handleAddBHXH = async (data) => {
+        const { translate } = this.props;
+        let { socialInsuranceDetails } = this.state;
+
+        let checkData = this.checkForDuplicate(data, socialInsuranceDetails);
         if (checkData) {
             await this.setState({
                 socialInsuranceDetails: [...socialInsuranceDetails, {
@@ -148,32 +185,57 @@ class InsurranceTab extends Component {
                 <ServerResponseAlert
                     type='error'
                     title={'general.error'}
-                    content={['Quá trình đóng bảo hiểm bị trùng lặp']}
+                    content={[translate('human_resource.profile.time_BHXH_duplicate')]}
                 />,
                 { containerId: 'toast-notification' }
             );
         }
     }
-    // function chỉnh sửa thông tin quá trình đóng BHXH
+
+    /**
+     * Function chỉnh sửa thông tin quá trình đóng BHXH
+     * @param {*} data : Dữ liệu quá trình đóng BHXH muốn chỉnh sửa
+     */
     handleEditBHXH = async (data) => {
-        var socialInsuranceDetails = this.state.socialInsuranceDetails;
+        const { translate } = this.props;
+        let { socialInsuranceDetails } = this.state;
         socialInsuranceDetails[data.index] = data;
-        await this.setState({
-            socialInsuranceDetails: socialInsuranceDetails
-        })
-        this.props.handleEditBHXH(this.state.socialInsuranceDetails, data);
+        let checkData = this.checkForDuplicate(data, socialInsuranceDetails.filter((x, index) => index !== data.index));
+
+        if (checkData) {
+            await this.setState({
+                socialInsuranceDetails: socialInsuranceDetails
+            })
+            this.props.handleEditBHXH(socialInsuranceDetails, data);
+        } else {
+            toast.error(
+                <ServerResponseAlert
+                    type='error'
+                    title={'general.error'}
+                    content={[translate('human_resource.profile.time_BHXH_duplicate')]}
+                />,
+                { containerId: 'toast-notification' }
+            );
+        }
     }
-    // Function bắt sự kiện xoá quá trình đóng BHXH
+
+    /**
+     * Function bắt sự kiện xoá quá trình đóng BHXH
+     * @param {*} index : Số thứ tự quá trình đóng BHXH cần xoá
+     */
     delete = async (index) => {
-        var socialInsuranceDetails = this.state.socialInsuranceDetails;
-        var data = socialInsuranceDetails[index];
+        let { socialInsuranceDetails } = this.state;
+
+        let data = socialInsuranceDetails[index];
         socialInsuranceDetails.splice(index, 1);
+        console.log(socialInsuranceDetails);
         await this.setState({
             ...this.state,
             socialInsuranceDetails: [...socialInsuranceDetails]
         })
-        this.props.handleDeleteBHXH(this.state.socialInsuranceDetails, data);
+        this.props.handleDeleteBHXH(socialInsuranceDetails, data);
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -192,21 +254,28 @@ class InsurranceTab extends Component {
 
 
     render() {
-        const { id, translate } = this.props;
+        const { translate } = this.props;
+
+        const { id } = this.props;
+
         const { healthInsuranceNumber, healthInsuranceStartDate, healthInsuranceEndDate, errorOnHealthInsuranceStartDate,
-            socialInsuranceNumber, socialInsuranceDetails, errorOnHealthInsuranceEndDate } = this.state;
+            socialInsuranceNumber, socialInsuranceDetails, errorOnHealthInsuranceEndDate, currentRow } = this.state;
+
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
+                    {/* Thông tin bảo hiểm y tế */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border" ><h4 className="box-title">{translate('manage_employee.bhyt')}</h4></legend>
+                        <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.bhyt')}</h4></legend>
                         <div className="row">
+                            {/* Mã số bảo hiểm y tế */}
                             <div className="form-group col-md-4">
-                                <label>{translate('manage_employee.number_BHYT')}</label>
-                                <input type="text" className="form-control" name="healthInsuranceNumber" value={healthInsuranceNumber} onChange={this.handleChange} placeholder={translate('manage_employee.number_BHYT')} autoComplete="off" />
+                                <label>{translate('human_resource.profile.number_BHYT')}</label>
+                                <input type="text" className="form-control" name="healthInsuranceNumber" value={healthInsuranceNumber} onChange={this.handleChange} placeholder={translate('human_resource.profile.number_BHYT')} autoComplete="off" />
                             </div>
-                            <div className={`form-group col-md-4 ${errorOnHealthInsuranceStartDate === undefined ? "" : "has-error"}`}>
-                                <label >{translate('manage_employee.start_date')}</label>
+                            {/* Ngày có hiệu lực */}
+                            <div className={`form-group col-md-4 ${errorOnHealthInsuranceStartDate && "has-error"}`}>
+                                <label >{translate('human_resource.profile.start_date')}</label>
                                 <DatePicker
                                     id={`startDateBHYT${id}`}
                                     value={healthInsuranceStartDate !== undefined ? this.formatDate(healthInsuranceStartDate) : undefined}
@@ -214,8 +283,9 @@ class InsurranceTab extends Component {
                                 />
                                 <ErrorLabel content={errorOnHealthInsuranceStartDate} />
                             </div>
-                            <div className={`form-group col-md-4 ${errorOnHealthInsuranceEndDate === undefined ? "" : "has-error"}`}>
-                                <label>{translate('manage_employee.end_date_certificate')}</label>
+                            {/* Ngày hết hiệu lực */}
+                            <div className={`form-group col-md-4 ${errorOnHealthInsuranceEndDate && "has-error"}`}>
+                                <label>{translate('human_resource.commendation_discipline.discipline.table.end_date')}</label>
                                 <DatePicker
                                     id={`endDateBHYT${id}`}
                                     value={healthInsuranceEndDate !== undefined ? this.formatDate(healthInsuranceEndDate) : undefined}
@@ -225,23 +295,25 @@ class InsurranceTab extends Component {
                             </div>
                         </div>
                     </fieldset>
+                    {/* Thông tin bảo hiểm xã hội */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border" ><h4 className="box-title">{translate('manage_employee.bhxh')}</h4></legend>
+                        <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.bhxh')}</h4></legend>
                         <div className="row">
+                            {/* Mã số bảo hiểm xã hội */}
                             <div className="form-group col-md-4">
-                                <label>{translate('manage_employee.number_BHXH')}</label>
-                                <input type="text" className="form-control" name="socialInsuranceNumber" value={socialInsuranceNumber} onChange={this.handleChange} placeholder={translate('manage_employee.number_BHXH')} autoComplete="off" />
+                                <label>{translate('human_resource.profile.number_BHXH')}</label>
+                                <input type="text" className="form-control" name="socialInsuranceNumber" value={socialInsuranceNumber} onChange={this.handleChange} placeholder={translate('human_resource.profile.number_BHXH')} autoComplete="off" />
                             </div>
+                            {/* Quá trình đóng bảo hiểm xã hội */}
                             <div className="col-md-12">
-                                <h4 className="row col-md-6">{translate('manage_employee.bhxh_process')}:</h4>
-                                {/* <ModalImportFileBHXH index={this.state.key} /> */}
+                                <h4 className="row col-md-6">{translate('human_resource.profile.bhxh_process')}:</h4>
                                 <SocialInsuranceAddModal handleChange={this.handleAddBHXH} id={`addBHXH${id}`} />
                                 <table className="table table-striped table-bordered table-hover " style={{ marginBottom: 0 }} >
                                     <thead>
                                         <tr>
-                                            <th>{translate('manage_employee.from_month_year')}</th>
-                                            <th>{translate('manage_employee.to_month_year')}</th>
-                                            <th>{translate('manage_employee.unit')}</th>
+                                            <th>{translate('human_resource.profile.from_month_year')}</th>
+                                            <th>{translate('human_resource.profile.to_month_year')}</th>
+                                            <th>{translate('human_resource.profile.unit')}</th>
                                             <th>{translate('table.position')}</th>
                                             <th style={{ width: '120px' }}>{translate('table.action')}</th>
                                         </tr>
@@ -255,7 +327,7 @@ class InsurranceTab extends Component {
                                                     <td>{x.company}</td>
                                                     <td>{x.position}</td>
                                                     <td>
-                                                        <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('manage_employee.edit_bhxh')}><i className="material-icons">edit</i></a>
+                                                        <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.edit_bhxh')}><i className="material-icons">edit</i></a>
                                                         <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
                                                     </td>
                                                 </tr>
@@ -269,16 +341,16 @@ class InsurranceTab extends Component {
                         </div>
                     </fieldset>
                 </div>
-                {
-                    this.state.currentRow !== undefined &&
+                {   /** Form chỉnh sửa quá trình đóng bảo hiểm xã hội */
+                    currentRow !== undefined &&
                     <SocialInsuranceEditModal
-                        id={`editBHXH${this.state.currentRow.index}`}
-                        _id={this.state.currentRow._id}
-                        index={this.state.currentRow.index}
-                        company={this.state.currentRow.company}
-                        startDate={this.formatDate(this.state.currentRow.startDate, true)}
-                        endDate={this.formatDate(this.state.currentRow.endDate, true)}
-                        position={this.state.currentRow.position}
+                        id={`editBHXH${currentRow.index}`}
+                        _id={currentRow._id}
+                        index={currentRow.index}
+                        company={currentRow.company}
+                        startDate={this.formatDate(currentRow.startDate, true)}
+                        endDate={this.formatDate(currentRow.endDate, true)}
+                        position={currentRow.position}
                         handleChange={this.handleEditBHXH}
                     />
                 }

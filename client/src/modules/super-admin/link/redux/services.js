@@ -14,6 +14,7 @@ export const LinkServices = {
 };
 
 function get(params) {
+    console.log("getlinks")
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/link/links`,
         method: 'GET',

@@ -87,6 +87,7 @@ class ModalDetailKPI extends Component {
         if (data.arrtarget) {           
             detailData = data.arrtarget.map((x, index) => {               
                 let creatorName = x.creator.name;
+                let creatorEmail = x.creator.email;
                 let targetName = x.target.name;      
                 let unitName =x.organizationalUnit.name;
                 let criteria = x.target.criteria;         
@@ -94,7 +95,8 @@ class ModalDetailKPI extends Component {
 
                 return {
                     STT: index + 1,
-                    creatorName: creatorName,                   
+                    creatorName: creatorName,   
+                    creatorEmail:creatorEmail,                
                     targetName : targetName,
                     unitName:unitName,
                     criteria :criteria,
@@ -118,16 +120,17 @@ class ModalDetailKPI extends Component {
                                 { key: "unitKpiWeight", value: "Trọng số (/100)" },
                                 { key: "automaticPoint", value: "Điểm tự động" },
                                 { key: "employeePoint", value: "Điểm tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm được đánh giá" }
+                                { key: "approverPoint", value: "Điểm được phê duyệt" }
  
                             ],
                             data:unitKpiData
                         },
                         {
-                            tableName : 'Danh sách KPI con của '+ unitKpiData[0].unitKpiName,
+                            tableName : 'Danh sách KPI con của KPI '+ unitKpiData[0].unitKpiName,
                             columns: [
                                 { key: "STT", value: "STT" },
-                                { key: "creatorName", value: "Người tạo" },                                
+                                { key: "creatorName", value: "Người tạo" }, 
+                                { key: "creatorEmail", value: "Email người tạo" } ,                              
                                 { key: "targetName", value: "Tên mục tiêu" },
                                 { key: "unitName", value: "Đơn vị" },
                                 { key: "criteria", value: "Tiêu chí đánh giá" },
@@ -174,6 +177,7 @@ class ModalDetailKPI extends Component {
                 if (item.arrtarget) {           
                     detailData = item.arrtarget.map((x, index) => {               
                         let creatorName = x.creator.name;
+                        let creatorEmail = x.creator.email;
                         let targetName = x.target.name;      
                         let unitName =x.organizationalUnit.name;
                         let criteria = x.target.criteria;         
@@ -181,7 +185,8 @@ class ModalDetailKPI extends Component {
         
                         return {
                             STT: index + 1,
-                            creatorName: creatorName,                   
+                            creatorName: creatorName, 
+                            creatorEmail:creatorEmail,                  
                             targetName : targetName,
                             unitName:unitName,
                             criteria :criteria,
@@ -212,16 +217,17 @@ class ModalDetailKPI extends Component {
                                 { key: "unitKpiWeight", value: "Trọng số (/100)" },
                                 { key: "automaticPoint", value: "Điểm tự động" },
                                 { key: "employeePoint", value: "Điểm tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm được đánh giá" }
+                                { key: "approverPoint", value: "Điểm được phê duyệt" }
  
                             ],
                             data:item.unitKpiData
                         },
                         {
-                            tableName : 'Danh sách KPI con của '+ item.unitKpiData[0].unitKpiName,
+                            tableName : 'Danh sách KPI con của KPI '+ item.unitKpiData[0].unitKpiName,
                             columns: [
                                 { key: "STT", value: "STT" },
-                                { key: "creatorName", value: "Người tạo" },                                
+                                { key: "creatorName", value: "Người tạo" },
+                                { key: "creatorEmail", value: "Email người tạo" },                                
                                 { key: "targetName", value: "Tên mục tiêu" },
                                 { key: "unitName", value: "Đơn vị" },
                                 { key: "criteria", value: "Tiêu chí đánh giá" },

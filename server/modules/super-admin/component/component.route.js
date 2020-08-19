@@ -12,5 +12,6 @@ router.get("/components/:id", auth, ComponentController.getComponent);
 router.patch("/components/:id", auth, ComponentController.editComponent);
 router.delete("/components/:id", auth, ComponentController.deleteComponent);
 
+router.patch("/components/company/update", auth, ComponentController.updateCompanyComponents);
 
 module.exports = router;

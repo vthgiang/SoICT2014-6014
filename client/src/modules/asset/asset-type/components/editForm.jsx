@@ -104,8 +104,6 @@ class EditForm extends Component {
             }
         })
 
-        console.log("222222222222222222222222222222222222222222222222", dataList);
-
         return (
             <div id="edit-asset-type">
                 {/* Mã loại tài sản */}

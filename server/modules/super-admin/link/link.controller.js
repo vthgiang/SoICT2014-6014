@@ -7,9 +7,9 @@ const { LogInfo, LogError } = require('../../../logs');
 
 exports.getLinks = async (req, res) => {
     try {
-        console.log("getalllink", req.query)
-        var links = await LinkService.getLinks(req.user.company._id, req.query);
-        
+        let {company} = req.query;
+        let links = await LinkService.getLinks(company, req.query);
+ 
         await LogInfo(req.user.email, 'GET_ALL_LINKS', req.user.company);
         res.status(200).json({
             success: true,
@@ -17,7 +17,7 @@ exports.getLinks = async (req, res) => {
             content: links
         });
     } catch (error) {
-        
+ 
         await LogError(req.user.email, 'GET_ALL_LINKS', req.user.company);
         res.status(400).json({
             success: false,
@@ -29,7 +29,7 @@ exports.getLinks = async (req, res) => {
 
 exports.getLink = async (req, res) => {
     try {
-        var link = await LinkService.getLink(req.params.id);
+        let link = await LinkService.getLink(req.params.id);
         
         await LogInfo(req.user.email, 'GET_LINK_BY_ID', req.user.company);
         res.status(200).json({
@@ -50,9 +50,10 @@ exports.getLink = async (req, res) => {
 
 exports.createLink = async (req, res) => {
     try {
-        var createLink = await LinkService.createLink(req.body, req.user.company._id);
+        let {company} = req.query;
+        let createLink = await LinkService.createLink(req.body, company);
         await LinkService.relationshipLinkRole(createLink._id, req.body.roles);
-        var link = await LinkService.getLink(createLink._id);
+        let link = await LinkService.getLink(createLink._id);
 
         await LogInfo(req.user.email, 'CREATE_LINK', req.user.company);
         res.status(200).json({
@@ -74,8 +75,8 @@ exports.createLink = async (req, res) => {
 exports.editLink = async (req, res) => {
     try {
         await LinkService.relationshipLinkRole(req.params.id, req.body.roles);
-        const link = await LinkService.editLink(req.params.id, req.body);
-        const data = await LinkService.getLink(link._id);
+        let link = await LinkService.editLink(req.params.id, req.body);
+        let data = await LinkService.getLink(link._id);
         
         await LogInfo(req.user.email, 'EDIT_LINK', req.user.company);
         res.status(200).json({
@@ -96,7 +97,9 @@ exports.editLink = async (req, res) => {
 
 exports.deleteLink = async (req, res) => {
     try {
-        var link = await LinkService.deleteLink(req.params.id );
+        let {id} = req.params;
+        let {type} = req.query; 
+        let link = await LinkService.deleteLink(id, type);
         
         await LogInfo(req.user.email, 'DELETE_LINK', req.user.company);
         res.status(200).json({
@@ -110,6 +113,47 @@ exports.deleteLink = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['delete_link_faile'],
+            content: error
+        });
+    }
+};
+
+exports.getLinkCategories = async (req, res) => {
+    try {
+        let content = await LinkService.getLinkCategories();
+
+        await LogInfo(req.user.email, 'GET_ALL_LINK_CATEGORIES');
+        res.status(200).json({
+            success: true,
+            messages: ['get_all_link_categories_success'],
+            content
+        });
+    } catch (error) {
+        await LogInfo(req.user.email, 'GET_ALL_LINK_CATEGORIES');
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['get_all_link_categories_faile'],
+            content: error
+        });
+    }
+};
+
+exports.updateCompanyLinks = async (req, res) => {
+    try {
+        let data = req.body;
+        let content = await LinkService.updateCompanyLinks(data);
+
+        await LogInfo(req.user.email, 'UPDATE_COMPANY_LINKS');
+        res.status(200).json({
+            success: true,
+            messages: ['update_company_links_success'],
+            content
+        });
+    } catch (error) {
+        await LogInfo(req.user.email, 'UPDATE_COMPANY_LINKS');
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['update_company_links_faile'],
             content: error
         });
     }

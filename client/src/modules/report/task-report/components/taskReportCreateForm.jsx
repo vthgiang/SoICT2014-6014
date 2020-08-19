@@ -88,6 +88,7 @@ class TaskReportCreateForm extends Component {
         return msg === undefined;
     }
 
+
     /**
      * Bắt sự kiện thay đổi cho ô input mô tả báo cáo
      * @param {*} e 
@@ -517,8 +518,8 @@ class TaskReportCreateForm extends Component {
                     size={100}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <TaskReportViewForm taskInformations={newReport.taskInformations} frequency={newReport.frequency}
-                    />
+                    <TaskReportViewForm />
+                    {/* taskInformations={newReport.taskInformations} */}
                     <div className="row" >
                         <div className="col-md-12 col-lg-12" style={{ display: 'flex', justifyContent: 'flex-end' }}>
                             <div className="form-inline d-flex justify-content-end">

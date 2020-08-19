@@ -11,5 +11,6 @@ router.get("/links/:id", auth, LinkController.getLink);
 router.patch("/links/:id", auth, LinkController.editLink);
 router.delete("/links/:id", auth, LinkController.deleteLink);
 
+router.patch("/links/company/update", auth, LinkController.updateCompanyLinks);
 
 module.exports = router;

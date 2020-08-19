@@ -263,7 +263,7 @@ class ModalViewTaskProcess extends Component {
                                                 <div>
                                                     <div>
                                                         <h1>Option {name}</h1>
-                                                    </div>
+                                                    </div> 
                                                     <ViewTaskTemplate
                                                         isProcess={true}
                                                         taskTemplate={info?.[`${id}`]}

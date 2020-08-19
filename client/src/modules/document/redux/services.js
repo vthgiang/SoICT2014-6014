@@ -211,7 +211,6 @@ function editDocumentArchives(id, data) {
 }
 
 function deleteDocumentArchives(id) {
-
     return sendRequest({
         url: `${LOCAL_SERVER_API}/documents/document-archives/${id}`,
         method: 'DELETE',

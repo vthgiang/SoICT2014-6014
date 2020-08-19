@@ -125,6 +125,20 @@ exports.editDocument = async (req, res) => {
     }
 };
 
+exports.addDocumentLog = async (req, res) => {
+    try {
+        const document = await DocumentServices.addDocumentLog(req.params, req.body);
+        await LogInfo(req.user.email, 'ADD_DOCUMENT_LOG', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['add_document_logs_success'],
+            content: documentLog
+        })
+    } catch (error) {
+
+    }
+}
+
 exports.deleteDocument = async (req, res) => {
     console.log('---------------------')
     try {
@@ -458,24 +472,24 @@ exports.createDocumentArchive = async (req, res) => {
 };
 
 exports.editDocumentArchive = async (req, res) => {
-    try {
-        const archive = await DocumentServices.editDocumentArchive(req.params.id, req.body);
+    // try {
+    const archive = await DocumentServices.editDocumentArchive(req.params.id, req.body);
 
-        await LogInfo(req.user.email, 'EDIT_DOCUMENT_ARCHIVE', req.user.company);
-        res.status(200).json({
-            success: true,
-            message: ['edit_document_archive_success'],
-            content: archive,
-        })
-    } catch (error) {
+    await LogInfo(req.user.email, 'EDIT_DOCUMENT_ARCHIVE', req.user.company);
+    res.status(200).json({
+        success: true,
+        message: ['edit_document_archive_success'],
+        content: archive,
+    })
+    // } catch (error) {
 
-        await LogError(req.user.email, 'EDIT_DOCUMENT_ARCHIVE', req.user.company);
-        res.status(400).json({
-            success: false,
-            message: Array.isArray(error) ? error : ['edit_document_faile'],
-            content: error
-        })
-    }
+    //     await LogError(req.user.email, 'EDIT_DOCUMENT_ARCHIVE', req.user.company);
+    //     res.status(400).json({
+    //         success: false,
+    //         message: Array.isArray(error) ? error : ['edit_document_faile'],
+    //         content: error
+    //     })
+    // }
 };
 
 exports.deleteDocumentArchive = async (req, res) => {

@@ -111,12 +111,15 @@ const AssetSchema = new Schema({
     cost: { //8. Nguyên giá
         type: Number
     },
+
     usefulLife: { //9. Thời gian sử dụng
         type: Number
     },
+
     startDepreciation: { // thời gian bắt đầu trích khấu hao
         type: Date
     },
+
     residualValue: { // 10. Giá trị thu hồi ước tính.
         /* Là giá trị ước tính của một tài sản vào cuối thời hạn thuê 
         hoặc thời gian sử dụng hữu ích.Theo nguyên tắc chung, 
@@ -124,13 +127,16 @@ const AssetSchema = new Schema({
         thì giá trị còn lại của nó càng thấp */
         type: Number
     },
+
     rate: { // Dùng trong phương pháp Reducing balance/DecliningBalance
         type: Number,
     },
+
     unitsProducedDuringTheYears: [{ // Dùng trong UnitsOfProduction
         year: Number,
         unitsProducedDuringTheYear: Number
     }],
+    
     estimatedTotalProduction: { // Dùng trong UnitsOfProduction
         type: Number
     },

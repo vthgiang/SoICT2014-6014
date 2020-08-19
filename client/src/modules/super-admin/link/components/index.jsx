@@ -7,6 +7,7 @@ import { LinkActions } from '../redux/actions';
 import { ToolTip, SearchBar, DataTableSetting, PaginateBar } from '../../../../common-components';
 
 import LinkInfoForm from './linkInfoForm';
+import { getStorage } from '../../../../config';
 
 class ManageLink extends Component {
     constructor(props) {
@@ -87,8 +88,8 @@ class ManageLink extends Component {
                                             </td>
                                         </tr>
                                     ) : link.isLoading ?
-                                            <tr><td colSpan={4}>{translate('confirm.loading')}</td></tr> :
-                                            <tr><td colSpan={4}>{translate('confirm.no_data')}</td></tr>
+                                            <tr><td colSpan={5}>{translate('confirm.loading')}</td></tr> :
+                                            <tr><td colSpan={5}>{translate('confirm.no_data')}</td></tr>
                                 }
                             </tbody>
                         </table>
@@ -107,41 +108,55 @@ class ManageLink extends Component {
         });
     }
 
-    searchWithOption = async () => {
-        const data = {
-            limit: this.state.limit,
-            page: 1,
-            key: this.state.option,
-            value: this.state.value
+    searchWithOption = () => {
+        let {page, option, value, limit} = this.state;
+        let company = getStorage('companyId');
+        const params = {
+            type: "active",
+            company,
+            limit,
+            page,
+            key: option,
+            value
         };
-        await this.props.getLinks(data);
+        this.props.getLinks(params);
     }
 
     setPage = (page) => {
         this.setState({ page });
-        const data = {
-            limit: this.state.limit,
-            page: page,
-            key: this.state.option,
-            value: this.state.value
+        let {limit, option, value} = this.state;
+        let company = getStorage('companyId');
+        const params = {
+            type: "active",
+            company,
+            limit,
+            page,
+            key: option,
+            value
         };
-        this.props.getLinks(data);
+        this.props.getLinks(params);
     }
 
     setLimit = (number) => {
         this.setState({ limit: number });
-        const data = {
+        let {page, option, value} = this.state;
+        let company = getStorage('companyId');
+        const params = {
+            type: "active",
+            company,
             limit: number,
-            page: this.state.page,
-            key: this.state.option,
-            value: this.state.value
+            page,
+            key: option,
+            value
         };
-        this.props.getLinks(data);
+        this.props.getLinks(params);
     }
 
     componentDidMount() {
-        this.props.getLinks();
-        this.props.getLinks({ page: this.state.page, limit: this.state.limit });
+        let {page, limit} = this.state;
+        let company = getStorage('companyId');
+        this.props.getLinks({company, type: "active"});
+        this.props.getLinks({company, type: "active", page, limit});
     }
 
     // Cac ham xu ly du lieu voi modal

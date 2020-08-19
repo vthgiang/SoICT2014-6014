@@ -1,5 +1,5 @@
-const { SystemLink, RootRole, SystemComponent } = require('../../../models').schema;
-const {LINK_CATEGORY} = require('../../../seed/terms');
+const { SystemLink, RootRole, SystemComponent, Privilege } = require(SERVER_MODELS_DIR).schema;
+const {LINK_CATEGORY} = require(SERVER_SEED_DIR+'/terms');
 
 /**
  * Lấy danh sách tất cả các system link 
@@ -60,11 +60,31 @@ exports.getSystemLink = async (systemLinkId) => {
  * @category danh mục của system link
  */
 exports.createSystemLink = async (url, description, roles, category) => {
-
     const link = await SystemLink.findOne({ url });
     if (link) throw ['system_link_url_exist'];
-    
-    const systemLink = await SystemLink.create({ url, description, category, roles });
+
+    const sysLink = await SystemLink.create({ url, description, category, roles });
+    const systemLink = await SystemLink.findById(sysLink._id).populate({path: 'roles', model: RootRole})
+    const companyList = await Company.find();
+    for (let i = 0; i < companyList.length; i++) {
+        let link = await Link.create({
+            company: companyList[i]._id, 
+            url, 
+            description, 
+            category
+        });
+        let roles = await Role.find({
+            name: { $in: systemLink.roles.map(role=>role.name)}
+        });
+        let privileges = roles.map(role=>{
+            return {
+                resourceId: link._id,
+                resourceType: 'Link',
+                roleId: role._id
+            }
+        });
+        await Privilege.insertMany(privileges);
+    }
 
     return systemLink;
 }
@@ -96,5 +116,16 @@ exports.editSystemLink = async (systemLinkId, url, description, roles, category)
  * @id id của system link
  */
 exports.deleteSystemLink = async (systemLinkId) => {
+    let systemLink = await SystemLink.findById(systemLinkId);
+    // 1. Xóa tất các link tương ứng của các công ty
+    let link = await Link.find({url: systemLink.url});
+    let priDel = [systemLink._id, ...link.map(link=>link._id)];
+    await Privilege.deleteMany({ 
+        resourceType: 'Link',
+        resourceId: { $in: priDel }
+    });
+    const deleteLink = await Link.deleteMany({url: systemLink.url});
+
+    // 2. Xóa system link 
     return await SystemLink.deleteOne({ _id: systemLinkId });
 }

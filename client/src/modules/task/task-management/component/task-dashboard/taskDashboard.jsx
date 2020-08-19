@@ -11,7 +11,8 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DatePicker } from '../../../../../common-components';
 import Swal from 'sweetalert2';
-import { TasksIsNotLinked } from './TasksIsNotLinked';
+import { TasksIsNotLinked } from './tasksIsNotLinked';
+import { TaskHasActionNotEvaluated } from './taskHasActionNotEvaluated';
 
 class TaskDashboard extends Component {
 
@@ -399,7 +400,7 @@ class TaskDashboard extends Component {
                         </div>
                     </div>
                     <TasksIsNotLinked />
-
+                    <TaskHasActionNotEvaluated />
 
                 </div>
                 {/* Lịch công việc chi tiết */}
