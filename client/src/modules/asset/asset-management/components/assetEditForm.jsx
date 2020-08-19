@@ -193,7 +193,7 @@ class AssetEditForm extends Component {
 
     // function kiểm tra các trường bắt buộc phải nhập
     validatorInput = (value) => {
-        if (value && value.toString().trim() !== '') {
+        if (value !== undefined && value !== null && value.toString().trim() !== '') {
             return true;
         }
         return false;
@@ -202,7 +202,7 @@ class AssetEditForm extends Component {
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let { code, assetName, serial, assetType, managedBy, purchaseDate, warrantyExpirationDate, location, status, canRegisterForUse, cost, usefulLife, startDepreciation, depreciationType } = this.state;
-
+        
         if (this.state !== {}) {
             let result = this.validatorInput(code) && this.validatorInput(assetName) &&
                 this.validatorInput(serial) && this.validatorInput(assetType) &&
@@ -375,7 +375,7 @@ class AssetEditForm extends Component {
                         < div className="tab-content">
                             {/* Thông tin chung */}
                             <GeneralTab
-                                _id={`edit_general${_id}`}
+                                id={`edit_general${_id}`}
                                 img={img}
                                 handleChange={this.handleChange}
                                 handleUpload={this.handleUpload}
