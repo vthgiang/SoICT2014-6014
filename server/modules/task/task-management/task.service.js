@@ -133,13 +133,14 @@ exports.getTaskEvaluations = async (data) => {
     }
 
 
-    let result = await Task.aggregate(condition);
+    let result = await Task.aggregate(condition); // kết quả sau khi truy vấn mongodb
 
+    // lấy danh sachs điều kiện lọc của trường thông tin của công việc
     let taskInfo = data.taskInformations;
     taskInfo = taskInfo.map(item => JSON.parse(item));
 
     let configurations = [];
-    // Lấy các điều kiện lọc cuarcasc trường thông tin từ client gửi về.
+    // Lấy các điều kiện lọc của các trường thông tin từ client gửi về.
     for (let [index, value] of taskInfo.entries()) { // tương tự for in
         configurations[index] = {
             filter: value.filter,
@@ -150,10 +151,12 @@ exports.getTaskEvaluations = async (data) => {
             aggregationType: value.aggregationType,
         }
     }
-
     // Add thêm các trường điều kiện lọc vào result
     let newResult = result.map((item) => {
+
         let taskInformations = item.taskInformations;
+
+        // Gộp trường taskInfomation của task vào array configurations để add điều kiện lọc vào taskInfomation
         let taskMerge = taskInformations.map((item, index) => Object.assign({}, item, configurations[index]))
 
         return { // Lấy các trường cần thiết

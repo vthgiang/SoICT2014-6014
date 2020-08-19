@@ -20,7 +20,8 @@ div.qlcv div.selectmulti,
 div.qlcv > .form-inline > button, div.qlcv > .form-inline > .form-group > button,
 div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group >.form-control,
 div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group> label,
-div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > div.select2 {
+div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > div.select2,
+div.qlcv > .form-inline > div.react-dropdown-tree-select, div.qlcv > .form-inline > .form-group > div.react-dropdown-tree-select {
     margin: 5px 0 5px 0;
 }
 
@@ -31,13 +32,15 @@ div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > d
     div.qlcv > .form-inline >.form-control, div.qlcv > .form-inline > .form-group > .form-control,
     div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group > label,
     div.qlcv > .form-inline > .input-group, div.qlcv .form-inline > .form-group > .input-group,
-    div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > div.select2 {
+    div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > div.select2,
+    div.qlcv > .form-inline > div.react-dropdown-tree-select, div.qlcv > .form-inline > .form-group > div.react-dropdown-tree-select {
         margin: 5px;
     }
     div.qlcv > .form-inline > div.selectmulti, div.qlcv > .form-inline > .form-group > div.selectmulti,
     div.qlcv > .form-inline > .form-control, div.qlcv > .form-inline > .form-group > .form-control,
     div.qlcv > .form-inline > .input-group, div.qlcv .form-inline > .form-group > .input-group,
-    div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > div.select2 {
+    div.qlcv > .form-inline > div.select2, div.qlcv > .form-inline > .form-group > div.select2,
+    div.qlcv > .form-inline > div.react-dropdown-tree-select, div.qlcv > .form-inline > .form-group > div.react-dropdown-tree-select {
         width: 200px;
     }
     div.qlcv > .form-inline > label, div.qlcv .form-inline > .form-group > label{

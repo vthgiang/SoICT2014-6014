@@ -254,11 +254,27 @@ exports.deleteXmlDiagram = async (diagramId, query) => {
 }
 
 
+isStartTask = (task) => {
+    let preTask = task.preceedingTasks;
+    for (let i in preTask) {
+        let type = preTask[i].task.split("_");
+        if (type[0] === "Event") {
+            return true;
+        }
+    }
+    return false;
+}
+
 /**
- * 
+ * tạo công việc theo quy trình
  */
 exports.createTaskByProcess = async (processId, body) => {
     console.log('----', body);
+
+    let processUsed = await TaskProcess.findByIdAndUpdate(processId, { $inc: { 'numberOfUse': 1 } }, { new: true });
+
+    let numberOfUse =  processUsed.numberOfUse;
+
     let data = body.taskList;
     // let startDate = body.startDate;
     // let endDate = body.endDate;
@@ -290,8 +306,15 @@ exports.createTaskByProcess = async (processId, body) => {
         }
         // }
 
-        let process = processId;
+        let status = "WaitForApproval";
+        if (isStartTask(data[i])) {
+            status = "Inprocess";
+        }
 
+        let process = {
+            processId: processId,
+            numberOfUse: numberOfUse,
+        }
         await Task.create({
             process: process,
             codeInProcess: data[i].code,
@@ -307,6 +330,7 @@ exports.createTaskByProcess = async (processId, body) => {
             taskActions: cloneActions,
             parent: null,
             level: 1,
+            status: status,
             responsibleEmployees: data[i].responsibleEmployees,
             accountableEmployees: data[i].accountableEmployees,
             consultedEmployees: data[i].consultedEmployees,
@@ -318,7 +342,7 @@ exports.createTaskByProcess = async (processId, body) => {
         let listFollowingTask = [];
         let listPreceedingTask = [];
         for (let i in data[x].followingTasks) {
-            let item = await Task.findOne({ process: processId, codeInProcess: data[x].followingTasks[i].task });
+            let item = await Task.findOne({ "process.processId": processId, "process.numberOfUse": numberOfUse, codeInProcess: data[x].followingTasks[i].task });
 
             if (item) {
                 listFollowingTask.push({
@@ -328,7 +352,8 @@ exports.createTaskByProcess = async (processId, body) => {
             }
         }
         for (let i in data[x].preceedingTasks) {
-            let item = await Task.findOne({ process: processId, codeInProcess: data[x].preceedingTasks[i].task });
+            let item = await Task.findOne({ "process.processId": processId, "process.numberOfUse": numberOfUse, codeInProcess: data[x].preceedingTasks[i].task });
+            
             if (item) {
                 listPreceedingTask.push({
                     task: item._id,
@@ -339,7 +364,7 @@ exports.createTaskByProcess = async (processId, body) => {
         }
 
         await Task.findOneAndUpdate(
-            { process: processId, codeInProcess: data[x].code },
+            { "process.processId": processId, "process.numberOfUse": numberOfUse, codeInProcess: data[x].code },
             {
                 $set: {
                     followingTasks: listFollowingTask,
@@ -350,6 +375,5 @@ exports.createTaskByProcess = async (processId, body) => {
         )
     }
 
-    await TaskProcess.findByIdAndUpdate(processId, { $inc: { 'numberOfUse': 1 } }, { new: true });
     return await TaskProcess.find().populate({ path: 'creator', model: User, select: 'name' });;
 }

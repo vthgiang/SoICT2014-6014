@@ -384,11 +384,17 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     save = async () => {
+        let { info, startDate, endDate, userId } = this.state;
+        for( let i in info ){
+            info[i].startDate = info[i].startDate ? info[i].startDate : startDate;
+            info[i].endDate = info[i].endDate ? info[i].endDate : endDate;
+        }
+
         let data = {
-            creator: this.state.userId,
-            taskList: this.state.info,
-            startDate: this.state.startDate,
-            endDate: this.state.endDate,
+            creator: userId,
+            taskList: info,
+            startDate: startDate,
+            endDate: endDate,
         }
         console.log('000', data);
         this.props.createTaskByProcess(data, this.state.idProcess);
@@ -647,6 +653,8 @@ class ModalCreateTaskByProcess extends Component {
                                     <FormCreateTaskByProcess
                                         isProcess={true}
                                         id={id}
+                                        startDate={startDate}
+                                        endDate={endDate}
                                         info={(info && info[`${id}`]) && info[`${id}`]}
                                         onChangeTemplateData={this.handleChangeInfo}
                                         handleChangeName={this.handleChangeName} // cập nhật tên vào diagram

@@ -4,11 +4,13 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker, TreeSelect, ErrorLabel } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import moment from 'moment';
-
+import { getStorage } from "../../../../../config";
 class EditForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
+        this.state = {
+
+        }
     }
 
     handleName = (e) => {
@@ -34,19 +36,38 @@ class EditForm extends Component {
 
     handleIssuingBody = (e) => {
         const value = e.target.value;
-        this.validateIssuingBody(value, true);
+        // this.validateIssuingBody(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentIssuingBody: value.trim(),
+                //errorIssuingBody: msg,
+            }
+        })
     }
-
     handleOfficialNumber = (e) => {
         const value = e.target.value;
-        this.validateOfficialNumber(value, true);
+        // this.validateOfficialNumber(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentOfficialNumber: value.trim(),
+                // errorOfficialNumber: msg,
+            }
+        })
     }
 
     handleSigner = (e) => {
         const value = e.target.value;
-        this.validateSinger(value, true);
+        // this.validateSinger(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentSigner: value.trim(),
+                //  errorSigner: msg,
+            }
+        })
     }
-
     handleRelationshipDescription = (e) => {
         const { value } = e.target;
         this.setState({ documentRelationshipDescription: value });
@@ -102,19 +123,47 @@ class EditForm extends Component {
 
     handleVersionName = (e) => {
         const value = e.target.value;
-        this.validateVersionName(value, true);
+        // this.validateVersionName(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentVersionName: value.trim(),
+                // errorVersionName: msg,
+            }
+        })
     }
 
     handleIssuingDate = (value) => {
-        this.validateIssuingDate(value, true);
+        // this.validateIssuingDate(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentIssuingDate: value,
+                //  errorIssuingDate: msg,
+            }
+        })
     }
 
     handleEffectiveDate = (value) => {
-        this.validateEffectiveDate(value, true);
+        // this.validateEffectiveDate(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentEffectiveDate: value,
+                // errorEffectiveDate: msg,
+            }
+        })
     }
 
     handleExpiredDate = (value) => {
-        this.validateExpiredDate(value, true);
+        //this.validateExpiredDate(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentExpiredDate: value,
+                //  errorExpiredDate: msg,
+            }
+        })
     }
     handleUploadFile = (e) => {
         this.setState({ documentFile: e.target.files[0] });
@@ -323,14 +372,14 @@ class EditForm extends Component {
     }
 
     isValidateForm = () => {
-        console.log('tttttttttttt', this.validateName(this.state.documentName, false), this.validateCategory(this.state.documentCategory, false),
-            this.validateOfficialNumber(this.state.documentOfficialNumber, false), this.validateSinger(this.state.documentSigner, false),
-            this.validateIssuingBody(this.state.documentIssuingBody, false))
+        // console.log('tttttttttttt', this.validateName(this.state.documentName, false), this.validateCategory(this.state.documentCategory, false),
+        //     this.validateOfficialNumber(this.state.documentOfficialNumber, false), this.validateSinger(this.state.documentSigner, false),
+        //     this.validateIssuingBody(this.state.documentIssuingBody, false))
         return this.validateName(this.state.documentName, false)
             && this.validateCategory(this.state.documentCategory, false)
-            && this.validateOfficialNumber(this.state.documentOfficialNumber, false)
-            && this.validateSinger(this.state.documentSigner, false)
-            && this.validateIssuingBody(this.state.documentIssuingBody, false);
+        // && this.validateOfficialNumber(this.state.documentOfficialNumber, false)
+        // && this.validateSinger(this.state.documentSigner, false)
+        // && this.validateIssuingBody(this.state.documentIssuingBody, false);
     }
     save = () => {
         const {
@@ -346,36 +395,115 @@ class EditForm extends Component {
             documentRelationshipDescription,
             documentRelationshipDocuments,
             documentRoles,
-            documentArchivedRecordPlaceInfo,
             documentArchivedRecordPlaceOrganizationalUnit,
             documentArchivedRecordPlaceManager,
         } = this.state;
 
+        let title = "";
+        let description = "";
         const formData = new FormData();
         formData.append('name', documentName);
         formData.append('category', documentCategory);
-        if (documentDomains) for (var i = 0; i < documentDomains.length; i++) {
-            formData.append('domains[]', documentDomains[i]);
-        }
-        if (documentArchives) for (var i = 0; i < documentArchives.length; i++) {
-            formData.append('archives[]', documentArchives[i]);
-        }
-        formData.append('description', documentDescription);
-        formData.append('issuingBody', documentIssuingBody);
-        formData.append('officialNumber', documentOfficialNumber);
-        formData.append('signer', documentSigner);
+        if (documentDomains) {
+            if (!title.includes("Chỉnh sửa thông tin văn bản")) {
+                title = (title + " Chỉnh sửa thông tin văn bản").trim();
+            }
 
-        formData.append('relationshipDescription', documentRelationshipDescription);
-        if (documentRelationshipDocuments) for (var i = 0; i < documentRelationshipDocuments.length; i++) {
-            formData.append('relationshipDocuments[]', documentRelationshipDocuments[i]);
+            description += "Danh mục mới ";
+            for (var i = 0; i < documentDomains.length; i++) {
+                formData.append('domains[]', documentDomains[i]);
+                description += documentDomains + " ";
+            }
         }
-        if (documentRoles) for (var i = 0; i < documentRoles.length; i++) {
-            formData.append('roles[]', documentRoles[i]);
+        if (documentArchives) {
+            if (!title.includes("Chỉnh sửa thông tin văn bản")) {
+                title = (title + " Chỉnh sửa thông tin văn bản").trim();
+            }
+            description += "Địa chỉ lưu trữ mới ";
+            for (var i = 0; i < documentArchives.length; i++) {
+                formData.append('archives[]', documentArchives[i]);
+                description += documentArchives[i] + " ";
+            }
+        }
+        if (documentDescription) {
+            if (!title.includes("Chỉnh sửa thông tin văn bản")) {
+                title = (title + " Chỉnh sửa thông tin văn bản").trim();
+            }
+            description += "Mô tả mới " + documentDescription;
+            formData.append('description', documentDescription);
+        }
+        if (documentIssuingBody) {
+            if (!title.includes("Chỉnh sửa thông tin văn bản")) {
+                title = (title + " Chỉnh sửa thông tin văn bản").trim();
+            }
+            description += "Cơ quan ban hành mới " + documentIssuingBody;
+            formData.append('issuingBody', documentIssuingBody);
+        }
+        if (documentOfficialNumber) {
+            if (!title.includes("Chỉnh sửa thông tin văn bản")) {
+                title = (title + " Chỉnh sửa thông tin văn bản").trim();
+            }
+            description += "Số hiệu mới " + documentOfficialNumber;
+            formData.append('officialNumber', documentOfficialNumber);
+        }
+        if (documentSigner) {
+            if (!title.includes("Chỉnh sửa thông tin văn bản")) {
+                title = (title + " Chỉnh sửa thông tin văn bản").trim();
+            }
+            description += "Người ký mới " + documentSigner;
+            formData.append('signer', documentSigner);
         }
 
-        formData.append('archivedRecordPlaceInfo', documentArchivedRecordPlaceInfo);
-        formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
-        formData.append('archivedRecordPlaceManager', documentArchivedRecordPlaceManager);
+        if (documentRelationshipDocuments) {
+            if (!title.includes("Chỉnh sửa khác")) {
+                title += "Chỉnh sửa khác"
+            }
+            description += "Mô tả liên kết tài liệu mới " + documentRelationshipDescription;
+            formData.append('relationshipDescription', documentRelationshipDescription);
+        }
+        if (documentRelationshipDocuments) {
+            if (!title.includes("Chỉnh sửa khác")) {
+                title += "Chỉnh sửa khác"
+            }
+            description += "Tài liệu liên kết mới"
+            for (var i = 0; i < documentRelationshipDocuments.length; i++) {
+                formData.append('relationshipDocuments[]', documentRelationshipDocuments[i]);
+                description += documentRelationshipDocuments + " ";
+            }
+        }
+        if (documentRoles) {
+            if (!title.includes("Chỉnh sửa khác")) {
+                title += "Chỉnh sửa khác"
+            }
+            description += "Các phân quyền mới "
+            for (var i = 0; i < documentRoles.length; i++) {
+                formData.append('roles[]', documentRoles[i]);
+                description += documentRoles[i] + " ";
+            }
+        }
+
+        if (documentArchivedRecordPlaceOrganizationalUnit) {
+            if (!title.includes("Chỉnh sửa khác")) {
+                title += "Chỉnh sửa khác"
+            }
+            description += "aaabba" + documentArchivedRecordPlaceOrganizationalUnit
+            formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
+        }
+        if (documentArchivedRecordPlaceManager) {
+            if (!title.includes("Chỉnh sửa khác")) {
+                title += "Chỉnh sửa khác"
+            }
+            description += "xyzaaee" + documentArchivedRecordPlaceManager
+            formData.append('archivedRecordPlaceManager', documentArchivedRecordPlaceManager);
+        }
+        if (title) {
+            formData.append('title', title);
+            formData.append('creator', getStorage("userId"),)
+        }
+        if (description) {
+            formData.append('descriptions', description)
+        }
+        console.log(title, description);
         //console.log('ererererer', formData.getAll());
         this.props.editDocument(documentId, formData);
     }
@@ -513,17 +641,17 @@ class EditForm extends Component {
                                                 <ErrorLabel content={errorName} />
                                             </div>
                                             <div className={`form-group ${!errorIssuingBody ? "" : "has-error"}`}>
-                                                <label>{translate('document.doc_version.issuing_body')}<span className="text-red">*</span></label>
+                                                <label>{translate('document.doc_version.issuing_body')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleIssuingBody} value={documentIssuingBody} />
                                                 <ErrorLabel content={errorIssuingBody} />
                                             </div>
                                             <div className={`form-group ${!errorOfficialNumber ? "" : "has-error"}`}>
-                                                <label>{translate('document.doc_version.official_number')}<span className="text-red">*</span></label>
+                                                <label>{translate('document.doc_version.official_number')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleOfficialNumber} value={documentOfficialNumber} />
                                                 <ErrorLabel content={errorOfficialNumber} />
                                             </div>
                                             <div className={`form-group ${!errorSigner ? "" : "has-error"}`}>
-                                                <label>{translate('document.doc_version.signer')}<span className="text-red">*</span></label>
+                                                <label>{translate('document.doc_version.signer')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleSigner} value={documentSigner} />
                                                 <ErrorLabel content={errorSigner} />
                                             </div>
@@ -555,15 +683,7 @@ class EditForm extends Component {
                                                 <label>{translate('document.description')}</label>
                                                 <textarea type="text" className="form-control" onChange={this.handleDescription} value={documentDescription ? documentDescription : ""} />
                                             </div>
-                                            <div className="form-group">
-                                                <label>Lưu trữ</label>
-                                                <TreeSelect
-                                                    data={archives}
-                                                    value={documentArchives}
-                                                    handleChange={this.handleArchives}
-                                                    mode="hierarchical"
-                                                />
-                                            </div>
+
 
                                         </div>
                                     </div>
@@ -606,7 +726,7 @@ class EditForm extends Component {
                                                         />
                                                     </div>
                                                     <div className="form-group">
-                                                        <label>{translate('document.doc_version.expired_date')}<span className="text-red">*</span></label>
+                                                        <label>{translate('document.doc_version.expired_date')}</label>
                                                         <DatePicker
                                                             id={`document-edit-version-expired-date-${documentId}`}
                                                             onChange={this.handleExpiredDate}
@@ -679,7 +799,16 @@ class EditForm extends Component {
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                             <div className="form-group">
                                                 <label>{translate('document.store.information')}</label>
-                                                <input type="text" className="form-control" onChange={this.handleArchivedRecordPlaceInformation} value={documentArchivedRecordPlaceInfo} />
+                                                <TreeSelect
+                                                    data={archives}
+                                                    value={documentArchives}
+                                                    handleChange={this.handleArchives}
+                                                    mode="hierarchical"
+                                                />
+                                            </div>
+                                            <div className="form-group">
+                                                <label>Đường dẫn chi tiết</label>
+                                                <textarea style={{ height: '30px' }} type="text" className="form-control" value={path} disable />
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.store.organizational_unit_manage')}</label>
