@@ -19,7 +19,7 @@ class SalaryAddModal extends Component {
 
     /**
      * Function format ngày hiện tại thành dạnh mm-yyyy
-     * @param {*} date 
+     * @param {*} date : Ngày muốn format
      */
     formatDate = (date) => {
         if (date) {

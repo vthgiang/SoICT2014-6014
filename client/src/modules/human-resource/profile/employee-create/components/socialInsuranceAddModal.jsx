@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DialogModal, ButtonModal, ErrorLabel, DatePicker } from '../../../../../common-components';
+
 import { EmployeeCreateValidator } from './combinedContent';
+
 class SocialInsuranceAddModal extends Component {
     constructor(props) {
         super(props);
@@ -13,27 +16,37 @@ class SocialInsuranceAddModal extends Component {
             position: "",
         }
     }
-    // Function format ngày hiện tại thành dạnh mm-yyyy
+
+    /**
+     * Function format ngày hiện tại thành dạnh mm-yyyy
+     * @param {*} date : Ngày muốn format
+     */
     formatDate = (date) => {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
 
-        return [month, year].join('-');
+            return [month, year].join('-');
+        }
+        return date;
+
     }
-    // Bắt sự kiện thay đổi đơn vị công tác
+
+    /** Bắt sự kiện thay đổi đơn vị công tác */
     handleUnitChange = (e) => {
-        let value = e.target.value;
+        let { value } = e.target;
         this.validateExperienceUnit(value, true)
     }
     validateExperienceUnit = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateExperienceUnit(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateExperienceUnit(value, translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -45,13 +58,15 @@ class SocialInsuranceAddModal extends Component {
         }
         return msg === undefined;
     }
-    //  Bắt sự kiện thay đổi chức vụ
+
+    /** Bắt sự kiện thay đổi chức vụ */
     handlePositionChange = (e) => {
-        let value = e.target.value;
+        let { value } = e.target;
         this.validateExperiencePosition(value, true)
     }
     validateExperiencePosition = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateExperiencePosition(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateExperiencePosition(value, translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -64,9 +79,14 @@ class SocialInsuranceAddModal extends Component {
         return msg === undefined;
     }
 
-    // Function lưu thay đổi "từ tháng/năm" vào state
+    /**
+     * Function lưu thay đổi "từ tháng/năm" vào state
+     * @param {*} value : Từ tháng
+     */
     handleStartDateChange = (value) => {
+        const { translate } = this.props;
         let { errorOnEndDate, endDate } = this.state;
+
         let errorOnStartDate;
         let partValue = value.split('-');
         let date = new Date([partValue[1], partValue[0], 1].join('-'));
@@ -75,79 +95,104 @@ class SocialInsuranceAddModal extends Component {
         let d = new Date([partEndDate[1], partEndDate[0], 1].join('-'));
 
         if (date.getTime() > d.getTime()) {
-            errorOnStartDate = "Từ tháng/năm phải trước đến tháng/năm";
+            errorOnStartDate = translate('human_resource.profile.start_month_before_end_month');
         } else {
-            errorOnEndDate = errorOnEndDate === 'Đến tháng/năm phải sau từ tháng/năm' ? undefined : errorOnEndDate
+            errorOnEndDate = undefined;
         }
+
         this.setState({
             startDate: value,
             errorOnStartDate: errorOnStartDate,
             errorOnEndDate: errorOnEndDate
         })
     }
-    // Function lưu thay đổi "đến tháng/năm" vào state
+
+    /**
+     * Function lưu thay đổi "đến tháng/năm" vào state
+     * @param {*} value : Đến tháng
+     */
     handleEndDateChange = (value) => {
+        const { translate } = this.props;
         let { startDate, errorOnStartDate } = this.state;
+
         let partValue = value.split('-');
         let date = new Date([partValue[1], partValue[0], 1].join('-'));
 
         let partStartDate = startDate.split('-');
         let d = new Date([partStartDate[1], partStartDate[0], 1].join('-'));
         let errorOnEndDate;
+
         if (d.getTime() > date.getTime()) {
-            errorOnEndDate = "Đến tháng/năm phải sau từ tháng/năm";
+            errorOnEndDate = translate('human_resource.profile.end_month_after_start_month');
         } else {
-            errorOnStartDate = errorOnStartDate === 'Từ tháng/năm phải trước đến tháng/năm' ? undefined : errorOnStartDate
+            errorOnStartDate = undefined;
         }
+
         this.setState({
             endDate: value,
             errorOnStartDate: errorOnStartDate,
             errorOnEndDate: errorOnEndDate
         })
     }
-    // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
+
+    /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
-        let result = this.validateExperienceUnit(this.state.company, false) && this.validateExperiencePosition(this.state.position, false);
-        let partStart = this.state.startDate.split('-');
-        let startDate = [partStart[1], partStart[0]].join('-');
-        let partEnd = this.state.endDate.split('-');
-        let endDate = [partEnd[1], partEnd[0]].join('-');
-        if (new Date(startDate).getTime() <= new Date(endDate).getTime()) {
+        const { company, startDate, endDate, position } = this.state;
+
+        let result = this.validateExperienceUnit(company, false) && this.validateExperiencePosition(position, false);
+
+        let partStart = startDate.split('-');
+        let startDateNew = [partStart[1], partStart[0]].join('-');
+        let partEnd = endDate.split('-');
+        let endDateNew = [partEnd[1], partEnd[0]].join('-');
+
+        if (new Date(startDateNew).getTime() <= new Date(endDateNew).getTime()) {
             return result;
         } else return false;
     }
-    // Bắt sự kiện submit form
+
+    /** Bắt sự kiện submit form */
     save = async () => {
-        let partStart = this.state.startDate.split('-');
-        let startDate = [partStart[1], partStart[0]].join('-');
-        let partEnd = this.state.endDate.split('-');
-        let endDate = [partEnd[1], partEnd[0]].join('-');
+        const { endDate, startDate } = this.state;
+
+        let partStart = startDate.split('-');
+        let startDateNew = [partStart[1], partStart[0]].join('-');
+        let partEnd = endDate.split('-');
+        let endDateNew = [partEnd[1], partEnd[0]].join('-');
+
         if (this.isFormValidated()) {
-            return this.props.handleChange({ ...this.state, startDate: startDate, endDate: endDate });
+            return this.props.handleChange({ ...this.state, startDate: startDateNew, endDate: endDateNew });
         }
     }
+
     render() {
-        const { id, translate } = this.props;
+        const { translate } = this.props;
+
+        const { id } = this.props;
+
         const { company, position, startDate, endDate, errorOnStartDate, errorOnEndDate, errorOnUnit, errorOnPosition } = this.state;
+
         return (
             <React.Fragment>
-                <ButtonModal modalID={`modal-create-BHXH-${id}`} button_name={translate('modal.create')} title={translate('manage_employee.add_bhxh')} />
+                <ButtonModal modalID={`modal-create-BHXH-${id}`} button_name={translate('modal.create')} title={translate('human_resource.profile.add_bhxh')} />
                 <DialogModal
                     size='50' modalID={`modal-create-BHXH-${id}`} isLoading={false}
                     formID={`form-create-BHXH-${id}`}
-                    title={translate('manage_employee.add_bhxh')}
+                    title={translate('human_resource.profile.add_bhxh')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-create-BHXH-${id}`}>
-                        <div className={`form-group ${errorOnUnit === undefined ? "" : "has-error"}`}>
-                            <label>{translate('manage_employee.unit')}<span className="text-red">*</span></label>
+                        {/* Đơn vị */}
+                        <div className={`form-group ${errorOnUnit && "has-error"}`}>
+                            <label>{translate('human_resource.profile.unit')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="company" value={company} onChange={this.handleUnitChange} autoComplete="off" />
                             <ErrorLabel content={errorOnUnit} />
                         </div>
                         <div className="row">
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                <label>{translate('manage_employee.from_month_year')}<span className="text-red">*</span></label>
+                            {/* Từ tháng */}
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnStartDate && "has-error"}`}>
+                                <label>{translate('human_resource.profile.from_month_year')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`addBHXH-start-date-${id}`}
                                     dateFormat="month-year"
@@ -157,8 +202,9 @@ class SocialInsuranceAddModal extends Component {
                                 />
                                 <ErrorLabel content={errorOnStartDate} />
                             </div>
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                <label>{translate('manage_employee.to_month_year')}<span className="text-red">*</span></label>
+                            {/* Đến tháng */}
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate && "has-error"}`}>
+                                <label>{translate('human_resource.profile.to_month_year')}<span className="text-red">*</span></label>
                                 <DatePicker
                                     id={`addBHXH-end-date-${id}`}
                                     dateFormat="month-year"
@@ -169,7 +215,8 @@ class SocialInsuranceAddModal extends Component {
                                 <ErrorLabel content={errorOnEndDate} />
                             </div>
                         </div>
-                        <div className={`form-group ${errorOnPosition === undefined ? "" : "has-error"}`}>
+                        {/* Chức vụ */}
+                        <div className={`form-group ${errorOnPosition && "has-error"}`}>
                             <label>{translate('table.position')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="position" value={position} onChange={this.handlePositionChange} autoComplete="off" />
                             <ErrorLabel content={errorOnPosition} />
@@ -180,5 +227,6 @@ class SocialInsuranceAddModal extends Component {
         );
     }
 };
+
 const addModal = connect(null, null)(withTranslate(SocialInsuranceAddModal));
 export { addModal as SocialInsuranceAddModal };
