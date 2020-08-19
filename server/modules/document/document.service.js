@@ -532,7 +532,8 @@ exports.editDocumentArchive = async (id, data) => {
         archive.save();
     }
     const document = await this.getDocumentArchives(archive.company)
-    return archive;
+    console.log('ddddd', document);
+    return document;
 }
 
 async function findPath(data) {
