@@ -20,6 +20,7 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
 
         this.state = {
             dataStatus: this.DATA_STATUS.QUERYING,
+            exportData : null
         };
     }
 
@@ -93,11 +94,17 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
     }
 
     setDataMultiLineChart = () => {
-        const { createEmployeeKpiSet, translate } = this.props;
-        let listEmployeeKpiSet, dataMultiLineChart, automaticPoint, employeePoint, approvedPoint, date;
+        const { createEmployeeKpiSet, translate,userName } = this.props;
+        let listEmployeeKpiSet, dataMultiLineChart, automaticPoint, employeePoint, approvedPoint, date,exportData;
+        
         
         if (createEmployeeKpiSet) {
             listEmployeeKpiSet = createEmployeeKpiSet.employeeKpiSetByMonth
+        }
+
+        if(listEmployeeKpiSet&&userName){
+            exportData=this.convertDataToExportData(listEmployeeKpiSet,userName)
+            this.handleExportData(exportData);
         }
 
         if (listEmployeeKpiSet) {
@@ -164,9 +171,64 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
         })
     }
 
+    handleExportData =(exportData)=>
+    {
+        this.setState(state => {
+            return {
+                ...state,
+                exportData : exportData            }
+        })
+    }
+    
+    /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
+    convertDataToExportData = (data,name) => {
+        let fileName = "Biểu đồ theo dõi kết quả KPI nhân viên theo từng tháng";
+        let convertToObjectData={}, finalData=[],employeeKpiArray=[];
+        if (data) {                
+            if (data) {           
+                for(let i=0; i< data.length;i++){
+                    let d =new Date(data[i].date);
+                    data[i]["time"]=d;
+                    data[i]["STT"]=i+1;
+                }
+             }     
+            
+        }
+
+        let exportData = {
+            fileName: fileName,
+            dataSheets:[
+                {
+                    sheetName: "Biểu đồ theo dõi kết quả KPI nhân viên "+(name?name:"")+ " theo từng tháng",
+                    sheetTitle : fileName,
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "time", value: "Thời gian" },    
+                                { key: "automaticPoint", value: "Điểm tự động" },
+                                { key: "employeePoint", value: "Điểm tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm được phê duyệt" }
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]    
+                
+            
+        }
+        return exportData;        
+       
+    }
+
     render() {
+        let { exportData } =this.state;
         return (
             <React.Fragment>
+                <div>
+                {exportData&&<ExportExcel id="export-statistic-employee-kpi-set-chart" exportData={exportData} style={{ marginTop:5 }} />}
+                </div>
                 <div ref="chart"></div>
             </React.Fragment>
         )

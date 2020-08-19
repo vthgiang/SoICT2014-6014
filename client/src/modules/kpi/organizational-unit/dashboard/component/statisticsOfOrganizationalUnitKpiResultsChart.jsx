@@ -25,7 +25,8 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         this.state = {
             month: this.today.getFullYear() + '-' + (this.today.getMonth() + 1),
             dataStatus: this.DATA_STATUS.QUERYING,
-            kindOfPoint: this.KIND_OF_POINT.AUTOMATIC
+            kindOfPoint: this.KIND_OF_POINT.AUTOMATIC,
+            exportData:null
         };
     }
 
@@ -148,9 +149,23 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         return employeeWithTheSamePoints;
     }
 
+    countEmployeeWithTheSamePoint =(arrayPoint)=>
+    {
+        let pointAndEmployeesWithSamePoint={};
+        for (let i=0;i<arrayPoint.length;i++){
+            let check = Object.keys(pointAndEmployeesWithSamePoint).find(x=>x===arrayPoint[i])
+            if(!check){
+                pointAndEmployeesWithSamePoint[arrayPoint[i]]=1;
+                continue;
+            }
+            pointAndEmployeesWithSamePoint[arrayPoint[i]]++ ;
+        }
+        return pointAndEmployeesWithSamePoint;
+    }
+
     setDataColumnChart = () => {
-        const { dashboardOrganizationalUnitKpi, translate } = this.props;
-        let listEmployeeKpiSet, automaticPoint = [], employeePoint = [], approvedPoint = [];
+        const { dashboardOrganizationalUnitKpi, translate,month } = this.props;
+        let listEmployeeKpiSet, automaticPoint = [], employeePoint = [], approvedPoint = [] ;
         let employeeWithTheSamePoints, textLabel;
         if (dashboardOrganizationalUnitKpi.employeeKpiSets) {
             listEmployeeKpiSet = dashboardOrganizationalUnitKpi.employeeKpiSets
@@ -174,7 +189,17 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
             employeeWithTheSamePoints = this.filterAndCountEmployeeWithTheSamePoint(approvedPoint);
             textLabel = translate('kpi.organizational_unit.dashboard.statistic_kpi_unit.approved_point');
         }
+        
+        //phan xu ly cua exportData
+        let countAutomaticPoint =this.countEmployeeWithTheSamePoint(automaticPoint);
+        let countEmployeePoint =this.countEmployeeWithTheSamePoint(employeePoint);
+        let countApprovedPoint =this.countEmployeeWithTheSamePoint(approvedPoint);
 
+        if(listEmployeeKpiSet,month,countAutomaticPoint,countEmployeePoint,countApprovedPoint){
+            let exportData =this.convertDataToExportData(listEmployeeKpiSet,month,countAutomaticPoint,countEmployeePoint,countApprovedPoint)
+            this.handleExportData(exportData);
+        }
+        //
 
         return {
             'employeeWithTheSamePoints': employeeWithTheSamePoints,
@@ -249,20 +274,35 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         })
     }
 
+    handleExportData=(data) =>{
+        this.setState(state => {
+            return {
+                ...state,
+                exportData:data
+            };
+        });
+    }
+
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    convertDataToExportData = (data, month) => {
+    convertDataToExportData = (data, month,countAutomaticPoint,countEmployeePoint,countApprovedPoint) => {
         let fileName = "Thống kê kết quả KPI đơn vị " + ( month?("tháng "+month):"" );
         if (data) {           
             data = data.map((x, index) => {
                
                 let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
+                let numberEmployeesWithSameAutomaticPoint = countAutomaticPoint[automaticPoint];
                 let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
-                let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);           
+                let numberEmployeesWithSameEmployeePoint = countEmployeePoint[employeePoint];
+                let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);
+                let numberEmployeesWithSameApprovedPoint = countApprovedPoint[approverPoint];           
 
                 return {
                     automaticPoint: automaticPoint,
+                    numberEmployeesWithSameAutomaticPoint:numberEmployeesWithSameAutomaticPoint,
                     employeePoint: employeePoint,
-                    approverPoint: approverPoint,                 
+                    numberEmployeesWithSameEmployeePoint:numberEmployeesWithSameEmployeePoint,
+                    approverPoint: approverPoint,        
+                    numberEmployeesWithSameApprovedPoint:numberEmployeesWithSameApprovedPoint         
                 };
             })
         }
@@ -275,11 +315,13 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
                     sheetTitle : fileName,
                     tables: [
                         {
-                            tableName : 'Dữ liệu để vẽ biểu đồ '+ fileName,
                             columns: [
-                                { key: "automaticPoint", value: "Điểm tự động" },
+                                { key: "automaticPoint", value: "Điểm tự động" },                                
                                 { key: "employeePoint", value: "Điểm tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm được đánh giá" }
+                                { key: "approverPoint", value: "Điểm được phê duyệt" },
+                                { key: "numberEmployeesWithSameAutomaticPoint", value: "Số nhân viên có cùng điểm số tự động " },
+                                { key: "numberEmployeesWithSameEmployeePoint", value: "Số nhân viên có cùng điểm số tự đánh giá " },
+                                { key: "numberEmployeesWithSameApprovedPoint", value: "Số nhân viên có cùng điểm số được phê duyệt " },
                             ],
                             data: data
                         }
@@ -293,11 +335,11 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
 
     render() {
         const { dashboardOrganizationalUnitKpi, translate,month } = this.props;
-        let listEmployeeKpiSet, exportData;
+        let { exportData } =this.state;
+        let listEmployeeKpiSet;
 
         if (dashboardOrganizationalUnitKpi.employeeKpiSets) {
             listEmployeeKpiSet = dashboardOrganizationalUnitKpi.employeeKpiSets
-            exportData =this.convertDataToExportData(listEmployeeKpiSet,month);
         }
 
         return (            

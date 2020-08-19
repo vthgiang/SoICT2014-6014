@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
-import { DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, SelectBox } from '../../../../../common-components';
+import { DataTableSetting, DateTimeConverter, PaginateBar, TreeSelect, SelectBox } from '../../../../../common-components';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import DocumentInformation from '../../user/documents/documentInformation';
@@ -166,75 +166,87 @@ class Table extends Component {
         const { paginate } = docs;
         const { isLoading } = this.props.documents;
         const { currentRow, archive, domain, category } = this.state;
-        const listDomain = this.convertData(domains.list)
+        const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
-        const listArchive = this.convertData(archives.list);
-
+        const listArchive = archives.list;
+        console.log('tttt', domains.tree);
         return (
             <React.Fragment>
-                <CreateForm />
-                {
-                    currentRow &&
-                    <ListView
-                        docs={currentRow}
-                    />
-                }
-                {
-                    currentRow &&
-                    <ListDownload
-                        docs={currentRow}
-                    />
-                }
-                {
-                    currentRow &&
-                    <EditForm
-                        documentId={currentRow._id}
-                        documentName={currentRow.name}
-                        documentDescription={currentRow.description}
-                        documentCategory={currentRow.category._id}
-                        documentDomains={currentRow.domains.map(domain => domain._id)}
-                        documentArchives={currentRow.archives.map(archive => archive._id)}
-                        documentIssuingBody={currentRow.issuingBody}
-                        documentOfficialNumber={currentRow.officialNumber}
-                        documentSigner={currentRow.signer}
-                        documentVersions={currentRow.versions}
+                <div className="qlcv">
+                    <CreateForm />
+                    {
+                        currentRow &&
+                        <ListView
+                            docs={currentRow}
+                        />
+                    }
+                    {
+                        currentRow &&
+                        <ListDownload
+                            docs={currentRow}
+                        />
+                    }
+                    {
+                        currentRow &&
+                        <EditForm
+                            documentId={currentRow._id}
+                            documentName={currentRow.name}
+                            documentDescription={currentRow.description}
+                            documentCategory={currentRow.category._id}
+                            documentDomains={currentRow.domains.map(domain => domain._id)}
+                            documentArchives={currentRow.archives.map(archive => archive._id)}
+                            documentIssuingBody={currentRow.issuingBody}
+                            documentOfficialNumber={currentRow.officialNumber}
+                            documentSigner={currentRow.signer}
+                            documentVersions={currentRow.versions}
 
-                        documentRelationshipDescription={currentRow.relationshipDescription}
-                        documentRelationshipDocuments={currentRow.relationshipDocuments}
+                            documentRelationshipDescription={currentRow.relationshipDescription}
+                            documentRelationshipDocuments={currentRow.relationshipDocuments}
 
-                        documentRoles={currentRow.roles}
+                            documentRoles={currentRow.roles}
 
-                        documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
-                        documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
-                        documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
-                    />
+                            documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
+                            documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
+                            documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
+                        />
 
-                }
-                {
-                    currentRow &&
-                    <DocumentInformation
-                        documentId={currentRow._id}
-                        documentName={currentRow.name}
-                        documentDescription={currentRow.description}
-                        documentCategory={currentRow.category._id}
-                        documentDomains={currentRow.domains.map(domain => domain._id)}
-                        documentIssuingBody={currentRow.issuingBody}
-                        documentOfficialNumber={currentRow.officialNumber}
-                        documentSigner={currentRow.signer}
-                        documentVersions={currentRow.versions}
+                    }
+                    {
+                        currentRow &&
+                        <DocumentInformation
+                            documentId={currentRow._id}
+                            documentName={currentRow.name}
+                            documentDescription={currentRow.description}
+                            documentCategory={currentRow.category._id}
+                            documentDomains={currentRow.domains.map(domain => domain._id)}
+                            documentIssuingBody={currentRow.issuingBody}
+                            documentOfficialNumber={currentRow.officialNumber}
+                            documentSigner={currentRow.signer}
+                            documentVersions={currentRow.versions}
 
-                        documentRelationshipDescription={currentRow.relationshipDescription}
-                        documentRelationshipDocuments={currentRow.relationshipDocuments}
+                            documentRelationshipDescription={currentRow.relationshipDescription}
+                            documentRelationshipDocuments={currentRow.relationshipDocuments}
 
-                        documentRoles={currentRow.roles}
+                            documentRoles={currentRow.roles}
 
-                        documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
-                        documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
-                        documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
-                    />
-                }
+                            documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
+                            documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
+                            documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
+                        />
+                    }
 
-                <div className="form-inline">
+
+                    <div className="form-group" >
+                        <label>{translate('document.store.information')}</label>
+                        <TreeSelect
+                            data={listArchive}
+                            className="form-control select2"
+                            handleChange={this.handleArchiveChange}
+                            value={archive}
+                            mode="hierarchical"
+                            style={{ width: " 100%" }}
+                        />
+                    </div>
                     <div className="form-group">
                         <label>{translate('document.category')}:</label>
                         <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
@@ -244,112 +256,94 @@ class Table extends Component {
                             onChange={this.handleCategoryChange}
                             value={category}
                         />
+
+
                     </div>
                     <div className="form-group">
-                        <label>Lưu trữ:</label>
-                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                            id={`status-archive`}
-                            style={{ width: "100%" }}
-                            items={listArchive}
-                            onChange={this.handleArchiveChange}
-                            value={archive}
-                        />
-                    </div>
-                </div>
-                <div className="form-inline">
-                    <div className="form-group">
-                        <label>{translate('document.domain')}:</label>
-                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                            id={`status-domain`}
-                            style={{ width: "100%" }}
-                            items={listDomain}
-                            onChange={this.handleDomainChange}
+                        <label>{translate('document.domain')}</label>
+                        <TreeSelect
+                            data={listDomain}
+                            className="form-control select2"
+                            handleChange={this.handleDomainChange}
+                            mode="hierarchical"
                             value={domain}
+                            style={{ width: "100%" }}
                         />
                     </div>
-                    {/* <SearchBar
-                        columns={[
-                            { title: translate('document.name'), value: 'name' },
-                            { title: translate('document.description'), value: 'description' }
-                        ]}
-                        option={this.state.option}
-                        setOption={this.setOption}
-                        search={this.searchWithOption}
-                    /> */}
+
                     <div className="form-group">
                         <button type="button" className="btn btn-success" onClick={() => this.searchWithOption()}>{
                             translate('kpi.organizational_unit.management.over_view.search')}</button>
                     </div>
-                </div>
-                <div className="form-inline">
+
+
+                    <table className="table table-hover table-striped table-bordered" id="table-manage-document-list">
+                        <thead>
+                            <tr>
+                                <th>{translate('document.name')}</th>
+                                <th>{translate('document.description')}</th>
+                                <th>{translate('document.issuing_date')}</th>
+                                <th>{translate('document.effective_date')}</th>
+                                <th>{translate('document.expired_date')}</th>
+                                <th>{translate('document.upload_file')}</th>
+                                <th>{translate('document.upload_file_scan')}</th>
+                                <th>{translate('document.views')}</th>
+                                <th>{translate('document.downloads')}</th>
+                                <th style={{ width: '120px', textAlign: 'center' }}>
+                                    {translate('general.action')}
+                                    <DataTableSetting
+                                        columnArr={[
+                                            translate('document.name'),
+                                            translate('document.description'),
+                                            translate('document.issuing_date'),
+                                            translate('document.effective_date'),
+                                            translate('document.expired_date'),
+                                            translate('document.upload_file'),
+                                            translate('document.upload_file_scan'),
+                                            translate('document.views'),
+                                            translate('document.downloads')
+                                        ]}
+                                        limit={this.state.limit}
+                                        setLimit={this.setLimit}
+                                        hideColumnOption={true}
+                                        tableId="table-manage-document"
+                                    />
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                paginate.length > 0 ?
+                                    paginate.map(doc =>
+                                        <tr key={doc._id}>
+                                            <td>{doc.name}</td>
+                                            <td>{!doc.description ? doc.description : ""}</td>
+                                            <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].issuingDate} type="DD-MM-YYYY" /></td>
+                                            <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].effectiveDate} type="DD-MM-YYYY" /></td>
+                                            <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].expiredDate} type="DD-MM-YYYY" /></td>
+                                            <td><a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
+                                            <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
+                                            <td>
+                                                <a href="#modal-list-view" onClick={() => this.showDetailListView(doc)}>{doc.numberOfView}</a>
+                                            </td>
+                                            <td>
+                                                <a href="#modal-list-download" onClick={() => this.showDetailListDownload(doc)}>{doc.numberOfDownload}</a>
+                                            </td>
+                                            <td>
+                                                <a className="text-green" title={translate('document.view')} onClick={() => this.toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
+                                                <a className="text-yellow" title={translate('document.edit')} onClick={() => this.toggleEditDocument(doc)}><i className="material-icons">edit</i></a>
+                                                <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocument(doc._id, doc.name)}><i className="material-icons">delete</i></a>
+                                            </td>
+                                        </tr>) :
+                                    isLoading ?
+                                        <tr><td colSpan={10}>{translate('general.loading')}</td></tr> : <tr><td colSpan={10}>{translate('general.no_data')}</td></tr>
+                            }
+
+                        </tbody>
+                    </table>
+                    <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={this.setPage} />
 
                 </div>
-
-                <table className="table table-hover table-striped table-bordered" id="table-manage-document-list">
-                    <thead>
-                        <tr>
-                            <th>{translate('document.name')}</th>
-                            <th>{translate('document.description')}</th>
-                            <th>{translate('document.issuing_date')}</th>
-                            <th>{translate('document.effective_date')}</th>
-                            <th>{translate('document.expired_date')}</th>
-                            <th>{translate('document.upload_file')}</th>
-                            <th>{translate('document.upload_file_scan')}</th>
-                            <th>{translate('document.views')}</th>
-                            <th>{translate('document.downloads')}</th>
-                            <th style={{ width: '120px', textAlign: 'center' }}>
-                                {translate('general.action')}
-                                <DataTableSetting
-                                    columnArr={[
-                                        translate('document.name'),
-                                        translate('document.description'),
-                                        translate('document.issuing_date'),
-                                        translate('document.effective_date'),
-                                        translate('document.expired_date'),
-                                        translate('document.upload_file'),
-                                        translate('document.upload_file_scan'),
-                                        translate('document.views'),
-                                        translate('document.downloads')
-                                    ]}
-                                    limit={this.state.limit}
-                                    setLimit={this.setLimit}
-                                    hideColumnOption={true}
-                                    tableId="table-manage-document"
-                                />
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            paginate.length > 0 ?
-                                paginate.map(doc =>
-                                    <tr key={doc._id}>
-                                        <td>{doc.name}</td>
-                                        <td>{!doc.description ? doc.description : ""}</td>
-                                        <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].issuingDate} type="DD-MM-YYYY" /></td>
-                                        <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].effectiveDate} type="DD-MM-YYYY" /></td>
-                                        <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].expiredDate} type="DD-MM-YYYY" /></td>
-                                        <td><a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
-                                        <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
-                                        <td>
-                                            <a href="#modal-list-view" onClick={() => this.showDetailListView(doc)}>{doc.numberOfView}</a>
-                                        </td>
-                                        <td>
-                                            <a href="#modal-list-download" onClick={() => this.showDetailListDownload(doc)}>{doc.numberOfDownload}</a>
-                                        </td>
-                                        <td>
-                                            <a className="text-green" title={translate('document.view')} onClick={() => this.toggleDocumentInformation(doc)}><i className="material-icons">visibility</i></a>
-                                            <a className="text-yellow" title={translate('document.edit')} onClick={() => this.toggleEditDocument(doc)}><i className="material-icons">edit</i></a>
-                                            <a className="text-red" title={translate('document.delete')} onClick={() => this.deleteDocument(doc._id, doc.name)}><i className="material-icons">delete</i></a>
-                                        </td>
-                                    </tr>) :
-                                isLoading ?
-                                    <tr><td colSpan={10}>{translate('general.loading')}</td></tr> : <tr><td colSpan={10}>{translate('general.no_data')}</td></tr>
-                        }
-
-                    </tbody>
-                </table>
-                <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={this.setPage} />
             </React.Fragment>
         );
     }

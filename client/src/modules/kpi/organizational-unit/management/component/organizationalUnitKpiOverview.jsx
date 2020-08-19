@@ -176,19 +176,18 @@ class KPIUnitManager extends Component {
             data = data.map((x, index) => {
                
                 let fullName =x.creator.name;
+                let email= x.creator.email;
                 let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
                 let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
                 let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);
-                let d = new Date(x.date),
-                    month = '' + (d.getMonth() + 1),
-                    year = d.getFullYear(),
-                    date =month + '-' + year;
+                let date = new Date(x.date);                    
                 let status = this.checkStatusKPI(x.status);
                 let numberTarget =parseInt(x.kpis.length);               
 
                 return {
                     STT: index + 1,
-                    fullName: fullName,                   
+                    fullName: fullName, 
+                    email:email,                  
                     automaticPoint: automaticPoint,
                     status: status,
                     employeePoint: employeePoint,
@@ -210,12 +209,13 @@ class KPIUnitManager extends Component {
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "fullName", value: "Người tạo" },
+                                { key: "email", value: "Email người tạo" },
                                 { key: "time", value: "Thời gian" },
                                 { key: "status", value: "Trạng thái" },                                
                                 { key: "numberTarget", value: "Số lượng mục tiêu" },                                
                                 { key: "automaticPoint", value: "Điểm tự động" },
                                 { key: "employeePoint", value: "Điểm tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm được đánh giá" }
+                                { key: "approverPoint", value: "Điểm được phê duyệt" }
                             ],
                             data: data
                         }

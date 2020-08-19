@@ -33,15 +33,11 @@ class TwoBarChart extends Component {
             })
         }
         dateConvert.unshift("x");
-
         valueConvert = Object.values(data.flatMap(x => x.tasks).reduce((a, i) => {
-            if (typeof i.value === 'number') {
-                a[i.code] = a[i.code] || [i.code];
-                a[i.code].push(i.value);
-            }
+            a[i.code] = a[i.code] || [i.code];
+            a[i.code].push(i.value);
             return a;
         }, {}));
-
         dataConvert = [...[dateConvert], ...valueConvert];
         return { dataConvert, axisXType };
     }
@@ -51,6 +47,7 @@ class TwoBarChart extends Component {
         if (nextProps.data) {
             if (nextProps.charType === "0") {
                 this.renderBarChart(nextProps.data);
+                // this.renderLineChart(nextProps.data);
             } else if (nextProps.charType === "1") {
                 this.renderLineChart(nextProps.data);
             } else {
@@ -94,6 +91,7 @@ class TwoBarChart extends Component {
     renderBarChart = (data) => {
         this.removePreviousBarChart();
         data = this.setDataMultiChart(data);
+        console.log('data', data)
         let newData = data.dataConvert;
         let type = data.axisXType;
 
@@ -102,7 +100,11 @@ class TwoBarChart extends Component {
             data: {
                 x: 'x',
                 columns: newData,
-                type: 'bar',
+                types: {
+                    p1: 'bar',
+                    p2: 'spline'
+                }
+                // type: 'bar',
 
             },
             bar: {
@@ -179,47 +181,44 @@ class TwoBarChart extends Component {
     }
     render() {
         const { nameChart } = this.state;
-        const { charType, data } = this.props;
-
+        const { charType } = this.props;
+        console.log('chart', charType)
         return (
             <React.Fragment>
                 <div className="row">
-                    {
-                        (charType) && charType === '0' &&
-                        <div className="col-md-6">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">{}</h3>
-                            </div>
-                            <div className="box-body dashboard_box_body">
-                                <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
-                                <div ref="barChart"></div>
-                            </div>
+
+
+                    <div className="col-md-6">
+                        <div className="box-header with-border">
+                            <h3 className="box-title">vc</h3>
                         </div>
-                    }
-                    {
-                        charType && charType === '1' &&
-                        <div className="col-md-6">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">{}</h3>
-                            </div>
-                            <div className="box-body dashboard_box_body">
-                                <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
-                                <div ref="pieChart"></div>
-                            </div>
+                        <div className="box-body dashboard_box_body">
+                            <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
+                            <div ref="barChart"></div>
+                            {/* <div ref="pieChart"></div>
+                                    <div ref="lineChart"></div> */}
                         </div>
-                    }
-                    {
-                        charType && charType === '2' &&
-                        <div className="col-md-6">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">{}</h3>
-                            </div>
-                            <div className="box-body dashboard_box_body">
-                                <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
-                                <div ref="lineChart"></div>
-                            </div>
+                    </div>
+
+                    <div className="col-md-6">
+                        <div className="box-header with-border">
+                            <h3 className="box-title">{}</h3>
                         </div>
-                    }
+                        <div className="box-body dashboard_box_body">
+                            <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
+                            <div ref="pieChart"></div>
+                        </div>
+                    </div>
+
+                    <div className="col-md-6">
+                        <div className="box-header with-border">
+                            <h3 className="box-title">{}</h3>
+                        </div>
+                        <div className="box-body dashboard_box_body">
+                            <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
+                            <div ref="lineChart"></div>
+                        </div>
+                    </div>
 
 
                 </div>
