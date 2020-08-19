@@ -14,6 +14,7 @@ export const DepartmentServices = {
     create,
     edit,
     destroy,
+    importDepartment,
 };
 
 function get() {
@@ -55,5 +56,13 @@ function destroy(departmentId) {
     return sendRequest({
         url: `${ LOCAL_SERVER_API }/organizational-units/organizational-units/${departmentId}`,
         method: 'DELETE',
+    }, true, true, 'super_admin.organization_unit');
+}
+
+function importDepartment(data) {
+    return sendRequest({
+        url: `${ LOCAL_SERVER_API }/organizational-units/organizational-units/import`,
+        method: 'POST',
+        data: data,
     }, true, true, 'super_admin.organization_unit');
 }

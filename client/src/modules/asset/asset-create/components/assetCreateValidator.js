@@ -44,6 +44,8 @@ export const AssetCreateValidator = {
     validateUsefulLife, // Thời gian trích khấu hao
     validateStartDepreciation, // Thời gian bắt đầu trích khấu hao
     validateDepreciationType, // Thời gian bắt đầu trích khấu hao
+    validateUnitsProducedDuringTheYear,
+    validateEstimatedTotalProduction,
 
     /**
      * Thông tin sự cố
@@ -422,5 +424,29 @@ function validateDisposalDate(value, translate) {
     if (value.trim() === "") {
         msg = "Mô tả thanh lý không được để trống";
     }
+    return msg;
+}
+
+// Kiểm tra sản lượng sản phẩm trong 1 năm
+function validateUnitsProducedDuringTheYear(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Các trường không được để trống";
+    } else if (value < 0) {
+        msg = "Các trường không được nhỏ hơn 0";
+    }
+
+    return msg;
+}
+
+// Kiểm tra sản lượng ước tính sản phẩm trong 1 năm
+function validateEstimatedTotalProduction(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Sản lượng ước tính sản phẩm không được để trống";
+    } else if (value < 0) {
+        msg = "Sản lượng ước tính sản phẩm không được nhỏ hơn 0";
+    }
+
     return msg;
 }

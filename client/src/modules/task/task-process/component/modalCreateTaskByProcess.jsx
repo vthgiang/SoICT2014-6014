@@ -40,7 +40,7 @@ class ModalCreateTaskByProcess extends Component {
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
             showInfo: false,
-            info: data.infoTask,
+            info: data.tasks,
             xmlDiagram: data.xmlDiagram,
             selectedEdit: 'info',
             zlevel: 1,
@@ -85,7 +85,7 @@ class ModalCreateTaskByProcess extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.idProcess !== prevState.idProcess) {
             let info = {};
-            let infoTask = nextProps.data.infoTask;
+            let infoTask = nextProps.data.tasks;
             for (let i in infoTask) {
                 if (!infoTask[i].organizationalUnit) {
                     infoTask[i].organizationalUnit = nextProps.listOrganizationalUnit[0]?._id;
@@ -384,29 +384,14 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     save = async () => {
-        // let xmlStr;
-        // this.modeler.saveXML({ format: true }, function (err, xml) {
-        //     xmlStr = xml;
-        // });
-        // await this.setState(state => {
-        //     return {
-        //         ...state,
-        //         xmlDiagram: xmlStr,
-        //     }
-        // })
         let data = {
-            // nameProcess: this.state.processName,
-            // description: this.state.processDescription,
-            // viewer: this.state.viewer,
-            // manager: this.state.manager,
             creator: this.state.userId,
-            // xmlDiagram: this.state.xmlDiagram,
-            infoTask: this.state.info,
+            taskList: this.state.info,
             startDate: this.state.startDate,
             endDate: this.state.endDate,
         }
         console.log('000', data);
-        // this.props.createTaskByProcess(data, this.state.idProcess);
+        this.props.createTaskByProcess(data, this.state.idProcess);
     }
 
     downloadAsSVG = () => {

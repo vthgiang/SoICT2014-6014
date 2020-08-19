@@ -78,27 +78,33 @@ const seedDatabase = async () => {
     var links = await Link.insertMany([
         {
             url: '/',
-            description: 'Trang chủ'
+            description: 'Trang chủ',
+            deleteSoft: false
         },
         {
             url: '/system/settings',
-            description: 'Quản lý thiết lập hệ thống'
+            description: 'Quản lý thiết lập hệ thống',
+            deleteSoft: false
         },
         {
             url: '/system/companies-management',
-            description: 'Quản lý thông tin doanh nghiệp/công ty'
+            description: 'Quản lý thông tin doanh nghiệp/công ty',
+            deleteSoft: false
         },
         {
             url: '/system/links-default-management',
-            description: 'Quản lý các trang mặc định khi khởi tạo 1 công ty'
+            description: 'Quản lý các trang mặc định khi khởi tạo 1 công ty',
+            deleteSoft: false
         },
         {
             url: '/system/components-default-management',
-            description: 'Quản lý các thành phần UI mặc định khi khởi tạo cho 1 công ty'
+            description: 'Quản lý các thành phần UI mặc định khi khởi tạo cho 1 công ty',
+            deleteSoft: false
         },
         {
             url: '/system/roles-default-management',
-            description: 'Thông tin về các role default trong csdl'
+            description: 'Thông tin về các role default trong csdl',
+            deleteSoft: false
         }
     ]);
     await Privilege.insertMany([

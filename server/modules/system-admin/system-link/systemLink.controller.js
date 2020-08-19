@@ -12,6 +12,7 @@ exports.getAllSystemLinks = async (req, res) => {
             content: links
         });
     } catch (error) {
+        
         LogError(req.user.email, 'GET_LINKS_DEFAULT');
         res.status(400).json({
             success: false,
@@ -55,6 +56,7 @@ exports.createSystemLink = async (req, res) => {
             content: data
         });
     } catch (error) {
+        console.log(error)
         LogError(req.user.email, 'CREATE_LINK_DEFAULT');
         res.status(400).json({
             success: false,
@@ -118,6 +120,7 @@ exports.deleteSystemLink = async (req, res) => {
             content: link
         });
     } catch (error) {
+        console.log(error)
         LogError(req.user.email, 'DELETE_LINK_DEFAULT');
         res.status(400).json({
             success: false,

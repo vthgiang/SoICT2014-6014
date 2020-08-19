@@ -232,7 +232,6 @@ exports.changePassword = async (id, password, new_password) => {
  * @param {*} idRole : id role người dùng
  */
 exports.getLinksThatRoleCanAccess = async (idRole) => {
-    
     const role = await Role.findById(idRole); //lay duoc role hien tai
     let roles = [role._id];
     roles = roles.concat(role.parents);
@@ -240,7 +239,7 @@ exports.getLinksThatRoleCanAccess = async (idRole) => {
         roleId: { $in: roles },
         resourceType: 'Link'
     }).populate({ path: 'resourceId', model: Link }); 
-    const links = await privilege.map( link => link.resourceId );
+    const links = await privilege.filter(pri => pri.resourceId.deleteSoft === false).map( pri => pri.resourceId );
 
     return links;
 }

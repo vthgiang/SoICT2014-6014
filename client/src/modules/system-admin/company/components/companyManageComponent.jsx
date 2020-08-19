@@ -19,10 +19,19 @@ class CompanyManageComponent extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.companyId !== prevState.companyId) {
+        if (
+            nextProps.companyId !== prevState.companyId|| 
+            nextProps.company.item.components.listPaginate.length !== prevState.componentPaginate.length ||
+            nextProps.company.item.components.limit !== prevState.componentLimit || 
+            nextProps.company.item.components.page !== prevState.componentPage
+        ) {
             return {
                 ...prevState,
-                companyId: nextProps.companyId
+                checkedAll: false,
+                companyId: nextProps.companyId,
+                componentPaginate: nextProps.company.item.components.listPaginate,
+                componentPage: nextProps.company.item.components.page,
+                componentLimit: nextProps.company.item.components.limit,
             } 
         } else {
             return null;
@@ -100,48 +109,56 @@ class CompanyManageComponent extends Component {
     }
 
     searchWithOption = async () => {
-        const data = {
+        const {companyId} = this.state;
+        const params = {
+            company: companyId,
             limit: this.state.limit,
             page: 1,
             key: this.state.option,
             value: this.state.value
         };
 
-        await this.props.getCompanyComponents(this.state.companyId, data);
+        await this.props.getCompanyComponents(params);
     }
 
     setPage = (page) => {
         this.setState({ page });
-        const data = {
+        const {companyId} = this.state;
+        const params = {
+            company: companyId,
             limit: this.state.limit,
             page: page,
             key: this.state.option,
             value: this.state.value
         };
 
-        this.props.getCompanyComponents(this.state.companyId, data);
+        this.props.getCompanyComponents(params);
     }
 
     setLimit = (number) => {
         this.setState({ limit: number });
-
-        const data = { 
+        const {companyId} = this.state;
+        const params = { 
+            company: companyId,
             limit: number, 
             page: this.state.page,
             key: this.state.option,
             value: this.state.value
         };
 
-        this.props.getCompanyComponents(this.state.companyId, data);
+        this.props.getCompanyComponents(params);
     }
 
     render() { 
         const { translate, company, systemComponents } = this.props;
-        const { companyId, componentDescriptionError } = this.state;
-
+        const { 
+            companyId, componentDescriptionError,
+            componentPaginate, checkedAll
+        } = this.state;
+        console.log("state", this.state)
         return ( 
             <div style={{padding: '10px 0px 10px 0px'}}>
-                <a className="btn btn-success pull-right" onClick={this.showCreateComponentForm}>Thêm</a>
+                <a className="btn btn-success pull-right" onClick={this.updateCompanyComponents}>Cập nhật</a>
                 <SearchBar 
                     columns={[
                         { title: translate('manage_component.name'), value: 'name' },
@@ -151,64 +168,38 @@ class CompanyManageComponent extends Component {
                     setOption={this.setOption}
                     search={this.searchWithOption}
                 />
-
+                <DataTableSetting 
+                    tableId="company-manage-component-table"
+                    setLimit={this.setLimit}
+                />
                 <table className="table table-hover table-striped table-bordered" id="company-manage-component-table">
                     <thead>
                         <tr>
+                            <th style={{width: '32px'}} className="col-fixed">
+                                <input type="checkbox" value="checkall" onChange={this.checkAll} checked={checkedAll}/>
+                            </th>
                             <th>{ translate('manage_component.name') }</th>
                             <th>{ translate('manage_component.link') }</th>
                             <th>{ translate('manage_component.description') }</th>
-                            <th style={{width: '120px'}}>
-                                {translate('table.action')}
-                                <DataTableSetting 
-                                    tableId="company-manage-component-table"
-                                    setLimit={this.setLimit}
-                                />
-                            </th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        <tr id="add-new-component-default" style={{display: "none"}}>
-                            <td>
-                                <select
-                                    className="form-control"
-                                    style={{width: '100%'}}
-                                    onChange={(e)=>this.handleName(e, systemComponents)}
-                                    value={this.state.componentName}
-                                >
-                                    <option key="noname" value="noname"> --- Chọn component ---</option>
-                                    {
-                                        systemComponents.list.map(systemComponent => 
-                                        <option 
-                                            key={systemComponent._id} 
-                                            value={systemComponent.name}
-                                            disabled={this.companyHasComponent(systemComponent.name, company.item.components.list)}
-                                        >{systemComponent.name}</option>)
-                                    }
-                                </select>
-                            </td>
-                            <td>{this.state.componentLink}</td>
-                            <td>{this.state.componentDescription}</td>
-                            <td>
-                                {
-                                    this.isFormCreateLinkValidated() ?
-                                    <a className="save" onClick={this.saveAndCloseComponentForm}><i className="material-icons">save</i></a>:
-                                    <a className="delete" onClick={this.closeCreateComponentForm}><i className="material-icons">delete</i></a>
-                                }
-                            </td>
-                        </tr> 
-
                         {
-                            company.item.components.listPaginate.length > 0 ? 
-                            company.item.components.listPaginate.map(component => 
+                            componentPaginate.length > 0 ? 
+                            componentPaginate.map( component => 
                                 <tr key={component._id}>
+                                    <td>
+                                        <input 
+                                            type="checkbox" 
+                                            value={component._id} 
+                                            onChange={this.handleCheckbox} 
+                                            checked={!component.deleteSoft}
+                                        />
+                                    </td>
                                     <td>{ component.name }</td>
                                     <td>{ component.link ? component.link.url : null}</td>
                                     <td>{ component.description }</td>
-                                    <td>
-                                        <a className="delete" onClick={() => this.deleteCompanyComponent(companyId, component._id)}><i className="material-icons">delete</i></a>
-                                    </td>
                                 </tr> 
                             ) : (
                                 company.item.components.isLoading ?
@@ -224,6 +215,48 @@ class CompanyManageComponent extends Component {
             </div>
          );
     }
+
+    checkAll = (e) => {
+        let {componentPaginate} = this.state;
+        let {checked} = e.target;
+        
+        const componentArr = componentPaginate.map(component=>{
+            return {
+                ...component,
+                deleteSoft: !checked
+            }
+        });
+        this.setState({
+            checkedAll: checked,
+            componentPaginate: componentArr
+        })
+    }
+
+    handleCheckbox = (e) => {
+        const {componentPaginate} = this.state;
+        const {value, checked} = e.target;
+        for (let i = 0; i < componentPaginate.length; i++) {
+            if(value === componentPaginate[i]._id){
+                componentPaginate[i].deleteSoft = !checked;
+                this.setState({
+                    componentPaginate
+                })
+                break;
+            }
+        }
+    }
+
+    updateCompanyComponents = () => {
+        let {componentPaginate} = this.state;
+        let data = componentPaginate.map(component=>{
+            return {
+                _id: component._id,
+                deleteSoft: component.deleteSoft
+            }
+        });
+
+        this.props.updateCompanyComponents(data);
+    }
 }
 
 function mapState(state) {
@@ -231,9 +264,8 @@ function mapState(state) {
     return { company, systemComponents };
 }
 const action = {
-    addCompanyComponent: CompanyActions.addCompanyComponent,
-    deleteCompanyComponent: CompanyActions.deleteCompanyComponent,
     getCompanyComponents: CompanyActions.getCompanyComponents,
+    updateCompanyComponents: CompanyActions.updateCompanyComponents,
 }
 
 const connectedCompanyManageComponent = connect(mapState, action)(withTranslate(CompanyManageComponent))

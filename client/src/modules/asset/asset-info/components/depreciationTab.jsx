@@ -32,7 +32,7 @@ class DepreciationTab extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id) {
+        if (nextProps.id !== prevState.id || nextProps.depreciationType !== prevState.depreciationType) {
             return {
                 ...prevState,
                 id: nextProps.id,
@@ -57,7 +57,7 @@ class DepreciationTab extends Component {
                 currentDate = moment(`${splitDay[2]}-${splitDay[1]}-${splitDay[0]}`),
                 futureMonth = moment(currentDate).add(usefulLife, 'M'),
                 futureMonthEnd = moment(futureMonth).endOf('month');
-            
+
             if (currentDate.date() !== futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
                 futureMonth = futureMonth.add(1, 'd');
             }
@@ -66,13 +66,81 @@ class DepreciationTab extends Component {
         }
     };
 
+    /**
+     * Hàm để tính các giá trị khấu hao cho tài sản
+     * @param {*} depreciationType Phương pháp khấu hao
+     * @param {*} cost Nguyên giá
+     * @param {*} usefulLife Thời gian trích khấu hao
+     * @param {*} startDepreciation Thời gian bắt đầu trích khấu hao
+     */
+    calculateDepreciation = (depreciationType, cost, usefulLife, startDepreciation) => {
+        let annualDepreciation, monthlyDepreciation, remainingValue = cost;
+
+        if (depreciationType === "Đường thẳng") { // Phương pháp khấu hao theo đường thẳng
+            annualDepreciation = ((12 * cost) / usefulLife);
+            monthlyDepreciation = cost / usefulLife;
+            remainingValue = cost - (cost / usefulLife) * ((new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(startDepreciation).getFullYear() * 12 + new Date(startDepreciation).getMonth()));
+
+        } else if (depreciationType === "Số dư giảm dần") { // Phương pháp khấu hao theo số dư giảm dần
+            let lastYears = false,
+                t,
+                usefulYear = usefulLife / 12,
+                usedTime = (new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(startDepreciation).getFullYear() * 12 + new Date(startDepreciation).getMonth());
+
+            if (usefulYear < 4) {
+                t = (1 / usefulYear) * 1.5;
+            } else if (usefulYear >= 4 && usefulYear <= 6) {
+                t = (1 / usefulYear) * 2;
+            } else if (usefulYear > 6) {
+                t = (1 / usefulYear) * 2.5;
+            }
+
+            for (let i = 1; i <= usedTime / 12; i++) {
+                if (!lastYears) {
+                    if (remainingValue * t > (remainingValue / (usefulYear - i + 1))) {
+                        annualDepreciation = remainingValue * t;
+                    } else {
+                        annualDepreciation = (remainingValue / (usefulYear - i + 1));
+                        lastYears = true;
+                    }
+                }
+
+                remainingValue = remainingValue - annualDepreciation;
+            }
+
+            if (usedTime % 12 !== 0) {
+                if (!lastYears) {
+                    if (remainingValue * t > (remainingValue / (usefulYear - Math.floor(usedTime / 12)))) {
+                        annualDepreciation = remainingValue * t;
+                    } else {
+                        annualDepreciation = (remainingValue / (usefulYear - Math.floor(usedTime / 12)));
+                        lastYears = true;
+                    }
+                }
+
+                monthlyDepreciation = annualDepreciation / 12;
+                remainingValue = remainingValue - (monthlyDepreciation * (usedTime % 12))
+            }
+        
+        } else if (depreciationType === "Sản lượng") { // Phương pháp khấu hao theo sản lượng
+
+        }
+
+        return [parseInt(annualDepreciation), parseInt(annualDepreciation / 12), parseInt(remainingValue)];
+    }
 
     render() {
         const { id } = this.props;
         const { translate } = this.props;
         const { cost, residualValue, startDepreciation, usefulLife, depreciationType, endDepreciation, annualDepreciationValue, monthlyDepreciationValue } = this.state;
-        
+
         var formater = new Intl.NumberFormat();
+
+        let annualDepreciation, monthlyDepreciation, remainingValue = cost;
+        let result = this.calculateDepreciation(depreciationType, cost, usefulLife, startDepreciation);
+        annualDepreciation = result[0];
+        monthlyDepreciation = result[1];
+        remainingValue = result[2];
 
         return (
             <div id={id} className="tab-pane">
@@ -83,7 +151,6 @@ class DepreciationTab extends Component {
                         <div className="form-group">
                             <strong>{translate('asset.general_information.original_price')}&emsp; </strong>
                             {formater.format(parseInt(cost))} VNĐ
-
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.general_information.residual_price')}&emsp; </strong>
@@ -109,19 +176,19 @@ class DepreciationTab extends Component {
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.asset_info.annual_depreciation')}&emsp; </strong>
-                            {formater.format(parseInt(((12 * cost) / usefulLife)))} VNĐ/năm
+                            {formater.format(annualDepreciation)} VNĐ/năm
 
                         </div>
                         <div className="form-group">
                             <strong>{translate('asset.asset_info.monthly_depreciation')}&emsp; </strong>
-                            {formater.format(cost / usefulLife)} VNĐ/tháng
+                            {formater.format(monthlyDepreciation)} VNĐ/tháng
 
                         </div>
 
                         {/* Giá trị hiện tại */}
                         <div className="form-group">
                             <strong>{translate('asset.depreciation.remaining_value')}&emsp; </strong>
-                            {formater.format(parseInt(cost - ((cost / usefulLife)) * ((new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(startDepreciation).getFullYear() * 12 + new Date(startDepreciation).getMonth()))))} VNĐ
+                            {formater.format(remainingValue)} VNĐ
                         </div>
                     </fieldset>
                 </div>

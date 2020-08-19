@@ -11,6 +11,6 @@ router.post("/diagrams", auth, TaskProcessController.createXmlDiagram);
 router.patch("/diagrams/:diagramId",auth,TaskProcessController.editXmlDiagram)
 
 router.delete("/diagrams/:diagramId", auth, TaskProcessController.deleteXmlDiagram);
-router.delete("/processes/processId/tasks/create", auth, TaskProcessController.deleteXmlDiagram);
+router.post("/processes/:processId/tasks/create", auth, TaskProcessController.createTaskByProcess);
 
 module.exports = router;

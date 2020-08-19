@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DialogModal, ButtonModal, ErrorLabel } from '../../../../../common-components';
+
 import { EmployeeCreateValidator } from './combinedContent';
+
 class FileAddModal extends Component {
     constructor(props) {
         super(props);
@@ -16,13 +19,14 @@ class FileAddModal extends Component {
             fileUpload: ""
         }
     }
-    // Bắt sự kiện thay đổi file đính kèm
+
+    /** Bắt sự kiện thay đổi file đính kèm */
     handleChangeFile = (e) => {
         const { name } = e.target;
-        var file = e.target.files[0];
+        let file = e.target.files[0];
         if (file !== undefined) {
-            var url = URL.createObjectURL(file);
-            var fileLoad = new FileReader();
+            let url = URL.createObjectURL(file);
+            let fileLoad = new FileReader();
             fileLoad.readAsDataURL(file);
             fileLoad.onload = () => {
                 this.setState({
@@ -40,20 +44,22 @@ class FileAddModal extends Component {
         }
     }
 
-    // Bắt sự kiện thay đổi trạng thái
+    /** Bắt sự kiện thay đổi trạng thái */
     handleStatusChange = (e) => {
         const { value } = e.target;
         this.setState({
             status: value
         });
     }
-    // Bắt sự kiên thay đổi mô tả
+
+    /** Bắt sự kiên thay đổi tên tài liệu */
     handleNameFileChange = (e) => {
         let { value } = e.target;
         this.validateNameFile(value, true);
     }
     validateNameFile = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateNameFile(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateNameFile(value, translate);
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -66,13 +72,14 @@ class FileAddModal extends Component {
         return msg === undefined;
     }
 
-    // Bắt sự kiên thay đổi mô tả
+    /** Bắt sự kiên thay đổi mô tả */
     handleDiscFileChange = (e) => {
         let { value } = e.target;
         this.validateDiscFile(value, true);
     }
     validateDiscFile = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateDiscFile(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateDiscFile(value, translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -85,13 +92,14 @@ class FileAddModal extends Component {
         return msg === undefined;
     }
 
-    // Bắt sự kiên thay đổi mô tả
+    /** Bắt sự kiên thay đổi mô tả */
     handleNumberChange = (e) => {
         let { value } = e.target;
         this.validateNumberFile(value, true);
     }
     validateNumberFile = (value, willUpdateState = true) => {
-        let msg = EmployeeCreateValidator.validateNumberFile(value, this.props.translate)
+        const { translate } = this.props;
+        let msg = EmployeeCreateValidator.validateNumberFile(value, translate)
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -104,61 +112,73 @@ class FileAddModal extends Component {
         return msg === undefined;
     }
 
-    // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
+    /** Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form */
     isFormValidated = () => {
-        let result =
-            this.validateNameFile(this.state.name, false) && this.validateDiscFile(this.state.description, false) &&
-            this.validateNumberFile(this.state.number, false);
+        const { name, description, number } = this.state;
+        let result = this.validateNameFile(name, false) &&
+            this.validateDiscFile(description, false) &&
+            this.validateNumberFile(number, false);
         return result;
     }
-    // Bắt sự kiện submit form
+
+    /** Bắt sự kiện submit form */
     save = () => {
         if (this.isFormValidated()) {
             return this.props.handleChange(this.state);
         }
     }
+
     render() {
-        const { id, translate } = this.props;
+        const { translate } = this.props;
+
+        const { id } = this.props;
+
         const { name, description, number, status,
             errorOnNameFile, errorOnDiscFile, errorOnNumberFile } = this.state;
+
         return (
             <React.Fragment>
-                <ButtonModal modalID={`modal-create-file-${id}`} button_name={translate('modal.create')} title={translate('manage_employee.add_file')} />
+                <ButtonModal modalID={`modal-create-file-${id}`} button_name={translate('modal.create')} title={translate('human_resource.profile.add_file')} />
                 <DialogModal
                     size='50' modalID={`modal-create-file-${id}`} isLoading={false}
                     formID={`form-create-file-${id}`}
-                    title={translate('manage_employee.add_file')}
+                    title={translate('human_resource.profile.add_file')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form className="form-group" id={`form-create-file-${id}`}>
-                        <div className={`form-group ${errorOnNameFile === undefined ? "" : "has-error"}`}>
-                            <label>{translate('manage_employee.file_name')}<span className="text-red">*</span></label>
+                        {/* Tên tài liệu  */}
+                        <div className={`form-group ${errorOnNameFile && "has-error"}`}>
+                            <label>{translate('human_resource.profile.file_name')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="name" value={name} onChange={this.handleNameFileChange} autoComplete="off" />
                             <ErrorLabel content={errorOnNameFile} />
                         </div>
-                        <div className={`form-group ${errorOnDiscFile === undefined ? "" : "has-error"}`}>
+                        {/* Mô tả */}
+                        <div className={`form-group ${errorOnDiscFile && "has-error"}`}>
                             <label>{translate('table.description')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" name="description" value={description} onChange={this.handleDiscFileChange} autoComplete="off" />
                             <ErrorLabel content={errorOnDiscFile} />
                         </div>
                         <div className="row">
-                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnNumberFile === undefined ? "" : "has-error"}`}>
-                                <label>{translate('manage_employee.number')}<span className="text-red">*</span></label>
+                            {/* Số lượng */}
+                            <div className={`form-group col-sm-6 col-xs-12 ${errorOnNumberFile && "has-error"}`}>
+                                <label>{translate('human_resource.profile.number')}<span className="text-red">*</span></label>
                                 <input type="number" className="form-control" name="number" value={number} onChange={this.handleNumberChange} autoComplete="off" />
                                 <ErrorLabel content={errorOnNumberFile} />
                             </div>
+                            {/* Trạng thái */}
                             <div className="form-group col-sm-6 col-xs-12">
                                 <label>{translate('table.status')}<span className="text-red">*</span></label>
                                 <select className="form-control" value={status} name="status" onChange={this.handleStatusChange}>
-                                <option value="no_submitted">{translate('manage_employee.no_submitted')}</option>
-                                    <option value="submitted">{translate('manage_employee.submitted')}</option>
-                                    <option value="returned">{translate('manage_employee.returned')}</option>
+                                    <option value="no_submitted">{translate('human_resource.profile.no_submitted')}</option>
+                                    <option value="submitted">{translate('human_resource.profile.submitted')}</option>
+                                    <option value="returned">{translate('human_resource.profile.returned')}</option>
                                 </select>
                             </div>
                         </div>
+                        {/* File đính kèm */}
                         <div className="form-group">
-                            <label htmlFor="file">{translate('manage_employee.attached_files')}</label>
+                            <label htmlFor="file">{translate('human_resource.profile.attached_files')}</label>
                             <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} />
                         </div>
                     </form>
@@ -167,5 +187,6 @@ class FileAddModal extends Component {
         );
     }
 };
+
 const addModal = connect(null, null)(withTranslate(FileAddModal));
 export { addModal as FileAddModal };
