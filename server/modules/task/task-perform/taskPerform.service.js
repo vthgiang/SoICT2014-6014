@@ -55,20 +55,31 @@ exports.startTimesheetLog = async (params, body) => {
  * Dừng bấm giờ: Lưu thời gian kết thúc và số giờ chạy (endTime và time)
  */
 exports.stopTimesheetLog = async (params, body) => {
-    const now = new Date()
-    let duration = now - body.startedAt
+    const now = new Date().getTime()
+    let stoppedAt
+
+    if(body.stoppedAt){
+        stoppedAt = body.stoppedAt
+    }else {
+        stoppedAt = now
+    }
+    
+    let duration = stoppedAt - body.startedAt
     let timer = await Task.findOneAndUpdate(
         { "_id": params.taskId, "timesheetLogs._id": body.timesheetLog },
         {
             $set:
             {
-                "timesheetLogs.$.stoppedAt": now,
+                "timesheetLogs.$.stoppedAt": stoppedAt,
                 "timesheetLogs.$.duration": duration,
                 "timesheetLogs.$.description": body.description,
             }
         },
         { new: true }
     ).populate({ path: "timesheetLogs.creator", select: "name" });
+
+
+
     let time = 0;
     timer.timesheetLogs.length > 0 && timer.timesheetLogs.forEach(x => {
         time += x.duration;

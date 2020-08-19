@@ -113,3 +113,6 @@
 #createtaskbyprocess > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2) {
     display: none;
 }
+#viewprocess > div > div > svg > g > g > g > g > g > text:nth-child(2) {
+    display: none;
+}
