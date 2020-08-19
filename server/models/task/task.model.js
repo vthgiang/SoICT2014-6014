@@ -10,8 +10,13 @@ const TaskProcess = require('./taskProcess.model');
 // Model quản lý thông tin của một công việc và liên kết với tài liệu, kết quả thực hiện công việc
 const TaskSchema = new Schema({
     process: {
-        type: Schema.Types.ObjectId,
-        ref: TaskProcess,
+        processId: {
+            type: Schema.Types.ObjectId,
+            ref: TaskProcess,
+        },
+        numberOfUse: {
+            type: Number,
+        }
     },
     codeInProcess: {
         type: String,

@@ -403,7 +403,6 @@ function destroy(id) {
 }
 
 function getAllUsersWithRole() {
-    console.log("hihihihihihihihi")
     return dispatch => {
         dispatch({
             type: UserConstants.GET_ALL_USERS_WITH_ROLE_REQUEST
