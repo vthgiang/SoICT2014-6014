@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
-import { DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, SelectBox } from '../../../../../common-components';
+import { DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, SelectBox, ExportExcel } from '../../../../../common-components';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import DocumentInformation from '../../user/documents/documentInformation';
@@ -159,6 +159,59 @@ class Table extends Component {
         array.unshift({ value: "", text: "Tất cả các loại" });
         return array;
     }
+    convertDataToExportData = (data) => {
+        data = data.map((x, index) => {
+            return {
+                STT: index + 1,
+                name: x.name,
+                description: x.description,
+                versionName: x.versions[0].versionName,
+                issuingDate: new Date(x.versions[0].issuingDate),
+                effectiveDate: new Date(x.versions[0].effectiveDate),
+                expiredDate: new Date(x.versions[0].expiredDate),
+                numberOfView: x.numberOfView,
+                numberOfDownload: x.numberOfDownload,
+                issuingBody: x.issuingBody,
+                signer: x.signer,
+                officialNumber: x.officialNumber,
+            }
+        });
+        let exportData = {
+            fileName: "Bang thong ke tai lieu",
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    tables: [
+                        {
+                            merges: [{
+                                key: "Vesions",
+                                columnName: "Phiên bản",
+                                keyMerge: 'versionName',
+                                colspan: 4
+                            }],
+                            rowHeader: 2,
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "name", value: "Tên" },
+                                { key: "description", value: "Mô tả" },
+                                { key: "signer", value: "Người ký"},
+                                { key: "officialNumber", value: "Số hiệu"},
+                                { key: "issuingBody", value: "Cơ quan ban hành"},
+                                { key: "versionName", value: "Tên phiên bản"},
+                                { key: "issuingDate", value: "Ngày ban hành" },
+                                { key: "effectiveDate", value: "Ngày áp dụng" },
+                                { key: "expiredDate", value: "Ngày hết hạn"},
+                                { key: "numberOfView", value: "Số lần xem"},
+                                { key: "numberOfDownload", value: "Số lần download"},
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData
+    }
     render() {
         const { translate } = this.props;
         const docs = this.props.documents.administration.data;
@@ -169,7 +222,11 @@ class Table extends Component {
         const listDomain = this.convertData(domains.list)
         const listCategory = this.convertData(categories.list)
         const listArchive = this.convertData(archives.list);
-
+        let list = [];
+        if ( isLoading === false ){
+            list = docs.list;
+        }
+        let exportData = this.convertDataToExportData(list);
         return (
             <div class="qlcv">
                 <CreateForm />
@@ -233,7 +290,7 @@ class Table extends Component {
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
                     />
                 }
-
+                {<ExportExcel id="export-document" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
                 <div className="form-inline">
                     <div className="form-group">
                         <label>{translate('document.category')}</label>
