@@ -2816,7 +2816,7 @@ export default {
                         execution_time: 'Thời gian thực hiện (Ngày)',
                         participants: 'Người tham gia',
                         amount_tasks: 'Số lượng công việc',
-                        amount_child_kpi: 'Số lượng KPI con',
+                        amount_employee_kpi: 'Số lượng KPI nhân viên',
                         weight: 'Trọng số'
                     },
                     result_kpi_unit_chart: {

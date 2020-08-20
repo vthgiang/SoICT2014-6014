@@ -56,7 +56,7 @@ export const AssetCreateValidator = {
 
     /** 
      * Tài liệu đính kèm 
-    */
+     */
     validateNameFile,
     validateDiscFile,
     validateNumberFile,
@@ -261,6 +261,7 @@ function validateUsedBy(value, translate) {
     }
     return msg;
 }
+
 function validateStartDate(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
@@ -360,7 +361,7 @@ function validateIncidentDescription(value, translate) {
  * Validate TabAttachmentsContent (Tài liệu đính kèm)
  */
 
- // kiểm tra tên file
+// kiểm tra tên file
 function validateNameFile(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
@@ -391,7 +392,7 @@ function validateNumberFile(value, translate) {
  * Validate TabDisposal (Thông tin thanh lý)
  */
 
- // kiểm tra ngày thanh lý
+// kiểm tra ngày thanh lý
 function validateDisposalDate(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
@@ -400,8 +401,8 @@ function validateDisposalDate(value, translate) {
     return msg;
 }
 
- // kiểm tra hình thức thanh lý
- function validateDisposalType(value, translate) {
+// kiểm tra hình thức thanh lý
+function validateDisposalType(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Hình thức thanh lý không được để trống";
@@ -409,8 +410,8 @@ function validateDisposalDate(value, translate) {
     return msg;
 }
 
- // kiểm tra giá trị thanh lý
- function validateDisposalCost(value, translate) {
+// kiểm tra giá trị thanh lý
+function validateDisposalCost(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Giá trị thanh lý không được để trống";
@@ -418,8 +419,8 @@ function validateDisposalDate(value, translate) {
     return msg;
 }
 
- // kiểm tra mô tả thanh lý
- function validateDisposalDescription(value, translate) {
+// kiểm tra mô tả thanh lý
+function validateDisposalDescription(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Mô tả thanh lý không được để trống";
@@ -431,9 +432,9 @@ function validateDisposalDate(value, translate) {
 function validateUnitsProducedDuringTheYear(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
-        msg = "Các trường không được để trống";
+        msg = "Sản lượng sản phẩm không được để trống";
     } else if (value < 0) {
-        msg = "Các trường không được nhỏ hơn 0";
+        msg = "Sản lượng sản phẩm không được nhỏ hơn 0";
     }
 
     return msg;

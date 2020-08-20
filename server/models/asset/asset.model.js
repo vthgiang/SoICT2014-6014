@@ -2,14 +2,13 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Company = require('../system-admin/company.model');
 const AssetType = require('./assetType.model');
-const AssetGroup = require('./assetGroup.model');
 const User = require('../auth/user.model');
 
 // Create Schema
 const AssetSchema = new Schema({
     group: {
-        type: Schema.Types.ObjectId,
-        ref: AssetGroup,
+        type: String,
+        enum: ["Building", "Vehicle", "Machine", "Other"]
     },
 
     company: { // công ty
@@ -77,8 +76,9 @@ const AssetSchema = new Schema({
         // required: true
     },
 
-    location: { //15.vị trí tài sản
-        type: String,
+    location: { // 15.vị trí tài sản
+        type: Schema.Types.ObjectId,
+        replies: this,
         // required: true
     },
 

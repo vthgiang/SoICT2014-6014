@@ -163,10 +163,10 @@ class ExportExcel extends Component {
         const { type = 'button', buttonName = translate('human_resource.name_button_export'), style = {}, className = "btn btn-primary pull-right", title = "" } = this.props;
         return (
             <React.Fragment>
-                {type === 'button' && <button type="button" style={style} className={className} title={title} onClick={this.handleExportExcel} >{buttonName}</button>}
+                {type === 'button' && <button type="button" style={style} className={className} title={title} onClick={this.handleExportExcel} >{buttonName}<i className="fa fa-fw fa-file-excel-o"> </i></button>}
                 {type === 'link' &&
                     < a className='pull-right' style={{ cursor: "pointer" }} onClick={this.handleExportExcel}>
-                        <i className="fa fa-download">{buttonName}</i>
+                        <i className="fa fa-fw fa-download"></i> {buttonName}<i className="fa fa-fw fa-file-excel-o"></i>
                     </a>
                 }
             </React.Fragment>

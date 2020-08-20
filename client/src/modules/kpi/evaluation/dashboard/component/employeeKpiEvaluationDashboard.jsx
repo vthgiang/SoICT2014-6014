@@ -8,11 +8,12 @@ import { DashboardEvaluationEmployeeKpiSetAction } from '../redux/actions';
 import { StatisticsOfEmployeeKpiSetChart } from './statisticsOfEmployeeKpiSetChart';
 import { ResultsOfAllEmployeeKpiSetChart } from './resultsOfAllEmployeeKpiSetChart';
 
-import { SelectBox, SelectMulti } from '../../../../../common-components';
+import { SelectBox, SelectMulti, ExportExcel } from '../../../../../common-components';
 import Swal from 'sweetalert2';
 import { DatePicker } from '../../../../../common-components';
 import { LOCAL_SERVER_API } from '../../../../../env';
 import { withTranslate } from 'react-redux-multilingual';
+
 
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 
@@ -260,11 +261,21 @@ class EmployeeKpiEvaluationDashboard extends Component {
         }
     }
 
+
+    handleStatisticsOfEmployeeKpiSetChartDataAvailable = (data) => {
+        this.setState( state => {
+            return {
+                ...state,
+                statisticsOfEmployeeKpiSetChartData: data
+            }
+        })
+    }
+
     render() {
         const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = this.props;
         const { translate } = this.props;
 
-        const { unitMembers, dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids, organizationalUnitIds } = this.state;
+        const { unitMembers, dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids, organizationalUnitIds, statisticsOfEmployeeKpiSetChartData } = this.state;
 
         let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee;
         let queue = [], childrenOrganizationalUnit = [],userName;
@@ -481,10 +492,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
                         <div className="box">
                             <div className="box-header with-border">
                                 <h3 className="box-title">{translate('kpi.evaluation.dashboard.statistics_chart_title')}</h3>
-                                <div className="box-tools pull-right">
-                                    <button type="button" className="btn btn-box-tool" data-widget="collapse" data-target="#statisticsOfEmployeeKpiSetChart"><i className="fa fa-minus" />
-                                    </button>
-                                </div>
+                                {statisticsOfEmployeeKpiSetChartData && <ExportExcel type="link" id="export-statistic-employee-kpi-set-chart" exportData={statisticsOfEmployeeKpiSetChartData} />}
                             </div>
                             {/* /.box-header */}
 
@@ -541,6 +549,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                             info={infosearch}
                                             unitId={currentUnit}
                                             userName = {userName}
+                                            onDataAvailable = {this.handleStatisticsOfEmployeeKpiSetChartDataAvailable}
                                         />
                                     }
                                 </div>

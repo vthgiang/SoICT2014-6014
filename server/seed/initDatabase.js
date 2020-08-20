@@ -1,5 +1,5 @@
 const { RoleType, Role, RootRole, SystemLink, SystemComponent, Link, Privilege, User, UserRole, Configuration} = require('../models').schema;
-
+const Term = require('./terms');
 require('dotenv').config({path: '../.env'});
 
 const Terms = require('./terms');
@@ -166,7 +166,7 @@ const seedDatabase = async () => {
 
 
     // Step 7: Khởi tạo các system link để áp dụng cho các công ty sử dụng dịch vụ
-    let systemLinks = Terms.LINKS;
+    // let systemLinks = Terms.LINKS;
     let convertRoleNameToRoleId = (roleName) => { // Tạo nhanh hàm tiện ích chuyển đổi tên role thành id role
         if (roleName === Terms.ROOT_ROLES.SUPER_ADMIN.name){
             return roleSuperAdmin._id;
@@ -181,38 +181,71 @@ const seedDatabase = async () => {
         }
     }
 
-    let componentLinkMap = {};
-
-    for (let i=0; i<systemLinks.length; ++i) {
-        let systemComponents = systemLinks[i].components;
-        if (systemComponents && systemComponents.length>0) { // Tạo các components
-            systemComponents = systemComponents.map(component => { // Liên kết với role
-                component.roles = component.roles.map(role => convertRoleNameToRoleId(role));
-                return component;
-            })
-
-            let mongodbSystemComponents = await SystemComponent.insertMany(systemComponents);
-            systemComponents = mongodbSystemComponents.map(component => component._id);
-            systemLinks[i].components = systemComponents;
-
-            mongodbSystemComponents.forEach(mongodbComponent => {
-                componentLinkMap[mongodbComponent._id] = i;
-            });
+    let convertComponentNameToId = (componentName, systemComponents) => {
+        let id = null;
+        for (let i = 0; i < systemComponents.length; i++) {
+            if(componentName === systemComponents[i].name){
+                id = systemComponents[i]._id;
+                break;
+            }
         }
 
-        let roles = systemLinks[i].roles;
-        if (roles){
-            systemLinks[i].roles = roles.map(role => convertRoleNameToRoleId(role));
-        }
+        return id;
     }
 
-    const mongodbSystemLinks = await SystemLink.insertMany(systemLinks); // Tạo các links
-    
-    for (let id in componentLinkMap) { // Thêm liên kết tới link trong bảng component
-        let systemComponent = await SystemComponent.findById(id);
-        systemComponent.link = mongodbSystemLinks[componentLinkMap[id]]._id;
-        await systemComponent.save();
+    let getComponentDataByName = (name, componentArr) => {
+        let component = null;
+        for (let i = 0; i < componentArr.length; i++) {
+            if(name === componentArr[i].name){
+                component = componentArr[i];
+                break;
+            }
+        }
+        return component;
     }
+
+    let convertLinkUrltoLinkId = (linkUrl, systemLinks) => {
+        let id = null;
+        for (let i = 0; i < systemLinks.length; i++) {
+            if(linkUrl === systemLinks[i].url){
+                id = systemLinks[i]._id;
+                break;
+            }
+        }
+
+        return id;
+    }
+
+    // Tạo các system component
+    let dataSystemComponents = Term.COMPONENTS.map(component=>{
+        return {
+            name: component.name,
+            roles: component.roles.map(name => convertRoleNameToRoleId(name)),
+            description: component.description
+        }
+    });
+    let systemComponents = await SystemComponent.insertMany(dataSystemComponents);
+
+    // Tạo các system link
+    let dataSystemLinks = Terms.LINKS.map( systemLink => {
+        return {
+            ...systemLink,
+            roles: systemLink.roles.map(name => convertRoleNameToRoleId(name)),
+            components: systemLink.components.map(name => convertComponentNameToId(name, systemComponents))
+        }
+    })
+    let systemLinks = await SystemLink.insertMany(dataSystemLinks);
+
+    // Thêm lại dữ liệu các links cho component
+    for (let i = 0; i < systemComponents.length; i++) {
+        let curSysComponent = await SystemComponent.findById(systemComponents[i]._id);
+        let dataComponent = getComponentDataByName(curSysComponent.name, Term.COMPONENTS);
+        curSysComponent.links = dataComponent.links.map(linkUrl => convertLinkUrltoLinkId(linkUrl, systemLinks));
+        await curSysComponent.save();
+    }
+
+
+
 
     // Thêm dữ liệu khu vực 
     await Location.insertMany(DATA);
