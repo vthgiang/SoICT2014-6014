@@ -226,8 +226,8 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
         let { exportData } =this.state;
         return (
             <React.Fragment>
-                <div>
-                {exportData&&<ExportExcel id="export-statistic-employee-kpi-set-chart" exportData={exportData} style={{ marginTop:5 }} />}
+                <div style={{textAlign: "right"}}>
+                    {exportData && <ExportExcel className="btn btn-primary" id="export-statistic-employee-kpi-set-chart" exportData={exportData} style={{ marginTop:5 }} />}
                 </div>
                 <div ref="chart"></div>
             </React.Fragment>
