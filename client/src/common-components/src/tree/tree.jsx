@@ -5,13 +5,13 @@ class Tree extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: []
+            data: [],
         }
     }
 
     componentDidMount() {
-        const {id, data} = this.state;
-        const { onChanged, checkNode, unCheckNode } = this.props;
+        const { id, data } = this.state;
+        const { onChanged, checkNode, unCheckNode, plugins=true } = this.props;
         window.$(`#${id}`).jstree({
             checkbox : {
                 whole_node : false,
@@ -27,7 +27,7 @@ class Tree extends Component {
                 data: data,
                 multiple: false,
             },
-            plugins: [ "checkbox" ]
+            plugins: plugins ? [ "checkbox" ] : null,
         });
 
         window.$(`#${id}`).on("changed.jstree", function (e, data) {
@@ -48,7 +48,7 @@ class Tree extends Component {
     }
 
     componentDidUpdate() {
-        const { id,data } = this.state;
+        const { id, data } = this.state;
         window.$(`#${id}`).jstree(true).settings.core.data = data;
         window.$(`#${id}`).jstree(true).refresh();
 
@@ -58,7 +58,7 @@ class Tree extends Component {
         if (nextProps.id !== prevState.id || JSON.stringify(nextProps.data) !== JSON.stringify(prevState.data)) {
             return {
                 id: nextProps.id,
-                data: nextProps.data
+                data: nextProps.data,
             }
         } else {
             return null;
