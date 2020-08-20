@@ -271,7 +271,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                     unit.map(kpi => {
                         if (kpi._id) {
                             let numberOfChildKpi = 0;
-                            let listTask = [], listChildTask = [], listParticipant = [], listChildParticipant = [];
+                            let listChildKpi = [], listTask = [], listChildTask = [], listParticipant = [], listChildParticipant = [];
 
                             // Công số kpi đơn vị con, lấy task, participant của kpi con
                             if (listChildTarget && listChildTarget.length !== 0) {
@@ -280,7 +280,17 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                                         numberOfChildKpi = numberOfChildKpi + item.numberOfChildKpi;
                                         listChildTask = item.listTask;
                                         listChildParticipant = item.listParticipant;
+                                        listChildKpi = item.listChildKpi;
                                     })
+                            }
+
+                            // Lọc child Kpi hiện tại
+                            if (kpi.employeeKpi.length !== 0) {
+                                if (kpi.employeeKpi[0].creator.length !== 0) {
+                                    kpi.employeeKpi.map(item => {
+                                        listChildKpi = listChildKpi.concat(item);
+                                    })
+                                } 
                             }
 
                             // Lọc task có kpi hiện tại
@@ -318,7 +328,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                             }
                             if (listTask.length !== 0) {
                                 listTask.map(task => {
-                                    listParticipant = listParticipant.concat(task.informedEmployees).concat(task.consultedEmployees).concat(task.informedEmployees)
+                                    listParticipant = listParticipant.concat(task.informedEmployees).concat(task.consultedEmployees).concat(task.informedEmployees).concat(task.responsibleEmployees)
                                 })
                             }
                             // Concat mảng participant kpi hiện tại và kpi con
@@ -329,12 +339,14 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                             // Phần tử tree
                             treeData.push({
                                 id: kpi.employeeKpi[0].parent ? kpi.employeeKpi[0].parent : this.TREE_INDEX,
-                                text: kpi._id,
+                                text: kpi.organizationalUnit + ' - ' + kpi._id,
+                                name: kpi._id,
                                 state: { "opened": true },
                                 parent: kpi.employeeKpi[0].parentOfUnitKpi && organizationalUnit && organizationalUnit.text !== kpi.organizationalUnit ? kpi.employeeKpi[0].parentOfUnitKpi.toString() : "#",
-                                numberOfChildKpi: numberOfChildKpi + (kpi.employeeKpi[0].creator.length !== 0 ? kpi.employeeKpi.length : 0),
+                                // numberOfChildKpi: numberOfChildKpi + (kpi.employeeKpi[0].creator.length !== 0 ? kpi.employeeKpi.length : 0),
                                 organizationalUnit: kpi.organizationalUnit,
                                 weight: kpi.employeeKpi[0].parentWeight,
+                                listChildKpi: listChildKpi,
                                 listTask: listTask,
                                 listParticipant: listParticipant
                             })
@@ -437,6 +449,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
 
     onChanged = async (e, data) => {
         this.TREE_INDEX = 0;
+        console.log("555", data)
         await this.setState(state => {
             return {
                 ...state,
@@ -533,6 +546,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                                             id="tree-qlcv-document"
                                             onChanged={this.onChanged} 
                                             data={dataTree}
+                                            plugins={false}
                                         />
                                     </div>
                                     <SlimScroll outerComponentId="details-tree" innerComponentId="tree-qlcv-document" innerComponentWidth={"100%"} activate={true} />
