@@ -76,7 +76,7 @@ const AssetSchema = new Schema({
         // required: true
     },
 
-    location: { //15.vị trí tài sản
+    location: { // 15.vị trí tài sản
         type: Schema.Types.ObjectId,
         replies: this,
         // required: true

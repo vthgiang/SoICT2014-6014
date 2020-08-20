@@ -1765,6 +1765,7 @@ const sampleCompanyData = async () => {
         archivedRecordNumber: "XTN013",
         files: [],
     });
+
     console.log(`Xong! Thông tin tài sản đã được tạo`);
     //END
 
