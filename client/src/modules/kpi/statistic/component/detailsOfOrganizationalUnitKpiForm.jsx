@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import { DetailOfTaskDialogModal } from './detailOfTaskDialogModal';
+import { DetailOfChildKpiDialogModal } from './detailOfChildKpiDialogModal';
 
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, ButtonModal, ErrorLabel, TreeSelect } from '../../../../common-components/index';
 
 class DetailsOfOrganizationalUnitKpiForm extends Component {
 
@@ -41,7 +42,7 @@ class DetailsOfOrganizationalUnitKpiForm extends Component {
                         <div className="col-xs-6">
                             <div className="form-group">
                                 <strong>{translate('document.administration.domains.name')}:  </strong>
-                                {details.text}
+                                {details.name}
                             </div>
 
                             <div className="form-group">
@@ -57,23 +58,31 @@ class DetailsOfOrganizationalUnitKpiForm extends Component {
 
                         <div className="col-xs-6">
                             <div className="form-group">
-                                <strong>Số lượng Kpi con:  </strong>
-                                {details.numberOfChildKpi}
+                                <a title="Chi tiết KPI con" data-toggle="modal" data-target="#modal-childKpi-detail" data-backdrop="static" data-keyboard="false" style={{ cursor: "pointer" }}>
+                                    <strong>Số lượng Kpi con:  </strong>
+                                    {details.listChildKpi.length}
+                                </a>
+                                <DetailOfChildKpiDialogModal listChildKpi={details.listChildKpi}/>
                             </div>
 
                             <div className="form-group">
-                                <strong>Số lượng công việc:  </strong>
-                                {details.listTask.length}
+                                <a title="Chi tiết công việc" data-toggle="modal" data-target="#modal-task-detail" data-backdrop="static" data-keyboard="false" style={{ cursor: "pointer" }}>
+                                    <strong>Số lượng công việc:  </strong>
+                                    {details.listTask.length}
+                                </a>
+                                <DetailOfTaskDialogModal listTask={details.listTask}/>
                             </div>
 
                             <div className="form-group">
-                                <strong>Số người tham gia:  </strong>
-                                {details.listParticipant.length}
+                                <a title="Chi tiết người tham gia" data-toggle="modal" data-target="#modal-participant-detail" data-backdrop="static" data-keyboard="false" style={{ cursor: "pointer" }}>
+                                    <strong>Số người tham gia:  </strong>
+                                    {details.listParticipant.length}
+                                </a>
                             </div>
                         </div>
                     </div>
                     <div className="form-group">
-                        <button className="btn btn-danger" onClick={()=>{
+                        <button className="btn btn-danger" onClick={() => {
                             window.$(`#details-of-organizational-unit-kpi-form`).slideUp()
                         }}>{ translate('form.close') }</button>
                     </div>
