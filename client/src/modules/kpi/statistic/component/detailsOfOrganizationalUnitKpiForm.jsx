@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { DetailOfTaskDialogModal } from './detailOfTaskDialogModal';
-import { DetailOfChildKpiDialogModal } from './detailOfChildKpiDialogModal';
+import { DetailOfEmployeeKpiDialogModal } from './detailOfEmployeeKpiDialogModal';
+import { DetailOfParticipantDialogModal } from './detailOfParticipantDialogModal';
 
 import { withTranslate } from 'react-redux-multilingual';
 
@@ -57,14 +58,16 @@ class DetailsOfOrganizationalUnitKpiForm extends Component {
                         </div>
 
                         <div className="col-xs-6">
+                            {/** Chi tiết số lượng kpi nhân viên */}
                             <div className="form-group">
-                                <a title="Chi tiết KPI con" data-toggle="modal" data-target="#modal-childKpi-detail" data-backdrop="static" data-keyboard="false" style={{ cursor: "pointer" }}>
-                                    <strong>Số lượng Kpi con:  </strong>
-                                    {details.listChildKpi.length}
+                                <a title="Chi tiết KPI nhân viên" data-toggle="modal" data-target="#modal-employee-kpi-detail" data-backdrop="static" data-keyboard="false" style={{ cursor: "pointer" }}>
+                                    <strong>Số lượng Kpi nhân viên:  </strong>
+                                    {details.listEmployeeKpi.length}
                                 </a>
-                                <DetailOfChildKpiDialogModal listChildKpi={details.listChildKpi}/>
+                                <DetailOfEmployeeKpiDialogModal listEmployeeKpi={details.listEmployeeKpi}/>
                             </div>
 
+                            {/** Chi tiết số lượng công việc */}
                             <div className="form-group">
                                 <a title="Chi tiết công việc" data-toggle="modal" data-target="#modal-task-detail" data-backdrop="static" data-keyboard="false" style={{ cursor: "pointer" }}>
                                     <strong>Số lượng công việc:  </strong>
@@ -73,11 +76,13 @@ class DetailsOfOrganizationalUnitKpiForm extends Component {
                                 <DetailOfTaskDialogModal listTask={details.listTask}/>
                             </div>
 
+                            {/** Chi tiết người tham gia */}
                             <div className="form-group">
                                 <a title="Chi tiết người tham gia" data-toggle="modal" data-target="#modal-participant-detail" data-backdrop="static" data-keyboard="false" style={{ cursor: "pointer" }}>
                                     <strong>Số người tham gia:  </strong>
                                     {details.listParticipant.length}
                                 </a>
+                                <DetailOfParticipantDialogModal listParticipant={details.listParticipant}/>
                             </div>
                         </div>
                     </div>
