@@ -7,7 +7,7 @@ import { SystemLinkActions } from '../../system-link/redux/actions';
 import { ComponentInfoForm } from './componentInfoForm';
 import { ComponentCreateForm } from './componentCreateForm';
 
-import { PaginateBar, DataTableSetting, DeleteNotification, SearchBar } from '../../../../common-components';
+import { PaginateBar, DataTableSetting, DeleteNotification, SearchBar, ToolTip } from '../../../../common-components';
 
 import { withTranslate } from 'react-redux-multilingual';
 class TableComponent extends Component {
@@ -91,7 +91,7 @@ class TableComponent extends Component {
                         componentId={ currentRow._id }
                         componentName={ currentRow.name }
                         componentDescription={ currentRow.description }
-                        componentLink={ currentRow.link ? currentRow.link._id : null }
+                        componentLink={ currentRow.links.map(link=>link._id)}
                         componentRoles={ currentRow.roles.map(role => role._id) }
                     />
                 }
@@ -129,7 +129,7 @@ class TableComponent extends Component {
                                 <tr key={ component._id }>
                                     <td>{ component.name }</td>
                                     <td>{ component.description }</td>
-                                    <td>{ component.link && component.link.url }</td>
+                                    <td><ToolTip dataTooltip={component.links.map(link=>link.url)}/></td>
                                     <td>{ component.roles.map((role, i, arr) => {
                                         if(i !== arr.length - 1)
                                             return <span key={role._id}>{role.name}, </span>

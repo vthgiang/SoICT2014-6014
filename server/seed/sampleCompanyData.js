@@ -349,92 +349,216 @@ const sampleCompanyData = async () => {
 
     // Step 6: TẠO LINK CHO CÁC TRANG WEB CỦA CÔNG TY
     console.log("Tạo link cho các trang web của công ty...");
-    let links = Terms.LINKS;
-    for (let i = 0; i < links.length; ++i) {
-        links[i].company = vnist._id;
-        links[i].deleteSoft = false;
-    }
-    let convertRoleNameToRoleId = (roleName) => { // Tạo nhanh hàm tiện ích chuyển đổi tên role thành id role
-        if (roleName === Terms.ROOT_ROLES.SUPER_ADMIN.name) {
-            return roleSuperAdmin._id;
-        } else if (roleName === Terms.ROOT_ROLES.ADMIN.name) {
-            return roleAdmin._id;
-        } else if (roleName === Terms.ROOT_ROLES.DEAN.name) {
-            return roleDean._id;
-        } else if (roleName === Terms.ROOT_ROLES.VICE_DEAN.name) {
-            return roleViceDean._id;
-        } else if (roleName === Terms.ROOT_ROLES.EMPLOYEE.name) {
-            return roleEmployee._id;
-        }
-    }
-
-    let componentLinkMap = {};
-
-    for (let i = 0; i < links.length; ++i) {
-        let components = links[i].components;
-        if (components && components.length > 0) { // Tạo các components
-            components = components.map(component => { // Liên kết với role
-                component.roles = component.roles.map(role => convertRoleNameToRoleId(role));
-                component.company = vnist._id;
-                component.deleteSoft = false;
-                return component;
-            })
-
-            let mongodbComponents = await Component.insertMany(components);
-            components = mongodbComponents.map(component => component._id);
-            links[i].components = components;
-
-            // Phân quyền cho component trong Privilege
-            let privileges_component = [];
-            mongodbComponents.forEach(mongodbComponent => {
-                if (mongodbComponent.roles) {
-                    mongodbComponent.roles.forEach(role => {
-                        privileges_component.push({
-                            resourceId: mongodbComponent._id,
-                            resourceType: 'Component',
-                            roleId: role._id
-                        })
-                    });
+    
+    const createCompanyLinks = async (companyId, linkArr, roleArr) => {
+        let checkIndex = (link, arr) => {
+            let resIndex =-1;
+            arr.forEach((node, i) => {
+                if(node.url === link.url){
+                    resIndex = i;
                 }
-                componentLinkMap[mongodbComponent._id] = i;
             });
-            await Privilege.insertMany(privileges_component);
+    
+            return resIndex;
         }
-
-        let roles = links[i].roles;
-        if (roles) {
-            links[i].roles = roles.map(role => convertRoleNameToRoleId(role));
+        
+        let allLinks = await SystemLink.find()
+            .populate({ path: 'roles', model: RootRole });;
+        let activeLinks = await SystemLink.find({ _id: { $in: linkArr } })
+            .populate({ path: 'roles', model: RootRole });
+        
+        let dataLinks = allLinks.map( link => {
+            if(checkIndex(link, activeLinks) === -1)
+                return {
+                    url: link.url,
+                    category: link.category,
+                    description: link.description,
+                    company: companyId
+                }
+            else return {
+                url: link.url,
+                category: link.category,
+                description: link.description,
+                company: companyId,
+                deleteSoft: false
+            }
+        })
+    
+        let links = await Link.insertMany(dataLinks);
+    
+        //Thêm phân quyền cho link
+        let dataPrivilege = [];
+        for (let i = 0; i < links.length; i++) {
+            let link = links[i];
+    
+            for (let j = 0; j < allLinks.length; j++) {
+                let systemLink = allLinks[j];
+    
+                if (link.url === systemLink.url) {
+                    for (let x = 0; x < systemLink.roles.length; x++) {
+                        let rootRole = systemLink.roles[x];
+                        
+                        for (let y = 0; y < roleArr.length; y++) {
+                            let role = roleArr[y];
+                            
+                            if (role.name === rootRole.name) {
+                                dataPrivilege.push({
+                                    resourceId: link._id,
+                                    resourceType: 'Link',
+                                    roleId: role._id
+                                });
+                            }
+                        }
+                    }
+                }
+            }
         }
+        await Privilege.insertMany(dataPrivilege);
+    
+        return await Link.find({ company: companyId })
+            .populate({ path: 'roles', model: Privilege, populate: { path: 'roleId', model: Role } });
     }
 
-    const mongodbLinks = await Link.insertMany(links); // Tạo các links
+    const createCompanyComponents = async (companyId, linkArr) => {
 
-    for (let id in componentLinkMap) { // Thêm liên kết tới link trong bảng component
-        let component = await Component.findById(id);
-        component.link = mongodbLinks[componentLinkMap[id]]._id;
-        await component.save();
-    }
-
-
-
-
-
-
-    // Step 7: Phân quyền cho các trang
-    let privileges_links = [];
-    mongodbLinks.forEach(mongodbSystemLink => {
-        if (mongodbSystemLink.roles) {
-            mongodbSystemLink.roles.forEach(role => {
-                privileges_links.push({
-                    resourceId: mongodbSystemLink._id,
-                    resourceType: 'Link',
-                    roleId: role._id
-                })
-            });
+        let systemLinks = await SystemLink.find({ _id: { $in: linkArr } });
+    
+        let dataSystemComponents = systemLinks.map(link=>link.components);
+        dataSystemComponents = dataSystemComponents.reduce((arr1, arr2)=>[...arr1, ...arr2]);
+        dataSystemComponents.filter((component, index) => dataSystemComponents.indexOf(component) === index);
+        const systemComponents = await SystemComponent
+            .find({_id: {$in: dataSystemComponents}})
+            .populate({ path: 'roles', model: RootRole });
+    
+        for (let i = 0; i < systemComponents.length; i++) {
+            let sysLinks = await SystemLink.find({_id: {$in: systemComponents[i].links}});
+            let links = await Link.find({company: companyId, url: sysLinks.map(link=>link.url)});
+            // Tạo component
+            let component = await Component.create({
+                name: systemComponents[i].name,
+                description: systemComponents[i].description,
+                links: links.map(link=>link._id),
+                company: companyId,
+                deleteSoft: false
+            })
+            for (let j = 0; j < links.length; j++) {
+                let updateLink = await Link.findById(links[j]._id);
+                updateLink.components.push(component._id);
+                await updateLink.save();
+            }
+            // Tạo phân quyền cho components
+            for (let k = 0; k < systemComponents.length; k++) {
+                let roles = await Role.find({
+                    company: companyId, 
+                    name: {$in: systemComponents[i].roles.map(role=>role.name)}
+                });
+                let dataPrivileges = roles.map(role=>{
+                    return {
+                        resourceId: component._id,
+                        resourceType: 'Component',
+                        roleId: role._id
+                    }
+                });
+                await Privilege.insertMany(dataPrivileges);
+            }
         }
-    });
-    let privileges = await Privilege.insertMany(privileges_links);
-    console.log("Gán quyền cho các role: ", privileges);
+    
+        return await Component.find({ company: companyId });
+    }
+    let linkArrData = await SystemLink.find();
+    let linkArr = linkArrData.map(link=>link._id);
+    let roleArr = [roleSuperAdmin, roleAdmin, roleDean, roleViceDean, roleEmployee];
+    await createCompanyLinks(vnist._id, linkArr, roleArr);
+    await createCompanyComponents(vnist._id, linkArr);
+
+    // let links = Terms.LINKS.map(link  => {
+    //     return {
+    //         ...link,
+    //         company: vnist._id,
+    //         deleteSoft: false
+    //     }
+    // });
+    // let convertRoleNameToRoleId = (roleName) => { // Tạo nhanh hàm tiện ích chuyển đổi tên role thành id role
+    //     if (roleName === Terms.ROOT_ROLES.SUPER_ADMIN.name) {
+    //         return roleSuperAdmin._id;
+    //     } else if (roleName === Terms.ROOT_ROLES.ADMIN.name) {
+    //         return roleAdmin._id;
+    //     } else if (roleName === Terms.ROOT_ROLES.DEAN.name) {
+    //         return roleDean._id;
+    //     } else if (roleName === Terms.ROOT_ROLES.VICE_DEAN.name) {
+    //         return roleViceDean._id;
+    //     } else if (roleName === Terms.ROOT_ROLES.EMPLOYEE.name) {
+    //         return roleEmployee._id;
+    //     }
+    // }
+
+    // let componentLinkMap = {};
+
+    // for (let i = 0; i < links.length; ++i) {
+    //     let components = links[i].components;
+    //     if (components && components.length > 0) { // Tạo các components
+    //         components = components.map(component => { // Liên kết với role
+    //             component.roles = component.roles.map(role => convertRoleNameToRoleId(role));
+    //             component.company = vnist._id;
+    //             component.deleteSoft = false;
+    //             return component;
+    //         })
+
+    //         let mongodbComponents = await Component.insertMany(components);
+    //         components = mongodbComponents.map(component => component._id);
+    //         links[i].components = components;
+
+    //         // Phân quyền cho component trong Privilege
+    //         let privileges_component = [];
+    //         mongodbComponents.forEach(mongodbComponent => {
+    //             if (mongodbComponent.roles) {
+    //                 mongodbComponent.roles.forEach(role => {
+    //                     privileges_component.push({
+    //                         resourceId: mongodbComponent._id,
+    //                         resourceType: 'Component',
+    //                         roleId: role._id
+    //                     })
+    //                 });
+    //             }
+    //             componentLinkMap[mongodbComponent._id] = i;
+    //         });
+    //         await Privilege.insertMany(privileges_component);
+    //     }
+
+    //     let roles = links[i].roles;
+    //     if (roles) {
+    //         links[i].roles = roles.map(role => convertRoleNameToRoleId(role));
+    //     }
+    // }
+
+    // const mongodbLinks = await Link.insertMany(links); // Tạo các links
+
+    // for (let id in componentLinkMap) { // Thêm liên kết tới link trong bảng component
+    //     let component = await Component.findById(id);
+    //     component.link = mongodbLinks[componentLinkMap[id]]._id;
+    //     await component.save();
+    // }
+
+
+
+
+
+
+    // // Step 7: Phân quyền cho các trang
+    // let privileges_links = [];
+    // mongodbLinks.forEach(mongodbSystemLink => {
+    //     if (mongodbSystemLink.roles) {
+    //         mongodbSystemLink.roles.forEach(role => {
+    //             privileges_links.push({
+    //                 resourceId: mongodbSystemLink._id,
+    //                 resourceType: 'Link',
+    //                 roleId: role._id
+    //             })
+    //         });
+    //     }
+    // });
+    // let privileges = await Privilege.insertMany(privileges_links);
+    // console.log("Gán quyền cho các role: ", privileges);
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------
