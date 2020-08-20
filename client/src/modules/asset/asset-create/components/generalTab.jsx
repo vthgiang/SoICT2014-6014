@@ -613,7 +613,7 @@ class GeneralTab extends Component {
 
                                 {/* Vị trí tài sản */}
                                 <div className={`form-group ${!errorOnLocation ? "" : "has-error"}`}>
-                                    <label htmlFor="location">{translate('asset.general_information.asset_location')}<span className="text-red">*</span></label>
+                                    <label htmlFor="location">{translate('asset.general_information.asset_location')}</label>
                                     <input type="text" className="form-control" name="location" value={location} onChange={this.handleLocationChange} placeholder="Vị trí tài sản"
                                         autoComplete="off" />
                                     <ErrorLabel content={errorOnLocation} />

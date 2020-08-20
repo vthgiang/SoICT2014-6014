@@ -207,7 +207,7 @@ class AssetEditForm extends Component {
             let result = this.validatorInput(code) && this.validatorInput(assetName) &&
                 this.validatorInput(serial) && this.validatorInput(assetType) &&
                 this.validatorInput(managedBy) && this.validatorInput(purchaseDate) &&
-                this.validatorInput(warrantyExpirationDate) && this.validatorInput(location) &&
+                this.validatorInput(warrantyExpirationDate) && //this.validatorInput(location) &&
                 this.validatorInput(status) && this.validatorInput(canRegisterForUse) &&
                 this.validatorInput(cost) && this.validatorInput(usefulLife) &&
                 this.validatorInput(startDepreciation) && this.validatorInput(depreciationType);
