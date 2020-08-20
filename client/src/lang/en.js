@@ -621,6 +621,7 @@ export default {
             task_management_dashboard: 'Task dashboard',
             task_organization_management_dashboard: 'Unit task dashboard',
             task_management_process: "Process list",
+            task_process_template: "Process template",
             //*******START */
             // Quản lý tài sản
             // QUẢN LÝ

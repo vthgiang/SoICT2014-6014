@@ -620,6 +620,7 @@ export default {
             task_management_dashboard: 'Dashboard công việc',
             task_organization_management_dashboard: 'Dashboard công việc đơn vị',
             task_management_process: "Danh sách quy trình",
+            task_process_template: "Mẫu quy trình",
 
             //*******START */
             // Quản lý tài sản

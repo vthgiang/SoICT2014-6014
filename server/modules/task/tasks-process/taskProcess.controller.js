@@ -3,6 +3,20 @@ const { LogInfo, LogError } = require('../../../logs');
 
 
 /**
+ * hàm lấy tất cả các process
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.get = async (req, res) => {
+    if(req.query.type === "template"){
+        this.getAllXmlDiagrams(req, res);
+    }
+    else if (req.query.type === "task") {
+        this.getAllTaskProcess(req, res);
+    }
+}
+
+/**
  * Lấy tất cả diagram
  */
 exports.getAllXmlDiagrams = async (req, res) => {
@@ -111,6 +125,11 @@ exports.deleteXmlDiagram = async (req, res) => {
   }
 }
 
+/**
+ * Tạo công việc theo quy trình
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.createTaskByProcess = async (req, res) => {
   // try {
     console.log("controller")
@@ -119,6 +138,31 @@ exports.createTaskByProcess = async (req, res) => {
     res.status(200).json({
       success: true,
       messages: ['create_task_by_process_success'],
+      content: data,
+    });
+  // } catch (error) {
+  //   await LogError(req.user.email, `create_task_by_process`, req.user.company);
+  //   res.status(400).json({
+  //     success: false,
+  //     messages: ['create_task_by_process_fail'],
+  //     content: error,
+  //   });
+  // }
+}
+
+/**
+ * lấy tất cả danh sách quy trình công việc
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.getAllTaskProcess = async (req, res) => {
+  // try {
+    console.log("getAllTaskProcess")
+    var data = await TaskProcessService.getAllTaskProcess(req.query);
+    await LogInfo(req.user.email, `create_task_by_process`, req.user.company);
+    res.status(200).json({
+      success: true,
+      messages: ['get_all_task_process_success'],
       content: data,
     });
   // } catch (error) {
