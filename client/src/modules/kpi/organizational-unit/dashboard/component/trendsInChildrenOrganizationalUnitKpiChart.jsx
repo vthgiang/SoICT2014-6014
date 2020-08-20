@@ -20,11 +20,10 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
         this.state = {
             currentRole: null,
             dataStatus: this.DATA_STATUS.QUERYING,
-            childUnitChart: 1
         };
     }
 
-    componentDidMount = () => {
+    componentDidMount = async () => {
         this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
         this.props.getAllEmployeeKpiInChildrenOrganizationalUnit(localStorage.getItem("currentRole"), this.props.month, this.props.organizationalUnitId);
         this.props.getAllTaskOfChildrenOrganizationalUnit(localStorage.getItem("currentRole"), this.props.month, this.props.organizationalUnitId);
@@ -373,7 +372,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                     
                     if (arrayListTaskSameOrganizationUnitKpi) {
                         creators2 = arrayListTaskSameOrganizationUnitKpi[key].map(x => {
-                            return x.informedEmployees.concat(x.consultedEmployees).concat(x.informedEmployees);
+                            return x.informedEmployees.concat(x.consultedEmployees).concat(x.informedEmployees).concat(x.responsibleEmployees);
                         })
                         creators2.forEach(x => creators1 = creators1.concat(x));
                     }

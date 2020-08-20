@@ -103,7 +103,6 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
 
         
         if (!nextProps.createKpiUnit.currentKPI && this.state.dataStatus === this.DATA_STATUS.FINISHED) {
-
             this.setState(state => {
                 return {
                     ...state,
@@ -295,7 +294,7 @@ class TrendsInOrganizationalUnitKpiChart extends Component {
                
                 if (arrayListTaskSameOrganizationUnitKpi) {
                     creators2 = arrayListTaskSameOrganizationUnitKpi[key].map(x => {
-                        return x.informedEmployees.concat(x.consultedEmployees).concat(x.informedEmployees);
+                        return x.informedEmployees.concat(x.consultedEmployees).concat(x.informedEmployees).concat(x.responsibleEmployees);
                     })
                     creators2.forEach(x => creators1 = creators1.concat(x));
                 }

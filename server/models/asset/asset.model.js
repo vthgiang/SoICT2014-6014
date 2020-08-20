@@ -6,6 +6,10 @@ const User = require('../auth/user.model');
 
 // Create Schema
 const AssetSchema = new Schema({
+    group: {
+        type: String,
+        enum: ["Building", "Vehicle", "Machine", "Other"]
+    },
 
     company: { // công ty
         type: Schema.Types.ObjectId,
