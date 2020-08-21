@@ -59,30 +59,7 @@ class ViewProcess extends Component {
         this.modeler.attachTo('#' + this.generateId);
         var eventBus = this.modeler.get('eventBus');
         this.modeler.on('element.click', 1000, (e) => this.interactPopup(e));
-        let infoTask = this.props.infoTask
-        console.log(infoTask)
-        infoTask.forEach(x => {
-            if (x.status === "Finished") {
-                console.log(x.codeInProcess)
-                console.log("hihihi")
-                let element1 = this.modeler.get('elementRegistry')._elements
-                console.log(element1)
-                for (let y in element1) {
-                    console.log(element1[y].element.id)
-                    if (element1[y].element.id === x.codeInProcess) {
-                       
-                         this.modeling.setColor(element1[y].element, {
-                            fill: '#dde6ca',
-                            stroke: '#6b7060'
-                        });
-                    }
-                }
-                // this.modeling.setColor(element1, {
-                //     fill: '#dde6ca',
-                //     stroke: '#6b7060'
-                // });
-            }
-        })
+
 
     }
 
@@ -130,8 +107,58 @@ class ViewProcess extends Component {
             return true;
         }
         if (nextProps.data) {
-            this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
-            return true;
+            let modeler = this.modeler;
+            let modeling = this.modeling;
+            this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
+
+                let infoTask = nextProps.data.tasks
+                // console.log(infoTask)
+                if (infoTask) {
+                    for (let i in infoTask) {
+                        if (infoTask[i].status === "Finished") {
+                            let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
+
+                            element1 && modeling.setColor(element1, {
+                                fill: '#dde6ca',
+                                stroke: '#6b7060'
+                            });
+
+                            let target = [];
+                            element1.outgoing.forEach(x => {
+                                target.push(x.target.id)
+                            })
+                            target.forEach(x => {
+                                modeling.setColor(modeler.get('elementRegistry').get(x), {
+                                    // fill: '#7236ff',
+                                    stroke: '#7236ff'
+                                });
+                            })
+
+                            var outgoing = element1.outgoing;
+                            outgoing.forEach(x => {
+                                var outgoingEdge = modeler.get('elementRegistry').get(x.id);
+
+                                modeling.setColor(outgoingEdge, {
+                                    stroke: '#7236ff',
+                                    width: '5px'
+                                })
+                            })
+                            var incoming = element1.incoming;
+                            incoming.forEach(x => {
+                                var incomingEdge = modeler.get('elementRegistry').get(x.id);
+
+                                modeling.setColor(incomingEdge, {
+                                    stroke: '#dde6ca',
+                                    width: '5px'
+                                })
+                            })
+                        }
+                    }
+                }
+
+            });
+
+            return false;
         }
         return true;
     }
