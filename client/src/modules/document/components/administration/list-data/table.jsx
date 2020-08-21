@@ -32,6 +32,7 @@ class Table extends Component {
             category: "",
             domain: "",
             archive: "",
+            name: "",
             option: {
                 category: "",
                 domain: "",
@@ -134,10 +135,17 @@ class Table extends Component {
         })
     }
     handleDomainChange = (value) => {
+        this.setState({ domain: value });
+    }
+    handleDomains = value => {
+        this.setState({ documentDomains: value });
+    }
+    handleNameChange = (e) => {
+        const value = e.target.value;
         this.setState(state => {
             return {
                 ...state,
-                domain: value,
+                name: value.trim(),
             }
         })
     }
@@ -194,15 +202,15 @@ class Table extends Component {
                                 { key: "STT", value: "STT" },
                                 { key: "name", value: "Tên" },
                                 { key: "description", value: "Mô tả" },
-                                { key: "signer", value: "Người ký"},
-                                { key: "officialNumber", value: "Số hiệu"},
-                                { key: "issuingBody", value: "Cơ quan ban hành"},
-                                { key: "versionName", value: "Tên phiên bản"},
+                                { key: "signer", value: "Người ký" },
+                                { key: "officialNumber", value: "Số hiệu" },
+                                { key: "issuingBody", value: "Cơ quan ban hành" },
+                                { key: "versionName", value: "Tên phiên bản" },
                                 { key: "issuingDate", value: "Ngày ban hành" },
                                 { key: "effectiveDate", value: "Ngày áp dụng" },
-                                { key: "expiredDate", value: "Ngày hết hạn"},
-                                { key: "numberOfView", value: "Số lần xem"},
-                                { key: "numberOfDownload", value: "Số lần download"},
+                                { key: "expiredDate", value: "Ngày hết hạn" },
+                                { key: "numberOfView", value: "Số lần xem" },
+                                { key: "numberOfDownload", value: "Số lần download" },
                             ],
                             data: data
                         }
@@ -218,13 +226,13 @@ class Table extends Component {
         const { domains, categories, archives } = this.props.documents.administration;
         const { paginate } = docs;
         const { isLoading } = this.props.documents;
-        const { currentRow, archive, domain, category } = this.state;
+        const { currentRow, archive, category } = this.state;
         const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
-        console.log('tttt', domains.tree);
+        console.log('tttt', currentRow);
         let list = [];
-        if ( isLoading === false ){
+        if (isLoading === false) {
             list = docs.list;
         }
         let exportData = this.convertDataToExportData(list);
@@ -249,7 +257,7 @@ class Table extends Component {
                         documentId={currentRow._id}
                         documentName={currentRow.name}
                         documentDescription={currentRow.description}
-                        documentCategory={currentRow.category._id}
+                        documentCategory={currentRow.category ? currentRow.category._id : ""}
                         documentDomains={currentRow.domains.map(domain => domain._id)}
                         documentArchives={currentRow.archives.map(archive => archive._id)}
                         documentIssuingBody={currentRow.issuingBody}
@@ -274,7 +282,7 @@ class Table extends Component {
                         documentId={currentRow._id}
                         documentName={currentRow.name}
                         documentDescription={currentRow.description}
-                        documentCategory={currentRow.category._id}
+                        documentCategory={currentRow.category ? currentRow.category._id : ""}
                         documentDomains={currentRow.domains.map(domain => domain._id)}
                         documentIssuingBody={currentRow.issuingBody}
                         documentOfficialNumber={currentRow.officialNumber}
@@ -292,8 +300,18 @@ class Table extends Component {
                     />
                 }
 
-                {<ExportExcel id="export-document" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}     
+                {<ExportExcel id="export-document" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
                 <div className="form-inline">
+                    <div className="form-group">
+                        <label>{translate('document.category')}</label>
+                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
+                            id={`stattus-category`}
+                            style={{ width: "100%" }}
+                            items={listCategory}
+                            onChange={this.handleCategoryChange}
+                            value={category}
+                        />
+                    </div>
                     <div className="form-group" >
                         <label>{translate('document.store.information')}</label>
                         <TreeSelect
@@ -305,18 +323,9 @@ class Table extends Component {
                             style={{ width: " 100%" }}
                         />
                     </div>
-                    <div className="form-group">
-                        <label>{translate('document.category')}</label>
-                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                            id={`stattus-category`}
-                            style={{ width: "100%" }}
-                            items={listCategory}
-                            onChange={this.handleCategoryChange}
-                            value={category}
-                        />
-                    </div>
+
                 </div>
-                
+
                 <div className="form-inline">
                     <div className="form-group">
                         <label>{translate('document.domain')}</label>
@@ -325,18 +334,22 @@ class Table extends Component {
                             className="form-control select2"
                             handleChange={this.handleDomainChange}
                             mode="hierarchical"
-                            value={domain}
                             style={{ width: "100%" }}
                         />
                     </div>
+                    <div className="form-group">
+                        <label>{translate('document.name')}</label>
+                        <input type="text" className="form-control" onChange={this.handleNameChange} />
+                    </div>
 
+                </div>
+                <div className="form-inline">
                     <div className="form-group">
                         <label></label>
                         <button type="button" className="btn btn-success" onClick={() => this.searchWithOption()}>{
                             translate('kpi.organizational_unit.management.over_view.search')}</button>
                     </div>
                 </div>
-
                 <table className="table table-hover table-striped table-bordered" id="table-manage-document-list">
                     <thead>
                         <tr>
@@ -437,12 +450,13 @@ class Table extends Component {
             limit: this.state.limit,
             page: 1,
             // key: this.state.option,
-            // value: this.state.value
-            // name : this.state.name,
+            // value: this.state.value,
+            name: this.state.name,
             category: this.state.category[0],
             domains: this.state.domain[0],
             archives: this.state.archive[0],
         };
+        console.log('nameeee', data)
         await this.props.getAllDocuments(data);
     }
 }

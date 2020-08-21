@@ -22,5 +22,6 @@ export * from './src/import-excel/showImportData';
 export * from './src/import-excel/configImportFile';
 export * from './src/export-excel/exportExcel';
 export * from './src/confirm-notification';
+export * from './src/time-picker/timePicker'
 export * from './src/lazy-load/lazyLoadComponent';
 export * from './src/lazy-load/forceCheckOrVisible';

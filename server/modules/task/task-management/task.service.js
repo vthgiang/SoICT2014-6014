@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User, UserRole } = require('../../../models/index').schema;
+const { Task, TaskProcess, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User, UserRole } = require('../../../models/index').schema;
 
 const moment = require("moment");
 const nodemailer = require("nodemailer");
@@ -198,6 +198,26 @@ exports.getTaskById = async (id, userId) => {
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "documents.creator", model: User, select: 'name email avatar' },
+        {
+            path: "process", model: TaskProcess, populate: {
+                path: "tasks", model: Task, populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit", model: OrganizationalUnit },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                    { path: "evaluations.results.kpis" },
+                    { path: "taskActions.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+                    { path: "taskComments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "documents.creator", model: User, select: 'name email avatar' },
+                    { path: "process", model: TaskProcess },
+                ]
+            }
+        },
     ])
     if (!task) {
         return {

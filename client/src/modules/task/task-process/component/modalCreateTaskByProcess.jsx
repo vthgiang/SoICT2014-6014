@@ -377,7 +377,6 @@ class ModalCreateTaskByProcess extends Component {
         this.setState(state => {
             if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' ||
                 element.type === "bpmn:SequenceFlow" || element.type === "bpmn:ServiceTask"
-                // || element.type === 'bpmn:EndEvent' || element.type === "bpmn:StartEvent" 
             ) {
                 if (!state.info[`${element.businessObject.id}`] ||
                     (state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {

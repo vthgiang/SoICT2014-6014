@@ -1,7 +1,4 @@
 import {
-    LOCAL_SERVER_API
-} from '../../../../env';
-import {
     getStorage
 } from '../../../../config';
 import { sendRequest } from '../../../../helpers/requestHelper';
@@ -30,7 +27,7 @@ export const taskManagementService = {
  */
 function getById(taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks/${taskId}`,
+        url: `${process.env.REACT_APP_SERVER}/task/tasks/${taskId}`,
         method: 'GET',
     }, false, true, 'task.task_management');
 }
@@ -40,7 +37,7 @@ function getById(taskId) {
  */
 function getAll() {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks`,
+        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
         params: {
             type: 'all',
@@ -57,7 +54,7 @@ function getAll() {
 
 function getAllTaskByRole(userId, roleId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks`,
+        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
         params: {
             type: 'get_all_task_created_by_user',
@@ -85,7 +82,7 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
     var user = getStorage("userId");
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks`,
+        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
         params: {
             type: 'responsible',
@@ -123,7 +120,7 @@ function getResponsibleTaskByUser(unit, number, perPage, status, priority, speci
 function getAccountableTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks`,
+        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
         params: {
             type: 'accountable',
@@ -161,7 +158,7 @@ function getAccountableTaskByUser(unit, number, perPage, status, priority, speci
 function getConsultedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks`,
+        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
         params: {
             type: 'consulted',
@@ -199,7 +196,7 @@ function getConsultedTaskByUser(unit, number, perPage, status, priority, special
 function getInformedTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks`,
+        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
         params: {
             type: 'informed',
@@ -237,7 +234,7 @@ function getInformedTaskByUser(unit, number, perPage, status, priority, special,
 function getCreatorTaskByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime) {
     var user = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks`,
+        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
         params: {
             type: 'creator',
@@ -265,7 +262,7 @@ function getCreatorTaskByUser(unit, number, perPage, status, priority, special, 
 
 function addNewTask(newTask) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks`,
+        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'POST',
         data: newTask
     }, true, true, 'task.task_management');
@@ -279,7 +276,7 @@ function addNewTask(newTask) {
 
 function editTask(taskId, newTask) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks/${taskId}`,
+        url: `${process.env.REACT_APP_SERVER}/task/tasks/${taskId}`,
         method: 'PUT',
         data: newTask
     }, true, true, 'task.task_management');
@@ -292,7 +289,7 @@ function editTask(taskId, newTask) {
 
 function deleteTaskById(taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks/${taskId}`,
+        url: `${process.env.REACT_APP_SERVER}/task/tasks/${taskId}`,
         method: 'DELETE',
     }, true, true, 'task.task_management');
 }
@@ -303,7 +300,7 @@ function deleteTaskById(taskId) {
  */
 function getSubTask(taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks/${taskId}/sub-tasks`,
+        url: `${process.env.REACT_APP_SERVER}/task/tasks/${taskId}/sub-tasks`,
         method: 'GET'
     }, false, true, 'task.task_management');
 }
@@ -314,7 +311,7 @@ function getSubTask(taskId) {
 function getTasksByUser(data) {
     var id = getStorage("userId")
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks`,
+        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
         params: {
             userId: id,
@@ -328,7 +325,7 @@ function getTasksByUser(data) {
 
 function getTaskEvaluations(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/task-evaluations`,
+        url: `${process.env.REACT_APP_SERVER}/task/task-evaluations`,
         method: 'GET',
         params: data,
     }, false, true, 'task.task_management');
@@ -336,7 +333,7 @@ function getTaskEvaluations(data) {
 
 function getTaskInOrganizationUnitByMonth(organizationUnitId, startDateAfter, endDateBefore) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/tasks`,
+        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
         method: 'GET',
         params: {
             type: 'task_in_unit',

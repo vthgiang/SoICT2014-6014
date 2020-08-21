@@ -100,7 +100,6 @@ class ModalCreateTaskProcess extends Component {
       this.modeler = new BpmnModeler({
          additionalModules: [
             customModule,
-            // { moveCanvas: [ 'value', null ] },
             { zoomScroll: ['value', ''] }
          ],
       });
@@ -293,8 +292,7 @@ class ModalCreateTaskProcess extends Component {
       })
       let nameStr = element.type.split(':');
       this.setState(state => {
-         if (element.type !== 'bpmn:Collaboration' && element.type !== 'bpmn:Process' && element.type !== 'bpmn:StartEvent' && element.type !== 'bpmn:EndEvent' && element.type !== 'bpmn:SequenceFlow') {
-
+         if (element.type === "bpmn:Task" || element.type === "bpmn:ExclusiveGateway") {
             if (!state.info[`${element.businessObject.id}`] ||
                (state.info[`${element.businessObject.id}`] && !state.info[`${element.businessObject.id}`].organizationalUnit)) {
                state.info[`${element.businessObject.id}`] = {

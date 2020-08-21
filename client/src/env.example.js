@@ -1,1 +1,0 @@
-export const LOCAL_SERVER_API = 'địa chỉ của server';

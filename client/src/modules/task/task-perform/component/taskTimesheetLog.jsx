@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import moment from 'moment';
-import { DatePicker } from '../../../../common-components';
+import { DatePicker, TimePicker } from '../../../../common-components';
 import { getStorage } from "../../../../config";
 
 import { CallApiStatus } from '../../../auth/redux/reducers'
@@ -14,7 +14,9 @@ class TaskTimesheetLog extends Component {
         super(props);
         this.state = {
             showModal: '',
-            description: ''
+            description: '',
+            showEndDate: false,
+            disabled: false
         }
         this.sendQuery = false;
     }
@@ -33,7 +35,7 @@ class TaskTimesheetLog extends Component {
         })
     }
     componentDidMount = () => {
-        
+
         this.callApi();
     }
 
@@ -87,11 +89,17 @@ class TaskTimesheetLog extends Component {
     }
     stopTimer = async () => {
         const { performtasks, auth } = this.props;
-
+        //Nếu quá 4 tiếng, chọn đủ ngày, giờ kết thúc
+        if (this.state.dateStop && this.state.timeStop) {
+            var stoppedAt = this.state.dateStop + " " + this.state.timeStop
+            var isoDate = new Date(stoppedAt).toISOString();
+            var milisec = new Date(isoDate).getTime();
+        }
         const timer = {
             startedAt: performtasks.currentTimer.timesheetLogs[0].startedAt,
             description: this.state.description,
-            timesheetLog: performtasks.currentTimer.timesheetLogs[0]._id
+            timesheetLog: performtasks.currentTimer.timesheetLogs[0]._id,
+            stoppedAt: milisec
         };
         await this.props.stopTimer(performtasks.currentTimer._id, timer);
         this.setState(state => {
@@ -102,14 +110,47 @@ class TaskTimesheetLog extends Component {
         });
     }
     handleDateChange = async (value) => {
-        console.log(value)
+        let a = value.split('-');
+        let dateStop = a[2] + '-' + a[1] + '-' + a[0];
+        await this.setState(state => {
+            return {
+                ...state,
+                dateStop: dateStop
+            }
+        });
+        this.validateTime()
     }
-    abc = (value) => {
-        console.log(value)
+    handleTimeChange = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                timeStop: value
+            }
+        });
+        this.validateTime()
+        
+    }
+    validateTime = ()  => {
+        if(this.state.timeStop && this.state.dateStop) {
+            const { performtasks } = this.props;
+            var startedAt= performtasks.currentTimer?.timesheetLogs[0]?.startedAt
+            var stoppedAt = this.state.dateStop + " " + this.state.timeStop
+            var isoDate = new Date(stoppedAt).toISOString();
+            var milisec = new Date(isoDate).getTime();
+            if(milisec < startedAt) {
+                this.setState({disabled: true});
+            }
+        }
+    }
+    endDate = (event) => {
+        this.setState({
+            showEndDate: event.target.checked
+        });
     }
     render() {
 
         const { translate, performtasks, auth } = this.props;
+        const { showEndDate,disabled } = this.state
         const currentTimer = performtasks.currentTimer;
         const a = (this.state.time - currentTimer?.timesheetLogs[0].startedAt > 0) ? this.state.time - currentTimer?.timesheetLogs[0].startedAt : 0
         return (
@@ -129,24 +170,23 @@ class TaskTimesheetLog extends Component {
 
                             {this.state.showModal === auth.user.id &&
                                 <React.Fragment>
-                                    {a > 20000 &&
-                                    <React.Fragment>
-                                        <DatePicker
-                                            id={"Thanh-dep-trai"}
-                                            onChange={this.handleDateChange}
-                                        />
-                                        <div className="bootstrap-timepicker">
-                                            <div className="form-group">
-                                            <label>Time picker:</label>
-                                            <div className="input-group">
-                                                <input type="text" id= "timepicker" className="form-control timepicker" onChange= {this.abc}  />
-                                                <div className="input-group-addon">
-                                                <i className="fa fa-clock-o"></i>
-                                                </div>
-                                            </div>
-                                            </div>
-                                        </div>
-                                    </React.Fragment>    
+                                    <form>
+                                        <input type="checkbox" id="stoppedAt" name="stoppedAt" onChange={this.endDate} />
+                                        <label for="stoppedAt"> Chọn thời gian kết thúc công việc</label>
+                                    </form>
+                                    {showEndDate &&
+                                        <React.Fragment>
+                                            <div style={{ marginBottom: "5px" }}>Ngày</div>
+                                            <DatePicker
+                                                id={`date-picker-${currentTimer._id}`}
+                                                onChange={this.handleDateChange}
+                                            />
+                                            <div>Giờ</div>
+                                            <TimePicker
+                                                id={`time-picker-${currentTimer._id}`}
+                                                onChange={this.handleTimeChange}
+                                            />
+                                        </React.Fragment>
                                     }
                                     <br />
                                     <label>Mô tả công việc đã làm (*)</label>
@@ -163,7 +203,7 @@ class TaskTimesheetLog extends Component {
                                             })
                                         }}
                                     />
-                                    <button className="btn btn-primary" style={{ marginRight: 5 }} onClick={this.stopTimer}>Lưu</button>
+                                    <button className="btn btn-primary" style={{ marginRight: 5 }} disabled = {disabled} onClick={this.stopTimer}>Lưu</button>
                                     <button className="btn btn-danger" onClick={this.resumeTimer}>Hủy</button>
                                 </React.Fragment>
                             }

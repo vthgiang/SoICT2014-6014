@@ -1,4 +1,3 @@
-import { LOCAL_SERVER_API } from '../../../../../env';
 import { getStorage } from '../../../../../config';
 import { sendRequest } from '../../../../../helpers/requestHelper';
 export const dashboardEmployeeKpiService = {
@@ -13,7 +12,7 @@ export const dashboardEmployeeKpiService = {
  */
 function getAllEmployeeKpiSetOfUnitByRole(role) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/evaluation/employee-evaluation/employee-kpi-sets`,
         method: 'GET',
         params: {
             roleId: role
@@ -28,7 +27,7 @@ function getAllEmployeeKpiSetOfUnitByRole(role) {
 function getAllEmployeeKpiSetOfUnitByIds(ids) {
     let role = getStorage("currentRole");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/evaluation/dashboard/employee-kpis`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/evaluation/dashboard/employee-kpis`,
         method: 'GET',
         params: {
             role: role,
@@ -43,7 +42,7 @@ function getAllEmployeeKpiSetOfUnitByIds(ids) {
  */
 function getChildrenOfOrganizationalUnitsAsTree(role) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/dashboard/organizational-units/get-children-of-organizational-unit-as-tree`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/dashboard/organizational-units/get-children-of-organizational-unit-as-tree`,
         method: 'GET',
         params: {
             role: role

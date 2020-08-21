@@ -159,16 +159,17 @@ class AdministrationStatisticsReport extends Component {
         return <React.Fragment>
 
             <div className="row">
-                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                    <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_document')}</b>
-
-                    <div ref="piechart"></div>
+                <div className="box">
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_document')}</b>
+                        <div ref="piechart"></div>
+                    </div>
                 </div>
-
-                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ marginTop: '50px', paddingTop: '10px' }}>
-                    <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_view_down')}</b>
-
-                    <div ref="barchart"></div>
+                <div className="box">
+                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ marginTop: '50px', paddingTop: '10px' }}>
+                        <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_view_down')}</b>
+                        <div ref="barchart"></div>
+                    </div>
                 </div>
             </div>
 

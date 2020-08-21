@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
-import { LOCAL_SERVER_API } from '../../../../env';
 import moment from 'moment';
 
 import { DialogModal } from '../../../../common-components';
@@ -279,7 +277,7 @@ class AssetEditForm extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                img: LOCAL_SERVER_API + nextProps.avatar,
+                img: process.env.REACT_APP_SERVER + nextProps.avatar,
                 avatar: "",
                 avatar: nextProps.avatar,
                 code: nextProps.code,

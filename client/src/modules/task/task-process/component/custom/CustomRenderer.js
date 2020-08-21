@@ -65,7 +65,7 @@ export default class CustomRenderer extends BaseRenderer {
       svgAttr(text, {
         fill: 'black',
         transform: 'translate(7, 20)',
-        fontSize: "15px",
+        fontSize: "12px",
         wordBreak: "break-all",
         overflowWrap: "break-word"
       });

@@ -1,4 +1,3 @@
-import { LOCAL_SERVER_API } from '../../../../env';
 import { sendRequest } from '../../../../helpers/requestHelper';
 export const AssetTypeService = {
     searchAssetTypes,
@@ -16,7 +15,7 @@ export const AssetTypeService = {
  */
 function searchAssetTypes(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/assettype/asset-types`,
+        url: `${ process.env.REACT_APP_SERVER }/assettype/asset-types`,
         method: 'GET',
         params: {
             typeNumber: data.typeNumber,
@@ -32,7 +31,7 @@ function searchAssetTypes(data) {
  */
 function getAssetTypes() {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/assettype/asset-types`,
+        url: `${ process.env.REACT_APP_SERVER }/assettype/asset-types`,
         method: 'GET',
     }, false, true, 'asset.asset_type');
 }
@@ -43,7 +42,7 @@ function getAssetTypes() {
  */
 function createAssetTypes(data) {  
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/assettype/asset-types`,
+        url: `${ process.env.REACT_APP_SERVER }/assettype/asset-types`,
         method: 'POST',
         data,
     }, true, true, 'asset.asset_type');
@@ -54,7 +53,7 @@ function createAssetTypes(data) {
  */
 function editAssetType(id, data) {  
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/assettype/asset-types/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/assettype/asset-types/${id}`,
         method: 'PATCH',
         data,
     }, true, true, 'asset.asset_type');
@@ -65,7 +64,7 @@ function editAssetType(id, data) {
  */
 function deleteAssetTypes(id) {  
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/assettype/asset-types/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/assettype/asset-types/${id}`,
         method: 'DELETE',
     }, true, true, 'asset.asset_type');
 }
@@ -75,7 +74,7 @@ function deleteAssetTypes(id) {
  */
 function deleteManyAssetType(array) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/assettype/asset-types`,
+        url: `${ process.env.REACT_APP_SERVER }/assettype/asset-types`,
         method: 'DELETE',
         data: {array}
     }, true, true, 'asset.asset_type');

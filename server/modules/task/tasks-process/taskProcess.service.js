@@ -407,7 +407,24 @@ exports.getAllTaskProcess = async (query) => {
     }).skip(noResultsPerPage * (pageNumber - 1)).limit(noResultsPerPage)
         .populate([
             { path: 'creator', model: User, select: 'name' },
-            { path: 'tasks', model: Task },
+            {
+                path: 'tasks', model: Task, populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit", model: OrganizationalUnit },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                    { path: "evaluations.results.kpis" },
+                    { path: "taskActions.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+                    { path: "taskComments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "documents.creator", model: User, select: 'name email avatar' },
+                    { path: "process", model: TaskProcess },
+                ]
+            },
             { path: 'processTemplate', model: ProcessTemplate, select: 'processName' },
         ]);
 
