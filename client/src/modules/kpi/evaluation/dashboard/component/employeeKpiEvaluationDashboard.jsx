@@ -11,7 +11,6 @@ import { ResultsOfAllEmployeeKpiSetChart } from './resultsOfAllEmployeeKpiSetCha
 import { SelectBox, SelectMulti, ExportExcel } from '../../../../../common-components';
 import Swal from 'sweetalert2';
 import { DatePicker } from '../../../../../common-components';
-import { LOCAL_SERVER_API } from '../../../../../env';
 import { withTranslate } from 'react-redux-multilingual';
 
 
@@ -474,7 +473,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                         (typeof lastMonthEmployeeKpiSets !== 'undefined' && lastMonthEmployeeKpiSets.length !== 0) ?
                                             lastMonthEmployeeKpiSets.map((item, index) =>
                                                 <li key={index} style={{ maxWidth: 200 }}>
-                                                    <img src={(LOCAL_SERVER_API + item.creator.avatar)} />
+                                                    <img src={(process.env.REACT_APP_SERVER + item.creator.avatar)} />
                                                     <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">{item.creator.name}</a>
                                                     <span className="users-list-date">{item.approvedPoint}</span>
                                                 </li>

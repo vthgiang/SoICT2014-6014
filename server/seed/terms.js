@@ -6,28 +6,28 @@ const ROLE_TYPES = {
 exports.ROLE_TYPES = ROLE_TYPES;
 
 const ROOT_ROLES = {
-    SYSTEM_ADMIN: {name: "System Admin", description: "Quản lý các doanh nghiệp/công ty sử dụng dịch vụ"},
-    SUPER_ADMIN: {name: "Super Admin", description: "Super Admin của một doanh nghiệp/công ty. Chỉ có một Super Admin duy nhất, không thể xóa"},
-    ADMIN: {name: "Admin", description: "Admin của một doanh nghiệp/công ty. Có thể có nhiều Admin"},
-    DEAN: {name: "Dean", description: "Trưởng đơn vị trong một doanh nghiệp/công ty"},
-    VICE_DEAN: {name: "Vice Dean", description: "Phó đơn vị trong một doanh nghiệp/công ty"},
-    EMPLOYEE: {name: "Employee", description: "Nhân viên đơn vị trong một doanh nghiệp/công ty"},
+    SYSTEM_ADMIN: { name: "System Admin", description: "Quản lý các doanh nghiệp/công ty sử dụng dịch vụ" },
+    SUPER_ADMIN: { name: "Super Admin", description: "Super Admin của một doanh nghiệp/công ty. Chỉ có một Super Admin duy nhất, không thể xóa" },
+    ADMIN: { name: "Admin", description: "Admin của một doanh nghiệp/công ty. Có thể có nhiều Admin" },
+    DEAN: { name: "Dean", description: "Trưởng đơn vị trong một doanh nghiệp/công ty" },
+    VICE_DEAN: { name: "Vice Dean", description: "Phó đơn vị trong một doanh nghiệp/công ty" },
+    EMPLOYEE: { name: "Employee", description: "Nhân viên đơn vị trong một doanh nghiệp/công ty" },
 }
 
 exports.ROOT_ROLES = ROOT_ROLES;
 
 const LINK_CATEGORY = {
-    COMMON: { name: 'common', description: 'Các trang web dùng chung'},
-    RBAC: { name: 'rbac-management', description: 'Quản lý phân quyền rbac'},
-    KPI: { name: 'kpi-management', description: 'Quản lý kpi'},
-    TASK: { name: 'task-management', description: 'Quản lý công việc'},
-    HUMAN_RESOURCE: { name: 'employee-management', description: 'Quản lý nhân sự'},
-    EDUCATION: { name: 'education-management', description: 'Quản lý đào tạo'},
-    DOCUMENT: { name: 'document-management', description: 'Quản lý tài liệu, biểu mẫu'},
-    PROCESS: { name: 'process-management', description: 'Quản lý quy trình'},
-    ASSET: { name: 'asset-management', description: 'Quản lý tài sản'},
-    REPORT: { name: 'report-management', description: 'Quản lý báo cáo'},
-    MATERIAL: { name: 'material-manager', description: 'Quản lý vật tư'},
+    COMMON: { name: 'common', description: 'Các trang web dùng chung' },
+    RBAC: { name: 'rbac-management', description: 'Quản lý phân quyền rbac' },
+    KPI: { name: 'kpi-management', description: 'Quản lý kpi' },
+    TASK: { name: 'task-management', description: 'Quản lý công việc' },
+    HUMAN_RESOURCE: { name: 'employee-management', description: 'Quản lý nhân sự' },
+    EDUCATION: { name: 'education-management', description: 'Quản lý đào tạo' },
+    DOCUMENT: { name: 'document-management', description: 'Quản lý tài liệu, biểu mẫu' },
+    PROCESS: { name: 'process-management', description: 'Quản lý quy trình' },
+    ASSET: { name: 'asset-management', description: 'Quản lý tài sản' },
+    REPORT: { name: 'report-management', description: 'Quản lý báo cáo' },
+    MATERIAL: { name: 'material-manager', description: 'Quản lý vật tư' },
     ORDER: { name: "orders-management", description: "Quản lý đơn hàng" },
 };
 exports.LINK_CATEGORY = LINK_CATEGORY;
@@ -43,7 +43,7 @@ const COMPONENTS = [
         links: [
             '/notifications'
         ]
-    },{
+    }, {
         name: 'create-task-template-button',
         description: 'Button thêm mới mẫu công việc',
         roles: [
@@ -52,7 +52,7 @@ const COMPONENTS = [
         links: [
             '/task-template'
         ]
-    },{
+    }, {
         name: 'create-task-process-button',
         description: 'Button thêm mới quy trình công việc',
         roles: [
@@ -65,7 +65,7 @@ const COMPONENTS = [
 ];
 exports.COMPONENTS = COMPONENTS;
 
-const getComponentsInLink = (link) =>  {
+const getComponentsInLink = (link) => {
     return COMPONENTS
         .filter(component => component.links.indexOf(link) !== -1)
         .map(component => component.name);
@@ -152,7 +152,7 @@ const LINKS = [
         ],
         components: getComponentsInLink('/components-management')
     },
-    
+
 
 
     {
@@ -408,11 +408,11 @@ const LINKS = [
         ],
         components: getComponentsInLink('/kpi-personals/manager')
     },
-    
 
 
-    
-    
+
+
+
     {
         url: '/task-template',
         description: 'Mẫu công việc',
@@ -490,9 +490,9 @@ const LINKS = [
     },
 
 
-    
 
-    
+
+
     {
         url: '/dashboard-asset',
         description: 'DashBoard quản lý tài sản',
@@ -608,10 +608,19 @@ const LINKS = [
         ],
         components: getComponentsInLink('/manage-assigned-asset')
     },
+    {
+        url: '/view-building-list',
+        description: 'Xem danh sách mặt bằng',
+        category: LINK_CATEGORY.ASSET.name,
+        roles: [
+            ROOT_ROLES.ADMIN.name,
+        ],
+        components: getComponentsInLink('/view-building-list')
+    },
 
 
 
-    
+
     {
         url: '/task-report',
         description: 'Quản lý báo cáo công việc',
@@ -641,11 +650,11 @@ const LINKS = [
         description: "Quản lý đơn hàng",
         category: LINK_CATEGORY.ORDER.name,
         roles: [
-          ROOT_ROLES.SUPER_ADMIN.name,
-          ROOT_ROLES.ADMIN.name,
-          ROOT_ROLES.DEAN.name,
-          ROOT_ROLES.VICE_DEAN.name,
-          ROOT_ROLES.EMPLOYEE.name,
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name,
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
         ],
         components: getComponentsInLink('/manage-orders'),
     },

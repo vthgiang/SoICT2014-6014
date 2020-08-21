@@ -1,7 +1,4 @@
 import {
-    LOCAL_SERVER_API
-} from '../../../../env';
-import {
     sendRequest
 } from '../../../../helpers/requestHelper';
 
@@ -15,7 +12,7 @@ export const RoleServices = {
 
 function get(params) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/role/roles`,
+        url: `${ process.env.REACT_APP_SERVER }/role/roles`,
         method: 'GET',
         params
     }, false, true, 'super_admin.role');
@@ -23,14 +20,14 @@ function get(params) {
 
 function show(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/role/roles/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/role/roles/${id}`,
         method: 'GET',
     }, false, true, 'super_admin.role');
 }
 
 function create(role) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/role/roles`,
+        url: `${ process.env.REACT_APP_SERVER }/role/roles`,
         method: 'POST',
         data: role,
     }, true, true, 'super_admin.role');
@@ -39,7 +36,7 @@ function create(role) {
 function edit(role) {
     let showAlert = role.showAlert === undefined ? true : false;
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/role/roles/${role.id}`,
+        url: `${ process.env.REACT_APP_SERVER }/role/roles/${role.id}`,
         method: 'PATCH',
         data: role,
     }, showAlert, showAlert, 'super_admin.role');
@@ -47,7 +44,7 @@ function edit(role) {
 
 function destroy(roleId) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/role/roles/${roleId}`,
+        url: `${ process.env.REACT_APP_SERVER }/role/roles/${roleId}`,
         method: 'DELETE',
     }, true, true, 'super_admin.role');
 }

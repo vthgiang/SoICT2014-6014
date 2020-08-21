@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { ContentMaker, DialogModal } from '../../../../../common-components'
-import { LOCAL_SERVER_API } from '../../../../../env'
-import { getStorage } from '../../../../../config'
+import { ContentMaker, DialogModal } from '../../../../../common-components';
+import { getStorage } from '../../../../../config';
 
 import { createKpiSetActions } from '../redux/actions';
 import { AuthActions } from '../../../../auth/redux/actions';
@@ -324,7 +323,7 @@ class Comment extends Component {
                     comments.map(item => {
                         return (
                             <div key={item._id}>
-                                <img className="user-img-level1" src={(LOCAL_SERVER_API + item.creator?.avatar)} alt="User Image" />
+                                <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
                                 {editComment !== item._id && // Khi đang edit thì ẩn đi
                                     <React.Fragment>
                                         <div className="content-level1">
@@ -418,7 +417,7 @@ class Comment extends Component {
                                     <div className="comment-content-child">
                                         {item.comments.map(child => {
                                             return <div key={child._id}>
-                                                <img className="user-img-level2" src={(LOCAL_SERVER_API + item.creator?.avatar)} alt="User Image" />
+                                                <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + item.creator?.avatar)} alt="User Image" />
 
                                                 {editChildComment !== child._id && // Đang edit thì ẩn đi
                                                     <div>
@@ -518,7 +517,7 @@ class Comment extends Component {
                                         }
                                         {/*Thêm bình luận cho bình luận */}
                                         <div>
-                                            <img className="user-img-level2" src={(LOCAL_SERVER_API + auth.user.avatar)} alt="user avatar" />
+                                            <img className="user-img-level2" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="user avatar" />
                                             <ContentMaker
                                                 inputCssClass="text-input-level2" controlCssClass="tool-level2"
                                                 onFilesChange={this.onCommentFilesChange}
@@ -542,7 +541,7 @@ class Comment extends Component {
                         )
                     }) : null
                 }
-                <img className="user-img-level1" src={(LOCAL_SERVER_API + auth.user.avatar)} alt="User Image" />
+                <img className="user-img-level1" src={(process.env.REACT_APP_SERVER + auth.user.avatar)} alt="User Image" />
                 <ContentMaker
                     inputCssClass="text-input-level1" controlCssClass="tool-level1"
                     onFilesChange={this.onFilesChange}

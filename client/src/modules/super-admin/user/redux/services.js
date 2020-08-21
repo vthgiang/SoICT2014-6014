@@ -1,7 +1,4 @@
 import {
-    LOCAL_SERVER_API
-} from '../../../../env';
-import {
     sendRequest
 } from '../../../../helpers/requestHelper';
 import {
@@ -29,7 +26,7 @@ export const UserServices = {
 
 function get(params) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/users`,
+        url: `${ process.env.REACT_APP_SERVER }/user/users`,
         method: 'GET',
         params,
     }, false, true, 'super_admin.user');
@@ -42,7 +39,7 @@ function get(params) {
 function getAllEmployeeOfUnitByIds(ids) {
     let role = getStorage("currentRole");
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/users`,
+        url: `${ process.env.REACT_APP_SERVER }/user/users`,
         method: 'GET',
         params: {
             role: role,
@@ -57,7 +54,7 @@ function getAllEmployeeOfUnitByIds(ids) {
  */
 function getAllEmployeeOfUnitByRole(role) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/users`,
+        url: `${ process.env.REACT_APP_SERVER }/user/users`,
         method: 'GET',
         params: {
             role: role
@@ -68,7 +65,7 @@ function getAllEmployeeOfUnitByRole(role) {
 function getRoles() {
     const id = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/roles/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/roles/${id}`,
         method: 'GET',
     }, false, true, 'super_admin.user');
 }
@@ -76,7 +73,7 @@ function getRoles() {
 function getLinkOfRole() {
     const currentRole = getStorage("currentRole");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/links/role/${currentRole}`,
+        url: `${process.env.REACT_APP_SERVER}/links/role/${currentRole}`,
         method: 'GET',
     }, false, true, 'super_admin.user');
 }
@@ -84,7 +81,7 @@ function getLinkOfRole() {
 // Lấy tất cả các vai trò cùng phòng ban với người dùng
 function getRoleSameDepartmentOfUser(currentRole) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/role/roles`,
+        url: `${process.env.REACT_APP_SERVER}/role/roles`,
         method: 'GET',
         params: {
             roleId: currentRole,
@@ -95,7 +92,7 @@ function getRoleSameDepartmentOfUser(currentRole) {
 // Lấy tất cả nhân viên của công ty
 function getAllUserOfCompany() {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/user/users`,
+        url: `${process.env.REACT_APP_SERVER}/user/users`,
         method: 'GET',
     }, false, true, 'super_admin.user');
 }
@@ -105,7 +102,7 @@ function getAllUserOfDepartment(id) {
     let params = id;
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/user/users`,
+        url: `${process.env.REACT_APP_SERVER}/user/users`,
         method: 'GET',
         params: {
             departmentIds: id
@@ -117,7 +114,7 @@ function getAllUserOfDepartment(id) {
 // Lấy tất cả nhân viên của một phòng ban kèm theo vai trò của họ
 function getAllUserSameDepartment(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/user/users`,
+        url: `${process.env.REACT_APP_SERVER}/user/users`,
         method: 'GET',
         params: {
             userRole: id
@@ -130,7 +127,7 @@ function getDepartmentOfUser() {
     const id = getStorage("userId");
 
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/organizational-units/organizational-units`,
+        url: `${ process.env.REACT_APP_SERVER }/organizational-units/organizational-units`,
         method: 'GET',
         params: {
             userId: id,
@@ -141,7 +138,7 @@ function getDepartmentOfUser() {
 // Get all children of an organizational unit and that organizational unit
 function getChildrenOfOrganizationalUnitsAsTree(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/user/users`,
+        url: `${process.env.REACT_APP_SERVER}/user/users`,
         method: 'GET',
         params: {
             unitId: id
@@ -152,7 +149,7 @@ function getChildrenOfOrganizationalUnitsAsTree(id) {
 // Get all user in organizational unit of company
 function getAllUserInAllUnitsOfCompany() {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/user/users`,
+        url: `${process.env.REACT_APP_SERVER}/user/users`,
         method: 'GET',
         params: {
             unitId: -1,
@@ -162,7 +159,7 @@ function getAllUserInAllUnitsOfCompany() {
 
 function edit(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/users/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/user/users/${id}`,
         method: 'PATCH',
         data,
     }, true, true, 'super_admin.user');
@@ -170,7 +167,7 @@ function edit(id, data) {
 
 function create(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/users`,
+        url: `${ process.env.REACT_APP_SERVER }/user/users`,
         method: 'POST',
         data,
     }, true, true, 'super_admin.user');
@@ -178,14 +175,14 @@ function create(data) {
 
 function destroy(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/users/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/user/users/${id}`,
         method: 'DELETE',
     }, true, true, 'super_admin.user');
 }
 
 function getAllUsersWithRole() {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/users/roles/abc`,
+        url: `${ process.env.REACT_APP_SERVER }/user/users/roles/abc`,
         method: 'GET',
     }, false, false, 'super_admin.user');
 }

@@ -1,4 +1,3 @@
-import { LOCAL_SERVER_API } from '../../../env';
 import { getStorage } from '../../../config';
 import { sendRequest } from '../../../helpers/requestHelper';
 
@@ -19,7 +18,7 @@ export const AuthService = {
 
 async function login(user) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/auth/login`,
+        url: `${ process.env.REACT_APP_SERVER }/auth/login`,
         method: 'POST',
         data: user
     }, false, false, 'auth')
@@ -27,14 +26,14 @@ async function login(user) {
 
 function logout() {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/auth/logout`,
+        url: `${ process.env.REACT_APP_SERVER }/auth/logout`,
         method: 'GET',
     }, false, true, 'auth');
 }
 
 function logoutAllAccount() {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/auth/logout-all-account`,
+        url: `${ process.env.REACT_APP_SERVER }/auth/logout-all-account`,
         method: 'GET',
     }, false, true, 'auth');
 }
@@ -43,7 +42,7 @@ function editProfile(data) {
     var id = getStorage("userId");
 
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/user/users/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/user/users/${id}`,
         method: 'PATCH',
         data: data,
     }, true, true, 'auth');
@@ -52,7 +51,7 @@ function editProfile(data) {
 function changeInformation(data) {
     var id = getStorage("userId");
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-information`,
+        url: `${ process.env.REACT_APP_SERVER }/auth/profile/${id}/change-information`,
         method: 'PATCH',
         data: data,
     }, true, true, 'auth');
@@ -61,7 +60,7 @@ function changeInformation(data) {
 function changePassword(data) {
     var id = getStorage("userId");
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/auth/profile/${id}/change-password`,
+        url: `${ process.env.REACT_APP_SERVER }/auth/profile/${id}/change-password`,
         method: 'PATCH',
         data: data,
     }, true, true, 'auth');
@@ -69,7 +68,7 @@ function changePassword(data) {
 
 function getLinksOfRole(idRole) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/auth/get-links-that-role-can-access/${idRole}`,
+        url: `${ process.env.REACT_APP_SERVER }/auth/get-links-that-role-can-access/${idRole}`,
         method: 'GET',
     }, false, true, 'auth');
 }
@@ -78,14 +77,14 @@ function refresh() {
     var id = getStorage("userId");
     
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/auth/get-profile/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/auth/get-profile/${id}`,
         method: 'GET',
     }, false, true, 'auth');
 }
 
 function forgotPassword(email) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/auth/forget-password`,
+        url: `${ process.env.REACT_APP_SERVER }/auth/forget-password`,
         method: 'POST',
         data: {
             email
@@ -95,7 +94,7 @@ function forgotPassword(email) {
 
 function resetPassword(otp, email, password) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/auth/reset-password`,
+        url: `${ process.env.REACT_APP_SERVER }/auth/reset-password`,
         method: 'POST',
         data: {
             otp,
@@ -107,7 +106,7 @@ function resetPassword(otp, email, password) {
 
 function getComponentOfUserInLink(currentRole, linkId) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/component/components`,
+        url: `${ process.env.REACT_APP_SERVER }/component/components`,
         method: 'GET',
         params: {
             currentRole: currentRole,
@@ -122,7 +121,7 @@ function getComponentOfUserInLink(currentRole, linkId) {
  */
 function downloadFile(path) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/auth/download-file/`,
+        url: `${process.env.REACT_APP_SERVER}/auth/download-file/`,
         method: 'GET',
         responseType: 'blob',
         params: { path: path }
