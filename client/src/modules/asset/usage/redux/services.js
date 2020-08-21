@@ -5,6 +5,7 @@ export const UsageService = {
     createUsage,
     updateUsage,
     deleteUsage,
+    recallAsset,
 }
 
 // Tạo mới thông tin phiếu đề nghị mua sắm thiết bị
@@ -21,7 +22,7 @@ function updateUsage(assetId, data) {
     return sendRequest({
         url: `${LOCAL_SERVER_API}/assets/assets/${assetId}/usage-logs`,
         method: 'PATCH',
-        data
+        data: data,
     }, true, true, 'asset.usage');
 }
 
@@ -31,5 +32,17 @@ function deleteUsage(assetId, usageId) {
         url: `${LOCAL_SERVER_API}/assets/assets/${assetId}/usage-logs`,
         method: 'DELETE',
         data: { usageId }
+    }, true, true, 'asset.usage');
+}
+
+function recallAsset(assetId, data){
+    console.log("Services", assetId, data);
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/assets/assets/${assetId}/usage-logs`,
+        method: 'PATCH',
+        data: data,
+        params: {
+            recallAsset: true,
+        }
     }, true, true, 'asset.usage');
 }

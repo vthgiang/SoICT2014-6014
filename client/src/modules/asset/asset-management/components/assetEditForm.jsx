@@ -400,6 +400,8 @@ class AssetEditForm extends Component {
                             {/* Thông tin sử dụng */}
                             <UsageLogTab
                                 id={`edit_usage${_id}`}
+                                assetId={_id}
+                                assignedTo={assignedTo}
                                 usageLogs={usageLogs}
                                 handleAddUsage={this.handleCreateUsageLogs}
                                 handleEditUsage={this.handleEditUsageLogs}
