@@ -17,6 +17,7 @@ import { AuthActions } from '../../../auth/redux/actions'
 
 import Files from 'react-files'
 import './actionTab.css';
+import { ViewProcess } from '../../task-process/component/task-process-management/viewProcess';
 
 
 
@@ -831,6 +832,7 @@ class ActionTab extends Component {
                         <li><a href="#logTimer" onClick={() => this.handleChangeContent("logTimer")} data-toggle="tab">{translate("task.task_perform.timesheetlogs")} ({logTimer && logTimer.length})</a></li>
                         <li><a href="#subTask" onClick={() => this.handleChangeContent("subTask")} data-toggle="tab">{translate("task.task_perform.subtasks")} ({subtasks && subtasks.length})</a></li>
                         <li><a href="#historyLog" onClick={() => this.handleChangeContent("historyLog")} data-toggle="tab">{translate("task.task_perform.change_history")} ({logs && logs.length})</a></li>
+                        <li><a href="#process" onClick={() => this.handleChangeContent("process")} data-toggle="tab">{translate("task.task_perform.change_process")} </a></li>
                     </ul>
                     <div className="tab-content">
                         <div className={selected === "taskAction" ? "active tab-pane" : "tab-pane"} id="taskAction">
@@ -1561,6 +1563,28 @@ class ActionTab extends Component {
                                     </div>
                                 </div>
                             )}
+                        </div>
+
+                        {/* Chuyển qua tab quy trình */}
+
+                        <div className={selected === "process" ? "active tab-pane" : "tab-pane"} id="process">
+                            {(task && task.process) ?
+                                <div>
+                                    {task &&
+                                        <ViewProcess
+                                            isTabPane={true}
+                                            data={task && task.process}
+                                            idProcess={task && task.process._id}
+                                            xmlDiagram={task && task.process.xmlDiagram}
+                                            processName={task && task.process.processName}
+                                            processDescription={task && task.process.processDescription}
+                                            infoTask={task && task.process.tasks}
+                                            creator={task && task.process.creator}
+                                        />
+                                    }
+
+                                </div> : <dt>Công việc không làm theo quy trình</dt>
+                            }
                         </div>
 
                     </div>

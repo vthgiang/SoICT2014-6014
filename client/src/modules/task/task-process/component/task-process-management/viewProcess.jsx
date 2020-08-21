@@ -1,17 +1,17 @@
 import React, { Component } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
-import { DialogModal, SelectBox, DatePicker } from "../../../../common-components";
-import { getStorage } from '../../../../config';
-import { ModalDetailTask } from "../../task-management/component/task-dashboard/modalDetailTask";
-import { taskManagementActions } from "../../task-management/redux/actions";
-import { UserActions } from "../../../super-admin/user/redux/actions";
+import { DialogModal, SelectBox, DatePicker } from "../../../../../common-components";
+import { getStorage } from '../../../../../config';
+import { ModalDetailTask } from "../../../task-management/component/task-dashboard/modalDetailTask";
+import { taskManagementActions } from "../../../task-management/redux/actions";
+import { UserActions } from "../../../../super-admin/user/redux/actions";
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
-import customModule from './custom'
+import customModule from './../custom'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
-import './processDiagram.css'
+import './../processDiagram.css'
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -31,6 +31,7 @@ class ViewProcess extends Component {
     constructor(props) {
         super(props);
         let { data } = this.props;
+        console.log('dtaa', data);
         this.state = {
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
@@ -49,7 +50,7 @@ class ViewProcess extends Component {
                 { zoomScroll: ['value', ''] }
             ],
         });
-        this.generateId = 'createtaskbyprocess';
+        this.generateId = 'viewtaskprocestab';
         this.initialDiagram = data.xmlDiagram;
     }
 
@@ -72,11 +73,11 @@ class ViewProcess extends Component {
         var eventBus = this.modeler.get('eventBus');
         this.modeler.on('element.click', 1000, (e) => this.interactPopup(e));
 
-        this.modeler.on('shape.remove', 1000, (e) => this.deleteElements(e));
+        // this.modeler.on('shape.remove', 1000, (e) => this.deleteElements(e));
 
-        this.modeler.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
+        // this.modeler.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
 
-        this.modeler.on('shape.changed', 1000, (e) => this.changeNameElement(e));
+        // this.modeler.on('shape.changed', 1000, (e) => this.changeNameElement(e));
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -122,6 +123,10 @@ class ViewProcess extends Component {
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
             return true;
         }
+        if ( nextProps.data ) {
+            this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
+            return true;
+        }
         return true;
     }
 
@@ -156,7 +161,8 @@ class ViewProcess extends Component {
 
         })
         if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway') {
-            this.props.getTaskById(this.state.info[this.state.id]._id);
+            console.log('0000', this.state.info[this.state.id]);
+            // this.props.getTaskById(this.state.info[this.state.id]._id);
             window.$(`#modal-detail-task`).modal("show");
         }
     }
@@ -310,11 +316,13 @@ class ViewProcess extends Component {
 
     render() {
         const { translate, role, user } = this.props;
-        const { name, id, idProcess, info, taskName, showInfo, startDate, endDate, errorOnEndDate, errorOnStartDate,
-            processDescription, processName, viewer, manager, selected, infoTask, currentTask } = this.state;
+        const { name, id, idProcess, info, startDate, endDate, errorOnEndDate, errorOnStartDate,
+            processDescription, processName } = this.state;
+        const { isTabPane } = this.props
+
         return (
             <React.Fragment>
-                <DialogModal
+                {/* <DialogModal
                     size='100' modalID={`modal-view-process-task-list`} isLoading={false}
                     formID="modal-view-process-task-list"
                     // disableSubmit={!this.isTaskFormValidated()}
@@ -322,13 +330,15 @@ class ViewProcess extends Component {
                     func={this.save}
                     hasSaveButton={false}
                     bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
-                >
+                > */}
                     <div>
-                        {<ModalDetailTask task={(info && info[`${id}`]) && info[`${id}`]} />}
-                        
-                        <div className="row">
+                        { id !== undefined &&
+                            <ModalDetailTask task={(info && info[`${id}`]) && info[`${id}`]} isProcess={true} />
+                        }
+
+                        <div className={`${isTabPane ? 'is-tabbed-pane' : 'row'}`}>
                             {/* Quy trình công việc */}
-                            <div className={`contain-border col-md-8`}>
+                            <div className={`contain-border ${isTabPane ? '' : 'col-md-8'}`}>
                                 {/* <div className="tool-bar-xml" }>
                                     <button onClick={this.exportDiagram}>Export XML</button>
                                     <button onClick={this.downloadAsSVG}>Save SVG</button>
@@ -359,12 +369,14 @@ class ViewProcess extends Component {
                                 </div>
                             </div>
 
-                            <div className={`right-content col-md-4`}>
+                            <div className={`${isTabPane ? '' : 'right-content col-md-4'}`}>
 
                                 <div className="box box-solid description">
-                                    <div className="box-header with-border">
-                                        {translate('task_template.general_information')}
-                                    </div>
+                                    { !isTabPane &&
+                                        <div className="box-header with-border">
+                                            {translate('task_template.general_information')}
+                                        </div>
+                                    }
                                     <div className="box-body">
 
                                         {/**Các thông tin của mẫu công việc */}
@@ -383,7 +395,7 @@ class ViewProcess extends Component {
                     </div>
 
 
-                </DialogModal>
+                {/* </DialogModal> */}
             </React.Fragment>
         )
     }

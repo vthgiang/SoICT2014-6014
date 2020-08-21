@@ -2187,6 +2187,7 @@ export default {
                 timesheetlogs: "Lịch sử bấm giờ",
                 subtasks: "Công việc con",
                 change_history: "Lịch sử thay đổi",
+                change_process: "Quy trình",
                 edit_action: "Sửa hành động",
                 delete_action: "Xóa hành động",
                 mandatory_action: "Hành động bắt buộc",

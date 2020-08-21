@@ -3,18 +3,11 @@ import { connect } from 'react-redux';
 import { withTranslate } from "react-redux-multilingual";
 
 
-import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../common-components';
+import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../../common-components';
 
+import { TaskProcessActions } from '../../redux/actions';
+import { ModalViewProcess } from './modalViewProcess';
 
-import { ModalEditTaskProcess } from './modalEditTaskProcess'
-import { ModalCreateTaskProcess } from './modalCreateTaskProcess'
-import { ModalViewTaskProcess } from './modalViewTaskProcess';
-import { ModalCreateTaskByProcess } from './modalCreateTaskByProcess';
-
-import { TaskProcessActions } from '../redux/actions';
-import { RoleActions } from '../../../super-admin/role/redux/actions';
-import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
-import { ViewProcess } from './viewProcess';
 class TaskProcessManagement extends Component {
   constructor(props) {
     super(props);
@@ -26,10 +19,7 @@ class TaskProcessManagement extends Component {
 
   }
   componentDidMount = () => {
-    // this.props.getAllDepartments()
-    // this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
     this.props.getAllTaskProcess(this.state.pageNumber, this.state.noResultsPerPage, "");
-    // this.props.getRoles();
   }
   showEditProcess = async (item) => {
     this.setState(state => {
@@ -112,13 +102,6 @@ class TaskProcessManagement extends Component {
       listTaskProcess = taskProcess.listTaskProcess
     }
 
-    console.log('');
-    // if (taskProcess && taskProcess.xmlDiagram) {
-    //   listTaskProcess = taskProcess.xmlDiagram.filter((item) => {
-    //     return listTaskProcess.find(e => e._id === item._id) ? '' : listTaskProcess.push(item)
-    //   });
-    // }
-
     let totalPage = taskProcess.totalPage
     let listOrganizationalUnit = department?.list
     return (
@@ -126,7 +109,7 @@ class TaskProcessManagement extends Component {
         <div className="box-body qlcv">
           {
             this.state.currentRow !== undefined &&
-            <ViewProcess
+            <ModalViewProcess
               title={'Xem quy trình công việc'}
               listOrganizationalUnit={listOrganizationalUnit}
               data={currentRow}

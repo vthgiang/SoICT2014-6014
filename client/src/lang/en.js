@@ -2183,6 +2183,7 @@ export default {
                 timesheetlogs: "Timesheet Logs",
                 subtasks: "Subtasks",
                 change_history: "Change logs",
+                change_process: "Process",
                 edit_action: "Edit action",
                 delete_action: "Delete action",
                 mandatory_action: "Mandatory action",
