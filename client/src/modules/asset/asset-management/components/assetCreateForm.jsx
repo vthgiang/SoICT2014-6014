@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { ButtonModal, DialogModal } from '../../../../common-components';
-import { LOCAL_SERVER_API } from '../../../../env';
 import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
 
 import {
@@ -18,7 +17,7 @@ class AssetCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            img: LOCAL_SERVER_API + '/upload/asset/pictures/picture5.png',
+            img: process.env.REACT_APP_SERVER + '/upload/asset/pictures/picture5.png',
             avatar: "",
             asset: {
                 avatar: '/upload/asset/pictures/picture5.png',
@@ -152,7 +151,7 @@ class AssetCreateForm extends Component {
 
         let result = this.validatorInput(asset.code) && this.validatorInput(asset.assetName) &&
             this.validatorInput(asset.serial) && this.validatorInput(asset.purchaseDate) &&
-            this.validatorInput(asset.warrantyExpirationDate) && this.validatorInput(asset.location) &&
+            this.validatorInput(asset.warrantyExpirationDate) && //this.validatorInput(asset.location) &&
             this.validatorInput(asset.assetType) && this.validatorInput(asset.managedBy) &&
             this.validatorInput(asset.status) && this.validatorInput(asset.canRegisterForUse) &&
             this.validatorInput(asset.cost) && this.validatorInput(asset.usefulLife) &&

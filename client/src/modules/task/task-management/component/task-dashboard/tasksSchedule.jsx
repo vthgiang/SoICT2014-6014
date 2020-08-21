@@ -7,10 +7,11 @@ import { taskManagementActions } from '../../../task-management/redux/actions'
 import { ModalDetailTask } from './modalDetailTask'
 
 import Timeline, { TodayMarker } from "react-calendar-timeline"
+
+import { SelectMulti } from '../../../../../common-components/index';
 import moment from 'moment'
 import 'react-calendar-timeline/lib/Timeline.css'
 import './calendar.css'
-import { translate } from 'react-redux-multilingual/lib/utils'
 
 
 class TasksSchedule extends Component {
@@ -25,33 +26,17 @@ class TasksSchedule extends Component {
       .startOf("month")
       .add(1, "month")
       .toDate();
-    let dateNow = new Date();
-    this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+    // let dateNow = new Date();
+    // this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
     this.state = {
       defaultTimeStart,
       defaultTimeEnd,
       startDate: null,
       endDate: null,
-      infoSearch: {
-        organizationalUnit: this.props.units,
-        currentPage: "1",
-        perPage: "1000",
-        status: '[]',
-        priority: '[]',
-        special: '[]',
-        name: null,
-        startDate: this.formatDate(dateNow),
-        endDate: null,
-        startDateAfter: null,
-        endDateBefore: null,
-        aPeriodOfTime: true
-      },
       taskId: null,
       add: true,
-      dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
-
-      willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
+      taskStatus: ["Inprocess"]
     };
   }
 
@@ -66,40 +51,69 @@ class TasksSchedule extends Component {
     return [month, year].join('-');
   }
 
+  handleSelectStatus = async (status) => {
+    if (status.length === 0) {
+      status = ["Inprocess"];
+    }
+
+    await this.setState(state => {
+      return {
+        ...state,
+        taskStatus: status
+      }
+    })
+
+    await this.getTaskDurations();
+    await this.getTaskGroups();
+  }
+
+  // Lọc công việc theo trạng thái
+  filterByStatus(task) {
+    let stt = this.state.taskStatus;
+    // console.log('stt', stt);
+
+    for (let i in stt) {
+      if (task.status === stt[i] && task.isArchived === false) return true;
+    }
+  }
+
   // Lấy thời gian các công việc
   getTaskDurations() {
+    console.log('call get ták');
     const { tasks } = this.props;
-    var taskList, inprocessTasks;
+    // const { taskStatus } = this.state;
+    var taskList, tasksByStatus;
     let taskDurations = [];
 
     if (tasks) {
       // Phân chia công việc vào nhóm theo người thực hiện
       if (this.props.TaskOrganizationUnitDashboard) {
         taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
-        inprocessTasks = taskList && taskList.filter(task => (task.status === "Inprocess" && task.isArchived === false));
+        // tasksByStatus = taskList && taskList.filter(task => (task.status === taskStatus && task.isArchived === false));
+        tasksByStatus = taskList && taskList.filter(task => this.filterByStatus(task));
 
-        if (inprocessTasks) {
+        if (tasksByStatus) {
           var startTime, endTime, currentTime, start_time, end_time, title1, title2, groupTask, titleTask;
           var workingDayMin;
 
-          for (let i = 1; i <= inprocessTasks.length; i++) {
+          for (let i = 1; i <= tasksByStatus.length; i++) {
             let multi = false;
             let responsibleEmployeeIds = [];
             let responsibleEmployeeNames = [];
 
             currentTime = new Date();
-            startTime = new Date(inprocessTasks[i - 1].startDate);
-            endTime = new Date(inprocessTasks[i - 1].endDate);
+            startTime = new Date(tasksByStatus[i - 1].startDate);
+            endTime = new Date(tasksByStatus[i - 1].endDate);
             start_time = moment(startTime);
             end_time = moment(endTime);
 
-            inprocessTasks[i - 1].responsibleEmployees.map(x => {
+            tasksByStatus[i - 1].responsibleEmployees.map(x => {
               responsibleEmployeeIds.push(x._id);
               responsibleEmployeeNames.push(x.name);
             });
 
-            title1 = inprocessTasks[i - 1].name + " - " + inprocessTasks[i - 1].progress + "%";
-            title2 = inprocessTasks[i - 1].name + " - " + responsibleEmployeeNames.join(" - ") + " - " + inprocessTasks[i - 1].progress + "%";
+            title1 = tasksByStatus[i - 1].name + " - " + tasksByStatus[i - 1].progress + "%";
+            title2 = tasksByStatus[i - 1].name + " - " + responsibleEmployeeNames.join(" - ") + " - " + tasksByStatus[i - 1].progress + "%";
             if (responsibleEmployeeIds.length > 1) {
               multi = true;
             }
@@ -138,17 +152,17 @@ class TasksSchedule extends Component {
 
           if (x.length) {
             for (let i = 0; i < x.length; i++) {
-              if (inprocessTasks[i]) {
+              if (tasksByStatus[i]) {
                 let color;
                 currentTime = new Date();
-                startTime = new Date(inprocessTasks[i].startDate);
-                endTime = new Date(inprocessTasks[i].endDate);
+                startTime = new Date(tasksByStatus[i].startDate);
+                endTime = new Date(tasksByStatus[i].endDate);
 
-                if (currentTime > endTime && inprocessTasks[i].progress < 100) {
+                if (currentTime > endTime && tasksByStatus[i].progress < 100) {
                   color = "#DD4B39"; // not achieved
                 }
                 else {
-                  workingDayMin = (endTime - startTime) * inprocessTasks[i].progress / 100;
+                  workingDayMin = (endTime - startTime) * tasksByStatus[i].progress / 100;
                   let dayFromStartDate = currentTime - startTime;
                   let timeOver = workingDayMin - dayFromStartDate;
                   if (timeOver >= 0) color = "#00A65A"; // In time or on time
@@ -156,7 +170,7 @@ class TasksSchedule extends Component {
                     color = "#F0D83A"; // delay
                   }
                 }
-                this.displayTaskProgress(inprocessTasks[i].progress, x[i], color);
+                this.displayTaskProgress(tasksByStatus[i].progress, x[i], color);
               }
             }
           }
@@ -166,89 +180,93 @@ class TasksSchedule extends Component {
       // Chia nhóm công việc theo vai trò trong công việc
       else {
         let res, acc, con, inf;
-        let inprocessTasks2 = [];
+        let tasksByStatus2 = [];
 
-        res = tasks.responsibleTasks;
-        acc = tasks.accountableTasks;
-        con = tasks.consultedTasks;
-        inf = tasks.informedTasks;
+        res = tasks.responsibleTasks && tasks.responsibleTasks.filter(task => this.filterByStatus(task));
+        acc = tasks.accountableTasks && tasks.accountableTasks.filter(task => this.filterByStatus(task));
+        con = tasks.consultedTasks && tasks.consultedTasks.filter(task => this.filterByStatus(task));
+        inf = tasks.informedTasks && tasks.informedTasks.filter(task => this.filterByStatus(task));
 
         if (res) {
+          console.log('res', res);
           for (let i = 0; i < res.length; i++) {
-            if (res[i].status === "Inprocess" && res[i].isArchived === false) {
-              inprocessTasks2.push({
-                id: res[i]._id,
-                gr: 'responsible-tasks',
-                name: res[i].name,
-                startDate: res[i].startDate,
-                endDate: res[i].endDate,
-                progress: res[i].progress
-              })
-            }
+            // if (res[i].status === taskStatus && res[i].isArchived === false) {
+            tasksByStatus2.push({
+              id: res[i]._id,
+              gr: 'responsible-tasks',
+              name: res[i].name,
+              startDate: res[i].startDate,
+              endDate: res[i].endDate,
+              progress: res[i].progress
+            })
+            // }
           }
         }
 
         if (acc) {
+          console.log('acc', acc);
           for (let i = 0; i < acc.length; i++) {
-            if (acc[i].status === "Inprocess" && acc[i].isArchived === false) {
-              inprocessTasks2.push({
-                id: acc[i]._id,
-                gr: 'accountable-tasks',
-                name: acc[i].name,
-                startDate: acc[i].startDate,
-                endDate: acc[i].endDate,
-                progress: acc[i].progress
-              })
-            }
+            // if (acc[i].status === taskStatus && acc[i].isArchived === false) {
+            tasksByStatus2.push({
+              id: acc[i]._id,
+              gr: 'accountable-tasks',
+              name: acc[i].name,
+              startDate: acc[i].startDate,
+              endDate: acc[i].endDate,
+              progress: acc[i].progress
+            })
+            // }
           }
         }
 
         if (con) {
+          console.log('con', con);
           for (let i = 0; i < con.length; i++) {
-            if (con[i].status === "Inprocess" && con[i].isArchived === false) {
-              inprocessTasks2.push({
-                id: con[i]._id,
-                gr: 'consulted-tasks',
-                name: con[i].name,
-                startDate: con[i].startDate,
-                endDate: con[i].endDate,
-                progress: con[i].progress
-              })
-            }
+            // if (con[i].status === taskStatus && con[i].isArchived === false) {
+            tasksByStatus2.push({
+              id: con[i]._id,
+              gr: 'consulted-tasks',
+              name: con[i].name,
+              startDate: con[i].startDate,
+              endDate: con[i].endDate,
+              progress: con[i].progress
+            })
+            // }
           }
         }
 
         if (inf) {
+          console.log('inf', inf);
           for (let i = 0; i < inf.length; i++) {
-            if (inf[i].status === "Inprocess" && inf[i].isArchived === false) {
-              inprocessTasks2.push({
-                id: inf[i]._id,
-                gr: 'informed-tasks',
-                name: inf[i].name,
-                startDate: inf[i].startDate,
-                endDate: inf[i].endDate,
-                progress: inf[i].progress
-              })
-            }
+            // if (inf[i].status === taskStatus && inf[i].isArchived === false) {
+            tasksByStatus2.push({
+              id: inf[i]._id,
+              gr: 'informed-tasks',
+              name: inf[i].name,
+              startDate: inf[i].startDate,
+              endDate: inf[i].endDate,
+              progress: inf[i].progress
+            })
+            // }
           }
         }
 
-        if (inprocessTasks2) {
+        if (tasksByStatus2) {
 
-          for (let i = 0; i < inprocessTasks2.length; i++) {
+          for (let i = 0; i < tasksByStatus2.length; i++) {
 
-            if (inprocessTasks2[i]) {
+            if (tasksByStatus2[i]) {
               let startTime, endTime, start_time, end_time;
-              let titleTask = inprocessTasks2[i].name + " - " + inprocessTasks2[i].progress + "%";
+              let titleTask = tasksByStatus2[i].name + " - " + tasksByStatus2[i].progress + "%";
 
-              startTime = new Date(inprocessTasks2[i].startDate);
-              endTime = new Date(inprocessTasks2[i].endDate);
+              startTime = new Date(tasksByStatus2[i].startDate);
+              endTime = new Date(tasksByStatus2[i].endDate);
               start_time = moment(startTime);
               end_time = moment(endTime);
 
               taskDurations.push({
                 id: i + 1,
-                group: inprocessTasks2[i].gr,
+                group: tasksByStatus2[i].gr,
                 title: titleTask,
                 canMove: false,
                 start_time: start_time,
@@ -269,17 +287,17 @@ class TasksSchedule extends Component {
           let x = document.getElementsByClassName("rct-item");
           if (x.length) {
             for (let i = 0; i < x.length; i++) {
-              if (inprocessTasks2[i]) {
+              if (tasksByStatus2[i]) {
                 let color;
                 currentTime = new Date();
-                startTime = new Date(inprocessTasks2[i].startDate);
-                endTime = new Date(inprocessTasks2[i].endDate);
+                startTime = new Date(tasksByStatus2[i].startDate);
+                endTime = new Date(tasksByStatus2[i].endDate);
 
-                if (currentTime > endTime && inprocessTasks2[i].progress < 100) {
+                if (currentTime > endTime && tasksByStatus2[i].progress < 100) {
                   color = "#DD4B39"; // not achieved
                 }
                 else {
-                  workingDayMin = (endTime - startTime) * inprocessTasks2[i].progress / 100;
+                  workingDayMin = (endTime - startTime) * tasksByStatus2[i].progress / 100;
                   let dayFromStartDate = currentTime - startTime;
                   let timeOver = workingDayMin - dayFromStartDate;
                   if (timeOver >= 0) color = "#00A65A"; // In time or on time
@@ -287,7 +305,7 @@ class TasksSchedule extends Component {
                     color = "#F0D83A"; // delay
                   }
                 }
-                this.displayTaskProgress(inprocessTasks2[i].progress, x[i], color);
+                this.displayTaskProgress(tasksByStatus2[i].progress, x[i], color);
               }
             }
           }
@@ -301,7 +319,8 @@ class TasksSchedule extends Component {
 
   getTaskGroups() {
     const { tasks, translate } = this.props;
-    var taskList1, inprocessTasks1;
+    let { taskStatus } = this.state;
+    var taskList1, tasksByStatus1;
     let groupName = [], distinctGroupName = [], id = [], distinctId = [];
     let multiResponsibleEmployee = false;
 
@@ -310,13 +329,13 @@ class TasksSchedule extends Component {
       // Phân nhóm công việc theo người thực hiện
       if (this.props.TaskOrganizationUnitDashboard) {
         taskList1 = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
-        inprocessTasks1 = taskList1 && taskList1.filter(task => (task.status === "Inprocess" && task.isArchived === false));
-        if (inprocessTasks1) {
-          for (let i = 1; i <= inprocessTasks1.length; i++) {
+        tasksByStatus1 = taskList1 && taskList1.filter(task => this.filterByStatus(task));
+        if (tasksByStatus1) {
+          for (let i = 1; i <= tasksByStatus1.length; i++) {
             let responsibleName = [];
             let responsibleEmployeeIds = [];
 
-            inprocessTasks1[i - 1].responsibleEmployees.map(x => {
+            tasksByStatus1[i - 1].responsibleEmployees.map(x => {
               responsibleName.push(x.name)
               responsibleEmployeeIds.push(x._id)
             });
@@ -364,10 +383,10 @@ class TasksSchedule extends Component {
         let res, acc, con, inf;
 
         if (tasks) {
-          res = tasks.responsibleTasks;
-          acc = tasks.accountableTasks;
-          con = tasks.consultedTasks;
-          inf = tasks.informedTasks;
+          res = tasks.responsibleTasks && tasks.responsibleTasks.filter(task => this.filterByStatus(task));
+          acc = tasks.accountableTasks && tasks.accountableTasks.filter(task => this.filterByStatus(task));
+          con = tasks.consultedTasks && tasks.consultedTasks.filter(task => this.filterByStatus(task));
+          inf = tasks.informedTasks && tasks.informedTasks.filter(task => this.filterByStatus(task));
 
           if (res && res.length) distinctGroupName.push({
             id: "responsible-tasks",
@@ -414,67 +433,68 @@ class TasksSchedule extends Component {
 
 
   handleItemClick = async (itemId) => {
+    let { taskStatus } = this.state;
     let { tasks } = this.props;
-    var taskList, inprocessTasks;
+    var taskList, tasksByStatus;
 
     if (tasks) {
       if (this.props.TaskOrganizationUnitDashboard) {
         taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
-        inprocessTasks = taskList && taskList.filter(task => (task.status === "Inprocess" && task.isArchived === false));
+        tasksByStatus = taskList && taskList.filter(task => this.filterByStatus(task));
       }
       else {
         let res, acc, con, inf;
-        var inprocessTasks2 = [];
+        var tasksByStatus2 = [];
 
-        res = tasks.responsibleTasks;
-        acc = tasks.accountableTasks;
-        con = tasks.consultedTasks;
-        inf = tasks.informedTasks;
+        res = tasks.responsibleTasks && tasks.responsibleTasks.filter(task => this.filterByStatus(task));
+        acc = tasks.accountableTasks && tasks.accountableTasks.filter(task => this.filterByStatus(task));
+        con = tasks.consultedTasks && tasks.consultedTasks.filter(task => this.filterByStatus(task));
+        inf = tasks.informedTasks && tasks.informedTasks.filter(task => this.filterByStatus(task));
 
         if (res) {
           await res.map(item => {
-            if (item.status === "Inprocess" && item.isArchived === false) {
-              inprocessTasks2.push({
-                _id: item._id
-              })
-            }
+            // if (item.status === taskStatus && item.isArchived === false) {
+            tasksByStatus2.push({
+              _id: item._id
+            })
+            // }
           })
         }
 
         if (acc) {
           await acc.map(item => {
-            if (item.status === "Inprocess" && item.isArchived === false) {
-              inprocessTasks2.push({
-                _id: item._id
-              })
-            }
+            // if (item.status === taskStatus && item.isArchived === false) {
+            tasksByStatus2.push({
+              _id: item._id
+            })
+            // }
           })
         }
 
         if (con) {
           await con.map(item => {
-            if (item.status === "Inprocess" && item.isArchived === false) {
-              inprocessTasks2.push({
-                _id: item._id
-              })
-            }
+            // if (item.status === taskStatus && item.isArchived === false) {
+            tasksByStatus2.push({
+              _id: item._id
+            })
+            // }
           })
         }
 
         if (inf) {
           await inf.map(item => {
-            if (item.status === "Inprocess" && item.isArchived === false) {
-              inprocessTasks2.push({
-                _id: item._id
-              })
-            }
+            // if (item.status === taskStatus && item.isArchived === false) {
+            tasksByStatus2.push({
+              _id: item._id
+            })
+            // }
           })
         }
-        inprocessTasks = inprocessTasks2;
+        tasksByStatus = tasksByStatus2;
       }
     }
 
-    let id = inprocessTasks[itemId - 1]._id;
+    let id = tasksByStatus[itemId - 1]._id;
 
     await this.setState(state => {
       return {
@@ -536,6 +556,23 @@ class TasksSchedule extends Component {
     return (
       <React.Fragment>
         <div className="box-body qlcv">
+          <section className="form-inline" style={{ textAlign: "right" }}>
+            {/* Chọn trạng thái công việc */}
+            <div className="form-group">
+              <label>{translate('task.task_management.status')}</label>
+              <SelectMulti id="multiSelectStatusInDistribution"
+                items={[
+                  { value: "Inprocess", text: translate('task.task_management.inprocess') },
+                  { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
+                  { value: "Finished", text: translate('task.task_management.finished') },
+                  { value: "Delayed", text: translate('task.task_management.delayed') },
+                  { value: "Canceled", text: translate('task.task_management.canceled') }
+                ]}
+                onChange={this.handleSelectStatus}
+                options={{ nonSelectedText: translate('task.task_management.inprocess'), allSelectedText: translate('task.task_management.select_all_status') }}>
+              </SelectMulti>
+            </div>
+          </section>
           {<ModalDetailTask task={task} />}
           <Timeline
             scrollRef={el => (this.scrollRef = el)}

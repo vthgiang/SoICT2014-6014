@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
-import { DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, SelectBox } from '../../../../../common-components';
+import { DataTableSetting, DateTimeConverter, PaginateBar, TreeSelect, SelectBox, ExportExcel } from '../../../../../common-components';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import DocumentInformation from '../../user/documents/documentInformation';
@@ -159,6 +159,59 @@ class Table extends Component {
         array.unshift({ value: "", text: "Tất cả các loại" });
         return array;
     }
+    convertDataToExportData = (data) => {
+        data = data.map((x, index) => {
+            return {
+                STT: index + 1,
+                name: x.name,
+                description: x.description,
+                versionName: x.versions[0].versionName,
+                issuingDate: new Date(x.versions[0].issuingDate),
+                effectiveDate: new Date(x.versions[0].effectiveDate),
+                expiredDate: new Date(x.versions[0].expiredDate),
+                numberOfView: x.numberOfView,
+                numberOfDownload: x.numberOfDownload,
+                issuingBody: x.issuingBody,
+                signer: x.signer,
+                officialNumber: x.officialNumber,
+            }
+        });
+        let exportData = {
+            fileName: "Bang thong ke tai lieu",
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    tables: [
+                        {
+                            merges: [{
+                                key: "Vesions",
+                                columnName: "Phiên bản",
+                                keyMerge: 'versionName',
+                                colspan: 4
+                            }],
+                            rowHeader: 2,
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "name", value: "Tên" },
+                                { key: "description", value: "Mô tả" },
+                                { key: "signer", value: "Người ký"},
+                                { key: "officialNumber", value: "Số hiệu"},
+                                { key: "issuingBody", value: "Cơ quan ban hành"},
+                                { key: "versionName", value: "Tên phiên bản"},
+                                { key: "issuingDate", value: "Ngày ban hành" },
+                                { key: "effectiveDate", value: "Ngày áp dụng" },
+                                { key: "expiredDate", value: "Ngày hết hạn"},
+                                { key: "numberOfView", value: "Số lần xem"},
+                                { key: "numberOfDownload", value: "Số lần download"},
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData
+    }
     render() {
         const { translate } = this.props;
         const docs = this.props.documents.administration.data;
@@ -166,12 +219,17 @@ class Table extends Component {
         const { paginate } = docs;
         const { isLoading } = this.props.documents;
         const { currentRow, archive, domain, category } = this.state;
-        const listDomain = this.convertData(domains.list)
+        const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
-        const listArchive = this.convertData(archives.list);
-
+        const listArchive = archives.list;
+        console.log('tttt', domains.tree);
+        let list = [];
+        if ( isLoading === false ){
+            list = docs.list;
+        }
+        let exportData = this.convertDataToExportData(list);
         return (
-            <React.Fragment>
+            <div className="qlcv">
                 <CreateForm />
                 {
                     currentRow &&
@@ -234,9 +292,21 @@ class Table extends Component {
                     />
                 }
 
+                {<ExportExcel id="export-document" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}     
                 <div className="form-inline">
+                    <div className="form-group" >
+                        <label>{translate('document.store.information')}</label>
+                        <TreeSelect
+                            data={listArchive}
+                            className="form-control select2"
+                            handleChange={this.handleArchiveChange}
+                            value={archive}
+                            mode="hierarchical"
+                            style={{ width: " 100%" }}
+                        />
+                    </div>
                     <div className="form-group">
-                        <label>{translate('document.category')}:</label>
+                        <label>{translate('document.category')}</label>
                         <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                             id={`stattus-category`}
                             style={{ width: "100%" }}
@@ -245,44 +315,26 @@ class Table extends Component {
                             value={category}
                         />
                     </div>
-                    <div className="form-group">
-                        <label>Lưu trữ:</label>
-                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                            id={`status-archive`}
-                            style={{ width: "100%" }}
-                            items={listArchive}
-                            onChange={this.handleArchiveChange}
-                            value={archive}
-                        />
-                    </div>
                 </div>
+                
                 <div className="form-inline">
                     <div className="form-group">
-                        <label>{translate('document.domain')}:</label>
-                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                            id={`status-domain`}
-                            style={{ width: "100%" }}
-                            items={listDomain}
-                            onChange={this.handleDomainChange}
+                        <label>{translate('document.domain')}</label>
+                        <TreeSelect
+                            data={listDomain}
+                            className="form-control select2"
+                            handleChange={this.handleDomainChange}
+                            mode="hierarchical"
                             value={domain}
+                            style={{ width: "100%" }}
                         />
                     </div>
-                    {/* <SearchBar
-                        columns={[
-                            { title: translate('document.name'), value: 'name' },
-                            { title: translate('document.description'), value: 'description' }
-                        ]}
-                        option={this.state.option}
-                        setOption={this.setOption}
-                        search={this.searchWithOption}
-                    /> */}
+
                     <div className="form-group">
+                        <label></label>
                         <button type="button" className="btn btn-success" onClick={() => this.searchWithOption()}>{
                             translate('kpi.organizational_unit.management.over_view.search')}</button>
                     </div>
-                </div>
-                <div className="form-inline">
-
                 </div>
 
                 <table className="table table-hover table-striped table-bordered" id="table-manage-document-list">
@@ -350,7 +402,8 @@ class Table extends Component {
                     </tbody>
                 </table>
                 <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={this.setPage} />
-            </React.Fragment>
+
+            </div>
         );
     }
 

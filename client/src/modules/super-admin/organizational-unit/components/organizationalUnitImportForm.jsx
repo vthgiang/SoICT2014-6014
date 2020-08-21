@@ -3,7 +3,7 @@ import { DepartmentActions } from '../redux/actions';
 import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../common-components';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { configDepartment } from './fileConfigurationImportOrganizationalUnit';
+import { configDepartment, templateImportDepartment } from './fileConfigurationImportOrganizationalUnit';
 
 class DepartmentImportForm extends Component {
     constructor(props) {
@@ -27,12 +27,24 @@ class DepartmentImportForm extends Component {
 
     handleImportExcel = (value, checkFileImport) => {
         console.log(value);
+        for (let i = 0; i < value.length; i++) {
+            let deans, viceDeans, employees;
+            deans = value[i].deans.split(',');
+            deans = deans.map( x => x.trim());
+            value[i].deans = deans;
+            viceDeans = value[i].viceDeans.split(',');
+            viceDeans = viceDeans.map( x => x.trim());
+            value[i].viceDeans = viceDeans;
+            employees = value[i].employees.split(',');
+            employees = employees.map( x => x.trim());
+            value[i].employees = employees;
+        }
         if (checkFileImport) {
             let rowError = [];
             let checkImportData = value;
             value = value.map((x, index) => {
                 let errorAlert = [];
-                if (x.name === null || x.description === null || x.deans === null || x.vicsDeans === null || x.employees === null) {
+                if (x.name === null || x.description === null || x.deans === null || x.viceDeans === null || x.employees === null) {
                     rowError = [...rowError, index+1];
                     x = {...x, error: true}
                 }
@@ -51,6 +63,7 @@ class DepartmentImportForm extends Component {
                 if (x.employees === null){
                     errorAlert = [...errorAlert, "Tên các chức dnah nhân viên đơn vị không được để trống"];
                 }
+                x = { ...x, errorAlert: errorAlert };
                 return x;
             });
             this.setState({
@@ -101,12 +114,12 @@ class DepartmentImportForm extends Component {
                             </div>
                             <div className="form-group col-md-4 col-xs-12">
                                 <label></label>
-                                {/* <ExportExcel id="download_template_organizationalUnit" type='link' exportData={templateImportTaskTemplate}
-                                    buttonName='Download file import mẫu' /> */}
+                                <ExportExcel id="download_template_organizationalUnit" type='link' exportData={templateImportDepartment}
+                                    buttonName='Download file import mẫu' />
                             </div>
                             <div className="form-group col-md-12 col-xs-12">
-                                {/* <ShowImportData
-                                    id="import_taskTemplate_show_data"
+                                <ShowImportData
+                                    id="import_department_show_data"
                                     configData={configData}
                                     importData={importData}
                                     rowError={rowError}
@@ -114,7 +127,7 @@ class DepartmentImportForm extends Component {
                                     checkFileImport={checkFileImport}
                                     limit={limit}
                                     page={page}
-                                /> */}
+                                />
                             </div> 
                         </div>
                     </form>

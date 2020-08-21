@@ -1,4 +1,3 @@
-import { LOCAL_SERVER_API } from '../../../../env';
 import {
     getStorage
 } from '../../../../config';
@@ -11,6 +10,7 @@ export const TaskProcessService = {
     editXmlDiagram,
     deleteXmlDiagram,
     createTaskByProcess,
+    getAllTaskProcess,
 };
 
 
@@ -20,13 +20,32 @@ export const TaskProcessService = {
 function getAllXmlDiagram( pageNumber, noResultsPerPage, name ) {
     let userId = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/taskprocess/diagrams`,
+        url: `${process.env.REACT_APP_SERVER}/process`,
         method: 'GET',
         params: {
             userId: userId,
             pageNumber: pageNumber,
             noResultsPerPage: noResultsPerPage,
             name: name,
+            type: "template"
+        },
+    }, false, true, 'task.task_process');
+}
+
+/**
+ * Lấy tất cả task-process
+ */
+function getAllTaskProcess( pageNumber, noResultsPerPage, name ) {
+    let userId = getStorage("userId");
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/process`,
+        method: 'GET',
+        params: {
+            userId: userId,
+            pageNumber: pageNumber,
+            noResultsPerPage: noResultsPerPage,
+            name: name,
+            type: "task"
         },
     }, false, true, 'task.task_process');
 }
@@ -36,7 +55,7 @@ function getAllXmlDiagram( pageNumber, noResultsPerPage, name ) {
  */
 function getXmlDiagramById(diagramId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/taskprocess/diagrams/${diagramId}`,
+        url: `${process.env.REACT_APP_SERVER}/process/diagrams/${diagramId}`,
         method: 'GET',
     }, false, true, 'task.task_process');
 }
@@ -47,7 +66,7 @@ function getXmlDiagramById(diagramId) {
  */
 function createXmlDiagram(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/taskprocess/diagrams`,
+        url: `${process.env.REACT_APP_SERVER}/process/diagrams`,
         method: 'POST',
         data: data
     }, true, true, 'task.task_process');
@@ -60,7 +79,7 @@ function createXmlDiagram(data) {
  */
 function editXmlDiagram(diagramId,data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/taskprocess/diagrams/${diagramId}`,
+        url: `${process.env.REACT_APP_SERVER}/process/diagrams/${diagramId}`,
         method: 'PATCH',
         data: data
     }, true, true, 'task.task_process');
@@ -73,7 +92,7 @@ function editXmlDiagram(diagramId,data) {
 function deleteXmlDiagram(diagramId, pageNumber, noResultsPerPage, name) {
     let userId = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/taskprocess/diagrams/${diagramId}`,
+        url: `${process.env.REACT_APP_SERVER}/process/diagrams/${diagramId}`,
         method: 'DELETE',
         params: {
             userId: userId,
@@ -91,7 +110,7 @@ function deleteXmlDiagram(diagramId, pageNumber, noResultsPerPage, name) {
  */
 function createTaskByProcess(data, processId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/taskprocess/processes/${processId}/tasks/create`,
+        url: `${process.env.REACT_APP_SERVER}/process/processes/${processId}/tasks/create`,
         method: 'POST',
         data: data,
     }, true, true, 'task.task_process');

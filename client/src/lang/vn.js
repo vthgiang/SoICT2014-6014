@@ -421,7 +421,7 @@ export default {
             },
 
             category: 'Loại văn bản',
-            domain: 'Danh mục văn bản',
+            domain: 'Danh mục',
             data: 'Danh sách tài liệu văn bản',
             statistics_report: 'Thống kê báo cáo',
             history_report: 'Lịch sử thống kê',
@@ -620,6 +620,7 @@ export default {
             task_management_dashboard: 'Dashboard công việc',
             task_organization_management_dashboard: 'Dashboard công việc đơn vị',
             task_management_process: "Danh sách quy trình",
+            task_process_template: "Mẫu quy trình",
 
             //*******START */
             // Quản lý tài sản
@@ -642,6 +643,7 @@ export default {
             manage_recommend_procure: 'Quản lý đề nghị mua sắm',
             manage_recommend_distribute_asset: 'Quản lý đăng ký sử dụng',
 
+            view_building_list: 'Xem danh sách mặt bằng',
 
             // NHÂN VIÊN
             recommend_equipment_procurement: 'Đăng ký mua sắm thiết bị',
@@ -1937,6 +1939,8 @@ export default {
                 loading_data: 'Đang tải dữ liệu',
                 task_has_action_not_evaluated: 'Công việc có hoạt động chưa đánh giá',
                 no_task_has_action_not_evaluated: 'Không có công việc nào',
+                performer: 'Người thực hiện',
+                approver: 'Người phê duyệt',
 
                 add_task: 'Thêm mới',
                 add_title: 'Thêm mới một công việc',
@@ -2184,6 +2188,7 @@ export default {
                 timesheetlogs: "Lịch sử bấm giờ",
                 subtasks: "Công việc con",
                 change_history: "Lịch sử thay đổi",
+                change_process: "Quy trình",
                 edit_action: "Sửa hành động",
                 delete_action: "Xóa hành động",
                 mandatory_action: "Hành động bắt buộc",
@@ -2322,7 +2327,7 @@ export default {
                     employee_point: 'Điểm tự đánh giá',
                     approved_point: 'Điểm quản lí đánh giá',
 
-                    responsible: 'Vai trog người thực hiện',
+                    responsible: 'Vai trò người thực hiện',
                     consulted: 'Vai trò người hỗ trợ',
                     accountable: 'Vai trò người phê duyệt',
 
@@ -2813,7 +2818,7 @@ export default {
                         execution_time: 'Thời gian thực hiện (Ngày)',
                         participants: 'Người tham gia',
                         amount_tasks: 'Số lượng công việc',
-                        amount_child_kpi: 'Số lượng KPI con',
+                        amount_employee_kpi: 'Số lượng KPI nhân viên',
                         weight: 'Trọng số'
                     },
                     result_kpi_unit_chart: {

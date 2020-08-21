@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
-import { LOCAL_SERVER_API } from '../../../../env';
 import moment from 'moment';
 
 import { DialogModal } from '../../../../common-components';
@@ -193,7 +191,7 @@ class AssetEditForm extends Component {
 
     // function kiểm tra các trường bắt buộc phải nhập
     validatorInput = (value) => {
-        if (value && value.toString().trim() !== '') {
+        if (value !== undefined && value !== null && value.toString().trim() !== '') {
             return true;
         }
         return false;
@@ -202,12 +200,12 @@ class AssetEditForm extends Component {
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
         let { code, assetName, serial, assetType, managedBy, purchaseDate, warrantyExpirationDate, location, status, canRegisterForUse, cost, usefulLife, startDepreciation, depreciationType } = this.state;
-
+        
         if (this.state !== {}) {
             let result = this.validatorInput(code) && this.validatorInput(assetName) &&
                 this.validatorInput(serial) && this.validatorInput(assetType) &&
                 this.validatorInput(managedBy) && this.validatorInput(purchaseDate) &&
-                this.validatorInput(warrantyExpirationDate) && this.validatorInput(location) &&
+                this.validatorInput(warrantyExpirationDate) && //this.validatorInput(location) &&
                 this.validatorInput(status) && this.validatorInput(canRegisterForUse) &&
                 this.validatorInput(cost) && this.validatorInput(usefulLife) &&
                 this.validatorInput(startDepreciation) && this.validatorInput(depreciationType);
@@ -279,7 +277,7 @@ class AssetEditForm extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                img: LOCAL_SERVER_API + nextProps.avatar,
+                img: process.env.REACT_APP_SERVER + nextProps.avatar,
                 avatar: "",
                 avatar: nextProps.avatar,
                 code: nextProps.code,
@@ -375,7 +373,7 @@ class AssetEditForm extends Component {
                         < div className="tab-content">
                             {/* Thông tin chung */}
                             <GeneralTab
-                                _id={`edit_general${_id}`}
+                                id={`edit_general${_id}`}
                                 img={img}
                                 handleChange={this.handleChange}
                                 handleUpload={this.handleUpload}
@@ -421,6 +419,7 @@ class AssetEditForm extends Component {
                                 handleChange={this.handleChange}
                                 cost={cost}
                                 residualValue={residualValue}
+                                startDepreciation={moment(startDepreciation).format('DD-MM-YYYY')}
                                 startDepreciation={moment(startDepreciation).format('DD-MM-YYYY')}
                                 usefulLife={usefulLife}
                                 depreciationType={depreciationType}

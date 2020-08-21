@@ -6,6 +6,7 @@ const Terms = require('../../../seed/terms');
 
 const { OrganizationalUnit, UserRole, Role } = require('../../../models').schema;
 
+
 /**
  * Lấy danh sách các đơn vị trong công ty
  * @id id công ty
@@ -416,4 +417,23 @@ exports.deleteOrganizationalUnit = async (departmentId) => {
         throw ['department_has_user'];
     }
     console.log(departmentId);
+}
+
+exports.importOrganizationalUnits = async(data, companyId) => {
+    console.log(companyId);
+    for ( let i = 0; i < data.length; i++) {
+        if (data[i].parent) {
+            let parent = await OrganizationalUnit.findOne({ name: data[i].parent});
+            parent = parent._id;
+            data[i].parent = parent;
+        }
+        let roles = await RoleService.createRolesForOrganizationalUnit(data[i], companyId);
+        let organizationalUnit = await this.createOrganizationalUnit( 
+                data[i], companyId,
+                roles.deans.map(dean=>dean._id), 
+                roles.viceDeans.map(vice=>vice._id), 
+                roles.employees.map(em=>em._id)
+            );
+        let tree = await this.getOrganizationalUnitsAsTree(companyId);
+    }
 }

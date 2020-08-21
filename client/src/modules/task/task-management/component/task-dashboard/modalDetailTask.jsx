@@ -42,7 +42,15 @@ class ModalDetailTask extends Component {
 
     render() {
         const { tasks, translate } = this.props;
-        let task = tasks && tasks.task;
+        const { isProcess } = this.props;
+
+        let task;
+        if (isProcess) {
+            console.log('quang');
+            task = (this.props.task) && this.props.task;
+        }
+        else task = tasks && tasks.task;
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -53,6 +61,7 @@ class ModalDetailTask extends Component {
                     <DetailTaskTab
                         task={task && task}
                         showToolbar={false}
+                        isProcess={isProcess}
                     />
                 </DialogModal>
             </React.Fragment>

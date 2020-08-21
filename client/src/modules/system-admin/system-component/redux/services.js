@@ -1,4 +1,3 @@
-import { LOCAL_SERVER_API } from '../../../../env';
 import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const SystemComponentServices = {
@@ -11,7 +10,7 @@ export const SystemComponentServices = {
 
 function getAllSystemComponents(params) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/system-admin/system-component/system-components`,
+        url: `${ process.env.REACT_APP_SERVER }/system-admin/system-component/system-components`,
         method: 'GET',
         params
     }, false, true, 'system_admin.system_component');
@@ -19,14 +18,14 @@ function getAllSystemComponents(params) {
 
 function getSystemComponent(systemComponentId) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/system-admin/system-component/system-components/${systemComponentId}`,
+        url: `${ process.env.REACT_APP_SERVER }/system-admin/system-component/system-components/${systemComponentId}`,
         method: 'GET',
     }, false, true, 'system_admin.system_component');
 }
 
 function createSystemComponent(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/system-admin/system-component/system-components`,
+        url: `${ process.env.REACT_APP_SERVER }/system-admin/system-component/system-components`,
         method: 'POST',
         data,
     }, true, true, 'system_admin.system_component');
@@ -34,7 +33,7 @@ function createSystemComponent(data) {
 
 function editSystemComponent(systemComponentId, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/system-admin/system-component/system-components/${systemComponentId}`,
+        url: `${ process.env.REACT_APP_SERVER }/system-admin/system-component/system-components/${systemComponentId}`,
         method: 'PATCH',
         data,
     }, true, true, 'system_admin.system_component');
@@ -42,7 +41,7 @@ function editSystemComponent(systemComponentId, data) {
 
 function deleteSystemComponent(systemComponentId, component) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/system-admin/system-component/system-components/${systemComponentId}`,
+        url: `${ process.env.REACT_APP_SERVER }/system-admin/system-component/system-components/${systemComponentId}`,
         method: 'DELETE',
     }, true, true, 'system_admin.system_component');
 }

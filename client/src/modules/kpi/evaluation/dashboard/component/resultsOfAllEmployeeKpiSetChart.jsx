@@ -280,52 +280,61 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
     convertDataToExportData = (data) => {
-        let fileName = "Biểu đồ theo dõi kết quả KPI nhân viên toàn đơn vị";
+        let fileName = "Biểu đồ theo dõi kết quả KPI nhân viên toàn đơn vị theo từng tháng";
+        let convertToObjectData={}, finalData=[],employeeKpiArray=[];
+        if (data) {    
+            
+            if (data) {           
+                for(let i=0; i< data.length;i++){
+                    if(data[i].employeeKpi.length >1){
+                        for(let j = 0 ; j< data[i].employeeKpi.length ; j++){
 
-        if (data) {           
-            data = data.map((item, index) => {
-                let dataEmployeeKpi;
-                if(item.employeeKpi && (item.employeeKpi.length !== 0)){
-                    dataEmployeeKpi = item.employeeKpi.map((x,index)=>{
-                        let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
-                        let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
-                        let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);
-                        let d = new Date(x.date),
-                        month = '' + (d.getMonth() + 1),
-                        year = d.getFullYear(),
-                        date =month+'-'+year;
+                            data[i].employeeKpi[j]["name"]=data[i]._id;                            
 
-                        return {              
-                            automaticPoint: automaticPoint,
-                            employeePoint: employeePoint,
-                            approverPoint: approverPoint,
-                            time : date,                
-                        };
-                    })
+                            let d = new Date(data[i].employeeKpi[j].date),
+                            month = (d.getMonth() + 1)+"-"+d.getFullYear();
+                            data[i].employeeKpi[j]["month"]=month;
+                            data[i].employeeKpi[j]["date"]=d;
+
+                            employeeKpiArray.push(data[i].employeeKpi[j]);
+                        }
+                    }
                 }
-                return {
-                    sheetName : item._id,
-                    dataInSheet : dataEmployeeKpi
+             }
+
+            for(let i=0;i<employeeKpiArray.length;i++){
+                let objectName = employeeKpiArray[i].month;
+                let checkDuplicate = (Object.keys(convertToObjectData)).find(element => element === objectName);
+                if(!checkDuplicate)
+                {
+                    convertToObjectData[objectName]=[];
+                    convertToObjectData[objectName].push(employeeKpiArray[i]);
                 }
-            })
+                else {
+                    convertToObjectData[objectName].push(employeeKpiArray[i]);
+                }
+    
+            }
+            finalData =Object.values(convertToObjectData);
+            
         }
 
         let exportData = {
             fileName: fileName,
-            dataSheets: data.map((x,index)=>{
+            dataSheets: finalData.map((x,index)=>{
                 return {
-                    sheetName: x.sheetName,
-                    sheetTitle : "Thống kê kết quả KPI của " + x.sheetName,
+                    sheetName: x[0].month?x[0].month:"",
+                    sheetTitle : "Thống kê kết quả KPI " + (x[0].month?x[0].month:"") ,
                     tables: [
                         {
-                            tableTitle:"Bảng thống kê kết quả KPI của " + x.sheetName,
                             columns: [                            
-                                { key: "time", value: "Thời gian" },
+                                { key: "date", value: "Thời gian" },
+                                { key: "name", value: "Tên nhân viên"},
                                 { key: "automaticPoint", value: "Điểm tự động" },
                                 { key: "employeePoint", value: "Điểm tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm được đánh giá" }
+                                { key: "approvedPoint", value: "Điểm được phê duyệt" }
                             ],
-                            data: x.dataInSheet
+                            data: x
                         }
                     ]
                 }

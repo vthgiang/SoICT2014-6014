@@ -1,9 +1,6 @@
 import { handleResponse } from '../../../../helpers/handleResponse';
 import { AuthenticateHeader } from '../../../../config';
 import {
-    LOCAL_SERVER_API
-} from '../../../../env';
-import {
     getStorage
 } from '../../../../config';
 import { sendRequest } from '../../../../helpers/requestHelper';
@@ -56,7 +53,7 @@ export const performTaskService = {
  */
 function getTimesheetLogs(taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/timesheet-logs`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/timesheet-logs`,
         method: 'GET',
     }, false, false, 'task.task_perform');
 };
@@ -67,7 +64,7 @@ function getTimesheetLogs(taskId) {
 function getTimerStatusTask() {
     var userId = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/task-timesheet-logs`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/task-timesheet-logs`,
         method: 'GET',
         params: { userId: userId }
     }, false, false, 'task.task_perform');
@@ -79,7 +76,7 @@ function getTimerStatusTask() {
  */
 function startTimerTask(taskId, newTimer) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/timesheet-logs/start-timer`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/timesheet-logs/start-timer`,
         method: 'POST',
         data: newTimer,
     }, false, true, 'task.task_perform');
@@ -91,7 +88,7 @@ function startTimerTask(taskId, newTimer) {
  */
 function stopTimerTask(taskId, newTimer) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/timesheet-logs/stop-timer`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/timesheet-logs/stop-timer`,
         method: 'POST',
         data: newTimer
     }, false, true, 'task.task_perform');
@@ -106,7 +103,7 @@ function stopTimerTask(taskId, newTimer) {
  */
 function createActionComment(taskId, actionId, newComment) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}/comments`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions/${actionId}/comments`,
         method: 'POST',
         data: newComment
     }, false, true, 'task.task_perform');
@@ -119,7 +116,7 @@ function createActionComment(taskId, actionId, newComment) {
  */
 function createTaskAction(taskId, newAction) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions`,
         method: 'POST',
         data: newAction
     }, false, true, 'task.task_perform');
@@ -134,7 +131,7 @@ function createTaskAction(taskId, newAction) {
  */
 function editActionComment(taskId, actionId, commentId, newComment) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}/comments/${commentId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions/${actionId}/comments/${commentId}`,
         method: 'PATCH',
         data: newComment
     }, false, true, 'task.task_perform');
@@ -148,7 +145,7 @@ function editActionComment(taskId, actionId, commentId, newComment) {
  */
 function editTaskAction(actionId, newAction, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions/${actionId}`,
         method: 'PATCH',
         data: newAction,
     }, false, true, 'task.task_perform')
@@ -161,7 +158,7 @@ function editTaskAction(actionId, newAction, taskId) {
  */
 function deleteActionComment(taskId, actionId, commentId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}/comments/${commentId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions/${actionId}/comments/${commentId}`,
         method: 'DELETE'
     }, false, true, 'task.task_perform')
 }
@@ -173,7 +170,7 @@ function deleteActionComment(taskId, actionId, commentId) {
  */
 function deleteTaskAction(actionId, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions/${actionId}`,
         method: 'DELETE'
     }, false, true, 'task.task_perform');
 }
@@ -185,7 +182,7 @@ function deleteTaskAction(actionId, taskId) {
  */
 function createTaskComment(taskId, newComment) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-comments`,
         method: 'POST',
         data: newComment
     }, false, true, 'task.task_perform')
@@ -199,7 +196,7 @@ function createTaskComment(taskId, newComment) {
  */
 function editTaskComment(taskId, commentId, newComment) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/${commentId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-comments/${commentId}`,
         method: 'PATCH',
         data: newComment
     }, false, true, 'task.task_perform')
@@ -212,7 +209,7 @@ function editTaskComment(taskId, commentId, newComment) {
  */
 function deleteTaskComment(commentId, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/${commentId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-comments/${commentId}`,
         method: 'DELETE'
     }, false, true, 'task.task_perform')
 }
@@ -225,7 +222,7 @@ function deleteTaskComment(commentId, taskId) {
  */
 function createCommentOfTaskComment(commentId, taskId, newComment) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/${commentId}/comments`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-comments/${commentId}/comments`,
         method: 'POST',
         data: newComment
     }, false, true, 'task.task_perform')
@@ -239,7 +236,7 @@ function createCommentOfTaskComment(commentId, taskId, newComment) {
  */
 function editCommentOfTaskComment(commentId, taskId, newComment) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/comments/${commentId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-comments/comments/${commentId}`,
         method: 'PATCH',
         data: newComment
     }, false, true, 'task.task_perform')
@@ -252,7 +249,7 @@ function editCommentOfTaskComment(commentId, taskId, newComment) {
  */
 function deleteCommentOfTaskComment(commentId, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/comments/${commentId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-comments/comments/${commentId}`,
         method: 'DELETE',
     }, false, true, 'task.task_perform')
 }
@@ -264,7 +261,7 @@ function deleteCommentOfTaskComment(commentId, taskId) {
  */
 function evaluationAction(actionId, taskId, evaluation) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions/${actionId}`,
         method: 'PATCH',
         data: evaluation,
     }, false, true, 'task.task_perform')
@@ -278,7 +275,7 @@ function evaluationAction(actionId, taskId, evaluation) {
  */
 function confirmAction(userId, actionId, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions/${actionId}`,
         method: 'POST',
         data: {
             userId: userId,
@@ -294,7 +291,7 @@ function confirmAction(userId, actionId, taskId) {
  */
 function uploadFile(taskId, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/files`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/files`,
         method: 'POST',
         data: data
     }, false, true, 'task.task_perform');
@@ -309,7 +306,7 @@ function uploadFile(taskId, data) {
  */
 function deleteFileAction(fileId, actionId, taskId, type) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}/files/${fileId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions/${actionId}/files/${fileId}`,
         method: 'PATCH',
     }, false, true, 'task.task_perform');
 };
@@ -323,7 +320,7 @@ function deleteFileAction(fileId, actionId, taskId, type) {
  */
 function deleteFileCommentOfAction(fileId, actionId, taskId, type) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-actions/${actionId}/comments/files/${fileId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions/${actionId}/comments/files/${fileId}`,
         method: 'PATCH',
 
     }, false, true, 'task.task_perform');
@@ -338,7 +335,7 @@ function deleteFileCommentOfAction(fileId, actionId, taskId, type) {
  */
 function deleteFileTaskComment(fileId, commentId, taskId, type) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/${commentId}/files/${fileId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-comments/${commentId}/files/${fileId}`,
         method: 'PATCH'
     }, false, true, 'task.task_perform');
 };
@@ -352,7 +349,7 @@ function deleteFileTaskComment(fileId, commentId, taskId, type) {
  */
 function deleteFileChildTaskComment(fileId, commentId, taskId, type) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/task-comments/${commentId}/comments/files/${fileId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-comments/${commentId}/comments/files/${fileId}`,
         method: 'PATCH',
     }, false, true, 'task.task_perform');
 }
@@ -362,7 +359,7 @@ function deleteFileChildTaskComment(fileId, commentId, taskId, type) {
  */
 function addTaskLog(log, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/logs`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/logs`,
         method: 'POST',
         data: log
     }, false, false, 'task.task_perform');
@@ -371,7 +368,7 @@ function addTaskLog(log, taskId) {
 // Hàm thêm nhật ký cho một công việc
 function getTaskLog(taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/logs`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/logs`,
         method: 'GET',
     }, false, false, 'task.task_perform');
 };
@@ -383,7 +380,7 @@ function getTaskLog(taskId) {
 
 function editArchivedOfTask(taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
         data: {
             type: 'edit_archived'
@@ -398,7 +395,7 @@ function editArchivedOfTask(taskId) {
 */
 function editStatusOfTask(taskId, status) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
         data: {
             status: status,
@@ -414,7 +411,7 @@ function editStatusOfTask(taskId, status) {
  */
 function editTaskByResponsibleEmployees(data, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
         data: {
             data: data,
@@ -431,7 +428,7 @@ function editTaskByResponsibleEmployees(data, taskId) {
  */
 function editTaskByAccountableEmployees(data, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
         data: {
             data: data,
@@ -448,7 +445,7 @@ function editTaskByAccountableEmployees(data, taskId) {
  */
 function evaluateTaskByResponsibleEmployees(data, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/evaluate`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/evaluate`,
         method: 'POST',
         data: {
             data: data,
@@ -464,7 +461,7 @@ function evaluateTaskByResponsibleEmployees(data, taskId) {
  */
 function evaluateTaskByConsultedEmployees(data, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/evaluate`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/evaluate`,
         method: 'POST',
         data: {
             data: data,
@@ -480,7 +477,7 @@ function evaluateTaskByConsultedEmployees(data, taskId) {
  */
 function evaluateTaskByAccountableEmployees(data, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/evaluate`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/evaluate`,
         method: 'POST',
         data: {
             data: data,
@@ -496,7 +493,7 @@ function evaluateTaskByAccountableEmployees(data, taskId) {
  */
 function deleteEvaluation(taskId, evaluationId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/evaluations/${evaluationId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/evaluations/${evaluationId}`,
         method: 'DELETE',
     }, true, true, 'task.task_management');
 }
@@ -506,7 +503,7 @@ function deleteEvaluation(taskId, evaluationId) {
  */
 function deleteFileTask(fileId, documentId, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/documents/${documentId}/files/${fileId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/documents/${documentId}/files/${fileId}`,
         method: 'DELETE',
     }, true, true, 'task.task_perform');
 }
@@ -515,7 +512,7 @@ function deleteFileTask(fileId, documentId, taskId) {
  */
 function deleteDocument(documentId, taskId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/documents/${documentId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/documents/${documentId}`,
         method: 'DELETE',
     }, true, true, 'task.task_perform');
 }
@@ -524,7 +521,7 @@ function deleteDocument(documentId, taskId) {
  */
 function editDocument(documentId, taskId, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/performtask/tasks/${taskId}/documents/${documentId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/documents/${documentId}`,
         data: data,
         method: 'PATCH',
     }, true, true, 'task.task_perform');

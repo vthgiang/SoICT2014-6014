@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, ToolTip } from '../../../../../common-components';
+import { DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, ToolTip, ExportExcel } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
@@ -50,13 +50,65 @@ class UserDocumentsData extends Component {
         })
         window.$('#modal-list-download').modal('show');
     }
+
+    convertDataToExportData = (data) => {
+        data = data.map((x, index) => {
+            return {
+                STT: index + 1,
+                name: x.name,
+                description: x.description,
+                issuingDate: new Date(x.versions[0].issuingDate),
+                effectiveDate: new Date(x.versions[0].effectiveDate),
+                expiredDate: new Date(x.versions[0].expiredDate),
+                numberOfView: x.numberOfView,
+                numberOfDownload: x.numberOfDownload,
+                issuingBody: x.issuingBody,
+                signer: x.signer,
+                officialNumber: x.officialNumber,
+            }
+        });
+        let exportData = {
+            fileName: "Bang thong ke tai lieu",
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    tables: [
+                        {
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "name", value: "Tên" },
+                                { key: "description", value: "Mô tả" },
+                                { key: "signer", value: "Người ký"},
+                                { key: "officialNumber", value: "Số hiệu"},
+                                { key: "issuingBody", value: "Cơ quan ban hành"},
+                                { key: "issuingDate", value: "Ngày ban hành" },
+                                { key: "effectiveDate", value: "Ngày áp dụng" },
+                                { key: "expiredDate", value: "Ngày hết hạn"},
+                                { key: "numberOfView", value: "Số lần xem"},
+                                { key: "numberOfDownload", value: "Số lần download"},
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData
+    }
+
     render() {
         const { translate } = this.props;
+        const { documents } = this.props;
         const docs = this.props.documents.user.data;
         const { paginate } = docs;
         const { isLoading } = this.props.documents;
         const { currentRow } = this.state;
         console.log('propsss', this.props);
+        let list = [];
+        if (documents.isLoading === false) {
+            list = documents.user.data.list ;
+        }
+        let exportData = this.convertDataToExportData(list);
         return (
             <React.Fragment>
                 {
@@ -94,6 +146,7 @@ class UserDocumentsData extends Component {
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
                     />
                 }
+                {<ExportExcel id="export-document" exportData={exportData} style={{ marginLeft: 5 }} />}
                 <SearchBar
                     columns={[
                         { title: translate('document.name'), value: 'name' },
@@ -103,6 +156,7 @@ class UserDocumentsData extends Component {
                     setOption={this.setOption}
                     search={this.searchWithOption}
                 />
+               
                 <table className="table table-hover table-striped table-bordered" id="table-manage-document">
                     <thead>
                         <tr>

@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { LOCAL_SERVER_API } from '../../../../env';
-
 import { FileAddModal, FileEditModal } from './combinedContent';
 
 class FileTab extends Component {
@@ -153,7 +151,7 @@ class FileTab extends Component {
                                             <td>{x.number}</td>
                                             <td>{!x.urlFile ? translate('manage_employee.no_files') :
                                                 <a className='intable' target={x._id === undefined ? '_self' : '_blank'}
-                                                    href={(x._id === undefined) ? x.urlFile : `${LOCAL_SERVER_API + x.urlFile}`}
+                                                    href={(x._id === undefined) ? x.urlFile : `${process.env.REACT_APP_SERVER + x.urlFile}`}
                                                     download={x.name}>
                                                     <i className="fa fa-download"> &nbsp;Download!</i>
                                                 </a>

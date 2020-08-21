@@ -219,7 +219,6 @@ class DepreciationManager extends Component {
                     sheetTitle: fileName,
                     tables: [
                         {
-                            tableName : fileName,
                             rowHeader: 2,
                             columns: [
                                 { key: "index", value: "STT" },
@@ -503,6 +502,7 @@ class DepreciationManager extends Component {
                         cost={currentRow.cost}
                         residualValue={currentRow.residualValue}
                         startDepreciation={this.formatDate(currentRow.startDepreciation)}
+                        endDepreciation={this.addMonth(currentRow.startDepreciation, currentRow.usefulLife)}
                         usefulLife={currentRow.usefulLife}
                         depreciationType={currentRow.depreciationType}
                     />

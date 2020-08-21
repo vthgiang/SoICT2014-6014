@@ -44,6 +44,20 @@ class TaskReportViewForm extends Component {
         return `${year}`;
     }
 
+    // Hàm tính tổng và trung bình cộng task evaluation 
+    aggregate = (tasks) => {
+        let map = new Map;
+        for (let { aggregationType, coefficient, code, value } of tasks) {
+            let entry = map.get(code);
+            if (!entry) map.set(code, entry = { aggregationType, coefficient, sum: 0, count: 0 });
+            entry.sum += value;
+            entry.count++;
+        }
+        return Array.from(map, ([code, { aggregationType, coefficient, sum, count }]) =>
+            [code, (+aggregationType ? sum : sum / count) * coefficient]
+        );
+    }
+
 
     render() {
         const { tasks, user, reports, translate } = this.props;
@@ -51,13 +65,6 @@ class TaskReportViewForm extends Component {
         let formater = new Intl.NumberFormat();
         let listTaskEvaluation = tasks.listTaskEvaluations;
         let taskInfoName, headTable = [], aggregationType, charType, coefficient, frequency, newlistTaskEvaluation;
-
-        //  Lấy loại bản đồ và cách tính từ form tạo mới
-        if (taskInformations) {
-            aggregationType = taskInformations[0].aggregationType;
-            charType = taskInformations[0].charType;
-            coefficient = taskInformations[0].coefficient;
-        }
 
 
         // hiển thị trường thông tin hiện trong báo cáo
@@ -72,57 +79,45 @@ class TaskReportViewForm extends Component {
 
         // Lấy tần suất từ server gửi
         if (listTaskEvaluation) {
-            frequency = listTaskEvaluation[0].frequency;
+            let taskEvaluation = listTaskEvaluation[0];
+            frequency = taskEvaluation.frequency;
+            let Task = taskEvaluation.taskInformations;
+
+            for (let i = 0; i < Task.length; i++) {
+                aggregationType = Task[0].aggregationType;
+                charType = Task[0].charType;
+                coefficient = Task[0].coefficient;
+            }
         }
+
 
         // Lọc lấy các trường cần thiết.
         if (listTaskEvaluation) {
             newlistTaskEvaluation = listTaskEvaluation.map(item => {
-                if (frequency && frequency === 'month') {
-                    return {
-                        time: this.convertMonthYear(item.date),
-                        task: item.taskInformations.filter(task => {
-                            if (task.type === 'Number')
-                                return {
-                                    code: task.code,
-                                    value: task.value,
-                                }
-                        })
-                    }
-                } else if (frequency && frequency === 'quarter') {
-                    return {
-                        time: this.getQuarter(item.date),
-                        task: item.taskInformations.filter(task => {
-                            if (task.type === 'Number')
-                                return {
-                                    code: task.code,
-                                    value: task.value,
-                                }
-                        })
-                    }
-
-                } else {
-                    return {
-                        time: this.convertYear(item.date),
-                        task: item.taskInformations.filter(task => {
-                            if (task.type === 'Number')
-                                return {
-                                    code: task.code,
-                                    value: task.value,
-                                }
-                        })
-                    }
+                return {
+                    time: (frequency && frequency === 'month') ? this.convertMonthYear(item.date)
+                        : (frequency === 'quarter' ? this.getQuarter(item.date) : this.convertYear(item.date)),
+                    task: item.taskInformations.filter(task => {
+                        if (task.type === 'Number')
+                            return {
+                                code: task.code,
+                                value: task.value,
+                                charType: task.charType,
+                                coefficient: task.coefficient,
+                                newName: task.newName,
+                                aggregationType: task.aggregationType,
+                            }
+                    })
                 }
-
             });
+
         }
 
 
-
-        //Gom nhóm công việc theo tháng-năm
-        let groupDataByMonth;
+        //Gom nhóm công việc theo tháng-năm-quys
+        let groupDataByDate;
         if (newlistTaskEvaluation) {
-            groupDataByMonth = newlistTaskEvaluation.reduce((groups, item) => {
+            groupDataByDate = newlistTaskEvaluation.reduce((groups, item) => {
                 groups[item.time] = [...groups[item.time] || [], item];
                 return groups;
             }, {});
@@ -130,52 +125,32 @@ class TaskReportViewForm extends Component {
 
 
         let output;
-        if (groupDataByMonth) {
-            output = Object.entries(groupDataByMonth).map(([time, datapoints]) => {
+        if (groupDataByDate) {
+            output = Object.entries(groupDataByDate).map(([time, datapoints]) => {
                 let allTasks = datapoints.flatMap(point => point.task);
-                let groupByCode = allTasks.reduce((arr, item) => { // gom công việc cùng trường thông tin (code)
-                    if (!arr[item.code]) {
-                        arr[item.code] = [];
+                // Gán newName cho code 
+                allTasks.map(item => {
+                    if (item.newName) {
+                        item.code = item.newName;
+                    } else {
+                        item.code = item.code;
                     }
-                    arr[item.code].push(item.value);
-                    return arr;
+                    return item;
+                })
 
-                }, {});
+                let result = this.aggregate(allTasks); // gọi hàm tính trung bình cộng và tổng 
 
-                if (coefficient && aggregationType && aggregationType === '0') {
-                    // Tính trung bình cộng
-                    let valueSum = Object.entries(groupByCode).map(([key, value]) => [ // Convert groupByCode từ object sang mảng để dùng map
-                        key, value.reduce((a, e) => a + e, 0) / value.length // Dùng reduce tính trung bình cộng
-                    ])
-
-                    // nhân với hệ số 
-                    let value = valueSum.map(([key, value]) => [key, value * coefficient]);
-                    return {
-                        time,
-                        tasks: value.map(([code, value]) => ({ code, value }))
-                    }
-
-                } else {
-                    // Tính tổng
-                    let valueAvg = Object.entries(groupByCode).map(([key, value]) => [
-                        key, value.reduce((a, e) => a + e, 0) // dùng reduce tính tổng array value
-                    ])
-
-                    // Nhân với hệ số
-                    let value = valueAvg.map(([key, value]) => [key, value * coefficient]);
-                    return {
-                        time,
-                        tasks: value.map(([code, value]) => ({ code, value }))
-                    }
+                return {
+                    time,
+                    tasks: result.map(([code, value]) => ({ code, value })),
                 }
-            })
+            });
         }
-
 
         return (
             <React.Fragment>
                 <DialogModal
-                    size='100' modalID="modal-view-taskreport" isLoading={false}
+                    modalID="modal-view-taskreport" isLoading={false}
                     formID="form-view-tasktemplate"
                     title="Xem chi tiết báo cáo"
                     hasSaveButton={true}
@@ -304,10 +279,12 @@ function mapState(state) {
     const { tasks, user, reports } = state;
     return { tasks, user, reports };
 }
+
 const actionCreators = {
     createTaskReport: TaskReportActions.createTaskReport,
     getTaskEvaluations: taskManagementActions.getTaskEvaluations,
 }
+
 const viewForm = connect(mapState, actionCreators)(withTranslate(TaskReportViewForm));
 
 export { viewForm as TaskReportViewForm };

@@ -1,5 +1,3 @@
-import { getStorage } from '../../../../../config';
-import { LOCAL_SERVER_API } from '../../../../../env';
 import { sendRequest } from '../../../../../helpers/requestHelper';
 export const kpiMemberServices = {
     getEmployeeKPISets,
@@ -17,7 +15,7 @@ export const kpiMemberServices = {
 function getEmployeeKPISets(infosearch) {
     console.log(infosearch);
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/evaluation/employee-evaluation/employee-kpi-sets`,
         method: 'GET',
         params: {
             roleId: infosearch.role,
@@ -33,7 +31,7 @@ function getEmployeeKPISets(infosearch) {
 */
 function getKpisByKpiSetId(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/evaluation/employee-evaluation/employee-kpi-sets/${id}`,
         method: 'GET',
     }, false, true, 'kpi.evaluation');
 }
@@ -42,7 +40,7 @@ function getKpisByKpiSetId(id) {
 */
 function getKpisByMonth(userId, date) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/evaluation/employee-evaluation/employee-kpi-sets`,
         method: 'GET',
         params: {
             userId: userId,
@@ -55,7 +53,7 @@ function getKpisByMonth(userId, date) {
 */
 function approveAllKpis(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/evaluation/employee-evaluation/employee-kpi-sets/${id}`,
         method: 'PATCH',
     }, true, true, 'kpi.evaluation');
 }
@@ -64,7 +62,7 @@ function approveAllKpis(id) {
 */
 function editKpi(id, newTarget) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpi-sets/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/evaluation/employee-evaluation/employee-kpi-sets/${id}`,
         method: 'PATCH',
         data: newTarget
     }, true, true, 'kpi.evaluation')
@@ -74,7 +72,7 @@ function editKpi(id, newTarget) {
 */
 function editStatusKpi(id, status) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpis/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/evaluation/employee-evaluation/employee-kpis/${id}`,
         method: 'PATCH',
         params: {
             status: status
@@ -86,7 +84,7 @@ function editStatusKpi(id, status) {
 */
 function getTaskById(id, employeeId, date, kpiType) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpis/${id}/tasks`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/evaluation/employee-evaluation/employee-kpis/${id}/tasks`,
         method: 'GET',
         params: {
             id: id,
@@ -101,7 +99,7 @@ function getTaskById(id, employeeId, date, kpiType) {
 */
 function setPointKPI(employeeId, kpiType, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/evaluation/employee-evaluation/employee-kpis/${employeeId}/set-task-importance-level`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/evaluation/employee-evaluation/employee-kpis/${employeeId}/set-task-importance-level`,
         method: 'POST',
         data: data,
         params: {

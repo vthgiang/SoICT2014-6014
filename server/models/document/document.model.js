@@ -20,10 +20,7 @@ const DocumentSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'document_domains'
     }],
-    archives: [{
-        type: Schema.Types.ObjectId,
-        ref: 'document_domains'
-    }],
+
     category: {
         type: Schema.Types.ObjectId,
         ref: 'document_categories'
@@ -124,9 +121,13 @@ const DocumentSchema = new Schema({
     }],
 
     /**Hồ sơ lưu trữ bản cứng */
-    archivedRecordPlaceInfo: {
-        type: String
-    },
+    archives: [{
+        type: Schema.Types.ObjectId,
+        ref: 'document_domains'
+    }],
+    // archivedRecordPlaceInfo: {
+    //     type: String
+    // },
     archivedRecordPlaceOrganizationalUnit: {
         type: Schema.Types.ObjectId,
         ref: 'organizational_units'
@@ -134,7 +135,28 @@ const DocumentSchema = new Schema({
     archivedRecordPlaceManager: {
         type: Schema.Types.ObjectId,
         ref: 'users'
-    }
+    },
+    /**
+     * Lịch sử chỉnh sửa
+     */
+    logs: [{
+        createdAt: {
+            type: Date,
+            default: Date.now
+        },
+        creator: {
+            type: Schema.Types.ObjectId,
+            ref: User,
+            required: true
+        },
+        title: {
+            type: String,
+        },
+        description: {
+            type: String,
+        },
+    }],
+
 }, {
     timestamps: true, //ngày tạo và ngày sửa gần nhất
     toJSON: { virtuals: true }

@@ -73,7 +73,7 @@ class ComponentCreateForm extends Component {
         this.setState(state => {
             return {
                 ...state,
-                componentLink: value[0]
+                componentLink: value
             }
         })
     }
@@ -99,7 +99,7 @@ class ComponentCreateForm extends Component {
         const component = { 
             name: this.state.componentName, 
             description: this.state.componentDescription, 
-            link: this.state.componentLink,
+            links: this.state.componentLink,
             roles: this.state.componentRoles 
         };
 
@@ -146,7 +146,7 @@ class ComponentCreateForm extends Component {
                                     value={componentLink}
                                     onChange={this.handleLink}
                                     options={{placeholder: translate('system_admin.system_component.select_link')}}
-                                    multiple={false}
+                                    multiple={true}
                                 />
                             }
                         </div>

@@ -38,7 +38,7 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
 
     shouldComponentUpdate = async (nextProps, nextState) => {
         if (this.state.currentRole !== localStorage.getItem("currentRole")) {
-            await this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"));
+            await this.props.getCurrentKPIUnit(localStorage.getItem("currentRole"), this.props.organizationalUnitId, this.props.month);
 
             this.setState(state => {
                 return {
@@ -53,7 +53,6 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
 
         if (nextProps.organizationalUnitId !== this.state.organizationalUnitId || nextProps.month !== this.state.month) {
             await this.props.getCurrentKPIUnit(this.state.currentRole, nextProps.organizationalUnitId, nextProps.month);
-
             this.setState(state => {
                 return {
                     ...state,
@@ -66,16 +65,17 @@ class DistributionOfOrganizationalUnitKpiChart extends Component {
         }
 
         if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
-            if (!nextProps.createKpiUnit.currentKPI)
+            if (!nextProps.createKpiUnit.currentKPI) {
                 return false;
-
+            }
+                
             this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.AVAILABLE,
                 };
             });
-
+            
             return false;
         } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
             this.pieChart();
