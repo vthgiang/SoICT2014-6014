@@ -6,9 +6,9 @@ import { getStorage } from '../../../../../config';
 import { ModalDetailTask } from "../../../task-management/component/task-dashboard/modalDetailTask";
 import { taskManagementActions } from "../../../task-management/redux/actions";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
-import BpmnModeler from 'bpmn-js/lib/Modeler';
+import BpmnViewer from 'bpmn-js';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
-import customModule from './../custom'
+import customModule from '../read-only'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './../processDiagram.css'
@@ -31,7 +31,6 @@ class ViewProcess extends Component {
     constructor(props) {
         super(props);
         let { data } = this.props;
-        console.log('dtaa', data);
         this.state = {
             userId: getStorage("userId"),
             currentRole: getStorage('currentRole'),
@@ -43,7 +42,7 @@ class ViewProcess extends Component {
             startDate: "",
             endDate: "",
         }
-        this.modeler = new BpmnModeler({
+        this.viewer = new BpmnViewer({
             additionalModules: [
                 customModule,
                 // { moveCanvas: [ 'value', null ] },
@@ -68,16 +67,16 @@ class ViewProcess extends Component {
         // this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
 
 
-        this.modeler.attachTo('#' + this.generateId);
+        this.viewer.attachTo('#' + this.generateId);
 
-        var eventBus = this.modeler.get('eventBus');
-        this.modeler.on('element.click', 1000, (e) => this.interactPopup(e));
+        var eventBus = this.viewer.get('eventBus');
+        this.viewer.on('element.click', 1000, (e) => this.interactPopup(e));
 
-        // this.modeler.on('shape.remove', 1000, (e) => this.deleteElements(e));
+        // this.viewer.on('shape.remove', 1000, (e) => this.deleteElements(e));
 
-        // this.modeler.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
+        // this.viewer.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
 
-        // this.modeler.on('shape.changed', 1000, (e) => this.changeNameElement(e));
+        // this.viewer.on('shape.changed', 1000, (e) => this.changeNameElement(e));
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -120,11 +119,11 @@ class ViewProcess extends Component {
                 defaultUnit = user.organizationalUnitsOfUser[0]
             }
             this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
-            this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
+            this.viewer.importXML(nextProps.data.xmlDiagram, function (err) { });
             return true;
         }
         if ( nextProps.data ) {
-            this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
+            this.viewer.importXML(nextProps.data.xmlDiagram, function (err) { });
             return true;
         }
         return true;
@@ -168,7 +167,7 @@ class ViewProcess extends Component {
     }
 
     downloadAsSVG = () => {
-        this.modeler.saveSVG({ format: true }, function (error, svg) {
+        this.viewer.saveSVG({ format: true }, function (error, svg) {
             if (error) {
                 return;
             }
@@ -193,7 +192,7 @@ class ViewProcess extends Component {
     }
 
     downloadAsBpmn = () => {
-        this.modeler.saveXML({ format: true }, function (error, xml) {
+        this.viewer.saveXML({ format: true }, function (error, xml) {
             if (error) {
                 return;
             }
@@ -201,7 +200,7 @@ class ViewProcess extends Component {
     }
 
     downloadAsImage = () => {
-        this.modeler.saveSVG({ format: true }, function (error, svg) {
+        this.viewer.saveSVG({ format: true }, function (error, svg) {
             if (error) {
                 return;
             }
@@ -247,8 +246,8 @@ class ViewProcess extends Component {
 
     handleZoomOut = async () => {
         let zstep = 0.2;
-        let canvas = this.modeler.get('canvas');
-        let eventBus = this.modeler.get('eventBus');
+        let canvas = this.viewer.get('canvas');
+        let eventBus = this.viewer.get('eventBus');
 
         // set initial zoom level
         canvas.zoom(zlevel, 'auto');
@@ -263,14 +262,14 @@ class ViewProcess extends Component {
 
     handleZoomReset = () => {
 
-        let canvas = this.modeler.get('canvas');
+        let canvas = this.viewer.get('canvas');
         canvas.zoom('fit-viewport');
     }
 
     handleZoomIn = async () => {
         let zstep = 0.2;
-        let canvas = this.modeler.get('canvas');
-        let eventBus = this.modeler.get('eventBus');
+        let canvas = this.viewer.get('canvas');
+        let eventBus = this.viewer.get('eventBus');
 
         // set initial zoom level
         canvas.zoom(zlevel, 'auto');
@@ -284,7 +283,7 @@ class ViewProcess extends Component {
 
     exportDiagram = () => {
         let xmlStr;
-        this.modeler.saveXML({ format: true }, function (err, xml) {
+        this.viewer.saveXML({ format: true }, function (err, xml) {
             if (err) {
             }
             else {

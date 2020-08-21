@@ -9,7 +9,6 @@ import { TaskProcessActions } from "../redux/actions";
 import { withTranslate } from "react-redux-multilingual";
 import { ViewTaskTemplate } from "../../task-template/component/viewTaskTemplate";
 import customModule from './read-only'
-// import readOnlyModule from './read-only'
 
 var zlevel = 1;
 class ModalViewTaskProcess extends Component {
