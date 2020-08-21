@@ -1,7 +1,4 @@
 import {
-    LOCAL_SERVER_API
-} from '../../../../env';
-import {
     sendRequest
 } from '../../../../helpers/requestHelper';
 
@@ -18,7 +15,7 @@ export const EducationService = {
  */
 function getListEducation(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/educationPrograms`,
+        url: `${ process.env.REACT_APP_SERVER }/educationPrograms`,
         method: 'GET',
         params: {
             organizationalUnit: data !== undefined ? data.organizationalUnit : data,
@@ -35,7 +32,7 @@ function getListEducation(data) {
  */
 function createNewEducation(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/educationPrograms/`,
+        url: `${ process.env.REACT_APP_SERVER }/educationPrograms/`,
         method: 'POST',
         data: data,
     }, true, true, 'training.education_program');
@@ -47,7 +44,7 @@ function createNewEducation(data) {
  */
 function deleteEducation(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/educationPrograms/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/educationPrograms/${id}`,
         method: 'DELETE',
     }, true, true, 'training.education_program');
 }
@@ -59,7 +56,7 @@ function deleteEducation(id) {
  */
 function updateEducation(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/educationPrograms/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/educationPrograms/${id}`,
         method: 'PATCH',
         data: data,
     }, true, true, 'training.education_program');
