@@ -228,10 +228,11 @@ const seedDatabase = async () => {
 
     // Tạo các system link
     let dataSystemLinks = Terms.LINKS.map( systemLink => {
+        console.log("SYSTEM LINK", systemLink)
         return {
             ...systemLink,
             roles: systemLink.roles.map(name => convertRoleNameToRoleId(name)),
-            components: systemLink.components.map(name => convertComponentNameToId(name, systemComponents))
+            components: systemLink.components ? systemLink.components.map(name => convertComponentNameToId(name, systemComponents)) : []
         }
     })
     let systemLinks = await SystemLink.insertMany(dataSystemLinks);
