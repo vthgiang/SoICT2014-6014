@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { LOCAL_SERVER_API } from '../../../../env';
-
 class AttachmentTab extends Component {
     constructor(props) {
         super(props);
@@ -62,7 +60,7 @@ class AttachmentTab extends Component {
                                             <td>{x.number}</td>
                                             <td>{!x.urlFile ? translate('manage_employee.no_files') :
                                                 <a className='intable'
-                                                    href={LOCAL_SERVER_API + x.urlFile} target="_blank"
+                                                    href={process.env.REACT_APP_SERVER + x.urlFile} target="_blank"
                                                     download={x.name}>
                                                     <i className="fa fa-download"> &nbsp;Download!</i>
                                                 </a>

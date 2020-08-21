@@ -78,14 +78,14 @@ class UserDocumentsData extends Component {
                                 { key: "STT", value: "STT" },
                                 { key: "name", value: "Tên" },
                                 { key: "description", value: "Mô tả" },
-                                { key: "signer", value: "Người ký"},
-                                { key: "officialNumber", value: "Số hiệu"},
-                                { key: "issuingBody", value: "Cơ quan ban hành"},
+                                { key: "signer", value: "Người ký" },
+                                { key: "officialNumber", value: "Số hiệu" },
+                                { key: "issuingBody", value: "Cơ quan ban hành" },
                                 { key: "issuingDate", value: "Ngày ban hành" },
                                 { key: "effectiveDate", value: "Ngày áp dụng" },
-                                { key: "expiredDate", value: "Ngày hết hạn"},
-                                { key: "numberOfView", value: "Số lần xem"},
-                                { key: "numberOfDownload", value: "Số lần download"},
+                                { key: "expiredDate", value: "Ngày hết hạn" },
+                                { key: "numberOfView", value: "Số lần xem" },
+                                { key: "numberOfDownload", value: "Số lần download" },
                             ],
                             data: data
                         }
@@ -106,7 +106,7 @@ class UserDocumentsData extends Component {
         console.log('propsss', this.props);
         let list = [];
         if (documents.isLoading === false) {
-            list = documents.user.data.list ;
+            list = documents.user.data.list;
         }
         let exportData = this.convertDataToExportData(list);
         return (
@@ -129,7 +129,7 @@ class UserDocumentsData extends Component {
                         documentId={currentRow._id}
                         documentName={currentRow.name}
                         documentDescription={currentRow.description}
-                        documentCategory={currentRow.category._id}
+                        documentCategory={currentRow.category ? currentRow.category._id : ""}
                         documentDomains={currentRow.domains.map(domain => domain._id)}
                         documentIssuingBody={currentRow.issuingBody}
                         documentOfficialNumber={currentRow.officialNumber}
@@ -156,7 +156,7 @@ class UserDocumentsData extends Component {
                     setOption={this.setOption}
                     search={this.searchWithOption}
                 />
-               
+
                 <table className="table table-hover table-striped table-bordered" id="table-manage-document">
                     <thead>
                         <tr>

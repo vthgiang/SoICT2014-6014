@@ -14,8 +14,7 @@ exports.getLinks = async (company, query) => {
         let links = await Link
             .find(options)
             .populate({ path: 'roles', model: Privilege });
-            
-        console.log("GETlink", links)
+
         return links;
     } else {
         let option = (query.key && query.value)

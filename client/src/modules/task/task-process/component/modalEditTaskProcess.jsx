@@ -321,7 +321,7 @@ class ModalEditTaskProcess extends Component {
 
     deleteElements = (event) => {
         var element = event.element;
-        console.log(element);
+        // console.log(element);
         this.setState(state => {
             delete state.info[`${state.id}`];
             return {
@@ -329,7 +329,7 @@ class ModalEditTaskProcess extends Component {
                 showInfo: false,
             }
         })
-        console.log(this.state);
+        // console.log(this.state);
     }
 
     handleUndoDeleteElement = (event) => {

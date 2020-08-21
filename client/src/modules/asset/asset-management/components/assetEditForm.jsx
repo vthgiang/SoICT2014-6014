@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
-import { LOCAL_SERVER_API } from '../../../../env';
 import moment from 'moment';
 
 import { DialogModal } from '../../../../common-components';
@@ -207,7 +205,7 @@ class AssetEditForm extends Component {
             let result = this.validatorInput(code) && this.validatorInput(assetName) &&
                 this.validatorInput(serial) && this.validatorInput(assetType) &&
                 this.validatorInput(managedBy) && this.validatorInput(purchaseDate) &&
-                this.validatorInput(warrantyExpirationDate) && this.validatorInput(location) &&
+                this.validatorInput(warrantyExpirationDate) && //this.validatorInput(location) &&
                 this.validatorInput(status) && this.validatorInput(canRegisterForUse) &&
                 this.validatorInput(cost) && this.validatorInput(usefulLife) &&
                 this.validatorInput(startDepreciation) && this.validatorInput(depreciationType);
@@ -279,7 +277,7 @@ class AssetEditForm extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                img: LOCAL_SERVER_API + nextProps.avatar,
+                img: process.env.REACT_APP_SERVER + nextProps.avatar,
                 avatar: "",
                 avatar: nextProps.avatar,
                 code: nextProps.code,
@@ -400,6 +398,8 @@ class AssetEditForm extends Component {
                             {/* Thông tin sử dụng */}
                             <UsageLogTab
                                 id={`edit_usage${_id}`}
+                                assetId={_id}
+                                assignedTo={assignedTo}
                                 usageLogs={usageLogs}
                                 handleAddUsage={this.handleCreateUsageLogs}
                                 handleEditUsage={this.handleEditUsageLogs}
@@ -421,6 +421,7 @@ class AssetEditForm extends Component {
                                 handleChange={this.handleChange}
                                 cost={cost}
                                 residualValue={residualValue}
+                                startDepreciation={moment(startDepreciation).format('DD-MM-YYYY')}
                                 startDepreciation={moment(startDepreciation).format('DD-MM-YYYY')}
                                 usefulLife={usefulLife}
                                 depreciationType={depreciationType}

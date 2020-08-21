@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
-import { LOCAL_SERVER_API } from '../../../../../env';
-
 import { GeneralTab, ContactTab, TaxTab, InsurranceTab, DisciplineTab, ExperienceTab, CertificateTab, ContractTab, SalaryTab, FileTab } from './combinedContent';
 
 import { EmployeeManagerActions } from '../../employee-management/redux/actions';
@@ -14,7 +12,7 @@ class EmployeeCreatePage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            img: LOCAL_SERVER_API + '/upload/human-resource/avatars/avatar5.png',
+            img: process.env.REACT_APP_SERVER + '/upload/human-resource/avatars/avatar5.png',
             avatar: "",
             employee: {
                 avatar: '/upload/human-resource/avatars/avatar5.png',

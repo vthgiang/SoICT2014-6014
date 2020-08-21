@@ -224,6 +224,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         dataPoints = this.setDataColumnChart();
         dataChart = dataPoints.employeeWithTheSamePoints;
         textLabel = dataPoints.textLabel;
+
         this.chart = c3.generate({
             bindto: this.refs.chart,
 
@@ -248,12 +249,12 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
             axis: {
                 x: {
                     label: {
-                        text: textLabel,
+                        text: 'Điểm',
                         position: 'outer-center',
                     },
                     padding: {
-                        right: 10,
-                        left: 10
+                        top: 10,
+                        bottom: 10
                     }
                 },
                 y: {
@@ -264,6 +265,9 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
                     padding: {
                         right: 10,
                         left: 10
+                    },
+                    tick: {
+                        // format: d3.format("d")
                     }
                 }
             },
@@ -344,7 +348,6 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
 
         return (            
             <React.Fragment>           
-                               
                 {listEmployeeKpiSet && (listEmployeeKpiSet.length !== 0) ?
                     <section className="box-body " style={{ textAlign: "right" }}>
                         <a>

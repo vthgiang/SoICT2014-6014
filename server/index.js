@@ -49,7 +49,7 @@ const systemSetting = require("./modules/system-admin/system-setting/systemSetti
 const tasktemplate = require("./modules/task/task-template/taskTemplate.route");
 const taskManagement = require("./modules/task/task-management/task.route");
 const taskPerform = require("./modules/task/task-perform/taskPerform.route");
-const taskProcess = require("./modules/task/tasks-process/taskProcess.route");
+const processes = require("./modules/task/tasks-process/taskProcess.route");
 const educationPrograms = require("./modules/trainning/education-program/educationProgram.route");
 const courses = require("./modules/trainning/course/course.route");
 
@@ -133,7 +133,7 @@ app.use("/system-admin/system-setting", systemSetting);
 app.use("/task", taskManagement);
 app.use("/performtask", taskPerform);
 app.use("/task/task-templates", tasktemplate);
-app.use("/taskprocess", taskProcess);
+app.use("/process", processes);
 app.use("/educationPrograms", educationPrograms);
 app.use("/courses", courses);
 

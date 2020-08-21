@@ -1,12 +1,4 @@
-import { handleResponse } from '../../../../../helpers/handleResponse';
-
-import {
-    LOCAL_SERVER_API
-} from '../../../../../env';
-import {
-    getStorage, AuthenticateHeader
-} from '../../../../../config';
-
+import { getStorage} from '../../../../../config';
 import { sendRequest } from '../../../../../helpers/requestHelper';
 
 export const createUnitKpiServices = {
@@ -30,7 +22,7 @@ export const createUnitKpiServices = {
  */
 function getCurrentKPIUnit(roleId, organizationalUnitId, month) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
         method: 'GET',
         params: {
             roleId: roleId,
@@ -45,7 +37,7 @@ function getCurrentKPIUnit(roleId, organizationalUnitId, month) {
  */
 function getKPIParent(parentUnit) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
         method: 'GET',
         params: {
             parent: 1,
@@ -59,7 +51,7 @@ function getKPIParent(parentUnit) {
  */
 function getAllOrganizationalUnitKpiSetByTime(roleId, organizationalUnitId, startDate, endDate) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
         method: 'GET',
         params: {
             allOrganizationalUnitKpiSetByTime: true,
@@ -76,7 +68,7 @@ function getAllOrganizationalUnitKpiSetByTime(roleId, organizationalUnitId, star
  */
 function getAllOrganizationalUnitKpiSetByTimeOfChildUnit(roleId, startDate, endDate) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
         method: 'GET',
         params: {
             child: true,
@@ -94,7 +86,7 @@ function addKPIUnit(newKPI) {
     newKPI = { ...newKPI, creator: id };
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
         method: 'POST',
         data: newKPI
     }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set_modal');
@@ -107,7 +99,7 @@ function editKPIUnit(kpiId, newKPI) {
     var userId = getStorage("userId");
     newKPI = { ...newKPI, creator: userId };
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${kpiId}`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${kpiId}`,
         method: 'PATCH',
         data: newKPI
     }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
@@ -116,7 +108,7 @@ function editKPIUnit(kpiId, newKPI) {
 // Chỉnh sửa trạng thái của KPI đơn vị
 function editStatusKPIUnit(kpiId, status) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${kpiId}`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${kpiId}`,
         method: 'PATCH',
         params: {
             status: status,
@@ -127,7 +119,7 @@ function editStatusKPIUnit(kpiId, status) {
 // Xóa KPI đơn vị
 function deleteKPIUnit(kpiId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${kpiId}`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${kpiId}`,
         method: 'DELETE'
     }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
 }
@@ -135,7 +127,7 @@ function deleteKPIUnit(kpiId) {
 // Thêm mục tiêu cho KPI đơn vị 
 function addTargetKPIUnit(newTarget) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/creation/organizational-unit-kpis`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpis`,
         method: 'POST',
         data: newTarget
     }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_modal');
@@ -144,7 +136,7 @@ function addTargetKPIUnit(newTarget) {
 // Chỉnh sửa mục tiêu của KPI đơn vị
 function editTargetKPIUnit(id, newTarget) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/creation/organizational-unit-kpis/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpis/${id}`,
         method: 'PATCH',
         data: newTarget
     }, true, true, 'kpi.organizational_unit.edit_target_kpi_modal');
@@ -154,7 +146,7 @@ function editTargetKPIUnit(id, newTarget) {
 function deleteTargetKPIUnit(id, organizationalUnitKpiSetId) {
     let kpiunit = organizationalUnitKpiSetId
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${kpiunit}/organizational-unit-kpis/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets/${kpiunit}/organizational-unit-kpis/${id}`,
         method: 'DELETE'
     }, true, true, 'kpi.organizational_unit.create_organizational_unit_kpi_set');
 }

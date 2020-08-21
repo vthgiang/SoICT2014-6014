@@ -1,4 +1,4 @@
-const { TaskProcess } = require('../../../models').schema;
+const { TaskProcess, ProcessTemplate } = require('../../../models').schema;
 const { User, Privilege, TaskTemplate, Task } = require('../../../models/index').schema;
 const mongoose = require('mongoose');
 
@@ -22,7 +22,7 @@ exports.getAllXmlDiagram = async (query) => {
     let taskProcesses = [];
     let roleId = allRole.map(function (el) { return mongoose.Types.ObjectId(el) });
 
-    var taskProcess = await TaskProcess.aggregate([
+    var taskProcess = await ProcessTemplate.aggregate([
         { $match: { processName: { "$regex": name, "$options": "i" } } },
         {
             $lookup:
@@ -66,7 +66,7 @@ exports.getAllXmlDiagram = async (query) => {
     ])
 
     taskProcesses = taskProcess[0].processes;
-    await TaskProcess.populate(taskProcesses, { path: 'creator', model: User, select: 'name' });
+    await ProcessTemplate.populate(taskProcesses, { path: 'creator', model: User, select: 'name' });
 
     let totalCount = 0;
     if (JSON.stringify(taskProcesses) !== JSON.stringify([])) {
@@ -83,7 +83,7 @@ exports.getAllXmlDiagram = async (query) => {
  * @param {*} params 
  */
 exports.getXmlDiagramById = (params) => {
-    let data = TaskProcess.findById(params.diagramId);
+    let data = ProcessTemplate.findById(params.diagramId);
     return data
 }
 
@@ -117,7 +117,7 @@ exports.createXmlDiagram = async (body) => {
         }
     }
     console.log(info)
-    let data = await TaskProcess.create({
+    let data = await ProcessTemplate.create({
         xmlDiagram: body.xmlDiagram,
         processName: body.processName,
         processDescription: body.processDescription,
@@ -166,12 +166,12 @@ exports.createXmlDiagram = async (body) => {
         await Privilege.create({
             roleId: roleId[i], //id của người cấp quyền xem
             resourceId: data._id,
-            resourceType: "TaskProcess",
+            resourceType: "ProcessTemplate",
             // action: [] //quyền READ
         });
     }
 
-    data = await TaskProcess.findById(data._id).populate({ path: 'creator', model: User, select: 'name' });
+    data = await ProcessTemplate.findById(data._id).populate({ path: 'creator', model: User, select: 'name' });
     return data;
 }
 
@@ -206,7 +206,7 @@ exports.editXmlDiagram = async (params, body) => {
             info.push(body.info[x])
         }
     }
-    let data = await TaskProcess.findByIdAndUpdate(params.diagramId,
+    let data = await ProcessTemplate.findByIdAndUpdate(params.diagramId,
         {
             $set: {
                 xmlDiagram: body.xmlDiagram,
@@ -227,7 +227,7 @@ exports.editXmlDiagram = async (params, body) => {
         noResultsPerPage: body.noResultsPerPage,
     }
     let data1 = await this.getAllXmlDiagram(queryData);
-    // let data1 = await TaskProcess.find().populate({ path: 'creator', model: User, select: 'name' });
+    // let data1 = await ProcessTemplate.find().populate({ path: 'creator', model: User, select: 'name' });
     return data1;
 }
 
@@ -236,10 +236,10 @@ exports.editXmlDiagram = async (params, body) => {
  * @param {ObjectId} diagramId 
  */
 exports.deleteXmlDiagram = async (diagramId, query) => {
-    await TaskProcess.findOneAndDelete({
+    await ProcessTemplate.findOneAndDelete({
         _id: diagramId,
     });
-    await Privilege.findOneAndDelete({ resourceId: diagramId, resourceType: "TaskProcess" })
+    await Privilege.findOneAndDelete({ resourceId: diagramId, resourceType: "ProcessTemplate" })
 
     let queryData = {
         userId: query.userId,
@@ -271,10 +271,6 @@ isStartTask = (task) => {
 exports.createTaskByProcess = async (processId, body) => {
     console.log('----', body);
 
-    let processUsed = await TaskProcess.findByIdAndUpdate(processId, { $inc: { 'numberOfUse': 1 } }, { new: true });
-
-    let numberOfUse =  processUsed.numberOfUse;
-
     let data = body.taskList;
     // let startDate = body.startDate;
     // let endDate = body.endDate;
@@ -284,6 +280,23 @@ exports.createTaskByProcess = async (processId, body) => {
     let startDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
     splitter = body.endDate.split("-");
     let endDateProcess = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+
+    let newTaskProcess = await TaskProcess.create({
+        processTemplate: processId,
+        xmlDiagram: body.xmlDiagram,
+        processName: body.processName,
+        processDescription: body.processDescription,
+        startDate: startDateProcess,
+        endDate: endDateProcess,
+        creator: body.creator,
+        // tasks: [{
+        //     type: Schema.Types.ObjectId,
+        //     ref: Task,
+        // }],
+    })
+
+    let listTask = [];
+    let taskProcessId = newTaskProcess._id;
 
     for (let i in data) {
         let taskInformations, taskActions, cloneActions = [];
@@ -311,15 +324,14 @@ exports.createTaskByProcess = async (processId, body) => {
             status = "Inprocess";
         }
 
-        let process = {
-            processId: processId,
-            numberOfUse: numberOfUse,
-        }
-        await Task.create({
+        let process = taskProcessId;
+
+        let newTaskItem = await Task.create({
             process: process,
             codeInProcess: data[i].code,
             organizationalUnit: data[i].organizationalUnit,
-            creator: data[i].creator, //id của người tạo
+            // creator: data[i].creator, //id của người tạo
+            creator: body.creator, //id của người tạo
             name: data[i].name,
             description: data[i].description,
             startDate: startDate,
@@ -336,13 +348,15 @@ exports.createTaskByProcess = async (processId, body) => {
             consultedEmployees: data[i].consultedEmployees,
             informedEmployees: data[i].informedEmployees,
         });
+
+        listTask.push(newTaskItem._id);
     }
 
     for (let x in data) {
         let listFollowingTask = [];
         let listPreceedingTask = [];
         for (let i in data[x].followingTasks) {
-            let item = await Task.findOne({ "process.processId": processId, "process.numberOfUse": numberOfUse, codeInProcess: data[x].followingTasks[i].task });
+            let item = await Task.findOne({ process: taskProcessId, codeInProcess: data[x].followingTasks[i].task });
 
             if (item) {
                 listFollowingTask.push({
@@ -352,8 +366,8 @@ exports.createTaskByProcess = async (processId, body) => {
             }
         }
         for (let i in data[x].preceedingTasks) {
-            let item = await Task.findOne({ "process.processId": processId, "process.numberOfUse": numberOfUse, codeInProcess: data[x].preceedingTasks[i].task });
-            
+            let item = await Task.findOne({ process: taskProcessId, codeInProcess: data[x].preceedingTasks[i].task });
+
             if (item) {
                 listPreceedingTask.push({
                     task: item._id,
@@ -364,7 +378,7 @@ exports.createTaskByProcess = async (processId, body) => {
         }
 
         await Task.findOneAndUpdate(
-            { "process.processId": processId, "process.numberOfUse": numberOfUse, codeInProcess: data[x].code },
+            { process: taskProcessId, codeInProcess: data[x].code },
             {
                 $set: {
                     followingTasks: listFollowingTask,
@@ -374,6 +388,50 @@ exports.createTaskByProcess = async (processId, body) => {
             { new: true }
         )
     }
+    await ProcessTemplate.findByIdAndUpdate(processId, { $inc: { 'numberOfUse': 1 } }, { new: true });
 
-    return await TaskProcess.find().populate({ path: 'creator', model: User, select: 'name' });;
+    await TaskProcess.findByIdAndUpdate(taskProcessId, { $set: { tasks: listTask } }, { new: true });
+
+    return await ProcessTemplate.find().populate({ path: 'creator', model: User, select: 'name' });;
+}
+
+
+exports.getAllTaskProcess = async (query) => {
+    // let { name, noResultsPerPage, pageNumber } = query;
+    let name = query.name;
+    let noResultsPerPage = parseInt(query.noResultsPerPage);
+    let pageNumber = parseInt(query.pageNumber);
+
+    let data = await TaskProcess.find({
+        processName: { $regex: name, $options: 'i' },
+    }).skip(noResultsPerPage * (pageNumber - 1)).limit(noResultsPerPage)
+        .populate([
+            { path: 'creator', model: User, select: 'name' },
+            {
+                path: 'tasks', model: Task, populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit", model: OrganizationalUnit },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                    { path: "evaluations.results.kpis" },
+                    { path: "taskActions.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+                    { path: "taskComments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "documents.creator", model: User, select: 'name email avatar' },
+                    { path: "process", model: TaskProcess },
+                ]
+            },
+            { path: 'processTemplate', model: ProcessTemplate, select: 'processName' },
+        ]);
+
+
+    let totalCount = await TaskProcess.countDocuments({ processName: { $regex: name, $options: 'i' } });
+    let totalPages = Math.ceil(totalCount / noResultsPerPage);
+    return {
+        data: data, pageTotal: totalPages
+    }
 }

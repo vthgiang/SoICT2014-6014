@@ -206,7 +206,7 @@ class TaskOrganizationUnitDashboard extends Component {
                     <div className="qlcv" style={{ textAlign: "right", marginBottom: 15, marginRight: 10 }}>
                         <div className="form-inline">
                             <div className="form-group">
-                                <label className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
+                                <label style={{ width: "auto" }} className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
                                 {childrenOrganizationalUnit &&
                                     <SelectMulti id="multiSelectOrganizationalUnitInTaskUnit"
                                         items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
@@ -218,7 +218,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                 }
                             </div>
                             <div className="form-group">
-                                <label>{translate('task.task_management.from')}</label>
+                                <label style={{ width: "auto" }}>{translate('task.task_management.from')}</label>
                                 <DatePicker
                                     id="monthStartInOrganizationUnitDashboard"
                                     dateFormat="month-year"
@@ -228,7 +228,7 @@ class TaskOrganizationUnitDashboard extends Component {
                                 />
                             </div>
                             <div className="form-group">
-                                <label>{translate('task.task_management.to')}</label>
+                                <label style={{ width: "auto" }}>{translate('task.task_management.to')}</label>
                                 <DatePicker
                                     id="monthEndInOrganizationUnitDashboard"
                                     dateFormat="month-year"
