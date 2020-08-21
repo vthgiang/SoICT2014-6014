@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import moment from 'moment';
-import { DatePicker, TimePicker } from '../../../../common-components';
+import { DatePicker, TimePicker,ErrorLabel } from '../../../../common-components';
 import { getStorage } from "../../../../config";
 
 import { CallApiStatus } from '../../../auth/redux/reducers'
@@ -138,7 +138,15 @@ class TaskTimesheetLog extends Component {
             var isoDate = new Date(stoppedAt).toISOString();
             var milisec = new Date(isoDate).getTime();
             if(milisec < startedAt) {
-                this.setState({disabled: true});
+                this.setState({
+                    disabled: true,
+                    errorOnEndDate: "Thời điểm kết thúc phải sau khi bắt đầu bấm giờ"
+                });
+            }else {
+                this.setState({
+                    disabled: false,
+                    errorOnEndDate: undefined
+                });
             }
         }
     }
@@ -150,7 +158,7 @@ class TaskTimesheetLog extends Component {
     render() {
 
         const { translate, performtasks, auth } = this.props;
-        const { showEndDate,disabled } = this.state
+        const { showEndDate,disabled,errorOnEndDate } = this.state
         const currentTimer = performtasks.currentTimer;
         const a = (this.state.time - currentTimer?.timesheetLogs[0].startedAt > 0) ? this.state.time - currentTimer?.timesheetLogs[0].startedAt : 0
         return (
@@ -168,14 +176,20 @@ class TaskTimesheetLog extends Component {
                                 <span>&nbsp; {moment.utc(a).format('HH:mm:ss')}</span>
                             </div>
 
+
+                    
+
+
                             {this.state.showModal === auth.user.id &&
                                 <React.Fragment>
                                     <form>
                                         <input type="checkbox" id="stoppedAt" name="stoppedAt" onChange={this.endDate} />
                                         <label for="stoppedAt"> Chọn thời gian kết thúc công việc</label>
                                     </form>
+                                    
                                     {showEndDate &&
                                         <React.Fragment>
+                                            <div className={`form-group ${!errorOnEndDate ? "" : "has-error"}`}>
                                             <div style={{ marginBottom: "5px" }}>Ngày</div>
                                             <DatePicker
                                                 id={`date-picker-${currentTimer._id}`}
@@ -186,6 +200,8 @@ class TaskTimesheetLog extends Component {
                                                 id={`time-picker-${currentTimer._id}`}
                                                 onChange={this.handleTimeChange}
                                             />
+                                           <ErrorLabel content={errorOnEndDate} />
+                                           </div>
                                         </React.Fragment>
                                     }
                                     <br />
