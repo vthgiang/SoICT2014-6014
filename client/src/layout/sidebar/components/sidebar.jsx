@@ -3,7 +3,6 @@ import Item from './item';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { withTranslate } from 'react-redux-multilingual';
-import { LOCAL_SERVER_API } from '../../../env';
 
 class SideBar extends Component {
 
@@ -77,7 +76,7 @@ class SideBar extends Component {
                     <section className="sidebar">
                         <div className="user-panel">
                             <div className="pull-left image">
-                                <img src={LOCAL_SERVER_API + auth.user.avatar} className="img-circle" alt="User avatar" />
+                                <img src={process.env.REACT_APP_SERVER + auth.user.avatar} className="img-circle" alt="User avatar" />
                             </div>
                             <div className="pull-left info">
                                 <p>{user.name}</p>

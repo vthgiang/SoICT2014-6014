@@ -23,6 +23,7 @@ class SystemSetting extends Component {
         const { translate } = this.props;
         const {backup, restore} = this.props.systemSetting;
         const {schedule, autoBackup, limit} = this.state;
+        console.log("processENV", process.env)
         
         return ( 
             <React.Fragment>

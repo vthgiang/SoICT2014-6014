@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
-import moment from 'moment';
-import { LOCAL_SERVER_API } from '../../../../../env';
 
 class DocumentInformation extends Component {
     constructor(props) {
