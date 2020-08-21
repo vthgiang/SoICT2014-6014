@@ -208,6 +208,7 @@ exports.createCompanyLinks = async (companyId, linkArr, roleArr) => {
 
         return resIndex;
     }
+    
     let allLinks = await SystemLink.find()
         .populate({ path: 'roles', model: RootRole });;
     let activeLinks = await SystemLink.find({ _id: { $in: linkArr } })
@@ -232,6 +233,7 @@ exports.createCompanyLinks = async (companyId, linkArr, roleArr) => {
 
     let links = await Link.insertMany(dataLinks);
 
+    //Thêm phân quyền cho link
     let dataPrivilege = [];
     for (let i = 0; i < links.length; i++) {
         let link = links[i];
@@ -271,35 +273,45 @@ exports.createCompanyLinks = async (companyId, linkArr, roleArr) => {
  */
 exports.createCompanyComponents = async (companyId, linkArr) => {
 
-    let systemLinks = await SystemLink.find({ _id: { $in: linkArr } })
-        .populate({ path: 'components', model: SystemComponent, populate: { path: 'roles', model: RootRole } });
-    
-    for (let i = 0; i < systemLinks.length; i++) {
-        let systemLink = systemLinks[i];
-        let link = await Link.findOne({ url: systemLink.url, company: companyId });
+    let systemLinks = await SystemLink.find({ _id: { $in: linkArr } });
 
-        for (let j = 0; j < systemLink.components.length; j++) {
-            let systemComponent = systemLink.components[j];
-            let component = await Component.create({
-                name: systemComponent.name,
-                description: systemComponent.description,
-                link: link._id,
-                company: companyId,
-                deleteSoft: false
-            });
-            let updateLink = await Link.findById(link._id);
-            updateLink.components = [component._id, ...updateLink.components];
+    let dataSystemComponents = systemLinks.map(link=>link.components);
+    dataSystemComponents = dataSystemComponents.reduce((arr1, arr2)=>[...arr1, ...arr2]);
+    dataSystemComponents.filter((component, index) => dataSystemComponents.indexOf(component) === index);
+    const systemComponents = await SystemComponent
+        .find({_id: {$in: dataSystemComponents}})
+        .populate({ path: 'roles', model: RootRole });
+
+    for (let i = 0; i < systemComponents.length; i++) {
+        let sysLinks = await SystemLink.find({_id: {$in: systemComponents[i].links}});
+        let links = await Link.find({company: companyId, url: sysLinks.map(link=>link.url)});
+        // Tạo component
+        let component = await Component.create({
+            name: systemComponents[i].name,
+            description: systemComponents[i].description,
+            links: links.map(link=>link._id),
+            company: companyId,
+            deleteSoft: false
+        })
+        for (let j = 0; j < links.length; j++) {
+            let updateLink = await Link.findById(links[j]._id);
+            updateLink.components.push(component._id);
             await updateLink.save();
-
-            for (let k = 0; k < systemComponent.roles.length; k++) {
-                let rootRole = systemComponent.roles[k];
-                let role = await Role.findOne({ name: rootRole.name, company: companyId });
-                await Privilege.create({
+        }
+        // Tạo phân quyền cho components
+        for (let k = 0; k < systemComponents.length; k++) {
+            let roles = await Role.find({
+                company: companyId, 
+                name: {$in: systemComponents[i].roles.map(role=>role.name)}
+            });
+            let dataPrivileges = roles.map(role=>{
+                return {
                     resourceId: component._id,
                     resourceType: 'Component',
                     roleId: role._id
-                })
-            }
+                }
+            });
+            await Privilege.insertMany(dataPrivileges);
         }
     }
 

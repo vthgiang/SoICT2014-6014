@@ -1,5 +1,5 @@
-import { LOCAL_SERVER_API } from '../../../../env';
 import { sendRequest } from '../../../../helpers/requestHelper';
+
 export const RecommendProcureService = {
     searchRecommendProcures,
     createRecommendProcure,
@@ -10,7 +10,7 @@ export const RecommendProcureService = {
 // Lấy danh sách phiếu đề nghị mua sắm thiết bị
 function searchRecommendProcures(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/recommendprocure/recommend-procurements`,
+        url: `${ process.env.REACT_APP_SERVER }/recommendprocure/recommend-procurements`,
         method: 'GET',
         params: {
             recommendNumber: data.recommendNumber,
@@ -25,7 +25,7 @@ function searchRecommendProcures(data) {
 // Tạo mới thông tin phiếu đề nghị mua sắm thiết bị
 function createRecommendProcure(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/recommendprocure/recommend-procurements`,
+        url: `${ process.env.REACT_APP_SERVER }/recommendprocure/recommend-procurements`,
         method: 'POST',
         data: data
     }, true, true, 'asset.recommend_procure');
@@ -34,7 +34,7 @@ function createRecommendProcure(data) {
 // Cập nhật thông tin phiếu đề nghị mua sắm thiết bị
 function updateRecommendProcure(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/recommendprocure/recommend-procurements/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/recommendprocure/recommend-procurements/${id}`,
         method: 'PUT',
         data: data
     }, true, true, 'asset.recommend_procure');
@@ -43,7 +43,7 @@ function updateRecommendProcure(id, data) {
 // Xoá thông tin phiếu đề nghị mua sắm thiết bị
 function deleteRecommendProcure(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/recommendprocure/recommend-procurements/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/recommendprocure/recommend-procurements/${id}`,
         method: 'DELETE',
     }, true, true, 'asset.recommend_procure');
 }

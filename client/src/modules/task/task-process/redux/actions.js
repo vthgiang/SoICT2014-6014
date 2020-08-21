@@ -7,6 +7,7 @@ export const TaskProcessActions = {
   editXmlDiagram,
   deleteXmlDiagram,
   createTaskByProcess,
+  getAllTaskProcess,
 };
 
 
@@ -17,6 +18,17 @@ function getAllXmlDiagram( pageNumber, noResultsPerPage, name = '' ) {
       .then(
         res => dispatch({ type: TaskProcessConstants.GET_ALL_XML_DIAGRAM_SUCCESS, payload: res.data }),
         error => dispatch({ type: TaskProcessConstants.GET_ALL_XML_DIAGRAM_FAIL })
+      );
+  };
+}
+
+function getAllTaskProcess( pageNumber, noResultsPerPage, name = '' ) {
+  return dispatch => {
+    dispatch({ type: TaskProcessConstants.GET_ALL_TASK_PROCESS_REQUEST });
+    TaskProcessService.getAllTaskProcess( pageNumber, noResultsPerPage, name )
+      .then(
+        res => dispatch({ type: TaskProcessConstants.GET_ALL_TASK_PROCESS_SUCCESS, payload: res.data }),
+        error => dispatch({ type: TaskProcessConstants.GET_ALL_TASK_PROCESS_FAIL })
       );
   };
 }

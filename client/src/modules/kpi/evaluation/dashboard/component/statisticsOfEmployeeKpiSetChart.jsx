@@ -6,8 +6,6 @@ import { UserActions } from "../../../../super-admin/user/redux/actions";
 
 import { withTranslate } from 'react-redux-multilingual';
 
-import { ExportExcel } from '../../../../../common-components';
-
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -173,6 +171,10 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
 
     handleExportData =(exportData)=>
     {
+        const { onDataAvailable } = this.props;
+        if (onDataAvailable) {
+            onDataAvailable(exportData);
+        }
         this.setState(state => {
             return {
                 ...state,
@@ -226,9 +228,6 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
         let { exportData } =this.state;
         return (
             <React.Fragment>
-                <div style={{textAlign: "right"}}>
-                    {exportData && <ExportExcel className="btn btn-primary" id="export-statistic-employee-kpi-set-chart" exportData={exportData} style={{ marginTop:5 }} />}
-                </div>
                 <div ref="chart"></div>
             </React.Fragment>
         )

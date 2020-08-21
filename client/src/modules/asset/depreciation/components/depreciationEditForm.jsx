@@ -211,17 +211,33 @@ class DepreciationEditForm extends Component {
     }
 
     /**
-     * Bắt sự kiện chỉnh sửa tên trường năm sản lượng sản phẩm
+     * Bắt sự kiện chỉnh sửa tên trường tháng sản lượng sản phẩm
      */
-    handleChangeYear = (e) => {
-        var { value, className } = e.target;
-        this.validateYear(value, className);
+    handleMonthChange = (value, index) => {
+        this.validateYear(value, index);
     }
-    validateYear = (value, className, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateUnitsProducedDuringTheYear(value, this.props.translate);
+    validateYear = (value, index, willUpdateState = true) => {
+        let time = value.split("-");
+        let date = new Date(time[1], time[0], 0)
+        let partDepreciation = this.state.startDepreciation.split('-');
+        let startDepreciation = [partDepreciation[2], partDepreciation[1], partDepreciation[0]].join('-');
+
+        let partEndDepreciation = this.state.endDepreciation.split('-');
+        let endDepreciation = [partEndDepreciation[2], partEndDepreciation[1], partEndDepreciation[0]].join('-');
+        console.log("*****22***", startDepreciation, endDepreciation);
+        let msg = undefined;
+
+        if (value.trim() === "") {
+            msg = "Tháng sản lượng sản phẩm không được để trống";
+        } else if (date.getTime() < new Date(startDepreciation).getTime()) {
+            msg = "Tháng sản lượng sản phẩm không được trước ngày bắt đầu tính khấu hao";
+        } else if (date.getTime() > new Date(endDepreciation).getTime()) {
+            msg = "Tháng sản lượng sản phẩm không được sau ngày kết thúc tính khấu hao";
+        } 
+
         if (willUpdateState) {
             var { unitsProducedDuringTheYears } = this.state;
-            unitsProducedDuringTheYears[className] = { ...unitsProducedDuringTheYears[className], year: value }
+            unitsProducedDuringTheYears[index] = { ...unitsProducedDuringTheYears[index], year: value }
             this.setState(state => {
                 return {
                     ...state,
@@ -312,6 +328,7 @@ class DepreciationEditForm extends Component {
                 residualValue: nextProps.residualValue,
                 usefulLife: nextProps.usefulLife,
                 startDepreciation: nextProps.startDepreciation,
+                endDepreciation: nextProps.endDepreciation,
                 depreciationType: nextProps.depreciationType,
                 errorOnStartDepreciation: undefined,
                 errorOnUsefulLife: undefined,
@@ -431,7 +448,7 @@ class DepreciationEditForm extends Component {
                             {
                                 depreciationType == 'Sản lượng' &&
                                 <div className="col-md-12">
-                                    <label>Sản lượng sản phẩm trong các năm:<a title='Số lượng sản phẩm trong các năm'><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }}
+                                    <label>Sản lượng sản phẩm trong các tháng:<a title='Số lượng sản phẩm trong các năm'><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }}
                                         onClick={this.handleAddUnitsProduced} /></a></label>
                                     <div className={`form-group ${(!errorOnYear && !errorOnValue) ? "" : "has-error"}`}>
 
@@ -439,7 +456,7 @@ class DepreciationEditForm extends Component {
                                         <table className="table table-bordered">
                                             <thead>
                                                 <tr>
-                                                    <th>Năm</th>
+                                                    <th>Tháng</th>
                                                     <th>Sản lượng</th>
                                                     <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
                                                 </tr>
@@ -452,7 +469,15 @@ class DepreciationEditForm extends Component {
                                                 </tr> :
                                                     unitsProducedDuringTheYears.map((x, index) => {
                                                         return <tr key={index}>
-                                                            <td><input className={index} type="number" value={x.year} name="year" style={{ width: "100%" }} onChange={this.handleChangeYear} /></td>
+                                                            <td>
+                                                                {/* <input className={index} type="number" value={x.year} name="year" style={{ width: "100%" }} onChange={this.handleChangeYear} /> */}
+                                                                <DatePicker
+                                                                    id={index}
+                                                                    dateFormat="month-year"
+                                                                    // value={this.formatDate2(Date.now())}
+                                                                    onChange={(e) => this.handleMonthChange(e, index)}
+                                                                />
+                                                            </td>
                                                             <td><input className={index} type="number" value={x.value} name="value" style={{ width: "100%" }} onChange={this.handleChangeValue} /></td>
                                                             <td style={{ textAlign: "center" }}>
                                                                 <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>

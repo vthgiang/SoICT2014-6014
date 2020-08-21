@@ -1,4 +1,3 @@
-import { LOCAL_SERVER_API } from '../../../env';
 import { sendRequest } from '../../../helpers/requestHelper';
 
 export const NotificationServices = {
@@ -14,14 +13,14 @@ export const NotificationServices = {
 
 function getAllManualNotifications() {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/notifications/get`,
+        url: `${ process.env.REACT_APP_SERVER }/notifications/get`,
         method: 'GET',
     }, false, false, 'notification');
 }
 
 function paginateManualNotifications(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/notifications/paginate`,
+        url: `${ process.env.REACT_APP_SERVER }/notifications/paginate`,
         method: 'POST',
         data
     }, false, false, 'notification');
@@ -29,14 +28,14 @@ function paginateManualNotifications(data) {
 
 function getAllNotifications() {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/notifications/get-notifications`,
+        url: `${ process.env.REACT_APP_SERVER }/notifications/get-notifications`,
         method: 'GET',
     }, false, false, 'notification');
 }
 
 function paginateNotifications(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/notifications/paginate-notifications`,
+        url: `${ process.env.REACT_APP_SERVER }/notifications/paginate-notifications`,
         method: 'POST',
         data
     }, false, false, 'notification');
@@ -44,7 +43,7 @@ function paginateNotifications(data) {
 
 function create(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/notifications/create`,
+        url: `${ process.env.REACT_APP_SERVER }/notifications/create`,
         method: 'POST',
         data,
     }, true, true, 'notification');
@@ -52,21 +51,21 @@ function create(data) {
 
 function readedNotification(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/notifications/readed/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/notifications/readed/${id}`,
         method: 'PATCH',
     }, false, false, 'notification');
 }
 
 function deleteManualNotification(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/notifications/delete-manual-notification/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/notifications/delete-manual-notification/${id}`,
         method: 'DELETE',
     }, true, true, 'notification');
 }
 
 function deleteNotification(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/notifications/delete-notification/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/notifications/delete-notification/${id}`,
         method: 'DELETE',
     }, true, true, 'notification');
 }

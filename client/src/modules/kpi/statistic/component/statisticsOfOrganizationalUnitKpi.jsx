@@ -270,17 +270,15 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                 if (unit.length !== 0) {
                     unit.map(kpi => {
                         if (kpi._id) {
-                            let numberOfChildKpi = 0;
-                            let listChildKpi = [], listTask = [], listChildTask = [], listParticipant = [], listChildParticipant = [];
+                            let listEmployeeKpi = [], listTask = [], listChildTask = [], listParticipant = [], listChildParticipant = [];
 
                             // Công số kpi đơn vị con, lấy task, participant của kpi con
                             if (listChildTarget && listChildTarget.length !== 0) {
                                 listChildTarget.filter(item => item.parent === kpi.employeeKpi[0].parent)
                                     .map(item => {
-                                        numberOfChildKpi = numberOfChildKpi + item.numberOfChildKpi;
                                         listChildTask = item.listTask;
                                         listChildParticipant = item.listParticipant;
-                                        listChildKpi = item.listChildKpi;
+                                        listEmployeeKpi = item.listEmployeeKpi;
                                     })
                             }
 
@@ -288,7 +286,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                             if (kpi.employeeKpi.length !== 0) {
                                 if (kpi.employeeKpi[0].creator.length !== 0) {
                                     kpi.employeeKpi.map(item => {
-                                        listChildKpi = listChildKpi.concat(item);
+                                        listEmployeeKpi = listEmployeeKpi.concat(item);
                                     })
                                 } 
                             }
@@ -323,18 +321,54 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                             // Lọc participant của kpi hiện tại
                             if (kpi.employeeKpi.length !== 0) {
                                 kpi.employeeKpi.map(item => {
-                                    listParticipant = listParticipant.concat(item.creator);
+                                    if (item.creatorInfo._id.length !== 0) {
+                                        listParticipant = listParticipant.concat({
+                                            '_id': item.creatorInfo._id.length !== 0 && item.creatorInfo._id[0],
+                                            'name': item.creatorInfo.name.length !== 0 && item.creatorInfo.name[0],
+                                            'email': item.creatorInfo.email.length !== 0 && item.creatorInfo.email[0]
+                                        });
+                                    }
                                 })
                             }
                             if (listTask.length !== 0) {
                                 listTask.map(task => {
-                                    listParticipant = listParticipant.concat(task.informedEmployees).concat(task.consultedEmployees).concat(task.informedEmployees).concat(task.responsibleEmployees)
+                                    if (task.accountableEmployeesInfo.length !== 0) {
+                                        task.accountableEmployeesInfo.map(item => {
+                                            listParticipant = listParticipant.concat(item)
+                                        })
+                                    }
+                                    if (task.consultedEmployeesInfo.length !== 0) {
+                                        task.consultedEmployeesInfo.map(item => {
+                                            listParticipant = listParticipant.concat(item)
+                                        })
+                                    }
+                                    if (task.informedEmployeesInfo.length !== 0) {
+                                        task.informedEmployeesInfo.map(item => {
+                                            listParticipant = listParticipant.concat(item)
+                                        })
+                                    }
+                                    if (task.responsibleEmployeesInfo.length !== 0) {
+                                        task.responsibleEmployeesInfo.map(item => {
+                                            listParticipant = listParticipant.concat(item)
+                                        })
+                                    }
                                 })
                             }
                             // Concat mảng participant kpi hiện tại và kpi con
                             listParticipant = listParticipant.concat(listChildParticipant);
-                            listParticipant = Array.from(new Set(listParticipant));
-
+                            // Lọc các phần tử trùng lặp
+                            let idArray = listParticipant.map(item => item && item._id);
+                            idArray = idArray.map((item, index, array) => {
+                                if (array.indexOf(item) === index) {
+                                    return index;
+                                } else {
+                                    return false
+                                }
+                            })
+                            idArray = idArray.filter(item => listParticipant[item]);
+                            let listParticipantFilter = idArray.map(item => {
+                                return listParticipant[item]
+                            })
 
                             // Phần tử tree
                             treeData.push({
@@ -343,12 +377,11 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
                                 name: kpi._id,
                                 state: { "opened": true },
                                 parent: kpi.employeeKpi[0].parentOfUnitKpi && organizationalUnit && organizationalUnit.text !== kpi.organizationalUnit ? kpi.employeeKpi[0].parentOfUnitKpi.toString() : "#",
-                                // numberOfChildKpi: numberOfChildKpi + (kpi.employeeKpi[0].creator.length !== 0 ? kpi.employeeKpi.length : 0),
                                 organizationalUnit: kpi.organizationalUnit,
                                 weight: kpi.employeeKpi[0].parentWeight,
-                                listChildKpi: listChildKpi,
+                                listEmployeeKpi: listEmployeeKpi,
                                 listTask: listTask,
-                                listParticipant: listParticipant
+                                listParticipant: listParticipantFilter
                             })
 
                             this.TREE_INDEX++;
@@ -449,7 +482,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
 
     onChanged = async (e, data) => {
         this.TREE_INDEX = 0;
-        console.log("555", data)
+
         await this.setState(state => {
             return {
                 ...state,

@@ -1,4 +1,3 @@
-import { LOCAL_SERVER_API } from '../../../../env';
 import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const CompanyServices = {
@@ -22,7 +21,7 @@ export const CompanyServices = {
  */
 function getAllCompanies(params) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/companies`,
+        url: `${process.env.REACT_APP_SERVER}/system-admin/company/companies`,
         method: 'GET',
         params
     }, false, true, 'system_admin.company');
@@ -34,7 +33,7 @@ function getAllCompanies(params) {
  */
 function createCompany(company) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/companies`,
+        url: `${process.env.REACT_APP_SERVER}/system-admin/company/companies`,
         method: 'POST',
         data: company,
     }, true, true, 'system_admin.company');
@@ -47,7 +46,7 @@ function createCompany(company) {
  */
 function editCompany(companyId, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/companies/${companyId}`,
+        url: `${process.env.REACT_APP_SERVER}/system-admin/company/companies/${companyId}`,
         method: 'PATCH',
         data,
     }, true, true, 'system_admin.company');
@@ -63,7 +62,7 @@ function editCompany(companyId, data) {
 function updateCompanyLinks(data) {
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/link/links/company/update`,
+        url: `${process.env.REACT_APP_SERVER}/link/links/company/update`,
         method: 'PATCH',
         data
     }, true, true, 'system_admin.company');
@@ -72,7 +71,7 @@ function updateCompanyLinks(data) {
 function updateCompanyComponents(data) {
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/component/components/company/update`,
+        url: `${process.env.REACT_APP_SERVER}/component/components/company/update`,
         method: 'PATCH',
         data
     }, true, true, 'system_admin.company');
@@ -84,38 +83,10 @@ function updateCompanyComponents(data) {
  */
 function getCompanyLinks(params) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/link/links`,
+        url: `${process.env.REACT_APP_SERVER}/link/links`,
         method: 'GET',
         params
     }, false, true, 'system_admin.company');
-}
-
-/**
- * Thêm mới 1 component cho công ty
- * @companyId id của công ty
- * @data
-    * @componentname tên của component
-    * @componentDescription mô tả về component
-    * @linkId id của link được chứa component này
- */
-function addCompanyComponent(companyId, data) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/companies/${companyId}/components`,
-        method: 'POST',
-        data,
-    }, true, true, 'system_admin.company');
-}
-
-/**
- * Xóa một của component của công ty
- * @companyId id của công ty
- * @componentId id của component muốn xóa
- */
-function deleteCompanyComponent(companyId, componentId) {
-    return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/companies/${companyId}/components/${componentId}`,
-        method: 'DELETE',
-    }, true, true, 'system_admin.company');
 }
 
 /**
@@ -124,7 +95,7 @@ function deleteCompanyComponent(companyId, componentId) {
  */
 function getCompanyComponents(params) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/component/components`,
+        url: `${process.env.REACT_APP_SERVER}/component/components`,
         method: 'GET',
         params
     }, false, true, 'system_admin.company');
@@ -137,7 +108,7 @@ function getCompanyComponents(params) {
  */
 function getImportConfiguration(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/data-import-configurations`,
+        url: `${process.env.REACT_APP_SERVER}/system-admin/company/data-import-configurations`,
         method: 'GET',
         params: { type: data.type }
     }, false, false, 'system_admin.company');
@@ -149,7 +120,7 @@ function getImportConfiguration(data) {
  */
 function createImportConfiguration(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/data-import-configurations`,
+        url: `${process.env.REACT_APP_SERVER}/system-admin/company/data-import-configurations`,
         method: 'POST',
         data,
     }, true, true, 'system_admin.company');
@@ -161,7 +132,7 @@ function createImportConfiguration(data) {
  */
 function editImportConfiguration(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/system-admin/company/data-import-configurations/${data.id}`,
+        url: `${process.env.REACT_APP_SERVER}/system-admin/company/data-import-configurations/${data.id}`,
         method: 'PATCH',
         data,
     }, true, true, 'system_admin.company');

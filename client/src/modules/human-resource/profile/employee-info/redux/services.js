@@ -1,5 +1,4 @@
 
-import { LOCAL_SERVER_API } from '../../../../../env';
 import { getStorage } from '../../../../../config';
 import { sendRequest } from '../../../../../helpers/requestHelper';
 
@@ -14,7 +13,7 @@ export const EmployeeService = {
 async function getEmployeeProfile() {
     var userId = getStorage("userId");
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employees/${userId}`,
+        url: `${ process.env.REACT_APP_SERVER }/employees/${userId}`,
         method: 'GET',
     }, false, true, 'human_resource.profile.employee_info');
 }
@@ -26,7 +25,7 @@ async function getEmployeeProfile() {
 async function updatePersonalInformation(data) {
     var userId = getStorage("userId");
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employees/${userId}`,
+        url: `${ process.env.REACT_APP_SERVER }/employees/${userId}`,
         method: 'PATCH',
         data: data,
     }, true, true, 'human_resource.profile.employee_info');

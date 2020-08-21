@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User, UserRole } = require('../../../models/index').schema;
+const { Task, TaskProcess, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User, UserRole } = require('../../../models/index').schema;
 
 const moment = require("moment");
 const nodemailer = require("nodemailer");
@@ -198,6 +198,26 @@ exports.getTaskById = async (id, userId) => {
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "documents.creator", model: User, select: 'name email avatar' },
+        {
+            path: "process", model: TaskProcess, populate: {
+                path: "tasks", model: Task, populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit", model: OrganizationalUnit },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                    { path: "evaluations.results.kpis" },
+                    { path: "taskActions.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+                    { path: "taskComments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "documents.creator", model: User, select: 'name email avatar' },
+                    { path: "process", model: TaskProcess },
+                ]
+            }
+        },
     ])
     if (!task) {
         return {
@@ -1382,6 +1402,39 @@ exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId, mo
         },
 
         {
+            $lookup: {
+                from: "users",
+                localField: "responsibleEmployees",
+                foreignField: "_id",
+                as: "responsibleEmployeesInfo"
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "accountableEmployees",
+                foreignField: "_id",
+                as: "accountableEmployeesInfo"
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "consultedEmployees",
+                foreignField: "_id",
+                as: "consultedEmployeesInfo"
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "informedEmployees",
+                foreignField: "_id",
+                as: "informedEmployeesInfo"
+            }
+        },
+
+        {
             $project: {
                 'name': 1,
                 'detailOrganizationalUnit.name': 1,
@@ -1390,10 +1443,27 @@ exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId, mo
                 'endDate': 1,
                 'priority': 1,
                 'evaluations': 1,
+
                 'responsibleEmployees': 1,
                 'accountableEmployees': 1,
                 'consultedEmployees': 1,
                 'informedEmployees': 1,
+
+                'responsibleEmployeesInfo._id': 1,
+                'responsibleEmployeesInfo.name': 1,
+                'responsibleEmployeesInfo.email': 1,
+
+                'accountableEmployeesInfo._id': 1,
+                'accountableEmployeesInfo.name': 1,
+                'accountableEmployeesInfo.email': 1,
+
+                'consultedEmployeesInfo._id': 1,
+                'consultedEmployeesInfo.name': 1,
+                'consultedEmployeesInfo.email': 1,
+
+                'informedEmployeesInfo._id': 1,
+                'informedEmployeesInfo.name': 1,
+                'informedEmployeesInfo.email': 1,
                 'status': 1
             }
         }

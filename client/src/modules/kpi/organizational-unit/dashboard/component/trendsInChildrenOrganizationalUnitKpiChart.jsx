@@ -372,7 +372,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                     
                     if (arrayListTaskSameOrganizationUnitKpi) {
                         creators2 = arrayListTaskSameOrganizationUnitKpi[key].map(x => {
-                            return x.informedEmployees.concat(x.consultedEmployees).concat(x.informedEmployees).concat(x.responsibleEmployees);
+                            return x.accountableEmployees.concat(x.consultedEmployees).concat(x.informedEmployees).concat(x.responsibleEmployees);
                         })
                         creators2.forEach(x => creators1 = creators1.concat(x));
                     }
@@ -393,11 +393,11 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
         return numberOfParticipants;
     }
 
-    setNumberOfChildKpiData = () => {
+    setNumberOfEmployeeKpiData = () => {
         const { createKpiUnit, translate } = this.props;
 
         let listOrganizationalUnitKpi;
-        let numberOfChildKpis = {};
+        let numberOfEmployeeKpis = {};
         let arrayListChildTargetSameParent = this.getArrayListChildTargetSameParent();
         
         if (createKpiUnit.currentKPI && createKpiUnit.currentKPI.kpis) {
@@ -405,11 +405,11 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
         }
 
         if (!listOrganizationalUnitKpi) {
-            numberOfChildKpis = {}
+            numberOfEmployeeKpis = {}
         } else {
             listOrganizationalUnitKpi.map(parent => {
 
-                let numberOfChildKpi = 0, temporary = {};
+                let numberOfEmployeeKpi = 0, temporary = {};
                 let listChildTargetSameParent;
 
                 if (arrayListChildTargetSameParent) {
@@ -429,7 +429,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                                 if (unit.length !== 0) {
                                         unit.forEach(kpi => {
                                         if (kpi.employeeKpi[0].creator.length !== 0) {
-                                            numberOfChildKpi = numberOfChildKpi + kpi.employeeKpi.length;
+                                            numberOfEmployeeKpi = numberOfEmployeeKpi + kpi.employeeKpi.length;
                                         }
                                     });
                                 }
@@ -439,17 +439,17 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
                     })
                 }
                 
-                temporary[parent.name] = numberOfChildKpi;
-                numberOfChildKpis = Object.assign(numberOfChildKpis, temporary);
+                temporary[parent.name] = numberOfEmployeeKpi;
+                numberOfEmployeeKpis = Object.assign(numberOfEmployeeKpis, temporary);
             })
         }
 
-        numberOfChildKpis = Object.assign(
-            { name: translate('kpi.organizational_unit.dashboard.trend_chart.amount_child_kpi') },
-            numberOfChildKpis
+        numberOfEmployeeKpis = Object.assign(
+            { name: translate('kpi.organizational_unit.dashboard.trend_chart.amount_employee_kpi') },
+            numberOfEmployeeKpis
         )
         
-        return numberOfChildKpis;
+        return numberOfEmployeeKpis;
     }
     
     // Thiết lập data trọng số của từng Kpi đơn vị
@@ -493,7 +493,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
         
         const { createKpiUnit } = this.props;
 
-        let numberOfParticipants, numberOfChildKpis, executionTimes, numberOfTasks, weight, listOrganizationalUnitKpi;
+        let numberOfParticipants, numberOfEmployeeKpis, executionTimes, numberOfTasks, weight, listOrganizationalUnitKpi;
         let data, dataChart, titleX;
            
         if(createKpiUnit.currentKPI) {
@@ -501,7 +501,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
         }
 
         executionTimes = this.setExecutionTimeData();
-        numberOfChildKpis = this.setNumberOfChildKpiData();
+        numberOfEmployeeKpis = this.setNumberOfEmployeeKpiData();
         numberOfParticipants = this.setNumberOfParticipantData();
         numberOfTasks = this.setNumberOfTaskData();
         weight = this.setWeightData();
@@ -510,7 +510,7 @@ class TrendsInChildrenOrganizationalUnitKpiChart extends Component {
             executionTimes,
             numberOfParticipants,
             numberOfTasks,
-            numberOfChildKpis,
+            numberOfEmployeeKpis,
             weight
         ]
 

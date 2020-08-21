@@ -1,4 +1,3 @@
-import { LOCAL_SERVER_API } from '../../../env';
 import { sendRequest } from '../../../helpers/requestHelper';
 
 export const DocumentServices = {
@@ -33,7 +32,7 @@ export const DocumentServices = {
 
 function getDocuments(params) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/documents`,
+        url: `${process.env.REACT_APP_SERVER}/documents/documents`,
         method: 'GET',
         params,
     }, false, true, 'document');
@@ -41,7 +40,7 @@ function getDocuments(params) {
 
 function createDocument(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/documents`,
+        url: `${process.env.REACT_APP_SERVER}/documents/documents`,
         method: 'POST',
         data,
     }, true, true, 'document');
@@ -49,21 +48,21 @@ function createDocument(data) {
 
 function deleteDocument(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/documents/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/documents/documents/${id}`,
         method: 'DELETE'
     }, true, true, 'document');
 }
 
 function increaseNumberView(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/documents/${id}/increase-number-view`,
+        url: `${process.env.REACT_APP_SERVER}/documents/documents/${id}/increase-number-view`,
         method: 'PATCH',
     }, false, false, 'document');
 }
 
 function editDocument(id, data, option = undefined) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/documents/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/documents/documents/${id}`,
         method: 'PATCH',
         data,
         params: { option },
@@ -72,7 +71,7 @@ function editDocument(id, data, option = undefined) {
 
 function downloadDocumentFile(id, numberVersion) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/documents/${id}/download-file`,
+        url: `${process.env.REACT_APP_SERVER}/documents/documents/${id}/download-file`,
         method: 'GET',
         responseType: 'blob',
         params: {
@@ -83,7 +82,7 @@ function downloadDocumentFile(id, numberVersion) {
 
 function downloadDocumentFileScan(id, numberVersion) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/documents/${id}/download-file-scan`,
+        url: `${process.env.REACT_APP_SERVER}/documents/documents/${id}/download-file-scan`,
         method: 'GET',
         responseType: 'blob',
         params: {
@@ -94,7 +93,7 @@ function downloadDocumentFileScan(id, numberVersion) {
 
 function getDocumentCategories(params) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/document-categories`,
+        url: `${process.env.REACT_APP_SERVER}/documents/document-categories`,
         method: 'GET',
         params
     }, false, true, 'document');
@@ -102,7 +101,7 @@ function getDocumentCategories(params) {
 
 function createDocumentCategory(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/document-categories`,
+        url: `${process.env.REACT_APP_SERVER}/documents/document-categories`,
         method: 'POST',
         data,
     }, true, true, 'document');
@@ -110,7 +109,7 @@ function createDocumentCategory(data) {
 
 function editDocumentCategory(id, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/document-categories/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/documents/document-categories/${id}`,
         method: 'PATCH',
         data,
     }, true, true, 'document');
@@ -118,7 +117,7 @@ function editDocumentCategory(id, data) {
 
 function deleteDocumentCategory(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/document-categories/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/documents/document-categories/${id}`,
         method: 'DELETE'
     }, true, true, 'document');
 }
@@ -126,14 +125,14 @@ function deleteDocumentCategory(id) {
 // Danh mục văn bản - domain
 function getDocumentDomains() {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/document-domains`,
+        url: `${process.env.REACT_APP_SERVER}/documents/document-domains`,
         method: 'GET',
     }, false, true, 'document');
 }
 
 function createDocumentDomain(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/document-domains`,
+        url: `${process.env.REACT_APP_SERVER}/documents/document-domains`,
         method: 'POST',
         data,
     }, true, true, 'document');
@@ -142,7 +141,7 @@ function createDocumentDomain(data) {
 function editDocumentDomain(id, data) {
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/document-domains/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/documents/document-domains/${id}`,
         method: 'PATCH',
         data,
     }, true, true, 'document');
@@ -150,14 +149,14 @@ function editDocumentDomain(id, data) {
 
 function deleteDocumentDomain(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/document-domains/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/documents/document-domains/${id}`,
         method: 'DELETE',
     }, true, true, 'document');
 }
 
 function deleteManyDocumentDomain(array) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/document-domains/delete-many`,
+        url: `${process.env.REACT_APP_SERVER}/documents/document-domains/delete-many`,
         method: 'POST',
         data: { array }
     }, true, true, 'document');
@@ -166,7 +165,7 @@ function deleteManyDocumentDomain(array) {
 function getDocumentsUserCanView(roleId, params) {
     console.log('ttt', params)
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/documents/permission-view`,
+        url: `${process.env.REACT_APP_SERVER}/documents/documents/permission-view`,
         method: 'GET',
         params: {
             ...params,
@@ -177,7 +176,7 @@ function getDocumentsUserCanView(roleId, params) {
 
 function getUserDocumentStatistics(params) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/documents/user-statistical`,
+        url: `${process.env.REACT_APP_SERVER}/documents/documents/user-statistical`,
         method: 'GET',
         params,
     }, false, true, 'document');
@@ -187,7 +186,7 @@ function getUserDocumentStatistics(params) {
 function getDocumentArchives() {
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/document-archives`,
+        url: `${process.env.REACT_APP_SERVER}/documents/document-archives`,
         method: 'GET',
     }, false, false, 'document')
 };
@@ -195,7 +194,7 @@ function getDocumentArchives() {
 function createDocumentArchives(data) {
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/document-archives`,
+        url: `${process.env.REACT_APP_SERVER}/documents/document-archives`,
         method: 'POST',
         data,
     }, true, true, 'document');
@@ -204,7 +203,7 @@ function createDocumentArchives(data) {
 function editDocumentArchives(id, data) {
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/document-archives/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/documents/document-archives/${id}`,
         method: 'PATCH',
         data,
     }, true, true, 'document');
@@ -212,7 +211,7 @@ function editDocumentArchives(id, data) {
 
 function deleteDocumentArchives(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/document-archives/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/documents/document-archives/${id}`,
         method: 'DELETE',
     }, true, true, 'document');
 }
@@ -220,7 +219,7 @@ function deleteDocumentArchives(id) {
 function deleteManyDocumentArchives(array) {
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/documents/document-archives/delete-many`,
+        url: `${process.env.REACT_APP_SERVER}/documents/document-archives/delete-many`,
         method: 'POST',
         data: { array }
     }, true, true, 'document');
