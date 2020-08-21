@@ -671,51 +671,6 @@ class ModalCreateTaskByProcess extends Component {
                                     </div>
                                 </div>
                             </div>
-<<<<<<< HEAD
-                        </div>
-                        {/* Ngày bắt đầu và kết thúc của cả quy trình */}
-                        <div className="row form-group col-md-4" >
-                            <div>
-                                <h3 style={{marginLeft: "10px"}}>Thông tin thời gian quy trình</h3>
-                            </div>
-
-                            <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnStartDate === undefined ? "" : "has-error"}`}>
-                                <label className="control-label">{translate('task.task_management.start_date')}*</label>
-                                <DatePicker
-                                    id={`datepicker1-process-${idProcess}`}
-                                    dateFormat="day-month-year"
-                                    value={startDate}
-                                    onChange={this.handleChangeTaskStartDate}
-                                />
-                            </div>
-                            <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${errorOnEndDate === undefined ? "" : "has-error"}`}>
-                                <label className="control-label">{translate('task.task_management.end_date')}*</label>
-                                <DatePicker
-                                    id={`datepicker2-process-${idProcess}`}
-                                    value={endDate}
-                                    onChange={this.handleChangeTaskEndDate}
-                                />
-                            </div>  
-                        </div>
-                        
-                        <div className={`right-content-create col-md-4`}>
-                            {/* style={{ display: "flex", flexDirection: "column" }} */}
-                            {
-                                (showInfo) &&
-                                <div>
-                                    <div>
-                                        <h3>Tạo công việc với mẫu {taskName}</h3>
-                                    </div>
-                                    <FormCreateTaskByProcess
-                                        isProcess={true}
-                                        id={id}
-                                        info={(info && info[`${id}`]) && info[`${id}`]}
-                                        onChangeTemplateData={this.handleChangeInfo}
-                                        handleChangeName={this.handleChangeName} // cập nhật tên vào diagram
-                                        handleChangeResponsible={this.handleChangeResponsible} // cập nhật hiển thi diagram
-                                        handleChangeAccountable={this.handleChangeAccountable} // cập nhật hiển thị diagram
-                                    />
-=======
                             <div className="tab-content" style={{ padding: 0, marginTop: -15 }}>
                                 <div className={selected === "process" ? "active tab-pane" : "tab-pane"} id="process-create-task">
                                     <div className="row">
@@ -776,7 +731,6 @@ class ModalCreateTaskByProcess extends Component {
                                         </div>
 
                                     </div>
->>>>>>> 3c86773584867f85ef44e26a41700cf1705a362b
                                 </div>
                             </div>
                         </div>

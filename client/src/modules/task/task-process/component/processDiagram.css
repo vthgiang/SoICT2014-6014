@@ -119,10 +119,9 @@
 #createtaskbyprocess > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2) {
     display: none;
 }
-<<<<<<< HEAD
 #viewprocess > div > div > svg > g > g > g > g > g > text:nth-child(2) {
     display: none;
-=======
+}
 #viewtaskprocestab > div > div > svg > g > g.layer-base > g > g > g > text:nth-child(2) {
     display: none;
 }
@@ -135,5 +134,4 @@
 .is-tabbed-pane #viewtaskprocestab svg{
     /* border: 1px solid black; */
     height: calc(100vh - 500px);
->>>>>>> 3c86773584867f85ef44e26a41700cf1705a362b
 }
