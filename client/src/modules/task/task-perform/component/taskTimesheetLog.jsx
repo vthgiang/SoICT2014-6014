@@ -14,7 +14,9 @@ class TaskTimesheetLog extends Component {
         super(props);
         this.state = {
             showModal: '',
-            description: ''
+            description: '',
+            showEndDate: false,
+            disabled: false
         }
         this.sendQuery = false;
     }
@@ -90,7 +92,6 @@ class TaskTimesheetLog extends Component {
         //Nếu quá 4 tiếng, chọn đủ ngày, giờ kết thúc
         if (this.state.dateStop && this.state.timeStop) {
             var stoppedAt = this.state.dateStop + " " + this.state.timeStop
-            var now = new Date().getTime()
             var isoDate = new Date(stoppedAt).toISOString();
             var milisec = new Date(isoDate).getTime();
         }
@@ -98,7 +99,7 @@ class TaskTimesheetLog extends Component {
             startedAt: performtasks.currentTimer.timesheetLogs[0].startedAt,
             description: this.state.description,
             timesheetLog: performtasks.currentTimer.timesheetLogs[0]._id,
-            stoppedAt : milisec
+            stoppedAt: milisec
         };
         await this.props.stopTimer(performtasks.currentTimer._id, timer);
         this.setState(state => {
@@ -117,6 +118,7 @@ class TaskTimesheetLog extends Component {
                 dateStop: dateStop
             }
         });
+        this.validateTime()
     }
     handleTimeChange = (value) => {
         this.setState(state => {
@@ -125,10 +127,30 @@ class TaskTimesheetLog extends Component {
                 timeStop: value
             }
         });
+        this.validateTime()
+        
+    }
+    validateTime = ()  => {
+        if(this.state.timeStop && this.state.dateStop) {
+            const { performtasks } = this.props;
+            var startedAt= performtasks.currentTimer?.timesheetLogs[0]?.startedAt
+            var stoppedAt = this.state.dateStop + " " + this.state.timeStop
+            var isoDate = new Date(stoppedAt).toISOString();
+            var milisec = new Date(isoDate).getTime();
+            if(milisec < startedAt) {
+                this.setState({disabled: true});
+            }
+        }
+    }
+    endDate = (event) => {
+        this.setState({
+            showEndDate: event.target.checked
+        });
     }
     render() {
 
         const { translate, performtasks, auth } = this.props;
+        const { showEndDate,disabled } = this.state
         const currentTimer = performtasks.currentTimer;
         const a = (this.state.time - currentTimer?.timesheetLogs[0].startedAt > 0) ? this.state.time - currentTimer?.timesheetLogs[0].startedAt : 0
         return (
@@ -148,10 +170,13 @@ class TaskTimesheetLog extends Component {
 
                             {this.state.showModal === auth.user.id &&
                                 <React.Fragment>
-                                    {a > 3000 &&
+                                    <form>
+                                        <input type="checkbox" id="stoppedAt" name="stoppedAt" onChange={this.endDate} />
+                                        <label for="stoppedAt"> Chọn thời gian kết thúc công việc</label>
+                                    </form>
+                                    {showEndDate &&
                                         <React.Fragment>
-                                            <div>Chọn thời gian kết thúc công việc</div>
-                                            <div style ={{marginBottom:"5px"}}>Ngày</div>
+                                            <div style={{ marginBottom: "5px" }}>Ngày</div>
                                             <DatePicker
                                                 id={`date-picker-${currentTimer._id}`}
                                                 onChange={this.handleDateChange}
@@ -178,7 +203,7 @@ class TaskTimesheetLog extends Component {
                                             })
                                         }}
                                     />
-                                    <button className="btn btn-primary" style={{ marginRight: 5 }} onClick={this.stopTimer}>Lưu</button>
+                                    <button className="btn btn-primary" style={{ marginRight: 5 }} disabled = {disabled} onClick={this.stopTimer}>Lưu</button>
                                     <button className="btn btn-danger" onClick={this.resumeTimer}>Hủy</button>
                                 </React.Fragment>
                             }
