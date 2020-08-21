@@ -45,6 +45,8 @@ const TaskResultInformation = require('./task/taskResultInformation.model');
 const TaskTemplate = require('./task/taskTemplate.model');
 const TaskTemplateInformation = require('./task/taskTemplateInformation.model');
 const TimesheetLog = require('./task/timesheetLog.model');
+const TaskProcess = require("./task/taskProcess.model");
+const ProcessTemplate = require("./task/processTemplate.model");
 
 const Course = require('./training/course.model');
 const EducationProgram = require('./training/educationProgram.model');
@@ -56,7 +58,6 @@ const Asset = require('./asset/asset.model'); //tài sản
 const AssetType = require('./asset/assetType.model'); //loại tài sản
 const RecommendProcure = require('./asset/recommendProcure.model'); //đề nghị mua sắm thiết bị
 const RecommendDistribute = require('./asset/recommendDistribute.model'); //đề nghị cấp phát thiết bị
-const TaskProcess = require("./task/taskProcess.model")
 //report
 const TaskReport = require('./report/taskReport.model');
 
@@ -123,6 +124,7 @@ exports.schema = {
     TaskTemplateInformation,
     TimesheetLog,
     TaskProcess,
+    ProcessTemplate,
     Course,
     EducationProgram,
     EmployeeCourse,

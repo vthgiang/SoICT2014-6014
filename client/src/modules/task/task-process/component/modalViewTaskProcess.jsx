@@ -8,8 +8,7 @@ import { UserActions } from "../../../super-admin/user/redux/actions";
 import { TaskProcessActions } from "../redux/actions";
 import { withTranslate } from "react-redux-multilingual";
 import { ViewTaskTemplate } from "../../task-template/component/viewTaskTemplate";
-
-// import readOnlyModule from './read-only'
+import customModule from './read-only'
 
 var zlevel = 1;
 class ModalViewTaskProcess extends Component {
@@ -26,9 +25,9 @@ class ModalViewTaskProcess extends Component {
             xmlDiagram: data.xmlDiagram,
         }
         this.viewer = new BpmnViewer({
-            // additionalModules: [
-            //     readOnlyModule
-            // ]
+            additionalModules: [
+                customModule
+            ]
         });
         this.generateId = 'viewprocess';
         this.viewer.importXML(this.props.xmlDiagram)

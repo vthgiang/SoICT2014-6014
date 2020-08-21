@@ -1,4 +1,3 @@
-import { LOCAL_SERVER_API } from '../../../../../env';
 import { sendRequest } from '../../../../../helpers/requestHelper';
 
 export const managerKPIPerService = {
@@ -14,7 +13,7 @@ export const managerKPIPerService = {
  */
 function getAllKpiSetsOrganizationalUnitByMonth(user, department, date) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpi-sets`,
         method: 'GET',
         params: {
             user: user,
@@ -33,7 +32,7 @@ function getAllKpiSetsOrganizationalUnitByMonth(user, department, date) {
  */
 function copyEmployeeKPI( id, idcreator, unitId,  dateNew){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/employee/management/employee-kpi-sets/${id}/copy`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/employee/management/employee-kpi-sets/${id}/copy`,
         method: 'POST',
         params: {
             creator: idcreator,

@@ -237,7 +237,6 @@ class FormInfoProcess extends Component {
                             <div className="form-group">
                         <label htmlFor="exampleFormControlSelect1" style={{ float: 'left' }} >Người thực hiện</label>
                         {
-                            // unitMembers &&
                             <SelectBox
                                 id={`select-responsible-employee-${id}-${action}`}
                                 className="form-control select2"
@@ -255,7 +254,6 @@ class FormInfoProcess extends Component {
                     <div className="form-group">
                         <label htmlFor="exampleFormControlSelect2" style={{ float: 'left' }} >Người phê duyệt</label>
                         {
-                            // unitMembers &&
                             <SelectBox
                                 id={`select-accountable-employee-${id}-${action}`}
                                 className="form-control select2"
@@ -287,7 +285,6 @@ function mapState(state) {
 
 const actionCreators = {
     getDepartment: UserActions.getDepartmentOfUser,
-    // getAllUserSameDepartment: UserActions.getAllUserSameDepartment,
     getTaskTemplateByUser: taskTemplateActions.getAllTaskTemplateByUser,
 };
 const connectedFormInfoProcess = connect(mapState, actionCreators)(withTranslate(FormInfoProcess));

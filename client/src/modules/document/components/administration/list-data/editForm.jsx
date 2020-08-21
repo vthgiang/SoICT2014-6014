@@ -381,6 +381,21 @@ class EditForm extends Component {
         // && this.validateSinger(this.state.documentSigner, false)
         // && this.validateIssuingBody(this.state.documentIssuingBody, false);
     }
+
+    compareArray = (array1, array2) => {
+        if (array1.length !== array2.length) {
+            return false;
+        }
+        else {
+            for (let i = 0; i < array1.length; i++) {
+                if (array1[i] !== array2[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
     save = () => {
         const {
             documentId,
@@ -398,112 +413,130 @@ class EditForm extends Component {
             documentArchivedRecordPlaceOrganizationalUnit,
             documentArchivedRecordPlaceManager,
         } = this.state;
-
+        const { role, documents } = this.props;
+        console.log('errrrrrrrrrrrrr', this.props);
+        const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
+        const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         let title = "";
         let description = "";
         const formData = new FormData();
         formData.append('name', documentName);
-        formData.append('category', documentCategory);
-        if (documentDomains) {
+        if (documentName !== this.props.documentName) {
             if (!title.includes("Chỉnh sửa thông tin văn bản")) {
-                title = (title + " Chỉnh sửa thông tin văn bản").trim();
+                title = (title + " Chỉnh sửa thông tin văn bản ");
+            }
+            description += "Thay đổi tên " + documentName + ".";
+        }
+        if (documentCategory[0] !== this.props.documentCategory[0]) {
+            if (!title.includes("Chỉnh sửa thông tin văn bản")) {
+                title = (title + "Chỉnh sửa thông tin văn bản.map(iterator)");
+            }
+
+            let nameCategory = categories.filter(item => item.value === documentCategory[0])
+            description += "Thay đổi loại tài liệu " + nameCategory + ".";
+            formData.append('category', documentCategory);
+        }
+        if (!this.compareArray(documentDomains, this.props.documentDomains)) {
+            if (!title.includes("Chỉnh sửa thông tin văn bản")) {
+                title = (title + " Chỉnh sửa thông tin văn bản");
             }
 
             description += "Danh mục mới ";
-            for (var i = 0; i < documentDomains.length; i++) {
+            for (let i = 0; i < documentDomains.length; i++) {
                 formData.append('domains[]', documentDomains[i]);
                 description += documentDomains + " ";
             }
         }
-        if (documentArchives) {
+        if (!this.compareArray(documentArchives, this.props.documentArchives)) {
             if (!title.includes("Chỉnh sửa thông tin văn bản")) {
-                title = (title + " Chỉnh sửa thông tin văn bản").trim();
+                title = (title + " Chỉnh sửa thông tin văn bản");
             }
             description += "Địa chỉ lưu trữ mới ";
-            for (var i = 0; i < documentArchives.length; i++) {
+            for (let i = 0; i < documentArchives.length; i++) {
                 formData.append('archives[]', documentArchives[i]);
                 description += documentArchives[i] + " ";
             }
         }
-        if (documentDescription) {
+        if (documentDescription !== this.documentDescription) {
             if (!title.includes("Chỉnh sửa thông tin văn bản")) {
-                title = (title + " Chỉnh sửa thông tin văn bản").trim();
+                title = (title + "Chỉnh sửa thông tin văn bản");
             }
-            description += "Mô tả mới " + documentDescription;
+            description += "Mô tả mới " + documentDescription + ".";
             formData.append('description', documentDescription);
         }
-        if (documentIssuingBody) {
+        if (documentIssuingBody !== this.props.documentIssuingBody) {
             if (!title.includes("Chỉnh sửa thông tin văn bản")) {
-                title = (title + " Chỉnh sửa thông tin văn bản").trim();
+                title = (title + "Chỉnh sửa thông tin văn bản");
             }
-            description += "Cơ quan ban hành mới " + documentIssuingBody;
+            description += "Cơ quan ban hành mới " + documentIssuingBody + ".";
             formData.append('issuingBody', documentIssuingBody);
         }
-        if (documentOfficialNumber) {
+        if (documentOfficialNumber !== this.props.documentOfficialNumber) {
             if (!title.includes("Chỉnh sửa thông tin văn bản")) {
-                title = (title + " Chỉnh sửa thông tin văn bản").trim();
+                title = (title + "Chỉnh sửa thông tin văn bản");
             }
-            description += "Số hiệu mới " + documentOfficialNumber;
+            description += "Số hiệu mới " + documentOfficialNumber + ".";
             formData.append('officialNumber', documentOfficialNumber);
         }
-        if (documentSigner) {
+        if (documentSigner !== this.props.documentSigner) {
             if (!title.includes("Chỉnh sửa thông tin văn bản")) {
-                title = (title + " Chỉnh sửa thông tin văn bản").trim();
+                title = (title + "Chỉnh sửa thông tin văn bản");
             }
-            description += "Người ký mới " + documentSigner;
+            description += "Người ký mới " + documentSigner + ".";
             formData.append('signer', documentSigner);
         }
 
-        if (documentRelationshipDocuments) {
+        if (documentRelationshipDocuments !== this.props.documentRelationshipDocuments) {
             if (!title.includes("Chỉnh sửa khác")) {
                 title += "Chỉnh sửa khác"
             }
-            description += "Mô tả liên kết tài liệu mới " + documentRelationshipDescription;
+            description += "Mô tả liên kết tài liệu mới.";
             formData.append('relationshipDescription', documentRelationshipDescription);
         }
-        if (documentRelationshipDocuments) {
+        if (documentRelationshipDocuments !== this.props.documentRelationshipDocuments) {
             if (!title.includes("Chỉnh sửa khác")) {
                 title += "Chỉnh sửa khác"
             }
-            description += "Tài liệu liên kết mới"
-            for (var i = 0; i < documentRelationshipDocuments.length; i++) {
+            description += "Tài liệu liên kết mới."
+            for (let i = 0; i < documentRelationshipDocuments.length; i++) {
                 formData.append('relationshipDocuments[]', documentRelationshipDocuments[i]);
                 description += documentRelationshipDocuments + " ";
             }
         }
-        if (documentRoles) {
+        if (documentRoles !== this.props.documentRoles) {
             if (!title.includes("Chỉnh sửa khác")) {
-                title += "Chỉnh sửa khác"
+                title += "Chỉnh sửa khác."
             }
             description += "Các phân quyền mới "
-            for (var i = 0; i < documentRoles.length; i++) {
+            for (let i = 0; i < documentRoles.length; i++) {
                 formData.append('roles[]', documentRoles[i]);
-                description += documentRoles[i] + " ";
+                let nameRole = roleList.filter(item => item.value === documentRoles[i])
+                description += nameRole[0].text + " ";
             }
         }
 
-        if (documentArchivedRecordPlaceOrganizationalUnit) {
+        if (documentArchivedRecordPlaceOrganizationalUnit !== this.documentArchivedRecordPlaceOrganizationalUnit) {
             if (!title.includes("Chỉnh sửa khác")) {
                 title += "Chỉnh sửa khác"
             }
-            description += "aaabba" + documentArchivedRecordPlaceOrganizationalUnit
+            description += "aaabba" + documentArchivedRecordPlaceOrganizationalUnit + "."
             formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
         }
-        if (documentArchivedRecordPlaceManager) {
+        if (documentArchivedRecordPlaceManager !== this.props.documentArchivedRecordPlaceManager) {
             if (!title.includes("Chỉnh sửa khác")) {
                 title += "Chỉnh sửa khác"
             }
-            description += "xyzaaee" + documentArchivedRecordPlaceManager
+            description += "xyzaaee" + documentArchivedRecordPlaceManager + "."
             formData.append('archivedRecordPlaceManager', documentArchivedRecordPlaceManager);
         }
         if (title) {
             formData.append('title', title);
-            formData.append('creator', getStorage("userId"),)
+            formData.append('creator', getStorage("userId"))
         }
         if (description) {
             formData.append('descriptions', description)
         }
-        console.log(title, description);
+        console.log(title, description,);
         //console.log('ererererer', formData.getAll());
         this.props.editDocument(documentId, formData);
     }
@@ -611,9 +644,10 @@ class EditForm extends Component {
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
         const archives = documents.administration.archives.list;
         let path = documentArchives ? this.findPath(archives, documentArchives[0]) : "";
-        console.log('pathhhh', path, documentArchives);
 
-        console.log("STATE:", this.state);
+        console.log('pathhhh', documentRoles);
+
+        console.log("STATE:", roleList);
 
         return (
             <React.Fragment>

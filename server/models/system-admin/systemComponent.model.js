@@ -11,13 +11,13 @@ const SystemComponentSchema = new Schema({
     description: {
         type: String
     },
-    link: {
-        type: Schema.Types.ObjectId,
-        ref: 'system_links'
-    },
     roles: [{
         type: Schema.Types.ObjectId,
         ref: 'root_roles'
+    }],
+    links: [{
+        type: Schema.Types.ObjectId,
+        ref: 'system_links'
     }]
 },{
     timestamps: true,

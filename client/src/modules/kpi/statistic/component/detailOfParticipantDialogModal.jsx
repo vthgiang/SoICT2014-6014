@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal, DataTableSetting, PaginateBar, TreeTable } from '../../../../common-components';
 
-class DetailOfChildKpiDialogModal extends Component {
+class DetailOfParticipantDialogModal extends Component {
 
     constructor(props) {
         super(props);
@@ -16,46 +16,41 @@ class DetailOfChildKpiDialogModal extends Component {
 
     render() {
         const { translate } = this.props;
-        const { listChildKpi } = this.props;
-
-        let column = [
-            { name: "Tên mục tiêu", key: "name" },
-            { name: "Mục tiêu cha", key: "parentName" },
-            { name: "Tiêu chí đánh giá", key: "criteria" },
-            { name: "Trọng số", key: "weight" },
-            { name: "Trạng thái", key: "status" }
-        ];
-        console.log(listChildKpi)
-        let data = listChildKpi;
-
+        const { listParticipant } = this.props;
+       
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-childKpi-detail" 
-                    title="Chi tiết KPI con"
+                    modalID="modal-participant-detail" 
+                    title="Chi tiết người tham gia"
                     hasNote={false}
                     hasSaveButton={false}
                 >
-                    <DataTableSetting
-                        tableId="tree-table"
-                        tableContainerId="tree-table-container"
-                        columnArr={[
-                            "Tên mục tiêu",
-                            "Mục tiêu cha",
-                            "Tiêu chí đánh giá",
-                            "Trọng số",
-                            "Trạng thái"
-                        ]}
-                        hideColumnOption={true}
-                    />
+                    <table className="table table-bordered table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th title="Số thứ tự" style={{ width: "40px" }}>{translate('kpi.organizational_unit.create_organizational_unit_kpi_set.no_')}</th>
+                                <th title="Tên nhân viên">Tên nhân viên</th>
+                                <th title="Email" style={{ textAlign: "left" }}>Email</th>
+                            </tr>
+                        </thead>
 
-                    <div id="tree-table-container">
-                        <TreeTable
-                            column={column}
-                            data={data}
-                        />
-
-                    </div>
+                        <tbody>
+                            {
+                                listParticipant && listParticipant.length !== 0 ?
+                                    listParticipant.map((item, index) => 
+                                        <tr>
+                                            <td>{index + 1}</td>  
+                                            <td title={item.name}>{item.name}</td>
+                                            <td title={item.email}>{item.email}</td>
+                                        </tr>
+                                    )
+                                    : <tr>
+                                        <td colspan="3">Không có dữ liệu</td>
+                                    </tr>
+                            }
+                        </tbody>
+                    </table>
                 </DialogModal>
             </React.Fragment>
         )
@@ -71,5 +66,5 @@ const actions = {
 
 }
 
-const connectDetailOfChildKpiDialogModal = connect(mapState, actions)(withTranslate(DetailOfChildKpiDialogModal));
-export { connectDetailOfChildKpiDialogModal as DetailOfChildKpiDialogModal }
+const connectDetailOfParticipantDialogModal = connect(mapState, actions)(withTranslate(DetailOfParticipantDialogModal));
+export { connectDetailOfParticipantDialogModal as DetailOfParticipantDialogModal }

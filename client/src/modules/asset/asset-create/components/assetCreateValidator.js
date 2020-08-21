@@ -175,9 +175,9 @@ function validateHandoverToDate(value, translate) {
 //kiểm tra vị trí tài sản
 function validateLocation(value, translate) {
     let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Vị trí tài sản không được để trống";
-    }
+    // if (value.trim() === "") {
+    //     msg = "Vị trí tài sản không được để trống";
+    // }
     return msg;
 }
 

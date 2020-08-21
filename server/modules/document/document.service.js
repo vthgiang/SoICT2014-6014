@@ -8,7 +8,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
  * @company id của công ty
  */
 exports.getDocuments = async (company, query) => {
-    console.log('ttt', query);
+    // console.log('ttt', query);
     var page = query.page;
     var limit = query.limit;
 
@@ -28,9 +28,18 @@ exports.getDocuments = async (company, query) => {
         // const option = (query.key !== undefined && query.value !== undefined)
         //     ? Object.assign({ company }, { [`${query.key}`]: new RegExp(query.value, "i") })
         //     : { company };
-        if (query.category) option.category = query.category;
-        if (query.domains) option.domains = query.domains;
-        if (query.archives) option.archives = query.archives
+        if (query.category) {
+            option.category = query.category;
+        }
+        if (query.domains) {
+            option.domains = query.domains;
+        }
+        if (query.archives) {
+            option.archives = query.archives
+        }
+        if (query.name) {
+            option.name = new RegExp(query.name, "i")
+        }
         console.log("option: ", option);
         return await Document.paginate(option, {
             page,
@@ -105,7 +114,7 @@ exports.increaseNumberView = async (id, viewer) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (company, data) => {
-    console.log(data);
+    // console.log(data);
     const newDoc = {
         company,
         name: data.name,
@@ -148,12 +157,14 @@ exports.editDocument = async (id, data, query = undefined) => {
     // thêm lịch sử chỉnh sửa
     console.log('querry', query);
     let { creator, title, descriptions } = data;
+    let createdAt = Date.now();
     let log = {
+        createdAt: createdAt,
         creator: creator,
         title: title,
         description: descriptions,
-        //createdAt: Date.now,
     }
+    console.log('logggg', log);
     let document = await Document.findByIdAndUpdate(
         id,
         {
@@ -201,16 +212,15 @@ exports.editDocument = async (id, data, query = undefined) => {
         // if (data.archivedRecordPlaceInfo !== 'undefined' && data.archivedRecordPlaceInfo !== undefined)
         //     doc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo
         if (data.archivedRecordPlaceOrganizationalUnit !== 'undefined' && data.archivedRecordPlaceOrganizationalUnit !== undefined && data.archivedRecordPlaceOrganizationalUnit !== "[object Object]") {
-            console.log(data.archivedRecordPlaceOrganizationalUnit)
+            //  console.log(data.archivedRecordPlaceOrganizationalUnit)
             doc.archivedRecordPlaceOrganizationalUnit = data.archivedRecordPlaceOrganizationalUnit
         }
         if (data.archivedRecordPlaceManager !== 'undefined' && data.archivedRecordPlaceManager !== undefined)
             doc.archivedRecordPlaceManager = data.archivedRecordPlaceManager
 
         await doc.save();
-
         let docs = doc.logs.reverse();
-        return docs;
+        return doc;
     }
 }
 
@@ -366,9 +376,9 @@ exports.createDocumentDomain = async (company, data) => {
 exports.getDocumentsThatRoleCanView = async (company, query) => {
     var page = query.page;
     var limit = query.limit;
-    console.log(query);
+    // console.log(query);
     var role = await Role.findById(query.roleId);
-    console.log(role);
+    // console.log(role);
     var roleArr = [role._id].concat(role.parents);
 
     if (page === undefined && limit === undefined) {
@@ -532,7 +542,7 @@ exports.editDocumentArchive = async (id, data) => {
         archive.save();
     }
     const document = await this.getDocumentArchives(archive.company)
-    return archive;
+    return document;
 }
 
 async function findPath(data) {

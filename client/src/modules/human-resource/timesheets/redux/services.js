@@ -1,7 +1,4 @@
 import {
-    LOCAL_SERVER_API
-} from '../../../../env';
-import {
     sendRequest
 } from '../../../../helpers/requestHelper';
 export const TimesheetsService = {
@@ -18,7 +15,7 @@ export const TimesheetsService = {
  */
 function searchTimesheets(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/timesheet/timesheets`,
+        url: `${ process.env.REACT_APP_SERVER }/timesheet/timesheets`,
         method: 'GET',
         params: {
             organizationalUnit: data.organizationalUnit,
@@ -37,7 +34,7 @@ function searchTimesheets(data) {
  */
 function createTimesheets(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/timesheet/timesheets`,
+        url: `${ process.env.REACT_APP_SERVER }/timesheet/timesheets`,
         method: 'POST',
         data: data,
     }, true, true, 'human_resource.timesheets');
@@ -49,7 +46,7 @@ function createTimesheets(data) {
  */
 function deleteTimesheets(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/timesheet/timesheets/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/timesheet/timesheets/${id}`,
         method: 'DELETE',
     }, true, true, 'human_resource.timesheets');
 }
@@ -61,7 +58,7 @@ function deleteTimesheets(id) {
  */
 function updateTimesheets(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/timesheet/timesheets/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/timesheet/timesheets/${id}`,
         method: 'PATCH',
         data: data,
     }, true, true, 'human_resource.timesheets');
@@ -73,7 +70,7 @@ function updateTimesheets(id, data) {
  */
 function importTimesheets(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/timesheet/timesheets/import`,
+        url: `${ process.env.REACT_APP_SERVER }/timesheet/timesheets/import`,
         method: 'POST',
         data: data,
     }, true, false, 'human_resource.timesheets');

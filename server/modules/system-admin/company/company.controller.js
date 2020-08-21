@@ -71,6 +71,7 @@ exports.createCompany = async (req, res) => {
             content: resCompany
         });
     } catch (error) {
+        console.log(error)
         LogError(req.user.email, 'CREATE_COMPANY');
         res.status(400).json({
             success: false,
