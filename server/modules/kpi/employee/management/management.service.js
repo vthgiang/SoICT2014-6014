@@ -176,9 +176,24 @@ exports.getAllEmployeeKpiInOrganizationalUnit = async (roleId, organizationalUni
                 as: "employeeKpiSet"
             }
         },
+
+        // Lấy thông tin employee
+        {
+            $lookup: {
+                from: "users",
+                localField: "employeeKpiSet.creator",
+                foreignField: "_id",
+                as: "employee"
+            }
+        },
         {
             $addFields: {
-                "employeeKpis.creator": "$employeeKpiSet.creator"
+                "employeeKpis.creator": "$employeeKpiSet.creator",
+                "employeeKpis.creatorInfo": {
+                    "_id": "$employee._id",
+                    "name": "$employee.name",
+                    "email": "$employee.email"
+                }
             }
         },
 

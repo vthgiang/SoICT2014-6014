@@ -710,9 +710,15 @@ class SideBar extends Component {
                                             </li>
                                         }
                                         {
-                                            this.checkURL('/task-management-process', links) === true &&
-                                            <li className={window.location.pathname === "/task-management-process" ? "active" : ""}>
-                                                <Link to="/task-management-process">{translate(`menu.task_management_process`)}</Link>
+                                            this.checkURL('/task-process-template', links) === true &&
+                                            <li className={window.location.pathname === "/task-process-template" ? "active" : ""}>
+                                                <Link to="/task-process-template">{translate(`menu.task_process_template`)}</Link>
+                                            </li>
+                                        }
+                                        {
+                                            this.checkURL('/task-process-management', links) === true &&
+                                            <li className={window.location.pathname === "/task-process-management" ? "active" : ""}>
+                                                <Link to="/task-process-management">{translate(`menu.task_management_process`)}</Link>
                                             </li>
                                         }
                                     </ul>

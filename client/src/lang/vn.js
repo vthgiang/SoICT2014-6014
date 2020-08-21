@@ -620,6 +620,7 @@ export default {
             task_management_dashboard: 'Dashboard công việc',
             task_organization_management_dashboard: 'Dashboard công việc đơn vị',
             task_management_process: "Danh sách quy trình",
+            task_process_template: "Mẫu quy trình",
 
             //*******START */
             // Quản lý tài sản
@@ -2815,7 +2816,7 @@ export default {
                         execution_time: 'Thời gian thực hiện (Ngày)',
                         participants: 'Người tham gia',
                         amount_tasks: 'Số lượng công việc',
-                        amount_child_kpi: 'Số lượng KPI con',
+                        amount_employee_kpi: 'Số lượng KPI nhân viên',
                         weight: 'Trọng số'
                     },
                     result_kpi_unit_chart: {

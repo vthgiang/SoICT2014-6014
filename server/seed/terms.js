@@ -436,8 +436,18 @@ const LINKS = [
         components: getComponentsInLink('/task-management')
     },
     {
-        url: '/task-management-process',
-        description: 'Quy trình công việc',
+        url: '/task-process-management',
+        description: 'Danh sách quy trình công việc',
+        category: LINK_CATEGORY.TASK.name,
+        roles: [
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
+        ]
+    },
+    {
+        url: '/task-process-template',
+        description: 'Mẫu quy trình công việc',
         category: LINK_CATEGORY.TASK.name,
         roles: [
             ROOT_ROLES.DEAN.name,

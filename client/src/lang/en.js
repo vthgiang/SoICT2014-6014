@@ -621,6 +621,7 @@ export default {
             task_management_dashboard: 'Task dashboard',
             task_organization_management_dashboard: 'Unit task dashboard',
             task_management_process: "Process list",
+            task_process_template: "Process template",
             //*******START */
             // Quản lý tài sản
             // QUẢN LÝ
@@ -2801,7 +2802,7 @@ export default {
                         execution_time: 'Execution time (Days)',
                         participants: 'Participants',
                         amount_tasks: 'Amount of tasks',
-                        amount_child_kpi: 'Amount of child KPI',
+                        amount_employee_kpi: 'Amount of employee KPI',
                         weight: 'Weight'
                     },
                     result_kpi_unit_chart: {

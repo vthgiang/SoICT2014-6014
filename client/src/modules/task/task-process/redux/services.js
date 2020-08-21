@@ -11,6 +11,7 @@ export const TaskProcessService = {
     editXmlDiagram,
     deleteXmlDiagram,
     createTaskByProcess,
+    getAllTaskProcess,
 };
 
 
@@ -20,13 +21,32 @@ export const TaskProcessService = {
 function getAllXmlDiagram( pageNumber, noResultsPerPage, name ) {
     let userId = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/taskprocess/diagrams`,
+        url: `${LOCAL_SERVER_API}/process`,
         method: 'GET',
         params: {
             userId: userId,
             pageNumber: pageNumber,
             noResultsPerPage: noResultsPerPage,
             name: name,
+            type: "template"
+        },
+    }, false, true, 'task.task_process');
+}
+
+/**
+ * Lấy tất cả task-process
+ */
+function getAllTaskProcess( pageNumber, noResultsPerPage, name ) {
+    let userId = getStorage("userId");
+    return sendRequest({
+        url: `${LOCAL_SERVER_API}/process`,
+        method: 'GET',
+        params: {
+            userId: userId,
+            pageNumber: pageNumber,
+            noResultsPerPage: noResultsPerPage,
+            name: name,
+            type: "task"
         },
     }, false, true, 'task.task_process');
 }
@@ -36,7 +56,7 @@ function getAllXmlDiagram( pageNumber, noResultsPerPage, name ) {
  */
 function getXmlDiagramById(diagramId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/taskprocess/diagrams/${diagramId}`,
+        url: `${LOCAL_SERVER_API}/process/diagrams/${diagramId}`,
         method: 'GET',
     }, false, true, 'task.task_process');
 }
@@ -47,7 +67,7 @@ function getXmlDiagramById(diagramId) {
  */
 function createXmlDiagram(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/taskprocess/diagrams`,
+        url: `${LOCAL_SERVER_API}/process/diagrams`,
         method: 'POST',
         data: data
     }, true, true, 'task.task_process');
@@ -60,7 +80,7 @@ function createXmlDiagram(data) {
  */
 function editXmlDiagram(diagramId,data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/taskprocess/diagrams/${diagramId}`,
+        url: `${LOCAL_SERVER_API}/process/diagrams/${diagramId}`,
         method: 'PATCH',
         data: data
     }, true, true, 'task.task_process');
@@ -73,7 +93,7 @@ function editXmlDiagram(diagramId,data) {
 function deleteXmlDiagram(diagramId, pageNumber, noResultsPerPage, name) {
     let userId = getStorage("userId");
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/taskprocess/diagrams/${diagramId}`,
+        url: `${LOCAL_SERVER_API}/process/diagrams/${diagramId}`,
         method: 'DELETE',
         params: {
             userId: userId,
@@ -91,7 +111,7 @@ function deleteXmlDiagram(diagramId, pageNumber, noResultsPerPage, name) {
  */
 function createTaskByProcess(data, processId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/taskprocess/processes/${processId}/tasks/create`,
+        url: `${LOCAL_SERVER_API}/process/processes/${processId}/tasks/create`,
         method: 'POST',
         data: data,
     }, true, true, 'task.task_process');

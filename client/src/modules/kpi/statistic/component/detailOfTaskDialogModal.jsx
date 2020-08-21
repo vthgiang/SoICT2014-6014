@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, DataTableSetting, PaginateBar, TreeTable } from '../../../../common-components';
+import { DialogModal } from '../../../../common-components';
 
 class DetailOfTaskDialogModal extends Component {
 
@@ -48,32 +48,6 @@ class DetailOfTaskDialogModal extends Component {
         const { translate } = this.props;
         const { listTask } = this.props;
 
-        let data = [], column;
-
-        column = [
-            { name: translate('task.task_management.col_name'), key: "name" },
-            { name: translate('task.task_management.col_organization'), key: "organization" },
-            { name: translate('task.task_management.col_priority'), key: "priority" },
-            { name: translate('task.task_management.col_start_date'), key: "startDate" },
-            { name: translate('task.task_management.col_end_date'), key: "endDate" },
-            { name: translate('task.task_management.col_status'), key: "status" }
-        ];
-
-        if (listTask && listTask.length !== 0) {
-            data = listTask.map(task => {
-                return {
-                    ...task,
-                    name: task.name,
-                    organization: task.detailOrganizationalUnit && task.detailOrganizationalUnit.length !== 0 ? task.detailOrganizationalUnit[0].name : translate('task.task_management.err_organizational_unit'),
-                    priority: this.formatPriority(task.priority),
-                    startDate: this.formatDate(task.startDate),
-                    endDate: this.formatDate(task.endDate),
-                    status: this.formatStatus(task.status)
-                }      
-            });
-        }
-        
-
         return (
             <React.Fragment>
                 <DialogModal
@@ -83,30 +57,41 @@ class DetailOfTaskDialogModal extends Component {
                     hasNote={false}
                     hasSaveButton={false}
                 >
-                    <DataTableSetting
-                        tableId="task-tree-table"
-                        tableContainerId="task-tree-table-container"
-                        tableWidth="1000px"
-                        columnArr={[
-                            translate('task.task_management.col_name'),
-                            translate('task.task_management.col_organization'),
-                            translate('task.task_management.col_priority'),
-                            translate('task.task_management.col_start_date'),
-                            translate('task.task_management.col_end_date'),
-                            translate('task.task_management.col_status')
-                        ]}
-                        hideColumnOption={true}
-                    />
+                    <table className="table table-bordered table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th title="Số thứ tự" style={{ width: "40px" }}>Stt</th>
+                                <th title="Tên công việc" >Tên công việc</th>
+                                <th title="Đơn vị">Đơn vị</th>
+                                <th title="Độ ưu tiên" >Độ ưu tiên</th>
+                                <th title="Ngày bắt đầu" >Ngày bắt đầu</th>
+                                <th title="Ngày kết thúc">Ngày kết thúc</th>
+                                <th title="Trạng thái" style={{ textAlign: "left" }}>Trạng thái</th>
+                            </tr>
+                        </thead>
 
-                    <div id="task-tree-table-container">
-                        <TreeTable
-                            tableId="task-tree-table"
-                            column={column}
-                            data={data}
-                            actions={false}
-                        />
-
-                    </div>
+                        <tbody>
+                            {
+                                listTask && listTask.length !== 0 ?
+                                    listTask.map((task, index) => 
+                                        <tr key={task._id}>
+                                            <td>{index + 1}</td>
+                                            <td title={task.name}>
+                                                <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a>
+                                            </td>
+                                            <td title={task.detailOrganizationalUnit && task.detailOrganizationalUnit.length !== 0 ? task.detailOrganizationalUnit[0].name : null}>{task.detailOrganizationalUnit && task.detailOrganizationalUnit.length !== 0 ? task.detailOrganizationalUnit[0].name : null}</td>
+                                            <td title={task.priority}>{this.formatPriority(task.priority)}</td>
+                                            <td title={task.startDate}>{this.formatDate(task.startDate)}</td>
+                                            <td title={task.endDate}>{this.formatDate(task.endDate)}</td>
+                                            <td title={task.status} style={{ textAlign: "left" }}>{this.formatStatus(task.status)}</td>
+                                        </tr>
+                                    )
+                                    : <tr>
+                                        <td colspan="7">Không có dữ liệu</td>
+                                    </tr>
+                            }
+                        </tbody>
+                    </table> 
                 </DialogModal>
             </React.Fragment>
         )
