@@ -1,4 +1,3 @@
-import { LOCAL_SERVER_API } from '../../../../env';
 import {
     getStorage
 } from '../../../../config';
@@ -18,7 +17,7 @@ export const taskTemplateService = {
 // get all task template
 function getAll() {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/task-templates`,
+        url: `${process.env.REACT_APP_SERVER}/task/task-templates`,
         method: 'GET',
     }, false, true, 'task.task_template');
 }
@@ -26,7 +25,7 @@ function getAll() {
 // get a task template by id 
 function getById(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/task-templates/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/task/task-templates/${id}`,
         method: 'GET',
     }, false, true, 'task.task_template');
 }
@@ -34,7 +33,7 @@ function getById(id) {
 // get all task template by Role
 function getAllTaskTemplateByRole(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/task-templates`,
+        url: `${process.env.REACT_APP_SERVER}/task/task-templates`,
         params:{
             roleId:id
         },
@@ -48,7 +47,7 @@ function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit="[]", 
     var id = getStorage("userId");
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/task-templates`,
+        url: `${process.env.REACT_APP_SERVER}/task/task-templates`,
         method: 'GET',
         params:{
             userId:id,
@@ -66,7 +65,7 @@ function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit="[]", 
     newTaskTemplate = {...newTaskTemplate, creator: id};
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/task-templates`,
+        url: `${process.env.REACT_APP_SERVER}/task/task-templates`,
         method: 'POST',
         data: newTaskTemplate
     }, true, true, 'task.task_template');
@@ -75,7 +74,7 @@ function getAllTaskTemplateByUser(pageNumber, noResultsPerPage, arrayUnit="[]", 
 
 function editTaskTemplate(id, newTaskTemplate) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/task-templates/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/task/task-templates/${id}`,
         method: 'PATCH',
         data: newTaskTemplate
     }, true, true, 'task.task_template');
@@ -85,7 +84,7 @@ function editTaskTemplate(id, newTaskTemplate) {
 // delete a task template
 function deleteTaskTemplateById(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/task-templates/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/task/task-templates/${id}`,
         method: 'DELETE',
     }, true, true, 'task.task_template');
 }
@@ -94,7 +93,7 @@ function deleteTaskTemplateById(id) {
 
 function importTaskTemplate(data){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/task/task-templates/import`,
+        url: `${process.env.REACT_APP_SERVER}/task/task-templates/import`,
         method: 'POST',
         data: data,
     },true, true, 'task.task_template');
