@@ -643,6 +643,7 @@ export default {
             manage_recommend_procure: 'Manage recommend procure',
             manage_recommend_distribute_asset: 'Manage recommend distribute',
 
+            view_building_list: 'View building list',
             // NHÂN VIÊN
             recommend_equipment_procurement: 'Recommend equipment procurement',
             recommend_distribute_asset: 'Recommend distribute asset',
