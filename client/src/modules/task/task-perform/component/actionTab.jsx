@@ -819,7 +819,7 @@ class ActionTab extends Component {
         if (performtasks.logs) {
             logs = performtasks.logs;
         };
-
+        console.log('iiiii', logs)
         return (
             <div>
                 <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none" }}>
