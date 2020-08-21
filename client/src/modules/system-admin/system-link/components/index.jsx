@@ -114,6 +114,7 @@ class ManageLinkSystem extends Component {
                                     <th>{ translate('system_admin.system_link.table.category') }</th>
                                     <th>{ translate('system_admin.system_link.table.description') }</th>
                                     <th>{ translate('system_admin.system_link.table.roles') }</th>
+                                    <th>Components</th>
                                     <th style={{width: "120px"}}>
                                         { translate('table.action') }
                                         <DataTableSetting 
@@ -142,6 +143,7 @@ class ManageLinkSystem extends Component {
                                                 else
                                                     return <span key={role._id}>{role.name}</span>
                                             }) }</td>
+                                            <td>{ link.components.map(component => component.name) }</td>
                                             <td style={{ textAlign: 'center' }}>
                                                 <a onClick={() => this.handleEdit(link)} className="edit" title={translate('system_admin.system_link.edit')}><i className="material-icons">edit</i></a>
                                                 <DeleteNotification 

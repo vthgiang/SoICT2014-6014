@@ -1,4 +1,3 @@
-import { LOCAL_SERVER_API } from '../../../../env';
 import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const TaskReportServices = {
@@ -15,7 +14,7 @@ export const TaskReportServices = {
  */
 function getTaskReports(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/taskreports`,
+        url: `${process.env.REACT_APP_SERVER}/taskreports`,
         method: 'GET',
         params: {
             name: data.name,
@@ -34,7 +33,7 @@ function getTaskReports(data) {
  */
 function getTaskReportById(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/taskreports/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/taskreports/${id}`,
         method: 'GET'
     }, false, true, 'report_manager');
 }
@@ -46,7 +45,7 @@ function getTaskReportById(id) {
  */
 function createTaskReport(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/taskreports`,
+        url: `${process.env.REACT_APP_SERVER}/taskreports`,
         method: 'POST',
         data, //data: data ===> data,
     }, true, true, 'report_manager');
@@ -60,7 +59,7 @@ function createTaskReport(data) {
  */
 function editTaskReport(id, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/taskreports/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/taskreports/${id}`,
         method: 'PATCH',
         data,
     }, true, true, 'report_manager');
@@ -73,7 +72,7 @@ function editTaskReport(id, data) {
  */
 function deleteTaskReport(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/taskreports/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/taskreports/${id}`,
         method: 'DELETE',
     }, true, true, 'report_manager');
 }

@@ -90,8 +90,6 @@ exports.stopTimesheetLog = async (req, res) => {
             content: error
         })
     }
-
-
 }
 /**
  *  Tạo hoạt động

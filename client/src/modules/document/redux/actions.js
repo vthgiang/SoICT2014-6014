@@ -467,7 +467,7 @@ function editDocumentArchive(id, data) {
 };
 
 function deleteDocumentArchive(data, type = "single") {
-
+    console.log('dataaa', data, type);
     return dispatch => {
         dispatch({ type: DocumentConstants.DELETE_DOCUMENT_ARCHIVE_REQUEST });
         if (type !== 'single') {

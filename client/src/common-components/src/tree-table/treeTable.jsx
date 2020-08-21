@@ -220,14 +220,14 @@ class TreeTable extends Component {
     }
 
     render() {
-        var { translate, column, data } = this.props;
+        const { translate, column, data, actions=true, tableId } = this.props;
 
         return (
-            <table id="tree-table" className="table table-striped table-hover table-bordered">
+            <table id={tableId ? tableId : "tree-table"} className="table table-striped table-hover table-bordered">
                 <thead>
                     <tr id="task">
                         {column.length !== 0 && column.map((col, index) => <th key={index}>{col.name}</th>)}
-                        <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
+                        {actions && <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>}
                     </tr>
                 </thead>
                 <tbody id="taskTable" className="task-table">
@@ -240,25 +240,27 @@ class TreeTable extends Component {
                                         <td key={index}>{x}</td>
                                     )
                                 }
-                                <td>
-                                    {
-                                        rows.action.map((x, index) => Array.isArray(x) ?
-                                            <React.Fragment key={index}>
-                                                <button type="button" data-toggle="collapse" data-target={`#actionTask${rows._id}`} style={{ border: "none", background: "none" }}><i className="fa fa-ellipsis-v"></i></button>
-                                                <div id={`actionTask${rows._id}`} className="collapse">
-                                                    {x.map((y, index) => (
-                                                        <React.Fragment key={index}>
-                                                            {this.showActionColumn(y, rows._id)}
-                                                        </React.Fragment>
-                                                    ))}
-                                                </div>
-                                            </React.Fragment> :
-                                            <React.Fragment key={index}>
-                                                {this.showActionColumn(x, rows._id)}
-                                            </React.Fragment>
-                                        )
-                                    }
-                                </td>
+                                {actions &&
+                                    <td>
+                                        {
+                                            rows.action && rows.action.map((x, index) => Array.isArray(x) ?
+                                                <React.Fragment key={index}>
+                                                    <button type="button" data-toggle="collapse" data-target={`#actionTask${rows._id}`} style={{ border: "none", background: "none" }}><i className="fa fa-ellipsis-v"></i></button>
+                                                    <div id={`actionTask${rows._id}`} className="collapse">
+                                                        {x.map((y, index) => (
+                                                            <React.Fragment key={index}>
+                                                                {this.showActionColumn(y, rows._id)}
+                                                            </React.Fragment>
+                                                        ))}
+                                                    </div>
+                                                </React.Fragment> :
+                                                <React.Fragment key={index}>
+                                                    {this.showActionColumn(x, rows._id)}
+                                                </React.Fragment>
+                                            )
+                                        }
+                                    </td>
+                                }
                             </tr>
                         ))
                     }

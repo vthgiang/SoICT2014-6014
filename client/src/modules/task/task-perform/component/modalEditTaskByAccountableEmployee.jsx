@@ -1105,14 +1105,14 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 <legend className="scheduler-border">{translate('task.task_management.edit_inactive_emp')}</legend>
                                 <div className="form-group">
 
-                                    <div style={{ lineHeight: 2.3 }}>
+                                    <div>
                                         {/* Thành viên phê duyệt */}
                                         <div style={{ marginBottom: 15 }}>
-                                            <div><strong>{translate('task.task_management.accountable')}</strong></div>
+                                            <div style={{ marginBottom: 5 }}><strong>{translate('task.task_management.accountable')}</strong></div>
                                             {
                                                 task.accountableEmployees.map((elem,index) => {
                                                     return <div key={index} style={{paddingLeft: 20}}>
-                                                        <label style={{fontWeight: "normal", margin: 0}}>
+                                                        <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
                                                             <input
                                                                 type="checkbox"
                                                                 checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true}
@@ -1126,11 +1126,11 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         </div>
 
                                         <div style={{ marginBottom: 15 }}>
-                                            <div><strong>{translate('task.task_management.responsible')}</strong></div>
+                                            <div style={{ marginBottom: 5 }}><strong>{translate('task.task_management.responsible')}</strong></div>
                                             {
                                                 task.responsibleEmployees.map((elem, index) => {
                                                     return <div key={index} style={{ paddingLeft: 20}}>
-                                                        <label style={{ fontWeight: "normal", margin: 0 }}>
+                                                        <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
                                                             <input
                                                                 type="checkbox"
                                                                 checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true}
@@ -1146,11 +1146,11 @@ class ModalEditTaskByAccountableEmployee extends Component {
 
                                         {task.consultedEmployees.length !== 0 &&
                                         <div>
-                                            <div><strong>{translate('task.task_management.consulted')}</strong></div>
+                                            <div style={{ marginBottom: 5 }}><strong>{translate('task.task_management.consulted')}</strong></div>
                                                 {
                                                     task.consultedEmployees.map((elem, key) => {
                                                         return <div key={key} style={{ paddingLeft: 20}}>
-                                                            <label style={{ fontWeight: "normal", margin: 0 }}>
+                                                            <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
                                                                 <input
                                                                     type="checkbox"
                                                                     checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true}

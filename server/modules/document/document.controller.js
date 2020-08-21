@@ -125,6 +125,20 @@ exports.editDocument = async (req, res) => {
     }
 };
 
+exports.addDocumentLog = async (req, res) => {
+    try {
+        const document = await DocumentServices.addDocumentLog(req.params, req.body);
+        await LogInfo(req.user.email, 'ADD_DOCUMENT_LOG', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['add_document_logs_success'],
+            content: documentLog
+        })
+    } catch (error) {
+
+    }
+}
+
 exports.deleteDocument = async (req, res) => {
     console.log('---------------------')
     try {
@@ -437,24 +451,24 @@ exports.getDocumnetArchive = async (req, res) => {
 };
 
 exports.createDocumentArchive = async (req, res) => {
-    //try {
-    const archive = await DocumentServices.createDocumentArchive(req.user.company._id, req.body);
+    try {
+        const archive = await DocumentServices.createDocumentArchive(req.user.company._id, req.body);
 
-    await LogInfo(req.user.email, 'CREATE_DOCUMENT_ARCHIVE', req.user.company);
-    res.status(200).json({
-        success: true,
-        message: ['create_document_archive_success'],
-        content: archive
-    })
-    // } catch (error) {
+        await LogInfo(req.user.email, 'CREATE_DOCUMENT_ARCHIVE', req.user.company);
+        res.status(200).json({
+            success: true,
+            message: ['create_document_archive_success'],
+            content: archive
+        })
+    } catch (error) {
 
-    //     await LogError(req.user.email, 'CREATE_DOCUMENT_ARCHIVE', req.user.company);
-    //     res.status(400).json({
-    //         success: false,
-    //         message: Array.isArray(error) ? error : ['create_document_archive_faile'],
-    //         content: error
-    //     })
-    // }
+        await LogError(req.user.email, 'CREATE_DOCUMENT_ARCHIVE', req.user.company);
+        res.status(400).json({
+            success: false,
+            message: Array.isArray(error) ? error : ['create_document_archive_faile'],
+            content: error
+        })
+    }
 };
 
 exports.editDocumentArchive = async (req, res) => {

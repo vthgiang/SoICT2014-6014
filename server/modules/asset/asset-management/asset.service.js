@@ -371,6 +371,22 @@ exports.updateUsage = async (usageId, data) => {
     })
 }
 
+exports.recallAsset = async ( assetId , data) => {
+    let nowDate= new Date();
+    let updateUsageLogs = await Asset.update({_id: assetId, "usageLogs.usedBy": data.usageId}, {
+        $set: {
+            "usageLogs.$.endDate": nowDate,
+        }
+    })
+    let asset = await Asset.update({_id: assetId}, {
+        $set: {
+            assignedTo: null,
+            status: "Sẵn sàng sử dụng",
+        }
+    });
+
+    return asset;
+}
 /**
  * Xóa thông tin sử dụng
  */

@@ -1,8 +1,4 @@
 import {
-    LOCAL_SERVER_API
-} from '../../../../env';
-
-import {
     sendRequest
 } from '../../../../helpers/requestHelper';
 
@@ -19,7 +15,7 @@ export const HolidayService = {
  */
 function getListHoliday() {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/holiday/holidays`,
+        url: `${ process.env.REACT_APP_SERVER }/holiday/holidays`,
         method: 'GET',
     }, false, true, 'human_resource.holiday');
 }
@@ -30,7 +26,7 @@ function getListHoliday() {
  */
 function createNewHoliday(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/holiday/holidays`,
+        url: `${ process.env.REACT_APP_SERVER }/holiday/holidays`,
         method: 'POST',
         data: data
     }, true, true, 'human_resource.holiday');
@@ -42,7 +38,7 @@ function createNewHoliday(data) {
  */
 function deleteHoliday(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/holiday/holidays/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/holiday/holidays/${id}`,
         method: 'DELETE',
     }, true, true, 'human_resource.holiday');
 }
@@ -54,7 +50,7 @@ function deleteHoliday(id) {
  */
 function updateHoliday(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/holiday/holidays/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/holiday/holidays/${id}`,
         method: 'PUT',
         data: data
     }, true, true, 'human_resource.holiday');
@@ -66,7 +62,7 @@ function updateHoliday(id, data) {
  */
 function importHoliday(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/holiday/holidays/import`,
+        url: `${ process.env.REACT_APP_SERVER }/holiday/holidays/import`,
         method: 'POST',
         data: data,
     }, true, false, 'human_resource.holiday');

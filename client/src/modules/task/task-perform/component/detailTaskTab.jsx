@@ -222,15 +222,19 @@ class DetailTaskTab extends Component {
     render() {
         const { tasks, performtasks, translate } = this.props;
         const { currentUser, roles, currentRole, collapseInfo, showEdit, showEndTask, showEvaluate } = this.state
-        const { showToolbar, id } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
+        const { showToolbar, id, isProcess } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
 
         let task;
-        if (performtasks.task) {
+        if (isProcess) {
+            task = this.props.task
+        }
+
+        else if (performtasks.task) {
             task = performtasks.task;
         }
 
         let statusTask
-        if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
+        // if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
 
         let checkInactive = true;
         if (task) checkInactive = task.inactiveEmployees.indexOf(currentUser) === -1; // return true if user is active user

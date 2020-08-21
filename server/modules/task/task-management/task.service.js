@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User, UserRole } = require('../../../models/index').schema;
+const { Task, TaskProcess, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User, UserRole } = require('../../../models/index').schema;
 
 const moment = require("moment");
 const nodemailer = require("nodemailer");
@@ -34,22 +34,17 @@ exports.getTaskEvaluations = async (data) => {
 
     let endTime = endDate.split("-");
     let end = new Date(endTime[2], endTime[1] - 1, endTime[0]);
-
-    let frequency = data.frequency.toString();
     let filterDate = {};
 
     if (data.responsibleEmployees) {
         responsible = data.responsibleEmployees;
     }
 
-
     if (data.accountableEmployees) {
         accountable = data.accountableEmployees;
     }
 
-
     (taskStatus === 1) ? taskStatus = "Finished" : (taskStatus === 2 ? taskStatus = "Inprocess" : "");
-
 
     // Lọc nếu ngày bắt đầu và kết thức có giá trị
     if (startDate && endDate) {
@@ -67,9 +62,7 @@ exports.getTaskEvaluations = async (data) => {
                 date: { $gte: start }
             }
         }
-
     }
-
 
     //  Lọc nếu có ngày bắt đầu, không có ngày kết thúc 
     if (!startDate && endDate) {
@@ -79,7 +72,6 @@ exports.getTaskEvaluations = async (data) => {
             }
         }
     }
-
 
     let condition = [
         { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
@@ -98,8 +90,8 @@ exports.getTaskEvaluations = async (data) => {
         },
     ];
 
-
     if (!startDate && !endDate) {
+        console.log('1')
         condition = [
             ...condition,
             { $match: { status: taskStatus } },
@@ -107,6 +99,7 @@ exports.getTaskEvaluations = async (data) => {
         ]
     } else {
         if (taskStatus === 0) { // Lọc tất cả các coong việc không theo đặc thù
+            console.log('2')
             condition = [
                 ...condition,
                 filterDate
@@ -115,6 +108,7 @@ exports.getTaskEvaluations = async (data) => {
         } else
             // nếu không lọc theo người thực hiện và người phê duyệt
             if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
+                console.log('3')
                 condition = [
                     { $match: { status: taskStatus } },
                     ...condition,
@@ -122,6 +116,7 @@ exports.getTaskEvaluations = async (data) => {
                 ]
 
             } else {
+                console.log('4')
                 condition = [
                     { $match: { status: taskStatus } },
                     { $match: { responsibleEmployees: { $in: [...responsible.map(x => mongoose.Types.ObjectId(x.toString()))] } } },
@@ -204,6 +199,26 @@ exports.getTaskById = async (id, userId) => {
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "documents.creator", model: User, select: 'name email avatar' },
+        {
+            path: "process", model: TaskProcess, populate: {
+                path: "tasks", model: Task, populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit", model: OrganizationalUnit },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                    { path: "evaluations.results.kpis" },
+                    { path: "taskActions.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+                    { path: "taskComments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "documents.creator", model: User, select: 'name email avatar' },
+                    { path: "process", model: TaskProcess },
+                ]
+            }
+        },
     ])
     if (!task) {
         return {
@@ -1378,7 +1393,81 @@ exports.getAllTaskOfOrganizationalUnit = async (roleId, organizationalUnitId, mo
             }
         },
 
-        { $project: { 'startDate': 1, 'endDate': 1, 'evaluations': 1, 'accountableEmployees': 1, 'consultedEmployees': 1, 'informedEmployees': 1, 'status': 1 } }
+        {
+            $lookup: {
+                from: "organizational_units",
+                localField: "organizationalUnit",
+                foreignField: "_id",
+                as: "detailOrganizationalUnit"
+            }
+        },
+
+        {
+            $lookup: {
+                from: "users",
+                localField: "responsibleEmployees",
+                foreignField: "_id",
+                as: "responsibleEmployeesInfo"
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "accountableEmployees",
+                foreignField: "_id",
+                as: "accountableEmployeesInfo"
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "consultedEmployees",
+                foreignField: "_id",
+                as: "consultedEmployeesInfo"
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "informedEmployees",
+                foreignField: "_id",
+                as: "informedEmployeesInfo"
+            }
+        },
+
+        {
+            $project: {
+                'name': 1,
+                'detailOrganizationalUnit.name': 1,
+                'description': 1,
+                'startDate': 1,
+                'endDate': 1,
+                'priority': 1,
+                'evaluations': 1,
+
+                'responsibleEmployees': 1,
+                'accountableEmployees': 1,
+                'consultedEmployees': 1,
+                'informedEmployees': 1,
+
+                'responsibleEmployeesInfo._id': 1,
+                'responsibleEmployeesInfo.name': 1,
+                'responsibleEmployeesInfo.email': 1,
+
+                'accountableEmployeesInfo._id': 1,
+                'accountableEmployeesInfo.name': 1,
+                'accountableEmployeesInfo.email': 1,
+
+                'consultedEmployeesInfo._id': 1,
+                'consultedEmployeesInfo.name': 1,
+                'consultedEmployeesInfo.email': 1,
+
+                'informedEmployeesInfo._id': 1,
+                'informedEmployeesInfo.name': 1,
+                'informedEmployeesInfo.email': 1,
+                'status': 1
+            }
+        }
     ])
 
     return tasksOfOrganizationalUnit;

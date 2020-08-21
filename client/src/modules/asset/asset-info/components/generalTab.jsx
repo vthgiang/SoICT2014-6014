@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { LOCAL_SERVER_API } from '../../../../env';
-
 class GeneralTab extends Component {
     constructor(props) {
         super(props);
@@ -75,8 +73,8 @@ class GeneralTab extends Component {
                         {/* Anh tài sản */}
                         <div className="col-md-4" style={{ textAlign: 'center' }}>
                             <div>
-                                <a href={LOCAL_SERVER_API + avatar} target="_blank">
-                                    <img className="attachment-img avarta" src={LOCAL_SERVER_API + avatar} alt="Attachment" />
+                                <a href={process.env.REACT_APP_SERVER + avatar} target="_blank">
+                                    <img className="attachment-img avarta" src={process.env.REACT_APP_SERVER + avatar} alt="Attachment" />
                                 </a>
                             </div>
                         </div>

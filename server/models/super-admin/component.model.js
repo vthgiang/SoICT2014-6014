@@ -13,10 +13,6 @@ const ComponentSchema = new Schema({
     description: {
         type: String
     },
-    link: {
-        type: Schema.Types.ObjectId,
-        ref: 'links'
-    },
     company: {
         type: Schema.Types.ObjectId,
         ref: 'companies'
@@ -24,7 +20,11 @@ const ComponentSchema = new Schema({
     deleteSoft: {
         type: Boolean,
         default: true
-    }
+    },
+    links: [{
+        type: Schema.Types.ObjectId,
+        ref: 'links'
+    }]
 },{
     timestamps: true,
     toJSON: { virtuals: true }

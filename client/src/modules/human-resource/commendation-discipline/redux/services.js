@@ -1,8 +1,4 @@
 import {
-    LOCAL_SERVER_API
-} from '../../../../env';
-
-import {
     sendRequest
 } from '../../../../helpers/requestHelper';
 
@@ -28,7 +24,7 @@ export const DisciplineService = {
  */
 function getListDiscipline(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/discipline/disciplines`,
+        url: `${ process.env.REACT_APP_SERVER }/discipline/disciplines`,
         method: 'GET',
         params: {
             organizationalUnits: data.organizationalUnits,
@@ -48,7 +44,7 @@ function getListDiscipline(data) {
  */
 function createNewDiscipline(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/discipline/disciplines`,
+        url: `${ process.env.REACT_APP_SERVER }/discipline/disciplines`,
         method: 'POST',
         data: data
     }, true, true, 'human_resource.commendation_discipline.discipline');
@@ -60,7 +56,7 @@ function createNewDiscipline(data) {
  */
 function deleteDiscipline(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/discipline/disciplines/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/discipline/disciplines/${id}`,
         method: 'DELETE',
     }, true, true, 'human_resource.commendation_discipline.discipline');
 }
@@ -72,7 +68,7 @@ function deleteDiscipline(id) {
  */
 function updateDiscipline(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/discipline/disciplines/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/discipline/disciplines/${id}`,
         method: 'PATCH',
         data: data,
     }, true, true, 'human_resource.commendation_discipline.discipline');
@@ -97,7 +93,7 @@ function updateDiscipline(id, data) {
  */
 function getListPraise(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/commendation/commendations`,
+        url: `${ process.env.REACT_APP_SERVER }/commendation/commendations`,
         method: 'GET',
         params: {
             organizationalUnits: data.organizationalUnits,
@@ -117,7 +113,7 @@ function getListPraise(data) {
  */
 function createNewPraise(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/commendation/commendations`,
+        url: `${ process.env.REACT_APP_SERVER }/commendation/commendations`,
         method: 'POST',
         data: data
     }, true, true, 'human_resource.commendation_discipline.commendation');
@@ -129,7 +125,7 @@ function createNewPraise(data) {
  */
 function deletePraise(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/commendation/commendations/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/commendation/commendations/${id}`,
         method: 'DELETE',
     }, true, true, 'human_resource.commendation_discipline.commendation');
 }
@@ -140,7 +136,7 @@ function deletePraise(id) {
  */
 function updatePraise(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/commendation/commendations/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/commendation/commendations/${id}`,
         method: 'PATCH',
         data: data,
     }, true, true, 'human_resource.commendation_discipline.commendation');
