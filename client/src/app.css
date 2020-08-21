@@ -411,7 +411,7 @@ button:focus {
         margin-left: 4px;
     }
     input[type='checkbox']:not(.switch) {
-        border-radius: 7px;
+        border-radius: 5px;
     }
     input[type='checkbox']:not(.switch):after {
         width: 5px;
