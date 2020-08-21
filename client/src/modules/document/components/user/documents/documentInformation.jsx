@@ -151,6 +151,7 @@ class DocumentInformation extends Component {
                     formID="form-information-user-document"
                     title={translate('document.information')}
                     hasSaveButton={false}
+                    size={100}
                 >
                     <form id="form-information-user-document">
                         <fieldset className="scheduler-border">

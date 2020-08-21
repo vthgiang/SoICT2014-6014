@@ -774,7 +774,7 @@ exports.addTaskLog = async (params, body) => {
         title: title,
         description: description,
     }
-
+    console.log('loggg', log)
     let task = await Task.findByIdAndUpdate(
         params.taskId, { $push: { logs: log } }, { new: true }
     ).populate("logs.creator");
@@ -1886,9 +1886,9 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 exports.deleteEvaluation = async (params) => {
     let { taskId, evaluationId } = params;
     await Task.updateOne(
-        {_id: taskId},
-        { $pull: {evaluations: { _id: evaluationId} } },
-        {$new: true}
+        { _id: taskId },
+        { $pull: { evaluations: { _id: evaluationId } } },
+        { $new: true }
     )
     // let newTask = await Task.findById(taskId);
     let newTask = await Task.findById(taskId).populate([
@@ -2106,7 +2106,7 @@ exports.deleteDocument = async (params) => {
     }
 
     let task = await Task.update(
-        { "_id": params.taskId, "documents._id": params.documentId},
+        { "_id": params.taskId, "documents._id": params.documentId },
         { $pull: { "documents": { "_id": params.documentId } } },
         { safe: true }
     )
@@ -2119,7 +2119,7 @@ exports.deleteDocument = async (params) => {
 /**
  * Sua document
  */
-exports.editDocument = async (params,body,files) => {
+exports.editDocument = async (params, body, files) => {
     console.log(body)
     let document = await Task.updateOne(
         { "_id": params.taskId, "documents._id": params.documentId },
