@@ -42,6 +42,8 @@ class DepreciationTab extends Component {
                 startDepreciation: nextProps.startDepreciation,
                 endDepreciation: nextProps.endDepreciation,
                 depreciationType: nextProps.depreciationType,
+                estimatedTotalProduction: nextProps.estimatedTotalProduction,
+                unitsProducedDuringTheYears: nextProps.unitsProducedDuringTheYears,
                 annualDepreciationValue: nextProps.annualDepreciationValue,
                 monthlyDepreciationValue: nextProps.monthlyDepreciationValue,
             }
@@ -73,7 +75,7 @@ class DepreciationTab extends Component {
      * @param {*} usefulLife Thời gian trích khấu hao
      * @param {*} startDepreciation Thời gian bắt đầu trích khấu hao
      */
-    calculateDepreciation = (depreciationType, cost, usefulLife, startDepreciation) => {
+    calculateDepreciation = (depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation) => {
         let annualDepreciation, monthlyDepreciation, remainingValue = cost;
 
         if (depreciationType === "Đường thẳng") { // Phương pháp khấu hao theo đường thẳng
@@ -123,7 +125,16 @@ class DepreciationTab extends Component {
             }
         
         } else if (depreciationType === "Sản lượng") { // Phương pháp khấu hao theo sản lượng
+            let monthTotal = unitsProducedDuringTheYears.length; // Tổng số tháng tính khấu hao
+            let productUnitDepreciation = cost / (estimatedTotalProduction * (usefulLife / 12)); // Mức khấu hao đơn vị sản phẩm
+            let accumulatedDepreciation = 0; // Giá trị hao mòn lũy kế
 
+            for (let i = 0; i < monthTotal; i++) {
+                accumulatedDepreciation += unitsProducedDuringTheYears[i].unitsProducedDuringTheYear * productUnitDepreciation;
+            }
+
+            remainingValue = cost - accumulatedDepreciation;
+            annualDepreciation = accumulatedDepreciation * 12 / monthTotal;
         }
 
         return [parseInt(annualDepreciation), parseInt(annualDepreciation / 12), parseInt(remainingValue)];
@@ -132,12 +143,13 @@ class DepreciationTab extends Component {
     render() {
         const { id } = this.props;
         const { translate } = this.props;
-        const { cost, residualValue, startDepreciation, usefulLife, depreciationType, endDepreciation, annualDepreciationValue, monthlyDepreciationValue } = this.state;
+        const { cost, residualValue, startDepreciation, usefulLife, depreciationType, endDepreciation, annualDepreciationValue, monthlyDepreciationValue,
+            estimatedTotalProduction, unitsProducedDuringTheYears } = this.state;
 
         var formater = new Intl.NumberFormat();
 
         let annualDepreciation, monthlyDepreciation, remainingValue = cost;
-        let result = this.calculateDepreciation(depreciationType, cost, usefulLife, startDepreciation);
+        let result = this.calculateDepreciation(depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation);
         annualDepreciation = result[0];
         monthlyDepreciation = result[1];
         remainingValue = result[2];

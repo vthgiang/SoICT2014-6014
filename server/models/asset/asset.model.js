@@ -138,8 +138,12 @@ const AssetSchema = new Schema({
     },
 
     unitsProducedDuringTheYears: [{ // Dùng trong UnitsOfProduction
-        year: Number,
-        unitsProducedDuringTheYear: Number
+        month: { 
+            type: Date
+        },
+        unitsProducedDuringTheYear: {
+            type: Number
+        },
     }],
     
     estimatedTotalProduction: { // Dùng trong UnitsOfProduction

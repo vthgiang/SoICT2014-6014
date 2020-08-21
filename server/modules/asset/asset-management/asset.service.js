@@ -208,6 +208,16 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
     oldAsset.residualValue = data.residualValue;
     oldAsset.startDepreciation = data.startDepreciation;
     oldAsset.depreciationType = data.depreciationType;
+    oldAsset.estimatedTotalProduction = data.estimatedTotalProduction;
+    oldAsset.unitsProducedDuringTheYears = data.unitsProducedDuringTheYears && data.unitsProducedDuringTheYears.map((x) => {
+        let time = x.month.split("-");
+        let date = new Date(time[1], time[0], 0)
+
+        return ({
+            month: date,
+            unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
+        })
+    });
     // Thanh lý
     oldAsset.disposalDate = data.disposalDate;
     oldAsset.disposalType = data.disposalType;
@@ -263,7 +273,15 @@ exports.updateDepreciation = async (id, data) => {
         startDepreciation: data.startDepreciation,
         depreciationType: data.depreciationType,
         estimatedTotalProduction: data.estimatedTotalProduction,
-        unitsProducedDuringTheYears: data.unitsProducedDuringTheYears,
+        unitsProducedDuringTheYears: data.unitsProducedDuringTheYears && data.unitsProducedDuringTheYears.map((x) => {
+            let time = x.month.split("-");
+            let date = new Date(time[1], time[0], 0)
+                
+            return ({
+                month: date,
+                unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
+            })
+        }),
     });
 }
 

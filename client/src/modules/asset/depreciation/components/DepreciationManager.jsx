@@ -48,6 +48,7 @@ class DepreciationManager extends Component {
                 currentRow: value
             }
         });
+
         window.$('#modal-edit-depreciation').modal('show');
     }
 
@@ -251,7 +252,7 @@ class DepreciationManager extends Component {
      * @param {*} usefulLife Thời gian trích khấu hao
      * @param {*} startDepreciation Thời gian bắt đầu trích khấu hao
      */
-    calculateDepreciation = (depreciationType, cost, usefulLife, startDepreciation) => {
+    calculateDepreciation = (depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation) => {
         let annualDepreciation, monthlyDepreciation, remainingValue = cost;
 
         if (depreciationType === "Đường thẳng") { // Phương pháp khấu hao theo đường thẳng
@@ -301,7 +302,16 @@ class DepreciationManager extends Component {
             }
 
         } else if (depreciationType === "Sản lượng") { // Phương pháp khấu hao theo sản lượng
+            let monthTotal = unitsProducedDuringTheYears.length; // Tổng số tháng tính khấu hao
+            let productUnitDepreciation = cost / (estimatedTotalProduction * (usefulLife / 12)); // Mức khấu hao đơn vị sản phẩm
+            let accumulatedDepreciation = 0; // Giá trị hao mòn lũy kế
 
+            for (let i = 0; i < monthTotal; i++){
+                accumulatedDepreciation += unitsProducedDuringTheYears[i].unitsProducedDuringTheYear * productUnitDepreciation;
+            }
+
+            remainingValue = cost - accumulatedDepreciation;
+            annualDepreciation = accumulatedDepreciation * 12 / monthTotal;
         }
 
         return [parseInt(annualDepreciation), parseInt(annualDepreciation / 12), parseInt(remainingValue)];
@@ -326,7 +336,7 @@ class DepreciationManager extends Component {
         if (lists && assettypelist) {
             exportData = this.convertDataToExportData(lists, assettypelist);
         }
-        
+
         return (
             <div className="box">
                 <div className="box-body qlcv">
@@ -417,25 +427,25 @@ class DepreciationManager extends Component {
                         <tbody>
                             {lists &&
                                 lists.map((x, index) => {
-                                    let result = this.calculateDepreciation(x.depreciationType, x.cost, x.usefulLife, x.startDepreciation);
+                                    let result = this.calculateDepreciation(x.depreciationType, x.cost, x.usefulLife, x.estimatedTotalProduction, x.unitsProducedDuringTheYears, x.startDepreciation);
                                     return (
                                         <tr key={index}>
-                                        <td>{x.code}</td>
-                                        <td>{x.assetName}</td>
-                                        <td>{assettypelist && assettypelist.filter(item => item._id === x.assetType).pop() ? assettypelist.filter(item => item._id === x.assetType).pop().typeName : 'Asset type is deleted'}</td>
-                                        <td>{formater.format(parseInt(x.cost))} VNĐ</td>
-                                        <td>{this.formatDate(x.startDepreciation)}</td>
-                                        <td>{x.usefulLife} tháng</td>
-                                        <td>{formater.format(result[0])} VNĐ/năm</td>
-                                        <td>{formater.format(result[1])} VNĐ/tháng</td>
-                                        <td>{formater.format(x.cost - result[2])} VNĐ</td>
-                                        <td>{formater.format(result[2])} VNĐ</td>
-                                        <td>{this.addMonth(x.startDepreciation, x.usefulLife)}</td>
-                                        <td style={{ textAlign: "center" }}>
-                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.depreciation.edit_depreciation')}><i
-                                                className="material-icons">edit</i></a>
-                                        </td>
+                                            <td>{x.code}</td>
+                                            <td>{x.assetName}</td>
+                                            <td>{assettypelist && assettypelist.filter(item => item._id === x.assetType).pop() ? assettypelist.filter(item => item._id === x.assetType).pop().typeName : 'Asset type is deleted'}</td>
+                                            <td>{formater.format(parseInt(x.cost))} VNĐ</td>
+                                            <td>{this.formatDate(x.startDepreciation)}</td>
+                                            <td>{x.usefulLife} tháng</td>
+                                            <td>{formater.format(result[0])} VNĐ/năm</td>
+                                            <td>{formater.format(result[1])} VNĐ/tháng</td>
+                                            <td>{formater.format(x.cost - result[2])} VNĐ</td>
+                                            <td>{formater.format(result[2])} VNĐ</td>
+                                            <td>{this.addMonth(x.startDepreciation, x.usefulLife)}</td>
+                                            <td style={{ textAlign: "center" }}>
+                                                <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
+                                                <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.depreciation.edit_depreciation')}><i
+                                                    className="material-icons">edit</i></a>
+                                            </td>
                                         </tr>
                                     )
                                 })
@@ -505,6 +515,12 @@ class DepreciationManager extends Component {
                         endDepreciation={this.addMonth(currentRow.startDepreciation, currentRow.usefulLife)}
                         usefulLife={currentRow.usefulLife}
                         depreciationType={currentRow.depreciationType}
+                        estimatedTotalProduction={currentRow.estimatedTotalProduction}
+                        unitsProducedDuringTheYears={currentRow.unitsProducedDuringTheYears && currentRow.unitsProducedDuringTheYears.map((x) => ({
+                            month: this.formatDate2(x.month),
+                            unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
+                        })
+                        )}
                     />
                 }
             </div>
