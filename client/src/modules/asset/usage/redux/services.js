@@ -35,9 +35,8 @@ function deleteUsage(assetId, usageId) {
 }
 
 function recallAsset(assetId, data){
-    console.log("Services", assetId, data);
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/assets/assets/${assetId}/usage-logs`,
+        url: `${process.env.REACT_APP_SERVER}/assets/assets/${assetId}/usage-logs`,
         method: 'PATCH',
         data: data,
         params: {
