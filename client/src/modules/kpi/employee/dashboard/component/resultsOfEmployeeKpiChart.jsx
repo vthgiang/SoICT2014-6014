@@ -262,9 +262,9 @@ class ResultsOfEmployeeKpiChart extends Component {
                             tableTitle: "Dữ liệu để vẽ biểu đồ "+ fileName,
                             columns: [                            
                                 { key: "time", value: "Thời gian" },
-                                { key: "automaticPoint", value: "Điểm tự động" },
-                                { key: "employeePoint", value: "Điểm tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm được đánh giá" }
+                                { key: "automaticPoint", value: "Điểm KPI tự động" },
+                                { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm KPI được đánh giá" }
                             ],
                             data: data
                         }

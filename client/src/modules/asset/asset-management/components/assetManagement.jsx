@@ -28,8 +28,8 @@ class AssetManagement extends Component {
 
     componentDidMount() {
         this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
+        this.props.getListBuildingAsTree();
         this.props.getAllAsset(this.state);
-        this.props.getGroupAsset(['Building']);
         this.props.getUser();
     }
 
@@ -555,7 +555,7 @@ function mapState(state) {
 const actionCreators = {
     searchAssetTypes: AssetTypeActions.searchAssetTypes,
     getAllAsset: AssetManagerActions.getAllAsset,
-    getGroupAsset: AssetManagerActions.getGroupAsset,
+    getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
     deleteAsset: AssetManagerActions.deleteAsset,
     getUser: UserActions.get,
 

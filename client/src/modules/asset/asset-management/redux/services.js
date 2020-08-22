@@ -4,10 +4,10 @@ import {
 
 export const AssetService = {
     getAll,
-    getGroupAsset,
     addNewAsset,
     updateInformationAsset,
     deleteAsset,
+    getListBuildingAsTree,
 }
 
 /**
@@ -29,12 +29,15 @@ function getAll(data) {
     }, false, true, 'asset.asset_info');
 }
 
-function getGroupAsset(groupArr) {
+/**
+ * Lấy danh sách mặt bằng dạng cây
+ */
+function getListBuildingAsTree() {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/assets/assets`,
         method: 'GET',
         params: {
-            group: groupArr,
+            type: "get-building-as-tree"
         }
     }, false, true, 'asset.asset_info');
 }

@@ -219,9 +219,9 @@ class KPIPersonalManager extends Component {
                                 { key: "date", value: "Thời gian" },    
                                 { key: "status", value: "Trạng thái mục tiêu" },                     
                                 { key: "numberTarget", value: "Số lượng mục tiêu" },
-                                { key: "automaticPoint", value: "Điểm tự động" },
-                                { key: "employeePoint", value: "Điểm tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm được phê duyệt" }
+                                { key: "automaticPoint", value: "Điểm KPI tự động" },
+                                { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm KPI được phê duyệt" }
                             ],
                             data: data
                         }

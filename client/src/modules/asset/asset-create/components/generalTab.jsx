@@ -460,7 +460,7 @@ class GeneralTab extends Component {
     render() {
         const { id } = this.props;
         const { translate, user, assetType, assetsManager } = this.props;
-        console.log("OK OK OKKKKKKKKKKK", assetsManager.listGroupAssets);
+
         const {
             img, code, assetName, assetTypes, serial, purchaseDate, warrantyExpirationDate, managedBy,
             assignedTo, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse, detailInfo,

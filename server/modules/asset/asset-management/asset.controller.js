@@ -1,6 +1,6 @@
 const AssetService = require('./asset.service');
-const {LogInfo, LogError} = require('../../../logs');
-const {Console} = require('winston/lib/winston/transports');
+const { LogInfo, LogError } = require('../../../logs');
+const { Console } = require('winston/lib/winston/transports');
 const {
     Asset,
 } = require('../../../models').schema;
@@ -11,18 +11,25 @@ const {
 exports.searchAssetProfiles = async (req, res) => {
     try {
         let data;
-        
-        let params = {
-            code: req.query.code,
-            assetName: req.query.assetName,
-            status: req.query.status,
-            canRegisterForUse: req.query.canRegisterForUse,
-            group: req.query.group,
-            page: Number(req.query.page),
-            limit: Number(req.query.limit),
+        if (req.query.type === "get-building-as-tree") {
+            data = await AssetService.getListBuildingAsTree(req.user.company._id);
+        }
+        else if (!req.query.page && !req.query.limit) {
+            data = await AssetService.getAssets(req.user.company._id, false);
+        } else {
+            let params = {
+                code: req.query.code,
+                assetName: req.query.assetName,
+                status: req.query.status,
+                canRegisterForUse: req.query.canRegisterForUse,
+                page: Number(req.query.page),
+                limit: Number(req.query.limit),
+            }
+            data = await AssetService.searchAssetProfiles(params, req.user.company._id);
+
         }
 
-        data = await AssetService.searchAssetProfiles(params, req.user.company._id);
+        // data = await AssetService.searchAssetProfiles(params, req.user.company._id);
         
         await LogInfo(req.user.email, 'GET_ASSETS', req.user.company);
         res.status(200).json({
@@ -55,7 +62,7 @@ exports.createAsset = async (req, res) => {
         }
         let file = req.files.file;
         let fileInfo = { file, avatar };
-        
+
         let data = await AssetService.createAsset(req.body, req.user.company._id, fileInfo);
         await LogInfo(req.user.email, 'CREATE_ASSET', req.user.company);
         res.status(200).json({
@@ -84,8 +91,8 @@ exports.updateAssetInformation = async (req, res) => {
             avatar = `/${req.files.fileAvatar[0].path}`;
         }
         let file = req.files.file;
-        let fileInfo = {file, avatar};
-        
+        let fileInfo = { file, avatar };
+
         let data = await AssetService.updateAssetInformation(req.params.id, req.body, fileInfo, req.user.company._id);
 
         await LogInfo(req.user.email, 'EDIT_ASSET', req.user.company);
@@ -327,7 +334,7 @@ exports.createIncident = async (req, res) => {
             content: data
         });
     } catch (error) {
-        res.status(400).json({success: false, messages: ["create_incident_false"], content: {error: error}});
+        res.status(400).json({ success: false, messages: ["create_incident_false"], content: { error: error } });
     }
 }
 

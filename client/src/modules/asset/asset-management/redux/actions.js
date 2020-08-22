@@ -1,12 +1,12 @@
-import {AssetConstants} from "./constants";
-import {AssetService} from "./services";
+import { AssetConstants } from "./constants";
+import { AssetService } from "./services";
 
 export const AssetManagerActions = {
     getAllAsset,
-    getGroupAsset,
     addNewAsset,
     updateInformationAsset,
     deleteAsset,
+    getListBuildingAsTree,
 };
 
 /**
@@ -34,21 +34,24 @@ function getAllAsset(data) {
     };
 }
 
-function getGroupAsset(groupArr) {
+/**
+ * Lấy danh sách mặt bằng dạng cây
+ */
+function getListBuildingAsTree() {
     return dispatch => {
         dispatch({
-            type: AssetConstants.GET_GROUP_ASSET_REQUEST
+            type: AssetConstants.GET_LIST_BUILDING_AS_TREE_REQUEST
         });
-        AssetService.getGroupAsset(groupArr)
+        AssetService.getListBuildingAsTree()
             .then(res => {
                 dispatch({
-                    type: AssetConstants.GET_GROUP_ASSET_SUCCESS,
+                    type: AssetConstants.GET_LIST_BUILDING_AS_TREE_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(err => {
                 dispatch({
-                    type: AssetConstants.GET_GROUP_ASSET_FAILURE,
+                    type: AssetConstants.GET_LIST_BUILDING_AS_TREE_FAILURE,
                     error: err
                 });
             })
