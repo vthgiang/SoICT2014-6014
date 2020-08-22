@@ -26,30 +26,43 @@ exports.searchAssetProfiles = async (params, company) => {
     if (params.code) {
         keySearch = {...keySearch, code: {$regex: params.code, $options: "i"}}
     }
-    ;
 
     // Bắt sựu kiện Tên tài sản tìm kiếm khác ""
     if (params.assetName) {
         keySearch = {...keySearch, assetName: {$regex: params.assetName, $options: "i"}}
     }
-    ;
 
     // Thêm key tìm kiếm tài sản theo trạng thái hoạt động vào keySearch
     if (params.status) {
         keySearch = {...keySearch, status: {$in: params.status}};
     }
-    ;
 
     // Thêm key tìm kiếm tài sản theo trạng thái hoạt động vào keySearch
     if (params.canRegisterForUse) {
         keySearch = {...keySearch, canRegisterForUse: {$in: params.canRegisterForUse}};
     }
-    ;
+
+    // Thêm key tìm kiếm tài sản theo nhóm tài sản
+    if (params.group) {
+        keySearch = {...keySearch, group: {$in: params.group}};
+    }
 
     // Lấy danh sách tài sản
     let totalList = await Asset.count(keySearch);
-    let listAssets = await Asset.find(keySearch)
-        .sort({'createdAt': 'desc'}).skip(params.page).limit(params.limit);
+    let listAssets;
+    if (!params.page && !params.limit) {
+        listAssets = await Asset.find(keySearch).populate({
+            path: 'location',
+            model: Asset
+        }).sort({
+            'createdAt': 'desc'
+        })
+    } else {
+        listAssets = await Asset.find(keySearch).populate({
+            path: 'location',
+            model: Asset
+        }).sort({'createdAt': 'desc'}).skip(params.page).limit(params.limit);
+    }
     
     return {data: listAssets, totalList}
 }

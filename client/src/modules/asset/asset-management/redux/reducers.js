@@ -13,6 +13,7 @@ const initState = {
 export function assetsManager(state = initState, action) {
     switch (action.type) {
         case AssetConstants.GETALL_REQUEST:
+        case AssetConstants.GET_GROUP_ASSET_REQUEST:
         case AssetConstants.ADDASSET_REQUEST:
         case AssetConstants.UPDATE_INFOR_ASSET_REQUEST:
         case AssetConstants.DELETE_ASSET_REQUEST:
@@ -44,6 +45,13 @@ export function assetsManager(state = initState, action) {
                     isLoading: false
                 }
             }
+
+        case AssetConstants.GET_GROUP_ASSET_SUCCESS:
+            return {
+                ...state,
+                listGroupAssets: action.payload.data,
+                isLoading: false
+            };
 
         case AssetConstants.CREATE_USAGE_SUCCESS:            
             let assets = [];
@@ -87,6 +95,7 @@ export function assetsManager(state = initState, action) {
             };
 
         case AssetConstants.GETALL_FAILURE:
+        case AssetConstants.GET_GROUP_ASSET_FAILURE:
         case AssetConstants.ADDASSET_FAILURE:
         case AssetConstants.UPDATE_INFOR_ASSET_FAILURE:
         case AssetConstants.DELETE_ASSET_FAILURE:

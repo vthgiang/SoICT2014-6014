@@ -11,21 +11,19 @@ const {
 exports.searchAssetProfiles = async (req, res) => {
     try {
         let data;
-        if (!req.query.page && !req.query.limit) {
-            data = await AssetService.getAssets(req.user.company._id, false);
-        } else {
-            let params = {
-                code: req.query.code,
-                assetName: req.query.assetName,
-                status: req.query.status,
-                canRegisterForUse: req.query.canRegisterForUse,
-                page: Number(req.query.page),
-                limit: Number(req.query.limit),
-            }
-
-            data = await AssetService.searchAssetProfiles(params, req.user.company._id);
-
+        
+        let params = {
+            code: req.query.code,
+            assetName: req.query.assetName,
+            status: req.query.status,
+            canRegisterForUse: req.query.canRegisterForUse,
+            group: req.query.group,
+            page: Number(req.query.page),
+            limit: Number(req.query.limit),
         }
+
+        data = await AssetService.searchAssetProfiles(params, req.user.company._id);
+        
         await LogInfo(req.user.email, 'GET_ASSETS', req.user.company);
         res.status(200).json({
             success: true,

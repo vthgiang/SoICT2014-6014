@@ -18,16 +18,16 @@ class GeneralTab extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
-            
+
         if (monthYear === true) {
             return [month, year].join('-');
         } else {
             return [day, month, year].join('-');
-        } 
+        }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -85,30 +85,44 @@ class GeneralTab extends Component {
                         <div className="col-md-8">
                             <div>
                                 <div className="col-md-6">
+
+                                    {/* Mã tài sản */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.asset_code')}&emsp; </strong>
                                         {code}
                                     </div>
+
+                                    {/* Tên tài sản */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.asset_name')}&emsp; </strong>
                                         {assetName}
                                     </div>
+
+                                    {/* Số serial */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.serial_number')}&emsp; </strong>
                                         {serial}
                                     </div>
+
+                                    {/* Loại tài sản */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.asset_type')}&emsp; </strong>
                                         {assetTypes && assettypelist.length && assettypelist.filter(item => item._id === assetTypes).pop() ? assettypelist.filter(item => item._id === assetTypes).pop().typeName : 'Asset type is deleted'}
                                     </div>
+
+                                    {/* Ngày nhập */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.purchase_date')}&emsp; </strong>
                                         {this.formatDate(purchaseDate)}
                                     </div>
+
+                                    {/* Ngày bảo hành */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.warranty_expiration_date')}&emsp; </strong>
                                         {this.formatDate(warrantyExpirationDate)}
                                     </div>
+
+                                    {/* Người quản lý */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.manager')}&emsp; </strong>
                                         {managedBy && userlist.length && userlist.filter(item => item._id === managedBy).pop() ? userlist.filter(item => item._id === managedBy).pop().name : 'User is deleted'}
@@ -116,37 +130,51 @@ class GeneralTab extends Component {
                                 </div>
 
                                 <div className="col-md-6">
+
+                                    {/* Người sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.user')}&emsp; </strong>
                                         {assignedTo ? (userlist.length && userlist.filter(item => item._id === assignedTo).pop() ? userlist.filter(item => item._id === assignedTo).pop().name : 'User is deleted') : ''}
                                     </div>
+
+                                    {/* Thời gian bắt đầu sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.handover_from_date')}&emsp; </strong>
                                         {handoverFromDate ? this.formatDate(handoverFromDate) : ''}
                                     </div>
+
+                                    {/* Thời gian kết thúc sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.handover_to_date')}&emsp; </strong>
                                         {handoverToDate ? this.formatDate(handoverToDate) : ''}
                                     </div>
+
+                                    {/* Vị trí */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.asset_location')}&emsp; </strong>
-                                        {location}
+                                        {location ? location.assetName : null}
                                     </div>
+
+                                    {/* Mô tả */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.description')}&emsp; </strong>
                                         {description}
                                     </div>
+
+                                    {/* Trạng thái */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.status')}&emsp; </strong>
                                         {status}
                                     </div>
+
+                                    {/* Quyền đăng ký sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.can_register_for_use')}&emsp; </strong>
                                         {canRegisterForUse}
                                     </div>
                                 </div>
                             </div>
-                        
+
                             {/* Thông tin chi tiết */}
                             <div className="col-md-12">
                                 <label>{translate('asset.general_information.detail_information')}:<a title={translate('asset.general_information.detail_information')}></a></label>

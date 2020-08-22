@@ -4,6 +4,7 @@ import {
 
 export const AssetService = {
     getAll,
+    getGroupAsset,
     addNewAsset,
     updateInformationAsset,
     deleteAsset,
@@ -24,6 +25,16 @@ function getAll(data) {
             canRegisterForUse: data !== undefined ? data.canRegisterForUse : data,
             page: data !== undefined ? data.page : data,
             limit: data !== undefined ? data.limit : data
+        }
+    }, false, true, 'asset.asset_info');
+}
+
+function getGroupAsset(groupArr) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/assets/assets`,
+        method: 'GET',
+        params: {
+            group: groupArr,
         }
     }, false, true, 'asset.asset_info');
 }

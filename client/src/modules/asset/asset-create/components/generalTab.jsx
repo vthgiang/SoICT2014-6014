@@ -459,8 +459,8 @@ class GeneralTab extends Component {
 
     render() {
         const { id } = this.props;
-        const { translate, user, assetType } = this.props;
-
+        const { translate, user, assetType, assetsManager } = this.props;
+        console.log("OK OK OKKKKKKKKKKK", assetsManager.listGroupAssets);
         const {
             img, code, assetName, assetTypes, serial, purchaseDate, warrantyExpirationDate, managedBy,
             assignedTo, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse, detailInfo,
@@ -614,7 +614,7 @@ class GeneralTab extends Component {
                                 {/* Vị trí tài sản */}
                                 <div className={`form-group ${!errorOnLocation ? "" : "has-error"}`}>
                                     <label htmlFor="location">{translate('asset.general_information.asset_location')}</label>
-                                    <input type="text" className="form-control" name="location" value={location} onChange={this.handleLocationChange} placeholder="Vị trí tài sản"
+                                    <input type="text" className="form-control" name="location" value={location ? location.assetName : null} onChange={this.handleLocationChange} placeholder="Vị trí tài sản"
                                         autoComplete="off" />
                                     <ErrorLabel content={errorOnLocation} />
                                 </div>

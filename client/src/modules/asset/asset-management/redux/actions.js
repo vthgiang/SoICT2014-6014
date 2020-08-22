@@ -3,6 +3,7 @@ import {AssetService} from "./services";
 
 export const AssetManagerActions = {
     getAllAsset,
+    getGroupAsset,
     addNewAsset,
     updateInformationAsset,
     deleteAsset,
@@ -33,6 +34,26 @@ function getAllAsset(data) {
     };
 }
 
+function getGroupAsset(groupArr) {
+    return dispatch => {
+        dispatch({
+            type: AssetConstants.GET_GROUP_ASSET_REQUEST
+        });
+        AssetService.getGroupAsset(groupArr)
+            .then(res => {
+                dispatch({
+                    type: AssetConstants.GET_GROUP_ASSET_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({
+                    type: AssetConstants.GET_GROUP_ASSET_FAILURE,
+                    error: err
+                });
+            })
+    };
+}
 
 /**
  * Thêm mới thông tin tài sản

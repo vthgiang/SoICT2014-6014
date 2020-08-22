@@ -29,6 +29,7 @@ class AssetManagement extends Component {
     componentDidMount() {
         this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
         this.props.getAllAsset(this.state);
+        this.props.getGroupAsset(['Building']);
         this.props.getUser();
     }
 
@@ -136,7 +137,7 @@ class AssetManagement extends Component {
         if (value.length === 0) {
             value = null
         }
-        ;
+        
         this.setState({
             ...this.state,
             status: value
@@ -148,7 +149,7 @@ class AssetManagement extends Component {
         if (value.length === 0) {
             value = null
         }
-        ;
+        
         this.setState({
             ...this.state,
             canRegisterForUse: value
@@ -554,6 +555,7 @@ function mapState(state) {
 const actionCreators = {
     searchAssetTypes: AssetTypeActions.searchAssetTypes,
     getAllAsset: AssetManagerActions.getAllAsset,
+    getGroupAsset: AssetManagerActions.getGroupAsset,
     deleteAsset: AssetManagerActions.deleteAsset,
     getUser: UserActions.get,
 
