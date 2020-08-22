@@ -404,7 +404,7 @@ button:focus {
     input[type='checkbox']+label,
     input[type='radio']+label {
         font-size: 14px;
-        line-height: 18px;
+        line-height: 21px;
         display: inline-block;
         vertical-align: top;
         cursor: pointer;
