@@ -537,7 +537,7 @@ class TasksSchedule extends Component {
   render() {
     const { tasks, translate } = this.props;
     const { TaskOrganizationUnitDashboard } = this.props;
-    const { defaultTimeStart, defaultTimeEnd } = this.state;
+    const { defaultTimeStart, defaultTimeEnd, taskStatus } = this.state;
 
     let task = tasks && tasks.task;
     let today = new Date();
@@ -560,17 +560,23 @@ class TasksSchedule extends Component {
             {/* Chọn trạng thái công việc */}
             <div className="form-group">
               <label>{translate('task.task_management.status')}</label>
-              <SelectMulti id="multiSelectStatusInDistribution"
-                items={[
-                  { value: "Inprocess", text: translate('task.task_management.inprocess') },
-                  { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
-                  { value: "Finished", text: translate('task.task_management.finished') },
-                  { value: "Delayed", text: translate('task.task_management.delayed') },
-                  { value: "Canceled", text: translate('task.task_management.canceled') }
-                ]}
-                onChange={this.handleSelectStatus}
-                options={{ nonSelectedText: translate('task.task_management.inprocess'), allSelectedText: translate('task.task_management.select_all_status') }}>
-              </SelectMulti>
+              {
+                taskStatus &&
+                <SelectMulti id="multiSelectStatusInDistribution"
+                  items={[
+                    { value: "Inprocess", text: translate('task.task_management.inprocess') },
+                    { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
+                    { value: "Finished", text: translate('task.task_management.finished') },
+                    { value: "Delayed", text: translate('task.task_management.delayed') },
+                    { value: "Canceled", text: translate('task.task_management.canceled') }
+                  ]}
+                  onChange={this.handleSelectStatus}
+                  options={{ nonSelectedText: translate('task.task_management.inprocess'), allSelectedText: translate('task.task_management.select_all_status') }}
+                  value={taskStatus}>
+
+                </SelectMulti>
+              }
+
             </div>
           </section>
           {<ModalDetailTask task={task} />}

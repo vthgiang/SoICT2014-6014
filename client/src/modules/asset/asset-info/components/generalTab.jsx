@@ -2,12 +2,17 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
+import { AssetTypeActions } from '../../asset-type/redux/actions';
+
 class GeneralTab extends Component {
     constructor(props) {
         super(props);
         this.state = {};
     }
+    componentDidMount() {
+        this.props.getAssetTypes();
 
+    }
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
         var d = new Date(date),
@@ -18,16 +23,16 @@ class GeneralTab extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
-            
+
         if (monthYear === true) {
             return [month, year].join('-');
         } else {
             return [day, month, year].join('-');
-        } 
+        }
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -58,9 +63,13 @@ class GeneralTab extends Component {
     }
 
     render() {
-        const { id, translate, user, assetType } = this.props;
+        const { id, translate, user, assetType, assetsManager } = this.props;
         var userlist = user.list;
-        var assettypelist = assetType.listAssetTypes;
+        var assettype = assetType && assetType.administration;
+        let assettypelist = assettype && assettype.types.list;
+        let assetbuilding = assetsManager && assetsManager.buildingAssets;
+        let assetbuildinglist = assetbuilding && assetbuilding.list;
+
         const {
             img, avatar, code, assetName, serial, assetTypes, purchaseDate, warrantyExpirationDate,
             managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse, detailInfo
@@ -130,7 +139,7 @@ class GeneralTab extends Component {
                                     </div>
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.asset_location')}&emsp; </strong>
-                                        {location}
+                                        {location && assetbuildinglist.length && assetbuildinglist.filter(item => item._id === location).pop() ? assetbuildinglist.filter(item => item._id === location).pop().assetName : 'Data is deleted'}
                                     </div>
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.description')}&emsp; </strong>
@@ -146,7 +155,7 @@ class GeneralTab extends Component {
                                     </div>
                                 </div>
                             </div>
-                        
+
                             {/* Thông tin chi tiết */}
                             <div className="col-md-12">
                                 <label>{translate('asset.general_information.detail_information')}:<a title={translate('asset.general_information.detail_information')}></a></label>
@@ -183,9 +192,11 @@ class GeneralTab extends Component {
 };
 
 function mapState(state) {
-    const { user, assetType } = state;
-    return { user, assetType };
+    const { user, assetType, assetsManager } = state;
+    return { user, assetType, assetsManager };
 };
-
-const tabGeneral = connect(mapState, null)(withTranslate(GeneralTab));
+const actions = {
+    getAssetTypes: AssetTypeActions.getAssetTypes,
+}
+const tabGeneral = connect(mapState, actions)(withTranslate(GeneralTab));
 export { tabGeneral as GeneralTab };
