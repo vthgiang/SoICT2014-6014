@@ -464,7 +464,8 @@ class DepreciationManager extends Component {
                         purchaseDate={currentRowView.purchaseDate}
                         warrantyExpirationDate={currentRowView.warrantyExpirationDate}
                         managedBy={currentRowView.managedBy}
-                        assignedTo={currentRowView.assignedTo}
+                        assignedToUser={currentRowView.assignedToUser}
+                        assignedToOrganizationalUnit={currentRowView.assignedToOrganizationalUnit}
                         handoverFromDate={currentRowView.handoverFromDate}
                         handoverToDate={currentRowView.handoverToDate}
                         location={currentRowView.location}

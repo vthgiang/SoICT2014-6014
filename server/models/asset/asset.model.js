@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const Company = require('../system-admin/company.model');
 const AssetType = require('./assetType.model');
 const User = require('../auth/user.model');
-
+const OrganizaitonalUnit = require('../super-admin/organizationalUnit.model')
 // Create Schema
 const AssetSchema = new Schema({
     group: {
@@ -58,31 +58,24 @@ const AssetSchema = new Schema({
         // required: true
     },
 
-    assignedTo: { //12.Người đang được giao sử dụng
+    assignedToUser: { //12.Người đang được giao sử dụng
         type: Schema.Types.ObjectId,
         ref: User,
         // required: true
     },
 
-    handoverFromDate: { //13.Người được giao sử dụng từ ngày
-        type: Date,
-        // defaut: Date.now,
-        // required: true
+    assignedToOrganizaitonalUnit: { //13.Đơn vị đang được giao sử dụng
+        type: Schema.Types.ObjectId,
+        ref: OrganizaitonalUnit, 
     },
 
-    handoverToDate: { //14.Người được giao sử dụng đến ngày
-        type: Date,
-        // defaut: Date.now,
-        // required: true
-    },
-
-    location: { // 15.vị trí tài sản
+    location: { // 16.vị trí tài sản
         type: Schema.Types.ObjectId,
         replies: this,
         // required: true
     },
 
-    status: { //16.tình trạng: sẵn sàng sử dụng || đang sử dụng || hỏng hóc || mất || Thanh lý
+    status: { //17.tình trạng: sẵn sàng sử dụng || đang sử dụng || hỏng hóc || mất || Thanh lý
         type: String,
         enum: ["Sẵn sàng sử dụng", "Đang sử dụng", "Hỏng hóc", "Mất", "Thanh lý"]
         // enum: ["InUse", "Unassigned", "InStorage", "Broken", "InRepair", "Disposed"]
@@ -95,7 +88,7 @@ const AssetSchema = new Schema({
         //    enum: ["Được phép đăng ký sử dụng", "Không được phép đăng ký sử dụng"]
     },
 
-    description: { //17.mô tả
+    description: { //18.mô tả
         type: String,
     },
 
@@ -150,9 +143,13 @@ const AssetSchema = new Schema({
      * Lịch sử sử dụng - Tab cấp phát
      */
     usageLogs: [{ //ghi lại lịch sử sử dụng
-        usedBy: { // người sử dụng
+        usedByUser: { // người sử dụng
             type: Schema.Types.ObjectId,
             ref: User,
+        },
+        usedByOrganizaitonalUnit: {
+            type: Schema.Types.ObjectId,
+            ref: OrganizaitonalUnit, 
         },
         startDate: { // ngày bắt đầu sử dụng
             type: Date

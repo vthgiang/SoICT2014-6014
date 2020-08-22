@@ -192,9 +192,9 @@ class AssetManagement extends Component {
                 let type = x.assetType && assettypelist.length && assettypelist.find(item => item._id === x.assetType) ? assettypelist.find(item => item._id === x.assetType).typeName : 'Asset is deleted';
                 let purchaseDate = this.formatDate(x.purchaseDate);
                 let manager = x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).email : 'User is deleted';
-                let assigner = x.assignedTo ? (userlist.length && userlist.find(item => item._id === x.assignedTo) ? userlist.find(item => item._id === x.assignedTo).email : 'User is deleted') : ''
-                let handoverFromDate = x.handoverFromDate ? this.formatDate(x.handoverFromDate) : '';
-                let handoverToDate = x.handoverToDate ? this.formatDate(x.handoverToDate) : '';
+                let assigner = x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).email : 'User is deleted') : ''
+                // let handoverFromDate = x.handoverFromDate ? this.formatDate(x.handoverFromDate) : '';
+                // let handoverToDate = x.handoverToDate ? this.formatDate(x.handoverToDate) : '';
                 let status = x.status;
                 length = x.detailInfo.length;
                 let info = (length) ? (x.detailInfo.map((item, index) => {
@@ -216,8 +216,8 @@ class AssetManagement extends Component {
                     purchaseDate: purchaseDate,
                     manager: manager,
                     assigner: assigner,
-                    handoverFromDate: handoverFromDate,
-                    handoverToDate: handoverToDate,
+                    // handoverFromDate: handoverFromDate,
+                    // handoverToDate: handoverToDate,
                     status: status,
                     infoName: infoName,
                     value: value
@@ -389,8 +389,6 @@ class AssetManagement extends Component {
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.purchase_date')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.manager')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.user')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.handover_from_date')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.handover_to_date')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('asset.general_information.action')}
                                     <DataTableSetting
@@ -402,8 +400,6 @@ class AssetManagement extends Component {
                                             translate('asset.general_information.purchase_date'),
                                             translate('asset.general_information.manager'),
                                             translate('asset.general_information.user'),
-                                            translate('asset.general_information.handover_from_date'),
-                                            translate('asset.general_information.handover_to_date'),
                                             translate('asset.general_information.status')
                                         ]}
                                         limit={limit}
@@ -422,9 +418,7 @@ class AssetManagement extends Component {
                                         <td>{x.assetType && assettypelist.length && assettypelist.find(item => item._id === x.assetType) ? assettypelist.find(item => item._id === x.assetType).typeName : 'Asset is deleted'}</td>
                                         <td>{this.formatDate(x.purchaseDate)}</td>
                                         <td>{x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : 'User is deleted'}</td>
-                                        <td>{x.assignedTo ? (userlist.length && userlist.find(item => item._id === x.assignedTo) ? userlist.find(item => item._id === x.assignedTo).name : 'User is deleted') : ''}</td>
-                                        <td>{x.handoverFromDate ? this.formatDate(x.handoverFromDate) : ''}</td>
-                                        <td>{x.handoverToDate ? this.formatDate(x.handoverToDate) : ''}</td>
+                                        <td>{x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).name : 'User is deleted') : ''}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
@@ -464,7 +458,8 @@ class AssetManagement extends Component {
                         purchaseDate={currentRowView.purchaseDate}
                         warrantyExpirationDate={currentRowView.warrantyExpirationDate}
                         managedBy={currentRowView.managedBy}
-                        assignedTo={currentRowView.assignedTo}
+                        assignedToUser={currentRowView.assignedToUser}
+                        assignedToOrganizationalUnit={currentRowView.assignedToOrganizationalUnit}
                         handoverFromDate={currentRowView.handoverFromDate}
                         handoverToDate={currentRowView.handoverToDate}
                         location={currentRowView.location}
@@ -506,7 +501,8 @@ class AssetManagement extends Component {
                         purchaseDate={currentRow.purchaseDate}
                         warrantyExpirationDate={currentRow.warrantyExpirationDate}
                         managedBy={currentRow.managedBy}
-                        assignedTo={currentRow.assignedTo}
+                        assignedToUser={currentRow.assignedToUser}
+                        assignedToOrganizationalUnit={currentRow.assignedToOrganizationalUnit}
                         handoverFromDate={currentRow.handoverFromDate}
                         handoverToDate={currentRow.handoverToDate}
                         location={currentRow.location}

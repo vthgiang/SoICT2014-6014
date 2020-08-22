@@ -205,13 +205,19 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện thay đổi người sử dụng
      */
-    handleAssignedToChange = (value) => {
+    handleAssignedToUserChange = (value) => {
         this.setState({
-            assignedTo: string2literal(value[0])
+            assignedToUser: string2literal(value[0])
         });
-        this.props.handleChange("assignedTo", string2literal(value[0]));
+        this.props.handleChange("assignedToUser", string2literal(value[0]));
     }
 
+    handleAssignedToOrganizationalUnitChange = (value) => {
+        this.setState({
+            assignedToOrganizationalUnit: string2literal(value[0])
+        });
+        this.props.handleChange("assignedToOrganiztionalUnit", string2literal(value[0]));
+    }
 
     /**
      * Bắt sự kiện thay đổi ngày bắt đầu sử dụng
@@ -431,7 +437,8 @@ class GeneralTab extends Component {
                 purchaseDate: nextProps.purchaseDate,
                 warrantyExpirationDate: nextProps.warrantyExpirationDate,
                 managedBy: nextProps.managedBy,
-                assignedTo: nextProps.assignedTo,
+                assignedToUser: nextProps.assignedToUser,
+                assignedToOrganizationalUnit: nextProps.assignedToOrganizationalUnit,
                 handoverFromDate: nextProps.handoverFromDate,
                 handoverToDate: nextProps.handoverToDate,
                 description: nextProps.description,
@@ -463,7 +470,7 @@ class GeneralTab extends Component {
 
         const {
             img, code, assetName, assetTypes, serial, purchaseDate, warrantyExpirationDate, managedBy,
-            assignedTo, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse, detailInfo,
+            assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse, detailInfo,
             errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate,
             errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue,
         } = this.state;
@@ -577,14 +584,14 @@ class GeneralTab extends Component {
                                 <div className={`form-group`}>
                                     <label>{translate('asset.general_information.user')}</label>
                                     <div>
-                                        <div id="assignedToBox">
+                                        <div id="assignedToUserBox">
                                             <SelectBox
-                                                id={`assignedTo${id}`}
+                                                id={`assignedToUser${id}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 items={[{ value: 'null', text: '---Chọn người được giao sử dụng---' }, ...userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })]}
-                                                onChange={this.handleAssignedToChange}
-                                                value={assignedTo}
+                                                onChange={this.handleAssignedToUserChange}
+                                                value={assignedToUser}
                                                 multiple={false}
                                             />
                                         </div>
