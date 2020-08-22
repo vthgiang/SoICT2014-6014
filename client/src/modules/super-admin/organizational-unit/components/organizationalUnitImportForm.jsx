@@ -27,18 +27,17 @@ class DepartmentImportForm extends Component {
 
     handleImportExcel = (value, checkFileImport) => {
         console.log(value);
-        for (let i = 0; i < value.length; i++) {
-            let deans, viceDeans, employees;
-            deans = value[i].deans.split(',');
-            deans = deans.map( x => x.trim());
-            value[i].deans = deans;
-            viceDeans = value[i].viceDeans.split(',');
-            viceDeans = viceDeans.map( x => x.trim());
-            value[i].viceDeans = viceDeans;
-            employees = value[i].employees.split(',');
-            employees = employees.map( x => x.trim());
-            value[i].employees = employees;
-        }
+        // for (let i = 0; i < value.length; i++) {
+        //     let deans, viceDeans, employees;
+        //     deans = value[i].deans;
+        //     value[i].deans = deans;
+        //     viceDeans = value[i].viceDeans.split(',');
+        //     viceDeans = viceDeans.map( x => x.trim());
+        //     value[i].viceDeans = viceDeans;
+        //     employees = value[i].employees.split(',');
+        //     employees = employees.map( x => x.trim());
+        //     value[i].employees = employees;
+        // }
         if (checkFileImport) {
             let rowError = [];
             let checkImportData = value;
@@ -84,9 +83,62 @@ class DepartmentImportForm extends Component {
         this.props.importDepartment(importData);
     }
 
+    convertExportData = (dataExport) => {
+        console.log(dataExport);
+        for (let va = 0; va < dataExport.dataSheets.length; va++ ) {
+            for (let val = 0; val < dataExport.dataSheets[va].tables.length; val++) {
+                let datas = [];
+                let data = dataExport.dataSheets[va].tables[val].data;
+                console.log(data);
+                if (data[0] && Array.isArray(data[0].deans)) {
+                    for (let i = 0; i < data.length; i++) {
+                        let x = data[i];
+                        let deans, viceDeans, employees;
+                        let length = 0;
+                        if (x.deans.length > length) {
+                            length = x.deans.length;
+                        }
+                        if (x.viceDeans.length > length) {
+                            length = x.viceDeans.length;
+                        }
+                        if (x.employees.length > length) {
+                            length = x.employees.length;
+                        }
+                        let out = {
+                            name: x.name,
+                            description: x.description,
+                            parent: x.parent,
+                            deans: x.deans[0],
+                            viceDeans: x.viceDeans[0],
+                            employees: x.employees[0],
+                        }
+                        datas = [...datas, out];
+                        for ( let k = 1; k < length ; k++) {
+                            out = {
+                                name: "",
+                                description: "",
+                                parent: "",
+                                deans: x.deans[k],
+                                viceDeans: x.viceDeans[k],
+                                employees: x.employees[k],
+                            }
+                            datas = [...datas, out];
+                        }
+                        console.log(datas);
+                    }
+                    dataExport.dataSheets[va].tables[val].data = datas;
+                }
+                
+            }
+        }
+        return dataExport;
+    }
+
     render() {
         const { translate} = this.props;
         let { limit, page, importData, configData, checkFileImport, rowError } = this.state;
+        let templateImportDepartment2 = this.convertExportData(templateImportDepartment);
+        console.log(templateImportDepartment2);
         return (
             <React.Fragment>
                 <DialogModal 
@@ -114,7 +166,7 @@ class DepartmentImportForm extends Component {
                             </div>
                             <div className="form-group col-md-4 col-xs-12">
                                 <label></label>
-                                <ExportExcel id="download_template_organizationalUnit" type='link' exportData={templateImportDepartment}
+                                <ExportExcel id="download_template_organizationalUnit" type='link' exportData={templateImportDepartment2}
                                     buttonName='Download file import mẫu' />
                             </div>
                             <div className="form-group col-md-12 col-xs-12">
