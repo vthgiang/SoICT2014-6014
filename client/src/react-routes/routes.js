@@ -82,7 +82,7 @@ import ManagerDepreciation from "../modules/asset/depreciation/components";
 import AssetManager from "../modules/asset/asset-management/components";
 import { ManagerAssetAssignedCrash } from '../modules/asset/asset-assgined/components';
 import { DashBoardAssets } from '../modules/asset/asset-dashboard/components/assetDashBoard';
-
+import { BuildingAsset } from '../modules/asset/building/components'
 
 //report
 import TaskReportManager from '../modules/report/task-report/components/taskReportManager';
@@ -1010,7 +1010,7 @@ class Routes extends Component {
                     />
 
                     <PrivateRoute
-                        isLoading={this.props.user.isLoading}
+                        isLoading={this.props.assetsManager.isLoading}
                         key={'view-building-list'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
@@ -1023,7 +1023,7 @@ class Routes extends Component {
                         pageName={'view_building_list'}
                         layout={Layout}
                         // xem danh sach
-                        component={MaterialManager}
+                        component={BuildingAsset}
                     />
 
                     {/* Customer Management */}

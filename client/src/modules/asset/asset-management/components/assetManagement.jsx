@@ -28,6 +28,7 @@ class AssetManagement extends Component {
 
     componentDidMount() {
         this.props.searchAssetTypes({ typeNumber: "", typeName: "", limit: 0 });
+        this.props.getListBuildingAsTree();
         this.props.getAllAsset(this.state);
         this.props.getUser();
     }
@@ -136,7 +137,7 @@ class AssetManagement extends Component {
         if (value.length === 0) {
             value = null
         }
-        ;
+        
         this.setState({
             ...this.state,
             status: value
@@ -148,7 +149,7 @@ class AssetManagement extends Component {
         if (value.length === 0) {
             value = null
         }
-        ;
+        
         this.setState({
             ...this.state,
             canRegisterForUse: value
@@ -473,7 +474,9 @@ class AssetManagement extends Component {
                         startDepreciation={currentRowView.startDepreciation}
                         usefulLife={currentRowView.usefulLife}
                         depreciationType={currentRowView.depreciationType}
-
+                        estimatedTotalProduction={currentRowView.estimatedTotalProduction}
+                        unitsProducedDuringTheYears={currentRowView.unitsProducedDuringTheYears}
+                        
                         maintainanceLogs={currentRowView.maintainanceLogs}
                         usageLogs={currentRowView.usageLogs}
                         incidentLogs={currentRowView.incidentLogs}
@@ -516,6 +519,12 @@ class AssetManagement extends Component {
                         startDepreciation={currentRow.startDepreciation}
                         usefulLife={currentRow.usefulLife}
                         depreciationType={currentRow.depreciationType}
+                        estimatedTotalProduction={currentRow.estimatedTotalProduction}
+                        unitsProducedDuringTheYears={currentRow.unitsProducedDuringTheYears && currentRow.unitsProducedDuringTheYears.map((x) => ({
+                            month: this.formatDate2(x.month),
+                            unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
+                        })
+                        )}
 
                         disposalDate={currentRow.disposalDate}
                         disposalType={currentRow.disposalType}
@@ -542,6 +551,7 @@ function mapState(state) {
 const actionCreators = {
     searchAssetTypes: AssetTypeActions.searchAssetTypes,
     getAllAsset: AssetManagerActions.getAllAsset,
+    getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
     deleteAsset: AssetManagerActions.deleteAsset,
     getUser: UserActions.get,
 

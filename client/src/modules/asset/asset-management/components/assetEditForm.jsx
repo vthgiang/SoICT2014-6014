@@ -199,16 +199,23 @@ class AssetEditForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let { code, assetName, serial, assetType, managedBy, purchaseDate, warrantyExpirationDate, location, status, canRegisterForUse, cost, usefulLife, startDepreciation, depreciationType } = this.state;
+        let { code, assetName, serial, assetType, managedBy, purchaseDate, warrantyExpirationDate, location, status,
+            canRegisterForUse, cost, usefulLife, startDepreciation, depreciationType, unitsProducedDuringTheYears, estimatedTotalProduction } = this.state;
         
         if (this.state !== {}) {
+            let unitProductionValidate = true;
+            if (depreciationType === "Sản lượng") {
+                unitProductionValidate = this.validatorInput(estimatedTotalProduction);
+            }
+
             let result = this.validatorInput(code) && this.validatorInput(assetName) &&
                 this.validatorInput(serial) && this.validatorInput(assetType) &&
                 this.validatorInput(managedBy) && this.validatorInput(purchaseDate) &&
                 this.validatorInput(warrantyExpirationDate) && //this.validatorInput(location) &&
                 this.validatorInput(status) && this.validatorInput(canRegisterForUse) &&
                 this.validatorInput(cost) && this.validatorInput(usefulLife) &&
-                this.validatorInput(startDepreciation) && this.validatorInput(depreciationType);
+                this.validatorInput(startDepreciation) && this.validatorInput(depreciationType)
+                && unitProductionValidate;
 
             return result;
         }
@@ -273,6 +280,13 @@ class AssetEditForm extends Component {
         }
     }
 
+    addMonth = (date, month) => {
+        date = new Date(date);
+        let newDate = new Date(date.setMonth(date.getMonth() + month));
+
+        return this.formatDate(newDate);
+    };
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps._id !== prevState._id || nextProps.usageLogs !== prevState.usageLogs) {
             return {
@@ -303,6 +317,8 @@ class AssetEditForm extends Component {
                 usefulLife: nextProps.usefulLife,
                 startDepreciation: nextProps.startDepreciation,
                 depreciationType: nextProps.depreciationType,
+                estimatedTotalProduction: nextProps.estimatedTotalProduction,
+                unitsProducedDuringTheYears: nextProps.unitsProducedDuringTheYears,
                 // Thanh lý
                 disposalDate: nextProps.disposalDate,
                 disposalType: nextProps.disposalType,
@@ -349,7 +365,8 @@ class AssetEditForm extends Component {
         const { translate, assetsManager } = this.props;
         const { _id, img, avatar, code, assetName, serial, assetType, purchaseDate, warrantyExpirationDate, managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate,
             handoverToDate, location, description, status, canRegisterForUse, detailInfo, usageLogs, maintainanceLogs, cost, residualValue, startDepreciation,
-            usefulLife, depreciationType, incidentLogs, disposalDate, disposalType, disposalCost, disposalDesc, archivedRecordNumber, files } = this.state;
+            usefulLife, depreciationType, incidentLogs, disposalDate, disposalType, unitsProducedDuringTheYears, disposalCost, disposalDesc, archivedRecordNumber,
+            files, estimatedTotalProduction } = this.state;
         console.log(this.state, 'this.state-edit')
 
         return (
@@ -427,9 +444,11 @@ class AssetEditForm extends Component {
                                 cost={cost}
                                 residualValue={residualValue}
                                 startDepreciation={moment(startDepreciation).format('DD-MM-YYYY')}
-                                startDepreciation={moment(startDepreciation).format('DD-MM-YYYY')}
+                                endDepreciation={this.addMonth(startDepreciation, usefulLife)}
                                 usefulLife={usefulLife}
                                 depreciationType={depreciationType}
+                                estimatedTotalProduction={estimatedTotalProduction}
+                                unitsProducedDuringTheYears={unitsProducedDuringTheYears}
                             />
 
                             {/* Thông tin sự cố */}

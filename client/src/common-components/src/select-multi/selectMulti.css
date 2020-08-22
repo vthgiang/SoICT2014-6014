@@ -1,7 +1,20 @@
-div.selectmulti div.btn-group {
-    width: 100%;
+/* Ghi đè setting mặc định của thư viện */
+.multiselect-container li a label.checkbox input[type=checkbox],
+.multiselect-container li a label.radio input[type=radio] {
+    margin-right: 5px !important;
+    position: relative;
+}
+.multiselect-container>li>a>label {
+    padding: 0 !important;
+    margin: 5px 20px 3px 25px !important;
+    display: inline-block;
+}
+.multiselect-container {
+    padding: 5px;
 }
 
+
+/* Background white cho multi select */
 button.multiselect {
     background-color: #fff !important;
     border: 1px solid #ced4da !important;
@@ -9,6 +22,12 @@ button.multiselect {
     box-shadow: none !important;
 }
 
+
+
+
+div.selectmulti div.btn-group {
+    width: 100%;
+}
 
 div.selectmulti div.btn-group>button {
     width: 100%;

@@ -323,9 +323,9 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
                                 { key: "automaticPoint", value: "Điểm tự động" },                                
                                 { key: "employeePoint", value: "Điểm tự đánh giá" },
                                 { key: "approverPoint", value: "Điểm được phê duyệt" },
-                                { key: "numberEmployeesWithSameAutomaticPoint", value: "Số nhân viên có cùng điểm số tự động " },
-                                { key: "numberEmployeesWithSameEmployeePoint", value: "Số nhân viên có cùng điểm số tự đánh giá " },
-                                { key: "numberEmployeesWithSameApprovedPoint", value: "Số nhân viên có cùng điểm số được phê duyệt " },
+                                { key: "numberEmployeesWithSameAutomaticPoint", value: "Số nhân viên có cùng điểm KPI tự động " },
+                                { key: "numberEmployeesWithSameEmployeePoint", value: "Số nhân viên có cùng điểm KPI tự đánh giá " },
+                                { key: "numberEmployeesWithSameApprovedPoint", value: "Số nhân viên có cùng điểm KPI được phê duyệt " },
                             ],
                             data: data
                         }

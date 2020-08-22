@@ -55,7 +55,7 @@ class TimePicker extends Component {
             <React.Fragment>
                 <div className="bootstrap-timepicker input-group has-feedback">
                     <span className="input-group-addon">
-                        <i className="fa fa-clock-o"></i>
+                        <i style={{ width: 16, height: 16 }} className="fa fa-clock-o"></i>
                     </span>
                     <input type="text" id={id} className="form-control" value={this.state.value ? this.state.value : ""}
                         onClick={() => window.$("#" + id).timepicker('showWidget')} onChange={() => { }} ref="timePicker"

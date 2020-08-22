@@ -10,7 +10,7 @@ class TaskReportViewForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            charType: '',
+            chartType: '',
             aggregationType: '',
         }
     }
@@ -19,6 +19,12 @@ class TaskReportViewForm extends Component {
         if (data === 1) return "Thấp";
         if (data === 2) return "Trung bình";
         if (data === 3) return "Cao";
+    }
+
+    formatChartType = (chartType) => {
+        if (chartType === '0') return "bar";
+        if (chartType === '1') return "line";
+        if (chartType === '2') return "pie";
     }
 
     // hamf convert month-year gom nhóm công viêc theo tháng
@@ -47,24 +53,23 @@ class TaskReportViewForm extends Component {
     // Hàm tính tổng và trung bình cộng task evaluation 
     aggregate = (tasks) => {
         let map = new Map;
-        for (let { aggregationType, coefficient, code, value } of tasks) {
+        for (let { aggregationType, coefficient, code, value, chartType, showInReport } of tasks) {
             let entry = map.get(code);
-            if (!entry) map.set(code, entry = { aggregationType, coefficient, sum: 0, count: 0 });
+            if (!entry) map.set(code, entry = { aggregationType, chartType, showInReport, coefficient, sum: 0, count: 0 });
             entry.sum += value;
             entry.count++;
         }
-        return Array.from(map, ([code, { aggregationType, coefficient, sum, count }]) =>
-            [code, (+aggregationType ? sum : sum / count) * coefficient]
+        return Array.from(map, ([code, { aggregationType, chartType, showInReport, coefficient, sum, count }]) =>
+            [code, (+aggregationType ? sum : sum / count) * coefficient, this.formatChartType(chartType), showInReport]
         );
     }
 
 
     render() {
         const { tasks, user, reports, translate } = this.props;
-        const { taskInformations } = this.props; // Lấy dữ liệu từ form cha
         let formater = new Intl.NumberFormat();
         let listTaskEvaluation = tasks.listTaskEvaluations;
-        let taskInfoName, headTable = [], aggregationType, charType, coefficient, frequency, newlistTaskEvaluation;
+        let taskInfoName, headTable = [], frequency, newlistTaskEvaluation;
 
 
         // hiển thị trường thông tin hiện trong báo cáo
@@ -81,13 +86,6 @@ class TaskReportViewForm extends Component {
         if (listTaskEvaluation) {
             let taskEvaluation = listTaskEvaluation[0];
             frequency = taskEvaluation.frequency;
-            let Task = taskEvaluation.taskInformations;
-
-            for (let i = 0; i < Task.length; i++) {
-                aggregationType = Task[0].aggregationType;
-                charType = Task[0].charType;
-                coefficient = Task[0].coefficient;
-            }
         }
 
 
@@ -99,20 +97,11 @@ class TaskReportViewForm extends Component {
                         : (frequency === 'quarter' ? this.getQuarter(item.date) : this.convertYear(item.date)),
                     task: item.taskInformations.filter(task => {
                         if (task.type === 'Number')
-                            return {
-                                code: task.code,
-                                value: task.value,
-                                charType: task.charType,
-                                coefficient: task.coefficient,
-                                newName: task.newName,
-                                aggregationType: task.aggregationType,
-                            }
+                            return task;
                     })
                 }
             });
-
         }
-
 
         //Gom nhóm công việc theo tháng-năm-quys
         let groupDataByDate;
@@ -123,8 +112,7 @@ class TaskReportViewForm extends Component {
             }, {});
         }
 
-
-        let output;
+        let output, pieChartData = [], barLineChartData = [];
         if (groupDataByDate) {
             output = Object.entries(groupDataByDate).map(([time, datapoints]) => {
                 let allTasks = datapoints.flatMap(point => point.task);
@@ -139,12 +127,25 @@ class TaskReportViewForm extends Component {
                 })
 
                 let result = this.aggregate(allTasks); // gọi hàm tính trung bình cộng và tổng 
-
                 return {
                     time,
-                    tasks: result.map(([code, value]) => ({ code, value })),
+                    tasks: result.map(([code, value, chartType, showInReport]) => ({ code, value, chartType, showInReport })),
                 }
             });
+
+            // tách data vẽ biểu đồ cột+đường với tròn
+            output.forEach(x => {
+                barLineChartData.push({
+                    time: x.time,
+                    tasks: [
+                        ...x.tasks.filter(y =>
+                            y.chartType === "pie"
+                                ? (pieChartData.push({ tasks: [y], time: x.time }), false)
+                                : true
+                        )
+                    ]
+                })
+            })
         }
 
         return (
@@ -161,9 +162,8 @@ class TaskReportViewForm extends Component {
                     <div className="row">
                         {
                             <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
-                                <TwoBarChart nameData={headTable.map(x => x)} data={output} charType={charType ? charType : null} nameChart={'Báo cáo công việc '} />
+                                <TwoBarChart barLineChartData={barLineChartData} pieChartData={pieChartData} />
                             </div>
-
                         }
                     </div>
                     <div className="form-inline">
