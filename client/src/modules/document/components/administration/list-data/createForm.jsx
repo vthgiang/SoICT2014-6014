@@ -44,34 +44,83 @@ class CreateForm extends Component {
 
     handleVersionName = (e) => {
         const value = e.target.value.trim();
-        this.validateVersionName(value, true);
+        // this.validateVersionName(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentVersionName: value,
+                // errorVersionName: msg,
+            }
+        })
     }
 
     handleIssuingBody = (e) => {
         const value = e.target.value.trim();
-        this.validateIssuingBody(value, true);
+        // this.validateIssuingBody(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentIssuingBody: value,
+                //errorIssuingBody: msg,
+            }
+        })
     }
 
     handleOfficialNumber = (e) => {
         const value = e.target.value.trim();
-        this.validateOfficialNumber(value, true);
+        // this.validateOfficialNumber(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentOfficialNumber: value,
+                // errorOfficialNumber: msg,
+            }
+        })
     }
 
     handleSigner = (e) => {
         const value = e.target.value.trim();
-        this.validateSinger(value, true);
+        // this.validateSinger(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentSigner: value,
+                //  errorSigner: msg,
+            }
+        })
     }
 
     handleIssuingDate = (value) => {
-        this.validateIssuingDate(value, true);
+        // this.validateIssuingDate(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentIssuingDate: value,
+                //  errorIssuingDate: msg,
+            }
+        })
     }
 
     handleEffectiveDate = (value) => {
-        this.validateEffectiveDate(value, true);
+        // this.validateEffectiveDate(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentEffectiveDate: value,
+                // errorEffectiveDate: msg,
+            }
+        })
     }
 
     handleExpiredDate = (value) => {
-        this.validateExpiredDate(value, true);
+        //this.validateExpiredDate(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentExpiredDate: value,
+                //  errorExpiredDate: msg,
+            }
+        })
     }
 
     handleRelationshipDescription = (e) => {
@@ -103,12 +152,26 @@ class CreateForm extends Component {
 
     handleUploadFile = (e) => {
         const value = e.target.files[0];
-        this.validateDocumentFile(value, true);
+        // this.validateDocumentFile(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentFile: value,
+                // errorDocumentFile: msg,
+            }
+        })
     }
 
     handleUploadFileScan = (e) => {
         const value = e.target.files[0];
-        this.validateDocumentFileScan(value, true);
+        // this.validateDocumentFileScan(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                documentFileScan: value,
+                //errorDocumentFileScan: msg,
+            }
+        })
     }
     validateName = (value, willUpdateState) => {
         let msg = undefined;
@@ -308,16 +371,16 @@ class CreateForm extends Component {
 
     isValidateForm = () => {
         return this.validateName(this.state.documentName, false)
-            && this.validateCategory(this.state.documentCategory, false)
-            && this.validateVersionName(this.state.documentVersionName, false)
-            && this.validateOfficialNumber(this.state.documentOfficialNumber, false)
-            && this.validateIssuingDate(this.state.documentIssuingDate, false)
-            && this.validateEffectiveDate(this.state.documentEffectiveDate, false)
-            && this.validateExpiredDate(this.state.documentExpiredDate, false)
-            && this.validateSinger(this.state.documentSigner, false)
-            && this.validateDocumentFile(this.state.documentFile, false)
-            && this.validateDocumentFileScan(this.state.documentFileScan, false)
-            && this.validateIssuingBody(this.state.documentIssuingBody, false);
+            && this.validateCategory(this.state.documentCategory, false);
+        // && this.validateVersionName(this.state.documentVersionName, false)
+        // && this.validateOfficialNumber(this.state.documentOfficialNumber, false)
+        // && this.validateIssuingDate(this.state.documentIssuingDate, false)
+        // && this.validateEffectiveDate(this.state.documentEffectiveDate, false)
+        // && this.validateExpiredDate(this.state.documentExpiredDate, false)
+        // && this.validateSinger(this.state.documentSigner, false)
+        // && this.validateDocumentFile(this.state.documentFile, false)
+        // && this.validateDocumentFileScan(this.state.documentFileScan, false)
+        // && this.validateIssuingBody(this.state.documentIssuingBody, false);
     }
 
 
@@ -353,19 +416,39 @@ class CreateForm extends Component {
         if (documentArchives) for (let i = 0; i < documentArchives.length; i++) {
             formData.append('archives[]', documentArchives[i]);
         }
-        formData.append('description', documentDescription);
-        formData.append('issuingBody', documentIssuingBody);
-        formData.append('officialNumber', documentOfficialNumber);
-        formData.append('signer', documentSigner);
-
-        formData.append('versionName', documentVersionName);
-        formData.append('issuingDate', moment(documentIssuingDate, "DD-MM-YYYY"));
-        formData.append('effectiveDate', moment(documentEffectiveDate, "DD-MM-YYYY"));
-        formData.append('expiredDate', moment(documentExpiredDate, "DD-MM-YYYY"));
-        formData.append('file', documentFile);
-        formData.append('fileScan', documentFileScan);
-
-        formData.append('relationshipDescription', documentRelationshipDescription);
+        if (documentDescription) {
+            formData.append('description', documentDescription);
+        }
+        if (documentIssuingBody) {
+            formData.append('issuingBody', documentIssuingBody);
+        }
+        if (documentOfficialNumber) {
+            formData.append('officialNumber', documentOfficialNumber);
+        }
+        if (documentSigner) {
+            formData.append('signer', documentSigner);
+        }
+        if (documentVersionName) {
+            formData.append('versionName', documentVersionName);
+        }
+        if (documentIssuingDate) {
+            formData.append('issuingDate', moment(documentIssuingDate, "DD-MM-YYYY"));
+        }
+        if (documentEffectiveDate) {
+            formData.append('effectiveDate', moment(documentEffectiveDate, "DD-MM-YYYY"));
+        }
+        if (documentExpiredDate) {
+            formData.append('expiredDate', moment(documentExpiredDate, "DD-MM-YYYY"));
+        }
+        if (documentFile) {
+            formData.append('file', documentFile);
+        }
+        if (documentFileScan) {
+            formData.append('fileScan', documentFileScan);
+        }
+        if (documentRelationshipDocuments) {
+            formData.append('relationshipDescription', documentRelationshipDescription);
+        }
         if (documentRelationshipDocuments) for (let i = 0; i < documentRelationshipDocuments.length; i++) {
             formData.append('relationshipDocuments[]', documentRelationshipDocuments[i]);
         }
@@ -374,14 +457,19 @@ class CreateForm extends Component {
         }
 
         //formData.append('archivedRecordPlaceInfo', documentArchivedRecordPlaceInfo);
-        formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
-        formData.append('archivedRecordPlaceManager', documentArchivedRecordPlaceManager);
+        if (documentArchivedRecordPlaceOrganizationalUnit) {
+            formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
+        }
+        if (documentArchivedRecordPlaceOrganizationalUnit) {
+            formData.append('archivedRecordPlaceManager', documentArchivedRecordPlaceManager);
+        }
+
 
         this.props.createDocument(formData);
     }
     findPath = (archives, select) => {
         let archive = archives.filter(arch => arch._id === select);
-        return archive[0].path;
+        return archive[0] ? archive[0].path : "";
     }
 
     render() {
@@ -424,17 +512,17 @@ class CreateForm extends Component {
                                                 <ErrorLabel content={errorName} />
                                             </div>
                                             <div className={`form-group ${!errorIssuingBody ? "" : "has-error"}`}>
-                                                <label>{translate('document.doc_version.issuing_body')}<span className="text-red">*</span></label>
+                                                <label>{translate('document.doc_version.issuing_body')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleIssuingBody} placeholder={translate('document.doc_version.exp_issuing_body')} />
                                                 <ErrorLabel content={errorIssuingBody} />
                                             </div>
                                             <div className={`form-group ${!errorOfficialNumber ? "" : "has-error"}`}>
-                                                <label>{translate('document.doc_version.official_number')}<span className="text-red">*</span></label>
+                                                <label>{translate('document.doc_version.official_number')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleOfficialNumber} placeholder={translate('document.doc_version.exp_official_number')} />
                                                 <ErrorLabel content={errorOfficialNumber} />
                                             </div>
                                             <div className={`form-group ${!errorSigner ? "" : "has-error"}`}>
-                                                <label>{translate('document.doc_version.signer')}<span className="text-red">*</span></label>
+                                                <label>{translate('document.doc_version.signer')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleSigner} placeholder={translate('document.doc_version.exp_signer')} />
                                                 <ErrorLabel content={errorSigner} />
                                             </div>
@@ -470,17 +558,17 @@ class CreateForm extends Component {
                                     <div className="row">
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                             <div className={`form-group ${!errorVersionName ? "" : "has-error"}`}>
-                                                <label>{translate('document.doc_version.name')}<span className="text-red">*</span></label>
+                                                <label>{translate('document.doc_version.name')}</label>
                                                 <input type="text" className="form-control" onChange={this.handleVersionName} placeholder={translate('document.doc_version.exp_version')} />
                                                 <ErrorLabel content={errorVersionName} />
                                             </div>
                                             <div className={`form-group ${!errorDocumentFile ? "" : "has-error"}`}>
-                                                <label>{translate('document.upload_file')}<span className="text-red">*</span></label>
+                                                <label>{translate('document.upload_file')}</label>
                                                 <input type="file" onChange={this.handleUploadFile} />
                                                 <ErrorLabel content={errorDocumentFile} />
                                             </div>
                                             <div className={`form-group ${!errorDocumentFileScan ? "" : "has-error"}`}>
-                                                <label>{translate('document.upload_file_scan')}<span className="text-red">*</span></label>
+                                                <label>{translate('document.upload_file_scan')}</label>
                                                 <input type="file" onChange={this.handleUploadFileScan} />
                                                 <ErrorLabel content={errorDocumentFileScan} />
                                             </div>
@@ -555,7 +643,7 @@ class CreateForm extends Component {
                                             </div>
                                             <div className="form-group">
                                                 <label>Đường dẫn chi tiết</label>
-                                                <textarea style={{ height: '30px' }} type="text" className="form-control" value={path} disable />
+                                                <textarea style={{ height: '30px' }} type="text" className="form-control" value={path ? path : ""} disable />
                                             </div>
                                             <div className="form-group">
                                                 <label>{translate('document.store.organizational_unit_manage')}</label>

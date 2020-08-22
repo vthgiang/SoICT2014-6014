@@ -6,46 +6,83 @@ class TasksIsNotLinked extends Component {
     constructor(props) {
         super(props);
         let currentMonth = new Date().getMonth() + 1;
+        let currentYear = new Date().getFullYear();
+
         this.state = {
             currentMonth: currentMonth,
+            currentYear: currentYear,
             userId: localStorage.getItem("userId")
         }
     }
 
     render() {
         let { tasks, translate } = this.props;
-        let { currentMonth, userId } = this.state;
-        let taskList = tasks && tasks.tasks;
+        let { currentMonth, currentYear, userId } = this.state;
+        let accTasks = tasks && tasks.accountableTasks;
+        let resTasks = tasks && tasks.responsibleTasks;
+        let conTasks = tasks && tasks.consultedTasks;
+        let infTasks = tasks && tasks.informedTasks;
+        let allTasks = [], notLinkedTasks = [], taskList;
+
+        if (accTasks && resTasks && infTasks && conTasks) {
+            taskList = allTasks.concat(accTasks, resTasks, conTasks, infTasks);
+        }
 
         if (taskList) {
             let inprocessTask = taskList.filter(task => task.status === "Inprocess")
-            var notLinkedTasks = [];
+            console.log('tasklist', inprocessTask);
+            let distinctTasks = [];
+            for (let i in inprocessTask) {
+                let check = false;
+                for (let j in distinctTasks) {
 
-            inprocessTask.length && inprocessTask.map(x => {
+                    if (inprocessTask[i]._id === distinctTasks[j]._id) {
+                        check = true
+                        break;
+                    }
+                }
+                if (!check) distinctTasks.push(inprocessTask[i])
+            }
+            distinctTasks.length && distinctTasks.map(x => {
                 let evaluations;
                 let currentEvaluate = [];
 
                 evaluations = x.evaluations.length && x.evaluations;
                 for (let i in evaluations) {
-                    let d = evaluations[i].date.slice(5, 7);
+                    let month = evaluations[i].date.slice(5, 7);
+                    let year = evaluations[i].date.slice(0, 4);
 
-                    if (d == currentMonth) {
+                    if (month == currentMonth && year == currentYear) {
                         currentEvaluate.push(evaluations[i]);
                     }
                 }
-                currentEvaluate.length && currentEvaluate.map(cur => {
-                    cur.results.length && cur.results.map(res => {
-                        if (!res.kpis.length && res.employee == userId) {
-                            notLinkedTasks.push(x);
-                            return;
+                if (currentEvaluate.length === 0) notLinkedTasks.push(x);
+
+                else {
+                    let break1 = false;
+                    let add = true;
+                    if (currentEvaluate.length !== 0)
+                        for (let i in currentEvaluate) {
+                            if (currentEvaluate[i].results.length !== 0) {
+                                for (let j in currentEvaluate[i].results) {
+                                    let res = currentEvaluate[i].results[j];
+
+                                    if (res.employee === userId) {
+                                        add = false;
+                                        if (res.kpis.length === 0) {
+                                            notLinkedTasks.push(x);
+                                            break1 = true
+                                        }
+                                    };
+                                    if (break1) break;
+                                }
+                                if (break1) break;
+                                if (add) notLinkedTasks.push(x);
+                            }
                         }
-                    })
-                })
-
+                }
             })
-
         }
-
         return (
             <React.Fragment>
                 {/* Các công việc chưa liên kết kpi tháng */}

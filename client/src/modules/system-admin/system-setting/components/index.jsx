@@ -13,7 +13,6 @@ class SystemSetting extends Component {
         super(props);
 
         this.state = {
-            backupType: 'automatic',
             autoBackup: 'on',
             schedule: 'monthly',
             limit: 10
@@ -23,104 +22,83 @@ class SystemSetting extends Component {
     render() { 
         const { translate } = this.props;
         const {backup, restore} = this.props.systemSetting;
-        const {schedule, autoBackup, backupType, limit} = this.state;
-        console.log("schedule:", this.state)
+        const {schedule, autoBackup, limit} = this.state;
+        console.log("processENV", process.env)
+        
         return ( 
             <React.Fragment>
                 <div className="row">
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
                         <div className="box box-default">
                             <div className="box-header with-border">
-                                <b>Sao lưu dữ liệu</b>
+                                <h4><b>Cấu hình sao lưu dữ liệu tự động</b></h4>
                             </div>
                             <div className="box-body">
-                                <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{marginBottom: '15px'}}>
-                                    <div className="radio-inline">
-                                        <span>
-                                            <input type="radio" name="backup-no-automatic" value="no-automatic" onChange={this.handleBackupType}
-                                                checked={backupType !== "automatic" ? true : false} />Thủ công</span>
-                                    </div>
-                                    <div className="radio-inline">
-                                        <span>
-                                            <input type="radio" name="backup-automatic" value="automatic" onChange={this.handleBackupType}
-                                                checked={backupType === "automatic" ? true : false} />Tự động</span>
-                                    </div>
-                                </div>
-                                {
-                                    backupType !== 'automatic' ?
+                                <React.Fragment>
                                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                        <button className="btn btn-default"onClick={()=>{this.props.backup()}} title={"Thêm bản sao dữ liệu mới nhất"}>             
-                                            Sao lưu dữ liệu
-                                        </button>
-                                    </div>
-                                    :
-                                    <React.Fragment>
-                                        <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                            <div className="form-group">
-                                                <label>Tự động sao lưu</label>
-                                                <SelectBox
-                                                    id="select-backup-status"
-                                                    className="form-control select2"
-                                                    style={{ width: "100%" }}
-                                                    items={[
-                                                        {value: 'on', text: 'Bật'},
-                                                        {value: 'off', text: 'Tắt'}
-                                                    ]}
-                                                    value={autoBackup}
-                                                    onChange={this.handleBackupAutoStatus}
-                                                    multiple={false}
-                                                />
-                                            </div>
+                                        <div className="form-group">
+                                            <label>Tự động sao lưu</label>
+                                            <SelectBox
+                                                id="select-backup-status"
+                                                className="form-control select2"
+                                                style={{ width: "100%" }}
+                                                items={[
+                                                    {value: 'on', text: 'Bật'},
+                                                    {value: 'off', text: 'Tắt'}
+                                                ]}
+                                                value={autoBackup}
+                                                onChange={this.handleBackupAutoStatus}
+                                                multiple={false}
+                                            />
                                         </div>
-                                        {
-                                            autoBackup === 'on' ?
-                                            <React.Fragment>
-                                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                                    <div className="form-group">
-                                                        <label>Giới hạn bản backup dữ liệu</label>
-                                                        <input className="form-control" type="number" min={0} onChange={this.handleBackupLimit} value={limit}/>
-                                                    </div>
-                                                </div>
-                                                <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                                    <div className="form-group">
-                                                        <label>Định kỳ</label>
-                                                        <SelectBox
-                                                            id="select-backup-time-schedule"
-                                                            className="form-control select2"
-                                                            style={{ width: "100%" }}
-                                                            items={[
-                                                                {value: 'weekly', text: 'Hàng tuần'},
-                                                                {value: 'monthly', text: 'Hàng tháng'},
-                                                                {value: 'yearly', text: 'Hàng năm'},
-                                                            ]}
-                                                            value={schedule}
-                                                            onChange={this.handleSchedule}
-                                                            multiple={false}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </React.Fragment> :
+                                    </div>
+                                    {
+                                        autoBackup === 'on' ?
+                                        <React.Fragment>
                                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                                <button className="btn btn-success" onClick={()=>this.props.backup({auto: 'off'})}>Lưu</button>
+                                                <div className="form-group">
+                                                    <label>Giới hạn bản backup</label>
+                                                    <input className="form-control" type="number" min={0} onChange={this.handleBackupLimit} value={limit}/>
+                                                </div>
                                             </div>
-                                        }
+                                            <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                                <div className="form-group">
+                                                    <label>Định kỳ</label>
+                                                    <SelectBox
+                                                        id="select-backup-time-schedule"
+                                                        className="form-control select2"
+                                                        style={{ width: "100%" }}
+                                                        items={[
+                                                            {value: 'weekly', text: 'Hàng tuần'},
+                                                            {value: 'monthly', text: 'Hàng tháng'},
+                                                            {value: 'yearly', text: 'Hàng năm'},
+                                                        ]}
+                                                        value={schedule}
+                                                        onChange={this.handleSchedule}
+                                                        multiple={false}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </React.Fragment> :
+                                        <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                                            <button className="btn btn-success" onClick={()=>this.props.backup({auto: 'off'})}>Lưu</button>
+                                        </div>
+                                    }
+                                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         {
-                                            autoBackup === 'on' &&
-                                            <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                                                {
-                                                    this.renderScheduleForm()
-                                                }
-                                            </div>
+                                            this.renderScheduleForm()
                                         }
-                                    </React.Fragment>
-                                }
+                                    </div>
+                                </React.Fragment>
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
                         <div className="box box-default">
                             <div className="box-header with-border">
-                                <b>Khôi phục dữ liệu</b>
+                                <button className="btn btn-success pull-right"onClick={()=>{this.props.backup()}} title={"Thêm bản sao dữ liệu mới nhất"}>             
+                                    Sao lưu dữ liệu
+                                </button>
                             </div>
                             <div className="box-body">
                                 <table className="table table-hover table-striped">

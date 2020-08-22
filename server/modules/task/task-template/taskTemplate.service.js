@@ -371,27 +371,29 @@ exports.importTaskTemplate = async (data,id) => {
         for (let j = 0; j < data[i].taskInformations.length; j++) {
             if (data[i].taskInformations[j][0]) {
                 // format thong tin "chi qua ly duoc dien"
-                if (data[i].taskInformations[j][3] === 'Đúng')
-                    data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = true;
-                else data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = false;
+                data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = data[i].taskInformations[j][3];
+                // if (data[i].taskInformations[j][3] === 'Đúng')
+                //     data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = true;
+                // else data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = false;
                 // formart thong tin kieu du lieu
-                if (data[i].taskInformations[j][2] == "Số") {
-                    data[i].taskInformations[j]["type"] = 'Number';
-                } else {
-                    if (data[i].taskInformations[j][2] == "Văn bản") {
-                        data[i].taskInformations[j]["type"] = 'Text';
-                    } else {
-                        if (data[i].taskInformations[j][2] == "Boolean") {
-                            data[i].taskInformations[j]["type"] = 'Boolean';
-                        } else {
-                            if (data[i].taskInformations[j][2] == "Ngày tháng") {
-                                data[i].taskInformations[j]["type"] = 'Date';
-                            } else {
-                                data[i].taskInformations[j]["type"] = "SetOfValues";
-                            }
-                        }
-                    }
-                }
+                data[i].taskInformations[j]["type"] = data[i].taskInformations[j][2];
+                // if (data[i].taskInformations[j][2] == "Số") {
+                //     data[i].taskInformations[j]["type"] = 'Number';
+                // } else {
+                //     if (data[i].taskInformations[j][2] == "Văn bản") {
+                //         data[i].taskInformations[j]["type"] = 'Text';
+                //     } else {
+                //         if (data[i].taskInformations[j][2] == "Boolean") {
+                //             data[i].taskInformations[j]["type"] = 'Boolean';
+                //         } else {
+                //             if (data[i].taskInformations[j][2] == "Ngày tháng") {
+                //                 data[i].taskInformations[j]["type"] = 'Date';
+                //             } else {
+                //                 data[i].taskInformations[j]["type"] = "SetOfValues";
+                //             }
+                //         }
+                //     }
+                // }
                 data[i].taskInformations[j]["name"] = data[i].taskInformations[j][0];
                 data[i].taskInformations[j]["description"] = data[i].taskInformations[j][1];
             } else {
@@ -400,9 +402,10 @@ exports.importTaskTemplate = async (data,id) => {
         }
         for (let j = 0; j < data[i].taskActions.length; j++) {
             if (data[i].taskActions[j][0]) {
-                if (data[i].taskActions[j][2] === "Bắt buộc")
-                    data[i].taskActions[j]["mandatory"] = true;
-                else data[i].taskActions[j]["mandatory"] = false;
+                data[i].taskActions[j]["mandatory"] = data[i].taskActions[j][2];
+                // if (data[i].taskActions[j][2] === "Bắt buộc")
+                //     data[i].taskActions[j]["mandatory"] = true;
+                // else data[i].taskActions[j]["mandatory"] = false;
                 data[i].taskActions[j]["name"] = data[i].taskActions[j][0];
                 data[i].taskActions[j]["description"] = data[i].taskActions[j][1];
             } else {

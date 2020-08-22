@@ -478,7 +478,9 @@ class AssetManagement extends Component {
                         startDepreciation={currentRowView.startDepreciation}
                         usefulLife={currentRowView.usefulLife}
                         depreciationType={currentRowView.depreciationType}
-
+                        estimatedTotalProduction={currentRowView.estimatedTotalProduction}
+                        unitsProducedDuringTheYears={currentRowView.unitsProducedDuringTheYears}
+                        
                         maintainanceLogs={currentRowView.maintainanceLogs}
                         usageLogs={currentRowView.usageLogs}
                         incidentLogs={currentRowView.incidentLogs}
@@ -520,6 +522,12 @@ class AssetManagement extends Component {
                         startDepreciation={currentRow.startDepreciation}
                         usefulLife={currentRow.usefulLife}
                         depreciationType={currentRow.depreciationType}
+                        estimatedTotalProduction={currentRow.estimatedTotalProduction}
+                        unitsProducedDuringTheYears={currentRow.unitsProducedDuringTheYears && currentRow.unitsProducedDuringTheYears.map((x) => ({
+                            month: this.formatDate2(x.month),
+                            unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
+                        })
+                        )}
 
                         disposalDate={currentRow.disposalDate}
                         disposalType={currentRow.disposalType}

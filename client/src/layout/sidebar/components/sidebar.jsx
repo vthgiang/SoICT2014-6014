@@ -3,7 +3,6 @@ import Item from './item';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { withTranslate } from 'react-redux-multilingual';
-import { LOCAL_SERVER_API } from '../../../env';
 
 class SideBar extends Component {
 
@@ -47,6 +46,7 @@ class SideBar extends Component {
             path1: "/dashboard-asset", //Dashboard Quản lý tài sản
             path2: "/manage-type-asset", //Quản lý loại tài sản
             path3: "/manage-info-asset", //Quản lý thông tin tài sản
+            path4: "/view-building-list", // Xem danh sách mặt bằng
             path6: "/manage-depreciation-asset", //Quản lý khấu hao tài sản
             path7: "/manage-recommend-procure", //Quản lý đề nghị mua sắm thiết bị
             path8: "/manage-recommend-distribute-asset", //Quản lý đề nghị cấp phát sử dụng thiết bị
@@ -67,7 +67,7 @@ class SideBar extends Component {
         const url3 = {
             path1: "/manage-orders", // quản lý đơn hàng
             path2: "/manage-list-orders", //Quản lý danh sách đơn hàng
-          };
+        };
 
         const { translate, auth } = this.props;
         const { user, links } = this.props.auth;
@@ -77,7 +77,7 @@ class SideBar extends Component {
                     <section className="sidebar">
                         <div className="user-panel">
                             <div className="pull-left image">
-                                <img src={LOCAL_SERVER_API + auth.user.avatar} className="img-circle" alt="User avatar" />
+                                <img src={process.env.REACT_APP_SERVER + auth.user.avatar} className="img-circle" alt="User avatar" />
                             </div>
                             <div className="pull-left info">
                                 <p>{user.name}</p>
@@ -252,7 +252,7 @@ class SideBar extends Component {
                             {/* Quan ly tai san */}
                             {
                                 (this.checkURL(url1.path1, links) === true || this.checkURL(url1.path2, links) === true ||
-                                    this.checkURL(url1.path3, links) === true || this.checkURL(url1.path6, links) === true ||
+                                    this.checkURL(url1.path3, links) === true || this.checkURL(url1.path4, links) === true || this.checkURL(url1.path6, links) === true ||
                                     this.checkURL(url1.path7, links) === true || this.checkURL(url1.path8, links) === true ||
                                     this.checkURL(url1.path10, links) === true || this.checkURL(url1.path11, links) === true ||
                                     this.checkURL(url1.path12, links) === true || this.checkURL(url1.path13, links) === true ||
@@ -382,6 +382,16 @@ class SideBar extends Component {
                                                 <Link to={url1.path10}>
                                                     <i className="fa fa-calendar" />
                                                     {translate(`menu.recommend_equipment_procurement`)}
+                                                </Link>
+                                            </li>
+                                        }
+
+                                        {/** Xem danh sách mặt bằng*/}
+                                        {this.checkURL(url1.path4, links) === true &&
+                                            <li className={window.location.pathname === url1.path4 ? "active" : ""}>
+                                                <Link to={url1.path4}>
+                                                    <i className="fa fa-building" />
+                                                    {translate(`menu.view_building_list`)}
                                                 </Link>
                                             </li>
                                         }
@@ -627,48 +637,48 @@ class SideBar extends Component {
                             {/* Quản lý đơn hàng */}
                             {(this.checkURL(url3.path1, links) === true ||
                                 this.checkURL(url3.path2, links) === true) && (
-                                <li className="treeview">
-                                <a href="">
-                                    <i className="fa  fa-reorder " />{" "}
-                                    <span>{translate(`menu.manage_orders`)}</span>
-                                    <span className="pull-right-container">
-                                    <i className="fa fa-angle-left pull-right" />
-                                    </span>
-                                </a>
-                                <ul className="treeview-menu">
-                                    {/**Quản lý danh sách đơn hàng */}
-                                    {this.checkURL(url3.path1, links) === true && (
-                                    <li
-                                        className={
-                                        window.location.pathname === url3.path1
-                                            ? "active"
-                                            : ""
-                                        }
-                                    >
-                                        <Link to={url3.path1}>
-                                        <i className="fa  fa-reorder" />
-                                        {translate(`menu.manage_list_orders`)}
-                                        </Link>
-                                    </li>
-                                    )}
+                                    <li className="treeview">
+                                        <a href="">
+                                            <i className="fa  fa-reorder " />{" "}
+                                            <span>{translate(`menu.manage_orders`)}</span>
+                                            <span className="pull-right-container">
+                                                <i className="fa fa-angle-left pull-right" />
+                                            </span>
+                                        </a>
+                                        <ul className="treeview-menu">
+                                            {/**Quản lý danh sách đơn hàng */}
+                                            {this.checkURL(url3.path1, links) === true && (
+                                                <li
+                                                    className={
+                                                        window.location.pathname === url3.path1
+                                                            ? "active"
+                                                            : ""
+                                                    }
+                                                >
+                                                    <Link to={url3.path1}>
+                                                        <i className="fa  fa-reorder" />
+                                                        {translate(`menu.manage_list_orders`)}
+                                                    </Link>
+                                                </li>
+                                            )}
 
-                                    {this.checkURL(url3.path2, links) === true && (
-                                    <li
-                                        className={
-                                        window.location.pathname === url3.path2
-                                            ? "active"
-                                            : ""
-                                        }
-                                    >
-                                        <Link to={url3.path2}>
-                                        <i className="fa  fa-reorder" />
-                                        {translate(`menu.manage_list_orders`)}
-                                        </Link>
+                                            {this.checkURL(url3.path2, links) === true && (
+                                                <li
+                                                    className={
+                                                        window.location.pathname === url3.path2
+                                                            ? "active"
+                                                            : ""
+                                                    }
+                                                >
+                                                    <Link to={url3.path2}>
+                                                        <i className="fa  fa-reorder" />
+                                                        {translate(`menu.manage_list_orders`)}
+                                                    </Link>
+                                                </li>
+                                            )}
+                                        </ul>
                                     </li>
-                                    )}
-                                </ul>
-                                </li>
-                            )}
+                                )}
 
 
                             {
@@ -711,9 +721,15 @@ class SideBar extends Component {
                                             </li>
                                         }
                                         {
-                                            this.checkURL('/task-management-process', links) === true &&
-                                            <li className={window.location.pathname === "/task-management-process" ? "active" : ""}>
-                                                <Link to="/task-management-process">{translate(`menu.task_management_process`)}</Link>
+                                            this.checkURL('/task-process-template', links) === true &&
+                                            <li className={window.location.pathname === "/task-process-template" ? "active" : ""}>
+                                                <Link to="/task-process-template">{translate(`menu.task_process_template`)}</Link>
+                                            </li>
+                                        }
+                                        {
+                                            this.checkURL('/task-process-management', links) === true &&
+                                            <li className={window.location.pathname === "/task-process-management" ? "active" : ""}>
+                                                <Link to="/task-process-management">{translate(`menu.task_management_process`)}</Link>
                                             </li>
                                         }
                                     </ul>

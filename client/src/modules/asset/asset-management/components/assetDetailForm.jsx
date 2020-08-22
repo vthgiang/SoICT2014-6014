@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
-import { LOCAL_SERVER_API } from '../../../../env';
 import { DialogModal } from '../../../../common-components';
 
 import {
@@ -20,7 +18,7 @@ class AssetDetailForm extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                img: LOCAL_SERVER_API + nextProps.avatar,
+                img: process.env.REACT_APP_SERVER + nextProps.avatar,
                 avatar: "",
                 avatar: nextProps.avatar,
                 code: nextProps.code,
@@ -42,6 +40,8 @@ class AssetDetailForm extends Component {
                 residualValue: nextProps.residualValue,
                 startDepreciation: nextProps.startDepreciation,
                 usefulLife: nextProps.usefulLife,
+                estimatedTotalProduction: nextProps.estimatedTotalProduction,
+                unitsProducedDuringTheYears: nextProps.unitsProducedDuringTheYears,
                 depreciationType: nextProps.depreciationType,
                 maintainanceLogs: nextProps.maintainanceLogs,
                 usageLogs: nextProps.usageLogs,
@@ -61,8 +61,8 @@ class AssetDetailForm extends Component {
         const { translate, assetsManager } = this.props;
         const { _id, avatar, code, assetName, serial, assetType, purchaseDate, warrantyExpirationDate, 
                 managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse,
-                detailInfo, cost, residualValue, startDepreciation, usefulLife, depreciationType,
-                maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost, 
+                detailInfo, cost, residualValue, startDepreciation, usefulLife, depreciationType, estimatedTotalProduction, 
+                unitsProducedDuringTheYears, maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost, 
                 disposalDesc, archivedRecordNumber, files 
             } = this.state;
 
@@ -128,6 +128,8 @@ class AssetDetailForm extends Component {
                                     residualValue={residualValue}
                                     startDepreciation={startDepreciation}
                                     usefulLife={usefulLife}
+                                    estimatedTotalProduction={estimatedTotalProduction}
+                                    unitsProducedDuringTheYears={unitsProducedDuringTheYears}
                                     depreciationType={depreciationType}
                                 />
 

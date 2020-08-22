@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import LazyLoad from 'react-lazyload';
-
 import { DashboardEvaluationEmployeeKpiSetAction } from '../../../evaluation/dashboard/redux/actions';
 
 import { TrendsInOrganizationalUnitKpiChart } from './trendsInOrganizationalUnitKpiChart';
@@ -12,8 +10,7 @@ import { ResultsOfOrganizationalUnitKpiChart } from './resultsOfOrganizationalUn
 import { ResultsOfAllOrganizationalUnitKpiChart } from './resultsOfAllOrganizationalUnitKpiChart';
 import { StatisticsOfOrganizationalUnitKpiResultsChart } from './statisticsOfOrganizationalUnitKpiResultsChart';
 
-import { SelectBox } from '../../../../../common-components/index';
-import { DatePicker } from '../../../../../common-components';
+import { SelectBox, DatePicker, LazyLoadComponent } from '../../../../../common-components/index';
 import { withTranslate } from 'react-redux-multilingual';
 
 
@@ -35,7 +32,7 @@ class OrganizationalUnitKpiDashboard extends Component {
 
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
 
-            childUnitChart: false
+            childUnitChart: 1
         };
     }
 
@@ -60,7 +57,7 @@ class OrganizationalUnitKpiDashboard extends Component {
                     ...state,
                     dataStatus: this.DATA_STATUS.QUERYING,
                     organizationalUnitId: null,
-                    childUnitChart: false
+                    childUnitChart: 1
                 }
             });
 
@@ -86,11 +83,11 @@ class OrganizationalUnitKpiDashboard extends Component {
         return false;
     }
     
-    handleSelectTypeChildUnit = () => {
+    handleSelectTypeChildUnit = (value) => {
         this.setState(state => {
             return {
                 ...state,
-                childUnitChart: !this.state.childUnitChart
+                childUnitChart: Number(value)
             }
         })
     }
@@ -139,13 +136,8 @@ class OrganizationalUnitKpiDashboard extends Component {
         const { dashboardEvaluationEmployeeKpiSet, translate } = this.props;
         const { childUnitChart, organizationalUnitId, month } = this.state;
 
-        const Loading = () => (
-            <div className="post loading" style={{ textAlign: "center" }}>
-                <h5>Loading...</h5>
-            </div>
-        )
-
-        let childOrganizationalUnit, childrenOrganizationalUnit, organizationalUnitSelectBox;
+        let childOrganizationalUnit, childrenOrganizationalUnit;
+        let organizationalUnitSelectBox, typeChartSelectBox;
         
         if (dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit) {
             childrenOrganizationalUnit = dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
@@ -187,9 +179,15 @@ class OrganizationalUnitKpiDashboard extends Component {
             }
         }
 
+        // Tạo các select box
         if (childOrganizationalUnit) {
             organizationalUnitSelectBox = childOrganizationalUnit.map(x => { return { 'text': x.name, 'value': x.id } });
         }
+        typeChartSelectBox = [
+            { 'text': 'Đơn vị hiện tại', 'value': 1 },
+            { 'text': 'Đơn vị hiện tại và đơn vị con', 'value': 2 }
+        ]
+
 
         let d = new Date(),
             monthDate = '' + (d.getMonth() + 1),
@@ -233,104 +231,125 @@ class OrganizationalUnitKpiDashboard extends Component {
                     </div>
                 </div>
 
-                {/* Xu hướng thực hiện mục tiêu */}
-                <div className=" box box-primary">
-                    <div className="box-header with-border">
-                        <div className="box-title">{translate('kpi.organizational_unit.dashboard.trend')} {this.state.date}</div>
+            {/* Xu hướng thực hiện mục tiêu */}
+                <div className="row">
+                    <div className="col-xs-12" >
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">{translate('kpi.organizational_unit.dashboard.trend')} {this.state.date}</div>
+                            </div>
 
-                        <button className="pull-right" title={ !childUnitChart ? "Hiển thị biểu đồ các đơn vị con" : "Hiển thị biểu đồ đơn vị hiện tại" } onClick={this.handleSelectTypeChildUnit}>{ !childUnitChart ? "Các đơn vị con" : "Đơn vị hiện tại" }</button>
-                    </div>
-                    <div className="box-body qlcv">
-                        {!childUnitChart ?
-                            <LazyLoad key="trendsInOrganizationalUnitKpiChart" placeholder={<Loading/>}>
-                                <TrendsInOrganizationalUnitKpiChart
-                                    organizationalUnitId={organizationalUnitId}
-                                    month={month}
-                                />
-                            </LazyLoad>
-                            : <LazyLoad key="trendsInChildrenOrganizationalUnitKpiChart" placeholder={<Loading/>}>
-                                <TrendsInChildrenOrganizationalUnitKpiChart
-                                    organizationalUnitId={organizationalUnitId}
-                                    month={month}
-                                />
-                            </LazyLoad>
-                        }
+                            <div className="box-body qlcv" style={{ minHeight: "400px" }}>
+                                <div className="form-inline" style={{ textAlign: 'right' }}>
+                                <div className="form-group">
+                                    <label style={{ width: "auto" }}>Thống kê</label>
+                                    <SelectBox
+                                        id={`typeChartSelectBoxInOrganizationalUnitKpiDashboard`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        items={typeChartSelectBox}
+                                        multiple={false}
+                                        onChange={this.handleSelectTypeChildUnit}
+                                        value={typeChartSelectBox[0].value}
+                                    />
+                                </div></div>
+                                {childUnitChart === 1 ?
+                                    <TrendsInOrganizationalUnitKpiChart
+                                        organizationalUnitId={organizationalUnitId}
+                                        month={month}
+                                    />
+                                    : <TrendsInChildrenOrganizationalUnitKpiChart
+                                        organizationalUnitId={organizationalUnitId}
+                                        month={month}
+                                    />
+                                }
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <div className="row">
                     {/* Phân bố KPI đơn vị */}
-                    <div className="col-xs-6">
-                        {childOrganizationalUnit &&
-                            <div className="box box-primary">
-                                <div className="box-header with-border">
-                                    <div className="box-title">{translate('kpi.organizational_unit.dashboard.distributive')}{this.state.date}</div>
-                                </div>
-                                <div className="box-body qlcv">
-                                { (this.state.dataStatus === this.DATA_STATUS.AVAILABLE) &&
-                                    <LazyLoad key="distributionOfOrganizationalUnitKpiChart" placeholder={<Loading/>}>
+                    <LazyLoadComponent
+                        key="distributionOfOrganizationalUnitKpiChart"
+                    >
+                        <div className="col-xs-6">
+                            {childOrganizationalUnit &&
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">{translate('kpi.organizational_unit.dashboard.distributive')}{this.state.date}</div>
+                                    </div>
+                                    <div className="box-body qlcv">
+                                    { (this.state.dataStatus === this.DATA_STATUS.AVAILABLE) &&
                                         <DistributionOfOrganizationalUnitKpiChart
                                             organizationalUnitId={organizationalUnitId}
                                             month={month}
                                         />
-                                    </LazyLoad>
-                                }
+                                    }
+                                    </div>
                                 </div>
-                            </div>
-                        }
-                    </div>
+                            }
+                        </div>
+                    </LazyLoadComponent>
 
                     {/* Thống kê kết quả KPI */}
-                    <div className="col-xs-6">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('kpi.organizational_unit.dashboard.statiscial')} {this.state.date}</div>
-                            </div>
-                            <div className="box-body qlcv">
-                                <LazyLoad key="statisticsOfOrganizationalUnitKpiResultsChart" placeholder={<Loading/>}>
+                    <LazyLoadComponent
+                        key="statisticsOfOrganizationalUnitKpiResultsChart"
+                    >
+                        <div className="col-xs-6">
+                            <div className="box box-primary">
+                                <div className="box-header with-border">
+                                    <div className="box-title">{translate('kpi.organizational_unit.dashboard.statiscial')} {this.state.date}</div>
+                                </div>
+                                <div className="box-body qlcv">
                                     <StatisticsOfOrganizationalUnitKpiResultsChart
                                         organizationalUnitId={organizationalUnitId}
                                         month={month}
                                     />
-                                </LazyLoad>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        </div> 
+                    </LazyLoadComponent>
                 </div>
+
                 <div className="row">
                     {/* Kết quả KPI đơn vị */}
-                    {childOrganizationalUnit &&
-                        <div className="col-xs-12">
-                            <div className="box box-primary">
-                                <div className="box-header with-border">
-                                    <div className="box-title">{translate('kpi.organizational_unit.dashboard.result_kpi_unit')}</div>
-                                </div>
-                                <div className="box-body qlcv">
-                                { (this.state.dataStatus === this.DATA_STATUS.AVAILABLE) &&
-                                    <LazyLoad key="resultsOfOrganizationalUnitKpiChart" placeholder={<Loading/>}>
+                    <LazyLoadComponent
+                        key="resultsOfOrganizationalUnitKpiChart"
+                    >
+                        {childOrganizationalUnit &&
+                            <div className="col-xs-12">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">{translate('kpi.organizational_unit.dashboard.result_kpi_unit')}</div>
+                                    </div>
+                                    <div className="box-body qlcv">
+                                    { (this.state.dataStatus === this.DATA_STATUS.AVAILABLE) &&
                                         <ResultsOfOrganizationalUnitKpiChart organizationalUnitId={organizationalUnitId}/>
-                                    </LazyLoad>
-                                }
+                                    }
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    }
+                        }
+                    </LazyLoadComponent>
 
                     {/* Kết quả KPI các đơn vị */}
-                    {childOrganizationalUnit &&
-                        <div className="col-xs-12">
-                            <div className="box box-primary">
-                                <div className="box-header with-border">
-                                    <div className="box-title">{translate('kpi.organizational_unit.dashboard.result_kpi_units')}</div>
-                                </div>
-                                <div className="box-body qlcv">
-                                    <LazyLoad key="resultsOfAllOrganizationalUnitKpiChart" placeholder={<Loading/>}>
+                    <LazyLoadComponent
+                        key="resultsOfAllOrganizationalUnitKpiChart"
+                    >
+                        {childOrganizationalUnit &&
+                            <div className="col-xs-12 container">
+                                <div className="box box-primary">
+                                    <div className="box-header with-border">
+                                        <div className="box-title">{translate('kpi.organizational_unit.dashboard.result_kpi_units')}</div>
+                                    </div>
+                                    <div className="box-body qlcv">
                                         <ResultsOfAllOrganizationalUnitKpiChart />
-                                    </LazyLoad>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    }
+                        }
+                    </LazyLoadComponent>
                 </div>
             </React.Fragment>
         );

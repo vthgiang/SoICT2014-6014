@@ -118,13 +118,23 @@ exports.editSystemLink = async (systemLinkId, url, description, roles, category)
 exports.deleteSystemLink = async (systemLinkId) => {
     let systemLink = await SystemLink.findById(systemLinkId);
     // 1. Xóa tất các link tương ứng của các công ty
-    let link = await Link.find({url: systemLink.url});
-    let priDel = [systemLink._id, ...link.map(link=>link._id)];
+    let links = await Link.find({url: systemLink.url});
+    //xóa phân quyền
     await Privilege.deleteMany({ 
         resourceType: 'Link',
-        resourceId: { $in: priDel }
+        resourceId: { $in: links.map(link=>link._id) }
     });
-    const deleteLink = await Link.deleteMany({url: systemLink.url});
+    //links trong component tương ứng
+    for (let i = 0; i < links.length; i++) {
+        let components = await Link.find({links: links[i]._id});
+        for (let j = 0; j < components.length; j++) {
+            let updateComponent = await Component.findById(components[j]._id);
+            let index = updateComponent.links.indexOf(links[i]._id);
+            if(index !== -1) updateComponent.links.splice(index, 1);
+            await updateComponent.save();
+        }
+    }
+    await Link.deleteMany({url: systemLink.url});
 
     // 2. Xóa system link 
     return await SystemLink.deleteOne({ _id: systemLinkId });

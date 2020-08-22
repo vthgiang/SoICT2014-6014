@@ -6,6 +6,10 @@ const User = require('../auth/user.model');
 
 // Create Schema
 const AssetSchema = new Schema({
+    group: {
+        type: String,
+        enum: ["Building", "Vehicle", "Machine", "Other"]
+    },
 
     company: { // công ty
         type: Schema.Types.ObjectId,
@@ -72,8 +76,9 @@ const AssetSchema = new Schema({
         // required: true
     },
 
-    location: { //15.vị trí tài sản
-        type: String,
+    location: { // 15.vị trí tài sản
+        type: Schema.Types.ObjectId,
+        replies: this,
         // required: true
     },
 
@@ -133,8 +138,12 @@ const AssetSchema = new Schema({
     },
 
     unitsProducedDuringTheYears: [{ // Dùng trong UnitsOfProduction
-        year: Number,
-        unitsProducedDuringTheYear: Number
+        month: { 
+            type: Date
+        },
+        unitsProducedDuringTheYear: {
+            type: Number
+        },
     }],
     
     estimatedTotalProduction: { // Dùng trong UnitsOfProduction

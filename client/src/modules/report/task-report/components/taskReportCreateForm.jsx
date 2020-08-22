@@ -88,6 +88,7 @@ class TaskReportCreateForm extends Component {
         return msg === undefined;
     }
 
+
     /**
      * Bắt sự kiện thay đổi cho ô input mô tả báo cáo
      * @param {*} e 
@@ -163,7 +164,7 @@ class TaskReportCreateForm extends Component {
                 for (let [index, value] of taskTemplate.taskInformations.entries()) {
                     taskInformations[index] = {
                         ...value,
-                        charType: '0',
+                        chartType: '0',
                         aggregationType: '0',
                         coefficient: 1,
                         showInReport: false,
@@ -178,8 +179,8 @@ class TaskReportCreateForm extends Component {
                         nameTaskReport: taskTemplate.name,
                         descriptionTaskReport: taskTemplate.description,
                         taskTemplate: taskTemplate._id,
-                        // responsibleEmployees: taskTemplate.responsibleEmployees,
-                        // accountableEmployees: taskTemplate.accountableEmployees,
+                        responsibleEmployees: taskTemplate.responsibleEmployees.map(item => item._id),
+                        accountableEmployees: taskTemplate.accountableEmployees.map(item => item._id),
                         taskInformations: taskInformations,
                     }
                 }
@@ -333,7 +334,7 @@ class TaskReportCreateForm extends Component {
     handleChangeChart = (index, value) => {
         let { newReport } = this.state;
         let taskInformations = newReport.taskInformations;
-        taskInformations[index] = { ...taskInformations[index], charType: value.toString() };
+        taskInformations[index] = { ...taskInformations[index], chartType: value.toString() };
         this.setState({
             newReport: {
                 ...newReport,
@@ -517,8 +518,8 @@ class TaskReportCreateForm extends Component {
                     size={100}
                     disableSubmit={!this.isFormValidated()}
                 >
-                    <TaskReportViewForm taskInformations={newReport.taskInformations} frequency={newReport.frequency}
-                    />
+                    <TaskReportViewForm />
+                    {/* taskInformations={newReport.taskInformations} */}
                     <div className="row" >
                         <div className="col-md-12 col-lg-12" style={{ display: 'flex', justifyContent: 'flex-end' }}>
                             <div className="form-inline d-flex justify-content-end">

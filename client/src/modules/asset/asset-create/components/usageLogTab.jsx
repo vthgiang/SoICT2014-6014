@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { UsageLogAddModal, UsageLogEditModal } from './combinedContent';
-
+import { UsageActions } from '../../usage/redux/actions'
 class UsageLogTab extends Component {
     constructor(props) {
         super(props);
@@ -126,6 +126,15 @@ class UsageLogTab extends Component {
         this.props.handleDeleteUsage(this.state.usageLogs, data)
     }
 
+    hanhdleRecallAsset = () => {
+        let assetId = this.props.assetId;
+        let assignedTo = this.props.assignedTo;
+        let data =  {
+            usageId: assignedTo,
+        }
+
+        this.props.recallAsset(assetId, data);        
+    }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id || nextProps.usageLogs !== prevState.usageLogs) {
@@ -151,11 +160,25 @@ class UsageLogTab extends Component {
             <div id={id} className="tab-pane">
                 <div className="box-body qlcv">
                     {/* Lịch sử sử dụng */}
+                   
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.usage_logs')}</h4></legend>
-
-                        {/* Form thêm thông tin sử dụng */}
-                        <UsageLogAddModal handleChange={this.handleAddUsage} id={`addUsage${id}`} />
+                        <div className="form-inline">
+                            <div className="form-group">
+                                <label style={{ width: "auto" }} className="form-control-static"> Người đang sử dụng:</label>
+                                <div style={{ width: "auto" }} className="form-control-static">{ this.props.assignedTo? userlist.filter(item => item._id === this.props.assignedTo).pop() ? userlist.filter(item => item._id === this.props.assignedTo).pop().name:"Chưa có ai": ''}</div>
+                            </div>
+                            
+                            { this.props.assignedTo &&
+                                <div className="form-group" style={{marginLeft: "20px"}}>
+                                    <button type="button" className="btn btn-success" onClick={this.hanhdleRecallAsset} >Thu hồi</button>
+                                </div>
+                            }
+                            {/* Form thêm thông tin sử dụng */}
+                            <UsageLogAddModal handleChange={this.handleAddUsage} id={`addUsage${id}`} />
+                        </div>
+                        
+                        
 
                         {/* Bảng thông tin sử dụng */}
                         <table className="table table-striped table-bordered table-hover">
@@ -215,6 +238,10 @@ function mapState(state) {
     return { user };
 };
 
-const usageLogTab = connect(mapState, null)(withTranslate(UsageLogTab));
+const actionCreators = {
+    recallAsset: UsageActions.recallAsset,
+};
+
+const usageLogTab = connect(mapState, actionCreators)(withTranslate(UsageLogTab));
 
 export { usageLogTab as UsageLogTab };

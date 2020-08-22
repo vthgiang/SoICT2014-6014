@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, DateTimeConverter } from '../../../../../common-components';
+import { DialogModal } from '../../../../../common-components';
 
+import moment from 'moment'
 class ListView extends Component {
     constructor(props) {
         super(props);
@@ -22,27 +23,19 @@ class ListView extends Component {
                     modalID={`modal-list-download`}
                     title={`${translate('document.downloads')} ${this.props.docs.name}`}
                     hasSaveButton={false}
+                    hasNote={false}
                 >
-                    <table className="table table-hover table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th>{translate('document.viewer')}</th>
-                                <th>{translate('document.time')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                downloads.length > 0 ?
-                                    downloads.map(download =>
-                                        <tr key={download._id}>
-                                            <td>{download.downloader.name}</td>
-                                            <td><DateTimeConverter dateTime={download.time} type="DD-MM-YYYY" /></td>
-                                        </tr>
-                                    ) :
-                                    null
-                            }
-                        </tbody>
-                    </table>
+
+                    <div>
+                        {downloads && downloads.map(item =>
+                            <div key={item._id} className="item-box">
+                                <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.downloader?.name} </a>
+                                Đã download lúc &nbsp;
+                                    ({moment(item.time).format("HH:mm:ss DD/MM/YYYY")})
+
+                            </div>
+                        )}
+                    </div>
                 </DialogModal>
             </React.Fragment>
         )

@@ -621,6 +621,7 @@ export default {
             task_management_dashboard: 'Task dashboard',
             task_organization_management_dashboard: 'Unit task dashboard',
             task_management_process: "Process list",
+            task_process_template: "Process template",
             //*******START */
             // Quản lý tài sản
             // QUẢN LÝ
@@ -642,6 +643,7 @@ export default {
             manage_recommend_procure: 'Manage recommend procure',
             manage_recommend_distribute_asset: 'Manage recommend distribute',
 
+            view_building_list: 'View building list',
             // NHÂN VIÊN
             recommend_equipment_procurement: 'Recommend equipment procurement',
             recommend_distribute_asset: 'Recommend distribute asset',
@@ -699,11 +701,11 @@ export default {
             no_parent: 'No parent department',
             select_parent: 'Select parent of department',
             roles_of_department: 'Roles in Department',
-            dean_name: 'Dean',
+            dean_name: 'Positions for Manager',
             dean_example: 'Ex: Dean of Financial Officer',
-            vice_dean_name: 'Vice Dean',
+            vice_dean_name: 'Positions for Deputy Manager',
             vice_dean_example: 'Ex: Vice Dean of Financial Officer',
-            employee_name: 'Employee',
+            employee_name: 'Positions for Employee',
             employee_example: 'Ex: Employee of Financial Officer',
             add_with_parent: 'Add new department with parent is',
             delete: 'Delete department',
@@ -2182,6 +2184,7 @@ export default {
                 timesheetlogs: "Timesheet Logs",
                 subtasks: "Subtasks",
                 change_history: "Change logs",
+                change_process: "Process",
                 edit_action: "Edit action",
                 delete_action: "Delete action",
                 mandatory_action: "Mandatory action",
@@ -2801,7 +2804,7 @@ export default {
                         execution_time: 'Execution time (Days)',
                         participants: 'Participants',
                         amount_tasks: 'Amount of tasks',
-                        amount_child_kpi: 'Amount of child KPI',
+                        amount_employee_kpi: 'Amount of employee KPI',
                         weight: 'Weight'
                     },
                     result_kpi_unit_chart: {

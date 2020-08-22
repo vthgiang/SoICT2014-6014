@@ -4,7 +4,6 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { EmployeeInfoActions } from '../redux/actions';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
-import { LOCAL_SERVER_API } from '../../../../../env';
 import { toast } from 'react-toastify';
 class UpdateEmployee extends Component {
     constructor(props) {
@@ -108,7 +107,7 @@ class UpdateEmployee extends Component {
                                     <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.menu_basic_infor')}</h4></legend>
                                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                                         <div>
-                                            <img className="attachment-img avarta" src={this.state.img !== "" ? this.state.img : (LOCAL_SERVER_API + x.avatar)} alt="Attachment" />
+                                            <img className="attachment-img avarta" src={this.state.img !== "" ? this.state.img : (process.env.REACT_APP_SERVER + x.avatar)} alt="Attachment" />
                                         </div>
                                         <div className="upload btn btn-default ">
                                             {translate('manage_employee.upload')}

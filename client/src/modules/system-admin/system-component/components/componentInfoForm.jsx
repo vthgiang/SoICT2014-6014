@@ -106,7 +106,7 @@ class ComponentInfoForm extends Component {
         const component = { 
             name: this.state.componentName, 
             description: this.state.componentDescription, 
-            link: this.state.componentLink,
+            links: this.state.componentLink,
             roles: this.state.componentRoles 
         };
 
@@ -141,21 +141,18 @@ class ComponentInfoForm extends Component {
                         </div>
                         <div className="form-group">
                             <label>{ translate('manage_component.link') }</label>
-                            {
-                                systemLinks.list.length > 0 &&
-                                <SelectBox
-                                    id={`select-component-default-link-${componentId}`}
-                                    className="form-control select2"
-                                    style={{width: "100%"}}
-                                    items = {
-                                        systemLinks.list.map( link => {return {value: link._id, text: link.url}})
-                                    }
-                                    options={{placeholder: translate('system_admin.system_component.select_link')}}
-                                    onChange={this.handleLink}
-                                    value={componentLink}
-                                    multiple={false}
-                                />
-                            }
+                            <SelectBox
+                                id={`select-component-default-link-${componentId}`}
+                                className="form-control select2"
+                                style={{width: "100%"}}
+                                items = {
+                                    systemLinks.list.map( link => {return {value: link._id, text: link.url}})
+                                }
+                                options={{placeholder: translate('system_admin.system_component.select_link')}}
+                                onChange={this.handleLink}
+                                value={componentLink}
+                                multiple={true}
+                            />
                         </div>
                         <div className="form-group">
                             <label>{ translate('manage_component.roles') }</label>

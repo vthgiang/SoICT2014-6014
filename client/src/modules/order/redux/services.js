@@ -1,4 +1,3 @@
-import { LOCAL_SERVER_API } from "../../../env";
 import { sendRequest } from "../../../helpers/requestHelper";
 
 export const orderServices = {
@@ -11,7 +10,7 @@ export const orderServices = {
 function getAllOrders(queryData) {
   return sendRequest(
     {
-      url: `${LOCAL_SERVER_API}/orders`,
+      url: `${process.env.REACT_APP_SERVER}/orders`,
       method: "GET",
       params: {
         code: queryData !== undefined ? queryData.code : "",
@@ -28,7 +27,7 @@ function getAllOrders(queryData) {
 function createNewOrder(dataOrder) {
   return sendRequest(
     {
-      url: `${LOCAL_SERVER_API}/orders`,
+      url: `${process.env.REACT_APP_SERVER}/orders`,
       method: "POST",
       data: dataOrder,
     },
@@ -41,7 +40,7 @@ function createNewOrder(dataOrder) {
 function editOrder(id, dataEdit) {
   return sendRequest(
     {
-      url: `${LOCAL_SERVER_API}/orders/${id}`,
+      url: `${process.env.REACT_APP_SERVER}/orders/${id}`,
       method: "PATCH",
       data: dataEdit,
     },
@@ -54,7 +53,7 @@ function editOrder(id, dataEdit) {
 function deleteOrder(id) {
   return sendRequest(
     {
-      url: `${LOCAL_SERVER_API}/orders/${id}`,
+      url: `${process.env.REACT_APP_SERVER}/orders/${id}`,
       method: "DELETE",
     },
     true,

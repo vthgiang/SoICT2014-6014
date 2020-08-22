@@ -1,7 +1,4 @@
 import {
-    LOCAL_SERVER_API
-} from '../../../../../env';
-import {
     sendRequest
 } from '../../../../../helpers/requestHelper';
 
@@ -18,7 +15,7 @@ export const EmployeeService = {
  */
 function getAll(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employees`,
+        url: `${ process.env.REACT_APP_SERVER }/employees`,
         method: 'GET',
         params: {
             numberMonth: data !== undefined ? data.numberMonth : data,
@@ -42,7 +39,7 @@ function getAll(data) {
  */
 function addNewEmployee(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employees`,
+        url: `${ process.env.REACT_APP_SERVER }/employees`,
         method: 'POST',
         data: data,
     }, true, true, 'human_resource.profile.employee_management');
@@ -55,7 +52,7 @@ function addNewEmployee(data) {
  */
 function updateInformationEmployee(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employees/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/employees/${id}`,
         method: 'PUT',
         data: data,
     }, true, true, 'human_resource.profile.employee_management');
@@ -67,7 +64,7 @@ function updateInformationEmployee(id, data) {
  */
 function deleteEmployee(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employees/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/employees/${id}`,
         method: 'DELETE',
     }, true, true, 'human_resource.profile.employee_management');
 }
@@ -78,7 +75,7 @@ function deleteEmployee(id) {
  */
 function importEmployees(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/employees/import`,
+        url: `${ process.env.REACT_APP_SERVER }/employees/import`,
         method: 'POST',
         data: data,
     }, true, true, 'human_resource.profile.employee_management');

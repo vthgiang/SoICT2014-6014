@@ -87,13 +87,12 @@ export const templateImportTaskTemplate = {
                 keyMerge: 'actionName',
                 colspan: 3
             }, {
-                key: "taskInfo",
+                key: "taskInfomations",
                 columnName: "Danh sách thông tin",
-                keyMerge: 'infoName',
+                keyMerge: 'infomationName',
                 colspan: 4
             }],
             columns: [
-                { key: "STT", value: "STT" },
                 { key: "name", value: "Tên mẫu" },
                 { key: "description", value: "Mô tả" },
                 { key: "organizationalUnits", value: "Đơn vị" },
@@ -107,31 +106,98 @@ export const templateImportTaskTemplate = {
                 { key: "actionName", value: "Tên hoạt động" },
                 { key: "actionDescription", value: "Mô tả hoạt động" },
                 { key: "mandatory", value: "Bắt buộc" },
-                { key: "infoName", value: "Tên thông tin" },
-                { key: "infoDescription", value: "Mô tả thông tin" },
-                { key: "infoType", value: "Kiểu dữ liệu" },
-                { key: "infoFill", value: "Chỉ quản lý được điền" }
+                { key: "infomationName", value: "Tên thông tin" },
+                { key: "infomationDescription", value: "Mô tả thông tin" },
+                { key: "type", value: "Kiểu dữ liệu" },
+                { key: "filledByAccountableEmployeesOnly", value: "Chỉ quản lý được điền" }
             ],
-            data: [{
-                STT: 1,
-                name: "Mẫu 1",
-                description: "Mẫu công việc 1",
-                organizationalUnits: "Phòng kinh doanh",
-                readByEmployees: "Trưởng phòng kinh doanh, Nhân viên phòng kinh doanh",
-                priority: "Cao",
-                responsibleEmployees: "pdp.vnist@gmail.com",
-                accountableEmployees: "nvd.vnist@gmail.com",
-                consultedEmployees: "nvd.vnist@gmail.com",
-                informedEmployees: "nvd.vnist@gmail.com",
-                formula: 80,
-                actionName:"Hoạt động 1",
-                actionDescription: "Đây là hoạt động 1",
-                mandatory: "Bắt buộc",
-                infoName: "Thông tin 1",
-                infoDescription: "Thông tin dữ liệu",
-                infoType: "Văn bản",
-                infoFill: "Đúng"
-            }]
+            // Do ở file export, dữ liệu được đọc theo dòng nên đối với dữ liệu mảng (taskAction, taskInfomation), mỗi phần tử của mảng là 1 dòng
+            data: [
+                {
+                    name: "Mẫu 1",
+                    description: "Mẫu công việc 1",
+                    organizationalUnit: "Phòng kinh doanh",
+                    readByEmployees: ["Trưởng phòng kinh doanh", "Nhân viên phòng kinh doanh"],
+                    priority: "Cao",
+                    responsibleEmployees: ["pdp.vnist@gmail.com"],
+                    accountableEmployees: ["nvd.vnist@gmail.com"],
+                    consultedEmployees: ["nvd.vnist@gmail.com"],
+                    informedEmployees: ["nvd.vnist@gmail.com"],
+                    formula: 80,
+                    taskActions: [
+                        {
+                            name:"Hoạt động 1",
+                            description: "Đây là hoạt động 1",
+                            mandatory: "true",
+                        }, {
+                            name:"Hoạt động 2",
+                            description: "Đây là hoạt động 2",
+                            mandatory: "false",
+                        }
+                    ],
+                    taskInformations: [
+                        {
+                            name: "Thông tin 1",
+                            description: "Thông tin dữ liệu",
+                            type: "Text",
+                            filledByAccountableEmployeesOnly: "true",
+                        }, {
+                            name: "Thông tin 2",
+                            description: "Thông tin số",
+                            type: "Number",
+                            filledByAccountableEmployeesOnly: "false",
+                        }, {
+                            name: "Thông tin 3",
+                            description: "Thông tin ngày tháng",
+                            type: "Date",
+                            filledByAccountableEmployeesOnly: "true",
+                        }
+                    ],
+                    
+                },
+                {
+                    name: "Mẫu 1",
+                    description: "Mẫu công việc 1",
+                    organizationalUnit: "Phòng kinh doanh",
+                    readByEmployees: ["Trưởng phòng kinh doanh", "Nhân viên phòng kinh doanh"],
+                    priority: "Cao",
+                    responsibleEmployees: ["pdp.vnist@gmail.com"],
+                    accountableEmployees: ["nvd.vnist@gmail.com"],
+                    consultedEmployees: ["nvd.vnist@gmail.com"],
+                    informedEmployees: ["nvd.vnist@gmail.com"],
+                    formula: 80,
+                    taskActions: [
+                        {
+                            name:"Hoạt động 1",
+                            description: "Đây là hoạt động 1",
+                            mandatory: "true",
+                        }, {
+                            name:"Hoạt động 2",
+                            description: "Đây là hoạt động 2",
+                            mandatory: "false",
+                        }
+                    ],
+                    taskInformations: [
+                        {
+                            name: "Thông tin 1",
+                            description: "Thông tin dữ liệu",
+                            type: "Text",
+                            filledByAccountableEmployeesOnly: "true",
+                        }, {
+                            name: "Thông tin 2",
+                            description: "Thông tin số",
+                            type: "Number",
+                            filledByAccountableEmployeesOnly: "false",
+                        }, {
+                            name: "Thông tin 3",
+                            description: "Thông tin ngày tháng",
+                            type: "Date",
+                            filledByAccountableEmployeesOnly: "true",
+                        }
+                    ],
+                    
+                },
+            ]
         }]
     }]
 }

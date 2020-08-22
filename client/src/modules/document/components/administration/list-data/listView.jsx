@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DialogModal, DateTimeConverter } from '../../../../../common-components';
+import { DialogModal } from '../../../../../common-components';
 
+import moment from 'moment'
 class ListView extends Component {
     constructor(props) {
         super(props);
@@ -21,27 +22,18 @@ class ListView extends Component {
                     modalID={`modal-list-view`}
                     title={`${translate('document.views')} ${this.props.docs.name}`}
                     hasSaveButton={false}
+                    hasNote={false}
                 >
-                    <table className="table table-hover table-striped table-bordered">
-                        <thead>
-                            <tr>
-                                <th>{translate('document.viewer')}</th>
-                                <th>{translate('document.time')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {
-                                views.length > 0 ?
-                                    views.map(view =>
-                                        <tr key={view._id}>
-                                            <td>{view.viewer.name}</td>
-                                            <td><DateTimeConverter dateTime={view.time} type="DD-MM-YYYY" /></td>
-                                        </tr>
-                                    ) :
-                                    null
-                            }
-                        </tbody>
-                    </table>
+                    <div>
+                        {views && views.map(item =>
+                            <div key={item._id} className="item-box">
+                                <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.viewer?.name} </a>
+                                đã xem lúc &nbsp;
+                                    ({moment(item.time).format("HH:mm:ss DD/MM/YYYY")})
+
+                            </div>
+                        )}
+                    </div>
                 </DialogModal>
             </React.Fragment>
 

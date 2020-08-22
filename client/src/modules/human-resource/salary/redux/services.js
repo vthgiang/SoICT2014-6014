@@ -1,8 +1,4 @@
 import {
-    LOCAL_SERVER_API
-} from '../../../../env';
-
-import {
     sendRequest
 } from '../../../../helpers/requestHelper';
 
@@ -20,7 +16,7 @@ export const SalaryService = {
  */
 function searchSalary(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/salary/salaries`,
+        url: `${ process.env.REACT_APP_SERVER }/salary/salaries`,
         method: 'GET',
         params: {
             organizationalUnit: data.organizationalUnit,
@@ -39,7 +35,7 @@ function searchSalary(data) {
  */
 function createSalary(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/salary/salaries`,
+        url: `${ process.env.REACT_APP_SERVER }/salary/salaries`,
         method: 'POST',
         data: data,
     }, true, true, 'human_resource.salary');
@@ -51,7 +47,7 @@ function createSalary(data) {
  */
 function deleteSalary(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/salary/salaries/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/salary/salaries/${id}`,
         method: 'DELETE',
     }, true, true, 'human_resource.salary');
 }
@@ -63,7 +59,7 @@ function deleteSalary(id) {
  */
 function updateSalary(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/salary/salaries/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/salary/salaries/${id}`,
         method: 'PATCH',
         data: data,
     }, true, true, 'human_resource.salary');
@@ -76,7 +72,7 @@ function updateSalary(id, data) {
 function importSalary(data) {
     console.log(data);
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/salary/salaries/import`,
+        url: `${ process.env.REACT_APP_SERVER }/salary/salaries/import`,
         method: 'POST',
         data: data,
     }, true, false, 'human_resource.salary');

@@ -21,7 +21,7 @@ class FormCreateTaskByProcess extends Component {
 
         this.state = {
             currentRole: localStorage.getItem('currentRole'),
-            editingTemplate: {
+            taskItem: {
                 organizationalUnit: '',
                 name: '',
                 responsibleEmployees: [],
@@ -71,16 +71,17 @@ class FormCreateTaskByProcess extends Component {
 
     shouldComponentUpdate = (nextProps, nextState) => {
         const { department } = this.props;
-        const { editingTemplate } = this.state;
+        const { taskItem } = this.state;
         if (nextProps.isProcess && nextProps.id !== this.state.id) {
             let { info, listOrganizationalUnit } = nextProps;
             this.setState(state => {
                 return {
                     id: nextProps.id,
-                    editingTemplate: {
+                    taskItem: {
+                        numberOfDaysTaken: (info && info.numberOfDaysTaken) ? info.numberOfDaysTaken : 0,
                         // code: (info && info.code) ? info.code : "",
-                        startDate: (info && info.startDate) ? info.startDate : "",
-                        endDate: (info && info.endDate) ? info.endDate : "",
+                        startDate: (info && info.startDate) ? info.startDate : nextProps.startDate,
+                        endDate: (info && info.endDate) ? info.endDate : nextProps.endDate,
                         organizationalUnit: (info && info.organizationalUnit) ? info.organizationalUnit : [],
                         name: (info && info.name) ? info.name : '',
                         responsibleEmployees: (info && info.responsibleEmployees) ? info.responsibleEmployees : [],
@@ -115,35 +116,8 @@ class FormCreateTaskByProcess extends Component {
             return false;
         }
 
-        // if (nextProps.isTaskTemplate && nextProps.taskTemplateId !== this.props.taskTemplateId) {
-
-        //     this.setState({
-        //         taskTemplateId: nextProps.taskTemplateId,
-        //         taskTemplate: nextProps.taskTemplate,
-        //         editingTemplate: {
-        //             _id: nextProps.taskTemplate._id,
-        //             organizationalUnit: nextProps.taskTemplate.organizationalUnit._id,
-        //             name: nextProps.taskTemplate.name,
-        //             readByEmployees: nextProps.taskTemplate.readByEmployees.map(item => item._id),
-        //             responsibleEmployees: nextProps.taskTemplate.responsibleEmployees.map(item => item._id),
-        //             accountableEmployees: nextProps.taskTemplate.accountableEmployees.map(item => item._id),
-        //             consultedEmployees: nextProps.taskTemplate.consultedEmployees.map(item => item._id),
-        //             informedEmployees: nextProps.taskTemplate.informedEmployees.map(item => item._id),
-        //             description: nextProps.taskTemplate.description,
-        //             formula: nextProps.taskTemplate.formula,
-        //             priority: nextProps.taskTemplate.priority,
-        //             taskActions: nextProps.taskTemplate.taskActions,
-        //             taskInformations: nextProps.taskTemplate.taskInformations,
-        //             startDate: nextProps.taskTemplate.startDate,
-        //             endDate: nextProps.taskTemplate.endDate,
-        //         },
-        //         showActionForm: true,
-        //     });
-        //     return true;
-        // }
-
         // Khi truy vấn lấy các đơn vị mà user là dean đã có kết quả, và thuộc tính đơn vị của newTemplate chưa được thiết lập
-        if (editingTemplate.organizationalUnit === "" && department.departmentsThatUserIsDean) {
+        if (taskItem.organizationalUnit === "" && department.departmentsThatUserIsDean) {
             // Tìm unit mà currentRole của user đang thuộc về
             let defaultUnit = department.departmentsThatUserIsDean.find(item =>
                 item.deans.includes(this.state.currentRole)
@@ -155,7 +129,7 @@ class FormCreateTaskByProcess extends Component {
                 this.setState(state => {
                     return {
                         ...state,
-                        editingTemplate: {
+                        taskItem: {
                             ...this.state.newTemplate,
                             organizationalUnit: defaultUnit._id
                         }
@@ -171,23 +145,23 @@ class FormCreateTaskByProcess extends Component {
 
     /**Gửi req sửa mẫu công việc này */
     handleSubmit = async (event) => {
-        const { editingTemplate } = this.state;
+        const { taskItem } = this.state;
 
-        this.props.editTaskTemplate(editingTemplate._id, editingTemplate);
+        this.props.editTaskTemplate(taskItem._id, taskItem);
     }
 
     /**
      * Xử lý form lớn tasktemplate
      */
     isTaskTemplateFormValidated = () => {
-        if (!this.state.editingTemplate._id)
+        if (!this.state.taskItem._id)
             return false;
         let result =
-            this.validateTaskTemplateRead(this.state.editingTemplate.readByEmployees, false) &&
-            this.validateTaskTemplateName(this.state.editingTemplate.name, false) &&
-            this.validateTaskTemplateDesc(this.state.editingTemplate.description, false) &&
-            this.validateTaskTemplateFormula(this.state.editingTemplate.formula, false) &&
-            this.validateTaskTemplateUnit(this.state.editingTemplate.organizationalUnit, false);
+            this.validateTaskTemplateRead(this.state.taskItem.readByEmployees, false) &&
+            this.validateTaskTemplateName(this.state.taskItem.name, false) &&
+            this.validateTaskTemplateDesc(this.state.taskItem.description, false) &&
+            this.validateTaskTemplateFormula(this.state.taskItem.formula, false) &&
+            this.validateTaskTemplateUnit(this.state.taskItem.organizationalUnit, false);
         return result;
     }
     handleTaskTemplateName = (event) => {
@@ -198,15 +172,16 @@ class FormCreateTaskByProcess extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateName(value);
 
         if (willUpdateState) {
-            this.state.editingTemplate.name = value;
-            this.state.editingTemplate.errorOnName = msg;
+            this.state.taskItem.name = value;
+            this.state.taskItem.errorOnName = msg;
             this.setState(state => {
                 return {
                     ...state,
                 };
             });
         }
-        this.props.onChangeTemplateData(this.state.editingTemplate);
+        this.props.handleChangeName(value);
+        this.props.onChangeTemplateData(this.state.taskItem);
         return msg == undefined;
     }
 
@@ -218,45 +193,26 @@ class FormCreateTaskByProcess extends Component {
         let msg = TaskTemplateFormValidator.validateTaskTemplateDescription(value);
 
         if (willUpdateState) {
-            this.state.editingTemplate.description = value;
-            this.state.editingTemplate.errorOnDescription = msg;
+            this.state.taskItem.description = value;
+            this.state.taskItem.errorOnDescription = msg;
             this.setState(state => {
                 return {
                     ...state,
                 };
             });
         }
-        this.props.onChangeTemplateData(this.state.editingTemplate);
+        this.props.onChangeTemplateData(this.state.taskItem);
         return msg == undefined;
     }
 
-    handleTaskTemplateFormula = (event) => {
-        let value = event.target.value;
-        this.validateTaskTemplateFormula(value, true);
-    }
-    validateTaskTemplateFormula = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value);
-
-        if (willUpdateState) {
-            this.state.editingTemplate.formula = value;
-            this.state.editingTemplate.errorOnFormula = msg;
-            this.setState(state => {
-                return {
-                    ...state,
-                };
-            });
-        }
-        this.props.onChangeTemplateData(this.state.editingTemplate);
-        return msg == undefined;
-    }
     handleChangeTaskPriority = (event) => {
-        this.state.editingTemplate.priority = event.target.value;
+        this.state.taskItem.priority = event.target.value;
         this.setState(state => {
             return {
                 ...state,
             };
         });
-        this.props.onChangeTemplateData(this.state.editingTemplate);
+        this.props.onChangeTemplateData(this.state.taskItem);
     }
     handleTaskTemplateUnit = (value) => {
         let singleValue = value[0]; // SelectBox một lựa chọn
@@ -280,8 +236,8 @@ class FormCreateTaskByProcess extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    editingTemplate: { // update lại unit, và reset các selection phía sau
-                        ...this.state.editingTemplate,
+                    taskItem: { // update lại unit, và reset các selection phía sau
+                        ...this.state.taskItem,
                         organizationalUnit: value,
                         errorOnUnit: msg,
                         readByEmployees: [],
@@ -293,102 +249,104 @@ class FormCreateTaskByProcess extends Component {
                 };
             });
         }
-        this.props.onChangeTemplateData(this.state.editingTemplate);
-        return msg == undefined;
-    }
-
-    handleTaskTemplateRead = (value) => {
-        this.validateTaskTemplateRead(value, true);
-    }
-    validateTaskTemplateRead = (value, willUpdateState = true) => {
-        let msg = TaskTemplateFormValidator.validateTaskTemplateRead(value);
-
-        if (willUpdateState) {
-            this.state.editingTemplate.readByEmployees = value;
-            this.state.editingTemplate.errorOnRead = msg;
-            this.setState(state => {
-                return {
-                    ...state,
-                };
-            });
-        }
-        this.props.onChangeTemplateData(this.state.editingTemplate);
+        this.props.onChangeTemplateData(this.state.taskItem);
         return msg == undefined;
     }
 
     handleTaskTemplateResponsible = (value) => {
-        this.state.editingTemplate.responsibleEmployees = value;
+        this.state.taskItem.responsibleEmployees = value;
 
         this.setState(state => {
             return {
                 ...state,
             };
         });
-        this.props.onChangeTemplateData(this.state.editingTemplate);
+        this.props.handleChangeResponsible(value);
+        this.props.onChangeTemplateData(this.state.taskItem);
     }
     handleTaskTemplateAccountable = (value) => {
-        this.state.editingTemplate.accountableEmployees = value;
+        this.state.taskItem.accountableEmployees = value;
         this.setState(state => {
             return {
                 ...state,
             };
         });
-        this.props.onChangeTemplateData(this.state.editingTemplate);
+        this.props.handleChangeAccountable(value);
+        this.props.onChangeTemplateData(this.state.taskItem);
     }
     handleTaskTemplateConsult = (value) => {
-        this.state.editingTemplate.consultedEmployees = value;
+        this.state.taskItem.consultedEmployees = value;
         this.setState(state => {
             return {
                 ...state,
             };
         });
-        this.props.onChangeTemplateData(this.state.editingTemplate);
+        this.props.onChangeTemplateData(this.state.taskItem);
     }
     handleTaskTemplateInform = (value) => {
-        this.state.editingTemplate.informedEmployees = value;
+        this.state.taskItem.informedEmployees = value;
 
         this.setState(state => {
             return {
                 ...state,
             };
         });
-        this.props.onChangeTemplateData(this.state.editingTemplate);
+        this.props.onChangeTemplateData(this.state.taskItem);
     }
 
-    // handleChangeTaskStartDate = (value) => {
-    //     this.setState({
-    //         startDate: value,
-    //     })
-    //     // this.props.handleChangeTaskStartDate(value);
-    // }
+    formatDate(date) {
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
 
-    // handleChangeTaskEndDate = (value) => {
-    //     this.setState({
-    //         endDate: value,
-    //     });
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
 
-    //     // this.props.handleChangeTaskEndDate(value)
-    // }
+        return [day, month, year].join('-');
+    }
+    formatMonth(date) {
+        let d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
 
+        if (month.length < 2)
+            month = '0' + month;
+        if (day.length < 2)
+            day = '0' + day;
+
+        return [month, year].join('-');
+    }
 
     handleChangeTaskStartDate = (value) => {
         this.validateTaskStartDate(value, true);
     }
     validateTaskStartDate = (value, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = TaskFormValidator.validateTaskStartDate(value, this.state.editingTemplate.endDate ? this.state.editingTemplate.endDate : "", translate);
+        let msg = TaskFormValidator.validateTaskStartDate(value, this.state.taskItem.endDate ? this.state.taskItem.endDate : "", translate);
 
         if (willUpdateState) {
-            this.state.editingTemplate.startDate = value;
-            this.state.editingTemplate.errorOnStartDate = msg;
+            let splitter = value.split('-');
+            let startDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+            let timer = startDate.getTime() + this.state.taskItem.numberOfDaysTaken * 24 * 60 * 60 * 1000;
+
+            let endDateISO = new Date(timer).toISOString();
+            let endDate = this.formatDate(endDateISO);
+
+            this.state.taskItem.startDate = value;
+            this.state.taskItem.endDate = endDate;
+            this.state.taskItem.errorOnStartDate = msg;
             this.setState(state => {
                 return {
                     ...state,
                 };
             });
-            this.props.onChangeTemplateData(this.state.editingTemplate);
+            this.props.onChangeTemplateData(this.state.taskItem);
         }
-        
+
         return msg === undefined;
     }
 
@@ -397,17 +355,25 @@ class FormCreateTaskByProcess extends Component {
     }
     validateTaskEndDate = (value, willUpdateState = true) => {
         let { translate } = this.props;
-        let msg = TaskFormValidator.validateTaskEndDate(this.state.editingTemplate.startDate ? this.state.editingTemplate.startDate : "", value, translate);
+        let msg = TaskFormValidator.validateTaskEndDate(this.state.taskItem.startDate ? this.state.taskItem.startDate : "", value, translate);
 
         if (willUpdateState) {
-            this.state.editingTemplate.endDate = value;
-            this.state.editingTemplate.errorOnEndDate = msg;
+            let splitter = value.split('-');
+            let endDate = new Date(splitter[2], splitter[1] - 1, splitter[0]);
+            let timer = endDate.getTime() - this.state.taskItem.numberOfDaysTaken * 24 * 60 * 60 * 1000;
+
+            let startDateISO = new Date(timer).toISOString();
+            let startDate = this.formatDate(startDateISO);
+
+            this.state.taskItem.endDate = value;
+            this.state.taskItem.startDate = startDate;
+            this.state.taskItem.errorOnEndDate = msg;
             this.setState(state => {
                 return {
                     ...state,
                 };
             });
-            this.props.onChangeTemplateData(this.state.editingTemplate);
+            this.props.onChangeTemplateData(this.state.taskItem);
         }
         return msg === undefined;
     }
@@ -426,10 +392,10 @@ class FormCreateTaskByProcess extends Component {
         const { isProcess } = this.props;
 
         var units, taskActions, taskInformations, listRole, departmentsThatUserIsDean, listRoles, usercompanys, userdepartments = [];
-        var { editingTemplate, id, showMore } = this.state;
+        var { taskItem, id, showMore } = this.state;
 
-        if (editingTemplate && editingTemplate.taskActions) taskActions = editingTemplate.taskActions;
-        if (editingTemplate && editingTemplate.taskInformations) taskInformations = editingTemplate.taskInformations;
+        if (taskItem && taskItem.taskActions) taskActions = taskItem.taskActions;
+        if (taskItem && taskItem.taskInformations) taskInformations = taskItem.taskInformations;
 
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
@@ -458,11 +424,11 @@ class FormCreateTaskByProcess extends Component {
                 <div className="row">
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                         {/**Đơn vị của mẫu công việc */}
-                        <div className={`form-group ${editingTemplate.errorOnUnit === undefined ? "" : "has-error"}`} >
+                        <div className={`form-group ${taskItem.errorOnUnit === undefined ? "" : "has-error"}`} >
                             <label className="control-label">{translate('task_template.unit')}*:</label>
-                            {departmentsThatUserIsDean !== undefined && editingTemplate.organizationalUnit !== "" &&
+                            {departmentsThatUserIsDean !== undefined && taskItem.organizationalUnit !== "" &&
                                 <SelectBox
-                                    id={`edit-unit-select-box-${editingTemplate._id}`}
+                                    id={`edit-unit-select-box-${taskItem._id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={
@@ -471,12 +437,12 @@ class FormCreateTaskByProcess extends Component {
                                         })
                                     }
                                     onChange={this.handleTaskTemplateUnit}
-                                    value={editingTemplate.organizationalUnit}
+                                    value={taskItem.organizationalUnit}
                                     multiple={false}
 
                                 />
                             }
-                            <ErrorLabel content={this.state.editingTemplate.errorOnUnit} />
+                            <ErrorLabel content={this.state.taskItem.errorOnUnit} />
                         </div>
                     </div>
 
@@ -486,10 +452,10 @@ class FormCreateTaskByProcess extends Component {
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
 
                         {/**Tên mẫu công việc này */}
-                        <div className={`form-group ${this.state.editingTemplate.errorOnName === undefined ? "" : "has-error"}`} >
+                        <div className={`form-group ${this.state.taskItem.errorOnName === undefined ? "" : "has-error"}`} >
                             <label className="control-label">{translate('task_template.tasktemplate_name')}*</label>
-                            <input type="Name" className="form-control" placeholder={translate('task_template.tasktemplate_name')} value={editingTemplate.name} onChange={this.handleTaskTemplateName} />
-                            <ErrorLabel content={this.state.editingTemplate.errorOnName} />
+                            <input type="Name" className="form-control" placeholder={translate('task_template.tasktemplate_name')} value={taskItem.name} onChange={this.handleTaskTemplateName} />
+                            <ErrorLabel content={this.state.taskItem.errorOnName} />
                         </div>
 
                         {/* độ ưu tiên cviec ---- older*/}
@@ -498,17 +464,17 @@ class FormCreateTaskByProcess extends Component {
                     <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
 
                         {/**Mô tả mẫu công việc này */}
-                        <div className={`form-group ${this.state.editingTemplate.errorOnDescription === undefined ? "" : "has-error"}`} >
+                        <div className={`form-group ${this.state.taskItem.errorOnDescription === undefined ? "" : "has-error"}`} >
                             <label className="control-label" htmlFor="inputDescriptionTaskTemplate">{translate('task_template.description')}*</label>
-                            <textarea rows={4} type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder={translate('task_template.description')} value={editingTemplate.description} onChange={this.handleTaskTemplateDesc} />
-                            <ErrorLabel content={this.state.editingTemplate.errorOnDescription} />
+                            <textarea rows={4} type="Description" className="form-control" id="inputDescriptionTaskTemplate" name="description" placeholder={translate('task_template.description')} value={taskItem.description} onChange={this.handleTaskTemplateDesc} />
+                            <ErrorLabel content={this.state.taskItem.errorOnDescription} />
                         </div>
                     </div>
                 </div>
                 {/**Độ ưu tiên mẫu công việc này */}
                 <div className="form-group" >
                     <label className="control-label">{translate('task_template.priority')}</label>
-                    <select className="form-control" value={editingTemplate.priority} onChange={this.handleChangeTaskPriority}>
+                    <select className="form-control" value={taskItem.priority} onChange={this.handleChangeTaskPriority}>
                         <option value={3}>{translate('task_template.high')}</option>
                         <option value={2}>{translate('task_template.medium')}</option>
                         <option value={1}>{translate('task_template.low')}</option>
@@ -516,21 +482,21 @@ class FormCreateTaskByProcess extends Component {
                 </div>
                 {/* Ngay bat dau - ngay ket thuc */}
                 <div className=" row form-group">
-                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${this.state.editingTemplate.errorOnStartDate === undefined ? "" : "has-error"}`}>
+                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${this.state.taskItem.errorOnStartDate === undefined ? "" : "has-error"}`}>
                         <label className="control-label">{translate('task.task_management.start_date')}*</label>
                         <DatePicker
                             id={`datepicker1-${id}`}
                             dateFormat="day-month-year"
-                            value={editingTemplate.startDate}
+                            value={taskItem.startDate}
                             onChange={this.handleChangeTaskStartDate}
                         />
                         {/* <ErrorLabel content={errorOnStartDate} /> */}
                     </div>
-                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${this.state.editingTemplate.errorOnEndDate === undefined ? "" : "has-error"}`}>
+                    <div className={`col-lg-6 col-md-6 col-ms-12 col-xs-12 ${this.state.taskItem.errorOnEndDate === undefined ? "" : "has-error"}`}>
                         <label className="control-label">{translate('task.task_management.end_date')}*</label>
                         <DatePicker
                             id={`datepicker2-${id}`}
-                            value={editingTemplate.endDate}
+                            value={taskItem.endDate}
                             onChange={this.handleChangeTaskEndDate}
                         />
                         {/* <ErrorLabel content={errorOnEndDate} /> */}
@@ -543,14 +509,14 @@ class FormCreateTaskByProcess extends Component {
 
                             {/**Người thực hiện mẫu công việc này */}
                             <label className="control-label" >{translate('task_template.performer')}</label>
-                            {unitMembers && editingTemplate.responsibleEmployees &&
+                            {unitMembers && taskItem.responsibleEmployees &&
                                 <SelectBox
-                                    id={isProcess ? `edit-responsible-select-box-${editingTemplate._id}-${id}` : "edit-responsible-select-box"}
+                                    id={isProcess ? `create-task-responsible-select-box-${taskItem._id}-${id}` : "edit-responsible-select-box"}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={unitMembers}
                                     onChange={this.handleTaskTemplateResponsible}
-                                    value={editingTemplate.responsibleEmployees}
+                                    value={taskItem.responsibleEmployees}
                                     multiple={true}
                                     options={{ placeholder: `${translate('task_template.performer')}` }}
                                 />
@@ -560,14 +526,14 @@ class FormCreateTaskByProcess extends Component {
 
                             {/**Người phê duyệt mẫu công việc này */}
                             <label className="control-label">{translate('task_template.approver')}</label>
-                            {unitMembers && editingTemplate.accountableEmployees &&
+                            {unitMembers && taskItem.accountableEmployees &&
                                 <SelectBox
-                                    id={isProcess ? `edit-accountable-select-box-${editingTemplate._id}-${id}` : "edit-accountable-select-box"}
+                                    id={isProcess ? `create-task-accountable-select-box-${taskItem._id}-${id}` : "edit-accountable-select-box"}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={unitMembers}
                                     onChange={this.handleTaskTemplateAccountable}
-                                    value={editingTemplate.accountableEmployees}
+                                    value={taskItem.accountableEmployees}
                                     multiple={true}
                                     options={{ placeholder: `${translate('task_template.approver')}` }}
                                 />
@@ -579,14 +545,14 @@ class FormCreateTaskByProcess extends Component {
                                 <div className='form-group' >
                                     {/**Người hỗ trọ mẫu công việc này */}
                                     <label className="control-label">{translate('task_template.supporter')}</label>
-                                    {allUnitsMember && editingTemplate.consultedEmployees &&
+                                    {allUnitsMember && taskItem.consultedEmployees &&
                                         <SelectBox
-                                            id={isProcess ? `edit-consulted-select-box-${editingTemplate._id}-${id}` : "edit-consulted-select-box"}
+                                            id={isProcess ? `create-task-consulted-select-box-${taskItem._id}-${id}` : "edit-consulted-select-box"}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={allUnitsMember}
                                             onChange={this.handleTaskTemplateConsult}
-                                            value={editingTemplate.consultedEmployees}
+                                            value={taskItem.consultedEmployees}
                                             multiple={true}
                                             options={{ placeholder: `${translate('task_template.supporter')}` }}
                                         />
@@ -596,15 +562,15 @@ class FormCreateTaskByProcess extends Component {
 
                                     {/**Người quan sát mẫu công việc này */}
                                     <label className="control-label">{translate('task_template.observer')}</label>
-                                    {allUnitsMember && editingTemplate.informedEmployees &&
+                                    {allUnitsMember && taskItem.informedEmployees &&
                                         <SelectBox
-                                            id={isProcess ? `edit-informed-select-box-${editingTemplate._id}-${id}` : "edit-informed-select-box"}
+                                            id={isProcess ? `create-task-informed-select-box-${taskItem._id}-${id}` : "edit-informed-select-box"}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={allUnitsMember}
                                             onChange={this.handleTaskTemplateInform}
                                             multiple={true}
-                                            value={editingTemplate.informedEmployees}
+                                            value={taskItem.informedEmployees}
                                             options={{ placeholder: `${translate('task_template.observer')}` }}
                                         />
                                     }
@@ -616,22 +582,6 @@ class FormCreateTaskByProcess extends Component {
 
                 </div>
 
-                {/* {
-                    isProcess &&
-                    <div>
-                        <a style={{ cursor: "pointer" }} onClick={this.clickShowMore}>
-                            {showMore ?
-                                <span>
-                                    Show less <i className="fa fa-angle-double-up"></i>
-                                </span>
-                                : <span>
-                                    Show more <i className="fa fa-angle-double-down"></i>
-                                </span>
-                            }
-                        </a>
-                        <br />
-                    </div>
-                } */}
             </React.Fragment>
         );
     }
