@@ -226,6 +226,16 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
     oldAsset.residualValue = data.residualValue;
     oldAsset.startDepreciation = data.startDepreciation;
     oldAsset.depreciationType = data.depreciationType;
+    oldAsset.estimatedTotalProduction = data.estimatedTotalProduction;
+    oldAsset.unitsProducedDuringTheYears = data.unitsProducedDuringTheYears && data.unitsProducedDuringTheYears.map((x) => {
+        let time = x.month.split("-");
+        let date = new Date(time[1], time[0], 0)
+
+        return ({
+            month: date,
+            unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
+        })
+    });
     // Thanh lý
     oldAsset.disposalDate = data.disposalDate;
     oldAsset.disposalType = data.disposalType;
@@ -281,7 +291,15 @@ exports.updateDepreciation = async (id, data) => {
         startDepreciation: data.startDepreciation,
         depreciationType: data.depreciationType,
         estimatedTotalProduction: data.estimatedTotalProduction,
-        unitsProducedDuringTheYears: data.unitsProducedDuringTheYears,
+        unitsProducedDuringTheYears: data.unitsProducedDuringTheYears && data.unitsProducedDuringTheYears.map((x) => {
+            let time = x.month.split("-");
+            let date = new Date(time[1], time[0], 0)
+                
+            return ({
+                month: date,
+                unitsProducedDuringTheYear: x.unitsProducedDuringTheYear
+            })
+        }),
     });
 }
 
@@ -389,6 +407,22 @@ exports.updateUsage = async (usageId, data) => {
     })
 }
 
+exports.recallAsset = async ( assetId , data) => {
+    let nowDate= new Date();
+    let updateUsageLogs = await Asset.update({_id: assetId, "usageLogs.usedBy": data.usageId}, {
+        $set: {
+            "usageLogs.$.endDate": nowDate,
+        }
+    })
+    let asset = await Asset.update({_id: assetId}, {
+        $set: {
+            assignedTo: null,
+            status: "Sẵn sàng sử dụng",
+        }
+    });
+
+    return asset;
+}
 /**
  * Xóa thông tin sử dụng
  */

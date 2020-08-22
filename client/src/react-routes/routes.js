@@ -65,7 +65,7 @@ import { TaskManagement } from "../modules/task/task-management/component/taskMa
 import { TaskComponent } from '../modules/task/task-perform/component/taskComponent';
 import { TaskDashboard } from "../modules/task/task-management/component/task-dashboard/taskDashboard";
 import { TaskTemplate } from '../modules/task/task-template/component/taskTemplate';
-import { TaskProcessManagement } from '../modules/task/task-process/component/taskProcessManagement';
+import { TaskProcessManagement } from '../modules/task/task-process/component/task-process-management/taskProcessManagement';
 import { ProcessTemplate } from '../modules/task/task-process/component/processTemplate';
 import { TaskOrganizationUnitDashboard } from '../modules/task/task-management/component/task-organization-dashboard/taskOrganizationUnitDashboard';
 

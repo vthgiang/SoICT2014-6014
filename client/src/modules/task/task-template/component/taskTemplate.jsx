@@ -213,7 +213,7 @@ class TaskTemplate extends Component {
                 let x = data[k];
                 let length = 0;
                 let actionName = [], actionDescription = [], mandatory = [] ;
-                if (x.taskActions.length !==0 ) {
+                if (x.taskActions.length !== 0 ) {
                     if (x.taskActions.length > length){
                         length = x.taskActions.length;
                     }
@@ -237,9 +237,9 @@ class TaskTemplate extends Component {
                         infomationDescription[i] = x.taskInformations[i].description;
                         type[i] = x.taskInformations[i].type;
                         if (x.taskInformations[i].filledByAccountableEmployeesOnly) {
-                            filledByAccountableEmployeesOnly[i] = "true";
+                            filledByAccountableEmployeesOnly[i] = "Đúng";
                         } else {
-                            filledByAccountableEmployeesOnly[i] = "false";
+                            filledByAccountableEmployeesOnly[i] = "";
                         }
                     }
                 }

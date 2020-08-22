@@ -54,12 +54,12 @@ const COMPONENTS = [
         ]
     }, {
         name: 'create-task-process-button',
-        description: 'Button thêm mới quy trình công việc',
+        description: 'Button thêm mới mẫu quy trình công việc',
         roles: [
             ROOT_ROLES.DEAN.name,
         ],
         links: [
-            '/task-management-process'
+            '/task-process-template'
         ]
     }
 ];
@@ -454,7 +454,7 @@ const LINKS = [
             ROOT_ROLES.VICE_DEAN.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-        components: getComponentsInLink('/task-management-process')
+        components: getComponentsInLink('/task-process-template')
 
     },
     {

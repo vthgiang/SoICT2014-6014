@@ -197,22 +197,42 @@ exports.createUsage = async (req, res) => {
  * Chỉnh sửa thông tin sử dụng tài sản
  */
 exports.updateUsage = async (req, res) => {
+    if(req.query.recallAsset){
+        recallAsset(req, res)
+    } else {
+        try {
+            let data = await AssetService.updateUsage(req.params.id, req.body);
+            res.status(200).json({
+                success: true,
+                messages: ["edit_usage_success"],
+                content: data
+            });
+        } catch (error) {
+            res.status(400).json({
+                success: false,
+                messages: ["edit_usage_false"],
+                content: { error: error }
+            });
+        }
+    }
+}
+
+recallAsset = async (req, res) => {
     try {
-        let data = await AssetService.updateUsage(req.params.id, req.body);
+        let data = await AssetService.recallAsset(req.params.id, req.body);
         res.status(200).json({
             success: true,
-            messages: ["edit_usage_success"],
+            messages: ["recall_asset_success"],
             content: data
         });
     } catch (error) {
         res.status(400).json({
             success: false,
-            messages: ["edit_usage_false"],
+            messages: ["recall_asset_false"],
             content: { error: error }
         });
     }
 }
-
 /**
  * Xóa thông tin sử dụng tài sản
  */

@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { Task, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User, UserRole } = require('../../../models/index').schema;
+const { Task, TaskProcess, TaskTemplate, TaskAction, TaskTemplateInformation, Role, OrganizationalUnit, User, UserRole } = require('../../../models/index').schema;
 
 const moment = require("moment");
 const nodemailer = require("nodemailer");
@@ -20,6 +20,7 @@ exports.getAllTasks = async () => {
  * @param {*} data 
  */
 exports.getTaskEvaluations = async (data) => {
+    console.log('data', data)
     // Lấy keySearch tu client gui trong body
     let organizationalUnit = data.organizationalUnit;
     let idTemplate = data.taskTemplate;
@@ -140,7 +141,7 @@ exports.getTaskEvaluations = async (data) => {
         configurations[index] = {
             filter: value.filter,
             newName: value.newName,
-            charType: value.charType,
+            chartType: value.chartType,
             coefficient: value.coefficient,
             showInReport: value.showInReport,
             aggregationType: value.aggregationType,
@@ -149,8 +150,8 @@ exports.getTaskEvaluations = async (data) => {
     // Add thêm các trường điều kiện lọc vào result
     let newResult = result.map((item) => {
 
-        let taskInformations = item.taskInformations;
 
+        let taskInformations = item.taskInformations;
         // Gộp trường taskInfomation của task vào array configurations để add điều kiện lọc vào taskInfomation
         let taskMerge = taskInformations.map((item, index) => Object.assign({}, item, configurations[index]))
 
@@ -198,6 +199,26 @@ exports.getTaskById = async (id, userId) => {
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "documents.creator", model: User, select: 'name email avatar' },
+        {
+            path: "process", model: TaskProcess, populate: {
+                path: "tasks", model: Task, populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit", model: OrganizationalUnit },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                    { path: "evaluations.results.kpis" },
+                    { path: "taskActions.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+                    { path: "taskComments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "documents.creator", model: User, select: 'name email avatar' },
+                    { path: "process", model: TaskProcess },
+                ]
+            }
+        },
     ])
     if (!task) {
         return {
