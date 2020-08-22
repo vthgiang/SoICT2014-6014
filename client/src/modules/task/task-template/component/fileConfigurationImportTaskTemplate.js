@@ -128,29 +128,71 @@ export const templateImportTaskTemplate = {
                         {
                             name:"Hoạt động 1",
                             description: "Đây là hoạt động 1",
-                            mandatory: "Bắt buộc",
+                            mandatory: "true",
                         }, {
                             name:"Hoạt động 2",
                             description: "Đây là hoạt động 2",
-                            mandatory: "",
+                            mandatory: "false",
                         }
                     ],
                     taskInformations: [
                         {
                             name: "Thông tin 1",
                             description: "Thông tin dữ liệu",
-                            type: "Văn bản",
-                            filledByAccountableEmployeesOnly: "Đúng",
+                            type: "Text",
+                            filledByAccountableEmployeesOnly: "true",
                         }, {
                             name: "Thông tin 2",
                             description: "Thông tin số",
-                            type: "Số",
-                            filledByAccountableEmployeesOnly: "",
+                            type: "Number",
+                            filledByAccountableEmployeesOnly: "false",
                         }, {
                             name: "Thông tin 3",
                             description: "Thông tin ngày tháng",
-                            type: "Ngày tháng",
-                            filledByAccountableEmployeesOnly: "Đúng",
+                            type: "Date",
+                            filledByAccountableEmployeesOnly: "true",
+                        }
+                    ],
+                    
+                },
+                {
+                    name: "Mẫu 1",
+                    description: "Mẫu công việc 1",
+                    organizationalUnit: "Phòng kinh doanh",
+                    readByEmployees: ["Trưởng phòng kinh doanh", "Nhân viên phòng kinh doanh"],
+                    priority: "Cao",
+                    responsibleEmployees: ["pdp.vnist@gmail.com"],
+                    accountableEmployees: ["nvd.vnist@gmail.com"],
+                    consultedEmployees: ["nvd.vnist@gmail.com"],
+                    informedEmployees: ["nvd.vnist@gmail.com"],
+                    formula: 80,
+                    taskActions: [
+                        {
+                            name:"Hoạt động 1",
+                            description: "Đây là hoạt động 1",
+                            mandatory: "true",
+                        }, {
+                            name:"Hoạt động 2",
+                            description: "Đây là hoạt động 2",
+                            mandatory: "false",
+                        }
+                    ],
+                    taskInformations: [
+                        {
+                            name: "Thông tin 1",
+                            description: "Thông tin dữ liệu",
+                            type: "Text",
+                            filledByAccountableEmployeesOnly: "true",
+                        }, {
+                            name: "Thông tin 2",
+                            description: "Thông tin số",
+                            type: "Number",
+                            filledByAccountableEmployeesOnly: "false",
+                        }, {
+                            name: "Thông tin 3",
+                            description: "Thông tin ngày tháng",
+                            type: "Date",
+                            filledByAccountableEmployeesOnly: "true",
                         }
                     ],
                     

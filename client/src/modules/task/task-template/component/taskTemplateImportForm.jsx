@@ -187,9 +187,9 @@ class TaskTemplateImportForm extends Component {
                                 actionName[i] = x.taskActions[i].name;
                                 actionDescription[i] = x.taskActions[i].description;
                                 if (x.taskActions[i].mandatory) {
-                                    mandatory[i] = "Bắt buộc";
+                                    mandatory[i] = "true";
                                 } else {
-                                    mandatory[i] = "Không bắt buộc";
+                                    mandatory[i] = "false";
                                 }
                             }
                         }
@@ -202,11 +202,12 @@ class TaskTemplateImportForm extends Component {
                                 infomationName[i] = x.taskInformations[i].name;
                                 infomationDescription[i] = x.taskInformations[i].description;
                                 type[i] = x.taskInformations[i].type;
-                                if (x.taskInformations[i].filledByAccountableEmployeesOnly) {
-                                    filledByAccountableEmployeesOnly[i] = "Đúng";
-                                } else {
-                                    filledByAccountableEmployeesOnly[i] = "";
-                                }
+                                filledByAccountableEmployeesOnly[i] = x.taskInformations[i].filledByAccountableEmployeesOnly;
+                                // if (x.taskInformations[i].filledByAccountableEmployeesOnly) {
+                                //     filledByAccountableEmployeesOnly[i] = "true";
+                                // } else {
+                                //     filledByAccountableEmployeesOnly[i] = "false";
+                                // }
                             }
                         }
                         let numberOfUse = "Chưa sử dụng";
