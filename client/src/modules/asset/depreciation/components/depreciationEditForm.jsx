@@ -12,7 +12,7 @@ import { DepreciationActions } from '../redux/actions';
 class DepreciationEditForm extends Component {
     constructor(props) {
         super(props);
-        this.state = { };
+        this.state = {};
     }
 
     /**
@@ -112,7 +112,7 @@ class DepreciationEditForm extends Component {
     }
 
     /**
-     * Bắt sự kiện thay đổi ản lượng theo công suất thiết kế (trong 1 năm)
+     * Bắt sự kiện thay đổi sản lượng theo công suất thiết kế (trong 1 năm)
      */
     handleEstimatedTotalProductionChange = (e) => {
         const { value } = e.target;
@@ -132,7 +132,7 @@ class DepreciationEditForm extends Component {
         }
         return msg === undefined;
     }
-    
+
     /**
      * Bắt sự kiện thay đổi phương pháp khấu hao
      */
@@ -170,8 +170,26 @@ class DepreciationEditForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
+        let unitProductionValidate = true;
+
+        if (this.state.depreciationType === "Sản lượng") {
+            let { unitsProducedDuringTheYears, estimatedTotalProduction } = this.state;
+            let check = true;
+
+            if (unitsProducedDuringTheYears && unitsProducedDuringTheYears.length !== 0) {
+                for (let n in unitsProducedDuringTheYears) {
+                    check = this.validateYear(unitsProducedDuringTheYears[n].month, n, false) && this.validateValue(unitsProducedDuringTheYears[n].unitsProducedDuringTheYear, n, false);
+                    if (!check) {
+                        break;
+                    }
+                }
+            }
+
+            unitProductionValidate = check && this.validateEstimatedTotalProduction(estimatedTotalProduction, false);
+        }
+
         let result = this.validateStartDepreciation(this.state.startDepreciation, false) &&
-            this.validatorInput(this.state.depreciationType);
+            this.validatorInput(this.state.depreciationType) && unitProductionValidate;
 
         return result;
     }
@@ -230,7 +248,7 @@ class DepreciationEditForm extends Component {
             msg = "Tháng sản lượng sản phẩm không được trước ngày bắt đầu tính khấu hao";
         } else if (date.getTime() > new Date(endDepreciation).getTime()) {
             msg = "Tháng sản lượng sản phẩm không được sau ngày kết thúc tính khấu hao";
-        } 
+        }
 
         if (willUpdateState) {
             var { unitsProducedDuringTheYears } = this.state;
@@ -238,12 +256,12 @@ class DepreciationEditForm extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnYear: msg,
+                    errorOnMonth: msg,
                     unitsProducedDuringTheYears: unitsProducedDuringTheYears
                 }
             });
         }
-        
+
         return msg === undefined;
     }
 
@@ -287,7 +305,7 @@ class DepreciationEditForm extends Component {
         } else {
             this.setState({
                 errorOnValue: undefined,
-                errorOnYear: undefined
+                errorOnMonth: undefined
             })
         }
     };
@@ -343,7 +361,7 @@ class DepreciationEditForm extends Component {
         const { translate, assetsManager } = this.props;
         const { asset,
             cost, residualValue, usefulLife, startDepreciation, depreciationType, endDepreciation, annualDepreciationValue,
-            monthlyDepreciationValue, errorOnCost, errorOnStartDepreciation, errorOnDepreciationType, errorOnUsefulLife, errorOnYear, errorOnValue, unitsProducedDuringTheYears, errorOnEstimatedTotalProduction, estimatedTotalProduction
+            monthlyDepreciationValue, errorOnCost, errorOnStartDepreciation, errorOnDepreciationType, errorOnUsefulLife, errorOnMonth, errorOnValue, unitsProducedDuringTheYears, errorOnEstimatedTotalProduction, estimatedTotalProduction
         } = this.state;
 
         var assetlist = assetsManager.listAssets;
@@ -449,7 +467,7 @@ class DepreciationEditForm extends Component {
                                 <div className="col-md-12">
                                     <label>Sản lượng sản phẩm trong các tháng:<a title='Số lượng sản phẩm trong các năm'><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }}
                                         onClick={this.handleAddUnitsProduced} /></a></label>
-                                    <div className={`form-group ${(!errorOnYear && !errorOnValue) ? "" : "has-error"}`}>
+                                    <div className={`form-group ${(!errorOnMonth && !errorOnValue) ? "" : "has-error"}`}>
 
                                         {/* Bảng thông tin chi tiết */}
                                         <table className="table table-bordered">
@@ -484,7 +502,7 @@ class DepreciationEditForm extends Component {
                                                     })}
                                             </tbody>
                                         </table>
-                                        <ErrorLabel content={errorOnYear} />
+                                        <ErrorLabel content={errorOnMonth} />
                                         <ErrorLabel content={errorOnValue} />
                                     </div>
                                 </div>

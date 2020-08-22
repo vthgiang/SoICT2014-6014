@@ -431,7 +431,7 @@ function validateDisposalDescription(value, translate) {
 // Kiểm tra sản lượng sản phẩm trong 1 năm
 function validateUnitsProducedDuringTheYear(value, translate) {
     let msg = undefined;
-    if (value.toString().trim() === "") {
+    if (!value) {
         msg = "Sản lượng sản phẩm không được để trống";
     } else if (value < 0) {
         msg = "Sản lượng sản phẩm không được nhỏ hơn 0";
@@ -443,7 +443,7 @@ function validateUnitsProducedDuringTheYear(value, translate) {
 // Kiểm tra sản lượng ước tính sản phẩm trong 1 năm
 function validateEstimatedTotalProduction(value, translate) {
     let msg = undefined;
-    if (value.trim() === "") {
+    if (!value) {
         msg = "Sản lượng ước tính sản phẩm không được để trống";
     } else if (value < 0) {
         msg = "Sản lượng ước tính sản phẩm không được nhỏ hơn 0";

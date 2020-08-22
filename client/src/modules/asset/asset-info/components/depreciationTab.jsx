@@ -97,6 +97,7 @@ class DepreciationTab extends Component {
                 t = (1 / usefulYear) * 2.5;
             }
 
+            // Tính khấu hao đến năm hiện tại
             for (let i = 1; i <= usedTime / 12; i++) {
                 if (!lastYears) {
                     if (remainingValue * t > (remainingValue / (usefulYear - i + 1))) {
@@ -110,6 +111,7 @@ class DepreciationTab extends Component {
                 remainingValue = remainingValue - annualDepreciation;
             }
 
+            // Tính khấu hao đến tháng hiện tại
             if (usedTime % 12 !== 0) {
                 if (!lastYears) {
                     if (remainingValue * t > (remainingValue / (usefulYear - Math.floor(usedTime / 12)))) {
@@ -134,7 +136,7 @@ class DepreciationTab extends Component {
             }
 
             remainingValue = cost - accumulatedDepreciation;
-            annualDepreciation = accumulatedDepreciation * 12 / monthTotal;
+            annualDepreciation = monthTotal ? accumulatedDepreciation * 12 / monthTotal : 0;
         }
 
         return [parseInt(annualDepreciation), parseInt(annualDepreciation / 12), parseInt(remainingValue)];

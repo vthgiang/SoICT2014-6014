@@ -271,7 +271,7 @@ class DepreciationTab extends Component {
             this.setState(state => {
                 return {
                     ...state,
-                    errorOnYear: msg,
+                    errorOnMonth: msg,
                     unitsProducedDuringTheYears: unitsProducedDuringTheYears
                 }
             });
@@ -324,7 +324,7 @@ class DepreciationTab extends Component {
         } else {
             this.setState({
                 errorOnValue: undefined,
-                errorOnYear: undefined
+                errorOnMonth: undefined
             })
         }
     };
@@ -335,7 +335,7 @@ class DepreciationTab extends Component {
         
         const {
             cost, residualValue, usefulLife, startDepreciation, depreciationType, errorOnCost, errorOnStartDepreciation,
-            errorOnUsefulLife, errorOnDepreciationType, errorOnYear, errorOnValue, unitsProducedDuringTheYears, errorOnEstimatedTotalProduction, estimatedTotalProduction
+            errorOnUsefulLife, errorOnDepreciationType, errorOnMonth, errorOnValue, unitsProducedDuringTheYears, errorOnEstimatedTotalProduction, estimatedTotalProduction
         } = this.state;
 
         return (
@@ -415,7 +415,7 @@ class DepreciationTab extends Component {
                             <div className="col-md-12">
                                 <label>Sản lượng sản phẩm trong các tháng:<a title='Số lượng sản phẩm trong các năm'><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }}
                                     onClick={this.handleAddUnitsProduced} /></a></label>
-                                <div className={`form-group ${(!errorOnYear && !errorOnValue) ? "" : "has-error"}`}>
+                                <div className={`form-group ${(!errorOnMonth && !errorOnValue) ? "" : "has-error"}`}>
 
                                     {/* Bảng thông tin chi tiết */}
                                     <table className="table table-bordered">
@@ -450,7 +450,7 @@ class DepreciationTab extends Component {
                                                 })}
                                         </tbody>
                                     </table>
-                                    <ErrorLabel content={errorOnYear} />
+                                    <ErrorLabel content={errorOnMonth} />
                                     <ErrorLabel content={errorOnValue} />
                                 </div>
                             </div>

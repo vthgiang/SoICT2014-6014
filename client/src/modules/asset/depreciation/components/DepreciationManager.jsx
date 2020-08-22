@@ -253,7 +253,7 @@ class DepreciationManager extends Component {
      * @param {*} startDepreciation Thời gian bắt đầu trích khấu hao
      */
     calculateDepreciation = (depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation) => {
-        let annualDepreciation, monthlyDepreciation, remainingValue = cost;
+        let annualDepreciation = 0, monthlyDepreciation = 0, remainingValue = cost;
 
         if (depreciationType === "Đường thẳng") { // Phương pháp khấu hao theo đường thẳng
             annualDepreciation = ((12 * cost) / usefulLife);
@@ -274,6 +274,7 @@ class DepreciationManager extends Component {
                 t = (1 / usefulYear) * 2.5;
             }
 
+            // Tính khấu hao đến năm hiện tại
             for (let i = 1; i <= usedTime / 12; i++) {
                 if (!lastYears) {
                     if (remainingValue * t > (remainingValue / (usefulYear - i + 1))) {
@@ -287,6 +288,7 @@ class DepreciationManager extends Component {
                 remainingValue = remainingValue - annualDepreciation;
             }
 
+            // Tính khấu hao đến tháng hiện tại
             if (usedTime % 12 !== 0) {
                 if (!lastYears) {
                     if (remainingValue * t > (remainingValue / (usefulYear - Math.floor(usedTime / 12)))) {
@@ -311,7 +313,7 @@ class DepreciationManager extends Component {
             }
 
             remainingValue = cost - accumulatedDepreciation;
-            annualDepreciation = accumulatedDepreciation * 12 / monthTotal;
+            annualDepreciation = monthTotal ? accumulatedDepreciation * 12 / monthTotal : 0;
         }
 
         return [parseInt(annualDepreciation), parseInt(annualDepreciation / 12), parseInt(remainingValue)];
@@ -487,6 +489,8 @@ class DepreciationManager extends Component {
                         residualValue={currentRowView.residualValue}
                         startDepreciation={currentRowView.startDepreciation}
                         usefulLife={currentRowView.usefulLife}
+                        estimatedTotalProduction={currentRowView.estimatedTotalProduction}
+                        unitsProducedDuringTheYears={currentRowView.unitsProducedDuringTheYears}
                         depreciationType={currentRowView.depreciationType}
 
                         maintainanceLogs={currentRowView.maintainanceLogs}
