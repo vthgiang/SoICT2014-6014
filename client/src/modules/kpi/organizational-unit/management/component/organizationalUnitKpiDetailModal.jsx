@@ -118,9 +118,9 @@ class ModalDetailKPI extends Component {
                                 { key: "unitKpiName", value: "Tên KPI đơn vị" },
                                 { key: "unitKpiCriteria", value: "Tiêu chí đánh giá" },                                
                                 { key: "unitKpiWeight", value: "Trọng số (/100)" },
-                                { key: "automaticPoint", value: "Điểm tự động" },
-                                { key: "employeePoint", value: "Điểm tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm được phê duyệt" }
+                                { key: "automaticPoint", value: "Điểm KPI tự động" },
+                                { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm KPI được phê duyệt" }
  
                             ],
                             data:unitKpiData
@@ -215,9 +215,9 @@ class ModalDetailKPI extends Component {
                                 { key: "unitKpiName", value: "Tên KPI đơn vị" },
                                 { key: "unitKpiCriteria", value: "Tiêu chí đánh giá" },                                
                                 { key: "unitKpiWeight", value: "Trọng số (/100)" },
-                                { key: "automaticPoint", value: "Điểm tự động" },
-                                { key: "employeePoint", value: "Điểm tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm được phê duyệt" }
+                                { key: "automaticPoint", value: "Điểm KPI tự động" },
+                                { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm KPI được phê duyệt" }
  
                             ],
                             data:item.unitKpiData

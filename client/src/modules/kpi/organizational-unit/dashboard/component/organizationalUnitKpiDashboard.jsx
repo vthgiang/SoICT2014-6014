@@ -152,6 +152,7 @@ class OrganizationalUnitKpiDashboard extends Component {
         }
 
         if (childrenOrganizationalUnit) {
+            console.log("\n\n\n\n\n\n\n\n",childrenOrganizationalUnit)
             let temporaryChild;
 
             childOrganizationalUnit = [{

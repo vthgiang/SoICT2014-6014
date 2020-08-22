@@ -328,9 +328,9 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
                             columns: [
                                 { key: "unitName", value: "Tên đơn vị"},
                                 { key: "date", value: "Thời gian" },
-                                { key: "automaticPoint", value: "Điểm tự động" },
-                                { key: "employeePoint", value: "Điểm tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm được phê duyệt" }
+                                { key: "automaticPoint", value: "Điểm KPI tự động" },
+                                { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm KPI được phê duyệt" }
                             ],
                             data: x
                         }
