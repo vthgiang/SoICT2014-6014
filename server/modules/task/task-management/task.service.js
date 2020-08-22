@@ -20,6 +20,7 @@ exports.getAllTasks = async () => {
  * @param {*} data 
  */
 exports.getTaskEvaluations = async (data) => {
+    console.log('data', data)
     // Lấy keySearch tu client gui trong body
     let organizationalUnit = data.organizationalUnit;
     let idTemplate = data.taskTemplate;
@@ -140,7 +141,7 @@ exports.getTaskEvaluations = async (data) => {
         configurations[index] = {
             filter: value.filter,
             newName: value.newName,
-            charType: value.charType,
+            chartType: value.chartType,
             coefficient: value.coefficient,
             showInReport: value.showInReport,
             aggregationType: value.aggregationType,
@@ -149,8 +150,8 @@ exports.getTaskEvaluations = async (data) => {
     // Add thêm các trường điều kiện lọc vào result
     let newResult = result.map((item) => {
 
-        let taskInformations = item.taskInformations;
 
+        let taskInformations = item.taskInformations;
         // Gộp trường taskInfomation của task vào array configurations để add điều kiện lọc vào taskInfomation
         let taskMerge = taskInformations.map((item, index) => Object.assign({}, item, configurations[index]))
 

@@ -11,6 +11,7 @@ class TaskTemplateImportForm extends Component {
         super(props);
         this.state = {
             configData: configTaskTempalte,
+            // templateImportTaskTemplate: templateImportTaskTemplate,
             checkFileImport: true,
             rowError: [],
             importData: [],
@@ -59,8 +60,8 @@ class TaskTemplateImportForm extends Component {
                     "informedEmployees": informedEmployees,
                     "formula": x.formula,
                     "taskActions": [x.taskActions],
-                    "taskInformations": [x.taskInformations],
-                    "filledByAccountableEmployeesOnly": x.filledByAccountableEmployeesOnly }];
+                    "taskInformations": [x.taskInformations], 
+                }];
                 valueShow = [...valueShow, {
                     "name": x.name, 
                     "description": x.description,
@@ -74,7 +75,7 @@ class TaskTemplateImportForm extends Component {
                     "formula": x.formula,
                     "taskActions": [x.taskActions],
                     "taskInformations": [x.taskInformations],
-                    "filledByAccountableEmployeesOnly": x.filledByAccountableEmployeesOnly }];
+                }];
             } else {
                 if (k >= 0) {
                     if (x.taskActions) {
@@ -167,9 +168,144 @@ class TaskTemplateImportForm extends Component {
         this.props.downloadFile(path, fileName)
     }
 
+    convertDataExport = (dataExport) => {
+        for (let va = 0; va < dataExport.dataSheets.length; va++ ) {
+            for (let val = 0; val < dataExport.dataSheets[va].tables.length; val++) {
+                let datas = [];
+                let data = dataExport.dataSheets[va].tables[val].data;
+                if (Array.isArray(data[0].readByEmployees)) {
+                    for (let k = 0; k < data.length; k++) {
+                        let x = data[k];
+                        let length = 0;
+                        let actionName = [], actionDescription = [], mandatory = [] ;
+                        
+                        if (x.taskActions && x.taskActions.length > 0 ) {
+                            if (x.taskActions.length > length){
+                                length = x.taskActions.length;
+                            }
+                            for (let i = 0; i < x.taskActions.length; i++) {
+                                actionName[i] = x.taskActions[i].name;
+                                actionDescription[i] = x.taskActions[i].description;
+                                if (x.taskActions[i].mandatory) {
+                                    mandatory[i] = "Bắt buộc";
+                                } else {
+                                    mandatory[i] = "Không bắt buộc";
+                                }
+                            }
+                        }
+                        let infomationName = [], type = [], infomationDescription = [], filledByAccountableEmployeesOnly = [];
+                        if (x.taskInformations && x.taskInformations.length !== 0) {
+                            if (x.taskInformations.length > length) {
+                                length = x.taskInformations.length;
+                            }
+                            for (let i = 0; i < x.taskInformations.length; i++){
+                                infomationName[i] = x.taskInformations[i].name;
+                                infomationDescription[i] = x.taskInformations[i].description;
+                                type[i] = x.taskInformations[i].type;
+                                if (x.taskInformations[i].filledByAccountableEmployeesOnly) {
+                                    filledByAccountableEmployeesOnly[i] = "Đúng";
+                                } else {
+                                    filledByAccountableEmployeesOnly[i] = "";
+                                }
+                            }
+                        }
+                        let numberOfUse = "Chưa sử dụng";
+                        if (x.numberOfUse !== 0) {
+                            numberOfUse = x.numberOfUse;
+                        }
+                        let readByEmployees, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
+                        if (Array.isArray(x.readByEmployees)) {
+                            if (x.readByEmployees.length > length) {
+                                length = x.readByEmployees.length;
+                                console.log(length);
+                            }
+                            readByEmployees = x.readByEmployees;
+                        } else {
+                            length = 0;
+                            readByEmployees = [x.readByEmployees];
+                            console.log(readByEmployees);
+                        }
+                        if ( Array.isArray(x.responsibleEmployees)) {
+                            responsibleEmployees = x.responsibleEmployees.join(', ');
+                        } else {
+                            responsibleEmployees = x.responsibleEmployees;
+                        }
+                        if (Array.isArray(x.accountableEmployees)) {
+                            accountableEmployees = x.accountableEmployees.join(', ');
+                        } else {
+                            accountableEmployees = x.accountableEmployees;
+                        }
+                        if (Array.isArray(x.consultedEmployees)) {
+                            consultedEmployees = x.consultedEmployees.join(', ');
+                        } else {
+                            consultedEmployees = x.consultedEmployees;
+                        }
+                        if (Array.isArray(x.informedEmployees)) {
+                            informedEmployees = x.informedEmployees.join(', ');
+                        } else {
+                            informedEmployees = x.informedEmployees;
+                        }
+                        let out = { STT: k + 1,
+                            name: x.name,
+                            description: x.description,
+                            numberOfUse: numberOfUse,
+                            readByEmployees: readByEmployees[0],
+                            responsibleEmployees: responsibleEmployees,
+                            accountableEmployees: accountableEmployees,
+                            consultedEmployees: consultedEmployees,
+                            informedEmployees: informedEmployees,
+                            organizationalUnits: x.organizationalUnit,
+                            priority: x.priority,
+                            formula: x.formula,
+                            actionName: actionName[0],
+                            actionDescription: actionDescription[0],
+                            mandatory: mandatory[0],
+                            infomationName: infomationName[0],
+                            infomationDescription: infomationDescription[0],
+                            type: type[0],
+                            filledByAccountableEmployeesOnly: filledByAccountableEmployeesOnly[0] }
+                        datas = [...datas, out];
+                        console.log(out);
+                        if (length > 1) {
+                            console.log(11111111111111111111111);
+                            for ( let i = 1; i < length; i++){
+                                out = {
+                                    STT: "",
+                                    name: "",
+                                    description: "",
+                                    numberOfUse: "",
+                                    creator: "",
+                                    readByEmployees: readByEmployees[i],
+                                    responsibleEmployees: "",
+                                    accountableEmployees: "",
+                                    consultedEmployees: "",
+                                    informedEmployees: "",
+                                    organizationalUnits: "",
+                                    priority: "",
+                                    formula: "",
+                                    actionName: actionName[i],
+                                    actionDescription: actionDescription[i],
+                                    mandatory: mandatory[i],
+                                    infomationName: infomationName[i],
+                                    infomationDescription: infomationDescription[i],
+                                    type: type[i],
+                                    filledByAccountableEmployeesOnly: filledByAccountableEmployeesOnly[i]
+                                };
+                                datas = [...datas, out];
+                            }
+                        }
+                    }
+                    dataExport.dataSheets[va].tables[val].data = datas;
+                }
+            }
+        }
+    return dataExport;
+    }
     render() {
         const { translate } = this.props;
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
+        let templateImportTaskTemplate2 = this.convertDataExport(templateImportTaskTemplate);
+        console.log(templateImportTaskTemplate2);
         return (
             <React.Fragment>
                 <DialogModal 
@@ -197,7 +333,7 @@ class TaskTemplateImportForm extends Component {
                             </div>
                             <div className="form-group col-md-4 col-xs-12">
                                 <label></label>
-                                <ExportExcel id="download_template_task_template" type='link' exportData={templateImportTaskTemplate}
+                                <ExportExcel id="download_template_task_template" type='link' exportData={templateImportTaskTemplate2}
                                     buttonName='Download file import mẫu' />
                             </div>
                             <div className="form-group col-md-12 col-xs-12">
