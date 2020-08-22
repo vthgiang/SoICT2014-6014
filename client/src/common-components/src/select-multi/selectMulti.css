@@ -1,6 +1,6 @@
 .form-inline .multiselect-container li a label.checkbox input[type=checkbox],
 .form-inline .multiselect-container li a label.radio input[type=radio] {
-	margin-right: 5px;
+	margin-right: 3px;
 }
 
 div.selectmulti div.btn-group {

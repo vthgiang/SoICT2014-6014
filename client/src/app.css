@@ -334,12 +334,12 @@ button:focus {
         --disabled-inner: #E1E6F9;
         -webkit-appearance: none;
         -moz-appearance: none;
-        height: 21px;
+        height: 18px;
         outline: none;
         display: inline-block;
         vertical-align: top;
         position: relative;
-        margin: 0;
+        margin: 1px 0 0 0;
         cursor: pointer;
         border: 1px solid var(--bc, var(--border));
         background: var(--b, var(--background));
@@ -391,7 +391,7 @@ button:focus {
     }
     input[type='checkbox']:not(.switch),
     input[type='radio']:not(.switch) {
-        width: 21px;
+        width: 18px;
     }
     input[type='checkbox']:not(.switch):after,
     input[type='radio']:not(.switch):after {
@@ -411,7 +411,7 @@ button:focus {
         margin-left: 4px;
     }
     input[type='checkbox']:not(.switch) {
-        border-radius: 5px;
+        border-radius: 4px;
     }
     input[type='checkbox']:not(.switch):after {
         width: 5px;
@@ -419,8 +419,8 @@ button:focus {
         border: 2px solid var(--active-inner);
         border-top: 0;
         border-left: 0;
-        left: 7px;
-        top: 4px;
+        left: 6px;
+        top: 3px;
         -webkit-transform: rotate(var(--r, 20deg));
         transform: rotate(var(--r, 20deg));
     }
@@ -452,8 +452,8 @@ button:focus {
         border-radius: 50%;
     }
     input[type='radio']:after {
-        width: 19px;
-        height: 19px;
+        width: 16px;
+        height: 16px;
         border-radius: 50%;
         background: var(--active-inner);
         opacity: 0;
