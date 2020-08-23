@@ -15,7 +15,7 @@ class UsageCreateForm extends Component {
         super(props);
         this.state = {
             asset: "",
-            usedBy: "",
+            usedByUser: "",
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(Date.now()),
             description: "",
@@ -56,10 +56,10 @@ class UsageCreateForm extends Component {
     /**
      * Bắt sự kiện thay đổi người sử dụng
      */
-    handleUsedByChange = (value) => {
+    handleUsedByUserChange = (value) => {
         this.setState({
             ...this.state,
-            usedBy: value[0]
+            usedByUser: value[0]
         });
     }
 
@@ -136,11 +136,11 @@ class UsageCreateForm extends Component {
 
         if (this.isFormValidated()) {
             let dataToSubit = {
-                usedBy: !this.state.usedBy ? this.props.user.list[0].id : this.state.usedBy,
+                usedByUser: !this.state.usedByUser ? this.props.user.list[0].id : this.state.usedByUser,
                 startDate: startDate,
                 endDate: endDate,
                 description: this.state.description,
-                assignedTo: !this.state.usedBy ? this.props.user.list[0].id : this.state.usedBy,
+                assignedToUser: !this.state.usedByUser ? this.props.user.list[0].id : this.state.usedByUser,
                 handoverFromDate: startDate,
                 handoverToDate: endDate,
                 status: "Đang sử dụng",
@@ -166,7 +166,7 @@ class UsageCreateForm extends Component {
         const { id } = this.props;
         const { translate, user, assetsManager } = this.props;
         const {
-            asset, usedBy, startDate, endDate, description, errorOnStartDate, errorOnDescription
+            asset, usedByUser, startDate, endDate, description, errorOnStartDate, errorOnDescription
         } = this.state;
 
         var userlist = user.list;
@@ -209,16 +209,16 @@ class UsageCreateForm extends Component {
                             <div className={`form-group`}>
                                 <label>{translate('asset.general_information.user')}</label>
                                 <div>
-                                    <div id="usedByUBox">
+                                    <div id="usedByUserBox">
                                         <SelectBox
-                                            id={`add-usedBy${id}`}
+                                            id={`add-usedByUser${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={userlist.map(x => {
                                                 return { value: x._id, text: x.name + " - " + x.email }
                                             })}
-                                            onChange={this.handleUsedByChange}
-                                            value={usedBy}
+                                            onChange={this.handleUsedByUserChange}
+                                            value={usedByUser}
                                             multiple={false}
                                         />
                                     </div>

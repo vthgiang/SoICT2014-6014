@@ -330,9 +330,9 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
                             columns: [                            
                                 { key: "date", value: "Thời gian" },
                                 { key: "name", value: "Tên nhân viên"},
-                                { key: "automaticPoint", value: "Điểm tự động" },
-                                { key: "employeePoint", value: "Điểm tự đánh giá" },
-                                { key: "approvedPoint", value: "Điểm được phê duyệt" }
+                                { key: "automaticPoint", value: "Điểm KPI tự động" },
+                                { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
+                                { key: "approvedPoint", value: "Điểm KPI được phê duyệt" }
                             ],
                             data: x
                         }

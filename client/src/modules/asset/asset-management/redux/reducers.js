@@ -1,4 +1,4 @@
-import {AssetConstants} from './constants';
+import { AssetConstants } from './constants';
 
 const initState = {
     isLoading: false,
@@ -7,12 +7,15 @@ const initState = {
 
     listAssets: [],
     listAllAssets: [],
+    buildingAsset: [],
+
     error: '',
 }
 
 export function assetsManager(state = initState, action) {
     switch (action.type) {
         case AssetConstants.GETALL_REQUEST:
+        case AssetConstants.GET_LIST_BUILDING_AS_TREE_REQUEST:
         case AssetConstants.ADDASSET_REQUEST:
         case AssetConstants.UPDATE_INFOR_ASSET_REQUEST:
         case AssetConstants.DELETE_ASSET_REQUEST:
@@ -21,7 +24,7 @@ export function assetsManager(state = initState, action) {
                 ...state,
                 isLoading: true
             };
-        
+
         case AssetConstants.GETALL_SUCCESS:
             if (action.payload.totalList !== undefined) {
                 return {
@@ -45,10 +48,19 @@ export function assetsManager(state = initState, action) {
                 }
             }
 
-        case AssetConstants.CREATE_USAGE_SUCCESS:            
+        case AssetConstants.GET_LIST_BUILDING_AS_TREE_SUCCESS:
+            return {
+                ...state,
+
+                isLoading: false,
+
+                buildingAssets: action.payload
+            }
+
+        case AssetConstants.CREATE_USAGE_SUCCESS:
             let assets = [];
 
-            for (let i = 0; i < state.listAssets.length; i++){
+            for (let i = 0; i < state.listAssets.length; i++) {
                 if (state.listAssets[i]._id === action.payload._id) {
                     assets.push(action.payload);
                 } else {
@@ -70,7 +82,7 @@ export function assetsManager(state = initState, action) {
                 listAssets: [...state.listAssets, ...action.payload.assets],
                 isLoading: false
             };
-      
+
         case AssetConstants.UPDATE_INFOR_ASSET_SUCCESS:
             console.log(action.payload);
             return {
@@ -78,7 +90,7 @@ export function assetsManager(state = initState, action) {
                 listAssets: state.listAssets.map(x => x.assets._id === action.payload.assets._id ? action.payload : x),
                 isLoading: false
             };
-        
+
         case AssetConstants.DELETE_ASSET_SUCCESS:
             return {
                 ...state,
@@ -87,6 +99,7 @@ export function assetsManager(state = initState, action) {
             };
 
         case AssetConstants.GETALL_FAILURE:
+        case AssetConstants.GET_LIST_BUILDING_AS_TREE_FAILURE:
         case AssetConstants.ADDASSET_FAILURE:
         case AssetConstants.UPDATE_INFOR_ASSET_FAILURE:
         case AssetConstants.DELETE_ASSET_FAILURE:

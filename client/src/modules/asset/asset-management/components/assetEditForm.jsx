@@ -224,8 +224,8 @@ class AssetEditForm extends Component {
     }
 
     save = async () => {
-        let { maintainanceLogs, usageLogs, incidentLogs, files, assignedTo, handoverFromDate, handoverToDate } = this.state;
-        
+        let { maintainanceLogs, usageLogs, incidentLogs, files, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate } = this.state;
+
         await this.setState({
             img: "",
             createMaintainanceLogs: maintainanceLogs.filter(x => !x._id),
@@ -243,13 +243,14 @@ class AssetEditForm extends Component {
         this.props.updateInformationAsset(this.state._id, formData);
 
         // Thêm vào thông tin sử dụng
-        if (assignedTo !== this.props.assignedTo || handoverFromDate !== this.props.handoverFromDate || handoverToDate !== this.props.handoverToDate) {
+        if (assignedToUser !== this.props.assignedToUser|| assignedToOrganizationalUnit !== this.props.assignedToOrganizationalUnit || handoverFromDate !== this.props.handoverFromDate || handoverToDate !== this.props.handoverToDate) {
             this.props.createUsage(this.state._id, {
-                usedBy: this.state.assignedTo,
+                usedByUser: this.state.assignedToUser,
                 startDate: this.state.handoverFromDate,
                 endDate: this.state.handoverToDate,
                 description: '',
-                assignedTo: this.state.assignedTo,
+                assignedToUser: this.state.assignedToUser,
+                assignedToOrganizationalUnit: this.state.assignedToOrganizationalUnit,
                 handoverFromDate: this.state.handoverFromDate,
                 handoverToDate: this.state.handoverToDate,
                 status: "Đang sử dụng",
@@ -298,10 +299,12 @@ class AssetEditForm extends Component {
                 assetName: nextProps.assetName,
                 serial: nextProps.serial,
                 assetType: nextProps.assetType,
+                group: nextProps.group,
                 purchaseDate: nextProps.purchaseDate,
                 warrantyExpirationDate: nextProps.warrantyExpirationDate,
                 managedBy: nextProps.managedBy,
-                assignedTo: nextProps.assignedTo,
+                assignedToUser: nextProps.assignedToUser,
+                assignedToOrganizationalUnit: nextProps.assignedToOrganizationalUnit,
                 handoverFromDate: nextProps.handoverFromDate,
                 handoverToDate: nextProps.handoverToDate,
                 location: nextProps.location,
@@ -349,7 +352,8 @@ class AssetEditForm extends Component {
                 errorOnPurchaseDate: undefined,
                 errorOnWarrantyExpirationDate: undefined,
                 errorOnManagedBy: undefined,
-                errorOnAssignedTo: undefined,
+                errorOnAssignedToUser: undefined,
+                errorOnAssignedToOrganizationalUnit: undefined,
                 errorOnNameField: undefined,
                 errorOnValue: undefined,
             }
@@ -360,7 +364,7 @@ class AssetEditForm extends Component {
 
     render() {
         const { translate, assetsManager } = this.props;
-        const { _id, img, avatar, code, assetName, serial, assetType, purchaseDate, warrantyExpirationDate, managedBy, assignedTo, handoverFromDate,
+        const { _id, img, avatar, code, assetName, serial, assetType, group, purchaseDate, warrantyExpirationDate, managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate,
             handoverToDate, location, description, status, canRegisterForUse, detailInfo, usageLogs, maintainanceLogs, cost, residualValue, startDepreciation,
             usefulLife, depreciationType, incidentLogs, disposalDate, disposalType, unitsProducedDuringTheYears, disposalCost, disposalDesc, archivedRecordNumber,
             files, estimatedTotalProduction } = this.state;
@@ -399,10 +403,12 @@ class AssetEditForm extends Component {
                                 assetName={assetName}
                                 serial={serial}
                                 assetTypes={assetType}
+                                group={group}
                                 purchaseDate={purchaseDate}
                                 warrantyExpirationDate={warrantyExpirationDate}
                                 managedBy={managedBy}
-                                assignedTo={assignedTo}
+                                assignedToUser={assignedToUser}
+                                assignedToOrganizationalUnit={assignedToOrganizationalUnit}
                                 handoverFromDate={handoverFromDate}
                                 handoverToDate={handoverToDate}
                                 location={location}
@@ -416,7 +422,8 @@ class AssetEditForm extends Component {
                             <UsageLogTab
                                 id={`edit_usage${_id}`}
                                 assetId={_id}
-                                assignedTo={assignedTo}
+                                assignedToUser={assignedToUser}
+                                assignedToOrganizationalUnit={assignedToOrganizationalUnit}
                                 usageLogs={usageLogs}
                                 handleAddUsage={this.handleCreateUsageLogs}
                                 handleEditUsage={this.handleEditUsageLogs}
