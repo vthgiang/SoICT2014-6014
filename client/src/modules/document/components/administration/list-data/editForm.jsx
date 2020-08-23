@@ -536,7 +536,6 @@ class EditForm extends Component {
         if (description) {
             formData.append('descriptions', description)
         }
-        console.log(title, description,);
         //console.log('ererererer', formData.getAll());
         this.props.editDocument(documentId, formData);
     }
@@ -553,14 +552,34 @@ class EditForm extends Component {
             documentFile,
             documentFileScan
         } = this.state;
-
+        let title, descriptions;
+        title = "Thêm phiên bản mới";
+        descriptions = "Tên phiên bản mới: " + documentVersionName
         const formData = new FormData();
         formData.append('versionName', documentVersionName);
-        formData.append('issuingDate', moment(documentIssuingDate, "DD-MM-YYYY"));
-        formData.append('effectiveDate', moment(documentEffectiveDate, "DD-MM-YYYY"));
-        formData.append('expiredDate', moment(documentExpiredDate, "DD-MM-YYYY"));
-        formData.append('file', documentFile);
-        formData.append('fileScan', documentFileScan);
+        if (documentIssuingDate) {
+            descriptions += "Ngày ban hành " + moment(documentIssuingDate, "DD-MM-YYYY") + ".";
+            formData.append('issuingDate', moment(documentIssuingDate, "DD-MM-YYYY"));
+        }
+        if (documentEffectiveDate) {
+            descriptions += "Ngày hiệu lực " + moment(documentEffectiveDate, "DD-MM-YYYY") + ".";
+            formData.append('effectiveDate', moment(documentEffectiveDate, "DD-MM-YYYY"));
+        }
+        if (documentExpiredDate) {
+            descriptions += "Ngày hết hạn" + + moment(documentExpiredDate, "DD-MM-YYYY") + ".";
+            formData.append('expiredDate', moment(documentExpiredDate, "DD-MM-YYYY"));
+        }
+        if (documentFile) {
+            descriptions += "Thêm file tài liệu."
+            formData.append('file', documentFile);
+        }
+        if (documentFileScan) {
+            descriptions += "Thêm file scan tài liệu";
+            formData.append('fileScan', documentFileScan);
+        }
+        formData.append('title', title);
+        formData.append('creator', getStorage("userId"))
+        formData.append('descriptions', descriptions)
         console.log("FORM DATA: ", formData)
         this.props.editDocument(id, formData, 'ADD_VERSION');
     }
@@ -624,7 +643,7 @@ class EditForm extends Component {
         console.log(archives, select);
         if (select) {
             let archive = archives.filter(arch => arch._id === select);
-            return [archive[0].path];
+            return archive.length ? [archive[0].path] : "";
         }
         else return null;
     }

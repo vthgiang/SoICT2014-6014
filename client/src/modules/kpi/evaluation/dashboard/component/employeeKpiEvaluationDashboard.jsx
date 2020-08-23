@@ -270,11 +270,20 @@ class EmployeeKpiEvaluationDashboard extends Component {
         })
     }
 
+    handleResultsOfAllEmployeeKpiSetChartDataAvailable =(data)=>{
+        this.setState( state => {
+            return {
+                ...state,
+                resultsOfAllEmployeeKpiSetChartData: data
+            }
+        })
+    }
+
     render() {
         const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = this.props;
         const { translate } = this.props;
 
-        const { unitMembers, dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids, organizationalUnitIds, statisticsOfEmployeeKpiSetChartData } = this.state;
+        const { unitMembers, dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids, organizationalUnitIds, statisticsOfEmployeeKpiSetChartData, resultsOfAllEmployeeKpiSetChartData } = this.state;
 
         let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee;
         let queue = [], childrenOrganizationalUnit = [],userName;
@@ -562,12 +571,14 @@ class EmployeeKpiEvaluationDashboard extends Component {
                         <div className="box">
                             <div className="box-header with-border">
                                 <h3 className="box-title">{translate('kpi.evaluation.dashboard.result_kpi_titile')}</h3>
+                                {resultsOfAllEmployeeKpiSetChartData&&<ExportExcel  type="link" id="export-all-employee-kpi-evaluate-result-dashboard" exportData={resultsOfAllEmployeeKpiSetChartData} style={{ marginTop:5 }} />}
                             </div>
                             {/* /.box-header */}
 
                             <div className="box-body qlcv">
                                 <ResultsOfAllEmployeeKpiSetChart
                                     organizationalUnitIds={organizationalUnitIds}
+                                    onDataAvailable={this.handleResultsOfAllEmployeeKpiSetChartDataAvailable}
                                 />
                             </div>
                         </div>

@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { ExportExcel } from '../../../../../common-components';
-
 import { createKpiSetActions } from '../../creation/redux/actions';
 
 import { DatePicker } from '../../../../../common-components';
@@ -143,10 +141,13 @@ class ResultsOfEmployeeKpiChart extends Component {
     /**Thiết lập dữ liệu biểu đồ */
     setDataMultiLineChart = () => {
         const { createEmployeeKpiSet } = this.props;
-        let listEmployeeKpiSetEachYear, automaticPoint, employeePoint, approvedPoint, date, dataMultiLineChart;
+        let listEmployeeKpiSetEachYear, automaticPoint, employeePoint, approvedPoint, date, dataMultiLineChart,exportData;
 
         if(createEmployeeKpiSet.employeeKpiSetByMonth) {
             listEmployeeKpiSetEachYear = createEmployeeKpiSet.employeeKpiSetByMonth
+            exportData =this.convertDataToExportData(listEmployeeKpiSetEachYear);
+            this.handleExportData(exportData)
+            
         }
 
         if(listEmployeeKpiSetEachYear) {
@@ -228,8 +229,16 @@ class ResultsOfEmployeeKpiChart extends Component {
         });
     }
 
+    handleExportData =(exportData)=>
+    {
+        const { onDataAvailable } = this.props;
+        if (onDataAvailable) {
+            onDataAvailable(exportData);
+        }
+    }
+
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    convertDataToExportData = (data) => {
+    convertDataToExportData = (data,name,email) => {
         let fileName = "Biểu đồ theo dõi kết quả KPI cá nhân";
 
         if (data) {           
@@ -255,7 +264,7 @@ class ResultsOfEmployeeKpiChart extends Component {
             fileName: fileName,
             dataSheets: [
                 {
-                    sheetName: "sheet1",
+                    sheetName: "Biểu đồ theo dõi kết quả KPI cá nhân của ",
                     sheetTitle: fileName,
                     tables: [
                         {
@@ -279,11 +288,10 @@ class ResultsOfEmployeeKpiChart extends Component {
     render() {
         const { createEmployeeKpiSet } = this.props;
 
-        let exportData,listEmployeeKpiSetEachYear;
+        let listEmployeeKpiSetEachYear;
         
         if (createEmployeeKpiSet.employeeKpiSetByMonth) {
             listEmployeeKpiSetEachYear = createEmployeeKpiSet.employeeKpiSetByMonth;
-            exportData =this.convertDataToExportData(listEmployeeKpiSetEachYear);
         }
 
         let d = new Date(),
@@ -332,11 +340,7 @@ class ResultsOfEmployeeKpiChart extends Component {
                         <button type="button" className="btn btn-success" onClick={this.handleSearchData}>{translate('kpi.evaluation.employee_evaluation.search')}</button>
                     </div>
 
-                    {exportData &&
-                        <div className="form-group">
-                            <ExportExcel id="export-employee-kpi-result-dashboard" exportData={exportData}/>
-                        </div>
-                    }
+                   
                 </section>
 
                 <section ref="chart"></section>

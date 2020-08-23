@@ -10,7 +10,7 @@ import { ResultsOfOrganizationalUnitKpiChart } from './resultsOfOrganizationalUn
 import { ResultsOfAllOrganizationalUnitKpiChart } from './resultsOfAllOrganizationalUnitKpiChart';
 import { StatisticsOfOrganizationalUnitKpiResultsChart } from './statisticsOfOrganizationalUnitKpiResultsChart';
 
-import { SelectBox, DatePicker, LazyLoadComponent } from '../../../../../common-components/index';
+import { SelectBox, DatePicker, LazyLoadComponent, ExportExcel } from '../../../../../common-components/index';
 import { withTranslate } from 'react-redux-multilingual';
 
 
@@ -132,9 +132,36 @@ class OrganizationalUnitKpiDashboard extends Component {
         })
     }
 
+    handleResultsOfOrganizationalUnitKpiChartDataAvailable =(data)=>{
+        this.setState( state => {
+            return {
+                ...state,
+                resultsOfOrganizationalUnitKpiChartData: data
+            }
+        })
+    }
+
+    handleResultsOfAllOrganizationalUnitsKpiChartDataAvailable =(data)=>{
+        this.setState( state => {
+            return {
+                ...state,
+                resultsOfAllOrganizationalUnitsKpiChartData: data
+            }
+        })
+    }
+
+    handleStatisticsOfOrganizationalUnitKpiResultChartDataAvailable =(data)=>{
+        this.setState( state => {
+            return {
+                ...state,
+                statisticsOfOrganizationalUnitKpiResultChartData: data
+            }
+        })
+    }
+
     render() {
         const { dashboardEvaluationEmployeeKpiSet, translate } = this.props;
-        const { childUnitChart, organizationalUnitId, month } = this.state;
+        const { childUnitChart, organizationalUnitId, month, resultsOfOrganizationalUnitKpiChartData,resultsOfAllOrganizationalUnitsKpiChartData,statisticsOfOrganizationalUnitKpiResultChartData } = this.state;
 
         let childOrganizationalUnit, childrenOrganizationalUnit;
         let organizationalUnitSelectBox, typeChartSelectBox;
@@ -144,7 +171,6 @@ class OrganizationalUnitKpiDashboard extends Component {
         }
 
         if (childrenOrganizationalUnit) {
-            console.log("\n\n\n\n\n\n\n\n",childrenOrganizationalUnit)
             let temporaryChild;
 
             childOrganizationalUnit = [{
@@ -181,6 +207,7 @@ class OrganizationalUnitKpiDashboard extends Component {
 
         // Tạo các select box
         if (childOrganizationalUnit) {
+            
             organizationalUnitSelectBox = childOrganizationalUnit.map(x => { return { 'text': x.name, 'value': x.id } });
         }
         typeChartSelectBox = [
@@ -200,6 +227,7 @@ class OrganizationalUnitKpiDashboard extends Component {
             day = '0' + day;
         let defaultDate = [monthDate, year].join('-');
 
+      
         return (
             <React.Fragment>
                 <div className="qlcv">
@@ -300,11 +328,14 @@ class OrganizationalUnitKpiDashboard extends Component {
                             <div className="box box-primary">
                                 <div className="box-header with-border">
                                     <div className="box-title">{translate('kpi.organizational_unit.dashboard.statiscial')} {this.state.date}</div>
+                                    {statisticsOfOrganizationalUnitKpiResultChartData&&<ExportExcel type ="link" id="export-statistic-organizational-unit-kpi-results-chart" exportData={statisticsOfOrganizationalUnitKpiResultChartData} style={{ marginLeft:10 }} />}
                                 </div>
                                 <div className="box-body qlcv">
                                     <StatisticsOfOrganizationalUnitKpiResultsChart
                                         organizationalUnitId={organizationalUnitId}
                                         month={month}
+                                        organizationalUnit ={childOrganizationalUnit}
+                                        onDataAvailable ={this.handleStatisticsOfOrganizationalUnitKpiResultChartDataAvailable}
                                     />
                                 </div>
                             </div>
@@ -322,10 +353,15 @@ class OrganizationalUnitKpiDashboard extends Component {
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('kpi.organizational_unit.dashboard.result_kpi_unit')}</div>
+                                        {resultsOfOrganizationalUnitKpiChartData&&<ExportExcel type ="link" id="export-organizational-unit-kpi-results-chart" exportData={resultsOfOrganizationalUnitKpiChartData} style={{ marginLeft:10 }} />}
                                     </div>
                                     <div className="box-body qlcv">
                                     { (this.state.dataStatus === this.DATA_STATUS.AVAILABLE) &&
-                                        <ResultsOfOrganizationalUnitKpiChart organizationalUnitId={organizationalUnitId}/>
+                                        <ResultsOfOrganizationalUnitKpiChart 
+                                        organizationalUnitId={organizationalUnitId}
+                                        organizationalUnit ={childOrganizationalUnit}
+                                        onDataAvailable ={this.handleResultsOfOrganizationalUnitKpiChartDataAvailable}
+                                        />
                                     }
                                     </div>
                                 </div>
@@ -342,9 +378,11 @@ class OrganizationalUnitKpiDashboard extends Component {
                                 <div className="box box-primary">
                                     <div className="box-header with-border">
                                         <div className="box-title">{translate('kpi.organizational_unit.dashboard.result_kpi_units')}</div>
+                                        {resultsOfAllOrganizationalUnitsKpiChartData&&<ExportExcel type ="link" id="export-all-organizational-unit-kpi-results-chart" exportData={resultsOfAllOrganizationalUnitsKpiChartData} style={{ marginLeft:10 }} />}
                                     </div>
                                     <div className="box-body qlcv">
-                                        <ResultsOfAllOrganizationalUnitKpiChart />
+                                        <ResultsOfAllOrganizationalUnitKpiChart 
+                                        onDataAvailable = {this.handleResultsOfAllOrganizationalUnitsKpiChartDataAvailable}/>
                                     </div>
                                 </div>
                             </div>

@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 
 import { dashboardOrganizationalUnitKpiActions } from '../redux/actions';
 
-import { ExportExcel } from '../../../../../common-components';
-
 import { withTranslate } from 'react-redux-multilingual';
 
 import c3 from 'c3';
@@ -164,7 +162,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
     }
 
     setDataColumnChart = () => {
-        const { dashboardOrganizationalUnitKpi, translate,month } = this.props;
+        const { dashboardOrganizationalUnitKpi, translate,month, organizationalUnit,organizationalUnitId } = this.props;
         let listEmployeeKpiSet, automaticPoint = [], employeePoint = [], approvedPoint = [] ;
         let employeeWithTheSamePoints, textLabel;
         if (dashboardOrganizationalUnitKpi.employeeKpiSets) {
@@ -195,8 +193,8 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         let countEmployeePoint =this.countEmployeeWithTheSamePoint(employeePoint);
         let countApprovedPoint =this.countEmployeeWithTheSamePoint(approvedPoint);
 
-        if(listEmployeeKpiSet,month,countAutomaticPoint,countEmployeePoint,countApprovedPoint){
-            let exportData =this.convertDataToExportData(listEmployeeKpiSet,month,countAutomaticPoint,countEmployeePoint,countApprovedPoint)
+        if(listEmployeeKpiSet&&month&&organizationalUnit){
+            let exportData =this.convertDataToExportData(listEmployeeKpiSet,organizationalUnit,organizationalUnitId,month,countAutomaticPoint,countEmployeePoint,countApprovedPoint)
             this.handleExportData(exportData);
         }
         //
@@ -278,18 +276,26 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         })
     }
 
-    handleExportData=(data) =>{
-        this.setState(state => {
-            return {
-                ...state,
-                exportData:data
-            };
-        });
+    handleExportData =(exportData)=>
+    {
+        const { onDataAvailable } = this.props;
+        if (onDataAvailable) {
+            onDataAvailable(exportData);
+        }
     }
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
-    convertDataToExportData = (data, month,countAutomaticPoint,countEmployeePoint,countApprovedPoint) => {
-        let fileName = "Thống kê kết quả KPI đơn vị " + ( month?("tháng "+month):"" );
+    convertDataToExportData = (data,organizationalUnit,organizationalUnitId, month,countAutomaticPoint,countEmployeePoint,countApprovedPoint) => {
+        let name;
+        if(organizationalUnitId){
+            let currentOrganizationalUnit = organizationalUnit.find(item => item.id===organizationalUnitId); 
+            name = currentOrganizationalUnit.name; 
+        }
+        else{
+            name = organizationalUnit[0].name;
+        }
+
+        let fileName = "Thống kê kết quả KPI " +(name?name:"")+" "+ ( month?("tháng "+month):"" );
         if (data) {           
             data = data.map((x, index) => {
                
@@ -320,9 +326,9 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
                     tables: [
                         {
                             columns: [
-                                { key: "automaticPoint", value: "Điểm tự động" },                                
-                                { key: "employeePoint", value: "Điểm tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm được phê duyệt" },
+                                { key: "automaticPoint", value: "Điểm KPI tự động" },                                
+                                { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm KPI được phê duyệt" },
                                 { key: "numberEmployeesWithSameAutomaticPoint", value: "Số nhân viên có cùng điểm KPI tự động " },
                                 { key: "numberEmployeesWithSameEmployeePoint", value: "Số nhân viên có cùng điểm KPI tự đánh giá " },
                                 { key: "numberEmployeesWithSameApprovedPoint", value: "Số nhân viên có cùng điểm KPI được phê duyệt " },
@@ -349,10 +355,7 @@ class StatisticsOfOrganizationalUnitKpiResultsChart extends Component {
         return (            
             <React.Fragment>           
                 {listEmployeeKpiSet && (listEmployeeKpiSet.length !== 0) ?
-                    <section className="box-body " style={{ textAlign: "right" }}>
-                        <a>
-                        {exportData&&<ExportExcel id="export-statistics-organizational-unit-kpi-results-chart" exportData={exportData} style={{ marginLeft:10 }} />}
-                        </a>  
+                    <section className="box-body " style={{ textAlign: "right" }}> 
                         <section className="btn-group">
                             <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.AUTOMATIC ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.AUTOMATIC)}>Automatic Point</button>
                             <button type="button" className={`btn btn-xs ${this.state.kindOfPoint === this.KIND_OF_POINT.EMPLOYEE ? 'btn-danger' : null}`} onClick={() => this.handleSelectKindOfPoint(this.KIND_OF_POINT.EMPLOYEE)}>Employee Point</button>
