@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { createKpiSetActions } from '../../../employee/creation/redux/actions';
 
-import { DatePicker,ExportExcel } from '../../../../../common-components';
+import { DatePicker } from '../../../../../common-components';
 
 import { withTranslate } from 'react-redux-multilingual'
 
@@ -35,7 +35,6 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
 
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
             kindOfPoint: this.KIND_OF_POINT.AUTOMATIC,
-            exportData : null
         }
     }
 
@@ -271,6 +270,10 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
 
     handleExportData =(exportData)=>
     {
+        const { onDataAvailable } = this.props;
+        if (onDataAvailable) {
+            onDataAvailable(exportData);
+        }
         this.setState(state => {
             return {
                 ...state,
@@ -345,7 +348,6 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
     }
 
     render() {
-        let { exportData } =this.state;
         const { createEmployeeKpiSet,translate } = this.props;
 
         let employeeKpiSetsInOrganizationalUnitByMonth;
@@ -381,7 +383,6 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
                 </section>
                 <section className="form-inline">
                     <div>
-                    {exportData&&<ExportExcel id="export-all-employee-kpi-evaluate-result-dashboard" exportData={exportData} style={{ marginTop:5 }} />}
                     </div>
                     <div className="form-group">
                         <label>{translate('kpi.evaluation.employee_evaluation.to')}</label>
