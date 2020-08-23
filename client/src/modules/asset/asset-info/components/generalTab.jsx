@@ -35,6 +35,19 @@ class GeneralTab extends Component {
         }
     }
 
+    convertGroupAsset = (group) => {
+        if (group === 'Building') {
+            return 'Mặt bằng';
+        } else if (group === 'Vehicle') {
+            return 'Xe cộ'
+        } else if (group === 'Machine') {
+            return 'Máy móc'
+        } else {
+            return 'Khác'
+        }
+
+    }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -45,6 +58,7 @@ class GeneralTab extends Component {
                 assetName: nextProps.assetName,
                 serial: nextProps.serial,
                 assetTypes: nextProps.assetTypes,
+                group: nextProps.group,
                 purchaseDate: nextProps.purchaseDate,
                 warrantyExpirationDate: nextProps.warrantyExpirationDate,
                 managedBy: nextProps.managedBy,
@@ -71,7 +85,7 @@ class GeneralTab extends Component {
         let assetbuildinglist = assetbuilding && assetbuilding.list;
 
         const {
-            img, avatar, code, assetName, serial, assetTypes, purchaseDate, warrantyExpirationDate,
+            img, avatar, code, assetName, serial, assetTypes, group, purchaseDate, warrantyExpirationDate,
             managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse, detailInfo
         } = this.state;
 
@@ -111,6 +125,12 @@ class GeneralTab extends Component {
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.serial_number')}&emsp; </strong>
                                         {serial}
+                                    </div>
+
+                                    {/* Nhóm tài sản */}
+                                    <div className="form-group">
+                                        <strong>{translate('asset.general_information.asset_group')}&emsp; </strong>
+                                        {this.convertGroupAsset(group)}
                                     </div>
 
                                     {/* Loại tài sản */}

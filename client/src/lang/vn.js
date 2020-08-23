@@ -1582,6 +1582,7 @@ export default {
                 asset_code: 'Mã tài sản',
                 asset_name: 'Tên tài sản',
                 asset_type: 'Loại tài sản',
+                asset_group: 'Nhóm tài sản',
                 purchase_date: 'Ngày nhập',
                 manager: 'Người quản lý',
                 user: 'Người sử dụng',
@@ -1685,6 +1686,12 @@ export default {
                 sale: 'Nhượng bán',
                 give: 'Tặng',
 
+                select_group: 'Chọn nhóm tài sản',
+                building: 'Mặt bằng',
+                vehicle: 'Xe cộ',
+                machine: 'Máy móc',
+                other: 'Khác',
+
                 //Thông điệp trả về từ server
                 get_list_asset_success: 'Lấy thông tin tài sản thành công',
                 get_list_asset_faile: 'Lấy thông tin tài sản thất bại',
@@ -1738,6 +1745,14 @@ export default {
                 accumulated_value: 'Giá trị hao mòn lũy kế',
                 remaining_value: 'Giá trị còn lại',
                 edit_depreciation: 'Chỉnh sửa thông tin kháu hao tài sản',
+
+                estimated_production: 'Sản lượng theo công suất thiết kế (trong 1 năm)',
+                months_production: 'Sản lượng sản phẩm trong các tháng',
+                production: 'Sản lượng',
+                select_depreciation_type: 'Chọn phương pháp khấu hao',
+                line: 'Phương pháp khấu hao đường thẳng',
+                declining_balance: 'Phương pháp khấu hao theo số dư giảm dần',
+                units_production: 'Phương pháp khấu hao theo sản lượng',
 
                 //Thông điệp trả về từ server
                 get_depreciation_success: 'Lấy thông tin khấu hao thành công',

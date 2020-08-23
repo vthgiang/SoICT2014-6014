@@ -1582,6 +1582,7 @@ export default {
                 asset_code: 'Asset code',
                 asset_name: 'Asset name',
                 asset_type: 'Asset type',
+                asset_group: 'Asset group',
                 purchase_date: 'Date of purchase',
                 manager: 'Manager',
                 user: 'User',
@@ -1685,6 +1686,12 @@ export default {
                 sale: 'Sale',
                 give: 'Give',
 
+                select_group: 'Select asset group',
+                building: 'Building',
+                vehicle: 'Vehicle',
+                machine: 'Machine',
+                other: 'Other',
+
                 //Thông điệp trả về từ server
                 get_list_asset_success: 'Lấy thông tin tài sản thành công',
                 get_list_asset_faile: 'Lấy thông tin tài sản thất bại',
@@ -1738,6 +1745,14 @@ export default {
                 accumulated_value: 'Accumulated depreciation value',
                 remaining_value: 'Remaining value',
                 edit_depreciation: 'Edit asset depreciation information',
+
+                estimated_production: 'Estimated total production (for 1 year)',
+                months_production: 'Product production in months',
+                production: 'Production',
+                select_depreciation_type: 'Select depreciation type',
+                line: 'Straight - line depreciation method',
+                declining_balance: 'Declining Balance depreciation method',
+                units_production: 'Unit of production method',
 
                 //Thông điệp trả về từ server
                 get_depreciation_success: 'Lấy thông tin khấu hao thành công',

@@ -440,10 +440,10 @@ class DepreciationEditForm extends Component {
                                     style={{ width: "100%" }}
                                     value={depreciationType}
                                     items={[
-                                        { value: '', text: '---Chọn hình thức thanh lý---' },
-                                        { value: 'Đường thẳng', text: 'Phương pháp khấu hao đường thẳng' },
-                                        { value: 'Số dư giảm dần', text: 'Phương pháp khấu hao theo số dư giảm dần' },
-                                        { value: 'Sản lượng', text: 'Phương pháp khấu hao theo sản lượng' },
+                                        { value: '', text: `---${translate('asset.depreciation.select_depreciation_type')}---` },
+                                        { value: 'Đường thẳng', text: translate('asset.depreciation.line') },
+                                        { value: 'Số dư giảm dần', text: translate('asset.depreciation.declining_balance') },
+                                        { value: 'Sản lượng', text: translate('asset.depreciation.units_production') },
                                     ]}
                                     onChange={this.handleDepreciationTypeChange}
                                 />
@@ -454,7 +454,7 @@ class DepreciationEditForm extends Component {
                             {
                                 depreciationType == 'Sản lượng' &&
                                 <div className={`form-group ${!errorOnEstimatedTotalProduction ? "" : "has-error"} `}>
-                                    <label htmlFor="estimatedTotalProduction">Sản lượng theo công suất thiết kế (trong 1 năm)<span className="text-red">*</span></label>
+                                    <label htmlFor="estimatedTotalProduction">{translate('asset.depreciation.estimated_production')}<span className="text-red">*</span></label>
                                     <input type="number" className="form-control" name="estimatedTotalProduction" value={estimatedTotalProduction} onChange={this.handleEstimatedTotalProductionChange}
                                         placeholder='Sản lượng theo công suất thiết kế' autoComplete="off" />
                                     <ErrorLabel content={errorOnEstimatedTotalProduction} />
@@ -465,7 +465,7 @@ class DepreciationEditForm extends Component {
                             {
                                 depreciationType == 'Sản lượng' &&
                                 <div className="col-md-12">
-                                    <label>Sản lượng sản phẩm trong các tháng:<a title='Số lượng sản phẩm trong các năm'><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }}
+                                    <label>{translate('asset.depreciation.months_production')}:<a title='Số lượng sản phẩm trong các năm'><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }}
                                         onClick={this.handleAddUnitsProduced} /></a></label>
                                     <div className={`form-group ${(!errorOnMonth && !errorOnValue) ? "" : "has-error"}`}>
 
@@ -473,8 +473,8 @@ class DepreciationEditForm extends Component {
                                         <table className="table table-bordered">
                                             <thead>
                                                 <tr>
-                                                    <th>Tháng</th>
-                                                    <th>Sản lượng</th>
+                                                    <th>{translate('page.month')}</th>
+                                                    <th>{translate('asset.depreciation.production')}</th>
                                                     <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
                                                 </tr>
                                             </thead>

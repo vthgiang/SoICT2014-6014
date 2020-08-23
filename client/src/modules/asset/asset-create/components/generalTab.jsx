@@ -133,6 +133,16 @@ class GeneralTab extends Component {
     };
 
     /**
+     * Bắt sự kiện thay đổi nhóm tài sản
+     */
+    handleGroupChange = (value) => {
+        this.setState({
+            group: value[0]
+        })
+        this.props.handleChange('group', value[0]);
+    }
+
+    /**
      * Bắt sự kiện thay đổi loại tài sản
      */
     handleAssetTypeChange = async (value) => {
@@ -260,24 +270,15 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện thay đổi vị trí tài sản
      */
-    handleLocationChange = (e) => {
-        const { value } = e.target;
-        this.validateLocation(value, true);
-    }
-    validateLocation = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateLocation(value, this.props.translate)
+    handleLocationChange = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                location: value[0],
+            }
+        });
 
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnLocation: msg,
-                    location: value,
-                }
-            });
-            this.props.handleChange("location", value);
-        }
-        return msg === undefined;
+        this.props.handleChange("location", value[0]);
     }
 
     /**
@@ -427,6 +428,7 @@ class GeneralTab extends Component {
                 assetName: nextProps.assetName,
                 serial: nextProps.serial,
                 assetTypes: nextProps.assetTypes,
+                group: nextProps.group,
                 location: nextProps.location,
                 purchaseDate: nextProps.purchaseDate,
                 warrantyExpirationDate: nextProps.warrantyExpirationDate,
@@ -462,7 +464,7 @@ class GeneralTab extends Component {
         const { translate, user, assetType, assetsManager } = this.props;
 
         const {
-            img, code, assetName, assetTypes, serial, purchaseDate, warrantyExpirationDate, managedBy,
+            img, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy,
             assignedTo, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse, detailInfo,
             errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate,
             errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue,
@@ -477,6 +479,17 @@ class GeneralTab extends Component {
                 id: node._id,
                 name: node.typeName,
                 parent: node.parent ? node.parent._id : null,
+            }
+        })
+
+        let assetbuilding = assetsManager && assetsManager.buildingAssets;
+        let assetbuildinglist = assetbuilding && assetbuilding.list;
+        let buildingList = assetbuildinglist && assetbuildinglist.map(node => {
+            return {
+                ...node,
+                id: node._id,
+                name: node.assetName,
+                parent: node.location,
             }
         })
 
@@ -524,6 +537,25 @@ class GeneralTab extends Component {
                                     <input type="text" className="form-control" name="serial" value={serial} onChange={this.handleSerialChange} placeholder={translate('asset.general_information.serial_number')}
                                         autoComplete="off" />
                                     <ErrorLabel content={errorOnSerial} />
+                                </div>
+
+                                {/* Nhóm tài sản */}
+                                <div className="form-group">
+                                    <label>{translate('asset.general_information.asset_group')}<span className="text-red">*</span></label>
+                                    <SelectBox
+                                        id={`group${id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={group}
+                                        items={[
+                                            { value: null, text: `---${translate('asset.asset_info.select_group')}---`},
+                                            { value: 'Building', text: translate('asset.asset_info.building') },
+                                            { value: 'Vehicle', text: translate('asset.asset_info.vehicle') },
+                                            { value: 'Machine', text: translate('asset.asset_info.machine') },
+                                            { value: 'Other', text: translate('asset.asset_info.other') },
+                                        ]}
+                                        onChange={this.handleGroupChange}
+                                    />
                                 </div>
 
                                 {/* Loại tài sản */}
@@ -614,8 +646,7 @@ class GeneralTab extends Component {
                                 {/* Vị trí tài sản */}
                                 <div className={`form-group ${!errorOnLocation ? "" : "has-error"}`}>
                                     <label htmlFor="location">{translate('asset.general_information.asset_location')}</label>
-                                    <input type="text" className="form-control" name="location" value={location ? location.assetName : null} onChange={this.handleLocationChange} placeholder="Vị trí tài sản"
-                                        autoComplete="off" />
+                                    <TreeSelect data={buildingList} value={[location]} handleChange={this.handleLocationChange} mode="radioSelect" />
                                     <ErrorLabel content={errorOnLocation} />
                                 </div>
 
