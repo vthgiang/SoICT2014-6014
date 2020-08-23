@@ -16,7 +16,8 @@ class TaskTimesheetLog extends Component {
             showModal: '',
             description: '',
             showEndDate: false,
-            disabled: false
+            disabled: false,
+            endDate: this.formatDate(Date.now())
         }
         this.sendQuery = false;
     }
@@ -35,7 +36,6 @@ class TaskTimesheetLog extends Component {
         })
     }
     componentDidMount = () => {
-
         this.callApi();
     }
 
@@ -155,10 +155,29 @@ class TaskTimesheetLog extends Component {
             showEndDate: event.target.checked
         });
     }
+
+    // Function format ngày hiện tại thành dạnh mm-yyyy
+    formatDate = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+
+        if (day.length < 2) {
+            day = '0' + day;
+        }
+
+        return [day, month, year].join('-');
+    }
+
     render() {
 
         const { translate, performtasks, auth } = this.props;
-        const { showEndDate,disabled,errorOnEndDate } = this.state
+        const { showEndDate,disabled,errorOnEndDate,endDate } = this.state
         const currentTimer = performtasks.currentTimer;
         const a = (this.state.time - currentTimer?.timesheetLogs[0].startedAt > 0) ? this.state.time - currentTimer?.timesheetLogs[0].startedAt : 0
         return (
@@ -194,6 +213,7 @@ class TaskTimesheetLog extends Component {
                                             <DatePicker
                                                 id={`date-picker-${currentTimer._id}`}
                                                 onChange={this.handleDateChange}
+                                                value= {endDate}
                                             />
                                             <TimePicker
                                                 id={`time-picker-${currentTimer._id}`}
