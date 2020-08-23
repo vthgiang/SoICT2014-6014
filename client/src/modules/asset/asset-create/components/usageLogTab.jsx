@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { UsageLogAddModal, UsageLogEditModal } from './combinedContent';
-
+import { UsageActions } from '../../usage/redux/actions'
 class UsageLogTab extends Component {
     constructor(props) {
         super(props);
@@ -126,6 +126,15 @@ class UsageLogTab extends Component {
         this.props.handleDeleteUsage(this.state.usageLogs, data)
     }
 
+    hanhdleRecallAsset = () => {
+        let assetId = this.props.assetId;
+        let assignedToUser = this.props.assignedToUser;
+        let data =  {
+            usageId: assignedToUser,
+        }
+
+        this.props.recallAsset(assetId, data);        
+    }
 
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id || nextProps.usageLogs !== prevState.usageLogs) {
@@ -151,11 +160,25 @@ class UsageLogTab extends Component {
             <div id={id} className="tab-pane">
                 <div className="box-body qlcv">
                     {/* Lịch sử sử dụng */}
+                   
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.usage_logs')}</h4></legend>
-
-                        {/* Form thêm thông tin sử dụng */}
-                        <UsageLogAddModal handleChange={this.handleAddUsage} id={`addUsage${id}`} />
+                        <div className="form-inline">
+                            <div className="form-group">
+                                <label style={{ width: "auto" }} className="form-control-static"> Người đang sử dụng:</label>
+                                <div style={{ width: "auto" }} className="form-control-static">{ this.props.assignedToUser? userlist.filter(item => item._id === this.props.assignedToUser).pop() ? userlist.filter(item => item._id === this.props.assignedToUser).pop().name:"Chưa có ai": ''}</div>
+                            </div>
+                            
+                            { (this.props.assignedToUser || this.props.assignedToOrganizaitonalUnit) &&
+                                <div className="form-group" style={{marginLeft: "20px"}}>
+                                    <button type="button" className="btn btn-success" onClick={this.hanhdleRecallAsset} >Thu hồi</button>
+                                </div>
+                            }
+                            {/* Form thêm thông tin sử dụng */}
+                            <UsageLogAddModal handleChange={this.handleAddUsage} id={`addUsage${id}`} />
+                        </div>
+                        
+                        
 
                         {/* Bảng thông tin sử dụng */}
                         <table className="table table-striped table-bordered table-hover">
@@ -172,7 +195,7 @@ class UsageLogTab extends Component {
                                 {(usageLogs && usageLogs.length !== 0) &&
                                     usageLogs.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.usedBy ? (userlist.length && userlist.filter(item => item._id === x.usedBy).pop() ? userlist.filter(item => item._id === x.usedBy).pop().name : 'User is deleted') : ''}</td>
+                                            <td>{x.usedByUser ? (userlist.length && userlist.filter(item => item._id === x.usedByUser).pop() ? userlist.filter(item => item._id === x.usedByUser).pop().name : 'User is deleted') : ''}</td>
                                             <td>{x.startDate ? this.formatDate(x.startDate) : ''}</td>
                                             <td>{x.endDate ? this.formatDate(x.endDate) : ''}</td>
                                             <td>{x.description}</td>
@@ -198,7 +221,7 @@ class UsageLogTab extends Component {
                         id={`editUsage${currentRow.index}`}
                         _id={currentRow._id}
                         index={currentRow.index}
-                        usedBy={currentRow.usedBy}
+                        usedByUser={currentRow.usedByUser}
                         startDate={currentRow.startDate}
                         endDate={currentRow.endDate}
                         description={currentRow.description}
@@ -215,6 +238,10 @@ function mapState(state) {
     return { user };
 };
 
-const usageLogTab = connect(mapState, null)(withTranslate(UsageLogTab));
+const actionCreators = {
+    recallAsset: UsageActions.recallAsset,
+};
+
+const usageLogTab = connect(mapState, actionCreators)(withTranslate(UsageLogTab));
 
 export { usageLogTab as UsageLogTab };

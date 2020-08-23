@@ -153,12 +153,33 @@ class ViewProcess extends Component {
                                 })
                             })
                         }
+
+                        if (infoTask[i].status === "Inprocess") {
+                            let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
+
+                            element1 && modeling.setColor(element1, {
+                                fill: '#605CA8',
+                                stroke: '#7236ff',
+                                width: '5px'
+                            });
+
+                            var incoming = element1.incoming;
+                            incoming.forEach(x => {
+                                var incomingEdge = modeler.get('elementRegistry').get(x.id);
+
+                                modeling.setColor(incomingEdge, {
+                                    stroke: '#7236ff',
+                                    width: '5px'
+                                })
+                            })
+                        }
+
                     }
                 }
 
             });
 
-            return false;
+            return true;
         }
         return true;
     }

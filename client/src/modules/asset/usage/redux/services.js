@@ -4,6 +4,7 @@ export const UsageService = {
     createUsage,
     updateUsage,
     deleteUsage,
+    recallAsset,
 }
 
 // Tạo mới thông tin phiếu đề nghị mua sắm thiết bị
@@ -20,7 +21,7 @@ function updateUsage(assetId, data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/assets/assets/${assetId}/usage-logs`,
         method: 'PATCH',
-        data
+        data: data,
     }, true, true, 'asset.usage');
 }
 
@@ -30,5 +31,16 @@ function deleteUsage(assetId, usageId) {
         url: `${process.env.REACT_APP_SERVER}/assets/assets/${assetId}/usage-logs`,
         method: 'DELETE',
         data: { usageId }
+    }, true, true, 'asset.usage');
+}
+
+function recallAsset(assetId, data){
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/assets/assets/${assetId}/usage-logs`,
+        method: 'PATCH',
+        data: data,
+        params: {
+            recallAsset: true,
+        }
     }, true, true, 'asset.usage');
 }

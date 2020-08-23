@@ -182,20 +182,19 @@ class TaskTimesheetLog extends Component {
 
                             {this.state.showModal === auth.user.id &&
                                 <React.Fragment>
+                                    <br/>
                                     <form>
                                         <input type="checkbox" id="stoppedAt" name="stoppedAt" onChange={this.endDate} />
-                                        <label for="stoppedAt"> Chọn thời gian kết thúc công việc</label>
+                                        <label htmlFor="stoppedAt">&nbsp;Tự chọn ngày giờ kết thúc công việc</label>
                                     </form>
                                     
                                     {showEndDate &&
                                         <React.Fragment>
                                             <div className={`form-group ${!errorOnEndDate ? "" : "has-error"}`}>
-                                            <div style={{ marginBottom: "5px" }}>Ngày</div>
                                             <DatePicker
                                                 id={`date-picker-${currentTimer._id}`}
                                                 onChange={this.handleDateChange}
                                             />
-                                            <div>Giờ</div>
                                             <TimePicker
                                                 id={`time-picker-${currentTimer._id}`}
                                                 onChange={this.handleTimeChange}

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 import { DocumentActions } from '../../../redux/actions';
-import { Tree, SlimScroll } from '../../../../../common-components';
+import { Tree, SlimScroll, ExportExcel } from '../../../../../common-components';
 import CreateForm from './createForm';
 import EditForm from './editForm';
 import './archive.css';
@@ -69,13 +69,51 @@ class AdministrationDocumentArchives extends Component {
             }
         })
     }
-
+    convertDataToExportData = (data) => {
+        console.log(data);
+        data = data.map((x, index) => {
+            return {
+                STT: index + 1,
+                name: x.name,
+                description: x.description,
+                path: x.path,
+            }
+        })
+        let exportData = {
+            fileName: "Bảng thống kê lưu trữ",
+            dataSheets: [
+                {
+                    sheetName: "Sheet1",
+                    tables: [
+                        {
+                            tableName: "Bảng thống kê lưu trữ",
+                            rowHeader: 1,
+                            columns: [
+                                { key: "STT", value: "STT"},
+                                { key: "name", value: "Tên danh mục"},
+                                { key: "description", value: "Mô tả danh mục"},
+                                { key: "path", value: "Đường dẫn danh mục"},
+                            ],
+                            data: data
+                        },
+                    ]
+                },
+            ]
+        }
+        return exportData;
+    }
     render() {
         const { archiveParent, deleteNode } = this.state;
         const { translate } = this.props;
+        const { documents } = this.props;
         const { list, tree } = this.props.documents.administration.archives;
         console.log('deleteNOde', deleteNode);
         console.log('alo', archiveParent);
+        let dataExport = [];
+        if (documents.isLoading === false) {
+            dataExport = list;
+        }
+        let exportData = this.convertDataToExportData(dataExport);
         const dataTree = list.map(node => {
             return {
                 ...node,
@@ -92,6 +130,7 @@ class AdministrationDocumentArchives extends Component {
                 {
                     archiveParent.length > 0 && <button class="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteArchive}>Xóa</button>
                 }
+                {<ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
                 <CreateForm domainParent={this.state.archiveParent[0]} />
                 <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">

@@ -5,6 +5,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DistributionOfEmployeeKpiChart } from './distributionOfEmployeeKpiChart';
 import { ResultsOfEmployeeKpiChart } from './resultsOfEmployeeKpiChart';
 
+import { ExportExcel } from '../../../../../common-components';
+
 var translate = '';
 class DashBoardEmployeeKpiSet extends Component {
 
@@ -18,7 +20,17 @@ class DashBoardEmployeeKpiSet extends Component {
         };
     }
 
+    handleResultsOfEmployeeKpiResultChartDataAvailable =(data)=>{
+        this.setState( state => {
+            return {
+                ...state,
+                resultsOfEmployeeKpiResultChartData: data
+            }
+        })
+    }
+
     render() {
+        let { resultsOfEmployeeKpiResultChartData } =this.state;
         return (
             <React.Fragment>
                 <section className="row">
@@ -26,12 +38,14 @@ class DashBoardEmployeeKpiSet extends Component {
                         <div className=" box box-primary">
                             <div className="box-header with-border">
                                 <div className="box-title">{translate('kpi.evaluation.dashboard.result_kpi_personal')}</div>
+                                {resultsOfEmployeeKpiResultChartData&&<ExportExcel type ="link" id="export-results-of-employee-kpi-chart" exportData={resultsOfEmployeeKpiResultChartData} style={{ marginLeft:10 }} />}
                             </div>
                             <div className="box-body qlcv">
                                 {/**Biểu đồ kết quả */}
                                 <ResultsOfEmployeeKpiChart
                                     startDate={this.state.startDate}
                                     endDate={this.state.endDate}
+                                    onDataAvailable ={this.handleResultsOfEmployeeKpiResultChartDataAvailable}
                                 />
                             </div>
                         </div>

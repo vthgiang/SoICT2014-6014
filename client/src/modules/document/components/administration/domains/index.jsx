@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { DocumentActions } from '../../../redux/actions';
-import { Tree, SlimScroll } from '../../../../../common-components';
+import { Tree, SlimScroll, ExportExcel } from '../../../../../common-components';
 
 import CreateForm from './createForm';
 import EditForm from './editForm';
@@ -62,11 +62,42 @@ class AdministrationDocumentDomains extends Component {
             }
         })
     }
-
+    convertDataToExportData = (data) => {
+        console.log(data);
+        data = data.map((x, index) => {
+            return {
+                STT: index + 1,
+                name: x.name,
+                description: x.description,
+            }
+        })
+        let exportData = {
+            fileName: "Bảng thống kê danh mục",
+            dataSheets: [
+                {
+                    sheetName: "Sheet1",
+                    tables: [
+                        {
+                            tableName: "Bảng thống kê danh mục",
+                            rowHeader: 1,
+                            columns: [
+                                { key: "STT", value: "STT"},
+                                { key: "name", value: "Tên danh mục"},
+                                { key: "description", value: "Mô tả danh mục"},
+                            ],
+                            data: data
+                        },
+                    ]
+                },
+            ]
+        }
+        return exportData;
+    }
     render() {
         const { domainParent, deleteNode } = this.state;
         const { translate } = this.props;
         const { list } = this.props.documents.administration.domains;
+        const { documents } = this.props;
         console.log('domainnnn', domainParent, deleteNode);
         const dataTree = list.map(node => {
             return {
@@ -76,7 +107,11 @@ class AdministrationDocumentDomains extends Component {
                 parent: node.parent ? node.parent.toString() : "#"
             }
         })
-        
+        let dataExport = [];
+        if (documents.isLoading === false) {
+            dataExport = list;
+        }
+        let exportData = this.convertDataToExportData(dataExport);
         return ( 
             <React.Fragment>
                 <button className="btn btn-success" onClick={() => {
@@ -85,6 +120,7 @@ class AdministrationDocumentDomains extends Component {
                 {
                     deleteNode.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteDomains}>{translate('general.delete')}</button>
                 }
+                {<ExportExcel id="export-document-domain" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
                 <CreateForm domainParent={this.state.domainParent[0]} />
                 <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
