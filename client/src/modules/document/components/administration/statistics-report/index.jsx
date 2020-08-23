@@ -149,43 +149,72 @@ class AdministrationStatisticsReport extends Component {
             }
         }
     }
-    convertDataToExportData = (data) => {
-        console.log(data);
-        data = data.map((x, index) => {
-            return {
-                STT: index + 1,
-                name: x.name,
-                // description: x.description,
-                // path: x.path,
+    convertDataToExportData = (data, data2) => {
+        console.log(data2);
+        let dataCategory = [];
+        let dataDownload = [];
+        let dataView = [];
+        let j = 0, k = 0;
+        for ( let i = 0; i < data.length; i++) {
+            if (data[i][1] !== 0) {
+                k++;
+                dataView = [...dataView, {
+                    "STT": k,
+                    "name": data[i][0],
+                    "number": data[i][1],
+                }]
             }
-        })
+            if (data[i][2] !== 0) {
+                j++;
+                dataDownload = [...dataDownload, {
+                    "STT": j,
+                    "name": data[i][0],
+                    "number": data[i][2],
+                }]
+            }
+        }
+        for ( let i = 0; i < data2.length; i++) {
+            dataCategory = [...dataCategory, {
+                "STT": i+1,
+                "name": data2[i][0],
+                "number": data2[i][1],
+            }]
+        }
         let exportData = {
-            fileName: "Bảng thống kê bao cao",
+            fileName: "Bảng thống kê báo cáo",
             dataSheets: [
                 {
                     sheetName: "Sheet1",
                     tables: [
                         {
-                            tableName: "Bảng thống kê loai tai lieu",
+                            tableName: "Bảng thống kê loại tài liệu sử dụng",
                             rowHeader: 1,
                             columns: [
                                 { key: "STT", value: "STT"},
-                                { key: "name", value: "Tên danh mục"},
-                                // { key: "description", value: "Mô tả danh mục"},
-                                // { key: "path", value: "Đường dẫn danh mục"},
+                                { key: "name", value: "Tên loại tài liệu"},
+                                { key: "number", value: "Số lần sử dụng"},
                             ],
-                            data: data
+                            data: dataCategory
                         },
                         {
-                            tableName: "Bảng thống kê so luot download",
+                            tableName: "Bảng thống kê số lượt xem",
                             rowHeader: 1,
                             columns: [
                                 { key: "STT", value: "STT"},
-                                { key: "name", value: "Tên danh mục"},
-                                // { key: "description", value: "Mô tả danh mục"},
-                                // { key: "path", value: "Đường dẫn danh mục"},
+                                { key: "name", value: "Tên loại tài liệu"},
+                                { key: "number", value: "Số lượt xem"},
                             ],
-                            data: data
+                            data: dataView
+                        },
+                        {
+                            tableName: "Bảng thống kê số lượt download",
+                            rowHeader: 1,
+                            columns: [
+                                { key: "STT", value: "STT"},
+                                { key: "name", value: "Tên loại tài liệu"},
+                                { key: "number", value: "Số lượt download"}
+                            ],
+                            data: dataDownload
                         }
                     ]
                 },
@@ -200,8 +229,8 @@ class AdministrationStatisticsReport extends Component {
         console.log('props', categoryList)
         console.log('stataeee', docList)
         let dataExport = []; 
+        let data2 = [];
         if ( documents.isLoading === false ) {
-            // dataExport = this.getDataViewDownloadBarChart();
             dataExport = categoryList.map(category => {
                 let docs = docList.filter(doc => doc.category !== undefined && doc.category.name === category.name);
                 let totalDownload = 0;
@@ -217,11 +246,15 @@ class AdministrationStatisticsReport extends Component {
                     totalDownload
                 ]
             });
-            // console.log(data);
+            data2 = categoryList.map(category => {
+                let docs = docList.filter(doc => doc.category !== undefined && doc.category.name === category.name).length;
+                return [
+                    category.name,
+                    docs
+                ]
+            });
         }
-        console.log(dataExport);
-        let exportData = this.convertDataToExportData(dataExport);
-        // let exportData = this.convertDataToExportData(dataExport);
+        let exportData = this.convertDataToExportData(dataExport, data2);
         return <React.Fragment>
             {<ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
             <div className="row">
