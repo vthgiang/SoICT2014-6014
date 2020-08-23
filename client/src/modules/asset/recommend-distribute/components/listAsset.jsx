@@ -275,7 +275,7 @@ class ListAsset extends Component {
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
                                         <td>{x.assetType && assettypelist.length && assettypelist.filter(item => item._id === x.assetType).pop() ? assettypelist.filter(item => item._id === x.assetType).pop().typeName : 'Asset type is deleted'}</td>
-                                        <td>{x.assignedTo ? (userlist.length && userlist.filter(item => item._id === x.assignedTo).pop() ? userlist.filter(item => item._id === x.assignedTo).pop().name : 'User is deleted') : ''}</td>
+                                        <td>{x.assignedToUser ? (userlist.length && userlist.filter(item => item._id === x.assignedToUser).pop() ? userlist.filter(item => item._id === x.assignedToUser).pop().name : 'User is deleted') : ''}</td>
                                         <td>{x.handoverFromDate ? this.formatDate2(x.handoverFromDate) : ''}</td>
                                         <td>{x.handoverToDate ? this.formatDate2(x.handoverToDate) : ''}</td>
                                         <td>{x.status}</td>
@@ -310,7 +310,8 @@ class ListAsset extends Component {
                         purchaseDate={currentRowView.purchaseDate}
                         warrantyExpirationDate={currentRowView.warrantyExpirationDate}
                         managedBy={currentRowView.managedBy}
-                        assignedTo={currentRowView.assignedTo}
+                        assignedToUser={currentRowView.assignedToUser}
+                        assignedToOrganizationalUnit={currentRowView.assignedToOrganizationalUnit}
                         handoverFromDate={currentRowView.handoverFromDate}
                         handoverToDate={currentRowView.handoverToDate}
                         location={currentRowView.location}

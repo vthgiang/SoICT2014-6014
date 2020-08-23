@@ -17,7 +17,7 @@ class PinnedPanel extends Component {
                         let id = `draggable-${index}`;
                         return (
                             <Draggable
-                                cancel="textarea, a, i, button"
+                                cancel="textarea, a, i, button, input, label"
                                 handle={`#${id}`}
                                 key={id}
                                 defaultPosition={{ x: 0, y: 0 }}

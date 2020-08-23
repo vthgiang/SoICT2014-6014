@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 /**
- * Cần dùng jquery plugin https://github.com/uxsolutions/bootstrap-datepicker
+ * Cần dùng jquery plugin http://jdewit.github.com/bootstrap-timepicker
  */
 class TimePicker extends Component {
     constructor(props) {
@@ -15,7 +15,7 @@ class TimePicker extends Component {
         const { id, dateFormat, onChange, deleteValue = true } = this.props;
         let zIndex = 1050;
         window.$("#" + id).timepicker({
-            template: "modal",
+            template: "dropdown",
             minuteStep: 5,
         })
         window.$("#" + id).on("change", () => {
@@ -30,21 +30,12 @@ class TimePicker extends Component {
     componentDidUpdate = () => {
         const { id, dateFormat } = this.props;
         window.$("#" + id).timepicker({
-            minuteStep: 5,
-            template: "modal"
+            template: "dropdown",
+            minuteStep: 5
         })
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        // if (nextProps.id !== prevState.id) {
-        //     return {
-        //         value: nextProps.value, // Lưu value ban đầu vào state
-        //         id: nextProps.id
-        //     }
-        // } else {
-        //     return null;
-        // }
-
         return {
             ...prevState,
             value: nextProps.value, // Lưu value ban đầu vào state
@@ -59,18 +50,16 @@ class TimePicker extends Component {
     }
 
     render() {
-        const { id, dateFormat, disabled = false } = this.props;
+        const { id, disabled = false } = this.props;
         return (
             <React.Fragment>
-                <div className="bootstrap-timepicker" id={id}>
-                    <div className="form-group">
-                        <div className="input-group">
-                            <input type="text" id="timepicker" className="form-control timepicker" value={this.state.value ? this.state.value : ""} ref="timePicker" />
-                            <div className="input-group-addon">
-                                <i className="fa fa-clock-o"></i>
-                            </div>
-                        </div>
-                    </div>
+                <div className="bootstrap-timepicker input-group has-feedback">
+                    <span className="input-group-addon">
+                        <i style={{ width: 16, height: 16 }} className="fa fa-clock-o"></i>
+                    </span>
+                    <input type="text" id={id} className="form-control" value={this.state.value ? this.state.value : ""}
+                        onClick={() => window.$("#" + id).timepicker('showWidget')} onChange={() => { }} ref="timePicker"
+                        disabled={disabled} />
                 </div>
             </React.Fragment>
         );

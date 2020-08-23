@@ -5,11 +5,11 @@ export const UsageFormValidator = {
 
     validateStartDate, // ngày bắt đầu sử dụng
     validateEndDate, // ngày kết thúc sử dụng
-    validateUsedBy, // người sử dụng
+    validateUsedByUser, // người sử dụng
     validateDescription
 }
 
-function validateUsedBy(value, translate) {
+function validateUsedByUser(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Người sử dụng không được để trống";
