@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
-import { SearchBar, DataTableSetting, PaginateBar } from '../../../../../common-components';
+import { SearchBar, DataTableSetting, PaginateBar, ExportExcel } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 
 import CreateForm from './createForm';
@@ -46,14 +46,49 @@ class Table extends Component {
         await this.setState({currentRow});
         window.$('#modal-edit-document-category').modal('show');
     }
-
+    convertDataToExportData = (data) => {
+        console.log(data);
+        data = data.map((x, index) => {
+            return {
+                STT: index + 1,
+                name: x.name,
+                description: x.description
+            }
+        })
+        let exportData = {
+            fileName: "Bảng thống kê loại tài liệu",
+            dataSheets: [
+                {
+                    sheetName: "Sheet1",
+                    tables: [
+                        {
+                            tableName: "Bảng thống kê loại tài liệu",
+                            rowHeader: 1,
+                            columns: [
+                                { key: "STT", value: "STT"},
+                                { key: "name", value: "Tên loại tài liệu"},
+                                { key: "description", value: "Mô tả loại tài liệu"}
+                            ],
+                            data: data
+                        },
+                    ]
+                },
+            ]
+        }
+        return exportData;
+    }
     render() { 
         const { translate } = this.props;
         const { isLoading } = this.props.documents;
         const { categories } = this.props.documents.administration;
         const { paginate } = categories;
         const { currentRow } = this.state;
-
+        const { list } = categories;
+        let dataExport = [];
+        if (isLoading === false) {
+            dataExport = list;
+        }
+        let exportData = this.convertDataToExportData(dataExport);
         return ( 
             <React.Fragment>
                 <CreateForm/>
@@ -65,6 +100,7 @@ class Table extends Component {
                         categoryDescription = { currentRow.description }
                     />
                 }
+                {<ExportExcel id="export-document-category" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
                 <SearchBar 
                     columns={[
                         { title: translate('document.administration.categories.name'), value: 'name' },

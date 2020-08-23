@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DocumentActions } from '../../../redux/actions';
+import { ExportExcel } from '../../../../../common-components';
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -148,16 +149,81 @@ class AdministrationStatisticsReport extends Component {
             }
         }
     }
-
+    convertDataToExportData = (data) => {
+        console.log(data);
+        data = data.map((x, index) => {
+            return {
+                STT: index + 1,
+                name: x.name,
+                // description: x.description,
+                // path: x.path,
+            }
+        })
+        let exportData = {
+            fileName: "Bảng thống kê bao cao",
+            dataSheets: [
+                {
+                    sheetName: "Sheet1",
+                    tables: [
+                        {
+                            tableName: "Bảng thống kê loai tai lieu",
+                            rowHeader: 1,
+                            columns: [
+                                { key: "STT", value: "STT"},
+                                { key: "name", value: "Tên danh mục"},
+                                // { key: "description", value: "Mô tả danh mục"},
+                                // { key: "path", value: "Đường dẫn danh mục"},
+                            ],
+                            data: data
+                        },
+                        {
+                            tableName: "Bảng thống kê so luot download",
+                            rowHeader: 1,
+                            columns: [
+                                { key: "STT", value: "STT"},
+                                { key: "name", value: "Tên danh mục"},
+                                // { key: "description", value: "Mô tả danh mục"},
+                                // { key: "path", value: "Đường dẫn danh mục"},
+                            ],
+                            data: data
+                        }
+                    ]
+                },
+            ]
+        }
+        return exportData;
+    }
     render() {
         const { documents, translate } = this.props;
         const categoryList = documents.administration.categories.list;
         const docList = documents.administration.data.list;
         console.log('props', categoryList)
         console.log('stataeee', docList)
-
+        let dataExport = []; 
+        if ( documents.isLoading === false ) {
+            // dataExport = this.getDataViewDownloadBarChart();
+            dataExport = categoryList.map(category => {
+                let docs = docList.filter(doc => doc.category !== undefined && doc.category.name === category.name);
+                let totalDownload = 0;
+                let totalView = 0;
+                for (let index = 0; index < docs.length; index++) {
+                    const element = docs[index];
+                    totalDownload = totalDownload + element.numberOfDownload;
+                    totalView = totalView + element.numberOfView;
+                }
+                return [
+                    category.name,
+                    totalView,
+                    totalDownload
+                ]
+            });
+            // console.log(data);
+        }
+        console.log(dataExport);
+        let exportData = this.convertDataToExportData(dataExport);
+        // let exportData = this.convertDataToExportData(dataExport);
         return <React.Fragment>
-
+            {<ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
             <div className="row">
                 <div className="box">
                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
