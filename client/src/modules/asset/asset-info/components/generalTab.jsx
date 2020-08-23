@@ -62,7 +62,8 @@ class GeneralTab extends Component {
                 purchaseDate: nextProps.purchaseDate,
                 warrantyExpirationDate: nextProps.warrantyExpirationDate,
                 managedBy: nextProps.managedBy,
-                assignedTo: nextProps.assignedTo,
+                assignedToUser: nextProps.assignedToUser,
+                assignedToOrganizationalUnit: nextProps.assignedToOrganizationalUnit,
                 handoverFromDate: nextProps.handoverFromDate,
                 handoverToDate: nextProps.handoverToDate,
                 location: nextProps.location,
@@ -86,7 +87,7 @@ class GeneralTab extends Component {
 
         const {
             img, avatar, code, assetName, serial, assetTypes, group, purchaseDate, warrantyExpirationDate,
-            managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse, detailInfo
+            managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse, detailInfo
         } = this.state;
 
         return (
@@ -163,7 +164,7 @@ class GeneralTab extends Component {
                                     {/* Người sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.user')}&emsp; </strong>
-                                        {assignedTo ? (userlist.length && userlist.filter(item => item._id === assignedTo).pop() ? userlist.filter(item => item._id === assignedTo).pop().name : 'User is deleted') : ''}
+                                        {assignedToUser ? (userlist.length && userlist.filter(item => item._id === assignedToUser).pop() ? userlist.filter(item => item._id === assignedToUser).pop().name : 'User is deleted') : ''}
                                     </div>
 
                                     {/* Thời gian bắt đầu sử dụng */}

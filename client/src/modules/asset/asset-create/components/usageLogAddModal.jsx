@@ -12,7 +12,7 @@ class UsageLogAddModal extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            usedBy: "",
+            usedByUser: "",
             startDate: this.formatDate(Date.now()),
             endDate: this.formatDate(Date.now()),
             description: "",
@@ -40,10 +40,10 @@ class UsageLogAddModal extends Component {
     /**
      * Bắt sự kiện thay đổi người sử dụng
      */
-    handleUsedByChange = (value) => {
+    handleUsedByUserChange = (value) => {
         this.setState({
             ...this.state,
-            usedBy: value[0]
+            usedByUser: value[0]
         });
     }
 
@@ -120,10 +120,10 @@ class UsageLogAddModal extends Component {
         var partEnd = this.state.endDate.split('-');
         var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
 
-        if (this.state.usedBy === '') {
+        if (this.state.usedByUser === '') {
             await this.setState({
                 ...this.state,
-                usedBy: userlist[0]._id,
+                usedByUser: userlist[0]._id,
             });
         }
 
@@ -135,7 +135,7 @@ class UsageLogAddModal extends Component {
     render() {
         const { id } = this.props;
         const { translate, user } = this.props;
-        const { usedBy, startDate, endDate, description, errorOnDescription } = this.state;
+        const { usedByUser, startDate, endDate, description, errorOnDescription } = this.state;
 
         var userlist = user.list;
         console.log(this.state, 'this.state')
@@ -158,14 +158,14 @@ class UsageLogAddModal extends Component {
                             <div className={`form-group`}>
                                 <label>{translate('asset.general_information.user')}</label>
                                 <div>
-                                    <div id="usedByBox">
+                                    <div id="usedByUserBox">
                                         <SelectBox
-                                            id={`usedBy${id}`}
+                                            id={`usedByUser${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })}
-                                            onChange={this.handleUsedByChange}
-                                            value={usedBy}
+                                            onChange={this.handleUsedByUserChange}
+                                            value={usedByUser}
                                             multiple={false}
                                         />
                                     </div>

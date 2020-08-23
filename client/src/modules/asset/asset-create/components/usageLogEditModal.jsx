@@ -39,10 +39,10 @@ class UsageLogEditModal extends Component {
     // /**
     //  * Bắt sự kiện thay đổi người sử dụng
     //  */
-    handleUsedByChange = (value) => {
+    handleUsedByUserChange = (value) => {
         this.setState({
             ...this.state,
-            usedBy: value[0]
+            usedByUser: value[0]
         });
     }
 
@@ -128,7 +128,7 @@ class UsageLogEditModal extends Component {
                 id: nextProps.id,
                 _id: nextProps._id,
                 index: nextProps.index,
-                usedBy: nextProps.usedBy,
+                usedByUser: nextProps.usedByUser,
                 startDate: nextProps.startDate,
                 endDate: nextProps.endDate,
                 description: nextProps.description,
@@ -142,7 +142,7 @@ class UsageLogEditModal extends Component {
     render() {
         const { id } = this.props;
         const { translate, user } = this.props;
-        const { usedBy, startDate, endDate, description, errorOnDescription } = this.state;
+        const { usedByUser, startDate, endDate, description, errorOnDescription } = this.state;
 
         var userlist = user.list;
         console.log(this.state, 'this.state')
@@ -164,14 +164,14 @@ class UsageLogEditModal extends Component {
                             <div className={`form-group`}>
                                 <label>{translate('asset.general_information.user')}</label>
                                 <div>
-                                    <div id="usedByBox">
+                                    <div id="usedByUserBox">
                                         <SelectBox
-                                            id={`usedBy${id}`}
+                                            id={`usedByUser${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })}
-                                            onChange={this.handleUsedByChange}
-                                            value={usedBy}
+                                            onChange={this.handleUsedByUserChange}
+                                            value={usedByUser}
                                             multiple={false}
                                         />
                                     </div>

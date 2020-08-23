@@ -246,7 +246,7 @@ class UsageManagement extends Component {
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
                                         <td>{x.assetType && assettypelist.length && assettypelist.find(item => item._id === x.assetType) ? assettypelist.find(item => item._id === x.assetType).typeName : ''}</td>
-                                        <td>{x.assignedTo ? (userlist.length && userlist.find(item => item._id === x.assignedTo) ? userlist.find(item => item._id === x.assignedTo).name : 'User is deleted') : ''}</td>
+                                        <td>{x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).name : 'User is deleted') : ''}</td>
                                         <td>{x.handoverFromDate ? this.formatDate(x.handoverFromDate) : ''}</td>
                                         <td>{x.handoverToDate ? this.formatDate(x.handoverToDate) : ''}</td>
                                         <td>{x.location}</td>
@@ -281,7 +281,8 @@ class UsageManagement extends Component {
                         purchaseDate={currentRow.purchaseDate}
                         warrantyExpirationDate={currentRow.warrantyExpirationDate}
                         managedBy={currentRow.managedBy}
-                        assignedTo={currentRow.assignedTo}
+                        assignedToUser={currentRow.assignedToUser}
+                        assignedToOrganizationalUnit={currentRow.assignedToOrganizationalUnit}
                         handoverFromDate={currentRow.handoverFromDate}
                         handoverToDate={currentRow.handoverToDate}
                         location={currentRow.location}

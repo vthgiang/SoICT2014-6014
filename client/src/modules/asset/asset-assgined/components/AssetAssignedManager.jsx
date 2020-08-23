@@ -238,8 +238,6 @@ class AssetAssignedManager extends Component {
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.asset_type')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.asset_value')}</th>
-                                <th style={{ width: "20%" }}>{translate('asset.general_information.handover_from_date')}</th>
-                                <th style={{ width: "20%" }}>{translate('asset.usage.accountable')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}
                                 <DataTableSetting
@@ -249,8 +247,6 @@ class AssetAssignedManager extends Component {
                                             translate('asset.general_information.asset_name'),
                                             translate('asset.general_information.asset_type'),
                                             translate('asset.general_information.asset_value'),
-                                            translate('asset.general_information.handover_from_date'),
-                                            translate('asset.usage.accountable'),
                                             translate('asset.general_information.status')
                                         ]}
                                         limit={limit}
@@ -262,14 +258,12 @@ class AssetAssignedManager extends Component {
                         </thead>
                         <tbody>
                             {(lists && lists.length !== 0) &&
-                                lists.filter(item => item.assignedTo === auth.user._id).map((x, index) => (
+                                lists.filter(item => item.assignedToUser === auth.user._id).map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.code}</td>
                                         <td>{x.assetName}</td>
                                         <td>{x.assetType && assettypelist.length && assettypelist.filter(item => item._id === x.assetType).pop() ? assettypelist.filter(item => item._id === x.assetType).pop().typeName : 'Asset is deleted'}</td>
                                         <td>{formater.format(parseInt(x.cost))} VNĐ</td>
-                                        <td>{this.formatDate2(x.handoverFromDate)}</td>
-                                        <td>{this.formatDate2(x.handoverToDate)}</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
@@ -303,9 +297,9 @@ class AssetAssignedManager extends Component {
                         purchaseDate={currentRowView.purchaseDate}
                         warrantyExpirationDate={currentRowView.warrantyExpirationDate}
                         managedBy={currentRowView.managedBy}
-                        assignedTo={currentRowView.assignedTo}
-                        handoverFromDate={currentRowView.handoverFromDate}
-                        handoverToDate={currentRowView.handoverToDate}
+                        assignedToUser={currentRowView.assignedToUser}
+                        assignedToOrganizationalUnit={currentRowView.assignedToOrganizationalUnit}
+
                         location={currentRowView.location}
                         description={currentRowView.description}
                         status={currentRowView.status}

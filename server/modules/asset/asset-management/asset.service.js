@@ -115,9 +115,9 @@ exports.createAsset = async (data, company, fileInfo) => {
         purchaseDate: data.purchaseDate,
         warrantyExpirationDate: data.warrantyExpirationDate,
         managedBy: data.managedBy,
-        assignedTo: data.assignedTo ? data.assignedTo : null,
-        handoverFromDate: data.handoverFromDate,
-        handoverToDate: data.handoverToDate,
+        assignedToUser: data.assignedToUser ? data.assignedToUser : null,
+        assignedToOrganizationalUnit: data.assignedToOrganizationalUnit? data.assignedToOrganizationalUnit: null,
+
         location: data.location,
         status: data.status,
         canRegisterForUse: data.canRegisterForUse,
@@ -215,9 +215,9 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
     oldAsset.purchaseDate = data.purchaseDate;
     oldAsset.warrantyExpirationDate = data.warrantyExpirationDate;
     oldAsset.managedBy = data.managedBy;
-    oldAsset.assignedTo = data.assignedTo !== '' ? data.assignedTo : null;
-    oldAsset.handoverFromDate = data.handoverFromDate;
-    oldAsset.handoverToDate = data.handoverToDate;
+    oldAsset.assignedToUser = data.assignedToUser !== '' ? data.assignedToUser : null;
+    oldAsset.assignedToOrganizationalUnit = data.assignedToOrganizationalUnit !== '' ? data.assignedToOrganizationalUnit : null;
+
     oldAsset.location = data.location;
     oldAsset.status = data.status;
     oldAsset.canRegisterForUse = data.canRegisterForUse;
@@ -383,11 +383,10 @@ exports.searchUsages = async (id, data, company) => {
  * Thêm mới thông tin sử dụng
  */
 exports.createUsage = async (id, data) => {
-    await Asset.update({ _id: id }, {
-        $addToSet: { usageLogs: data },
-        assignedTo: data.assignedTo,
-        handoverFromDate: data.handoverFromDate,
-        handoverToDate: data.handoverToDate,
+    await Asset.update({_id: id}, {
+        $addToSet: {usageLogs: data},
+        assignedToUser: data.assignedToUser ? data.assignedToUser : null,
+        assignedToOrganizationalUnit: data.assignedToOrganizationalUnit? data.assignedToOrganizationalUnit: null,
         status: data.status
     });
 
@@ -402,7 +401,7 @@ exports.createUsage = async (id, data) => {
 exports.updateUsage = async (usageId, data) => {
     return await Asset.update({ _id: data.assetId, "usageLogs._id": usageId }, {
         $set: {
-            "usageLogs.$.usedBy": data.usedBy,
+            "usageLogs.$.usedByUser": data.usedByUser,
             "usageLogs.$.description": data.description,
             "usageLogs.$.endDate": data.endDate,
             "usageLogs.$.startDate": data.startDate
@@ -412,19 +411,21 @@ exports.updateUsage = async (usageId, data) => {
 
 exports.recallAsset = async ( assetId , data) => {
     let nowDate= new Date();
-    let updateUsageLogs = await Asset.update({_id: assetId, "usageLogs.usedBy": data.usageId}, {
+    let asset = await Asset.findById(assetId);
+    let usageLogs = asset.usageLogs[asset.usageLogs.length - 1];
+    let updateUsageLogs = await Asset.update({_id: assetId, "usageLogs.usedByUser": usageLogs._id}, {
         $set: {
             "usageLogs.$.endDate": nowDate,
         }
     })
-    let asset = await Asset.update({_id: assetId}, {
+    let updateAsset = await Asset.update({_id: assetId},{
         $set: {
-            assignedTo: null,
+            assignedToUser: null,
+            assignedToOrganizationalUnit: null,
             status: "Sẵn sàng sử dụng",
         }
-    });
-
-    return asset;
+    })
+    return updateAsset;
 }
 /**
  * Xóa thông tin sử dụng

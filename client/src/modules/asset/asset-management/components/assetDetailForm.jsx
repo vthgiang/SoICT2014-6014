@@ -29,7 +29,8 @@ class AssetDetailForm extends Component {
                 purchaseDate: nextProps.purchaseDate,
                 warrantyExpirationDate: nextProps.warrantyExpirationDate,
                 managedBy: nextProps.managedBy,
-                assignedTo: nextProps.assignedTo,
+                assignedToUser: nextProps.assignedToUser,
+                assignedToOrganizationalUnit: nextProps.assignedToOrganizationalUnit,
                 handoverFromDate: nextProps.handoverFromDate,
                 handoverToDate: nextProps.handoverToDate,
                 location: nextProps.location,
@@ -61,7 +62,7 @@ class AssetDetailForm extends Component {
     render() {
         const { translate, assetsManager } = this.props;
         const { _id, avatar, code, assetName, serial, assetType, group, purchaseDate, warrantyExpirationDate, 
-                managedBy, assignedTo, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse,
+                managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse,
                 detailInfo, cost, residualValue, startDepreciation, usefulLife, depreciationType, estimatedTotalProduction, 
                 unitsProducedDuringTheYears, maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost, 
                 disposalDesc, archivedRecordNumber, files 
@@ -101,7 +102,8 @@ class AssetDetailForm extends Component {
                                     purchaseDate={purchaseDate}
                                     warrantyExpirationDate={warrantyExpirationDate}
                                     managedBy={managedBy}
-                                    assignedTo={assignedTo}
+                                    assignedToUser={assignedToUser}
+                                    assignedToOrganizationalUnit= {assignedToOrganizationalUnit}
                                     handoverFromDate={handoverFromDate}
                                     handoverToDate={handoverToDate}
                                     location={location}
