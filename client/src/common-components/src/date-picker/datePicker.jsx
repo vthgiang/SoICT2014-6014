@@ -12,8 +12,7 @@ class DatePicker extends Component {
         this.zIndex = 1050;
     }
     componentDidMount = () => {
-        const { id, dateFormat, onChange, deleteValue = true,value } = this.props;
-        console.log(value)
+        const { id, dateFormat, onChange, deleteValue = true } = this.props;
         let zIndex = 1050;
 
         dateFormat !== "month-year" ?
@@ -38,16 +37,11 @@ class DatePicker extends Component {
             });
         }
         window.$("#" + id).on("change", () => {
-            let value1 = this.refs.datePicker.value;
-            if(value) {
-                onChange(value)
-            }else {
-                this.setState({
-                    value: value1
-                })
-                onChange(value1); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
-            }
-            
+            let value = this.refs.datePicker.value;
+            this.setState({
+                value: value
+            })
+            onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
         });
     }
 
