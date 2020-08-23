@@ -251,6 +251,8 @@ class DepreciationManager extends Component {
      * @param {*} cost Nguyên giá
      * @param {*} usefulLife Thời gian trích khấu hao
      * @param {*} startDepreciation Thời gian bắt đầu trích khấu hao
+     * @param {*} estimatedTotalProduction Sản lượng theo công suất thiết kế (trong 1 năm)
+     * @param {*} unitsProducedDuringTheYears Sản lượng sản phẩm trong các tháng
      */
     calculateDepreciation = (depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation) => {
         let annualDepreciation = 0, monthlyDepreciation = 0, remainingValue = cost;
