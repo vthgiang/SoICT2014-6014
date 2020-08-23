@@ -175,17 +175,12 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
         if (onDataAvailable) {
             onDataAvailable(exportData);
         }
-        this.setState(state => {
-            return {
-                ...state,
-                exportData : exportData            }
-        })
+        
     }
     
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
     convertDataToExportData = (data,name) => {
-        let fileName = "Biểu đồ theo dõi kết quả KPI nhân viên theo từng tháng";
-        let convertToObjectData={}, finalData=[],employeeKpiArray=[];
+        let fileName = "Biểu đồ theo dõi kết quả KPI nhân viên "+ (name?name:"") +" theo từng tháng ";
         if (data) {                
             if (data) {           
                 for(let i=0; i< data.length;i++){
@@ -201,7 +196,7 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
             fileName: fileName,
             dataSheets:[
                 {
-                    sheetName: "Biểu đồ theo dõi kết quả KPI nhân viên "+(name?name:"")+ " theo từng tháng",
+                    sheetName: "sheet1" ,
                     sheetTitle : fileName,
                     tables: [
                         {
@@ -210,7 +205,7 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
                                 { key: "time", value: "Thời gian" },    
                                 { key: "automaticPoint", value: "Điểm KPI tự động" },
                                 { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm KPI được phê duyệt" }
+                                { key: "approvedPoint", value: "Điểm KPI được phê duyệt" }
                             ],
                             data: data
                         }
