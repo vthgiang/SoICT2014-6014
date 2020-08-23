@@ -12,7 +12,7 @@ class TimePicker extends Component {
         this.zIndex = 1050;
     }
     componentDidMount = () => {
-        const { id, dateFormat, onChange, deleteValue = true } = this.props;
+        const { id, dateFormat, onChange, deleteValue = true, getDefaultValue } = this.props;
         let zIndex = 1050;
         window.$("#" + id).timepicker({
             template: "dropdown",
@@ -25,6 +25,7 @@ class TimePicker extends Component {
             })
             onChange(value); // Thông báo lại cho parent component về giá trị mới (để parent component lưu vào state của nó)
         });
+        getDefaultValue(window.$("#" + id).val())
     }
 
     componentDidUpdate = () => {
