@@ -24,7 +24,6 @@ class AdministrationStatisticsReport extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (nextProps.documents.administration.categories.list.length && nextProps.documents.administration.data.list.length) {
-                // console.log('aaaaaaaaaaaaaaa',nextProps. documents.administration.categories.list)
                 this.setState(state => {
                     return {
                         ...state,
@@ -65,7 +64,6 @@ class AdministrationStatisticsReport extends Component {
     pieChart = () => {
         this.removePreviousPieChart();
         let dataChart = this.getDataDocumentAnalys();
-        //console.log('pieeeeeeeee', dataChart);
         this.chart = c3.generate({
             bindto: this.refs.piechart,
 
@@ -153,25 +151,34 @@ class AdministrationStatisticsReport extends Component {
         const { documents, translate } = this.props;
         const categoryList = documents.administration.categories.list;
         const docList = documents.administration.data.list;
-        console.log('props', categoryList)
-        console.log('stataeee', docList)
 
         return <React.Fragment>
 
             <div className="row">
-                <div className="box">
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_document')}</b>
-                        <div ref="piechart"></div>
-                    </div>
-                </div>
-                <div className="box">
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ marginTop: '50px', paddingTop: '10px' }}>
-                        <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_view_down')}</b>
-                        <div ref="barchart"></div>
+                <div className="col-xs-12" >
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_document')}</b>
+                        </div>
+                        <div className="box-body qlcv" style={{ minHeight: "400px" }}>
+                            <div ref="piechart"></div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div className="row">
+                <div className="col-xs-12" >
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_view_down')}</b>
+                        </div>
+                        <div className="box-body qlcv" style={{ minHeight: "400px" }}>
+                            <div ref="barchart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
         </React.Fragment>;
 
