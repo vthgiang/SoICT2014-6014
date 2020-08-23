@@ -322,6 +322,7 @@ class Table extends Component {
                         documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
                         documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
+
                     />
 
                 }
@@ -346,6 +347,7 @@ class Table extends Component {
                         documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
                         documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
+                        documentLogs={currentRow.logs}
                     />
                 }
 
@@ -505,7 +507,6 @@ class Table extends Component {
             domains: this.state.domain[0],
             archives: this.state.archive[0],
         };
-        console.log('nameeee', data)
         await this.props.getAllDocuments(data);
     }
 }

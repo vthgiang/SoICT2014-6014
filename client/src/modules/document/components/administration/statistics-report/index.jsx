@@ -25,7 +25,6 @@ class AdministrationStatisticsReport extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (nextProps.documents.administration.categories.list.length && nextProps.documents.administration.data.list.length) {
-                // console.log('aaaaaaaaaaaaaaa',nextProps. documents.administration.categories.list)
                 this.setState(state => {
                     return {
                         ...state,
@@ -66,7 +65,6 @@ class AdministrationStatisticsReport extends Component {
     pieChart = () => {
         this.removePreviousPieChart();
         let dataChart = this.getDataDocumentAnalys();
-        //console.log('pieeeeeeeee', dataChart);
         this.chart = c3.generate({
             bindto: this.refs.piechart,
 
@@ -155,7 +153,7 @@ class AdministrationStatisticsReport extends Component {
         let dataDownload = [];
         let dataView = [];
         let j = 0, k = 0;
-        for ( let i = 0; i < data.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             if (data[i][1] !== 0) {
                 k++;
                 dataView = [...dataView, {
@@ -173,9 +171,9 @@ class AdministrationStatisticsReport extends Component {
                 }]
             }
         }
-        for ( let i = 0; i < data2.length; i++) {
+        for (let i = 0; i < data2.length; i++) {
             dataCategory = [...dataCategory, {
-                "STT": i+1,
+                "STT": i + 1,
                 "name": data2[i][0],
                 "number": data2[i][1],
             }]
@@ -190,9 +188,9 @@ class AdministrationStatisticsReport extends Component {
                             tableName: "Bảng thống kê loại tài liệu sử dụng",
                             rowHeader: 1,
                             columns: [
-                                { key: "STT", value: "STT"},
-                                { key: "name", value: "Tên loại tài liệu"},
-                                { key: "number", value: "Số lần sử dụng"},
+                                { key: "STT", value: "STT" },
+                                { key: "name", value: "Tên loại tài liệu" },
+                                { key: "number", value: "Số lần sử dụng" },
                             ],
                             data: dataCategory
                         },
@@ -200,9 +198,9 @@ class AdministrationStatisticsReport extends Component {
                             tableName: "Bảng thống kê số lượt xem",
                             rowHeader: 1,
                             columns: [
-                                { key: "STT", value: "STT"},
-                                { key: "name", value: "Tên loại tài liệu"},
-                                { key: "number", value: "Số lượt xem"},
+                                { key: "STT", value: "STT" },
+                                { key: "name", value: "Tên loại tài liệu" },
+                                { key: "number", value: "Số lượt xem" },
                             ],
                             data: dataView
                         },
@@ -210,9 +208,9 @@ class AdministrationStatisticsReport extends Component {
                             tableName: "Bảng thống kê số lượt download",
                             rowHeader: 1,
                             columns: [
-                                { key: "STT", value: "STT"},
-                                { key: "name", value: "Tên loại tài liệu"},
-                                { key: "number", value: "Số lượt download"}
+                                { key: "STT", value: "STT" },
+                                { key: "name", value: "Tên loại tài liệu" },
+                                { key: "number", value: "Số lượt download" }
                             ],
                             data: dataDownload
                         }
@@ -228,9 +226,9 @@ class AdministrationStatisticsReport extends Component {
         const docList = documents.administration.data.list;
         console.log('props', categoryList)
         console.log('stataeee', docList)
-        let dataExport = []; 
+        let dataExport = [];
         let data2 = [];
-        if ( documents.isLoading === false ) {
+        if (documents.isLoading === false) {
             dataExport = categoryList.map(category => {
                 let docs = docList.filter(doc => doc.category !== undefined && doc.category.name === category.name);
                 let totalDownload = 0;
@@ -258,19 +256,30 @@ class AdministrationStatisticsReport extends Component {
         return <React.Fragment>
             {<ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
             <div className="row">
-                <div className="box">
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                        <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_document')}</b>
-                        <div ref="piechart"></div>
-                    </div>
-                </div>
-                <div className="box">
-                    <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12" style={{ marginTop: '50px', paddingTop: '10px' }}>
-                        <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_view_down')}</b>
-                        <div ref="barchart"></div>
+                <div className="col-xs-12" >
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_document')}</b>
+                        </div>
+                        <div className="box-body qlcv" style={{ minHeight: "400px" }}>
+                            <div ref="piechart"></div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div className="row">
+                <div className="col-xs-12" >
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_view_down')}</b>
+                        </div>
+                        <div className="box-body qlcv" style={{ minHeight: "400px" }}>
+                            <div ref="barchart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
         </React.Fragment>;
 

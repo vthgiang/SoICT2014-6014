@@ -66,12 +66,10 @@ class EditForm extends Component {
     }
     // tìm các node con cháu
     addNode = (node, array) => {
-        console.log('dang xet', node.label, node.children);
+
         if (node && node.children) {
-            console.log('3333333333', node.children);
             for (let i = 0; i < node.children.length; i++) {
                 array.push(node.children[i].id);
-                console.log(array);
                 this.addNode(node.children[i], array);
             }
         }
@@ -80,7 +78,7 @@ class EditForm extends Component {
         const { translate, documents } = this.props;
         const { archiveId, archiveName, archiveDescription, archiveParent } = this.state;
         const { tree } = documents.administration.archives;
-        console.log('treee edit', tree);
+
         let node = "";
         // find node
         for (let i = 0; i < tree.length; i++) {
@@ -92,7 +90,7 @@ class EditForm extends Component {
         if (node && node.children) {
             this.addNode(node, childrenNode);
         }
-        console.log("hihihi", childrenNode);
+
         this.props.editDocumentArchive(archiveId, {
             name: archiveName,
             description: archiveDescription,

@@ -9,8 +9,8 @@ const ObjectId = require('mongoose').Types.ObjectId;
  */
 exports.getDocuments = async (company, query) => {
     // console.log('ttt', query);
-    var page = query.page;
-    var limit = query.limit;
+    let page = query.page;
+    let limit = query.limit;
 
     if (!(page || limit)) {
 
@@ -20,6 +20,7 @@ exports.getDocuments = async (company, query) => {
             { path: 'views.viewer', model: User, select: 'name id' },
             { path: "downloads.downloader", model: User, select: 'name id' },
             { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
+            { path: "logs.creator", model: User, select: 'name id' },
         ]);
     } else {
         let option = {
@@ -51,6 +52,8 @@ exports.getDocuments = async (company, query) => {
                 { path: 'views.viewer', model: User, select: 'name id' },
                 { path: "downloads.downloader", model: User, select: 'name id' },
                 { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
+                { path: "logs.creator", model: User, select: 'name id' },
+
             ]
         });
     }
@@ -69,7 +72,7 @@ exports.showDocument = async (id, viewer) => {
     const getIndex
 
         = (array, value) => {
-            var res = -1;
+            let res = -1;
             for (let i = 0; i < array.length; i++) {
                 if (array[i].viewer.toString() === value.toString()) {
                     res = i;
@@ -79,7 +82,7 @@ exports.showDocument = async (id, viewer) => {
 
             return res;
         }
-    var index = getIndex(doc.views, viewer);
+    let index = getIndex(doc.views, viewer);
     if (index !== -1) doc.views.splice(index, 1);
     doc.views.push({ viewer });
     await doc.save();
@@ -101,7 +104,7 @@ exports.increaseNumberView = async (id, viewer) => {
 
         return res;
     }
-    var index = getIndex(doc.views, viewer);
+    let index = getIndex(doc.views, viewer);
     if (index !== -1) doc.views.splice(index, 1);
     doc.views.push({ viewer });
     await doc.save();
@@ -153,7 +156,6 @@ exports.createDocument = async (company, data) => {
  * Chỉnh sửa thông tin tài liệu văn bản
  */
 exports.editDocument = async (id, data, query = undefined) => {
-    console.log('data', data);
     // thêm lịch sử chỉnh sửa
     console.log('querry', query);
     let { creator, title, descriptions } = data;
@@ -164,7 +166,6 @@ exports.editDocument = async (id, data, query = undefined) => {
         title: title,
         description: descriptions,
     }
-    console.log('logggg', log);
     let document = await Document.findByIdAndUpdate(
         id,
         {
@@ -172,7 +173,6 @@ exports.editDocument = async (id, data, query = undefined) => {
         },
         { new: true }
     )
-
     // chỉnh sửa
     if (query !== undefined && Object.keys(query).length > 0) {
 
@@ -277,7 +277,7 @@ exports.downloadDocumentFileScan = async (data) => {
 async function downloadFile(doc, downloaderId) {
     doc.numberOfDownload += 1;
     const getIndex = (array, value) => {
-        var res = -1;
+        let res = -1;
         for (let i = 0; i < array.length; i++) {
             if (array[i].downloader.toString() === value.toString()) {
                 res = i;
@@ -287,7 +287,7 @@ async function downloadFile(doc, downloaderId) {
 
         return res;
     }
-    var index = getIndex(doc.downloads, downloaderId);
+    let index = getIndex(doc.downloads, downloaderId);
     if (index !== -1) doc.downloads.splice(index, 1);
     doc.downloads.push({ downloader: downloaderId });
     await doc.save();
@@ -297,8 +297,8 @@ async function downloadFile(doc, downloaderId) {
  */
 exports.getDocumentCategories = async (company, query) => {
 
-    var page = query.page;
-    var limit = query.limit;
+    let page = query.page;
+    let limit = query.limit;
 
     if (page === undefined && limit === undefined) {
 
@@ -374,12 +374,12 @@ exports.createDocumentDomain = async (company, data) => {
 }
 
 exports.getDocumentsThatRoleCanView = async (company, query) => {
-    var page = query.page;
-    var limit = query.limit;
+    let page = query.page;
+    let limit = query.limit;
     // console.log(query);
-    var role = await Role.findById(query.roleId);
+    let role = await Role.findById(query.roleId);
     // console.log(role);
-    var roleArr = [role._id].concat(role.parents);
+    let roleArr = [role._id].concat(role.parents);
 
     if (page === undefined && limit === undefined) {
 
@@ -394,11 +394,30 @@ exports.getDocumentsThatRoleCanView = async (company, query) => {
             { path: 'views.viewer', model: User, select: 'name id' },
             { path: "downloads.downloader", model: User, select: 'name id' },
             { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
+            { path: "logs.creator", model: User, select: 'name id' },
         ]);
     } else {
-        const option = (query.key !== undefined && query.value !== undefined)
-            ? Object.assign({ company, roles: { $in: roleArr } }, { [`${query.key}`]: new RegExp(query.value, "i") })
-            : { company, roles: { $in: roleArr } };
+        // const option = (query.key !== undefined && query.value !== undefined)
+        //     ? Object.assign({ company, roles: { $in: roleArr } }, { [`${query.key}`]: new RegExp(query.value, "i") })
+        //     : { company, roles: { $in: roleArr } };
+        let option = {
+            company: company,
+            roles: { $in: roleArr }
+        };
+
+        if (query.category) {
+            option.category = query.category;
+        }
+        if (query.domains) {
+            option.domains = query.domains;
+        }
+        if (query.archives) {
+            option.archives = query.archives
+        }
+        if (query.name) {
+            option.name = new RegExp(query.name, "i")
+        }
+        console.log("option: ", option);
 
         return await Document.paginate(option, {
             page,
@@ -411,6 +430,7 @@ exports.getDocumentsThatRoleCanView = async (company, query) => {
                 { path: 'views.viewer', model: User, select: 'name id' },
                 { path: "downloads.downloader", model: User, select: 'name id' },
                 { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
+                { path: "logs.creator", model: User, select: 'name id' },
             ]
         });
     }
@@ -420,7 +440,7 @@ exports.getDocumentsUserStatistical = async (userId, query) => {
     const user = await User.findById(userId).populate({
         path: 'roles', model: UserRole
     });
-    var { option } = query;
+    let { option } = query;
     switch (option) {
         case 'downloaded': //những tài liệu văn bản mà người dùng đã tải xuống
             return await Document.find({ "downloads.downloader": userId }).populate([
@@ -542,7 +562,7 @@ exports.editDocumentArchive = async (id, data) => {
         archive.save();
     }
     const document = await this.getDocumentArchives(archive.company)
-    return document;
+    return archive;
 }
 
 async function findPath(data) {
