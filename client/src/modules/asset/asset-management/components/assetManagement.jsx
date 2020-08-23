@@ -456,6 +456,7 @@ class AssetManagement extends Component {
                         assetName={currentRowView.assetName}
                         serial={currentRowView.serial}
                         assetType={currentRowView.assetType}
+                        group={currentRowView.group}
                         purchaseDate={currentRowView.purchaseDate}
                         warrantyExpirationDate={currentRowView.warrantyExpirationDate}
                         managedBy={currentRowView.managedBy}
@@ -501,6 +502,7 @@ class AssetManagement extends Component {
                         assetName={currentRow.assetName}
                         serial={currentRow.serial}
                         assetType={currentRow.assetType}
+                        group={currentRow.group}
                         purchaseDate={currentRow.purchaseDate}
                         warrantyExpirationDate={currentRow.warrantyExpirationDate}
                         managedBy={currentRow.managedBy}

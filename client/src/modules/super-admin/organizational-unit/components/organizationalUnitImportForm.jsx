@@ -26,18 +26,34 @@ class DepartmentImportForm extends Component {
     }
 
     handleImportExcel = (value, checkFileImport) => {
-        console.log(value);
-        // for (let i = 0; i < value.length; i++) {
-        //     let deans, viceDeans, employees;
-        //     deans = value[i].deans;
-        //     value[i].deans = deans;
-        //     viceDeans = value[i].viceDeans.split(',');
-        //     viceDeans = viceDeans.map( x => x.trim());
-        //     value[i].viceDeans = viceDeans;
-        //     employees = value[i].employees.split(',');
-        //     employees = employees.map( x => x.trim());
-        //     value[i].employees = employees;
-        // }
+        let values = [];
+        let k = -1;
+        for (let i = 0; i < value.length; i++) {
+            let deans, viceDeans, employees;
+            let x = value[i];
+            if (x.name) {
+                k++;
+                values = [...values, {
+                    "name": x.name,
+                    "description": x.description,
+                    "parent": x.parent,
+                    "deans": [x.deans],
+                    "viceDeans": [x.viceDeans],
+                    "employees": [x.employees],
+                }]
+            } else {
+                if (x.deans) {
+                    values[k].deans = [...values[k].deans, x.deans];
+                }
+                if (x.viceDeans) {
+                    values[k].viceDeans = [...values[k].viceDeans, x.viceDeans];
+                }
+                if (x.employees) {
+                    values[k].employees = [...values[k].employees, x.employees];
+                }
+            }
+        }
+        value = values;
         if (checkFileImport) {
             let rowError = [];
             let checkImportData = value;
@@ -84,12 +100,10 @@ class DepartmentImportForm extends Component {
     }
 
     convertExportData = (dataExport) => {
-        console.log(dataExport);
         for (let va = 0; va < dataExport.dataSheets.length; va++ ) {
             for (let val = 0; val < dataExport.dataSheets[va].tables.length; val++) {
                 let datas = [];
                 let data = dataExport.dataSheets[va].tables[val].data;
-                console.log(data);
                 if (data[0] && Array.isArray(data[0].deans)) {
                     for (let i = 0; i < data.length; i++) {
                         let x = data[i];
@@ -124,7 +138,6 @@ class DepartmentImportForm extends Component {
                             }
                             datas = [...datas, out];
                         }
-                        console.log(datas);
                     }
                     dataExport.dataSheets[va].tables[val].data = datas;
                 }
@@ -138,7 +151,6 @@ class DepartmentImportForm extends Component {
         const { translate} = this.props;
         let { limit, page, importData, configData, checkFileImport, rowError } = this.state;
         let templateImportDepartment2 = this.convertExportData(templateImportDepartment);
-        console.log(templateImportDepartment2);
         return (
             <React.Fragment>
                 <DialogModal 

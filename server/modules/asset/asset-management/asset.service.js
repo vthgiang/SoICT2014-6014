@@ -110,6 +110,7 @@ exports.createAsset = async (data, company, fileInfo) => {
         assetName: data.assetName,
         code: data.code,
         serial: data.serial,
+        group: data.group,
         assetType: data.assetType,
         purchaseDate: data.purchaseDate,
         warrantyExpirationDate: data.warrantyExpirationDate,
@@ -210,6 +211,7 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
     oldAsset.code = data.code;
     oldAsset.serial = data.serial;
     oldAsset.assetType = data.assetType;
+    oldAsset.group = data.group;
     oldAsset.purchaseDate = data.purchaseDate;
     oldAsset.warrantyExpirationDate = data.warrantyExpirationDate;
     oldAsset.managedBy = data.managedBy;

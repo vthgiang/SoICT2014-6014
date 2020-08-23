@@ -225,7 +225,7 @@ class Table extends Component {
             }
         }
         let exportData = {
-            fileName: "Bang thong ke tai lieu",
+            fileName: "Bảng thống kê tài liệu",
             dataSheets: [
                 {
                     sheetName: "sheet1",
@@ -248,7 +248,7 @@ class Table extends Component {
                                 { key: "STT", value: "STT" },
                                 { key: "name", value: "Tên" },
                                 { key: "officialNumber", value: "Số hiệu"},
-                                { key: "category", value: "Loai văn bản"},
+                                { key: "category", value: "Loai tài liệu"},
                                 { key: "description", value: "Mô tả" },
                                 { key: "signer", value: "Người ký"},
                                 { key: "domain", value: "Danh mục"},

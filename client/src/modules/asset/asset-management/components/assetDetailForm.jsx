@@ -25,6 +25,7 @@ class AssetDetailForm extends Component {
                 assetName: nextProps.assetName,
                 serial: nextProps.serial,
                 assetType: nextProps.assetType,
+                group: nextProps.group,
                 purchaseDate: nextProps.purchaseDate,
                 warrantyExpirationDate: nextProps.warrantyExpirationDate,
                 managedBy: nextProps.managedBy,
@@ -60,7 +61,7 @@ class AssetDetailForm extends Component {
     }
     render() {
         const { translate, assetsManager } = this.props;
-        const { _id, avatar, code, assetName, serial, assetType, purchaseDate, warrantyExpirationDate, 
+        const { _id, avatar, code, assetName, serial, assetType, group, purchaseDate, warrantyExpirationDate, 
                 managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse,
                 detailInfo, cost, residualValue, startDepreciation, usefulLife, depreciationType, estimatedTotalProduction, 
                 unitsProducedDuringTheYears, maintainanceLogs, usageLogs, incidentLogs, disposalDate, disposalType, disposalCost, 
@@ -97,6 +98,7 @@ class AssetDetailForm extends Component {
                                     assetName={assetName}
                                     serial={serial}
                                     assetTypes={assetType}
+                                    group={group}
                                     purchaseDate={purchaseDate}
                                     warrantyExpirationDate={warrantyExpirationDate}
                                     managedBy={managedBy}

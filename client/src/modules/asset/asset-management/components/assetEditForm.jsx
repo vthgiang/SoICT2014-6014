@@ -299,6 +299,7 @@ class AssetEditForm extends Component {
                 assetName: nextProps.assetName,
                 serial: nextProps.serial,
                 assetType: nextProps.assetType,
+                group: nextProps.group,
                 purchaseDate: nextProps.purchaseDate,
                 warrantyExpirationDate: nextProps.warrantyExpirationDate,
                 managedBy: nextProps.managedBy,
@@ -363,7 +364,7 @@ class AssetEditForm extends Component {
 
     render() {
         const { translate, assetsManager } = this.props;
-        const { _id, img, avatar, code, assetName, serial, assetType, purchaseDate, warrantyExpirationDate, managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate,
+        const { _id, img, avatar, code, assetName, serial, assetType, group, purchaseDate, warrantyExpirationDate, managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate,
             handoverToDate, location, description, status, canRegisterForUse, detailInfo, usageLogs, maintainanceLogs, cost, residualValue, startDepreciation,
             usefulLife, depreciationType, incidentLogs, disposalDate, disposalType, unitsProducedDuringTheYears, disposalCost, disposalDesc, archivedRecordNumber,
             files, estimatedTotalProduction } = this.state;
@@ -402,6 +403,7 @@ class AssetEditForm extends Component {
                                 assetName={assetName}
                                 serial={serial}
                                 assetTypes={assetType}
+                                group={group}
                                 purchaseDate={purchaseDate}
                                 warrantyExpirationDate={warrantyExpirationDate}
                                 managedBy={managedBy}

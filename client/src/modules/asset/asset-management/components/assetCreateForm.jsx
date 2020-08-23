@@ -139,7 +139,7 @@ class AssetCreateForm extends Component {
 
     // function kiểm tra các trường bắt buộc phải nhập
     validatorInput = (value) => {
-        if (value && value.trim() !== '') {
+        if (value !== null && value !== undefined && value.toString().trim() !== '') {
             return true;
         }
 
