@@ -78,14 +78,61 @@ class TaskTemplateImportForm extends Component {
                 }];
             } else {
                 if (k >= 0) {
-                    if (x.taskActions) {
-                        values[k].taskActions = [...values[k].taskActions, x.taskActions];
-                        valueShow[k].taskActions = [...valueShow[k].taskActions, x.taskActions];
+                    
+                    if (x.taskActions && x.taskInformations) {
+                        // values[k].taskActions = [...values[k].taskActions, x.taskActions];
+                        
+                        values = [...values, {
+                            "name": "", 
+                            "description": "",
+                            "organizationalUnit": "",
+                            "readByEmployees": "",
+                            "priority": "",
+                            "responsibleEmployees": "",
+                            "accountableEmployees": "",
+                            "consultedEmployees": "",
+                            "informedEmployees": "",
+                            "formula": "",
+                            "taskActions": [x.taskActions],
+                            "taskInformations": [x.taskInformations], 
+                        }];
+                    } else {
+                        if (x.taskActions) {
+                            valueShow[k].taskActions = [...valueShow[k].taskActions, x.taskActions];
+                            values = [...values, {
+                                "name": "", 
+                                "description": "",
+                                "organizationalUnit": "",
+                                "readByEmployees": "",
+                                "priority": "",
+                                "responsibleEmployees": "",
+                                "accountableEmployees": "",
+                                "consultedEmployees": "",
+                                "informedEmployees": "",
+                                "formula": "",
+                                "taskActions": [x.taskActions],
+                            }];
+                        } else {
+                            if (x.taskInformations) {
+                                valueShow[k].taskInformations = [...valueShow[k].taskInformations, x.taskInformations];
+                                // values[k].taskInformations = [...values[k].taskInformations, x.taskInformations];
+                                values = [...values, {
+                                    "name": "", 
+                                    "description": "",
+                                    "organizationalUnit": "",
+                                    "readByEmployees": "",
+                                    "priority": "",
+                                    "responsibleEmployees": "",
+                                    "accountableEmployees": "",
+                                    "consultedEmployees": "",
+                                    "informedEmployees": "",
+                                    "formula": "",
+                                    "taskInformations": [x.taskInformations], 
+                                }];
+                            }
+                        }
                     }
-                    if (x.taskInformations) {
-                        valueShow[k].taskInformations = [...valueShow[k].taskInformations, x.taskInformations];
-                        values[k].taskInformations = [...values[k].taskInformations, x.taskInformations];
-                    }
+                    
                 }
             }
         }

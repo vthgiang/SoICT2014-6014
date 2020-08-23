@@ -77,9 +77,8 @@ export const templateImportTaskTemplate = {
     fileName: "Mẫu import mẫu công việc",
     dataSheets: [{
         sheetName: "Sheet1",
-        sheetTitle: '',
+        sheetTitle: 'Danh sách mẫu công việc',
         tables: [{
-            tableName: "Bảng thống kê mẫu công việc",
             rowHeader: 2,
             merges: [{
                 key: "taskActions",
@@ -118,7 +117,7 @@ export const templateImportTaskTemplate = {
                     description: "Mẫu công việc 1",
                     organizationalUnit: "Phòng kinh doanh",
                     readByEmployees: ["Trưởng phòng kinh doanh", "Nhân viên phòng kinh doanh"],
-                    priority: "Cao",
+                    priority: 1,
                     responsibleEmployees: ["pdp.vnist@gmail.com"],
                     accountableEmployees: ["nvd.vnist@gmail.com"],
                     consultedEmployees: ["nvd.vnist@gmail.com"],
@@ -156,11 +155,11 @@ export const templateImportTaskTemplate = {
                     
                 },
                 {
-                    name: "Mẫu 1",
-                    description: "Mẫu công việc 1",
+                    name: "Mẫu 2",
+                    description: "Mẫu công việc 2",
                     organizationalUnit: "Phòng kinh doanh",
                     readByEmployees: ["Trưởng phòng kinh doanh", "Nhân viên phòng kinh doanh"],
-                    priority: "Cao",
+                    priority: 1,
                     responsibleEmployees: ["pdp.vnist@gmail.com"],
                     accountableEmployees: ["nvd.vnist@gmail.com"],
                     consultedEmployees: ["nvd.vnist@gmail.com"],
