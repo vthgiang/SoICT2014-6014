@@ -212,8 +212,10 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
 
     removePreviousChart = () => {
         const chart = this.refs.chart;
-        while (chart.hasChildNodes()) {
-            chart.removeChild(chart.lastChild);
+        if (chart) {
+            while (chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild);
+            }
         }
     }
 

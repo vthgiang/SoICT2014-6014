@@ -61,9 +61,9 @@ exports.getAllEmployeeKpiSetByMonth = async (userId, startDate, endDate) => {
         {
             creator: new mongoose.Types.ObjectId(userId),
             date: { $gt: new Date(startDate), $lte: new Date(endDate) }
-        },
-        { 'automaticPoint': 1, 'employeePoint': 1, 'approvedPoint': 1, 'date': 1 }
-    )
+        })
+        .populate({ path: "organizationalUnit", select: "name" })
+        .select({ 'automaticPoint': 1, 'employeePoint': 1, 'approvedPoint': 1, 'date': 1 })
 
     return employeeKpiSetByMonth;
 }
@@ -87,12 +87,25 @@ exports.getAllEmployeeKpiSetOfAllEmployeeInOrganizationalUnitByMonth = async (or
                 as: "employee"
             }
         },
-
         { $unwind: "$employee" },
 
         {
+            $lookup: {
+                from: "organizational_units",
+                localField: "organizationalUnit",
+                foreignField: "_id",
+                as: "organizationalUnit"
+            }
+        },
+        { $unwind: "$organizationalUnit" },
+
+        {
+            $addFields: { "employeeAndUnit": { $concat: ["$employee.name", " - ", "$organizationalUnit.name"] } }
+        },
+
+        {
             $group: {
-                '_id': "$employee.name",
+                '_id': "$employeeAndUnit",
                 'employeeKpi': { $push: "$$ROOT" }
             }
         },
