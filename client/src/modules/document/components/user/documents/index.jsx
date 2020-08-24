@@ -159,7 +159,7 @@ class UserDocumentsData extends Component {
         const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
-        console.log('tttt', currentRow.logs);
+        
         let list = [];
         if (isLoading === false) {
             list = docs.list;
