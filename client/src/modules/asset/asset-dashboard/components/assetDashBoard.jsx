@@ -7,6 +7,10 @@ import CanvasJSReact from './assets/canvasjs.react';
 import { AssetService } from "../../asset-management/redux/services";
 import { RecommendProcureService } from "../../recommend-procure/redux/services";
 import { RecommendDistributeService } from "../../recommend-distribute-management/redux/services";
+import { AmountOfAssetChart } from './amountOfAssetChart';
+import { ValueOfAssetChart } from './valueOfAssetChart';
+import { DepreciationOfAssetChart } from './depreciationOfAssetChart';
+
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -91,7 +95,6 @@ class DashBoardAssets extends Component {
 
     render() {
         const { listAssets, recommendProcure, recommendDistribute } = this.state;
-
         const options = {
             animationEnabled: true,
             title: {
@@ -201,16 +204,60 @@ class DashBoardAssets extends Component {
                     </div>
 
                     {/* Biểu đồ yêu cầu mua sắm tài sản */}
-                    <div className="col-md-6 col-sm-6 col-xs-6">
+                    {/* <div className="col-md-6 col-sm-6 col-xs-6">
                         <CanvasJSChart options={options} />
-                    </div>
+                    </div> */}
 
                     {/* Biểu đồ yêu cầu sử dụng tài sản */}
-                    <div className="col-md-6 col-sm-6 col-xs-6">
+                    {/* <div className="col-md-6 col-sm-6 col-xs-6">
                         <CanvasJSChart options={options2} />
-                    </div>
+                    </div> */}
 
                 </div>
+                <div className="row">
+                    {/* Biểu đồ số lượng tài sản */}
+                    <div className="col-xs-6">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">Biểu đồ số lượng tài sản</div>
+                            </div>
+                            <div className="box-body qlcv">
+                                <AmountOfAssetChart
+                                    listAssets={listAssets}
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Biểu đồ giá trị tài sản */}
+                    <div className="col-xs-6">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">Biểu đồ giá trị tài sản</div>
+                            </div>
+                            <div className="box-body qlcv">
+                                <ValueOfAssetChart
+                                    listAssets={listAssets}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    {/* Biểu đồ khấu hao tài sản */}
+                    <div className="col-xs-6">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">Biểu đồ khấu hao tài sản</div>
+                            </div>
+                            <div className="box-body qlcv">
+                                <DepreciationOfAssetChart
+                                    listAssets={listAssets}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    </div>
             </div>
         );
     }
