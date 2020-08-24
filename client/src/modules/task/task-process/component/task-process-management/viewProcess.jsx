@@ -119,36 +119,36 @@ class ViewProcess extends Component {
                             let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
 
                             element1 && modeling.setColor(element1, {
-                                fill: '#dde6ca',
-                                stroke: '#6b7060'
+                                fill: '#9695AD',
+                                stroke: '#5C7391'
                             });
 
                             let target = [];
-                            element1.outgoing.forEach(x => {
-                                target.push(x.target.id)
-                            })
-                            target.forEach(x => {
-                                modeling.setColor(modeler.get('elementRegistry').get(x), {
-                                    // fill: '#7236ff',
-                                    stroke: '#7236ff'
-                                });
-                            })
+                            // element1.outgoing.forEach(x => {
+                            //     target.push(x.target.id)
+                            // })
+                            // target.forEach(x => {
+                            //     modeling.setColor(modeler.get('elementRegistry').get(x), {
+                            //         // fill: '#7236ff',
+                            //         stroke: '#1692E0'
+                            //     });
+                            // })
 
-                            var outgoing = element1.outgoing;
-                            outgoing.forEach(x => {
-                                var outgoingEdge = modeler.get('elementRegistry').get(x.id);
+                            // var outgoing = element1.outgoing;
+                            // outgoing.forEach(x => {
+                            //     var outgoingEdge = modeler.get('elementRegistry').get(x.id);
 
-                                modeling.setColor(outgoingEdge, {
-                                    stroke: '#7236ff',
-                                    width: '5px'
-                                })
-                            })
+                            //     modeling.setColor(outgoingEdge, {
+                            //         stroke: '#7236ff',
+                            //         width: '5px'
+                            //     })
+                            // })
                             var incoming = element1.incoming;
                             incoming.forEach(x => {
                                 var incomingEdge = modeler.get('elementRegistry').get(x.id);
 
                                 modeling.setColor(incomingEdge, {
-                                    stroke: '#dde6ca',
+                                    stroke: '#5C7391',
                                     width: '5px'
                                 })
                             })
@@ -158,8 +158,8 @@ class ViewProcess extends Component {
                             let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
 
                             element1 && modeling.setColor(element1, {
-                                fill: '#605CA8',
-                                stroke: '#7236ff',
+                                fill: '#50DF8C',
+                                stroke: '#1692E0', //E02001
                                 width: '5px'
                             });
 
@@ -168,7 +168,7 @@ class ViewProcess extends Component {
                                 var incomingEdge = modeler.get('elementRegistry').get(x.id);
 
                                 modeling.setColor(incomingEdge, {
-                                    stroke: '#7236ff',
+                                    stroke: '#1692E0',
                                     width: '5px'
                                 })
                             })

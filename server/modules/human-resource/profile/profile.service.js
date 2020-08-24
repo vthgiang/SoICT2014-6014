@@ -10,7 +10,7 @@ const {
     Role,
     EmployeeCourse,
     Notification,
-    Timesheets,
+    Timesheet,
 } = require('../../../models').schema;
 const fs = require('fs');
 
@@ -664,7 +664,7 @@ exports.createEmployee = async (data, company, fileInfor) => {
         emailInCompany: data.emailInCompany,
         taxNumber: data.taxNumber,
         taxRepresentative: data.taxRepresentative,
-        taxDateOfIssue: data.taxDateOfIssue,
+        taxDateOfIssue: data.taxDateOfIssue ? data.taxDateOfIssue : null,
         taxAuthority: data.taxAuthority,
         atmNumber: data.atmNumber,
         bankName: data.bankName,
@@ -930,7 +930,7 @@ exports.updateEmployeeInformation = async (id, data, fileInfor, company) => {
     oldEmployee.emailInCompany = employee.emailInCompany;
     oldEmployee.taxNumber = employee.taxNumber;
     oldEmployee.taxRepresentative = employee.taxRepresentative;
-    oldEmployee.taxDateOfIssue = employee.taxDateOfIssue;
+    oldEmployee.taxDateOfIssue = employee.taxDateOfIssue ? employee.taxDateOfIssue : null;
     oldEmployee.taxAuthority = employee.taxAuthority;
     oldEmployee.atmNumber = employee.atmNumber;
     oldEmployee.bankName = employee.bankName;
@@ -970,6 +970,7 @@ exports.updateEmployeeInformation = async (id, data, fileInfor, company) => {
     oldEmployee.temporaryResidenceDistrict = employee.temporaryResidenceDistrict;
     oldEmployee.temporaryResidenceWard = employee.temporaryResidenceWard;
 
+    console.log(oldEmployee.contracts);
     // Edit  thông tin nhân viên
     oldEmployee.save();
 
@@ -1070,7 +1071,7 @@ exports.deleteEmployee = async (id) => {
     await Salary.deleteMany({
         employee: id
     });
-    await Timesheets.deleteMany({
+    await Timesheet.deleteMany({
         employee: id
     })
     if (employee.avatar) {

@@ -52,7 +52,29 @@ class ModalAddTaskTemplate extends Component {
 
     /**Submit new template in data */
     handleSubmit = async (event) => {
-        const { newTemplate } = this.state;
+        // const { newTemplate } = this.state;
+        // this.props.addNewTemplate(newTemplate);
+        // window.$("#addTaskTemplate").modal("hide");
+        let { newTemplate } = this.state;
+        const { department, user, translate, tasktemplates, isProcess } = this.props;
+
+        let listRoles = [];
+        if (user.roledepartments) {
+            console.log('pppp');
+            let listRole = user.roledepartments;
+            for (let x in listRole.employees)
+                listRoles.push(listRole.employees[x]._id);
+        }
+        console.log('list role', listRoles);
+        await this.setState( state => {
+            if(state.newTemplate.readByEmployees.length === 0){
+                state.newTemplate.readByEmployees = listRoles
+            }
+            return {
+                ...state,
+            }
+        });
+
         this.props.addNewTemplate(newTemplate);
         window.$("#addTaskTemplate").modal("hide");
     }
@@ -62,13 +84,13 @@ class ModalAddTaskTemplate extends Component {
      * Xử lý form lớn tasktemplate
      */
     isTaskTemplateFormValidated = () => {
-        let result =
-            this.validateTaskTemplateUnit(this.state.newTemplate.organizationalUnit, false) &&
-            this.validateTaskTemplateRead(this.state.newTemplate.readByEmployees, false) &&
-            this.validateTaskTemplateName(this.state.newTemplate.name, false) &&
-            this.validateTaskTemplateDescription(this.state.newTemplate.description, false) &&
-            this.validateTaskTemplateFormula(this.state.newTemplate.formula, false);
-        return result;
+        // let result =
+        //     this.validateTaskTemplateUnit(this.state.newTemplate.organizationalUnit, false) &&
+        //     this.validateTaskTemplateRead(this.state.newTemplate.readByEmployees, false) &&
+        //     this.validateTaskTemplateName(this.state.newTemplate.name, false) &&
+        //     this.validateTaskTemplateDescription(this.state.newTemplate.description, false) &&
+        //     this.validateTaskTemplateFormula(this.state.newTemplate.formula, false);
+        // return result;
     }
     
     
@@ -171,7 +193,7 @@ class ModalAddTaskTemplate extends Component {
                     formID="form-add-task-template"
                     title={translate('task_template.add_tasktemplate')}
                     func={this.handleSubmit}
-                    disableSubmit={!this.isTaskTemplateFormValidated()}
+                    // disableSubmit={!this.isTaskTemplateFormValidated()}
                     size={100}
                 >
                     <AddTaskTemplate onChangeTemplateData={this.onChangeTemplateData}/>

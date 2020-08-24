@@ -370,7 +370,7 @@ class DepreciationTab extends Component {
 
                         {/* Thời gian bắt đầu trích khấu hao */}
                         <div className={`form-group ${!errorOnStartDepreciation ? "" : "has-error"} `}>
-                            <label htmlFor="startDepreciation">{translate('asset.general_information.start_depreciation')}<span className="text-red">*</span></label>
+                            <label htmlFor="startDepreciation">{translate('asset.general_information.start_depreciation')}</label>
                             <DatePicker
                                 id={`startDepreciation${id}`}
                                 value={startDepreciation}

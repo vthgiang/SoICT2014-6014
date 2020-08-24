@@ -17,7 +17,7 @@ class EmployeeDetail extends Component {
         this.props.getDepartment();
     }
     render() {
-        var employees, salaries, annualLeaves, commendations, disciplines, courses, roles = [];
+        let employees, salaries, annualLeaves, commendations, disciplines, courses, roles = [];
         const { employeesInfo, translate } = this.props;
         if (employeesInfo.employees) employees = employeesInfo.employees;
         if (employeesInfo.salarys) salaries = employeesInfo.salarys;

@@ -335,7 +335,7 @@ class SalaryManagement extends Component {
                             </ul>
                         </div>
                         {/* Nút xuất báo cáo */}
-                        <ExportExcel id="export-salary" exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
+                        <ExportExcel id="export-salary" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
                     </div>
                     <div className="form-inline">
                         {/* Đơn vị */}
