@@ -116,7 +116,7 @@ exports.searchTaskTemplates = async (req, res) => {
  * @param {*} res 
  */
 exports.createTaskTemplate = async (req, res) => {
-    // try {
+    try {
         console.log('req.body', req.body);
         var data = await TaskTemplateService.createTaskTemplate(req.body);
         await LogInfo(req.user.email, `Create task templates ${req.body.name}`, req.user.company);
@@ -125,14 +125,14 @@ exports.createTaskTemplate = async (req, res) => {
             messages: ['create_task_template_success'],
             content: data
         });
-    // } catch (error) {
-    //     await LogError(req.user.email, `Create task templates ${req.body.name}`, req.user.company);
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: ['create_task_template_faile'],
-    //         content: error
-    //     });
-    // }
+    } catch (error) {
+        await LogError(req.user.email, `Create task templates ${req.body.name}`, req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['create_task_template_faile'],
+            content: error
+        });
+    }
 }
 
 /**
