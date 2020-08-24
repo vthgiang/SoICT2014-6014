@@ -58,12 +58,12 @@ exports.stopTimesheetLog = async (params, body) => {
     const now = new Date().getTime()
     let stoppedAt
 
-    if(body.stoppedAt){
+    if (body.stoppedAt) {
         stoppedAt = body.stoppedAt
-    }else {
+    } else {
         stoppedAt = now
     }
-    
+
     let duration = stoppedAt - body.startedAt
     let timer = await Task.findOneAndUpdate(
         { "_id": params.taskId, "timesheetLogs._id": body.timesheetLog },
@@ -1162,6 +1162,32 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     );
     let task = await Task.findById(taskId);
 
+    if (status[0] === 'Finished') {
+        if (task.process) {
+            let followingTasks = task.followingTasks;
+            console.log('following', followingTasks);
+            for (let i in followingTasks) {
+                let startDate = endOfTask;
+                let followItem = await Task.findById(followingTasks[i].task);
+                let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
+                let timer = startDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+
+                let endDate = new Date(timer).toISOString();
+
+                console.log('endDate===startDate', endDate, startDate);
+                await Task.findByIdAndUpdate(followingTasks[i].task,
+                    {
+                        $set: {
+                            status: "Inprocess",
+                            startDate: startDate,
+                            endDate: endDate,
+                        }
+                    },
+                    { new: true}
+                )
+            }
+        }
+    }
 
     for (let item in info) {
         for (let i in task.taskInformations) {
@@ -1717,6 +1743,30 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     checkSave && await Task.updateOne({ _id: taskId }, { $set: { progress: progress } });
     task = await Task.findById(taskId);
+
+    // if (status[0] === 'Finished') {
+    //     if (task.process) {
+    //         let followingTasks = task.followingTasks;
+    //         for (let i in followingTasks) {
+    //             let startDate = endOfTask;
+    //             let numberOfDaysTaken = followingTasks.numberOfDaysTaken ? followingTasks.numberOfDaysTaken : 0;
+    //             let timer = startDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+
+    //             let endDate = new Date(timer).toISOString();
+
+    //             await Task.findByIdAndUpdate(followingTasks[i],
+    //                 {
+    //                     $set: {
+    //                         status: "Inprocess",
+    //                         startDate: startDate,
+    //                         endDate: endDate,
+    //                     }
+    //                 },
+    //                 { new: true}
+    //             )
+    //         }
+    //     }
+    // }
 
     // cập nhật thông tin result================================================================BEGIN=====================================================
 
