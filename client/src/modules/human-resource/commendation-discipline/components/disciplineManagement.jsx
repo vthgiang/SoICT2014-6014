@@ -237,7 +237,7 @@ class DisciplineManager extends Component {
                 <div className="box-body qlcv">
                     {/* Form thêm kỷ luật */}
                     <DisciplineCreateForm />
-                    <ExportExcel id="export-discipline" exportData={exportData} style={{ marginRight: 15, marginTop: 2 }} />
+                    <ExportExcel id="export-discipline" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15, marginTop: 2 }} />
                     <div className="form-inline">
                         {/* Đơn vị */}
                         <div className="form-group">

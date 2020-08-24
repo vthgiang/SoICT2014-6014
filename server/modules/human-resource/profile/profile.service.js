@@ -10,7 +10,7 @@ const {
     Role,
     EmployeeCourse,
     Notification,
-    Timesheets,
+    Timesheet,
 } = require('../../../models').schema;
 const fs = require('fs');
 
@@ -1070,7 +1070,7 @@ exports.deleteEmployee = async (id) => {
     await Salary.deleteMany({
         employee: id
     });
-    await Timesheets.deleteMany({
+    await Timesheet.deleteMany({
         employee: id
     })
     if (employee.avatar) {

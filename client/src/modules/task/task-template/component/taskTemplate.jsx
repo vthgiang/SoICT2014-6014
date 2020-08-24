@@ -237,9 +237,9 @@ class TaskTemplate extends Component {
                         infomationDescription[i] = x.taskInformations[i].description;
                         type[i] = x.taskInformations[i].type;
                         if (x.taskInformations[i].filledByAccountableEmployeesOnly) {
-                            filledByAccountableEmployeesOnly[i] = "Đúng";
+                            filledByAccountableEmployeesOnly[i] = true;
                         } else {
-                            filledByAccountableEmployeesOnly[i] = "";
+                            filledByAccountableEmployeesOnly[i] = false;
                         }
                     }
                 }
@@ -263,12 +263,6 @@ class TaskTemplate extends Component {
                 if (x.informedEmployees.length !== 0) {
                     informedEmployees = x.informedEmployees.map(item => item.name);
                 }
-                let priority = "";
-                switch (x.priority) {
-                    case 1: priority = "thấp"; break;
-                    case 2: priority = "trung bình"; break;
-                    case 3: priority = "cao"; break;
-                }
                 let out = { STT: k + 1,
                     name: x.name,
                     description: x.description,
@@ -280,7 +274,7 @@ class TaskTemplate extends Component {
                     consultedEmployees: consultedEmployees.join(', '),
                     informedEmployees: informedEmployees.join(', '),
                     organizationalUnits: x.organizationalUnit.name,
-                    priority: priority,
+                    priority: x.priority,
                     formula: x.formula,
                     actionName: actionName[0],
                     actionDescription: actionDescription[0],
@@ -323,12 +317,13 @@ class TaskTemplate extends Component {
         
         let exportData = {
             fileName: "Bảng thống kê mẫu công việc",
+            sheetTitle: 'Danh sách mẫu công việc',
             dataSheets: [
                 {
                     sheetName: "sheet1",
+
                     tables: [
                         {
-                            tableName: "Bảng thống kê mẫu công việc",
                             merges: [{
                                 key: "taskActions",
                                 columnName: "Danh sách hoạt động",

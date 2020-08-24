@@ -236,7 +236,7 @@ class CommendationManagement extends Component {
                 <div className="box-body qlcv">
                     {/* Form thêm thông tin khen thưởng*/}
                     <PraiseCreateForm />
-                    <ExportExcel id="export-commendation" exportData={exportData} style={{ marginRight: 15, marginTop: 2 }} />
+                    <ExportExcel id="export-commendation" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15, marginTop: 2 }} />
                     <div className="form-inline">
                         {/* Đơn vị */}
                         <div className="form-group">

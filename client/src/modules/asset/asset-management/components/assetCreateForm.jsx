@@ -150,13 +150,21 @@ class AssetCreateForm extends Component {
     isFormValidated = () => {
         let { asset } = this.state;
 
-        let result = this.validatorInput(asset.code) && this.validatorInput(asset.assetName) &&
-            this.validatorInput(asset.serial) && this.validatorInput(asset.purchaseDate) &&
-            this.validatorInput(asset.warrantyExpirationDate) && //this.validatorInput(asset.location) &&
-            this.validatorInput(asset.assetType) && this.validatorInput(asset.managedBy) &&
-            this.validatorInput(asset.status) && this.validatorInput(asset.canRegisterForUse) &&
-            this.validatorInput(asset.cost) && this.validatorInput(asset.usefulLife) &&
-            this.validatorInput(asset.startDepreciation) && this.validatorInput(asset.depreciationType);
+        let result =
+            this.validatorInput(asset.code) &&
+            this.validatorInput(asset.assetName) &&
+            // this.validatorInput(asset.serial) &&
+            this.validatorInput(asset.purchaseDate)
+            // && this.validatorInput(asset.warrantyExpirationDate) &&
+            // //this.validatorInput(asset.location) &&
+            // this.validatorInput(asset.assetType) &&
+            // this.validatorInput(asset.managedBy) &&
+            // this.validatorInput(asset.status) &&
+            // this.validatorInput(asset.canRegisterForUse) &&
+            // this.validatorInput(asset.cost) &&
+            // this.validatorInput(asset.usefulLife) &&
+            // this.validatorInput(asset.startDepreciation) &&
+            // this.validatorInput(asset.depreciationType);
         
         return result;
     }

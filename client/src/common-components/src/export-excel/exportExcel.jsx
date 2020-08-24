@@ -1,6 +1,5 @@
-import React, { Component, forwardRef } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
 
 import * as Excel from "exceljs";
 import * as FileSaver from 'file-saver';
@@ -11,11 +10,7 @@ class ExportExcel extends Component {
         this.state = {};
     }
 
-    /**
-     * Function bắt sự kiện click xuất báo cáo
-     */
-    handleExportExcel = () => {
-        const { exportData } = this.state;
+    static export(exportData) {
         let workbook = new Excel.Workbook();
 
         exportData.dataSheets.forEach(x => {
@@ -149,6 +144,18 @@ class ExportExcel extends Component {
             const blob = new Blob([data], { type: this.blobType });
             FileSaver.saveAs(blob, `${exportData.fileName}.xlsx`);
         });
+    }
+
+    /**
+     * Function bắt sự kiện click xuất báo cáo
+     */
+    handleExportExcel = () => {
+        const { exportData } = this.state;
+        if (this.props.onClick) {
+            this.props.onClick();
+        } else {
+            ExportExcel.export(exportData);
+        }
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -159,8 +166,7 @@ class ExportExcel extends Component {
     };
 
     render() {
-        const { translate } = this.props;
-        const { type = 'button', buttonName = translate('human_resource.name_button_export'), style = {}, className = "btn btn-primary pull-right", title = "" } = this.props;
+        const { type = 'button', buttonName = 'Xuất báo cáo', style = {}, className = "btn btn-primary pull-right", title = "" } = this.props;
         return (
             <React.Fragment>
                 {type === 'button' && <button type="button" style={style} className={className} title={title} onClick={this.handleExportExcel} >{buttonName}<i className="fa fa-fw fa-file-excel-o"> </i></button>}
@@ -174,5 +180,5 @@ class ExportExcel extends Component {
     }
 };
 
-const exportExcel = connect(null, null)(withTranslate(ExportExcel));
+const exportExcel = connect(null, null)(ExportExcel);
 export { exportExcel as ExportExcel };

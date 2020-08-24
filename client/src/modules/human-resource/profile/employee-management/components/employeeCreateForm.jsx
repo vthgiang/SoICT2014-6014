@@ -13,7 +13,7 @@ class EmployeeCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            img: process.env.REACT_APP_SERVER + '/upload/human-resource/avatars/avatar5.png',
+            img: './upload/human-resource/avatars/avatar5.png',
             avatar: "",
             employee: {
                 avatar: '/upload/human-resource/avatars/avatar5.png',

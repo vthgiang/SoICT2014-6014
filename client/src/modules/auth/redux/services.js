@@ -1,5 +1,9 @@
-import { getStorage } from '../../../config';
-import { sendRequest } from '../../../helpers/requestHelper';
+import {
+    getStorage
+} from '../../../config';
+import {
+    sendRequest
+} from '../../../helpers/requestHelper';
 
 export const AuthService = {
     login,
@@ -75,7 +79,7 @@ function getLinksOfRole(idRole) {
 
 function refresh() {
     var id = getStorage("userId");
-    
+
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/auth/get-profile/${id}`,
         method: 'GET',
@@ -119,11 +123,14 @@ function getComponentOfUserInLink(currentRole, linkId) {
  * Download file
  * @param {*} path: đường dẫn file cần tải
  */
-function downloadFile(path) {
+function downloadFile(path, type) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/auth/download-file/`,
         method: 'GET',
-        responseType: 'blob',
-        params: { path: path }
+        responseType: type ? undefined : 'blob',
+        params: {
+            path: path,
+            type: type
+        }
     }, false, false, 'auth');
 }

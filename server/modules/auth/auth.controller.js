@@ -1,4 +1,6 @@
 const AuthService = require('./auth.service');
+const fs = require('fs');
+const mime = require('mime-types');
 const { LogInfo, LogError } = require('../../logs');
 
 exports.login = async (req, res) => {
@@ -204,9 +206,18 @@ exports.getProfile = async (req, res) => {
  */
 exports.downloadFile = async (req, res) => {
     try {
-        const { path } = req.query;
+        const { path, type } = req.query;
        // await LogInfo(req.user.email, 'DOWNLOAD_FILE', req.user.company);
-        res.download(path, "file");
+        if (type) {
+            const file_buffer  = fs.readFileSync(path,{encoding: 'base64'});
+            res.status(200).json({
+                success: true,
+                messages:  ['download_file_faile'],
+                content: `data:${mime.lookup(path)};base64,${file_buffer}`
+            });
+        } else {
+            res.download(path, "file");
+        }
     } catch (error) {
 
         //await LogError(req.user.email, 'DOWNLOAD_FILE', req.user.company);
