@@ -234,10 +234,10 @@ class ContractEditModal extends Component {
                             </div>
                             {/* Ngày hết hiệu lực*/}
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate && "has-error"}`}>
-                                <label>{translate('human_resource.profile.end_date_certificate')}<span className="text-red">*</span></label>
+                                <label>{translate('human_resource.profile.end_date_certificate')}</label>
                                 <DatePicker
                                     id={`edit-end-date-${id}`}
-                                    deleteValue={false}
+                                    deleteValue={true}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />
