@@ -166,13 +166,13 @@ class ContactTab extends Component {
     render() {
         const { translate } = this.props;
 
-        const { id } = this.props;
+        // const { id } = this.props;
 
-        const { phoneNumber2, phoneNumber, personalEmail, personalEmail2, homePhone, emergencyContactPerson,
+
+        const { id, phoneNumber2, phoneNumber, personalEmail, personalEmail2, homePhone, emergencyContactPerson,
             relationWithEmergencyContactPerson, emergencyContactPersonAddress, emergencyContactPersonPhoneNumber, emergencyContactPersonHomePhone, emergencyContactPersonEmail, permanentResidence,
             permanentResidenceWard, permanentResidenceDistrict, permanentResidenceCity, permanentResidenceCountry, temporaryResidence, temporaryResidenceWard, errorOnEmergencyContactPersonEmail,
             temporaryResidenceDistrict, temporaryResidenceCity, temporaryResidenceCountry, errorOnPhoneNumber, errorOnTemporaryResidence, errorOnPersonalEmail, errorOnPersonalEmail2 } = this.state;
-
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
@@ -186,26 +186,26 @@ class ContactTab extends Component {
                         {/* Điện thoại cá nhân 2 */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.mobile_phone_2')}</label>
-                            <input type="number" className="form-control" name="phoneNumber2" value={phoneNumber2} onChange={this.handleChange} placeholder={translate('human_resource.profile.mobile_phone_2')} autoComplete="off" />
+                            <input type="number" className="form-control" name="phoneNumber2" value={phoneNumber2 ? phoneNumber2 : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.mobile_phone_2')} autoComplete="off" />
                         </div>
                     </div>
                     <div className="row">
                         {/* Email cá nhân 1 */}
                         <div className={`form-group col-md-4 ${errorOnPersonalEmail && "has-error"}`}>
                             <label >{translate('human_resource.profile.personal_email_1')}</label>
-                            <input type="text" className="form-control" name="personalEmail" value={personalEmail} onChange={this.handleEmail1Change} placeholder={translate('human_resource.profile.personal_email_1')} autoComplete="off" />
+                            <input type="text" className="form-control" name="personalEmail" value={personalEmail ? personalEmail : ''} onChange={this.handleEmail1Change} placeholder={translate('human_resource.profile.personal_email_1')} autoComplete="off" />
                             <ErrorLabel content={errorOnPersonalEmail} />
                         </div>
                         {/* Email cá nhân 2 */}
                         <div className={`form-group col-md-4 ${errorOnPersonalEmail2 && "has-error"}`}>
                             <label >{translate('human_resource.profile.personal_email_2')}</label>
-                            <input type="text" className="form-control" name="personalEmail2" value={personalEmail2} onChange={this.handleEmail2Change} placeholder={translate('human_resource.profile.personal_email_2')} autoComplete="off" />
+                            <input type="text" className="form-control" name="personalEmail2" value={personalEmail2 ? personalEmail2 : ''} onChange={this.handleEmail2Change} placeholder={translate('human_resource.profile.personal_email_2')} autoComplete="off" />
                             <ErrorLabel content={errorOnPersonalEmail2} />
                         </div>
                         {/* Điện thoại cố định */}
                         <div className="form-group col-md-4">
                             <label >{translate('human_resource.profile.home_phone')}</label>
-                            <input type="text" className="form-control" name="homePhone" value={homePhone} onChange={this.handleChange} placeholder={translate('human_resource.profile.home_phone')} autoComplete="off" />
+                            <input type="text" className="form-control" name="homePhone" value={homePhone ? homePhone : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.home_phone')} autoComplete="off" />
                         </div>
                     </div>
                     {/* Liên hệ khẩn cấp */}
@@ -217,34 +217,34 @@ class ContactTab extends Component {
                             {/* Tên người liên hệ */}
                             <div className="form-group col-md-4">
                                 <label >{translate('human_resource.profile.full_name')}</label>
-                                <input type="text" className="form-control" name="emergencyContactPerson" value={emergencyContactPerson} onChange={this.handleChange} placeholder={translate('human_resource.profile.full_name')} autoComplete="off" />
+                                <input type="text" className="form-control" name="emergencyContactPerson" value={emergencyContactPerson ? emergencyContactPerson : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.full_name')} autoComplete="off" />
                             </div>
                             {/* Quan hệ */}
                             <div className="form-group col-md-4">
                                 <label >{translate('human_resource.profile.nexus')}</label>
-                                <input type="text" className="form-control" name="relationWithEmergencyContactPerson" value={relationWithEmergencyContactPerson} onChange={this.handleChange} placeholder={translate('human_resource.profile.nexus')} autoComplete="off" />
+                                <input type="text" className="form-control" name="relationWithEmergencyContactPerson" value={relationWithEmergencyContactPerson ? relationWithEmergencyContactPerson : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.nexus')} autoComplete="off" />
                             </div>
                             {/* Địa chỉ */}
                             <div className="form-group col-md-4">
                                 <label >{translate('human_resource.profile.address')}</label>
-                                <input type="text" className="form-control" name="emergencyContactPersonAddress" value={emergencyContactPersonAddress} onChange={this.handleChange} placeholder={translate('human_resource.profile.address')} autoComplete="off" />
+                                <input type="text" className="form-control" name="emergencyContactPersonAddress" value={emergencyContactPersonAddress ? emergencyContactPersonAddress : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.address')} autoComplete="off" />
                             </div>
                         </div>
                         <div className="row">
                             {/* Điện thoại di động */}
                             <div className="form-group col-md-4">
                                 <label >{translate('human_resource.profile.mobile_phone')}</label>
-                                <input type="text" className="form-control" name="emergencyContactPersonPhoneNumber" value={emergencyContactPersonPhoneNumber} onChange={this.handleChange} placeholder={translate('human_resource.profile.mobile_phone')} autoComplete="off" />
+                                <input type="text" className="form-control" name="emergencyContactPersonPhoneNumber" value={emergencyContactPersonPhoneNumber ? emergencyContactPersonPhoneNumber : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.mobile_phone')} autoComplete="off" />
                             </div>
                             {/* Điện thoại cố định */}
                             <div className="form-group col-md-4">
                                 <label >{translate('human_resource.profile.home_phone')}</label>
-                                <input type="text" className="form-control" name="emergencyContactPersonHomePhone" value={emergencyContactPersonHomePhone} onChange={this.handleChange} placeholder={translate('human_resource.profile.home_phone')} autoComplete="off" />
+                                <input type="text" className="form-control" name="emergencyContactPersonHomePhone" value={emergencyContactPersonHomePhone ? emergencyContactPersonHomePhone : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.home_phone')} autoComplete="off" />
                             </div>
                             {/* Email */}
                             <div className={`form-group col-md-4 ${errorOnEmergencyContactPersonEmail && "has-error"}`}>
                                 <label >{translate('human_resource.profile.email')}</label>
-                                <input type="text" className="form-control" name="emergencyContactPersonEmail" value={emergencyContactPersonEmail} onChange={this.handleEmergencyContactPersonEmailChange} placeholder={translate('human_resource.profile.email')} autoComplete="off" />
+                                <input type="text" className="form-control" name="emergencyContactPersonEmail" value={emergencyContactPersonEmail ? emergencyContactPersonEmail : ''} onChange={this.handleEmergencyContactPersonEmailChange} placeholder={translate('human_resource.profile.email')} autoComplete="off" />
                                 <ErrorLabel content={errorOnEmergencyContactPersonEmail} />
                             </div>
                         </div>
@@ -257,27 +257,27 @@ class ContactTab extends Component {
                                 {/* Địa chỉ */}
                                 <div className="form-group">
                                     <label >{translate('human_resource.profile.address')}</label>
-                                    <input type="text" className="form-control " name="permanentResidence" value={permanentResidence} onChange={this.handleChange} placeholder={translate('human_resource.profile.address')} autoComplete="off" />
+                                    <input type="text" className="form-control " name="permanentResidence" value={permanentResidence ? permanentResidence : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.address')} autoComplete="off" />
                                 </div>
                                 {/* Xã/Phường */}
                                 <div className="form-group">
                                     <label >{translate('human_resource.profile.wards')}</label>
-                                    <input type="text" className="form-control " name="permanentResidenceWard" value={permanentResidenceWard} onChange={this.handleChange} placeholder={translate('human_resource.profile.wards')} autoComplete="off" />
+                                    <input type="text" className="form-control " name="permanentResidenceWard" value={permanentResidenceWard ? permanentResidenceWard : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.wards')} autoComplete="off" />
                                 </div>
                                 {/* Huyện/Quận */}
                                 <div className="form-group">
                                     <label >{translate('human_resource.profile.district')}</label>
-                                    <input type="text" className="form-control " name="permanentResidenceDistrict" value={permanentResidenceDistrict} onChange={this.handleChange} placeholder={translate('human_resource.profile.district')} autoComplete="off" />
+                                    <input type="text" className="form-control " name="permanentResidenceDistrict" value={permanentResidenceDistrict ? permanentResidenceDistrict : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.district')} autoComplete="off" />
                                 </div>
                                 {/* Tỉnh/Thành phố */}
                                 <div className="form-group">
                                     <label >{translate('human_resource.profile.province')}</label>
-                                    <input type="text" className="form-control " name="permanentResidenceCity" value={permanentResidenceCity} onChange={this.handleChange} placeholder={translate('human_resource.profile.province')} autoComplete="off" />
+                                    <input type="text" className="form-control " name="permanentResidenceCity" value={permanentResidenceCity ? permanentResidenceCity : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.province')} autoComplete="off" />
                                 </div>
                                 {/* Quốc gia */}
                                 <div className="form-group">
                                     <label >{translate('human_resource.profile.nation')}</label>
-                                    <input type="text" className="form-control " name="permanentResidenceCountry" value={permanentResidenceCountry} onChange={this.handleChange} placeholder={translate('human_resource.profile.nation')} autoComplete="off" />
+                                    <input type="text" className="form-control " name="permanentResidenceCountry" value={permanentResidenceCountry ? permanentResidenceCountry : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.nation')} autoComplete="off" />
                                 </div>
                             </fieldset>
                         </div>
@@ -288,28 +288,28 @@ class ContactTab extends Component {
                                 {/* Địa chỉ hiện tại */}
                                 <div className={`form-group ${errorOnTemporaryResidence && "has-error"}`}>
                                     <label >{translate('human_resource.profile.address')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control " name="temporaryResidence" value={temporaryResidence} onChange={this.handleNowAddressChange} placeholder={translate('human_resource.profile.address')} autoComplete="off" />
+                                    <input type="text" className="form-control " name="temporaryResidence" value={temporaryResidence ? temporaryResidence : ''} onChange={this.handleNowAddressChange} placeholder={translate('human_resource.profile.address')} autoComplete="off" />
                                     <ErrorLabel content={errorOnTemporaryResidence} />
                                 </div>
                                 {/* Xã/Phường */}
                                 <div className="form-group">
                                     <label >{translate('human_resource.profile.wards')}</label>
-                                    <input type="text" className="form-control " name="temporaryResidenceWard" value={temporaryResidenceWard} onChange={this.handleChange} placeholder={translate('human_resource.profile.wards')} autoComplete="off" />
+                                    <input type="text" className="form-control " name="temporaryResidenceWard" value={temporaryResidenceWard ? temporaryResidenceWard : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.wards')} autoComplete="off" />
                                 </div>
                                 {/* Huyện/Quận */}
                                 <div className="form-group">
                                     <label >{translate('human_resource.profile.district')}</label>
-                                    <input type="text" className="form-control " name="temporaryResidenceDistrict" value={temporaryResidenceDistrict} onChange={this.handleChange} placeholder={translate('human_resource.profile.district')} autoComplete="off" />
+                                    <input type="text" className="form-control " name="temporaryResidenceDistrict" value={temporaryResidenceDistrict ? temporaryResidenceDistrict : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.district')} autoComplete="off" />
                                 </div>
                                 {/* Tỉnh/Thành phố */}
                                 <div className="form-group">
                                     <label >{translate('human_resource.profile.province')}</label>
-                                    <input type="text" className="form-control " name="temporaryResidenceCity" value={temporaryResidenceCity} onChange={this.handleChange} placeholder={translate('human_resource.profile.province')} autoComplete="off" />
+                                    <input type="text" className="form-control " name="temporaryResidenceCity" value={temporaryResidenceCity ? temporaryResidenceCity : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.province')} autoComplete="off" />
                                 </div>
                                 {/* Quốc gia */}
                                 <div className="form-group">
                                     <label >{translate('human_resource.profile.nation')}</label>
-                                    <input type="text" className="form-control " name="temporaryResidenceCountry" value={temporaryResidenceCountry} onChange={this.handleChange} placeholder={translate('human_resource.profile.nation')} autoComplete="off" />
+                                    <input type="text" className="form-control " name="temporaryResidenceCountry" value={temporaryResidenceCountry ? temporaryResidenceCountry : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.nation')} autoComplete="off" />
                                 </div>
                             </fieldset>
                         </div>

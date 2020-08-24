@@ -188,6 +188,22 @@ class TaskTimesheetLog extends Component {
 
         return [year, month, day].join('-');
     }
+    formatDate1 = (date) => {
+        var d = new Date(date),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+
+        if (month.length < 2) {
+            month = '0' + month;
+        }
+
+        if (day.length < 2) {
+            day = '0' + day;
+        }
+
+        return [day, month, year].join('-');
+    }
 
     render() {
 
@@ -223,7 +239,7 @@ class TaskTimesheetLog extends Component {
                                                 <DatePicker
                                                     id={`date-picker-${currentTimer._id}`}
                                                     onChange={this.handleDateChange}
-                                                    value={endDate}
+                                                    defaultValue={this.formatDate1(Date.now())}
                                                 />
                                                 <TimePicker
                                                     id={`time-picker-${currentTimer._id}`}

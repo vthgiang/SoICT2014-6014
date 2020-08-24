@@ -6,12 +6,13 @@ import { DialogModal, SelectBox, DatePicker } from "../../../../common-component
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { getStorage } from '../../../../config';
 import BpmnModeler from 'bpmn-js/lib/Modeler';
+import BpmnViewer from 'bpmn-js'
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
 import { TaskProcessActions } from "../redux/actions";
-import customModule from './custom'
+import customModule from './read-only'
 import { TaskFormValidator } from "../../task-management/component/taskFormValidator";
 import { FormCreateTaskByProcess } from "./formCreateTaskByProcess";
 //bpmn-nyan
@@ -47,10 +48,9 @@ class ModalCreateTaskByProcess extends Component {
             startDate: "",
             endDate: "",
         }
-        this.modeler = new BpmnModeler({
+        this.viewer = new BpmnViewer({
             additionalModules: [
                 customModule,
-                // { moveCanvas: [ 'value', null ] },
                 { zoomScroll: ['value', ''] }
             ],
         });
@@ -72,16 +72,16 @@ class ModalCreateTaskByProcess extends Component {
         this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
 
 
-        this.modeler.attachTo('#' + this.generateId);
+        this.viewer.attachTo('#' + this.generateId);
 
-        var eventBus = this.modeler.get('eventBus');
-        this.modeler.on('element.click', 1000, (e) => this.interactPopup(e));
+        var eventBus = this.viewer.get('eventBus');
+        this.viewer.on('element.click', 1000, (e) => this.interactPopup(e));
 
-        this.modeler.on('shape.remove', 1000, (e) => this.deleteElements(e));
+        // this.viewer.on('shape.remove', 1000, (e) => this.deleteElements(e));
 
-        this.modeler.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
+        // this.viewer.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
 
-        this.modeler.on('shape.changed', 1000, (e) => this.changeNameElement(e));
+        // this.viewer.on('shape.changed', 1000, (e) => this.changeNameElement(e));
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -122,7 +122,7 @@ class ModalCreateTaskByProcess extends Component {
                 defaultUnit = user.organizationalUnitsOfUser[0]
             }
             this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
-            this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
+            this.viewer.importXML(nextProps.data.xmlDiagram, function (err) { });
             return true;
         }
         return true;
@@ -159,8 +159,8 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     handleChangeName = async (value) => {
-        const modeling = this.modeler.get('modeling');
-        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        const modeling = this.viewer.get('modeling');
+        let element1 = this.viewer.get('elementRegistry').get(this.state.id);
         modeling.updateProperties(element1, {
            name: value,
         });
@@ -210,8 +210,8 @@ class ModalCreateTaskByProcess extends Component {
     //         }
     //     })
     //     console.log('-----vào');
-    //     const modeling = this.modeler.get('modeling');
-    //     let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+    //     const modeling = this.viewer.get('modeling');
+    //     let element1 = this.viewer.get('elementRegistry').get(this.state.id);
     //     modeling.updateProperties(element1, {
     //         responsibleName: responsible
     //     });
@@ -236,8 +236,8 @@ class ModalCreateTaskByProcess extends Component {
     //             ...state,
     //         }
     //     })
-    //     const modeling = this.modeler.get('modeling');
-    //     let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+    //     const modeling = this.viewer.get('modeling');
+    //     let element1 = this.viewer.get('elementRegistry').get(this.state.id);
     //     modeling.updateProperties(element1, {
     //         accountableName: accountable
     //     });
@@ -251,8 +251,8 @@ class ModalCreateTaskByProcess extends Component {
               responsible.push(x.name)
            }
         })
-        const modeling = this.modeler.get('modeling');
-        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        const modeling = this.viewer.get('modeling');
+        let element1 = this.viewer.get('elementRegistry').get(this.state.id);
         modeling.updateProperties(element1, {
            responsibleName: responsible
         });
@@ -266,8 +266,8 @@ class ModalCreateTaskByProcess extends Component {
               accountable.push(x.name)
            }
         })
-        const modeling = this.modeler.get('modeling');
-        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
+        const modeling = this.viewer.get('modeling');
+        let element1 = this.viewer.get('elementRegistry').get(this.state.id);
         modeling.updateProperties(element1, {
            accountableName: accountable
         });
@@ -424,7 +424,7 @@ class ModalCreateTaskByProcess extends Component {
         let { info, startDate, endDate, userId, processName, processDescription, xmlDiagram } = this.state;
 
         let xmlStr;
-        this.modeler.saveXML({ format: true }, function (err, xml) {
+        this.viewer.saveXML({ format: true }, function (err, xml) {
            xmlStr = xml;
         });
 
@@ -455,7 +455,7 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     downloadAsSVG = () => {
-        this.modeler.saveSVG({ format: true }, function (error, svg) {
+        this.viewer.saveSVG({ format: true }, function (error, svg) {
             if (error) {
                 return;
             }
@@ -480,7 +480,7 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     downloadAsBpmn = () => {
-        this.modeler.saveXML({ format: true }, function (error, xml) {
+        this.viewer.saveXML({ format: true }, function (error, xml) {
             if (error) {
                 return;
             }
@@ -488,7 +488,7 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     downloadAsImage = () => {
-        this.modeler.saveSVG({ format: true }, function (error, svg) {
+        this.viewer.saveSVG({ format: true }, function (error, svg) {
             if (error) {
                 return;
             }
@@ -534,8 +534,8 @@ class ModalCreateTaskByProcess extends Component {
 
     handleZoomOut = async () => {
         let zstep = 0.2;
-        let canvas = this.modeler.get('canvas');
-        let eventBus = this.modeler.get('eventBus');
+        let canvas = this.viewer.get('canvas');
+        let eventBus = this.viewer.get('eventBus');
 
         // set initial zoom level
         canvas.zoom(zlevel, 'auto');
@@ -550,14 +550,14 @@ class ModalCreateTaskByProcess extends Component {
 
     handleZoomReset = () => {
 
-        let canvas = this.modeler.get('canvas');
+        let canvas = this.viewer.get('canvas');
         canvas.zoom('fit-viewport');
     }
 
     handleZoomIn = async () => {
         let zstep = 0.2;
-        let canvas = this.modeler.get('canvas');
-        let eventBus = this.modeler.get('eventBus');
+        let canvas = this.viewer.get('canvas');
+        let eventBus = this.viewer.get('eventBus');
 
         // set initial zoom level
         canvas.zoom(zlevel, 'auto');
@@ -571,7 +571,7 @@ class ModalCreateTaskByProcess extends Component {
 
     exportDiagram = () => {
         let xmlStr;
-        this.modeler.saveXML({ format: true }, function (err, xml) {
+        this.viewer.saveXML({ format: true }, function (err, xml) {
             if (err) {
             }
             else {
