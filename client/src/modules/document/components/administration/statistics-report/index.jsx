@@ -18,9 +18,10 @@ class AdministrationStatisticsReport extends Component {
         }
     }
 
-    // componentDidMount(){
-    //     this.props.getAllDocuments();
-    // }
+    componentDidMount(){
+        this.props.getAllDocuments();
+        this.props.getDocumentCategories();
+    }
 
     shouldComponentUpdate(nextProps, nextState) {
         if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
@@ -289,7 +290,8 @@ class AdministrationStatisticsReport extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    getAllDocuments: DocumentActions.getDocuments
+    getAllDocuments: DocumentActions.getDocuments,
+    getDocumentCategories: DocumentActions.getDocumentCategories,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(AdministrationStatisticsReport));
