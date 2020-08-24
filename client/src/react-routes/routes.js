@@ -70,19 +70,19 @@ import { ProcessTemplate } from '../modules/task/task-process/component/processT
 import { TaskOrganizationUnitDashboard } from '../modules/task/task-management/component/task-organization-dashboard/taskOrganizationUnitDashboard';
 
 //asset
-import RecommendProcure from "../modules/asset/recommend-procure/components";
-import RecommendDistribute from "../modules/asset/recommend-distribute/components";
-import ManagerRecommendProcure from "../modules/asset/recommend-procure-management/components";
-import ManagerRecommendDistribute from "../modules/asset/recommend-distribute-management/components";
-import ManagerAssetType from "../modules/asset/asset-type/components";
-import MaintainanceManager from "../modules/asset/maintainance/components";
-import UsageManager from "../modules/asset/usage/components";
-import IncidentManager from "../modules/asset/incident/components";
-import ManagerDepreciation from "../modules/asset/depreciation/components";
-import AssetManager from "../modules/asset/asset-management/components";
-import { ManagerAssetAssignedCrash } from '../modules/asset/asset-assgined/components';
-import { DashBoardAssets } from '../modules/asset/asset-dashboard/components/assetDashBoard';
-import { BuildingAsset } from '../modules/asset/building/components'
+import RecommendProcure from "../modules/asset/user/purchase-request/components";
+import RecommendDistribute from "../modules/asset/user/use-request/components";
+import ManagerRecommendProcure from "../modules/asset/admin/purchase-request-management/components";
+import ManagerRecommendDistribute from "../modules/asset/admin/use-request-management/components";
+import ManagerAssetType from "../modules/asset/admin/asset-type/components";
+import MaintainanceManager from "../modules/asset/admin/maintainance/components";
+import UsageManager from "../modules/asset/admin/usage/components";
+import IncidentManager from "../modules/asset/admin/incident/components";
+import ManagerDepreciation from "../modules/asset/admin/depreciation/components";
+import AssetManager from "../modules/asset/admin/asset-information/components";
+import { ManagerAssetAssignedCrash } from '../modules/asset/user/asset-assigned/components';
+import { DashBoardAssets } from '../modules/asset/admin/asset-dashboard/components/assetDashBoard';
+import { BuildingAsset } from '../modules/asset/admin/building/components'
 
 //report
 import TaskReportManager from '../modules/report/task-report/components/taskReportManager';

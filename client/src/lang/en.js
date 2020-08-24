@@ -640,8 +640,8 @@ export default {
             manage_maintainance_asset: 'Manage maintainance assets',
             manage_depreciation_asset: 'Manage depreciation assets',
             manage_incident_asset: 'Manage incident assets',
-            manage_recommend_procure: 'Manage recommend procure',
-            manage_recommend_distribute_asset: 'Manage recommend distribute',
+            manage_recommend_procure: 'Manage purchase request',
+            manage_recommend_distribute_asset: 'Manage use request',
 
             view_building_list: 'View building list',
             // NHÂN VIÊN
