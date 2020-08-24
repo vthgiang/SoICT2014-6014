@@ -139,11 +139,16 @@ class ContractEditModal extends Component {
         let result = this.validateNameContract(name, false) && this.validateTypeContract(contractType, false);
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
-        let partEnd = endDate.split('-');
-        let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
-        if (new Date(startDateNew).getTime() <= new Date(endDateNew).getTime()) {
+        if (endDate) {
+            let partEnd = endDate.split('-');
+            let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+            if (new Date(startDateNew).getTime() <= new Date(endDateNew).getTime()) {
+                return result;
+            } else return false;
+        } else {
             return result;
-        } else return false;
+        }
+
     }
 
     /** Bắt sự kiện submit form */
@@ -151,8 +156,11 @@ class ContractEditModal extends Component {
         const { startDate, endDate } = this.state;
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
-        let partEnd = endDate.split('-');
-        let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        let endDateNew = null;
+        if (endDate) {
+            let partEnd = endDate.split('-');
+            endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        }
         if (this.isFormValidated()) {
             return this.props.handleChange({ ...this.state, startDate: startDateNew, endDate: endDateNew });
         }

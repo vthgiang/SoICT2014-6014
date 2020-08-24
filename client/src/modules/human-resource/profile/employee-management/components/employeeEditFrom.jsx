@@ -747,6 +747,7 @@ class EmployeeEditFrom extends Component {
         const { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,
             organizationalUnits, roles, commendations, disciplines, salaries, annualLeaves, files } = this.state;
 
+        console.log(this.state);
         return (
             <React.Fragment>
                 <DialogModal

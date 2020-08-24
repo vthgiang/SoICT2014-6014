@@ -970,6 +970,7 @@ exports.updateEmployeeInformation = async (id, data, fileInfor, company) => {
     oldEmployee.temporaryResidenceDistrict = employee.temporaryResidenceDistrict;
     oldEmployee.temporaryResidenceWard = employee.temporaryResidenceWard;
 
+    console.log(oldEmployee.contracts);
     // Edit  thông tin nhân viên
     oldEmployee.save();
 
