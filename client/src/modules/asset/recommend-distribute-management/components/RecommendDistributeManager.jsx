@@ -380,7 +380,7 @@ class RecommendDistributeManager extends Component {
                         asset={currentRowAdd.asset}
                         startDate={currentRowAdd.dateStartUse}
                         endDate={currentRowAdd.dateEndUse}
-                        usedBy={currentRowAdd.proponent}
+                        usedByUser={currentRowAdd.proponent}
                     />
                 }
             </div >

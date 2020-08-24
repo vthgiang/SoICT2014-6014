@@ -23,7 +23,8 @@ class AssetCreateForm extends Component {
                 avatar: '/upload/asset/pictures/picture5.png',
                 purchaseDate: this.formatDate2(Date.now()),
                 warrantyExpirationDate: this.formatDate2(Date.now()),
-                assignedTo: null,
+                assignedToUser: null,
+                assignedToOrganizationalUnit: null,
                 handoverFromDate: null,
                 handoverToDate: null,
                 status: "",
@@ -138,7 +139,7 @@ class AssetCreateForm extends Component {
 
     // function kiểm tra các trường bắt buộc phải nhập
     validatorInput = (value) => {
-        if (value && value.trim() !== '') {
+        if (value !== null && value !== undefined && value.toString().trim() !== '') {
             return true;
         }
 
@@ -149,13 +150,21 @@ class AssetCreateForm extends Component {
     isFormValidated = () => {
         let { asset } = this.state;
 
-        let result = this.validatorInput(asset.code) && this.validatorInput(asset.assetName) &&
-            this.validatorInput(asset.serial) && this.validatorInput(asset.purchaseDate) &&
-            this.validatorInput(asset.warrantyExpirationDate) && //this.validatorInput(asset.location) &&
-            this.validatorInput(asset.assetType) && this.validatorInput(asset.managedBy) &&
-            this.validatorInput(asset.status) && this.validatorInput(asset.canRegisterForUse) &&
-            this.validatorInput(asset.cost) && this.validatorInput(asset.usefulLife) &&
-            this.validatorInput(asset.startDepreciation) && this.validatorInput(asset.depreciationType);
+        let result =
+            this.validatorInput(asset.code) &&
+            this.validatorInput(asset.assetName) &&
+            // this.validatorInput(asset.serial) &&
+            this.validatorInput(asset.purchaseDate)
+            // && this.validatorInput(asset.warrantyExpirationDate) &&
+            // //this.validatorInput(asset.location) &&
+            // this.validatorInput(asset.assetType) &&
+            // this.validatorInput(asset.managedBy) &&
+            // this.validatorInput(asset.status) &&
+            // this.validatorInput(asset.canRegisterForUse) &&
+            // this.validatorInput(asset.cost) &&
+            // this.validatorInput(asset.usefulLife) &&
+            // this.validatorInput(asset.startDepreciation) &&
+            // this.validatorInput(asset.depreciationType);
         
         return result;
     }

@@ -122,6 +122,11 @@ export function department(state = initState, action) {
         case DepartmentConstants.IMPORT_DEPARTMENT_SUCCESS:
             return{
                 ...state,
+                list: [
+                    ...state.list,
+                    action.payload.department
+                ],
+                tree: action.payload.tree,
                 isLoading: false,
             };
 

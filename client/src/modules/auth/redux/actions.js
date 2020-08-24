@@ -201,14 +201,21 @@ function getComponentOfUserInLink(curentRole, linkId){
             })
     }
 }
-function downloadFile(path, fileName) {
+function downloadFile(path, fileName, type = 'show') {
     return dispatch => {
         dispatch({ type: AuthConstants.DOWNLOAD_FILE_REQUEST });
-        AuthService.downloadFile(path)
+        AuthService.downloadFile(path, type)
             .then(res => {
-                dispatch({ type: AuthConstants.DOWNLOAD_FILE_SUCCESS });
-                const content = res.headers['content-type'];
-                FileDownload(res.data, fileName, content)
+                dispatch({ 
+                    type: AuthConstants.DOWNLOAD_FILE_SUCCESS,
+                    payload: {
+                        fileName: fileName,
+                        file : res.data.content
+                    }});
+                if (!type) {
+                    const content = res.headers['content-type'];
+                    FileDownload(res.data, fileName, content)
+                }
             })
             .catch(err => { dispatch({ type: AuthConstants.DOWNLOAD_FILE_FAILURE }) })
     }

@@ -702,11 +702,11 @@ export default {
             select_parent: 'Chọn đơn vị cha',
             no_parent: 'Không có đơn vị cha',
             roles_of_department: 'Các chức danh của đơn vị',
-            dean_name: 'Tên chức danh cho trưởng đơn vị',
+            dean_name: 'Tên các chức danh trưởng đơn vị',
             dean_example: 'VD: Trưởng phòng tài chính',
-            vice_dean_name: 'Tên chức danh cho phó đơn vị',
+            vice_dean_name: 'Tên các chức danh phó đơn vị',
             vice_dean_example: 'VD: Phó phòng tài chính',
-            employee_name: 'Tên chức danh cho nhân viên đơn vị',
+            employee_name: 'Tên các chức danh nhân viên đơn vị',
             employee_example: 'VD: Nhân viên phòng tài chính',
             add_with_parent: 'Tạo đơn vị mới với đơn vị cha là',
             delete: 'Xóa đơn vị',
@@ -1582,6 +1582,7 @@ export default {
                 asset_code: 'Mã tài sản',
                 asset_name: 'Tên tài sản',
                 asset_type: 'Loại tài sản',
+                asset_group: 'Nhóm tài sản',
                 purchase_date: 'Ngày nhập',
                 manager: 'Người quản lý',
                 user: 'Người sử dụng',
@@ -1685,6 +1686,12 @@ export default {
                 sale: 'Nhượng bán',
                 give: 'Tặng',
 
+                select_group: 'Chọn nhóm tài sản',
+                building: 'Mặt bằng',
+                vehicle: 'Xe cộ',
+                machine: 'Máy móc',
+                other: 'Khác',
+
                 //Thông điệp trả về từ server
                 get_list_asset_success: 'Lấy thông tin tài sản thành công',
                 get_list_asset_faile: 'Lấy thông tin tài sản thất bại',
@@ -1738,6 +1745,14 @@ export default {
                 accumulated_value: 'Giá trị hao mòn lũy kế',
                 remaining_value: 'Giá trị còn lại',
                 edit_depreciation: 'Chỉnh sửa thông tin kháu hao tài sản',
+
+                estimated_production: 'Sản lượng theo công suất thiết kế (trong 1 năm)',
+                months_production: 'Sản lượng sản phẩm trong các tháng',
+                production: 'Sản lượng',
+                select_depreciation_type: 'Chọn phương pháp khấu hao',
+                line: 'Phương pháp khấu hao đường thẳng',
+                declining_balance: 'Phương pháp khấu hao theo số dư giảm dần',
+                units_production: 'Phương pháp khấu hao theo sản lượng',
 
                 //Thông điệp trả về từ server
                 get_depreciation_success: 'Lấy thông tin khấu hao thành công',
@@ -1887,6 +1902,8 @@ export default {
             view_detail_of_this_task_template: 'Xem chi tiết mẫu công việc này',
             edit_this_task_template: 'Sửa mẫu công việc này',
             delete_this_task_template: 'Xóa mẫu công việc này',
+            create_task_by_process: 'Tạo công việc theo quy trình này',
+            numberOfDaysTaken: "Số ngày dự kiến hoàn thành công việc",
         },
 
         task: {

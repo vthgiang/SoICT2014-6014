@@ -48,6 +48,9 @@ class Table extends Component {
         this.props.getAllDocuments({ page: this.state.page, limit: this.state.limit });
         this.props.getAllRoles();
         this.props.getAllDepartments();
+        this.props.getDocumentDomains();
+        this.props.getDocumentArchive();
+        this.props.getDocumentCategories();
     }
 
     toggleEditDocument = async (data) => {
@@ -193,8 +196,8 @@ class Table extends Component {
                 officialNumber: x.officialNumber,
                 category: x.category.description,
             }
-            datas = [...datas, out] ;
-            for ( let  j = 1; j < leng; j++) {
+            datas = [...datas, out];
+            for (let j = 1; j < leng; j++) {
                 let versionName = "", issuingDate = "", effectiveDate = "", expiredDate = "", domain = "";
                 if (x.versions[j]) {
                     versionName = x.versions[j].versionName;
@@ -206,26 +209,26 @@ class Table extends Component {
                     domain = x.domains[j].name;
                 }
                 out = {
-                STT: "",
-                name: "",
-                description: "",
-                domain: domain,
-                versionName: versionName,
-                issuingDate: issuingDate,
-                effectiveDate: effectiveDate,
-                expiredDate: expiredDate,
-                numberOfView: "",
-                numberOfDownload: "",
-                issuingBody: "",
-                signer: "",
-                officialNumber: "",
-                categor: "",
+                    STT: "",
+                    name: "",
+                    description: "",
+                    domain: domain,
+                    versionName: versionName,
+                    issuingDate: issuingDate,
+                    effectiveDate: effectiveDate,
+                    expiredDate: expiredDate,
+                    numberOfView: "",
+                    numberOfDownload: "",
+                    issuingBody: "",
+                    signer: "",
+                    officialNumber: "",
+                    categor: "",
                 }
-                datas = [...datas, out] ;
+                datas = [...datas, out];
             }
         }
         let exportData = {
-            fileName: "Bang thong ke tai lieu",
+            fileName: "Bảng thống kê tài liệu",
             dataSheets: [
                 {
                     sheetName: "sheet1",
@@ -247,13 +250,13 @@ class Table extends Component {
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "name", value: "Tên" },
-                                { key: "officialNumber", value: "Số hiệu"},
-                                { key: "category", value: "Loai văn bản"},
+                                { key: "officialNumber", value: "Số hiệu" },
+                                { key: "category", value: "Loai tài liệu" },
                                 { key: "description", value: "Mô tả" },
-                                { key: "signer", value: "Người ký"},
-                                { key: "domain", value: "Danh mục"},
-                                { key: "issuingBody", value: "Cơ quan ban hành"},
-                                { key: "versionName", value: "Tên phiên bản"},
+                                { key: "signer", value: "Người ký" },
+                                { key: "domain", value: "Danh mục" },
+                                { key: "issuingBody", value: "Cơ quan ban hành" },
+                                { key: "versionName", value: "Tên phiên bản" },
                                 { key: "issuingDate", value: "Ngày ban hành" },
                                 { key: "effectiveDate", value: "Ngày áp dụng" },
                                 { key: "expiredDate", value: "Ngày hết hạn" },
@@ -322,6 +325,7 @@ class Table extends Component {
                         documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
                         documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
+
                     />
 
                 }
@@ -346,6 +350,7 @@ class Table extends Component {
                         documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
                         documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
+                        documentLogs={currentRow.logs}
                     />
                 }
 
@@ -505,7 +510,6 @@ class Table extends Component {
             domains: this.state.domain[0],
             archives: this.state.archive[0],
         };
-        console.log('nameeee', data)
         await this.props.getAllDocuments(data);
     }
 }
@@ -520,6 +524,9 @@ const mapDispatchToProps = {
     downloadDocumentFileScan: DocumentActions.downloadDocumentFileScan,
     increaseNumberView: DocumentActions.increaseNumberView,
     deleteDocument: DocumentActions.deleteDocument,
+    getDocumentDomains: DocumentActions.getDocumentDomains,
+    getDocumentCategories: DocumentActions.getDocumentCategories,
+    getDocumentArchive: DocumentActions.getDocumentArchive,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(Table));

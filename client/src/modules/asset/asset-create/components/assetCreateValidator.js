@@ -13,9 +13,9 @@ export const AssetCreateValidator = {
     validatePurchaseDate, //ngày nhập
     validateWarrantyExpirationDate, //ngày bảo hành
     validateManagedBy, //người quản lý
-    validateAssignedTo, //người sử dụng
-    validateHandoverFromDate, //ngày bát đầu
-    validateHandoverToDate, //ngày kết thúc
+    validateAssignedToUser, //người sử dụng
+    validateAssignedToOrganizationalUnit,
+
     validateLocation, //vị trí tài sản
     validateNameField, //tên trường dữ liệu
     validateValue, //giá trị
@@ -34,7 +34,8 @@ export const AssetCreateValidator = {
      */
     validateStartDate, // ngày bắt đầu sử dụng
     validateEndDate, // ngày kết thúc sử dụng
-    validateUsedBy, // người sử dụng
+    validateUsedByUser, // người sử dụng
+    validateUsedByOrganiztionalUnit, // đơn vị sử dụng
 
     /** 
      * Thông tin khấu hao
@@ -150,28 +151,13 @@ function validateManagedBy(value, translate) {
 }
 
 //kiểm tra người sử dụng
-function validateAssignedTo(value, translate) {
+function validateAssignedToUser(value, translate) {
     return undefined;
 }
 
-//kiểm tra ngày bắt đầu sử dụng
-function validateHandoverFromDate(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Ngày nhập không được để trống";
-    }
-    return msg;
+function validateAssignedToOrganizationalUnit(value, translate) {
+    return undefined;
 }
-
-//kiểm tra kết thúc sử dụng
-function validateHandoverToDate(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Ngày nhập không được để trống";
-    }
-    return msg;
-}
-
 //kiểm tra vị trí tài sản
 function validateLocation(value, translate) {
     let msg = undefined;
@@ -254,10 +240,18 @@ function validateExpense(value, translate) {
  */
 //
 
-function validateUsedBy(value, translate) {
+function validateUsedByUser(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Người sử dụng không được để trống";
+    }
+    return msg;
+}
+
+function validateUsedByOrganiztionalUnit(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Đơn vị sử dụng không được để trống";
     }
     return msg;
 }
@@ -431,7 +425,7 @@ function validateDisposalDescription(value, translate) {
 // Kiểm tra sản lượng sản phẩm trong 1 năm
 function validateUnitsProducedDuringTheYear(value, translate) {
     let msg = undefined;
-    if (value.trim() === "") {
+    if (!value) {
         msg = "Sản lượng sản phẩm không được để trống";
     } else if (value < 0) {
         msg = "Sản lượng sản phẩm không được nhỏ hơn 0";
@@ -443,7 +437,7 @@ function validateUnitsProducedDuringTheYear(value, translate) {
 // Kiểm tra sản lượng ước tính sản phẩm trong 1 năm
 function validateEstimatedTotalProduction(value, translate) {
     let msg = undefined;
-    if (value.trim() === "") {
+    if (!value) {
         msg = "Sản lượng ước tính sản phẩm không được để trống";
     } else if (value < 0) {
         msg = "Sản lượng ước tính sản phẩm không được nhỏ hơn 0";

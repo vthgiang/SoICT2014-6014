@@ -701,11 +701,11 @@ export default {
             no_parent: 'No parent department',
             select_parent: 'Select parent of department',
             roles_of_department: 'Roles in Department',
-            dean_name: 'Dean',
+            dean_name: 'Positions for Manager',
             dean_example: 'Ex: Dean of Financial Officer',
-            vice_dean_name: 'Vice Dean',
+            vice_dean_name: 'Positions for Deputy Manager',
             vice_dean_example: 'Ex: Vice Dean of Financial Officer',
-            employee_name: 'Employee',
+            employee_name: 'Positions for Employee',
             employee_example: 'Ex: Employee of Financial Officer',
             add_with_parent: 'Add new department with parent is',
             delete: 'Delete department',
@@ -1582,6 +1582,7 @@ export default {
                 asset_code: 'Asset code',
                 asset_name: 'Asset name',
                 asset_type: 'Asset type',
+                asset_group: 'Asset group',
                 purchase_date: 'Date of purchase',
                 manager: 'Manager',
                 user: 'User',
@@ -1685,6 +1686,12 @@ export default {
                 sale: 'Sale',
                 give: 'Give',
 
+                select_group: 'Select asset group',
+                building: 'Building',
+                vehicle: 'Vehicle',
+                machine: 'Machine',
+                other: 'Other',
+
                 //Thông điệp trả về từ server
                 get_list_asset_success: 'Lấy thông tin tài sản thành công',
                 get_list_asset_faile: 'Lấy thông tin tài sản thất bại',
@@ -1738,6 +1745,14 @@ export default {
                 accumulated_value: 'Accumulated depreciation value',
                 remaining_value: 'Remaining value',
                 edit_depreciation: 'Edit asset depreciation information',
+
+                estimated_production: 'Estimated total production (for 1 year)',
+                months_production: 'Product production in months',
+                production: 'Production',
+                select_depreciation_type: 'Select depreciation type',
+                line: 'Straight - line depreciation method',
+                declining_balance: 'Declining Balance depreciation method',
+                units_production: 'Unit of production method',
 
                 //Thông điệp trả về từ server
                 get_depreciation_success: 'Lấy thông tin khấu hao thành công',
@@ -1886,6 +1901,8 @@ export default {
             view_detail_of_this_task_template: 'View detail of this task',
             edit_this_task_template: 'Edit this task template',
             delete_this_task_template: 'Delete this task template',
+            create_task_by_process: 'Create tasks by process',
+            numberOfDaysTaken: "The number of days taken",
         },
 
         task: {

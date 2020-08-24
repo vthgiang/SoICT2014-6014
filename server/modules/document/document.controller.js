@@ -98,31 +98,31 @@ exports.showDocument = async (req, res) => {
 };
 
 exports.editDocument = async (req, res) => {
-    try {
-        if (req.files && Object.keys(req.files).length > 0) {
-            var pathFile = req.files.file[0].destination + '/' + req.files.file[0].filename;
-            var pathFileScan = req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
+    // try {
+    if (req.files && Object.keys(req.files).length > 0) {
+        var pathFile = req.files.file[0].destination + '/' + req.files.file[0].filename;
+        var pathFileScan = req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
 
-            req.body.file = pathFile;
-            req.body.scannedFileOfSignedDocument = pathFileScan;
-        }
-        const document = await DocumentServices.editDocument(req.params.id, req.body, req.query);
-
-        await LogInfo(req.user.email, 'EDIT_DOCUMENT', req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['edit_document_success'],
-            content: document
-        });
-    } catch (error) {
-
-        await LogError(req.user.email, 'EDIT_DOCUMENT', req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['edit_document_faile'],
-            content: error
-        });
+        req.body.file = pathFile;
+        req.body.scannedFileOfSignedDocument = pathFileScan;
     }
+    const document = await DocumentServices.editDocument(req.params.id, req.body, req.query);
+
+    await LogInfo(req.user.email, 'EDIT_DOCUMENT', req.user.company);
+    res.status(200).json({
+        success: true,
+        messages: ['edit_document_success'],
+        content: document
+    });
+    // } catch (error) {
+
+    //     await LogError(req.user.email, 'EDIT_DOCUMENT', req.user.company);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: Array.isArray(error) ? error : ['edit_document_faile'],
+    //         content: error
+    //     });
+    // }
 };
 
 exports.addDocumentLog = async (req, res) => {

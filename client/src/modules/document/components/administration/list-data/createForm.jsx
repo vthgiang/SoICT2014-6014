@@ -573,7 +573,7 @@ class CreateForm extends Component {
                                                 <ErrorLabel content={errorDocumentFileScan} />
                                             </div>
                                             <div className={`form-group ${!errorIssuingDate ? "" : "has-error"}`}>
-                                                <label>{translate('document.doc_version.issuing_date')}<span className="text-red">*</span></label>
+                                                <label>{translate('document.doc_version.issuing_date')}</label>
                                                 <DatePicker
                                                     id="create-document-version-issuing-date"
                                                     value={this.state.documentIssuingDate}
@@ -582,7 +582,7 @@ class CreateForm extends Component {
                                                 <ErrorLabel content={errorIssuingDate} />
                                             </div>
                                             <div className={`form-group ${!errorEffectiveDate ? "" : "has-error"}`}>
-                                                <label>{translate('document.doc_version.effective_date')}<span className="text-red">*</span></label>
+                                                <label>{translate('document.doc_version.effective_date')}</label>
                                                 <DatePicker
                                                     id="create-document-version-effective-date"
                                                     value={this.state.documentEffectiveDate}
@@ -591,7 +591,7 @@ class CreateForm extends Component {
                                                 <ErrorLabel content={errorEffectiveDate} />
                                             </div>
                                             <div className={`form-group ${!errorExpiredDate ? "" : "has-error"}`}>
-                                                <label>{translate('document.doc_version.expired_date')}<span className="text-red">*</span></label>
+                                                <label>{translate('document.doc_version.expired_date')}</label>
                                                 <DatePicker
                                                     id="create-document-version-expired-date"
                                                     value={this.state.documentExpiredDate}

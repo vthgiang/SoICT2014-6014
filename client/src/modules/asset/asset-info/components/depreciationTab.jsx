@@ -42,6 +42,8 @@ class DepreciationTab extends Component {
                 startDepreciation: nextProps.startDepreciation,
                 endDepreciation: nextProps.endDepreciation,
                 depreciationType: nextProps.depreciationType,
+                estimatedTotalProduction: nextProps.estimatedTotalProduction,
+                unitsProducedDuringTheYears: nextProps.unitsProducedDuringTheYears,
                 annualDepreciationValue: nextProps.annualDepreciationValue,
                 monthlyDepreciationValue: nextProps.monthlyDepreciationValue,
             }
@@ -72,8 +74,10 @@ class DepreciationTab extends Component {
      * @param {*} cost Nguyên giá
      * @param {*} usefulLife Thời gian trích khấu hao
      * @param {*} startDepreciation Thời gian bắt đầu trích khấu hao
+     * @param {*} estimatedTotalProduction Sản lượng theo công suất thiết kế (trong 1 năm)
+     * @param {*} unitsProducedDuringTheYears Sản lượng sản phẩm trong các tháng
      */
-    calculateDepreciation = (depreciationType, cost, usefulLife, startDepreciation) => {
+    calculateDepreciation = (depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation) => {
         let annualDepreciation, monthlyDepreciation, remainingValue = cost;
 
         if (depreciationType === "Đường thẳng") { // Phương pháp khấu hao theo đường thẳng
@@ -95,6 +99,7 @@ class DepreciationTab extends Component {
                 t = (1 / usefulYear) * 2.5;
             }
 
+            // Tính khấu hao đến năm hiện tại
             for (let i = 1; i <= usedTime / 12; i++) {
                 if (!lastYears) {
                     if (remainingValue * t > (remainingValue / (usefulYear - i + 1))) {
@@ -108,6 +113,7 @@ class DepreciationTab extends Component {
                 remainingValue = remainingValue - annualDepreciation;
             }
 
+            // Tính khấu hao đến tháng hiện tại
             if (usedTime % 12 !== 0) {
                 if (!lastYears) {
                     if (remainingValue * t > (remainingValue / (usefulYear - Math.floor(usedTime / 12)))) {
@@ -123,7 +129,16 @@ class DepreciationTab extends Component {
             }
         
         } else if (depreciationType === "Sản lượng") { // Phương pháp khấu hao theo sản lượng
+            let monthTotal = unitsProducedDuringTheYears.length; // Tổng số tháng tính khấu hao
+            let productUnitDepreciation = cost / (estimatedTotalProduction * (usefulLife / 12)); // Mức khấu hao đơn vị sản phẩm
+            let accumulatedDepreciation = 0; // Giá trị hao mòn lũy kế
 
+            for (let i = 0; i < monthTotal; i++) {
+                accumulatedDepreciation += unitsProducedDuringTheYears[i].unitsProducedDuringTheYear * productUnitDepreciation;
+            }
+
+            remainingValue = cost - accumulatedDepreciation;
+            annualDepreciation = monthTotal ? accumulatedDepreciation * 12 / monthTotal : 0;
         }
 
         return [parseInt(annualDepreciation), parseInt(annualDepreciation / 12), parseInt(remainingValue)];
@@ -132,12 +147,13 @@ class DepreciationTab extends Component {
     render() {
         const { id } = this.props;
         const { translate } = this.props;
-        const { cost, residualValue, startDepreciation, usefulLife, depreciationType, endDepreciation, annualDepreciationValue, monthlyDepreciationValue } = this.state;
+        const { cost, residualValue, startDepreciation, usefulLife, depreciationType, endDepreciation, annualDepreciationValue, monthlyDepreciationValue,
+            estimatedTotalProduction, unitsProducedDuringTheYears } = this.state;
 
         var formater = new Intl.NumberFormat();
 
         let annualDepreciation, monthlyDepreciation, remainingValue = cost;
-        let result = this.calculateDepreciation(depreciationType, cost, usefulLife, startDepreciation);
+        let result = this.calculateDepreciation(depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation);
         annualDepreciation = result[0];
         monthlyDepreciation = result[1];
         remainingValue = result[2];

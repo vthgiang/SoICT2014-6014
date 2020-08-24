@@ -180,10 +180,13 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
     setDataMultiLineChart = () => {
         const { createKpiUnit } = this.props;
-        let organizationalUnitKpiSetsOfChildUnit, point = [];
+        const { startDate, endDate }= this.state;
+        let organizationalUnitKpiSetsOfChildUnit, point = [],exportData;
 
         if (createKpiUnit.organizationalUnitKpiSetsOfChildUnit) {
             organizationalUnitKpiSetsOfChildUnit = createKpiUnit.organizationalUnitKpiSetsOfChildUnit;
+            exportData =this.convertDataToExportData(organizationalUnitKpiSetsOfChildUnit,startDate,endDate);
+            this.handleExportData(exportData);
         }
 
         if (organizationalUnitKpiSetsOfChildUnit) {
@@ -257,13 +260,12 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
 
     }
 
-    handleExportData =(exportData)=>{
-        this.setState(state => {
-            return {
-                ...state,
-                exportData: exportData
-            }
-        })
+    handleExportData =(exportData)=>
+    {
+        const { onDataAvailable } = this.props;
+        if (onDataAvailable) {
+            onDataAvailable(exportData);
+        }
     }
 
     /*Chuyển đổi dữ liệu KPI nhân viên thành dữ liệu export to file excel */
@@ -327,9 +329,9 @@ class ResultsOfAllOrganizationalUnitKpiChart extends Component {
                             columns: [
                                 { key: "unitName", value: "Tên đơn vị"},
                                 { key: "date", value: "Thời gian" },
-                                { key: "automaticPoint", value: "Điểm tự động" },
-                                { key: "employeePoint", value: "Điểm tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm được phê duyệt" }
+                                { key: "automaticPoint", value: "Điểm KPI tự động" },
+                                { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm KPI được phê duyệt" }
                             ],
                             data: x
                         }

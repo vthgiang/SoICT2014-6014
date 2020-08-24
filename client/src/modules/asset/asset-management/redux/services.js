@@ -7,6 +7,7 @@ export const AssetService = {
     addNewAsset,
     updateInformationAsset,
     deleteAsset,
+    getListBuildingAsTree,
 }
 
 /**
@@ -24,6 +25,19 @@ function getAll(data) {
             canRegisterForUse: data !== undefined ? data.canRegisterForUse : data,
             page: data !== undefined ? data.page : data,
             limit: data !== undefined ? data.limit : data
+        }
+    }, false, true, 'asset.asset_info');
+}
+
+/**
+ * Lấy danh sách mặt bằng dạng cây
+ */
+function getListBuildingAsTree() {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/assets/assets`,
+        method: 'GET',
+        params: {
+            type: "get-building-as-tree"
         }
     }, false, true, 'asset.asset_info');
 }

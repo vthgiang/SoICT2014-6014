@@ -128,9 +128,9 @@ class UsageLogTab extends Component {
 
     hanhdleRecallAsset = () => {
         let assetId = this.props.assetId;
-        let assignedTo = this.props.assignedTo;
+        let assignedToUser = this.props.assignedToUser;
         let data =  {
-            usageId: assignedTo,
+            usageId: assignedToUser,
         }
 
         this.props.recallAsset(assetId, data);        
@@ -166,10 +166,10 @@ class UsageLogTab extends Component {
                         <div className="form-inline">
                             <div className="form-group">
                                 <label style={{ width: "auto" }} className="form-control-static"> Người đang sử dụng:</label>
-                                <div style={{ width: "auto" }} className="form-control-static">{ this.props.assignedTo? userlist.filter(item => item._id === this.props.assignedTo).pop() ? userlist.filter(item => item._id === this.props.assignedTo).pop().name:"Chưa có ai": ''}</div>
+                                <div style={{ width: "auto" }} className="form-control-static">{ this.props.assignedToUser? userlist.filter(item => item._id === this.props.assignedToUser).pop() ? userlist.filter(item => item._id === this.props.assignedToUser).pop().name:"Chưa có ai": ''}</div>
                             </div>
                             
-                            { this.props.assignedTo &&
+                            { (this.props.assignedToUser || this.props.assignedToOrganizaitonalUnit) &&
                                 <div className="form-group" style={{marginLeft: "20px"}}>
                                     <button type="button" className="btn btn-success" onClick={this.hanhdleRecallAsset} >Thu hồi</button>
                                 </div>
@@ -195,7 +195,7 @@ class UsageLogTab extends Component {
                                 {(usageLogs && usageLogs.length !== 0) &&
                                     usageLogs.map((x, index) => (
                                         <tr key={index}>
-                                            <td>{x.usedBy ? (userlist.length && userlist.filter(item => item._id === x.usedBy).pop() ? userlist.filter(item => item._id === x.usedBy).pop().name : 'User is deleted') : ''}</td>
+                                            <td>{x.usedByUser ? (userlist.length && userlist.filter(item => item._id === x.usedByUser).pop() ? userlist.filter(item => item._id === x.usedByUser).pop().name : 'User is deleted') : ''}</td>
                                             <td>{x.startDate ? this.formatDate(x.startDate) : ''}</td>
                                             <td>{x.endDate ? this.formatDate(x.endDate) : ''}</td>
                                             <td>{x.description}</td>
@@ -221,7 +221,7 @@ class UsageLogTab extends Component {
                         id={`editUsage${currentRow.index}`}
                         _id={currentRow._id}
                         index={currentRow.index}
-                        usedBy={currentRow.usedBy}
+                        usedByUser={currentRow.usedByUser}
                         startDate={currentRow.startDate}
                         endDate={currentRow.endDate}
                         description={currentRow.description}
