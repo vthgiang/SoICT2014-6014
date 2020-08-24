@@ -697,7 +697,7 @@ class EmployeeEditFrom extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                img: process.env.REACT_APP_SERVER + nextProps.employees[0].avatar,
+                img: `.${nextProps.employees[0].avatar}`,
                 avatar: "",
                 employee: nextProps.employees[0],
                 experiences: nextProps.employees[0].experiences,

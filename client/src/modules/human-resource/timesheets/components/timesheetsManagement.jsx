@@ -342,7 +342,7 @@ class TimesheetsManagement extends Component {
                                 <li><a title={translate('human_resource.timesheets.add_timesheets_title')} onClick={this.createTimesheets}>{translate('human_resource.timesheets.add_by_hand')}</a></li>
                             </ul>
                         </div>
-                        <ExportExcel id="export-timesheets" exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
+                        <ExportExcel id="export-timesheets" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
                     </div>
 
                     <div className="form-inline">

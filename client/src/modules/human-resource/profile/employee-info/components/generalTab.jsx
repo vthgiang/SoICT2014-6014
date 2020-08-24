@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
+import { AuthActions } from '../../../../auth/redux/actions';
+
 class GeneralTab extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+        this.state = {
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
+        };
     }
     // Function format dữ liệu Date thành string
     formatDate(date, monthYear = false) {
@@ -55,6 +61,34 @@ class GeneralTab extends Component {
             return null;
         }
     }
+
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        if (nextProps.employee.avatar && !nextProps.auth.isLoading &&
+            this.state.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
+            this.props.downloadFile(`.${nextProps.employee.avatar}`, `avatarInfor${nextProps.id}`, 'show');
+            this.setState({
+                dataStatus: this.DATA_STATUS.QUERYING
+            });
+            return false;
+        };
+        if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.auth.isLoading) {
+            this.setState({
+                dataStatus: this.DATA_STATUS.AVAILABLE
+            });
+            return false;
+        };
+        if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE && nextProps.auth.show_files.length !== 0) {
+            let avatar = nextProps.auth.show_files.find(x => x.fileName === `avatarInfor${nextProps.id}`);
+            this.setState({
+                dataStatus: this.DATA_STATUS.FINISHED,
+                avatar: avatar.file
+            });
+            return true;
+        }
+        return false;
+    }
+
+
     render() {
         const { id, translate } = this.props;
         const { avatar, employeeNumber, employeeTimesheetId, fullName, gender, birthdate, birthplace, status, roles, startingDate, leavingDate,
@@ -64,8 +98,8 @@ class GeneralTab extends Component {
                 <div className=" row box-body">
                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                         <div>
-                            <a href={process.env.REACT_APP_SERVER + avatar} target="_blank">
-                                <img className="attachment-img avarta" src={process.env.REACT_APP_SERVER + avatar} alt="Attachment" />
+                            <a href={avatar} target="_blank">
+                                <img className="attachment-img avarta" src={avatar} alt="Attachment" />
                             </a>
                         </div>
                     </div>
@@ -170,5 +204,15 @@ class GeneralTab extends Component {
         );
     }
 };
-const tabGeneral = connect(null, null)(withTranslate(GeneralTab));
+
+function mapState(state) {
+    const { auth } = state;
+    return { auth };
+};
+
+const actionCreators = {
+    downloadFile: AuthActions.downloadFile,
+};
+
+const tabGeneral = connect(mapState, actionCreators)(withTranslate(GeneralTab));
 export { tabGeneral as GeneralTab };
