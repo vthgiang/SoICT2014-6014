@@ -200,9 +200,7 @@ exports.importTaskTemplate = async(req, res)=>{
         res.status(400).json({
             success: false,
             messages: ["import_task_template_faile"],
-            content: {
-                error: error
-            }
+            content: error
         });
     }
 }
