@@ -243,10 +243,10 @@ class DisciplineEditForm extends Component {
                             </div>
                             {/* Ngày hết hiệu lực*/}
                             <div className={`col-sm-6 col-xs-12 form-group ${errorOnEndDate && "has-error"}`}>
-                                <label>{translate('human_resource.commendation_discipline.discipline.table.end_date')}<span className="text-red">*</span></label>
+                                <label>{translate('human_resource.commendation_discipline.discipline.table.end_date')}</label>
                                 <DatePicker
                                     id={`edit_discipline_end_date${_id}`}
-                                    deleteValue={false}
+                                    deleteValue={true}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />
