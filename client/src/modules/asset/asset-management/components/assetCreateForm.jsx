@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { ButtonModal, DialogModal } from '../../../../common-components';
-import { LOCAL_SERVER_API } from '../../../../env';
 import { convertJsonObjectToFormData } from '../../../../helpers/jsonObjectToFormDataObjectConverter';
 
 import {
@@ -18,13 +17,14 @@ class AssetCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            img: LOCAL_SERVER_API + '/upload/asset/pictures/picture5.png',
+            img: process.env.REACT_APP_SERVER + '/upload/asset/pictures/picture5.png',
             avatar: "",
             asset: {
                 avatar: '/upload/asset/pictures/picture5.png',
                 purchaseDate: this.formatDate2(Date.now()),
                 warrantyExpirationDate: this.formatDate2(Date.now()),
-                assignedTo: null,
+                assignedToUser: null,
+                assignedToOrganizationalUnit: null,
                 handoverFromDate: null,
                 handoverToDate: null,
                 status: "",
@@ -139,7 +139,7 @@ class AssetCreateForm extends Component {
 
     // function kiểm tra các trường bắt buộc phải nhập
     validatorInput = (value) => {
-        if (value && value.trim() !== '') {
+        if (value !== null && value !== undefined && value.toString().trim() !== '') {
             return true;
         }
 
@@ -152,7 +152,7 @@ class AssetCreateForm extends Component {
 
         let result = this.validatorInput(asset.code) && this.validatorInput(asset.assetName) &&
             this.validatorInput(asset.serial) && this.validatorInput(asset.purchaseDate) &&
-            this.validatorInput(asset.warrantyExpirationDate) && this.validatorInput(asset.location) &&
+            this.validatorInput(asset.warrantyExpirationDate) && //this.validatorInput(asset.location) &&
             this.validatorInput(asset.assetType) && this.validatorInput(asset.managedBy) &&
             this.validatorInput(asset.status) && this.validatorInput(asset.canRegisterForUse) &&
             this.validatorInput(asset.cost) && this.validatorInput(asset.usefulLife) &&

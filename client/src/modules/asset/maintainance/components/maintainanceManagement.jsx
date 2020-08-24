@@ -229,7 +229,6 @@ class MaintainanceManagement extends Component {
                     sheetTitle : fileName,
                     tables: [
                         {
-                            tableName : fileName,
                             rowHeader: 2,
                             columns: [
                                 { key: "index", value: "STT" },

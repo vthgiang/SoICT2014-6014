@@ -1,30 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import c3 from 'c3';
 import 'c3/c3.css';
 
 class TwoBarChart extends Component {
     constructor(props) {
         super(props);
-        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
         this.state = {
-            dataStatus: this.DATA_STATUS.QUERYING
+            barAndLineChart: false,
+            pieChart: false,
         }
     }
 
-    setDataMultiChart = (data, type) => {
-        // const { data } = this.props;
-        let dataConvert = [], dateConvert = [], valueConvert = [], axisXType;
+    setDataMultiChart = (data) => {
+        let dataConvert = [], dateConvert = [], valueConvert = [], chartType = [], showInReport;
         if (data) {
             data.forEach(x => {
                 let date = new Date(x.time);
-                if (isNaN(date)) {
-                    axisXType = 'category';
+
+                if (isNaN(date)) { // axisXType cho biểu đồ tròn
                     return dateConvert = [...dateConvert, x.time.toString()];
-                } else {
-                    axisXType = 'timeseries';
+                } else { /// axisXType cho biểu đồ cột và đường
                     let getYear = date.getFullYear();
                     let getMonth = date.getMonth() + 1;
                     let newDate = `${getYear}-${getMonth}-1`;
@@ -34,29 +31,34 @@ class TwoBarChart extends Component {
         }
         dateConvert.unshift("x");
 
-        valueConvert = Object.values(data.flatMap(x => x.tasks).reduce((a, i) => {
-            if (typeof i.value === 'number') {
-                a[i.code] = a[i.code] || [i.code];
-                a[i.code].push(i.value);
-            }
-            return a;
+
+        let allTasks = data.flatMap(x => x.tasks);
+        // gom nhom giá trị các trường thông tin
+        valueConvert = Object.values(allTasks.reduce((arr, item) => {
+            arr[item.code] = arr[item.code] || [item.code];
+            arr[item.code].push(item.value);
+            return arr;
         }, {}));
 
+        // gom nhom dang bieu do để 
+        chartType = allTasks.reduce((obj, item) => {
+            return {
+                ...obj,
+                [item.code]: item.chartType
+            }
+        }, {});
+
         dataConvert = [...[dateConvert], ...valueConvert];
-        return { dataConvert, axisXType };
+        return { dataConvert, chartType };
     }
 
 
     shouldComponentUpdate = (nextProps, nextState) => {
-        if (nextProps.data) {
-            if (nextProps.charType === "0") {
-                this.renderBarChart(nextProps.data);
-            } else if (nextProps.charType === "1") {
-                this.renderLineChart(nextProps.data);
-            } else {
-                this.renderPieChart(nextProps.data);
-            }
-
+        if (nextProps.pieChartData && nextProps.pieChartData.length > 0) {
+            this.renderPieChart(nextProps.pieChartData);
+        }
+        if (nextProps.barLineChartData && nextProps.barLineChartData.length > 0) {
+            this.renderBarAndLineChart(nextProps.barLineChartData);
         }
         return true;
     }
@@ -81,21 +83,24 @@ class TwoBarChart extends Component {
         }
     }
 
-    // Xóa các  lineChart đã render khi chưa đủ dữ liệu
-    removePrceviousLineChart() {
-        const chart = this.refs.lineChart;
-        if (chart) {
-            while (chart.hasChildNodes()) {
-                chart.removeChild(chart.lastChild);
-            }
-        }
-    }
-
-    renderBarChart = (data) => {
+    renderBarAndLineChart = (data) => {
         this.removePreviousBarChart();
         data = this.setDataMultiChart(data);
+
         let newData = data.dataConvert;
-        let type = data.axisXType;
+        let chartType = data.chartType;
+        let barLinechartType = {};
+        let pieChartType = {};
+
+        // xóa chartType = pie (biểu đồ tròn)
+        for (let i in chartType) {
+            if (chartType[i] !== "pie") {
+                barLinechartType[i] = chartType[i];
+            } else {
+                pieChartType[i] = chartType[i];
+            }
+        }
+
 
         this.chart = c3.generate({
             bindto: this.refs.barChart,
@@ -103,14 +108,14 @@ class TwoBarChart extends Component {
                 x: 'x',
                 columns: newData,
                 type: 'bar',
-
+                types: barLinechartType,
             },
             bar: {
                 width: { ratio: 0.3 }
             },
             axis: {
                 x: {
-                    type: type,
+                    type: 'timeseries',
                     tick: {
                         format: '%m - %Y',
                         outer: false,
@@ -121,46 +126,20 @@ class TwoBarChart extends Component {
                 }
             },
         });
-
     }
 
-    renderLineChart = (data) => {
-        this.removePrceviousLineChart();
-        data = this.setDataMultiChart(data);
-        let newData = data.dataConvert;
-        let type = data.axisXType;
-
-        this.chart = c3.generate({
-            bindto: this.refs.lineChart,
-            data: {
-                x: 'x',
-                columns: newData,
-                type: 'spline'
-            },
-            axis: {
-                x: {
-                    type: type,
-                    tick: {
-                        format: function (x) { return (x.getMonth() + 1) + "-" + x.getFullYear(); },
-                        outer: false,
-                    },
-                },
-                y: {
-                    tick: {
-                        outer: false,
-                    },
-                }
-            },
-        });
-    }
 
     renderPieChart = (data) => {
         this.removePrceviousPieChart();
         data = this.setDataMultiChart(data);
         let newData = data.dataConvert;
-        let newPiedata = [...newData];
-        newPiedata.shift();
-
+        // let newPiedata = [...newData];
+        let newPiedata = [
+            ["7-2020", 130025000008],
+            ["8-2020", 489011950000],
+            ["9-2020", 224775049500]
+        ]
+        // newPiedata.shift();
         this.chart = c3.generate({
             bindto: this.refs.pieChart,
             // Căn lề biểu đồ
@@ -184,21 +163,20 @@ class TwoBarChart extends Component {
         return (
             <React.Fragment>
                 <div className="row">
-                    {
-                        (charType) && charType === '0' &&
-                        <div className="col-md-6">
+                    <div className="col-xs-6">
+                        <div className="box box-primary">
                             <div className="box-header with-border">
-                                <h3 className="box-title">{}</h3>
+                                <h3 className="box-title">Báo cáo công việc</h3>
                             </div>
                             <div className="box-body dashboard_box_body">
                                 <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
                                 <div ref="barChart"></div>
                             </div>
                         </div>
-                    }
-                    {
-                        charType && charType === '1' &&
-                        <div className="col-md-6">
+                    </div>
+
+                    <div className="col-xs-6">
+                        <div className="box box-primary">
                             <div className="box-header with-border">
                                 <h3 className="box-title">{}</h3>
                             </div>
@@ -207,24 +185,8 @@ class TwoBarChart extends Component {
                                 <div ref="pieChart"></div>
                             </div>
                         </div>
-                    }
-                    {
-                        charType && charType === '2' &&
-                        <div className="col-md-6">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">{}</h3>
-                            </div>
-                            <div className="box-body dashboard_box_body">
-                                <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
-                                <div ref="lineChart"></div>
-                            </div>
-                        </div>
-                    }
-
-
+                    </div>
                 </div>
-
-
             </React.Fragment>
         )
     }

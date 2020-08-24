@@ -12,6 +12,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DatePicker } from '../../../../../common-components';
 import Swal from 'sweetalert2';
 import { TasksIsNotLinked } from './tasksIsNotLinked';
+import { TaskHasActionNotEvaluated } from './taskHasActionNotEvaluated';
 
 class TaskDashboard extends Component {
 
@@ -232,11 +233,11 @@ class TaskDashboard extends Component {
         let defaultStartMonth = ['01', year].join('-');
         return (
             <React.Fragment>
-                <div className="qlcv">
+                <div className="qlcv" style={{ textAlign: "right", marginBottom: 15 }}>
                     {/**Chọn ngày bắt đầu */}
                     <div className="form-inline">
                         <div className="form-group">
-                            <label>{translate('task.task_management.from')}</label>
+                            <label style={{ width: "auto" }}>{translate('task.task_management.from')}</label>
                             <DatePicker
                                 id="monthStartInTaskDashBoard"
                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
@@ -245,12 +246,10 @@ class TaskDashboard extends Component {
                                 disabled={false}                    // sử dụng khi muốn disabled, mặc định là false
                             />
                         </div>
-                    </div>
 
-                    {/**Chọn ngày kết thúc */}
-                    <div className="form-inline">
+                        {/**Chọn ngày kết thúc */}
                         <div className="form-group">
-                            <label>{translate('task.task_management.to')}</label>
+                            <label style={{ width: "auto" }}>{translate('task.task_management.to')}</label>
                             <DatePicker
                                 id="monthEndInTaskDashBoard"
                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
@@ -399,7 +398,7 @@ class TaskDashboard extends Component {
                         </div>
                     </div>
                     <TasksIsNotLinked />
-
+                    <TaskHasActionNotEvaluated />
 
                 </div>
                 {/* Lịch công việc chi tiết */}

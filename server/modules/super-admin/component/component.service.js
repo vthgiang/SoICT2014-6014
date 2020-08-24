@@ -6,7 +6,7 @@ const { Privilege, Role, Link, Component } = require(SERVER_MODELS_DIR).schema;
  */
 exports.getComponents = async (company, query) => {
     let {page, limit, currentRole, linkId, type} = query;
-    console.log("query:", page, limit, currentRole, linkId, type)
+    
     let optionExpression = (type === 'active') ? {company, deleteSoft: false} : {company};
 
 
@@ -15,7 +15,7 @@ exports.getComponents = async (company, query) => {
             .find(optionExpression)
             .populate([
                 { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role } },
-                { path: 'link', model: Link },
+                { path: 'links', model: Link },
             ]);
     } else if (page && limit && !currentRole && !linkId) {
         let option = (query.key && query.value)
@@ -28,7 +28,7 @@ exports.getComponents = async (company, query) => {
                 limit,
                 populate: [
                     { path: 'roles', model: Privilege, populate: {path: 'roleId', model: Role }},
-                    { path: 'link', model: Link },
+                    { path: 'links', model: Link },
                 ]
             });
     } else if (!page && !limit && currentRole && linkId) {

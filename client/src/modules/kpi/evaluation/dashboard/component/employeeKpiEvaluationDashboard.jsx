@@ -8,11 +8,11 @@ import { DashboardEvaluationEmployeeKpiSetAction } from '../redux/actions';
 import { StatisticsOfEmployeeKpiSetChart } from './statisticsOfEmployeeKpiSetChart';
 import { ResultsOfAllEmployeeKpiSetChart } from './resultsOfAllEmployeeKpiSetChart';
 
-import { SelectBox, SelectMulti } from '../../../../../common-components';
+import { SelectBox, SelectMulti, ExportExcel } from '../../../../../common-components';
 import Swal from 'sweetalert2';
 import { DatePicker } from '../../../../../common-components';
-import { LOCAL_SERVER_API } from '../../../../../env';
 import { withTranslate } from 'react-redux-multilingual';
+
 
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 
@@ -260,14 +260,33 @@ class EmployeeKpiEvaluationDashboard extends Component {
         }
     }
 
+
+    handleStatisticsOfEmployeeKpiSetChartDataAvailable = (data) => {
+        this.setState( state => {
+            return {
+                ...state,
+                statisticsOfEmployeeKpiSetChartData: data
+            }
+        })
+    }
+
+    handleResultsOfAllEmployeeKpiSetChartDataAvailable =(data)=>{
+        this.setState( state => {
+            return {
+                ...state,
+                resultsOfAllEmployeeKpiSetChartData: data
+            }
+        })
+    }
+
     render() {
         const { user, kpimembers, dashboardEvaluationEmployeeKpiSet } = this.props;
         const { translate } = this.props;
 
-        const { unitMembers, dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids, organizationalUnitIds } = this.state;
+        const { unitMembers, dateOfExcellentEmployees, numberOfExcellentEmployees, infosearch, ids, organizationalUnitIds, statisticsOfEmployeeKpiSetChartData, resultsOfAllEmployeeKpiSetChartData } = this.state;
 
         let employeeKpiSets, lastMonthEmployeeKpiSets, currentMonthEmployeeKpiSets, settingUpKpi, awaitingApprovalKpi, activatedKpi, totalKpi, numberOfEmployee;
-        let queue = [], childrenOrganizationalUnit = [];
+        let queue = [], childrenOrganizationalUnit = [],userName;
         let kpimember;
         let listkpi, kpiApproved;
         let currentUnit = dashboardEvaluationEmployeeKpiSet && dashboardEvaluationEmployeeKpiSet.childrenOrganizationalUnit;
@@ -276,6 +295,16 @@ class EmployeeKpiEvaluationDashboard extends Component {
         let currentYear = currentDate.getFullYear();
         let currentMonth = currentDate.getMonth();
 
+        if(unitMembers&&infosearch)
+        {
+            for(let i=0;i<unitMembers[0].value.length;i++)
+            {
+                let arr = unitMembers[0].value
+                if(arr[i].value === infosearch.userId){
+                    userName = arr[i].text
+                }
+            }
+        }
 
         if (this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets) {
             employeeKpiSets = this.props.dashboardEvaluationEmployeeKpiSet.employeeKpiSets;
@@ -453,7 +482,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                         (typeof lastMonthEmployeeKpiSets !== 'undefined' && lastMonthEmployeeKpiSets.length !== 0) ?
                                             lastMonthEmployeeKpiSets.map((item, index) =>
                                                 <li key={index} style={{ maxWidth: 200 }}>
-                                                    <img src={(LOCAL_SERVER_API + item.creator.avatar)} />
+                                                    <img src={(process.env.REACT_APP_SERVER + item.creator.avatar)} />
                                                     <a className="users-list-name" href="#detailKpiMember2" data-toggle="modal" data-target="#memberKPIApprove2">{item.creator.name}</a>
                                                     <span className="users-list-date">{item.approvedPoint}</span>
                                                 </li>
@@ -471,10 +500,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
                         <div className="box">
                             <div className="box-header with-border">
                                 <h3 className="box-title">{translate('kpi.evaluation.dashboard.statistics_chart_title')}</h3>
-                                <div className="box-tools pull-right">
-                                    <button type="button" className="btn btn-box-tool" data-widget="collapse" data-target="#statisticsOfEmployeeKpiSetChart"><i className="fa fa-minus" />
-                                    </button>
-                                </div>
+                                {statisticsOfEmployeeKpiSetChartData && <ExportExcel type="link" id="export-statistic-employee-kpi-set-chart" exportData={statisticsOfEmployeeKpiSetChartData} />}
                             </div>
                             {/* /.box-header */}
 
@@ -530,6 +556,8 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                             endMonth={infosearch.endMonth}
                                             info={infosearch}
                                             unitId={currentUnit}
+                                            userName = {userName}
+                                            onDataAvailable = {this.handleStatisticsOfEmployeeKpiSetChartDataAvailable}
                                         />
                                     }
                                 </div>
@@ -543,12 +571,14 @@ class EmployeeKpiEvaluationDashboard extends Component {
                         <div className="box">
                             <div className="box-header with-border">
                                 <h3 className="box-title">{translate('kpi.evaluation.dashboard.result_kpi_titile')}</h3>
+                                {resultsOfAllEmployeeKpiSetChartData&&<ExportExcel  type="link" id="export-all-employee-kpi-evaluate-result-dashboard" exportData={resultsOfAllEmployeeKpiSetChartData} style={{ marginTop:5 }} />}
                             </div>
                             {/* /.box-header */}
 
                             <div className="box-body qlcv">
                                 <ResultsOfAllEmployeeKpiSetChart
                                     organizationalUnitIds={organizationalUnitIds}
+                                    onDataAvailable={this.handleResultsOfAllEmployeeKpiSetChartDataAvailable}
                                 />
                             </div>
                         </div>

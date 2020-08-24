@@ -1,7 +1,4 @@
 import {
-    LOCAL_SERVER_API
-} from '../../../../env';
-import {
     sendRequest
 } from '../../../../helpers/requestHelper';
 import {
@@ -14,11 +11,12 @@ export const DepartmentServices = {
     create,
     edit,
     destroy,
+    importDepartment,
 };
 
 function get() {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/organizational-units/organizational-units`,
+        url: `${ process.env.REACT_APP_SERVER }/organizational-units/organizational-units`,
         method: 'GET',
     }, false, true, 'super_admin.organization_unit');
 }
@@ -27,7 +25,7 @@ function getDepartmentsThatUserIsDean(currentRole) {
     var id = getStorage("userId");
 
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/organizational-units/organizational-units`,
+        url: `${process.env.REACT_APP_SERVER}/organizational-units/organizational-units`,
         method: 'GET',
         params: {
             deanOfOrganizationalUnit: id
@@ -37,7 +35,7 @@ function getDepartmentsThatUserIsDean(currentRole) {
 
 function create(department) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/organizational-units/organizational-units`,
+        url: `${ process.env.REACT_APP_SERVER }/organizational-units/organizational-units`,
         method: 'POST',
         data: department,
     }, true, true, 'super_admin.organization_unit');
@@ -45,7 +43,7 @@ function create(department) {
 
 function edit(department) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/organizational-units/organizational-units/${department._id}`,
+        url: `${ process.env.REACT_APP_SERVER }/organizational-units/organizational-units/${department._id}`,
         method: 'PATCH',
         data: department,
     }, true, true, 'super_admin.organization_unit');
@@ -53,7 +51,15 @@ function edit(department) {
 
 function destroy(departmentId) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/organizational-units/organizational-units/${departmentId}`,
+        url: `${ process.env.REACT_APP_SERVER }/organizational-units/organizational-units/${departmentId}`,
         method: 'DELETE',
+    }, true, true, 'super_admin.organization_unit');
+}
+
+function importDepartment(data) {
+    return sendRequest({
+        url: `${ process.env.REACT_APP_SERVER }/organizational-units/organizational-units/import`,
+        method: 'POST',
+        data: data,
     }, true, true, 'super_admin.organization_unit');
 }

@@ -50,14 +50,54 @@ class EditForm extends Component {
     isValidateForm = () => {
         return this.validateName(this.state.archiveName, false);
     }
+    findNode = (element, id) => {
+        if (element.id === id) {
+            return element
+        }
+        else if (element.children) {
+            let i;
+            let result = "";
+            for (i = 0; i < element.children.length; i++) {
+                result = this.findNode(element.children[i], id);
+            }
+            return result;
+        }
+        return null;
+    }
+    // tìm các node con cháu
+    addNode = (node, array) => {
 
+        if (node && node.children) {
+            for (let i = 0; i < node.children.length; i++) {
+                array.push(node.children[i].id);
+                this.addNode(node.children[i], array);
+            }
+        }
+    }
     save = () => {
+        const { translate, documents } = this.props;
         const { archiveId, archiveName, archiveDescription, archiveParent } = this.state;
+        const { tree } = documents.administration.archives;
+
+        let node = "";
+        // find node
+        for (let i = 0; i < tree.length; i++) {
+            node = this.findNode(tree[i], archiveId);
+            if (node !== "") break;
+        }
+        // find node child 
+        let childrenNode = [];
+        if (node && node.children) {
+            this.addNode(node, childrenNode);
+        }
+
         this.props.editDocumentArchive(archiveId, {
             name: archiveName,
             description: archiveDescription,
-            parent: archiveParent
+            parent: archiveParent,
+            array: childrenNode,
         });
+        //this.props.getDocumentArchives();
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -115,7 +155,8 @@ class EditForm extends Component {
 const mapStateToProps = state => state;
 
 const mapDispatchToProps = {
-    editDocumentArchive: DocumentActions.editDocumentArchive
+    editDocumentArchive: DocumentActions.editDocumentArchive,
+    getDocumentArchives: DocumentActions.getDocumentArchive,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(EditForm));

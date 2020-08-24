@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 
-import { DataTableSetting, DateTimeConverter, PaginateBar, SearchBar, SelectBox } from '../../../../../common-components';
+import { DataTableSetting, DateTimeConverter, PaginateBar, TreeSelect, SelectBox, ExportExcel } from '../../../../../common-components';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
 import DocumentInformation from '../../user/documents/documentInformation';
@@ -32,6 +32,7 @@ class Table extends Component {
             category: "",
             domain: "",
             archive: "",
+            name: "",
             option: {
                 category: "",
                 domain: "",
@@ -134,10 +135,17 @@ class Table extends Component {
         })
     }
     handleDomainChange = (value) => {
+        this.setState({ domain: value });
+    }
+    handleDomains = value => {
+        this.setState({ documentDomains: value });
+    }
+    handleNameChange = (e) => {
+        const value = e.target.value;
         this.setState(state => {
             return {
                 ...state,
-                domain: value,
+                name: value.trim(),
             }
         })
     }
@@ -159,19 +167,126 @@ class Table extends Component {
         array.unshift({ value: "", text: "Tất cả các loại" });
         return array;
     }
+    convertDataToExportData = (data) => {
+        console.log(data);
+        let datas = [];
+        for (let i = 0; i < data.length; i++) {
+            let x = data[i];
+            let domain = "";
+            let leng = x.versions.length > x.domains.length ? x.versions.length : x.domains.length;
+            if (x.domains.length > 0) {
+                domain = x.domains[0].name;
+            }
+            let out = {
+                STT: i + 1,
+                name: x.name,
+                description: x.description,
+                versionName: x.versions[0].versionName,
+                domain: domain,
+                issuingDate: new Date(x.versions[0].issuingDate),
+                effectiveDate: new Date(x.versions[0].effectiveDate),
+                expiredDate: new Date(x.versions[0].expiredDate),
+                numberOfView: x.numberOfView,
+                numberOfDownload: x.numberOfDownload,
+                issuingBody: x.issuingBody,
+                signer: x.signer,
+                officialNumber: x.officialNumber,
+                category: x.category.description,
+            }
+            datas = [...datas, out] ;
+            for ( let  j = 1; j < leng; j++) {
+                let versionName = "", issuingDate = "", effectiveDate = "", expiredDate = "", domain = "";
+                if (x.versions[j]) {
+                    versionName = x.versions[j].versionName;
+                    issuingDate = new Date(x.versions[j].issuingDate);
+                    effectiveDate = new Date(x.versions[j].effectiveDate);
+                    expiredDate = new Date(x.versions[j].expiredDate);
+                }
+                if (x.domains[j]) {
+                    domain = x.domains[j].name;
+                }
+                out = {
+                STT: "",
+                name: "",
+                description: "",
+                domain: domain,
+                versionName: versionName,
+                issuingDate: issuingDate,
+                effectiveDate: effectiveDate,
+                expiredDate: expiredDate,
+                numberOfView: "",
+                numberOfDownload: "",
+                issuingBody: "",
+                signer: "",
+                officialNumber: "",
+                categor: "",
+                }
+                datas = [...datas, out] ;
+            }
+        }
+        let exportData = {
+            fileName: "Bảng thống kê tài liệu",
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    tables: [
+                        {
+                            tableName: "Bảng thống kê tài liệu",
+                            merges: [{
+                                key: "Vesions",
+                                columnName: "Phiên bản",
+                                keyMerge: 'versionName',
+                                colspan: 4
+                            }, {
+                                key: "Infomation",
+                                columnName: "Thông tin chung",
+                                keyMerge: 'name',
+                                colspan: 7
+                            }],
+                            rowHeader: 2,
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "name", value: "Tên" },
+                                { key: "officialNumber", value: "Số hiệu"},
+                                { key: "category", value: "Loai tài liệu"},
+                                { key: "description", value: "Mô tả" },
+                                { key: "signer", value: "Người ký"},
+                                { key: "domain", value: "Danh mục"},
+                                { key: "issuingBody", value: "Cơ quan ban hành"},
+                                { key: "versionName", value: "Tên phiên bản"},
+                                { key: "issuingDate", value: "Ngày ban hành" },
+                                { key: "effectiveDate", value: "Ngày áp dụng" },
+                                { key: "expiredDate", value: "Ngày hết hạn" },
+                                { key: "numberOfView", value: "Số lần xem" },
+                                { key: "numberOfDownload", value: "Số lần download" },
+                            ],
+                            data: datas
+                        }
+                    ]
+                },
+            ]
+        }
+        console.log(exportData);
+        return exportData
+    }
     render() {
         const { translate } = this.props;
         const docs = this.props.documents.administration.data;
         const { domains, categories, archives } = this.props.documents.administration;
         const { paginate } = docs;
         const { isLoading } = this.props.documents;
-        const { currentRow, archive, domain, category } = this.state;
-        const listDomain = this.convertData(domains.list)
+        const { currentRow, archive, category } = this.state;
+        const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
-        const listArchive = this.convertData(archives.list);
-
+        const listArchive = archives.list;
+        console.log('tttt', currentRow);
+        let list = [];
+        if (isLoading === false) {
+            list = docs.list;
+        }
+        let exportData = this.convertDataToExportData(list);
         return (
-            <React.Fragment>
+            <div className="qlcv">
                 <CreateForm />
                 {
                     currentRow &&
@@ -191,7 +306,7 @@ class Table extends Component {
                         documentId={currentRow._id}
                         documentName={currentRow.name}
                         documentDescription={currentRow.description}
-                        documentCategory={currentRow.category._id}
+                        documentCategory={currentRow.category ? currentRow.category._id : ""}
                         documentDomains={currentRow.domains.map(domain => domain._id)}
                         documentArchives={currentRow.archives.map(archive => archive._id)}
                         documentIssuingBody={currentRow.issuingBody}
@@ -207,6 +322,7 @@ class Table extends Component {
                         documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
                         documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
+
                     />
 
                 }
@@ -216,7 +332,7 @@ class Table extends Component {
                         documentId={currentRow._id}
                         documentName={currentRow.name}
                         documentDescription={currentRow.description}
-                        documentCategory={currentRow.category._id}
+                        documentCategory={currentRow.category ? currentRow.category._id : ""}
                         documentDomains={currentRow.domains.map(domain => domain._id)}
                         documentIssuingBody={currentRow.issuingBody}
                         documentOfficialNumber={currentRow.officialNumber}
@@ -231,12 +347,14 @@ class Table extends Component {
                         documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
                         documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
+                        documentLogs={currentRow.logs}
                     />
                 }
 
+                {<ExportExcel id="export-document" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
                 <div className="form-inline">
                     <div className="form-group">
-                        <label>{translate('document.category')}:</label>
+                        <label>{translate('document.category')}</label>
                         <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
                             id={`stattus-category`}
                             style={{ width: "100%" }}
@@ -245,46 +363,44 @@ class Table extends Component {
                             value={category}
                         />
                     </div>
-                    <div className="form-group">
-                        <label>Lưu trữ:</label>
-                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                            id={`status-archive`}
-                            style={{ width: "100%" }}
-                            items={listArchive}
-                            onChange={this.handleArchiveChange}
+                    <div className="form-group" >
+                        <label>{translate('document.store.information')}</label>
+                        <TreeSelect
+                            data={listArchive}
+                            className="form-control select2"
+                            handleChange={this.handleArchiveChange}
                             value={archive}
+                            mode="hierarchical"
+                            style={{ width: " 100%" }}
                         />
                     </div>
+
+                </div>
+
+                <div className="form-inline">
+                    <div className="form-group">
+                        <label>{translate('document.domain')}</label>
+                        <TreeSelect
+                            data={listDomain}
+                            className="form-control select2"
+                            handleChange={this.handleDomainChange}
+                            mode="hierarchical"
+                            style={{ width: "100%" }}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>{translate('document.name')}</label>
+                        <input type="text" className="form-control" onChange={this.handleNameChange} />
+                    </div>
+
                 </div>
                 <div className="form-inline">
                     <div className="form-group">
-                        <label>{translate('document.domain')}:</label>
-                        <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu
-                            id={`status-domain`}
-                            style={{ width: "100%" }}
-                            items={listDomain}
-                            onChange={this.handleDomainChange}
-                            value={domain}
-                        />
-                    </div>
-                    {/* <SearchBar
-                        columns={[
-                            { title: translate('document.name'), value: 'name' },
-                            { title: translate('document.description'), value: 'description' }
-                        ]}
-                        option={this.state.option}
-                        setOption={this.setOption}
-                        search={this.searchWithOption}
-                    /> */}
-                    <div className="form-group">
+                        <label></label>
                         <button type="button" className="btn btn-success" onClick={() => this.searchWithOption()}>{
                             translate('kpi.organizational_unit.management.over_view.search')}</button>
                     </div>
                 </div>
-                <div className="form-inline">
-
-                </div>
-
                 <table className="table table-hover table-striped table-bordered" id="table-manage-document-list">
                     <thead>
                         <tr>
@@ -350,7 +466,8 @@ class Table extends Component {
                     </tbody>
                 </table>
                 <PaginateBar pageTotal={docs.totalPages} currentPage={docs.page} func={this.setPage} />
-            </React.Fragment>
+
+            </div>
         );
     }
 
@@ -384,8 +501,8 @@ class Table extends Component {
             limit: this.state.limit,
             page: 1,
             // key: this.state.option,
-            // value: this.state.value
-            // name : this.state.name,
+            // value: this.state.value,
+            name: this.state.name,
             category: this.state.category[0],
             domains: this.state.domain[0],
             archives: this.state.archive[0],

@@ -208,6 +208,7 @@ exports.createCompanyLinks = async (companyId, linkArr, roleArr) => {
 
         return resIndex;
     }
+    
     let allLinks = await SystemLink.find()
         .populate({ path: 'roles', model: RootRole });;
     let activeLinks = await SystemLink.find({ _id: { $in: linkArr } })
@@ -232,6 +233,7 @@ exports.createCompanyLinks = async (companyId, linkArr, roleArr) => {
 
     let links = await Link.insertMany(dataLinks);
 
+    //Thêm phân quyền cho link
     let dataPrivilege = [];
     for (let i = 0; i < links.length; i++) {
         let link = links[i];
@@ -271,35 +273,45 @@ exports.createCompanyLinks = async (companyId, linkArr, roleArr) => {
  */
 exports.createCompanyComponents = async (companyId, linkArr) => {
 
-    let systemLinks = await SystemLink.find({ _id: { $in: linkArr } })
-        .populate({ path: 'components', model: SystemComponent, populate: { path: 'roles', model: RootRole } });
-    
-    for (let i = 0; i < systemLinks.length; i++) {
-        let systemLink = systemLinks[i];
-        let link = await Link.findOne({ url: systemLink.url, company: companyId });
+    let systemLinks = await SystemLink.find({ _id: { $in: linkArr } });
 
-        for (let j = 0; j < systemLink.components.length; j++) {
-            let systemComponent = systemLink.components[j];
-            let component = await Component.create({
-                name: systemComponent.name,
-                description: systemComponent.description,
-                link: link._id,
-                company: companyId,
-                deleteSoft: false
-            });
-            let updateLink = await Link.findById(link._id);
-            updateLink.components = [component._id, ...updateLink.components];
+    let dataSystemComponents = systemLinks.map(link=>link.components);
+    dataSystemComponents = dataSystemComponents.reduce((arr1, arr2)=>[...arr1, ...arr2]);
+    dataSystemComponents.filter((component, index) => dataSystemComponents.indexOf(component) === index);
+    const systemComponents = await SystemComponent
+        .find({_id: {$in: dataSystemComponents}})
+        .populate({ path: 'roles', model: RootRole });
+
+    for (let i = 0; i < systemComponents.length; i++) {
+        let sysLinks = await SystemLink.find({_id: {$in: systemComponents[i].links}});
+        let links = await Link.find({company: companyId, url: sysLinks.map(link=>link.url)});
+        // Tạo component
+        let component = await Component.create({
+            name: systemComponents[i].name,
+            description: systemComponents[i].description,
+            links: links.map(link=>link._id),
+            company: companyId,
+            deleteSoft: false
+        })
+        for (let j = 0; j < links.length; j++) {
+            let updateLink = await Link.findById(links[j]._id);
+            updateLink.components.push(component._id);
             await updateLink.save();
-
-            for (let k = 0; k < systemComponent.roles.length; k++) {
-                let rootRole = systemComponent.roles[k];
-                let role = await Role.findOne({ name: rootRole.name, company: companyId });
-                await Privilege.create({
+        }
+        // Tạo phân quyền cho components
+        for (let k = 0; k < systemComponents.length; k++) {
+            let roles = await Role.find({
+                company: companyId, 
+                name: {$in: systemComponents[i].roles.map(role=>role.name)}
+            });
+            let dataPrivileges = roles.map(role=>{
+                return {
                     resourceId: component._id,
                     resourceType: 'Component',
                     roleId: role._id
-                })
-            }
+                }
+            });
+            await Privilege.insertMany(dataPrivileges);
         }
     }
 
@@ -336,207 +348,6 @@ exports.editCompanySuperAdmin = async (companyId, superAdminEmail) => {
             return user;
         }
     }
-}
-
-/**
- * Thêm link mới cho công ty
- * @companyId id của công ty
- * @linkUrl đường dẫn cho link muốn tạo
- * @linkDescription mô tả về link
- */
-exports.addCompanyLink = async (companyId, data) => {
-
-    let check = await Link.findOne({
-        company: companyId,
-        url: data.url
-    });
-    if(check) throw ['url_exist'];
-
-    let newLink = await Link.create({
-        url: data.url,
-        description: data.description,
-        category: data.category,
-        company: companyId
-    });
-
-    let systemLink = await SystemLink.findOne({ 'url': data.url });
-
-    for (let i=0; i<systemLink.roles.length; i++) {
-        let role = await RootRole.aggregate([
-            { $match: { '_id': systemLink.roles[i]._id } },
-
-            { $lookup: {
-                from: "roles",
-                localField: "name",
-                foreignField: "name",
-                as: "roles"
-            } },
-
-            { $unwind: '$roles' },
-            { $replaceRoot: { newRoot: '$roles' } },
-
-            { $match: { 'company': newLink.company } },
-        ])
-        
-        await Privilege.create({
-            'resourceId': newLink._id,
-            'resourceType': 'Link',
-            'roleId': role[0]._id
-        })
-    }
-
-    return newLink;
-}
-
-/**
- * Xóa 1 link của công ty
- * @companyId id của công ty
- * @linkId id của link muốn xóa
- */
-exports.deleteCompanyLink = async (companyId, linkId) => {
-    
-    await Privilege.deleteMany({
-        resourceId: linkId,
-        resourceType: 'Link'
-    });
-    
-    await Link.deleteOne({ _id: linkId });
-
-    return linkId;
-}
-
-/**
- * Thêm mới 1 component cho công ty
- * @companyId id của công ty
- * @componentname tên của component
- * @componentDescription mô tả về component
- * @linkId id của link được chứa component này
- */
-exports.addCompanyComponent = async (companyId, data) => {
-
-    let check = await Component.findOne({
-        company: companyId,
-        name: data.name
-    });
-    if(check) throw ['component_exist'];
-
-    let link = await Link.findOne({ company: companyId, url: data.link });
-    let newComponent = await Component.create({
-        name: data.name,
-        description: data.description,
-        link: link ? link._id : null,
-        company: companyId
-    });
-
-    return newComponent;
-}
-
-/**
- * Xóa một của component của công ty
- * @companyId id của công ty
- * @componentId id của component muốn xóa
- */
-exports.deleteCompanyComponent = async (companyId, componentId) => {
-    
-    await Privilege.deleteMany({
-        resourceId: componentId,
-        resourceType: 'Component'
-    });
-
-    let link = await Link.findOne({
-        company: companyId, 
-        components: componentId
-    });
-    if(link){
-        link.components.splice(link.components.indexOf(componentId), 1);
-        await link.save();
-    }
-
-    await Component.deleteOne({ _id: componentId });
-
-    return componentId;
-}
-
-/**
- * Lấy danh sách tất cả các link của công ty
- * @companyId id của công ty muốn lấy danh sách các link
- */
-exports.getCompanyLinks = async (companyId, query) => {
-
-    let check = await Company.findById(companyId);
-    if(!check) throw ['company_not_found'];
-
-    let page = query.page;
-    let limit = query.limit;
-    if (!page && !limit) {
-
-        return await Link
-            .find({ company: companyId, deleteSoft: false })
-            .populate({ path: 'roles', model: Privilege, populate: { path: 'roleId', model: Role } });
-    } else {
-        let option = (query.key && query.value)
-            ? Object.assign({ company: companyId, deleteSoft: false }, { [`${query.key}`]: new RegExp(query.value, "i") })
-            : { company: companyId, deleteSoft: false };
-
-        return await Link.paginate( 
-            option, 
-            {
-                page, 
-                limit, 
-                populate: [
-                    { path: 'roles', model: Privilege, populate: { path: 'roleId', model: Role } }
-                ]
-            }
-        );
-    }
-}
-
-/**
- * Lấy danh sách các component của công ty
- * @companyId id của công ty
- */
-exports.getCompanyComponents = async (companyId, query) => {
-
-    let check = await Company.findById(companyId);
-    if(!check) throw ['company_not_found'];
-
-    let page = query.page;
-    let limit = query.limit;
-    if (!page && !limit) {
-        return await Component.find({ company: companyId })
-            .populate([
-                { path: 'link', model: Link }
-            ]);
-    } else {
-        let option = (query.key && query.value)
-            ? Object.assign({ company: companyId }, { [`${query.key}`]: new RegExp(query.value, "i") })
-            : { company: companyId };
-        let rescom = await Component
-            .paginate( 
-                option, 
-                { 
-                    page, 
-                    limit,
-                    populate: [
-                        { path: 'link', model: Link }
-                    ]
-                }
-            );
-
-        return rescom;
-    }
-}
-
-/**
- * Lấy component
- * @componentId id của component
- */
-exports.getComponentById = async (componentId) => {
-
-    return await Component.findById(componentId)
-        .populate([
-            { path: 'link', model: Link }
-        ]);
 }
 
 /**

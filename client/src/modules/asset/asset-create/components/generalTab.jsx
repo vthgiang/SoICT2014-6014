@@ -133,6 +133,16 @@ class GeneralTab extends Component {
     };
 
     /**
+     * Bắt sự kiện thay đổi nhóm tài sản
+     */
+    handleGroupChange = (value) => {
+        this.setState({
+            group: value[0]
+        })
+        this.props.handleChange('group', value[0]);
+    }
+
+    /**
      * Bắt sự kiện thay đổi loại tài sản
      */
     handleAssetTypeChange = async (value) => {
@@ -205,13 +215,19 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện thay đổi người sử dụng
      */
-    handleAssignedToChange = (value) => {
+    handleAssignedToUserChange = (value) => {
         this.setState({
-            assignedTo: string2literal(value[0])
+            assignedToUser: string2literal(value[0])
         });
-        this.props.handleChange("assignedTo", string2literal(value[0]));
+        this.props.handleChange("assignedToUser", string2literal(value[0]));
     }
 
+    handleAssignedToOrganizationalUnitChange = (value) => {
+        this.setState({
+            assignedToOrganizationalUnit: string2literal(value[0])
+        });
+        this.props.handleChange("assignedToOrganiztionalUnit", string2literal(value[0]));
+    }
 
     /**
      * Bắt sự kiện thay đổi ngày bắt đầu sử dụng
@@ -260,24 +276,15 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện thay đổi vị trí tài sản
      */
-    handleLocationChange = (e) => {
-        const { value } = e.target;
-        this.validateLocation(value, true);
-    }
-    validateLocation = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateLocation(value, this.props.translate)
+    handleLocationChange = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                location: value[0],
+            }
+        });
 
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnLocation: msg,
-                    location: value,
-                }
-            });
-            this.props.handleChange("location", value);
-        }
-        return msg === undefined;
+        this.props.handleChange("location", value[0]);
     }
 
     /**
@@ -417,21 +424,23 @@ class GeneralTab extends Component {
     };
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps._id !== prevState._id) {
+        if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
-                _id: nextProps._id,
+                id: nextProps.id,
                 img: nextProps.img,
                 avatar: nextProps.avatar,
                 code: nextProps.code,
                 assetName: nextProps.assetName,
                 serial: nextProps.serial,
                 assetTypes: nextProps.assetTypes,
+                group: nextProps.group,
                 location: nextProps.location,
                 purchaseDate: nextProps.purchaseDate,
                 warrantyExpirationDate: nextProps.warrantyExpirationDate,
                 managedBy: nextProps.managedBy,
-                assignedTo: nextProps.assignedTo,
+                assignedToUser: nextProps.assignedToUser,
+                assignedToOrganizationalUnit: nextProps.assignedToOrganizationalUnit,
                 handoverFromDate: nextProps.handoverFromDate,
                 handoverToDate: nextProps.handoverToDate,
                 description: nextProps.description,
@@ -458,12 +467,12 @@ class GeneralTab extends Component {
     }
 
     render() {
-        const { _id } = this.props;
-        const { translate, user, assetType } = this.props;
+        const { id } = this.props;
+        const { translate, user, assetType, assetsManager } = this.props;
 
         const {
-            img, code, assetName, assetTypes, serial, purchaseDate, warrantyExpirationDate, managedBy,
-            assignedTo, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse, detailInfo,
+            img, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy,
+            assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse, detailInfo,
             errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate,
             errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue,
         } = this.state;
@@ -480,8 +489,19 @@ class GeneralTab extends Component {
             }
         })
 
+        let assetbuilding = assetsManager && assetsManager.buildingAssets;
+        let assetbuildinglist = assetbuilding && assetbuilding.list;
+        let buildingList = assetbuildinglist && assetbuildinglist.map(node => {
+            return {
+                ...node,
+                id: node._id,
+                name: node.assetName,
+                parent: node.location,
+            }
+        })
+
         return (
-            <div id={_id} className="tab-pane active">
+            <div id={id} className="tab-pane active">
                 <div className="row">
                     {/* Ảnh tài sản */}
                     <div className="col-md-4" style={{ textAlign: 'center' }}>
@@ -526,6 +546,25 @@ class GeneralTab extends Component {
                                     <ErrorLabel content={errorOnSerial} />
                                 </div>
 
+                                {/* Nhóm tài sản */}
+                                <div className="form-group">
+                                    <label>{translate('asset.general_information.asset_group')}<span className="text-red">*</span></label>
+                                    <SelectBox
+                                        id={`group${id}`}
+                                        className="form-control select2"
+                                        style={{ width: "100%" }}
+                                        value={group}
+                                        items={[
+                                            { value: null, text: `---${translate('asset.asset_info.select_group')}---`},
+                                            { value: 'Building', text: translate('asset.asset_info.building') },
+                                            { value: 'Vehicle', text: translate('asset.asset_info.vehicle') },
+                                            { value: 'Machine', text: translate('asset.asset_info.machine') },
+                                            { value: 'Other', text: translate('asset.asset_info.other') },
+                                        ]}
+                                        onChange={this.handleGroupChange}
+                                    />
+                                </div>
+
                                 {/* Loại tài sản */}
                                 <div className={`form-group${!errorOnAssetType ? "" : "has-error"}`}>
                                     <label>{translate('asset.general_information.asset_type')}<span className="text-red">*</span></label>
@@ -536,7 +575,7 @@ class GeneralTab extends Component {
                                 <div className={`form-group ${!errorOnPurchaseDate ? "" : "has-error"}`}>
                                     <label htmlFor="purchaseDate">{translate('asset.general_information.purchase_date')}<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id={`purchaseDate${_id}`}
+                                        id={`purchaseDate${id}`}
                                         value={purchaseDate ? this.formatDate(purchaseDate): ''}
                                         onChange={this.handlePurchaseDateChange}
                                     />
@@ -547,7 +586,7 @@ class GeneralTab extends Component {
                                 <div className={`form-group ${!errorOnWarrantyExpirationDate ? "" : "has-error"}`}>
                                     <label htmlFor="warrantyExpirationDate">{translate('asset.general_information.warranty_expiration_date')}<span className="text-red">*</span></label>
                                     <DatePicker
-                                        id={`warrantyExpirationDate${_id}`}
+                                        id={`warrantyExpirationDate${id}`}
                                         value={warrantyExpirationDate ? this.formatDate(warrantyExpirationDate): ''}
                                         onChange={this.handleWarrantyExpirationDateChange}
                                     />
@@ -559,10 +598,10 @@ class GeneralTab extends Component {
                                     <label>{translate('asset.general_information.manager')}<span className="text-red">*</span></label>
                                     <div id="managedByBox">
                                         <SelectBox
-                                            id={`managedBy${_id}`}
+                                            id={`managedBy${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })}
+                                            items={userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })}
                                             onChange={this.handleManagedByChange}
                                             value={managedBy}
                                             multiple={false}
@@ -577,14 +616,14 @@ class GeneralTab extends Component {
                                 <div className={`form-group`}>
                                     <label>{translate('asset.general_information.user')}</label>
                                     <div>
-                                        <div id="assignedToBox">
+                                        <div id="assignedToUserBox">
                                             <SelectBox
-                                                id={`assignedTo${_id}`}
+                                                id={`assignedToUser${id}`}
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
-                                                items={[{ value: 'null', text: '---Chọn người được giao sử dụng---' }, ...userlist.map(x => { return { value: x._id, text: x.name + " - " + x.email } })]}
-                                                onChange={this.handleAssignedToChange}
-                                                value={assignedTo}
+                                                items={[{ value: 'null', text: '---Chọn người được giao sử dụng---' }, ...userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })]}
+                                                onChange={this.handleAssignedToUserChange}
+                                                value={assignedToUser}
                                                 multiple={false}
                                             />
                                         </div>
@@ -595,7 +634,7 @@ class GeneralTab extends Component {
                                 <div className="form-group">
                                     <label htmlFor="handoverFromDate">{translate('asset.general_information.handover_from_date')}</label>
                                     <DatePicker
-                                        id={`handoverFromDate${_id}`}
+                                        id={`handoverFromDate${id}`}
                                         value={handoverFromDate ? this.formatDate(handoverFromDate) : ''}
                                         onChange={this.handleHandoverFromDateChange}
                                     />
@@ -605,7 +644,7 @@ class GeneralTab extends Component {
                                 <div className="form-group">
                                     <label htmlFor="handoverToDate">{translate('asset.general_information.handover_to_date')}</label>
                                     <DatePicker
-                                        id={`handoverToDate${_id}`}
+                                        id={`handoverToDate${id}`}
                                         value={handoverToDate ? this.formatDate(handoverToDate) : ''}
                                         onChange={this.handleHandoverToDateChange}
                                     />
@@ -613,9 +652,8 @@ class GeneralTab extends Component {
 
                                 {/* Vị trí tài sản */}
                                 <div className={`form-group ${!errorOnLocation ? "" : "has-error"}`}>
-                                    <label htmlFor="location">{translate('asset.general_information.asset_location')}<span className="text-red">*</span></label>
-                                    <input type="text" className="form-control" name="location" value={location} onChange={this.handleLocationChange} placeholder="Vị trí tài sản"
-                                        autoComplete="off" />
+                                    <label htmlFor="location">{translate('asset.general_information.asset_location')}</label>
+                                    <TreeSelect data={buildingList} value={[location]} handleChange={this.handleLocationChange} mode="radioSelect" />
                                     <ErrorLabel content={errorOnLocation} />
                                 </div>
 
@@ -630,7 +668,7 @@ class GeneralTab extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.status')}<span className="text-red">*</span></label>
                                     <SelectBox
-                                        id={`status${_id}`}
+                                        id={`status${id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={status}
@@ -650,7 +688,7 @@ class GeneralTab extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.can_register_for_use')}<span className="text-red">*</span></label>
                                     <SelectBox
-                                        id={`canRegisterForUse${_id}`}
+                                        id={`canRegisterForUse${id}`}
                                         className="form-control select2"
                                         style={{ width: "100%" }}
                                         value={canRegisterForUse}

@@ -484,12 +484,12 @@ class GeneralTab extends Component {
                                     <div className="radio-inline">
                                         <label>
                                             <input type="radio" name={`gender${id}`} value="male" onChange={this.handleGenderChange}
-                                                checked={gender === "male" ? true : false} />{translate('human_resource.profile.male')}</label>
+                                                checked={gender === "male" ? true : false} />&nbsp;&nbsp;{translate('human_resource.profile.male')}</label>
                                     </div>
                                     <div className="radio-inline">
                                         <label>
                                             <input type="radio" name={`gender${id}`} value="female" onChange={this.handleGenderChange}
-                                                checked={gender === "female" ? true : false} />{translate('human_resource.profile.female')}</label>
+                                                checked={gender === "female" ? true : false} />&nbsp;&nbsp;{translate('human_resource.profile.female')}</label>
                                     </div>
                                 </div>
                             </div>
@@ -530,11 +530,11 @@ class GeneralTab extends Component {
                                 <div>
                                     <div className="radio-inline">
                                         <label>
-                                            <input type="radio" name={`maritalStatus${id}`} value="single" onChange={this.handleMaritalStatusChange} checked={maritalStatus === "single" ? true : false} />{translate('human_resource.profile.single')}</label>
+                                            <input type="radio" name={`maritalStatus${id}`} value="single" onChange={this.handleMaritalStatusChange} checked={maritalStatus === "single" ? true : false} />&nbsp;&nbsp;{translate('human_resource.profile.single')}</label>
                                     </div>
                                     <div className="radio-inline">
                                         <label>
-                                            <input type="radio" name={`maritalStatus${id}`} value="married" onChange={this.handleMaritalStatusChange} checked={maritalStatus === "married" ? true : false} />{translate('human_resource.profile.married')}</label>
+                                            <input type="radio" name={`maritalStatus${id}`} value="married" onChange={this.handleMaritalStatusChange} checked={maritalStatus === "married" ? true : false} />&nbsp;&nbsp;{translate('human_resource.profile.married')}</label>
                                     </div>
                                 </div>
                             </div>

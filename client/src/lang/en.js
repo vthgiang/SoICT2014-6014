@@ -621,6 +621,7 @@ export default {
             task_management_dashboard: 'Task dashboard',
             task_organization_management_dashboard: 'Unit task dashboard',
             task_management_process: "Process list",
+            task_process_template: "Process template",
             //*******START */
             // Quản lý tài sản
             // QUẢN LÝ
@@ -642,6 +643,7 @@ export default {
             manage_recommend_procure: 'Manage recommend procure',
             manage_recommend_distribute_asset: 'Manage recommend distribute',
 
+            view_building_list: 'View building list',
             // NHÂN VIÊN
             recommend_equipment_procurement: 'Recommend equipment procurement',
             recommend_distribute_asset: 'Recommend distribute asset',
@@ -699,11 +701,11 @@ export default {
             no_parent: 'No parent department',
             select_parent: 'Select parent of department',
             roles_of_department: 'Roles in Department',
-            dean_name: 'Dean',
+            dean_name: 'Positions for Manager',
             dean_example: 'Ex: Dean of Financial Officer',
-            vice_dean_name: 'Vice Dean',
+            vice_dean_name: 'Positions for Deputy Manager',
             vice_dean_example: 'Ex: Vice Dean of Financial Officer',
-            employee_name: 'Employee',
+            employee_name: 'Positions for Employee',
             employee_example: 'Ex: Employee of Financial Officer',
             add_with_parent: 'Add new department with parent is',
             delete: 'Delete department',
@@ -1580,6 +1582,7 @@ export default {
                 asset_code: 'Asset code',
                 asset_name: 'Asset name',
                 asset_type: 'Asset type',
+                asset_group: 'Asset group',
                 purchase_date: 'Date of purchase',
                 manager: 'Manager',
                 user: 'User',
@@ -1683,6 +1686,12 @@ export default {
                 sale: 'Sale',
                 give: 'Give',
 
+                select_group: 'Select asset group',
+                building: 'Building',
+                vehicle: 'Vehicle',
+                machine: 'Machine',
+                other: 'Other',
+
                 //Thông điệp trả về từ server
                 get_list_asset_success: 'Lấy thông tin tài sản thành công',
                 get_list_asset_faile: 'Lấy thông tin tài sản thất bại',
@@ -1736,6 +1745,14 @@ export default {
                 accumulated_value: 'Accumulated depreciation value',
                 remaining_value: 'Remaining value',
                 edit_depreciation: 'Edit asset depreciation information',
+
+                estimated_production: 'Estimated total production (for 1 year)',
+                months_production: 'Product production in months',
+                production: 'Production',
+                select_depreciation_type: 'Select depreciation type',
+                line: 'Straight - line depreciation method',
+                declining_balance: 'Declining Balance depreciation method',
+                units_production: 'Unit of production method',
 
                 //Thông điệp trả về từ server
                 get_depreciation_success: 'Lấy thông tin khấu hao thành công',
@@ -1934,6 +1951,10 @@ export default {
                 task_is_not_linked_up_with_monthly_kpi: 'Tasks are not linked up with monthly KPI',
                 no_task_is_not_linked: 'There is no task is not linked up with monthly KPI',
                 loading_data: 'Loading data',
+                task_has_action_not_evaluated: 'Tasks have action not evaluated',
+                no_task_has_action_not_evaluated: 'There is no task has action not evaluated',
+                performer: 'Performer',
+                approver: 'Approver',
 
                 add_task: 'Add task',
                 add_title: 'Add a new task',
@@ -2178,6 +2199,7 @@ export default {
                 timesheetlogs: "Timesheet Logs",
                 subtasks: "Subtasks",
                 change_history: "Change logs",
+                change_process: "Process",
                 edit_action: "Edit action",
                 delete_action: "Delete action",
                 mandatory_action: "Mandatory action",
@@ -2797,7 +2819,7 @@ export default {
                         execution_time: 'Execution time (Days)',
                         participants: 'Participants',
                         amount_tasks: 'Amount of tasks',
-                        amount_child_kpi: 'Amount of child KPI',
+                        amount_employee_kpi: 'Amount of employee KPI',
                         weight: 'Weight'
                     },
                     result_kpi_unit_chart: {

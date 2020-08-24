@@ -1,6 +1,4 @@
-import { LOCAL_SERVER_API } from '../../../../env';
 import { sendRequest } from '../../../../helpers/requestHelper';
-import { getStorage } from '../../../../config';
 
 export const materialManagerServices = {
     getAll,
@@ -11,7 +9,7 @@ export const materialManagerServices = {
 
 function getAll(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/materials`,
+        url: `${process.env.REACT_APP_SERVER}/materials`,
         method: 'GET',
         params:{
             materialName: data !== undefined ? data.materialName : data,
@@ -24,7 +22,7 @@ function getAll(data) {
 
 function createMaterial(data){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/materials`,
+        url: `${process.env.REACT_APP_SERVER}/materials`,
         method: 'POST',
         data: data
     }, true, true, 'manage_warehouse.material_manager');
@@ -32,14 +30,14 @@ function createMaterial(data){
 
 function deleteMaterial(id){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/materials/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/materials/${id}`,
         method: 'DELETE',
     }, true, true, 'manage_warehouse.material_manager');
 }
 
 function updateMaterial(id, data){
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/materials/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/materials/${id}`,
         method: 'PATCH',
         data: data
     }, true, true, 'manage_warehouse.material_manager')

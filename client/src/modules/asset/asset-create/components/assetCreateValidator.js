@@ -13,9 +13,9 @@ export const AssetCreateValidator = {
     validatePurchaseDate, //ngày nhập
     validateWarrantyExpirationDate, //ngày bảo hành
     validateManagedBy, //người quản lý
-    validateAssignedTo, //người sử dụng
-    validateHandoverFromDate, //ngày bát đầu
-    validateHandoverToDate, //ngày kết thúc
+    validateAssignedToUser, //người sử dụng
+    validateAssignedToOrganizationalUnit,
+
     validateLocation, //vị trí tài sản
     validateNameField, //tên trường dữ liệu
     validateValue, //giá trị
@@ -34,7 +34,8 @@ export const AssetCreateValidator = {
      */
     validateStartDate, // ngày bắt đầu sử dụng
     validateEndDate, // ngày kết thúc sử dụng
-    validateUsedBy, // người sử dụng
+    validateUsedByUser, // người sử dụng
+    validateUsedByOrganiztionalUnit, // đơn vị sử dụng
 
     /** 
      * Thông tin khấu hao
@@ -44,6 +45,8 @@ export const AssetCreateValidator = {
     validateUsefulLife, // Thời gian trích khấu hao
     validateStartDepreciation, // Thời gian bắt đầu trích khấu hao
     validateDepreciationType, // Thời gian bắt đầu trích khấu hao
+    validateUnitsProducedDuringTheYear,
+    validateEstimatedTotalProduction,
 
     /**
      * Thông tin sự cố
@@ -54,7 +57,7 @@ export const AssetCreateValidator = {
 
     /** 
      * Tài liệu đính kèm 
-    */
+     */
     validateNameFile,
     validateDiscFile,
     validateNumberFile,
@@ -148,34 +151,19 @@ function validateManagedBy(value, translate) {
 }
 
 //kiểm tra người sử dụng
-function validateAssignedTo(value, translate) {
+function validateAssignedToUser(value, translate) {
     return undefined;
 }
 
-//kiểm tra ngày bắt đầu sử dụng
-function validateHandoverFromDate(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Ngày nhập không được để trống";
-    }
-    return msg;
+function validateAssignedToOrganizationalUnit(value, translate) {
+    return undefined;
 }
-
-//kiểm tra kết thúc sử dụng
-function validateHandoverToDate(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Ngày nhập không được để trống";
-    }
-    return msg;
-}
-
 //kiểm tra vị trí tài sản
 function validateLocation(value, translate) {
     let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Vị trí tài sản không được để trống";
-    }
+    // if (value.trim() === "") {
+    //     msg = "Vị trí tài sản không được để trống";
+    // }
     return msg;
 }
 
@@ -252,13 +240,22 @@ function validateExpense(value, translate) {
  */
 //
 
-function validateUsedBy(value, translate) {
+function validateUsedByUser(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Người sử dụng không được để trống";
     }
     return msg;
 }
+
+function validateUsedByOrganiztionalUnit(value, translate) {
+    let msg = undefined;
+    if (value.trim() === "") {
+        msg = "Đơn vị sử dụng không được để trống";
+    }
+    return msg;
+}
+
 function validateStartDate(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
@@ -358,7 +355,7 @@ function validateIncidentDescription(value, translate) {
  * Validate TabAttachmentsContent (Tài liệu đính kèm)
  */
 
- // kiểm tra tên file
+// kiểm tra tên file
 function validateNameFile(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
@@ -389,7 +386,7 @@ function validateNumberFile(value, translate) {
  * Validate TabDisposal (Thông tin thanh lý)
  */
 
- // kiểm tra ngày thanh lý
+// kiểm tra ngày thanh lý
 function validateDisposalDate(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
@@ -398,8 +395,8 @@ function validateDisposalDate(value, translate) {
     return msg;
 }
 
- // kiểm tra hình thức thanh lý
- function validateDisposalType(value, translate) {
+// kiểm tra hình thức thanh lý
+function validateDisposalType(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Hình thức thanh lý không được để trống";
@@ -407,8 +404,8 @@ function validateDisposalDate(value, translate) {
     return msg;
 }
 
- // kiểm tra giá trị thanh lý
- function validateDisposalCost(value, translate) {
+// kiểm tra giá trị thanh lý
+function validateDisposalCost(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Giá trị thanh lý không được để trống";
@@ -416,11 +413,35 @@ function validateDisposalDate(value, translate) {
     return msg;
 }
 
- // kiểm tra mô tả thanh lý
- function validateDisposalDescription(value, translate) {
+// kiểm tra mô tả thanh lý
+function validateDisposalDescription(value, translate) {
     let msg = undefined;
     if (value.trim() === "") {
         msg = "Mô tả thanh lý không được để trống";
     }
+    return msg;
+}
+
+// Kiểm tra sản lượng sản phẩm trong 1 năm
+function validateUnitsProducedDuringTheYear(value, translate) {
+    let msg = undefined;
+    if (!value) {
+        msg = "Sản lượng sản phẩm không được để trống";
+    } else if (value < 0) {
+        msg = "Sản lượng sản phẩm không được nhỏ hơn 0";
+    }
+
+    return msg;
+}
+
+// Kiểm tra sản lượng ước tính sản phẩm trong 1 năm
+function validateEstimatedTotalProduction(value, translate) {
+    let msg = undefined;
+    if (!value) {
+        msg = "Sản lượng ước tính sản phẩm không được để trống";
+    } else if (value < 0) {
+        msg = "Sản lượng ước tính sản phẩm không được nhỏ hơn 0";
+    }
+
     return msg;
 }

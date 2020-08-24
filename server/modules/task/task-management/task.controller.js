@@ -78,7 +78,6 @@ getAllTasks = async (req, res) => {
 exports.getTaskEvaluations = async (req, res) => {
     try {
         let taskEvaluation = await TaskManagementService.getTaskEvaluations(req.query);
-        console.log('taskEvaluation', taskEvaluation);
         res.status(200).json({
             success: true,
             messages: ['get_task_evaluation_success'],
@@ -98,7 +97,7 @@ exports.getTaskEvaluations = async (req, res) => {
  *  Lấy công việc theo id
  */
 exports.getTaskById = async (req, res) => {
-    try {
+    // try {
         var task = await TaskManagementService.getTaskById(req.params.taskId, req.user._id);
         await LogInfo(req.user.email, ` get task by id `, req.user.company);
         res.status(200).json({
@@ -106,14 +105,14 @@ exports.getTaskById = async (req, res) => {
             messages: ['get_task_by_id_success'],
             content: task
         });
-    } catch (error) {
-        await LogError(req.user.email, ` get task by id `, req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: ['get_task_by_id_fail'],
-            content: error
-        });
-    };
+    // } catch (error) {
+    //     await LogError(req.user.email, ` get task by id `, req.user.company);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['get_task_by_id_fail'],
+    //         content: error
+    //     });
+    // };
 };
 
 /**

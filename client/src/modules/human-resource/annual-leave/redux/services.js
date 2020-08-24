@@ -1,7 +1,4 @@
 import {
-    LOCAL_SERVER_API
-} from '../../../../env';
-import {
     sendRequest
 } from '../../../../helpers/requestHelper';
 export const AnnualLeaveService = {
@@ -17,7 +14,7 @@ export const AnnualLeaveService = {
  */
 function searchAnnualLeaves(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/annualLeave/annualLeaves`,
+        url: `${ process.env.REACT_APP_SERVER }/annualLeave/annualLeaves`,
         method: 'GET',
         params: {
             numberMonth: data.numberMonth,
@@ -38,7 +35,7 @@ function searchAnnualLeaves(data) {
  */
 function createAnnualLeave(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/annualLeave/annualLeaves`,
+        url: `${ process.env.REACT_APP_SERVER }/annualLeave/annualLeaves`,
         method: 'POST',
         data: data
     }, true, true, 'human_resource.annual_leave');
@@ -50,7 +47,7 @@ function createAnnualLeave(data) {
  */
 function deleteAnnualLeave(id) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/annualLeave/annualLeaves/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/annualLeave/annualLeaves/${id}`,
         method: 'DELETE',
     }, true, true, 'human_resource.annual_leave');
 }
@@ -61,7 +58,7 @@ function deleteAnnualLeave(id) {
  */
 function updateAnnualLeave(id, data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/annualLeave/annualLeaves/${id}`,
+        url: `${ process.env.REACT_APP_SERVER }/annualLeave/annualLeaves/${id}`,
         method: 'PATCH',
         data: data
     }, true, true, 'human_resource.annual_leave');

@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, DateTimeConverter, SelectBox, DatePicker } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
-import moment from 'moment';
-import { LOCAL_SERVER_API } from '../../../../../env';
+
+import moment from 'moment'
 
 class DocumentInformation extends Component {
     constructor(props) {
@@ -135,7 +135,7 @@ class DocumentInformation extends Component {
             documentRoles, documentArchives,
             documentArchivedRecordPlaceInfo, documentArchivedRecordPlaceOrganizationalUnit, documentArchivedRecordPlaceManager
         } = this.state;
-        const { translate, role, documents, department, user } = this.props;
+        const { translate, role, documents, department, user, documentLogs } = this.props;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
         const domains = documents.administration.domains.list.map(domain => { return { value: domain._id, text: domain.name } });
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
@@ -143,7 +143,8 @@ class DocumentInformation extends Component {
         let roles = this.findDocumentRole(roleList, documentRoles);
         let category = categories.filter(category => category.value === documentCategory)[0];
         let domain = domains.filter(domain => domain.value === documentDomains[0])[0];
-        console.log('111111111111111', documentArchivedRecordPlaceOrganizationalUnit)
+        console.log('111111111111111', documentLogs)
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -151,9 +152,10 @@ class DocumentInformation extends Component {
                     formID="form-information-user-document"
                     title={translate('document.information')}
                     hasSaveButton={false}
+                    size={100}
                 >
-                    <form id="form-information-user-document">
-                        <fieldset className="scheduler-border">
+                    <div className="collapse in">
+                        <div className="description-box">
                             <legend className="scheduler-border">{translate('document.infomation_docs')}</legend>
                             <div className="row">
                                 <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
@@ -189,9 +191,9 @@ class DocumentInformation extends Component {
                                     {documentDescription}
                                 </div>
                             </div>
+                        </div>
 
-                        </fieldset>
-                        <fieldset className="scheduler-border">
+                        <div className="description-box">
                             <legend className="scheduler-border">{translate('document.doc_version.title')}</legend>
                             <div className="row">
                                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
@@ -224,8 +226,9 @@ class DocumentInformation extends Component {
                                     </table>
                                 </div>
                             </div>
-                        </fieldset>
-                        <fieldset className="scheduler-border">
+                        </div>
+
+                        <div className="description-box">
                             <legend className="scheduler-border">{translate('document.relationship.title')}</legend>
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('document.relationship.description')}&emsp; </strong>
@@ -237,21 +240,9 @@ class DocumentInformation extends Component {
                                 {documentRelationshipDocuments}
                             </div>
 
+                        </div>
 
-                            {/* <div className="form-group">
-                                <label>{ translate('document.relationship.list') }<span className="text-red">*</span></label>
-                                <SelectBox
-                                    id="select-edit-documents-user-relationship-to-document"
-                                    className="form-control select2"
-                                    style={{width: "100%"}}
-                                    items = {relationshipDocs}
-                                    value={documentRelationshipDocuments}
-                                    multiple={true}
-                                    disabled={true}
-                                />
-                            </div> */}
-                        </fieldset>
-                        <fieldset className="scheduler-border">
+                        <div className="description-box">
                             <legend className="scheduler-border">{translate('document.roles')}</legend>
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('document.roles')}&emsp; </strong>
@@ -259,18 +250,10 @@ class DocumentInformation extends Component {
                                     <div>{y[0]}</div>
                                 ) : null}
                             </div>
-                            {/* <SelectBox
-                                id={`select-edit-user-document-users-see-permission-${documentId}`}
-                                className="form-control select2"
-                                style={{width: "100%"}}
-                                items = {roleList}
-                                value={documentRoles}
-                                multiple={true}
-                                disabled={true}
-                            /> */}
-                        </fieldset>
 
-                        <fieldset className="scheduler-border">
+                        </div>
+
+                        <div className="description-box">
                             <legend className="scheduler-border">{translate('document.store.title')}</legend>
                             <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                 <strong>{translate('document.store.information')}&emsp; </strong>
@@ -281,20 +264,26 @@ class DocumentInformation extends Component {
                                 {documentArchivedRecordPlaceOrganizationalUnit ? documentArchivedRecordPlaceOrganizationalUnit.name : ""}
                             </div>
 
-                            {/* <div className="form-group">
-                                <label>{ translate('document.store.organizational_unit_manage') }<span className="text-red">*</span></label>
-                                <SelectBox
-                                    id={`select-edit-user-documents-organizational-unit-manage${documentId}`}
-                                    className="form-control select2"
-                                    style={{width: "100%"}}
-                                    items = {department.list.map(organ => {return {value: organ._id, text: organ.name}})}
-                                    value={documentArchivedRecordPlaceOrganizationalUnit}
-                                    multiple={false}
-                                    disabled={true}
-                                />
-                            </div> */}
-                        </fieldset>
-                    </form>
+                        </div>
+                        <div className="description-box">
+                            <legend className="scheduler-border">Lịch sử chỉnh sửa</legend>
+                            <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                <div className="active tab-pane">
+                                    {documentLogs && documentLogs.map(item =>
+                                        <div key={item._id} className="item-box row">
+                                            <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
+                                            {item.title ? item.title : translate("task.task_perform.none_description")}&nbsp;
+                                    ({moment(item.createdAt).format("HH:mm:ss DD/MM/YYYY")})
+                                    <div>
+                                                {item.description ? item.description : translate("task.task_perform.none_description")}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
                 </DialogModal>
             </React.Fragment>
         );

@@ -181,19 +181,18 @@ class EmployeeKpiManagement extends Component {
             data = data.map((x, index) => {
                
                 let fullName =x.creator.name;
+                let email = x.creator.email;
                 let automaticPoint = (x.automaticPoint === null)?"Chưa đánh giá":parseInt(x.automaticPoint);
                 let employeePoint = (x.employeePoint === null)?"Chưa đánh giá":parseInt(x.employeePoint);
                 let approverPoint =(x.approvedPoint===null)?"Chưa đánh giá":parseInt(x.approvedPoint);
-                let d = new Date(x.date),
-                    month = '' + (d.getMonth() + 1),
-                    year = d.getFullYear(),
-                    time =month+"-"+year;
+                let time = new Date(x.date)
                 let status = this.checkStatusKPI(x.status);
                 let numberTarget =parseInt(x.kpis.length);               
 
                 return {
                     STT: index + 1,
-                    fullName: fullName,                   
+                    fullName: fullName,    
+                    email:email,               
                     automaticPoint: automaticPoint,
                     status: status,
                     employeePoint: employeePoint,
@@ -212,16 +211,16 @@ class EmployeeKpiManagement extends Component {
                     sheetTitle : fileName,
                     tables: [
                         {
-                            tableName : 'Danh sách KPI ',
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "time", value: "Thời gian" },
-                                { key: "fullName", value: "Họ và tên" },                                
+                                { key: "fullName", value: "Họ và tên" }, 
+                                { key: "email", value : "Email nhân viên"},                               
                                 { key: "numberTarget", value: "Số lượng mục tiêu" },
                                 { key: "status", value: "Trạng thái mục tiêu" },
-                                { key: "automaticPoint", value: "Điểm tự động" },
-                                { key: "employeePoint", value: "Điểm tự đánh giá" },
-                                { key: "approverPoint", value: "Điểm được đánh giá" }
+                                { key: "automaticPoint", value: "Điểm KPI tự động" },
+                                { key: "employeePoint", value: "Điểm KPI tự đánh giá" },
+                                { key: "approverPoint", value: "Điểm KPI được phê duyệt" }
                             ],
                             data: data
                         }

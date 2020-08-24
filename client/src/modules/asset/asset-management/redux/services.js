@@ -1,7 +1,4 @@
 import {
-    LOCAL_SERVER_API
-} from '../../../../env';
-import {
     sendRequest
 } from '../../../../helpers/requestHelper';
 
@@ -10,6 +7,7 @@ export const AssetService = {
     addNewAsset,
     updateInformationAsset,
     deleteAsset,
+    getListBuildingAsTree,
 }
 
 /**
@@ -18,7 +16,7 @@ export const AssetService = {
  */
 function getAll(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/assets/assets`,
+        url: `${process.env.REACT_APP_SERVER}/assets/assets`,
         method: 'GET',
         params: {
             code: data !== undefined ? data.code : data,
@@ -32,12 +30,25 @@ function getAll(data) {
 }
 
 /**
+ * Lấy danh sách mặt bằng dạng cây
+ */
+function getListBuildingAsTree() {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/assets/assets`,
+        method: 'GET',
+        params: {
+            type: "get-building-as-tree"
+        }
+    }, false, true, 'asset.asset_info');
+}
+
+/**
  * Thêm mới thông tin tài sản
  * @param {*} data : dữ liệu thông tin tài sản cần tạo
  */
 function addNewAsset(data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/assets/assets`,
+        url: `${process.env.REACT_APP_SERVER}/assets/assets`,
         method: 'POST',
         data: data,
     }, true, true, 'asset.asset_info');
@@ -50,7 +61,7 @@ function addNewAsset(data) {
  */
 function updateInformationAsset(id, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/assets/assets/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/assets/assets/${id}`,
         method: 'PATCH',
         data: data,
     }, true, true, 'asset.asset_info');
@@ -62,7 +73,7 @@ function updateInformationAsset(id, data) {
  */
 function deleteAsset(id) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/assets/assets/${id}`,
+        url: `${process.env.REACT_APP_SERVER}/assets/assets/${id}`,
         method: 'DELETE',
     }, true, true, 'asset.asset_info');
 }

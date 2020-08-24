@@ -8,9 +8,9 @@ const ObjectId = require('mongoose').Types.ObjectId;
  * @company id của công ty
  */
 exports.getDocuments = async (company, query) => {
-    console.log('ttt', query);
-    var page = query.page;
-    var limit = query.limit;
+    // console.log('ttt', query);
+    let page = query.page;
+    let limit = query.limit;
 
     if (!(page || limit)) {
 
@@ -20,6 +20,7 @@ exports.getDocuments = async (company, query) => {
             { path: 'views.viewer', model: User, select: 'name id' },
             { path: "downloads.downloader", model: User, select: 'name id' },
             { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
+            { path: "logs.creator", model: User, select: 'name id' },
         ]);
     } else {
         let option = {
@@ -28,9 +29,18 @@ exports.getDocuments = async (company, query) => {
         // const option = (query.key !== undefined && query.value !== undefined)
         //     ? Object.assign({ company }, { [`${query.key}`]: new RegExp(query.value, "i") })
         //     : { company };
-        if (query.category) option.category = query.category;
-        if (query.domains) option.domains = query.domains;
-        if (query.archives) option.archives = query.archives
+        if (query.category) {
+            option.category = query.category;
+        }
+        if (query.domains) {
+            option.domains = query.domains;
+        }
+        if (query.archives) {
+            option.archives = query.archives
+        }
+        if (query.name) {
+            option.name = new RegExp(query.name, "i")
+        }
         console.log("option: ", option);
         return await Document.paginate(option, {
             page,
@@ -42,6 +52,8 @@ exports.getDocuments = async (company, query) => {
                 { path: 'views.viewer', model: User, select: 'name id' },
                 { path: "downloads.downloader", model: User, select: 'name id' },
                 { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
+                { path: "logs.creator", model: User, select: 'name id' },
+
             ]
         });
     }
@@ -60,7 +72,7 @@ exports.showDocument = async (id, viewer) => {
     const getIndex
 
         = (array, value) => {
-            var res = -1;
+            let res = -1;
             for (let i = 0; i < array.length; i++) {
                 if (array[i].viewer.toString() === value.toString()) {
                     res = i;
@@ -70,7 +82,7 @@ exports.showDocument = async (id, viewer) => {
 
             return res;
         }
-    var index = getIndex(doc.views, viewer);
+    let index = getIndex(doc.views, viewer);
     if (index !== -1) doc.views.splice(index, 1);
     doc.views.push({ viewer });
     await doc.save();
@@ -92,7 +104,7 @@ exports.increaseNumberView = async (id, viewer) => {
 
         return res;
     }
-    var index = getIndex(doc.views, viewer);
+    let index = getIndex(doc.views, viewer);
     if (index !== -1) doc.views.splice(index, 1);
     doc.views.push({ viewer });
     await doc.save();
@@ -105,7 +117,7 @@ exports.increaseNumberView = async (id, viewer) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (company, data) => {
-    console.log(data);
+    // console.log(data);
     const newDoc = {
         company,
         name: data.name,
@@ -144,8 +156,24 @@ exports.createDocument = async (company, data) => {
  * Chỉnh sửa thông tin tài liệu văn bản
  */
 exports.editDocument = async (id, data, query = undefined) => {
-    console.log('data', data);
+    // thêm lịch sử chỉnh sửa
     console.log('querry', query);
+    let { creator, title, descriptions } = data;
+    let createdAt = Date.now();
+    let log = {
+        createdAt: createdAt,
+        creator: creator,
+        title: title,
+        description: descriptions,
+    }
+    let document = await Document.findByIdAndUpdate(
+        id,
+        {
+            $push: { logs: log }
+        },
+        { new: true }
+    )
+    // chỉnh sửa
     if (query !== undefined && Object.keys(query).length > 0) {
 
         const doc = await Document.findById(id);
@@ -184,14 +212,14 @@ exports.editDocument = async (id, data, query = undefined) => {
         // if (data.archivedRecordPlaceInfo !== 'undefined' && data.archivedRecordPlaceInfo !== undefined)
         //     doc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo
         if (data.archivedRecordPlaceOrganizationalUnit !== 'undefined' && data.archivedRecordPlaceOrganizationalUnit !== undefined && data.archivedRecordPlaceOrganizationalUnit !== "[object Object]") {
-            console.log(data.archivedRecordPlaceOrganizationalUnit)
+            //  console.log(data.archivedRecordPlaceOrganizationalUnit)
             doc.archivedRecordPlaceOrganizationalUnit = data.archivedRecordPlaceOrganizationalUnit
         }
         if (data.archivedRecordPlaceManager !== 'undefined' && data.archivedRecordPlaceManager !== undefined)
             doc.archivedRecordPlaceManager = data.archivedRecordPlaceManager
 
         await doc.save();
-
+        let docs = doc.logs.reverse();
         return doc;
     }
 }
@@ -208,6 +236,24 @@ exports.deleteDocument = async (id) => {
     return doc;
 }
 
+// exports.addDocumentLog = async (params, body) => {
+//     let { creator, title, description } = body;
+//     let log = {
+//         creator: creator,
+//         title: title,
+//         description: description,
+//         createdAt: Date.now,
+//     }
+//     let document = await Document.findByIdAndUpdate(
+//         params.id,
+//         {
+//             $push: { logs: log }
+//         },
+//         { new: true }
+//     ).populate({ path: "logs.creator", model: User, select: "name id" })
+//     let documentLog = document.logs.reserve();
+//     return documentLog;
+// }
 exports.downloadDocumentFile = async (data) => {
     const doc = await Document.findById(data.id);
     if (doc.versions.length < data.numberVersion) throw ['cannot_download_doc_file', 'version_not_found'];
@@ -231,7 +277,7 @@ exports.downloadDocumentFileScan = async (data) => {
 async function downloadFile(doc, downloaderId) {
     doc.numberOfDownload += 1;
     const getIndex = (array, value) => {
-        var res = -1;
+        let res = -1;
         for (let i = 0; i < array.length; i++) {
             if (array[i].downloader.toString() === value.toString()) {
                 res = i;
@@ -241,7 +287,7 @@ async function downloadFile(doc, downloaderId) {
 
         return res;
     }
-    var index = getIndex(doc.downloads, downloaderId);
+    let index = getIndex(doc.downloads, downloaderId);
     if (index !== -1) doc.downloads.splice(index, 1);
     doc.downloads.push({ downloader: downloaderId });
     await doc.save();
@@ -251,8 +297,8 @@ async function downloadFile(doc, downloaderId) {
  */
 exports.getDocumentCategories = async (company, query) => {
 
-    var page = query.page;
-    var limit = query.limit;
+    let page = query.page;
+    let limit = query.limit;
 
     if (page === undefined && limit === undefined) {
 
@@ -328,12 +374,12 @@ exports.createDocumentDomain = async (company, data) => {
 }
 
 exports.getDocumentsThatRoleCanView = async (company, query) => {
-    var page = query.page;
-    var limit = query.limit;
-    console.log(query);
-    var role = await Role.findById(query.roleId);
-    console.log(role);
-    var roleArr = [role._id].concat(role.parents);
+    let page = query.page;
+    let limit = query.limit;
+    // console.log(query);
+    let role = await Role.findById(query.roleId);
+    // console.log(role);
+    let roleArr = [role._id].concat(role.parents);
 
     if (page === undefined && limit === undefined) {
 
@@ -348,11 +394,30 @@ exports.getDocumentsThatRoleCanView = async (company, query) => {
             { path: 'views.viewer', model: User, select: 'name id' },
             { path: "downloads.downloader", model: User, select: 'name id' },
             { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
+            { path: "logs.creator", model: User, select: 'name id' },
         ]);
     } else {
-        const option = (query.key !== undefined && query.value !== undefined)
-            ? Object.assign({ company, roles: { $in: roleArr } }, { [`${query.key}`]: new RegExp(query.value, "i") })
-            : { company, roles: { $in: roleArr } };
+        // const option = (query.key !== undefined && query.value !== undefined)
+        //     ? Object.assign({ company, roles: { $in: roleArr } }, { [`${query.key}`]: new RegExp(query.value, "i") })
+        //     : { company, roles: { $in: roleArr } };
+        let option = {
+            company: company,
+            roles: { $in: roleArr }
+        };
+
+        if (query.category) {
+            option.category = query.category;
+        }
+        if (query.domains) {
+            option.domains = query.domains;
+        }
+        if (query.archives) {
+            option.archives = query.archives
+        }
+        if (query.name) {
+            option.name = new RegExp(query.name, "i")
+        }
+        console.log("option: ", option);
 
         return await Document.paginate(option, {
             page,
@@ -365,6 +430,7 @@ exports.getDocumentsThatRoleCanView = async (company, query) => {
                 { path: 'views.viewer', model: User, select: 'name id' },
                 { path: "downloads.downloader", model: User, select: 'name id' },
                 { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
+                { path: "logs.creator", model: User, select: 'name id' },
             ]
         });
     }
@@ -374,7 +440,7 @@ exports.getDocumentsUserStatistical = async (userId, query) => {
     const user = await User.findById(userId).populate({
         path: 'roles', model: UserRole
     });
-    var { option } = query;
+    let { option } = query;
     switch (option) {
         case 'downloaded': //những tài liệu văn bản mà người dùng đã tải xuống
             return await Document.find({ "downloads.downloader": userId }).populate([
@@ -466,35 +532,45 @@ exports.createDocumentArchive = async (company, data) => {
 }
 
 exports.deleteDocumentArchive = async (id) => {
-    const archive = await DocumentArchive.find(id);
-    if (!archive) throw ['document_archive_not_found'];
-    await DocumentArchive.deleteOne({ _id: id });
-
+    const archive = await DocumentArchive.findById(id);
+    await deleteNode(id);
     return await this.getDocumentArchives(archive.company);
 }
 
 exports.deleteManyDocumentArchive = async (array, company) => {
-    await DocumentArchive.deleteMany({ _id: { $in: array } });
+    // console.log
+    // await DocumentArchive.deleteMany({ _id: { $in: array } });
+    for (let i = 0; i < array.length; i++) {
+        deleteNode(array[i]);
+    }
 
     return await this.getDocumentArchives(company);
 }
 
 exports.editDocumentArchive = async (id, data) => {
     const archive = await DocumentArchive.findById(id);
+    let array = data.array;
     archive.name = data.name;
     archive.description = data.description;
     archive.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
     archive.path = await findPath(data)
     await archive.save();
+    for (let i = 0; i < array.length; i++) {
 
+        const archive = await DocumentArchive.findById(array[i]);
+        archive.path = await findPath(archive);
+        archive.save();
+    }
+    const document = await this.getDocumentArchives(archive.company)
     return archive;
 }
 
 async function findPath(data) {
-    console.log('name', data.name)
     let path = "";
-    if (data.parent && data.parent.length) {
-        let arrayParent = [];
+    let arrayParent = [];
+    arrayParent.push(data.name);
+    if (data.parent && data.parent !== "#") {
+
         let parent = data.parent;
         while (parent) {
             let tmp = await DocumentArchive.findById(parent);
@@ -502,12 +578,22 @@ async function findPath(data) {
             parent = tmp.parent;
         }
 
-        while (arrayParent && arrayParent.length) {
-            let tmp = arrayParent.pop();
-            path = path + `${tmp} - `;
+    }
+    path = arrayParent.reverse().join(" - ");
+    return path;
+}
+
+async function deleteNode(id) {
+    const archive = await DocumentArchive.findById(id);
+    if (!archive) throw ['document_archive_not_found'];
+    let parent = archive.parent;
+    let archives = await DocumentArchive.find({ parent: id });
+    if (archives.length) {
+        for (let i = 0; i < archives.length; i++) {
+            archives[i].parent = parent;
+            archives[i].path = await findPath(archives[i]);
+            await archives[i].save();
         }
     }
-    path = path + data.name;
-    console.log('pathhh', path)
-    return path;
+    await DocumentArchive.deleteOne({ _id: id });
 }

@@ -348,9 +348,9 @@ export default {
             information: 'Thông tin',
             different_versions: 'Phiên bản khác',
             amount: 'Số lượng',
-            name: 'Tên văn bản',
+            name: 'Tên tài liệu',
             description: 'Mô tả',
-            category: "Loại văn bản",
+            category: "Loại tài liệu",
             domain: 'Danh mục',
             roles: 'Những vị trí có quyền xem mẫu này',
             issuing_date: 'Ngày ban hành',
@@ -360,10 +360,10 @@ export default {
             viewer: 'Người xem',
             downloader: "Người tải",
             downloads: 'Số lần download',
-            add: 'Thêm văn bản',
-            edit: 'Sửa văn bản',
-            watch: 'Xem văn bản',
-            delete: 'Xóa văn bản',
+            add: 'Thêm tài liệu',
+            edit: 'Sửa tài liệu',
+            watch: 'Xem tài liệu',
+            delete: 'Xóa tài liệu',
             time: "Thời gian",
             add_version: 'Thêm phiên bản mới',
             upload_file: 'File tài liệu',
@@ -372,9 +372,9 @@ export default {
             no_version: 'Không có phiên bản nào khác',
             no_blank_description: 'Mô tả không được để trống',
             no_blank_name: 'Tên không được để trống',
-            infomation_docs: "Thông tin văn bản",
+            infomation_docs: "Thông tin tài liệu",
             relationship_role_store: "Liên kết, phân quyền và lưu trữ",
-            statistical_document: "Thống kê các loại văn bản tài liệu",
+            statistical_document: "Thống kê các loại tài liệu",
             statistical_view_down: "Thống kê số lượng xem và download các loại tài liệu",
             doc_version: {
                 title: 'Phiên bản',
@@ -404,10 +404,10 @@ export default {
                 no_blank_signer: "Tên người đăng kí không được để trống",
                 no_blank_file: "File chưa được upload",
                 no_blank_file_scan: "File scan không được để trống",
-                no_blank_category: "Loại văn bản không được để trống",
+                no_blank_category: "Loại tài liệu không được để trống",
             },
             relationship: {
-                title: 'Liên kết văn bản',
+                title: 'Liên kết tài liệu',
                 description: 'Mô tả',
                 list: 'Các tài liệu liên kết'
             },
@@ -420,25 +420,25 @@ export default {
                 select_user: 'Chọn người quản lý',
             },
 
-            category: 'Loại văn bản',
-            domain: 'Danh mục văn bản',
-            data: 'Danh sách tài liệu văn bản',
+            category: 'Loại tài liệu',
+            domain: 'Danh mục',
+            data: 'Danh sách tài liệu tài liệu',
             statistics_report: 'Thống kê báo cáo',
             history_report: 'Lịch sử thống kê',
 
             administration: {
                 categories: {
-                    add: 'Thêm loại văn bản',
-                    edit: 'Sửa thông tin loại văn bản',
-                    delete: 'Xóa loại văn bản',
+                    add: 'Thêm loại tài liệu',
+                    edit: 'Sửa thông tin loại tài liệu',
+                    delete: 'Xóa loại tài liệu',
                     name: 'Tên',
                     description: 'Mô tả',
-                    select: 'Chọn loại văn bản',
-                    not_select: 'Chưa thuộc loại văn bản',
+                    select: 'Chọn loại tài liệu',
+                    not_select: 'Chưa thuộc loại tài liệu',
                 },
                 domains: {
-                    add: 'Thêm danh mục văn bản',
-                    edit: 'Sửa thông tin danh mục văn bản',
+                    add: 'Thêm danh mục tài liệu',
+                    edit: 'Sửa thông tin danh mục tài liệu',
                     delete: 'Xóa các danh mục đã chọn',
                     name: 'Tên',
                     description: 'Mô tả',
@@ -620,6 +620,7 @@ export default {
             task_management_dashboard: 'Dashboard công việc',
             task_organization_management_dashboard: 'Dashboard công việc đơn vị',
             task_management_process: "Danh sách quy trình",
+            task_process_template: "Mẫu quy trình",
 
             //*******START */
             // Quản lý tài sản
@@ -642,6 +643,7 @@ export default {
             manage_recommend_procure: 'Quản lý đề nghị mua sắm',
             manage_recommend_distribute_asset: 'Quản lý đăng ký sử dụng',
 
+            view_building_list: 'Xem danh sách mặt bằng',
 
             // NHÂN VIÊN
             recommend_equipment_procurement: 'Đăng ký mua sắm thiết bị',
@@ -700,11 +702,11 @@ export default {
             select_parent: 'Chọn đơn vị cha',
             no_parent: 'Không có đơn vị cha',
             roles_of_department: 'Các chức danh của đơn vị',
-            dean_name: 'Tên chức danh cho trưởng đơn vị',
+            dean_name: 'Tên các chức danh trưởng đơn vị',
             dean_example: 'VD: Trưởng phòng tài chính',
-            vice_dean_name: 'Tên chức danh cho phó đơn vị',
+            vice_dean_name: 'Tên các chức danh phó đơn vị',
             vice_dean_example: 'VD: Phó phòng tài chính',
-            employee_name: 'Tên chức danh cho nhân viên đơn vị',
+            employee_name: 'Tên các chức danh nhân viên đơn vị',
             employee_example: 'VD: Nhân viên phòng tài chính',
             add_with_parent: 'Tạo đơn vị mới với đơn vị cha là',
             delete: 'Xóa đơn vị',
@@ -1580,6 +1582,7 @@ export default {
                 asset_code: 'Mã tài sản',
                 asset_name: 'Tên tài sản',
                 asset_type: 'Loại tài sản',
+                asset_group: 'Nhóm tài sản',
                 purchase_date: 'Ngày nhập',
                 manager: 'Người quản lý',
                 user: 'Người sử dụng',
@@ -1683,6 +1686,12 @@ export default {
                 sale: 'Nhượng bán',
                 give: 'Tặng',
 
+                select_group: 'Chọn nhóm tài sản',
+                building: 'Mặt bằng',
+                vehicle: 'Xe cộ',
+                machine: 'Máy móc',
+                other: 'Khác',
+
                 //Thông điệp trả về từ server
                 get_list_asset_success: 'Lấy thông tin tài sản thành công',
                 get_list_asset_faile: 'Lấy thông tin tài sản thất bại',
@@ -1736,6 +1745,14 @@ export default {
                 accumulated_value: 'Giá trị hao mòn lũy kế',
                 remaining_value: 'Giá trị còn lại',
                 edit_depreciation: 'Chỉnh sửa thông tin kháu hao tài sản',
+
+                estimated_production: 'Sản lượng theo công suất thiết kế (trong 1 năm)',
+                months_production: 'Sản lượng sản phẩm trong các tháng',
+                production: 'Sản lượng',
+                select_depreciation_type: 'Chọn phương pháp khấu hao',
+                line: 'Phương pháp khấu hao đường thẳng',
+                declining_balance: 'Phương pháp khấu hao theo số dư giảm dần',
+                units_production: 'Phương pháp khấu hao theo sản lượng',
 
                 //Thông điệp trả về từ server
                 get_depreciation_success: 'Lấy thông tin khấu hao thành công',
@@ -1935,6 +1952,10 @@ export default {
                 task_is_not_linked_up_with_monthly_kpi: 'Công việc chưa được liên kết KPI tháng',
                 no_task_is_not_linked: 'Không có công việc nào ',
                 loading_data: 'Đang tải dữ liệu',
+                task_has_action_not_evaluated: 'Công việc có hoạt động chưa đánh giá',
+                no_task_has_action_not_evaluated: 'Không có công việc nào',
+                performer: 'Người thực hiện',
+                approver: 'Người phê duyệt',
 
                 add_task: 'Thêm mới',
                 add_title: 'Thêm mới một công việc',
@@ -2182,6 +2203,7 @@ export default {
                 timesheetlogs: "Lịch sử bấm giờ",
                 subtasks: "Công việc con",
                 change_history: "Lịch sử thay đổi",
+                change_process: "Quy trình",
                 edit_action: "Sửa hành động",
                 delete_action: "Xóa hành động",
                 mandatory_action: "Hành động bắt buộc",
@@ -2320,7 +2342,7 @@ export default {
                     employee_point: 'Điểm tự đánh giá',
                     approved_point: 'Điểm quản lí đánh giá',
 
-                    responsible: 'Vai trog người thực hiện',
+                    responsible: 'Vai trò người thực hiện',
                     consulted: 'Vai trò người hỗ trợ',
                     accountable: 'Vai trò người phê duyệt',
 
@@ -2811,7 +2833,7 @@ export default {
                         execution_time: 'Thời gian thực hiện (Ngày)',
                         participants: 'Người tham gia',
                         amount_tasks: 'Số lượng công việc',
-                        amount_child_kpi: 'Số lượng KPI con',
+                        amount_employee_kpi: 'Số lượng KPI nhân viên',
                         weight: 'Trọng số'
                     },
                     result_kpi_unit_chart: {

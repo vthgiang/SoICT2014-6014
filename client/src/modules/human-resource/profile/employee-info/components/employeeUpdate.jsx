@@ -4,7 +4,6 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { EmployeeInfoActions } from '../redux/actions';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
-import { LOCAL_SERVER_API } from '../../../../../env';
 import { toast } from 'react-toastify';
 
 import { AuthActions } from '../../../../auth/redux/actions';

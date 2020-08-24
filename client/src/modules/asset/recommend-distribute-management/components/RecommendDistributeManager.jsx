@@ -196,8 +196,6 @@ class RecommendDistributeManager extends Component {
                     sheetTitle : fileName,
                     tables: [
                         {
-                            tableName : fileName,
-                            tableTitle: fileName,
                             rowHeader: 2,
                             columns: [
                                 { key: "index", value: "STT" },
@@ -382,7 +380,7 @@ class RecommendDistributeManager extends Component {
                         asset={currentRowAdd.asset}
                         startDate={currentRowAdd.dateStartUse}
                         endDate={currentRowAdd.dateEndUse}
-                        usedBy={currentRowAdd.proponent}
+                        usedByUser={currentRowAdd.proponent}
                     />
                 }
             </div >

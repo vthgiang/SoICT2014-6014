@@ -1,11 +1,12 @@
-import {UsageService} from './services';
-import {UsageConstants} from './constants';
-import {AssetManagerActions} from '../../asset-management/redux/actions';
+import { UsageService } from './services';
+import { UsageConstants } from './constants';
+import { AssetManagerActions } from '../../asset-management/redux/actions';
 
 export const UsageActions = {
     createUsage,
     updateUsage,
-    deleteUsage
+    deleteUsage,
+    recallAsset,
 }
 
 function createUsage(id, data) {
@@ -85,4 +86,23 @@ function deleteUsage(assetId, usageId) {
         }
 
     }
+}
+
+function recallAsset(id, data) {
+    return dispatch => {
+        dispatch({ type: UsageConstants.RECALL_ASSET_REQUEST })
+        UsageService.recallAsset(id, data)
+            .then(res => {
+                dispatch({
+                    type: UsageConstants.RECALL_ASSET_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: UsageConstants.RECALL_ASSET_FAILURE,
+                    payload: error
+                })
+            })
+    };
 }

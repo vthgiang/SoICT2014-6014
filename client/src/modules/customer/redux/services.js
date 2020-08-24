@@ -1,4 +1,3 @@
-import { LOCAL_SERVER_API } from '../../../env';
 import { sendRequest } from '../../../helpers/requestHelper';
 
 export const CustomerServices = {
@@ -14,7 +13,7 @@ export const CustomerServices = {
 
 function getCustomers(params) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/customer`,
+        url: `${ process.env.REACT_APP_SERVER }/customer`,
         method: 'GET',
         params,
     }, false, true, 'customer');
@@ -22,7 +21,7 @@ function getCustomers(params) {
 
 function createCustomer(data) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/customer`,
+        url: `${ process.env.REACT_APP_SERVER }/customer`,
         method: 'POST',
         data,
     }, true, true, 'customer');
@@ -30,7 +29,7 @@ function createCustomer(data) {
 
 function getCustomerGroups(params) {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/customer/group`,
+        url: `${ process.env.REACT_APP_SERVER }/customer/group`,
         method: 'GET',
         params,
     }, false, true, 'customer');
@@ -38,7 +37,7 @@ function getCustomerGroups(params) {
 
 function getLocations() {
     return sendRequest({
-        url: `${ LOCAL_SERVER_API }/customer/location`,
+        url: `${ process.env.REACT_APP_SERVER }/customer/location`,
         method: 'GET'
     }, false, true, 'customer');
 }

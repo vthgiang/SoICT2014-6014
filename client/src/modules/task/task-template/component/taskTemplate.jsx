@@ -213,7 +213,7 @@ class TaskTemplate extends Component {
                 let x = data[k];
                 let length = 0;
                 let actionName = [], actionDescription = [], mandatory = [] ;
-                if (x.taskActions.length !==0 ) {
+                if (x.taskActions.length !== 0 ) {
                     if (x.taskActions.length > length){
                         length = x.taskActions.length;
                     }
@@ -227,19 +227,19 @@ class TaskTemplate extends Component {
                         }
                     }
                 }
-                let infoName = [], infoType = [], infoDescription = [], infoFill = [];
+                let infomationName = [], type = [], infomationDescription = [], filledByAccountableEmployeesOnly = [];
                 if (x.taskInformations.length !== 0) {
                     if (x.taskInformations.length > length) {
                         length = x.taskInformations.length;
                     }
                     for (let i = 0; i < x.taskInformations.length; i++){
-                        infoName[i] = x.taskInformations[i].name;
-                        infoDescription[i] = x.taskInformations[i].description;
-                        infoType[i] = x.taskInformations[i].type;
+                        infomationName[i] = x.taskInformations[i].name;
+                        infomationDescription[i] = x.taskInformations[i].description;
+                        type[i] = x.taskInformations[i].type;
                         if (x.taskInformations[i].filledByAccountableEmployeesOnly) {
-                            infoFill[i] = "true";
+                            filledByAccountableEmployeesOnly[i] = true;
                         } else {
-                            infoFill[i] = "false";
+                            filledByAccountableEmployeesOnly[i] = false;
                         }
                     }
                 }
@@ -263,12 +263,6 @@ class TaskTemplate extends Component {
                 if (x.informedEmployees.length !== 0) {
                     informedEmployees = x.informedEmployees.map(item => item.name);
                 }
-                let priority = "";
-                switch (x.priority) {
-                    case 1: priority = "thấp"; break;
-                    case 2: priority = "trung bình"; break;
-                    case 3: priority = "cao"; break;
-                }
                 let out = { STT: k + 1,
                     name: x.name,
                     description: x.description,
@@ -280,15 +274,15 @@ class TaskTemplate extends Component {
                     consultedEmployees: consultedEmployees.join(', '),
                     informedEmployees: informedEmployees.join(', '),
                     organizationalUnits: x.organizationalUnit.name,
-                    priority: priority,
+                    priority: x.priority,
                     formula: x.formula,
                     actionName: actionName[0],
                     actionDescription: actionDescription[0],
                     mandatory: mandatory[0],
-                    infoName: infoName[0],
-                    infoDescription: infoDescription[0],
-                    infoType: infoType[0],
-                    infoFill: infoFill[0] }
+                    infomationName: infomationName[0],
+                    infomationDescription: infomationDescription[0],
+                    type: type[0],
+                    filledByAccountableEmployeesOnly: filledByAccountableEmployeesOnly[0] }
                 datas = [...datas, out];
                 if (length > 1) {
                     for ( let i = 1; i < length; i++){
@@ -309,35 +303,36 @@ class TaskTemplate extends Component {
                             actionName: actionName[i],
                             actionDescription: actionDescription[i],
                             mandatory: mandatory[i],
-                            infoName: infoName[i],
-                            infoDescription: infoDescription[i],
-                            infoType: infoType[i],
-                            infoFill: infoFill[i]
+                            infomationName: infomationName[i],
+                            infomationDescription: infomationDescription[i],
+                            type: type[i],
+                            filledByAccountableEmployeesOnly: filledByAccountableEmployeesOnly[i]
                         };
                         datas = [...datas, out];
                     }
                 }
             }
         }
-
+        console.log(datas);
         
         let exportData = {
             fileName: "Bảng thống kê mẫu công việc",
+            sheetTitle: 'Danh sách mẫu công việc',
             dataSheets: [
                 {
                     sheetName: "sheet1",
+
                     tables: [
                         {
-                            tableName: "Bảng thống kê mẫu công việc",
                             merges: [{
                                 key: "taskActions",
                                 columnName: "Danh sách hoạt động",
                                 keyMerge: 'actionName',
                                 colspan: 3
                             }, {
-                                key: "taskInfo",
+                                key: "taskInfomations",
                                 columnName: "Danh sách thông tin",
-                                keyMerge: 'infoName',
+                                keyMerge: 'infomationName',
                                 colspan: 4
                             }],
                             rowHeader: 2,
@@ -358,10 +353,10 @@ class TaskTemplate extends Component {
                                 { key: "actionName", value: "Tên hoạt động" },
                                 { key: "actionDescription", value: "Mô tả hoạt động" },
                                 { key: "mandatory", value: "Bắt buộc" },
-                                { key: "infoName", value: "Tên thông tin" },
-                                { key: "infoDescription", value: "Mô tả thông tin" },
-                                { key: "infoType", value: "Kiểu dữ liệu" },
-                                { key: "infoFill", value: "Chỉ quản lý được điền" }
+                                { key: "infomationName", value: "Tên thông tin" },
+                                { key: "infomationDescription", value: "Mô tả thông tin" },
+                                { key: "type", value: "Kiểu dữ liệu" },
+                                { key: "filledByAccountableEmployeesOnly", value: "Chỉ quản lý được điền" }
                             ],
                             data: datas
                         }

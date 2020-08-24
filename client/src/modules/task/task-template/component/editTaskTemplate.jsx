@@ -36,7 +36,7 @@ class EditTaskTemplate extends Component {
                 taskActions: [],
                 taskInformations: []
             },
-
+            showMore: props.isProcess ? false : true,
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-import { DateTimeConverter, DataTableSetting, ToolTip, SearchBar } from '../../../../../common-components';
+import { DateTimeConverter, DataTableSetting, ToolTip, SearchBar, ExportExcel } from '../../../../../common-components';
 import { DocumentActions } from '../../../redux/actions';
 import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../../super-admin/organizational-unit/redux/actions';
@@ -53,7 +53,108 @@ class DocumentNew extends Component {
         };
         await this.props.getAllDocuments(getStorage('currentRole'), data);
     }
-
+    convertDataToExportData = (data) => {
+        console.log(data);
+        let datas = [];
+        for (let i = 0; i < data.length; i++) {
+            let x = data[i];
+            let domain = "";
+            let leng = x.versions.length > x.domains.length ? x.versions.length : x.domains.length;
+            if (x.domains.length > 0) {
+                domain = x.domains[0].name;
+            }
+            let out = {
+                STT: i + 1,
+                name: x.name,
+                description: x.description,
+                versionName: x.versions[0].versionName,
+                domain: domain,
+                issuingDate: new Date(x.versions[0].issuingDate),
+                effectiveDate: new Date(x.versions[0].effectiveDate),
+                expiredDate: new Date(x.versions[0].expiredDate),
+                numberOfView: x.numberOfView,
+                numberOfDownload: x.numberOfDownload,
+                issuingBody: x.issuingBody,
+                signer: x.signer,
+                officialNumber: x.officialNumber,
+                category: x.category.description,
+            }
+            datas = [...datas, out] ;
+            for ( let  j = 1; j < leng; j++) {
+                let versionName = "", issuingDate = "", effectiveDate = "", expiredDate = "", domain = "";
+                if (x.versions[j]) {
+                    versionName = x.versions[j].versionName;
+                    issuingDate = new Date(x.versions[j].issuingDate);
+                    effectiveDate = new Date(x.versions[j].effectiveDate);
+                    expiredDate = new Date(x.versions[j].expiredDate);
+                }
+                if (x.domains[j]) {
+                    domain = x.domains[j].name;
+                }
+                out = {
+                STT: "",
+                name: "",
+                description: "",
+                domain: domain,
+                versionName: versionName,
+                issuingDate: issuingDate,
+                effectiveDate: effectiveDate,
+                expiredDate: expiredDate,
+                numberOfView: "",
+                numberOfDownload: "",
+                issuingBody: "",
+                signer: "",
+                officialNumber: "",
+                categor: "",
+                }
+                datas = [...datas, out] ;
+            }
+        }
+        let exportData = {
+            fileName: "Bảng thống kê tài liệu mới nhất",
+            dataSheets: [
+                {
+                    sheetName: "sheet1",
+                    tables: [
+                        {
+                            tableName: "Bảng thống kê tài liệu mới nhất",
+                            merges: [{
+                                key: "Vesions",
+                                columnName: "Phiên bản",
+                                keyMerge: 'versionName',
+                                colspan: 4
+                            }, {
+                                key: "Infomation",
+                                columnName: "Thông tin chung",
+                                keyMerge: 'name',
+                                colspan: 7
+                            }],
+                            rowHeader: 2,
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "name", value: "Tên" },
+                                { key: "officialNumber", value: "Số hiệu"},
+                                { key: "category", value: "Loai tài liệu"},
+                                { key: "description", value: "Mô tả" },
+                                { key: "signer", value: "Người ký"},
+                                { key: "domain", value: "Danh mục"},
+                                { key: "issuingBody", value: "Cơ quan ban hành"},
+                                { key: "versionName", value: "Tên phiên bản"},
+                                { key: "issuingDate", value: "Ngày ban hành" },
+                                { key: "effectiveDate", value: "Ngày áp dụng" },
+                                { key: "expiredDate", value: "Ngày hết hạn" },
+                                { key: "numberOfView", value: "Số lần xem" },
+                                { key: "numberOfDownload", value: "Số lần download" },
+                            ],
+                            data: datas
+                        }
+                    ]
+                },
+            ]
+        }
+        console.log(exportData);
+        return exportData
+    }
     render() {
         const { translate } = this.props;
         const { user } = this.props.documents;
@@ -61,7 +162,11 @@ class DocumentNew extends Component {
         const { downloaded, common, latest } = user;
         const { isLoading } = this.props.documents;
         const { currentRow } = this.state;
-
+        let dataExport = [];
+        if (isLoading === false) {
+            dataExport = latest;
+        }
+        let exportData = this.convertDataToExportData(dataExport);
         return (
             <React.Fragment>
                 {
@@ -87,6 +192,7 @@ class DocumentNew extends Component {
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
                     />
                 }
+                {<ExportExcel id="export-document-downloaded" exportData={exportData} style={{ marginLeft: 5 }} />}
                 <SearchBar
                     columns={[
                         { title: translate('document.name'), value: 'name' },

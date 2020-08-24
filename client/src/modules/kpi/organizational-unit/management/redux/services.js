@@ -1,9 +1,3 @@
-import {
-    LOCAL_SERVER_API
-} from '../../../../../env';
-import {
-    getStorage
-} from '../../../../../config';
 import { sendRequest } from '../../../../../helpers/requestHelper'
 export const managerServices = {
     getAllKPIUnit,
@@ -14,7 +8,7 @@ export const managerServices = {
 // Lấy tất cả KPI đơn vị
 function getAllKPIUnit(infosearch) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/creation/organizational-unit-kpi-sets`,
         method: 'GET',
         params: {
             allOrganizationalUnitKpiSet: 1,
@@ -29,7 +23,7 @@ function getAllKPIUnit(infosearch) {
 // Lấy tất cả KPI đơn vị
 function getChildTargetOfCurrentTarget(kpiId) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/employee/creation/employee-kpi-sets`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpi-sets`,
         method: 'GET',
         params: {
             organizationalUnitKpiSetId: kpiId,
@@ -41,7 +35,7 @@ function getChildTargetOfCurrentTarget(kpiId) {
 
 function copyKPIUnit(kpiId, data) {
     return sendRequest({
-        url: `${LOCAL_SERVER_API}/kpi/organizational-unit/management/organizational-unit-kpi-sets/${kpiId}/copy`,
+        url: `${process.env.REACT_APP_SERVER}/kpi/organizational-unit/management/organizational-unit-kpi-sets/${kpiId}/copy`,
         method: 'POST',
         params: {
             idunit: data.idunit,

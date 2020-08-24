@@ -21,7 +21,7 @@ class ComponentInfoForm extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    size='50' func={this.save}
+                    func={this.save}
                     modalID="modal-edit-component"
                     formID="form-edit-component"
                     title={translate('manage_component.edit')}
@@ -37,13 +37,6 @@ class ComponentInfoForm extends Component {
                             <input type="text" className="form-control" value={componentName} disabled />
                         </div>
 
-                        {/* Mô tả về component	 */}
-                        <div className={`form-group ${!componentDescriptionError ? "" : "has-error"}`}>
-                            <label>{translate('table.description')}</label>
-                            <input type="text" className="form-control" value={componentDescription} onChange={this.handleDescription} />
-                            <ErrorLabel content={componentDescriptionError} />
-                        </div>
-
                         {/* Thuộc về trang nào */}
                         <div className="form-group">
                             <label>{translate('manage_component.link')}</label>
@@ -51,11 +44,19 @@ class ComponentInfoForm extends Component {
                                 id={`component-link-${componentId}`}
                                 className="form-control select2"
                                 style={{ width: "100%" }}
-                                items={link.list.map(link => { return { value: link ? link._id : null, text: link ? link.url : "Link is deleted" } })}
+                                items={link.list.map(link => { return { value: link.id, text: link.url } })}
                                 onChange={this.handleComponentLink}
                                 value={componentLink}
-                                multiple={false}
+                                multiple={true}
+                                disabled={true}
                             />
+                        </div>
+
+                        {/* Mô tả về component	 */}
+                        <div className={`form-group ${!componentDescriptionError ? "" : "has-error"}`}>
+                            <label>{translate('table.description')}</label>
+                            <input type="text" className="form-control" value={componentDescription} onChange={this.handleDescription} />
+                            <ErrorLabel content={componentDescriptionError} />
                         </div>
 
                         {/* Những role có component này */}
@@ -111,7 +112,6 @@ class ComponentInfoForm extends Component {
     save = () => {
         const component = {
             name: this.state.componentName,
-            link: this.state.componentLink,
             description: this.state.componentDescription,
             roles: this.state.componentRoles
         };

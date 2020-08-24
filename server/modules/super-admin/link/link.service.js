@@ -11,9 +11,11 @@ exports.getLinks = async (company, query) => {
     let options = (type === 'active') ? {company, deleteSoft: false} : {company};
 
     if (!page && !limit) {
-        return await Link
+        let links = await Link
             .find(options)
             .populate({ path: 'roles', model: Privilege });
+
+        return links;
     } else {
         let option = (query.key && query.value)
             ? Object.assign(options, {[`${query.key}`]: new RegExp(query.value, "i")})

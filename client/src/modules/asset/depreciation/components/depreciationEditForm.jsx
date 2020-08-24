@@ -112,6 +112,28 @@ class DepreciationEditForm extends Component {
     }
 
     /**
+     * Bắt sự kiện thay đổi sản lượng theo công suất thiết kế (trong 1 năm)
+     */
+    handleEstimatedTotalProductionChange = (e) => {
+        const { value } = e.target;
+        this.validateEstimatedTotalProduction(value, true);
+    }
+    validateEstimatedTotalProduction = (value, willUpdateState = true) => {
+        let msg = AssetCreateValidator.validateEstimatedTotalProduction(value, this.props.translate)
+
+        if (willUpdateState) {
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnEstimatedTotalProduction: msg,
+                    estimatedTotalProduction: value,
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    /**
      * Bắt sự kiện thay đổi phương pháp khấu hao
      */
     handleDepreciationTypeChange = (value) => {
@@ -128,7 +150,7 @@ class DepreciationEditForm extends Component {
                 currentDate = moment(`${splitDay[2]}-${splitDay[1]}-${splitDay[0]}`),
                 futureMonth = moment(currentDate).add(usefulLife, 'M'),
                 futureMonthEnd = moment(futureMonth).endOf('month');
-            
+
             if (currentDate.date() !== futureMonth.date() && futureMonth.isSame(futureMonthEnd.format('YYYY-MM-DD'))) {
                 futureMonth = futureMonth.add(1, 'd');
             }
@@ -148,11 +170,145 @@ class DepreciationEditForm extends Component {
 
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
+        let unitProductionValidate = true;
+
+        if (this.state.depreciationType === "Sản lượng") {
+            let { unitsProducedDuringTheYears, estimatedTotalProduction } = this.state;
+            let check = true;
+
+            if (unitsProducedDuringTheYears && unitsProducedDuringTheYears.length !== 0) {
+                for (let n in unitsProducedDuringTheYears) {
+                    check = this.validateYear(unitsProducedDuringTheYears[n].month, n, false) && this.validateValue(unitsProducedDuringTheYears[n].unitsProducedDuringTheYear, n, false);
+                    if (!check) {
+                        break;
+                    }
+                }
+            }
+
+            unitProductionValidate = check && this.validateEstimatedTotalProduction(estimatedTotalProduction, false);
+        }
+
         let result = this.validateStartDepreciation(this.state.startDepreciation, false) &&
-            this.validatorInput(this.state.depreciationType);
-        
+            this.validatorInput(this.state.depreciationType) && unitProductionValidate;
+
         return result;
     }
+
+    /**
+     * Bắt sự kiện click thêm thông tin sản lượng sản phẩm
+     */
+    handleAddUnitsProduced = () => {
+        var unitsProducedDuringTheYears = this.state.unitsProducedDuringTheYears;
+
+        if (unitsProducedDuringTheYears.length !== 0) {
+            let result;
+
+            for (let n in unitsProducedDuringTheYears) {
+                result = this.validateYear(unitsProducedDuringTheYears[n].month, n) && this.validateValue(unitsProducedDuringTheYears[n].unitsProducedDuringTheYear, n);
+                if (!result) {
+                    this.validateYear(unitsProducedDuringTheYears[n].month, n);
+                    this.validateValue(unitsProducedDuringTheYears[n].unitsProducedDuringTheYear, n)
+                    break;
+                }
+            }
+
+            if (result) {
+                this.setState({
+                    unitsProducedDuringTheYears: [...unitsProducedDuringTheYears, { month: "", unitsProducedDuringTheYear: "" }]
+                })
+            }
+        } else {
+            this.setState({
+                unitsProducedDuringTheYears: [...unitsProducedDuringTheYears, { month: "", unitsProducedDuringTheYear: "" }]
+            })
+        }
+
+    }
+
+    /**
+     * Bắt sự kiện chỉnh sửa tên trường tháng sản lượng sản phẩm
+     */
+    handleMonthChange = (value, index) => {
+        this.validateYear(value, index);
+    }
+    validateYear = (value, index, willUpdateState = true) => {
+        let time = value.split("-");
+        let date = new Date(time[1], time[0], 0)
+        let partDepreciation = this.state.startDepreciation.split('-');
+        let startDepreciation = [partDepreciation[2], partDepreciation[1], partDepreciation[0]].join('-');
+
+        let partEndDepreciation = this.state.endDepreciation.split('-');
+        let endDepreciation = [partEndDepreciation[2], partEndDepreciation[1], partEndDepreciation[0]].join('-');
+
+        let msg = undefined;
+
+        if (value.toString().trim() === "") {
+            msg = "Tháng sản lượng sản phẩm không được để trống";
+        } else if (date.getTime() < new Date(startDepreciation).getTime()) {
+            msg = "Tháng sản lượng sản phẩm không được trước ngày bắt đầu tính khấu hao";
+        } else if (date.getTime() > new Date(endDepreciation).getTime()) {
+            msg = "Tháng sản lượng sản phẩm không được sau ngày kết thúc tính khấu hao";
+        }
+
+        if (willUpdateState) {
+            var { unitsProducedDuringTheYears } = this.state;
+            unitsProducedDuringTheYears[index] = { ...unitsProducedDuringTheYears[index], month: value }
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnMonth: msg,
+                    unitsProducedDuringTheYears: unitsProducedDuringTheYears
+                }
+            });
+        }
+
+        return msg === undefined;
+    }
+
+    /**
+     * Bắt sự kiện chỉnh sửa giá trị trường giá trị sản lượng sản phẩm
+     */
+    handleChangeValue = (e) => {
+        var { value, className } = e.target;
+        this.validateValue(value, className);
+    }
+    validateValue = (value, className, willUpdateState = true) => {
+        let msg = AssetCreateValidator.validateUnitsProducedDuringTheYear(value, this.props.translate);
+        if (willUpdateState) {
+            var { unitsProducedDuringTheYears } = this.state;
+            unitsProducedDuringTheYears[className] = { ...unitsProducedDuringTheYears[className], unitsProducedDuringTheYear: value }
+            this.setState(state => {
+                return {
+                    ...state,
+                    errorOnValue: msg,
+                    unitsProducedDuringTheYears: unitsProducedDuringTheYears
+                }
+            });
+        }
+        return msg === undefined;
+    }
+
+    /**
+     * Bắt sự kiện xóa thông tin sản lượng sản phẩm
+     */
+    delete = (index) => {
+        var { unitsProducedDuringTheYears } = this.state;
+        unitsProducedDuringTheYears.splice(index, 1);
+        this.setState({
+            unitsProducedDuringTheYears: unitsProducedDuringTheYears
+        })
+        if (unitsProducedDuringTheYears.length !== 0) {
+            for (let n in unitsProducedDuringTheYears) {
+                this.validateYear(unitsProducedDuringTheYears[n].month, n);
+                this.validateValue(unitsProducedDuringTheYears[n].unitsProducedDuringTheYear, n)
+            }
+        } else {
+            this.setState({
+                errorOnValue: undefined,
+                errorOnMonth: undefined
+            })
+        }
+    };
 
     save = () => {
         var partDepreciation = this.state.startDepreciation.split('-');
@@ -166,6 +322,11 @@ class DepreciationEditForm extends Component {
                 startDepreciation: startDepreciation,
                 residualValue: this.state.residualValue,
                 depreciationType: this.state.depreciationType,
+                estimatedTotalProduction: this.state.estimatedTotalProduction,
+                unitsProducedDuringTheYears: this.state.unitsProducedDuringTheYears.map((x) => ({
+                    month: x.month,
+                    unitsProducedDuringTheYear: x.unitsProducedDuringTheYear,
+                })),
                 assetId
             }
             return this.props.updateDepreciation(this.props._id, dataToSubmit);
@@ -182,7 +343,10 @@ class DepreciationEditForm extends Component {
                 residualValue: nextProps.residualValue,
                 usefulLife: nextProps.usefulLife,
                 startDepreciation: nextProps.startDepreciation,
+                endDepreciation: nextProps.endDepreciation,
                 depreciationType: nextProps.depreciationType,
+                estimatedTotalProduction: nextProps.estimatedTotalProduction,
+                unitsProducedDuringTheYears: nextProps.unitsProducedDuringTheYears,
                 errorOnStartDepreciation: undefined,
                 errorOnUsefulLife: undefined,
             }
@@ -197,7 +361,7 @@ class DepreciationEditForm extends Component {
         const { translate, assetsManager } = this.props;
         const { asset,
             cost, residualValue, usefulLife, startDepreciation, depreciationType, endDepreciation, annualDepreciationValue,
-            monthlyDepreciationValue, errorOnCost, errorOnStartDepreciation, errorOnDepreciationType, errorOnUsefulLife
+            monthlyDepreciationValue, errorOnCost, errorOnStartDepreciation, errorOnDepreciationType, errorOnUsefulLife, errorOnMonth, errorOnValue, unitsProducedDuringTheYears, errorOnEstimatedTotalProduction, estimatedTotalProduction
         } = this.state;
 
         var assetlist = assetsManager.listAssets;
@@ -276,35 +440,74 @@ class DepreciationEditForm extends Component {
                                     style={{ width: "100%" }}
                                     value={depreciationType}
                                     items={[
-                                        { value: '', text: '---Chọn hình thức thanh lý---' },
-                                        { value: 'Đường thẳng', text: 'Phương pháp khấu hao đường thẳng' },
-                                        { value: 'Số dư giảm dần', text: 'Phương pháp khấu hao theo số dư giảm dần' },
-                                        { value: 'Sản lượng', text: 'Phương pháp khấu hao theo sản lượng' },
+                                        { value: '', text: `---${translate('asset.depreciation.select_depreciation_type')}---` },
+                                        { value: 'Đường thẳng', text: translate('asset.depreciation.line') },
+                                        { value: 'Số dư giảm dần', text: translate('asset.depreciation.declining_balance') },
+                                        { value: 'Sản lượng', text: translate('asset.depreciation.units_production') },
                                     ]}
                                     onChange={this.handleDepreciationTypeChange}
                                 />
                                 <ErrorLabel content={errorOnDepreciationType} />
                             </div>
-                            
-                            {/* <div className="form-group">
-                                <label htmlFor="endDepreciation">Thời gian kết thúc trích khấu hao (Ghi chú: thời gian kết thúc = thời gian bắt đầu + thời gian trích khấu hao)</label><br />
-                                <input
-                                    className="form-control"
-                                    id={`endDepreciation-${_id}`}
-                                    value={startDepreciation !== "" ? this.addMonthToEndDepreciation(startDepreciation) : ""}
-                                    disabled
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="annualDepreciationValue">Mức độ khấu hao trung bình hằng năm (VNĐ/Năm)</label><br />
-                                <input type="number" className="form-control" name="annualDepreciationValue" value={(12 * cost) / usefulLife}
-                                    placeholder="Mức độ khấu hao trung bình hằng năm = ( 12 x Nguyên giá ) / Thời gian trích khấu hao" autoComplete="off" disabled />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="monthlyDepreciationValue">Mức độ khấu hao trung bình hằng tháng (VNĐ/Tháng)</label><br />
-                                <input type="number" className="form-control" name="monthlyDepreciationValue" value={cost / usefulLife}
-                                    placeholder="Mức độ khấu hao trung bình hằng tháng = Nguyên giá / Thời gian trích khấu hao" autoComplete="off" disabled />
-                            </div> */}
+
+                            {/* Sản lượng theo công suất thiết kế */}
+                            {
+                                depreciationType == 'Sản lượng' &&
+                                <div className={`form-group ${!errorOnEstimatedTotalProduction ? "" : "has-error"} `}>
+                                    <label htmlFor="estimatedTotalProduction">{translate('asset.depreciation.estimated_production')}<span className="text-red">*</span></label>
+                                    <input type="number" className="form-control" name="estimatedTotalProduction" value={estimatedTotalProduction} onChange={this.handleEstimatedTotalProductionChange}
+                                        placeholder='Sản lượng theo công suất thiết kế' autoComplete="off" />
+                                    <ErrorLabel content={errorOnEstimatedTotalProduction} />
+                                </div>
+                            }
+
+                            {/* Sản lượng sản phẩm trong các năm */}
+                            {
+                                depreciationType == 'Sản lượng' &&
+                                <div className="col-md-12">
+                                    <label>{translate('asset.depreciation.months_production')}:<a title='Số lượng sản phẩm trong các năm'><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }}
+                                        onClick={this.handleAddUnitsProduced} /></a></label>
+                                    <div className={`form-group ${(!errorOnMonth && !errorOnValue) ? "" : "has-error"}`}>
+
+                                        {/* Bảng thông tin chi tiết */}
+                                        <table className="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>{translate('page.month')}</th>
+                                                    <th>{translate('asset.depreciation.production')}</th>
+                                                    <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {(!unitsProducedDuringTheYears || unitsProducedDuringTheYears.length === 0) ? <tr>
+                                                    <td colSpan={3}>
+                                                        <center> {translate('table.no_data')}</center>
+                                                    </td>
+                                                </tr> :
+                                                    unitsProducedDuringTheYears.map((x, index) => {
+                                                        return <tr key={index}>
+                                                            <td>
+                                                                <DatePicker
+                                                                    id={index}
+                                                                    dateFormat="month-year"
+                                                                    value={x.month}
+                                                                    onChange={(e) => this.handleMonthChange(e, index)}
+                                                                />
+                                                            </td>
+                                                            <td><input className={index} type="number" value={x.unitsProducedDuringTheYear} name="unitsProducedDuringTheYears" style={{ width: "100%" }} onChange={this.handleChangeValue} /></td>
+                                                            <td style={{ textAlign: "center" }}>
+                                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
+                                                            </td>
+                                                        </tr>
+                                                    })}
+                                            </tbody>
+                                        </table>
+                                        <ErrorLabel content={errorOnMonth} />
+                                        <ErrorLabel content={errorOnValue} />
+                                    </div>
+                                </div>
+                            }
+
                         </div>
                     </form>
                 </DialogModal>
