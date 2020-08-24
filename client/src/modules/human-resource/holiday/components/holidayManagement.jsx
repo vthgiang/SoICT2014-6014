@@ -147,7 +147,7 @@ class ManageHoliday extends Component {
                         </ul>
                     </div>
 
-                    <ExportExcel id="export-holiday" exportData={exportData} style={{ marginRight: 15 }} />
+                    <ExportExcel id="export-holiday" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15 }} />
                     <table className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
