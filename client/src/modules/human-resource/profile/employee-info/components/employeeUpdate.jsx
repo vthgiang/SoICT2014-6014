@@ -6,12 +6,17 @@ import { EmployeeInfoActions } from '../redux/actions';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
 import { LOCAL_SERVER_API } from '../../../../../env';
 import { toast } from 'react-toastify';
+
+import { AuthActions } from '../../../../auth/redux/actions';
+
 class UpdateEmployee extends Component {
     constructor(props) {
         super(props);
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+
         this.state = {
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
             img: "",
-            // avatar: "",
             check: false,
             informationEmployee: null,
         };
@@ -90,6 +95,36 @@ class UpdateEmployee extends Component {
         }
     }
 
+    shouldComponentUpdate = async (nextProps, nextState) => {
+        if (nextProps.employeesInfo.employees) {
+            let employee = nextProps.employeesInfo.employees[0];
+            if (employee.avatar && !nextProps.auth.isLoading &&
+                this.state.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
+                this.props.downloadFile(`.${employee.avatar}`, 'avatarEmployeeUpdate', 'show');
+                this.setState({
+                    dataStatus: this.DATA_STATUS.QUERYING
+                });
+                return false;
+            };
+        }
+
+        if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.auth.isLoading) {
+            this.setState({
+                dataStatus: this.DATA_STATUS.AVAILABLE
+            });
+            return false;
+        };
+        if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE && nextProps.auth.show_files.length !== 0) {
+            let img = nextProps.auth.show_files.find(x => x.fileName === "avatarEmployeeUpdate");
+            this.setState({
+                dataStatus: this.DATA_STATUS.FINISHED,
+                img: img.file
+            });
+            return true;
+        }
+        return false;
+    }
+
     render() {
         const { employeesInfo, translate } = this.props;
         var employees;
@@ -108,7 +143,7 @@ class UpdateEmployee extends Component {
                                     <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.menu_basic_infor')}</h4></legend>
                                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                                         <div>
-                                            <img className="attachment-img avarta" src={this.state.img !== "" ? this.state.img : (LOCAL_SERVER_API + x.avatar)} alt="Attachment" />
+                                            <img className="attachment-img avarta" src={this.state.img} alt="Attachment" />
                                         </div>
                                         <div className="upload btn btn-default ">
                                             {translate('manage_employee.upload')}
@@ -182,11 +217,11 @@ class UpdateEmployee extends Component {
                                         <div className="row">
                                             <div className="form-group col-md-4">
                                                 <label >{translate('manage_employee.mobile_phone_1')}</label>
-                                                <input type="text" className="form-control " name="phoneNumber"  defaultValue={x.phoneNumber ? "0" + x.phoneNumber : ""} onChange={this.handleChange} />
+                                                <input type="text" className="form-control " name="phoneNumber" defaultValue={x.phoneNumber ? "0" + x.phoneNumber : ""} onChange={this.handleChange} />
                                             </div>
                                             <div className="form-group col-md-4">
                                                 <label>{translate('manage_employee.mobile_phone_2')}</label>
-                                                <input type="text" className="form-control " name="phoneNumber2"  defaultValue={x.phoneNumber2 ? "0" + x.phoneNumber2 : ""} onChange={this.handleChange} />
+                                                <input type="text" className="form-control " name="phoneNumber2" defaultValue={x.phoneNumber2 ? "0" + x.phoneNumber2 : ""} onChange={this.handleChange} />
                                             </div>
                                         </div>
                                     </div>
@@ -194,7 +229,7 @@ class UpdateEmployee extends Component {
                                         <div className="row">
                                             <div className="form-group col-md-4">
                                                 <label >{translate('manage_employee.personal_email_1')}</label>
-                                                <input type="text" className="form-control " name="personalEmail"  defaultValue={x.personalEmail} onChange={this.handleChange} />
+                                                <input type="text" className="form-control " name="personalEmail" defaultValue={x.personalEmail} onChange={this.handleChange} />
                                             </div>
                                             <div className="form-group col-md-4">
                                                 <label>{translate('manage_employee.personal_email_2')}</label>
@@ -202,7 +237,7 @@ class UpdateEmployee extends Component {
                                             </div>
                                             <div className="form-group col-md-4">
                                                 <label>{translate('manage_employee.home_phone')}</label>
-                                                <input type="text" className="form-control " name="homePhone"  defaultValue={x.homePhone ? "0" + x.homePhone : ""} onChange={this.handleChange} />
+                                                <input type="text" className="form-control " name="homePhone" defaultValue={x.homePhone ? "0" + x.homePhone : ""} onChange={this.handleChange} />
                                             </div>
                                         </div>
                                     </div>
@@ -319,13 +354,15 @@ class UpdateEmployee extends Component {
 }
 
 function mapState(state) {
-    const { employeesInfo } = state;
-    return { employeesInfo };
+    const { employeesInfo, auth } = state;
+    return { employeesInfo, auth };
 };
 
 const actionCreator = {
     getEmployeeProfile: EmployeeInfoActions.getEmployeeProfile,
     updatePersonalInformation: EmployeeInfoActions.updatePersonalInformation,
+    downloadFile: AuthActions.downloadFile,
 };
+
 const updateEmployee = connect(mapState, actionCreator)(withTranslate(UpdateEmployee));
 export { updateEmployee as UpdateEmployee };

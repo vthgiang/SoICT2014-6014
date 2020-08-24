@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { LOCAL_SERVER_API } from '../../../../../env';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
 
 import { DialogModal } from '../../../../../common-components';
@@ -699,7 +698,7 @@ class EmployeeEditFrom extends Component {
             return {
                 ...prevState,
                 _id: nextProps._id,
-                img: LOCAL_SERVER_API + nextProps.employees[0].avatar,
+                img: `.${nextProps.employees[0].avatar}`,
                 avatar: "",
                 employee: nextProps.employees[0],
                 experiences: nextProps.employees[0].experiences,
