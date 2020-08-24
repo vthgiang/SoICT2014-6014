@@ -31,7 +31,10 @@ class FormCreateTaskByProcess extends Component {
                 description: '',
                 startDate: '',
                 endDate: '',
+                numberOfDaysTaken: '',
                 priority: 3,
+                preceedingTasks: [],
+                followingTasks: [],
             },
 
         };
@@ -321,6 +324,27 @@ class FormCreateTaskByProcess extends Component {
         return [month, year].join('-');
     }
 
+    handleTaskTemplateNumberOfDaysTaken = (event) => {
+        let value = event.target.value;
+        this.validateTaskTemplateNumberOfDaysTaken(value, true);
+    }
+
+    validateTaskTemplateNumberOfDaysTaken = (value, willUpdateState = true) => {
+        let msg = TaskTemplateFormValidator.validateTaskTemplateNumberOfDaysTaken(value);
+
+        if (willUpdateState) {
+            this.state.taskItem.numberOfDaysTaken = value;
+            this.state.taskItem.errorOnNumberOfDaysTaken = msg;
+            this.setState(state => {
+                return {
+                    ...state,
+                };
+            });
+        }
+        this.props.onChangeTemplateData(this.state.taskItem);
+        return msg === undefined;
+    }
+
     handleChangeTaskStartDate = (value) => {
         this.validateTaskStartDate(value, true);
     }
@@ -479,6 +503,14 @@ class FormCreateTaskByProcess extends Component {
                         <option value={2}>{translate('task_template.medium')}</option>
                         <option value={1}>{translate('task_template.low')}</option>
                     </select>
+                </div>
+                {/**Số ngày hoàn thành công việc dự kiến */}
+                <div className={`form-group ${this.state.taskItem.errorOnNumberOfDaysTaken === undefined ? "" : "has-error"}`} >
+                    <label className="control-label" htmlFor="inputNumberOfDaysTaken">{translate('task_template.numberOfDaysTaken')}*</label>
+                    <input type="number" className="form-control" id="inputNumberOfDaysTaken" value={taskItem.numberOfDaysTaken}
+                        placeholder={'Nhập số ngày hoàn thành dự kiến'}
+                        onChange={this.handleTaskTemplateNumberOfDaysTaken} />
+                    <ErrorLabel content={this.state.taskItem.errorOnNumberOfDaysTaken} />
                 </div>
                 {/* Ngay bat dau - ngay ket thuc */}
                 <div className=" row form-group">

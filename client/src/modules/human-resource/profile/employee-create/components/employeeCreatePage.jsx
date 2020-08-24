@@ -23,7 +23,6 @@ class EmployeeCreatePage extends Component {
                 status: 'active',
                 identityCardDate: this.formatDate2(Date.now()),
                 birthdate: this.formatDate2(Date.now()),
-                taxDateOfIssue: this.formatDate2(Date.now()),
                 experiences: [],
                 socialInsuranceDetails: [],
             },

@@ -14,10 +14,10 @@ export const EmployeeCreateValidator = {
     validateEmail,
     validatePhone,
 
-    validateTaxNumber,
-    validateStartTax,
-    validateUnitTax,
-    validateUserTax,
+    // validateTaxNumber,
+    // validateStartTax,
+    // validateUnitTax,
+    // validateUserTax,
 
     validateExperienceUnit,
     validateExperiencePosition,
@@ -220,37 +220,37 @@ function validateTypeContract(value, translate) {
 }
 
 // Validate TabTaxContent (Tài khoản và thuế)
-function validateTaxNumber(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Mã số thuế không được để trống";
-    }
-    return msg;
-}
+// function validateTaxNumber(value, translate) {
+//     let msg = undefined;
+//     if (value.trim() === "") {
+//         msg = "Mã số thuế không được để trống";
+//     }
+//     return msg;
+// }
 
-function validateStartTax(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Ngày hoạt động không được để trống";
-    }
-    return msg;
-}
+// function validateStartTax(value, translate) {
+//     let msg = undefined;
+//     if (value.trim() === "") {
+//         msg = "Ngày hoạt động không được để trống";
+//     }
+//     return msg;
+// }
 
-function validateUnitTax(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Đơn vị quản lý không được để trống";
-    }
-    return msg;
-}
+// function validateUnitTax(value, translate) {
+//     let msg = undefined;
+//     if (value.trim() === "") {
+//         msg = "Đơn vị quản lý không được để trống";
+//     }
+//     return msg;
+// }
 
-function validateUserTax(value, translate) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Người đạo diện không được để trống";
-    }
-    return msg;
-}
+// function validateUserTax(value, translate) {
+//     let msg = undefined;
+//     if (value.trim() === "") {
+//         msg = "Người đạo diện không được để trống";
+//     }
+//     return msg;
+// }
 
 
 // Validate TabAttachmentsContent (Tài liệu đính kèm)

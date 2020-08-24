@@ -9,7 +9,7 @@ class EditForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            documentVersionName: "",
         }
     }
 
@@ -40,7 +40,7 @@ class EditForm extends Component {
         this.setState(state => {
             return {
                 ...state,
-                documentIssuingBody: value.trim(),
+                documentIssuingBody: value,
                 //errorIssuingBody: msg,
             }
         })
@@ -51,7 +51,7 @@ class EditForm extends Component {
         this.setState(state => {
             return {
                 ...state,
-                documentOfficialNumber: value.trim(),
+                documentOfficialNumber: value,
                 // errorOfficialNumber: msg,
             }
         })
@@ -63,7 +63,7 @@ class EditForm extends Component {
         this.setState(state => {
             return {
                 ...state,
-                documentSigner: value.trim(),
+                documentSigner: value,
                 //  errorSigner: msg,
             }
         })
@@ -72,7 +72,10 @@ class EditForm extends Component {
         const { value } = e.target;
         this.setState({ documentRelationshipDescription: value });
     }
-
+    handleChangeVersionName = (e) => {
+        const value = e.target.value;
+        this.validateVersionName(value, true)
+    }
     handleRelationshipDocuments = (e) => {
         const { value } = e.target;
         this.setState({ documentRelationshipDocuments: value });
@@ -127,7 +130,7 @@ class EditForm extends Component {
         this.setState(state => {
             return {
                 ...state,
-                documentVersionName: value.trim(),
+                documentVersionName: value,
                 // errorVersionName: msg,
             }
         })
@@ -190,6 +193,7 @@ class EditForm extends Component {
         return msg === undefined;
     }
 
+
     validateCategory = (value, willUpdateState) => {
         let msg = undefined;
         const { translate } = this.props;
@@ -211,9 +215,9 @@ class EditForm extends Component {
 
     validateIssuingBody = (value, willUpdateState) => {
         let msg = undefined;
-        let val = value.trim();
+        let val = value;
         const { translate } = this.props;
-        if (!val) {
+        if (!val.trim()) {
             msg = translate('document.doc_version.no_blank_issuingbody');
         }
         if (willUpdateState) {
@@ -381,18 +385,22 @@ class EditForm extends Component {
         // && this.validateSinger(this.state.documentSigner, false)
         // && this.validateIssuingBody(this.state.documentIssuingBody, false);
     }
-
+    isValidateFormAddVersion = () => {
+        return this.validateVersionName(this.state.documentVersionName, false);
+    }
     compareArray = (array1, array2) => {
-        if (array1.length !== array2.length) {
-            return false;
-        }
-        else {
-            for (let i = 0; i < array1.length; i++) {
-                if (array1[i] !== array2[i]) {
-                    return false;
-                }
+        if (array1 && array2) {
+            if (array1.length !== array2.length) {
+                return false;
             }
-            return true;
+            else {
+                for (let i = 0; i < array1.length; i++) {
+                    if (array1[i] !== array2[i]) {
+                        return false;
+                    }
+                }
+                return true;
+            }
         }
     }
 
@@ -413,27 +421,30 @@ class EditForm extends Component {
             documentArchivedRecordPlaceOrganizationalUnit,
             documentArchivedRecordPlaceManager,
         } = this.state;
-        const { role, documents } = this.props;
-        console.log('errrrrrrrrrrrrr', this.props);
-        const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
+        const { role, documents, department } = this.props;
         const categories = documents.administration.categories.list.map(category => { return { value: category._id, text: category.name } });
+        const { list } = documents.administration.domains;
+        const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
+        const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
+        const archives = documents.administration.archives.list;
         let title = "";
         let description = "";
+        console.log('rrrrrr', documentRelationshipDocuments, relationshipDocs);
         const formData = new FormData();
         formData.append('name', documentName);
         if (documentName !== this.props.documentName) {
             if (!title.includes("Chỉnh sửa thông tin văn bản")) {
                 title = (title + " Chỉnh sửa thông tin văn bản ");
             }
-            description += "Thay đổi tên " + documentName + ".";
+            description += "Thay đổi tên " + documentName + ". ";
         }
-        if (documentCategory[0] !== this.props.documentCategory[0]) {
+        if (!this.compareArray(documentCategory, this.props.documentCategory)) {
             if (!title.includes("Chỉnh sửa thông tin văn bản")) {
-                title = (title + "Chỉnh sửa thông tin văn bản.map(iterator)");
+                title = (title + "Chỉnh sửa thông tin văn bản");
             }
 
             let nameCategory = categories.filter(item => item.value === documentCategory[0])
-            description += "Thay đổi loại tài liệu " + nameCategory + ".";
+            description += "Thay đổi loại tài liệu " + nameCategory + ". ";
             formData.append('category', documentCategory);
         }
         if (!this.compareArray(documentDomains, this.props.documentDomains)) {
@@ -442,47 +453,55 @@ class EditForm extends Component {
             }
 
             description += "Danh mục mới ";
+            let newDomain = [];
             for (let i = 0; i < documentDomains.length; i++) {
                 formData.append('domains[]', documentDomains[i]);
-                description += documentDomains + " ";
+                let domain = list.filter(item => item.value === documentDomains[i]);
+                newDomain.push(domain[0]);
+
             }
+            description += newDomain.join(" ") + ". ";
         }
         if (!this.compareArray(documentArchives, this.props.documentArchives)) {
+
             if (!title.includes("Chỉnh sửa thông tin văn bản")) {
                 title = (title + " Chỉnh sửa thông tin văn bản");
             }
             description += "Địa chỉ lưu trữ mới ";
+            let newDomain = [];
             for (let i = 0; i < documentArchives.length; i++) {
                 formData.append('archives[]', documentArchives[i]);
-                description += documentArchives[i] + " ";
+                let archive = archives.filter(item => item.value === documentArchives[i]);
+                newDomain.push(archive[0]);
             }
+            description += newDomain.join(" ") + ". ";
         }
         if (documentDescription !== this.documentDescription) {
             if (!title.includes("Chỉnh sửa thông tin văn bản")) {
                 title = (title + "Chỉnh sửa thông tin văn bản");
             }
-            description += "Mô tả mới " + documentDescription + ".";
+            description += "Mô tả mới " + documentDescription + ". ";
             formData.append('description', documentDescription);
         }
         if (documentIssuingBody !== this.props.documentIssuingBody) {
             if (!title.includes("Chỉnh sửa thông tin văn bản")) {
                 title = (title + "Chỉnh sửa thông tin văn bản");
             }
-            description += "Cơ quan ban hành mới " + documentIssuingBody + ".";
+            description += "Cơ quan ban hành mới " + documentIssuingBody + ". ";
             formData.append('issuingBody', documentIssuingBody);
         }
         if (documentOfficialNumber !== this.props.documentOfficialNumber) {
             if (!title.includes("Chỉnh sửa thông tin văn bản")) {
                 title = (title + "Chỉnh sửa thông tin văn bản");
             }
-            description += "Số hiệu mới " + documentOfficialNumber + ".";
+            description += "Số hiệu mới " + documentOfficialNumber + ". ";
             formData.append('officialNumber', documentOfficialNumber);
         }
         if (documentSigner !== this.props.documentSigner) {
             if (!title.includes("Chỉnh sửa thông tin văn bản")) {
                 title = (title + "Chỉnh sửa thông tin văn bản");
             }
-            description += "Người ký mới " + documentSigner + ".";
+            description += "Người ký mới " + documentSigner + ". ";
             formData.append('signer', documentSigner);
         }
 
@@ -490,14 +509,14 @@ class EditForm extends Component {
             if (!title.includes("Chỉnh sửa khác")) {
                 title += "Chỉnh sửa khác"
             }
-            description += "Mô tả liên kết tài liệu mới.";
+            description += "Mô tả liên kết tài liệu mới. ";
             formData.append('relationshipDescription', documentRelationshipDescription);
         }
         if (documentRelationshipDocuments !== this.props.documentRelationshipDocuments) {
             if (!title.includes("Chỉnh sửa khác")) {
                 title += "Chỉnh sửa khác"
             }
-            description += "Tài liệu liên kết mới."
+            description += "Tài liệu liên kết mới. "
             for (let i = 0; i < documentRelationshipDocuments.length; i++) {
                 formData.append('relationshipDocuments[]', documentRelationshipDocuments[i]);
                 description += documentRelationshipDocuments + " ";
@@ -505,7 +524,7 @@ class EditForm extends Component {
         }
         if (documentRoles !== this.props.documentRoles) {
             if (!title.includes("Chỉnh sửa khác")) {
-                title += "Chỉnh sửa khác."
+                title += "Chỉnh sửa khác. "
             }
             description += "Các phân quyền mới "
             for (let i = 0; i < documentRoles.length; i++) {
@@ -519,14 +538,14 @@ class EditForm extends Component {
             if (!title.includes("Chỉnh sửa khác")) {
                 title += "Chỉnh sửa khác"
             }
-            description += "aaabba" + documentArchivedRecordPlaceOrganizationalUnit + "."
+            description += "aaabba" + documentArchivedRecordPlaceOrganizationalUnit + ". "
             formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
         }
         if (documentArchivedRecordPlaceManager !== this.props.documentArchivedRecordPlaceManager) {
             if (!title.includes("Chỉnh sửa khác")) {
                 title += "Chỉnh sửa khác"
             }
-            description += "xyzaaee" + documentArchivedRecordPlaceManager + "."
+            description += "xyzaaee" + documentArchivedRecordPlaceManager + ". "
             formData.append('archivedRecordPlaceManager', documentArchivedRecordPlaceManager);
         }
         if (title) {
@@ -537,7 +556,9 @@ class EditForm extends Component {
             formData.append('descriptions', description)
         }
         //console.log('ererererer', formData.getAll());
-        this.props.editDocument(documentId, formData);
+        if (title) {
+            this.props.editDocument(documentId, formData);
+        }
     }
 
 
@@ -552,36 +573,41 @@ class EditForm extends Component {
             documentFile,
             documentFileScan
         } = this.state;
+        console.log('ddddddddd');
         let title, descriptions;
         title = "Thêm phiên bản mới";
-        descriptions = "Tên phiên bản mới: " + documentVersionName
         const formData = new FormData();
-        formData.append('versionName', documentVersionName);
+        if (documentVersionName) {
+            formData.append('versionName', documentVersionName);
+            descriptions = "Tên phiên bản mới: " + documentVersionName
+        }
         if (documentIssuingDate) {
-            descriptions += "Ngày ban hành " + moment(documentIssuingDate, "DD-MM-YYYY") + ".";
+            descriptions += "Ngày ban hành " + moment(documentIssuingDate, "DD-MM-YYYY") + ". ";
             formData.append('issuingDate', moment(documentIssuingDate, "DD-MM-YYYY"));
         }
         if (documentEffectiveDate) {
-            descriptions += "Ngày hiệu lực " + moment(documentEffectiveDate, "DD-MM-YYYY") + ".";
+            descriptions += "Ngày hiệu lực " + moment(documentEffectiveDate, "DD-MM-YYYY") + ". ";
             formData.append('effectiveDate', moment(documentEffectiveDate, "DD-MM-YYYY"));
         }
         if (documentExpiredDate) {
-            descriptions += "Ngày hết hạn" + + moment(documentExpiredDate, "DD-MM-YYYY") + ".";
+            descriptions += "Ngày hết hạn" + + moment(documentExpiredDate, "DD-MM-YYYY") + ". ";
             formData.append('expiredDate', moment(documentExpiredDate, "DD-MM-YYYY"));
         }
         if (documentFile) {
-            descriptions += "Thêm file tài liệu."
+            descriptions += "Thêm file tài liệu. "
             formData.append('file', documentFile);
         }
         if (documentFileScan) {
             descriptions += "Thêm file scan tài liệu";
             formData.append('fileScan', documentFileScan);
         }
+
         formData.append('title', title);
         formData.append('creator', getStorage("userId"))
         formData.append('descriptions', descriptions)
         console.log("FORM DATA: ", formData)
         this.props.editDocument(id, formData, 'ADD_VERSION');
+
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -666,7 +692,7 @@ class EditForm extends Component {
 
         console.log('pathhhh', documentRoles);
 
-        console.log("STATE:", roleList);
+        console.log("STATE:", documentVersions);
 
         return (
             <React.Fragment>
@@ -748,11 +774,12 @@ class EditForm extends Component {
                                                 formID="sub-form-add-document-new-version"
                                                 title={translate('document.add_version')}
                                                 func={() => this.addNewVersion(documentId)}
+                                                disableSubmit={!this.isValidateFormAddVersion()}
                                             >
                                                 <React.Fragment>
                                                     <div className={`form-group `}>
-                                                        <label>{translate('document.doc_version.name')}</label>
-                                                        <input type="text" className="form-control" />
+                                                        <label>{translate('document.doc_version.name')}<span className="text-red">*</span></label>
+                                                        <input type="text" onChange={this.handleChangeVersionName} className="form-control" />
                                                     </div>
                                                     <div className="form-group">
                                                         <label>{translate('document.upload_file')}</label>

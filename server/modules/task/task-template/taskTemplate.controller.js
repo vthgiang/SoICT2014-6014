@@ -117,6 +117,7 @@ exports.searchTaskTemplates = async (req, res) => {
  */
 exports.createTaskTemplate = async (req, res) => {
     try {
+        console.log('req.body', req.body);
         var data = await TaskTemplateService.createTaskTemplate(req.body);
         await LogInfo(req.user.email, `Create task templates ${req.body.name}`, req.user.company);
         res.status(200).json({
@@ -200,9 +201,7 @@ exports.importTaskTemplate = async(req, res)=>{
         res.status(400).json({
             success: false,
             messages: ["import_task_template_faile"],
-            content: {
-                error: error
-            }
+            content: error
         });
     }
 }

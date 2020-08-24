@@ -1902,6 +1902,8 @@ export default {
             view_detail_of_this_task_template: 'Xem chi tiết mẫu công việc này',
             edit_this_task_template: 'Sửa mẫu công việc này',
             delete_this_task_template: 'Xóa mẫu công việc này',
+            create_task_by_process: 'Tạo công việc theo quy trình này',
+            numberOfDaysTaken: "Số ngày dự kiến hoàn thành công việc",
         },
 
         task: {

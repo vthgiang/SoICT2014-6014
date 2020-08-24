@@ -10,7 +10,8 @@ export const TaskTemplateFormValidator = {
     validateActionDescription,
     validateInfoName,
     validateInfoDescription,
-    validateInfoSetOfValues
+    validateInfoSetOfValues,
+    validateTaskTemplateNumberOfDaysTaken,
 }
 
 function validateTaskTemplateUnit(value) {
@@ -53,6 +54,14 @@ function validateTaskTemplateFormula(value) {
         msg = "Công thức tính không được để trống";
     }
     // TODO: Thêm validate công thức
+    return msg;
+}
+
+function validateTaskTemplateNumberOfDaysTaken(value) {
+    let msg = undefined;
+    if (value.trim() === ""){
+        msg = "Số ngày hoàn thành công việc dự kiến không được để trống";
+    }
     return msg;
 }
 

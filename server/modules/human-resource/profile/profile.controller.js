@@ -218,42 +218,6 @@ exports.createEmployee = async (req, res) => {
                     inputData: req.body
                 }
             });
-        } else if (req.body.taxDateOfIssue === undefined || req.body.taxDateOfIssue.trim() === "") {
-            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["tax_date_of_issue_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.taxNumber === undefined || req.body.taxNumber.trim() === "") {
-            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["tax_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.taxRepresentative === undefined || req.body.taxRepresentative.trim() === "") {
-            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["tax_representative_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.taxAuthority === undefined || req.body.taxAuthority.trim() === "") {
-            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["tax_authority_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
         } else {
             // Kiểm tra sự tồn tại của mã nhân viên
             let checkMSNV = await EmployeeService.checkEmployeeExisted(req.body.employeeNumber, req.user.company._id);
@@ -423,42 +387,6 @@ exports.updateEmployeeInformation = async (req, res) => {
             res.status(400).json({
                 success: false,
                 messages: ["temporary_residence_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.employee.taxDateOfIssue === undefined || req.body.employee.taxDateOfIssue.trim() === "") {
-            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["tax_date_of_issue_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.employee.taxNumber.toString() === undefined || req.body.employee.taxNumber.toString().trim() === "") {
-            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["tax_number_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.employee.taxRepresentative === undefined || req.body.employee.taxRepresentative.trim() === "") {
-            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["tax_representative_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.employee.taxAuthority === undefined || req.body.employee.taxAuthority.trim() === "") {
-            await LogError(req.user.email, 'CREATE_EMPLOYEE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["tax_authority_required"],
                 content: {
                     inputData: req.body
                 }

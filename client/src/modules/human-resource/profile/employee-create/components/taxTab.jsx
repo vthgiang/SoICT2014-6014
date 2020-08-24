@@ -2,9 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker, ErrorLabel } from '../../../../../common-components';
-
-import { EmployeeCreateValidator } from './employeeCreateValidator';
+import { DatePicker } from '../../../../../common-components';
 
 class TaxTab extends Component {
     constructor(props) {
@@ -49,66 +47,37 @@ class TaxTab extends Component {
     /** Function Bắt sự kiện thay đổi người đại diện */
     handleUserTaxChange = (e) => {
         const { value } = e.target;
-        this.validateUserTax(value, true);
-    }
-    validateUserTax = (value, willUpdateState = true) => {
-        const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateUserTax(value, translate)
-        if (willUpdateState) {
-
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnTaxRepresentative: msg,
-                    taxRepresentative: value,
-                }
-            });
-            this.props.handleChange("taxRepresentative", value);
-        }
-        return msg === undefined;
+        this.setState(state => {
+            return {
+                ...state,
+                taxRepresentative: value,
+            }
+        });
+        this.props.handleChange("taxRepresentative", value);
     }
 
     /** Function Bắt sự kiện thay đổi mã số thuế */
     handleNumberTaxChange = (e) => {
         const { value } = e.target;
-        this.validateTaxNumber(value, true);
-    }
-    validateTaxNumber = (value, willUpdateState = true) => {
-        const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateTaxNumber(value, translate)
-        if (willUpdateState) {
-
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnTaxNumber: msg,
-                    taxNumber: value,
-                }
-            });
-            this.props.handleChange("taxNumber", value);
-        }
-        return msg === undefined;
+        this.setState(state => {
+            return {
+                ...state,
+                taxNumber: value,
+            }
+        });
+        this.props.handleChange("taxNumber", value);
     }
 
     /** Function Bắt sự kiện thay đổi tổ chức quản lý */
     handleUnitTaxChange = (e) => {
         const { value } = e.target;
-        this.validateUnitTax(value, true);
-    }
-    validateUnitTax = (value, willUpdateState = true) => {
-        const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateUnitTax(value, translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnTaxAuthority: msg,
-                    taxAuthority: value,
-                }
-            });
-            this.props.handleChange("taxAuthority", value);
-        }
-        return msg === undefined;
+        this.setState(state => {
+            return {
+                ...state,
+                taxAuthority: value,
+            }
+        });
+        this.props.handleChange("taxAuthority", value);
     }
 
     /**
@@ -116,25 +85,14 @@ class TaxTab extends Component {
      * @param {*} value 
      */
     handleStartDateChange = (value) => {
-        this.validateStartTax(value, true);
+        this.setState(state => {
+            return {
+                ...state,
+                taxDateOfIssue: value,
+            }
+        });
+        this.props.handleChange("taxDateOfIssue", value);
     }
-    validateStartTax = (value, willUpdateState = true) => {
-        const { translate } = this.props;
-        let msg = EmployeeCreateValidator.validateStartTax(value, translate)
-        if (willUpdateState) {
-
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnTaxDateOfIssue: msg,
-                    taxDateOfIssue: value,
-                }
-            });
-            this.props.handleChange("taxDateOfIssue", value);
-        }
-        return msg === undefined;
-    }
-
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -147,12 +105,6 @@ class TaxTab extends Component {
                 taxRepresentative: nextProps.employee.taxRepresentative,
                 taxDateOfIssue: nextProps.employee.taxDateOfIssue,
                 taxAuthority: nextProps.employee.taxAuthority,
-
-                errorOnTaxRepresentative: undefined,
-                errorOnTaxDateOfIssue: undefined,
-                errorOnTaxAuthority: undefined,
-                errorOnTaxNumber: undefined,
-
             }
         } else {
             return null;
@@ -164,8 +116,7 @@ class TaxTab extends Component {
 
         const { id } = this.props;
 
-        const { atmNumber, bankName, bankAddress, taxNumber, taxRepresentative, taxDateOfIssue, taxAuthority,
-            errorOnTaxRepresentative, errorOnTaxDateOfIssue, errorOnTaxNumber, errorOnTaxAuthority } = this.state;
+        const { atmNumber, bankName, bankAddress, taxNumber, taxRepresentative, taxDateOfIssue, taxAuthority } = this.state;
 
         return (
             <div id={id} className="tab-pane">
@@ -177,17 +128,17 @@ class TaxTab extends Component {
                             {/* Số tài khoản */}
                             <div className="form-group col-md-4">
                                 <label >{translate('human_resource.profile.account_number')}</label>
-                                <input type="text" className="form-control" name="atmNumber" value={atmNumber} onChange={this.handleChange} placeholder={translate('human_resource.profile.account_number')} autoComplete="off" />
+                                <input type="text" className="form-control" name="atmNumber" value={atmNumber ? atmNumber : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.account_number')} autoComplete="off" />
                             </div>
                             {/* Tên ngân hàng */}
                             <div className="form-group col-md-4">
                                 <label >{translate('human_resource.profile.bank_name')}</label>
-                                <input type="text" className="form-control" name="bankName" value={bankName} onChange={this.handleChange} placeholder={translate('human_resource.profile.bank_name')} autoComplete="off" />
+                                <input type="text" className="form-control" name="bankName" value={bankName ? bankName : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.bank_name')} autoComplete="off" />
                             </div>
                             {/* Chi nhánh */}
                             <div className="form-group col-md-4">
                                 <label >{translate('human_resource.profile.bank_branch')}</label>
-                                <input type="text" className="form-control" name="bankAddress" value={bankAddress} onChange={this.handleChange} placeholder={translate('human_resource.profile.bank_branch')} autoComplete="off" />
+                                <input type="text" className="form-control" name="bankAddress" value={bankAddress ? bankAddress : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.bank_branch')} autoComplete="off" />
                             </div>
                         </div>
                     </fieldset>
@@ -195,32 +146,31 @@ class TaxTab extends Component {
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border" ><h4 className="box-title">{translate('human_resource.profile.personal_income_tax')}</h4></legend>
                         {/* Mã số thuế */}
-                        <div className={`form-group ${errorOnTaxNumber && "has-error"}`}>
-                            <label >{translate('human_resource.profile.tax_number')}<span className="text-red">*</span></label>
-                            <input type="number" className="form-control" name="taxNumber" value={taxNumber} onChange={this.handleNumberTaxChange} placeholder={translate('human_resource.profile.tax_number')} autoComplete="off" />
-                            <ErrorLabel content={errorOnTaxNumber} />
+                        <div className="form-group">
+                            <label >{translate('human_resource.profile.tax_number')}</label>
+                            <input type="number" className="form-control" name="taxNumber" value={taxNumber ? taxNumber : ''} onChange={this.handleNumberTaxChange} placeholder={translate('human_resource.profile.tax_number')} autoComplete="off" />
+
                         </div>
                         {/* Người đại diện */}
-                        <div className={`form-group ${errorOnTaxRepresentative && "has-error"}`}>
-                            <label >{translate('human_resource.profile.representative')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="taxRepresentative" value={taxRepresentative} onChange={this.handleUserTaxChange} placeholder={translate('human_resource.profile.representative')} autoComplete="off" />
-                            <ErrorLabel content={errorOnTaxRepresentative} />
+                        <div className="form-group">
+                            <label >{translate('human_resource.profile.representative')}</label>
+                            <input type="text" className="form-control" name="taxRepresentative" value={taxRepresentative ? taxRepresentative : ''} onChange={this.handleUserTaxChange} placeholder={translate('human_resource.profile.representative')} autoComplete="off" />
+
                         </div>
                         {/* Ngày hoạt động */}
-                        <div className={`form-group ${errorOnTaxDateOfIssue && "has-error"}`}>
-                            <label htmlFor="startDate">{translate('human_resource.profile.day_active')}<span className="text-red">*</span></label>
+                        <div className="form-group">
+                            <label htmlFor="startDate">{translate('human_resource.profile.day_active')}</label>
                             <DatePicker
                                 id={`taxDateOfIssue-${id}`}
+                                deleteValue={true}
                                 value={this.formatDate(taxDateOfIssue)}
                                 onChange={this.handleStartDateChange}
                             />
-                            <ErrorLabel content={errorOnTaxDateOfIssue} />
                         </div>
                         {/* Quản lý bởi */}
-                        <div className={`form-group ${errorOnTaxAuthority && "has-error"}`}>
-                            <label>{translate('human_resource.profile.managed_by')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" name="taxAuthority" value={taxAuthority} onChange={this.handleUnitTaxChange} placeholder={translate('human_resource.profile.managed_by')} autoComplete="off" />
-                            <ErrorLabel content={errorOnTaxAuthority} />
+                        <div className="form-group">
+                            <label>{translate('human_resource.profile.managed_by')}</label>
+                            <input type="text" className="form-control" name="taxAuthority" value={taxAuthority ? taxAuthority : ''} onChange={this.handleUnitTaxChange} placeholder={translate('human_resource.profile.managed_by')} autoComplete="off" />
                         </div>
                     </fieldset>
                 </div>
