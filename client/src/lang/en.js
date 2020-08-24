@@ -1901,6 +1901,8 @@ export default {
             view_detail_of_this_task_template: 'View detail of this task',
             edit_this_task_template: 'Edit this task template',
             delete_this_task_template: 'Delete this task template',
+            create_task_by_process: 'Create tasks by process',
+            numberOfDaysTaken: "The number of days taken",
         },
 
         task: {

@@ -87,16 +87,18 @@ class ContractTab extends Component {
      * @param {*} array 
      */
     checkForDuplicate = (data, array) => {
-        let startDate = new Date(data.startDate);
-        let endDate = new Date(data.endDate);
         let checkData = true;
-        for (let n in array) {
-            let date1 = new Date(array[n].startDate);
-            let date2 = new Date(array[n].endDate);
-            if (date1.getTime() === startDate.getTime() || (startDate.getTime() < date1.getTime() && endDate.getTime() > date1.getTime()) ||
-                (startDate.getTime() < date2.getTime() && endDate.getTime() > date1.getTime())) {
-                checkData = false;
-                break;
+        if (data.startDate && data.endDate) {
+            let startDate = new Date(data.startDate);
+            let endDate = new Date(data.endDate);
+            for (let n in array) {
+                let date1 = new Date(array[n].startDate);
+                let date2 = new Date(array[n].endDate);
+                if (date1.getTime() === startDate.getTime() || (startDate.getTime() < date1.getTime() && endDate.getTime() > date1.getTime()) ||
+                    (startDate.getTime() < date2.getTime() && endDate.getTime() > date1.getTime())) {
+                    checkData = false;
+                    break;
+                }
             }
         }
         return checkData
@@ -118,7 +120,7 @@ class ContractTab extends Component {
                     ...data
                 }]
             })
-            this.props.handleAddContract(contracts, data);
+            this.props.handleAddContract(this.state.contracts, data);
         } else {
             toast.error(
                 <ServerResponseAlert

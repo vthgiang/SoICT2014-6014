@@ -201,7 +201,7 @@ class ExperienceTab extends Component {
                         {/* Trình độ ngoại ngữ */}
                         <div className="form-group">
                             <label >{translate('human_resource.profile.language_level')}</label>
-                            <input type="text" className="form-control" name="foreignLanguage" value={foreignLanguage} onChange={this.handleChange} placeholder={translate('human_resource.profile.language_level')} autoComplete="off" />
+                            <input type="text" className="form-control" name="foreignLanguage" value={foreignLanguage ? foreignLanguage : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.language_level')} autoComplete="off" />
                         </div>
 
                         {/* Trình độ chuyên môn */}

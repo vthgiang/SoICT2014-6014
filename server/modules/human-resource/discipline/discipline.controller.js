@@ -80,15 +80,6 @@ exports.createDiscipline = async (req, res) => {
                     inputData: req.body
                 }
             });
-        } else if (req.body.endDate.trim() === "") {
-            await LogError(req.user.email, 'CREATE_DISCIPLINE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["end_date_discipline_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
         } else if (req.body.type.trim() === "") {
             await LogError(req.user.email, 'CREATE_DISCIPLINE', req.user.company);
             res.status(400).json({
@@ -207,15 +198,6 @@ exports.updateDiscipline = async (req, res) => {
             res.status(400).json({
                 success: false,
                 messages: ["start_date_required"],
-                content: {
-                    inputData: req.body
-                }
-            });
-        } else if (req.body.endDate.trim() === "") {
-            await LogError(req.user.email, 'EDIT_DISCIPLINE', req.user.company);
-            res.status(400).json({
-                success: false,
-                messages: ["end_date_required"],
                 content: {
                     inputData: req.body
                 }

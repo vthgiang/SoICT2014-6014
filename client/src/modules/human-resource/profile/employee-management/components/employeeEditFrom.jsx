@@ -608,9 +608,7 @@ class EmployeeEditFrom extends Component {
             this.validatorInput(employee.fullName) && this.validatorInput(employee.birthdate) &&
             this.validatorInput(employee.emailInCompany) && this.validatorInput(employee.identityCardNumber) &&
             this.validatorInput(employee.identityCardDate) && this.validatorInput(employee.identityCardAddress) &&
-            this.validatorInput(employee.phoneNumber) && this.validatorInput(employee.temporaryResidence) &&
-            this.validatorInput(employee.taxRepresentative) && this.validatorInput(employee.taxNumber) &&
-            this.validatorInput(employee.taxDateOfIssue) && this.validatorInput(employee.taxAuthority);
+            this.validatorInput(employee.phoneNumber) && this.validatorInput(employee.temporaryResidence);
 
         if (employee.healthInsuranceStartDate && employee.healthInsuranceEndDate) {
             if (new Date(employee.healthInsuranceEndDate).getTime() < new Date(employee.healthInsuranceStartDate).getTime()) {
@@ -749,6 +747,7 @@ class EmployeeEditFrom extends Component {
         const { _id, img, employee, degrees, certificates, socialInsuranceDetails, contracts, courses,
             organizationalUnits, roles, commendations, disciplines, salaries, annualLeaves, files } = this.state;
 
+        console.log(this.state);
         return (
             <React.Fragment>
                 <DialogModal

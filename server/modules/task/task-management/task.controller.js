@@ -98,13 +98,13 @@ exports.getTaskEvaluations = async (req, res) => {
  */
 exports.getTaskById = async (req, res) => {
     // try {
-        var task = await TaskManagementService.getTaskById(req.params.taskId, req.user._id);
-        await LogInfo(req.user.email, ` get task by id `, req.user.company);
-        res.status(200).json({
-            success: true,
-            messages: ['get_task_by_id_success'],
-            content: task
-        });
+    var task = await TaskManagementService.getTaskById(req.params.taskId, req.user._id);
+    await LogInfo(req.user.email, ` get task by id `, req.user.company);
+    res.status(200).json({
+        success: true,
+        messages: ['get_task_by_id_success'],
+        content: task
+    });
     // } catch (error) {
     //     await LogError(req.user.email, ` get task by id `, req.user.company);
     //     res.status(400).json({

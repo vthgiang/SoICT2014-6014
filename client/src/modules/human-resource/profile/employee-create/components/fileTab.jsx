@@ -145,9 +145,7 @@ class FileTab extends Component {
             this.validatorInput(employee.fullName) && this.validatorInput(employee.birthdate) &&
             this.validatorInput(employee.emailInCompany) && this.validatorInput(employee.identityCardNumber) &&
             this.validatorInput(employee.identityCardDate) && this.validatorInput(employee.identityCardAddress) &&
-            this.validatorInput(employee.phoneNumber) && this.validatorInput(employee.temporaryResidence) &&
-            this.validatorInput(employee.taxRepresentative) && this.validatorInput(employee.taxNumber) &&
-            this.validatorInput(employee.taxDateOfIssue) && this.validatorInput(employee.taxAuthority);
+            this.validatorInput(employee.phoneNumber) && this.validatorInput(employee.temporaryResidence);
 
         if (employee.healthInsuranceStartDate && employee.healthInsuranceEndDate) {
             if (new Date(employee.healthInsuranceEndDate).getTime() < new Date(employee.healthInsuranceStartDate).getTime()) {
@@ -193,7 +191,7 @@ class FileTab extends Component {
                     <div className="col-md-4">
                         <div className="form-group">
                             <label>{translate('human_resource.profile.attachments_code')}</label>
-                            <input type="text" className="form-control" name="archivedRecordNumber" value={archivedRecordNumber} onChange={this.handleChange} placeholder={translate('human_resource.profile.attachments_code')} autoComplete="off" />
+                            <input type="text" className="form-control" name="archivedRecordNumber" value={archivedRecordNumber ? archivedRecordNumber : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.attachments_code')} autoComplete="off" />
                         </div>
                     </div>
                     {/* Danh sách tài liệu đính kèm */}
