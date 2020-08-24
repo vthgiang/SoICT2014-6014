@@ -10,20 +10,20 @@ const TaskTemplateSchema = new Schema({
     organizationalUnit: {
         type: Schema.Types.ObjectId,
         ref: OrganizationalUnit,
-        required: true
+        //require: true
     },
     name: {
         type: String,
-        required: true
+        //require: true
     },
     creator: {
         type: Schema.Types.ObjectId,
         ref: User,
-        required: true
+        //require: true
     },
     priority: { // 1: Thấp, 2: Trung Bình, 3: Cao
         type: Number,
-        required: true
+        //require: true
     },
     numberOfDaysTaken: {
         type: Number,
@@ -32,16 +32,16 @@ const TaskTemplateSchema = new Schema({
     taskActions: [{
         name: {
             type: String,
-            required: true
+            //require: true
         },
         description: {
             type: String,
-            required: true
+            //require: true
         },
         mandatory: { // Hoạt động này bắt buộc hay không?
             type: Boolean,
             default: true,
-            required: true
+            //require: true
         },
         creator: {
             type : Schema.Types.ObjectId,
@@ -50,15 +50,15 @@ const TaskTemplateSchema = new Schema({
     taskInformations: [{
         code: { // Mã thuộc tính công việc dùng trong công thức
             type: String,
-            required: true
+            //require: true
         },
         name: { // Tên thuộc tính công việc
             type: String,
-            required: true
+            //require: true
         },
         description: {
             type: String,
-            required: true
+            //require: true
         },
         extra: { // Cho kiểu dữ liệu tập giá trị, lưu lại các tập giá trị
             type: String
@@ -66,18 +66,18 @@ const TaskTemplateSchema = new Schema({
         filledByAccountableEmployeesOnly: { // Chỉ người phê duyệt được điền?
             type: Boolean,
             default: true,
-            required: true
+            //require: true
         },
         type: {
             type: String,
-            required: true,
+            //require: true,
             enum: ['Text', 'Boolean', 'Date', 'Number', 'SetOfValues'],
         }
     }],
     readByEmployees: [{
         type: Schema.Types.ObjectId,
         ref: Role,
-        required: true
+        //require: true
     }],
     responsibleEmployees: [{
         type: Schema.Types.ObjectId,
@@ -97,21 +97,21 @@ const TaskTemplateSchema = new Schema({
     }],
     description: {
         type: String,
-        required: true
+        //require: true
     },
     formula: {
         type: String,
-        required: true
+        //require: true
     },
     status: {
         type: Boolean,
         default: false,
-        required: true
+        //require: true
     },
     numberOfUse: {
         type: Number,
         default: 0,
-        required: true
+        //require: true
     }
 }, {
     timestamps: true
