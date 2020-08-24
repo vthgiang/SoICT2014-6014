@@ -741,13 +741,6 @@ class EmployeeEditFrom extends Component {
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps._id !== this.state._id) {
-            return true;
-        }
-        return false;
-    }
-
     render() {
         const { translate, employeesManager } = this.props;
 

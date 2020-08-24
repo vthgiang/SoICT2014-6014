@@ -128,17 +128,17 @@ class TaxTab extends Component {
                             {/* Số tài khoản */}
                             <div className="form-group col-md-4">
                                 <label >{translate('human_resource.profile.account_number')}</label>
-                                <input type="text" className="form-control" name="atmNumber" value={atmNumber} onChange={this.handleChange} placeholder={translate('human_resource.profile.account_number')} autoComplete="off" />
+                                <input type="text" className="form-control" name="atmNumber" value={atmNumber ? atmNumber : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.account_number')} autoComplete="off" />
                             </div>
                             {/* Tên ngân hàng */}
                             <div className="form-group col-md-4">
                                 <label >{translate('human_resource.profile.bank_name')}</label>
-                                <input type="text" className="form-control" name="bankName" value={bankName} onChange={this.handleChange} placeholder={translate('human_resource.profile.bank_name')} autoComplete="off" />
+                                <input type="text" className="form-control" name="bankName" value={bankName ? bankName : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.bank_name')} autoComplete="off" />
                             </div>
                             {/* Chi nhánh */}
                             <div className="form-group col-md-4">
                                 <label >{translate('human_resource.profile.bank_branch')}</label>
-                                <input type="text" className="form-control" name="bankAddress" value={bankAddress} onChange={this.handleChange} placeholder={translate('human_resource.profile.bank_branch')} autoComplete="off" />
+                                <input type="text" className="form-control" name="bankAddress" value={bankAddress ? bankAddress : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.bank_branch')} autoComplete="off" />
                             </div>
                         </div>
                     </fieldset>
@@ -148,13 +148,13 @@ class TaxTab extends Component {
                         {/* Mã số thuế */}
                         <div className="form-group">
                             <label >{translate('human_resource.profile.tax_number')}</label>
-                            <input type="number" className="form-control" name="taxNumber" value={taxNumber} onChange={this.handleNumberTaxChange} placeholder={translate('human_resource.profile.tax_number')} autoComplete="off" />
+                            <input type="number" className="form-control" name="taxNumber" value={taxNumber ? taxNumber : ''} onChange={this.handleNumberTaxChange} placeholder={translate('human_resource.profile.tax_number')} autoComplete="off" />
 
                         </div>
                         {/* Người đại diện */}
                         <div className="form-group">
                             <label >{translate('human_resource.profile.representative')}</label>
-                            <input type="text" className="form-control" name="taxRepresentative" value={taxRepresentative} onChange={this.handleUserTaxChange} placeholder={translate('human_resource.profile.representative')} autoComplete="off" />
+                            <input type="text" className="form-control" name="taxRepresentative" value={taxRepresentative ? taxRepresentative : ''} onChange={this.handleUserTaxChange} placeholder={translate('human_resource.profile.representative')} autoComplete="off" />
 
                         </div>
                         {/* Ngày hoạt động */}
@@ -170,7 +170,7 @@ class TaxTab extends Component {
                         {/* Quản lý bởi */}
                         <div className="form-group">
                             <label>{translate('human_resource.profile.managed_by')}</label>
-                            <input type="text" className="form-control" name="taxAuthority" value={taxAuthority} onChange={this.handleUnitTaxChange} placeholder={translate('human_resource.profile.managed_by')} autoComplete="off" />
+                            <input type="text" className="form-control" name="taxAuthority" value={taxAuthority ? taxAuthority : ''} onChange={this.handleUnitTaxChange} placeholder={translate('human_resource.profile.managed_by')} autoComplete="off" />
                         </div>
                     </fieldset>
                 </div>

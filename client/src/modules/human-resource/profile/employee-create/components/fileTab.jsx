@@ -191,7 +191,7 @@ class FileTab extends Component {
                     <div className="col-md-4">
                         <div className="form-group">
                             <label>{translate('human_resource.profile.attachments_code')}</label>
-                            <input type="text" className="form-control" name="archivedRecordNumber" value={archivedRecordNumber} onChange={this.handleChange} placeholder={translate('human_resource.profile.attachments_code')} autoComplete="off" />
+                            <input type="text" className="form-control" name="archivedRecordNumber" value={archivedRecordNumber ? archivedRecordNumber : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.attachments_code')} autoComplete="off" />
                         </div>
                     </div>
                     {/* Danh sách tài liệu đính kèm */}
