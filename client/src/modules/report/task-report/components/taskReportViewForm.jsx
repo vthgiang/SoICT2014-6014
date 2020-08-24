@@ -5,7 +5,8 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DialogModal } from '../../../../common-components';
 import { taskManagementActions } from '../../../task/task-management/redux/actions';
-import { TwoBarChart } from './twoBarChart';
+import { LineBarChart } from './lineBarChart';
+import { PieChart } from './pieChart';
 class TaskReportViewForm extends Component {
     constructor(props) {
         super(props);
@@ -46,7 +47,7 @@ class TaskReportViewForm extends Component {
     getQuarter = (data) => {
         const time = new Date(data);
         let quarter = Math.floor((time.getMonth() + 3) / 3);
-        let year = time.getFullYear() + (`-quy${quarter}`);
+        let year = (`Quý${quarter}-`) + time.getFullYear();
         return `${year}`;
     }
 
@@ -82,15 +83,13 @@ class TaskReportViewForm extends Component {
             })
         }
 
-        // Lấy tần suất từ server gửi
+
         if (listTaskEvaluation) {
+            // Lấy tần suất từ server gửi
             let taskEvaluation = listTaskEvaluation[0];
             frequency = taskEvaluation.frequency;
-        }
 
-
-        // Lọc lấy các trường cần thiết.
-        if (listTaskEvaluation) {
+            // Lọc lấy các trường cần thiết.
             newlistTaskEvaluation = listTaskEvaluation.map(item => {
                 return {
                     time: (frequency && frequency === 'month') ? this.convertMonthYear(item.date)
@@ -112,7 +111,8 @@ class TaskReportViewForm extends Component {
             }, {});
         }
 
-        let output, pieChartData = [], barLineChartData = [];
+        let output, pieChartData = [], barLineChartData = [], pieDataConvert;
+
         if (groupDataByDate) {
             output = Object.entries(groupDataByDate).map(([time, datapoints]) => {
                 let allTasks = datapoints.flatMap(point => point.task);
@@ -135,18 +135,36 @@ class TaskReportViewForm extends Component {
 
             // tách data vẽ biểu đồ cột+đường với tròn
             output.forEach(x => {
-                barLineChartData.push({
-                    time: x.time,
-                    tasks: [
-                        ...x.tasks.filter(y =>
-                            y.chartType === "pie"
-                                ? (pieChartData.push({ tasks: [y], time: x.time }), false)
-                                : true
-                        )
-                    ]
-                })
+                let tasks = x.tasks.filter(y =>
+                    y.chartType === "pie" ? (pieChartData.push({ tasks: [y], time: x.time }), false) : true)
+                if (tasks.length > 0) {
+                    barLineChartData.push({
+                        time: x.time,
+                        tasks: tasks,
+                    })
+                }
+
             })
         }
+
+
+        if (pieChartData && pieChartData.length > 0) {
+            // convert Data pieChart
+            let groupByCode = {};
+            pieChartData.flatMap(item => item.tasks.map(task => ({ ...task, time: item.time }))
+            ).forEach(childTask => {
+                if (groupByCode[childTask.code]) {
+                    groupByCode[childTask.code].push(childTask)
+                } else {
+                    groupByCode[childTask.code] = [childTask];
+                }
+            })
+
+            pieDataConvert = Object.entries(groupByCode).map(([code, tasks]) => ({
+                [code]: tasks.map((task) => [task.time, task.value])
+            }))
+        }
+
 
         return (
             <React.Fragment>
@@ -157,20 +175,39 @@ class TaskReportViewForm extends Component {
                     hasSaveButton={true}
                     func={this.save}
                     size={100}
+                    hasNote={false}
                 >
                     {/* Modal Body */}
                     <div className="row">
                         {
-                            <div className=" col-lg-12 col-md-12 col-md-sm-12 col-xs-12">
-                                <TwoBarChart barLineChartData={barLineChartData} pieChartData={pieChartData} />
+                            barLineChartData.length > 0 &&
+                            <div className=" col-lg-6 col-md-6 col-md-sm-6 col-xs-12">
+                                <LineBarChart barLineChartData={barLineChartData} />
                             </div>
+                        }
+
+                        {
+                            pieDataConvert && pieDataConvert.map((item, index) => (
+                                Object.entries(item).map(([code, data]) => (
+                                    <div key={index} className=" col-lg-6 col-md-6 col-md-sm-6 col-xs-12">
+                                        <PieChart pieChartData={data} namePieChart={code} />
+                                    </div>
+                                ))
+                            ))
+
                         }
                     </div>
                     <div className="form-inline">
                         <button id="exportButton" className="btn btn-sm btn-success " style={{ marginBottom: '10px' }}><span className="fa fa-file-excel-o"></span> Export to Excel</button>
                     </div>
-                    <div className="row row-equal-height box" >
-                        <div className="col-md-12">
+                    <div className="row box" >
+                        <div className="box-header">
+                            <div class="box-tools pull-right">
+                                <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                            </div>
+                        </div>
+
+                        <div className="col-md-12 box-body">
                             <table className="table table-hover table-striped table-bordered" id="report_manager" style={{ marginBottom: '0px !important' }}>
                                 <thead>
                                     <tr>
