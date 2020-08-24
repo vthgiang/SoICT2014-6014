@@ -664,7 +664,7 @@ exports.createEmployee = async (data, company, fileInfor) => {
         emailInCompany: data.emailInCompany,
         taxNumber: data.taxNumber,
         taxRepresentative: data.taxRepresentative,
-        taxDateOfIssue: data.taxDateOfIssue,
+        taxDateOfIssue: data.taxDateOfIssue ? data.taxDateOfIssue : null,
         taxAuthority: data.taxAuthority,
         atmNumber: data.atmNumber,
         bankName: data.bankName,
@@ -930,7 +930,7 @@ exports.updateEmployeeInformation = async (id, data, fileInfor, company) => {
     oldEmployee.emailInCompany = employee.emailInCompany;
     oldEmployee.taxNumber = employee.taxNumber;
     oldEmployee.taxRepresentative = employee.taxRepresentative;
-    oldEmployee.taxDateOfIssue = employee.taxDateOfIssue;
+    oldEmployee.taxDateOfIssue = employee.taxDateOfIssue ? employee.taxDateOfIssue : null;
     oldEmployee.taxAuthority = employee.taxAuthority;
     oldEmployee.atmNumber = employee.atmNumber;
     oldEmployee.bankName = employee.bankName;
