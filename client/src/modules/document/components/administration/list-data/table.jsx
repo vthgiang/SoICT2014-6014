@@ -284,7 +284,7 @@ class Table extends Component {
         const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
-        console.log('ttttttttttttt', paginate);
+        console.log('ttttttttttttt', currentRow);
         let list = [];
         if (isLoading === false) {
             list = docs.list;
@@ -337,9 +337,9 @@ class Table extends Component {
                         documentId={currentRow._id}
                         documentName={currentRow.name}
                         documentDescription={currentRow.description}
-                        documentCategory={currentRow.category ? currentRow.category._id : ""}
-                        documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain._id) : ""}
-                        documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive._id) : ""}
+                        documentCategory={currentRow.category ? currentRow.category.name : ""}
+                        documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain.name) : []}
+                        documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive.name) : []}
                         documentIssuingBody={currentRow.issuingBody}
                         documentOfficialNumber={currentRow.officialNumber}
                         documentSigner={currentRow.signer}

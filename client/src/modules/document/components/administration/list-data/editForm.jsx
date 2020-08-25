@@ -524,7 +524,7 @@ class EditForm extends Component {
         }
         if (documentRoles !== this.props.documentRoles) {
             if (!title.includes("Chỉnh sửa khác")) {
-                title += "Chỉnh sửa khác. "
+                title += "Chỉnh sửa phân quyền. "
             }
             description += "Các phân quyền mới "
             for (let i = 0; i < documentRoles.length; i++) {
@@ -573,7 +573,6 @@ class EditForm extends Component {
             documentFile,
             documentFileScan
         } = this.state;
-        console.log('ddddddddd');
         let title, descriptions;
         title = "Thêm phiên bản mới";
         const formData = new FormData();
@@ -834,8 +833,8 @@ class EditForm extends Component {
                                                                     <td><DateTimeConverter dateTime={version.issuingDate} type="DD-MM-YYYY" /></td>
                                                                     <td><DateTimeConverter dateTime={version.effectiveDate} type="DD-MM-YYYY" /></td>
                                                                     <td><DateTimeConverter dateTime={version.expiredDate} type="DD-MM-YYYY" /></td>
-                                                                    <td><a href="#" onClick={() => this.requestDownloadDocumentFile(documentId, documentName, i)}><u>{translate('document.download')}</u></a></td>
-                                                                    <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(documentId, "SCAN_" + documentName, i)}><u>{translate('document.download')}</u></a></td>
+                                                                    <td><a href="#" onClick={() => this.requestDownloadDocumentFile(documentId, documentName, i)}><u>{version.file ? translate('document.download') : ""}</u></a></td>
+                                                                    <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(documentId, "SCAN_" + documentName, i)}><u>{version.scannedFileOfSignedDocument ? translate('document.download') : ""}</u></a></td>
                                                                 </tr>
                                                             }) : <tr><td colSpan={7}>{translate('document.no_version')}</td></tr>
                                                     }

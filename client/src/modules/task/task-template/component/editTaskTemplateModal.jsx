@@ -191,7 +191,7 @@ class ModalEditTaskTemplate extends Component {
                 formID="form-edit-task-template"
                 title={translate('task_template.edit_tasktemplate')}
                 func={this.handleSubmit}
-                disableSubmit={!this.isTaskTemplateFormValidated()}
+                // disableSubmit={!this.isTaskTemplateFormValidated()}
                 size={100}
             >
                 <React.Fragment>

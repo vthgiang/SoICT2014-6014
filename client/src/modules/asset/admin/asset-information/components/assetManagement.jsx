@@ -18,7 +18,7 @@ class AssetManagement extends Component {
             code: "",
             assetName: "",
             assetType: null,
-            month: null,
+            purchaseDate: null,
             status: "",
             canRegisterForUse: "",
             page: 0,
@@ -113,11 +113,17 @@ class AssetManagement extends Component {
     }
 
     // Function lưu giá trị tháng vào state khi thay đổi
-    handleMonthChange = (value) => {
-        this.setState({
+    handleMonthChange = async (value) => {
+        if (!value) {
+            value = null
+        }
+
+        await this.setState({
             ...this.state,
-            month: value
+            purchaseDate: value
         });
+
+        console.log("##################################", this.state.purchaseDate);
     }
 
     // Function lưu giá trị loại tài sản vào state khi thay đổi
@@ -125,7 +131,7 @@ class AssetManagement extends Component {
         if (value.length === 0) {
             value = null
         }
-        ;
+        
         this.setState({
             ...this.state,
             assetType: value
@@ -290,7 +296,7 @@ class AssetManagement extends Component {
 
     render() {
         var { assetsManager, assetType, translate, user } = this.props;
-        var { page, limit, currentRowView, currentRow } = this.state;
+        var { page, limit, currentRowView, currentRow, purchaseDate } = this.state;
 
         var lists = "", exportData;
         var userlist = user.list;
@@ -337,11 +343,11 @@ class AssetManagement extends Component {
                             </SelectMulti>
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">{translate('page.month')}</label>
+                            <label className="form-control-static">{translate('asset.general_information.purchase_date')}</label>
                             <DatePicker
                                 id="month"
                                 dateFormat="month-year"
-                                value={this.formatDate2(Date.now())}
+                                value={purchaseDate}
                                 onChange={this.handleMonthChange}
                             />
                         </div>
