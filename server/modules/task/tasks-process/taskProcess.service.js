@@ -432,6 +432,47 @@ exports.getAllTaskProcess = async (query) => {
     let totalCount = await TaskProcess.countDocuments({ processName: { $regex: name, $options: 'i' } });
     let totalPages = Math.ceil(totalCount / noResultsPerPage);
     return {
-        data: data, pageTotal: totalPages
+        data: data,
+        pageTotal: totalPages
+    }
+}
+
+
+
+exports.updateDiagram = async (params, body) => {
+    let diagram = await TaskProcess.findByIdAndUpdate(params.processId,
+        { $set: { xmlDiagram: body.diagram } },
+        { new: true }
+    )
+    let data = await TaskProcess.find({}).skip(0).limit(5)
+        .populate([
+            { path: 'creator', model: User, select: 'name' },
+            {
+                path: 'tasks', model: Task, populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit", model: OrganizationalUnit },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                    { path: "evaluations.results.kpis" },
+                    { path: "taskActions.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+                    { path: "taskComments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "documents.creator", model: User, select: 'name email avatar' },
+                    { path: "process", model: TaskProcess },
+                ]
+            },
+            { path: 'processTemplate', model: ProcessTemplate, select: 'processName' },
+        ]);
+
+
+    let totalCount = await TaskProcess.countDocuments({ processName: { $regex: "", $options: 'i' } });
+    let totalPages = Math.ceil(totalCount / 5);
+    return {
+        data: data,
+        pageTotal: totalPages
     }
 }
