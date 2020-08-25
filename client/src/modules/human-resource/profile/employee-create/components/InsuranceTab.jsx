@@ -271,7 +271,7 @@ class InsurranceTab extends Component {
                             {/* Mã số bảo hiểm y tế */}
                             <div className="form-group col-md-4">
                                 <label>{translate('human_resource.profile.number_BHYT')}</label>
-                                <input type="text" className="form-control" name="healthInsuranceNumber" value={healthInsuranceNumber} onChange={this.handleChange} placeholder={translate('human_resource.profile.number_BHYT')} autoComplete="off" />
+                                <input type="text" className="form-control" name="healthInsuranceNumber" value={healthInsuranceNumber ? healthInsuranceNumber : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.number_BHYT')} autoComplete="off" />
                             </div>
                             {/* Ngày có hiệu lực */}
                             <div className={`form-group col-md-4 ${errorOnHealthInsuranceStartDate && "has-error"}`}>
@@ -302,7 +302,7 @@ class InsurranceTab extends Component {
                             {/* Mã số bảo hiểm xã hội */}
                             <div className="form-group col-md-4">
                                 <label>{translate('human_resource.profile.number_BHXH')}</label>
-                                <input type="text" className="form-control" name="socialInsuranceNumber" value={socialInsuranceNumber} onChange={this.handleChange} placeholder={translate('human_resource.profile.number_BHXH')} autoComplete="off" />
+                                <input type="text" className="form-control" name="socialInsuranceNumber" value={socialInsuranceNumber ? socialInsuranceNumber : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.number_BHXH')} autoComplete="off" />
                             </div>
                             {/* Quá trình đóng bảo hiểm xã hội */}
                             <div className="col-md-12">

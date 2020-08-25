@@ -10,7 +10,7 @@ class CertificateAddModal extends Component {
         super(props);
         this.state = {
             startDate: this.formatDate(Date.now()),
-            endDate: this.formatDate(Date.now()),
+            endDate: "",
             name: "",
             issuedBy: "",
             urlFile: "",
@@ -167,11 +167,15 @@ class CertificateAddModal extends Component {
         let result = this.validateNameCertificate(name, false) && this.validateIssuedByCertificate(issuedBy, false);
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
-        let partEnd = endDate.split('-');
-        let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
-        if (new Date(startDateNew).getTime() <= new Date(endDateNew).getTime()) {
+        if (endDate) {
+            let partEnd = endDate.split('-');
+            let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+            if (new Date(startDateNew).getTime() <= new Date(endDateNew).getTime()) {
+                return result;
+            } else return false;
+        } else {
             return result;
-        } else return false;
+        }
     }
 
     /** Bắt sự kiện submit form */
@@ -179,8 +183,11 @@ class CertificateAddModal extends Component {
         const { startDate, endDate } = this.state;
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
-        let partEnd = endDate.split('-');
-        let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        let endDateNew = null;
+        if (endDate) {
+            let partEnd = endDate.split('-');
+            endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        };
         if (this.isFormValidated()) {
             return this.props.handleChange({ ...this.state, startDate: startDateNew, endDate: endDateNew });
         }
@@ -230,10 +237,10 @@ class CertificateAddModal extends Component {
                             </div>
                             {/* Ngày hết hạn */}
                             <div className={`form-group col-sm-6 col-xs-12 ${errorOnEndDate && "has-error"}`}>
-                                <label>{translate('human_resource.profile.end_date_certificate')}<span className="text-red">*</span></label>
+                                <label>{translate('human_resource.profile.end_date_certificate')}</label>
                                 <DatePicker
                                     id={`add-end-date-${id}`}
-                                    deleteValue={false}
+                                    deleteValue={true}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />

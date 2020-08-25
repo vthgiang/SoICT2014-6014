@@ -265,7 +265,7 @@ class SideBar extends Component {
                                         </span>
                                     </a>
                                     <ul className="treeview-menu">
-                                        {/**Quản lý dashboard tài sản */}
+                                        {/** Quản lý dashboard tài sản */}
                                         {this.checkURL(url1.path1, links) === true &&
                                             <li className={window.location.pathname === url1.path1 ? "active" : ""}>
                                                 <Link to={url1.path1}>
@@ -275,52 +275,12 @@ class SideBar extends Component {
                                             </li>
                                         }
 
-                                        {/**Quản lý loại tài sản */}
-                                        {this.checkURL(url1.path2, links) === true &&
-                                            <li className={window.location.pathname === url1.path2 ? "active" : ""}>
-                                                <Link to={url1.path2}>
-                                                    <i className="fa fa-dashboard" />
-                                                    {translate(`menu.manage_type_asset`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/**Quản lý thông tin tài sản */}
+                                        {/** Quản lý thông tin tài sản */}
                                         {this.checkURL(url1.path3, links) === true &&
                                             <li className={window.location.pathname === url1.path3 ? "active" : ""}>
                                                 <Link to={url1.path3}>
                                                     <i className="fa fa-sitemap" />
                                                     {translate(`menu.manage_info_asset`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/** quản lý đăng ký sử dụng thiết bị */}
-                                        {this.checkURL(url1.path8, links) === true &&
-                                            <li className={window.location.pathname === url1.path8 ? "active" : ""}>
-                                                <Link to={url1.path8}>
-                                                    <i className="fa fa-calendar" />
-                                                    {translate(`menu.manage_recommend_distribute_asset`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/**Quản lý sử dụng tài sản */}
-                                        {this.checkURL(url1.path14, links) === true &&
-                                            <li className={window.location.pathname === url1.path14 ? "active" : ""}>
-                                                <Link to={url1.path14}>
-                                                    <i className="fa fa-sitemap" />
-                                                    {translate(`menu.manage_usage_asset`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/**Quản lý bảo trì tài sản */}
-                                        {this.checkURL(url1.path13, links) === true &&
-                                            <li className={window.location.pathname === url1.path13 ? "active" : ""}>
-                                                <Link to={url1.path13}>
-                                                    <i className="fa fa-sitemap" />
-                                                    {translate(`menu.manage_maintainance_asset`)}
                                                 </Link>
                                             </li>
                                         }
@@ -335,6 +295,16 @@ class SideBar extends Component {
                                             </li>
                                         }
 
+                                        {/** Quản lý bảo trì tài sản */}
+                                        {this.checkURL(url1.path13, links) === true &&
+                                            <li className={window.location.pathname === url1.path13 ? "active" : ""}>
+                                                <Link to={url1.path13}>
+                                                    <i className="fa fa-sitemap" />
+                                                    {translate(`menu.manage_maintainance_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+
                                         {/** quản lý sự cố tài sản */}
                                         {this.checkURL(url1.path15, links) === true &&
                                             <li className={window.location.pathname === url1.path15 ? "active" : ""}>
@@ -345,6 +315,26 @@ class SideBar extends Component {
                                             </li>
                                         }
 
+                                        {/** quản lý đăng ký sử dụng thiết bị */}
+                                        {this.checkURL(url1.path8, links) === true &&
+                                            <li className={window.location.pathname === url1.path8 ? "active" : ""}>
+                                                <Link to={url1.path8}>
+                                                    <i className="fa fa-calendar" />
+                                                    {translate(`menu.manage_recommend_distribute_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+
+                                        {/** Quản lý sử dụng tài sản */}
+                                        {this.checkURL(url1.path14, links) === true &&
+                                            <li className={window.location.pathname === url1.path14 ? "active" : ""}>
+                                                <Link to={url1.path14}>
+                                                    <i className="fa fa-sitemap" />
+                                                    {translate(`menu.manage_usage_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                        
                                         {/** quản lý đề nghị mua sắm thiết bị */}
                                         {this.checkURL(url1.path7, links) === true &&
                                             <li className={window.location.pathname === url1.path7 ? "active" : ""}>
@@ -354,7 +344,16 @@ class SideBar extends Component {
                                                 </Link>
                                             </li>
                                         }
-
+                                        
+                                        {/** đề nghị cấp phát thiết bị */}
+                                        {this.checkURL(url1.path11, links) === true &&
+                                            <li className={window.location.pathname === url1.path11 ? "active" : ""}>
+                                                <Link to={url1.path11}>
+                                                    <i className="fa fa-calendar" />
+                                                    {translate(`menu.recommend_distribute_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
 
                                         {/** quản lý tài sản được bàn giao */}
                                         {this.checkURL(url1.path12, links) === true &&
@@ -366,22 +365,22 @@ class SideBar extends Component {
                                             </li>
                                         }
 
-                                        {/** đề nghị cấp phát thiết bị */}
-                                        {this.checkURL(url1.path11, links) === true &&
-                                            <li className={window.location.pathname === url1.path11 ? "active" : ""}>
-                                                <Link to={url1.path11}>
-                                                    <i className="fa fa-calendar" />
-                                                    {translate(`menu.recommend_distribute_asset`)}
-                                                </Link>
-                                            </li>
-                                        }
-
                                         {/** đề nghị mua sắm thiết bị */}
                                         {this.checkURL(url1.path10, links) === true &&
                                             <li className={window.location.pathname === url1.path10 ? "active" : ""}>
                                                 <Link to={url1.path10}>
                                                     <i className="fa fa-calendar" />
                                                     {translate(`menu.recommend_equipment_procurement`)}
+                                                </Link>
+                                            </li>
+                                        }
+
+                                        {/**Quản lý loại tài sản */}
+                                        {this.checkURL(url1.path2, links) === true &&
+                                            <li className={window.location.pathname === url1.path2 ? "active" : ""}>
+                                                <Link to={url1.path2}>
+                                                    <i className="fa fa-dashboard" />
+                                                    {translate(`menu.manage_type_asset`)}
                                                 </Link>
                                             </li>
                                         }

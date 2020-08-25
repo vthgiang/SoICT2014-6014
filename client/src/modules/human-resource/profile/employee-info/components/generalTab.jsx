@@ -63,8 +63,8 @@ class GeneralTab extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextProps.employee.avatar && !nextProps.auth.isLoading &&
-            this.state.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
+        if (nextProps.id !== this.state.id || (nextProps.employee.avatar && !nextProps.auth.isLoading &&
+            this.state.dataStatus === this.DATA_STATUS.NOT_AVAILABLE)) {
             this.props.downloadFile(`.${nextProps.employee.avatar}`, `avatarInfor${nextProps.id}`, 'show');
             this.setState({
                 dataStatus: this.DATA_STATUS.QUERYING

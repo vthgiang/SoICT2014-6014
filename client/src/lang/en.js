@@ -640,8 +640,8 @@ export default {
             manage_maintainance_asset: 'Manage maintainance assets',
             manage_depreciation_asset: 'Manage depreciation assets',
             manage_incident_asset: 'Manage incident assets',
-            manage_recommend_procure: 'Manage recommend procure',
-            manage_recommend_distribute_asset: 'Manage recommend distribute',
+            manage_recommend_procure: 'Manage purchase request',
+            manage_recommend_distribute_asset: 'Manage use request',
 
             view_building_list: 'View building list',
             // NHÂN VIÊN
@@ -1901,6 +1901,8 @@ export default {
             view_detail_of_this_task_template: 'View detail of this task',
             edit_this_task_template: 'Edit this task template',
             delete_this_task_template: 'Delete this task template',
+            create_task_by_process: 'Create tasks by process',
+            numberOfDaysTaken: "The number of days taken",
         },
 
         task: {

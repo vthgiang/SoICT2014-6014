@@ -398,36 +398,33 @@ class GeneralTab extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        if (nextProps.img && !nextProps.auth.isLoading &&
-            this.state.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-            this.props.downloadFile(nextProps.img, `avatar${nextProps.id}`, 'show');
+        if (nextProps.id !== this.state.id || (nextProps.img && !nextProps.auth.isLoading && this.state.dataStatus === this.DATA_STATUS.NOT_AVAILABLE)) {
+            await this.props.downloadFile(nextProps.img, `avatar${nextProps.id}`, 'show');
             this.setState({
                 dataStatus: this.DATA_STATUS.QUERYING
             });
-            return false;
         };
         if (this.state.dataStatus === this.DATA_STATUS.QUERYING && !nextProps.auth.isLoading) {
             this.setState({
                 dataStatus: this.DATA_STATUS.AVAILABLE
             });
             return false;
-        };
-        if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE && nextProps.auth.show_files.length !== 0) {
+        }
+        if (this.state.dataStatus === this.DATA_STATUS.AVAILABLE && !nextProps.auth.isLoading && nextProps.auth.show_files.length !== 0) {
             let img = nextProps.auth.show_files.find(x => x.fileName === `avatar${nextProps.id}`);
             this.setState({
                 dataStatus: this.DATA_STATUS.FINISHED,
-                img: img.file
+                img: img ? img.file : '',
             });
             return true;
-        }
+        };
         return false;
     }
 
     render() {
         const { translate } = this.props;
-        const { id } = this.props;
 
-        const { birthdate, identityCardDate, img, employeeNumber, employeeTimesheetId, fullName, gender, birthplace, status,
+        const { id, birthdate, identityCardDate, img, employeeNumber, employeeTimesheetId, fullName, gender, birthplace, status,
             startingDate, leavingDate, emailInCompany, maritalStatus, identityCardNumber, identityCardAddress, ethnic, religion, nationality,
             errorOnBrithdate, errorOnDateCMND, errorOnEmployeeNumber, errorOnMSCC, errorOnFullName, errorOnEmailCompany, errorOnStartingDate,
             errorOnCMND, errorOnAddressCMND, errorOnLeavingDate } = this.state;
@@ -508,7 +505,7 @@ class GeneralTab extends Component {
                             {/* Nơi sinh */}
                             <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
                                 <label htmlFor="birthplace">{translate('human_resource.profile.place_birth')}</label>
-                                <input type="text" className="form-control" name="birthplace" value={birthplace} onChange={this.handleChange} placeholder={translate('human_resource.profile.place_birth')} autoComplete="off" />
+                                <input type="text" className="form-control" name="birthplace" value={birthplace ? birthplace : ''} onChange={this.handleChange} placeholder={translate('human_resource.profile.place_birth')} autoComplete="off" />
                             </div>
                         </div>
                         <div className="row">
@@ -599,17 +596,17 @@ class GeneralTab extends Component {
                             {/* Dân tộc */}
                             <div className="form-group col-lg-4 col-md-4 col-ms-12 col-xs-12">
                                 <label htmlFor="national">{translate('human_resource.profile.ethnic')}</label>
-                                <input type="text" className="form-control" name="ethnic" value={ethnic} onChange={this.handleChange} placeholder={translate('human_resource.profile.ethnic')} autoComplete="off" />
+                                <input type="text" className="form-control" name="ethnic" value={ethnic ? ethnic : ""} onChange={this.handleChange} placeholder={translate('human_resource.profile.ethnic')} autoComplete="off" />
                             </div>
                             {/* Tôn giáo */}
                             <div className="form-group col-lg-4 col-md-4 col-ms-12 col-xs-12">
                                 <label htmlFor="religion">{translate('human_resource.profile.religion')}</label>
-                                <input type="text" className="form-control" name="religion" value={religion} onChange={this.handleChange} placeholder={translate('human_resource.profile.religion')} autoComplete="off" />
+                                <input type="text" className="form-control" name="religion" value={religion ? religion : ""} onChange={this.handleChange} placeholder={translate('human_resource.profile.religion')} autoComplete="off" />
                             </div>
                             {/* Quốc tịch */}
                             <div className="form-group col-lg-4 col-md-4 col-ms-12 col-xs-12">
                                 <label htmlFor="nation">{translate('human_resource.profile.nationality')}</label>
-                                <input type="text" className="form-control" name="nationality" value={nationality} onChange={this.handleChange} placeholder={translate('human_resource.profile.nationality')} autoComplete="off" />
+                                <input type="text" className="form-control" name="nationality" value={nationality ? nationality : ""} onChange={this.handleChange} placeholder={translate('human_resource.profile.nationality')} autoComplete="off" />
                             </div>
                         </div>
                     </div>

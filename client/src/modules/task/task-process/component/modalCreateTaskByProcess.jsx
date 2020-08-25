@@ -443,7 +443,7 @@ class ModalCreateTaskByProcess extends Component {
         let data = {
             processName: processName,
             processDescription: processDescription,
-            xmlDiagram: xmlDiagram,
+            xmlDiagram: this.state.xmlDiagram,
             creator: userId,
             taskList: info,
             startDate: startDate,

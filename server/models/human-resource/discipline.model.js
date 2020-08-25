@@ -30,7 +30,6 @@ const DisciplineSchema = new Schema({
     },
     endDate: {
         type: Date,
-        required: true,
     },
     type: { // hình thức kỷ luật
         type: String,

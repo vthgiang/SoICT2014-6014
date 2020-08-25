@@ -329,6 +329,7 @@ exports.createTaskByProcess = async (processId, body) => {
         let newTaskItem = await Task.create({
             process: process,
             codeInProcess: data[i].code,
+            numberOfDaysTaken: data[i].numberOfDaysTaken,
             organizationalUnit: data[i].organizationalUnit,
             // creator: data[i].creator, //id của người tạo
             creator: body.creator, //id của người tạo

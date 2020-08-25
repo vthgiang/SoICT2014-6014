@@ -16,7 +16,7 @@ class DisciplineCreateForm extends Component {
             decisionNumber: "",
             organizationalUnit: "",
             startDate: this.formatDate(Date.now()),
-            endDate: this.formatDate(Date.now()),
+            endDate: "",
             type: "",
             reason: "",
         };
@@ -212,17 +212,30 @@ class DisciplineCreateForm extends Component {
 
         let partStart = startDate.split('-');
         let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
-        let partEnd = endDate.split('-');
-        let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
-        if (new Date(startDateNew).getTime() <= new Date(endDateNew).getTime()) {
+        if (endDate) {
+            let partEnd = endDate.split('-');
+            let endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+            if (new Date(startDateNew).getTime() <= new Date(endDateNew).getTime()) {
+                return result;
+            } else return false;
+        } else {
             return result;
-        } else return false;
+        }
+
     }
 
     /** Bắt sự kiện submit form */
     save = () => {
+        const { endDate, startDate } = this.state;
+        let partStart = startDate.split('-');
+        let startDateNew = [partStart[2], partStart[1], partStart[0]].join('-');
+        let endDateNew = null;
+        if (endDate) {
+            let partEnd = endDate.split('-');
+            endDateNew = [partEnd[2], partEnd[1], partEnd[0]].join('-');
+        }
         if (this.isFormValidated()) {
-            return this.props.createNewDiscipline(this.state);
+            return this.props.createNewDiscipline({ ...this.state, endDate: endDateNew, startDate: startDateNew });
         }
     }
 
@@ -286,10 +299,10 @@ class DisciplineCreateForm extends Component {
                             </div>
                             {/* Ngày hết hiệu lực */}
                             <div className={`col-sm-6 col-xs-12 form-group ${errorOnEndDate && "has-error"}`}>
-                                <label>{translate('human_resource.commendation_discipline.discipline.table.end_date')}<span className="text-red">*</span></label>
+                                <label>{translate('human_resource.commendation_discipline.discipline.table.end_date')}</label>
                                 <DatePicker
                                     id="create_discipline_end_date"
-                                    deleteValue={false}
+                                    deleteValue={true}
                                     value={endDate}
                                     onChange={this.handleEndDateChange}
                                 />

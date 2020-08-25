@@ -421,6 +421,8 @@ exports.deleteOrganizationalUnit = async (departmentId) => {
 
 exports.importOrganizationalUnits = async(data, companyId) => {
     console.log(companyId);
+    let tree;
+    let organizationalUnits = [];
     for ( let i = 0; i < data.length; i++) {
         if (data[i].parent) {
             let parent = await OrganizationalUnit.findOne({ name: data[i].parent});
@@ -434,6 +436,8 @@ exports.importOrganizationalUnits = async(data, companyId) => {
                 roles.viceDeans.map(vice=>vice._id), 
                 roles.employees.map(em=>em._id)
             );
-        let tree = await this.getOrganizationalUnitsAsTree(companyId);
+            organizationalUnits = [...organizationalUnits, organizationalUnit];
+        tree = await this.getOrganizationalUnitsAsTree(companyId);
     }
+    return { department: organizationalUnits, tree}
 }

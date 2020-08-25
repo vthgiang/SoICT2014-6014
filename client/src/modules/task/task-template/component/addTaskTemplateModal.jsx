@@ -52,7 +52,29 @@ class ModalAddTaskTemplate extends Component {
 
     /**Submit new template in data */
     handleSubmit = async (event) => {
-        const { newTemplate } = this.state;
+        // const { newTemplate } = this.state;
+        // this.props.addNewTemplate(newTemplate);
+        // window.$("#addTaskTemplate").modal("hide");
+        let { newTemplate } = this.state;
+        const { department, user, translate, tasktemplates, isProcess } = this.props;
+
+        let listRoles = [];
+        if (user.roledepartments) {
+            console.log('pppp');
+            let listRole = user.roledepartments;
+            for (let x in listRole.employees)
+                listRoles.push(listRole.employees[x]._id);
+        }
+        console.log('list role', listRoles);
+        await this.setState( state => {
+            if(state.newTemplate.readByEmployees.length === 0){
+                state.newTemplate.readByEmployees = listRoles
+            }
+            return {
+                ...state,
+            }
+        });
+
         this.props.addNewTemplate(newTemplate);
         window.$("#addTaskTemplate").modal("hide");
     }

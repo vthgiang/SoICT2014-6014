@@ -31,6 +31,7 @@ class EditTaskTemplate extends Component {
                 consultedEmployees: [],
                 informedEmployees: [],
                 description: '',
+                numberOfDaysTaken: '',
                 formula: '',
                 priority: 3,
                 taskActions: [],
@@ -90,6 +91,7 @@ class EditTaskTemplate extends Component {
                         informedEmployees: (info && info.informedEmployees) ? info.informedEmployees : [],
                         description: (info && info.description) ? info.description : '',
                         creator: (info && info.creator) ? info.creator : getStorage("userId"),
+                        numberOfDaysTaken: (info && info.numberOfDaysTaken) ? info.numberOfDaysTaken : '',
                         formula: (info && info.formula) ? info.formula : '',
                         priority: (info && info.priority) ? info.priority : 3,
                         taskActions: (info && info.taskActions) ? info.taskActions : [],
@@ -129,6 +131,7 @@ class EditTaskTemplate extends Component {
                     consultedEmployees: nextProps.taskTemplate.consultedEmployees.map(item => item._id),
                     informedEmployees: nextProps.taskTemplate.informedEmployees.map(item => item._id),
                     description: nextProps.taskTemplate.description,
+                    numberOfDaysTaken: nextProps.taskTemplate.numberOfDaysTaken,
                     formula: nextProps.taskTemplate.formula,
                     priority: nextProps.taskTemplate.priority,
                     taskActions: nextProps.taskTemplate.taskActions,
@@ -139,7 +142,7 @@ class EditTaskTemplate extends Component {
             return true;
         }
 
-        // Khi truy vấn lấy các đơn vị mà user là dean đã có kết quả, và thuộc tính đơn vị của newTemplate chưa được thiết lập
+        // Khi truy vấn lấy các đơn vị mà user là dean đã có kết quả, và thuộc tính đơn vị của editingTemplate chưa được thiết lập
         if (editingTemplate.organizationalUnit === "" && department.departmentsThatUserIsDean) {
             // Tìm unit mà currentRole của user đang thuộc về
             let defaultUnit = department.departmentsThatUserIsDean.find(item =>
@@ -153,7 +156,7 @@ class EditTaskTemplate extends Component {
                     return {
                         ...state,
                         editingTemplate: {
-                            ...this.state.newTemplate,
+                            ...this.state.editingTemplate,
                             organizationalUnit: defaultUnit._id
                         }
                     };
@@ -263,6 +266,27 @@ class EditTaskTemplate extends Component {
         }
         this.props.onChangeTemplateData(this.state.editingTemplate);
         return msg == undefined;
+    }
+
+    handleTaskTemplateNumberOfDaysTaken = (event) => {
+        let value = event.target.value;
+        this.validateTaskTemplateNumberOfDaysTaken(value, true);
+    }
+
+    validateTaskTemplateNumberOfDaysTaken = (value, willUpdateState = true) => {
+        let msg = TaskTemplateFormValidator.validateTaskTemplateNumberOfDaysTaken(value);
+
+        if (willUpdateState) {
+            this.state.editingTemplate.numberOfDaysTaken = value;
+            this.state.editingTemplate.errorOnNumberOfDaysTaken = msg;
+            this.setState(state => {
+                return {
+                    ...state,
+                };
+            });
+        }
+        this.props.onChangeTemplateData(this.state.editingTemplate);
+        return msg === undefined;
     }
 
     handleTaskTemplateFormula = (event) => {
@@ -634,24 +658,38 @@ class EditTaskTemplate extends Component {
                         }
                     </div>
                     {showMore &&
-                        <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
-                            {/**Công thức tính điểm mẫu công việc này */}
-                            <div className={`form-group ${this.state.editingTemplate.errorOnFormula === undefined ? "" : "has-error"}`} >
-                                <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}*</label>
-                                <input type="text" className="form-control" id="inputFormula" placeholder="progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100*(1-p1/p2)" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
-                                <ErrorLabel content={this.state.editingTemplate.errorOnFormula} />
-
-                                <br />
-                                <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100*(1-p1/p2)</div>
-                                <br />
-                                <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
-                                <div><span style={{ fontWeight: 600 }}>overdueDate</span> - Thời gian quá hạn (ngày)</div>
-                                <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
-                                <div><span style={{ fontWeight: 600 }}>totalDay</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
-                                <div><span style={{ fontWeight: 600 }}>averageActionRating</span> -  Trung bình cộng điểm đánh giá hoạt động (1-10)</div>
-                                <div><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</div>
-                                <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
+                        <div>
+                            <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                                {/**Số ngày hoàn thành công việc dự kiến */}
+                                <div className={`form-group ${this.state.editingTemplate.errorOnNumberOfDaysTaken === undefined ? "" : "has-error"}`} >
+                                    <label className="control-label" htmlFor="inputNumberOfDaysTaken">{translate('task_template.numberOfDaysTaken')}*</label>
+                                    <input type="number" className="form-control" id="inputNumberOfDaysTaken" value={editingTemplate.numberOfDaysTaken}
+                                        placeholder={'Nhập số ngày hoàn thành dự kiến'}
+                                        onChange={this.handleTaskTemplateNumberOfDaysTaken} />
+                                    <ErrorLabel content={this.state.editingTemplate.errorOnNumberOfDaysTaken} />
+                                </div>
                             </div>
+
+                            <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                                {/**Công thức tính điểm mẫu công việc này */}
+                                <div className={`form-group ${this.state.editingTemplate.errorOnFormula === undefined ? "" : "has-error"}`} >
+                                    <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}*</label>
+                                    <input type="text" className="form-control" id="inputFormula" placeholder="progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100*(1-p1/p2)" value={editingTemplate.formula} onChange={this.handleTaskTemplateFormula} />
+                                    <ErrorLabel content={this.state.editingTemplate.errorOnFormula} />
+
+                                    <br />
+                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100*(1-p1/p2)</div>
+                                    <br />
+                                    <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
+                                    <div><span style={{ fontWeight: 600 }}>overdueDate</span> - Thời gian quá hạn (ngày)</div>
+                                    <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
+                                    <div><span style={{ fontWeight: 600 }}>totalDay</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
+                                    <div><span style={{ fontWeight: 600 }}>averageActionRating</span> -  Trung bình cộng điểm đánh giá hoạt động (1-10)</div>
+                                    <div><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</div>
+                                    <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
+                                </div>
+                            </div>
+
                         </div>
                     }
                 </div>
