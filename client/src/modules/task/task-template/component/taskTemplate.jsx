@@ -213,7 +213,7 @@ class TaskTemplate extends Component {
                 let x = data[k];
                 let length = 0;
                 let actionName = [], actionDescription = [], mandatory = [] ;
-                if (x.taskActions.length !== 0 ) {
+                if (x.taskActions ) {
                     if (x.taskActions.length > length){
                         length = x.taskActions.length;
                     }
@@ -228,7 +228,7 @@ class TaskTemplate extends Component {
                     }
                 }
                 let infomationName = [], type = [], infomationDescription = [], filledByAccountableEmployeesOnly = [];
-                if (x.taskInformations.length !== 0) {
+                if (x.taskInformations) {
                     if (x.taskInformations.length > length) {
                         length = x.taskInformations.length;
                     }
@@ -248,19 +248,19 @@ class TaskTemplate extends Component {
                     numberOfUse = x.numberOfUse;
                 }
                 let readByEmployees = [], responsibleEmployees = [], accountableEmployees = [], consultedEmployees = [], informedEmployees = [];
-                if (x.readByEmployees.length !== 0) {
+                if (x.readByEmployees) {
                     readByEmployees = x.readByEmployees.map(item => item.name);
                 }
-                if (x.responsibleEmployees.length !== 0) {
+                if (x.responsibleEmployees) {
                     responsibleEmployees = x.responsibleEmployees.map(item => item.name);
                 }
-                if (x.accountableEmployees.length !== 0) {
+                if (x.accountableEmployees) {
                     accountableEmployees = x.accountableEmployees.map(item => item.name);
                 }
-                if (x.consultedEmployees.length !== 0) {
+                if (x.consultedEmployees) {
                     consultedEmployees = x.consultedEmployees.map(item => item.name);
                 }
-                if (x.informedEmployees.length !== 0) {
+                if (x.informedEmployees) {
                     informedEmployees = x.informedEmployees.map(item => item.name);
                 }
                 let out = { STT: k + 1,
