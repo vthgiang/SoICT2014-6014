@@ -71,15 +71,15 @@ class DepreciationOfAssetChart extends Component {
             let productUnitDepreciation = cost / (estimatedTotalProduction * (usefulLife / 12)); // Mức khấu hao đơn vị sản phẩm
             let accumulatedDepreciation = 0; // Giá trị hao mòn lũy kế
 
-            for (let i = 0; i < monthTotal; i++){
+            for (let i = 0; i < monthTotal; i++) {
                 accumulatedDepreciation += unitsProducedDuringTheYears[i].unitsProducedDuringTheYear * productUnitDepreciation;
             }
 
             remainingValue = cost - accumulatedDepreciation;
             annualDepreciation = monthTotal ? accumulatedDepreciation * 12 / monthTotal : 0;
         }
-
-        return parseInt(cost - remainingValue );
+        // console.log('cost', parseInt(cost - remainingValue));
+        return parseInt(cost - remainingValue);
     }
 
     // Thiết lập dữ liệu biểu đồ
@@ -91,34 +91,37 @@ class DepreciationOfAssetChart extends Component {
         let depreciationOfAsset = [];
 
         if (listAsset) {
-            for(let i in listAsset ){
-               depreciationOfAsset.push({
-                   type: listAsset[i].assetType,
-                   group: listAsset[i].group,
-                   depreciationExpense: this.calculateDepreciation()
+            for (let i in listAsset) {
+
+                depreciationOfAsset.push({
+                    name: listAsset[i].assetName,
+                    type: listAsset[i].assetType,
+                    group: listAsset[i].group,
+                    depreciationExpense: this.calculateDepreciation(listAsset[i].depreciationType, listAsset[i].cost, listAsset[i].usefulLife, listAsset[i].estimatedTotalProduction, listAsset[i].unitsProducedDuringTheYears, listAsset[i].startDepreciation)
                 })
             }
         }
- if(depreciationOfAsset.length){
-    depreciationOfAsset.map(asset => {
-        switch (asset.group) {
-            case "Building":
-                depreciationExpenseOfBuilding++;
-                break;
-            case "Vehicle":
-                depreciationExpenseOfVehicle++;
-                break;
-            case "Machine":
-                depreciationExpenseOfMachine++;
-                break;
-            case "Other":
-                depreciationExpenseOfOrther++;
-                break;
+        if (depreciationOfAsset.length) {
+            depreciationOfAsset.map(asset => {
+                switch (asset.group) {
+                    case "Building":
+                        depreciationExpenseOfBuilding += asset.depreciationExpense;
+                        break;
+                    case "Vehicle":
+                        depreciationExpenseOfVehicle += asset.depreciationExpense;
+                        break;
+                    case "Machine":
+                        depreciationExpenseOfMachine += asset.depreciationExpense;
+                        break;
+                    case "Other":
+                        depreciationExpenseOfOrther += asset.depreciationExpense;
+                        break;
+                }
+            });
         }
-    });
- }
+
         dataPieChart = [
-            ["Mặt bằng", depreciationExpenseOfBuilding],
+            ["Mặt bằng", depreciationExpenseOfBuilding > 0 ? depreciationExpenseOfBuilding : 0],
             ["Phương tiện", depreciationExpenseOfVehicle],
             ["Máy móc", depreciationExpenseOfMachine],
             ["Khác", depreciationExpenseOfOrther],
@@ -142,7 +145,16 @@ class DepreciationOfAssetChart extends Component {
             pie: {
                 label: {
                     format: function (value) {
-                        return value / 1000000 + " M";
+                        let valueByUnit, unit;
+                        if (value >= 1000000000) {
+                            valueByUnit = Math.round(value / 1000000000);
+                            unit = "B";
+                        }
+                        else {
+                            valueByUnit = Math.round(value / 1000000);
+                            unit = "M";
+                        }
+                        return valueByUnit + unit;
                     }
                 }
             },
@@ -195,4 +207,3 @@ const actions = {
 const DepreciationOfAssetChartConnected = connect(mapState, actions)(withTranslate(DepreciationOfAssetChart));
 
 export { DepreciationOfAssetChartConnected as DepreciationOfAssetChart }
-   

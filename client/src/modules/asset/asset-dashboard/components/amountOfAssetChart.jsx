@@ -9,40 +9,65 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 class AmountOfAssetChart extends Component {
     constructor(props) {
         super(props);
+
     }
 
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
         const { translate } = this.props;
-
+        const { displayBy, assetType } = this.props;
+        console.log('ass', assetType);
         let dataPieChart, numberOfBuilding = 0, numberOfVehicle = 0, numberOfMachine = 0, numberOfOrther = 0;
         let listAsset = this.props.listAssets;
+        let countAssetType = [], idAssetType = [];
 
-        if (listAsset) {
-            listAsset.map(asset => {
-                switch (asset.group) {
-                    case "Building":
-                        numberOfBuilding++;
-                        break;
-                    case "Vehicle":
-                        numberOfVehicle++;
-                        break;
-                    case "Machine":
-                        numberOfMachine++;
-                        break;
-                    case "Other":
-                        numberOfOrther++;
-                        break;
-                }
-            });
+        for (let i in assetType) {
+            countAssetType[i] = 0;
+            idAssetType.push(assetType[i].id)
         }
 
-        dataPieChart = [
-            ["Mặt bằng", numberOfBuilding],
-            ["Phương tiện", numberOfVehicle],
-            ["Máy móc", numberOfMachine],
-            ["Khác", numberOfOrther],
-        ];
+        if (displayBy === "Group") {
+            if (listAsset) {
+                console.log('listas', listAsset);
+                listAsset.map(asset => {
+                    switch (asset.group) {
+                        case "Building":
+                            numberOfBuilding++;
+                            break;
+                        case "Vehicle":
+                            numberOfVehicle++;
+                            break;
+                        case "Machine":
+                            numberOfMachine++;
+                            break;
+                        case "Other":
+                            numberOfOrther++;
+                            break;
+                    }
+                });
+            }
+
+            dataPieChart = [
+                ["Mặt bằng", numberOfBuilding],
+                ["Phương tiện", numberOfVehicle],
+                ["Máy móc", numberOfMachine],
+                ["Khác", numberOfOrther],
+            ];
+        }
+        else {
+            let chart = [];
+            if (listAsset) {
+                listAsset.map(asset => {
+                    let idx = idAssetType.indexOf(asset.assetType);
+                    countAssetType[idx]++;
+                })
+                for (let i in assetType) {
+                    let typeName = assetType[i].title;
+                    chart.push([typeName, countAssetType[i]])
+                }
+            }
+            console.log('heloooooooooooooo', chart);
+        }
         return dataPieChart;
     }
 
@@ -76,7 +101,7 @@ class AmountOfAssetChart extends Component {
                 format: {
                     title: function (d) { return d; },
                     value: function (value, ratio, id) {
-                        
+
                         return value;
                     }
                     //            value: d3.format(',') // apply this format to both y and y2
@@ -92,6 +117,7 @@ class AmountOfAssetChart extends Component {
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
+
                     <section ref="amountOfAsset"></section>
                 </div>
             </React.Fragment>
