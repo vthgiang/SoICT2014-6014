@@ -18,6 +18,8 @@ export const VALIDATOR = {
 
     checkName,
     checkEmail,
+    checkPassword,
+    checkDescription,
 }
 
 // Kiểm tra tên có hợp lệ
@@ -66,5 +68,23 @@ function checkEmail(email) {
     if(!emailRegex.test(dataEmail)) {
         mes = 'general.validate.emailErr';
     } 
+    return mes;
+}
+
+function checkPassword(pass) {
+    let dataPass = pass.toString();
+    let mes;
+    if(dataPass.length < 6 || dataPass.length > 30) {
+        mes = 'general.validate.passwordLengthErr'
+    }
+    return mes;
+}
+
+function checkDescription(des) {
+    let desData = des.toString();
+    let mes;
+    if(desData.length < 1) {
+        mes = 'general.validate.descriptionLengthErr'
+    }
     return mes;
 }
