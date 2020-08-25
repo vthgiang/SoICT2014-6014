@@ -429,7 +429,7 @@ export default {
 
             category: 'Loại tài liệu',
             domain: 'Danh mục',
-            data: 'Danh sách tài liệu tài liệu',
+            data: 'Danh sách tài liệu',
             statistics_report: 'Thống kê báo cáo',
             history_report: 'Lịch sử thống kê',
 
