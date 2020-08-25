@@ -15,8 +15,7 @@ class DistributionOfEmployee extends Component {
         this.state = {
             listNameEmployee: [],
             status: ["Inprocess", "WaitForApproval", "Finished", "Delayed", "Canceled"],
-            maxEmployee: 10,
-            numOfChart: 10
+
         }
     }
 
@@ -37,47 +36,13 @@ class DistributionOfEmployee extends Component {
         if (value.length === 0) {
             value = ["Inprocess", "WaitForApproval", "Finished", "Delayed", "Canceled"];
         }
-
         await this.setState(state => {
             return {
                 ...state,
                 status: value
             }
         });
-
         this.pieChart();
-    }
-
-    handleSelectNumOfEmployee = async (maxEmployee) => {
-        let data = await this.getData();
-        let dataPieChart = data.taskCount;
-        let maxLength = 0;
-
-        for (let i = 0; i < dataPieChart.length; i++) {
-            if (dataPieChart[i].length > maxLength) {
-                maxLength = dataPieChart[i].length;
-            }
-
-        }
-        let employeesEachChart;
-        let j = 1;
-        let rep = true;
-
-        // nếu số nhân viên nhiều thì chia thành nhiều biểu đồ
-        while (rep) {
-            employeesEachChart = Math.ceil(maxLength / j);
-            if (employeesEachChart <= maxEmployee) { // số nhân viên tối đa trong mỗi biểu đồ
-                rep = false;
-            }
-            else j++;
-        }
-        await this.setState(state => {
-            return {
-                ...state,
-                maxEmployee: maxEmployee,
-                numOfChart: j
-            }
-        })
     }
 
     filterByStatus(task) {
@@ -143,103 +108,71 @@ class DistributionOfEmployee extends Component {
         return data;
     }
 
-    // removePreviosChart = () => {
-    //     let chart;
-    //     for (let i = 0; i < 10; i++) {
-    //         let idChart = 'distribution_chart' + i;
-    //         chart = document.getElementById(idChart)
-    //         if (chart) { chart.remove() }
-    //     }
-    // }
-
     pieChart = async () => {
         const { translate } = this.props;
+
         let data = await this.getData();
         let dataPieChart = data.taskCount;
-        let maxLength = 0;
-
-        for (let i = 0; i < dataPieChart.length; i++) {
-            if (dataPieChart[i].length > maxLength) {
-                maxLength = dataPieChart[i].length;
-            }
-        }
         let dataPieChartSlice = [];
-        let employeesEachChart;
-        let j = 1;
-        let rep = true;
+        let res = dataPieChart[0];
+        let acc = dataPieChart[1];
+        let con = dataPieChart[2];
+        let inf = dataPieChart[3];
 
-        // nếu số nhân viên nhiều thì chia thành nhiều biểu đồ
-        while (rep) {
-            employeesEachChart = Math.ceil(maxLength / j);
-            if (employeesEachChart <= this.state.maxEmployee) { // số nhân viên tối đa trong mỗi biểu đồ
-                rep = false;
-            }
-            else j++;
-        }
-        let numOfChart = Math.ceil(maxLength / employeesEachChart);
-        for (let i = 0; i < numOfChart; i++) {
-            let res = dataPieChart[0].slice(employeesEachChart * i, employeesEachChart * (i + 1));
-            let acc = dataPieChart[1].slice(employeesEachChart * i, employeesEachChart * (i + 1));
-            let con = dataPieChart[2].slice(employeesEachChart * i, employeesEachChart * (i + 1));
-            let inf = dataPieChart[3].slice(employeesEachChart * i, employeesEachChart * (i + 1));
+        res.unshift(`${translate('task.task_management.responsible_role')}`);
+        acc.unshift(`${translate('task.task_management.accountable_role')}`);
+        con.unshift(`${translate('task.task_management.consulted_role')}`);
+        inf.unshift(`${translate('task.task_management.informed_role')}`);
 
-            res.unshift(`${translate('task.task_management.responsible_role')}`);
-            acc.unshift(`${translate('task.task_management.accountable_role')}`);
-            con.unshift(`${translate('task.task_management.consulted_role')}`);
-            inf.unshift(`${translate('task.task_management.informed_role')}`);
-            dataPieChartSlice[i] = [res, acc, con, inf];
+        dataPieChartSlice = [res, acc, con, inf];
 
-            let nameInChart = data.nameEmployee.slice(employeesEachChart * i, employeesEachChart * (i + 1));
-            let nameChart = 'distribution_chart' + i;
+        let height = data.nameEmployee.length * 60;
+        let heightOfChart = height > 320 ? height : 320
 
-            this.chart = c3.generate({
-                bindto: document.getElementById(nameChart),
-                data: {
-                    columns: dataPieChartSlice[i],
-                    type: 'bar',
-                    groups: [
-                        [`${translate('task.task_management.responsible_role')}`,
-                        `${translate('task.task_management.accountable_role')}`,
+        this.chart = c3.generate({
+            bindto: document.getElementById("distributionChart"),
+
+            data: {
+                columns: dataPieChartSlice,
+                type: 'bar',
+                groups: [
+                    [
                         `${translate('task.task_management.consulted_role')}`,
-                        `${translate('task.task_management.informed_role')}`]
+                        `${translate('task.task_management.informed_role')}`,
+                        `${translate('task.task_management.responsible_role')}`,
+                        `${translate('task.task_management.accountable_role')}`,
                     ]
-                },
+                ]
+            },
 
-                legend: {                             // Ẩn chú thích biểu đồ
-                    show: true
-                },
+            size: {
+                height: heightOfChart
+            },
 
-                padding: {
-                    top: 20,
-                    bottom: 20,
-                    right: 20,
-                    left: 20
-                },
+            legend: {                             // Ẩn chú thích biểu đồ
+                show: true
+            },
 
-                axis: {
-                    x: {
-                        type: 'category',
-                        categories: nameInChart
-                    }
-                },
-                // color: {
-                //     pattern: ['#2E66B0', '#FF6508', '#972CA3', '#00E073']
-                // }
+            padding: {
+                top: 20,
+                bottom: 20,
+                right: 20,
+            },
 
-            });
-        }
+            axis: {
+                x: {
+                    type: 'category',
+                    categories: data.nameEmployee
+                },
+                rotated: true
+            }
+        });
 
 
     }
     render() {
         let { translate } = this.props;
-        let idArr = [];
-        let numOfChart = this.state.numOfChart;
 
-        for (let i = 0; i < numOfChart; i++) {
-            let idName = 'distribution_chart' + i;
-            idArr.push(idName);
-        }
         return (
             <React.Fragment>
                 <section className="form-inline" style={{ textAlign: "right" }}>
@@ -258,30 +191,11 @@ class DistributionOfEmployee extends Component {
                             options={{ nonSelectedText: translate('task.task_management.select_status'), allSelectedText: translate('task.task_management.select_all_status') }}>
                         </SelectMulti>
                     </div>
-                    {/* Chọn số lượng nhân viên tối đa trong mỗi biểu đồ */}
-                    <div className="form-group">
-                        <label style={{ width: "200px" }}>{translate('task.task_management.employees_each_chart')}</label>
-                        <SelectBox
-                            id={`numberOfEmployeeInDistribution`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            items={[
-                                { text: 5, value: 5 },
-                                { text: 10, value: 10 },
-                                { text: 20, value: 20 },
-                                { text: 30, value: 30 },
-                            ]}
-                            multiple={false}
-                            onChange={this.handleSelectNumOfEmployee}
-                            value={10}
-                        />
-                    </div>
                 </section>
-                {
-                    idArr.map(id => {
-                        return <section id={id}></section>
-                    })
-                }
+
+                {/* Biểu đồ đóng góp */}
+                <section id="distributionChart"></section>
+
             </React.Fragment>
         )
     }

@@ -113,8 +113,8 @@ export const templateImportTaskTemplate = {
             // Do ở file export, dữ liệu được đọc theo dòng nên đối với dữ liệu mảng (taskAction, taskInfomation), mỗi phần tử của mảng là 1 dòng
             data: [
                 {
-                    name: "Mẫu 1",
-                    description: "Mẫu công việc 1",
+                    name: "Triển khai sản phẩm mới",
+                    description: "Triển khai sản phẩm mới",
                     organizationalUnit: "Phòng kinh doanh",
                     readByEmployees: ["Trưởng phòng kinh doanh", "Nhân viên phòng kinh doanh"],
                     priority: 1,
@@ -125,74 +125,42 @@ export const templateImportTaskTemplate = {
                     formula: 80,
                     taskActions: [
                         {
-                            name:"Hoạt động 1",
-                            description: "Đây là hoạt động 1",
+                            name:"Xây dựng định mức kỹ thuật",
+                            description: "Phòng R&D xây dựng kế hoạch và thực hiện nghiên cứu sản phẩm, xây dựng Định mức kỹ thuật",
                             mandatory: "true",
                         }, {
-                            name:"Hoạt động 2",
-                            description: "Đây là hoạt động 2",
-                            mandatory: "false",
+                            name:"Khảo sát nguyên liệu",
+                            description: "Phòng Kế hoạch kho GSP khảo sát nguyên liệu, tài liệu nguyên liệu (CA)",
+                            mandatory: "true",
+                        }, {
+                            name: "Thiết kế Maquette",
+                            description: "Phòng Marketing xây dựng kế hoạch và thực hiện thiết kế maquette",
+                            mandatory: "true",
+                        }, {
+                            name: "Duyệt maquette",
+                            description: "Phòng Kinh doanh duyệt thiết kế maquette ",
+                            mandatory: "true",
+                        }, {
+                            name: "Kiểm soát nội dung maquette",
+                            description: "Phòng Đảm bảo chất lượng kiểm soát nội dung trên maquette",
+                            mandatory: "true",
+                        }, {
+                            name: "Chuyển TGĐ ký duyệt maquette",
+                            description: "Phòng Marketing chuyển maquette đã được Phòng Đảm bảo chất lượng kiểm soát nội dung cho TGĐ phê duyệt",
+                            mandatory: "true",
+                        }, {
+                            name: "Gửi phòng Kế hoạch và nhà in bản maquette đã được TGĐ ký duyệt",
+                            description: "Phòng Marketing có trách nhiệm chuyển bản maquette đã được TGĐ ký duyệt cho nhà in và Phòng Kế hoạch",
+                            mandatory: "true",
                         }
                     ],
                     taskInformations: [
                         {
-                            name: "Thông tin 1",
-                            description: "Thông tin dữ liệu",
-                            type: "Text",
-                            filledByAccountableEmployeesOnly: "true",
-                        }, {
-                            name: "Thông tin 2",
-                            description: "Thông tin số",
+                            name: "Số lượng nguyên liệu",
+                            description: "Số lượng nguyên liệu dùng để khảo sát",
                             type: "Number",
-                            filledByAccountableEmployeesOnly: "false",
-                        }, {
-                            name: "Thông tin 3",
-                            description: "Thông tin ngày tháng",
-                            type: "Date",
                             filledByAccountableEmployeesOnly: "true",
-                        }
-                    ],
-                    
-                },
-                {
-                    name: "Mẫu 2",
-                    description: "Mẫu công việc 2",
-                    organizationalUnit: "Phòng kinh doanh",
-                    readByEmployees: ["Trưởng phòng kinh doanh", "Nhân viên phòng kinh doanh"],
-                    priority: 1,
-                    responsibleEmployees: ["pdp.vnist@gmail.com"],
-                    accountableEmployees: ["nvd.vnist@gmail.com"],
-                    consultedEmployees: ["nvd.vnist@gmail.com"],
-                    informedEmployees: ["nvd.vnist@gmail.com"],
-                    formula: 80,
-                    taskActions: [
-                        {
-                            name:"Hoạt động 1",
-                            description: "Đây là hoạt động 1",
-                            mandatory: "true",
-                        }, {
-                            name:"Hoạt động 2",
-                            description: "Đây là hoạt động 2",
-                            mandatory: "false",
-                        }
-                    ],
-                    taskInformations: [
-                        {
-                            name: "Thông tin 1",
-                            description: "Thông tin dữ liệu",
-                            type: "Text",
-                            filledByAccountableEmployeesOnly: "true",
-                        }, {
-                            name: "Thông tin 2",
-                            description: "Thông tin số",
-                            type: "Number",
-                            filledByAccountableEmployeesOnly: "false",
-                        }, {
-                            name: "Thông tin 3",
-                            description: "Thông tin ngày tháng",
-                            type: "Date",
-                            filledByAccountableEmployeesOnly: "true",
-                        }
+                        }, 
                     ],
                     
                 },

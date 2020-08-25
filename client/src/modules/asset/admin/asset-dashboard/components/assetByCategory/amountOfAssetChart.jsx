@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import c3 from 'c3';
 import 'c3/c3.css';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { Tree } from '../../../../../common-components';
-import { createElement } from 'react';
+import { Tree } from '../../../../../../common-components';
 
 
 class AmountOfAssetChart extends Component {
@@ -13,12 +12,6 @@ class AmountOfAssetChart extends Component {
         super(props);
 
     }
-    // shouldComponentUpdate() {
-    //     let d = document.getElementById("amountOfAsset");
-    //     console.log('aaaaaaaaaaaaaaaaaa', d);
-    //     if (d) return false;
-    //     else return true;
-    // }
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
         const { listAssets } = this.props;
@@ -124,7 +117,7 @@ class AmountOfAssetChart extends Component {
                     countAssetType[idx]++;
                 })
                 for (let i in assetType) {
-                    let title = `${assetType[i].title} (${countAssetType[i]})`
+                    let title = `${assetType[i].title} - ${countAssetType[i]}`
                     chart.push({
                         id: assetType[i].id,
                         typeName: title,

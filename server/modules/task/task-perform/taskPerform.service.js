@@ -1185,7 +1185,31 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
                             endDate: endDate,
                         }
                     },
-                    { new: true}
+                    { new: true }
+                )
+            }
+        }
+    }
+    if (status[0] !== 'Finished') {
+        if (task.process) {
+            let followingTasks = task.followingTasks;
+            for (let i in followingTasks) {
+                // let startDate = endOfTask;
+                // let followItem = await Task.findById(followingTasks[i].task);
+                // let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
+                // let timer = startDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+
+                // let endDate = new Date(timer).toISOString();
+
+                await Task.findByIdAndUpdate(followingTasks[i].task,
+                    {
+                        $set: {
+                            status: "WaitForApproval",
+                            // startDate: startDate,
+                            // endDate: endDate,
+                        }
+                    },
+                    { new: true }
                 )
             }
         }
@@ -2230,12 +2254,102 @@ exports.deleteFileChildTaskComment = async (params) => {
  * @param taskID id công việc
  * @param status trang thai công việc
  */
-exports.editTaskStatus = async (taskID, status) => {
-    let task = await Task.findByIdAndUpdate(taskID,
-        { $set: { status: status } },
-        { new: true }
-    );
-    return task;
+exports.editTaskStatus = async (taskID, body) => {
+
+    let task1 = await Task.findByIdAndUpdate(taskID,
+        { $set: { status: body.status } }
+    )
+
+    let startDate = task1.startDate;
+    let endDate = task1.endDate;
+
+    if (body.typeOfTask === "Gateway") {
+        for (let i = 0; i < body.listSelected.length; i++) {
+            let followStartDate = endDate;
+
+            let followItem = await Task.findById(body.listSelected[i]);
+            let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
+            let timer = startDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+
+            let followEndDate = new Date(timer).toISOString();
+
+            await Task.findByIdAndUpdate(body.listSelected[i],
+                {
+                    $set: {
+                        status: "Inprocess",
+                        startDate: followStartDate,
+                        endDate: followEndDate,
+                    }
+                }
+            )
+        }
+    } else {
+        if (!body.listSelected.length) {
+
+            if (task1.followingTasks) {
+                for (let i = 0; i < task1.followingTasks.length; i++) {
+                    let followStartDate = endDate;
+
+                    let followItem = await Task.findById(task1.followingTasks[i].task);
+                    let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
+                    let timer = startDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+
+                    let followEndDate = new Date(timer).toISOString();
+
+                    console.log('follow', followEndDate, followStartDate);
+                    await Task.findByIdAndUpdate(task1.followingTasks[i].task,
+                        {
+                            $set: {
+                                status: "Inprocess",
+                                startDate: followStartDate,
+                                endDate: followEndDate,
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+    let task = await Task.findById(taskID).populate([
+        { path: "parent", select: "name" },
+        { path: "taskTemplate", select: "formula" },
+        { path: "organizationalUnit", model: OrganizationalUnit },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "evaluations.results.employee", select: "name email _id" },
+        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+        { path: "evaluations.results.kpis" },
+        { path: "taskActions.creator", model: User, select: 'name email avatar' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+        { path: "taskComments.creator", model: User, select: 'name email avatar' },
+        { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
+        { path: "followingTasks.task", model: Task, select: 'name' },
+        { path: "preceedingTasks.task", model: Task, select: 'name' },
+        {
+            path: "process", model: TaskProcess, populate: {
+                path: "tasks", model: Task, populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit", model: OrganizationalUnit },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                    { path: "evaluations.results.kpis" },
+                    { path: "taskActions.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+                    { path: "taskComments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "documents.creator", model: User, select: 'name email avatar' },
+                    { path: "process", model: TaskProcess },
+                ]
+            }
+        },
+    ]);
+    task.evaluations.reverse();
+    return task
 }
 
 /**

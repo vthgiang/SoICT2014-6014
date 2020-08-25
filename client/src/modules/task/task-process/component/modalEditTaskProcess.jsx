@@ -46,7 +46,6 @@ class ModalEditTaskProcess extends Component {
         this.modeler = new BpmnModeler({
             additionalModules: [
                 customModule,
-                // { moveCanvas: [ 'value', null ] },
                 { zoomScroll: ['value', ''] }
             ],
         });
@@ -206,34 +205,56 @@ class ModalEditTaskProcess extends Component {
     }
 
     handleChangeResponsible = async (value) => {
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
         let { user } = this.props
+        let responsibleName
         let responsible = []
         user.usercompanys.forEach(x => {
             if (value.some(y => y === x._id)) {
                 responsible.push(x.name)
             }
         })
-        const modeling = this.modeler.get('modeling');
-        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-        modeling.updateProperties(element1, {
-            responsibleName: responsible
-        });
+        if (responsible.length > 2) {
+
+            responsibleName = responsible[0] + ", " + responsible[1] + "..."
+            modeling.updateProperties(element1, {
+                responsibleName: responsibleName
+            });
+
+        } else {
+
+            modeling.updateProperties(element1, {
+                responsibleName: responsible
+            });
+
+        }
     }
 
     handleChangeAccountable = async (value) => {
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
         let { user } = this.props
+        let accountableName
         let accountable = []
+
         user.usercompanys.forEach(x => {
             if (value.some(y => y === x._id)) {
                 accountable.push(x.name)
             }
         })
-        const modeling = this.modeler.get('modeling');
-        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-        modeling.updateProperties(element1, {
-            accountableName: accountable
-        });
 
+        if (accountable.length > 2) {
+            accountableName = accountable[0] + ", " + accountable[1] + "..."
+            modeling.updateProperties(element1, {
+                accountableName: accountableName
+            });
+
+        } else {
+            modeling.updateProperties(element1, {
+                accountableName: accountable
+            });
+        }
     }
 
     handleChangeOrganizationalUnit = async (value) => {
@@ -292,7 +313,7 @@ class ModalEditTaskProcess extends Component {
         var element = event.element;
         let nameStr = element.type.split(':');
         this.setState(state => {
-            if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway' 
+            if (element.type === 'bpmn:Task' || element.type === 'bpmn:ExclusiveGateway'
                 // || element.type === "bpmn:SequenceFlow" || element.type === "bpmn:IntermediateThrowEvent"
                 // || element.type === 'bpmn:EndEvent' || element.type === "bpmn:StartEvent" 
             ) {
@@ -321,7 +342,6 @@ class ModalEditTaskProcess extends Component {
 
     deleteElements = (event) => {
         var element = event.element;
-        // console.log(element);
         this.setState(state => {
             delete state.info[`${state.id}`];
             return {
@@ -329,7 +349,6 @@ class ModalEditTaskProcess extends Component {
                 showInfo: false,
             }
         })
-        // console.log(this.state);
     }
 
     handleUndoDeleteElement = (event) => {
@@ -338,7 +357,6 @@ class ModalEditTaskProcess extends Component {
 
     changeNameElement = (event) => {
         var element = event.element;
-        // this.modeler.updateProperties(shape,{name: 'abc'});
     }
 
     save = async () => {
@@ -346,7 +364,6 @@ class ModalEditTaskProcess extends Component {
         let { info } = this.state;
         let xmlStr;
         this.modeler.saveXML({ format: true }, function (err, xml) {
-
             xmlStr = xml;
         });
         await this.setState(state => {

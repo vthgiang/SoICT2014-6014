@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { DialogModal } from '../../../../common-components';
+import { performTaskAction } from '../redux/actions';
+import Swal from 'sweetalert2';
 
 
 class SelectFollowingTaskModal extends Component {
@@ -36,7 +38,28 @@ class SelectFollowingTaskModal extends Component {
     }
     
     save = () => {
-        console.log('saved');
+        let selectedFollowing = this.state.selectedFollowing;
+        let listFollowing = [];
+        for(let i in selectedFollowing){
+            if(selectedFollowing[i].checked) {
+                listFollowing.push(selectedFollowing[i].value);
+            }
+        }
+        Swal.fire({
+            title: "Bạn có chắc chắn muốn kết thúc công việc",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            cancelButtonText: this.props.translate('general.no'),
+            confirmButtonText: this.props.translate('general.yes'),
+        }).then((result) => {
+            if (result.value) {
+                this.props.editStatusTask(this.props.id, "Finished", this.props.typeOfTask, listFollowing)
+            }
+        })
+        
+        // console.log('selected', selected);
     }
 
     render() {
@@ -81,6 +104,8 @@ function mapState(state) {
     return { tasks, performtasks, user };
 }
 
-const actionCreators = {};
+const actionCreators = {
+    editStatusTask: performTaskAction.editStatusOfTask,
+};
 const connectedSelectFollowingTaskModal = connect(mapState, actionCreators)(withTranslate(SelectFollowingTaskModal));
 export { connectedSelectFollowingTaskModal as SelectFollowingTaskModal };

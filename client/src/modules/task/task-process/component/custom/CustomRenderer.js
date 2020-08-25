@@ -48,26 +48,18 @@ export default class CustomRenderer extends BaseRenderer {
     const suitabilityScore = this.getSuitabilityScore(element);
 
     if (element.type == 'bpmn:Task') {
-      element.height = 130;
+      element.height = 110;
       element.width = 160;
 
-      // const rect = drawRect(parentNode, 200, 120, 10, 'black');
-      // svgAttr(rect, {
-      //   transform: 'translate(0, 20)'
-      // });
-
-      const line = drawLine(parentNode, 0, 30, 160, 30, 'black');
-      const line1 = drawLine(parentNode, 0, 90, 160, 90, 'black');
-
-
+      const line = drawLine(parentNode, 0, 40, 160, 40, 'black');
 
       var text = svgCreate('text');
       svgAttr(text, {
         fill: 'black',
-        transform: 'translate(7, 20)',
-        fontSize: "12px",
-        wordBreak: "break-all",
-        overflowWrap: "break-word"
+        transform: 'translate(7, 26)',
+        fontSize: "13px",
+        fontWeight: "bold",
+        fontFamily: "Open Sans"
       });
       svgClasses(text).add('djs-label');
       svgAppend(text, document.createTextNode(element.businessObject.name !== undefined ? element.businessObject.name : ""));
@@ -76,7 +68,7 @@ export default class CustomRenderer extends BaseRenderer {
       text = svgCreate('text');
       svgAttr(text, {
         fill: 'black',
-        transform: 'translate(5, 50)',
+        transform: 'translate(5, 60)',
         fontSize: "10px",
         fontWeight: "bold"
       });
@@ -91,7 +83,7 @@ export default class CustomRenderer extends BaseRenderer {
       text = svgCreate('text');
       svgAttr(text, {
         fill: 'black',
-        transform: 'translate(5, 70)',
+        transform: 'translate(5, 85)',
         fontSize: "10px"
       });
       svgClasses(text).add('djs-label');

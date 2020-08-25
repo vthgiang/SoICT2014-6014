@@ -28,8 +28,8 @@ class ListView extends Component {
                         {views && views.map(item =>
                             <div key={item._id} className="item-box">
                                 <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.viewer?.name} </a>
-                                đã xem lúc &nbsp;
-                                    ({moment(item.time).format("HH:mm:ss DD/MM/YYYY")})
+                                đã xem lúc&nbsp;
+                                    {moment(item.time).format("HH:mm:ss DD/MM/YYYY")}
 
                             </div>
                         )}
