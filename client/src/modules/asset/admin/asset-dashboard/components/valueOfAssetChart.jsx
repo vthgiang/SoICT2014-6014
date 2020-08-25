@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import c3 from 'c3';
 import 'c3/c3.css';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+import { Tree } from '../../../../../common-components';
 
 
 class ValueOfAssetChart extends Component {
@@ -96,11 +97,55 @@ class ValueOfAssetChart extends Component {
         });
     }
     render() {
-        this.pieChart()
+        const { displayBy, assetType, listAssets } = this.props;
+        let countAssetValue = [], idAssetType = [];
+
+        let dataTree;
+        if (displayBy == "Group") this.pieChart();
+        else {
+            for (let i in assetType) {
+                countAssetValue[i] = 0;
+                idAssetType.push(assetType[i].id)
+            }
+
+            let chart = [];
+            if (listAssets) {
+                listAssets.map(asset => {
+                    let idx = idAssetType.indexOf(asset.assetType);
+                    countAssetValue[idx] += asset.cost;
+                })
+                for (let i in assetType) {
+                    let title = `${assetType[i].title} (${countAssetValue[i]} VND)`
+                    chart.push({
+                        id: assetType[i].id,
+                        typeName: title,
+                        parentId: assetType[i].parent_id,
+                    })
+                }
+            }
+
+            dataTree = chart && chart.map(node => {
+                return {
+                    ...node,
+                    id: node.id,
+                    text: node.typeName,
+                    amount: node.count,
+                    parent: node.parentId ? node.parentId.toString() : "#"
+                }
+            })
+        }
         return (
             <React.Fragment>
                 <div className="box-body qlcv">
-                    <section ref="valueOfAsset"></section>
+                    {
+                        displayBy == "Group" ?
+                            <section ref="valueOfAsset"></section>
+                            : <Tree
+                                id="tree-qlcv-value-by-type"
+                                // onChanged={this.onChanged}
+                                data={dataTree}
+                                plugins={false}
+                            />}
                 </div>
             </React.Fragment>
         )
