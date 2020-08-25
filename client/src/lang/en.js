@@ -73,7 +73,9 @@ export default {
             validate: {
                 nameTypeErr: 'not special digit',
                 nameLengthErr: 'length must be 6 to 255 digit',
-                emailErr: 'không hợp lệ',
+                emailErr: 'invalid',
+                passwordLengthErr: 'length must be 6 to 30 digit',
+                descriptionLengthErr: 'not null',
             }
         },
 

@@ -74,6 +74,8 @@ export default {
                 nameTypeErr: 'không được chứa ký tự đặc biệt',
                 nameLengthErr: 'phải có độ dài từ 6 đến 255 ký tự',
                 emailErr: 'không hợp lệ',
+                passwordLengthErr: 'phải có độ dài từ 6 đến 30 ký tự',
+                descriptionLengthErr: 'không được để trống',
             }
         },
 
