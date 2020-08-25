@@ -1156,8 +1156,8 @@ const sampleCompanyData = async () => {
         description: 'Công văn'
     }, {
         company: vnist._id,
-        name: "Tài liệu",
-        description: 'Tài liệu'
+        name: "Tài liệu khác",
+        description: 'Tài liệu khác'
     }, {
         company: vnist._id,
         name: "Hồ sơ",

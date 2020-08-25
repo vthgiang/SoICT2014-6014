@@ -12,56 +12,6 @@ class DocumentInformation extends Component {
         this.state = {}
     }
 
-    save = () => {
-        const {
-            documentId,
-            documentName,
-            documentCategory,
-            documentDomains,
-            documentArchives,
-            documentDescription,
-            documentIssuingBody,
-            documentOfficialNumber,
-            documentSigner,
-
-            documentRelationshipDescription,
-            documentRelationshipDocuments,
-
-            documentRoles,
-
-            documentArchivedRecordPlaceInfo,
-            documentArchivedRecordPlaceOrganizationalUnit,
-            documentArchivedRecordPlaceManager,
-        } = this.state;
-        console.log('============================', documentArchivedRecordPlaceOrganizationalUnit)
-        const formData = new FormData();
-        formData.append('name', documentName);
-        formData.append('category', documentCategory);
-        if (documentDomains !== undefined) for (var i = 0; i < documentDomains.length; i++) {
-            formData.append('domains[]', documentDomains[i]);
-        }
-        if (documentArchives !== undefined) for (var i = 0; i < documentArchives.length; i++) {
-            formData.append('archives[]', documentArchives[i]);
-        }
-        formData.append('description', documentDescription);
-        formData.append('issuingBody', documentIssuingBody);
-        formData.append('officialNumber', documentOfficialNumber);
-        formData.append('signer', documentSigner);
-
-        formData.append('relationshipDescription', documentRelationshipDescription);
-        if (documentRelationshipDocuments !== undefined) for (var i = 0; i < documentRelationshipDocuments.length; i++) {
-            formData.append('relationshipDocuments[]', documentRelationshipDocuments[i]);
-        }
-        if (documentRoles !== undefined) for (var i = 0; i < documentRoles.length; i++) {
-            formData.append('roles[]', documentRoles[i]);
-        }
-
-        formData.append('archivedRecordPlaceInfo', documentArchivedRecordPlaceInfo);
-        formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
-        formData.append('archivedRecordPlaceManager', documentArchivedRecordPlaceManager);
-
-        this.props.editDocument(documentId, formData);
-    }
 
 
     handleUploadFile = (e) => {
@@ -139,7 +89,8 @@ class DocumentInformation extends Component {
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
         let roles = this.findDocumentRole(roleList, documentRoles);
-        console.log('----------------', documentDomains, documentCategory)
+        console.log('----------------', documentDomains, documentCategory, documentArchives)
+        let logs = documentLogs.reverse();
         return (
             <React.Fragment>
                 <DialogModal
@@ -186,6 +137,10 @@ class DocumentInformation extends Component {
                                         <div className="for{ translate('document.description') }m-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                             <strong>{translate('document.description')}&emsp; </strong>
                                             {documentDescription}
+                                        </div>
+                                        <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                            <strong>Lưu trữ&emsp; </strong>
+                                            {documentArchives ? documentArchives.join(" ") : ""}
                                         </div>
                                     </div>
                                 </div>
@@ -234,7 +189,7 @@ class DocumentInformation extends Component {
 
                                     <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
                                         <strong>{translate('document.relationship.list')}&emsp; </strong>
-                                        {documentRelationshipDocuments}
+                                        {documentRelationshipDocuments ? documentRelationshipDocuments.join("-") : ""}
                                     </div>
 
                                 </div>
@@ -267,21 +222,20 @@ class DocumentInformation extends Component {
                         <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6" style={{ padding: "10px 0 10px 0", borderLeft: "1px solid #f4f4f4" }}>
                             <div className="description-box">
                                 <legend className="scheduler-border">Lịch sử chỉnh sửa</legend>
-                                <div className="form-group col-lg-6 col-md-6 col-ms-6 col-xs-6">
+                                <div className="form-group col-lg-12 col-md-12 col-ms-12 col-xs-12">
                                     <div className="active tab-pane">
                                         {documentLogs && documentLogs.map(item =>
                                             <div key={item._id} className="item-box row">
                                                 <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.creator?.name} </a>
                                                 {item.title ? item.title : translate("task.task_perform.none_description")}&nbsp;
-                                    ({moment(item.createdAt).format("HH:mm:ss DD/MM/YYYY")})
-                                    <div>
+                                                ({moment(item.createdAt).format("HH:mm:ss DD/MM/YYYY")})
+                                                <div>
                                                     {item.description ? item.description : translate("task.task_perform.none_description")}
                                                 </div>
                                             </div>
                                         )}
                                     </div>
                                 </div>
-
                             </div>
                         </div>
 

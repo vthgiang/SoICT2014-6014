@@ -159,7 +159,7 @@ class UserDocumentsData extends Component {
         const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
-
+        console.log('currrrrrrrrrrr', currentRow)
         let list = [];
         if (isLoading === false) {
             list = docs.list;
@@ -187,7 +187,8 @@ class UserDocumentsData extends Component {
                             documentName={currentRow.name}
                             documentDescription={currentRow.description}
                             documentCategory={currentRow.category ? currentRow.category.name : ""}
-                            documentDomains={currentRow.domains.map(domain => domain._id)}
+                            documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain.name) : []}
+                            documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive.path) : []}
                             documentIssuingBody={currentRow.issuingBody}
                             documentOfficialNumber={currentRow.officialNumber}
                             documentSigner={currentRow.signer}
