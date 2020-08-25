@@ -106,18 +106,9 @@ function importTaskTemplate(data) {
         dispatch({
             type: taskTemplateConstants.IMPORT_TEMPLATE_REQUEST
         });
-        taskTemplateService.importTaskTemplate(data)
-            .then(res => {
-                dispatch({
-                    type: taskTemplateConstants.IMPORT_TEMPLATE_SUCCESS,
-                    payload: res.data
-                })
-            })
-            .catch(err => {
-                dispatch({
-                    type: taskTemplateConstants.IMPORT_TEMPLATE_FAILURE,
-                    error: err.response.data.content
-                });
-            })
+        taskTemplateService.importTaskTemplate(data).then(
+            res => dispatch({ type: taskTemplateConstants.IMPORT_TEMPLATE_SUCCESS, payload: res.data }),
+            error => dispatch({ type: taskTemplateConstants.IMPORT_TEMPLATE_FAILURE})
+        );
     };
 }
