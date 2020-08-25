@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
-
 import { UserActions } from '../redux/actions';
-
-import { UserFormValidator } from './userFormValidator';
+import { VALIDATOR } from '../../../../helpers/validator';
 
 class UserEditForm extends Component {
     constructor(props) {
@@ -47,47 +44,29 @@ class UserEditForm extends Component {
     }
 
     isFormValidated = () => {
-        let result =
-            this.validateUserEmail(this.state.userEmail, false) &&
-            this.validateUserName(this.state.userName, false); // Kết hợp với kết quả validate các trường khác (nếu có trong form)
-
-        return result;
+        let {userNameError, userEmailError} = this.state;
+        if(userEmailError || userNameError) return false;
+        return true;
     }
 
-    handleUserEmailChange = (e) => {
-        let value = e.target.value;
-        this.validateUserEmail(value, true);
-    }
-    validateUserEmail = (value, willUpdateState = true) => {
-        let msg = UserFormValidator.validateEmail(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    userEmailError: msg,
-                    userEmail: value,
-                }
-            });
-        }
-        return msg === undefined;
+    handleUserName = (e) => {
+        let {value} = e.target;
+        let {translate} = this.props;
+        let msg = VALIDATOR.checkName(value);
+        this.setState({
+            userName: value,
+            userNameError: msg ? `${translate('manage_user.name')} ${translate(msg)}` : undefined
+        })
     }
 
-    handleUserNameChange = (e) => {
-        let value = e.target.value;
-        this.validateUserName(value, true);
-    }
-    validateUserName = (value, willUpdateState = true) => {
-        let msg = UserFormValidator.validateName(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnUserName: msg,
-                    userName: value,
-                }
-            });
-        }
-        return msg === undefined;
+    handleUserEmail = (e) => {
+        let {value} = e.target;
+        let {translate} = this.props;
+        let msg = VALIDATOR.checkEmail(value);
+        this.setState({
+            userEmail: value,
+            userEmailError: msg ? `${translate('manage_user.email')} ${translate(msg)}` : undefined
+        })
     }
 
     handleRolesChange = (value) => {
@@ -119,7 +98,7 @@ class UserEditForm extends Component {
                 userActive: nextProps.userActive,
                 userRoles: nextProps.userRoles,
                 userEmailError: undefined,
-                errorOnUserName: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
+                userNameError: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
             }
         } else {
             return null;
@@ -128,7 +107,7 @@ class UserEditForm extends Component {
 
     render() {
         const { translate, role, user, auth } = this.props;
-        const { userId, userEmail, userName, userActive, userRoles, status, errorOnUserName, userEmailError } = this.state;
+        const { userId, userEmail, userName, userActive, userRoles, status, userNameError, userEmailError } = this.state;
 
         return (
             <React.Fragment>
@@ -153,7 +132,7 @@ class UserEditForm extends Component {
                                             <label>{translate('table.email')}<span className="text-red">*</span></label>
                                             {
                                                 auth.user._id === userId ?
-                                                    <input type="text" className="form-control" value={userEmail} onChange={this.handleUserEmailChange} /> :
+                                                    <input type="text" className="form-control" value={userEmail} onChange={this.handleUserEmail} /> :
                                                     <input type="text" className="form-control" value={userEmail} disabled />
                                             }
                                             <ErrorLabel content={userEmailError} />
@@ -174,7 +153,7 @@ class UserEditForm extends Component {
                                     <React.Fragment>
                                         <div className={`form-group col-sm-8 ${!userEmailError ? "" : "has-error"}`}>
                                             <label>{translate('table.email')}<span className="text-red">*</span></label>
-                                            <input type="text" className="form-control" value={userEmail} onChange={this.handleUserEmailChange} />
+                                            <input type="text" className="form-control" value={userEmail} onChange={this.handleUserEmail} />
                                             <ErrorLabel content={userEmailError} />
                                         </div>
                                         <div className="form-group col-sm-4">
@@ -192,10 +171,10 @@ class UserEditForm extends Component {
                                     </React.Fragment>
                             }
                         </div>
-                        <div className={`form-group ${!errorOnUserName ? "" : "has-error"}`}>
+                        <div className={`form-group ${!userNameError ? "" : "has-error"}`}>
                             <label>{translate('table.name')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" value={userName} onChange={this.handleUserNameChange} />
-                            <ErrorLabel content={errorOnUserName} />
+                            <input type="text" className="form-control" value={userName} onChange={this.handleUserName} />
+                            <ErrorLabel content={userNameError} />
                         </div>
                         {
                             this.checkSuperAdmin(userRoles) && auth.user._id !== userId ?

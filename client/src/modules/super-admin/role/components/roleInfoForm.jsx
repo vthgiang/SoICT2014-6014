@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { RoleActions } from '../redux/actions';
-
 import { DialogModal, SelectBox, ErrorLabel } from '../../../../common-components';
-
-import { RoleValidator } from './roleValidator';
+import { VALIDATOR } from '../../../../helpers/validator';
 
 class RoleInfoForm extends Component {
     constructor(props) {
@@ -98,23 +95,14 @@ class RoleInfoForm extends Component {
         }
     }
 
-    // Xy ly va validate role name
     handleRoleName = (e) => {
-        const { value } = e.target;
-        this.validateRoleName(value, true);
-    }
-    validateRoleName = (value, willUpdateState = true) => {
-        let msg = RoleValidator.validateName(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    roleNameError: msg,
-                    roleName: value,
-                }
-            });
-        }
-        return msg === undefined;
+        let {translate} = this.props;
+        let { value } = e.target;
+        let msg = VALIDATOR.checkName(value);
+        this.setState({
+            roleName: value,
+            roleNameError: msg ? `${translate('manage_role.name')} ${translate(msg)}` : undefined
+        });
     }
 
     handleParents = (value) => {
@@ -146,8 +134,9 @@ class RoleInfoForm extends Component {
     }
 
     isFormValidated = () => {
-        let result = this.validateRoleName(this.state.roleName, false);
-        return result;
+        let {roleNameError} = this.state;
+        if(roleNameError) return false;
+        return true;
     }
 
     save = () => {

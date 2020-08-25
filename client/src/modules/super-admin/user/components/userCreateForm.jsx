@@ -1,22 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../common-components';
-
 import { UserActions } from '../redux/actions';
 import { RoleActions } from '../../role/redux/actions';
-
-import { UserFormValidator } from './userFormValidator';
+import { VALIDATOR } from '../../../../helpers/validator';
 
 class UserCreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            userName: "",
-            userEmail: "",
-            userRoles: []
-        }
+        this.state = {}
     }
 
     save = () => {
@@ -30,47 +23,29 @@ class UserCreateForm extends Component {
     }
 
     isFormValidated = () => {
-        let result =
-            this.validateUserName(this.state.userName, false) &&
-            this.validateUserEmail(this.state.userEmail, false);
-
-        return result;
+        let {userNameError, userEmailError} = this.state;
+        if(userEmailError || userNameError) return false;
+        return true;
     }
 
-    handleUserNameChange = (e) => {
-        let value = e.target.value;
-        this.validateUserName(value, true);
-    }
-    validateUserName = (value, willUpdateState = true) => {
-        let msg = UserFormValidator.validateName(value)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnUserName: msg,
-                    userName: value,
-                }
-            });
-        }
-        return msg === undefined;
+    handleUserName = (e) => {
+        let {value} = e.target;
+        let {translate} = this.props;
+        let msg = VALIDATOR.checkName(value);
+        this.setState({
+            userName: value,
+            userNameError: msg ? `${translate('manage_user.name')} ${translate(msg)}` : undefined
+        })
     }
 
-    handleUserEmailChange = (e) => {
-        let value = e.target.value;
-        this.validateUserEmail(value);
-    }
-    validateUserEmail = (value, willUpdateState = true) => {
-        let msg = UserFormValidator.validateEmail(value)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnUserEmail: msg,
-                    userEmail: value,
-                }
-            });
-        }
-        return msg == undefined;
+    handleUserEmail = (e) => {
+        let {value} = e.target;
+        let {translate} = this.props;
+        let msg = VALIDATOR.checkEmail(value);
+        this.setState({
+            userEmail: value,
+            userEmailError: msg ? `${translate('manage_user.email')} ${translate(msg)}` : undefined
+        })
     }
 
     handleRolesChange = (value) => {
@@ -88,7 +63,7 @@ class UserCreateForm extends Component {
 
     render() {
         const { translate, role, user } = this.props;
-        const { userName, userEmail, errorOnUserName, errorOnUserEmail } = this.state;
+        const { userName, userEmail, userEmailError, userNameError } = this.state;
 
         const items = role.list.filter(role => {
             return role && role.name !== 'Super Admin'
@@ -114,17 +89,17 @@ class UserCreateForm extends Component {
                     <form id="form-create-user" onSubmit={() => this.save(translate('manage_user.add_success'))}>
 
                         {/* Tên người dùng */}
-                        <div className={`form-group ${!errorOnUserName ? "" : "has-error"}`}>
+                        <div className={`form-group ${!userNameError ? "" : "has-error"}`}>
                             <label>{translate('table.name')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" onChange={this.handleUserNameChange} />
-                            <ErrorLabel content={errorOnUserName} />
+                            <input type="text" className="form-control" onChange={this.handleUserName} />
+                            <ErrorLabel content={userNameError} />
                         </div>
 
                         {/* Email */}
-                        <div className={`form-group ${!errorOnUserEmail ? "" : "has-error"}`}>
+                        <div className={`form-group ${!userEmailError ? "" : "has-error"}`}>
                             <label>{translate('table.email')}<span className="text-red">*</span></label>
-                            <input type="email" className="form-control" onChange={this.handleUserEmailChange} />
-                            <ErrorLabel content={errorOnUserEmail} />
+                            <input type="email" className="form-control" onChange={this.handleUserEmail} />
+                            <ErrorLabel content={userEmailError} />
                         </div>
 
                         {/* Phân quyền được cấp */}

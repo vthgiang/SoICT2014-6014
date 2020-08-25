@@ -69,6 +69,11 @@ export default {
                     'Token của bạn không hợp lệ',
                     'Dịch vụ cho công ty không còn hoạt động',
                 ],
+            },
+            validate: {
+                nameTypeErr: 'không được chứa ký tự đặc biệt',
+                nameLengthErr: 'phải có độ dài từ 6 đến 255 ký tự',
+                emailErr: 'không hợp lệ',
             }
         },
 
@@ -1601,7 +1606,7 @@ export default {
                 attach_infomation: 'Thông tin đính kèm',
 
                 serial_number: 'Số serial',
-                warranty_expiration_date: 'Ngày bảo hành',
+                warranty_expiration_date: 'Ngày hết hạn bảo hành',
                 asset_location: 'Vị trí tài sản',
                 description: 'Mô tả',
                 can_register: 'Quyền đăng ký',

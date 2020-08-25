@@ -69,6 +69,11 @@ export default {
                     'Token invalid',
                     'Company service stoped',
                 ],
+            },
+            validate: {
+                nameTypeErr: 'not special digit',
+                nameLengthErr: 'length must be 6 to 255 digit',
+                emailErr: 'không hợp lệ',
             }
         },
 
@@ -1601,7 +1606,7 @@ export default {
                 attach_infomation: 'Attached information',
 
                 serial_number: 'Serial number',
-                warranty_expiration_date: 'Warrant expiration date',
+                warranty_expiration_date: 'Warranty expiration date',
                 asset_location: 'Asset location',
                 description: 'Description',
                 can_register: 'Can register',

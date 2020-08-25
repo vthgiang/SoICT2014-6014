@@ -8,6 +8,7 @@ import { ModalEditTaskByResponsibleEmployee } from './modalEditTaskByResponsible
 import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployee';
 import { EvaluationModal } from './evaluationModal';
 import { getStorage } from '../../../../config';
+import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
 
 import './detailTaskTab.css';
 
@@ -171,14 +172,14 @@ class DetailTaskTab extends Component {
 
     }
 
-    handleShowEndTask = async (id, role) => {
+    handleEndTask = async (id, role) => {
         await this.setState(state => {
             return {
                 ...state,
                 showEndTask: id
             }
         });
-        window.$(`#modal-evaluate-task-by-${role}-${id}-stop`).modal('show');
+        window.$(`#modal-select-following-task`).modal('show');
 
     }
 
@@ -234,7 +235,7 @@ class DetailTaskTab extends Component {
         }
 
         let statusTask
-        // if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
+        if ( task ) statusTask = task.status;
 
         let checkInactive = true;
         if (task) checkInactive = task.inactiveEmployees.indexOf(currentUser) === -1; // return true if user is active user
@@ -295,7 +296,14 @@ class DetailTaskTab extends Component {
                                 {/* <a className="btn btn-app" onClick={() => this.handleShowEndTask(id, currentRole)} title="Kết thúc công việc">
                                     <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
                                 </a> */}
-
+                                { statusTask === "Finished" ?
+                                    <a className="btn btn-app" onClick={() => this.handleEndTask(id, currentRole)} title="Công việc đã kết thúc">
+                                        <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
+                                    </a> : 
+                                    <a className="btn btn-app" onClick={() => this.handleEndTask(id, currentRole)} title="Kết thúc công việc">
+                                        <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
+                                    </a>
+                                }
                                 <a className="btn btn-app" onClick={() => this.handleShowEvaluate(id, currentRole)} title="Đánh giá công việc">
                                     <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_evaluate')}
                                 </a>
@@ -554,6 +562,16 @@ class DetailTaskTab extends Component {
                         role={currentRole}
                         title={translate('task.task_management.detail_cons_eval')}
                         perform='evaluate'
+                    />
+                }
+                {
+                    (id && showEndTask === id) &&
+                    <SelectFollowingTaskModal
+                        id={id}
+                        task={task && task}
+                        role={currentRole}
+                        title={"Chọn công việc thực hiện tiếp theo"}
+                        perform='selectFollowingTask'
                     />
                 }
 

@@ -48,7 +48,7 @@ class ViewTaskTemplate extends Component {
         }
         let organizationalUnit = isProcess ? organizationalUnitProcess : taskTemplate?.organizationalUnit?.name
         let accountableEmployees = isProcess ? listUserAccountable : taskTemplate?.accountableEmployees
-        let responsibleEmployees = isProcess ? listUserResponsible : taskTemplate?.listUserResponsible
+        let responsibleEmployees = isProcess ? listUserResponsible : taskTemplate?.responsibleEmployees
         console.log(responsibleEmployees)
         switch (taskTemplate?.priority) {
             case 1: priority = translate('task_template.low'); break;
