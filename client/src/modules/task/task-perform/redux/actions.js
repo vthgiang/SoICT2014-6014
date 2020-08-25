@@ -523,10 +523,10 @@ function deleteEvaluation(taskId, evaluateId) {
  * @param {*} id id task
  * @param {*} status trang thai muon cap nhat
  */
-function editStatusOfTask(id, status) {
+function editStatusOfTask(id, status, typeOfTask, listSelected = []) {
     return dispatch => {
         dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_REQUEST, id });
-        performTaskService.editStatusOfTask(id, status) //(taskid, { status: "dang thuc hien" })
+        performTaskService.editStatusOfTask(id, status, typeOfTask, listSelected) //(taskid, { status: "dang thuc hien" })
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.EDIT_STATUS_OF_TASK_SUCCESS,

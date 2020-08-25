@@ -31,7 +31,7 @@ class GeneralTab extends Component {
         if (month.length < 2) {
             month = '0' + month;
         }
-            
+
         if (day.length < 2) {
             day = '0' + day;
         }
@@ -40,7 +40,7 @@ class GeneralTab extends Component {
             return [month, year].join('-');
         } else {
             return [day, month, year].join('-');
-        } 
+        }
     }
 
     // Function upload avatar
@@ -152,7 +152,7 @@ class GeneralTab extends Component {
                 assetTypes: value[0],
             }
         });
-       
+
         this.props.handleChange("assetType", value[0]);
     }
 
@@ -186,7 +186,7 @@ class GeneralTab extends Component {
     }
     validateWarrantyExpirationDate = (value, willUpdateState = true) => {
         let msg = AssetCreateValidator.validateWarrantyExpirationDate(value, this.props.translate)
-        
+
         if (willUpdateState) {
             this.setState(state => {
                 return {
@@ -330,7 +330,7 @@ class GeneralTab extends Component {
 
         if (detailInfo.length !== 0) {
             let result;
-            
+
             for (let n in detailInfo) {
                 result = this.validateNameField(detailInfo[n].nameField, n) && this.validateValue(detailInfo[n].value, n);
                 if (!result) {
@@ -447,6 +447,7 @@ class GeneralTab extends Component {
                 status: nextProps.status,
                 canRegisterForUse: nextProps.canRegisterForUse,
                 detailInfo: nextProps.detailInfo,
+                usageLogs: nextProps.usageLogs,
 
                 errorOnCode: undefined,
                 errorOnAssetName: undefined,
@@ -474,7 +475,7 @@ class GeneralTab extends Component {
             img, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy,
             assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse, detailInfo,
             errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate,
-            errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue,
+            errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue, usageLogs
         } = this.state;
 
         var userlist = user.list;
@@ -555,7 +556,7 @@ class GeneralTab extends Component {
                                         style={{ width: "100%" }}
                                         value={group}
                                         items={[
-                                            { value: null, text: `---${translate('asset.asset_info.select_group')}---`},
+                                            { value: null, text: `---${translate('asset.asset_info.select_group')}---` },
                                             { value: 'Building', text: translate('asset.asset_info.building') },
                                             { value: 'Vehicle', text: translate('asset.asset_info.vehicle') },
                                             { value: 'Machine', text: translate('asset.asset_info.machine') },
@@ -576,7 +577,7 @@ class GeneralTab extends Component {
                                     <label htmlFor="purchaseDate">{translate('asset.general_information.purchase_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`purchaseDate${id}`}
-                                        value={purchaseDate ? this.formatDate(purchaseDate): ''}
+                                        value={purchaseDate ? this.formatDate(purchaseDate) : ''}
                                         onChange={this.handlePurchaseDateChange}
                                     />
                                     <ErrorLabel content={errorOnPurchaseDate} />
@@ -587,7 +588,7 @@ class GeneralTab extends Component {
                                     <label htmlFor="warrantyExpirationDate">{translate('asset.general_information.warranty_expiration_date')}<span className="text-red">*</span></label>
                                     <DatePicker
                                         id={`warrantyExpirationDate${id}`}
-                                        value={warrantyExpirationDate ? this.formatDate(warrantyExpirationDate): ''}
+                                        value={warrantyExpirationDate ? this.formatDate(warrantyExpirationDate) : ''}
                                         onChange={this.handleWarrantyExpirationDateChange}
                                     />
                                     <ErrorLabel content={errorOnPurchaseDate} />
@@ -614,41 +615,27 @@ class GeneralTab extends Component {
                             {/* Người sử dụng */}
                             <div className="col-md-6">
                                 <div className={`form-group`}>
-                                    <label>{translate('asset.general_information.user')}</label>
-                                    <div>
-                                        <div id="assignedToUserBox">
-                                            <SelectBox
-                                                id={`assignedToUser${id}`}
-                                                className="form-control select2"
-                                                style={{ width: "100%" }}
-                                                items={[{ value: 'null', text: '---Chọn người được giao sử dụng---' }, ...userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })]}
-                                                onChange={this.handleAssignedToUserChange}
-                                                value={assignedToUser}
-                                                multiple={false}
-                                            />
-                                        </div>
-                                    </div>
+                                    <strong>{translate('asset.general_information.user')}&emsp; </strong>
+                                    {assignedToUser ? (userlist.length && userlist.filter(item => item._id === assignedToUser).pop() ? userlist.filter(item => item._id === assignedToUser).pop().name : 'User is deleted') : ''}
                                 </div>
 
-                                {/* Thời gian sử dụng từ ngày */}
+                                {/* Đơn vị sử dụng */}
                                 <div className="form-group">
-                                    <label htmlFor="handoverFromDate">{translate('asset.general_information.handover_from_date')}</label>
-                                    <DatePicker
-                                        id={`handoverFromDate${id}`}
-                                        value={handoverFromDate ? this.formatDate(handoverFromDate) : ''}
-                                        onChange={this.handleHandoverFromDateChange}
-                                    />
+                                    <strong>{translate('asset.general_information.organization_unit')}&emsp; </strong>
+                                    {assignedToOrganizationalUnit ? assignedToOrganizationalUnit : ''}
+                                </div>
+                                {/* Thời gian bắt đầu sử dụng */}
+                                <div className="form-group">
+                                    <strong>{translate('asset.general_information.handover_from_date')}&emsp; </strong>
+                                    {status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : ''}
                                 </div>
 
-                                {/* Thời gian sử dụng đến ngày */}
+                                {/* Thời gian kết thúc sử dụng */}
                                 <div className="form-group">
-                                    <label htmlFor="handoverToDate">{translate('asset.general_information.handover_to_date')}</label>
-                                    <DatePicker
-                                        id={`handoverToDate${id}`}
-                                        value={handoverToDate ? this.formatDate(handoverToDate) : ''}
-                                        onChange={this.handleHandoverToDateChange}
-                                    />
+                                    <strong>{translate('asset.general_information.handover_to_date')}&emsp; </strong>
+                                    {status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : ''}
                                 </div>
+
 
                                 {/* Vị trí tài sản */}
                                 <div className={`form-group ${!errorOnLocation ? "" : "has-error"}`}>

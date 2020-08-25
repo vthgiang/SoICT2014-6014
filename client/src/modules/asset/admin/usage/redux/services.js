@@ -34,6 +34,7 @@ function deleteUsage(assetId, usageId) {
     }, true, true, 'asset.usage');
 }
 
+// Thu hồi tài sản
 function recallAsset(assetId, data){
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/asset/assets/${assetId}/usage-logs`,

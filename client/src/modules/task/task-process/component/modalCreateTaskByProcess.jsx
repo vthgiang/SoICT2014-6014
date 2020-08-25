@@ -48,7 +48,7 @@ class ModalCreateTaskByProcess extends Component {
             startDate: "",
             endDate: "",
         }
-        this.viewer = new BpmnViewer({
+        this.modeler = new BpmnModeler({
             additionalModules: [
                 customModule,
                 { zoomScroll: ['value', ''] }
@@ -72,16 +72,10 @@ class ModalCreateTaskByProcess extends Component {
         this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
 
 
-        this.viewer.attachTo('#' + this.generateId);
+        this.modeler.attachTo('#' + this.generateId);
 
-        var eventBus = this.viewer.get('eventBus');
-        this.viewer.on('element.click', 1000, (e) => this.interactPopup(e));
-
-        // this.viewer.on('shape.remove', 1000, (e) => this.deleteElements(e));
-
-        // this.viewer.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
-
-        // this.viewer.on('shape.changed', 1000, (e) => this.changeNameElement(e));
+        var eventBus = this.modeler.get('eventBus');
+        this.modeler.on('element.click', 1000, (e) => this.interactPopup(e));
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -122,7 +116,7 @@ class ModalCreateTaskByProcess extends Component {
                 defaultUnit = user.organizationalUnitsOfUser[0]
             }
             this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
-            this.viewer.importXML(nextProps.data.xmlDiagram, function (err) { });
+            this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
             return true;
         }
         return true;
@@ -159,8 +153,8 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     handleChangeName = async (value) => {
-        const modeling = this.viewer.get('modeling');
-        let element1 = this.viewer.get('elementRegistry').get(this.state.id);
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
         modeling.updateProperties(element1, {
            name: value,
         });
@@ -210,8 +204,8 @@ class ModalCreateTaskByProcess extends Component {
     //         }
     //     })
     //     console.log('-----vào');
-    //     const modeling = this.viewer.get('modeling');
-    //     let element1 = this.viewer.get('elementRegistry').get(this.state.id);
+    //     const modeling = this.modeler.get('modeling');
+    //     let element1 = this.modeler.get('elementRegistry').get(this.state.id);
     //     modeling.updateProperties(element1, {
     //         responsibleName: responsible
     //     });
@@ -236,8 +230,8 @@ class ModalCreateTaskByProcess extends Component {
     //             ...state,
     //         }
     //     })
-    //     const modeling = this.viewer.get('modeling');
-    //     let element1 = this.viewer.get('elementRegistry').get(this.state.id);
+    //     const modeling = this.modeler.get('modeling');
+    //     let element1 = this.modeler.get('elementRegistry').get(this.state.id);
     //     modeling.updateProperties(element1, {
     //         accountableName: accountable
     //     });
@@ -251,8 +245,8 @@ class ModalCreateTaskByProcess extends Component {
               responsible.push(x.name)
            }
         })
-        const modeling = this.viewer.get('modeling');
-        let element1 = this.viewer.get('elementRegistry').get(this.state.id);
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
         modeling.updateProperties(element1, {
            responsibleName: responsible
         });
@@ -266,8 +260,8 @@ class ModalCreateTaskByProcess extends Component {
               accountable.push(x.name)
            }
         })
-        const modeling = this.viewer.get('modeling');
-        let element1 = this.viewer.get('elementRegistry').get(this.state.id);
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
         modeling.updateProperties(element1, {
            accountableName: accountable
         });
@@ -424,7 +418,7 @@ class ModalCreateTaskByProcess extends Component {
         let { info, startDate, endDate, userId, processName, processDescription, xmlDiagram } = this.state;
 
         let xmlStr;
-        this.viewer.saveXML({ format: true }, function (err, xml) {
+        this.modeler.saveXML({ format: true }, function (err, xml) {
            xmlStr = xml;
         });
 
@@ -455,7 +449,7 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     downloadAsSVG = () => {
-        this.viewer.saveSVG({ format: true }, function (error, svg) {
+        this.modeler.saveSVG({ format: true }, function (error, svg) {
             if (error) {
                 return;
             }
@@ -480,7 +474,7 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     downloadAsBpmn = () => {
-        this.viewer.saveXML({ format: true }, function (error, xml) {
+        this.modeler.saveXML({ format: true }, function (error, xml) {
             if (error) {
                 return;
             }
@@ -488,7 +482,7 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     downloadAsImage = () => {
-        this.viewer.saveSVG({ format: true }, function (error, svg) {
+        this.modeler.saveSVG({ format: true }, function (error, svg) {
             if (error) {
                 return;
             }
@@ -534,8 +528,8 @@ class ModalCreateTaskByProcess extends Component {
 
     handleZoomOut = async () => {
         let zstep = 0.2;
-        let canvas = this.viewer.get('canvas');
-        let eventBus = this.viewer.get('eventBus');
+        let canvas = this.modeler.get('canvas');
+        let eventBus = this.modeler.get('eventBus');
 
         // set initial zoom level
         canvas.zoom(zlevel, 'auto');
@@ -550,14 +544,14 @@ class ModalCreateTaskByProcess extends Component {
 
     handleZoomReset = () => {
 
-        let canvas = this.viewer.get('canvas');
+        let canvas = this.modeler.get('canvas');
         canvas.zoom('fit-viewport');
     }
 
     handleZoomIn = async () => {
         let zstep = 0.2;
-        let canvas = this.viewer.get('canvas');
-        let eventBus = this.viewer.get('eventBus');
+        let canvas = this.modeler.get('canvas');
+        let eventBus = this.modeler.get('eventBus');
 
         // set initial zoom level
         canvas.zoom(zlevel, 'auto');
@@ -571,7 +565,7 @@ class ModalCreateTaskByProcess extends Component {
 
     exportDiagram = () => {
         let xmlStr;
-        this.viewer.saveXML({ format: true }, function (err, xml) {
+        this.modeler.saveXML({ format: true }, function (err, xml) {
             if (err) {
             }
             else {
