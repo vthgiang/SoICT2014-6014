@@ -64,7 +64,7 @@ class LinkInfoForm extends Component {
 
     isFormValidated = () => {
         let {linkDescriptionError} = this.state;
-        if(linkDescriptionError) return false;
+        if(!linkDescriptionError) return false;
         return true;
     }
 

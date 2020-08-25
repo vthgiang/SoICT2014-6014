@@ -110,7 +110,7 @@ class ComponentInfoForm extends Component {
 
     isFormValidated = () => {
         let {componentDescriptionError} = this.state;
-        if(componentDescriptionError) return false;
+        if(!componentDescriptionError) return false;
         return true;
     }
 

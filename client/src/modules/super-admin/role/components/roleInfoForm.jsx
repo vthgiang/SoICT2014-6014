@@ -135,7 +135,7 @@ class RoleInfoForm extends Component {
 
     isFormValidated = () => {
         let {roleNameError} = this.state;
-        if(roleNameError) return false;
+        if(roleNameError !== undefined) return false;
         return true;
     }
 

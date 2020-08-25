@@ -45,7 +45,7 @@ class UserEditForm extends Component {
 
     isFormValidated = () => {
         let {userNameError, userEmailError} = this.state;
-        if(userEmailError || userNameError) return false;
+        if(userEmailError !== undefined || userNameError !== undefined) return false;
         return true;
     }
 
