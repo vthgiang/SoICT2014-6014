@@ -1601,7 +1601,7 @@ export default {
                 attach_infomation: 'Attached information',
 
                 serial_number: 'Serial number',
-                warranty_expiration_date: 'Warrant expiration date',
+                warranty_expiration_date: 'Warranty expiration date',
                 asset_location: 'Asset location',
                 description: 'Description',
                 can_register: 'Can register',
