@@ -6,7 +6,7 @@ import CanvasJSReact from './assets/canvasjs.react';
 
 import { AssetService } from "../../asset-information/redux/services";
 import { RecommendProcureService } from "../../../user/purchase-request/redux/services";
-import { RecommendDistributeService } from "../../use-request-management/redux/services";
+import { RecommendDistributeService } from "../../use-request/redux/services";
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 

@@ -1,4 +1,4 @@
-const RecommendDistribute = require('../../../models/asset/useRequest.model');
+const RecommendDistribute = require('../../../models/asset/assetUseRequest.model');
 const { Asset, UserRole } = require('../../../models').schema;
 
 /**

@@ -1,4 +1,4 @@
-const RecommendProcure = require('../../../models/asset/purchaseRequest.model');
+const RecommendProcure = require('../../../models/asset/assetPurchaseRequest.model');
 
 /**
  * Lấy danh sách phiếu đề nghị mua sắm thiết bị

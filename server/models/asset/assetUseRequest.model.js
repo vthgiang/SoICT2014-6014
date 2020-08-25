@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Company = require('../system-admin/company.model');
+const Asset = require('./asset.model');
 const User = require('../auth/user.model');
 
-// Bảng đề nghị mua sắm thiết bị
-const PurchaseRequestSchema = new Schema({
+// tạo bảng csdl Đề nghị cấp phát thiết bị
+const AssetUseRequestSchema = new Schema({
     company: { //công ty
         type: Schema.Types.ObjectId,
         ref: Company
@@ -21,29 +22,29 @@ const PurchaseRequestSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: User
     },
-    equipment: { //Tên thiết bị đề nghị mua sắm
+    reqContent: { //nội dung đề nghị cấp phát
         type: String,
     },
-    supplier: { //nhà cung cấp
+    asset: { //asset
+        type: Schema.Types.ObjectId,
+        ref: Asset
+    },
+    dateStartUse: { //thời gian đăng ký sử dụng từ ngày
         type: String,
+        defaut: Date.now,
     },
-    total: { //số lượng
+    dateEndUse: { //thời gian đăng ký sử dụng đến ngày
         type: String,
-    },
-    unit: { //đơn vị tính
-        type: String,
-    },
-    estimatePrice: { //Giá trị dự tính
-        type: String
-    },
-    note: { //ghi chú
-        type: String
+        defaut: Date.now,
     },
     approver: { //người phê duyệt
         type: Schema.Types.ObjectId,
         ref: User
     },
-    status: {//trạng thái, tình trạng: chờ phê duyệt || không chấp nhận || đã chấp nhận
+    note: { //ghi chú
+        type: String
+    },
+    status: { //trạng thái, tình trạng: chờ phê duyệt || không chấp nhận || đã chấp nhận
         type: String
     },
     createdAt: {
@@ -54,7 +55,7 @@ const PurchaseRequestSchema = new Schema({
         type: Date,
         default: Date.now
     }
-    
+
 });
 
-module.exports = PurchaseRequest = mongoose.model("purchase_requests", PurchaseRequestSchema);
+module.exports = AssetUseRequest = mongoose.model("asset_use_requests", AssetUseRequestSchema);

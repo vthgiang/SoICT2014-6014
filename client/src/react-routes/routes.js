@@ -72,8 +72,8 @@ import { TaskOrganizationUnitDashboard } from '../modules/task/task-management/c
 //asset
 import RecommendProcure from "../modules/asset/user/purchase-request/components";
 import RecommendDistribute from "../modules/asset/user/use-request/components";
-import ManagerRecommendProcure from "../modules/asset/admin/purchase-request-management/components";
-import ManagerRecommendDistribute from "../modules/asset/admin/use-request-management/components";
+import ManagerRecommendProcure from "../modules/asset/admin/purchase-request/components";
+import ManagerRecommendDistribute from "../modules/asset/admin/use-request/components";
 import ManagerAssetType from "../modules/asset/admin/asset-type/components";
 import MaintainanceManager from "../modules/asset/admin/maintainance/components";
 import UsageManager from "../modules/asset/admin/usage/components";
