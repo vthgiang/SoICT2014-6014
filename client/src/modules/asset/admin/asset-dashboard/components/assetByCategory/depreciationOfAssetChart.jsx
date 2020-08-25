@@ -2,10 +2,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+import { Tree } from '../../../../../../common-components';
 import c3 from 'c3';
 import 'c3/c3.css';
-import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { Tree } from '../../../../../common-components';
 
 
 class DepreciationOfAssetChart extends Component {
@@ -207,7 +207,8 @@ class DepreciationOfAssetChart extends Component {
                     countDepreciation[idx] += this.calculateDepreciation(asset.depreciationType, asset.cost, asset.usefulLife, asset.estimatedTotalProduction, asset.unitsProducedDuringTheYears, asset.startDepreciation);
                 })
                 for (let i in assetType) {
-                    let title = `${assetType[i].title} (${countDepreciation[i]} VND)`
+                    let val = countDepreciation[i]
+                    let title = `${assetType[i].title} - ${val} `
                     chart.push({
                         id: assetType[i].id,
                         typeName: title,
