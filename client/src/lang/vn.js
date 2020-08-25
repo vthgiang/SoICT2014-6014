@@ -69,6 +69,13 @@ export default {
                     'Token của bạn không hợp lệ',
                     'Dịch vụ cho công ty không còn hoạt động',
                 ],
+            },
+            validate: {
+                nameTypeErr: 'không được chứa ký tự đặc biệt',
+                nameLengthErr: 'phải có độ dài từ 6 đến 255 ký tự',
+                emailErr: 'không hợp lệ',
+                passwordLengthErr: 'phải có độ dài từ 6 đến 30 ký tự',
+                descriptionLengthErr: 'không được để trống',
             }
         },
 
@@ -1586,6 +1593,7 @@ export default {
                 purchase_date: 'Ngày nhập',
                 manager: 'Người quản lý',
                 user: 'Người sử dụng',
+                organization_unit: 'Đơn vị sử dụng',
                 handover_from_date: 'Thời gian bắt đầu sử dụng',
                 handover_to_date: 'Thời gian kết thúc sử dụng',
                 status: 'Trạng thái',
@@ -1601,7 +1609,7 @@ export default {
                 attach_infomation: 'Thông tin đính kèm',
 
                 serial_number: 'Số serial',
-                warranty_expiration_date: 'Ngày bảo hành',
+                warranty_expiration_date: 'Ngày hết hạn bảo hành',
                 asset_location: 'Vị trí tài sản',
                 description: 'Mô tả',
                 can_register: 'Quyền đăng ký',

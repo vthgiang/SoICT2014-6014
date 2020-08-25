@@ -14,7 +14,12 @@ export const VALIDATOR = {
     isValidPassword,
     isValidEmployeeNumber,
     isValidUrl,
-    isStringNotSpace
+    isStringNotSpace,
+
+    checkName,
+    checkEmail,
+    checkPassword,
+    checkDescription,
 }
 
 // Kiểm tra tên có hợp lệ
@@ -44,4 +49,42 @@ function isValidUrl(url) {
 
 function isStringNotSpace(string){
     return stringNotSpaceRegex.test(string) ? true : false;
+}
+
+function checkName(name) {
+    let dataName = name.toString();
+    let mes;
+    if(!nameRegex.test(dataName)) {
+        mes = 'general.validate.nameTypeErr';
+    } else if(dataName.length < 6 || dataName.length > 255) {
+        mes = 'general.validate.nameLengthErr'
+    }
+    return mes;
+}
+
+function checkEmail(email) {
+    let dataEmail = email.toString();
+    let mes;
+    if(!emailRegex.test(dataEmail)) {
+        mes = 'general.validate.emailErr';
+    } 
+    return mes;
+}
+
+function checkPassword(pass) {
+    let dataPass = pass.toString();
+    let mes;
+    if(dataPass.length < 6 || dataPass.length > 30) {
+        mes = 'general.validate.passwordLengthErr'
+    }
+    return mes;
+}
+
+function checkDescription(des) {
+    let desData = des.toString();
+    let mes;
+    if(desData.length < 1) {
+        mes = 'general.validate.descriptionLengthErr'
+    }
+    return mes;
 }

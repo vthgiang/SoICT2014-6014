@@ -69,6 +69,13 @@ export default {
                     'Token invalid',
                     'Company service stoped',
                 ],
+            },
+            validate: {
+                nameTypeErr: 'not special digit',
+                nameLengthErr: 'length must be 6 to 255 digit',
+                emailErr: 'invalid',
+                passwordLengthErr: 'length must be 6 to 30 digit',
+                descriptionLengthErr: 'not null',
             }
         },
 
@@ -640,8 +647,8 @@ export default {
             manage_maintainance_asset: 'Manage maintainance assets',
             manage_depreciation_asset: 'Manage depreciation assets',
             manage_incident_asset: 'Manage incident assets',
-            manage_recommend_procure: 'Manage recommend procure',
-            manage_recommend_distribute_asset: 'Manage recommend distribute',
+            manage_recommend_procure: 'Manage purchase request',
+            manage_recommend_distribute_asset: 'Manage use request',
 
             view_building_list: 'View building list',
             // NHÂN VIÊN
@@ -1586,6 +1593,7 @@ export default {
                 purchase_date: 'Date of purchase',
                 manager: 'Manager',
                 user: 'User',
+                organization_unit: 'Organizaitonal Unit',
                 handover_from_date: 'Handover from date',
                 handover_to_date: 'Handover to date',
                 status: 'Status',
@@ -1601,7 +1609,7 @@ export default {
                 attach_infomation: 'Attached information',
 
                 serial_number: 'Serial number',
-                warranty_expiration_date: 'Warrant expiration date',
+                warranty_expiration_date: 'Warranty expiration date',
                 asset_location: 'Asset location',
                 description: 'Description',
                 can_register: 'Can register',

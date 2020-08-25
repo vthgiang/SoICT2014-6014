@@ -122,7 +122,22 @@ export function taskProcess(state = {}, action) {
         error: action.error,
         isLoading: false
       };
-
+    case TaskProcessConstants.UPDATE_DIAGRAM_REQUEST:
+      return {
+        ...state,
+        isLoading: true
+      };
+    case TaskProcessConstants.UPDATE_DIAGRAM_SUCCESS:
+      return {
+        ...state,
+        listTaskProcess: action.payload.content.data,
+        totalPage: action.payload.content.pageTotal
+      };
+    case TaskProcessConstants.UPDATE_DIAGRAM_FAIL:
+      return {
+        error: action.error,
+        isLoading: false
+      };
     default:
       return state
   }

@@ -589,7 +589,7 @@ class EditTaskTemplate extends Component {
                             <label className="control-label" >{translate('task_template.performer')}</label>
                             {unitMembers && editingTemplate.responsibleEmployees &&
                                 <SelectBox
-                                    id={isProcess ? `edit-responsible-select-box-${editingTemplate._id}-${id}` : "edit-responsible-select-box"}
+                                    id={isProcess ? `edit-responsible-select-box-${editingTemplate._id}-${id}` : `edit-responsible-select-box-${editingTemplate._id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={unitMembers}
@@ -606,7 +606,7 @@ class EditTaskTemplate extends Component {
                             <label className="control-label">{translate('task_template.approver')}</label>
                             {unitMembers && editingTemplate.accountableEmployees &&
                                 <SelectBox
-                                    id={isProcess ? `edit-accountable-select-box-${editingTemplate._id}-${id}` : "edit-accountable-select-box"}
+                                    id={isProcess ? `edit-accountable-select-box-${editingTemplate._id}-${id}` : `edit-accountable-select-box-${editingTemplate._id}`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
                                     items={unitMembers}
@@ -625,7 +625,7 @@ class EditTaskTemplate extends Component {
                                     <label className="control-label">{translate('task_template.supporter')}</label>
                                     {allUnitsMember && editingTemplate.consultedEmployees &&
                                         <SelectBox
-                                            id={isProcess ? `edit-consulted-select-box-${editingTemplate._id}-${id}` : "edit-consulted-select-box"}
+                                            id={isProcess ? `edit-consulted-select-box-${editingTemplate._id}-${id}` : `edit-consulted-select-box-${editingTemplate._id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={allUnitsMember}
@@ -642,7 +642,7 @@ class EditTaskTemplate extends Component {
                                     <label className="control-label">{translate('task_template.observer')}</label>
                                     {allUnitsMember && editingTemplate.informedEmployees &&
                                         <SelectBox
-                                            id={isProcess ? `edit-informed-select-box-${editingTemplate._id}-${id}` : "edit-informed-select-box"}
+                                            id={isProcess ? `edit-informed-select-box-${editingTemplate._id}-${id}` : `edit-informed-select-box-${editingTemplate._id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={allUnitsMember}
@@ -659,16 +659,18 @@ class EditTaskTemplate extends Component {
                     </div>
                     {showMore &&
                         <div>
-                            <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
-                                {/**Số ngày hoàn thành công việc dự kiến */}
-                                <div className={`form-group ${this.state.editingTemplate.errorOnNumberOfDaysTaken === undefined ? "" : "has-error"}`} >
-                                    <label className="control-label" htmlFor="inputNumberOfDaysTaken">{translate('task_template.numberOfDaysTaken')}*</label>
-                                    <input type="number" className="form-control" id="inputNumberOfDaysTaken" value={editingTemplate.numberOfDaysTaken}
-                                        placeholder={'Nhập số ngày hoàn thành dự kiến'}
-                                        onChange={this.handleTaskTemplateNumberOfDaysTaken} />
-                                    <ErrorLabel content={this.state.editingTemplate.errorOnNumberOfDaysTaken} />
+                            {isProcess &&
+                                <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                                    {/**Số ngày hoàn thành công việc dự kiến */}
+                                    <div className={`form-group ${this.state.editingTemplate.errorOnNumberOfDaysTaken === undefined ? "" : "has-error"}`} >
+                                        <label className="control-label" htmlFor="inputNumberOfDaysTaken">{translate('task_template.numberOfDaysTaken')}*</label>
+                                        <input type="number" className="form-control" id="inputNumberOfDaysTaken" value={editingTemplate.numberOfDaysTaken}
+                                            placeholder={'Nhập số ngày hoàn thành dự kiến'}
+                                            onChange={this.handleTaskTemplateNumberOfDaysTaken} />
+                                        <ErrorLabel content={this.state.editingTemplate.errorOnNumberOfDaysTaken} />
+                                    </div>
                                 </div>
-                            </div>
+                            }
 
                             <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                                 {/**Công thức tính điểm mẫu công việc này */}

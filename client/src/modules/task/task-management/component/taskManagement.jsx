@@ -146,13 +146,28 @@ class TaskManagement extends Component {
     // Hàm xóa một công việc theo id
     handleDelete = async (id) => {
         const { tasks, translate } = this.props;
-        let currentTasks = tasks.tasks.filter(task => task._id === id);
+        let currentTasks = tasks.tasks.find(task => task._id === id);
 
-        let progress = currentTasks[0].progress;
-        let action = currentTasks[0].taskActions.filter(item => item.creator); // Nếu công việc theo mẫu, chưa hoạt động nào được xác nhận => cho xóa
+        console.log('task', currentTasks);
+
+        let progress = currentTasks.progress;
+        let action = currentTasks.taskActions.filter(item => item.creator); // Nếu công việc theo mẫu, chưa hoạt động nào được xác nhận => cho xóa
 
         if (action.length === 0 && progress === 0) {
-            await this.props.deleteTaskById(id);
+            Swal.fire({
+                title: `Bạn có chắc chắn muốn xóa công việc "${currentTasks.name}"?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: this.props.translate('general.no'),
+                confirmButtonText: this.props.translate('general.yes'),
+            }).then((result) => {
+                if (result.value) {
+                    this.props.deleteTaskById(id);
+                }
+            })
+            
         }
         else {
             Swal.fire({

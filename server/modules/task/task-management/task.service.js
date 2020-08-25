@@ -28,6 +28,7 @@ exports.getTaskEvaluations = async (data) => {
     let responsible, accountable;
     let startDate = data.startDate;
     let endDate = data.endDate;
+    let frequency = data.frequency.toString();
 
     let startTime = startDate.split("-");
     let start = new Date(startTime[2], startTime[1] - 1, startTime[0]);
@@ -91,7 +92,6 @@ exports.getTaskEvaluations = async (data) => {
     ];
 
     if (!startDate && !endDate) {
-        console.log('1')
         condition = [
             ...condition,
             { $match: { status: taskStatus } },
@@ -99,7 +99,6 @@ exports.getTaskEvaluations = async (data) => {
         ]
     } else {
         if (taskStatus === 0) { // Lọc tất cả các coong việc không theo đặc thù
-            console.log('2')
             condition = [
                 ...condition,
                 filterDate
@@ -108,7 +107,6 @@ exports.getTaskEvaluations = async (data) => {
         } else
             // nếu không lọc theo người thực hiện và người phê duyệt
             if (typeof responsible === 'undefined' && typeof accountable === 'undefined') {
-                console.log('3')
                 condition = [
                     { $match: { status: taskStatus } },
                     ...condition,
@@ -116,7 +114,6 @@ exports.getTaskEvaluations = async (data) => {
                 ]
 
             } else {
-                console.log('4')
                 condition = [
                     { $match: { status: taskStatus } },
                     { $match: { responsibleEmployees: { $in: [...responsible.map(x => mongoose.Types.ObjectId(x.toString()))] } } },
@@ -147,14 +144,16 @@ exports.getTaskEvaluations = async (data) => {
             aggregationType: value.aggregationType,
         }
     }
+
     // Add thêm các trường điều kiện lọc vào result
     let newResult = result.map((item) => {
-
-
         let taskInformations = item.taskInformations;
-        // Gộp trường taskInfomation của task vào array configurations để add điều kiện lọc vào taskInfomation
-        let taskMerge = taskInformations.map((item, index) => Object.assign({}, item, configurations[index]))
 
+        /**
+         * Gộp trường taskInfomation của task vào array configurations
+         * Mục đích để đính kèm các điều kiện lọc của các trường thông tin vào taskInfomation để tính toán
+         */
+        let taskMerge = taskInformations.map((item, index) => Object.assign({}, item, configurations[index]))
         return { // Lấy các trường cần thiết
             _id: item._id,
             name: item.name,
@@ -167,6 +166,7 @@ exports.getTaskEvaluations = async (data) => {
             priority: item.priority,
             frequency: frequency,
             taskInformations: taskMerge,
+            results: item.results,
         };
     })
     return newResult;
@@ -199,6 +199,8 @@ exports.getTaskById = async (id, userId) => {
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "documents.creator", model: User, select: 'name email avatar' },
+        { path: "followingTasks.task", model: Task, select: 'name' },
+        { path: "preceedingTasks.task", model: Task, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [

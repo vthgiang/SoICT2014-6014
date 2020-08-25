@@ -355,16 +355,19 @@ class ModalEditTaskByResponsibleEmployee extends Component {
 
 
     isFormValidated = () => {
-        var { info } = this.state;
-        var check = true;
-        for (let i in info) {
-            if (info[i].value === undefined) {
-                check = false;
-                break;
+        let { info, errorInfo } = this.state;
+        let check = true;
+        if(Object.keys(errorInfo).length !== 0) {
+            for(let i in errorInfo ) {
+                if (errorInfo[i]) {
+                    check = false;
+                    return;
+                }
             }
         }
+       
         return this.validateTaskName(this.state.taskName, false)
-            && this.validateTaskDescription(this.state.taskDescription, false)
+            && this.validateTaskDescription(this.state.taskDescription, false) && (this.state.errorOnProgress === undefined && check)
     }
 
     handleAddTaskLog = () => {
