@@ -55,7 +55,7 @@ class SelectFollowingTaskModal extends Component {
             confirmButtonText: this.props.translate('general.yes'),
         }).then((result) => {
             if (result.value) {
-                this.props.editStatusTask(this.props.id, "Finish", this.props.typeOfTask, listFollowing)
+                this.props.editStatusTask(this.props.id, "Finished", this.props.typeOfTask, listFollowing)
             }
         })
         
