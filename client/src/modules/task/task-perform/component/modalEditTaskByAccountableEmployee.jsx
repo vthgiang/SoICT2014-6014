@@ -595,7 +595,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         this.validateTaskStartDate(value, true);
     }
     validateTaskStartDate = (value, willUpdateState = true) => {
-        let msg = TaskFormValidator.validateTaskStartDate(value, this.state.endDate);
+        let msg = TaskFormValidator.validateTaskStartDate(value, this.state.endDate, this.props.translate);
 
         if (willUpdateState) {
             this.state.startDate = value;
@@ -613,7 +613,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         this.validateTaskEndDate(value, true);
     }
     validateTaskEndDate = (value, willUpdateState = true) => {
-        let msg = TaskFormValidator.validateTaskEndDate(this.state.startDate, value);
+        let msg = TaskFormValidator.validateTaskEndDate(this.state.startDate, value, this.props.translate);
 
         if (willUpdateState) {
             this.state.endDate = value;
@@ -671,7 +671,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         // check &&
         return this.validateTaskName(this.state.taskName, false)
             && this.validateTaskDescription(this.state.taskDescription, false)
-            && (this.state.errorOnProgress === undefined && check);
+            && (this.state.errorOnProgress === undefined && this.state.errorOnEndDate === undefined && this.state.errorOnStartDate === undefined && check);
     }
 
     handleSelectedPriority = (value) => {
