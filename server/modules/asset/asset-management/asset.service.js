@@ -47,6 +47,22 @@ exports.searchAssetProfiles = async (params, company) => {
         keySearch = {...keySearch, group: {$in: params.group}};
     }
 
+    // Thêm key tìm kiếm tài sản theo ngày nhập tài sản
+    console.log(params.purchaseDate);
+    if (params.purchaseDate) {
+        let date = params.purchaseDate.split("-");
+        let start = new Date(date[1], date[0] - 1, 1);
+        let end = new Date(date[1], date[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            purchaseDate: {
+                $gt: start,
+                $lte: end
+            }
+        }
+    }
+
     // Lấy danh sách tài sản
     let totalList = await Asset.count(keySearch);
     let listAssets = await Asset.find(keySearch)

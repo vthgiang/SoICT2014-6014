@@ -1606,7 +1606,7 @@ export default {
                 attach_infomation: 'Thông tin đính kèm',
 
                 serial_number: 'Số serial',
-                warranty_expiration_date: 'Ngày bảo hành',
+                warranty_expiration_date: 'Ngày hết hạn bảo hành',
                 asset_location: 'Vị trí tài sản',
                 description: 'Mô tả',
                 can_register: 'Quyền đăng ký',

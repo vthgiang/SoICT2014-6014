@@ -11,6 +11,7 @@ export const TaskProcessService = {
     deleteXmlDiagram,
     createTaskByProcess,
     getAllTaskProcess,
+    updateDiagram,
 };
 
 
@@ -113,5 +114,18 @@ function createTaskByProcess(data, processId) {
         url: `${process.env.REACT_APP_SERVER}/process/processes/${processId}/tasks/create`,
         method: 'POST',
         data: data,
+    }, true, true, 'task.task_process');
+}
+
+/**
+ * Tạo công việc theo quy trình
+ * @param {String} processId dữ liệu gửi lên body 
+ * @param {String} diagram id của process
+ */
+function updateDiagram(processId, diagram) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/process/processes/${processId}/diagram`,
+        method: 'PATCH',
+        data: diagram,
     }, true, true, 'task.task_process');
 }
