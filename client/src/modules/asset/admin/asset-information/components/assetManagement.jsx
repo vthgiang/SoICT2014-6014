@@ -31,6 +31,7 @@ class AssetManagement extends Component {
         this.props.getListBuildingAsTree();
         this.props.getAllAsset(this.state);
         this.props.getUser();
+        this.props.getDepartment();
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -390,6 +391,7 @@ class AssetManagement extends Component {
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.purchase_date')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.manager')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.user')}</th>
+                                <th style={{ width: "10%" }}>{translate('asset.general_information.organization_unit')}</th>
                                 <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('asset.general_information.action')}
                                     <DataTableSetting
@@ -401,6 +403,7 @@ class AssetManagement extends Component {
                                             translate('asset.general_information.purchase_date'),
                                             translate('asset.general_information.manager'),
                                             translate('asset.general_information.user'),
+                                            translate('asset.general_information.organizaiton_unit'),
                                             translate('asset.general_information.status')
                                         ]}
                                         limit={limit}
@@ -420,6 +423,7 @@ class AssetManagement extends Component {
                                         <td>{this.formatDate(x.purchaseDate)}</td>
                                         <td>{x.managedBy && userlist.length && userlist.find(item => item._id === x.managedBy) ? userlist.find(item => item._id === x.managedBy).name : 'User is deleted'}</td>
                                         <td>{x.assignedToUser ? (userlist.length && userlist.find(item => item._id === x.assignedToUser) ? userlist.find(item => item._id === x.assignedToUser).name : 'User is deleted') : ''}</td>
+                                        <td>{x.assignedToOrganizationalUnit ? x.assignedToOrganizationalUnit : '' }</td>
                                         <td>{x.status}</td>
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
@@ -556,6 +560,7 @@ const actionCreators = {
     getListBuildingAsTree: AssetManagerActions.getListBuildingAsTree,
     deleteAsset: AssetManagerActions.deleteAsset,
     getUser: UserActions.get,
+    getDepartment: UserActions.getDepartmentOfUser,
 
 };
 

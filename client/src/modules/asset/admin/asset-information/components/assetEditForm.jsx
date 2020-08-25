@@ -416,6 +416,7 @@ class AssetEditForm extends Component {
                                 status={status}
                                 canRegisterForUse={canRegisterForUse}
                                 detailInfo={detailInfo}
+                                usageLogs={usageLogs}
                             />
 
                             {/* Thông tin sử dụng */}

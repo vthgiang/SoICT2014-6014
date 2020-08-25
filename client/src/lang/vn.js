@@ -1586,6 +1586,7 @@ export default {
                 purchase_date: 'Ngày nhập',
                 manager: 'Người quản lý',
                 user: 'Người sử dụng',
+                organization_unit: 'Đơn vị sử dụng',
                 handover_from_date: 'Thời gian bắt đầu sử dụng',
                 handover_to_date: 'Thời gian kết thúc sử dụng',
                 status: 'Trạng thái',
