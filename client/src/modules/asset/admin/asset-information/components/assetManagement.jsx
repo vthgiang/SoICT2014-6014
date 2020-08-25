@@ -122,8 +122,6 @@ class AssetManagement extends Component {
             ...this.state,
             purchaseDate: value
         });
-
-        console.log("##################################", this.state.purchaseDate);
     }
 
     // Function lưu giá trị loại tài sản vào state khi thay đổi

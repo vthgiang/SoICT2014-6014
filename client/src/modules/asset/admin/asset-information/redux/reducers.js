@@ -84,7 +84,6 @@ export function assetsManager(state = initState, action) {
             };
 
         case AssetConstants.UPDATE_INFOR_ASSET_SUCCESS:
-            console.log(action.payload);
             return {
                 ...state,
                 listAssets: state.listAssets.map(x => x.assets._id === action.payload.assets._id ? action.payload : x),
