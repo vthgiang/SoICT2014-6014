@@ -1190,6 +1190,30 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
             }
         }
     }
+    if (status[0] !== 'Finished') {
+        if (task.process) {
+            let followingTasks = task.followingTasks;
+            for (let i in followingTasks) {
+                // let startDate = endOfTask;
+                // let followItem = await Task.findById(followingTasks[i].task);
+                // let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
+                // let timer = startDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+
+                // let endDate = new Date(timer).toISOString();
+
+                await Task.findByIdAndUpdate(followingTasks[i].task,
+                    {
+                        $set: {
+                            status: "WaitForApproval",
+                            // startDate: startDate,
+                            // endDate: endDate,
+                        }
+                    },
+                    { new: true}
+                )
+            }
+        }
+    }
 
     for (let item in info) {
         for (let i in task.taskInformations) {
