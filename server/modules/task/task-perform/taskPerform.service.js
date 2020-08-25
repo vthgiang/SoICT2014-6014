@@ -1057,6 +1057,8 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "documents.creator", model: User, select: 'name email avatar' },
+        { path: "followingTasks.task", model: Task, select: 'name' },
+        { path: "preceedingTasks.task", model: Task, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
@@ -1188,6 +1190,30 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
             }
         }
     }
+    if (status[0] !== 'Finished') {
+        if (task.process) {
+            let followingTasks = task.followingTasks;
+            for (let i in followingTasks) {
+                // let startDate = endOfTask;
+                // let followItem = await Task.findById(followingTasks[i].task);
+                // let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
+                // let timer = startDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+
+                // let endDate = new Date(timer).toISOString();
+
+                await Task.findByIdAndUpdate(followingTasks[i].task,
+                    {
+                        $set: {
+                            status: "WaitForApproval",
+                            // startDate: startDate,
+                            // endDate: endDate,
+                        }
+                    },
+                    { new: true}
+                )
+            }
+        }
+    }
 
     for (let item in info) {
         for (let i in task.taskInformations) {
@@ -1237,6 +1263,8 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "documents.creator", model: User, select: 'name email avatar' },
+        { path: "followingTasks.task", model: Task, select: 'name' },
+        { path: "preceedingTasks.task", model: Task, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
@@ -1349,6 +1377,8 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "documents.creator", model: User, select: 'name email avatar' },
+        { path: "followingTasks.task", model: Task, select: 'name' },
+        { path: "preceedingTasks.task", model: Task, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
@@ -1635,6 +1665,8 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "documents.creator", model: User, select: 'name email avatar' },
+        { path: "followingTasks.task", model: Task, select: 'name' },
+        { path: "preceedingTasks.task", model: Task, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
@@ -2014,6 +2046,8 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "documents.creator", model: User, select: 'name email avatar' },
+        { path: "followingTasks.task", model: Task, select: 'name' },
+        { path: "preceedingTasks.task", model: Task, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [
@@ -2066,6 +2100,8 @@ exports.deleteEvaluation = async (params) => {
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "documents.creator", model: User, select: 'name email avatar' },
+        { path: "followingTasks.task", model: Task, select: 'name' },
+        { path: "preceedingTasks.task", model: Task, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [

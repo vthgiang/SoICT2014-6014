@@ -8,8 +8,10 @@ import { ModalEditTaskByResponsibleEmployee } from './modalEditTaskByResponsible
 import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployee';
 import { EvaluationModal } from './evaluationModal';
 import { getStorage } from '../../../../config';
+import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
 
 import './detailTaskTab.css';
+import Swal from 'sweetalert2';
 
 class DetailTaskTab extends Component {
 
@@ -171,15 +173,48 @@ class DetailTaskTab extends Component {
 
     }
 
-    handleShowEndTask = async (id, role) => {
+    handleEndTask = async (id, status, codeInProcess, typeOfTask) => {
         await this.setState(state => {
             return {
                 ...state,
-                showEndTask: id
+                showEndTask: id,
             }
         });
-        window.$(`#modal-evaluate-task-by-${role}-${id}-stop`).modal('show');
-
+        if (codeInProcess) {
+            if (typeOfTask === "Gateway") {
+                window.$(`#modal-select-following-task`).modal('show');
+            }
+            else {
+                Swal.fire({
+                    title: "Bạn có chắc chắn muốn kết thúc công việc",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    cancelButtonText: this.props.translate('general.no'),
+                    confirmButtonText: this.props.translate('general.yes'),
+                }).then((result) => {
+                    if (result.value) {
+                        this.props.editStatusTask(id, status, typeOfTask)
+                    }
+                })
+            }
+        }
+        else {
+            Swal.fire({
+                title: "Bạn có chắc chắn muốn kết thúc công việc",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: this.props.translate('general.no'),
+                confirmButtonText: this.props.translate('general.yes'),
+            }).then((result) => {
+                if (result.value) {
+                    this.props.editStatusTask(id, status, false)
+                }
+            })
+        }
     }
 
     handleShowEvaluate = async (id, role) => {
@@ -233,14 +268,29 @@ class DetailTaskTab extends Component {
             task = performtasks.task;
         }
 
+        let codeInProcess, typeOfTask;
+        if (task) {
+            codeInProcess = task.codeInProcess;
+            if (codeInProcess) {
+                let splitter = codeInProcess.split("_");
+                typeOfTask = splitter[0];
+            }
+        }
+
         let statusTask
-        // if (typeof tasks.task !== 'undefined' && tasks.task !== null) statusTask = task.status;
+        if (task) {
+            statusTask = task.status;
+        }
 
         let checkInactive = true;
-        if (task) checkInactive = task.inactiveEmployees.indexOf(currentUser) === -1; // return true if user is active user
+        if (task) {
+            checkInactive = task.inactiveEmployees.indexOf(currentUser) === -1
+        }; // return true if user is active user
 
         let evaluations;
-        if (task && task.evaluations && task.evaluations.length !== 0) evaluations = task.evaluations; //.reverse()
+        if (task && task.evaluations && task.evaluations.length !== 0) {
+            evaluations = task.evaluations; //.reverse()
+        }
 
         let evalList = [];
         if (evaluations && evaluations.length > 0) {
@@ -290,6 +340,18 @@ class DetailTaskTab extends Component {
                                 <i className="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" ></i>{translate('task.task_management.detail_start_timer')}
                             </a>
                         }
+
+                        {currentRole === "accountable" && checkInactive &&
+                            (statusTask === "Finished" ?
+                                <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)} title="Công việc đã kết thúc">
+                                    <i className="fa fa-times" style={{ fontSize: "16px" }}></i>{"Hủy kết thúc"}
+                                </a> :
+                                <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Finished", codeInProcess, typeOfTask)} title="Kết thúc công việc">
+                                    <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
+                                </a>
+                            )
+                        }
+
                         {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
                             <React.Fragment>
                                 {/* <a className="btn btn-app" onClick={() => this.handleShowEndTask(id, currentRole)} title="Kết thúc công việc">
@@ -556,6 +618,18 @@ class DetailTaskTab extends Component {
                         perform='evaluate'
                     />
                 }
+                {
+                    (id && showEndTask === id) &&
+                    <SelectFollowingTaskModal
+                        id={id}
+                        task={task && task}
+                        role={currentRole}
+                        typeOfTask={typeOfTask}
+                        codeInProcess={codeInProcess}
+                        title={"Chọn công việc thực hiện tiếp theo"}
+                        perform='selectFollowingTask'
+                    />
+                }
 
 
             </React.Fragment>
@@ -578,6 +652,7 @@ const actionGetState = { //dispatchActionToProps
     getTimesheetLogs: performTaskAction.getTimesheetLogs,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getTaskLog: performTaskAction.getTaskLog,
+    editStatusTask: performTaskAction.editStatusOfTask,
 }
 
 const detailTask = connect(mapStateToProps, actionGetState)(withTranslate(DetailTaskTab));

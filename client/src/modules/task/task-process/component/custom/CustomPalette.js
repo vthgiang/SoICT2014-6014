@@ -39,7 +39,7 @@ export default class CustomPalette {
       'create.average-task': {
         group: 'activity',
         className: 'bpmn-icon-task yellow',
-        title: translate('Create Task with average suitability score'),
+        title: translate('Create Task'),
         action: {
           dragstart: createTask(SUITABILITY_SCORE_AVERGE),
           click: createTask(SUITABILITY_SCORE_AVERGE)

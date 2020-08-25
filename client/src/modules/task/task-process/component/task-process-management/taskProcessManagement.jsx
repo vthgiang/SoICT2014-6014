@@ -81,7 +81,7 @@ class TaskProcessManagement extends Component {
       }
     })
     let newCurrentPage = this.state.pageNumber;
-    this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
+    this.props.getAllTaskProcess(this.state.pageNumber, this.state.noResultsPerPage, "");
   }
   setLimit = (pageTotal) => {
     if (pageTotal !== this.state.noResultsPerPage) {
@@ -91,7 +91,8 @@ class TaskProcessManagement extends Component {
           noResultsPerPage: pageTotal
         }
       })
-      this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
+      // this.props.getAllTaskProcess(this.state.pageNumber, this.state.noResultsPerPage, "");
+      this.props.getAllTaskProcess( 1, this.state.noResultsPerPage, "");
     }
   }
   render() {
@@ -125,15 +126,16 @@ class TaskProcessManagement extends Component {
             <div className="form-group">
               <label className="form-control-static">{translate('task_template.name')}</label>
               <input className="form-control" type="text" placeholder={translate('task_template.search_by_name')} ref={input => this.name = input} />
-            </div>
-          </div>
-
-          <div className="form-inline">
-            <div className="form-group">
-              <label className="form-control-static">{translate('task_template.unit')}</label>
               <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
             </div>
           </div>
+
+          {/* <div className="form-inline">
+            <div className="form-group">
+              <label className="form-control-static"></label>
+              <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
+            </div>
+          </div> */}
           <DataTableSetting
             tableId="table-task-template"
             columnArr={[

@@ -393,13 +393,15 @@ function editArchivedOfTask(taskId) {
 * @param {*} taskId id cua task
 * @param {*} status trang thai muon cap nhat
 */
-function editStatusOfTask(taskId, status) {
+function editStatusOfTask(taskId, status, typeOfTask, listSelected) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
         method: 'POST',
         data: {
             status: status,
-            type: 'edit_status'
+            typeOfTask: typeOfTask,
+            listSelected: listSelected,
+            type: 'edit_status',
         }
     }, false, true, 'task.task_management');
 }

@@ -159,7 +159,7 @@ class UserDocumentsData extends Component {
         const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
-        
+
         let list = [];
         if (isLoading === false) {
             list = docs.list;
@@ -186,7 +186,7 @@ class UserDocumentsData extends Component {
                             documentId={currentRow._id}
                             documentName={currentRow.name}
                             documentDescription={currentRow.description}
-                            documentCategory={currentRow.category ? currentRow.category._id : ""}
+                            documentCategory={currentRow.category ? currentRow.category.name : ""}
                             documentDomains={currentRow.domains.map(domain => domain._id)}
                             documentIssuingBody={currentRow.issuingBody}
                             documentOfficialNumber={currentRow.officialNumber}
@@ -298,8 +298,8 @@ class UserDocumentsData extends Component {
                                             <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].issuingDate} type="DD-MM-YYYY" /></td>
                                             <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].effectiveDate} type="DD-MM-YYYY" /></td>
                                             <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].expiredDate} type="DD-MM-YYYY" /></td>
-                                            <td><a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
-                                            <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
+                                            <td><a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u></a></td>
+                                            <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}><u>{doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u></a></td>
                                             <td>
                                                 <a href="#modal-list-view" onClick={() => this.showDetailListView(doc)}>{doc.numberOfView}</a>
                                             </td>
