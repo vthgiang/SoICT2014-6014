@@ -1591,6 +1591,7 @@ export default {
                 purchase_date: 'Date of purchase',
                 manager: 'Manager',
                 user: 'User',
+                organization_unit: 'Organizaitonal Unit',
                 handover_from_date: 'Handover from date',
                 handover_to_date: 'Handover to date',
                 status: 'Status',

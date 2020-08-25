@@ -71,6 +71,7 @@ class GeneralTab extends Component {
                 status: nextProps.status,
                 canRegisterForUse: nextProps.canRegisterForUse,
                 detailInfo: nextProps.detailInfo,
+                usageLogs: nextProps.usageLogs
             }
         } else {
             return null;
@@ -84,10 +85,11 @@ class GeneralTab extends Component {
         let assettypelist = assettype && assettype.types.list;
         let assetbuilding = assetsManager && assetsManager.buildingAssets;
         let assetbuildinglist = assetbuilding && assetbuilding.list;
-
+        
         const {
             img, avatar, code, assetName, serial, assetTypes, group, purchaseDate, warrantyExpirationDate,
-            managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse, detailInfo
+            managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, 
+            description, status, canRegisterForUse, detailInfo, usageLogs
         } = this.state;
 
         return (
@@ -166,17 +168,22 @@ class GeneralTab extends Component {
                                         <strong>{translate('asset.general_information.user')}&emsp; </strong>
                                         {assignedToUser ? (userlist.length && userlist.filter(item => item._id === assignedToUser).pop() ? userlist.filter(item => item._id === assignedToUser).pop().name : 'User is deleted') : ''}
                                     </div>
-
+                                    
+                                    {/* Đơn vị sử dụng */}
+                                    <div className="form-group">
+                                        <strong>{translate('asset.general_information.organization_unit')}&emsp; </strong>
+                                        {assignedToOrganizationalUnit ? assignedToOrganizationalUnit : ''}
+                                    </div>
                                     {/* Thời gian bắt đầu sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.handover_from_date')}&emsp; </strong>
-                                        {handoverFromDate ? this.formatDate(handoverFromDate) : ''}
+                                        {status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length-1].startDate) : ''}
                                     </div>
 
                                     {/* Thời gian kết thúc sử dụng */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.handover_to_date')}&emsp; </strong>
-                                        {handoverToDate ? this.formatDate(handoverToDate) : ''}
+                                        {status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length-1].endDate) : ''}
                                     </div>
 
                                     {/* Vị trí */}
