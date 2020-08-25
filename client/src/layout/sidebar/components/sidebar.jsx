@@ -92,7 +92,6 @@ class SideBar extends Component {
                             </div>
                         </div>
                         <ul className="sidebar-menu" data-widget="tree" ref="sideBarMenu">
-                            <li className="header">*MENU*</li>
                             {
                                 this.checkURL('/', links) === true &&
                                 <Item

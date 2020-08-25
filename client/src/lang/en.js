@@ -69,6 +69,11 @@ export default {
                     'Token invalid',
                     'Company service stoped',
                 ],
+            },
+            validate: {
+                nameTypeErr: 'not special digit',
+                nameLengthErr: 'length must be 6 to 255 digit',
+                emailErr: 'không hợp lệ',
             }
         },
 
