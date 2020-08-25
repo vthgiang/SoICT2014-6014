@@ -506,12 +506,16 @@ class TaskReportCreateForm extends Component {
                 listRoles = [...listRoles, listRole.employees[x]];
         }
         // Lấy thông tin nhân viên của đơn vị
-        let unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+        let unitMembers = [];
+        if (usersOfChildrenOrganizationalUnit) {
+            unitMembers = getEmployeeSelectBoxItems(usersOfChildrenOrganizationalUnit);
+        }
+
 
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-create-task-report" isLoading={reports.isLoading}
+                    modalID="modal-create-task-report" isLoading={reports.isLoading && user.isLoading && tasktemplates.isLoading}
                     formID="form-create-task-report"
                     title="Thêm mới báo cáo"
                     func={this.save}
@@ -738,7 +742,7 @@ class TaskReportCreateForm extends Component {
                                     </thead>
                                     <tbody>
                                         {
-                                            taskInformations ? taskInformations.map((item2, index) => (
+                                            taskInformations && taskInformations.map((item2, index) => (
                                                 <tr key={index}>
                                                     <td>{item2.code}</td>
                                                     <td>{item2.name}</td>
@@ -805,14 +809,34 @@ class TaskReportCreateForm extends Component {
                                                     </td>
                                                 </tr>
 
-                                                // Khong dung colSpan
-                                            )) : <tr><td colSpan={8}><center>{translate('report_manager.no_data')}</center></td></tr>
+                                            ))
+
+                                            // : <tr><td colSpan={8}><center>{translate('report_manager.no_data')}</center></td></tr>
+
                                         }
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     }
+
+                    {/* {
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div class="box box-default">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title">Collapsable</h3>
+                                        <div class="box-tools pull-right">
+                                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="box-body">
+                                        The body of the box
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                    } */}
                 </DialogModal>
             </React.Fragment>
         );

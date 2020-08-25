@@ -8,13 +8,14 @@ export const TaskProcessActions = {
   deleteXmlDiagram,
   createTaskByProcess,
   getAllTaskProcess,
+  updateDiagram
 };
 
 
-function getAllXmlDiagram( pageNumber, noResultsPerPage, name = '' ) {
+function getAllXmlDiagram(pageNumber, noResultsPerPage, name = '') {
   return dispatch => {
     dispatch({ type: TaskProcessConstants.GET_ALL_XML_DIAGRAM_REQUEST });
-    TaskProcessService.getAllXmlDiagram( pageNumber, noResultsPerPage, name )
+    TaskProcessService.getAllXmlDiagram(pageNumber, noResultsPerPage, name)
       .then(
         res => dispatch({ type: TaskProcessConstants.GET_ALL_XML_DIAGRAM_SUCCESS, payload: res.data }),
         error => dispatch({ type: TaskProcessConstants.GET_ALL_XML_DIAGRAM_FAIL })
@@ -22,10 +23,10 @@ function getAllXmlDiagram( pageNumber, noResultsPerPage, name = '' ) {
   };
 }
 
-function getAllTaskProcess( pageNumber, noResultsPerPage, name = '' ) {
+function getAllTaskProcess(pageNumber, noResultsPerPage, name = '') {
   return dispatch => {
     dispatch({ type: TaskProcessConstants.GET_ALL_TASK_PROCESS_REQUEST });
-    TaskProcessService.getAllTaskProcess( pageNumber, noResultsPerPage, name )
+    TaskProcessService.getAllTaskProcess(pageNumber, noResultsPerPage, name)
       .then(
         res => dispatch({ type: TaskProcessConstants.GET_ALL_TASK_PROCESS_SUCCESS, payload: res.data }),
         error => dispatch({ type: TaskProcessConstants.GET_ALL_TASK_PROCESS_FAIL })
@@ -86,6 +87,16 @@ function createTaskByProcess(data, diagramId) {
       .then(
         res => dispatch({ type: TaskProcessConstants.CREATE_TASK_BY_PROCESS_SUCCESS, payload: res.data }),
         error => dispatch({ type: TaskProcessConstants.CREATE_TASK_BY_PROCESS_FAIL })
+      );
+  };
+}
+function updateDiagram(processId, diagram) {
+  return dispatch => {
+    dispatch({ type: TaskProcessConstants.UPDATE_DIAGRAM_REQUEST });
+    TaskProcessService.updateDiagram(processId, diagram)
+      .then(
+        res => dispatch({ type: TaskProcessConstants.UPDATE_DIAGRAM_SUCCESS, payload: res.data }),
+        error => dispatch({ type: TaskProcessConstants.UPDATE_DIAGRAM_FAIL })
       );
   };
 }

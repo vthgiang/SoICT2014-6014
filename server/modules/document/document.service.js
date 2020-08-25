@@ -117,7 +117,6 @@ exports.increaseNumberView = async (id, viewer) => {
  * Tạo một tài liệu văn bản mới
  */
 exports.createDocument = async (company, data) => {
-    // console.log(data);
     const newDoc = {
         company,
         name: data.name,
@@ -157,7 +156,7 @@ exports.createDocument = async (company, data) => {
  */
 exports.editDocument = async (id, data, query = undefined) => {
     // thêm lịch sử chỉnh sửa
-    console.log('querry', query);
+    console.log('querry', query, data);
     let { creator, title, descriptions } = data;
     let createdAt = Date.now();
     let log = {
@@ -254,12 +253,19 @@ exports.deleteDocument = async (id) => {
 //     let documentLog = document.logs.reserve();
 //     return documentLog;
 // }
+
+/**
+ * Download File and File Scan
+ * @param {} data: id(document), numberofVersion, downloaderId (id of user, who downloaded this document)
+ *  
+ */
 exports.downloadDocumentFile = async (data) => {
+    console.log("dataaa", data);
     const doc = await Document.findById(data.id);
     if (doc.versions.length < data.numberVersion) throw ['cannot_download_doc_file', 'version_not_found'];
     await downloadFile(doc, data.downloaderId)
     return {
-        path: doc.versions[data.numberVersion].file,
+        path: doc.versions[data.numberVersion].file ? doc.versions[data.numberVersion].file : "",
         name: doc.name
     };
 }
@@ -268,8 +274,9 @@ exports.downloadDocumentFileScan = async (data) => {
     const doc = await Document.findById(data.id);
     if (doc.versions.length < data.numberVersion) throw ['cannot_download_doc_file_scan', 'version_scan_not_found'];
     await downloadFile(doc, data.downloaderId)
+    console.log('eeeeee', doc.versions[data.numberVersion].scannedFileOfSignedDocument)
     return {
-        path: doc.versions[data.numberVersion].scannedFileOfSignedDocument,
+        path: doc.versions[data.numberVersion].scannedFileOfSignedDocument ? doc.versions[data.numberVersion].scannedFileOfSignedDocument : "",
         name: doc.name
     };
 }

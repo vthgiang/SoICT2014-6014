@@ -143,7 +143,6 @@ class DocumentInformation extends Component {
         let roles = this.findDocumentRole(roleList, documentRoles);
         let category = categories.filter(category => category.value === documentCategory)[0];
         let domain = domains.filter(domain => domain.value === documentDomains[0])[0];
-        console.log('111111111111111', documentLogs)
 
         return (
             <React.Fragment>
