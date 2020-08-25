@@ -236,14 +236,10 @@ class TaskTemplate extends Component {
                         infomationName[i] = x.taskInformations[i].name;
                         infomationDescription[i] = x.taskInformations[i].description;
                         type[i] = x.taskInformations[i].type;
-                        if (x.taskInformations[i].filledByAccountableEmployeesOnly) {
-                            filledByAccountableEmployeesOnly[i] = true;
-                        } else {
-                            filledByAccountableEmployeesOnly[i] = false;
-                        }
+                        filledByAccountableEmployeesOnly[i] = x.taskInformations[i].filledByAccountableEmployeesOnly;
                     }
                 }
-                let numberOfUse = "Chưa sử dụng";
+                let numberOfUse = 0;
                 if (x.numberOfUse !== 0) {
                     numberOfUse = x.numberOfUse;
                 }
@@ -317,11 +313,10 @@ class TaskTemplate extends Component {
         
         let exportData = {
             fileName: "Bảng thống kê mẫu công việc",
-            sheetTitle: 'Danh sách mẫu công việc',
             dataSheets: [
                 {
                     sheetName: "sheet1",
-
+                    sheetTitle: 'Danh sách mẫu công việc',
                     tables: [
                         {
                             merges: [{
