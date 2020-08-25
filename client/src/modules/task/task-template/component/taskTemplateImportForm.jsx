@@ -49,6 +49,7 @@ class TaskTemplateImportForm extends Component {
                 informedEmployees = x.consultedEmployees.split(',');
                 informedEmployees = informedEmployees.map( x=> x.trim());
                 values = [...values, {
+                    "STT": k+1,
                     "name": x.name, 
                     "description": x.description,
                     "organizationalUnit": x.organizationalUnit,
@@ -83,6 +84,7 @@ class TaskTemplateImportForm extends Component {
                         // values[k].taskActions = [...values[k].taskActions, x.taskActions];
                         
                         values = [...values, {
+                            "STT": "",
                             "name": "", 
                             "description": "",
                             "organizationalUnit": "",
@@ -100,6 +102,7 @@ class TaskTemplateImportForm extends Component {
                         if (x.taskActions) {
                             valueShow[k].taskActions = [...valueShow[k].taskActions, x.taskActions];
                             values = [...values, {
+                                "STT":"",
                                 "name": "", 
                                 "description": "",
                                 "organizationalUnit": "",

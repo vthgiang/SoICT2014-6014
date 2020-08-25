@@ -13,6 +13,7 @@ class DepartmentImportForm extends Component {
             checkFileImport: true,
             rowError: [],
             importData: [],
+            importDataShow: [],
             limit: 100,
             page: 0
         };
@@ -27,6 +28,7 @@ class DepartmentImportForm extends Component {
 
     handleImportExcel = (value, checkFileImport) => {
         let values = [];
+        let valueShow = [];
         let k = -1;
         for (let i = 0; i < value.length; i++) {
             let deans, viceDeans, employees;
@@ -40,20 +42,42 @@ class DepartmentImportForm extends Component {
                     "deans": [x.deans],
                     "viceDeans": [x.viceDeans],
                     "employees": [x.employees],
+                }];
+                valueShow = [...valueShow, {
+                    "STT": k+1,
+                    "name": x.name,
+                    "description": x.description,
+                    "parent": x.parent,
+                    "deans": [x.deans],
+                    "viceDeans": [x.viceDeans],
+                    "employees": [x.employees],
                 }]
             } else {
+                let out = {
+                    "STT": "",
+                    "name": "",
+                    "description": "",
+                    "parent": "",
+                    "deans": "",
+                    "viceDeans": "",
+                    "employees": "",
+                };
                 if (x.deans) {
                     values[k].deans = [...values[k].deans, x.deans];
+                    out.deans = x.deans;
                 }
                 if (x.viceDeans) {
                     values[k].viceDeans = [...values[k].viceDeans, x.viceDeans];
+                    out.viceDeans = x.viceDeans;
                 }
                 if (x.employees) {
                     values[k].employees = [...values[k].employees, x.employees];
+                    out.employees = x.employees;
                 }
+                valueShow = [...valueShow, out];
             }
         }
-        value = values;
+        value = valueShow;
         if (checkFileImport) {
             let rowError = [];
             let checkImportData = value;
@@ -82,7 +106,9 @@ class DepartmentImportForm extends Component {
                 return x;
             });
             this.setState({
-                importData: value,
+                importData: values,
+                importDataShow: value
+                ,
                 rowError: rowError,
                 checkFileImport: checkFileImport,
             })
@@ -149,7 +175,7 @@ class DepartmentImportForm extends Component {
 
     render() {
         const { translate} = this.props;
-        let { limit, page, importData, configData, checkFileImport, rowError } = this.state;
+        let { limit, page, configData, checkFileImport, rowError, importDataShow } = this.state;
         let templateImportDepartment2 = this.convertExportData(templateImportDepartment);
         return (
             <React.Fragment>
@@ -185,7 +211,7 @@ class DepartmentImportForm extends Component {
                                 <ShowImportData
                                     id="import_department_show_data"
                                     configData={configData}
-                                    importData={importData}
+                                    importData={importDataShow}
                                     rowError={rowError}
                                     scrollTable={false}
                                     checkFileImport={checkFileImport}

@@ -1406,6 +1406,14 @@ const sampleCompanyData = async () => {
     var listAsset = await Asset.insertMany([{
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "Laptop Sony Vaio",
+        group: "Machine",
+        usefulLife: "12",
+        unitsProducedDuringTheYears: [{
+            month: new Date("2020-06-20"),
+            unitsProducedDuringTheYear: 10
+        }
+        ],
+        estimatedTotalProduction: 1000,
         code: "VVTM02.001",
         company: vnist._id,
         serial: "00001",
@@ -1444,6 +1452,14 @@ const sampleCompanyData = async () => {
         assetName: "Điều hòa Panasonic 9.000BTU",
         code: "VVDH01.017",
         company: vnist._id,
+        group: "Machine",
+        usefulLife: "15",
+        unitsProducedDuringTheYears: [{
+            month: new Date("2015-06-20"),
+            unitsProducedDuringTheYear: 4
+        }
+        ],
+        estimatedTotalProduction: 50,
         serial: "00002",
         assetType: listAssetType[8]._id,
         purchaseDate: new Date("2020-05-20"),
@@ -1480,6 +1496,14 @@ const sampleCompanyData = async () => {
         assetName: "Máy tính cây",
         code: "VVMV18.001",
         company: vnist._id,
+        group: "Other",
+        usefulLife: "20",
+        unitsProducedDuringTheYears: [{
+            month: new Date("2017-06-20"),
+            unitsProducedDuringTheYear: 20
+        }
+        ],
+        estimatedTotalProduction: 500,
         serial: "00003",
         assetType: listAssetType[16]._id,
         purchaseDate: new Date("2020-05-25"),
@@ -1848,6 +1872,13 @@ const sampleCompanyData = async () => {
         avatar: "/upload/asset/pictures/picture5.png",
         assetName: "HUST",
         group: "Building",
+        usefulLife: "40",
+        unitsProducedDuringTheYears: [{
+            month: new Date("2020-05-20"),
+            unitsProducedDuringTheYear: 40
+        }
+        ],
+        estimatedTotalProduction: 500,
         code: "VVTM02.000",
         company: vnist._id,
         serial: "00000",
@@ -1890,6 +1921,13 @@ const sampleCompanyData = async () => {
             avatar: "/upload/asset/pictures/picture5.png",
             assetName: "B1",
             group: "Building",
+            usefulLife: "32",
+            unitsProducedDuringTheYears: [{
+                month: new Date("2020-05-20"),
+                unitsProducedDuringTheYear: 10
+            }
+            ],
+            estimatedTotalProduction: 500,
             code: "VVTM02.001",
             company: vnist._id,
             serial: "00001",
@@ -1930,6 +1968,13 @@ const sampleCompanyData = async () => {
             avatar: "/upload/asset/pictures/picture5.png",
             assetName: "TV TQB",
             group: "Building",
+            usefulLife: "50",
+            unitsProducedDuringTheYears: [{
+                month: new Date("2020-05-20"),
+                unitsProducedDuringTheYear: 50
+            }
+            ],
+            estimatedTotalProduction: 1000,
             code: "VVTM02.002",
             company: vnist._id,
             serial: "00002",
@@ -1973,6 +2018,13 @@ const sampleCompanyData = async () => {
             assetName: "B1-101",
             group: "Building",
             code: "VVTM02.003",
+            usefulLife: "12",
+            unitsProducedDuringTheYears: [{
+                month: new Date("2020-06-20"),
+                unitsProducedDuringTheYear: 10
+            }
+            ],
+            estimatedTotalProduction: 1000,
             company: vnist._id,
             serial: "00003",
             assetType: listAssetType[25]._id,
@@ -2012,6 +2064,13 @@ const sampleCompanyData = async () => {
             avatar: "/upload/asset/pictures/picture5.png",
             assetName: "B1-202",
             group: "Building",
+            usefulLife: "22",
+            unitsProducedDuringTheYears: [{
+                month: new Date("2020-05-20"),
+                unitsProducedDuringTheYear: 3
+            }
+            ],
+            estimatedTotalProduction: 100,
             code: "VVTM02.004",
             company: vnist._id,
             serial: "00004",
@@ -2052,6 +2111,13 @@ const sampleCompanyData = async () => {
             avatar: "/upload/asset/pictures/picture5.png",
             assetName: "D3-101",
             group: "Building",
+            usefulLife: "18",
+            unitsProducedDuringTheYears: [{
+                month: new Date("2020-05-20"),
+                unitsProducedDuringTheYear: 5
+            }
+            ],
+            estimatedTotalProduction: 112,
             code: "VVTM02.005",
             company: vnist._id,
             serial: "00005",
@@ -2092,6 +2158,13 @@ const sampleCompanyData = async () => {
             avatar: "/upload/asset/pictures/picture5.png",
             assetName: "D3-102",
             group: "Building",
+            usefulLife: "20",
+            unitsProducedDuringTheYears: [{
+                month: new Date("2020-05-20"),
+                unitsProducedDuringTheYear: 10
+            }
+            ],
+            estimatedTotalProduction: 300,
             code: "VVTM02.006",
             company: vnist._id,
             serial: "00006",
@@ -2132,6 +2205,13 @@ const sampleCompanyData = async () => {
             avatar: "/upload/asset/pictures/picture5.png",
             assetName: "D3-103",
             group: "Building",
+            usefulLife: "12",
+            unitsProducedDuringTheYears: [{
+                month: new Date("2020-05-20"),
+                unitsProducedDuringTheYear: 80
+            }
+            ],
+            estimatedTotalProduction: 1000,
             code: "VVTM02.007",
             company: vnist._id,
             serial: "00007",

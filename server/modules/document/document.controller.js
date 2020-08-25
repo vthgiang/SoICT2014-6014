@@ -27,12 +27,12 @@ exports.getDocuments = async (req, res) => {
 
 exports.createDocument = async (req, res) => {
     try {
-        if (req.files.file !== undefined && req.files.fileScan !== undefined) {
-            console.log(req.files.file)
+        if (req.files.file) {
             var pathFile = req.files.file[0].destination + '/' + req.files.file[0].filename;
-            var pathFileScan = req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
-
             req.body.file = pathFile;
+        }
+        if (req.files.fileScan) {
+            var pathFileScan = req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
             req.body.scannedFileOfSignedDocument = pathFileScan;
         }
         const document = await DocumentServices.createDocument(req.user.company._id, req.body);
@@ -98,31 +98,31 @@ exports.showDocument = async (req, res) => {
 };
 
 exports.editDocument = async (req, res) => {
-    // try {
-    if (req.files && Object.keys(req.files).length > 0) {
-        var pathFile = req.files.file[0].destination + '/' + req.files.file[0].filename;
-        var pathFileScan = req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
+    try {
+        if (req.files && Object.keys(req.files).length > 0) {
+            var pathFile = req.files.file[0].destination + '/' + req.files.file[0].filename;
+            var pathFileScan = req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
 
-        req.body.file = pathFile;
-        req.body.scannedFileOfSignedDocument = pathFileScan;
+            req.body.file = pathFile;
+            req.body.scannedFileOfSignedDocument = pathFileScan;
+        }
+        const document = await DocumentServices.editDocument(req.params.id, req.body, req.query);
+
+        await LogInfo(req.user.email, 'EDIT_DOCUMENT', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_document_success'],
+            content: document
+        });
+    } catch (error) {
+
+        await LogError(req.user.email, 'EDIT_DOCUMENT', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['edit_document_faile'],
+            content: error
+        });
     }
-    const document = await DocumentServices.editDocument(req.params.id, req.body, req.query);
-
-    await LogInfo(req.user.email, 'EDIT_DOCUMENT', req.user.company);
-    res.status(200).json({
-        success: true,
-        messages: ['edit_document_success'],
-        content: document
-    });
-    // } catch (error) {
-
-    //     await LogError(req.user.email, 'EDIT_DOCUMENT', req.user.company);
-    //     res.status(400).json({
-    //         success: false,
-    //         messages: Array.isArray(error) ? error : ['edit_document_faile'],
-    //         content: error
-    //     });
-    // }
 };
 
 exports.addDocumentLog = async (req, res) => {
@@ -164,7 +164,10 @@ exports.downloadDocumentFile = async (req, res) => {
     try {
         const file = await DocumentServices.downloadDocumentFile({ id: req.params.id, numberVersion: req.query.numberVersion, downloaderId: req.user._id });
         await LogInfo(req.user.email, 'DOWNLOAD_DOCUMENT_FILE', req.user.company);
-        res.download(file.path, file.name);
+        if (file.path) {
+            res.download(file.path, file.name);
+        }
+
     } catch (error) {
         console.log("ERROR: ", error)
         await LogError(req.user.email, 'DOWNLOAD_DOCUMENT_FILE', req.user.company);
@@ -177,9 +180,21 @@ exports.downloadDocumentFile = async (req, res) => {
 };
 
 exports.downloadDocumentFileScan = async (req, res) => {
-    const file = await DocumentServices.downloadDocumentFileScan({ id: req.params.id, numberVersion: req.query.numberVersion, downloaderId: req.user._id });
-    await LogInfo(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.user.company);
-    res.download(file.path, file.name);
+    try {
+        const file = await DocumentServices.downloadDocumentFileScan({ id: req.params.id, numberVersion: req.query.numberVersion, downloaderId: req.user._id });
+        await LogInfo(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.user.company);
+        if (file.path) {
+            res.download(file.path, file.name);
+        }
+    } catch (error) {
+        console.log("ERROR: ", error)
+        await LogError(req.user.email, 'DOWNLOAD_DOCUMENT_FILE_SCAN', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['download_document_file_scan_faile'],
+            content: error
+        });
+    }
 };
 
 /**

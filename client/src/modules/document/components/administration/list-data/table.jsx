@@ -174,57 +174,59 @@ class Table extends Component {
         console.log(data);
         let datas = [];
         for (let i = 0; i < data.length; i++) {
-            let x = data[i];
-            let domain = "";
-            let leng = x.versions.length > x.domains.length ? x.versions.length : x.domains.length;
-            if (x.domains.length > 0) {
-                domain = x.domains[0].name;
-            }
-            let out = {
-                STT: i + 1,
-                name: x.name,
-                description: x.description,
-                versionName: x.versions[0].versionName,
-                domain: domain,
-                issuingDate: new Date(x.versions[0].issuingDate),
-                effectiveDate: new Date(x.versions[0].effectiveDate),
-                expiredDate: new Date(x.versions[0].expiredDate),
-                numberOfView: x.numberOfView,
-                numberOfDownload: x.numberOfDownload,
-                issuingBody: x.issuingBody,
-                signer: x.signer,
-                officialNumber: x.officialNumber,
-                category: x.category.description,
-            }
-            datas = [...datas, out];
-            for (let j = 1; j < leng; j++) {
-                let versionName = "", issuingDate = "", effectiveDate = "", expiredDate = "", domain = "";
-                if (x.versions[j]) {
-                    versionName = x.versions[j].versionName;
-                    issuingDate = new Date(x.versions[j].issuingDate);
-                    effectiveDate = new Date(x.versions[j].effectiveDate);
-                    expiredDate = new Date(x.versions[j].expiredDate);
+            if (data.versions && data.domains) {
+                let x = data[i];
+                let domain = "";
+                let leng = x.versions.length > x.domains.length ? x.versions.length : x.domains.length;
+                if (x.domains.length > 0) {
+                    domain = x.domains[0].name;
                 }
-                if (x.domains[j]) {
-                    domain = x.domains[j].name;
-                }
-                out = {
-                    STT: "",
-                    name: "",
-                    description: "",
+                let out = {
+                    STT: i + 1,
+                    name: x.name,
+                    description: x.description,
+                    versionName: x.versions[0].versionName,
                     domain: domain,
-                    versionName: versionName,
-                    issuingDate: issuingDate,
-                    effectiveDate: effectiveDate,
-                    expiredDate: expiredDate,
-                    numberOfView: "",
-                    numberOfDownload: "",
-                    issuingBody: "",
-                    signer: "",
-                    officialNumber: "",
-                    categor: "",
+                    issuingDate: new Date(x.versions[0].issuingDate),
+                    effectiveDate: new Date(x.versions[0].effectiveDate),
+                    expiredDate: new Date(x.versions[0].expiredDate),
+                    numberOfView: x.numberOfView,
+                    numberOfDownload: x.numberOfDownload,
+                    issuingBody: x.issuingBody,
+                    signer: x.signer,
+                    officialNumber: x.officialNumber,
+                    category: x.category.description,
                 }
                 datas = [...datas, out];
+                for (let j = 1; j < leng; j++) {
+                    let versionName = "", issuingDate = "", effectiveDate = "", expiredDate = "", domain = "";
+                    if (x.versions[j]) {
+                        versionName = x.versions[j].versionName;
+                        issuingDate = new Date(x.versions[j].issuingDate);
+                        effectiveDate = new Date(x.versions[j].effectiveDate);
+                        expiredDate = new Date(x.versions[j].expiredDate);
+                    }
+                    if (x.domains[j]) {
+                        domain = x.domains[j].name;
+                    }
+                    out = {
+                        STT: "",
+                        name: "",
+                        description: "",
+                        domain: domain,
+                        versionName: versionName,
+                        issuingDate: issuingDate,
+                        effectiveDate: effectiveDate,
+                        expiredDate: expiredDate,
+                        numberOfView: "",
+                        numberOfDownload: "",
+                        issuingBody: "",
+                        signer: "",
+                        officialNumber: "",
+                        categor: "",
+                    }
+                    datas = [...datas, out];
+                }
             }
         }
         let exportData = {
@@ -282,7 +284,7 @@ class Table extends Component {
         const listDomain = domains.list
         const listCategory = this.convertData(categories.list)
         const listArchive = archives.list;
-        console.log('tttt', currentRow);
+        console.log('ttttttttttttt', paginate);
         let list = [];
         if (isLoading === false) {
             list = docs.list;
@@ -310,8 +312,8 @@ class Table extends Component {
                         documentName={currentRow.name}
                         documentDescription={currentRow.description}
                         documentCategory={currentRow.category ? currentRow.category._id : ""}
-                        documentDomains={currentRow.domains.map(domain => domain._id)}
-                        documentArchives={currentRow.archives.map(archive => archive._id)}
+                        documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain._id) : ""}
+                        documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive._id) : ""}
                         documentIssuingBody={currentRow.issuingBody}
                         documentOfficialNumber={currentRow.officialNumber}
                         documentSigner={currentRow.signer}
@@ -336,7 +338,8 @@ class Table extends Component {
                         documentName={currentRow.name}
                         documentDescription={currentRow.description}
                         documentCategory={currentRow.category ? currentRow.category._id : ""}
-                        documentDomains={currentRow.domains.map(domain => domain._id)}
+                        documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain._id) : ""}
+                        documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive._id) : ""}
                         documentIssuingBody={currentRow.issuingBody}
                         documentOfficialNumber={currentRow.officialNumber}
                         documentSigner={currentRow.signer}
@@ -448,8 +451,8 @@ class Table extends Component {
                                         <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].issuingDate} type="DD-MM-YYYY" /></td>
                                         <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].effectiveDate} type="DD-MM-YYYY" /></td>
                                         <td><DateTimeConverter dateTime={doc.versions[doc.versions.length - 1].expiredDate} type="DD-MM-YYYY" /></td>
-                                        <td><a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
-                                        <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}><u>{translate('document.download')}</u></a></td>
+                                        <td><a href="#" onClick={() => this.requestDownloadDocumentFile(doc._id, doc.name, doc.versions.length - 1)}><u>{doc.versions[doc.versions.length - 1].file ? translate('document.download') : ""}</u></a></td>
+                                        <td><a href="#" onClick={() => this.requestDownloadDocumentFileScan(doc._id, "SCAN_" + doc.name, doc.versions.length - 1)}><u>{doc.versions[doc.versions.length - 1].scannedFileOfSignedDocument ? translate('document.download') : ""}</u></a></td>
                                         <td>
                                             <a href="#modal-list-view" onClick={() => this.showDetailListView(doc)}>{doc.numberOfView}</a>
                                         </td>
