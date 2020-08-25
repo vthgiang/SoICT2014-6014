@@ -65,8 +65,8 @@ class AddTaskTemplate extends Component {
                 listRoles.push(listRole.employees[x]);
         }
         console.log('list role', listRoles);
-        await this.setState( state => {
-            if(state.readByEmployees.length === 0){
+        await this.setState(state => {
+            if (state.readByEmployees.length === 0) {
                 state.newTemplate.readByEmployees = listRoles
             }
             return {
@@ -598,16 +598,18 @@ class AddTaskTemplate extends Component {
 
                     {showMore &&
                         <div>
-                            <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
-                                {/**Số ngày hoàn thành công việc dự kiến */}
-                                <div className={`form-group ${this.state.newTemplate.errorOnNumberOfDaysTaken === undefined ? "" : "has-error"}`} >
-                                    <label className="control-label" htmlFor="inputNumberOfDaysTaken">{translate('task_template.numberOfDaysTaken')}*</label>
-                                    <input type="number" className="form-control" id="inputNumberOfDaysTaken" value={newTemplate.numberOfDaysTaken} 
-                                        placeholder={'Nhập số ngày hoàn thành dự kiến'}
-                                        onChange={this.handleTaskTemplateNumberOfDaysTaken} />
-                                    <ErrorLabel content={this.state.newTemplate.errorOnNumberOfDaysTaken} />
+                            {isProcess &&
+                                <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
+                                    {/**Số ngày hoàn thành công việc dự kiến */}
+                                    <div className={`form-group ${this.state.newTemplate.errorOnNumberOfDaysTaken === undefined ? "" : "has-error"}`} >
+                                        <label className="control-label" htmlFor="inputNumberOfDaysTaken">{translate('task_template.numberOfDaysTaken')}*</label>
+                                        <input type="number" className="form-control" id="inputNumberOfDaysTaken" value={newTemplate.numberOfDaysTaken}
+                                            placeholder={'Nhập số ngày hoàn thành dự kiến'}
+                                            onChange={this.handleTaskTemplateNumberOfDaysTaken} />
+                                        <ErrorLabel content={this.state.newTemplate.errorOnNumberOfDaysTaken} />
+                                    </div>
                                 </div>
-                            </div>
+                            }
                             <div className={`${isProcess ? "col-lg-12" : "col-sm-6"}`}>
                                 {/**Công thức tính của mẫu công việc */}
                                 <div className={`form-group ${this.state.newTemplate.errorOnFormula === undefined ? "" : "has-error"}`} >

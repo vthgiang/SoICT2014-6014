@@ -81,7 +81,7 @@ class TaskProcessManagement extends Component {
       }
     })
     let newCurrentPage = this.state.pageNumber;
-    this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
+    this.props.getAllTaskProcess(this.state.pageNumber, this.state.noResultsPerPage, "");
   }
   setLimit = (pageTotal) => {
     if (pageTotal !== this.state.noResultsPerPage) {
@@ -91,7 +91,7 @@ class TaskProcessManagement extends Component {
           noResultsPerPage: pageTotal
         }
       })
-      this.props.getAllXmlDiagram(this.state.pageNumber, this.state.noResultsPerPage, "");
+      this.props.getAllTaskProcess(this.state.pageNumber, this.state.noResultsPerPage, "");
     }
   }
   render() {
