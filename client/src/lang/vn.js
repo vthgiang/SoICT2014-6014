@@ -72,7 +72,7 @@ export default {
             },
             validate: {
                 nameTypeErr: 'không được chứa ký tự đặc biệt',
-                nameLengthErr: 'phải có độ dài từ 6 đến 255 ký tự',
+                nameLengthErr: 'không được để trống hoặc không quá 255 ký tự',
                 emailErr: 'không hợp lệ',
                 passwordLengthErr: 'phải có độ dài từ 6 đến 30 ký tự',
                 descriptionLengthErr: 'không được để trống',

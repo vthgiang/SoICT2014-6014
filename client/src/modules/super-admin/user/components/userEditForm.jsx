@@ -44,15 +44,15 @@ class UserEditForm extends Component {
     }
 
     isFormValidated = () => {
-        let {userNameError, userEmailError} = this.state;
-        if(userEmailError !== undefined || userNameError !== undefined) return false;
+        let {userName, userEmail} = this.state;
+        if(!VALIDATOR.checkName(userName).status || !VALIDATOR.checkEmail(userEmail)) return false;
         return true;
     }
 
     handleUserName = (e) => {
         let {value} = e.target;
         let {translate} = this.props;
-        let msg = VALIDATOR.checkName(value);
+        let {msg} = VALIDATOR.checkName(value);
         this.setState({
             userName: value,
             userNameError: msg ? `${translate('manage_user.name')} ${translate(msg)}` : undefined
@@ -62,7 +62,7 @@ class UserEditForm extends Component {
     handleUserEmail = (e) => {
         let {value} = e.target;
         let {translate} = this.props;
-        let msg = VALIDATOR.checkEmail(value);
+        let {msg} = VALIDATOR.checkEmail(value);
         this.setState({
             userEmail: value,
             userEmailError: msg ? `${translate('manage_user.email')} ${translate(msg)}` : undefined

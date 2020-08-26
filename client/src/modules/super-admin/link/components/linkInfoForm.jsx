@@ -31,7 +31,7 @@ class LinkInfoForm extends Component {
     handleLinkDescription = (e) => {
         let {translate} = this.props;
         let { value } = e.target;
-        let msg = VALIDATOR.checkDescription(value);
+        let {msg} = VALIDATOR.checkDescription(value);
         this.setState({
             linkDescription: value,
             linkDescriptionError: msg ? `${translate('manage_link.description')} ${translate(msg)}` : undefined
@@ -63,8 +63,8 @@ class LinkInfoForm extends Component {
     }
 
     isFormValidated = () => {
-        let {linkDescriptionError} = this.state;
-        if(!linkDescriptionError) return false;
+        let {linkDescription} = this.state;
+        if(!VALIDATOR.checkDescription(linkDescription).status) return false;
         return true;
     }
 

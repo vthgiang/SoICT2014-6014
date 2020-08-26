@@ -85,7 +85,7 @@ class RoleCreateForm extends Component {
     handleRoleName = (e) => {
         let {translate} = this.props;
         let { value } = e.target;
-        let msg = VALIDATOR.checkName(value);
+        let {msg} = VALIDATOR.checkName(value);
         this.setState({
             roleName: value,
             roleNameError: msg ? `${translate('manage_role.name')} ${translate(msg)}` : undefined
@@ -121,8 +121,8 @@ class RoleCreateForm extends Component {
     }
 
     isFormValidated = () => {
-        let {roleNameError} = this.state;
-        if(roleNameError !== undefined) return false;
+        let {roleName} = this.state;
+        if(!VALIDATOR.checkName(roleName).status) return false;
         return true;
     }
 

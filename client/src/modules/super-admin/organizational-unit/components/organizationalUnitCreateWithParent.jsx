@@ -90,14 +90,14 @@ class DepartmentCreateWithParent extends Component {
                             {/* Tên đơn vị */}
                             <div className={`form-group ${!departmentNameError ? "" : "has-error"}`}>
                                 <label>{translate('manage_department.name')}<span className="attention"> * </span></label>
-                                <input type="text" className="form-control" onChange={this.handleName} /><br />
+                                <input type="text" className="form-control" onChange={this.handleName} />
                                 <ErrorLabel content={departmentNameError} />
                             </div>
 
                             {/* Mô tả về đơn vị */}
                             <div className={`form-group ${!departmentDescriptionError ? "" : "has-error"}`}>
                                 <label>{translate('manage_department.description')}<span className="attention"> * </span></label>
-                                <textarea type="text" className="form-control" onChange={this.handleDescription} /><br />
+                                <textarea type="text" className="form-control" onChange={this.handleDescription} />
                                 <ErrorLabel content={departmentDescriptionError} />
                             </div>
 
@@ -259,8 +259,8 @@ class DepartmentCreateWithParent extends Component {
      * Validate form
     */
     isFormValidated = () => {
-        let {departmentNameError, departmentDescriptionError} = this.state;
-        if(departmentNameError !== undefined || departmentDescriptionError !== undefined) return false;
+        let {departmentName, departmentDescription} = this.state;
+        if(!VALIDATOR.checkName(departmentName).status || !VALIDATOR.checkDescription(departmentDescription)) return false;
         return true;
     }
 
@@ -290,7 +290,7 @@ class DepartmentCreateWithParent extends Component {
     handleName = (e) => {
         let {translate} = this.props;
         let { value } = e.target;
-        let msg = VALIDATOR.checkName(value);
+        let {msg} = VALIDATOR.checkName(value);
         this.setState({
             departmentName: value,
             departmentNameError: msg ? `${translate('manage_department.name')} ${translate(msg)}` : undefined
@@ -300,7 +300,7 @@ class DepartmentCreateWithParent extends Component {
     handleDescription = (e) => {
         let {translate} = this.props;
         let { value } = e.target;
-        let msg = VALIDATOR.checkDescription(value);
+        let {msg} = VALIDATOR.checkDescription(value);
         this.setState({
             departmentDescription: value,
             departmentDescriptionError: msg ? `${translate('manage_department.description')} ${translate(msg)}` : undefined
