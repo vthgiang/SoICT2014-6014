@@ -157,10 +157,10 @@ class DepartmentTreeView extends Component {
             fileName: "Bảng thống kê cơ cấu tổ chức",
             dataSheets: [
                 {
-                    tableName: "Bảng thống kê cơ cấu tổ chức",
-                    rowHeader: 1,
+                    sheetTitle: "Bảng thống kê cơ cấu tổ chức",
                     sheetName: "sheet1",
                     tables: [{
+                        rowHeader: 1,
                         columns: [
                             { key: "STT", value: "STT" },
                             { key: "name", value: "Tên đơn vị" },

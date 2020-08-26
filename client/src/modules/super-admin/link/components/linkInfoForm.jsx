@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { RoleActions } from '../../role/redux/actions';
 import { LinkActions } from '../redux/actions';
-
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
-
-import { LinkValidator } from './linkValidator';
+import { VALIDATOR } from '../../../../helpers/validator';
 
 class LinkInfoForm extends Component {
     constructor(props) {
@@ -31,24 +28,16 @@ class LinkInfoForm extends Component {
         }
     }
 
-    // Xy ly va validate role name
     handleLinkDescription = (e) => {
-        const { value } = e.target;
-        this.validateLinkDescription(value, true);
+        let {translate} = this.props;
+        let { value } = e.target;
+        let {msg} = VALIDATOR.checkDescription(value);
+        this.setState({
+            linkDescription: value,
+            linkDescriptionError: msg ? `${translate('manage_link.description')} ${translate(msg)}` : undefined
+        });
     }
-    validateLinkDescription = (value, willUpdateState = true) => {
-        let msg = LinkValidator.validateDescription(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    linkDescriptionError: msg,
-                    linkDescription: value,
-                }
-            });
-        }
-        return msg === undefined;
-    }
+    
 
     handleLinkRoles = (value) => {
         this.setState(state => {
@@ -74,8 +63,9 @@ class LinkInfoForm extends Component {
     }
 
     isFormValidated = () => {
-        let result = this.validateLinkDescription(this.state.linkDescription, false);
-        return result;
+        let {linkDescription} = this.state;
+        if(!VALIDATOR.checkDescription(linkDescription).status) return false;
+        return true;
     }
 
     componentDidMount() {

@@ -73,7 +73,9 @@ export default {
             validate: {
                 nameTypeErr: 'not special digit',
                 nameLengthErr: 'length must be 6 to 255 digit',
-                emailErr: 'không hợp lệ',
+                emailErr: 'invalid',
+                passwordLengthErr: 'length must be 6 to 30 digit',
+                descriptionLengthErr: 'not null',
             }
         },
 
@@ -1640,6 +1642,13 @@ export default {
                 file_name: 'File name',
                 number: 'Amount',
                 attached_file: 'Attached files',
+            },
+
+            // Dashboard
+            dashboard: {
+                status_chart: 'Asset statistics chart by status',
+                group_chart: 'Asset statistics chart by group',
+                cost_chart: 'Asset statistics chart by cost',
             },
 
             //  Quản lý loại tài sản

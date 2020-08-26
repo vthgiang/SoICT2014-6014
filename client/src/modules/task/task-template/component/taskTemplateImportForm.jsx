@@ -36,29 +36,18 @@ class TaskTemplateImportForm extends Component {
         for ( let i = 0; i < value.length; i++){
             let x = value[i];
             if (x.name) {
-                let readByEmployees, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
                 k = k + 1;
-                readByEmployees = x.readByEmployees.split(',');
-                readByEmployees = readByEmployees.map( x => x.trim());
-                responsibleEmployees = x.responsibleEmployees.split(',');
-                responsibleEmployees = responsibleEmployees.map( x => x.trim());
-                accountableEmployees = x.accountableEmployees.split(',');
-                accountableEmployees = accountableEmployees.map( x => x.trim());
-                consultedEmployees = x.consultedEmployees.split(',');
-                consultedEmployees = consultedEmployees.map( x => x.trim());
-                informedEmployees = x.consultedEmployees.split(',');
-                informedEmployees = informedEmployees.map( x=> x.trim());
                 values = [...values, {
                     "STT": k+1,
                     "name": x.name, 
                     "description": x.description,
                     "organizationalUnit": x.organizationalUnit,
-                    "readByEmployees": readByEmployees,
+                    "readByEmployees": x.readByEmployees,
                     "priority": x.priority,
-                    "responsibleEmployees": responsibleEmployees,
-                    "accountableEmployees": accountableEmployees,
-                    "consultedEmployees": consultedEmployees,
-                    "informedEmployees": informedEmployees,
+                    "responsibleEmployees": x.responsibleEmployees,
+                    "accountableEmployees": x.accountableEmployees,
+                    "consultedEmployees": x.consultedEmployees,
+                    "informedEmployees": x.informedEmployees,
                     "formula": x.formula,
                     "taskActions": [x.taskActions],
                     "taskInformations": [x.taskInformations], 
@@ -67,75 +56,63 @@ class TaskTemplateImportForm extends Component {
                     "name": x.name, 
                     "description": x.description,
                     "organizationalUnit": x.organizationalUnit,
-                    "readByEmployees": readByEmployees,
+                    "readByEmployees": [x.readByEmployees],
                     "priority": x.priority,
-                    "responsibleEmployees": responsibleEmployees,
-                    "accountableEmployees": accountableEmployees,
-                    "consultedEmployees": consultedEmployees,
-                    "informedEmployees": informedEmployees,
+                    "responsibleEmployees": [x.responsibleEmployees],
+                    "accountableEmployees": [x.accountableEmployees],
+                    "consultedEmployees": [x.consultedEmployees],
+                    "informedEmployees": [x.informedEmployees],
                     "formula": x.formula,
                     "taskActions": [x.taskActions],
                     "taskInformations": [x.taskInformations],
                 }];
             } else {
                 if (k >= 0) {
-                    
-                    if (x.taskActions && x.taskInformations) {
-                        // values[k].taskActions = [...values[k].taskActions, x.taskActions];
-                        
-                        values = [...values, {
-                            "STT": "",
-                            "name": "", 
-                            "description": "",
-                            "organizationalUnit": "",
-                            "readByEmployees": "",
-                            "priority": "",
-                            "responsibleEmployees": "",
-                            "accountableEmployees": "",
-                            "consultedEmployees": "",
-                            "informedEmployees": "",
-                            "formula": "",
-                            "taskActions": [x.taskActions],
-                            "taskInformations": [x.taskInformations], 
-                        }];
-                    } else {
-                        if (x.taskActions) {
-                            valueShow[k].taskActions = [...valueShow[k].taskActions, x.taskActions];
-                            values = [...values, {
-                                "STT":"",
-                                "name": "", 
-                                "description": "",
-                                "organizationalUnit": "",
-                                "readByEmployees": "",
-                                "priority": "",
-                                "responsibleEmployees": "",
-                                "accountableEmployees": "",
-                                "consultedEmployees": "",
-                                "informedEmployees": "",
-                                "formula": "",
-                                "taskActions": [x.taskActions],
-                            }];
-                        } else {
-                            if (x.taskInformations) {
-                                valueShow[k].taskInformations = [...valueShow[k].taskInformations, x.taskInformations];
-                                // values[k].taskInformations = [...values[k].taskInformations, x.taskInformations];
-                                values = [...values, {
-                                    "name": "", 
-                                    "description": "",
-                                    "organizationalUnit": "",
-                                    "readByEmployees": "",
-                                    "priority": "",
-                                    "responsibleEmployees": "",
-                                    "accountableEmployees": "",
-                                    "consultedEmployees": "",
-                                    "informedEmployees": "",
-                                    "formula": "",
-                                    "taskInformations": [x.taskInformations], 
-                                }];
-                            }
-                        }
+                    let out = {
+                        "STT": "",
+                        "name": "", 
+                        "description": "",
+                        "organizationalUnit": "",
+                        "readByEmployees": "",
+                        "priority": "",
+                        "responsibleEmployees": "",
+                        "accountableEmployees": "",
+                        "consultedEmployees": "",
+                        "informedEmployees": "",
+                        "formula": "",
+                        "taskActions": "",
+                        "taskInformations": "", 
                     }
                     
+                    if (x.taskActions) {
+                        valueShow[k].taskActions = [...valueShow[k].taskActions, x.taskActions];
+                        out.taskActions = [x.taskActions];
+                    } 
+                    if (x.taskInformations) {
+                        valueShow[k].taskInformations = [...valueShow[k].taskInformations, x.taskInformations];
+                        out.taskInformations = [x.taskInformations];
+                    }
+                    if (x.readByEmployees) {
+                        out.readByEmployees = x.readByEmployees;
+                        valueShow[k].readByEmployees = [...valueShow[k].readByEmployees, x.readByEmployees];
+                    }
+                    if (x.responsibleEmployees) {
+                        out.responsibleEmployees = x.responsibleEmployees;
+                        valueShow[k].responsibleEmployees = [...valueShow[k].responsibleEmployees, x.responsibleEmployees];
+                    }
+                    if (x.accountableEmployees) {
+                        out.accountableEmployees = x.accountableEmployees;
+                        valueShow[k].accountableEmployees = [...valueShow[k].accountableEmployees, x.accountableEmployees];
+                    }
+                    if (x.consultedEmployees) {
+                        out.consultedEmployees = x.consultedEmployees;
+                        valueShow[k].consultedEmployees = [...valueShow[k].consultedEmployees, x.consultedEmployees];
+                    }
+                    if (x.informedEmployees) {
+                        out.informedEmployees = x.informedEmployees;
+                        valueShow[k].informedEmployees = [...valueShow[k].informedEmployees, x.informedEmployees];
+                    }
+                    values = [...values, out];
                 }
             }
         }
@@ -210,6 +187,7 @@ class TaskTemplateImportForm extends Component {
 
     save = () => {
         let { importShowData } = this.state;
+        console.log(importShowData);
         this.props.importTaskTemplate(importShowData);
     }
 

@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { ComponentActions } from '../redux/actions';
-
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
-
-import { ComponentValidator } from './componentValidator';
-
+import { VALIDATOR } from '../../../../helpers/validator';
 class ComponentInfoForm extends Component {
     constructor(props) {
         super(props);
@@ -54,8 +50,8 @@ class ComponentInfoForm extends Component {
 
                         {/* Mô tả về component	 */}
                         <div className={`form-group ${!componentDescriptionError ? "" : "has-error"}`}>
-                            <label>{translate('table.description')}</label>
-                            <input type="text" className="form-control" value={componentDescription} onChange={this.handleDescription} />
+                            <label>{translate('table.description')}<span className="text-red"> * </span></label>
+                            <input type="text" className="form-control" value={componentDescription} onChange={this.handleComponentDescription} />
                             <ErrorLabel content={componentDescriptionError} />
                         </div>
 
@@ -78,23 +74,14 @@ class ComponentInfoForm extends Component {
         );
     }
 
-    // Xy ly va validate role name
-    handleDescription = (e) => {
-        const { value } = e.target;
-        this.validateDescription(value, true);
-    }
-    validateDescription = (value, willUpdateState = true) => {
-        let msg = ComponentValidator.validateDescription(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    componentDescriptionError: msg,
-                    componentDescription: value,
-                }
-            });
-        }
-        return msg === undefined;
+    handleComponentDescription = (e) => {
+        let {translate} = this.props;
+        let { value } = e.target;
+        let {msg} = VALIDATOR.checkDescription(value);
+        this.setState({
+            componentDescription: value,
+            componentDescriptionError: msg ? `${translate('manage_component.description')} ${translate(msg)}` : undefined
+        });
     }
 
     handleComponentLink = (value) => {
@@ -122,9 +109,9 @@ class ComponentInfoForm extends Component {
     }
 
     isFormValidated = () => {
-        let result = this.validateDescription(this.state.componentDescription, false);
-
-        return result;
+        let {componentDescription} = this.state;
+        if(!VALIDATOR.checkDescription(componentDescription).status) return false;
+        return true;
     }
 
 

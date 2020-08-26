@@ -133,19 +133,20 @@ class UsageCreateForm extends Component {
         var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
         var partEnd = this.state.endDate.split('-');
         var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
-
         if (this.isFormValidated()) {
             let dataToSubit = {
-                usedByUser: !this.state.usedByUser ? this.props.user.list[0].id : this.state.usedByUser,
-                startDate: startDate,
-                endDate: endDate,
-                description: this.state.description,
-                assignedToUser: !this.state.usedByUser ? this.props.user.list[0].id : this.state.usedByUser,
-                handoverFromDate: startDate,
-                handoverToDate: endDate,
+                usageLogs: {
+                    usedByUser: !this.state.usedByUser ? this.props.user.list[0].id : this.state.usedByUser.id,
+                    startDate: startDate,
+                    endDate: endDate,
+                    description: this.state.description,
+                },
+                assignedToUser: !this.state.usedByUser ? this.props.user.list[0].id : this.state.usedByUser.id,
+                assignedToOrganizationalUnit: null,
                 status: "Đang sử dụng",
 
             }
+
             let assetId = !this.state.asset ? this.props.assetsManager.listAssets[0]._id : this.state.asset;
             return this.props.createUsage(assetId, dataToSubit).then(({ response }) => {
                 if (response.data.success) {

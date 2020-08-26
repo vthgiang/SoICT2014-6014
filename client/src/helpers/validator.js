@@ -18,6 +18,8 @@ export const VALIDATOR = {
 
     checkName,
     checkEmail,
+    checkPassword,
+    checkDescription,
 }
 
 // Kiểm tra tên có hợp lệ
@@ -50,21 +52,87 @@ function isStringNotSpace(string){
 }
 
 function checkName(name) {
-    let dataName = name.toString();
-    let mes;
-    if(!nameRegex.test(dataName)) {
-        mes = 'general.validate.nameTypeErr';
-    } else if(dataName.length < 6 || dataName.length > 255) {
-        mes = 'general.validate.nameLengthErr'
+    let msg;
+    if(name === undefined || name === null) {
+        return {
+            status: false
+        }
+    } else {
+        let dataName = name.toString();
+        if(!nameRegex.test(dataName)) {
+            msg = 'general.validate.nameTypeErr';
+        } else if(dataName.length < 1 || dataName.length > 255) {
+            msg = 'general.validate.nameLengthErr'
+        }
+        return msg !== undefined ?
+        {
+            status: false,
+            msg
+        } : {
+            status: true
+        }
     }
-    return mes;
 }
 
 function checkEmail(email) {
-    let dataEmail = email.toString();
-    let mes;
-    if(!emailRegex.test(dataEmail)) {
-        mes = 'general.validate.emailErr';
-    } 
-    return mes;
+    let msg;
+    if(email === undefined || email === null) {
+        return {
+            status: false
+        }
+    } else {
+        let dataEmail = email.toString();
+        if(!emailRegex.test(dataEmail)) {
+            msg = 'general.validate.emailErr';
+        }
+        return msg !== undefined ?
+        {
+            status: false,
+            msg
+        } : {
+            status: true
+        }
+    }
+}
+
+function checkPassword(pass) {
+    let msg;
+    if(pass === undefined || pass === null) {
+        return {
+            status: false
+        }
+    } else {
+        let dataPass = pass.toString();
+        if(dataPass.length < 6 || dataPass.length > 30) {
+            msg = 'general.validate.passwordLengthErr';
+        }
+        return msg !== undefined ?
+        {
+            status: false,
+            msg
+        } : {
+            status: true
+        }
+    }
+}
+
+function checkDescription(des) {
+    let msg;
+    if(des === undefined || des === null) {
+        return {
+            status: false
+        }
+    } else {
+        let desData = des.toString();
+        if(desData.length < 1) {
+            msg = 'general.validate.descriptionLengthErr'
+        }
+        return msg !== undefined ?
+        {
+            status: false,
+            msg
+        } : {
+            status: true
+        }
+    }
 }

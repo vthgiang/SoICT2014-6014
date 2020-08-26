@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import c3 from 'c3';
 import 'c3/c3.css';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { Tree } from '../../../../../common-components';
+import { Tree } from '../../../../../../common-components';
 
 
 class ValueOfAssetChart extends Component {
@@ -115,7 +115,7 @@ class ValueOfAssetChart extends Component {
                     countAssetValue[idx] += asset.cost;
                 })
                 for (let i in assetType) {
-                    let title = `${assetType[i].title} (${countAssetValue[i]} VND)`
+                    let title = `${assetType[i].title} - ${countAssetValue[i]} `
                     chart.push({
                         id: assetType[i].id,
                         typeName: title,

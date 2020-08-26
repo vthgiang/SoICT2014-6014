@@ -76,8 +76,8 @@ class EditForm extends Component {
         const value = e.target.value;
         this.validateVersionName(value, true)
     }
-    handleRelationshipDocuments = (e) => {
-        const { value } = e.target;
+    handleRelationshipDocuments = value => {
+        //  this.setState({ documentDomains: value });
         this.setState({ documentRelationshipDocuments: value });
     }
 
@@ -429,104 +429,107 @@ class EditForm extends Component {
         const archives = documents.administration.archives.list;
         let title = "";
         let description = "";
-        console.log('rrrrrr', documentRelationshipDocuments, relationshipDocs);
         const formData = new FormData();
         formData.append('name', documentName);
         if (documentName !== this.props.documentName) {
-            if (!title.includes("Chỉnh sửa thông tin văn bản")) {
+            if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
                 title = (title + " Chỉnh sửa thông tin văn bản ");
             }
-            description += "Thay đổi tên " + documentName + ". ";
+            description += "Thay đổi tên: " + documentName + ". ";
         }
         if (!this.compareArray(documentCategory, this.props.documentCategory)) {
-            if (!title.includes("Chỉnh sửa thông tin văn bản")) {
-                title = (title + "Chỉnh sửa thông tin văn bản");
+            if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
+                title = (title + "Chỉnh sửa thông tin văn bản.");
             }
 
-            let nameCategory = categories.filter(item => item.value === documentCategory[0])
-            description += "Thay đổi loại tài liệu " + nameCategory + ". ";
+            let nameCategory = categories.filter(item => item.value === documentCategory)
+            description += "Thay đổi loại tài liệu: " + nameCategory[0].text + ". ";
             formData.append('category', documentCategory);
         }
         if (!this.compareArray(documentDomains, this.props.documentDomains)) {
-            if (!title.includes("Chỉnh sửa thông tin văn bản")) {
+            if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
                 title = (title + " Chỉnh sửa thông tin văn bản");
             }
 
-            description += "Danh mục mới ";
+            description += "Danh mục mới: ";
             let newDomain = [];
             for (let i = 0; i < documentDomains.length; i++) {
                 formData.append('domains[]', documentDomains[i]);
-                let domain = list.filter(item => item.value === documentDomains[i]);
-                newDomain.push(domain[0]);
+                let domain = list.filter(item => item.id === documentDomains[i]);
+                newDomain.push(domain[0].name);
 
             }
             description += newDomain.join(" ") + ". ";
         }
         if (!this.compareArray(documentArchives, this.props.documentArchives)) {
 
-            if (!title.includes("Chỉnh sửa thông tin văn bản")) {
+            if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
                 title = (title + " Chỉnh sửa thông tin văn bản");
             }
-            description += "Địa chỉ lưu trữ mới ";
-            let newDomain = [];
+            description += "Địa chỉ lưu trữ mới: ";
+            let newArchives = [];
             for (let i = 0; i < documentArchives.length; i++) {
                 formData.append('archives[]', documentArchives[i]);
-                let archive = archives.filter(item => item.value === documentArchives[i]);
-                newDomain.push(archive[0]);
+                let archive = archives.filter(item => item.id === documentArchives[i]);
+                newArchives.push(archive[0].name);
             }
-            description += newDomain.join(" ") + ". ";
+            description += newArchives.join(" ") + ". ";
         }
         if (documentDescription !== this.documentDescription) {
-            if (!title.includes("Chỉnh sửa thông tin văn bản")) {
-                title = (title + "Chỉnh sửa thông tin văn bản");
+            if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
+                title = (title + "Chỉnh sửa thông tin văn bản.");
             }
-            description += "Mô tả mới " + documentDescription + ". ";
+            description += "Mô tả mới: " + documentDescription + ". ";
             formData.append('description', documentDescription);
         }
         if (documentIssuingBody !== this.props.documentIssuingBody) {
-            if (!title.includes("Chỉnh sửa thông tin văn bản")) {
-                title = (title + "Chỉnh sửa thông tin văn bản");
+            if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
+                title = (title + "Chỉnh sửa thông tin văn bản.");
             }
-            description += "Cơ quan ban hành mới " + documentIssuingBody + ". ";
+            description += "Cơ quan ban hành mới: " + documentIssuingBody + ". ";
             formData.append('issuingBody', documentIssuingBody);
         }
         if (documentOfficialNumber !== this.props.documentOfficialNumber) {
-            if (!title.includes("Chỉnh sửa thông tin văn bản")) {
-                title = (title + "Chỉnh sửa thông tin văn bản");
+            if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
+                title = (title + "Chỉnh sửa thông tin văn bản.");
             }
-            description += "Số hiệu mới " + documentOfficialNumber + ". ";
+            description += "Số hiệu mới: " + documentOfficialNumber + ". ";
             formData.append('officialNumber', documentOfficialNumber);
         }
         if (documentSigner !== this.props.documentSigner) {
-            if (!title.includes("Chỉnh sửa thông tin văn bản")) {
-                title = (title + "Chỉnh sửa thông tin văn bản");
+            if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
+                title = (title + "Chỉnh sửa thông tin văn bản.");
             }
-            description += "Người ký mới " + documentSigner + ". ";
+            description += "Người ký mới: " + documentSigner + ". ";
             formData.append('signer', documentSigner);
         }
 
-        if (documentRelationshipDocuments !== this.props.documentRelationshipDocuments) {
-            if (!title.includes("Chỉnh sửa khác")) {
-                title += "Chỉnh sửa khác"
+        if (documentRelationshipDescription !== this.props.documentRelationshipDescription) {
+            if (!title.includes("Chỉnh sửa tài liệu liên kết")) {
+                title += "Chỉnh sửa tài liệu liên kết."
             }
-            description += "Mô tả liên kết tài liệu mới. ";
+            description += "Mô tả liên kết tài liệu mới: ";
             formData.append('relationshipDescription', documentRelationshipDescription);
         }
-        if (documentRelationshipDocuments !== this.props.documentRelationshipDocuments) {
-            if (!title.includes("Chỉnh sửa khác")) {
-                title += "Chỉnh sửa khác"
+        if (!this.compareArray(documentRelationshipDocuments, this.props.documentRelationshipDocuments)) {
+            if (!title.includes("Chỉnh sửa mô tả liên kết.")) {
+                title += "Chỉnh sửa mô tả liên kết."
             }
-            description += "Tài liệu liên kết mới. "
+            description += "Tài liệu liên kết mới: "
+            let newArray = [];
             for (let i = 0; i < documentRelationshipDocuments.length; i++) {
                 formData.append('relationshipDocuments[]', documentRelationshipDocuments[i]);
-                description += documentRelationshipDocuments + " ";
+                let relationship = relationshipDocs.filter(item => item.value === documentRelationshipDocuments[i]);
+                newArray.push(relationship[0].text);
+
             }
+            description += newArray.join(" - ");
         }
         if (documentRoles !== this.props.documentRoles) {
-            if (!title.includes("Chỉnh sửa khác")) {
+            if (!title.includes("Chỉnh sửa phân quyền")) {
                 title += "Chỉnh sửa phân quyền. "
             }
-            description += "Các phân quyền mới "
+            description += "Các phân quyền mới: "
             for (let i = 0; i < documentRoles.length; i++) {
                 formData.append('roles[]', documentRoles[i]);
                 let nameRole = roleList.filter(item => item.value === documentRoles[i])
@@ -545,7 +548,7 @@ class EditForm extends Component {
             if (!title.includes("Chỉnh sửa khác")) {
                 title += "Chỉnh sửa khác"
             }
-            description += "xyzaaee" + documentArchivedRecordPlaceManager + ". "
+            description += + documentArchivedRecordPlaceManager + ". "
             formData.append('archivedRecordPlaceManager', documentArchivedRecordPlaceManager);
         }
         if (title) {
@@ -555,7 +558,6 @@ class EditForm extends Component {
         if (description) {
             formData.append('descriptions', description)
         }
-        //console.log('ererererer', formData.getAll());
         if (title) {
             this.props.editDocument(documentId, formData);
         }
@@ -604,7 +606,6 @@ class EditForm extends Component {
         formData.append('title', title);
         formData.append('creator', getStorage("userId"))
         formData.append('descriptions', descriptions)
-        console.log("FORM DATA: ", formData)
         this.props.editDocument(id, formData, 'ADD_VERSION');
 
     }
@@ -665,7 +666,6 @@ class EditForm extends Component {
         this.props.downloadDocumentFileScan(id, fileName, numberVersion);
     }
     findPath = (archives, select) => {
-        console.log(archives, select);
         if (select) {
             let archive = archives.filter(arch => arch._id === select);
             return archive.length ? [archive[0].path] : "";
@@ -689,9 +689,6 @@ class EditForm extends Component {
         const archives = documents.administration.archives.list;
         let path = documentArchives ? this.findPath(archives, documentArchives[0]) : "";
 
-        console.log('pathhhh', documentRoles);
-
-        console.log("STATE:", documentVersions);
 
         return (
             <React.Fragment>

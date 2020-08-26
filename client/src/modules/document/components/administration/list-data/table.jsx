@@ -339,14 +339,14 @@ class Table extends Component {
                         documentDescription={currentRow.description}
                         documentCategory={currentRow.category ? currentRow.category.name : ""}
                         documentDomains={currentRow.domains ? currentRow.domains.map(domain => domain.name) : []}
-                        documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive.name) : []}
+                        documentArchives={currentRow.archives ? currentRow.archives.map(archive => archive.path) : []}
                         documentIssuingBody={currentRow.issuingBody}
                         documentOfficialNumber={currentRow.officialNumber}
                         documentSigner={currentRow.signer}
                         documentVersions={currentRow.versions}
 
                         documentRelationshipDescription={currentRow.relationshipDescription}
-                        documentRelationshipDocuments={currentRow.relationshipDocuments}
+                        documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(document => document.name) : []}
 
                         documentRoles={currentRow.roles}
 
