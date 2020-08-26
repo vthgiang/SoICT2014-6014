@@ -50,7 +50,7 @@ class ComponentInfoForm extends Component {
 
                         {/* Mô tả về component	 */}
                         <div className={`form-group ${!componentDescriptionError ? "" : "has-error"}`}>
-                            <label>{translate('table.description')}</label>
+                            <label>{translate('table.description')}<span className="text-red"> * </span></label>
                             <input type="text" className="form-control" value={componentDescription} onChange={this.handleComponentDescription} />
                             <ErrorLabel content={componentDescriptionError} />
                         </div>
@@ -77,7 +77,7 @@ class ComponentInfoForm extends Component {
     handleComponentDescription = (e) => {
         let {translate} = this.props;
         let { value } = e.target;
-        let msg = VALIDATOR.checkDescription(value);
+        let {msg} = VALIDATOR.checkDescription(value);
         this.setState({
             componentDescription: value,
             componentDescriptionError: msg ? `${translate('manage_component.description')} ${translate(msg)}` : undefined
@@ -109,8 +109,8 @@ class ComponentInfoForm extends Component {
     }
 
     isFormValidated = () => {
-        let {componentDescriptionError} = this.state;
-        if(componentDescriptionError) return false;
+        let {componentDescription} = this.state;
+        if(!VALIDATOR.checkDescription(componentDescription).status) return false;
         return true;
     }
 

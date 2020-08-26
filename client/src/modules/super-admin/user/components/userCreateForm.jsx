@@ -23,15 +23,15 @@ class UserCreateForm extends Component {
     }
 
     isFormValidated = () => {
-        let {userNameError, userEmailError} = this.state;
-        if(userEmailError || userNameError) return false;
+        let {userName, userEmail} = this.state;
+        if(!VALIDATOR.checkName(userName).status || !VALIDATOR.checkEmail(userEmail)) return false;
         return true;
     }
 
     handleUserName = (e) => {
         let {value} = e.target;
         let {translate} = this.props;
-        let msg = VALIDATOR.checkName(value);
+        let {msg} = VALIDATOR.checkName(value);
         this.setState({
             userName: value,
             userNameError: msg ? `${translate('manage_user.name')} ${translate(msg)}` : undefined
@@ -41,7 +41,7 @@ class UserCreateForm extends Component {
     handleUserEmail = (e) => {
         let {value} = e.target;
         let {translate} = this.props;
-        let msg = VALIDATOR.checkEmail(value);
+        let {msg} = VALIDATOR.checkEmail(value);
         this.setState({
             userEmail: value,
             userEmailError: msg ? `${translate('manage_user.email')} ${translate(msg)}` : undefined
@@ -78,8 +78,6 @@ class UserCreateForm extends Component {
                     modalID="modal-create-user" isLoading={user.isLoading}
                     formID="form-create-user"
                     title={translate('manage_user.add_title')}
-                    msg_success={translate('manage_user.add_success')}
-                    msg_faile={translate('manage_user.add_faile')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                     size={50}

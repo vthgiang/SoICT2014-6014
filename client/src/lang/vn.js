@@ -72,7 +72,7 @@ export default {
             },
             validate: {
                 nameTypeErr: 'không được chứa ký tự đặc biệt',
-                nameLengthErr: 'phải có độ dài từ 6 đến 255 ký tự',
+                nameLengthErr: 'không được để trống hoặc không quá 255 ký tự',
                 emailErr: 'không hợp lệ',
                 passwordLengthErr: 'phải có độ dài từ 6 đến 30 ký tự',
                 descriptionLengthErr: 'không được để trống',
@@ -649,6 +649,7 @@ export default {
             manage_incident_asset: 'Quản lý sự cố tài sản',
             manage_recommend_procure: 'Quản lý đề nghị mua sắm',
             manage_recommend_distribute_asset: 'Quản lý đăng ký sử dụng',
+            employee_manage_asset_info: 'Quản lý thông tin tài sản được phân quyền',
 
             view_building_list: 'Xem danh sách mặt bằng',
 
@@ -1644,6 +1645,13 @@ export default {
                 attached_file: 'File đính kèm',
             },
 
+            // Dashboard
+            dashboard: {
+                status_chart: 'Biểu đồ thống kê tài sản theo trạng thái',
+                group_chart: 'Biểu đồ thống kê tài sản theo nhóm',
+                cost_chart: 'Biểu đồ thống kê tài sản theo giá trị',
+            },
+
             //  Quản lý loại tài sản
             asset_type: {
                 asset_type_code: 'Mã loại tài sản',
@@ -1680,6 +1688,7 @@ export default {
                 add_incident_info: 'Thêm mới thông tin sự cố',
                 edit_incident_info: 'Chỉnh sửa thông tin sự cố',
                 delete_incident_info: 'Xóa thông tin sự cố',
+                delete_asset_confirm: 'Xóa tài sản này ?',
 
                 usage_time: 'Thời gian sử dụng',
                 annual_depreciation: 'Mức độ khấu hao trung bình hằng năm',

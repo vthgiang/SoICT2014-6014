@@ -78,7 +78,7 @@ function createXmlDiagram(data) {
  * @param {Object} diagramId id của diagram 
  * @param {Object} data 
  */
-function editXmlDiagram(diagramId,data) {
+function editXmlDiagram(diagramId, data) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/process/diagrams/${diagramId}`,
         method: 'PATCH',

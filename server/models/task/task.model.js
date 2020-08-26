@@ -215,6 +215,11 @@ const TaskSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: User,
         },
+        isOutput: {
+            type: Boolean,
+            default: false,
+            required: true
+        }
     }],
     timesheetLogs: [{
         creator: { // Người thực hiện nào tiến hành bấm giờ
@@ -268,6 +273,11 @@ const TaskSchema = new Schema({
         },
         value: {
             type: Schema.Types.Mixed,
+        },
+        isOutput: {
+            type: Boolean,
+            default: false,
+            required: true
         }
     }],
     taskActions: [{ // Khi task theo tempate nào đó, sẽ copy hết actions trong template vào đây

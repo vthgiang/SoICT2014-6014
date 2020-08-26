@@ -28,11 +28,11 @@ exports.getDocuments = async (req, res) => {
 exports.createDocument = async (req, res) => {
     try {
         if (req.files.file) {
-            var pathFile = req.files.file[0].destination + '/' + req.files.file[0].filename;
+            let pathFile = req.files.file[0].destination + '/' + req.files.file[0].filename;
             req.body.file = pathFile;
         }
         if (req.files.fileScan) {
-            var pathFileScan = req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
+            let pathFileScan = req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
             req.body.scannedFileOfSignedDocument = pathFileScan;
         }
         const document = await DocumentServices.createDocument(req.user.company._id, req.body);
@@ -100,8 +100,8 @@ exports.showDocument = async (req, res) => {
 exports.editDocument = async (req, res) => {
     //try {
     if (req.files && Object.keys(req.files).length > 0) {
-        var pathFile = req.files.file[0].destination + '/' + req.files.file[0].filename;
-        var pathFileScan = req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
+        let pathFile = req.files.file[0].destination + '/' + req.files.file[0].filename;
+        let pathFileScan = req.files.fileScan[0].destination + '/' + req.files.fileScan[0].filename;
 
         req.body.file = pathFile;
         req.body.scannedFileOfSignedDocument = pathFileScan;
