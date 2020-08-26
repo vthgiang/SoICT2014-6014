@@ -5,7 +5,7 @@ import c3 from 'c3';
 import 'c3/c3.css';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 
-class AssetStautsChart extends Component {
+class GroupChart extends Component {
     constructor(props) {
         super(props);
     }
@@ -15,58 +15,54 @@ class AssetStautsChart extends Component {
         const { listAssets } = this.props;
 
         const { translate } = this.props;
-        let dataPieChart, numberOfReadyToUse = 0, numberOfInUse = 0, numberOfBroken = 0, numberOfLost = 0, numberOfDisposed = 0;
+        let dataPieChart, numberOfBuilding = 0, numberOfVehicle = 0, numberOfMachine = 0, numberOfOrther = 0;
 
         if (listAssets) {
-            for (let i in listAssets) {
-                switch (listAssets[i].status) {
-                    case "Sẵn sàng sử dụng":
-                        numberOfReadyToUse++;
+            for( let i in listAssets) {
+                switch (listAssets[i].group) {
+                    case "Building":
+                        numberOfBuilding++;
                         break;
-                    case "Đang sử dụng":
-                        numberOfInUse++;
+                    case "Vehicle":
+                        numberOfVehicle++;
                         break;
-                    case "Hỏng hóc":
-                        numberOfBroken++;
+                    case "Machine":
+                        numberOfMachine++;
                         break;
-                    case "Mất":
-                        numberOfLost++;
-                        break;
-                    case "Thanh lý":
-                        numberOfDisposed++;
+                    case "Other":
+                        numberOfOrther++;
                         break;
                 }
             }
         }
 
         dataPieChart = [
-            ["Sẵn sàng sử dụng", numberOfReadyToUse],
-            ["Đang sử dụng", numberOfInUse],
-            ["Hỏng hóc", numberOfBroken],
-            ["Mất", numberOfLost],
-            ["Thanh lý", numberOfDisposed],
+            ["Mặt bằng", numberOfBuilding],
+            ["Phương tiện", numberOfVehicle],
+            ["Máy móc", numberOfMachine],
+            ["Khác", numberOfOrther],
         ];
 
         return dataPieChart;
     }
 
-    // // Hàm xóa biểu đồ trước
-    // removePreviousChart() {
-    //     const chart = this.refs.chart;
+    // Hàm xóa biểu đồ trước
+    removePreviousChart() {
+        const chart = this.refs.chart;
 
-    //     if (chart) {
-    //         while (chart.hasChildNodes()) {
-    //             chart.removeChild(chart.lastChild);
-    //         }
-    //     } 
-    // }
+        if (chart) {
+            while (chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild);
+            }
+        } 
+    }
 
     // Khởi tạo PieChart bằng C3
     pieChart = () => {
         let dataPieChart = this.setDataPieChart();
         
         this.chart = c3.generate({
-            bindto: '#assetStatus',
+            bindto: '#assetGroup',
 
             data: {
                 columns: dataPieChart,
@@ -101,20 +97,17 @@ class AssetStautsChart extends Component {
         });
     }
     render() {
-        const { translate, listAssets } = this.props;
+        const { translate } = this.props;
+        const { listAssets } = this.props;
 
         console.log('call pie chart');
         this.pieChart();
 
         return (
             <React.Fragment>
-                {
-                    listAssets ?
-                        <div className="box-body qlcv" id="assetStatusChart">
-                            <section id="assetStatus"></section>
-                        </div>
-                    : <section>{translate('confirm.no_data')}</section>
-                }
+                <div className="box-body qlcv" id="assetGroupChart">
+                    <section id="assetGroup"></section>
+                </div>
             </React.Fragment>
         )
     }
@@ -126,6 +119,6 @@ function mapState(state) {
 const actions = {
 }
 
-const AmountOfAssetChartConnected = connect(mapState, actions)(withTranslate(AssetStautsChart));
+const GroupChartConnected = connect(mapState, actions)(withTranslate(GroupChart));
 
-export { AmountOfAssetChartConnected as AssetStautsChart }
+export { GroupChartConnected as GroupChart }

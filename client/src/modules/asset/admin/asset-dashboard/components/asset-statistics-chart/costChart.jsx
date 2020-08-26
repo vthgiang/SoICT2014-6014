@@ -5,7 +5,7 @@ import c3 from 'c3';
 import 'c3/c3.css';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 
-class AssetCostChart extends Component {
+class CostChart extends Component {
     constructor(props) {
         super(props);
     }
@@ -43,13 +43,13 @@ class AssetCostChart extends Component {
 
         dataPieChart = [
             ["< 100.000.000", lessThanOneHundred],
-            ["100.000.000 <= cost < 200.000.000", oneHundred],
-            ["200.000.000 <= cost < 500.000.000", twoHundred],
-            ["500.000.000 <= cost < 1.000.000.000", fiveHundred],
-            ["1.000.000.000 <= cost < 2.000.000.000", oneBillion],
-            ["2.000.000.000 <= cost < 5.000.000.000", twoBillion],
-            ["5.000.000.000 <= cost < 10.000.000.000", fiveBillion],
-            [">= 10.000.000.000", tenBillion],
+            ["100.000.000 - 200.000.000", oneHundred],
+            ["200.000.000 - 500.000.000", twoHundred],
+            ["500.000.000 - 1.000.000.000", fiveHundred],
+            ["1.000.000.000 - 2.000.000.000", oneBillion],
+            ["2.000.000.000 - 5.000.000.000", twoBillion],
+            ["5.000.000.000 - 10.000.000.000", fiveBillion],
+            ["> 10.000.000.000", tenBillion],
         ];
 
         return dataPieChart;
@@ -85,10 +85,10 @@ class AssetCostChart extends Component {
                 }
             },
             padding: {
-                top: 20,
-                bottom: 20,
-                right: 20,
-                left: 20
+                top: 5,
+                bottom: 5,
+                right: 10,
+                left: 10
             },
             tooltip: {
                 format: {
@@ -106,20 +106,17 @@ class AssetCostChart extends Component {
         });
     }
     render() {
-        const { translate, listAssets } = this.props;
+        const { translate } = this.props;
+        const { listAssets } = this.props;
 
         console.log('call pie chart');
         this.pieChart();
 
         return (
             <React.Fragment>
-                {
-                    listAssets ?
-                        <div className="box-body qlcv" id="assetCostChart">
-                            <section id="assetCost"></section>
-                        </div>
-                    : <section>{translate('confirm.no_data')}</section>
-                }
+                <div className="box-body qlcv" id="assetCostChart">
+                    <section id="assetCost"></section>
+                </div>
             </React.Fragment>
         )
     }
@@ -131,6 +128,6 @@ function mapState(state) {
 const actions = {
 }
 
-const AmountOfAssetChartConnected = connect(mapState, actions)(withTranslate(AssetCostChart));
+const AmountOfAssetChartConnected = connect(mapState, actions)(withTranslate(CostChart));
 
-export { AmountOfAssetChartConnected as AssetCostChart }
+export { AmountOfAssetChartConnected as CostChart }
