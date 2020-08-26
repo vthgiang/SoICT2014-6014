@@ -25,7 +25,7 @@ class AmountBarChart extends Component {
     setDataBarChart = () => {
         const { listAssets, assetType } = this.props;
 
-        let typeName = [], countAssetType = [], idAssetType = [];
+        let typeName = [], shortName = [], countAssetType = [], idAssetType = [];
         for (let i in assetType) {
             countAssetType[i] = 0;
             idAssetType.push(assetType[i].id)
@@ -41,7 +41,9 @@ class AmountBarChart extends Component {
 
                 // let val = d3.format(",")(countAssetType[i])
                 // let title = `${assetType[i].title} - ${val} `
-
+                let longName = assetType[i].title.slice(0, 15) + "...";
+                let name = assetType[i].title.length > 15 ? longName : assetType[i].title;
+                shortName.push(name);
                 typeName.push(assetType[i].title);
 
                 // chart.push({
@@ -53,7 +55,8 @@ class AmountBarChart extends Component {
         }
         let data = {
             count: countAssetType,
-            type: typeName
+            type: typeName,
+            shortName: shortName
         }
 
         return data;
@@ -94,7 +97,10 @@ class AmountBarChart extends Component {
             axis: {
                 x: {
                     type: 'category',
-                    categories: dataPieChart.type
+                    categories: dataPieChart.shortName,
+                    tick: {
+                        multiline: false
+                    }
                 },
                 y: {
                     label: {
@@ -115,8 +121,14 @@ class AmountBarChart extends Component {
 
             legend: {
                 show: false
-            }
+            },
 
+            tooltip: {
+                format: {
+                    title: function (index) { return dataPieChart.type[index] },
+
+                }
+            }
         });
     }
     handleChangeViewChart = async (value) => {

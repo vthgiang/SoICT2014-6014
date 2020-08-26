@@ -38,27 +38,26 @@ class TabNotificationSent extends Component {
                     {
                         notifications.sent.paginate.length > 0 ? 
                         notifications.sent.paginate.map(notification => 
-                            <li key={notification._id}  style={{border: "none", backgroundColor: "white"}}>
-
-                                <div style={{marginBottom: 5}}>
-                                    {
-                                        notification.level === 'info' ? <i className="fa fa-fw fa-info-circle text-blue"/> :
-                                        notification.level === 'general' ? <i className="fa fa-fw fa-bell text-green" /> :
-                                        notification.level === 'important' ? <i className="fa fa-fw fa-warning text-yellow" /> :
-                                        <i className="fa fa-fw fa-bomb text-red" />
-                                    }
-                                    <DateTimeConverter dateTime={notification.createdAt} type={1}/>
-                                    
-                                    <div className="tools">
-                                        <a href='#abc' onClick={() => this.showNotificationInformation(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
-                                        <DeleteNotification 
+                            <li key={notification._id}  style={{border: "none", backgroundColor: "white", cursor: "pointer", overflow: "hidden"}}>
+                                <div className="row" >
+                                    <div style={{ marginBottom: 5 }} className="col-sm-11" onClick={() => this.showNotificationInformation(notification)}>
+                                        <div>{
+                                            notification.level === 'info' ? <i className="fa fa-fw fa-info-circle text-blue" /> :
+                                                notification.level === 'general' ? <i className="fa fa-fw fa-bell text-green" /> :
+                                                    notification.level === 'important' ? <i className="fa fa-fw fa-warning text-yellow" /> :
+                                                        <i className="fa fa-fw fa-bomb text-red" />
+                                        }
+                                            <DateTimeConverter dateTime={notification.createdAt} type={1} /></div>
+                                        <span className="threedots" style={{ maxWidth: "100%", display: "inline-block" }}><b>{notification.title}</b> {innerText(parse(notification.content))}</span>
+                                    </div>
+                                    <div className="col-sm-1">
+                                        <DeleteNotification
                                             content={translate('notification.delete')}
                                             data={{ id: notification._id, info: notification.title }}
                                             func={this.props.deleteManualNotification}
                                         />
                                     </div>
                                 </div>
-                                <span className="threedots" style={{maxWidth: "100%", display: "inline-block"}}><b>{notification.title}</b> {innerText(parse(notification.content))}</span>
                             </li>
                         ): notifications.isLoading ?
                         <div className="table-info-panel" style={{textAlign: "left"}}>{translate('general.loading')}</div>:

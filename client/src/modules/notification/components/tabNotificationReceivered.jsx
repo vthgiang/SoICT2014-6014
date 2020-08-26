@@ -16,7 +16,12 @@ class TabNotificationReceivered extends Component {
     render() { 
         const { translate, notifications } = this.props;
         const { currentRow } = this.state;
-
+        let content = [];
+        if (notifications.isLoading === false) {
+            content = notifications.receivered.paginate.map( x => x.content);
+            content = content.map(x => x.trim());
+            console.log(content);
+        }
         return ( 
             <React.Fragment>
                 {
@@ -36,29 +41,31 @@ class TabNotificationReceivered extends Component {
                     {
                         notifications.receivered.paginate.length > 0 ? 
                         notifications.receivered.paginate.map(notification => 
-                            <li key={notification._id} style={{border: "none", backgroundColor: "white"}}>
-                                <div style={{marginBottom: 5}}>
-                                    {
-                                        notification.level === 'info' ? <i className="fa fa-fw fa-info-circle text-blue"/> :
-                                        notification.level === 'general' ? <i className="fa fa-fw fa-bell text-green" /> :
-                                        notification.level === 'important' ? <i className="fa fa-fw fa-warning text-yellow" /> :
-                                        <i className="fa fa-fw fa-bomb text-red" />
-                                    }
-                                    <DateTimeConverter dateTime={notification.createdAt} type={1}/>
-                                    {notification.readed?
-                                        <div className="label" style={{width: 30, display:"inline-block", margin: "0 0 0 5px"}}></div>:
-                                    <div className="label label-danger" style={{width: 30, display:"inline-block", margin: "0 0 0 5px"}}>{translate('notification.new')}</div>
-                                    }
-                                    <div className="tools">
-                                        <a href="#abc" onClick={() => this.handleEdit(notification)} className="text-aqua"><i className="material-icons">visibility</i></a>
-                                        <DeleteNotification 
+                            <li key={notification._id} style={{border: "none", backgroundColor: "white", cursor: "pointer", overflow: "hidden"}}>
+                                <div className="row" >
+                                    <div style={{ marginBottom: 5 }} className="col-sm-11" onClick={() => this.handleEdit(notification)}>
+                                        {
+                                            notification.level === 'info' ? <i className="fa fa-fw fa-info-circle text-blue" /> :
+                                                notification.level === 'general' ? <i className="fa fa-fw fa-bell text-green" /> :
+                                                    notification.level === 'important' ? <i className="fa fa-fw fa-warning text-yellow" /> :
+                                                        <i className="fa fa-fw fa-bomb text-red" />
+                                        }
+                                        <div><DateTimeConverter dateTime={notification.createdAt} type={1} />
+                                            {notification.readed ?
+                                                <div className="label" style={{ width: 30, display: "inline-block", margin: "0 0 0 5px" }}></div> :
+                                                <div className="label label-danger" style={{ width: 30, display: "inline-block", margin: "0 0 0 5px" }}>{translate('notification.new')}</div>
+                                            }</div>
+                                        <span className="threedots" style={{ maxWidth: "100%", display: "inline-block" }}><b>{notification.title}</b> {innerText(parse(notification.content))}</span>
+                                    </div>
+                                    <div className="col-sm-1">
+                                        <DeleteNotification
                                             content={translate('notification.delete')}
                                             data={{ id: notification._id, info: notification.title }}
                                             func={this.props.deleteNotification}
                                         />
+
                                     </div>
                                 </div>
-                                <span className="threedots" style={{maxWidth: "100%", display: "inline-block"}}><b>{notification.title}</b> {innerText(parse(notification.content))}</span>
                             </li>
                         ): notifications.isLoading ?
                         <div className="table-info-panel" style={{textAlign: "left"}}>{translate('general.loading')}</div>:
