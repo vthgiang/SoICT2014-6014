@@ -334,12 +334,17 @@ class DetailTaskTab extends Component {
                                 <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_edit')}
                             </a>
                         }
-
-                        {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
-                            <a className="btn btn-app" onClick={() => !performtasks.currentTimer && this.startTimer(task._id, currentUser)} title="Bắt đầu thực hiện công việc" disabled={performtasks.currentTimer}>
+                        {
+                            performtasks?.task?.status !== "Finished" &&
+                            <React.Fragment>
+                            {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
+                            <a className="btn btn-app" onClick={() => !performtasks.currentTimer && this.startTimer(task._id, currentUser)} title="Bắt đầu thực hiện công việc" disabled={performtasks.currentTimer }>
                                 <i className="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" ></i>{translate('task.task_management.detail_start_timer')}
                             </a>
+                            }
+                             </React.Fragment>
                         }
+                      
 
                         {currentRole === "accountable" && checkInactive &&
                             (statusTask === "Finished" ?

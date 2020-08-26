@@ -51,7 +51,8 @@ class ModalCreateTaskByProcess extends Component {
         this.modeler = new BpmnModeler({
             additionalModules: [
                 customModule,
-                { zoomScroll: ['value', ''] }
+                { zoomScroll: ['value', ''] },
+                { bendpoints: ['value', ""] }
             ],
         });
         this.generateId = 'createtaskbyprocess';
@@ -75,6 +76,7 @@ class ModalCreateTaskByProcess extends Component {
         this.modeler.attachTo('#' + this.generateId);
 
         var eventBus = this.modeler.get('eventBus');
+        eventBus.on('shape.move.start', 100000, () => { return false })
         this.modeler.on('element.click', 1000, (e) => this.interactPopup(e));
     }
 
@@ -156,7 +158,7 @@ class ModalCreateTaskByProcess extends Component {
         const modeling = this.modeler.get('modeling');
         let element1 = this.modeler.get('elementRegistry').get(this.state.id);
         modeling.updateProperties(element1, {
-           name: value,
+            name: value,
         });
     }
     // handleChangeName = async (value) => {
@@ -241,31 +243,31 @@ class ModalCreateTaskByProcess extends Component {
         let { user } = this.props
         let responsible = []
         user.usercompanys.forEach(x => {
-           if (value.some(y => y === x._id)) {
-              responsible.push(x.name)
-           }
+            if (value.some(y => y === x._id)) {
+                responsible.push(x.name)
+            }
         })
         const modeling = this.modeler.get('modeling');
         let element1 = this.modeler.get('elementRegistry').get(this.state.id);
         modeling.updateProperties(element1, {
-           responsibleName: responsible
+            responsibleName: responsible
         });
-     }
-  
-     handleChangeAccountable = async (value) => {
+    }
+
+    handleChangeAccountable = async (value) => {
         let { user } = this.props
         let accountable = []
         user.usercompanys.forEach(x => {
-           if (value.some(y => y === x._id)) {
-              accountable.push(x.name)
-           }
+            if (value.some(y => y === x._id)) {
+                accountable.push(x.name)
+            }
         })
         const modeling = this.modeler.get('modeling');
         let element1 = this.modeler.get('elementRegistry').get(this.state.id);
         modeling.updateProperties(element1, {
-           accountableName: accountable
+            accountableName: accountable
         });
-     }
+    }
 
     handleChangeOrganizationalUnit = async (value) => {
         await this.setState(state => {
@@ -419,7 +421,7 @@ class ModalCreateTaskByProcess extends Component {
 
         let xmlStr;
         this.modeler.saveXML({ format: true }, function (err, xml) {
-           xmlStr = xml;
+            xmlStr = xml;
         });
 
         await this.setState(state => {
@@ -655,7 +657,7 @@ class ModalCreateTaskByProcess extends Component {
                                         <div className='col-md-6'>
                                             <div className="form-group">
                                                 <label>Mô tả quy trình</label>
-                                                <textarea type="text" rows={4} style={{height: "108px"}}
+                                                <textarea type="text" rows={4} style={{ height: "108px" }}
                                                     value={processDescription}
                                                     className="form-control" placeholder="Mô tả công việc"
                                                     onChange={this.handleChangeBpmnDescription}
