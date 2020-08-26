@@ -2269,9 +2269,13 @@ exports.editTaskStatus = async (taskID, body) => {
 
             let followItem = await Task.findById(body.listSelected[i]);
             let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
-            let timer = startDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+            let timer = followStartDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
 
             let followEndDate = new Date(timer).toISOString();
+
+            console.log('enddate', followEndDate);
+            console.log('startdate', followStartDate);
+
 
             await Task.findByIdAndUpdate(body.listSelected[i],
                 {
@@ -2292,7 +2296,7 @@ exports.editTaskStatus = async (taskID, body) => {
 
                     let followItem = await Task.findById(task1.followingTasks[i].task);
                     let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
-                    let timer = startDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+                    let timer = followStartDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
 
                     let followEndDate = new Date(timer).toISOString();
 

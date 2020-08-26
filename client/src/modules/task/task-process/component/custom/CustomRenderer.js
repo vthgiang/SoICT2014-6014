@@ -48,9 +48,11 @@ export default class CustomRenderer extends BaseRenderer {
     const suitabilityScore = this.getSuitabilityScore(element);
 
     if (element.type == 'bpmn:Task') {
-      element.height = 110;
+      element.height = 130;
       element.width = 160;
-
+      // let a = element.businessObject.name.split("")
+      let b = element.businessObject.name
+      console.log(b)
       const line = drawLine(parentNode, 0, 40, 160, 40, 'black');
 
       var text = svgCreate('text');
@@ -62,13 +64,13 @@ export default class CustomRenderer extends BaseRenderer {
         fontFamily: "Open Sans"
       });
       svgClasses(text).add('djs-label');
-      svgAppend(text, document.createTextNode(element.businessObject.name !== undefined ? element.businessObject.name : ""));
+      svgAppend(text, document.createTextNode(b !== undefined ? b : ""));
       svgAppend(parentNode, text);
 
       text = svgCreate('text');
       svgAttr(text, {
         fill: 'black',
-        transform: 'translate(5, 60)',
+        transform: 'translate(5, 50)',
         fontSize: "10px",
         fontWeight: "bold"
       });
@@ -83,7 +85,7 @@ export default class CustomRenderer extends BaseRenderer {
       text = svgCreate('text');
       svgAttr(text, {
         fill: 'black',
-        transform: 'translate(5, 85)',
+        transform: 'translate(5, 70)',
         fontSize: "10px"
       });
       svgClasses(text).add('djs-label');
