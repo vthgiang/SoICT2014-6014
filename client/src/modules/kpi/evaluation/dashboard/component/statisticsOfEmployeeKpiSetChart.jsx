@@ -23,20 +23,11 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
         };
     }
 
-    componentDidMount = async () => {
-        await this.props.getAllEmployeeKpiSetByMonth(this.state.userId, this.state.startMonth, this.state.endMonth);
-
-        this.setState(state => {
-            return {
-                ...state,
-                dataStatus: this.DATA_STATUS.QUERYING
-            }
-        });
-    }
     shouldComponentUpdate = async (nextProps, nextState) => {
-        const { userId, startMonth, endMonth } = this.state;
-        if (nextProps.userId !== userId || nextProps.startMonth !== startMonth || nextProps.endMonth !== endMonth) {
-            await this.props.getAllEmployeeKpiSetByMonth(nextProps.userId, nextProps.startMonth, nextProps.endMonth);
+        const { userId, startMonth, endMonth, organizationalUnitIds } = this.state;
+
+        if (nextProps.organizationalUnitIds !== organizationalUnitIds || nextProps.userId !== userId || nextProps.startMonth !== startMonth || nextProps.endMonth !== endMonth) {
+            await this.props.getAllEmployeeKpiSetByMonth(nextProps.organizationalUnitIds, nextProps.userId, nextProps.startMonth, nextProps.endMonth);
             
             this.setState(state => {
                 return {
@@ -48,7 +39,7 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
         }
 
         if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-            await this.props.getAllEmployeeKpiSetByMonth(this.state.userId, this.state.startMonth, this.state.endMonth);
+            await this.props.getAllEmployeeKpiSetByMonth(nextProps.organizationalUnitIds, nextProps.userId, nextProps.startMonth, nextProps.endMonth);
 
             this.setState(state => {
                 return {
@@ -80,12 +71,19 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.userId !== prevState.userId || nextProps.startMonth !== prevState.startMonth || nextProps.endMonth !== prevState.endMonth) {
+        if (nextProps.userId !== prevState.userId
+            || nextProps.startMonth !== prevState.startMonth
+            || nextProps.endMonth !== prevState.endMonth
+            || nextProps.userName !== prevState.userName
+            || nextProps.organizationalUnitIds !== prevState.organizationalUnitIds
+        ) {
             return {
                 ...prevState,
                 userId: nextProps.userId,
                 startMonth: nextProps.startMonth,
                 endMonth: nextProps.endMonth,
+                userName: nextProps.userName,
+                organizationalUnitIds: nextProps.organizationalUnitIds
             }
         } else {
             return null;
@@ -93,7 +91,9 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
     }
 
     filterEmloyeeKpiSetSameOrganizationaUnit = () => {
-        const { createEmployeeKpiSet, translate, userName } = this.props;
+        const { createEmployeeKpiSet, translate } = this.props;
+        const { userName } = this.state;
+
         let listEmployeeKpiSet, listOrganizationalUnit, listEmployeeKpiSetSameOrganizationalUnit = [], dataChart;
         
         if (createEmployeeKpiSet) {
@@ -125,8 +125,19 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
     }
 
     setDataMultiLineChart = (listEmployeeKpiSet) => {
-        const { createEmployeeKpiSet, translate,userName } = this.props;
+        const { createEmployeeKpiSet, translate } = this.props;
+        const { userName } = this.state;
+
+        let employeeName, title;
         let dataMultiLineChart, automaticPoint, employeePoint, approvedPoint, date, exportData;
+
+        if (userName) {
+            employeeName = userName.split('(');
+            employeeName = employeeName[0];
+        }
+        if (listEmployeeKpiSet[0] && listEmployeeKpiSet[0].organizationalUnit) {
+            title = employeeName + ' - ' + listEmployeeKpiSet[0].organizationalUnit.name;
+        }
 
         if (listEmployeeKpiSet && userName ) {
             exportData=this.convertDataToExportData(listEmployeeKpiSet,userName)
@@ -142,8 +153,9 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
                 return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + (date.getDate() - 1);
             })
         }
+
         dataMultiLineChart = {
-            "title": listEmployeeKpiSet[0].organizationalUnit.name,
+            "title": title,
             "data": [['x'].concat(date), automaticPoint, employeePoint, approvedPoint]
         };
         return dataMultiLineChart;
