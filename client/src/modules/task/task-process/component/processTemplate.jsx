@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from "react-redux-multilingual";
 
 
-import { PaginateBar, SelectMulti, DataTableSetting } from '../../../../common-components';
+import { PaginateBar, SelectMulti, DataTableSetting, ConfirmNotification } from '../../../../common-components';
 
 
 import { ModalEditTaskProcess } from './modalEditTaskProcess'
@@ -14,6 +14,7 @@ import { ModalCreateTaskByProcess } from './modalCreateTaskByProcess';
 import { TaskProcessActions } from '../redux/actions';
 import { RoleActions } from '../../../super-admin/role/redux/actions';
 import { DepartmentActions } from '../../../super-admin/organizational-unit/redux/actions';
+import Swal from 'sweetalert2';
 class ProcessTemplate extends Component {
     constructor(props) {
         super(props);
@@ -176,7 +177,7 @@ class ProcessTemplate extends Component {
                             <div className="pull-right">
                                 <button className="btn btn-success" onClick={() => { this.showModalCreateProcess() }}>
                                     Thêm mới
-              </button>
+                                </button>
                             </div>
                             {
                                 showModalCreateProcess &&
@@ -235,9 +236,17 @@ class ProcessTemplate extends Component {
                                             <a className="edit" onClick={() => { this.showEditProcess(item) }} title={translate('task_template.edit_this_task_template')}>
                                                 <i className="material-icons">edit</i>
                                             </a>
-                                            <a className="delete" onClick={() => { this.deleteDiagram(item._id) }} title={translate('task_template.delete_this_task_template')}>
+                                            {/* <a className="delete" onClick={() => { this.deleteDiagram(item._id) }} title={translate('task_template.delete_this_task_template')}>
                                                 <i className="material-icons"></i>
-                                            </a>
+                                            </a> */}
+                                            <ConfirmNotification
+                                                icon="warning"
+                                                title={translate('task_template.delete_this_task_template')}
+                                                content={`<h3>${translate('task_template.delete_this_task_template')} "${item.processName}"</h3>`}
+                                                name="delete_outline"
+                                                className="text-red"
+                                                func={()=>this.deleteDiagram(item._id)}
+                                            />
                                             <a className="" style={{ color: "#008D4C" }} onClick={() => { this.showModalCreateTask(item) }} title={translate('task_template.create_task_by_process')}>
                                                 <i className="material-icons">add_box</i>
                                             </a>

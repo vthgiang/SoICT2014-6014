@@ -287,6 +287,7 @@ class ModalCreateTaskProcess extends Component {
       this.modeler.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
 
       this.modeler.on('shape.changed', 1, (e) => this.changeNameElement(e));
+      console.log('event', eventBus);
    }
    done = (e) => {
       e.preventDefault()
