@@ -137,15 +137,14 @@ class UsageCreateForm extends Component {
 
         if (this.isFormValidated()) {
             let dataToSubit = {
-                usedByUser: !this.state.usedByUser ? this.props.user.list[0].id : this.state.usedByUser,
-                startDate: startDate,
-                endDate: endDate,
-                description: this.state.description,
-                assignedToUser: !this.state.usedByUser ? this.props.user.list[0].id : this.state.usedByUser,
-                handoverFromDate: startDate,
-                handoverToDate: endDate,
+                usageLogs: {
+                    usedByUser: !this.state.usedByUser ? this.props.user.list[0].id : this.state.usedByUser.id,
+                    startDate: startDate,
+                    endDate: endDate,
+                    description: this.state.description,
+                },
+                assignedToUser: !this.state.usedByUser ? this.props.user.list[0].id : this.state.usedByUser._id,
                 status: "Đang sử dụng",
-
             }
 
             let assetId = this.state.asset._id;
