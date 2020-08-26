@@ -35,6 +35,7 @@ class AssetStatistics extends Component {
     
     
     render() {
+        const { translate } = this.props;
         const { listAssets } = this.state;
 
         return (
@@ -45,7 +46,7 @@ class AssetStatistics extends Component {
                         <div className="col-6 col-xs-6">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div className="box-title">Biểu thống kê tài sản theo trạng thái</div>
+                                    <div className="box-title">{translate('asset.dashboard.status_chart')}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     <StautsChart
@@ -59,7 +60,7 @@ class AssetStatistics extends Component {
                         <div className="col-6 col-xs-6">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div className="box-title">Biểu thống kê tài sản theo nhóm</div>
+                                    <div className="box-title">{translate('asset.dashboard.group_chart')}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     <GroupChart
@@ -74,7 +75,7 @@ class AssetStatistics extends Component {
                         <div className="col-6 col-xs-6">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
-                                    <div className="box-title">Biểu thống kê tài sản theo giá trị</div>
+                                    <div className="box-title">{translate('asset.dashboard.cost_chart')}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     <CostChart
@@ -89,6 +90,7 @@ class AssetStatistics extends Component {
         );
     }
 }
+
 function mapState(state) {
 }
 

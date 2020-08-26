@@ -222,7 +222,7 @@ class DashBoardAssets extends Component {
                             </LazyLoadComponent>
                         </div>
 
-                        {/** Danh sách tài liệu văn bản */}
+                        {/** Biểu đồ thống kê tài sản */}
                         <div className="tab-pane" id="administration-asset-statistics">
                             <LazyLoadComponent
                                 key="AdministrationAssetStatistics"

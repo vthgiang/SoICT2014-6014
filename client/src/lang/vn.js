@@ -1644,6 +1644,13 @@ export default {
                 attached_file: 'File đính kèm',
             },
 
+            // Dashboard
+            dashboard: {
+                status_chart: 'Biểu đồ thống kê tài sản theo trạng thái',
+                group_chart: 'Biểu đồ thống kê tài sản theo nhóm',
+                cost_chart: 'Biểu đồ thống kê tài sản theo giá trị',
+            },
+
             //  Quản lý loại tài sản
             asset_type: {
                 asset_type_code: 'Mã loại tài sản',
