@@ -47,11 +47,11 @@ function getEmployeeKpiSet(month = undefined) {
 }
 
 // Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước
-function getAllEmployeeKpiSetByMonth(userId, startDate, endDate) {
+function getAllEmployeeKpiSetByMonth(organizationalUnitIds, userId, startDate, endDate) {
     return dispatch => {
         dispatch({ type: createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_BY_MONTH_REQUEST });
 
-        createKpiSetService.getAllEmployeeKpiSetByMonth(userId, startDate, endDate)
+        createKpiSetService.getAllEmployeeKpiSetByMonth(organizationalUnitIds, userId, startDate, endDate)
             .then(res => {
                 dispatch({
                     type: createKpiSetConstants.GET_ALL_EMPLOYEE_KPI_SET_BY_MONTH_SUCCESS,

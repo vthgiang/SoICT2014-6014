@@ -1,4 +1,4 @@
-const { DocumentCategory, DocumentDomain, DocumentArchive, Role, User, UserRole, OrganizationalUnit } = require('../../models').schema;
+const { DocumentCategory, DocumentDomain, DocumentArchive, Role, User, UserRole, OrganizationalUnit, Document } = require('../../models').schema;
 const arrayToTree = require('array-to-tree');
 const fs = require('fs');
 const ObjectId = require('mongoose').Types.ObjectId;
@@ -17,10 +17,12 @@ exports.getDocuments = async (company, query) => {
         return await Document.find({ company }).populate([
             { path: 'category', model: DocumentCategory },
             { path: 'domains', model: DocumentDomain },
+            { path: 'archives', model: DocumentArchive },
             { path: 'views.viewer', model: User, select: 'name id' },
             { path: "downloads.downloader", model: User, select: 'name id' },
             { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
             { path: "logs.creator", model: User, select: 'name id' },
+            { path: "relationshipDocuments", model: Document, select: "name id" },
         ]);
     } else {
         let option = {
@@ -53,6 +55,7 @@ exports.getDocuments = async (company, query) => {
                 { path: "downloads.downloader", model: User, select: 'name id' },
                 { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
                 { path: "logs.creator", model: User, select: 'name id' },
+                { path: "relationshipDocuments", model: Document, select: "name id" },
 
             ]
         });
@@ -165,6 +168,7 @@ exports.editDocument = async (id, data, query = undefined) => {
         title: title,
         description: descriptions,
     }
+
     let document = await Document.findByIdAndUpdate(
         id,
         {
@@ -194,27 +198,49 @@ exports.editDocument = async (id, data, query = undefined) => {
         }
     } else {
         const doc = await Document.findById(id);
-        doc.name = data.name
-        doc.domains = data.domains
-        doc.archives = data.archives
-        doc.category = data.category
-        doc.description = data.description
-        doc.issuingBody = data.issuingBody
-        doc.officialNumber = data.officialNumber
-        doc.signer = data.signer
+        if (doc.name !== data.name) {
+            doc.name = data.name
+        }
+        if (data.domains) {
+            doc.domains = data.domains
+        }
+        if (data.archives) {
+            doc.archives = data.archives
+        }
+        if (data.category) {
+            doc.category = data.category
+        }
+        if (data.description) {
+            doc.description = data.description
+        }
+        if (data.issuingBody) {
+            doc.issuingBody = data.issuingBody
+        }
+        if (data.officialNumber) {
+            doc.officialNumber = data.officialNumber
+        }
+        if (data.signer) {
+            doc.signer = data.signer
+        }
 
-        doc.relationshipDescription = data.relationshipDescription
-        doc.relationshipDocuments = data.relationshipDocuments
+        if (data.relationshipDescription) {
+            doc.relationshipDescription = data.relationshipDescription
+        }
+        if (data.relationshipDocuments) {
+            doc.relationshipDocuments = data.relationshipDocuments
+        }
 
-        doc.roles = data.roles
+        if (data.roles) {
+            doc.roles = data.roles
+        }
 
         // if (data.archivedRecordPlaceInfo !== 'undefined' && data.archivedRecordPlaceInfo !== undefined)
         //     doc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo
-        if (data.archivedRecordPlaceOrganizationalUnit !== 'undefined' && data.archivedRecordPlaceOrganizationalUnit !== undefined && data.archivedRecordPlaceOrganizationalUnit !== "[object Object]") {
+        if (data.archivedRecordPlaceOrganizationalUnit) {
             //  console.log(data.archivedRecordPlaceOrganizationalUnit)
             doc.archivedRecordPlaceOrganizationalUnit = data.archivedRecordPlaceOrganizationalUnit
         }
-        if (data.archivedRecordPlaceManager !== 'undefined' && data.archivedRecordPlaceManager !== undefined)
+        if (data.archivedRecordPlaceManagerd)
             doc.archivedRecordPlaceManager = data.archivedRecordPlaceManager
 
         await doc.save();
@@ -402,6 +428,7 @@ exports.getDocumentsThatRoleCanView = async (company, query) => {
             { path: "downloads.downloader", model: User, select: 'name id' },
             { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
             { path: "logs.creator", model: User, select: 'name id' },
+            { path: "relationshipDocuments", model: Document, select: "name id" },
         ]);
     } else {
         // const option = (query.key !== undefined && query.value !== undefined)
@@ -438,6 +465,7 @@ exports.getDocumentsThatRoleCanView = async (company, query) => {
                 { path: "downloads.downloader", model: User, select: 'name id' },
                 { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
                 { path: "logs.creator", model: User, select: 'name id' },
+                { path: "relationshipDocuments", model: Document, select: "name id" },
             ]
         });
     }

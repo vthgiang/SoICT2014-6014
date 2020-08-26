@@ -44,7 +44,7 @@ exports.getEmployeeKpiSet = async (req, res) => {
 /** Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
 exports.getAllEmployeeKpiSetByMonth = async (req, res) => {
     try {
-        const employeeKpiSetByMonth = await EmployeeKpiSetService.getAllEmployeeKpiSetByMonth(req.query.userId, req.query.startDate, req.query.endDate);
+        const employeeKpiSetByMonth = await EmployeeKpiSetService.getAllEmployeeKpiSetByMonth(req.query.organizationalUnitIds, req.query.userId, req.query.startDate, req.query.endDate);
 
         await LogInfo(req.user.email, ` get all employee kpi set by month `, req.user.company);
         res.status(200).json({

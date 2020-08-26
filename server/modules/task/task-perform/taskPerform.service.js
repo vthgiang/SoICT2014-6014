@@ -2260,19 +2260,55 @@ exports.editTaskStatus = async (taskID, body) => {
         { $set: { status: body.status } }
     )
 
+    let startDate = task1.startDate;
+    let endDate = task1.endDate;
+
     if (body.typeOfTask === "Gateway") {
         for (let i = 0; i < body.listSelected.length; i++) {
-            console.log(body.listSelected[i])
+            let followStartDate = endDate;
+
+            let followItem = await Task.findById(body.listSelected[i]);
+            let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
+            let timer = followStartDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+
+            let followEndDate = new Date(timer).toISOString();
+
+            console.log('enddate', followEndDate);
+            console.log('startdate', followStartDate);
+
+
             await Task.findByIdAndUpdate(body.listSelected[i],
-                { $set: { status: "Inprocess" } }
+                {
+                    $set: {
+                        status: "Inprocess",
+                        startDate: followStartDate,
+                        endDate: followEndDate,
+                    }
+                }
             )
         }
     } else {
         if (!body.listSelected.length) {
+
             if (task1.followingTasks) {
                 for (let i = 0; i < task1.followingTasks.length; i++) {
+                    let followStartDate = endDate;
+
+                    let followItem = await Task.findById(task1.followingTasks[i].task);
+                    let numberOfDaysTaken = followItem.numberOfDaysTaken ? followItem.numberOfDaysTaken : 0;
+                    let timer = followStartDate.getTime() + numberOfDaysTaken * 24 * 60 * 60 * 1000;
+
+                    let followEndDate = new Date(timer).toISOString();
+
+                    console.log('follow', followEndDate, followStartDate);
                     await Task.findByIdAndUpdate(task1.followingTasks[i].task,
-                        { $set: { status: "Inprocess" } }
+                        {
+                            $set: {
+                                status: "Inprocess",
+                                startDate: followStartDate,
+                                endDate: followEndDate,
+                            }
+                        }
                     )
                 }
             }
@@ -2395,7 +2431,7 @@ exports.deleteDocument = async (params) => {
  * Sua document
  */
 exports.editDocument = async (params, body, files) => {
-    console.log(body)
+    
     let document = await Task.updateOne(
         { "_id": params.taskId, "documents._id": params.documentId },
         {
@@ -2414,6 +2450,16 @@ exports.editDocument = async (params, body, files) => {
             }
         }
     )
+    let isOutput = await Task.updateOne(
+        { "_id": params.taskId, "documents._id": params.documentId },
+        {
+            $set:
+            {
+                "documents.$.isOutput": body.isOutput
+            }
+        }
+    )
+
     let task1 = await Task.findById({ _id: params.taskId }).populate([
         { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);

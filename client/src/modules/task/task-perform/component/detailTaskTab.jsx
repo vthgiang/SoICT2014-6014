@@ -334,18 +334,23 @@ class DetailTaskTab extends Component {
                                 <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_edit')}
                             </a>
                         }
-
-                        {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
-                            <a className="btn btn-app" onClick={() => !performtasks.currentTimer && this.startTimer(task._id, currentUser)} title="Bắt đầu thực hiện công việc" disabled={performtasks.currentTimer}>
-                                <i className="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" ></i>{translate('task.task_management.detail_start_timer')}
-                            </a>
+                        {
+                            performtasks?.task?.status !== "Finished" &&
+                            <React.Fragment>
+                                {((currentRole === "consulted" || currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
+                                    <a className="btn btn-app" onClick={() => !performtasks.currentTimer && this.startTimer(task._id, currentUser)} title="Bắt đầu thực hiện công việc" disabled={performtasks.currentTimer}>
+                                        <i className="fa fa-clock-o" style={{ fontSize: "16px" }} aria-hidden="true" ></i>{translate('task.task_management.detail_start_timer')}
+                                    </a>
+                                }
+                            </React.Fragment>
                         }
 
-                        {currentRole === "accountable" && checkInactive &&
-                            (statusTask === "Finished" ?
-                                <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)} title="Công việc đã kết thúc">
-                                    <i className="fa fa-times" style={{ fontSize: "16px" }}></i>{"Hủy kết thúc"}
-                                </a> :
+
+                        {currentRole === "accountable" && checkInactive && codeInProcess &&
+                            (statusTask !== "Finished" &&
+                                // <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)} title="Công việc đã kết thúc">
+                                //     <i className="fa fa-times" style={{ fontSize: "16px" }}></i>{"Hủy kết thúc"}
+                                // </a> :
                                 <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Finished", codeInProcess, typeOfTask)} title="Kết thúc công việc">
                                     <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
                                 </a>
@@ -402,7 +407,7 @@ class DetailTaskTab extends Component {
 
                                 <div><strong>{translate('task.task_management.detail_progress')}: &nbsp;&nbsp;</strong> {task && task.progress}%</div>
                                 {
-                                    (task && task.taskInformations.length !== 0) &&
+                                    (task && task.taskInformations && task.taskInformations.length !== 0) &&
                                     task.taskInformations.map((info, key) => {
                                         if (info.type === "Date") {
                                             return <div key={key}><strong>{info.name}: &nbsp; &nbsp;</strong> {info.value ? this.formatDate(info.value) : translate('task.task_management.detail_not_hasinfo')}</div>
@@ -434,7 +439,7 @@ class DetailTaskTab extends Component {
                                         &nbsp;&nbsp;
                                         <span>
                                         {
-                                            (task && task.responsibleEmployees.length !== 0) &&
+                                            (task && task.responsibleEmployees && task.responsibleEmployees.length !== 0) &&
                                             task.responsibleEmployees.map((item, index) => {
                                                 let seperator = index !== 0 ? ", " : "";
                                                 if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
@@ -452,7 +457,7 @@ class DetailTaskTab extends Component {
                                         &nbsp;&nbsp;
                                         <span>
                                         {
-                                            (task && task.accountableEmployees.length !== 0) &&
+                                            (task && task.accountableEmployees && task.accountableEmployees.length !== 0) &&
                                             task.accountableEmployees.map((item, index) => {
                                                 let seperator = index !== 0 ? ", " : "";
                                                 if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
@@ -466,7 +471,7 @@ class DetailTaskTab extends Component {
                                     <br />
 
                                     {
-                                        (task && task.consultedEmployees.length !== 0) &&
+                                        (task && task.consultedEmployees && task.consultedEmployees.length !== 0) &&
                                         <React-Fragment>
                                             {/* Người tư vấn */}
                                             <strong>{translate('task.task_management.consulted')}: </strong>
@@ -488,7 +493,7 @@ class DetailTaskTab extends Component {
                                         </React-Fragment>
                                     }
                                     {
-                                        (task && task.informedEmployees.length !== 0) &&
+                                        (task && task.informedEmployees && task.informedEmployees.length !== 0) &&
                                         <React-Fragment>
                                             {/* Người hỗ trợ */}
                                             <strong>{translate('task.task_management.informed')}: </strong>
