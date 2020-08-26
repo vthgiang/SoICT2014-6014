@@ -58,6 +58,10 @@ class SideBar extends Component {
             path13: "/manage-maintainance-asset", //Quản lý bảo trì
             path14: "/manage-usage-asset", //Quản lý  sử dụng tài sản
             path15: "/manage-incident-asset", //Quản lý lịch sự cố tài sản
+
+            path16: "/employee-manage-info-asset", //Nhân viên quản lý thông tin tài sản 
+            path17: "/employee-manage-incident-asset", //Nhân viên quản lý thông su co tin tài sản 
+            path18: "/employee-manage-recommend-distribute-asset", //Nhân viên quản lý thông tin  dang ky tài sản 
         };
         const url2 = {
             path1: "/dashboad-material",
@@ -255,7 +259,9 @@ class SideBar extends Component {
                                     this.checkURL(url1.path7, links) === true || this.checkURL(url1.path8, links) === true ||
                                     this.checkURL(url1.path10, links) === true || this.checkURL(url1.path11, links) === true ||
                                     this.checkURL(url1.path12, links) === true || this.checkURL(url1.path13, links) === true ||
-                                    this.checkURL(url1.path14, links) === true || this.checkURL(url1.path15, links) === true) &&
+                                    this.checkURL(url1.path14, links) === true || this.checkURL(url1.path15, links) === true || 
+                                    this.checkURL(url1.path16, links) === true || this.checkURL(url1.path17, links) === true || 
+                                    this.checkURL(url1.path18, links) === true) &&
                                 <li className="treeview" >
                                     <a href="">
                                         <i className="fa fa-address-book" /> <span>{translate(`menu.manage_asset`)}</span>
@@ -390,6 +396,36 @@ class SideBar extends Component {
                                                 <Link to={url1.path4}>
                                                     <i className="fa fa-building" />
                                                     {translate(`menu.view_building_list`)}
+                                                </Link>
+                                            </li>
+                                        }
+
+                                        {/** Nhân viên quản lí tài san */}
+                                        {this.checkURL(url1.path16, links) === true &&
+                                            <li className={window.location.pathname === url1.path16 ? "active" : ""}>
+                                                <Link to={url1.path16}>
+                                                    <i className="fa fa-sitemap" />
+                                                    {translate(`menu.employee_manage_asset_info`)}
+                                                </Link>
+                                            </li>
+                                        }
+
+                                        {/** quản lý sự cố tài sản */}
+                                        {this.checkURL(url1.path17, links) === true &&
+                                            <li className={window.location.pathname === url1.path17 ? "active" : ""}>
+                                                <Link to={url1.path17}>
+                                                    <i className="fa fa-calendar" />
+                                                    {translate(`menu.manage_incident_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+                                        
+                                        {/** Quản lý sử dụng tài sản */}
+                                        {this.checkURL(url1.path18, links) === true &&
+                                            <li className={window.location.pathname === url1.path18 ? "active" : ""}>
+                                                <Link to={url1.path18}>
+                                                    <i className="fa fa-sitemap" />
+                                                    {translate(`menu.manage_recommend_distribute_asset`)}
                                                 </Link>
                                             </li>
                                         }

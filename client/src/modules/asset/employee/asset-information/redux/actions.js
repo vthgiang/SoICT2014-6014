@@ -1,7 +1,7 @@
 import { AssetConstants } from "./constants";
 import { AssetService } from "./services";
 
-export const AssetManagerActions = {
+export const EmployeeAssetManagerActions = {
     getAllAsset,
     addNewAsset,
     updateInformationAsset,
@@ -95,11 +95,10 @@ function addNewAsset(asset) {
 
 /**
  * Cập nhật thông tin tài sản theo id
- * @param {*} id 
- * @param {*} data 
- * @param {*} managedBy khi manageBy !="", role gọi service này không phải là admin
+ * @param {*} id
+ * @param {*} data
  */
-function updateInformationAsset(id, data,managedBy = "") {
+function updateInformationAsset(id, data) {
     return dispatch => {
         dispatch({
             type: AssetConstants.UPDATE_INFOR_ASSET_REQUEST
@@ -107,32 +106,15 @@ function updateInformationAsset(id, data,managedBy = "") {
 
         AssetService.updateInformationAsset(id, data)
             .then(res => {
-                if(managedBy === "")
-                {
-                    dispatch(getAllAsset({
-                        code: "",
-                        assetName: "",
-                        assetType: null,
-                        month: null,
-                        status: "",
-                        page: 0,
-                        limit: 5,
-                    }));                   
-                }
-                else
-                {
-                    dispatch(getAllAsset({
-                        code: "",
-                        assetName: "",
-                        assetType: null,
-                        month: null,
-                        status: "",
-                        page: 0,
-                        limit: 5,
-                        managedBy:managedBy
-                    }));          
-                }
-
+                dispatch(getAllAsset({
+                    code: "",
+                    assetName: "",
+                    assetType: null,
+                    month: null,
+                    status: "",
+                    page: 0,
+                    limit: 5,
+                }));
                 dispatch({
                     type: AssetConstants.UPDATE_INFOR_ASSET_SUCCESS,
                     payload: res.data.content
@@ -148,11 +130,10 @@ function updateInformationAsset(id, data,managedBy = "") {
 }
 
 /**
- * Xóa tài sản
- * @param {*} id 
- * @param {*} managedBy khi manageBy !="", role gọi service này không phải là admin
+ * Xoá thông tin tài sản
+ * @id : id thông tin tài sản cần xoá
  */
-function deleteAsset(id, managedBy ="") {
+function deleteAsset(id) {
     return dispatch => {
         dispatch({
             type: AssetConstants.DELETE_ASSET_REQUEST
@@ -160,32 +141,15 @@ function deleteAsset(id, managedBy ="") {
 
         AssetService.deleteAsset(id)
             .then(res => {
-                if(managedBy === "")
-                {
-                    dispatch(getAllAsset({
-                        code: "",
-                        assetName: "",
-                        assetType: null,
-                        month: null,
-                        status: "",
-                        page: 0,
-                        limit: 5,
-                    }));                   
-                }
-                else
-                {
-                    dispatch(getAllAsset({
-                        code: "",
-                        assetName: "",
-                        assetType: null,
-                        month: null,
-                        status: "",
-                        page: 0,
-                        limit: 5,
-                        managedBy:managedBy
-                    }));          
-                }
-                
+                dispatch(getAllAsset({
+                    code: "",
+                    assetName: "",
+                    assetType: null,
+                    month: null,
+                    status: "",
+                    page: 0,
+                    limit: 5,
+                }));
                 dispatch({
                     type: AssetConstants.DELETE_ASSET_SUCCESS,
                     payload: res.data.content

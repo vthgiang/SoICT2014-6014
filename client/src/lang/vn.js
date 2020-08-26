@@ -649,6 +649,7 @@ export default {
             manage_incident_asset: 'Quản lý sự cố tài sản',
             manage_recommend_procure: 'Quản lý đề nghị mua sắm',
             manage_recommend_distribute_asset: 'Quản lý đăng ký sử dụng',
+            employee_manage_asset_info: 'Quản lý thông tin tài sản được phân quyền',
 
             view_building_list: 'Xem danh sách mặt bằng',
 
@@ -1687,6 +1688,7 @@ export default {
                 add_incident_info: 'Thêm mới thông tin sự cố',
                 edit_incident_info: 'Chỉnh sửa thông tin sự cố',
                 delete_incident_info: 'Xóa thông tin sự cố',
+                delete_asset_confirm: 'Xóa tài sản này ?',
 
                 usage_time: 'Thời gian sử dụng',
                 annual_depreciation: 'Mức độ khấu hao trung bình hằng năm',

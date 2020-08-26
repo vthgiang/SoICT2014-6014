@@ -61,7 +61,7 @@ const COMPONENTS = [
         links: [
             '/task-process-template'
         ]
-    }
+    }, 
 ];
 exports.COMPONENTS = COMPONENTS;
 
@@ -574,6 +574,41 @@ const LINKS = [
         ],
         components: getComponentsInLink('/manage-recommend-distribute-asset')
     },
+
+    {
+        url: '/employee-manage-info-asset',
+        description: 'Quản lý thông tin tài sản',
+        category: LINK_CATEGORY.ASSET.name,
+        roles: [
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/employee-manage-info-asset')
+    },
+    {
+        url: '/employee-manage-incident-asset',
+        description: 'Quản lý thông tin sự cố tài sản',
+        category: LINK_CATEGORY.ASSET.name,
+        roles: [
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/employee-manage-incident-asset')
+    },
+    {
+        url: '/employee-manage-recommend-distribute-asset',
+        description: 'Quản lý đăng kí sử dụng tài sản',
+        category: LINK_CATEGORY.ASSET.name,
+        roles: [
+            ROOT_ROLES.DEAN.name,
+            ROOT_ROLES.VICE_DEAN.name,
+            ROOT_ROLES.EMPLOYEE.name,
+        ],
+        components: getComponentsInLink('/employee-manage-recommend-distribute-asset')
+    },
+    
 
     {
         url: '/recommend-equipment-procurement',
