@@ -5,8 +5,7 @@ const { Asset, UserRole } = require('../../../models').schema;
  * Lấy danh sách phiếu đề nghị cấp thiết bị
  */
 exports.searchRecommendDistributes = async (query, company) => {
-    const { recommendNumber, month, status, page, limit } = query;
-
+    const { recommendNumber, month, status, page, limit,managedBy } = query;
     var keySearch = { company: company};
 
     // Bắt sựu kiện mã phiếu tìm kiếm khác ""
@@ -27,6 +26,13 @@ exports.searchRecommendDistributes = async (query, company) => {
     var totalList = await RecommendDistribute.count(keySearch);
     var listRecommendDistributes = await RecommendDistribute.find(keySearch).populate('asset proponent approver').sort({'createdAt': 'desc'}).skip(page ? parseInt(page) : 0).limit(limit ? parseInt(limit) : 0);
     
+
+    if(managedBy!=="" && managedBy!==undefined)
+    {
+        let tempListRecommendDistributes = listRecommendDistributes.filter(item=>item.asset.managedBy.toString()===managedBy);
+        listRecommendDistributes=tempListRecommendDistributes;
+    }
+
     return { totalList, listRecommendDistributes };
 }
 

@@ -647,6 +647,7 @@ export default {
             manage_incident_asset: 'Manage incident assets',
             manage_recommend_procure: 'Manage purchase request',
             manage_recommend_distribute_asset: 'Manage use request',
+            employee_manage_asset_info: 'Manage information assets by employee',
 
             view_building_list: 'View building list',
             // NHÂN VIÊN
@@ -1677,6 +1678,7 @@ export default {
                 add_incident_info: 'Add new incident infomation',
                 edit_incident_info: 'Edit incident infomation',
                 delete_incident_info: 'Delete incident infomation',
+                delete_asset_confirm: 'Are you sure to delete this asset ?',
 
                 usage_time: 'Usage time',
                 annual_depreciation: 'Annual average rate of depreciation',

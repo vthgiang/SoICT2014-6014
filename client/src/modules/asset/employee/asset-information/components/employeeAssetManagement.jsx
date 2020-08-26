@@ -4,14 +4,15 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMulti, ExportExcel } from '../../../../../common-components';
 
-import { AssetManagerActions } from '../redux/actions';
-import { AssetTypeActions } from "../../asset-type/redux/actions";
+import { AssetManagerActions } from '../../../admin/asset-information/redux/actions';
+import { AssetTypeActions } from "../../../admin/asset-type/redux/actions";
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 
-import { AssetCreateForm, AssetDetailForm, AssetEditForm } from './combinedContent';
-import { configTaskTempalte } from '../../../../task/task-template/component/fileConfigurationImportTaskTemplate';
+import { AssetDetailForm, AssetEditForm } from './combinedContent';
 
-class AssetManagement extends Component {
+import Swal from 'sweetalert2';
+
+class EmployeeAssetManagement extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -23,6 +24,7 @@ class AssetManagement extends Component {
             canRegisterForUse: "",
             page: 0,
             limit: 5,
+            managedBy:localStorage.getItem('userId')
         }
     }
 
@@ -92,6 +94,37 @@ class AssetManagement extends Component {
             }
         });
         window.$('#modal-edit-asset').modal('show');
+    }
+
+    /**Xoa tasktemplate theo id */
+    handleDelete = (id) => {
+        const { translate } = this.props;
+        const { managedBy } = this.state;
+            Swal.fire({
+                title: translate('asset.asset_info.delete_asset_confirm'),
+                type: 'success',
+                showCancelButton: true,
+                cancelButtonColor: '#d33',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('task_template.confirm')
+            }).then((res) => {
+                if (res.value) {
+                    this.props.deleteAsset(id,managedBy);
+                    
+
+                    // var test = window.$("#multiSelectUnit").val();
+                    // this.props.getAllAsset({
+                    //     code: "",
+                    //     assetName: "",
+                    //     assetType: null,
+                    //     month: null,
+                    //     status: "",
+                    //     page: 0,
+                    //     limit: 5,
+                    //     managedBy:managedBy
+                    // });
+                }
+            });
     }
 
     // Function lưu giá trị mã tài sản vào state khi thay đổi
@@ -317,8 +350,6 @@ class AssetManagement extends Component {
         return (
             <div className="box">
                 <div className="box-body qlcv">
-                    {/* Form thêm tài sản mới */}
-                    <AssetCreateForm />
 
                     {/* Thanh tìm kiếm */}
                     <div className="form-inline">
@@ -429,14 +460,9 @@ class AssetManagement extends Component {
                                         <td style={{ textAlign: "center" }}>
                                             <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('asset.general_information.view')}><i className="material-icons">view_list</i></a>
                                             <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.general_information.edit_info')}><i className="material-icons">edit</i></a>
-                                            <DeleteNotification
-                                                content={translate('asset.general_information.delete_info')}
-                                                data={{
-                                                    id: x._id,
-                                                    info: x.code + " - " + x.assetName
-                                                }}
-                                                func={this.props.deleteAsset}
-                                            />
+                                            <a href="cursor:{'pointer'}" onClick={() => this.handleDelete(x._id)} className="delete" title={translate('asset.general_information.delete_info')}>
+                                                            <i className="material-icons"></i>
+                                            </a>
                                         </td>
                                     </tr>))
                             }
@@ -564,5 +590,5 @@ const actionCreators = {
 
 };
 
-const assetManagement = connect(mapState, actionCreators)(withTranslate(AssetManagement));
-export { assetManagement as AssetManagement };
+const assetManagement = connect(mapState, actionCreators)(withTranslate(EmployeeAssetManagement));
+export { assetManagement as EmployeeAssetManagement };
