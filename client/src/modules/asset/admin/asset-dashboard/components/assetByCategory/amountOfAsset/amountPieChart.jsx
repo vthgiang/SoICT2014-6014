@@ -3,14 +3,19 @@ import { connect } from 'react-redux';
 
 import c3 from 'c3';
 import 'c3/c3.css';
+import * as d3 from 'd3-format';
+
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { Tree } from '../../../../../../common-components';
+import { Tree } from '../../../../../../../common-components';
 
 
-class AmountOfAssetChart extends Component {
+class AmountPieChart extends Component {
     constructor(props) {
         super(props);
 
+    }
+    componentDidMount() {
+        if (this.refs.amountPieChart) this.pieChart();
     }
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
@@ -47,20 +52,23 @@ class AmountOfAssetChart extends Component {
 
         return dataPieChart;
     }
-
+    // Xóa các chart đã render khi chưa đủ dữ liệu
+    removePreviousChart() {
+        const chart = this.refs.amountPieChart;
+        if (chart) {
+            while (chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild);
+            }
+        }
+    }
 
     // Khởi tạo PieChart bằng C3
     pieChart = () => {
-        let dataPieChart = this.setDataPieChart();
-        let d = document.getElementById("amountOfAsset")
-        let c = document.getElementById("amountOfAssetChart")
-        console.log('c: ', c);
-        if (c) console.log('d: ', c.childNodes[0]);
-        if (!d) {
 
-        };
-        this.chart = c3.generate({
-            bindto: '#amountOfAsset',
+        let dataPieChart = this.setDataPieChart();
+        this.removePreviousChart();
+        let chart = c3.generate({
+            bindto: this.refs.amountPieChart,
 
             data: {
                 columns: dataPieChart,
@@ -94,74 +102,22 @@ class AmountOfAssetChart extends Component {
             }
         });
     }
+
     render() {
-        const { displayBy, assetType, listAssets } = this.props;
-        let countAssetType = [], idAssetType = [];
-
-
-        let dataTree;
-        if (displayBy == "Group") {
-            console.log('call pie chart');
-            this.pieChart();
-        }
-        else {
-            for (let i in assetType) {
-                countAssetType[i] = 0;
-                idAssetType.push(assetType[i].id)
-            }
-
-            let chart = [];
-            if (listAssets) {
-                listAssets.map(asset => {
-                    let idx = idAssetType.indexOf(asset.assetType);
-                    countAssetType[idx]++;
-                })
-                for (let i in assetType) {
-                    let title = `${assetType[i].title} - ${countAssetType[i]}`
-                    chart.push({
-                        id: assetType[i].id,
-                        typeName: title,
-                        parentId: assetType[i].parent_id,
-                    })
-                }
-            }
-
-            dataTree = chart && chart.map(node => {
-                return {
-                    ...node,
-                    id: node.id,
-                    text: node.typeName,
-                    amount: node.count,
-                    parent: node.parentId ? node.parentId.toString() : "#"
-                }
-            })
-        }
+        this.pieChart();
+        // console.log('render ');
         return (
             <React.Fragment>
-                <div className="box-body qlcv" id="amountOfAssetChart">
-                    {/* { */}
-                    {/* // displayBy == "Group" ? */}
-                    {displayBy === "Group" && <section id="amountOfAsset"></section>}
-                    <Tree
-                        id="tree-qlcv-amount-by-type"
-                        data={dataTree}
-                        plugins={false}
-                    />
-
-
-
-                </div>
+                <section ref="amountPieChart"></section>
             </React.Fragment>
         )
     }
 }
 
-function mapState(state) {
-}
+function mapState(state) { }
 
-const actions = {
-}
+const actions = {}
 
-const AmountOfAssetChartConnected = connect(mapState, actions)(withTranslate(AmountOfAssetChart));
+const AmountPieChartConnected = connect(mapState, actions)(withTranslate(AmountPieChart));
 
-export { AmountOfAssetChartConnected as AmountOfAssetChart }
+export { AmountPieChartConnected as AmountPieChart }

@@ -1,0 +1,146 @@
+
+
+
+
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+import c3 from 'c3';
+import 'c3/c3.css';
+import * as d3 from 'd3-format';
+
+import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+import { Tree } from '../../../../../../../common-components';
+
+class DepreciationTree extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    /**
+             * Hàm để tính các giá trị khấu hao cho tài sản
+             */
+    calculateDepreciation = (depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation) => {
+        let annualDepreciation = 0, monthlyDepreciation = 0, remainingValue = cost;
+
+        if (depreciationType === "Đường thẳng") { // Phương pháp khấu hao theo đường thẳng
+            annualDepreciation = ((12 * cost) / usefulLife);
+            monthlyDepreciation = cost / usefulLife;
+            remainingValue = cost - (cost / usefulLife) * ((new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(startDepreciation).getFullYear() * 12 + new Date(startDepreciation).getMonth()));
+
+        } else if (depreciationType === "Số dư giảm dần") { // Phương pháp khấu hao theo số dư giảm dần
+            let lastYears = false,
+                t,
+                usefulYear = usefulLife / 12,
+                usedTime = (new Date().getFullYear() * 12 + new Date().getMonth()) - (new Date(startDepreciation).getFullYear() * 12 + new Date(startDepreciation).getMonth());
+
+            if (usefulYear < 4) {
+                t = (1 / usefulYear) * 1.5;
+            } else if (usefulYear >= 4 && usefulYear <= 6) {
+                t = (1 / usefulYear) * 2;
+            } else if (usefulYear > 6) {
+                t = (1 / usefulYear) * 2.5;
+            }
+
+            // Tính khấu hao đến năm hiện tại
+            for (let i = 1; i <= usedTime / 12; i++) {
+                if (!lastYears) {
+                    if (remainingValue * t > (remainingValue / (usefulYear - i + 1))) {
+                        annualDepreciation = remainingValue * t;
+                    } else {
+                        annualDepreciation = (remainingValue / (usefulYear - i + 1));
+                        lastYears = true;
+                    }
+                }
+
+                remainingValue = remainingValue - annualDepreciation;
+            }
+
+            // Tính khấu hao đến tháng hiện tại
+            if (usedTime % 12 !== 0) {
+                if (!lastYears) {
+                    if (remainingValue * t > (remainingValue / (usefulYear - Math.floor(usedTime / 12)))) {
+                        annualDepreciation = remainingValue * t;
+                    } else {
+                        annualDepreciation = (remainingValue / (usefulYear - Math.floor(usedTime / 12)));
+                        lastYears = true;
+                    }
+                }
+
+                monthlyDepreciation = annualDepreciation / 12;
+                remainingValue = remainingValue - (monthlyDepreciation * (usedTime % 12))
+            }
+
+        } else if (depreciationType === "Sản lượng") { // Phương pháp khấu hao theo sản lượng
+            let monthTotal = unitsProducedDuringTheYears.length; // Tổng số tháng tính khấu hao
+            let productUnitDepreciation = cost / (estimatedTotalProduction * (usefulLife / 12)); // Mức khấu hao đơn vị sản phẩm
+            let accumulatedDepreciation = 0; // Giá trị hao mòn lũy kế
+
+            for (let i = 0; i < monthTotal; i++) {
+                accumulatedDepreciation += unitsProducedDuringTheYears[i].unitsProducedDuringTheYear * productUnitDepreciation;
+            }
+
+            remainingValue = cost - accumulatedDepreciation;
+            annualDepreciation = monthTotal ? accumulatedDepreciation * 12 / monthTotal : 0;
+        }
+        // console.log('cost', parseInt(cost - remainingValue));
+        return parseInt(cost - remainingValue);
+    }
+    render() {
+        let { assetType, listAssets } = this.props;
+
+        let typeName = [], countAssetDepreciation = [], idAssetType = [];
+        for (let i in assetType) {
+            countAssetDepreciation[i] = 0;
+            idAssetType.push(assetType[i].id)
+        }
+
+        let chart = [];
+        if (listAssets) {
+            listAssets.map(asset => {
+                let idx = idAssetType.indexOf(asset.assetType);
+                countAssetDepreciation[idx] += this.calculateDepreciation(asset.depreciationType, asset.cost, asset.usefulLife, asset.estimatedTotalProduction, asset.unitsProducedDuringTheYears, asset.startDepreciation);
+            })
+            for (let i in assetType) {
+
+                let val = d3.format(",")(countAssetDepreciation[i])
+                let title = `${assetType[i].title} - ${val} `
+
+                typeName.push(assetType[i].title);
+
+                chart.push({
+                    id: assetType[i].id,
+                    typeName: title,
+                    parentId: assetType[i].parent_id,
+                })
+            }
+        }
+        let dataTree = chart && chart.map(node => {
+            return {
+                ...node,
+                id: node.id,
+                text: node.typeName,
+                parent: node.parentId ? node.parentId.toString() : "#"
+            }
+        })
+        console.log('treee', dataTree);
+        return (
+            <div className="depreciation-asset" id="depreciation-asset">
+                <br />
+                <Tree
+                    id="tree-qlcv-depreciation-asset"
+                    data={dataTree}
+                    plugins={false}
+                />
+            </div>
+        )
+    }
+}
+
+function mapState(state) { }
+
+const actions = {}
+
+const DepreciationTreeConnected = connect(mapState, actions)(withTranslate(DepreciationTree));
+
+export { DepreciationTreeConnected as DepreciationTree }

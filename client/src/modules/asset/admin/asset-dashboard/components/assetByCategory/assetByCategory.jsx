@@ -1,19 +1,24 @@
 import React, { Component } from 'react';
-import { AmountOfAssetChart } from './amountOfAssetChart';
-import { ValueOfAssetChart } from './valueOfAssetChart';
-import { DepreciationOfAssetChart } from './depreciationOfAssetChart';
+import { connect } from 'react-redux';
+
 import { AssetService } from '../../../asset-information/redux/services';
 import { AssetTypeService } from '../../../asset-type/redux/services';
-import { connect } from 'react-redux';
+
+import AmountOfAssetCharts from './amountOfAsset/amountOfAssetCharts';
+import ValueOfAssetCharts from './valueOfAsset/valueOfAssetCharts';
+import DepreciationOfAssetCharts from './depreciationOfAsset/depreciationOfAssetCharts';
+
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { SelectBox } from '../../../../../../common-components';
+
 
 class AssetByCategory extends Component {
     constructor(props) {
         super(props);
         this.state = {
             listAssets: [],
-            displayBy: "Group"
+            displayBy: ["Group"],
+            typeOfChart: ["Bar"]
         }
     }
     componentDidMount() {
@@ -49,6 +54,16 @@ class AssetByCategory extends Component {
             }
         })
     }
+
+    handleSelectTypeOfChart = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                typeOfChart: value
+            }
+        })
+    }
+
     render() {
         const { listAssets, recommendProcure, recommendDistribute, displayBy, assetType } = this.state;
 
@@ -56,7 +71,7 @@ class AssetByCategory extends Component {
             <React.Fragment>
                 <div className="qlcv">
                     <section className="form-inline" style={{ textAlign: "left" }}>
-                        {
+                        {/* {
                             displayBy == "Type" &&
                             <div className="form-group">
                                 <label>Type of Chart</label>
@@ -64,13 +79,13 @@ class AssetByCategory extends Component {
                                     id={`select-chart-in-asset-dashboard`}
                                     className="form-control select2"
                                     style={{ width: "100%" }}
-                                    items={[{ text: "Tree", value: "Tree" }, { text: "Bar", value: "Bar" }]}
+                                    items={[{ text: "Bar", value: "Bar" }, { text: "Tree", value: "Tree" }]}
                                     multiple={false}
                                     onChange={this.handleSelectTypeOfChart}
                                     value={"Bar"}
                                 />
                             </div>
-                        }
+                        } */}
                         <div className="form-group">
                             <label>Classify by</label>
                             <SelectBox
@@ -85,14 +100,13 @@ class AssetByCategory extends Component {
                         </div>
                     </section>
                     <div className="row">
-                        {/* Biểu đồ số lượng tài sản */}
                         <div className="col-xs-6">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
                                     <div className="box-title">Biểu đồ số lượng tài sản</div>
                                 </div>
                                 <div className="box-body qlcv">
-                                    <AmountOfAssetChart
+                                    <AmountOfAssetCharts
                                         listAssets={listAssets}
                                         displayBy={displayBy}
                                         assetType={assetType}
@@ -101,34 +115,34 @@ class AssetByCategory extends Component {
                             </div>
                         </div>
 
-                        {/* Biểu đồ giá trị tài sản */}
                         <div className="col-xs-6">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
                                     <div className="box-title">Biểu đồ giá trị tài sản</div>
                                 </div>
                                 <div className="box-body qlcv">
-                                    <ValueOfAssetChart
+                                    <ValueOfAssetCharts
                                         listAssets={listAssets}
                                         displayBy={displayBy}
                                         assetType={assetType}
+
                                     />
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div className="row">
-                        {/* Biểu đồ khấu hao tài sản */}
                         <div className="col-xs-6">
                             <div className="box box-primary">
                                 <div className="box-header with-border">
                                     <div className="box-title">Biểu đồ khấu hao tài sản</div>
                                 </div>
                                 <div className="box-body qlcv">
-                                    <DepreciationOfAssetChart
+                                    <DepreciationOfAssetCharts
                                         listAssets={listAssets}
                                         displayBy={displayBy}
                                         assetType={assetType}
+
                                     />
                                 </div>
                             </div>
