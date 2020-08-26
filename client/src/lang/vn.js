@@ -429,7 +429,7 @@ export default {
 
             category: 'Loại tài liệu',
             domain: 'Danh mục',
-            data: 'Danh sách tài liệu tài liệu',
+            data: 'Danh sách tài liệu',
             statistics_report: 'Thống kê báo cáo',
             history_report: 'Lịch sử thống kê',
 
@@ -1642,6 +1642,13 @@ export default {
                 file_name: 'Tên tài liệu',
                 number: 'Số lượng',
                 attached_file: 'File đính kèm',
+            },
+
+            // Dashboard
+            dashboard: {
+                status_chart: 'Biểu đồ thống kê tài sản theo trạng thái',
+                group_chart: 'Biểu đồ thống kê tài sản theo nhóm',
+                cost_chart: 'Biểu đồ thống kê tài sản theo giá trị',
             },
 
             //  Quản lý loại tài sản

@@ -847,22 +847,22 @@ editArchivedOfTask = async (req, res) => {
  * Chinh sua trang thai cua cong viec
  */
 editTaskStatus = async (req, res) => {
-    try {
-        let task = await PerformTaskService.editTaskStatus(req.params.taskId, req.body.status);
+    // try {
+        let task = await PerformTaskService.editTaskStatus(req.params.taskId, req.body);
         await LogInfo(req.user.email, ` edit status of task  `, req.user.company);
         res.status(200).json({
             success: true,
             messages: ['edit_status_of_task_success'],
             content: task
         })
-    } catch (error) {
-        await LogError(req.user.email, ` edit status of task `, req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: ['edit_status_of_task_fail'],
-            content: error
-        });
-    }
+    // } catch (error) {
+    //     await LogError(req.user.email, ` edit status of task `, req.user.company);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['edit_status_of_task_fail'],
+    //         content: error
+    //     });
+    // }
 }
 
 /**
