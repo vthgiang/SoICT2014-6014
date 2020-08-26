@@ -61,6 +61,7 @@ class ManageUserTable extends Component {
                         userName={this.state.currentRow.name}
                         userActive={this.state.currentRow.active}
                         userRoles={this.state.currentRow.roles.map(role => role && role.roleId ? role.roleId._id : null)}
+                        userAvatar={this.state.currentRow.avatar}
                     />
                 }
 

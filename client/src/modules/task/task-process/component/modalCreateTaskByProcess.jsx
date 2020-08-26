@@ -5,16 +5,17 @@ import { FormInfoTask } from "./formInfoTask";
 import { DialogModal, SelectBox, DatePicker } from "../../../../common-components";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 import { getStorage } from '../../../../config';
+import { TaskProcessActions } from "../redux/actions";
+import { TaskFormValidator } from "../../task-management/component/taskFormValidator";
+import { FormCreateTaskByProcess } from "./formCreateTaskByProcess";
+import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import BpmnViewer from 'bpmn-js'
+import customModule from './read-only'
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
-import { TaskProcessActions } from "../redux/actions";
-import customModule from './read-only'
-import { TaskFormValidator } from "../../task-management/component/taskFormValidator";
-import { FormCreateTaskByProcess } from "./formCreateTaskByProcess";
 //bpmn-nyan
 // import nyanDrawModule from 'bpmn-js-nyan/lib/nyan/draw';
 // import nyanPaletteModule from 'bpmn-js-nyan/lib/nyan/palette';
@@ -48,10 +49,11 @@ class ModalCreateTaskByProcess extends Component {
             startDate: "",
             endDate: "",
         }
-        this.viewer = new BpmnViewer({
+        this.modeler = new BpmnModeler({
             additionalModules: [
                 customModule,
-                { zoomScroll: ['value', ''] }
+                { zoomScroll: ['value', ''] },
+                { bendpoints: ['value', ""] }
             ],
         });
         this.generateId = 'createtaskbyprocess';
@@ -72,16 +74,21 @@ class ModalCreateTaskByProcess extends Component {
         this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
 
 
-        this.viewer.attachTo('#' + this.generateId);
+        this.modeler.attachTo('#' + this.generateId);
 
-        var eventBus = this.viewer.get('eventBus');
-        this.viewer.on('element.click', 1000, (e) => this.interactPopup(e));
+        var eventBus = this.modeler.get('eventBus');
 
-        // this.viewer.on('shape.remove', 1000, (e) => this.deleteElements(e));
+        //Vo hieu hoa double click edit label
+        eventBus.on('element.dblclick', 10000, function (event) {
+            var element = event.element;
 
-        // this.viewer.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
+            if (isAny(element, ['bpmn:Task'])) {
+                return false; // will cancel event
+            }
+        });
 
-        // this.viewer.on('shape.changed', 1000, (e) => this.changeNameElement(e));
+        eventBus.on('shape.move.start', 100000, () => { return false })
+        this.modeler.on('element.click', 1000, (e) => this.interactPopup(e));
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -122,7 +129,7 @@ class ModalCreateTaskByProcess extends Component {
                 defaultUnit = user.organizationalUnitsOfUser[0]
             }
             this.props.getChildrenOfOrganizationalUnits(defaultUnit && defaultUnit._id);
-            this.viewer.importXML(nextProps.data.xmlDiagram, function (err) { });
+            this.modeler.importXML(nextProps.data.xmlDiagram, function (err) { });
             return true;
         }
         return true;
@@ -159,10 +166,10 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     handleChangeName = async (value) => {
-        const modeling = this.viewer.get('modeling');
-        let element1 = this.viewer.get('elementRegistry').get(this.state.id);
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
         modeling.updateProperties(element1, {
-           name: value,
+            name: value,
         });
     }
     // handleChangeName = async (value) => {
@@ -210,8 +217,8 @@ class ModalCreateTaskByProcess extends Component {
     //         }
     //     })
     //     console.log('-----vào');
-    //     const modeling = this.viewer.get('modeling');
-    //     let element1 = this.viewer.get('elementRegistry').get(this.state.id);
+    //     const modeling = this.modeler.get('modeling');
+    //     let element1 = this.modeler.get('elementRegistry').get(this.state.id);
     //     modeling.updateProperties(element1, {
     //         responsibleName: responsible
     //     });
@@ -236,8 +243,8 @@ class ModalCreateTaskByProcess extends Component {
     //             ...state,
     //         }
     //     })
-    //     const modeling = this.viewer.get('modeling');
-    //     let element1 = this.viewer.get('elementRegistry').get(this.state.id);
+    //     const modeling = this.modeler.get('modeling');
+    //     let element1 = this.modeler.get('elementRegistry').get(this.state.id);
     //     modeling.updateProperties(element1, {
     //         accountableName: accountable
     //     });
@@ -247,31 +254,31 @@ class ModalCreateTaskByProcess extends Component {
         let { user } = this.props
         let responsible = []
         user.usercompanys.forEach(x => {
-           if (value.some(y => y === x._id)) {
-              responsible.push(x.name)
-           }
+            if (value.some(y => y === x._id)) {
+                responsible.push(x.name)
+            }
         })
-        const modeling = this.viewer.get('modeling');
-        let element1 = this.viewer.get('elementRegistry').get(this.state.id);
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
         modeling.updateProperties(element1, {
-           responsibleName: responsible
+            responsibleName: responsible
         });
-     }
-  
-     handleChangeAccountable = async (value) => {
+    }
+
+    handleChangeAccountable = async (value) => {
         let { user } = this.props
         let accountable = []
         user.usercompanys.forEach(x => {
-           if (value.some(y => y === x._id)) {
-              accountable.push(x.name)
-           }
+            if (value.some(y => y === x._id)) {
+                accountable.push(x.name)
+            }
         })
-        const modeling = this.viewer.get('modeling');
-        let element1 = this.viewer.get('elementRegistry').get(this.state.id);
+        const modeling = this.modeler.get('modeling');
+        let element1 = this.modeler.get('elementRegistry').get(this.state.id);
         modeling.updateProperties(element1, {
-           accountableName: accountable
+            accountableName: accountable
         });
-     }
+    }
 
     handleChangeOrganizationalUnit = async (value) => {
         await this.setState(state => {
@@ -424,8 +431,8 @@ class ModalCreateTaskByProcess extends Component {
         let { info, startDate, endDate, userId, processName, processDescription, xmlDiagram } = this.state;
 
         let xmlStr;
-        this.viewer.saveXML({ format: true }, function (err, xml) {
-           xmlStr = xml;
+        this.modeler.saveXML({ format: true }, function (err, xml) {
+            xmlStr = xml;
         });
 
         await this.setState(state => {
@@ -455,7 +462,7 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     downloadAsSVG = () => {
-        this.viewer.saveSVG({ format: true }, function (error, svg) {
+        this.modeler.saveSVG({ format: true }, function (error, svg) {
             if (error) {
                 return;
             }
@@ -480,7 +487,7 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     downloadAsBpmn = () => {
-        this.viewer.saveXML({ format: true }, function (error, xml) {
+        this.modeler.saveXML({ format: true }, function (error, xml) {
             if (error) {
                 return;
             }
@@ -488,7 +495,7 @@ class ModalCreateTaskByProcess extends Component {
     }
 
     downloadAsImage = () => {
-        this.viewer.saveSVG({ format: true }, function (error, svg) {
+        this.modeler.saveSVG({ format: true }, function (error, svg) {
             if (error) {
                 return;
             }
@@ -534,8 +541,8 @@ class ModalCreateTaskByProcess extends Component {
 
     handleZoomOut = async () => {
         let zstep = 0.2;
-        let canvas = this.viewer.get('canvas');
-        let eventBus = this.viewer.get('eventBus');
+        let canvas = this.modeler.get('canvas');
+        let eventBus = this.modeler.get('eventBus');
 
         // set initial zoom level
         canvas.zoom(zlevel, 'auto');
@@ -550,14 +557,14 @@ class ModalCreateTaskByProcess extends Component {
 
     handleZoomReset = () => {
 
-        let canvas = this.viewer.get('canvas');
+        let canvas = this.modeler.get('canvas');
         canvas.zoom('fit-viewport');
     }
 
     handleZoomIn = async () => {
         let zstep = 0.2;
-        let canvas = this.viewer.get('canvas');
-        let eventBus = this.viewer.get('eventBus');
+        let canvas = this.modeler.get('canvas');
+        let eventBus = this.modeler.get('eventBus');
 
         // set initial zoom level
         canvas.zoom(zlevel, 'auto');
@@ -571,7 +578,7 @@ class ModalCreateTaskByProcess extends Component {
 
     exportDiagram = () => {
         let xmlStr;
-        this.viewer.saveXML({ format: true }, function (err, xml) {
+        this.modeler.saveXML({ format: true }, function (err, xml) {
             if (err) {
             }
             else {
@@ -661,7 +668,7 @@ class ModalCreateTaskByProcess extends Component {
                                         <div className='col-md-6'>
                                             <div className="form-group">
                                                 <label>Mô tả quy trình</label>
-                                                <textarea type="text" rows={4} style={{height: "108px"}}
+                                                <textarea type="text" rows={4} style={{ height: "108px" }}
                                                     value={processDescription}
                                                     className="form-control" placeholder="Mô tả công việc"
                                                     onChange={this.handleChangeBpmnDescription}

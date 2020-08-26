@@ -556,7 +556,8 @@ class EmployeeKpiEvaluationDashboard extends Component {
                                             endMonth={infosearch.endMonth}
                                             info={infosearch}
                                             unitId={currentUnit}
-                                            userName = {userName}
+                                            userName={userName}
+                                            organizationalUnitIds={ids}
                                             onDataAvailable = {this.handleStatisticsOfEmployeeKpiSetChartDataAvailable}
                                         />
                                     }

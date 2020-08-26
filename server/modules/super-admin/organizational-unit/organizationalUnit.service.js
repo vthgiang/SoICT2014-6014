@@ -410,13 +410,11 @@ exports.deleteOrganizationalUnit = async (departmentId) => {
             },{
                 $set :{ parent: department.parent }
             }); 
-
-            return await OrganizationalUnit.deleteOne({ _id: departmentId });
         }
+        return await OrganizationalUnit.deleteOne({ _id: departmentId });
     } else {
         throw ['department_has_user'];
     }
-    console.log(departmentId);
 }
 
 exports.importOrganizationalUnits = async(data, companyId) => {

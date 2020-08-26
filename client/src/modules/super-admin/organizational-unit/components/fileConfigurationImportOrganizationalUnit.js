@@ -43,9 +43,8 @@ export const templateImportDepartment = {
     fileName: "Mẫu import cơ cấu tổ chức",
     dataSheets: [{
         sheetName: "sheet1",
-        sheetTitle: '',
+        sheetTitle: 'Danh sách cơ cấu tổ chức',
         tables: [{
-            tableName: "Bảng thống kê cơ cấu tổ chức",
             rowHeader: 2,
             columns: [
                 { key: "name", value: "Tên đơn vị" },

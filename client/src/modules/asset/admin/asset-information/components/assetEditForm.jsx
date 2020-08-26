@@ -245,14 +245,14 @@ class AssetEditForm extends Component {
         // Thêm vào thông tin sử dụng
         if (assignedToUser !== this.props.assignedToUser|| assignedToOrganizationalUnit !== this.props.assignedToOrganizationalUnit || handoverFromDate !== this.props.handoverFromDate || handoverToDate !== this.props.handoverToDate) {
             this.props.createUsage(this.state._id, {
-                usedByUser: this.state.assignedToUser,
-                startDate: this.state.handoverFromDate,
-                endDate: this.state.handoverToDate,
-                description: '',
+                usageLogs: {
+                    usedByUser: this.state.assignedToUser,
+                    startDate: this.state.handoverFromDate,
+                    endDate: this.state.handoverToDate,
+                    description: '',
+                },
                 assignedToUser: this.state.assignedToUser,
                 assignedToOrganizationalUnit: this.state.assignedToOrganizationalUnit,
-                handoverFromDate: this.state.handoverFromDate,
-                handoverToDate: this.state.handoverToDate,
                 status: "Đang sử dụng",
             });
         }
@@ -368,7 +368,7 @@ class AssetEditForm extends Component {
             handoverToDate, location, description, status, canRegisterForUse, detailInfo, usageLogs, maintainanceLogs, cost, residualValue, startDepreciation,
             usefulLife, depreciationType, incidentLogs, disposalDate, disposalType, unitsProducedDuringTheYears, disposalCost, disposalDesc, archivedRecordNumber,
             files, estimatedTotalProduction } = this.state;
-        console.log(this.state, 'this.state-edit')
+
 
         return (
             <React.Fragment>
@@ -416,6 +416,7 @@ class AssetEditForm extends Component {
                                 status={status}
                                 canRegisterForUse={canRegisterForUse}
                                 detailInfo={detailInfo}
+                                usageLogs={usageLogs}
                             />
 
                             {/* Thông tin sử dụng */}

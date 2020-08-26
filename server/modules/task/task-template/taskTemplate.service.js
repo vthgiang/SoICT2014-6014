@@ -338,6 +338,7 @@ exports.editTaskTemplate = async (data, id) => {
  * @param {*} id : id user
  */
 exports.importTaskTemplate = async (data,id) => {
+    let results = [];
     for (let i = 0; i < data.length; i++) {
         // chuyen dia chi email sang id
         for (let j = 0; j < data[i].accountableEmployees.length; j++) {
@@ -363,59 +364,36 @@ exports.importTaskTemplate = async (data,id) => {
             let responsibleEmployees = await User.findOne({ email: data[i].responsibleEmployees[j] });
             data[i].responsibleEmployees[j] = String(responsibleEmployees._id);            
         };
-        // xu ly thong tin priority
-        if (data[i].priority === "Cao") data[i].priority = 1;
-        else if (data[i].priority === "Thấp") data[i].priority = 3;
-        else data[i].priority = 2;
         // xu ly thong tin filledByAccountableEmployeesOnly 
         for (let j = 0; j < data[i].taskInformations.length; j++) {
             if (data[i].taskInformations[j][0]) {
                 // format thong tin "chi qua ly duoc dien"
                 data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = data[i].taskInformations[j][3];
-                // if (data[i].taskInformations[j][3] === 'Đúng')
-                //     data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = true;
-                // else data[i].taskInformations[j]["filledByAccountableEmployeesOnly"] = false;
                 // formart thong tin kieu du lieu
                 data[i].taskInformations[j]["type"] = data[i].taskInformations[j][2];
-                // if (data[i].taskInformations[j][2] == "Số") {
-                //     data[i].taskInformations[j]["type"] = 'Number';
-                // } else {
-                //     if (data[i].taskInformations[j][2] == "Văn bản") {
-                //         data[i].taskInformations[j]["type"] = 'Text';
-                //     } else {
-                //         if (data[i].taskInformations[j][2] == "Boolean") {
-                //             data[i].taskInformations[j]["type"] = 'Boolean';
-                //         } else {
-                //             if (data[i].taskInformations[j][2] == "Ngày tháng") {
-                //                 data[i].taskInformations[j]["type"] = 'Date';
-                //             } else {
-                //                 data[i].taskInformations[j]["type"] = "SetOfValues";
-                //             }
-                //         }
-                //     }
-                // }
                 data[i].taskInformations[j]["name"] = data[i].taskInformations[j][0];
                 data[i].taskInformations[j]["description"] = data[i].taskInformations[j][1];
             } else {
                 data[i].taskInformations.splice(j,1);
+                j--;
             }
         }
         for (let j = 0; j < data[i].taskActions.length; j++) {
             if (data[i].taskActions[j][0]) {
                 data[i].taskActions[j]["mandatory"] = data[i].taskActions[j][2];
-                // if (data[i].taskActions[j][2] === "Bắt buộc")
-                //     data[i].taskActions[j]["mandatory"] = true;
-                // else data[i].taskActions[j]["mandatory"] = false;
                 data[i].taskActions[j]["name"] = data[i].taskActions[j][0];
                 data[i].taskActions[j]["description"] = data[i].taskActions[j][1];
             } else {
                 data[i].taskActions.splice(j,1);
+                j--;
             }
         }
         let unit = await OrganizationalUnit.findOne({name: data[i].organizationalUnit});
         data[i].organizationalUnit = String(unit._id);
         data[i].creator = id;
         let result = await this.createTaskTemplate(data[i]);
+        results = [...results, result];
     };
-
+    console.log("results", results);
+    return results;
 }

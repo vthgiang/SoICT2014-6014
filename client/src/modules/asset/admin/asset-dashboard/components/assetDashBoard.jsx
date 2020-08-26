@@ -4,16 +4,16 @@ import { withTranslate } from 'react-redux-multilingual';
 
 import CanvasJSReact from './assets/canvasjs.react';
 
-import { AmountOfAssetChart } from './amountOfAssetChart';
-import { ValueOfAssetChart } from './valueOfAssetChart';
-import { DepreciationOfAssetChart } from './depreciationOfAssetChart';
-
 import { AssetService } from "../../asset-information/redux/services";
-import { AssetTypeService } from "../../asset-type/redux/services";
 import { RecommendProcureService } from "../../../user/purchase-request/redux/services";
 import { RecommendDistributeService } from "../../use-request/redux/services";
 
-import { SelectBox } from '../../../../../common-components'
+import { LazyLoadComponent, forceCheckOrVisible } from '../../../../../common-components';
+
+import { AssetByCategory } from './assetByCategory/assetByCategory';
+import { AssetStatistics } from './asset-statistics-chart/index';
+import { AssetIsExpired } from './asset-is-expired/assetIsExpired';
+
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class DashBoardAssets extends Component {
@@ -23,7 +23,6 @@ class DashBoardAssets extends Component {
             listAssets: [],
             recommendProcure: [],
             recommendDistribute: [],
-            displayBy: "Group"
         }
     }
 
@@ -70,14 +69,6 @@ class DashBoardAssets extends Component {
         }).catch(err => {
             console.log(err);
         });
-
-        AssetTypeService.getAssetTypes().then(res => {
-            if (res.data.success) {
-                this.setState({ assetType: res.data.content.tree })
-            }
-        }).catch(err => {
-            console.log(err);
-        });
     }
 
     // Function format dữ liệu Date thành string
@@ -104,17 +95,10 @@ class DashBoardAssets extends Component {
 
     returnCountNumber = (array, status) => array.filter(item => item.status === status).length;
 
-    handleSelectTypeOfDisplay = async (value) => {
-        await this.setState(state => {
-            return {
-                ...state,
-                displayBy: value
-            }
-        })
-    }
+
 
     render() {
-        const { listAssets, recommendProcure, recommendDistribute, displayBy, assetType } = this.state;
+        const { listAssets, recommendProcure, recommendDistribute } = this.state;
         const options = {
             animationEnabled: true,
             title: {
@@ -170,24 +154,8 @@ class DashBoardAssets extends Component {
                 ]
             }]
         };
-
         return (
             <div className="qlcv">
-                <section className="form-inline" style={{ textAlign: "right" }}>
-                    <div className="form-group">
-                        <label>Phan loai theo</label>
-
-                        <SelectBox
-                            id={`select-type-display-in-asset-dashboard`}
-                            className="form-control select2"
-                            style={{ width: "100%" }}
-                            items={[{ text: "Group", value: "Group" }, { text: "Type", value: "Type" }]}
-                            multiple={false}
-                            onChange={this.handleSelectTypeOfDisplay}
-                            value={"Group"}
-                        />
-                    </div>
-                </section>
                 <div className="row" style={{ marginTop: 10 }}>
 
                     {/* Tổng số tài sản */}
@@ -237,70 +205,130 @@ class DashBoardAssets extends Component {
                             </div>
                         </div>
                     </div>
-
-                    {/* Biểu đồ yêu cầu mua sắm tài sản */}
-                    {/* <div className="col-md-6 col-sm-6 col-xs-6">
-                        <CanvasJSChart options={options} />
-                    </div> */}
-
-                    {/* Biểu đồ yêu cầu sử dụng tài sản */}
-                    {/* <div className="col-md-6 col-sm-6 col-xs-6">
-                        <CanvasJSChart options={options2} />
-                    </div> */}
-
                 </div>
-                <div className="row">
-                    {/* Biểu đồ số lượng tài sản */}
-                    <div className="col-xs-6">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">Biểu đồ số lượng tài sản</div>
-                            </div>
-                            <div className="box-body qlcv">
-                                <AmountOfAssetChart
-                                    listAssets={listAssets}
-                                    displayBy={displayBy}
-                                    assetType={assetType}
-                                />
-                            </div>
-                        </div>
-                    </div>
 
-                    {/* Biểu đồ giá trị tài sản */}
-                    <div className="col-xs-6">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">Biểu đồ giá trị tài sản</div>
-                            </div>
-                            <div className="box-body qlcv">
-                                <ValueOfAssetChart
-                                    listAssets={listAssets}
-                                    displayBy={displayBy}
-                                    assetType={assetType}
-                                />
-                            </div>
+                <div className="nav-tabs-custom">
+                    <ul className="nav nav-tabs">
+                        <li className="active"><a href="#administration-asset-by-type" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Tài sản theo nhóm loại</a></li>
+                        <li ><a href="#administration-asset-statistics" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê tài sản</a></li>
+                        <li><a href="#administration-asset-is-expired" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Hạn sử dụng tài sản</a> </li>
+                    </ul>
+                    <div className="tab-content">
+
+                        {/** Danh sách tài liệu văn bản */}
+                        <div className="tab-pane active" id="administration-asset-by-type">
+                            <LazyLoadComponent
+                                key="AdministrationAssetByType"
+                            >
+                                <AssetByCategory />
+                            </LazyLoadComponent>
                         </div>
-                    </div>
-                </div>
-                <div className="row">
-                    {/* Biểu đồ khấu hao tài sản */}
-                    <div className="col-xs-6">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">Biểu đồ khấu hao tài sản</div>
-                            </div>
-                            <div className="box-body qlcv">
-                                <DepreciationOfAssetChart
-                                    listAssets={listAssets}
-                                    displayBy={displayBy}
-                                    assetType={assetType}
-                                />
-                            </div>
+
+                        {/** Biểu đồ thống kê tài sản */}
+                        <div className="tab-pane" id="administration-asset-statistics">
+                            <LazyLoadComponent
+                                key="AdministrationAssetStatistics"
+                            >
+                                <AssetStatistics />
+                            </LazyLoadComponent>
                         </div>
+
+                        {/* Danh sách các tài sản sắp hết hạn */}
+                        <div className="tab-pane" id="administration-asset-is-expired">
+                            <LazyLoadComponent
+                                key="AdministrationAssetExpired"
+                            >
+                                <AssetIsExpired />
+                            </LazyLoadComponent>
+                        </div>
+
                     </div>
                 </div>
             </div>
         );
+
+        // return (
+        //     <div className="qlcv">
+        //         <section className="form-inline" style={{ textAlign: "right" }}>
+        //             <div className="form-group">
+        //                 <label>Phan loai theo</label>
+
+        //                 <SelectBox
+        //                     id={`select-type-display-in-asset-dashboard`}
+        //                     className="form-control select2"
+        //                     style={{ width: "100%" }}
+        //                     items={[{ text: "Group", value: "Group" }, { text: "Type", value: "Type" }]}
+        //                     multiple={false}
+        //                     onChange={this.handleSelectTypeOfDisplay}
+        //                     value={"Group"}
+        //                 />
+        //             </div>
+        //         </section>
+
+
+        //             {/* Biểu đồ yêu cầu mua sắm tài sản */}
+        //             {/* <div className="col-md-6 col-sm-6 col-xs-6">
+        //                 <CanvasJSChart options={options} />
+        //             </div> */}
+
+        //             {/* Biểu đồ yêu cầu sử dụng tài sản */}
+        //             {/* <div className="col-md-6 col-sm-6 col-xs-6">
+        //                 <CanvasJSChart options={options2} />
+        //             </div> */}
+
+        //         </div>
+        //         <div className="row">
+        //             {/* Biểu đồ số lượng tài sản */}
+        //             <div className="col-xs-6">
+        //                 <div className="box box-primary">
+        //                     <div className="box-header with-border">
+        //                         <div className="box-title">Biểu đồ số lượng tài sản</div>
+        //                     </div>
+        //                     <div className="box-body qlcv">
+        //                         <AmountOfAssetChart
+        //                             listAssets={listAssets}
+        //                             displayBy={displayBy}
+        //                             assetType={assetType}
+        //                         />
+        //                     </div>
+        //                 </div>
+        //             </div>
+
+        //             {/* Biểu đồ giá trị tài sản */}
+        //             <div className="col-xs-6">
+        //                 <div className="box box-primary">
+        //                     <div className="box-header with-border">
+        //                         <div className="box-title">Biểu đồ giá trị tài sản</div>
+        //                     </div>
+        //                     <div className="box-body qlcv">
+        //                         <ValueOfAssetChart
+        //                             listAssets={listAssets}
+        //                             displayBy={displayBy}
+        //                             assetType={assetType}
+        //                         />
+        //                     </div>
+        //                 </div>
+        //             </div>
+        //         </div>
+        //         <div className="row">
+        //             {/* Biểu đồ khấu hao tài sản */}
+        //             <div className="col-xs-6">
+        //                 <div className="box box-primary">
+        //                     <div className="box-header with-border">
+        //                         <div className="box-title">Biểu đồ khấu hao tài sản</div>
+        //                     </div>
+        //                     <div className="box-body qlcv">
+        //                         <DepreciationOfAssetChart
+        //                             listAssets={listAssets}
+        //                             displayBy={displayBy}
+        //                             assetType={assetType}
+        //                         />
+        //                     </div>
+        //                 </div>
+        //             </div>
+        //         </div>
+        //     </div>
+        // );
     }
 };
 

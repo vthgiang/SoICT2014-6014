@@ -72,8 +72,10 @@ export default {
             },
             validate: {
                 nameTypeErr: 'không được chứa ký tự đặc biệt',
-                nameLengthErr: 'phải có độ dài từ 6 đến 255 ký tự',
+                nameLengthErr: 'không được để trống hoặc không quá 255 ký tự',
                 emailErr: 'không hợp lệ',
+                passwordLengthErr: 'phải có độ dài từ 6 đến 30 ký tự',
+                descriptionLengthErr: 'không được để trống',
             }
         },
 
@@ -427,7 +429,7 @@ export default {
 
             category: 'Loại tài liệu',
             domain: 'Danh mục',
-            data: 'Danh sách tài liệu tài liệu',
+            data: 'Danh sách tài liệu',
             statistics_report: 'Thống kê báo cáo',
             history_report: 'Lịch sử thống kê',
 
@@ -1592,6 +1594,7 @@ export default {
                 purchase_date: 'Ngày nhập',
                 manager: 'Người quản lý',
                 user: 'Người sử dụng',
+                organization_unit: 'Đơn vị sử dụng',
                 handover_from_date: 'Thời gian bắt đầu sử dụng',
                 handover_to_date: 'Thời gian kết thúc sử dụng',
                 status: 'Trạng thái',
@@ -1640,6 +1643,13 @@ export default {
                 file_name: 'Tên tài liệu',
                 number: 'Số lượng',
                 attached_file: 'File đính kèm',
+            },
+
+            // Dashboard
+            dashboard: {
+                status_chart: 'Biểu đồ thống kê tài sản theo trạng thái',
+                group_chart: 'Biểu đồ thống kê tài sản theo nhóm',
+                cost_chart: 'Biểu đồ thống kê tài sản theo giá trị',
             },
 
             //  Quản lý loại tài sản

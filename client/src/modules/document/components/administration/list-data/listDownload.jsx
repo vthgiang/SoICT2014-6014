@@ -30,8 +30,8 @@ class ListView extends Component {
                         {downloads && downloads.map(item =>
                             <div key={item._id} className="item-box">
                                 <a style={{ fontWeight: 700, cursor: "pointer" }}>{item.downloader?.name} </a>
-                                Đã download lúc &nbsp;
-                                    ({moment(item.time).format("HH:mm:ss DD/MM/YYYY")})
+                                đã download lúc&nbsp;
+                                    {moment(item.time).format("HH:mm:ss DD/MM/YYYY")}
 
                             </div>
                         )}

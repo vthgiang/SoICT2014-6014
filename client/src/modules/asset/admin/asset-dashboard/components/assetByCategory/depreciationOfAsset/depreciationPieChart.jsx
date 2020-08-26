@@ -2,17 +2,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import c3 from 'c3';
-import 'c3/c3.css';
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { Tree } from '../../../../../common-components';
+import { Tree } from '../../../../../../../common-components';
+import c3 from 'c3';
+import * as d3 from 'd3-format';
+import 'c3/c3.css';
 
 
-class DepreciationOfAssetChart extends Component {
+class DepreciationPieChart extends Component {
     constructor(props) {
         super(props);
     }
-
+    componentDidMount() {
+        if (this.refs.depreciationExpenseOfAsset) this.pieChart();
+    }
     /**
      * Hàm để tính các giá trị khấu hao cho tài sản
      */
@@ -188,57 +191,15 @@ class DepreciationOfAssetChart extends Component {
         });
     }
     render() {
-        const { displayBy, assetType, listAssets } = this.props;
-        let countDepreciation = [], idAssetType = [];
-        let dataTree;
-        if (displayBy == "Group") {
-            this.pieChart();
-        }
-        else {
-            for (let i in assetType) {
-                countDepreciation[i] = 0;
-                idAssetType.push(assetType[i].id)
-            }
 
-            let chart = [];
-            if (listAssets) {
-                listAssets.map(asset => {
-                    let idx = idAssetType.indexOf(asset.assetType);
-                    countDepreciation[idx] += this.calculateDepreciation(asset.depreciationType, asset.cost, asset.usefulLife, asset.estimatedTotalProduction, asset.unitsProducedDuringTheYears, asset.startDepreciation);
-                })
-                for (let i in assetType) {
-                    let title = `${assetType[i].title} (${countDepreciation[i]} VND)`
-                    chart.push({
-                        id: assetType[i].id,
-                        typeName: title,
-                        parentId: assetType[i].parent_id,
-                    })
-                }
-            }
+        this.pieChart();
 
-            dataTree = chart && chart.map(node => {
-                return {
-                    ...node,
-                    id: node.id,
-                    text: node.typeName,
-                    amount: node.count,
-                    parent: node.parentId ? node.parentId.toString() : "#"
-                }
-            })
-        }
         return (
             <React.Fragment>
-                <div className="box-body qlcv">
-                    {
-                        displayBy == "Group" ?
-                            <section ref="depreciationExpenseOfAsset"></section>
-                            : <Tree
-                                id="tree-qlcv-depreciation-by-type"
-                                // onChanged={this.onChanged}
-                                data={dataTree}
-                                plugins={false}
-                            />
-                    }
+                <div>
+
+                    <section ref="depreciationExpenseOfAsset"></section>
+
                 </div>
             </React.Fragment>
         )
@@ -251,6 +212,6 @@ function mapState(state) {
 const actions = {
 }
 
-const DepreciationOfAssetChartConnected = connect(mapState, actions)(withTranslate(DepreciationOfAssetChart));
+const DepreciationPieChartConnected = connect(mapState, actions)(withTranslate(DepreciationPieChart));
 
-export { DepreciationOfAssetChartConnected as DepreciationOfAssetChart }
+export { DepreciationPieChartConnected as DepreciationPieChart }

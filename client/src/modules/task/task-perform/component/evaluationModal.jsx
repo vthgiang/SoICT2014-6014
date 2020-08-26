@@ -209,7 +209,7 @@ class EvaluationModal extends Component {
                                 )}
 
                                 {/* Thêm mới đánh giá */}
-                                {(expire > 0) && (checkMonth === false && showEval === false) &&
+                                {(checkMonth === false && showEval === false) && // (expire > 0) && 
                                     <li className={content === 'new' ? "active" : undefined}>
                                         <a style={{ cursor: 'pointer' }} onClick={() => this.handleAddEval()}>
                                             {translate('task.task_management.add_eval_of_this_month')}&nbsp;&nbsp;&nbsp;&nbsp;<i style={{ color: 'green' }} className="fa fa-plus-square"></i>
