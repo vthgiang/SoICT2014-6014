@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { DepartmentActions } from '../redux/actions';
-
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
-
-import { DepartmentValidator } from './organizationalUnitValidator';
+import { VALIDATOR } from '../../../../helpers/validator';
 
 class DepartmentCreateWithParent extends Component {
     constructor(props) {
@@ -93,14 +90,14 @@ class DepartmentCreateWithParent extends Component {
                             {/* Tên đơn vị */}
                             <div className={`form-group ${!departmentNameError ? "" : "has-error"}`}>
                                 <label>{translate('manage_department.name')}<span className="attention"> * </span></label>
-                                <input type="text" className="form-control" onChange={this.handleName} /><br />
+                                <input type="text" className="form-control" onChange={this.handleName} />
                                 <ErrorLabel content={departmentNameError} />
                             </div>
 
                             {/* Mô tả về đơn vị */}
                             <div className={`form-group ${!departmentDescriptionError ? "" : "has-error"}`}>
                                 <label>{translate('manage_department.description')}<span className="attention"> * </span></label>
-                                <textarea type="text" className="form-control" onChange={this.handleDescription} /><br />
+                                <textarea type="text" className="form-control" onChange={this.handleDescription} />
                                 <ErrorLabel content={departmentDescriptionError} />
                             </div>
 
@@ -258,14 +255,18 @@ class DepartmentCreateWithParent extends Component {
         }
     }
 
+    /**
+     * Validate form
+    */
     isFormValidated = () => {
-        let result =
-            this.validateName(this.state.departmentName, false) &&
-            this.validateDescription(this.state.departmentDescription, false)
-
-        return result;
+        let {departmentName, departmentDescription} = this.state;
+        if(!VALIDATOR.checkName(departmentName).status || !VALIDATOR.checkDescription(departmentDescription)) return false;
+        return true;
     }
 
+    /**
+     * Thực hiện thêm đơn vị mới
+    */
     save = () => {
         if (this.isFormValidated()) {
             return this.props.create({
@@ -278,6 +279,7 @@ class DepartmentCreateWithParent extends Component {
             });
         }
     }
+
     handleParent = (value) => {
         console.log("giá trị đơn vị cha: ", value[0])
         this.setState({
@@ -286,41 +288,23 @@ class DepartmentCreateWithParent extends Component {
     }
 
     handleName = (e) => {
-        const { value } = e.target;
-        this.validateName(value, true);
-    }
-    validateName = (value, willUpdateState = true) => {
-        let msg = DepartmentValidator.validateName(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    departmentNameError: msg,
-                    departmentName: value,
-                }
-            });
-        }
-        return msg === undefined;
+        let {translate} = this.props;
+        let { value } = e.target;
+        let {msg} = VALIDATOR.checkName(value);
+        this.setState({
+            departmentName: value,
+            departmentNameError: msg ? `${translate('manage_department.name')} ${translate(msg)}` : undefined
+        });
     }
 
     handleDescription = (e) => {
-        const { value } = e.target;
-        this.validateDescription(value, true);
-    }
-    validateDescription = (value, willUpdateState = true) => {
-        let msg = DepartmentValidator.validateName(value);
-
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    departmentDescriptionError: msg,
-                    departmentDescription: value,
-                }
-            });
-        }
-
-        return msg === undefined;
+        let {translate} = this.props;
+        let { value } = e.target;
+        let {msg} = VALIDATOR.checkDescription(value);
+        this.setState({
+            departmentDescription: value,
+            departmentDescriptionError: msg ? `${translate('manage_department.description')} ${translate(msg)}` : undefined
+        });
     }
 }
 

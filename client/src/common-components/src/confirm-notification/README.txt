@@ -10,3 +10,4 @@ Các property truyền vào:
     title: title của button
     content: Nội dung thông báo in lên thông báo
     icon: icon SweetAlert (success, error, warning, info, question) https://sweetalert2.github.io/#icons
+    func: hàm thực hiện khi xác nhận

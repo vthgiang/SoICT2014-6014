@@ -1644,6 +1644,13 @@ export default {
                 attached_file: 'Attached files',
             },
 
+            // Dashboard
+            dashboard: {
+                status_chart: 'Asset statistics chart by status',
+                group_chart: 'Asset statistics chart by group',
+                cost_chart: 'Asset statistics chart by cost',
+            },
+
             //  Quản lý loại tài sản
             asset_type: {
                 asset_type_code: 'Asset type code',

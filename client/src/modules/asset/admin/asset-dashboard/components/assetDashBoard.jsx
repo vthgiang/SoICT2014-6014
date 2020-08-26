@@ -8,9 +8,10 @@ import { AssetService } from "../../asset-information/redux/services";
 import { RecommendProcureService } from "../../../user/purchase-request/redux/services";
 import { RecommendDistributeService } from "../../use-request/redux/services";
 
-import { AssetByCategory } from './assetByCategory/assetByCategory';
 import { LazyLoadComponent, forceCheckOrVisible } from '../../../../../common-components';
 
+import { AssetByCategory } from './assetByCategory/assetByCategory';
+import { AssetStatistics } from './asset-statistics-chart/index';
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -208,6 +209,7 @@ class DashBoardAssets extends Component {
                 <div className="nav-tabs-custom">
                     <ul className="nav nav-tabs">
                         <li className="active"><a href="#administration-asset-by-type" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Tài sản theo nhóm loại</a></li>
+                        <li ><a href="#administration-asset-statistics" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê tài sản</a></li>
                     </ul>
                     <div className="tab-content">
 
@@ -219,6 +221,16 @@ class DashBoardAssets extends Component {
                                 <AssetByCategory />
                             </LazyLoadComponent>
                         </div>
+
+                        {/** Biểu đồ thống kê tài sản */}
+                        <div className="tab-pane" id="administration-asset-statistics">
+                            <LazyLoadComponent
+                                key="AdministrationAssetStatistics"
+                            >
+                                <AssetStatistics />
+                            </LazyLoadComponent>
+                        </div>
+
                     </div>
                 </div>
             </div>

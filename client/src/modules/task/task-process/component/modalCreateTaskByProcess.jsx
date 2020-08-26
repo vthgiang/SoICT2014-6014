@@ -52,7 +52,8 @@ class ModalCreateTaskByProcess extends Component {
         this.modeler = new BpmnModeler({
             additionalModules: [
                 customModule,
-                { zoomScroll: ['value', ''] }
+                { zoomScroll: ['value', ''] },
+                { bendpoints: ['value', ""] }
             ],
         });
         this.generateId = 'createtaskbyprocess';
@@ -86,6 +87,7 @@ class ModalCreateTaskByProcess extends Component {
             }
         });
 
+        eventBus.on('shape.move.start', 100000, () => { return false })
         this.modeler.on('element.click', 1000, (e) => this.interactPopup(e));
     }
 
