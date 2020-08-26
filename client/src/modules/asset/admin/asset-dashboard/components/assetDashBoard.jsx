@@ -12,6 +12,7 @@ import { LazyLoadComponent, forceCheckOrVisible } from '../../../../../common-co
 
 import { AssetByCategory } from './assetByCategory/assetByCategory';
 import { AssetStatistics } from './asset-statistics-chart/index';
+import { AssetIsExpired } from './asset-is-expired/assetIsExpired';
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -210,6 +211,7 @@ class DashBoardAssets extends Component {
                     <ul className="nav nav-tabs">
                         <li className="active"><a href="#administration-asset-by-type" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Tài sản theo nhóm loại</a></li>
                         <li ><a href="#administration-asset-statistics" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê tài sản</a></li>
+                        <li><a href="#administration-asset-is-expired" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Hạn sử dụng tài sản</a> </li>
                     </ul>
                     <div className="tab-content">
 
@@ -228,6 +230,15 @@ class DashBoardAssets extends Component {
                                 key="AdministrationAssetStatistics"
                             >
                                 <AssetStatistics />
+                            </LazyLoadComponent>
+                        </div>
+
+                        {/* Danh sách các tài sản sắp hết hạn */}
+                        <div className="tab-pane" id="administration-asset-is-expired">
+                            <LazyLoadComponent
+                                key="AdministrationAssetExpired"
+                            >
+                                <AssetIsExpired />
                             </LazyLoadComponent>
                         </div>
 
