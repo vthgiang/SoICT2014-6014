@@ -399,10 +399,12 @@ exports.searchUsages = async (id, data, company) => {
  * Thêm mới thông tin sử dụng
  */
 exports.createUsage = async (id, data) => {
+    let assignedToUser = data.assignedToUser ? data.assignedToUser : null;
+    let assignedToOrganizationalUnit = data.assignedToOrganizationalUnit? data.assignedToOrganizationalUnit: null
     await Asset.update({_id: id}, {
-        $addToSet: {usageLogs: data},
-        assignedToUser: data.assignedToUser ? data.assignedToUser : null,
-        assignedToOrganizationalUnit: data.assignedToOrganizationalUnit? data.assignedToOrganizationalUnit: null,
+        $addToSet: {usageLogs: data.usageLogs},
+        assignedToUser: assignedToUser,
+        assignedToOrganizationalUnit: assignedToOrganizationalUnit,
         status: data.status
     });
 
@@ -414,13 +416,20 @@ exports.createUsage = async (id, data) => {
 /**
  * Chỉnh sửa thông tin sử dụng
  */
-exports.updateUsage = async (usageId, data) => {
-    return await Asset.update({ _id: data.assetId, "usageLogs._id": usageId }, {
+exports.updateUsage = async (assetId, data) => {
+    let asset = await Asset.update({_id: assetId}, {
+        $set:{
+            assignedToUser: data.assignedToUser,
+            assignedToOrganizationalUnit: data.assignedToOrganizationalUnit,
+        }
+    })
+
+    return await Asset.update({ _id: assetId, "usageLogs._id": data._id }, {
         $set: {
             "usageLogs.$.usedByUser": data.usedByUser,
             "usageLogs.$.description": data.description,
             "usageLogs.$.endDate": data.endDate,
-            "usageLogs.$.startDate": data.startDate
+            "usageLogs.$.startDate": data.startDate, 
         }
     })
 }
@@ -465,7 +474,6 @@ exports.createIncident = async (id, data) => {
  * Chỉnh sửa thông tin sự cố tài sản
  */
 exports.updateIncident = async (incidentId, data) => {
-    console.log(data, 'data-incident')
     return await Asset.update({ _id: data.assetId, "incidentLogs._id": incidentId }, {
         $set: {
             "incidentLogs.$.incidentCode": data.incidentCode,

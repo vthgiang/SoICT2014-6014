@@ -93,25 +93,55 @@ class UsageLogTab extends Component {
 
     // Function thêm thông tin phiếu
     handleAddUsage = async (data) => {
-        const { usageLogs } = this.state;
+        const { assignedToUser, usageLogs, assignedToOrganizaitonalUnit } = this.state;
         usageLogs.push(data);
 
         await this.setState({
+            ...this.state,
             usageLogs: usageLogs,
+            assignedToUser: data.usedByUser,
+            assignedToOrganizaitonalUnit: data.usedByOrganizationalUnit,
+            status: "Đang sử dụng",
         })
-
-        this.props.handleAddUsage(this.state.usageLogs, data)
+        let createUsage = {
+            usageLogs: usageLogs,
+            status: "Đang sử dụng",
+            assignedToUser: data.usedByUser,
+            assignedToOrganizaitonalUnit: data.usedByOrganizationalUnit,
+        }
+    
+        await this.props.createUsage(this.props.assetId, createUsage)
     }
 
     // Function chỉnh sửa thông tin phiếu
     handleEditUsage = async (data) => {
         const { usageLogs } = this.state;
+        let assignedToUser, assignedToOrganizaitonalUnit, updateUsage;
         usageLogs[data.index] = data;
+        if(data.index == (usageLogs.length - 1) && (this.state.assignedToUser || this.state.assignedToOrganizaitonalUnit)){
+            assignedToUser = data.usedByUser ? data.usedByUser : null ;
+            assignedToOrganizaitonalUnit = data.assignedToOrganizaitonalUnit ? data.assignedToOrganizaitonalUnit : null;
+        } else {
+            assignedToUser = this.state.assignedToUser;
+            assignedToOrganizaitonalUnit = this.state.assignedToOrganizaitonalUnit
+        }
+
         await this.setState({
             usageLogs: usageLogs,
+            assignedToUser: assignedToUser,
+            assignedToOrganizaitonalUnit: assignedToOrganizaitonalUnit,
         })
-
-        await this.props.handleEditUsage(this.state.usageLogs, data)
+        
+        updateUsage = {
+            _id: data._id,
+            usedByUser: data.usedByUser,
+            description: data.description,
+            endDate: data.endDate,
+            startDate: data.startDate,
+            assignedToUser: assignedToUser,
+            assignedToOrganizaitonalUnit: assignedToOrganizaitonalUnit,
+        }
+        await this.props.updateUsage(this.props.assetId, updateUsage)
     }
 
     // Function bắt sự kiện xoá thông tin phiếu
@@ -123,25 +153,35 @@ class UsageLogTab extends Component {
             ...this.state,
             usageLogs: [...usageLogs]
         })
-        this.props.handleDeleteUsage(this.state.usageLogs, data)
+
+        this.props.deleteUsage(this.props.assetId, data._id)
     }
 
-    hanhdleRecallAsset = () => {
+    hanhdleRecallAsset = async () => {
         let assetId = this.props.assetId;
         let assignedToUser = this.props.assignedToUser;
+
+        await this.setState({
+            ...this.state,
+            assignedToUser: null,
+            assignedToOrganizaitonalUnit: null,
+            status: "Đang sử dụng",
+        })
         let data =  {
             usageId: assignedToUser,
         }
 
-        this.props.recallAsset(assetId, data);        
+        await this.props.recallAsset(assetId, data);        
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || nextProps.usageLogs !== prevState.usageLogs) {
+        if (nextProps.id !== prevState.id || nextProps.usageLogs !== prevState.usageLogs || nextProps.assignedToUser !== prevState.assignedToUser || nextProps.assignedToOrganizaitonalUnit !== prevState.assignedToOrganizaitonalUnit) {
             return {
                 ...prevState,
                 id: nextProps.id,
                 usageLogs: nextProps.usageLogs,
+                assignedToUser: nextProps.assignedToUser,
+                assignedToOrganizaitonalUnit: nextProps.assignedToOrganizaitonalUnit,
             }
         } else {
             return null;
@@ -152,8 +192,7 @@ class UsageLogTab extends Component {
     render() {
         const { id } = this.props;
         const { translate, user } = this.props;
-        const { usageLogs, currentRow } = this.state;
-
+        const { assignedToOrganizaitonalUnit, assignedToUser, usageLogs, currentRow } = this.state;
         var userlist = user.list;
 
         return (
@@ -165,11 +204,11 @@ class UsageLogTab extends Component {
                         <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.usage_logs')}</h4></legend>
                         <div className="form-inline">
                             <div className="form-group">
-                                <label style={{ width: "auto" }} className="form-control-static"> Người đang sử dụng:</label>
-                                <div style={{ width: "auto" }} className="form-control-static">{ this.props.assignedToUser? userlist.filter(item => item._id === this.props.assignedToUser).pop() ? userlist.filter(item => item._id === this.props.assignedToUser).pop().name:"Chưa có ai": ''}</div>
+                                <label style={{ width: "auto" }} className="form-control-static"> Đối tượng đang sử dụng:</label>
+                                <div style={{ width: "auto" }} className="form-control-static">{ assignedToUser? userlist.filter(item => item._id === assignedToUser).pop() ? userlist.filter(item => item._id === assignedToUser).pop().name:"Chưa có đối tượng sử dụng": ''}</div>
                             </div>
                             
-                            { (this.props.assignedToUser || this.props.assignedToOrganizaitonalUnit) &&
+                            { (assignedToUser || assignedToOrganizaitonalUnit) &&
                                 <div className="form-group" style={{marginLeft: "20px"}}>
                                     <button type="button" className="btn btn-success" onClick={this.hanhdleRecallAsset} >Thu hồi</button>
                                 </div>
@@ -202,7 +241,9 @@ class UsageLogTab extends Component {
                                             <td>
                                                 <a onClick={() => this.handleEdit(x, index)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin sử dụng"><i
                                                     className="material-icons">edit</i></a>
-                                                <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteUsage(index)}><i className="material-icons"></i></a>
+                                                { ((assignedToUser && index != (usageLogs.length - 1)) || !assignedToUser) &&
+                                                    <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.handleDeleteUsage(index)}><i className="material-icons"></i></a>
+                                                }
                                             </td>
                                         </tr>
                                     ))
@@ -240,6 +281,9 @@ function mapState(state) {
 
 const actionCreators = {
     recallAsset: UsageActions.recallAsset,
+    createUsage: UsageActions.createUsage,
+    deleteUsage: UsageActions.deleteUsage,
+    updateUsage: UsageActions.updateUsage,
 };
 
 const usageLogTab = connect(mapState, actionCreators)(withTranslate(UsageLogTab));
