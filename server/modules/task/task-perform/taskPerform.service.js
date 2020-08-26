@@ -2431,7 +2431,7 @@ exports.deleteDocument = async (params) => {
  * Sua document
  */
 exports.editDocument = async (params, body, files) => {
-    console.log(body)
+    
     let document = await Task.updateOne(
         { "_id": params.taskId, "documents._id": params.documentId },
         {
@@ -2450,6 +2450,16 @@ exports.editDocument = async (params, body, files) => {
             }
         }
     )
+    let isOutput = await Task.updateOne(
+        { "_id": params.taskId, "documents._id": params.documentId },
+        {
+            $set:
+            {
+                "documents.$.isOutput": body.isOutput
+            }
+        }
+    )
+
     let task1 = await Task.findById({ _id: params.taskId }).populate([
         { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);
