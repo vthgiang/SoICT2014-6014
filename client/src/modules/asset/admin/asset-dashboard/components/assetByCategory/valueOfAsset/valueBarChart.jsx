@@ -25,7 +25,7 @@ class ValueBarChart extends Component {
     setDataBarChart = () => {
         const { listAssets, assetType } = this.props;
 
-        let typeName = [], countAssetValue = [], idAssetType = [];
+        let typeName = [], shortName = [], countAssetValue = [], idAssetType = [];
         for (let i in assetType) {
             countAssetValue[i] = 0;
             idAssetType.push(assetType[i].id)
@@ -41,7 +41,9 @@ class ValueBarChart extends Component {
 
                 // let val = d3.format(",")(countAssetValue[i])
                 // let title = `${assetType[i].title} - ${val} `
-
+                let longName = assetType[i].title.slice(0, 15) + "...";
+                let name = assetType[i].title.length > 15 ? longName : assetType[i].title;
+                shortName.push(name);
                 typeName.push(assetType[i].title);
 
                 // chart.push({
@@ -53,7 +55,8 @@ class ValueBarChart extends Component {
         }
         let data = {
             count: countAssetValue,
-            type: typeName
+            type: typeName,
+            shortName: shortName
         }
 
         return data;
@@ -93,8 +96,13 @@ class ValueBarChart extends Component {
 
             axis: {
                 x: {
+                    fit: true,
                     type: 'category',
-                    categories: dataPieChart.type
+                    categories: dataPieChart.shortName,
+                    tick: {
+                        multiline: false,
+
+                    }
                 },
                 y: {
                     label: {
@@ -115,8 +123,13 @@ class ValueBarChart extends Component {
 
             legend: {
                 show: false
-            }
+            },
+            tooltip: {
+                format: {
+                    title: function (index) { return dataPieChart.type[index] },
 
+                }
+            }
         });
     }
     handleChangeViewChart = async (value) => {
