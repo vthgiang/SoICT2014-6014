@@ -17,6 +17,7 @@ exports.getDocuments = async (company, query) => {
         return await Document.find({ company }).populate([
             { path: 'category', model: DocumentCategory },
             { path: 'domains', model: DocumentDomain },
+            { path: 'archives', model: DocumentArchive },
             { path: 'views.viewer', model: User, select: 'name id' },
             { path: "downloads.downloader", model: User, select: 'name id' },
             { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },

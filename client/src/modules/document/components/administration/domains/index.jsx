@@ -24,6 +24,7 @@ class AdministrationDocumentDomains extends Component {
     }
 
     onChanged = async (e, data) => {
+        console.log('ttt', data)
         await this.setState({ currentDomain: data.node })
         window.$(`#edit-document-domain`).slideDown();
     }
@@ -81,9 +82,9 @@ class AdministrationDocumentDomains extends Component {
                             tableName: "Bảng thống kê danh mục",
                             rowHeader: 1,
                             columns: [
-                                { key: "STT", value: "STT"},
-                                { key: "name", value: "Tên danh mục"},
-                                { key: "description", value: "Mô tả danh mục"},
+                                { key: "STT", value: "STT" },
+                                { key: "name", value: "Tên danh mục" },
+                                { key: "description", value: "Mô tả danh mục" },
                             ],
                             data: data
                         },
@@ -98,7 +99,7 @@ class AdministrationDocumentDomains extends Component {
         const { translate } = this.props;
         const { list } = this.props.documents.administration.domains;
         const { documents } = this.props;
-        console.log('domainnnn', domainParent, deleteNode);
+
         const dataTree = list.map(node => {
             return {
                 ...node,
@@ -111,8 +112,9 @@ class AdministrationDocumentDomains extends Component {
         if (documents.isLoading === false) {
             dataExport = list;
         }
+        console.log('domainnnn', this.state.currentDomain);
         let exportData = this.convertDataToExportData(dataExport);
-        return ( 
+        return (
             <React.Fragment>
                 <button className="btn btn-success" onClick={() => {
                     window.$('#modal-create-document-domain').modal('show');
