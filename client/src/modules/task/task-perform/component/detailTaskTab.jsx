@@ -342,10 +342,10 @@ class DetailTaskTab extends Component {
                         }
 
                         {currentRole === "accountable" && checkInactive && codeInProcess &&
-                            (statusTask === "Finished" ?
-                                <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)} title="Công việc đã kết thúc">
-                                    <i className="fa fa-times" style={{ fontSize: "16px" }}></i>{"Hủy kết thúc"}
-                                </a> :
+                            (statusTask !== "Finished" &&
+                                // <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)} title="Công việc đã kết thúc">
+                                //     <i className="fa fa-times" style={{ fontSize: "16px" }}></i>{"Hủy kết thúc"}
+                                // </a> :
                                 <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Finished", codeInProcess, typeOfTask)} title="Kết thúc công việc">
                                     <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
                                 </a>
