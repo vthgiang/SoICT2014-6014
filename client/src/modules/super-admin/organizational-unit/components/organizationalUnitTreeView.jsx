@@ -21,7 +21,7 @@ class DepartmentTreeView extends Component {
         this.departmentId = React.createRef();
 
         this.state = {
-            zoom: 16,
+            zoom: 13,
         }
     }
 
@@ -56,10 +56,10 @@ class DepartmentTreeView extends Component {
                 {
                     department.list && department.list.length > 0 ?
                         <React.Fragment >
-                            <div className="pull-left">
+                            {/* <div className="pull-left">
                                 <i className="btn btn-sm btn-default fa fa-plus" onClick={this.zoomIn} title={translate('manage_department.zoom_in')}></i>
                                 <i className="btn btn-sm btn-default fa fa-minus" onClick={this.zoomOut} title={translate('manage_department.zoom_out')}></i>
-                            </div>
+                            </div> */}
                         </React.Fragment>
                         : department.isLoading ?
                             <p className="text-center">{translate('confirm.loading')}</p> :
@@ -247,18 +247,14 @@ class DepartmentTreeView extends Component {
 
     showNodeContent = (data, translate) => {
         return (
-            <div className="tf-nc w3-card-4 department" style={{ borderTop: '2px solid gray' }}>
-                <div id={`department-${data.id}`} title={data.name}>
-                    <a href="#abc" title="Ẩn/hiện điều khiển" style={{ border: 'none', backgroundColor: 'transparent' }} onClick={() => this.toggleSetting(`department-setting-${data.id}`)}><i className="fa fa-gear"></i></a>
-                    {` ${data.name} `}
+            <div className="tf-nc panel panel-primary" style={{padding: '0px', textAlign: 'center', fontWeight: '900'}}>
+                <div className="panel-heading" style={{padding: '8px'}}>{`${data.name}`}
+                    <span id={`department-${data.id}`} title={data.name} className="pull-right" style={{paddingLeft: '5px'}}>
+                        <a href="#abc" title="Ẩn/hiện điều khiển" style={{ border: 'none', backgroundColor: 'transparent', color:'white' }} onClick={() => this.toggleSetting(`department-setting-${data.id}`)}><i className="fa fa-gears"></i></a>
+                    </span>
                 </div>
-                <div id={`department-setting-${data.id}`} className="pull-right" style={{
-                    display: 'none', marginTop: '8px',
-                    borderRadius: '3px',
-                    border: 'none',
-                    padding: '4px 2px 0px 2px',
-                    backgroundColor: '#ECF0F5'
-                }}>
+                
+                <div className="panel-body" style={{padding: '8px', display: 'none'}} id={`department-setting-${data.id}`}>
                     <a href="#setting-organizationalUnit" className="edit text-green" onClick={() => this.handleCreateWithParent(data)} title={translate('manage_department.add_title')}><i className="material-icons">add</i></a>
                     <a href="#setting-organizationalUnit" className="edit text-yellow" onClick={() => this.handleEdit(data)} title={translate('manage_department.edit_title')}><i className="material-icons">edit</i></a>
                     <DeleteNotification
