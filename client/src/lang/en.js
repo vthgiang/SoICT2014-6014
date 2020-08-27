@@ -71,11 +71,14 @@ export default {
                 ],
             },
             validate: {
-                nameTypeErr: 'not special digit',
-                nameLengthErr: 'length must be 6 to 255 digit',
-                emailErr: 'invalid',
-                passwordLengthErr: 'length must be 6 to 30 digit',
-                descriptionLengthErr: 'not null',
+                invalid_character_error: 'invalid character error',
+                length_error: 'should have length between {min} to {max}',
+                minimum_length_error: 'should have minimum length of {min}',
+                maximum_length_error: 'should have maximum length of {max}',
+                invalid_error: 'invalid',
+                empty_error: 'not null',
+                not_existing_error: 'not existing',
+                existing_error: 'existing',
             }
         },
 

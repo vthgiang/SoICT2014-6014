@@ -1,8 +1,8 @@
-export const LINK_VALIDATOR = {
-    checkDescription
+export const ROLE_VALIDATOR = {
+    checkName
 }
 
-function checkDescription(value, min=6, max=255) {
+function checkName(value, min=6, max=255) {
     if(!value)
         return {
             status: false,
