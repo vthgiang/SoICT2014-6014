@@ -110,6 +110,7 @@ class LineBarChart extends Component {
         data = this.setDataMultiChart(data);
 
         let newData = data.dataConvert;
+        console.log('new', newData);
         let chartType = data.chartType;
         let barLinechartType = {};
         let pieChartType = {};
@@ -142,6 +143,10 @@ class LineBarChart extends Component {
                     tick: {
                         format: '%m - %Y',
                         outer: false,
+                        // culling: false,
+                        // format: function (d) {
+                        //     console.log('d', d)
+                        // }
                     },
                 },
                 y: {
@@ -153,7 +158,6 @@ class LineBarChart extends Component {
 
 
     render() {
-        const { barAndLineChart } = this.state;
         return (
             <React.Fragment>
                 <div className="row">

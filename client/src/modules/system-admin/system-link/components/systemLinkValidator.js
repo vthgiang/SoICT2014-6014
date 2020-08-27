@@ -1,28 +1,40 @@
-import { VALIDATOR } from '../../../../helpers/validator';
+import { REGEX } from '../../../../helpers/validator';
 
-export const LinkDefaultValidator = {
-    validateUrl,
-    validateDescription
+export const SYSTEM_LINK_VALIDATOR = {
+    checkUrl,
+    checkDescription
 }
 
-function validateUrl(url) {
-    let msg = undefined;
-    if (url.trim() === "") {
-        msg = "system_admin.system_link.validator.url.no_blank";
-    } else if (!VALIDATOR.isValidUrl(url)) {
-        msg = "system_admin.system_link.validator.url.start_with_slash";
-    }
-
-    return msg;
+function checkUrl(value) {
+    if(!value || !REGEX.URL.test(value))
+        return {
+            status: false,
+            msg: 'general.validate.invalid_error',
+        }
+    else 
+        return {
+            status: true
+        }
 }
 
-function validateDescription(url) {
-    let msg = undefined;
-    if (url.trim() === "") {
-        msg = "system_admin.system_link.validatdor.description.no_blank";
-    } else if (!VALIDATOR.isValidName(url)) {
-        msg = "system_admin.system_link.validator.description.no_special";
-    }
-    
-    return msg;
+function checkDescription(value, min=6, max=255) {
+    if(!value)
+        return {
+            status: false,
+            msg: 'general.validate.invalid_error',
+        }
+    else if (value.length < min)
+        return {
+            status: false,
+            msg: 'general.validate.minimum_length_error'
+        }
+    else if (value.length > max)
+        return {
+            status: false,
+            msg: 'general.validate.maximum_length_error'
+        }
+    else 
+        return {
+            status: true
+        }
 }

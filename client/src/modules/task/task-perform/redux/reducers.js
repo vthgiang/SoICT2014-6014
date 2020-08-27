@@ -155,6 +155,21 @@ export function performtasks(state = {}, action) {
             return {
                 error: action.error
             };
+        case performTaskConstants.EDIT_TASK_INFORMATION_REQUEST:
+            return {
+                ...state,
+                editing: true
+            };
+        case performTaskConstants.EDIT_TASK_INFORMATION_SUCCESS:
+            return {
+                ...state,
+                task: action.payload
+        };
+        case performTaskConstants.EDIT_TASK_INFORMATION_FAILURE:
+            return {
+                ...state,
+                error: action.payload
+            };
         case performTaskConstants.DELETE_ACTION_COMMENT_REQUEST:
             return {
                 ...state,

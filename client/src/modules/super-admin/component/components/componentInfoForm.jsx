@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ComponentActions } from '../redux/actions';
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
-import { VALIDATOR } from '../../../../helpers/validator';
+import { COMPONENT_VALIDATOR } from './componentValidator';
 class ComponentInfoForm extends Component {
     constructor(props) {
         super(props);
@@ -75,13 +75,27 @@ class ComponentInfoForm extends Component {
     }
 
     handleComponentDescription = (e) => {
+        let {value} = e.target;
+        this.setState({ componentDescription: value });
+
         let {translate} = this.props;
-        let { value } = e.target;
-        let {msg} = VALIDATOR.checkDescription(value);
-        this.setState({
-            componentDescription: value,
-            componentDescriptionError: msg ? `${translate('manage_component.description')} ${translate(msg)}` : undefined
-        });
+        let {msg} = COMPONENT_VALIDATOR.checkDescription(value, 6, 1204);
+        let error;
+        switch(msg){
+            case 'general.validate.invalid_error':
+                error = translate(msg);
+                break;
+            case 'general.validate.minimum_length_error':
+                error = translate(msg, {min: 6});
+                break;
+            case 'general.validate.maximum_length_error':
+                error = translate(msg, {max: 1024})
+                break;
+            default: 
+                error = undefined;
+                break;
+        }
+        this.setState({ componentDescriptionError: error})
     }
 
     handleComponentLink = (value) => {
@@ -110,7 +124,7 @@ class ComponentInfoForm extends Component {
 
     isFormValidated = () => {
         let {componentDescription} = this.state;
-        if(!VALIDATOR.checkDescription(componentDescription).status) return false;
+        if(!COMPONENT_VALIDATOR.checkDescription(componentDescription).status) return false;
         return true;
     }
 

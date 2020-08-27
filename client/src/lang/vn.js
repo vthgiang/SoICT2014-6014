@@ -71,11 +71,14 @@ export default {
                 ],
             },
             validate: {
-                nameTypeErr: 'không được chứa ký tự đặc biệt',
-                nameLengthErr: 'không được để trống hoặc không quá 255 ký tự',
-                emailErr: 'không hợp lệ',
-                passwordLengthErr: 'phải có độ dài từ 6 đến 30 ký tự',
-                descriptionLengthErr: 'không được để trống',
+                invalid_character_error: 'không được chứa ký tự đặc biệt',
+                length_error: 'phải có số ký tự từ {min} đến {max}',
+                minimum_length_error: 'phải có độ dài tối thiểu là {min} ký tự',
+                maximum_length_error: 'có độ dài không quá {max} ký tự',
+                invalid_error: 'không hợp lệ',
+                empty_error: 'không được để trống',
+                not_existing_error: 'không tồn tại',
+                existing_error: 'đã tồn tại',
             }
         },
 
