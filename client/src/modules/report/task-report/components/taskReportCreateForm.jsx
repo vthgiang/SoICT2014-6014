@@ -443,7 +443,6 @@ class TaskReportCreateForm extends Component {
 
     handleLeftListChange = (e) => {
         let { value, name, checked } = e.target;
-
         let { itemListTemp, itemListBoxLeft } = this.state;
 
         // Kiểm tra xem item nào được click 
@@ -461,14 +460,14 @@ class TaskReportCreateForm extends Component {
 
 
         // kiểm tra xem trong mảng itemListTemp đã tồn tại item được click hay chưa: false = -1
-        const findIndexItem = itemListTemp.findIndex(x => x.id === name);
+        const findIndexItem = itemListTemp.findIndex(x => x.id === name); // name là id get từ input 
 
         // Nếu trong mảng có tồn tại item được click thì xóa nó đi, dùng slice cắt lấy các item khác item dc click
         if (findIndexItem > -1) {
             itemListTemp = [...itemListTemp.slice(0, findIndexItem), ...itemListTemp.slice(findIndexItem + 1)]
         } else {
             // Nếu chưa có trong mảng thì thêm nó vào itemListTemp
-            itemListTemp.push({ id: name, name: value });
+            itemListTemp.push({ id: parseInt(name), name: value });
         }
 
         this.setState({
@@ -479,33 +478,63 @@ class TaskReportCreateForm extends Component {
 
 
     handleClickTransferLeftList = () => {
-        const { itemListTemp, itemListBoxLeft, itemListBoxRight } = this.state;
-        let nameInListBoxRight = itemListBoxRight.map(x => x.name); // ["NVD","VTC",...]
-        let nameInListTemp = itemListTemp.map(x => x.name); // ["NVD"]
-        const checkName = nameInListBoxRight.includes(nameInListTemp.toString()); // true or false
+        let { itemListTemp, itemListBoxLeft, itemListBoxRight } = this.state;
+
+        let idInListBoxRight = itemListBoxRight.map(x => x.id); // array id in itemListBoxRight
+        let idInListTemp = itemListTemp.map(x => parseInt(x.id)); // array id khi mình chọn vào checkbox của listBoxRight
+
+        const checkId = idInListBoxRight.includes(parseInt(idInListTemp)); // true or false
+
+        // Lọc item khác với item đã chọn
+        idInListTemp.forEach(x => {
+            itemListBoxRight = itemListBoxRight.filter(y => y.id !== x)
+        })
+
+
+        idInListTemp.forEach(x => {
+            itemListBoxLeft = itemListBoxLeft.filter(y => y.id !== x)
+        })
+
 
         this.setState({
-            itemListBoxRight: checkName ? itemListBoxRight.filter(item => item.name !== nameInListTemp.toString())
+            itemListBoxRight: checkId ? itemListBoxRight
                 : [...itemListBoxRight, itemListTemp].flat(1),
-            itemListBoxLeft: checkName ? [...itemListBoxLeft, itemListTemp].flat(1) : itemListBoxLeft.filter(item => item !== nameInListTemp.toString()),
+
+            itemListBoxLeft: checkId ? [...itemListBoxLeft, itemListTemp].flat(1) : itemListBoxLeft,
             itemListTemp: [],
         })
     }
 
     handleClickTransferRightList = () => {
-        const { itemListTemp, itemListBoxLeft, itemListBoxRight } = this.state;
+        let { itemListTemp, itemListBoxLeft, itemListBoxRight } = this.state;
 
-        let idInListBoxLeft = itemListBoxLeft.map(x => x.id);
-        let idInListTemp = itemListTemp.map(x => parseInt(x.id));
-        console.log(idInListBoxLeft, idInListTemp);
+        let idInListBoxLeft = itemListBoxLeft.map(x => x.id); // array id in itemListBoxLeft
+        let idInListTemp = itemListTemp.map(x => parseInt(x.id)); // array id khi mình chọn vào checkbox của listBoxLeft
 
-        const checkName = idInListBoxLeft.includes(parseInt(idInListTemp));
-        console.log(checkName)
+        /**
+         * Check xem id khi mình chọn checkbox thì item đó có trong list item box left hay ko
+         * mục đích: phần setState
+         * nếu trùng thì xóa đi item đó trong listBoxleft 
+         * nếu không trùng thì add thêm vào 
+         */
+        const checkId = idInListBoxLeft.includes(parseInt(idInListTemp));
+
+        // Lọc item khác với item đã chọn
+        idInListTemp.forEach(x => {
+            itemListBoxLeft = itemListBoxLeft.filter(y => y.id !== x)
+        })
+
+
+        idInListTemp.forEach(x => {
+            itemListBoxRight = itemListBoxRight.filter(y => y.id !== x)
+        })
+
+
         this.setState({
-            itemListBoxLeft: checkName ? itemListBoxLeft.filter(item => item.id !== parseInt(idInListTemp))
+            itemListBoxLeft: checkId ? itemListBoxLeft
                 : [...itemListBoxLeft, itemListTemp].flat(1),
 
-            itemListBoxRight: checkName ? [...itemListBoxRight, itemListTemp].flat(1) : itemListBoxRight.filter(item => item !== parseInt(idInListTemp)),
+            itemListBoxRight: checkId ? [...itemListBoxRight, itemListTemp].flat(1) : itemListBoxRight,
             itemListTemp: [],
         })
     }
