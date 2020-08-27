@@ -42,14 +42,14 @@ class CostChart extends Component {
         }
 
         dataPieChart = [
-            ["< 100.000.000", lessThanOneHundred],
-            ["100.000.000 - 200.000.000", oneHundred],
-            ["200.000.000 - 500.000.000", twoHundred],
-            ["500.000.000 - 1.000.000.000", fiveHundred],
-            ["1.000.000.000 - 2.000.000.000", oneBillion],
-            ["2.000.000.000 - 5.000.000.000", twoBillion],
-            ["5.000.000.000 - 10.000.000.000", fiveBillion],
-            ["> 10.000.000.000", tenBillion],
+            ["< 100M", lessThanOneHundred],
+            ["100M - 200M", oneHundred],
+            ["200M - 500M", twoHundred],
+            ["500M - 1B", fiveHundred],
+            ["1B - 2B", oneBillion],
+            ["2B - 5B", twoBillion],
+            ["5B - 10B", fiveBillion],
+            ["> 10B", tenBillion],
         ];
 
         return dataPieChart;
@@ -85,10 +85,10 @@ class CostChart extends Component {
                 }
             },
             padding: {
-                top: 5,
-                bottom: 5,
-                right: 10,
-                left: 10
+                top: 20,
+                bottom: 20,
+                right: 20,
+                left: 20
             },
             tooltip: {
                 format: {

@@ -788,15 +788,15 @@ class Routes extends Component {
                     {/** Nhân viên */}
                     <PrivateRoute
                         isLoading={this.props.recommendProcure.isLoading}
-                        key={'recommend-equipment-procurement'}
+                        key={'asset-purchase-request'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/recommend-equipment-procurement', name: 'recommend_equipment_procurement', icon: '' }
+                            { link: '/asset-purchase-request', name: 'recommend_equipment_procurement', icon: '' }
                         ]}
                         auth={auth}
                         exact={true}
-                        link={'/recommend-equipment-procurement'}
-                        path={'/recommend-equipment-procurement'}
+                        link={'/asset-purchase-request'}
+                        path={'/asset-purchase-request'}
                         pageName={'recommend_equipment_procurement'}
                         layout={Layout}
                         component={RecommendProcure}
@@ -804,15 +804,15 @@ class Routes extends Component {
 
                     <PrivateRoute
                         isLoading={this.props.recommendDistribute.isLoading}
-                        key={'recommend-distribute-asset'}
+                        key={'asset-use-request'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/recommmend-distribute-asset', name: 'recommend_distribute_asset', icon: '' }
+                            { link: '/asset-use-request', name: 'recommend_distribute_asset', icon: '' }
                         ]}
                         auth={auth}
                         exact={true}
-                        link={'/recommmend-distribute-asset'}
-                        path={'/recommmend-distribute-asset'}
+                        link={'/asset-use-request'}
+                        path={'/asset-use-request'}
                         pageName={'recommend_distribute_asset'}
                         layout={Layout}
                         component={RecommendDistribute}
@@ -851,15 +851,15 @@ class Routes extends Component {
                     />                    
                     <PrivateRoute
                         isLoading={this.props.recommendDistribute.isLoading}
-                        key={'employee-manage-recommend-distribute-asset'}
+                        key={'employee-manage-asset-use-request'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/employee-manage-recommend-distribute-asset', name: 'employee-manage-recommend-distribute-asset', icon: '' }
+                            { link: '/employee-manage-asset-use-request', name: 'employee-manage-recommend-distribute-asset', icon: '' }
                         ]}
                         auth={auth}
                         exact={true}
-                        link={'/employee-manage-recommend-distribute-asset'}
-                        path={'/employee-manage-recommend-distribute-asset'}
+                        link={'/employee-manage-asset-use-request'}
+                        path={'/employee-manage-asset-use-request'}
                         pageName={'manage_recommend_distribute_asset'}
                         layout={Layout}
                         component={EmployeePurchaseRequestManagement}
@@ -997,15 +997,15 @@ class Routes extends Component {
 
                     <PrivateRoute
                         isLoading={this.props.recommendProcure.isLoading}
-                        key={'manage-recommend-procure'}
+                        key={'manage-asset-purchase-request'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/manage-recommend-procure', name: 'manage_recommend_procure', icon: '' }
+                            { link: '/manage-asset-purchase-request', name: 'manage_recommend_procure', icon: '' }
                         ]}
                         auth={auth}
                         exact={true}
-                        link={'/manage-recommend-procure'}
-                        path={'/manage-recommend-procure'}
+                        link={'/manage-asset-purchase-request'}
+                        path={'/manage-asset-purchase-request'}
                         pageName={'manage_recommend_procure'}
                         layout={Layout}
                         component={ManagerRecommendProcure}
@@ -1013,15 +1013,15 @@ class Routes extends Component {
 
                     <PrivateRoute
                         isLoading={this.props.recommendDistribute.isLoading}
-                        key={'manage-recommend-distribute'}
+                        key={'manage-asset-use-request'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/manage-recommend-distribute-asset', name: 'manage-recommend-distribute-asset', icon: '' }
+                            { link: '/manage-asset-use-request', name: 'manage-recommend-distribute-asset', icon: '' }
                         ]}
                         auth={auth}
                         exact={true}
-                        link={'/manage-recommend-distribute-asset'}
-                        path={'/manage-recommend-distribute-asset'}
+                        link={'/manage-asset-use-request'}
+                        path={'/manage-asset-use-request'}
                         pageName={'manage_recommend_distribute_asset'}
                         layout={Layout}
                         component={ManagerRecommendDistribute}

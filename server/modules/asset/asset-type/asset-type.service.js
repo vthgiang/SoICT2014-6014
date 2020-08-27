@@ -52,6 +52,7 @@ exports.createAssetTypes = async (company, data) => {
         typeNumber: data.typeNumber,
         typeName: data.typeName,
         description: data.description,
+        defaultInformation: data.defaultInformation,
     }
     if (data.parent.length) {
         query.parent = data.parent
@@ -68,7 +69,8 @@ exports.editAssetType = async (id, data) => {
     type.typeName = data.typeName,
     type.description = data.description,
     type.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
-    
+    type.defaultInformation = data.defaultInformation,
+
     await type.save();
 
     return type;
