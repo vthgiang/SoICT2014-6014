@@ -10,7 +10,7 @@ import { RecommendDistributeService } from "../../use-request/redux/services";
 
 import { LazyLoadComponent, forceCheckOrVisible } from '../../../../../common-components';
 
-import { AssetByCategory } from './assetByCategory/assetByCategory';
+import { AssetByCategory } from './asset-by-category/assetByCategory';
 import { AssetStatistics } from './asset-statistics-chart/index';
 import { AssetIsExpired } from './asset-is-expired/assetIsExpired';
 
