@@ -18,7 +18,7 @@ class GroupChart extends Component {
         let dataPieChart, numberOfBuilding = 0, numberOfVehicle = 0, numberOfMachine = 0, numberOfOrther = 0;
 
         if (listAssets) {
-            for( let i in listAssets) {
+            for (let i in listAssets) {
                 switch (listAssets[i].group) {
                     case "Building":
                         numberOfBuilding++;
@@ -54,13 +54,13 @@ class GroupChart extends Component {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
             }
-        } 
+        }
     }
 
     // Khởi tạo PieChart bằng C3
     pieChart = () => {
         let dataPieChart = this.setDataPieChart();
-        
+
         this.chart = c3.generate({
             bindto: '#assetGroup',
 
@@ -83,8 +83,8 @@ class GroupChart extends Component {
             },
             tooltip: {
                 format: {
-                    title: function (d) { 
-                        return d; 
+                    title: function (d) {
+                        return d;
                     },
                     value: function (value, ratio, id) {
                         return value;
