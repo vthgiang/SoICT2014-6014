@@ -52,7 +52,7 @@ class ComponentInfoForm extends Component {
                 error = undefined;
                 break;
         }
-        this.setState({ componentName: error})
+        this.setState({ componentNameError: error})
     }
 
     handleDescription = (e) => {
