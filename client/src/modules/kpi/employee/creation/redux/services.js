@@ -44,11 +44,12 @@ function getEmployeeKpiSet(month) {
 }
 
 /** Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
-function getAllEmployeeKpiSetByMonth(userId, startDate, endDate) {
+function getAllEmployeeKpiSetByMonth(organizationalUnitIds, userId, startDate, endDate) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/kpi/employee/creation/employee-kpi-sets`,
         method: 'GET',
         params: {
+            organizationalUnitIds: organizationalUnitIds,
             userId: userId,
             startDate: startDate,
             endDate: endDate

@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { ComponentActions } from '../redux/actions';
-
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
-
-import { ComponentValidator } from './componentValidator';
-
+import { COMPONENT_VALIDATOR } from './componentValidator';
 class ComponentInfoForm extends Component {
     constructor(props) {
         super(props);
@@ -54,8 +50,8 @@ class ComponentInfoForm extends Component {
 
                         {/* Mô tả về component	 */}
                         <div className={`form-group ${!componentDescriptionError ? "" : "has-error"}`}>
-                            <label>{translate('table.description')}</label>
-                            <input type="text" className="form-control" value={componentDescription} onChange={this.handleDescription} />
+                            <label>{translate('table.description')}<span className="text-red"> * </span></label>
+                            <input type="text" className="form-control" value={componentDescription} onChange={this.handleComponentDescription} />
                             <ErrorLabel content={componentDescriptionError} />
                         </div>
 
@@ -78,23 +74,28 @@ class ComponentInfoForm extends Component {
         );
     }
 
-    // Xy ly va validate role name
-    handleDescription = (e) => {
-        const { value } = e.target;
-        this.validateDescription(value, true);
-    }
-    validateDescription = (value, willUpdateState = true) => {
-        let msg = ComponentValidator.validateDescription(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    componentDescriptionError: msg,
-                    componentDescription: value,
-                }
-            });
+    handleComponentDescription = (e) => {
+        let {value} = e.target;
+        this.setState({ componentDescription: value });
+
+        let {translate} = this.props;
+        let {msg} = COMPONENT_VALIDATOR.checkDescription(value, 6, 1204);
+        let error;
+        switch(msg){
+            case 'general.validate.invalid_error':
+                error = translate(msg);
+                break;
+            case 'general.validate.minimum_length_error':
+                error = translate(msg, {min: 6});
+                break;
+            case 'general.validate.maximum_length_error':
+                error = translate(msg, {max: 1024})
+                break;
+            default: 
+                error = undefined;
+                break;
         }
-        return msg === undefined;
+        this.setState({ componentDescriptionError: error})
     }
 
     handleComponentLink = (value) => {
@@ -122,9 +123,9 @@ class ComponentInfoForm extends Component {
     }
 
     isFormValidated = () => {
-        let result = this.validateDescription(this.state.componentDescription, false);
-
-        return result;
+        let {componentDescription} = this.state;
+        if(!COMPONENT_VALIDATOR.checkDescription(componentDescription).status) return false;
+        return true;
     }
 
 

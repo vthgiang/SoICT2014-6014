@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
 
 import { createKpiSetActions } from '../../../employee/creation/redux/actions';
@@ -22,20 +23,11 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
         };
     }
 
-    componentDidMount = async () => {
-        await this.props.getAllEmployeeKpiSetByMonth(this.state.userId, this.state.startMonth, this.state.endMonth);
-
-        this.setState(state => {
-            return {
-                ...state,
-                dataStatus: this.DATA_STATUS.QUERYING
-            }
-        });
-    }
     shouldComponentUpdate = async (nextProps, nextState) => {
-        const { userId, startMonth, endMonth } = this.state;
-        if (nextProps.userId !== userId || nextProps.startMonth !== startMonth || nextProps.endMonth !== endMonth) {
-            await this.props.getAllEmployeeKpiSetByMonth(nextProps.userId, nextProps.startMonth, nextProps.endMonth);
+        const { userId, startMonth, endMonth, organizationalUnitIds } = this.state;
+
+        if (nextProps.organizationalUnitIds !== organizationalUnitIds || nextProps.userId !== userId || nextProps.startMonth !== startMonth || nextProps.endMonth !== endMonth) {
+            await this.props.getAllEmployeeKpiSetByMonth(nextProps.organizationalUnitIds, nextProps.userId, nextProps.startMonth, nextProps.endMonth);
             
             this.setState(state => {
                 return {
@@ -47,7 +39,7 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
         }
 
         if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-            await this.props.getAllEmployeeKpiSetByMonth(this.state.userId, this.state.startMonth, this.state.endMonth);
+            await this.props.getAllEmployeeKpiSetByMonth(nextProps.organizationalUnitIds, nextProps.userId, nextProps.startMonth, nextProps.endMonth);
 
             this.setState(state => {
                 return {
@@ -79,28 +71,75 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.userId !== prevState.userId || nextProps.startMonth !== prevState.startMonth || nextProps.endMonth !== prevState.endMonth) {
+        if (nextProps.userId !== prevState.userId
+            || nextProps.startMonth !== prevState.startMonth
+            || nextProps.endMonth !== prevState.endMonth
+            || nextProps.userName !== prevState.userName
+            || nextProps.organizationalUnitIds !== prevState.organizationalUnitIds
+        ) {
             return {
                 ...prevState,
                 userId: nextProps.userId,
                 startMonth: nextProps.startMonth,
                 endMonth: nextProps.endMonth,
+                userName: nextProps.userName,
+                organizationalUnitIds: nextProps.organizationalUnitIds
             }
         } else {
             return null;
         }
     }
 
-    setDataMultiLineChart = () => {
-        const { createEmployeeKpiSet, translate,userName } = this.props;
-        let listEmployeeKpiSet, dataMultiLineChart, automaticPoint, employeePoint, approvedPoint, date,exportData;
-        
+    filterEmloyeeKpiSetSameOrganizationaUnit = () => {
+        const { createEmployeeKpiSet, translate } = this.props;
+        const { userName } = this.state;
+
+        let listEmployeeKpiSet, listOrganizationalUnit, listEmployeeKpiSetSameOrganizationalUnit = [], dataChart;
         
         if (createEmployeeKpiSet) {
             listEmployeeKpiSet = createEmployeeKpiSet.employeeKpiSetByMonth
         }
 
-        if(listEmployeeKpiSet&&userName){
+        if (listEmployeeKpiSet && listEmployeeKpiSet.length !== 0) {
+            listOrganizationalUnit = listEmployeeKpiSet.map(kpi => {
+                if (kpi.organizationalUnit) {
+                    return kpi.organizationalUnit.name;
+                }
+            })
+        }
+        listOrganizationalUnit = Array.from(new Set(listOrganizationalUnit));
+
+        if (listOrganizationalUnit && listOrganizationalUnit.length !== 0) {
+            listOrganizationalUnit.map((unit, index) => {
+                listEmployeeKpiSetSameOrganizationalUnit[index] = listEmployeeKpiSet.filter(kpi => kpi.organizationalUnit && kpi.organizationalUnit.name === unit);
+
+            })
+        }
+
+        if (listEmployeeKpiSetSameOrganizationalUnit.length !== 0) {
+            dataChart = listEmployeeKpiSetSameOrganizationalUnit.map(kpi => {
+                return this.setDataMultiLineChart(kpi);
+            })
+        }
+        return dataChart;
+    }
+
+    setDataMultiLineChart = (listEmployeeKpiSet) => {
+        const { createEmployeeKpiSet, translate } = this.props;
+        const { userName } = this.state;
+
+        let employeeName, title;
+        let dataMultiLineChart, automaticPoint, employeePoint, approvedPoint, date, exportData;
+
+        if (userName) {
+            employeeName = userName.split('(');
+            employeeName = employeeName[0];
+        }
+        if (listEmployeeKpiSet[0] && listEmployeeKpiSet[0].organizationalUnit) {
+            title = employeeName + ' - ' + listEmployeeKpiSet[0].organizationalUnit.name;
+        }
+
+        if (listEmployeeKpiSet && userName ) {
             exportData=this.convertDataToExportData(listEmployeeKpiSet,userName)
             this.handleExportData(exportData);
         }
@@ -114,14 +153,21 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
                 return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + (date.getDate() - 1);
             })
         }
-        dataMultiLineChart = [['x'].concat(date), automaticPoint, employeePoint, approvedPoint];
+
+        dataMultiLineChart = {
+            "title": title,
+            "data": [['x'].concat(date), automaticPoint, employeePoint, approvedPoint]
+        };
         return dataMultiLineChart;
     }
 
     removePreviousChart() {
-        const chart = this.refs.chart;
-        while (chart.hasChildNodes()) {
-            chart.removeChild(chart.lastChild);
+        const chart = document.getElementById("chart");
+
+        if (chart) {
+            while (chart.hasChildNodes()) {
+                chart.removeChild(chart.lastChild);
+            }
         }
     }
 
@@ -129,44 +175,68 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
         this.removePreviousChart();
 
         const { translate } = this.props;
-        let dataMultiLineChart = this.setDataMultiLineChart();
+        let dataMultiLineChart = this.filterEmloyeeKpiSetSameOrganizationaUnit();
+        
+        if (dataMultiLineChart && dataMultiLineChart.length !== 0) {
+            dataMultiLineChart.map(data => {
+                let div = document.createElement('div');
+                div.id = data.title;
+                let section = document.getElementById("chart");
+                section.appendChild(div);
 
-        this.chart = c3.generate({
-            bindto: this.refs.chart,
-            padding: {
-                top: 20,
-                right: 20,
-                left: 20
-            },
-            data: {                                
-                x: 'x',
-                columns: dataMultiLineChart,
-                type: 'spline'
-            },
-            axis: {                               
-                x: {
-                    type: 'timeseries',
-                    tick: {
-                        format: function (x) { return (x.getMonth() + 1) + "-" + x.getFullYear(); }
-                    }
-                },
-                y: {
-                    max: 100,
-                    min: 0,
-                    label: {
-                        text: translate('kpi.evaluation.employee_evaluation.point'),
-                        position: 'outer-right'
+                this.chart = c3.generate({
+                    bindto: document.getElementById(data.title),
+                    title: {
+                        show: false,
+                        text: data.title,
+                        position: 'top-left',   // top-left, top-center and top-right
+                        padding: {
+                            top: 20,
+                            bottom: 5,
+                        }
                     },
                     padding: {
-                        top: 10,
-                        bottom: 10
+                        top: 20,
+                        right: 20,
+                        left: 20
+                    },
+                    data: {                                
+                        x: 'x',
+                        columns: data.data,
+                        type: 'spline'
+                    },
+                    axis: {                               
+                        x: {
+                            type: 'timeseries',
+                            tick: {
+                                format: function (x) { return (x.getMonth() + 1) + "-" + x.getFullYear(); }
+                            }
+                        },
+                        y: {
+                            max: 100,
+                            min: 0,
+                            label: {
+                                text: translate('kpi.evaluation.employee_evaluation.point'),
+                                position: 'outer-right'
+                            },
+                            padding: {
+                                top: 10,
+                                bottom: 10
+                            }
+                        }
+                    },
+                    zoom: {                         
+                        enabled: false
                     }
-                }
-            },
-            zoom: {                         
-                enabled: false
-            }
-        })
+                    
+                })
+            })
+        } else {
+            let div = document.createElement('div');
+            div.innerHTML = "Không có dữ liệu";
+            let section = document.getElementById("chart");
+            section.appendChild(div);
+        }
     }
 
     handleExportData =(exportData)=>
@@ -220,10 +290,11 @@ class StatisticsOfEmployeeKpiSetChart extends Component {
     }
 
     render() {
-        let { exportData } =this.state;
+        let { exportData } = this.state;
+        
         return (
             <React.Fragment>
-                <div ref="chart"></div>
+                <section id="chart"></section>
             </React.Fragment>
         )
     }

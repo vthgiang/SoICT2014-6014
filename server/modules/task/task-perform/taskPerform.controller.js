@@ -733,6 +733,28 @@ editTaskByAccountableEmployees = async (req, res) => {
         });
     }
 }
+
+/** Chỉnh sửa taskInformation của task */
+exports.editTaskInformation = async (req, res) => {
+    try {
+        let task = await PerformTaskService.editTaskInformation(req.params.taskId, req.body);
+
+        await LogInfo(req.user.email, ` edit task information `, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['edit_task_information_success'],
+            content: task
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` edit task information `, req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['edit_task_information_failure'],
+            content: error
+        });
+    }
+}
+
 /**
  * evaluate task by consulted employee
  */
@@ -847,22 +869,22 @@ editArchivedOfTask = async (req, res) => {
  * Chinh sua trang thai cua cong viec
  */
 editTaskStatus = async (req, res) => {
-    try {
-        let task = await PerformTaskService.editTaskStatus(req.params.taskId, req.body.status);
+    // try {
+        let task = await PerformTaskService.editTaskStatus(req.params.taskId, req.body);
         await LogInfo(req.user.email, ` edit status of task  `, req.user.company);
         res.status(200).json({
             success: true,
             messages: ['edit_status_of_task_success'],
             content: task
         })
-    } catch (error) {
-        await LogError(req.user.email, ` edit status of task `, req.user.company);
-        res.status(400).json({
-            success: false,
-            messages: ['edit_status_of_task_fail'],
-            content: error
-        });
-    }
+    // } catch (error) {
+    //     await LogError(req.user.email, ` edit status of task `, req.user.company);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['edit_status_of_task_fail'],
+    //         content: error
+    //     });
+    // }
 }
 
 /**
@@ -900,7 +922,7 @@ exports.editDocument = async (req, res) => {
 
             })
         }
-        let file = await PerformTaskService.editDocument(req.params, req.body, files);
+        let file = await PerformTaskService.editDocument(req.params.taskId, req.query.documentId, req.body, files);
         await LogInfo(req.user.email, ` delete document of task  `, req.user.company);
         res.status(200).json({
             success: true,

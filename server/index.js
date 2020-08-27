@@ -56,8 +56,8 @@ const courses = require("./modules/trainning/course/course.route");
 //asset
 const assetType = require("./modules/asset/asset-type/asset-type.route");
 const asset = require("./modules/asset/asset-management/asset.route");
-const recommendProcure = require("./modules/asset/recommend-equipment-procurement/recommend-procurement.route");
-const recommendDistribute = require("./modules/asset/recommend-distribute-equipment/recommend-distribute.route");
+const recommendProcure = require("./modules/asset/purchase-request/purchase-request.route");
+const recommendDistribute = require("./modules/asset/use-request/use-request.route");
 
 // report
 const taskReport = require("./modules/report/task-report/taskReport.route");
@@ -136,9 +136,9 @@ app.use("/courses", courses);
 
 //asset
 app.use("/assettype", assetType);
-app.use("/assets", asset);
-app.use("/recommendprocure", recommendProcure);
-app.use("/recommenddistribute", recommendDistribute);
+app.use("/asset", asset);
+app.use("/purchase-request", recommendProcure);
+app.use("/use-request", recommendDistribute);
 
 // Task report
 app.use("/taskreports", taskReport);

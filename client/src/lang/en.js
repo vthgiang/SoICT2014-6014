@@ -69,6 +69,16 @@ export default {
                     'Token invalid',
                     'Company service stoped',
                 ],
+            },
+            validate: {
+                invalid_character_error: 'invalid character error',
+                length_error: 'should have length between {min} to {max}',
+                minimum_length_error: 'should have minimum length of {min}',
+                maximum_length_error: 'should have maximum length of {max}',
+                invalid_error: 'invalid',
+                empty_error: 'not null',
+                not_existing_error: 'not existing',
+                existing_error: 'existing',
             }
         },
 
@@ -640,8 +650,9 @@ export default {
             manage_maintainance_asset: 'Manage maintainance assets',
             manage_depreciation_asset: 'Manage depreciation assets',
             manage_incident_asset: 'Manage incident assets',
-            manage_recommend_procure: 'Manage recommend procure',
-            manage_recommend_distribute_asset: 'Manage recommend distribute',
+            manage_recommend_procure: 'Manage purchase request',
+            manage_recommend_distribute_asset: 'Manage use request',
+            employee_manage_asset_info: 'Manage information assets by employee',
 
             view_building_list: 'View building list',
             // NHÂN VIÊN
@@ -1586,6 +1597,7 @@ export default {
                 purchase_date: 'Date of purchase',
                 manager: 'Manager',
                 user: 'User',
+                organization_unit: 'Organizaitonal Unit',
                 handover_from_date: 'Handover from date',
                 handover_to_date: 'Handover to date',
                 status: 'Status',
@@ -1601,7 +1613,7 @@ export default {
                 attach_infomation: 'Attached information',
 
                 serial_number: 'Serial number',
-                warranty_expiration_date: 'Warrant expiration date',
+                warranty_expiration_date: 'Warranty expiration date',
                 asset_location: 'Asset location',
                 description: 'Description',
                 can_register: 'Can register',
@@ -1634,6 +1646,13 @@ export default {
                 file_name: 'File name',
                 number: 'Amount',
                 attached_file: 'Attached files',
+            },
+
+            // Dashboard
+            dashboard: {
+                status_chart: 'Asset statistics chart by status',
+                group_chart: 'Asset statistics chart by group',
+                cost_chart: 'Asset statistics chart by cost',
             },
 
             //  Quản lý loại tài sản
@@ -1672,6 +1691,7 @@ export default {
                 add_incident_info: 'Add new incident infomation',
                 edit_incident_info: 'Edit incident infomation',
                 delete_incident_info: 'Delete incident infomation',
+                delete_asset_confirm: 'Are you sure to delete this asset ?',
 
                 usage_time: 'Usage time',
                 annual_depreciation: 'Annual average rate of depreciation',
@@ -1975,6 +1995,9 @@ export default {
                 finished: 'Finished',
                 delayed: 'Delayed',
                 canceled: 'Canceled',
+                task_status: 'Task status',
+                filter: 'Filter',
+
 
                 priority: 'Priority',
                 select_priority: 'Select priority',

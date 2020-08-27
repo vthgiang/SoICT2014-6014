@@ -35,19 +35,6 @@ export function performtasks(state = {}, action) {
             return {
                 error: action.error
             };
-        case performTaskConstants.EDIT_RESULT_TASK_REQUEST:
-            return {
-                ...state
-            };
-        case performTaskConstants.EDIT_RESULT_TASK_SUCCESS:
-            return {
-                ...state,
-                resulttask: action.resultTask.data.content
-            };
-        case performTaskConstants.EDIT_RESULT_TASK_FAILURE:
-            return {
-                error: action.error
-            };
         case performTaskConstants.GET_TIMESHEET_LOGS_REQUEST:
             return {
                 ...state,
@@ -167,6 +154,21 @@ export function performtasks(state = {}, action) {
         case performTaskConstants.EDIT_TASK_ACTION_FAILURE:
             return {
                 error: action.error
+            };
+        case performTaskConstants.EDIT_TASK_INFORMATION_REQUEST:
+            return {
+                ...state,
+                editing: true
+            };
+        case performTaskConstants.EDIT_TASK_INFORMATION_SUCCESS:
+            return {
+                ...state,
+                task: action.payload
+        };
+        case performTaskConstants.EDIT_TASK_INFORMATION_FAILURE:
+            return {
+                ...state,
+                error: action.payload
             };
         case performTaskConstants.DELETE_ACTION_COMMENT_REQUEST:
             return {
@@ -559,6 +561,22 @@ export function performtasks(state = {}, action) {
             return {
                 error: action.error,
                 isLoading: false,
+            };
+        case performTaskConstants.EDIT_STATUS_OF_TASK_REQUEST:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case performTaskConstants.EDIT_STATUS_OF_TASK_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                task: action.payload
+            };
+        case performTaskConstants.EDIT_STATUS_OF_TASK_FAILURE:
+            return {
+                isLoading: false,
+                error: action.error
             };
         default:
             return state

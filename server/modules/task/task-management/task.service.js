@@ -218,6 +218,8 @@ exports.getTaskById = async (id, userId) => {
         { path: "taskComments.creator", model: User, select: 'name email avatar' },
         { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
         { path: "documents.creator", model: User, select: 'name email avatar' },
+        { path: "followingTasks.task", model: Task, select: 'name' },
+        { path: "preceedingTasks.task", model: Task, select: 'name' },
         {
             path: "process", model: TaskProcess, populate: {
                 path: "tasks", model: Task, populate: [

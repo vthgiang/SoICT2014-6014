@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { RoleActions } from '../../role/redux/actions';
 import { LinkActions } from '../redux/actions';
-
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
-
-import { LinkValidator } from './linkValidator';
+import { LINK_VALIDATOR } from './linkValidator';
 
 class LinkInfoForm extends Component {
     constructor(props) {
@@ -31,24 +28,30 @@ class LinkInfoForm extends Component {
         }
     }
 
-    // Xy ly va validate role name
     handleLinkDescription = (e) => {
-        const { value } = e.target;
-        this.validateLinkDescription(value, true);
-    }
-    validateLinkDescription = (value, willUpdateState = true) => {
-        let msg = LinkValidator.validateDescription(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    linkDescriptionError: msg,
-                    linkDescription: value,
-                }
-            });
+        let {value} = e.target;
+        this.setState({ linkDescription: value });
+
+        let {translate} = this.props;
+        let {msg} = LINK_VALIDATOR.checkDescription(value, 6, 1204);
+        let error;
+        switch(msg){
+            case 'general.validate.invalid_error':
+                error = translate(msg);
+                break;
+            case 'general.validate.minimum_length_error':
+                error = translate(msg, {min: 6});
+                break;
+            case 'general.validate.maximum_length_error':
+                error = translate(msg, {max: 1024})
+                break;
+            default: 
+                error = undefined;
+                break;
         }
-        return msg === undefined;
+        this.setState({ linkDescriptionError: error})
     }
+    
 
     handleLinkRoles = (value) => {
         this.setState(state => {
@@ -74,8 +77,9 @@ class LinkInfoForm extends Component {
     }
 
     isFormValidated = () => {
-        let result = this.validateLinkDescription(this.state.linkDescription, false);
-        return result;
+        let {linkDescription} = this.state;
+        if(!LINK_VALIDATOR.checkDescription(linkDescription).status) return false;
+        return true;
     }
 
     componentDidMount() {

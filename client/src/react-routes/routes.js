@@ -63,26 +63,29 @@ import { EmployeeKpiEvaluationDashboard } from "../modules/kpi/evaluation/dashbo
 
 import { TaskManagement } from "../modules/task/task-management/component/taskManagement";
 import { TaskComponent } from '../modules/task/task-perform/component/taskComponent';
-import { TaskDashboard } from "../modules/task/task-management/component/task-dashboard/taskDashboard";
+import { TaskDashboard } from "../modules/task/task-dashboard/task-personal-dashboard/taskDashboard";
 import { TaskTemplate } from '../modules/task/task-template/component/taskTemplate';
 import { TaskProcessManagement } from '../modules/task/task-process/component/task-process-management/taskProcessManagement';
 import { ProcessTemplate } from '../modules/task/task-process/component/processTemplate';
-import { TaskOrganizationUnitDashboard } from '../modules/task/task-management/component/task-organization-dashboard/taskOrganizationUnitDashboard';
+import { TaskOrganizationUnitDashboard } from '../modules/task/task-dashboard/task-organization-dashboard/taskOrganizationUnitDashboard';
 
 //asset
-import RecommendProcure from "../modules/asset/recommend-procure/components";
-import RecommendDistribute from "../modules/asset/recommend-distribute/components";
-import ManagerRecommendProcure from "../modules/asset/recommend-procure-management/components";
-import ManagerRecommendDistribute from "../modules/asset/recommend-distribute-management/components";
-import ManagerAssetType from "../modules/asset/asset-type/components";
-import MaintainanceManager from "../modules/asset/maintainance/components";
-import UsageManager from "../modules/asset/usage/components";
-import IncidentManager from "../modules/asset/incident/components";
-import ManagerDepreciation from "../modules/asset/depreciation/components";
-import AssetManager from "../modules/asset/asset-management/components";
-import { ManagerAssetAssignedCrash } from '../modules/asset/asset-assgined/components';
-import { DashBoardAssets } from '../modules/asset/asset-dashboard/components/assetDashBoard';
-import { BuildingAsset } from '../modules/asset/building/components'
+import RecommendProcure from "../modules/asset/user/purchase-request/components";
+import RecommendDistribute from "../modules/asset/user/use-request/components";
+import ManagerRecommendProcure from "../modules/asset/admin/purchase-request/components";
+import ManagerRecommendDistribute from "../modules/asset/admin/use-request/components";
+import ManagerAssetType from "../modules/asset/admin/asset-type/components";
+import MaintainanceManager from "../modules/asset/admin/maintainance/components";
+import UsageManager from "../modules/asset/admin/usage/components";
+import IncidentManager from "../modules/asset/admin/incident/components";
+import ManagerDepreciation from "../modules/asset/admin/depreciation/components";
+import AssetManager from "../modules/asset/admin/asset-information/components";
+import { ManagerAssetAssignedCrash } from '../modules/asset/user/asset-assigned/components';
+import { DashBoardAssets } from '../modules/asset/admin/asset-dashboard/components/assetDashBoard';
+import { BuildingAsset } from '../modules/asset/admin/building/components';
+import { EmployeeAssetManagement } from '../modules/asset/employee/asset-information/components/employeeAssetManagement';
+import { EmployeeIncidentManagement } from '../modules/asset/employee/incident/components/incidentManagement';
+import { EmployeePurchaseRequestManagement } from '../modules/asset/employee/use-request/components/PurchaseRequestManager';
 
 //report
 import TaskReportManager from '../modules/report/task-report/components/taskReportManager';
@@ -829,6 +832,53 @@ class Routes extends Component {
                         pageName={'manage_assigned_asset'}
                         layout={Layout}
                         component={ManagerAssetAssignedCrash}
+                    />
+
+                    <PrivateRoute
+                        isLoading={this.props.assetsManager.isLoading}
+                        key={'employee-manage-info-asset'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/employee-manage-info-asset', name: 'employee_manage_info_asset', icon: '' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/employee-manage-info-asset'}
+                        path={'/employee-manage-info-asset'}
+                        pageName={'employee_manage_info_asset'}
+                        layout={Layout}
+                        component={EmployeeAssetManagement}
+                    />
+                    <PrivateRoute
+                        isLoading={this.props.recommendDistribute.isLoading}
+                        key={'employee-manage-recommend-distribute-asset'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/employee-manage-recommend-distribute-asset', name: 'employee-manage-recommend-distribute-asset', icon: '' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/employee-manage-recommend-distribute-asset'}
+                        path={'/employee-manage-recommend-distribute-asset'}
+                        pageName={'manage_recommend_distribute_asset'}
+                        layout={Layout}
+                        component={EmployeePurchaseRequestManagement}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'employee-manage-incident-asset'}
+                        arrPage={[
+                            { link: '/', name: 'home', icon: 'fa fa-home' },
+                            { link: '/employee-manage-incident-asset', name: 'employee_manage_incident_asset', icon: '' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/employee-manage-incident-asset'}
+                        path={'/employee-manage-incident-asset'}
+                        pageName={'emloyee_manage_incident_asset'}
+                        layout={Layout}
+                        component={EmployeeIncidentManagement}
                     />
 
                     {/** Quản lý */}

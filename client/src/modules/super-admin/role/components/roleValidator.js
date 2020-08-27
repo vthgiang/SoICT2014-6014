@@ -1,21 +1,25 @@
-import {
-    VALIDATOR
-} from '../../../../helpers/validator';
-
-export const RoleValidator = {
-    validateName
+export const ROLE_VALIDATOR = {
+    checkName
 }
 
-function validateName(value) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Tên không được để trống";
-    } else if (value.length < 4) {
-        msg = "Tên không ít hơn 4 ký tự";
-    } else if (value.length > 255) {
-        msg = "Tên không nhiều hơn 255 ký tự";
-    } else if (!VALIDATOR.isValidName(value)) {
-        msg = "Tên không chứa ký tự đặc biệt";
-    }
-    return msg;
+function checkName(value, min=6, max=255) {
+    if(!value)
+        return {
+            status: false,
+            msg: 'general.validate.invalid_error',
+        }
+    else if (value.length < min)
+        return {
+            status: false,
+            msg: 'general.validate.minimum_length_error'
+        }
+    else if (value.length > max)
+        return {
+            status: false,
+            msg: 'general.validate.maximum_length_error'
+        }
+    else 
+        return {
+            status: true
+        }
 }

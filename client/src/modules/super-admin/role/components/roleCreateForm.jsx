@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { DialogModal, ButtonModal, SelectBox, ErrorLabel } from '../../../../common-components';
-
 import { RoleActions } from '../redux/actions';
-
-import { RoleValidator } from './roleValidator';
+import { ROLE_VALIDATOR } from './roleValidator';
 
 class RoleCreateForm extends Component {
     constructor(props) {
@@ -85,23 +82,28 @@ class RoleCreateForm extends Component {
         this.props.get();
     }
 
-    // Xy ly va validate role name
     handleRoleName = (e) => {
-        const { value } = e.target;
-        this.validateRoleName(value, true);
-    }
-    validateRoleName = (value, willUpdateState = true) => {
-        let msg = RoleValidator.validateName(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    roleNameError: msg,
-                    roleName: value,
-                }
-            });
+        let {value} = e.target;
+        this.setState({ roleName: value });
+
+        let {translate} = this.props;
+        let {msg} = ROLE_VALIDATOR.checkName(value, 4, 255);
+        let error;
+        switch(msg){
+            case 'general.validate.invalid_error':
+                error = translate(msg);
+                break;
+            case 'general.validate.minimum_length_error':
+                error = translate(msg, {min: 4});
+                break;
+            case 'general.validate.maximum_length_error':
+                error = translate(msg, {max: 255})
+                break;
+            default: 
+                error = undefined;
+                break;
         }
-        return msg === undefined;
+        this.setState({ roleNameError: error})
     }
 
     handleParents = (value) => {
@@ -133,8 +135,9 @@ class RoleCreateForm extends Component {
     }
 
     isFormValidated = () => {
-        let result = this.validateRoleName(this.state.roleName, false);
-        return result;
+        let {roleName} = this.state;
+        if(!ROLE_VALIDATOR.checkName(roleName).status) return false;
+        return true;
     }
 
     save = () => {

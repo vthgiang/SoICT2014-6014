@@ -1,22 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../common-components';
-
 import { UserActions } from '../redux/actions';
 import { RoleActions } from '../../role/redux/actions';
-
-import { UserFormValidator } from './userFormValidator';
+import {USER_VALIDATOR} from './userValidator';
 
 class UserCreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            userName: "",
-            userEmail: "",
-            userRoles: []
-        }
+        this.state = {}
     }
 
     save = () => {
@@ -30,47 +23,51 @@ class UserCreateForm extends Component {
     }
 
     isFormValidated = () => {
-        let result =
-            this.validateUserName(this.state.userName, false) &&
-            this.validateUserEmail(this.state.userEmail, false);
-
-        return result;
+        let {userName, userEmail} = this.state;
+        if(!USER_VALIDATOR.checkName(userName).status || !USER_VALIDATOR.checkEmail(userEmail).status) return false;
+        return true;
     }
 
-    handleUserNameChange = (e) => {
-        let value = e.target.value;
-        this.validateUserName(value, true);
-    }
-    validateUserName = (value, willUpdateState = true) => {
-        let msg = UserFormValidator.validateName(value)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnUserName: msg,
-                    userName: value,
-                }
-            });
+    handleUserName = (e) => {
+        let {value} = e.target;
+        this.setState({ userName: value });
+
+        let {translate} = this.props;
+        let {msg} = USER_VALIDATOR.checkName(value, 6, 255);
+        let error;
+        switch(msg){
+            case 'general.validate.invalid_error':
+                error = translate(msg);
+                break;
+            case 'general.validate.minimum_length_error':
+                error = translate(msg, {min: 6});
+                break;
+            case 'general.validate.maximum_length_error':
+                error = translate(msg, {max: 255})
+                break;
+            default: 
+                error = undefined;
+                break;
         }
-        return msg === undefined;
+        this.setState({ userNameError: error})
     }
 
-    handleUserEmailChange = (e) => {
-        let value = e.target.value;
-        this.validateUserEmail(value);
-    }
-    validateUserEmail = (value, willUpdateState = true) => {
-        let msg = UserFormValidator.validateEmail(value)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnUserEmail: msg,
-                    userEmail: value,
-                }
-            });
+    handleUserEmail = (e) => {
+        let {value} = e.target;
+        this.setState({ userEmail: value });
+
+        let {translate} = this.props;
+        let {msg} = USER_VALIDATOR.checkEmail(value);
+        let error;
+        switch(msg){
+            case 'general.validate.invalid_error':
+                error = translate(msg);
+                break;
+            default: 
+                error = undefined;
+                break;
         }
-        return msg == undefined;
+        this.setState({ userEmailError: error})
     }
 
     handleRolesChange = (value) => {
@@ -88,7 +85,7 @@ class UserCreateForm extends Component {
 
     render() {
         const { translate, role, user } = this.props;
-        const { userName, userEmail, errorOnUserName, errorOnUserEmail } = this.state;
+        const { userName, userEmail, userEmailError, userNameError } = this.state;
 
         const items = role.list.filter(role => {
             return role && role.name !== 'Super Admin'
@@ -103,8 +100,6 @@ class UserCreateForm extends Component {
                     modalID="modal-create-user" isLoading={user.isLoading}
                     formID="form-create-user"
                     title={translate('manage_user.add_title')}
-                    msg_success={translate('manage_user.add_success')}
-                    msg_faile={translate('manage_user.add_faile')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                     size={50}
@@ -114,17 +109,17 @@ class UserCreateForm extends Component {
                     <form id="form-create-user" onSubmit={() => this.save(translate('manage_user.add_success'))}>
 
                         {/* Tên người dùng */}
-                        <div className={`form-group ${!errorOnUserName ? "" : "has-error"}`}>
+                        <div className={`form-group ${!userNameError ? "" : "has-error"}`}>
                             <label>{translate('table.name')}<span className="text-red">*</span></label>
-                            <input type="text" className="form-control" onChange={this.handleUserNameChange} />
-                            <ErrorLabel content={errorOnUserName} />
+                            <input type="text" className="form-control" onChange={this.handleUserName} />
+                            <ErrorLabel content={userNameError} />
                         </div>
 
                         {/* Email */}
-                        <div className={`form-group ${!errorOnUserEmail ? "" : "has-error"}`}>
+                        <div className={`form-group ${!userEmailError ? "" : "has-error"}`}>
                             <label>{translate('table.email')}<span className="text-red">*</span></label>
-                            <input type="email" className="form-control" onChange={this.handleUserEmailChange} />
-                            <ErrorLabel content={errorOnUserEmail} />
+                            <input type="email" className="form-control" onChange={this.handleUserEmail} />
+                            <ErrorLabel content={userEmailError} />
                         </div>
 
                         {/* Phân quyền được cấp */}

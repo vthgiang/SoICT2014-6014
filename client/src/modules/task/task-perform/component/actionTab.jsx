@@ -1,23 +1,24 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { withTranslate } from 'react-redux-multilingual';
+import Rating from 'react-rating';
+import moment from 'moment';
+import 'moment/locale/vi';
+import Files from 'react-files';
+import './actionTab.css';
 
-import Rating from 'react-rating'
-import moment from 'moment'
-import 'moment/locale/vi'
-import { ContentMaker, DialogModal, DateTimeConverter } from '../../../../common-components'
-
+import { ContentMaker, DialogModal, DateTimeConverter } from '../../../../common-components';
 import { getStorage } from '../../../../config';
+
 import { performTaskAction } from '../redux/actions';
 import { taskManagementActions } from "../../task-management/redux/actions";
+import { AuthActions } from '../../../auth/redux/actions';
+
 import { SubTaskTab } from './subTaskTab';
-import { AuthActions } from '../../../auth/redux/actions'
-
-import Files from 'react-files'
-import './actionTab.css';
 import { ViewProcess } from '../../task-process/component/task-process-management/viewProcess';
-
-
+import { IncomingDataTab } from './incomingDataTab';
+import { OutgoingDataTab } from './outgoingDataTab';
 
 class ActionTab extends Component {
     constructor(props) {
@@ -830,7 +831,17 @@ class ActionTab extends Component {
                         <li><a href="#logTimer" onClick={() => this.handleChangeContent("logTimer")} data-toggle="tab">{translate("task.task_perform.timesheetlogs")} ({logTimer && logTimer.length})</a></li>
                         <li><a href="#subTask" onClick={() => this.handleChangeContent("subTask")} data-toggle="tab">{translate("task.task_perform.subtasks")} ({subtasks && subtasks.length})</a></li>
                         <li><a href="#historyLog" onClick={() => this.handleChangeContent("historyLog")} data-toggle="tab">{translate("task.task_perform.change_history")} ({logs && logs.length})</a></li>
-                        <li><a href="#process" onClick={() => this.handleChangeContent("process")} data-toggle="tab">{translate("task.task_perform.change_process")} </a></li>
+                        {(task && task.process) && <li><a href="#process" onClick={() => this.handleChangeContent("process")} data-toggle="tab">{translate("task.task_perform.change_process")} </a></li>}
+                        
+                        {/** Điều kiện hiển thị tab dữ liệu vào */
+                            task && task.preceedingTasks && task.preceedingTasks.length !== 0 &&
+                                <li><a href="#incoming-data" onClick={() => this.handleChangeContent("incoming-data")} data-toggle="tab">Dữ liệu vào</a></li>
+                        }
+                        
+                        {/** Điều kiện hiển thị tab dữ liệu ra */
+                            task && task.followingTasks && task.followingTasks.length !== 0 &&
+                                <li><a href="#outgoing-data" onClick={() => this.handleChangeContent("outgoing-data")} data-toggle="tab">Dữ liệu ra</a></li>
+                        }
                     </ul>
                     <div className="tab-content">
                         <div className={selected === "taskAction" ? "active tab-pane" : "tab-pane"} id="taskAction">
@@ -1585,6 +1596,31 @@ class ActionTab extends Component {
                             }
                         </div>
 
+                        
+                        {/** Dữ liệu vào */}
+                        <div className={selected === "incoming-data" ? "active tab-pane" : "tab-pane"} id="incoming-data">
+                            {
+                                (task && task.process) &&
+                                <IncomingDataTab
+                                        isIncomingData={task && task.preceedingTasks && task.preceedingTasks.length !== 0}
+                                        taskId={task._id}
+                                        task={task}
+                                        infoTaskProcess={task.process.tasks}
+                                    />
+                            }
+                        </div>
+
+                        {/** Dữ liệu ra */}
+                        <div className={selected === "outgoing-data" ? "active tab-pane" : "tab-pane"} id="outgoing-data">
+                            {
+                                (task && task.process) &&
+                                <OutgoingDataTab
+                                        isOutgoingData={task && task.followingTasks && task.followingTasks.length !== 0}
+                                        taskId={task._id}
+                                        task={task}
+                                    />
+                            }
+                        </div>
                     </div>
                 </div>
             </div>

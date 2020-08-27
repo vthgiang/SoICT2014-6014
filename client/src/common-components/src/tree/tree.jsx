@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import './tree.css';
 
+/**
+ * Nguồn: https://www.jstree.com/
+ */
 class Tree extends Component {
     constructor(props) {
         super(props);

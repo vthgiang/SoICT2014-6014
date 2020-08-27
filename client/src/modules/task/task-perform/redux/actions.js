@@ -8,29 +8,35 @@ export const performTaskAction = {
     getTimerStatusTask,
     startTimerTask,
     stopTimerTask,
+
     createActionComment,
     editActionComment,
     deleteActionComment,
+
     createResultTask,
     editResultTask,
+
     createTaskAction,
     editTaskAction,
     deleteTaskAction,
+    confirmAction,
+
     createTaskComment,
     editTaskComment,
     deleteTaskComment,
     createCommentOfTaskComment,
     editCommentOfTaskComment,
     deleteCommentOfTaskComment,
-    evaluationAction,
-    confirmAction,
-    uploadFile,
+
     addTaskLog,
+    getTaskLog,
+
     deleteFileAction,
     deleteFileCommentOfAction,
     deleteFileTaskComment,
     deleteFileChildTaskComment,
-    getTaskLog,
+
+    uploadFile,
     deleteFileTask,
     editTaskByAccountableEmployees,
     editTaskByResponsibleEmployees,
@@ -39,11 +45,14 @@ export const performTaskAction = {
     editDocument,
     deleteDocument,
 
+    evaluationAction,
     evaluateTaskByAccountableEmployees,
     evaluateTaskByConsultedEmployees,
     evaluateTaskByResponsibleEmployees,
 
     deleteEvaluation,
+
+    editInformationTask
 };
 // Create result task
 function createResultTask(result) {
@@ -523,10 +532,10 @@ function deleteEvaluation(taskId, evaluateId) {
  * @param {*} id id task
  * @param {*} status trang thai muon cap nhat
  */
-function editStatusOfTask(id, status) {
+function editStatusOfTask(id, status, typeOfTask, listSelected = []) {
     return dispatch => {
         dispatch({ type: taskManagementConstants.EDIT_STATUS_OF_TASK_REQUEST, id });
-        performTaskService.editStatusOfTask(id, status) //(taskid, { status: "dang thuc hien" })
+        performTaskService.editStatusOfTask(id, status, typeOfTask, listSelected) //(taskid, { status: "dang thuc hien" })
             .then(res => {
                 dispatch({
                     type: taskManagementConstants.EDIT_STATUS_OF_TASK_SUCCESS,
@@ -614,4 +623,25 @@ function deleteDocument(fileId, documentId, taskId) {
                 dispatch({ type: performTaskConstants.DELETE_DOCUMENT_TASK_FAILURE, error });
             });
     };
+}
+
+// Chỉnh sửa task information
+function editInformationTask(taskId, informations) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.EDIT_TASK_INFORMATION_REQUEST });
+
+        performTaskService.editInformationTask(taskId, informations)
+            .then(res => {
+                dispatch({
+                    type: performTaskConstants.EDIT_TASK_INFORMATION_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({
+                    type: performTaskConstants.EDIT_TASK_INFORMATION_FAILURE,
+                    payload: error
+                });
+            });
+    }
 }

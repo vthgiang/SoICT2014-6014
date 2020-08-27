@@ -27,7 +27,7 @@ import { AddTaskTemplate } from "../../task-template/component/addTaskTemplate";
 ElementFactory.prototype._getDefaultSize = function (semantic) {
 
    if (is(semantic, 'bpmn:Task')) {
-      return { width: 160, height: 130 };
+      return { width: 160, height: 110 };
    }
 
    if (is(semantic, 'bpmn:Gateway')) {
@@ -135,10 +135,15 @@ class ModalCreateTaskProcess extends Component {
    }
 
    handleChangeName = async (value) => {
+      let stringName = value
+      if (value.length > 13) {
+         stringName = value.slice(0, 13)
+         stringName += "..."
+      }
       const modeling = this.modeler.get('modeling');
       let element1 = this.modeler.get('elementRegistry').get(this.state.id);
       modeling.updateProperties(element1, {
-         name: value,
+         name: stringName,
       });
    }
 
@@ -185,33 +190,57 @@ class ModalCreateTaskProcess extends Component {
    }
 
    handleChangeResponsible = async (value) => {
+      const modeling = this.modeler.get('modeling');
+      let element1 = this.modeler.get('elementRegistry').get(this.state.id);
       let { user } = this.props
+      let responsibleName
       let responsible = []
       user.usercompanys.forEach(x => {
          if (value.some(y => y === x._id)) {
             responsible.push(x.name)
          }
       })
-      const modeling = this.modeler.get('modeling');
-      let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-      modeling.updateProperties(element1, {
-         responsibleName: responsible
-      });
+      if (responsible.length > 2) {
+
+         responsibleName = responsible[0] + ", " + responsible[1] + "..."
+         modeling.updateProperties(element1, {
+            responsibleName: responsibleName
+         });
+
+      } else {
+
+         modeling.updateProperties(element1, {
+            responsibleName: responsible
+         });
+
+      }
    }
 
    handleChangeAccountable = async (value) => {
+      const modeling = this.modeler.get('modeling');
+      let element1 = this.modeler.get('elementRegistry').get(this.state.id);
       let { user } = this.props
+      let accountableName
       let accountable = []
+
       user.usercompanys.forEach(x => {
          if (value.some(y => y === x._id)) {
             accountable.push(x.name)
          }
       })
-      const modeling = this.modeler.get('modeling');
-      let element1 = this.modeler.get('elementRegistry').get(this.state.id);
-      modeling.updateProperties(element1, {
-         accountableName: accountable
-      });
+
+      if (accountable.length > 2) {
+         accountableName = accountable[0] + ", " + accountable[1] + "..."
+         modeling.updateProperties(element1, {
+            accountableName: accountableName
+         });
+
+      } else {
+         modeling.updateProperties(element1, {
+            accountableName: accountable
+         });
+
+      }
    }
    shouldComponentUpdate(nextProps, nextState) {
       if (nextState.save === true) {
@@ -258,6 +287,7 @@ class ModalCreateTaskProcess extends Component {
       this.modeler.on('commandStack.shape.delete.revert', (e) => this.handleUndoDeleteElement(e));
 
       this.modeler.on('shape.changed', 1, (e) => this.changeNameElement(e));
+      console.log('event', eventBus);
    }
    done = (e) => {
       e.preventDefault()
@@ -381,7 +411,7 @@ class ModalCreateTaskProcess extends Component {
                         for (let y in outgoing) {
                            info[j].followingTasks.push({ // các công việc sau công việc hiện tại
                               task: outgoing[y].targetRef.id,
-                                 // name: outgoing[y].targetRef.name,
+                              // name: outgoing[y].targetRef.name,
                               link: outgoing[y].name,
                            })
                         }

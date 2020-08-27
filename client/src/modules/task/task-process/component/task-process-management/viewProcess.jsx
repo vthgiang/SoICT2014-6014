@@ -3,9 +3,10 @@ import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
 import { DialogModal, SelectBox, DatePicker } from "../../../../../common-components";
 import { getStorage } from '../../../../../config';
-import { ModalDetailTask } from "../../../task-management/component/task-dashboard/modalDetailTask";
+import { ModalDetailTask } from "../../../task-dashboard/task-personal-dashboard/modalDetailTask";
 import { taskManagementActions } from "../../../task-management/redux/actions";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
+import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import customModule from './../custom'
@@ -58,6 +59,17 @@ class ViewProcess extends Component {
 
         this.modeler.attachTo('#' + this.generateId);
         var eventBus = this.modeler.get('eventBus');
+
+        //Vo hieu hoa double click edit label
+        eventBus.on('element.dblclick', 10000, function (event) {
+            var element = event.element;
+
+            if (isAny(element, ['bpmn:Task'])) {
+                return false; // will cancel event
+            }
+        });
+
+
         this.modeler.on('element.click', 1000, (e) => this.interactPopup(e));
 
 

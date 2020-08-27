@@ -69,6 +69,16 @@ export default {
                     'Token của bạn không hợp lệ',
                     'Dịch vụ cho công ty không còn hoạt động',
                 ],
+            },
+            validate: {
+                invalid_character_error: 'không được chứa ký tự đặc biệt',
+                length_error: 'phải có số ký tự từ {min} đến {max}',
+                minimum_length_error: 'phải có độ dài tối thiểu là {min} ký tự',
+                maximum_length_error: 'có độ dài không quá {max} ký tự',
+                invalid_error: 'không hợp lệ',
+                empty_error: 'không được để trống',
+                not_existing_error: 'không tồn tại',
+                existing_error: 'đã tồn tại',
             }
         },
 
@@ -422,7 +432,7 @@ export default {
 
             category: 'Loại tài liệu',
             domain: 'Danh mục',
-            data: 'Danh sách tài liệu tài liệu',
+            data: 'Danh sách tài liệu',
             statistics_report: 'Thống kê báo cáo',
             history_report: 'Lịch sử thống kê',
 
@@ -642,6 +652,7 @@ export default {
             manage_incident_asset: 'Quản lý sự cố tài sản',
             manage_recommend_procure: 'Quản lý đề nghị mua sắm',
             manage_recommend_distribute_asset: 'Quản lý đăng ký sử dụng',
+            employee_manage_asset_info: 'Quản lý thông tin tài sản được phân quyền',
 
             view_building_list: 'Xem danh sách mặt bằng',
 
@@ -1586,6 +1597,7 @@ export default {
                 purchase_date: 'Ngày nhập',
                 manager: 'Người quản lý',
                 user: 'Người sử dụng',
+                organization_unit: 'Đơn vị sử dụng',
                 handover_from_date: 'Thời gian bắt đầu sử dụng',
                 handover_to_date: 'Thời gian kết thúc sử dụng',
                 status: 'Trạng thái',
@@ -1601,7 +1613,7 @@ export default {
                 attach_infomation: 'Thông tin đính kèm',
 
                 serial_number: 'Số serial',
-                warranty_expiration_date: 'Ngày bảo hành',
+                warranty_expiration_date: 'Ngày hết hạn bảo hành',
                 asset_location: 'Vị trí tài sản',
                 description: 'Mô tả',
                 can_register: 'Quyền đăng ký',
@@ -1634,6 +1646,13 @@ export default {
                 file_name: 'Tên tài liệu',
                 number: 'Số lượng',
                 attached_file: 'File đính kèm',
+            },
+
+            // Dashboard
+            dashboard: {
+                status_chart: 'Biểu đồ thống kê tài sản theo trạng thái',
+                group_chart: 'Biểu đồ thống kê tài sản theo nhóm',
+                cost_chart: 'Biểu đồ thống kê tài sản theo giá trị',
             },
 
             //  Quản lý loại tài sản
@@ -1672,6 +1691,7 @@ export default {
                 add_incident_info: 'Thêm mới thông tin sự cố',
                 edit_incident_info: 'Chỉnh sửa thông tin sự cố',
                 delete_incident_info: 'Xóa thông tin sự cố',
+                delete_asset_confirm: 'Xóa tài sản này ?',
 
                 usage_time: 'Thời gian sử dụng',
                 annual_depreciation: 'Mức độ khấu hao trung bình hằng năm',
@@ -1976,6 +1996,8 @@ export default {
                 finished: 'Đã hoàn thành',
                 delayed: 'Tạm hoãn',
                 canceled: 'Bị hủy',
+                task_status: 'Trạng thái công việc',
+                filter: 'Lọc',
 
                 priority: 'Độ ưu tiên',
                 select_priority: 'Chọn mức độ ưu tiên',

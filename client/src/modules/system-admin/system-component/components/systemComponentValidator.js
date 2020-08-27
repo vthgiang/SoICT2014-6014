@@ -1,28 +1,48 @@
-import { VALIDATOR } from '../../../../helpers/validator';
-
-export const ComponentDefaultValidator = {
-    validateName,
-    validateDescription
+export const SYSTEM_COMPONENT_VALIDATOR = {
+    checkName,
+    checkDescription
 }
 
-function validateName(url) {
-    let msg = undefined;
-    if (url.trim() === "") {
-        msg = "system_admin.system_component.validator.name.no_space";
-    } else if (!VALIDATOR.isValidName(url)) {
-        msg = "system_admin.system_component.validator.name.no_special";
-    }
-
-    return msg;
+function checkName(value, min=6, max=255) {
+    if(!value)
+        return {
+            status: false,
+            msg: 'general.validate.invalid_error',
+        }
+    else if (value.length < min)
+        return {
+            status: false,
+            msg: 'general.validate.minimum_length_error'
+        }
+    else if (value.length > max)
+        return {
+            status: false,
+            msg: 'general.validate.maximum_length_error'
+        }
+    else 
+        return {
+            status: true
+        }
 }
 
-function validateDescription(url) {
-    let msg = undefined;
-    if (url.trim() === "") {
-        msg = "system_admin.system_component.validator.description.no_space";
-    } else if (!VALIDATOR.isValidName(url)) {
-        msg = "system_admin.system_component.validator.description.no_special";
-    }
-
-    return msg;
+function checkDescription(value, min=6, max=255) {
+    if(!value)
+        return {
+            status: false,
+            msg: 'general.validate.invalid_error',
+        }
+    else if (value.length < min)
+        return {
+            status: false,
+            msg: 'general.validate.minimum_length_error'
+        }
+    else if (value.length > max)
+        return {
+            status: false,
+            msg: 'general.validate.maximum_length_error'
+        }
+    else 
+        return {
+            status: true
+        }
 }

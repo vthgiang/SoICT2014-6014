@@ -22,8 +22,10 @@ exports.searchAssetProfiles = async (req, res) => {
                 assetName: req.query.assetName,
                 status: req.query.status,
                 canRegisterForUse: req.query.canRegisterForUse,
+                purchaseDate: req.query.purchaseDate,
                 page: Number(req.query.page),
                 limit: Number(req.query.limit),
+                managedBy : req.query.managedBy
             }
             data = await AssetService.searchAssetProfiles(params, req.user.company._id);
 

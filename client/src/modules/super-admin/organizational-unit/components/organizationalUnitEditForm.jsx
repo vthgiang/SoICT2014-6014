@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
-
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
-
 import { DepartmentActions } from '../redux/actions';
-
-import { DepartmentValidator } from './organizationalUnitValidator';
+import { ORGANIZATIONAL_UNIT_VALIDATOR } from './organizationalUnitValidator';
 
 class DepartmentEditForm extends Component {
     constructor(props) {
@@ -82,7 +79,7 @@ class DepartmentEditForm extends Component {
             departmentViceDeanError,
             departmentEmployeeError,
         } = this.state;
-
+        console.log("state department:", this.state)
         return (
             <React.Fragment>
                 <DialogModal
@@ -272,10 +269,9 @@ class DepartmentEditForm extends Component {
     }
 
     isFormValidated = () => {
-        let result =
-            this.validateName(this.state.departmentName, false) &&
-            this.validateDescription(this.state.departmentDescription, false)
-        return result;
+        let {departmentName, departmentDescription} = this.state;
+        if(!ORGANIZATIONAL_UNIT_VALIDATOR.checkName(departmentName).status || !ORGANIZATIONAL_UNIT_VALIDATOR.checkDescription(departmentDescription).status) return false;
+        return true;
     }
 
     save = () => {
@@ -304,39 +300,51 @@ class DepartmentEditForm extends Component {
     }
 
     handleName = (e) => {
-        const { value } = e.target;
-        this.validateName(value, true);
-    }
-    validateName = (value, willUpdateState = true) => {
-        let msg = DepartmentValidator.validateName(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    departmentNameError: msg,
-                    departmentName: value,
-                }
-            });
+        let {value} = e.target;
+        this.setState({ departmentName: value });
+
+        let {translate} = this.props;
+        let {msg} = ORGANIZATIONAL_UNIT_VALIDATOR.checkName(value, 4, 255);
+        let error;
+        switch(msg){
+            case 'general.validate.invalid_error':
+                error = translate(msg);
+                break;
+            case 'general.validate.minimum_length_error':
+                error = translate(msg, {min: 4});
+                break;
+            case 'general.validate.maximum_length_error':
+                error = translate(msg, {max: 255})
+                break;
+            default: 
+                error = undefined;
+                break;
         }
-        return msg === undefined;
+        this.setState({ departmentNameError: error})
     }
 
     handleDescription = (e) => {
-        const { value } = e.target;
-        this.validateDescription(value, true);
-    }
-    validateDescription = (value, willUpdateState = true) => {
-        let msg = DepartmentValidator.validateName(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    departmentDescriptionError: msg,
-                    departmentDescription: value,
-                }
-            });
+        let {value} = e.target;
+        this.setState({ departmentDescription: value });
+
+        let {translate} = this.props;
+        let {msg} = ORGANIZATIONAL_UNIT_VALIDATOR.checkDescription(value, 6, 1204);
+        let error;
+        switch(msg){
+            case 'general.validate.invalid_error':
+                error = translate(msg);
+                break;
+            case 'general.validate.minimum_length_error':
+                error = translate(msg, {min: 6});
+                break;
+            case 'general.validate.maximum_length_error':
+                error = translate(msg, {max: 1024})
+                break;
+            default: 
+                error = undefined;
+                break;
         }
-        return msg === undefined;
+        this.setState({ departmentDescriptionError: error})
     }
 }
 
