@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-
+import { withTranslate } from 'react-redux-multilingual';
 import { SystemComponentActions } from '../redux/actions';
-
-import { ComponentDefaultValidator } from './systemComponentValidator';
-
+import { SYSTEM_COMPONENT_VALIDATOR } from './systemComponentValidator';
 import { DialogModal, ErrorLabel, SelectBox} from '../../../../common-components';
 
-import { withTranslate } from 'react-redux-multilingual';
 class ComponentInfoForm extends Component {
 
     constructor(props) {
@@ -34,46 +31,52 @@ class ComponentInfoForm extends Component {
         }
     }
 
-    // Xy ly va validate name
     handleName = (e) => {
-        const {value} = e.target;
-        this.validateName(value, true);
-    }
+        let {value} = e.target;
+        this.setState({ componentName: value });
 
-    validateName = (value, willUpdateState=true) => {
-        let msg = ComponentDefaultValidator.validateName(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    componentNameError: msg,
-                    componentName: value,
-                }
-            });
+        let {translate} = this.props;
+        let {msg} = SYSTEM_COMPONENT_VALIDATOR.checkDescription(value, 6, 255);
+        let error;
+        switch(msg){
+            case 'general.validate.invalid_error':
+                error = translate(msg);
+                break;
+            case 'general.validate.minimum_length_error':
+                error = translate(msg, {min: 6});
+                break;
+            case 'general.validate.maximum_length_error':
+                error = translate(msg, {max: 255})
+                break;
+            default: 
+                error = undefined;
+                break;
         }
-
-        return !msg;
+        this.setState({ componentName: error})
     }
 
-    // Xy ly va validate description
     handleDescription = (e) => {
-        const { value } = e.target;
-        this.validateDescription(value, true);
-    }
+        let {value} = e.target;
+        this.setState({ componentDescription: value });
 
-    validateDescription = (value, willUpdateState=true) => {
-        let msg = ComponentDefaultValidator.validateDescription(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    componentDescriptionError: msg,
-                    componentDescription: value,
-                }
-            });
+        let {translate} = this.props;
+        let {msg} = SYSTEM_COMPONENT_VALIDATOR.checkDescription(value, 6, 1204);
+        let error;
+        switch(msg){
+            case 'general.validate.invalid_error':
+                error = translate(msg);
+                break;
+            case 'general.validate.minimum_length_error':
+                error = translate(msg, {min: 6});
+                break;
+            case 'general.validate.maximum_length_error':
+                error = translate(msg, {max: 1024})
+                break;
+            default: 
+                error = undefined;
+                break;
         }
-
-        return !msg;
+        this.setState({ componentDescriptionError: error})
     }
 
     handleLink = (value) => {
@@ -95,11 +98,9 @@ class ComponentInfoForm extends Component {
     }
 
     isFormValidated = () => {
-        let result = 
-            this.validateName(this.state.componentName, false) &&
-            this.validateDescription(this.state.componentDescription, false);
-
-        return result;
+        let {componentName, componentDescription} = this.state;
+        if(!SYSTEM_COMPONENT_VALIDATOR.checkName(componentName).status  || !SYSTEM_COMPONENT_VALIDATOR.checkDescription(componentDescription)) return false;
+        return true;
     }
 
     save = () => {
