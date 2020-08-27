@@ -2,13 +2,13 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withTranslate } from 'react-redux-multilingual'
 
-import { taskManagementActions } from '../../../task-management/redux/actions'
+import { taskManagementActions } from '../../task-management/redux/actions'
 
 import { ModalDetailTask } from './modalDetailTask'
 
 import Timeline, { TodayMarker } from "react-calendar-timeline"
 
-import { SelectMulti } from '../../../../../common-components/index';
+import { SelectMulti } from '../../../../common-components/index';
 import moment from 'moment'
 import 'react-calendar-timeline/lib/Timeline.css'
 import './calendar.css'
@@ -28,7 +28,9 @@ class TasksSchedule extends Component {
       .toDate();
     // let dateNow = new Date();
     // this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
-
+    this.infoSearch = {
+      taskStatus: ["Inprocess"],
+    }
     this.state = {
       defaultTimeStart,
       defaultTimeEnd,
@@ -36,7 +38,7 @@ class TasksSchedule extends Component {
       endDate: null,
       taskId: null,
       add: true,
-      taskStatus: ["Inprocess"]
+      taskStatus: this.infoSearch.taskStatus
     };
   }
 
@@ -51,11 +53,15 @@ class TasksSchedule extends Component {
     return [month, year].join('-');
   }
 
-  handleSelectStatus = async (status) => {
-    if (status.length === 0) {
-      status = ["Inprocess"];
+  handleSelectStatus = async (taskStatus) => {
+    if (taskStatus.length === 0) {
+      taskStatus = ["Inprocess"];
     }
+    this.infoSearch.taskStatus = taskStatus;
 
+  }
+  handleSearchData = async () => {
+    let status = this.infoSearch.taskStatus;
     await this.setState(state => {
       return {
         ...state,
@@ -66,11 +72,10 @@ class TasksSchedule extends Component {
     await this.getTaskDurations();
     await this.getTaskGroups();
   }
-
   // Lọc công việc theo trạng thái
   filterByStatus(task) {
     let stt = this.state.taskStatus;
-    // console.log('stt', stt);
+    console.log('stt', stt);
 
     for (let i in stt) {
       if (task.status === stt[i] && task.isArchived === false) return true;
@@ -142,7 +147,7 @@ class TasksSchedule extends Component {
                   fontWeight: '600',
                   fontSize: 14,
                   borderWidth: 1,
-                  borderRadius: 3,
+                  borderRadius: 2,
                 }
               }
             })
@@ -278,7 +283,7 @@ class TasksSchedule extends Component {
                     fontWeight: '600',
                     fontSize: 14,
                     borderWidth: 1,
-                    borderRadius: 3,
+                    borderRadius: 2,
                   }
                 }
               })
@@ -556,27 +561,27 @@ class TasksSchedule extends Component {
     return (
       <React.Fragment>
         <div className="box-body qlcv">
-          <section className="form-inline" style={{ textAlign: "right" }}>
+          <section className="form-inline" style={{ textAlign: "right", marginBottom: "10px" }}>
             {/* Chọn trạng thái công việc */}
             <div className="form-group">
-              <label>{translate('task.task_management.status')}</label>
-              {
-                taskStatus &&
-                <SelectMulti id="multiSelectStatusInDistribution"
-                  items={[
-                    { value: "Inprocess", text: translate('task.task_management.inprocess') },
-                    { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
-                    { value: "Finished", text: translate('task.task_management.finished') },
-                    { value: "Delayed", text: translate('task.task_management.delayed') },
-                    { value: "Canceled", text: translate('task.task_management.canceled') }
-                  ]}
-                  onChange={this.handleSelectStatus}
-                  options={{ nonSelectedText: translate('task.task_management.inprocess'), allSelectedText: translate('task.task_management.select_all_status') }}
-                  value={taskStatus}>
+              <label style={{ minWidth: "150px" }}>{translate('task.task_management.task_status')}</label>
 
-                </SelectMulti>
-              }
+              <SelectMulti id="multiSelectStatusInCalendar"
+                items={[
+                  { value: "Inprocess", text: translate('task.task_management.inprocess') },
+                  { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
+                  { value: "Finished", text: translate('task.task_management.finished') },
+                  { value: "Delayed", text: translate('task.task_management.delayed') },
+                  { value: "Canceled", text: translate('task.task_management.canceled') }
+                ]}
+                onChange={this.handleSelectStatus}
+                options={{ nonSelectedText: translate('task.task_management.inprocess'), allSelectedText: translate('task.task_management.select_all_status') }}
+                value={taskStatus}>
+              </SelectMulti>
 
+            </div>
+            <div className="form-group">
+              <button className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.filter')}</button>
             </div>
           </section>
           {<ModalDetailTask task={task} />}
@@ -625,8 +630,8 @@ class TasksSchedule extends Component {
 
           </div>
           <div className="form-inline pull-right" style={{ marginTop: "5px" }}>
-            <button className='btn btn-success' onClick={this.onPrevClick}><i className="fa fa-angle-left"></i> {translate('task.task_management.prev')}</button>
-            <button className='btn btn-success' onClick={this.onNextClick}>{translate('task.task_management.next')} <i className="fa fa-angle-right"></i></button>
+            <button className='btn btn-primary' onClick={this.onPrevClick}><i className="fa fa-angle-left"></i> {translate('task.task_management.prev')}</button>
+            <button className='btn btn-primary' onClick={this.onNextClick}>{translate('task.task_management.next')} <i className="fa fa-angle-right"></i></button>
           </div>
         </div>
       </React.Fragment>

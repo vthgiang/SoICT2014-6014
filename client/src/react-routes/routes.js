@@ -63,11 +63,11 @@ import { EmployeeKpiEvaluationDashboard } from "../modules/kpi/evaluation/dashbo
 
 import { TaskManagement } from "../modules/task/task-management/component/taskManagement";
 import { TaskComponent } from '../modules/task/task-perform/component/taskComponent';
-import { TaskDashboard } from "../modules/task/task-management/component/task-dashboard/taskDashboard";
+import { TaskDashboard } from "../modules/task/task-dashboard/task-personal-dashboard/taskDashboard";
 import { TaskTemplate } from '../modules/task/task-template/component/taskTemplate';
 import { TaskProcessManagement } from '../modules/task/task-process/component/task-process-management/taskProcessManagement';
 import { ProcessTemplate } from '../modules/task/task-process/component/processTemplate';
-import { TaskOrganizationUnitDashboard } from '../modules/task/task-management/component/task-organization-dashboard/taskOrganizationUnitDashboard';
+import { TaskOrganizationUnitDashboard } from '../modules/task/task-dashboard/task-organization-dashboard/taskOrganizationUnitDashboard';
 
 //asset
 import RecommendProcure from "../modules/asset/user/purchase-request/components";
@@ -848,7 +848,7 @@ class Routes extends Component {
                         pageName={'employee_manage_info_asset'}
                         layout={Layout}
                         component={EmployeeAssetManagement}
-                    />                    
+                    />
                     <PrivateRoute
                         isLoading={this.props.recommendDistribute.isLoading}
                         key={'employee-manage-recommend-distribute-asset'}
@@ -863,7 +863,7 @@ class Routes extends Component {
                         pageName={'manage_recommend_distribute_asset'}
                         layout={Layout}
                         component={EmployeePurchaseRequestManagement}
-                    />     
+                    />
 
                     <PrivateRoute
                         isLoading={false}

@@ -94,7 +94,7 @@ class DepreciationBarChart extends Component {
         const { listAssets, assetType } = this.props;
 
         // let typeName = [], countAssetType = [], idAssetType = [];
-        let countDepreciation = [], typeName = [], idAssetType = [];
+        let countDepreciation = [], typeName = [], shortName = [], idAssetType = [];
 
         for (let i in assetType) {
             countDepreciation[i] = 0;
@@ -107,13 +107,17 @@ class DepreciationBarChart extends Component {
                 countDepreciation[idx] += this.calculateDepreciation(asset.depreciationType, asset.cost, asset.usefulLife, asset.estimatedTotalProduction, asset.unitsProducedDuringTheYears, asset.startDepreciation) / 1000000;
             })
             for (let i in assetType) {
+                let longName = assetType[i].title.slice(0, 20) + "...";
+                let name = assetType[i].title.length > 20 ? longName : assetType[i].title;
+                shortName.push(name);
                 typeName.push(assetType[i].title);
             }
         }
 
         let data = {
             count: countDepreciation,
-            type: typeName
+            type: typeName,
+            shortName: shortName
         }
 
         return data;
@@ -144,21 +148,22 @@ class DepreciationBarChart extends Component {
             },
 
             padding: {
-                top: 20,
                 bottom: 20,
-                right: 0,
-                left: 100
+                right: 20
             },
 
             axis: {
                 x: {
                     type: 'category',
-                    categories: dataPieChart.type
+                    categories: dataPieChart.shortName,
+                    tick: {
+                        multiline: false
+                    }
                 },
 
                 y: {
                     label: {
-                        text: 'Giá trị (Triệu)',
+                        text: 'Giá trị mất (Triệu)',
                         position: 'outer-right'
                     }
                 },
@@ -174,6 +179,12 @@ class DepreciationBarChart extends Component {
 
             legend: {
                 show: false
+            },
+            tooltip: {
+                format: {
+                    title: function (index) { return dataPieChart.type[index] },
+
+                }
             }
 
         });
