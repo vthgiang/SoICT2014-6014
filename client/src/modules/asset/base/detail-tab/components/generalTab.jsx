@@ -189,7 +189,7 @@ class GeneralTab extends Component {
                                     {/* Vị trí */}
                                     <div className="form-group">
                                         <strong>{translate('asset.general_information.asset_location')}&emsp; </strong>
-                                        {location && assetbuildinglist.length && assetbuildinglist.filter(item => item._id === location).pop() ? assetbuildinglist.filter(item => item._id === location).pop().assetName : 'Data is deleted'}
+                                        {location && assetbuildinglist && assetbuildinglist.length && assetbuildinglist.filter(item => item._id === location).pop() ? assetbuildinglist.filter(item => item._id === location).pop().assetName : ''}
                                     </div>
 
                                     {/* Mô tả */}

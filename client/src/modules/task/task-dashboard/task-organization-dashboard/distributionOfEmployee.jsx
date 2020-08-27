@@ -1,9 +1,9 @@
 import React, { Component, createElement } from 'react';
 import { connect } from 'react-redux';
 
-import { UserActions } from '../../../../super-admin/user/redux/actions';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 
-import { SelectBox, SelectMulti } from '../../../../../common-components/index';
+import { SelectBox, SelectMulti } from '../../../../common-components/index';
 import { withTranslate } from 'react-redux-multilingual';
 
 import c3 from 'c3';
@@ -11,40 +11,42 @@ import 'c3/c3.css';
 class DistributionOfEmployee extends Component {
     constructor(props) {
         super(props);
-
+        this.infoSearch = {
+            status: ["Inprocess", "WaitForApproval", "Finished", "Delayed", "Canceled"],
+        }
         this.state = {
             listNameEmployee: [],
-            status: ["Inprocess", "WaitForApproval", "Finished", "Delayed", "Canceled"],
-
+            status: this.infoSearch.status,
         }
     }
 
     shouldComponentUpdate(nextState) {
         if (!this.props.listEmployee) return false;
 
-        else if (nextState.maxEmployee !== this.state.maxEmployee) {
+        else {
             this.pieChart();
             return true;
         }
 
-        else {
-            this.pieChart();
-        }
     }
 
     handleSelectStatus = async (value) => {
         if (value.length === 0) {
             value = ["Inprocess", "WaitForApproval", "Finished", "Delayed", "Canceled"];
         }
+        this.infoSearch.status = value;
+
+    }
+    handleSearchData = async () => {
+        let status = this.infoSearch.status;
         await this.setState(state => {
             return {
                 ...state,
-                status: value
+                status: status
             }
         });
         this.pieChart();
     }
-
     filterByStatus(task) {
         let stt = this.state.status;
         for (let i in stt) {
@@ -178,7 +180,7 @@ class DistributionOfEmployee extends Component {
                 <section className="form-inline" style={{ textAlign: "right" }}>
                     {/* Chọn trạng thái công việc */}
                     <div className="form-group">
-                        <label>{translate('task.task_management.status')}</label>
+                        <label style={{ minWidth: "150px" }}>{translate('task.task_management.task_status')}</label>
                         <SelectMulti id="multiSelectStatusInDistribution"
                             items={[
                                 { value: "Inprocess", text: translate('task.task_management.inprocess') },
@@ -188,8 +190,11 @@ class DistributionOfEmployee extends Component {
                                 { value: "Canceled", text: translate('task.task_management.canceled') }
                             ]}
                             onChange={this.handleSelectStatus}
-                            options={{ nonSelectedText: translate('task.task_management.select_status'), allSelectedText: translate('task.task_management.select_all_status') }}>
+                            options={{ nonSelectedText: translate('task.task_management.select_all_status'), allSelectedText: translate('task.task_management.select_all_status') }}>
                         </SelectMulti>
+                    </div>
+                    <div className="form-group">
+                        <button className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.filter')}</button>
                     </div>
                 </section>
 

@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { DomainOfTaskResultsChart } from '../task-dashboard/domainOfTaskResultsChart';
-import { TaskStatusChart } from '../task-dashboard/taskStatusChart';
-import { TasksSchedule } from '../task-dashboard/tasksSchedule';
+import { taskManagementActions } from '../../task-management/redux/actions';
+import { DashboardEvaluationEmployeeKpiSetAction } from '../../../kpi/evaluation/dashboard/redux/actions';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 
-import { taskManagementActions } from '../../redux/actions';
-import { UserActions } from '../../../../super-admin/user/redux/actions';
-import { DashboardEvaluationEmployeeKpiSetAction } from '../../../../kpi/evaluation/dashboard/redux/actions';
+import { DistributionOfEmployee } from './distributionOfEmployee';
+import { DomainOfTaskResultsChart } from '../task-personal-dashboard/domainOfTaskResultsChart';
+import { TaskStatusChart } from '../task-personal-dashboard/taskStatusChart';
+import { TasksSchedule } from '../task-personal-dashboard/tasksSchedule';
 
 import { withTranslate } from 'react-redux-multilingual';
-import { SelectBox, SelectMulti, DatePicker } from '../../../../../common-components/index';
-import { DistributionOfEmployee } from './distributionOfEmployee';
+import { SelectMulti, DatePicker } from '../../../../common-components/index';
 
 class TaskOrganizationUnitDashboard extends Component {
     constructor(props) {
@@ -29,18 +29,23 @@ class TaskOrganizationUnitDashboard extends Component {
         if (day.length < 2)
             day = '0' + day;
 
-
+        this.INFO_SEARCH = {
+            idsUnit: [],
+            checkUnit: 0,
+            startMonth: [year, month - 3].join('-'),
+            endMonth: [year, month].join('-')
+        }
         this.state = {
             userID: "",
-            idsUnit: [],
+            idsUnit: this.INFO_SEARCH.idsUnit,
             dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
 
             willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
             callAction: false,
 
-            checkUnit: 0,
-            startMonth: [year, month - 3].join('-'),
-            endMonth: [year, month].join('-')
+            checkUnit: this.INFO_SEARCH.checkUnit,
+            startMonth: this.INFO_SEARCH.startMonth,
+            endMonth: this.INFO_SEARCH.endMonth
         };
 
 
@@ -127,25 +132,27 @@ class TaskOrganizationUnitDashboard extends Component {
     }
 
     handleChangeOrganizationUnit = async (value) => {
-        let checkUnit = this.state.checkUnit + 1
-        await this.setState(state => {
-            return {
-                ...state,
-                checkUnit: checkUnit,
-                idsUnit: value
-            }
-        })
+        let checkUnit = this.state.checkUnit + 1;
+        this.INFO_SEARCH.checkUnit = checkUnit;
+        this.INFO_SEARCH.idsUnit = value;
+        // await this.setState(state => {
+        //     return {
+        //         ...state,
+        //         checkUnit: checkUnit,
+        //         idsUnit: value
+        //     }
+        // })
     }
 
     handleSelectMonthStart = async (value) => {
         let month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
-
-        await this.setState(state => {
-            return {
-                ...state,
-                startMonth: month
-            }
-        })
+        this.INFO_SEARCH.startMonth = month;
+        // await this.setState(state => {
+        //     return {
+        //         ...state,
+        //         startMonth: month
+        //     }
+        // })
     }
 
     handleSelectMonthEnd = async (value) => {
@@ -156,14 +163,28 @@ class TaskOrganizationUnitDashboard extends Component {
         } else {
             month = (new Number(value.slice(3, 7))) + '-' + '1';
         }
+        this.INFO_SEARCH.endMonth = month;
+
+        // await this.setState(state => {
+        //     return {
+        //         ...state,
+        //         endMonth: month
+        //     }
+        // })
+    }
+    handleSearchData = async () => {
+        console.log('clickkkkkkkk');
         await this.setState(state => {
             return {
                 ...state,
-                endMonth: month
+                startMonth: this.INFO_SEARCH.startMonth,
+                endMonth: this.INFO_SEARCH.endMonth,
+                idsUnit: this.INFO_SEARCH.idsUnit,
+                checkUnit: this.INFO_SEARCH.checkUnit,
+
             }
         })
     }
-
     render() {
         const { tasks, translate, user } = this.props;
         let { idsUnit, startMonth, endMonth } = this.state;
@@ -207,10 +228,10 @@ class TaskOrganizationUnitDashboard extends Component {
                         <div className="form-inline">
                             <div className="form-group">
                                 <label style={{ width: "auto" }} className="form-control-static">{translate('kpi.evaluation.dashboard.organizational_unit')}</label>
-                                {childrenOrganizationalUnit &&
+                                {childrenOrganizationalUnit.length &&
                                     <SelectMulti id="multiSelectOrganizationalUnitInTaskUnit"
                                         items={childrenOrganizationalUnit.map(item => { return { value: item.id, text: item.name } })}
-                                        // options={{ nonSelectedText: translate('kpi.evaluation.dashboard.select_units'), allSelectedText: translate('kpi.evaluation.dashboard.all_unit') }}
+                                        options={{ nonSelectedText: childrenOrganizationalUnit[0].name, allSelectedText: translate('kpi.evaluation.dashboard.all_unit') }}
                                         onChange={this.handleChangeOrganizationUnit}
                                         value={idsUnit}
                                     >
@@ -236,6 +257,44 @@ class TaskOrganizationUnitDashboard extends Component {
                                     onChange={this.handleSelectMonthEnd}
                                     disabled={false}
                                 />
+                            </div>
+                            <div className="form-group">
+                                <button className="btn btn-success" onClick={this.handleSearchData}>{translate('task.task_management.search')}</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-xs-12">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">{translate('task.task_management.tasks_calendar')}</div>
+                            </div>
+                            <TasksSchedule
+                                callAction={!this.state.willUpdate}
+                                TaskOrganizationUnitDashboard={true}
+                                units={idsUnit}
+                                willUpdate={true}
+                            />
+                        </div>
+
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-xs-12">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">{translate('task.task_management.distribution_Of_Employee')}</div>
+                            </div>
+                            <div className="box-body qlcv">
+                                {this.state.callAction && tasks && tasks.organizationUnitTasks &&
+                                    <DistributionOfEmployee
+                                        tasks={tasks.organizationUnitTasks}
+                                        listEmployee={user.employees}
+                                        units={idsUnit}
+                                    />
+                                }
                             </div>
                         </div>
                     </div>
@@ -339,40 +398,8 @@ class TaskOrganizationUnitDashboard extends Component {
                     </div>
 
                 </div>
-                <div className="row">
-                    <div className="col-xs-12">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.distribution_Of_Employee')}</div>
-                            </div>
-                            <div className="box-body qlcv">
-                                {this.state.callAction && tasks && tasks.organizationUnitTasks &&
-                                    <DistributionOfEmployee
-                                        tasks={tasks.organizationUnitTasks}
-                                        listEmployee={user.employees}
-                                        units={idsUnit}
-                                    />
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-xs-12">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.tasks_calendar')}</div>
-                            </div>
-                            <TasksSchedule
-                                callAction={!this.state.willUpdate}
-                                TaskOrganizationUnitDashboard={true}
-                                units={idsUnit}
-                                willUpdate={true}
-                            />
-                        </div>
 
-                    </div>
-                </div>
+
             </React.Fragment>
         )
     }

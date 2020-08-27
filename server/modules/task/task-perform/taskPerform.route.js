@@ -17,7 +17,7 @@ router.post('/tasks/:taskId/logs', auth, PerformTaskController.addTaskLog);
 
 //upload file
 router.post('/tasks/:taskId/files', auth, uploadFile([{ name: 'files', path: '/files' }], 'array'), PerformTaskController.uploadFile)
-router.patch('/tasks/:taskId/documents/:documentId', auth, uploadFile([{ name: 'files', path: '/files' }], 'array'), PerformTaskController.editDocument)
+router.patch('/tasks/:taskId/documents', auth, uploadFile([{ name: 'files', path: '/files' }], 'array'), PerformTaskController.editDocument)
 router.delete('/tasks/:taskId/documents/:documentId', auth, PerformTaskController.deleteDocument)
 router.delete('/tasks/:taskId/documents/:documentId/files/:fileId', auth, PerformTaskController.deleteFileTask)
 
@@ -50,6 +50,9 @@ router.patch('/tasks/:taskId/task-comments/comments/:commentId', auth, uploadFil
 router.delete('/tasks/:taskId/task-comments/comments/:commentId', auth, PerformTaskController.deleteCommentOfTaskComment);
 router.patch('/tasks/:taskId/task-comments/:commentId/comments/files/:fileId', auth, PerformTaskController.deleteFileChildTaskComment);
 
+
+// Task Information
+router.patch('/tasks/:taskId/task-informations', auth, PerformTaskController.editTaskInformation);
 
 
 router.post('/tasks/:taskId', auth, PerformTaskController.editTask);

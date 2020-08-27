@@ -14,7 +14,7 @@ class AssetStatistics extends Component {
             listAssets: null,
         }
     }
-    
+
     componentDidMount() {
         AssetService.getAll({
             assetName: "",
@@ -31,8 +31,8 @@ class AssetStatistics extends Component {
             console.log(err);
         });
     }
-    
-    
+
+
     render() {
         const { translate } = this.props;
         const { listAssets } = this.state;

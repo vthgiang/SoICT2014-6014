@@ -128,8 +128,6 @@ getAllUserInUnitAndItsSubUnits = async (id, unitId) => {
     //Lấy tất cả các đơn vị con của 1 đơn vị
     var data;
 
-    console.log("**", typeof unitId);
-
     if (unitId !== '-1') {
 
         var organizationalUnit = await OrganizationalUnit.findById(unitId);

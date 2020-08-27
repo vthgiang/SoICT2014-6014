@@ -37,7 +37,7 @@ class EmployeeIncidentManagement extends Component {
             status: "",
             page: 0,
             limit: 100,
-            userId
+            managedBy: userId
         });
     }
 

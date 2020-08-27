@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { kpiMemberActions } from '../redux/actions';
 import { DataTableSetting, ExportExcel } from '../../../../../common-components';
 import { DialogModal } from '../../../../../common-components/index';
-import { ModalDetailTask } from '../../../../task/task-management/component/task-dashboard/modalDetailTask';
+import { ModalDetailTask } from '../../../../task/task-dashboard/task-personal-dashboard/modalDetailTask';
 import { withTranslate } from 'react-redux-multilingual';
 
 class EmployeeKpiEvaluateModal extends Component {
@@ -166,16 +166,16 @@ class EmployeeKpiEvaluateModal extends Component {
     convertDataToExportData = (dataTask, currentKpiName, employeeName) => {
 
         let fileName = "Thông tin KPI " + (currentKpiName ? currentKpiName : "") + " của " + (employeeName ? employeeName : "");
-        let tableName = 'Danh sách công việc ứng với KPI ' +(currentKpiName ? currentKpiName : "") + " của " + (employeeName ? employeeName : "");
+        let tableName = 'Danh sách công việc ứng với KPI ' + (currentKpiName ? currentKpiName : "") + " của " + (employeeName ? employeeName : "");
         if (dataTask) {
 
             dataTask = dataTask.map((x, index) => {
 
                 let name = x.name;
                 let startTaskD = new Date(x.startDate);
-                let endTaskD = new Date(x.endDate);                  
-                let startApproveD = new Date(x.preEvaDate);                   
-                let endApproveD = new Date(x.date);                   
+                let endTaskD = new Date(x.endDate);
+                let startApproveD = new Date(x.preEvaDate);
+                let endApproveD = new Date(x.date);
                 let automaticPoint = (x.results.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x.results.automaticPoint);
                 let employeePoint = (x.results.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.results.employeePoint);
                 let approverPoint = (x.results.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.results.approvedPoint);
@@ -207,13 +207,13 @@ class EmployeeKpiEvaluateModal extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
-                    sheetTitle : fileName,
+                    sheetTitle: fileName,
                     tables: [
                         {
-                            tableName : tableName,
+                            tableName: tableName,
                             columns: [
                                 { key: "STT", value: "STT" },
-                                { key: "name", value:"Tên hoạt động" },
+                                { key: "name", value: "Tên hoạt động" },
                                 { key: "startTaskDate", value: "Ngày bắt đầu công việc" },
                                 { key: "endTaskDate", value: "Ngày kết thúc công việc" },
                                 { key: "startApproveDate", value: "Ngày bắt đầu đánh giá" },

@@ -7,8 +7,9 @@ import 'c3/c3.css';
 import * as d3 from 'd3-format';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { AmountTree } from './amountTree';
-class AmountBarChart extends Component {
+import { ValueTree } from './valueTree';
+
+class ValueBarChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -17,17 +18,16 @@ class AmountBarChart extends Component {
     }
 
     componentDidMount() {
-        console.log('run did mount');
-        this.pieChart();
+        if (this.refs.c) this.pieChart();
     }
 
     // Thiết lập dữ liệu biểu đồ
     setDataBarChart = () => {
         const { listAssets, assetType } = this.props;
 
-        let typeName = [], countAssetType = [], idAssetType = [];
+        let typeName = [], shortName = [], countAssetValue = [], idAssetType = [];
         for (let i in assetType) {
-            countAssetType[i] = 0;
+            countAssetValue[i] = 0;
             idAssetType.push(assetType[i].id)
         }
 
@@ -35,13 +35,15 @@ class AmountBarChart extends Component {
         if (listAssets) {
             listAssets.map(asset => {
                 let idx = idAssetType.indexOf(asset.assetType);
-                countAssetType[idx]++;
+                countAssetValue[idx] += asset.cost / 1000000;
             })
             for (let i in assetType) {
 
-                // let val = d3.format(",")(countAssetType[i])
+                // let val = d3.format(",")(countAssetValue[i])
                 // let title = `${assetType[i].title} - ${val} `
-
+                let longName = assetType[i].title.slice(0, 20) + "...";
+                let name = assetType[i].title.length > 20 ? longName : assetType[i].title;
+                shortName.push(name);
                 typeName.push(assetType[i].title);
 
                 // chart.push({
@@ -52,8 +54,9 @@ class AmountBarChart extends Component {
             }
         }
         let data = {
-            count: countAssetType,
-            type: typeName
+            count: countAssetValue,
+            type: typeName,
+            shortName: shortName
         }
 
         return data;
@@ -61,7 +64,7 @@ class AmountBarChart extends Component {
 
     // Xóa các chart đã render khi chưa đủ dữ liệu
     removePreviousChart() {
-        const chart = this.refs.a;
+        const chart = this.refs.c;
         if (chart) {
             console.log('c');
             while (chart.hasChildNodes()) {
@@ -77,7 +80,7 @@ class AmountBarChart extends Component {
         let heightCalc = dataPieChart.type.length * 24.8;
         let height = heightCalc < 320 ? 320 : heightCalc;
         let chart = c3.generate({
-            bindto: this.refs.a,
+            bindto: this.refs.c,
 
             data: {
                 columns: [count],
@@ -85,21 +88,24 @@ class AmountBarChart extends Component {
             },
 
             padding: {
-                top: 10,
                 bottom: 20,
-                right: 0,
-                left: 100
+                right: 20
             },
 
             axis: {
                 x: {
+                    fit: true,
                     type: 'category',
-                    categories: dataPieChart.type
+                    categories: dataPieChart.shortName,
+                    tick: {
+                        multiline: false,
+
+                    }
                 },
                 y: {
                     label: {
-                        text: 'Số lượng',
-                        position: 'outer-right'
+                        text: 'Tổng giá trị (Triệu)',
+                        position: 'outer-right',
                     }
                 },
                 rotated: true
@@ -115,8 +121,13 @@ class AmountBarChart extends Component {
 
             legend: {
                 show: false
-            }
+            },
+            tooltip: {
+                format: {
+                    title: function (index) { return dataPieChart.type[index] },
 
+                }
+            }
         });
     }
     handleChangeViewChart = async (value) => {
@@ -128,7 +139,6 @@ class AmountBarChart extends Component {
         })
     }
     render() {
-        console.log('render');
         const { assetType, listAssets } = this.props;
         const { barChart } = this.state;
         if (barChart) this.pieChart();
@@ -140,14 +150,11 @@ class AmountBarChart extends Component {
                         <button type="button" className={`btn btn-xs ${!barChart ? "btn-danger" : "active"}`} onClick={() => this.handleChangeViewChart(false)}>Tree</button>
                     </div>
                 </div>
+                {barChart ? <div ref="c"></div> : <ValueTree
+                    assetType={assetType}
+                    listAssets={listAssets} />}
 
-
-                {
-                    barChart ? <div ref="a"></div> :
-                        <AmountTree
-                            assetType={assetType}
-                            listAssets={listAssets} />
-                }
+                {/* </div> */}
             </React.Fragment>
         )
     }
@@ -157,6 +164,6 @@ function mapState(state) { }
 
 const actions = {}
 
-const AmountBarChartConnected = connect(mapState, actions)(withTranslate(AmountBarChart));
+const ValueBarChartConnected = connect(mapState, actions)(withTranslate(ValueBarChart));
 
-export { AmountBarChartConnected as AmountBarChart }
+export { ValueBarChartConnected as ValueBarChart }

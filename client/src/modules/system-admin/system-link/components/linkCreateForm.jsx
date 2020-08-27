@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-
+import { withTranslate } from 'react-redux-multilingual';
 import { RootRoleActions } from '../../root-role/redux/actions';
 import { SystemLinkActions } from '../redux/actions';
-
-import { LinkDefaultValidator } from './systemLinkValidator';
-
+import { SYSTEM_LINK_VALIDATOR } from './systemLinkValidator';
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../common-components';
-
-import { withTranslate } from 'react-redux-multilingual';
 class CreateLinkForm extends Component {
 
     constructor(props) {
@@ -24,46 +20,46 @@ class CreateLinkForm extends Component {
         this.props.getAllRootRoles();
     }
 
-    // Xy ly va validate role name
     handleUrl = (e) => {
-        const {value} = e.target;
-        this.validateUrl(value, true);
-    }
+        let {value} = e.target;
+        this.setState({ linkUrl: value });
 
-    validateUrl = (value, willUpdateState=true) => {
-        let msg = LinkDefaultValidator.validateUrl(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    linkUrlError: msg,
-                    linkUrl: value,
-                }
-            });
+        let {translate} = this.props;
+        let {msg} = SYSTEM_LINK_VALIDATOR.checkUrl(value);
+        let error;
+        switch(msg){
+            case 'general.validate.invalid_error':
+                error = translate(msg);
+                break;
+            default: 
+                error = undefined;
+                break;
         }
-
-        return !msg;
+        this.setState({ linkUrlError: error})
     }
 
-    // Xy ly va validate role name
     handleDescription = (e) => {
-        const { value } = e.target;
-        this.validateDescription(value, true);
-    }
+        let {value} = e.target;
+        this.setState({ linkDescription: value });
 
-    validateDescription = (value, willUpdateState=true) => {
-        let msg = LinkDefaultValidator.validateDescription(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    linkDescriptionError: msg,
-                    linkDescription: value,
-                }
-            });
+        let {translate} = this.props;
+        let {msg} = SYSTEM_LINK_VALIDATOR.checkDescription(value, 6, 1204);
+        let error;
+        switch(msg){
+            case 'general.validate.invalid_error':
+                error = translate(msg);
+                break;
+            case 'general.validate.minimum_length_error':
+                error = translate(msg, {min: 6});
+                break;
+            case 'general.validate.maximum_length_error':
+                error = translate(msg, {max: 1024})
+                break;
+            default: 
+                error = undefined;
+                break;
         }
-
-        return !msg;
+        this.setState({ linkDescriptionError: error})
     }
 
     handleCategory = (value) => {
@@ -85,11 +81,9 @@ class CreateLinkForm extends Component {
     }
 
     isFormValidated = () => {
-        let result = 
-            this.validateUrl(this.state.linkUrl, false) &&
-            this.validateDescription(this.state.linkDescription, false);
-            
-        return result;
+        let {linkUrl, linkDescription} = this.state;
+        if(!SYSTEM_LINK_VALIDATOR.checkUrl(linkUrl).status  || !SYSTEM_LINK_VALIDATOR.checkDescription(linkDescription)) return false;
+        return true;
     }
 
     save = () => {
