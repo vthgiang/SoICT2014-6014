@@ -107,8 +107,8 @@ class DepreciationBarChart extends Component {
                 countDepreciation[idx] += this.calculateDepreciation(asset.depreciationType, asset.cost, asset.usefulLife, asset.estimatedTotalProduction, asset.unitsProducedDuringTheYears, asset.startDepreciation) / 1000000;
             })
             for (let i in assetType) {
-                let longName = assetType[i].title.slice(0, 15) + "...";
-                let name = assetType[i].title.length > 15 ? longName : assetType[i].title;
+                let longName = assetType[i].title.slice(0, 20) + "...";
+                let name = assetType[i].title.length > 20 ? longName : assetType[i].title;
                 shortName.push(name);
                 typeName.push(assetType[i].title);
             }
@@ -148,10 +148,8 @@ class DepreciationBarChart extends Component {
             },
 
             padding: {
-                top: 20,
                 bottom: 20,
-                right: 0,
-                left: 100
+                right: 20
             },
 
             axis: {
@@ -165,7 +163,7 @@ class DepreciationBarChart extends Component {
 
                 y: {
                     label: {
-                        text: 'Giá trị (Triệu)',
+                        text: 'Giá trị mất (Triệu)',
                         position: 'outer-right'
                     }
                 },

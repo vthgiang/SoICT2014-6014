@@ -1992,6 +1992,9 @@ export default {
                 finished: 'Finished',
                 delayed: 'Delayed',
                 canceled: 'Canceled',
+                task_status: 'Task status',
+                filter: 'Filter',
+
 
                 priority: 'Priority',
                 select_priority: 'Select priority',

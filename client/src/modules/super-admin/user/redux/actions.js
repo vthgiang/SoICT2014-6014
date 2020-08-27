@@ -1,9 +1,5 @@
-import {
-    UserServices
-} from "./services";
-import {
-    UserConstants
-} from "./constants";
+import { UserServices } from "./services";
+import { UserConstants } from "./constants";
 
 export const UserActions = {
     get,

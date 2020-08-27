@@ -1993,6 +1993,8 @@ export default {
                 finished: 'Đã hoàn thành',
                 delayed: 'Tạm hoãn',
                 canceled: 'Bị hủy',
+                task_status: 'Trạng thái công việc',
+                filter: 'Lọc',
 
                 priority: 'Độ ưu tiên',
                 select_priority: 'Chọn mức độ ưu tiên',

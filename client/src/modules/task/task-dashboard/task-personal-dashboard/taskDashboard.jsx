@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { taskManagementActions } from '../../redux/actions';
+import { taskManagementActions } from '../../task-management/redux/actions';
 
 import { TaskStatusChart } from './taskStatusChart';
 import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
@@ -9,7 +9,7 @@ import { TasksSchedule } from './tasksSchedule';
 
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker } from '../../../../../common-components';
+import { DatePicker } from '../../../../common-components';
 import Swal from 'sweetalert2';
 import { TasksIsNotLinked } from './tasksIsNotLinked';
 import { TaskHasActionNotEvaluated } from './taskHasActionNotEvaluated';
@@ -305,6 +305,18 @@ class TaskDashboard extends Component {
                         </div>
                     </div>
                 </div>
+                {/* Lịch công việc chi tiết */}
+                <div className="row">
+                    <div className="col-xs-12">
+                        <div className="box box-primary">
+                            <div className="box-header with-border">
+                                <div className="box-title">{translate('task.task_management.tasks_calendar')}</div>
+                            </div>
+                            <TasksSchedule />
+                        </div>
+
+                    </div>
+                </div>
                 <div className="row">
                     <div className="col-xs-6">
                         <div className="box box-primary">
@@ -401,18 +413,7 @@ class TaskDashboard extends Component {
                     <TaskHasActionNotEvaluated />
 
                 </div>
-                {/* Lịch công việc chi tiết */}
-                <div className="row">
-                    <div className="col-xs-12">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.tasks_calendar')}</div>
-                            </div>
-                            <TasksSchedule />
-                        </div>
 
-                    </div>
-                </div>
             </React.Fragment>
         );
     }

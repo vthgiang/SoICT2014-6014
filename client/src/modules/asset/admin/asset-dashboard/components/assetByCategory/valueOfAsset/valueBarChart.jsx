@@ -41,8 +41,8 @@ class ValueBarChart extends Component {
 
                 // let val = d3.format(",")(countAssetValue[i])
                 // let title = `${assetType[i].title} - ${val} `
-                let longName = assetType[i].title.slice(0, 15) + "...";
-                let name = assetType[i].title.length > 15 ? longName : assetType[i].title;
+                let longName = assetType[i].title.slice(0, 20) + "...";
+                let name = assetType[i].title.length > 20 ? longName : assetType[i].title;
                 shortName.push(name);
                 typeName.push(assetType[i].title);
 
@@ -88,10 +88,8 @@ class ValueBarChart extends Component {
             },
 
             padding: {
-                top: 0,
                 bottom: 20,
-                right: 0,
-                left: 100
+                right: 20
             },
 
             axis: {
@@ -106,7 +104,7 @@ class ValueBarChart extends Component {
                 },
                 y: {
                     label: {
-                        text: 'Giá trị (Triệu)',
+                        text: 'Tổng giá trị (Triệu)',
                         position: 'outer-right',
                     }
                 },
