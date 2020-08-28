@@ -187,8 +187,38 @@ export default {
                 component_exist: 'Component này đã tồn tại',
             },
 
-            log: {
-
+            system_setting: {
+                backup: {
+                    config: 'Cấu hình sao lưu dữ liệu',
+                    backup_button: 'Sao lưu dữ liệu',
+                    automatic: 'Tự động', on: 'Bật sao lưu', off: "Tắt sao lưu",
+                    week_day: {
+                        mon: 'Thứ hai', tue: 'Thứ ba', wed: 'Thứ tư', thur: 'Thứ năm', fri: 'Thứ sáu', sat: 'Thứ bảy', sun: 'Chủ nhật',
+                    },
+                    month_list: {
+                        jan: 'Tháng 1',
+                        feb: 'Tháng 2',
+                        mar: 'Tháng 3',
+                        apr: 'Tháng 4',
+                        may: 'Tháng 5',
+                        june: 'Tháng 6',
+                        july: 'Tháng 7',
+                        aug: 'Tháng 8',
+                        sep: 'Tháng 9',
+                        oct: 'Tháng 10',
+                        nov: 'Tháng 11',
+                        dec: 'Tháng 12'
+                    },
+                    limit: 'Giới hạn',
+                    period: 'Định kỳ', weekly: 'Hàng tuần', monthly: 'Hàng tháng', yearly: 'Hằng năm',
+                    date: 'Ngày', hour: 'Giờ', minute: 'Phút', second: 'Giây', day: 'Thứ', month: 'Tháng',
+                    save: 'Lưu cấu hình',
+                    
+                    version: 'Phiên bản',
+                    description: 'Mô tả về phiên bản',
+                    backup_time: 'Thời gian đã sao lưu',
+                    action: 'Hành động',
+                },
             },
 
             root_role: {
