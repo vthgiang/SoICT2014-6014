@@ -94,7 +94,7 @@ class ComponentCreateForm extends Component {
 
     isFormValidated = () => {
         let {componentName, componentDescription} = this.state;
-        if(!SYSTEM_COMPONENT_VALIDATOR.checkName(componentName).status  || !SYSTEM_COMPONENT_VALIDATOR.checkDescription(componentDescription)) return false;
+        if(!SYSTEM_COMPONENT_VALIDATOR.checkName(componentName).status  || !SYSTEM_COMPONENT_VALIDATOR.checkDescription(componentDescription).status) return false;
         return true;
     }
 

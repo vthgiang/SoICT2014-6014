@@ -6,7 +6,7 @@ export const SYSTEM_LINK_VALIDATOR = {
 }
 
 function checkUrl(value) {
-    if(!value || !REGEX.URL.test(value))
+    if(!value || !REGEX.URL.test(value) || value[0] !== '/')
         return {
             status: false,
             msg: 'general.validate.invalid_error',

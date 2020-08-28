@@ -98,7 +98,7 @@ class LinkInfoForm extends Component {
 
     isFormValidated = () => {
         let {linkUrl, linkDescription} = this.state;
-        if(!SYSTEM_LINK_VALIDATOR.checkUrl(linkUrl).status  || !SYSTEM_LINK_VALIDATOR.checkDescription(linkDescription)) return false;
+        if(!SYSTEM_LINK_VALIDATOR.checkUrl(linkUrl).status  || !SYSTEM_LINK_VALIDATOR.checkDescription(linkDescription).status) return false;
         return true;
     }
 
