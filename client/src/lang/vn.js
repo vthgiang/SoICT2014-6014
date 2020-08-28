@@ -2096,7 +2096,7 @@ export default {
                 detail_show_info: 'Hiện thông tin',
                 detail_choose_role: 'Chọn vai trò',
 
-                detail_link: 'Liên kết công việc',
+                detail_link: 'Link công việc',
                 detail_priority: 'Độ ưu tiên công việc',
                 detail_status: 'Trạng thái công việc',
                 detail_time: 'Thời gian thực hiện công việc',
