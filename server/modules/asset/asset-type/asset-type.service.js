@@ -40,10 +40,9 @@ exports.getAssetTypes = async (query, company) => {
             }
         });
         const tree = await arrayToTree(dataConverted, {});
-
         return { list, tree };
     }
-    
+
 }
 
 exports.createAssetTypes = async (company, data) => {
@@ -52,6 +51,7 @@ exports.createAssetTypes = async (company, data) => {
         typeNumber: data.typeNumber,
         typeName: data.typeName,
         description: data.description,
+        defaultInformation: data.defaultInformation,
     }
     if (data.parent.length) {
         query.parent = data.parent
@@ -65,11 +65,12 @@ exports.editAssetType = async (id, data) => {
     const type = await AssetType.findById(id);
 
     type.typeNumber = data.typeNumber,
-    type.typeName = data.typeName,
-    type.description = data.description,
-    type.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
-    
-    await type.save();
+        type.typeName = data.typeName,
+        type.description = data.description,
+        type.parent = ObjectId.isValid(data.parent) ? data.parent : undefined
+    type.defaultInformation = data.defaultInformation,
+
+        await type.save();
 
     return type;
 }
@@ -80,7 +81,7 @@ exports.deleteAssetTypes = async (id) => {
     if (!type) {
         throw ['document_domain_not_found']
     }
-    
+
     await AssetType.deleteOne({ _id: id });
 
     return await this.getAssetTypes({}, type.company);

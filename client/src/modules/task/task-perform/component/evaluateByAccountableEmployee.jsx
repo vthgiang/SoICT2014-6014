@@ -632,7 +632,7 @@ class EvaluateByAccountableEmployee extends Component {
                 role: "Accountable",
                 target: "Point"
             }
-            state.empPoint[`accountable${id}`] = value;
+            if(id === state.userId) state.empPoint[`accountable${id}`] = value;
             state.errorApprovedPoint[`accountable${id}`] = this.validateEvaluateResult(value);
             return {
                 ...state,

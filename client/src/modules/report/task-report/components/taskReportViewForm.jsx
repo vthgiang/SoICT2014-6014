@@ -28,6 +28,7 @@ class TaskReportViewForm extends Component {
         if (chartType === '2') return "pie";
     }
 
+
     // hamf convert month-year gom nhóm công viêc theo tháng
     convertMonthYear = (data) => {
         const time = new Date(data);
@@ -36,12 +37,14 @@ class TaskReportViewForm extends Component {
         return `${year}-${month + 1}`;
     }
 
+
     // Hmaf convert year, gom nhóm công việc theo năm
     convertYear = (data) => {
         const time = new Date(data);
         const year = time.getFullYear();
         return `${year}`;
     }
+
 
     //Hàm convert gom nhóm công việc theo quý
     getQuarter = (data) => {
@@ -50,6 +53,24 @@ class TaskReportViewForm extends Component {
         let year = (`Quý${quarter}-`) + time.getFullYear();
         return `${year}`;
     }
+
+
+    groupByDate = (tasks) => {
+        return tasks.reduce((groups, item) => {
+            groups[item.time] = [...groups[item.time] || [], item];
+            return groups;
+        }, {});
+    }
+
+
+    // gom nhom theo responsibleEmployees
+    groupByResponsibleEmployees = (tasks) => {
+        return tasks.reduce((groups, item) => {
+            groups[item.responsibleEmployees.toString()] = [...groups[item.responsibleEmployees.toString()] || [], item];
+            return groups;
+        }, {});
+    }
+
 
     // Hàm tính tổng và trung bình cộng task evaluation 
     aggregate = (tasks) => {
@@ -66,8 +87,48 @@ class TaskReportViewForm extends Component {
     }
 
 
+    dataAfterAggregate = (input) => {
+        return Object.entries(input).map(([time, datapoints]) => {
+            let allTasks = datapoints.flatMap(point => point.task.map(x => ({ ...x, responsibleEmployees: point.responsibleEmployees.toString() })))
+            allTasks.map(item => {
+                if (item.newName) {
+                    item.code = item.newName;
+                } else {
+                    item.code = item.code;
+                }
+                return item;
+            })
+            let result = this.aggregate(allTasks); // gọi hàm tính trung bình cộng và tổng. 
+
+            return {
+                time,
+                tasks: result.map(([code, value, chartType, showInReport]) => ({ code, value, chartType, showInReport })),
+            }
+        });
+    }
+
+
+    convertDataPieChartOneWay = (input) => {
+        let groupByCode = {}, pieDataConvert;
+
+        input.flatMap(item => item.tasks.map(task => ({ ...task, time: item.time }))
+        ).forEach(childTask => {
+            if (groupByCode[childTask.code]) {
+                groupByCode[childTask.code].push(childTask)
+            } else {
+                groupByCode[childTask.code] = [childTask];
+            }
+        })
+
+        pieDataConvert = Object.entries(groupByCode).map(([code, tasks]) => ({
+            [code]: tasks.map((task) => [task.time, task.value])
+        }))
+        return pieDataConvert;
+    }
+
+
     render() {
-        const { tasks, user, reports, translate } = this.props;
+        const { tasks, reports, translate } = this.props;
         let formater = new Intl.NumberFormat();
         let listTaskEvaluation = tasks.listTaskEvaluations;
         let taskInfoName, headTable = [], frequency, newlistTaskEvaluation;
@@ -97,42 +158,72 @@ class TaskReportViewForm extends Component {
                     task: item.taskInformations.filter(task => {
                         if (task.type === 'Number')
                             return task;
-                    })
+                    }),
+                    responsibleEmployees: item.responsibleEmployees.map(x => x.name),
                 }
             });
         }
+
+
+        /**
+         * Convert data gom nhóm, tính tổng và tính trung bình cộng các trường thông tin.
+         *  Nếu chọn trục hoành là thời gian
+         */
 
         //Gom nhóm công việc theo tháng-năm-quys
         let groupDataByDate;
         if (newlistTaskEvaluation) {
-            groupDataByDate = newlistTaskEvaluation.reduce((groups, item) => {
-                groups[item.time] = [...groups[item.time] || [], item];
-                return groups;
-            }, {});
+            groupDataByDate = this.groupByDate(newlistTaskEvaluation);
         }
+
 
         let output, pieChartData = [], barLineChartData = [], pieDataConvert;
 
-        if (groupDataByDate) {
-            output = Object.entries(groupDataByDate).map(([time, datapoints]) => {
-                let allTasks = datapoints.flatMap(point => point.task);
-                // Gán newName cho code 
-                allTasks.map(item => {
-                    if (item.newName) {
-                        item.code = item.newName;
-                    } else {
-                        item.code = item.code;
-                    }
-                    return item;
+        // if (groupDataByDate) {
+        //     output = this.dataAfterAggregate(groupDataByDate);
+
+        //     // tách data vẽ biểu đồ cột+đường với tròn
+        //     output.forEach(x => {
+        //         let tasks = x.tasks.filter(y =>
+        //             y.chartType === "pie" ? (pieChartData.push({ tasks: [y], time: x.time }), false) : true)
+        //         if (tasks.length > 0) {
+        //             barLineChartData.push({
+        //                 time: x.time,
+        //                 tasks: tasks,
+        //             })
+        //         }
+        //     })
+        // }
+
+        // if (pieChartData && pieChartData.length > 0) {
+        //     // convert Data pieChart
+        //     pieDataConvert = this.convertDataPieChartOneWay(pieChartData);
+        // }
+
+        /**
+        * Convert data, gom nhóm theo người thực hiện, tính trung bình cộng các trường thông tin.
+        * Nếu trục hoành là người thực hiện
+        */
+
+        //Gom nhóm công việc theo người thực hiện
+        let groupDataByResponsibleEmployees;
+        if (newlistTaskEvaluation) {
+            let results = [];
+
+            newlistTaskEvaluation.forEach(x => {
+                x.responsibleEmployees.forEach(y => {
+                    results.push({
+                        time: x.time,
+                        task: x.task,
+                        responsibleEmployees: y,
+                    })
                 })
+            })
+            groupDataByResponsibleEmployees = this.groupByResponsibleEmployees(results);
+        }
 
-                let result = this.aggregate(allTasks); // gọi hàm tính trung bình cộng và tổng 
-                return {
-                    time,
-                    tasks: result.map(([code, value, chartType, showInReport]) => ({ code, value, chartType, showInReport })),
-                }
-            });
-
+        if (groupDataByResponsibleEmployees) {
+            output = this.dataAfterAggregate(groupDataByResponsibleEmployees);
             // tách data vẽ biểu đồ cột+đường với tròn
             output.forEach(x => {
                 let tasks = x.tasks.filter(y =>
@@ -143,26 +234,12 @@ class TaskReportViewForm extends Component {
                         tasks: tasks,
                     })
                 }
-
             })
         }
 
-
         if (pieChartData && pieChartData.length > 0) {
             // convert Data pieChart
-            let groupByCode = {};
-            pieChartData.flatMap(item => item.tasks.map(task => ({ ...task, time: item.time }))
-            ).forEach(childTask => {
-                if (groupByCode[childTask.code]) {
-                    groupByCode[childTask.code].push(childTask)
-                } else {
-                    groupByCode[childTask.code] = [childTask];
-                }
-            })
-
-            pieDataConvert = Object.entries(groupByCode).map(([code, tasks]) => ({
-                [code]: tasks.map((task) => [task.time, task.value])
-            }))
+            pieDataConvert = this.convertDataPieChartOneWay(pieChartData);
         }
 
 
@@ -241,12 +318,10 @@ class TaskReportViewForm extends Component {
                                     {
                                         tasks.listTaskEvaluations && tasks.listTaskEvaluations.map((item, key) => {
                                             //Lấy tên người thực hiện 
-                                            let getNameResponsibleEmployees = user.usercompanys.filter(item1 => item1._id === item.responsibleEmployees);
-                                            getNameResponsibleEmployees = getNameResponsibleEmployees.map(x1 => x1.name);
+                                            let getNameResponsibleEmployees = item.responsibleEmployees.map(x1 => x1.name);
 
                                             //Lấy tên người phê duyệt
-                                            let getNameAccountableEmployees = user.usercompanys.filter(item2 => item2._id === item.accountableEmployees);
-                                            getNameAccountableEmployees = getNameAccountableEmployees.map(x2 => x2.name);
+                                            let getNameAccountableEmployees = item.accountableEmployees.map(x2 => x2.name);
 
                                             // lấy điểm tự động của các công việc
                                             let result = item.results, point = [];
@@ -273,7 +348,7 @@ class TaskReportViewForm extends Component {
                                                     </td>
                                                     <td className="text-center">
                                                         {
-                                                            getNameAccountableEmployees.join(',')
+                                                            getNameAccountableEmployees.join(', ')
                                                         }
                                                     </td>
                                                     <td className="text-center">
@@ -313,8 +388,8 @@ class TaskReportViewForm extends Component {
 }
 
 function mapState(state) {
-    const { tasks, user, reports } = state;
-    return { tasks, user, reports };
+    const { tasks, reports } = state;
+    return { tasks, reports };
 }
 
 const actionCreators = {
