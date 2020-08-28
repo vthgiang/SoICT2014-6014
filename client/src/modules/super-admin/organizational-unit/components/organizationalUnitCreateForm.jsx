@@ -3,14 +3,12 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DepartmentActions } from '../redux/actions';
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../common-components';
-import { ORGANIZATIONAL_UNIT_VALIDATOR } from './organizationalUnitValidator';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class DepartmentCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            departmentName: '',
-            departmentDescription: '',
             deans: [],
             viceDeans: [],
             employees: []
@@ -239,7 +237,7 @@ class DepartmentCreateForm extends Component {
      */
     isFormValidated = () => {
         let {departmentName, departmentDescription} = this.state;
-        if(!ORGANIZATIONAL_UNIT_VALIDATOR.checkName(departmentName).status || !ORGANIZATIONAL_UNIT_VALIDATOR.checkDescription(departmentDescription).status) return false;
+        if(!ValidationHelper.validateName(departmentName).status || !ValidationHelper.validateDescription(departmentDescription).status) return false;
         return true;
     }
 
@@ -273,7 +271,7 @@ class DepartmentCreateForm extends Component {
         this.setState({ departmentName: value });
 
         let {translate} = this.props;
-        let {msg} = ORGANIZATIONAL_UNIT_VALIDATOR.checkName(value, 4, 255);
+        let {msg} = ValidationHelper.validateName(value, 4, 255);
         let error = msg ? translate(msg, {min: 4, max: 255}) : undefined;
         this.setState({ departmentNameError: error})
     }
@@ -283,8 +281,8 @@ class DepartmentCreateForm extends Component {
         this.setState({ departmentDescription: value });
 
         let {translate} = this.props;
-        let {msg} = ORGANIZATIONAL_UNIT_VALIDATOR.checkDescription(value, 6, 1204);
-        let error = msg ? translate(msg, {min: 6, max: 1024}) : undefined;
+        let {msg} = ValidationHelper.validateDescription(value);
+        let error = msg ? translate(msg) : undefined;
         this.setState({ departmentDescriptionError: error})
     }
 

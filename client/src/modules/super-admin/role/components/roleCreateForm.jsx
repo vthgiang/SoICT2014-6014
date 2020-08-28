@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, SelectBox, ErrorLabel } from '../../../../common-components';
 import { RoleActions } from '../redux/actions';
-import { ROLE_VALIDATOR } from './roleValidator';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class RoleCreateForm extends Component {
     constructor(props) {
@@ -81,7 +81,7 @@ class RoleCreateForm extends Component {
         this.setState({ roleName: value });
 
         let {translate} = this.props;
-        let {msg} = ROLE_VALIDATOR.checkName(value, 4, 255);
+        let {msg} = ValidationHelper.validateName(value, 4, 255);
         let err = msg ? translate(msg, {min: 4, max: 255}) : undefined;
         this.setState({ roleNameError: err})
     }
@@ -116,7 +116,7 @@ class RoleCreateForm extends Component {
 
     isFormValidated = () => {
         let {roleName} = this.state;
-        if(!ROLE_VALIDATOR.checkName(roleName).status) return false;
+        if(!ValidationHelper.validateName(roleName).status) return false;
         return true;
     }
 

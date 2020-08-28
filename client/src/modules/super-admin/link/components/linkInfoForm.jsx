@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { RoleActions } from '../../role/redux/actions';
 import { LinkActions } from '../redux/actions';
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
-import { LINK_VALIDATOR } from './linkValidator';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class LinkInfoForm extends Component {
     constructor(props) {
@@ -33,8 +33,8 @@ class LinkInfoForm extends Component {
         this.setState({ linkDescription: value });
 
         let {translate} = this.props;
-        let {msg} = LINK_VALIDATOR.checkDescription(value, 6, 1204);
-        let error = msg ? translate(msg, {min: 6, max: 1024}) : undefined;
+        let {msg} = ValidationHelper.validateDescription(value);
+        let error = msg ? translate(msg) : undefined;
         this.setState({ linkDescriptionError: error})
     }
     
@@ -64,7 +64,7 @@ class LinkInfoForm extends Component {
 
     isFormValidated = () => {
         let {linkDescription} = this.state;
-        if(!LINK_VALIDATOR.checkDescription(linkDescription).status) return false;
+        if(!ValidationHelper.validateDescription(linkDescription).status) return false;
         return true;
     }
 
