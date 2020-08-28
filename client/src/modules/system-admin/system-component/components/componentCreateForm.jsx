@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { RootRoleActions } from '../../root-role/redux/actions';
 import { SystemComponentActions } from '../redux/actions';
 import { SystemLinkActions } from '../../system-link/redux/actions';
-import { SYSTEM_COMPONENT_VALIDATOR } from './systemComponentValidator';
+import ValidationHelper from '../../../../helpers/validationHelper';
 import { ButtonModal, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
 
 class ComponentCreateForm extends Component {
@@ -31,7 +31,7 @@ class ComponentCreateForm extends Component {
         this.setState({ componentName: value });
 
         let {translate} = this.props;
-        let {msg} = SYSTEM_COMPONENT_VALIDATOR.checkName(value, 6, 255);
+        let {msg} = ValidationHelper.validateName(value, 6, 255);
         let error = msg ? translate(msg, {min: 6, max: 255}) : undefined;
         this.setState({ componentNameError: error})
     }
@@ -41,8 +41,8 @@ class ComponentCreateForm extends Component {
         this.setState({ componentDescription: value });
 
         let {translate} = this.props;
-        let {msg} = SYSTEM_COMPONENT_VALIDATOR.checkDescription(value, 6, 1204);
-        let error = msg ? translate(msg, {min: 6, max: 1024}) : undefined;
+        let {msg} = ValidationHelper.validateDescription(value);
+        let error = msg ? translate(msg) : undefined;
         this.setState({ componentDescriptionError: error})
     }
 
@@ -66,7 +66,7 @@ class ComponentCreateForm extends Component {
 
     isFormValidated = () => {
         let {componentName, componentDescription} = this.state;
-        if(!SYSTEM_COMPONENT_VALIDATOR.checkName(componentName).status  || !SYSTEM_COMPONENT_VALIDATOR.checkDescription(componentDescription).status) return false;
+        if(!ValidationHelper.validateName(componentName).status  || !ValidationHelper.validateDescription(componentDescription).status) return false;
         return true;
     }
 
