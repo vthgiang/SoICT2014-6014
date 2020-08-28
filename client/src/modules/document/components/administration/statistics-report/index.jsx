@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DocumentActions } from '../../../redux/actions';
-import { ExportExcel } from '../../../../../common-components';
+import { ExportExcel, Tree } from '../../../../../common-components';
+import ListDocument from './ListDocument';
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -18,9 +19,10 @@ class AdministrationStatisticsReport extends Component {
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.props.getAllDocuments();
         this.props.getDocumentCategories();
+        this.props.getDocumentDomains();
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -38,6 +40,8 @@ class AdministrationStatisticsReport extends Component {
         else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE) {
             this.pieChart();
             this.barChart();
+            window.$(`#list-document`).slideDown();
+
             this.setState(state => {
                 return {
                     ...state,
@@ -140,6 +144,7 @@ class AdministrationStatisticsReport extends Component {
             }
         }
     }
+
     removePreviousBarChart() {
         const chart = this.refs.barchart;
         if (chart) {
@@ -221,12 +226,107 @@ class AdministrationStatisticsReport extends Component {
         }
         return exportData;
     }
+    onChanged = async (e, data) => {
+        console.log('data', data);
+        await this.setState({
+            currentDomain: data.node,
+            dataStatus: this.DATA_STATUS.AVAILABLE,
+        })
+        window.$(`#list-document`).slideDown();
+    }
+    checkIn = (array, element) => {
+        for (let i = 0; i < array.length; i++) {
+            if (array[i].id === element.id)
+                return true;
+        }
+        return false;
+    }
+    checkChildrenNode = (array, element) => {
+
+    }
+    removeDuplicateInArrayObject = (array) => {
+        let idArray = [];
+        let newArray = [];
+        for (let i = 0; i < array.length; i++) {
+            if (!idArray.includes(array[i].id)) {
+                idArray.push(array[i].id);
+                newArray.push(array[i]);
+            }
+        }
+        return newArray;
+    }
+    /**
+     * Hàm thực hiện đếm số document trong danh mục và trả về mảng domain có chứa list các document đó
+     * @param {*} domains : mảng danh mục
+     * @param {*} documents : mảng document
+     */
+    countDocumentInDomain = (domains, documents) => {
+
+        for (let i = 0; i < domains.length; i++) {
+            let arrDocument = documents.filter(document => this.checkIn(document.domains, domains[i]));
+            domains[i].documents = arrDocument;
+            domains[i].title = domains[i].name + " - " + arrDocument.length;
+            let inDomain = [];
+            let x = domains[i];
+            while (x.parent) {
+                inDomain.push(x.parent)
+                let parentX = domains.filter(domain => domain.id === x.parent);
+                x = parentX[0];
+            }
+            domains[i].inDomain = inDomain;
+        }
+
+        for (let i = 0; i < domains.length; i++) {
+            // gộp các tài liệu của danh mục con vào danh mục cha
+            let children = domains.filter(domain => domain.inDomain.includes(domains[i].id))
+            for (let j = 0; j < children.length; j++) {
+                domains[i].documents = domains[i].documents.concat(children[j].documents);
+            }
+            //loại bỏ các tài liệu trùng nhau
+            domains[i].documents = this.removeDuplicateInArrayObject(domains[i].documents);
+
+        }
+
+    }
+    /**
+     * Hàm thực hiện đếm số document trong mục lưu trữ và trả về mảng archive có chứa list các document đó
+     * @param {*} archives : mảng lưu trữ
+     * @param {*} documents : mảng document
+     */
+    countDocumentInArchive = (archives, documents) => {
+        for (let i = 0; i < archives.length; i++) {
+            let arrDocument = documents.filter(document => this.checkIn(document.archives, archives[i]));
+            archives[i].documents = arrDocument;
+            archives[i].title = archives[i].name + " - " + arrDocument.length;
+            let inDomain = [];
+            let x = archives[i];
+            while (x.parent) {
+                inDomain.push(x.parent)
+                let parentX = archives.filter(archive => archive.id === x.parent);
+                x = parentX[0];
+            }
+            archives[i].inDomain = inDomain;
+        }
+
+        for (let i = 0; i < archives.length; i++) {
+            // gộp các tài liệu của danh mục con vào danh mục cha
+            let children = archives.filter(archive => archive.inDomain.includes(archives[i].id))
+            for (let j = 0; j < children.length; j++) {
+                archives[i].documents = archives[i].documents.concat(children[j].documents);
+            }
+            //loại bỏ các tài liệu trùng nhau
+            archives[i].documents = this.removeDuplicateInArrayObject(archives[i].documents);
+
+        }
+    }
     render() {
         const { documents, translate } = this.props;
         const categoryList = documents.administration.categories.list;
         const docList = documents.administration.data.list;
-        console.log('props', categoryList)
-        console.log('stataeee', docList)
+        const { list } = this.props.documents.administration.domains;
+        const listArchives = this.props.documents.administration.archives.list;
+        const docs = this.props.documents.administration.data.list;
+        console.log('props', listArchives)
         let dataExport = [];
         let data2 = [];
         if (documents.isLoading === false) {
@@ -254,6 +354,28 @@ class AdministrationStatisticsReport extends Component {
             });
         }
         let exportData = this.convertDataToExportData(dataExport, data2);
+        this.countDocumentInDomain(list, docs)
+        this.countDocumentInArchive(listArchives, docs);
+        console.log('oooooooooo', list);
+
+        const dataTreeDomains = list.map(node => {
+            return {
+                ...node,
+                text: node.name + " -" + node.documents.length,
+                state: { "opened": true },
+                parent: node.parent ? node.parent.toString() : "#"
+            }
+        })
+        const dataTreeArchives = listArchives.map(node => {
+            return {
+                ...node,
+                text: node.name + " -" + node.documents.length,
+                state: { "opened": true },
+                parent: node.parent ? node.parent.toString() : "#"
+            }
+        })
+
+        console.log('uuuuuuuuu', dataTreeDomains, dataTreeArchives)
         return <React.Fragment>
             {<ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
             <div className="row">
@@ -280,6 +402,48 @@ class AdministrationStatisticsReport extends Component {
                     </div>
                 </div>
             </div>
+            <div className="row">
+                <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7" >
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <b className="text-left" style={{ fontSize: '20px' }}>Thống kê dữ liệu theo danh mục</b>
+                        </div>
+                        <div className="box-body qlcv" style={{ minHeight: "400px" }}>
+                            <Tree
+                                id="tree-qlcv-count-document-domain"
+                                data={dataTreeDomains}
+                                plugins={false}
+                                onChanged={this.onChanged}
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                    {
+                        this.state.currentDomain &&
+                        <ListDocument
+                            documents={this.state.currentDomain.original.documents ? this.state.currentDomain.original.documents : []}
+                        />
+                    }
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7" >
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <b className="text-left" style={{ fontSize: '20px' }}>Thống kê dữ liệu theo mục lưu trữ</b>
+                        </div>
+                        <div className="box-body qlcv" style={{ minHeight: "400px" }}>
+                            <Tree
+                                id="tree-qlcv-count-document-archive"
+                                data={dataTreeArchives}
+                                plugins={false}
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div className="col-xs-12 col-sm-12 col-md-5 col-lg-5"></div>
+            </div>
 
 
         </React.Fragment>;
@@ -292,6 +456,7 @@ const mapStateToProps = state => state;
 const mapDispatchToProps = {
     getAllDocuments: DocumentActions.getDocuments,
     getDocumentCategories: DocumentActions.getDocumentCategories,
+    getDocumentDomains: DocumentActions.getDocumentDomains,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(AdministrationStatisticsReport));

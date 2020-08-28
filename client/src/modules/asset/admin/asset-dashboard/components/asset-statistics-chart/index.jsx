@@ -5,7 +5,6 @@ import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { AssetService } from '../../../asset-information/redux/services';
 
 import { StautsChart } from './stautsChart';
-import { GroupChart } from './groupChart';
 import { CostChart } from './costChart';
 
 class AssetStatistics extends Component {
@@ -15,7 +14,7 @@ class AssetStatistics extends Component {
             listAssets: null,
         }
     }
-    
+
     componentDidMount() {
         AssetService.getAll({
             assetName: "",
@@ -32,8 +31,8 @@ class AssetStatistics extends Component {
             console.log(err);
         });
     }
-    
-    
+
+
     render() {
         const { translate } = this.props;
         const { listAssets } = this.state;
@@ -56,21 +55,6 @@ class AssetStatistics extends Component {
                             </div>
                         </div>
 
-                        {/* Biểu thống kê tài sản theo nhóm */}
-                        <div className="col-6 col-xs-6">
-                            <div className="box box-primary">
-                                <div className="box-header with-border">
-                                    <div className="box-title">{translate('asset.dashboard.group_chart')}</div>
-                                </div>
-                                <div className="box-body qlcv">
-                                    <GroupChart
-                                        listAssets={listAssets}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row">
                         {/* Biểu thống kê tài sản theo giá trị */}
                         <div className="col-6 col-xs-6">
                             <div className="box box-primary">

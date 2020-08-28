@@ -71,11 +71,14 @@ export default {
                 ],
             },
             validate: {
-                nameTypeErr: 'not special digit',
-                nameLengthErr: 'length must be 6 to 255 digit',
-                emailErr: 'invalid',
-                passwordLengthErr: 'length must be 6 to 30 digit',
-                descriptionLengthErr: 'not null',
+                invalid_character_error: 'invalid character error',
+                length_error: 'should have length between {min} to {max}',
+                minimum_length_error: 'should have minimum length of {min}',
+                maximum_length_error: 'should have maximum length of {max}',
+                invalid_error: 'invalid',
+                empty_error: 'not null',
+                not_existing_error: 'not existing',
+                existing_error: 'existing',
             }
         },
 
@@ -649,6 +652,7 @@ export default {
             manage_incident_asset: 'Manage incident assets',
             manage_recommend_procure: 'Manage purchase request',
             manage_recommend_distribute_asset: 'Manage use request',
+            employee_manage_asset_info: 'Manage information assets by employee',
 
             view_building_list: 'View building list',
             // NHÂN VIÊN
@@ -1687,6 +1691,7 @@ export default {
                 add_incident_info: 'Add new incident infomation',
                 edit_incident_info: 'Edit incident infomation',
                 delete_incident_info: 'Delete incident infomation',
+                delete_asset_confirm: 'Are you sure to delete this asset ?',
 
                 usage_time: 'Usage time',
                 annual_depreciation: 'Annual average rate of depreciation',
@@ -1990,6 +1995,9 @@ export default {
                 finished: 'Finished',
                 delayed: 'Delayed',
                 canceled: 'Canceled',
+                task_status: 'Task status',
+                filter: 'Filter',
+
 
                 priority: 'Priority',
                 select_priority: 'Select priority',

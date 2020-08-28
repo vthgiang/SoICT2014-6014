@@ -3,19 +3,21 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { Tree } from '../../../../../../common-components';
 import c3 from 'c3';
 import 'c3/c3.css';
 
 
-class DepreciationOfAssetChart extends Component {
+
+class DepreciationPieChart extends Component {
     constructor(props) {
         super(props);
     }
 
-    /**
-     * Hàm để tính các giá trị khấu hao cho tài sản
-     */
+    componentDidMount() {
+        if (this.refs.depreciationExpenseOfAsset) this.pieChart();
+    }
+
+    // Hàm để tính các giá trị khấu hao cho tài sản
     calculateDepreciation = (depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation) => {
         let annualDepreciation = 0, monthlyDepreciation = 0, remainingValue = cost;
 
@@ -79,21 +81,17 @@ class DepreciationOfAssetChart extends Component {
             remainingValue = cost - accumulatedDepreciation;
             annualDepreciation = monthTotal ? accumulatedDepreciation * 12 / monthTotal : 0;
         }
-        // console.log('cost', parseInt(cost - remainingValue));
         return parseInt(cost - remainingValue);
     }
 
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
-        const { translate } = this.props;
-
+        const { listAssets, translate } = this.props;
         let dataPieChart, depreciationExpenseOfBuilding = 0, depreciationExpenseOfVehicle = 0, depreciationExpenseOfMachine = 0, depreciationExpenseOfOrther = 0;
-        let { listAssets } = this.props;
         let depreciationOfAsset = [];
 
         if (listAssets) {
             for (let i in listAssets) {
-
                 depreciationOfAsset.push({
                     name: listAssets[i].assetName,
                     type: listAssets[i].assetType,
@@ -130,12 +128,9 @@ class DepreciationOfAssetChart extends Component {
         return dataPieChart;
     }
 
-
     // Khởi tạo PieChart bằng C3
     pieChart = () => {
-
         let dataPieChart = this.setDataPieChart();
-
         this.chart = c3.generate({
             bindto: this.refs.depreciationExpenseOfAsset,
 
@@ -159,12 +154,14 @@ class DepreciationOfAssetChart extends Component {
                     }
                 }
             },
+
             padding: {
                 top: 20,
                 bottom: 20,
                 right: 20,
                 left: 20
             },
+
             tooltip: {
                 format: {
                     title: function (d) { return d; },
@@ -182,76 +179,29 @@ class DepreciationOfAssetChart extends Component {
                     }
                 }
             },
+
             legend: {
                 show: true
             }
         });
     }
     render() {
-        const { displayBy, assetType, listAssets } = this.props;
-        let countDepreciation = [], idAssetType = [];
-        let dataTree;
-        if (displayBy == "Group") {
-            this.pieChart();
-        }
-        else {
-            for (let i in assetType) {
-                countDepreciation[i] = 0;
-                idAssetType.push(assetType[i].id)
-            }
+        this.pieChart();
 
-            let chart = [];
-            if (listAssets) {
-                listAssets.map(asset => {
-                    let idx = idAssetType.indexOf(asset.assetType);
-                    countDepreciation[idx] += this.calculateDepreciation(asset.depreciationType, asset.cost, asset.usefulLife, asset.estimatedTotalProduction, asset.unitsProducedDuringTheYears, asset.startDepreciation);
-                })
-                for (let i in assetType) {
-                    let val = countDepreciation[i]
-                    let title = `${assetType[i].title} - ${val} `
-                    chart.push({
-                        id: assetType[i].id,
-                        typeName: title,
-                        parentId: assetType[i].parent_id,
-                    })
-                }
-            }
-
-            dataTree = chart && chart.map(node => {
-                return {
-                    ...node,
-                    id: node.id,
-                    text: node.typeName,
-                    amount: node.count,
-                    parent: node.parentId ? node.parentId.toString() : "#"
-                }
-            })
-        }
         return (
             <React.Fragment>
-                <div className="box-body qlcv">
-                    {
-                        displayBy == "Group" ?
-                            <section ref="depreciationExpenseOfAsset"></section>
-                            : <Tree
-                                id="tree-qlcv-depreciation-by-type"
-                                // onChanged={this.onChanged}
-                                data={dataTree}
-                                plugins={false}
-                            />
-                    }
+                <div>
+                    <section ref="depreciationExpenseOfAsset"></section>
                 </div>
             </React.Fragment>
         )
     }
 }
 
-function mapState(state) {
-}
+function mapState(state) { }
 
-const actions = {
-}
+const actions = {}
 
-const DepreciationOfAssetChartConnected = connect(mapState, actions)(withTranslate(DepreciationOfAssetChart));
+const DepreciationPieChartConnected = connect(mapState, actions)(withTranslate(DepreciationPieChart));
 
-export { DepreciationOfAssetChartConnected as DepreciationOfAssetChart }
+export { DepreciationPieChartConnected as DepreciationPieChart }

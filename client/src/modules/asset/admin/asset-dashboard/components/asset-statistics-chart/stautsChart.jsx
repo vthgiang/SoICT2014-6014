@@ -64,7 +64,7 @@ class StautsChart extends Component {
     // Khởi tạo PieChart bằng C3
     pieChart = () => {
         let dataPieChart = this.setDataPieChart();
-        
+
         this.chart = c3.generate({
             bindto: '#assetStatus',
 
@@ -87,8 +87,8 @@ class StautsChart extends Component {
             },
             tooltip: {
                 format: {
-                    title: function (d) { 
-                        return d; 
+                    title: function (d) {
+                        return d;
                     },
                     value: function (value, ratio, id) {
                         return value;

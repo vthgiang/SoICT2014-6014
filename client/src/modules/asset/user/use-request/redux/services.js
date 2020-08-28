@@ -7,7 +7,7 @@ export const RecommendDistributeService = {
 }
 
 // Lấy danh sách phiếu đề nghị mua sắm thiết bị
-function searchRecommendDistributes(data) {
+function searchRecommendDistributes(data ) {
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/use-request/use-requests`,
         method: 'GET',
@@ -17,6 +17,7 @@ function searchRecommendDistributes(data) {
             status: data.status,
             page: data.page,
             limit: data.limit,
+            managedBy: data.managedBy
         },
     }, false, true, 'asset.recommend_distribute');
 }

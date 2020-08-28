@@ -10,8 +10,10 @@ import { RecommendDistributeService } from "../../use-request/redux/services";
 
 import { LazyLoadComponent, forceCheckOrVisible } from '../../../../../common-components';
 
-import { AssetByCategory } from './assetByCategory/assetByCategory';
+import { AssetByGroup } from './asset-by-group/assetByGroup';
 import { AssetStatistics } from './asset-statistics-chart/index';
+import { AssetIsExpired } from './asset-is-expired/assetIsExpired';
+import { AssetByType } from './asset-by-type/assetByType';
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -208,17 +210,28 @@ class DashBoardAssets extends Component {
 
                 <div className="nav-tabs-custom">
                     <ul className="nav nav-tabs">
-                        <li className="active"><a href="#administration-asset-by-type" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Tài sản theo nhóm loại</a></li>
-                        <li ><a href="#administration-asset-statistics" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê tài sản</a></li>
+                        <li className="active"><a href="#administration-asset-by-group" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Tài sản theo nhóm</a></li>
+                        <li><a href="#administration-asset-by-type" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Tài sản theo loại</a></li>
+                        <li><a href="#administration-asset-statistics" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê tài sản</a></li>
+                        <li><a href="#administration-asset-is-expired" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Hạn sử dụng tài sản</a> </li>
                     </ul>
                     <div className="tab-content">
 
-                        {/** Danh sách tài liệu văn bản */}
-                        <div className="tab-pane active" id="administration-asset-by-type">
+                        {/**Tài sản theo nhóm*/}
+                        <div className="tab-pane active" id="administration-asset-by-group">
+                            <LazyLoadComponent
+                                key="AdministrationAssetByGroup"
+                            >
+                                <AssetByGroup />
+                            </LazyLoadComponent>
+                        </div>
+
+                        {/**Tài sản theo loại*/}
+                        <div className="tab-pane" id="administration-asset-by-type">
                             <LazyLoadComponent
                                 key="AdministrationAssetByType"
                             >
-                                <AssetByCategory />
+                                <AssetByType />
                             </LazyLoadComponent>
                         </div>
 
@@ -228,6 +241,15 @@ class DashBoardAssets extends Component {
                                 key="AdministrationAssetStatistics"
                             >
                                 <AssetStatistics />
+                            </LazyLoadComponent>
+                        </div>
+
+                        {/* Danh sách các tài sản sắp hết hạn */}
+                        <div className="tab-pane" id="administration-asset-is-expired">
+                            <LazyLoadComponent
+                                key="AdministrationAssetExpired"
+                            >
+                                <AssetIsExpired />
                             </LazyLoadComponent>
                         </div>
 

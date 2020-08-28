@@ -55,10 +55,11 @@ exports.getEmployeeKpiSet = async (id, role, month) => {
 }
 
 /* Lấy tất cả các tập KPI của 1 nhân viên theo thời gian cho trước */
-exports.getAllEmployeeKpiSetByMonth = async (userId, startDate, endDate) => {
-
+exports.getAllEmployeeKpiSetByMonth = async (organizationalUnitIds, userId, startDate, endDate) => {
+    
     let employeeKpiSetByMonth = await EmployeeKpiSet.find(
         {
+            organizationalUnit: { $in: [...organizationalUnitIds] },
             creator: new mongoose.Types.ObjectId(userId),
             date: { $gt: new Date(startDate), $lte: new Date(endDate) }
         })

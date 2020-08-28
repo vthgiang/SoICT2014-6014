@@ -1,19 +1,25 @@
-import {
-    VALIDATOR
-} from '../../../../helpers/validator';
-
-export const LinkValidator = {
-    validateDescription
+export const LINK_VALIDATOR = {
+    checkDescription
 }
 
-function validateDescription(value) {
-    let msg = undefined;
-    if (value.trim() === "") {
-        msg = "Mô tả không được để trống";
-    } else if (value.length > 255) {
-        msg = "Mô tả không được nhiều hơn 255 ký tự";
-    } else if (!VALIDATOR.isValidName(value)) {
-        msg = "Mô tả không được chứa ký tự đặc biệt";
-    }
-    return msg;
+function checkDescription(value, min=6, max=255) {
+    if(!value)
+        return {
+            status: false,
+            msg: 'general.validate.invalid_error',
+        }
+    else if (value.length < min)
+        return {
+            status: false,
+            msg: 'general.validate.minimum_length_error'
+        }
+    else if (value.length > max)
+        return {
+            status: false,
+            msg: 'general.validate.maximum_length_error'
+        }
+    else 
+        return {
+            status: true
+        }
 }

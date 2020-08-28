@@ -95,10 +95,11 @@ function addNewAsset(asset) {
 
 /**
  * Cập nhật thông tin tài sản theo id
- * @param {*} id
- * @param {*} data
+ * @param {*} id 
+ * @param {*} data 
+ * @param {*} managedBy khi manageBy !="", role gọi service này không phải là admin
  */
-function updateInformationAsset(id, data) {
+function updateInformationAsset(id, data,managedBy = "") {
     return dispatch => {
         dispatch({
             type: AssetConstants.UPDATE_INFOR_ASSET_REQUEST
@@ -106,15 +107,32 @@ function updateInformationAsset(id, data) {
 
         AssetService.updateInformationAsset(id, data)
             .then(res => {
-                dispatch(getAllAsset({
-                    code: "",
-                    assetName: "",
-                    assetType: null,
-                    month: null,
-                    status: "",
-                    page: 0,
-                    limit: 5,
-                }));
+                if(managedBy === "")
+                {
+                    dispatch(getAllAsset({
+                        code: "",
+                        assetName: "",
+                        assetType: null,
+                        month: null,
+                        status: "",
+                        page: 0,
+                        limit: 5,
+                    }));                   
+                }
+                else
+                {
+                    dispatch(getAllAsset({
+                        code: "",
+                        assetName: "",
+                        assetType: null,
+                        month: null,
+                        status: "",
+                        page: 0,
+                        limit: 5,
+                        managedBy:managedBy
+                    }));          
+                }
+
                 dispatch({
                     type: AssetConstants.UPDATE_INFOR_ASSET_SUCCESS,
                     payload: res.data.content
@@ -130,10 +148,11 @@ function updateInformationAsset(id, data) {
 }
 
 /**
- * Xoá thông tin tài sản
- * @id : id thông tin tài sản cần xoá
+ * Xóa tài sản
+ * @param {*} id 
+ * @param {*} managedBy khi manageBy !="", role gọi service này không phải là admin
  */
-function deleteAsset(id) {
+function deleteAsset(id, managedBy ="") {
     return dispatch => {
         dispatch({
             type: AssetConstants.DELETE_ASSET_REQUEST
@@ -141,15 +160,32 @@ function deleteAsset(id) {
 
         AssetService.deleteAsset(id)
             .then(res => {
-                dispatch(getAllAsset({
-                    code: "",
-                    assetName: "",
-                    assetType: null,
-                    month: null,
-                    status: "",
-                    page: 0,
-                    limit: 5,
-                }));
+                if(managedBy === "")
+                {
+                    dispatch(getAllAsset({
+                        code: "",
+                        assetName: "",
+                        assetType: null,
+                        month: null,
+                        status: "",
+                        page: 0,
+                        limit: 5,
+                    }));                   
+                }
+                else
+                {
+                    dispatch(getAllAsset({
+                        code: "",
+                        assetName: "",
+                        assetType: null,
+                        month: null,
+                        status: "",
+                        page: 0,
+                        limit: 5,
+                        managedBy:managedBy
+                    }));          
+                }
+                
                 dispatch({
                     type: AssetConstants.DELETE_ASSET_SUCCESS,
                     payload: res.data.content

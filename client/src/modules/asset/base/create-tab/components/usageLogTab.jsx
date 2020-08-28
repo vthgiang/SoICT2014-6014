@@ -7,7 +7,10 @@ import { UsageActions } from '../../../admin/usage/redux/actions'
 class UsageLogTab extends Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            assignedToUser: this.props.assignedToUser,
+            assignedToOrganizaitonalUnit: this.props.assignedToOrganizaitonalUnit,
+        };
     }
 
     // Function format dữ liệu Date thành string
@@ -94,8 +97,9 @@ class UsageLogTab extends Component {
     // Function thêm thông tin phiếu
     handleAddUsage = async (data) => {
         const { assignedToUser, usageLogs, assignedToOrganizaitonalUnit } = this.state;
+        console.log("Dòng 97")
         usageLogs.push(data);
-
+        console.log("Dòng 99")
         await this.setState({
             ...this.state,
             usageLogs: usageLogs,
@@ -103,13 +107,14 @@ class UsageLogTab extends Component {
             assignedToOrganizaitonalUnit: data.usedByOrganizationalUnit,
             status: "Đang sử dụng",
         })
+
         let createUsage = {
             usageLogs: usageLogs,
             status: "Đang sử dụng",
             assignedToUser: data.usedByUser,
             assignedToOrganizaitonalUnit: data.usedByOrganizationalUnit,
         }
-    
+        
         await this.props.createUsage(this.props.assetId, createUsage)
     }
 
@@ -175,13 +180,13 @@ class UsageLogTab extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.id !== prevState.id || nextProps.usageLogs !== prevState.usageLogs || nextProps.assignedToUser !== prevState.assignedToUser || nextProps.assignedToOrganizaitonalUnit !== prevState.assignedToOrganizaitonalUnit) {
+        if (nextProps.id !== prevState.id || nextProps.usageLogs !== prevState.usageLogs ) {
             return {
                 ...prevState,
                 id: nextProps.id,
                 usageLogs: nextProps.usageLogs,
-                assignedToUser: nextProps.assignedToUser,
-                assignedToOrganizaitonalUnit: nextProps.assignedToOrganizaitonalUnit,
+                // assignedToUser: nextProps.assignedToUser,
+                // assignedToOrganizaitonalUnit: nextProps.assignedToOrganizaitonalUnit,
             }
         } else {
             return null;

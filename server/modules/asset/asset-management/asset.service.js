@@ -46,6 +46,10 @@ exports.searchAssetProfiles = async (params, company) => {
     if (params.group) {
         keySearch = {...keySearch, group: {$in: params.group}};
     }
+    // Thêm key tìm kiếm tài sản theo id người quản lý
+    if (params.managedBy) {
+        keySearch = {...keySearch, managedBy: {$in: params.managedBy}};
+    }
 
     // Thêm key tìm kiếm tài sản theo ngày nhập tài sản
     if (params.purchaseDate) {

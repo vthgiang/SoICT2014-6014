@@ -3,7 +3,7 @@ import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
 import { DialogModal, SelectBox, DatePicker } from "../../../../../common-components";
 import { getStorage } from '../../../../../config';
-import { ModalDetailTask } from "../../../task-management/component/task-dashboard/modalDetailTask";
+import { ModalDetailTask } from "../../../task-dashboard/task-personal-dashboard/modalDetailTask";
 import { taskManagementActions } from "../../../task-management/redux/actions";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'

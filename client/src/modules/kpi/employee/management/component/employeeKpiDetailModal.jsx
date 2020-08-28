@@ -6,7 +6,7 @@ import { DialogModal } from '../../../../../common-components/index';
 import { DataTableSetting, ExportExcel } from '../../../../../common-components';
 
 import { TaskDialog } from '../../../evaluation/employee-evaluation/component/taskImpotanceDialog';
-import { ModalDetailTask } from '../../../../task/task-management/component/task-dashboard/modalDetailTask';
+import { ModalDetailTask } from '../../../../task/task-dashboard/task-personal-dashboard/modalDetailTask';
 import { kpiMemberActions } from '../../../evaluation/employee-evaluation/redux/actions';
 
 class ModalDetailKPIPersonal extends Component {
@@ -118,7 +118,7 @@ class ModalDetailKPIPersonal extends Component {
                 automaticPoint: (dataKpi.automaticPoint === null) ? "Chưa đánh giá" : parseInt(dataKpi.automaticPoint),
                 employeePoint: (dataKpi.employeePoint === null) ? "Chưa đánh giá" : parseInt(dataKpi.employeePoint),
                 approverPoint: (dataKpi.approvedPoint === null) ? "Chưa đánh giá" : parseInt(dataKpi.approvedPoint),
-                sheetTitle : "Thông tin chi tiết KPI " + dataKpi.name
+                sheetTitle: "Thông tin chi tiết KPI " + dataKpi.name
             }
             kpiData.push(dataObject);
         }
@@ -126,10 +126,10 @@ class ModalDetailKPIPersonal extends Component {
         if (dataDetailKpi) {
             detailData = dataDetailKpi.map((x, index) => {
                 let name = x.name;
-                let startTaskD = new Date(x.startDate);                   
-                let endTaskD = new Date(x.endDate);                    
-                let startApproveD = new Date(x.preEvaDate);                    
-                let endApproveD = new Date(x.date);                    
+                let startTaskD = new Date(x.startDate);
+                let endTaskD = new Date(x.endDate);
+                let startApproveD = new Date(x.preEvaDate);
+                let endApproveD = new Date(x.date);
                 let automaticPoint = (x.results.automaticPoint === null) ? "Chưa đánh giá" : parseInt(x.results.automaticPoint);
                 let employeePoint = (x.results.employeePoint === null) ? "Chưa đánh giá" : parseInt(x.results.employeePoint);
                 let approverPoint = (x.results.approvedPoint === null) ? "Chưa đánh giá" : parseInt(x.results.approvedPoint);
@@ -150,7 +150,7 @@ class ModalDetailKPIPersonal extends Component {
                     endApproveDate: endApproveD,
                     contributionPoint: contributionPoint,
                     importantLevel: importantLevel,
-                   
+
                 };
             })
         }
@@ -160,10 +160,10 @@ class ModalDetailKPIPersonal extends Component {
             dataSheets: [
                 {
                     sheetName: "sheet1",
-                    sheetTitle : kpiData[0].sheetTitle,
+                    sheetTitle: kpiData[0].sheetTitle,
                     tables: [
                         {
-                            tableName : 'Thông tin chung KPI '+ kpiData[0].kpiName,
+                            tableName: 'Thông tin chung KPI ' + kpiData[0].kpiName,
                             columns: [
                                 { key: "kpiName", value: "Tên KPI cá nhân" },
                                 { key: "kpiCriteria", value: "Tiêu chí đánh giá" },
@@ -175,7 +175,7 @@ class ModalDetailKPIPersonal extends Component {
                             data: kpiData
                         },
                         {
-                            tableName : 'Danh sách công việc ứng với KPI: ',
+                            tableName: 'Danh sách công việc ứng với KPI: ',
                             columns: [
                                 { key: "STT", value: "STT" },
                                 { key: "name", value: "Tên hoạt động" },
