@@ -8,11 +8,7 @@ import { ROLE_VALIDATOR } from './roleValidator';
 class RoleCreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            roleName: '',
-            roleParents: [],
-            roleUsers: []
-        }
+        this.state = {}
     }
 
     render() {
@@ -28,8 +24,6 @@ class RoleCreateForm extends Component {
                     modalID="modal-create-role" isLoading={role.isLoading}
                     formID="form-create-role"
                     title={translate('manage_role.add_title')}
-                    msg_success={translate('manage_role.add_success')}
-                    msg_faile={translate('manage_role.add_faile')}
                     func={this.save} disableSubmit={!this.isFormValidated()}
                 >
                     {/* Form thêm phân quyền mới */}

@@ -18,12 +18,10 @@ class RoleInfoForm extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    size='50' func={this.save} isLoading={role.isLoading}
+                    func={this.save} isLoading={role.isLoading}
                     modalID="modal-edit-role"
                     formID="form-edit-role"
                     title={translate('manage_role.edit')}
-                    msg_success={translate('manage_role.edit_success')}
-                    msg_faile={translate('manage_role.edit_faile')}
                     disableSubmit={!this.isFormValidated()}
                 >
                     {/* Form chỉnh sửa thông tin phân quyền */}
@@ -100,14 +98,14 @@ class RoleInfoForm extends Component {
         this.setState({ roleName: value });
 
         let {translate} = this.props;
-        let {msg} = ROLE_VALIDATOR.checkName(value, 6, 255);
+        let {msg} = ROLE_VALIDATOR.checkName(value, 4, 255);
         let error;
         switch(msg){
             case 'general.validate.invalid_error':
                 error = translate(msg);
                 break;
             case 'general.validate.minimum_length_error':
-                error = translate(msg, {min: 6});
+                error = translate(msg, {min: 4});
                 break;
             case 'general.validate.maximum_length_error':
                 error = translate(msg, {max: 255})

@@ -100,14 +100,14 @@ class DepartmentEditForm extends Component {
                             {/* Tên đơn vị */}
                             <div className={`form-group ${!departmentNameError ? "" : "has-error"}`}>
                                 <label>{translate('manage_department.name')}<span className="attention"> * </span></label>
-                                <input type="text" className="form-control" onChange={this.handleName} value={departmentName} /><br />
+                                <input type="text" className="form-control" onChange={this.handleName} value={departmentName} />
                                 <ErrorLabel content={departmentNameError} />
                             </div>
 
                             {/* Mô tả về đơn vị */}
                             <div className={`form-group ${!departmentDescriptionError ? "" : "has-error"}`}>
                                 <label>{translate('manage_department.description')}<span className="attention"> * </span></label>
-                                <textarea type="text" className="form-control" onChange={this.handleDescription} value={departmentDescription} /><br />
+                                <textarea type="text" className="form-control" onChange={this.handleDescription} value={departmentDescription} />   
                                 <ErrorLabel content={departmentDescriptionError} />
                             </div>
 

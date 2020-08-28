@@ -45,7 +45,7 @@ class UserEditForm extends Component {
 
     isFormValidated = () => {
         let {userName, userEmail} = this.state;
-        if(!USER_VALIDATOR.checkName(userName).status || !USER_VALIDATOR.checkEmail(userEmail)) return false;
+        if(!USER_VALIDATOR.checkName(userName).status || !USER_VALIDATOR.checkEmail(userEmail).status) return false;
         return true;
     }
 
