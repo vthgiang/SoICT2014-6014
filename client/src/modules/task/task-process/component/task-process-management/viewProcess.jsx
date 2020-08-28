@@ -131,8 +131,8 @@ class ViewProcess extends Component {
                             let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
 
                             element1 && modeling.setColor(element1, {
-                                fill: '#ddd', // 9695AD
-                                stroke: '#5C7391'
+                                fill: '#f9f9f9', // 9695AD
+                                stroke: '#c4c4c7'
                             });
 
                             let target = [];
@@ -160,7 +160,7 @@ class ViewProcess extends Component {
                                 var incomingEdge = modeler.get('elementRegistry').get(x.id);
 
                                 modeling.setColor(incomingEdge, {
-                                    stroke: '#5C7391',
+                                    stroke: '#c4c4c7',
                                     width: '5px'
                                 })
                             })
@@ -170,8 +170,8 @@ class ViewProcess extends Component {
                             let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
 
                             element1 && modeling.setColor(element1, {
-                                fill: '#E8F0F4',
-                                stroke: '#1692E0', //red E02001, green 50DF8C
+                                fill: '#84ffb8',
+                                stroke: '#14984c', //E02001
                                 width: '5px'
                             });
 
@@ -180,7 +180,7 @@ class ViewProcess extends Component {
                                 var incomingEdge = modeler.get('elementRegistry').get(x.id);
 
                                 modeling.setColor(incomingEdge, {
-                                    stroke: '#1692E0',
+                                    stroke: '#14984c',
                                     width: '5px'
                                 })
                             })
