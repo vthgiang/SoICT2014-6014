@@ -23,7 +23,7 @@ class EvaluateByAccountableEmployee extends Component {
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         this.state = {
-            id: id,
+            // id: id,
             errorInfo: {},
             errorApprovedPoint: {},
             errorContribute: {},
@@ -44,6 +44,7 @@ class EvaluateByAccountableEmployee extends Component {
 
             kpi: data.kpi,
             unit: data.unit,
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
         }
     }
 
@@ -59,7 +60,7 @@ class EvaluateByAccountableEmployee extends Component {
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
-                id: nextProps.id,
+                // id: nextProps.id,
 
                 errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnPoint: undefined,
@@ -82,8 +83,8 @@ class EvaluateByAccountableEmployee extends Component {
             let { task, userId, unit } = this.state;
             let department = unit;
             let date = nextProps.date;
-            let data = this.getData(date);
             this.props.getAllKpiSetsOrganizationalUnitByMonth(userId, department, date);
+            let data = this.getData(date);
 
             this.setState(state => {
                 return {
@@ -110,16 +111,34 @@ class EvaluateByAccountableEmployee extends Component {
 
                     kpi: data.kpi,
                     unit: data.unit,
+
+                    dataStatus: this.DATA_STATUS.QUERYING,
                 }
             });
             return false;
+        }
+        if (this.state.dataStatus === this.DATA_STATUS.QUERYING) {
+            if (!(nextProps.KPIPersonalManager && nextProps.KPIPersonalManager.kpiSets)) {
+                return false;
+            } else {
+                let date = nextProps.date;
+                let data = this.getData(date);
+                this.setState(state => {
+                    return {
+                        ...state,
+                        kpi: data.kpi,
+                        dataStatus: this.DATA_STATUS.FINISHED,
+                    }
+                });
+                return false;
+            }
         }
         return true;
     }
 
     // hàm lấy dữ liệu khởi tạo
     getData = (dateParam) => {
-        const { user } = this.props;
+        const { user, KPIPersonalManager } = this.props;
         let { task } = this.props;
         let idUser = getStorage("userId");
         let checkSave = false;
@@ -151,11 +170,14 @@ class EvaluateByAccountableEmployee extends Component {
         let automaticPoint = (evaluations && evaluations.results.length !== 0) ? evaluations.results[0].automaticPoint : undefined;
         let progress = evaluations ? evaluations.progress : undefined;
 
-        let unit, cloneKpi = [];
+        let unit;
         if (user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
             unit = user.organizationalUnitsOfUser[0]._id;
         }
-
+        let cloneKpi = []
+        if (KPIPersonalManager && KPIPersonalManager.kpiSets){
+            cloneKpi = (KPIPersonalManager.kpiSets.kpis.filter(e => (e.type === 1)).map(x => { return x._id }));
+        }
         // let date = this.formatDate(new Date());
         // if (this.props.perform === "stop") { // nếu dừng thì cho ngày là ngày hiện tại
         //     date = this.formatDate(new Date());
@@ -240,7 +262,7 @@ class EvaluateByAccountableEmployee extends Component {
                         unit = tmp.organizationalUnit._id;
                     };
                     let kpi = tmp.kpis;
-
+                    cloneKpi = [];
                     for (let i in kpi) {
                         cloneKpi.push(kpi[i]._id);
                     }
@@ -691,7 +713,6 @@ class EvaluateByAccountableEmployee extends Component {
                 errSumContribution: this.validateSumContribute(),
             }
         })
-        console.log('err', this.state.errSumContribution);
     }
 
     handleChangeApprovedPointForConsulted = async (e, id) => {
@@ -941,7 +962,8 @@ class EvaluateByAccountableEmployee extends Component {
         this.setState(state => {
             return {
                 ...state,
-                unit: value[0]
+                unit: value[0],
+                kpi: [],
             }
         });
         this.props.getAllKpiSetsOrganizationalUnitByMonth(this.state.userId, value[0], this.state.date);
