@@ -1,28 +1,18 @@
-import { VALIDATOR } from '../../../../helpers/validator';
+import ValidationHelper from "../../../../helpers/validationHelper"
 
-export const LinkDefaultValidator = {
-    validateUrl,
-    validateDescription
-}
+export default class SystemLinkValidator extends ValidationHelper {
+    constructor(){
 
-function validateUrl(url) {
-    let msg = undefined;
-    if (url.trim() === "") {
-        msg = "system_admin.system_link.validator.url.no_blank";
-    } else if (!VALIDATOR.isValidUrl(url)) {
-        msg = "system_admin.system_link.validator.url.start_with_slash";
     }
 
-    return msg;
-}
-
-function validateDescription(url) {
-    let msg = undefined;
-    if (url.trim() === "") {
-        msg = "system_admin.system_link.validatdor.description.no_blank";
-    } else if (!VALIDATOR.isValidName(url)) {
-        msg = "system_admin.system_link.validator.description.no_special";
+    static validateUrl = (url) => {
+        let URL_REGEX = /^[^~`!@#$%^&*()+= *';\\<>?:",]*$/;
+        let msg;
+        if(!this.validateEmpty(url))
+            msg = 'general.validate.empty_error';
+        else if(url[0] !== '/' || !URL_REGEX.test(url))
+            msg = 'general.validate.invalid_error';
+        
+        return msg ? { status: false, msg } : { status: true };
     }
-    
-    return msg;
 }

@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-
+import { withTranslate } from 'react-redux-multilingual';
 import { RootRoleActions } from '../../root-role/redux/actions';
 import { SystemComponentActions } from '../redux/actions';
 import { SystemLinkActions } from '../../system-link/redux/actions';
-
-import { ComponentDefaultValidator } from './systemComponentValidator';
-
+import ValidationHelper from '../../../../helpers/validationHelper';
 import { ButtonModal, DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
 
-import { withTranslate } from 'react-redux-multilingual';
 class ComponentCreateForm extends Component {
 
     constructor(props) {
@@ -29,44 +26,24 @@ class ComponentCreateForm extends Component {
         this.props.getAllSystemLinks();
     }
 
-    // Xy ly va validate name
     handleName = (e) => {
-        const {value} = e.target;
-        this.validateName(value, true);
-    }
-    validateName = (value, willUpdateState=true) => {
-        let msg = ComponentDefaultValidator.validateName(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    componentNameError: msg,
-                    componentName: value,
-                }
-            });
-        }
+        let {value} = e.target;
+        this.setState({ componentName: value });
 
-        return !msg;
+        let {translate} = this.props;
+        let {msg} = ValidationHelper.validateName(value, 6, 255);
+        let error = msg ? translate(msg, {min: 6, max: 255}) : undefined;
+        this.setState({ componentNameError: error})
     }
 
-    // Xy ly va validate description
     handleDescription = (e) => {
-        const {value} = e.target;
-        this.validateDescription(value, true);
-    }
-    validateDescription = (value, willUpdateState=true) => {
-        let msg = ComponentDefaultValidator.validateDescription(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    componentDescriptionError: msg,
-                    componentDescription: value,
-                }
-            });
-        }
+        let {value} = e.target;
+        this.setState({ componentDescription: value });
 
-        return !msg;
+        let {translate} = this.props;
+        let {msg} = ValidationHelper.validateDescription(value);
+        let error = msg ? translate(msg) : undefined;
+        this.setState({ componentDescriptionError: error})
     }
 
     handleLink = (value) => {
@@ -88,11 +65,9 @@ class ComponentCreateForm extends Component {
     }
 
     isFormValidated = () => {
-        let result = 
-            this.validateName(this.state.componentName, false) &&
-            this.validateDescription(this.state.componentDescription, false);
-
-        return result;
+        let {componentName, componentDescription} = this.state;
+        if(!ValidationHelper.validateName(componentName).status  || !ValidationHelper.validateDescription(componentDescription).status) return false;
+        return true;
     }
 
     save = () => {
@@ -117,8 +92,6 @@ class ComponentCreateForm extends Component {
                     modalID="modal-create-component"
                     formID="form-create-component"
                     title={translate('manage_component.add_title')}
-                    msg_success={translate('manage_component.add_success')}
-                    msg_faile={translate('manage_component.add_faile')}
                     func={this.save} disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-create-component">

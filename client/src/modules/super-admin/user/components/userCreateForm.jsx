@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../common-components';
 import { UserActions } from '../redux/actions';
 import { RoleActions } from '../../role/redux/actions';
-import { VALIDATOR } from '../../../../helpers/validator';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class UserCreateForm extends Component {
     constructor(props) {
@@ -24,28 +24,28 @@ class UserCreateForm extends Component {
 
     isFormValidated = () => {
         let {userName, userEmail} = this.state;
-        if(!VALIDATOR.checkName(userName).status || !VALIDATOR.checkEmail(userEmail)) return false;
+        if(!ValidationHelper.validateName(userName).status || !ValidationHelper.validateEmail(userEmail).status) return false;
         return true;
     }
 
     handleUserName = (e) => {
         let {value} = e.target;
+        this.setState({ userName: value });
+
         let {translate} = this.props;
-        let {msg} = VALIDATOR.checkName(value);
-        this.setState({
-            userName: value,
-            userNameError: msg ? `${translate('manage_user.name')} ${translate(msg)}` : undefined
-        })
+        let {msg} = ValidationHelper.validateName(value, 6, 255);
+        let error = msg ? translate(msg, {min: 6, max: 255}) : undefined;
+        this.setState({ userNameError: error})
     }
 
     handleUserEmail = (e) => {
         let {value} = e.target;
+        this.setState({ userEmail: value });
+
         let {translate} = this.props;
-        let {msg} = VALIDATOR.checkEmail(value);
-        this.setState({
-            userEmail: value,
-            userEmailError: msg ? `${translate('manage_user.email')} ${translate(msg)}` : undefined
-        })
+        let {msg} = ValidationHelper.validateEmail(value);
+        let error = msg ? translate(msg) : undefined;
+        this.setState({ userEmailError: error})
     }
 
     handleRolesChange = (value) => {

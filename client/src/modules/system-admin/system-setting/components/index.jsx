@@ -28,23 +28,23 @@ class SystemSetting extends Component {
         return ( 
             <React.Fragment>
                 <div className="row">
-                    <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                    <div className="col-xs-12 col-sm-5 col-md-5 col-lg-5">
                         <div className="box box-default">
                             <div className="box-header with-border">
-                                <h4><b>Cấu hình sao lưu dữ liệu tự động</b></h4>
+                                <h4><b>{translate('system_admin.system_setting.backup.config')}</b></h4>
                             </div>
                             <div className="box-body">
                                 <React.Fragment>
                                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         <div className="form-group">
-                                            <label>Tự động sao lưu</label>
+                                            <label>{translate('system_admin.system_setting.backup.automatic')}</label>
                                             <SelectBox
                                                 id="select-backup-status"
                                                 className="form-control select2"
                                                 style={{ width: "100%" }}
                                                 items={[
-                                                    {value: 'on', text: 'Bật'},
-                                                    {value: 'off', text: 'Tắt'}
+                                                    {value: 'on', text: translate('system_admin.system_setting.backup.on')},
+                                                    {value: 'off', text: translate('system_admin.system_setting.backup.off')}
                                                 ]}
                                                 value={autoBackup}
                                                 onChange={this.handleBackupAutoStatus}
@@ -57,21 +57,21 @@ class SystemSetting extends Component {
                                         <React.Fragment>
                                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                                 <div className="form-group">
-                                                    <label>Giới hạn bản backup</label>
+                                                    <label>{translate('system_admin.system_setting.backup.limit')}</label>
                                                     <input className="form-control" type="number" min={0} onChange={this.handleBackupLimit} value={limit}/>
                                                 </div>
                                             </div>
                                             <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                                 <div className="form-group">
-                                                    <label>Định kỳ</label>
+                                                    <label>{translate('system_admin.system_setting.backup.period')}</label>
                                                     <SelectBox
                                                         id="select-backup-time-schedule"
                                                         className="form-control select2"
                                                         style={{ width: "100%" }}
                                                         items={[
-                                                            {value: 'weekly', text: 'Hàng tuần'},
-                                                            {value: 'monthly', text: 'Hàng tháng'},
-                                                            {value: 'yearly', text: 'Hàng năm'},
+                                                            {value: 'weekly', text: translate('system_admin.system_setting.backup.weekly')},
+                                                            {value: 'monthly', text: translate('system_admin.system_setting.backup.monthly')},
+                                                            {value: 'yearly', text: translate('system_admin.system_setting.backup.yearly')},
                                                         ]}
                                                         value={schedule}
                                                         onChange={this.handleSchedule}
@@ -81,33 +81,33 @@ class SystemSetting extends Component {
                                             </div>
                                         </React.Fragment> :
                                         <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
-                                            <button className="btn btn-success" onClick={()=>this.props.backup({auto: 'off'})}>Lưu</button>
+                                            <button className="btn btn-success" onClick={()=>this.props.backup({auto: 'off'})}>{translate('system_admin.system_setting.backup.save')}</button>
                                         </div>
                                     }
                                     <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                                         {
-                                            this.renderScheduleForm()
+                                            autoBackup === 'on' && this.renderScheduleForm()
                                         }
                                     </div>
                                 </React.Fragment>
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8">
+                    <div className="col-xs-12 col-sm-7 col-md-7 col-lg-7">
                         <div className="box box-default">
                             <div className="box-header with-border">
-                                <button className="btn btn-success pull-right"onClick={()=>{this.props.backup()}} title={"Thêm bản sao dữ liệu mới nhất"}>             
-                                    Sao lưu dữ liệu
+                                <button className="btn btn-success pull-right"onClick={()=>{this.props.backup()}} title={translate('system_admin.system_setting.backup.backup_button')}>             
+                                    {translate('system_admin.system_setting.backup.backup_button')}
                                 </button>
                             </div>
                             <div className="box-body">
                                 <table className="table table-hover table-striped">
                                     <thead>
                                         <tr>
-                                            <th>Phiên bản</th>
-                                            <th>Mô tả</th>
-                                            <th>Thời gian sao lưu</th>
-                                            <th style={{width: '100px'}}>Hành động</th>
+                                            <th>{translate('system_admin.system_setting.backup.version')}</th>
+                                            <th>{translate('system_admin.system_setting.backup.description')}</th>
+                                            <th>{translate('system_admin.system_setting.backup.backup_time')}</th>
+                                            <th style={{width: '100px'}}>{translate('system_admin.system_setting.backup.action')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>

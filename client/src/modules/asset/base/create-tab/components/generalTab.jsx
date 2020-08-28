@@ -146,14 +146,39 @@ class GeneralTab extends Component {
      * Bắt sự kiện thay đổi loại tài sản
      */
     handleAssetTypeChange = async (value) => {
+        let { assetType } = this.props;
+        let { detailInfo } = this.state;
+
+        let assetTypeList = assetType.listAssetTypes;
+        let currentAssetType = assetTypeList.filter((element) => element._id === value[0])[0];
+        let defaultInformation = currentAssetType.defaultInformation;
+
+        // Thêm trường thông tin mặc định ở nhóm tài sản vào thông tin chi tiết
+        let arr = [...detailInfo];
+        for (let i in defaultInformation) {
+            let check = true;
+            for (let j in detailInfo) {
+                if (defaultInformation[i].nameField === detailInfo[j].nameField ||
+                    defaultInformation[i].nameField === detailInfo[j].nameField) {
+                    check = false;
+                }
+            }
+
+            if (check) {
+                arr.push(defaultInformation[i]);
+            }
+        }
+        
         await this.setState(state => {
             return {
                 ...state,
                 assetTypes: value[0],
+                detailInfo: arr,
             }
         });
 
         this.props.handleChange("assetType", value[0]);
+        this.props.handleChange("detailInfo", arr);
     }
 
     /**

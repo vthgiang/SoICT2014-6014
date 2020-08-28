@@ -3,14 +3,12 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DepartmentActions } from '../redux/actions';
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
-import { VALIDATOR } from '../../../../helpers/validator';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class DepartmentCreateWithParent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            departmentName: '',
-            departmentDescription: '',
             deans: [],
             viceDeans: [],
             employees: []
@@ -239,7 +237,6 @@ class DepartmentCreateWithParent extends Component {
     // Thiet lap cac gia tri tu props vao state
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.departmentId !== prevState.departmentId) {
-            console.log("thay doi state");
             return {
                 ...prevState,
                 departmentId: nextProps.departmentId,
@@ -258,9 +255,9 @@ class DepartmentCreateWithParent extends Component {
     /**
      * Validate form
     */
-    isFormValidated = () => {
+   isFormValidated = () => {
         let {departmentName, departmentDescription} = this.state;
-        if(!VALIDATOR.checkName(departmentName).status || !VALIDATOR.checkDescription(departmentDescription)) return false;
+        if(!ValidationHelper.validateName(departmentName).status || !ValidationHelper.validateDescription(departmentDescription).status) return false;
         return true;
     }
 
@@ -281,30 +278,29 @@ class DepartmentCreateWithParent extends Component {
     }
 
     handleParent = (value) => {
-        console.log("giá trị đơn vị cha: ", value[0])
         this.setState({
             departmentParent: value[0]
         })
     }
 
     handleName = (e) => {
+        let {value} = e.target;
+        this.setState({ departmentName: value });
+
         let {translate} = this.props;
-        let { value } = e.target;
-        let {msg} = VALIDATOR.checkName(value);
-        this.setState({
-            departmentName: value,
-            departmentNameError: msg ? `${translate('manage_department.name')} ${translate(msg)}` : undefined
-        });
+        let {msg} = ValidationHelper.validateName(value, 4, 255);
+        let error = msg ? translate(msg, {min: 4, max: 255}) : undefined;
+        this.setState({ departmentNameError: error})
     }
 
     handleDescription = (e) => {
+        let {value} = e.target;
+        this.setState({ departmentDescription: value });
+
         let {translate} = this.props;
-        let { value } = e.target;
-        let {msg} = VALIDATOR.checkDescription(value);
-        this.setState({
-            departmentDescription: value,
-            departmentDescriptionError: msg ? `${translate('manage_department.description')} ${translate(msg)}` : undefined
-        });
+        let {msg} = ValidationHelper.validateDescription(value);
+        let error = msg ? translate(msg) : undefined;
+        this.setState({ departmentDescriptionError: error})
     }
 }
 

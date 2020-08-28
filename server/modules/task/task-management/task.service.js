@@ -20,7 +20,6 @@ exports.getAllTasks = async () => {
  * @param {*} data 
  */
 exports.getTaskEvaluations = async (data) => {
-    console.log('data', data)
     // Lấy keySearch tu client gui trong body
     let organizationalUnit = data.organizationalUnit;
     let idTemplate = data.taskTemplate;
@@ -77,18 +76,35 @@ exports.getTaskEvaluations = async (data) => {
     let condition = [
         { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
         { $match: { taskTemplate: mongoose.Types.ObjectId(idTemplate) } },
-        { $unwind: "$responsibleEmployees" },
-        { $unwind: "$accountableEmployees" },
+        // { $unwind: "$responsibleEmployees" },
+        // { $unwind: "$accountableEmployees" },
         { $unwind: "$evaluations" },
+        {
+            $lookup: {
+                from: "users",
+                localField: "responsibleEmployees",
+                foreignField: "_id",
+                as: "responsibleEmployeesInfo"
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "accountableEmployees",
+                foreignField: "_id",
+                as: "accountableEmployeesInfo"
+            }
+        },
         {
             $replaceRoot: {
                 newRoot: {
-                    $mergeObjects: [{ name: "$name" }, { taskId: "$_id" }, { status: "$status" }, { responsibleEmployees: "$responsibleEmployees" },
-                    { accountableEmployees: "$accountableEmployees" },
+                    $mergeObjects: [{ name: "$name" }, { taskId: "$_id" }, { status: "$status" }, { responsibleEmployees: "$responsibleEmployeesInfo" },
+                    { accountableEmployees: "$accountableEmployeesInfo" },
                     { startDate: "$startDate" }, { endDate: "$endDate" }, { priority: "$priority" }, "$evaluations"]
                 }
             }
         },
+
     ];
 
     if (!startDate && !endDate) {
@@ -118,6 +134,9 @@ exports.getTaskEvaluations = async (data) => {
                     { $match: { status: taskStatus } },
                     { $match: { responsibleEmployees: { $in: [...responsible.map(x => mongoose.Types.ObjectId(x.toString()))] } } },
                     { $match: { accountableEmployees: { $in: [...accountable.map(y => mongoose.Types.ObjectId(y.toString()))] } } },
+                    // {
+                    //     $match: { responsibleEmployees: { $elemMatch: { _id: { $in: [ObjectId("5f3ddd35c38b633068665e4d"), ObjectId("5f3ddd35c38b633068665e4e")] } } } }
+                    // }
                     ...condition,
                     filterDate,
 
@@ -148,7 +167,7 @@ exports.getTaskEvaluations = async (data) => {
     // Add thêm các trường điều kiện lọc vào result
     let newResult = result.map((item) => {
         let taskInformations = item.taskInformations;
-
+        console.log('item', item.responsibleEmployees);
         /**
          * Gộp trường taskInfomation của task vào array configurations
          * Mục đích để đính kèm các điều kiện lọc của các trường thông tin vào taskInfomation để tính toán

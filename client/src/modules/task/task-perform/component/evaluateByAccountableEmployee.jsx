@@ -632,7 +632,7 @@ class EvaluateByAccountableEmployee extends Component {
                 role: "Accountable",
                 target: "Point"
             }
-            state.empPoint[`accountable${id}`] = value;
+            if(id === state.userId) state.empPoint[`accountable${id}`] = value;
             state.errorApprovedPoint[`accountable${id}`] = this.validateEvaluateResult(value);
             return {
                 ...state,
@@ -1481,13 +1481,13 @@ class EvaluateByAccountableEmployee extends Component {
 
                                     {
                                         <table className="table table-striped table-hover">
-                                            <tr>
+                                            <tr style={{verticalAlign: "top"}}>
                                                 <th><div className="form-group"><label>{translate('task.task_management.name_employee')}</label></div></th>
                                                 <th><div className="form-group"><label>{translate('task.task_management.role_employee')}</label></div></th>
                                                 <th><div className="form-group"><label>{translate('task.task_management.detail_emp_point')}</label></div></th>
                                                 <th>
-                                                    <div className={`form-group ${errSumContribution === undefined ? "" : "has-error"}`}>
-                                                        <label>% {translate('task.task_management.contribution')}</label>
+                                                    <label>% {translate('task.task_management.contribution')}</label>
+                                                    <div style={{fontWeight: "normal"}} className={`form-group ${errSumContribution === undefined ? "" : "has-error"}`}>
                                                         <ErrorLabel content={errSumContribution ? errSumContribution : ''} />
                                                     </div>
                                                 </th>
@@ -1497,10 +1497,10 @@ class EvaluateByAccountableEmployee extends Component {
                                             { // Chấm điểm phê duyệt cho người thực hiện
                                                 task && task.responsibleEmployees.map((item, index) =>
                                                     (task.inactiveEmployees.indexOf(item._id) === -1 &&
-                                                        <tr key={index}>
-                                                            <td>{item.name}</td>
-                                                            <td>{this.formatRole('Responsible')}</td>
-                                                            <td>{this.checkNullUndefined(empPoint[`responsible${item._id}`]) ? empPoint[`responsible${item._id}`] : translate('task.task_management.not_eval')}</td>
+                                                        <tr key={index} style={{ verticalAlign: "top" }}>
+                                                            <td><div style={{ marginTop: 10 }}>{item.name}</div></td>
+                                                            <td><div style={{ marginTop: 10 }}>{this.formatRole('Responsible')}</div></td>
+                                                            <td><div style={{ marginTop: 10 }}>{this.checkNullUndefined(empPoint[`responsible${item._id}`]) ? empPoint[`responsible${item._id}`] : translate('task.task_management.not_eval')}</div></td>
                                                             <td style={{ padding: 5 }}>
                                                                 <div className={errorContribute[`responsible${item._id}`] === undefined ? "form-group" : "form-group has-error"}>
                                                                     <input className='form-control'
@@ -1532,10 +1532,10 @@ class EvaluateByAccountableEmployee extends Component {
                                             { // Chấm điểm phê duyệt cho người hỗ trợ
                                                 task && task.consultedEmployees.map((item, index) =>
                                                     (task.inactiveEmployees.indexOf(item._id) === -1 &&
-                                                        <tr key={index}>
-                                                            <td>{item.name}</td>
-                                                            <td>{this.formatRole('Consulted')}</td>
-                                                            <td>{this.checkNullUndefined(empPoint[`consulted${item._id}`]) ? empPoint[`consulted${item._id}`] : translate('task.task_management.not_eval')}</td>
+                                                        <tr key={index} style={{ verticalAlign: "top" }}>
+                                                            <td><div style={{ marginTop: 10 }}>{item.name}</div></td>
+                                                            <td><div style={{ marginTop: 10 }}>{this.formatRole('Consulted')}</div></td>
+                                                            <td><div style={{ marginTop: 10 }}>{this.checkNullUndefined(empPoint[`consulted${item._id}`]) ? empPoint[`consulted${item._id}`] : translate('task.task_management.not_eval')}</div></td>
                                                             <td style={{ padding: 5 }}>
                                                                 <div className={errorContribute[`consulted${item._id}`] === undefined ? "form-group" : "form-group has-error"}>
                                                                     <input className='form-control' type="number"
@@ -1568,10 +1568,10 @@ class EvaluateByAccountableEmployee extends Component {
                                             { // Chấm điểm phê duyệt cho người phê duyệt
                                                 task && task.accountableEmployees.map((item, index) =>
                                                     (task.inactiveEmployees.indexOf(item._id) === -1 &&
-                                                        <tr key={index}>
-                                                            <td>{item.name}</td>
-                                                            <td>{this.formatRole('Accountable')}</td>
-                                                            <td><p id={`accountablePoint${item._id}`}>{this.checkNullUndefined(empPoint[`accountable${item._id}`]) ? empPoint[`accountable${item._id}`] : translate('task.task_management.not_eval')}</p></td>
+                                                        <tr key={index} style={{ verticalAlign: "top" }}>
+                                                            <td><div style={{marginTop: 10}}>{item.name}</div></td>
+                                                            <td><div style={{ marginTop: 10 }}>{this.formatRole('Accountable')}</div></td>
+                                                            <td><div style={{ marginTop: 10 }}><p id={`accountablePoint${item._id}`}>{this.checkNullUndefined(empPoint[`accountable${item._id}`]) ? empPoint[`accountable${item._id}`] : translate('task.task_management.not_eval')}</p></div></td>
                                                             <td style={{ padding: 5 }}>
                                                                 <div className={errorContribute[`accountable${item._id}`] === undefined ? "form-group" : "form-group has-error"}>
                                                                     <input className='form-control' type="number"

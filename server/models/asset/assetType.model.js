@@ -5,30 +5,41 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 
 // Create Schema
 const AssetTypeSchema = new Schema({
-    company: {// công ty
+    company: { // Công ty
         type: Schema.Types.ObjectId,
         ref: Company,
     },
-    typeNumber: { //mã loại
+
+    typeNumber: { // Mã loại
         type: String,
         required: true
     },
-    typeName: { //Tên loại
+
+    typeName: { // Tên loại
         type: String,
         required: true
     },
-    parent: { // loại tài sản cha
+
+    parent: { // Loại tài sản cha
         type: Schema.Types.ObjectId,
         replies: this 
     },
-    description: { //mô tả
+
+    description: { // Mô tả
         type: String,
         // required: true
     },
+
+    defaultInformation: [{ // Thông tin mặc định khi chọn loại tài sản 
+        nameField: String, // Tên trường dữ liệu
+        value: String, // Giá trị
+    }],
+
     createdAt: {
         type: Date,
         default: Date.now
     },
+
     updatedAt: {
         type: Date,
         default: Date.now

@@ -3,27 +3,26 @@ import { connect } from 'react-redux';
 
 import c3 from 'c3';
 import 'c3/c3.css';
-import * as d3 from 'd3-format';
+
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { Tree } from '../../../../../../../common-components';
 
 
 class ValuePieChart extends Component {
     constructor(props) {
         super(props);
     }
+
     componentDidMount() {
         if (this.refs.valuePieChart) this.pieChart();
     }
+
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
         const { translate } = this.props;
-
         let dataPieChart, valueOfBuilding = 0, valueOfVehicle = 0, valueOfMachine = 0, valueOfOrther = 0;
         let listAsset = this.props.listAssets;
 
         if (listAsset) {
-
             listAsset.map(asset => {
                 switch (asset.group) {
                     case "Building":
@@ -54,9 +53,7 @@ class ValuePieChart extends Component {
 
     // Khởi tạo PieChart bằng C3
     pieChart = () => {
-
         let dataPieChart = this.setDataPieChart();
-
         this.chart = c3.generate({
             bindto: this.refs.valuePieChart,
 
@@ -64,6 +61,7 @@ class ValuePieChart extends Component {
                 columns: dataPieChart,
                 type: 'pie',
             },
+
             pie: {
                 label: {
                     format: function (value) {
@@ -71,12 +69,14 @@ class ValuePieChart extends Component {
                     }
                 }
             },
+
             padding: {
                 top: 20,
                 bottom: 20,
                 right: 20,
                 left: 20
             },
+
             tooltip: {
                 format: {
                     title: function (d) { return d; },
@@ -94,6 +94,7 @@ class ValuePieChart extends Component {
                     }
                 }
             },
+
             legend: {
                 show: true
             }
@@ -102,6 +103,7 @@ class ValuePieChart extends Component {
 
     render() {
         this.pieChart();
+
         return (
             <React.Fragment>
                 <div >
@@ -112,11 +114,9 @@ class ValuePieChart extends Component {
     }
 }
 
-function mapState(state) {
-}
+function mapState(state) { }
 
-const actions = {
-}
+const actions = {}
 
 const ValuePieChartConnected = connect(mapState, actions)(withTranslate(ValuePieChart));
 

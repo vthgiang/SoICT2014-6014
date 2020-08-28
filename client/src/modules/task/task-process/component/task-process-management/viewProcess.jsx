@@ -131,8 +131,8 @@ class ViewProcess extends Component {
                             let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
 
                             element1 && modeling.setColor(element1, {
-                                fill: '#9695AD',
-                                stroke: '#5C7391'
+                                fill: '#f9f9f9', // 9695AD
+                                stroke: '#c4c4c7'
                             });
 
                             let target = [];
@@ -160,7 +160,7 @@ class ViewProcess extends Component {
                                 var incomingEdge = modeler.get('elementRegistry').get(x.id);
 
                                 modeling.setColor(incomingEdge, {
-                                    stroke: '#5C7391',
+                                    stroke: '#c4c4c7',
                                     width: '5px'
                                 })
                             })
@@ -170,8 +170,8 @@ class ViewProcess extends Component {
                             let element1 = (Object.keys(modeler.get('elementRegistry')).length > 0) && modeler.get('elementRegistry').get(infoTask[i].codeInProcess);
 
                             element1 && modeling.setColor(element1, {
-                                fill: '#50DF8C',
-                                stroke: '#1692E0', //E02001
+                                fill: '#84ffb8',
+                                stroke: '#14984c', //E02001
                                 width: '5px'
                             });
 
@@ -180,7 +180,7 @@ class ViewProcess extends Component {
                                 var incomingEdge = modeler.get('elementRegistry').get(x.id);
 
                                 modeling.setColor(incomingEdge, {
-                                    stroke: '#1692E0',
+                                    stroke: '#14984c',
                                     width: '5px'
                                 })
                             })
@@ -435,10 +435,10 @@ class ViewProcess extends Component {
                             </div>
                         </div>
 
-                        <div className={`${isTabPane ? '' : 'right-content col-md-4'}`}>
+                        <div className={`${isTabPane ? 'row' : 'right-content col-md-4'}`}>  
 
-                            <div className="box box-solid description">
-                                {!isTabPane &&
+                            <div className={`${isTabPane ? "col-lg-6 col-md-6 col-sm-6 col-xs-6" : "box box-solid" }`}>
+                                { // !isTabPane && style={isTabPane ? {display: "flex", flexDirection: "row"} : {}}
                                     <div className="box-header with-border">
                                         {translate('task_template.general_information')}
                                     </div>
@@ -454,6 +454,20 @@ class ViewProcess extends Component {
 
                                     <dt>Thời gian thực hiện quy trình</dt>
                                     <dd>{this.formatDate(startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(endDate)}</dd>
+                                </div>
+                            </div>
+                            <div className={` ${isTabPane ? "col-lg-6 col-md-6 col-sm-6 col-xs-6" : "box box-solid" }`}>
+                                { // !isTabPane &&
+                                    <div className="box-header with-border">
+                                        Chú thích
+                                    </div>
+                                }
+                                <div className="box-body">
+
+                                    {/**Các thông tin của mẫu công việc */}
+                                    <dd><i className="fa fa-square" style={{color: "#fff", border: "1px solid #000", borderRadius: "3px", marginRight: "5px"}}></i>Chờ phê duyệt</dd>
+                                    <dd><i className="fa fa-square" style={{color: "#E8F0F4", border: "1px solid #1692E0", borderRadius: "3px", marginRight: "5px"}}></i>Đang thực hiện</dd>
+                                    <dd><i className="fa fa-square" style={{color: "#ddd", border: "1px solid #5C7391", borderRadius: "3px", marginRight: "5px"}}></i>Đã hoàn thành</dd>
                                 </div>
                             </div>
                         </div>

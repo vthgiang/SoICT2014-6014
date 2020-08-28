@@ -93,15 +93,6 @@ exports.editCompany = async (id, data) => {
 }
 
 /**
- * Xóa dữ liệu 1 công ty
- * @id id của công ty trong database
- */
-exports.deleteCompany = async (id) => {
-
-    return await Company.deleteOne({ _id: id, customer: true });
-}
-
-/**
  * Tạo 5 root roles khi tạo mới 1 company
  * @SuperAdmin super admin của công ty đó
  * @Admin admin của công ty

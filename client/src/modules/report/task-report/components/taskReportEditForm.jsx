@@ -364,7 +364,6 @@ class TaskReportEditForm extends Component {
     handleEditChecked = (index, item) => {
         let { editingReport } = this.state;
         let value = item.target.checked;
-
         let taskInformations = editingReport.taskInformations;
         taskInformations[index] = { ...taskInformations[index], showInReport: value };
         this.setState({

@@ -1,9 +1,6 @@
 import React, { Component } from 'react';import { connect } from 'react-redux';
-
 import { CompanyActions } from '../redux/actions';
-
 import { PaginateBar, DataTableSetting, SearchBar} from '../../../../common-components';
-
 import { withTranslate } from 'react-redux-multilingual';
 class CompanyManageLinks extends Component {
 
@@ -118,12 +115,12 @@ class CompanyManageLinks extends Component {
     }
 
     render() { 
-        const { translate, company, systemLinks } = this.props;
-        const { companyId, linkPaginate, checkedAll } = this.state;
-        console.log("link paginate",linkPaginate);
+        const { translate, company } = this.props;
+        const { linkPaginate, checkedAll } = this.state;
+
         return ( 
             <div style={{padding: '10px 0px 10px 0px'}}>
-                <a className="btn btn-success pull-right" onClick={this.updateCompanyLinks}>Cập nhật</a>
+                <a className="btn btn-primary pull-right" onClick={this.updateCompanyLinks}><i className="material-icons">save</i></a>
                 <SearchBar 
                     columns={[
                         { title: translate('manage_link.url'), value: 'url' },

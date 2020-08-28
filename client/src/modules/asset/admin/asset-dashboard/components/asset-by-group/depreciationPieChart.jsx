@@ -3,22 +3,21 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { Tree } from '../../../../../../../common-components';
 import c3 from 'c3';
-import * as d3 from 'd3-format';
 import 'c3/c3.css';
+
 
 
 class DepreciationPieChart extends Component {
     constructor(props) {
         super(props);
     }
+
     componentDidMount() {
         if (this.refs.depreciationExpenseOfAsset) this.pieChart();
     }
-    /**
-     * Hàm để tính các giá trị khấu hao cho tài sản
-     */
+
+    // Hàm để tính các giá trị khấu hao cho tài sản
     calculateDepreciation = (depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation) => {
         let annualDepreciation = 0, monthlyDepreciation = 0, remainingValue = cost;
 
@@ -82,21 +81,17 @@ class DepreciationPieChart extends Component {
             remainingValue = cost - accumulatedDepreciation;
             annualDepreciation = monthTotal ? accumulatedDepreciation * 12 / monthTotal : 0;
         }
-        // console.log('cost', parseInt(cost - remainingValue));
         return parseInt(cost - remainingValue);
     }
 
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
-        const { translate } = this.props;
-
+        const { listAssets, translate } = this.props;
         let dataPieChart, depreciationExpenseOfBuilding = 0, depreciationExpenseOfVehicle = 0, depreciationExpenseOfMachine = 0, depreciationExpenseOfOrther = 0;
-        let { listAssets } = this.props;
         let depreciationOfAsset = [];
 
         if (listAssets) {
             for (let i in listAssets) {
-
                 depreciationOfAsset.push({
                     name: listAssets[i].assetName,
                     type: listAssets[i].assetType,
@@ -133,12 +128,9 @@ class DepreciationPieChart extends Component {
         return dataPieChart;
     }
 
-
     // Khởi tạo PieChart bằng C3
     pieChart = () => {
-
         let dataPieChart = this.setDataPieChart();
-
         this.chart = c3.generate({
             bindto: this.refs.depreciationExpenseOfAsset,
 
@@ -162,12 +154,14 @@ class DepreciationPieChart extends Component {
                     }
                 }
             },
+
             padding: {
                 top: 20,
                 bottom: 20,
                 right: 20,
                 left: 20
             },
+
             tooltip: {
                 format: {
                     title: function (d) { return d; },
@@ -185,32 +179,28 @@ class DepreciationPieChart extends Component {
                     }
                 }
             },
+
             legend: {
                 show: true
             }
         });
     }
     render() {
-
         this.pieChart();
 
         return (
             <React.Fragment>
                 <div>
-
                     <section ref="depreciationExpenseOfAsset"></section>
-
                 </div>
             </React.Fragment>
         )
     }
 }
 
-function mapState(state) {
-}
+function mapState(state) { }
 
-const actions = {
-}
+const actions = {}
 
 const DepreciationPieChartConnected = connect(mapState, actions)(withTranslate(DepreciationPieChart));
 
