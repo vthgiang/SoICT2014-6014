@@ -89,10 +89,11 @@ class EvaluateByConsultedEmployee extends Component {
         }
         if (this.state.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!(nextProps.KPIPersonalManager && nextProps.KPIPersonalManager.kpiSets)) {
-                return false;
+                return true;
             } else {
                 let date = nextProps.date;
                 let data = this.getData(date);
+                console.log('quangdz\n\n\n', nextProps.KPIPersonalManager.kpiSets, data);
                 this.setState(state => {
                     return {
                         ...state,
