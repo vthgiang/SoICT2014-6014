@@ -71,7 +71,7 @@ exports.createCompany = async (req, res) => {
             content: resCompany
         });
     } catch (error) {
-        console.log(error)
+
         LogError(req.user.email, 'CREATE_COMPANY');
         res.status(400).json({
             success: false,
@@ -88,7 +88,7 @@ exports.createCompany = async (req, res) => {
  */
 exports.editCompany = async (req, res) => {
     try {
-        const company = await CompanyServices.editCompany(req.params.id, req.body);
+        const company = await CompanyServices.editCompany(req.params.companyId, req.body);
         await CompanyServices.editCompanySuperAdmin(company._id, req.body.email);
 
         const resCompany = await CompanyServices.getCompany(company._id);
@@ -104,30 +104,6 @@ exports.editCompany = async (req, res) => {
         res.status(400).json({
             success: false,
             messages: Array.isArray(error) ? error : ['edit_company_faile'],
-            content: error
-        });
-    }
-};
-
-/**
- * Xóa dữ liệu 1 công ty
- * @id id của công ty trong database
- */
-exports.deleteCompany = async (req, res) => {
-    try {
-        const company = await CompanyServices.deleteCompany(req.params.id);
-        
-        LogInfo(req.user.email, 'DELETE_COMPANY');
-        res.status(200).json({
-            success: true,
-            messages: ['delete_company_success'],
-            content: company
-        });
-    } catch (error) {
-        LogError(req.user.email, 'DELETE_COMPANY');
-        res.status(400).json({
-            success: false,
-            messages: Array.isArray(error) ? error : ['delete_company_faile'],
             content: error
         });
     }

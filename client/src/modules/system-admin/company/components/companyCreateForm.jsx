@@ -4,7 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { CompanyActions } from '../redux/actions';
 import { SystemLinkActions } from '../../system-link/redux/actions';
 import { ButtonModal, DialogModal, ErrorLabel } from '../../../../common-components';
-import { COMPANY_VALIDATOR } from './companyFormValidator';
+import ValidationHelper from '../../../../helpers/validationHelper';
 class CompanyCreateForm extends Component {
 
     constructor(props) {
@@ -126,7 +126,7 @@ class CompanyCreateForm extends Component {
         this.setState({ companyName: value });
 
         let {translate} = this.props;
-        let {msg} = COMPANY_VALIDATOR.checkName(value, 4, 255);
+        let {msg} = ValidationHelper.validateName(value, 4, 255);
         let error = msg ? translate(msg, {min: 4, max:255}) : undefined;
         this.setState({ nameError: error})
     }
@@ -136,7 +136,7 @@ class CompanyCreateForm extends Component {
         this.setState({ companyShortName: value });
 
         let {translate} = this.props;
-        let {msg} = COMPANY_VALIDATOR.checkName(value, 4, 255);
+        let {msg} = ValidationHelper.validateName(value, 4, 255);
         let error = msg ? translate(msg, {min: 4, max:255}) : undefined;
         this.setState({ shortNameError: error})
     }
@@ -146,8 +146,8 @@ class CompanyCreateForm extends Component {
         this.setState({ companyDescription: value });
 
         let {translate} = this.props;
-        let {msg} = COMPANY_VALIDATOR.checkName(value, 4, 1024);
-        let error = msg ? translate(msg, {min: 4, max:1024}) : undefined;
+        let {msg} = ValidationHelper.validateDescription(value);
+        let error = msg ? translate(msg) : undefined;
         this.setState({ descriptionError: error})
     }
 
@@ -156,7 +156,7 @@ class CompanyCreateForm extends Component {
         this.setState({ companyEmail: value });
 
         let {translate} = this.props;
-        let {msg} = COMPANY_VALIDATOR.checkEmail(value);
+        let {msg} = ValidationHelper.validateEmail(value);
         let error = msg ? translate(msg) : undefined;
         this.setState({ emailError: error })
     }
@@ -164,10 +164,10 @@ class CompanyCreateForm extends Component {
     isFormValidated = () => {
         let {companyName, companyShortName, companyDescription, companyEmail} = this.state;
         if(
-            !COMPANY_VALIDATOR.checkName(companyName).status  || 
-            !COMPANY_VALIDATOR.checkName(companyShortName).status ||
-            !COMPANY_VALIDATOR.checkEmail(companyEmail).status  || 
-            !COMPANY_VALIDATOR.checkDescription(companyDescription).status
+            !ValidationHelper.validateName(companyName).status  || 
+            !ValidationHelper.validateName(companyShortName).status ||
+            !ValidationHelper.validateEmail(companyEmail).status  || 
+            !ValidationHelper.validateDescription(companyDescription).status
         ) return false;
         return true;
     }

@@ -8,7 +8,6 @@ router.get("/companies", auth, CompanyControllers.getAllCompanies);
 router.post("/companies", auth, CompanyControllers.createCompany);
 router.get("/companies/:companyId", auth, CompanyControllers.getCompany);
 router.patch("/companies/:companyId", auth, CompanyControllers.editCompany);
-router.delete("/companies/:companyId", auth, CompanyControllers.deleteCompany);
 
 // Lấy thông tin cấu hình file import theo id
 router.get('/data-import-configurations', auth, CompanyControllers.getImportConfiguraion);
