@@ -93,6 +93,7 @@ exports.createTaskReport = async (data, user) => {
 
     let statusConvert = Number(data.status);
     let frequencyConvert = data.frequency.toString();
+    let listDataInChart = data.itemListBoxRight;
 
     let configurations = [];
     for (let [index, value] of data.taskInformations.entries()) {
@@ -122,6 +123,7 @@ exports.createTaskReport = async (data, user) => {
         endDate: end,
         frequency: frequencyConvert,
         configurations: configurations,
+        dataForAxisXInChart: listDataInChart,
 
     })
     let getNewTaskReport = await TaskReport.findById(newTaskReport._id).populate({ path: 'creator', select: "_id name" });

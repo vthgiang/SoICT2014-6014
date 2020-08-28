@@ -1,3 +1,29 @@
+.only-pc{
+    display: block;
+}
+.only-mobile{
+    display: none;
+}
+
+@media screen and (max-width: 991px){
+.only-pc{
+    display: none !important;
+}
+.only-mobile{
+    display: block !important;
+}
+.listButton{
+    display: flex;
+    justify-content: center;
+}
+
+.only-mobile .listButton .item-button{
+    margin:  15px 20px;
+}
+
+}
+
+
 .listItem-left, .listItem-right{
     display: flex;
     flex-direction: column;

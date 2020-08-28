@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
-import { DialogModal } from '../../../../common-components';
+import { DialogModal, SelectBox } from '../../../../common-components';
 import { performTaskAction } from '../redux/actions';
 import Swal from 'sweetalert2';
 
@@ -9,8 +9,11 @@ import Swal from 'sweetalert2';
 class SelectFollowingTaskModal extends Component {
     constructor(props) {
         super(props);
+        let { task } = props;
+        // let task = tasks && tasks.task;
         this.state = {
-            selectedFollowing: {}
+            selectedFollowing: {},
+            statusOptions: task?.status,
         };
     }
 
@@ -22,10 +25,19 @@ class SelectFollowingTaskModal extends Component {
         // this.props.getAllUserInAllUnitsOfCompany();
     }
 
+    handleSelectedStatus = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                statusOptions: value
+            }
+        })
+    }
+
     changeSelectedFollowingTask = async (e, id) => {
         let { value, checked } = e.target;
 
-        await this.setState( state =>{
+        await this.setState(state => {
             state.selectedFollowing[id] = {
                 checked: checked,
                 value: value,
@@ -36,12 +48,12 @@ class SelectFollowingTaskModal extends Component {
         });
         console.log('0000', this.state);
     }
-    
+
     save = () => {
         let selectedFollowing = this.state.selectedFollowing;
         let listFollowing = [];
-        for(let i in selectedFollowing){
-            if(selectedFollowing[i].checked) {
+        for (let i in selectedFollowing) {
+            if (selectedFollowing[i].checked) {
                 listFollowing.push(selectedFollowing[i].value);
             }
         }
@@ -55,16 +67,25 @@ class SelectFollowingTaskModal extends Component {
             confirmButtonText: this.props.translate('general.yes'),
         }).then((result) => {
             if (result.value) {
-                this.props.editStatusTask(this.props.id, "Finished", this.props.typeOfTask, listFollowing)
+                this.props.editStatusTask(this.props.id, this.state.statusOptions, this.props.typeOfTask, listFollowing); // "Finished"
             }
         })
-        
+
         // console.log('selected', selected);
     }
 
     render() {
         const { user, translate } = this.props;
         const { task } = this.props;
+        const { statusOptions } = this.state;
+
+        let statusArr = [
+            { value: "Inprocess", text: translate('task.task_management.inprocess') },
+            { value: "WaitForApproval", text: translate('task.task_management.wait_for_approval') },
+            { value: "Finished", text: translate('task.task_management.finished') },
+            { value: "Delayed", text: translate('task.task_management.delayed') },
+            { value: "Canceled", text: translate('task.task_management.canceled') }
+        ];
 
         return (
             <React.Fragment>
@@ -76,23 +97,43 @@ class SelectFollowingTaskModal extends Component {
                     // disableSubmit={!this.isTaskTemplateFormValidated()}
                     size={50}
                 >
-                    {task.followingTasks.length !== 0 ?
-                        (task.followingTasks.map( (x, key) => {
-                            return <div key={key} style={{ paddingLeft: 20 }}>
-                                <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
-                                    <input
-                                        type="checkbox"
-                                        // checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true}
-                                        checked={this.state.selectedFollowing[x.task._id] && this.state.selectedFollowing[x.task._id].checked === true}
-                                        value={x.task._id}
-                                        name="following" onChange={(e) => this.changeSelectedFollowingTask(e, x.task._id)}
-                                    />&nbsp;&nbsp;&nbsp;{x.task.name} { x.link ? `- Đường liên kết: ${x.link}` : ''}
-                                </label>
-                                <br />
-                            </div>
-                        }))
-                        : <div>Không có công việc phía sau</div>
-                    }
+
+                    <div className="form-group">
+                        <label>{translate('task.task_management.detail_status')}</label>
+                        {
+                            <SelectBox
+                                id={`select-status-following-task-${task._id}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={statusArr}
+                                multiple={false}
+                                value={statusOptions}
+                                onChange={this.handleSelectedStatus}
+                            />
+                        }
+                    </div>
+
+                    <fieldset className="scheduler-border">
+                        <legend className="scheduler-border">Chọn công việc thực hiện tiếp theo</legend>
+
+                        {task.followingTasks.length !== 0 ?
+                            (task.followingTasks.map((x, key) => {
+                                return <div key={key} style={{ paddingLeft: 20 }}>
+                                    <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
+                                        <input
+                                            type="checkbox"
+                                            // checked={this.state.listInactive[`${elem._id}`] && this.state.listInactive[`${elem._id}`].checked === true}
+                                            checked={this.state.selectedFollowing[x.task._id] && this.state.selectedFollowing[x.task._id].checked === true}
+                                            value={x.task._id}
+                                            name="following" onChange={(e) => this.changeSelectedFollowingTask(e, x.task._id)}
+                                        />&nbsp;&nbsp;&nbsp;{x.task.name} {x.link ? `- Đường liên kết: ${x.link}` : ''}
+                                    </label>
+                                    <br />
+                                </div>
+                            }))
+                            : <div>Không có công việc phía sau</div>
+                        }
+                    </fieldset>
                 </DialogModal>
             </React.Fragment>
         );

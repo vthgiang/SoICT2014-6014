@@ -458,7 +458,8 @@ class EvaluateByResponsibleEmployee extends Component {
         this.setState(state => {
             return {
                 ...state,
-                unit: value[0]
+                unit: value[0],
+                kpi: [],
             }
         });
         this.props.getAllKpiSetsOrganizationalUnitByMonth(this.state.idUser, value[0], this.state.date);
