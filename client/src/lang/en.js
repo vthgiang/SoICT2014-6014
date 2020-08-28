@@ -76,7 +76,7 @@ export default {
                 minimum_length_error: 'should have minimum length of {min}',
                 maximum_length_error: 'should have maximum length of {max}',
                 invalid_error: 'invalid',
-                empty_error: 'not null',
+                empty_error: 'cannot be empty',
                 not_existing_error: 'not existing',
                 existing_error: 'existing',
             }
