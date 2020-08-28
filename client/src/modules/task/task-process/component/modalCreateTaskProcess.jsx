@@ -23,6 +23,7 @@ import ElementFactory from 'bpmn-js/lib/features/modeling/ElementFactory';
 import LabelEditingProvider from 'bpmn-js/lib/features/label-editing/LabelEditingProvider'
 import { AddTaskTemplate } from "../../task-template/component/addTaskTemplate";
 
+import { TaskProcessValidator } from './taskProcessValidator';
 
 ElementFactory.prototype._getDefaultSize = function (semantic) {
 
@@ -106,9 +107,10 @@ class ModalCreateTaskProcess extends Component {
 		this.modeling = this.modeler.get('modeling');
 		this.generateId = "createprocess"
 	}
+
 	handleChangeBpmnName = async (e) => {
 		let { value } = e.target;
-		let msg = this.validateProcessName(value);
+		let msg = TaskProcessValidator.validateProcessName(value);
 		await this.setState(state => {
 			return {
 				...state,
@@ -117,14 +119,6 @@ class ModalCreateTaskProcess extends Component {
 			}
 		});
 	}
-	
-	validateProcessName = (value) => {
-		let msg;
-		if(value.trim() === "") {
-			msg = "Tên quy trình không được bỏ trống"
-		}
-		return msg;
-	}
 
 	handleChangeBpmnDescription = async (e) => {
 		let { value } = e.target;
@@ -132,17 +126,9 @@ class ModalCreateTaskProcess extends Component {
 			return {
 				...state,
 				processDescription: value,
-				errorOnProcessDescription: this.validateProcessDescription(value),
+				errorOnProcessDescription: TaskProcessValidator.validateProcessDescription(value),
 			}
 		});
-	}
-
-	validateProcessDescription = (value) => {
-		let msg;
-		if(value.trim() === "") {
-			msg = "Mô tả quy trình không được bỏ trống"
-		}
-		return msg;
 	}
 
 	handleChangeViewer = async (value) => {
@@ -151,17 +137,9 @@ class ModalCreateTaskProcess extends Component {
 			return {
 				...state,
 				viewer: value,
-				errorOnViewer: this.validateViewer(value),
+				errorOnViewer: TaskProcessValidator.validateViewer(value),
 			}
 		})
-	}
-
-	validateViewer = (value) => {
-		let msg;
-		if(value.length === 0) {
-			msg = "Cần chỉ rõ những người có quyền xem mẫu quy trình"
-		}
-		return msg;
 	}
 
 	handleChangeManager = async (value) => {
@@ -170,18 +148,11 @@ class ModalCreateTaskProcess extends Component {
 			return {
 				...state,
 				manager: value,
-				errorOnManager: this.validateManager(value),
+				errorOnManager: TaskProcessValidator.validateManager(value),
 			}
 		})
 	}
 
-	validateManager = (value) => {
-		let msg;
-		if(value.length === 0) {
-			msg = "Cần chỉ rõ những người quản lý mẫu quy trình"
-		}
-		return msg;
-	}
 
 	// Các hàm cập nhật thông tin task
 
@@ -441,9 +412,9 @@ class ModalCreateTaskProcess extends Component {
 		let check = true; // valid
 		let hasStart = false, hasEnd = false;
 		console.log('element', elementList);
-		
+
 		for (let i in elementList) {
-			
+
 			let e = elementList[i].element;
 			if (e.type === "bpmn:StartEvent") {
 				hasStart = true;
@@ -452,17 +423,17 @@ class ModalCreateTaskProcess extends Component {
 				hasEnd = true;
 			}
 			else if (e.type === "bpmn:Task" || e.type === "bpmn:ExclusiveGateway") {
-				if (!e.businessObject.incoming ) {
+				if (!e.businessObject.incoming) {
 					check = false;
 				}
 				else if (e.businessObject.incoming.length === 0) {
 					check = false;
 				}
 
-				if(!e.businessObject.outgoing) {
+				if (!e.businessObject.outgoing) {
 					check = false;
 				}
-				else if(e.businessObject.outgoing.length === 0) {
+				else if (e.businessObject.outgoing.length === 0) {
 					check = false;
 				}
 			}
@@ -472,7 +443,7 @@ class ModalCreateTaskProcess extends Component {
 		}
 		console.log('check', check, hasEnd, hasStart);
 		return check
-			&& this.state.errorOnManager === undefined && this.state.errorOnProcessDescription === undefined 
+			&& this.state.errorOnManager === undefined && this.state.errorOnProcessDescription === undefined
 			&& this.state.errorOnProcessName === undefined && this.state.errorOnViewer === undefined;
 	}
 
@@ -709,8 +680,6 @@ class ModalCreateTaskProcess extends Component {
 		let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
 			.map(item => { return { text: item.name, value: item._id } });
 
-
-			console.log('disable', !this.isFormValidate());
 		return (
 			<React.Fragment>
 				<DialogModal
