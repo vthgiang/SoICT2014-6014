@@ -359,6 +359,40 @@ class ModalEditTaskProcess extends Component {
         var element = event.element;
     }
 
+	isFormValidate = () => {
+		let elementList = this.modeler.get('elementRegistry')._elements;
+		let check = true; // valid
+		let hasStart = false, hasEnd = false;
+		for (let i in elementList) {
+			let e = elementList[i].element;
+			if (e.type === "bpmn:StartEvent") {
+				hasStart = true;
+			}
+			else if (e.type === "bpmn:EndEvent") {
+				hasEnd = true;
+			}
+			else if (e.type === "bpmn:Task" || e.type === "bpmn:ExclusiveGateway") {
+				if (!e.businessObject.incoming ) {
+					check = false;
+				}
+				else if (e.businessObject.incoming.length === 0) {
+					check = false;
+				}
+
+				if(!e.businessObject.outgoing) {
+					check = false;
+				}
+				else if(e.businessObject.outgoing.length === 0) {
+					check = false;
+				}
+			}
+		}
+		if (!hasStart || !hasEnd) {
+			check = false;
+		}
+		return check;
+	}
+
     save = async () => {
         let elementList = this.modeler.get('elementRegistry')._elements;
         let { info } = this.state;
@@ -623,7 +657,7 @@ class ModalEditTaskProcess extends Component {
                 <DialogModal
                     size='100' modalID={`modal-edit-process`} isLoading={false}
                     formID="form-task-process"
-                    // disableSubmit={!this.isTaskFormValidated()}
+                    disableSubmit={!this.isFormValidate()}
                     title={this.props.title}
                     func={this.save}
                     bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
