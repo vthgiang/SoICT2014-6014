@@ -32,21 +32,7 @@ class ComponentCreateForm extends Component {
 
         let {translate} = this.props;
         let {msg} = SYSTEM_COMPONENT_VALIDATOR.checkName(value, 6, 255);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            case 'general.validate.minimum_length_error':
-                error = translate(msg, {min: 6});
-                break;
-            case 'general.validate.maximum_length_error':
-                error = translate(msg, {max: 255})
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        let error = msg ? translate(msg, {min: 6, max: 255}) : undefined;
         this.setState({ componentNameError: error})
     }
 
@@ -56,21 +42,7 @@ class ComponentCreateForm extends Component {
 
         let {translate} = this.props;
         let {msg} = SYSTEM_COMPONENT_VALIDATOR.checkDescription(value, 6, 1204);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            case 'general.validate.minimum_length_error':
-                error = translate(msg, {min: 6});
-                break;
-            case 'general.validate.maximum_length_error':
-                error = translate(msg, {max: 1024})
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        let error = msg ? translate(msg, {min: 6, max: 1024}) : undefined;
         this.setState({ componentDescriptionError: error})
     }
 
@@ -120,8 +92,6 @@ class ComponentCreateForm extends Component {
                     modalID="modal-create-component"
                     formID="form-create-component"
                     title={translate('manage_component.add_title')}
-                    msg_success={translate('manage_component.add_success')}
-                    msg_faile={translate('manage_component.add_faile')}
                     func={this.save} disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-create-component">

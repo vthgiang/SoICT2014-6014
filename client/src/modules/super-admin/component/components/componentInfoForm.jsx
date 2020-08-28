@@ -80,21 +80,7 @@ class ComponentInfoForm extends Component {
 
         let {translate} = this.props;
         let {msg} = COMPONENT_VALIDATOR.checkDescription(value, 6, 1204);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            case 'general.validate.minimum_length_error':
-                error = translate(msg, {min: 6});
-                break;
-            case 'general.validate.maximum_length_error':
-                error = translate(msg, {max: 1024})
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        let error = msg ? translate(msg, {min: 6, max: 1024}) : undefined;
         this.setState({ componentDescriptionError: error})
     }
 

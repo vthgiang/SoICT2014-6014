@@ -82,22 +82,8 @@ class RoleCreateForm extends Component {
 
         let {translate} = this.props;
         let {msg} = ROLE_VALIDATOR.checkName(value, 4, 255);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            case 'general.validate.minimum_length_error':
-                error = translate(msg, {min: 4});
-                break;
-            case 'general.validate.maximum_length_error':
-                error = translate(msg, {max: 255})
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
-        this.setState({ roleNameError: error})
+        let err = msg ? translate(msg, {min: 4, max: 255}) : undefined;
+        this.setState({ roleNameError: err})
     }
 
     handleParents = (value) => {

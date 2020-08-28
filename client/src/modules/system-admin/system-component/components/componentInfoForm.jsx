@@ -36,22 +36,8 @@ class ComponentInfoForm extends Component {
         this.setState({ componentName: value });
 
         let {translate} = this.props;
-        let {msg} = SYSTEM_COMPONENT_VALIDATOR.checkDescription(value, 6, 255);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            case 'general.validate.minimum_length_error':
-                error = translate(msg, {min: 6});
-                break;
-            case 'general.validate.maximum_length_error':
-                error = translate(msg, {max: 255})
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        let {msg} = SYSTEM_COMPONENT_VALIDATOR.checkName(value, 6, 255);
+        let error = msg ? translate(msg, {min: 6, max: 255}) : undefined;
         this.setState({ componentNameError: error})
     }
 
@@ -61,21 +47,7 @@ class ComponentInfoForm extends Component {
 
         let {translate} = this.props;
         let {msg} = SYSTEM_COMPONENT_VALIDATOR.checkDescription(value, 6, 1204);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            case 'general.validate.minimum_length_error':
-                error = translate(msg, {min: 6});
-                break;
-            case 'general.validate.maximum_length_error':
-                error = translate(msg, {max: 1024})
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        let error = msg ? translate(msg, {min: 6, max: 1024}) : undefined;
         this.setState({ componentDescriptionError: error})
     }
 
@@ -121,12 +93,10 @@ class ComponentInfoForm extends Component {
         return ( 
             <React.Fragment>
                 <DialogModal
-                    size='50' func={this.save}
+                    func={this.save}
                     modalID="modal-edit-component-default"
                     formID="form-edit-component-default"
                     title={translate('manage_component.edit')}
-                    msg_success={translate('manage_component.edit_success')}
-                    msg_faile={translate('manage_component.edit_faile')}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-edit-component-default">

@@ -293,21 +293,7 @@ class DepartmentCreateWithParent extends Component {
 
         let {translate} = this.props;
         let {msg} = ORGANIZATIONAL_UNIT_VALIDATOR.checkName(value, 4, 255);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            case 'general.validate.minimum_length_error':
-                error = translate(msg, {min: 4});
-                break;
-            case 'general.validate.maximum_length_error':
-                error = translate(msg, {max: 255})
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        let error = msg ? translate(msg, {min: 4, max: 255}) : undefined;
         this.setState({ departmentNameError: error})
     }
 
@@ -317,21 +303,7 @@ class DepartmentCreateWithParent extends Component {
 
         let {translate} = this.props;
         let {msg} = ORGANIZATIONAL_UNIT_VALIDATOR.checkDescription(value, 6, 1204);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            case 'general.validate.minimum_length_error':
-                error = translate(msg, {min: 6});
-                break;
-            case 'general.validate.maximum_length_error':
-                error = translate(msg, {max: 1024})
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        let error = msg ? translate(msg, {min: 6, max: 1024}) : undefined;
         this.setState({ departmentDescriptionError: error})
     }
 }

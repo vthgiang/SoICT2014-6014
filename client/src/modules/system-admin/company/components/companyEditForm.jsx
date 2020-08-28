@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
+import { withTranslate } from 'react-redux-multilingual';
 import { CompanyActions } from '../redux/actions';
-
-import { CompanyFormValidator } from './companyFormValidator';
-
+import { COMPANY_VALIDATOR } from './companyFormValidator';
 import { ErrorLabel, DialogModal } from '../../../../common-components';
 
-import { withTranslate } from 'react-redux-multilingual';
 class CompanyEditForm extends Component {
 
     constructor(props) {
@@ -28,7 +25,7 @@ class CompanyEditForm extends Component {
                 companyLinks: nextProps.companyLinks,
                 companyActive: nextProps.companyActive,
                 companyEmail: nextProps.companyEmail,
-                nameError: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
+                nameError: undefined,
                 shortNameError: undefined,
                 descriptionError: undefined,
                 emailError: undefined
@@ -75,108 +72,55 @@ class CompanyEditForm extends Component {
         })
     }
 
-    // Xu ly thay doi va validate cho ten cong ty
     handleChangeName = (e) => {
-        const value = e.target.value;
-        this.validateName(value, true);
+        let {value} = e.target;
+        this.setState({ companyName: value });
+
+        let {translate} = this.props;
+        let {msg} = COMPANY_VALIDATOR.checkName(value, 4, 255);
+        let error = msg ? translate(msg, {min: 4, max: 255}) : undefined;
+        this.setState({ nameError: error})
     }
 
-    validateName = (value, willUpdateState=true) => {
-        let msg = CompanyFormValidator.validateName(value);
-        const { translate } = this.props;
-
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    nameError: msg ? translate(msg) : msg,
-                    companyName: value,
-                }
-            });
-        }
-
-        return !msg;
-    }
-
-    // Xu ly thay doi va validate short_name cong ty
     handleChangeShortName = (e) => {
-        const value = e.target.value;
-        this.validateShortName(value, true);
+        let {value} = e.target;
+        this.setState({ companyShortName: value });
+
+        let {translate} = this.props;
+        let {msg} = COMPANY_VALIDATOR.checkName(value, 4, 255);
+        let error = msg ? translate(msg, {min: 4, max: 255}) : undefined;
+        this.setState({ shortNameError: error})
     }
 
-    validateShortName = (value, willUpdateState=true) => {
-        let msg = CompanyFormValidator.validateShortName(value);
-        const { translate } = this.props;
-
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    shortNameError: msg ? translate(msg) : msg,
-                    companyShortName: value,
-                }
-            });
-        }
-
-        return !msg;
-    }
-
-    // Xu ly thay doi va validate cho phan description cua cong ty
     handleChangeDescription = (e) => {
-        const value = e.target.value;
-        this.validateDescription(value, true);
+        let {value} = e.target;
+        this.setState({ companyDescription: value });
+
+        let {translate} = this.props;
+        let {msg} = COMPANY_VALIDATOR.checkName(value, 4, 1024);
+        let error = msg ? translate(msg, {min: 4, max: 1024}) : undefined;
+        this.setState({ descriptionError: error})
     }
 
-    validateDescription = (value, willUpdateState=true) => {
-        let msg = CompanyFormValidator.validateDescription(value);
-        const { translate } = this.props;
-
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    descriptionError: msg ? translate(msg) : msg,
-                    companyDescription: value,
-                }
-            });
-        }
-
-        return !msg;
-    }
-
-    // Xu ly thay doi va validate cho email cua super admin cong ty
     handleChangeEmail = (e) => {
-        const value = e.target.value;
-        this.validateEmail(value, true);
+        let {value} = e.target;
+        this.setState({ companyEmail: value });
+
+        let {translate} = this.props;
+        let {msg} = COMPANY_VALIDATOR.checkEmail(value);
+        let error = msg ? translate(msg) : undefined;
+        this.setState({ emailError: error})
     }
 
-    validateEmail = (value, willUpdateState=true) => {
-        let msg = CompanyFormValidator.validateEmailSuperAdmin(value);
-        const { translate } = this.props;
-
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    emailError: msg ? translate(msg) : msg,
-                    companyEmail: value,
-                }
-            });
-        }
-
-        return !msg;
-    }
-
-    // Kiem tra thong tin da validated het chua?
     isFormValidated = () => {
-        const { companyName, companyShortName, companyDescription, companyEmail } = this.state;
-        let result = 
-            this.validateName(companyName, false) &&
-            this.validateShortName(companyShortName, false) &&
-            this.validateDescription(companyDescription, false) &&
-            this.validateEmail(companyEmail, false);
-
-        return result;
+        let {companyName, companyShortName, companyDescription, companyEmail} = this.state;
+        if(
+            !COMPANY_VALIDATOR.checkName(companyName).status  || 
+            !COMPANY_VALIDATOR.checkName(companyShortName).status ||
+            !COMPANY_VALIDATOR.checkEmail(companyEmail).status  || 
+            !COMPANY_VALIDATOR.checkDescription(companyDescription).status
+        ) return false;
+        return true;
     }
 
     render() { 

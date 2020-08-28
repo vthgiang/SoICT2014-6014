@@ -26,15 +26,8 @@ class CreateLinkForm extends Component {
 
         let {translate} = this.props;
         let {msg} = SYSTEM_LINK_VALIDATOR.checkUrl(value);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        
+        let error = msg ? translate(msg) : undefined;
         this.setState({ linkUrlError: error})
     }
 
@@ -44,21 +37,7 @@ class CreateLinkForm extends Component {
 
         let {translate} = this.props;
         let {msg} = SYSTEM_LINK_VALIDATOR.checkDescription(value, 6, 1204);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            case 'general.validate.minimum_length_error':
-                error = translate(msg, {min: 6});
-                break;
-            case 'general.validate.maximum_length_error':
-                error = translate(msg, {max: 1024})
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        let error = msg ? translate(msg, {min: 6, max: 1024}) : undefined;
         this.setState({ linkDescriptionError: error})
     }
 

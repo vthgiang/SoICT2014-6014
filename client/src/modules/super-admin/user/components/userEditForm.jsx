@@ -55,21 +55,7 @@ class UserEditForm extends Component {
 
         let {translate} = this.props;
         let {msg} = USER_VALIDATOR.checkName(value, 6, 255);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            case 'general.validate.minimum_length_error':
-                error = translate(msg, {min: 6});
-                break;
-            case 'general.validate.maximum_length_error':
-                error = translate(msg, {max: 255})
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        let error = msg ? translate(msg, {min: 6, max: 255}) : undefined;
         this.setState({ userNameError: error})
     }
 
@@ -79,15 +65,7 @@ class UserEditForm extends Component {
 
         let {translate} = this.props;
         let {msg} = USER_VALIDATOR.checkEmail(value);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        let error = msg ? translate(msg) : undefined;
         this.setState({ userEmailError: error})
     }
 
