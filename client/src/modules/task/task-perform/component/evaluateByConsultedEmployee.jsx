@@ -13,9 +13,10 @@ class EvaluateByConsultedEmployee extends Component {
 
         let { date, id } = this.props;
         let data = this.getData(date);
+        this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         this.state = {
-            id: id,
+            // id: id,
             info: data.info,
             task: data.task,
             date: data.date,
@@ -26,7 +27,8 @@ class EvaluateByConsultedEmployee extends Component {
             dentaDate: data.dentaDate,
             unit: data.unit,
             kpi: data.kpi,
-            idUser: data.idUser
+            idUser: data.idUser,
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
         }
     }
 
@@ -42,7 +44,7 @@ class EvaluateByConsultedEmployee extends Component {
         if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
-                id: nextProps.id,
+                // id: nextProps.id,
 
                 errorOnDate: undefined, // Khi nhận thuộc tính mới, cần lưu ý reset lại các gợi ý nhắc lỗi, nếu không các lỗi cũ sẽ hiển thị lại
                 errorOnPoint: undefined,
@@ -57,13 +59,14 @@ class EvaluateByConsultedEmployee extends Component {
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
+    shouldComponentUpdate = (nextProps, nextState) => {
         if (nextProps.id !== this.state.id) {
             let { task, idUser, unit } = this.state;
             let department = unit;
             let date = nextProps.date;
-            let data = this.getData(date);
             this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, department, date);
+            
+            let data = this.getData(date);
 
             this.setState(state => {
                 return {
@@ -79,11 +82,28 @@ class EvaluateByConsultedEmployee extends Component {
                     dentaDate: data.dentaDate,
                     unit: data.unit,
                     kpi: data.kpi,
+                    dataStatus: this.DATA_STATUS.QUERYING,
                 }
             });
             return false;
         }
-        else return true;
+        if (this.state.dataStatus === this.DATA_STATUS.QUERYING) {
+            if (!(nextProps.KPIPersonalManager && nextProps.KPIPersonalManager.kpiSets)) {
+                return false;
+            } else {
+                let date = nextProps.date;
+                let data = this.getData(date);
+                this.setState(state => {
+                    return {
+                        ...state,
+                        kpi: data.kpi,
+                        dataStatus: this.DATA_STATUS.FINISHED,
+                    }
+                });
+                return false;
+            }
+        }
+        return true;
     }
 
     // hàm lấy dữ liệu khởi tạo
@@ -91,10 +111,6 @@ class EvaluateByConsultedEmployee extends Component {
         const { user, KPIPersonalManager } = this.props;
         let { task } = this.props;
         let idUser = getStorage("userId");
-
-        let cloneKpi = (KPIPersonalManager && KPIPersonalManager.kpiSets) ?
-            (KPIPersonalManager.kpiSets.kpis.filter(e => ( e.type === 2 )).map(x => { return { value: x._id, text: x.name } }))
-            : []
 
         let progress = task.progress;
         let evaluations;
@@ -104,6 +120,14 @@ class EvaluateByConsultedEmployee extends Component {
         if (user.organizationalUnitsOfUser && user.organizationalUnitsOfUser.length > 0) {
             unit = user.organizationalUnitsOfUser[0]._id;
         }
+
+        // this.props.getAllKpiSetsOrganizationalUnitByMonth(idUser, unit, date);
+
+        let cloneKpi = []
+        if (KPIPersonalManager && KPIPersonalManager.kpiSets){
+            cloneKpi = (KPIPersonalManager.kpiSets.kpis.filter(e => (e.type === 2)).map(x => { return x._id }));
+        }
+
         let splitter = dateParams.split("-");
         let dateOfEval = new Date(splitter[2], splitter[1] - 1, splitter[0]);
         let monthOfEval = dateOfEval.getMonth();
@@ -121,6 +145,8 @@ class EvaluateByConsultedEmployee extends Component {
                     unit = res.organizationalUnit._id;
                 };
                 let kpi = res.kpis;
+
+                cloneKpi = []
 
                 for (let i in kpi) {
                     cloneKpi.push(kpi[i]._id);
@@ -182,8 +208,6 @@ class EvaluateByConsultedEmployee extends Component {
             }
         }
         dentaDate = Math.round(((new Date()).getTime() - dateOfEval.getTime()) / (1000 * 3600 * 24));
-
-        console.log('KPI--', cloneKpi);
 
         return {
             info: info,
@@ -263,7 +287,8 @@ class EvaluateByConsultedEmployee extends Component {
         this.setState(state => {
             return {
                 ...state,
-                unit: value[0]
+                unit: value[0],
+                kpi: [],
             }
         });
         this.props.getAllKpiSetsOrganizationalUnitByMonth(this.state.idUser, value[0], this.state.date);
@@ -382,7 +407,7 @@ class EvaluateByConsultedEmployee extends Component {
                                         style={{ width: "100%" }}
                                         items={
                                             (KPIPersonalManager && KPIPersonalManager.kpiSets) ?
-                                                (KPIPersonalManager.kpiSets.kpis.filter(e => ( e.type === 2 )).map(x => { return { value: x._id, text: x.name } }))
+                                                (KPIPersonalManager.kpiSets.kpis.filter(e => (e.type === 2)).map(x => { return { value: x._id, text: x.name } }))
                                                 : []
                                         }
                                         onChange={this.handleKpiChange}

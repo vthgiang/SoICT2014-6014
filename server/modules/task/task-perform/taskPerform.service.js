@@ -1872,7 +1872,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     if (cloneResult.length > 0) {
         for (let i in cloneResult) {
-            if (String(cloneResult[i].role) === "Accountable") {
+            if (String(cloneResult[i].role) === "Accountable" && String(cloneResult[i].employee) === String(user)) {
                 await Task.updateOne(
                     {
                         _id: taskId,

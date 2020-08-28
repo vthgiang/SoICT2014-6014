@@ -158,7 +158,7 @@ class CompanyManageComponent extends Component {
         console.log("state", this.state)
         return ( 
             <div style={{padding: '10px 0px 10px 0px'}}>
-                <a className="btn btn-success pull-right" onClick={this.updateCompanyComponents}>Cập nhật</a>
+                <a className="btn btn-primary pull-right" onClick={this.updateCompanyComponents}><i className="material-icons">save</i></a>
                 <SearchBar 
                     columns={[
                         { title: translate('manage_component.name'), value: 'name' },
