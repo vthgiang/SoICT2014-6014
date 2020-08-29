@@ -1,19 +1,14 @@
 
-
-
-
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import c3 from 'c3';
-import 'c3/c3.css';
 import * as d3 from 'd3-format';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { Tree } from '../../../../../../../common-components';
-import AmountBarChart from './amountBarChart';
+import { Tree } from '../../../../../../common-components';
+import BarChartArchive from './barChartArchive';
 
-class AmountTree extends Component {
+class TreeArchive extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,45 +16,48 @@ class AmountTree extends Component {
         }
     }
 
-    handleChangeViewChart = async (value) => {
-        await this.setState(state => {
+    handleChangeViewChart = (value) => {
+        this.setState(state => {
             return {
                 ...state,
                 tree: value
             }
         })
     }
+
+
     render() {
-        let { assetType, listAssets } = this.props;
-        console.log('asset type', assetType);
+        const { documents, archives } = this.props;
         let { tree } = this.state;
-        let typeName = [], countAssetType = [], idAssetType = [];
-        for (let i in assetType) {
-            countAssetType[i] = 0;
-            idAssetType.push(assetType[i]._id)
-        }
-
+        let typeName = [], countArchive = [], idArchive = [];
         let chart = [];
-        if (listAssets) {
-            listAssets.map(asset => {
-                let idx = idAssetType.indexOf(asset.assetType);
-                countAssetType[idx]++;
+        //console.log('uuuuuuuuuuuu', archives, documents)
+        for (let i in archives) {
+            countArchive[i] = 0;
+            idArchive.push(archives[i]._id)
+        }
+        if (documents) {
+            documents.map(doc => {
+                console.log('uuuuuuuuuuuu', doc)
+                doc.archives.map(archive => {
+                    let idx = idArchive.indexOf(archive.id);
+                    countArchive[idx]++;
+                })
             })
-            for (let i in assetType) {
+            for (let i in archives) {
 
-                let val = d3.format(",")(countAssetType[i])
-                let title = `${assetType[i].typeName} - ${val} `
+                let val = d3.format(",")(countArchive[i])
+                let title = `${archives[i].name} - ${val} `
 
-                typeName.push(assetType[i].typeName);
+                typeName.push(archives[i].name);
 
                 chart.push({
-                    id: assetType[i]._id,
+                    id: archives[i]._id,
                     typeName: title,
-                    parentId: assetType[i].parent,
+                    parentId: archives[i].parent,
                 })
             }
         }
-        console.log('chart', chart, listAssets);
         let dataTree = chart && chart.map(node => {
             return {
                 ...node,
@@ -68,8 +66,9 @@ class AmountTree extends Component {
                 parent: node.parentId ? node.parentId.toString() : "#"
             }
         })
+        console.log('===============', dataTree);
         return (
-            <div className="amout-asset" id="amout-asset">
+            <div className="amout-docs" id="amout-docs">
                 <br />
                 <div className="box-tools pull-right">
                     <div className="btn-group pull-right">
@@ -82,19 +81,21 @@ class AmountTree extends Component {
                         <div>
                             <br />
                             <Tree
-                                id="tree-qlcv-amount-asset"
+                                id="tree-qlcv-amount-docs"
                                 data={dataTree}
                                 plugins={false}
                             />
                         </div> :
-                        <AmountBarChart
-                            listAssets={listAssets}
-                            assetType={assetType}
+                        <BarChartArchive
+                            archives={archives}
+                            docs={documents}
                         />
                 }
             </div>
         )
-    }
-}
 
-export default AmountTree;
+    }
+
+
+}
+export default TreeArchive;
