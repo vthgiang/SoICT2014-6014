@@ -104,6 +104,7 @@ exports.updateAssetInformation = async (req, res) => {
             content: data
         });
     } catch (error) {
+        console.log(error);
         await LogError(req.user.email, 'EDIT_ASSET', req.user.company);
         res.status(400).json({
             success: false,

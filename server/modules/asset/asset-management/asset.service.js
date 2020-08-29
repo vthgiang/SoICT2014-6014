@@ -99,16 +99,24 @@ exports.getListBuildingAsTree = async (company) => {
  * @arrayObject :mảng chứa các object
  */
 exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
+    console.log(arrayObject, arrayFile);
     if (arrayFile) {
         arrayObject.forEach(x => {
             arrayFile.forEach(y => {
-                if (x.file === y.originalname) {
-                    x.urlFile = `/${y.path}`;
-                }
+                x.files.forEach(item => {
+                    if (item.fileName === y.originalname) {
+                        console.log(y);
+                        let path = y.destination + '/' + y.filename
+                        item.fileName = y.originalname;
+                        item.url = path;
+                    }
+                })
             })
         });
         return arrayObject;
-    } else return arrayObject;
+    } else {
+        return arrayObject;
+    }
 }
 
 /**
@@ -190,6 +198,7 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
         createIncidentLogs, editIncidentLogs, deleteIncidentLogs,
         createFiles, editFiles, deleteFiles
     } = data;
+
     let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
         file = fileInfo.file;
     let oldAsset = await Asset.findById(id);
@@ -223,7 +232,7 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
     oldAsset.usageLogs = deleteEditCreateObjectInArrayObject(oldAsset.usageLogs, deleteUsageLogs, editUsageLogs, createUsageLogs);
     oldAsset.maintainanceLogs = deleteEditCreateObjectInArrayObject(oldAsset.maintainanceLogs, deleteMaintainanceLogs, editMaintainanceLogs, createMaintainanceLogs);
     oldAsset.incidentLogs = deleteEditCreateObjectInArrayObject(oldAsset.incidentLogs, deleteIncidentLogs, editIncidentLogs, createIncidentLogs);
-    oldAsset.files = deleteEditCreateObjectInArrayObject(oldAsset.files, deleteFiles, editFiles, createFiles, file);
+    oldAsset.documents = deleteEditCreateObjectInArrayObject(oldAsset.documents, deleteFiles, editFiles, createFiles, file);
 
     oldAsset.avatar = avatar;
     oldAsset.assetName = data.assetName;

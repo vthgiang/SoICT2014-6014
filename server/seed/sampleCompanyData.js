@@ -1998,7 +1998,7 @@ const sampleCompanyData = async () => {
         disposalDesc: '',
         //tài liệu đính kèm
         archivedRecordNumber: "PKD000",
-        files: [],
+        documents: [],
     })
     var listAsset1 = await Asset.insertMany([
 
@@ -2047,7 +2047,7 @@ const sampleCompanyData = async () => {
             disposalDesc: '',
             //tài liệu đính kèm
             archivedRecordNumber: "PKD001",
-            files: [],
+            documents: [],
         },
         { //2 TQB
             avatar: "/upload/asset/pictures/picture5.png",
@@ -2094,7 +2094,7 @@ const sampleCompanyData = async () => {
             disposalDesc: '',
             //tài liệu đính kèm
             archivedRecordNumber: "PKD002",
-            files: [],
+            documents: [],
         }]);
 
     var listAsset2 = await Asset.insertMany([
@@ -2143,7 +2143,7 @@ const sampleCompanyData = async () => {
             disposalDesc: '',
             //tài liệu đính kèm
             archivedRecordNumber: "PKD003",
-            files: [],
+            documents: [],
         },
         {//04
             avatar: "/upload/asset/pictures/picture5.png",
@@ -2190,7 +2190,7 @@ const sampleCompanyData = async () => {
             disposalDesc: '',
             //tài liệu đính kèm
             archivedRecordNumber: "PKD004",
-            files: [],
+            documents: [],
         },
         {// 05
             avatar: "/upload/asset/pictures/picture5.png",
@@ -2237,7 +2237,7 @@ const sampleCompanyData = async () => {
             disposalDesc: '',
             //tài liệu đính kèm
             archivedRecordNumber: "PKD005",
-            files: [],
+            documents: [],
         },
         {// 06
             avatar: "/upload/asset/pictures/picture5.png",
@@ -2284,7 +2284,7 @@ const sampleCompanyData = async () => {
             disposalDesc: '',
             //tài liệu đính kèm
             archivedRecordNumber: "PKD006",
-            files: [],
+            documents: [],
         },
         {// 07
             avatar: "/upload/asset/pictures/picture5.png",
@@ -2331,7 +2331,7 @@ const sampleCompanyData = async () => {
             disposalDesc: '',
             //tài liệu đính kèm
             archivedRecordNumber: "PKD007",
-            files: [],
+            documents: [],
         }
     ])
 
