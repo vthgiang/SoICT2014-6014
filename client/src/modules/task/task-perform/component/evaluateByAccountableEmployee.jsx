@@ -119,7 +119,7 @@ class EvaluateByAccountableEmployee extends Component {
         }
         if (this.state.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!(nextProps.KPIPersonalManager && nextProps.KPIPersonalManager.kpiSets)) {
-                return false;
+                return true;
             } else {
                 let date = nextProps.date;
                 let data = this.getData(date);

@@ -1243,7 +1243,7 @@ exports.createTask = async (task) => {
     user = await User.find({
         _id: { $in: userIds }
     })
-
+    console.log(con);
     email = user.map(item => item.email); // Lấy ra tất cả email của người dùng
     email.push("trinhhong102@gmail.com");
     var html = `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${task._id} </a></p> ` +
@@ -1259,17 +1259,17 @@ exports.createTask = async (task) => {
         `<ul>${acc.map((item) => {
             return `<li>${item.name}</li>`
         })}
-                    </ul>`+
-        `<p>Người hỗ trợ</p> ` +
+                    </ul>` +
+        `${con.length > 0 ? `<p>Người hỗ trợ</p> ` +
         `<ul>${con.map((item) => {
             return `<li>${item.name}</li>`
         })}
-                    </ul>`+
-        `<p>Người quan sát</p> ` +
+                    </ul>` : "" }` +
+        `${inf.length > 0 ? `<p>Người quan sát</p> ` +
         `<ul>${inf.map((item) => {
             return `<li>${item.name}</li>`
         })}
-                    </ul>`
+                    </ul>` : "" }`
         ;
 
     return { task: task, user: userIds, email: email, html: html };
