@@ -145,10 +145,14 @@ exports.getTaskEvaluations = async (data) => {
 
     // lấy danh sachs điều kiện lọc của trường thông tin của công việc
     let taskInfo = data.taskInformations;
-    let listDataChart = data.itemListBoxRight;
+    let listDataChart = [];
+    if (data.itemListBoxRight) {
+        listDataChart = data.itemListBoxRight;
+        listDataChart = listDataChart.map(item => JSON.parse(item));
+    }
+    // let listDataChart = data.itemListBoxRight;
 
     taskInfo = taskInfo.map(item => JSON.parse(item));
-    listDataChart = listDataChart.map(item => JSON.parse(item));
 
     let configurations = [];
     // Lấy các điều kiện lọc của các trường thông tin từ client gửi về.
