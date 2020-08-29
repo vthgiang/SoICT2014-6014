@@ -3,16 +3,12 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, SelectBox, ErrorLabel } from '../../../../common-components';
 import { RoleActions } from '../redux/actions';
-import { ROLE_VALIDATOR } from './roleValidator';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class RoleCreateForm extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            roleName: '',
-            roleParents: [],
-            roleUsers: []
-        }
+        this.state = {}
     }
 
     render() {
@@ -28,8 +24,6 @@ class RoleCreateForm extends Component {
                     modalID="modal-create-role" isLoading={role.isLoading}
                     formID="form-create-role"
                     title={translate('manage_role.add_title')}
-                    msg_success={translate('manage_role.add_success')}
-                    msg_faile={translate('manage_role.add_faile')}
                     func={this.save} disableSubmit={!this.isFormValidated()}
                 >
                     {/* Form thêm phân quyền mới */}
@@ -87,23 +81,9 @@ class RoleCreateForm extends Component {
         this.setState({ roleName: value });
 
         let {translate} = this.props;
-        let {msg} = ROLE_VALIDATOR.checkName(value, 4, 255);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            case 'general.validate.minimum_length_error':
-                error = translate(msg, {min: 4});
-                break;
-            case 'general.validate.maximum_length_error':
-                error = translate(msg, {max: 255})
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
-        this.setState({ roleNameError: error})
+        let {msg} = ValidationHelper.validateName(value, 4, 255);
+        let err = msg ? translate(msg, {min: 4, max: 255}) : undefined;
+        this.setState({ roleNameError: err})
     }
 
     handleParents = (value) => {
@@ -136,7 +116,7 @@ class RoleCreateForm extends Component {
 
     isFormValidated = () => {
         let {roleName} = this.state;
-        if(!ROLE_VALIDATOR.checkName(roleName).status) return false;
+        if(!ValidationHelper.validateName(roleName).status) return false;
         return true;
     }
 

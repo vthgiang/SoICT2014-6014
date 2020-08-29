@@ -7,14 +7,12 @@ import 'c3/c3.css';
 import * as d3 from 'd3-format';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { DepreciationTree } from './depreciationTree';
+import DepreciationTree from './depreciationTree';
 
 class DepreciationBarChart extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            barChart: true
-        }
+
     }
 
     componentDidMount() {
@@ -98,7 +96,7 @@ class DepreciationBarChart extends Component {
 
         for (let i in assetType) {
             countDepreciation[i] = 0;
-            idAssetType.push(assetType[i].id)
+            idAssetType.push(assetType[i]._id)
         }
 
         if (listAssets) {
@@ -107,10 +105,10 @@ class DepreciationBarChart extends Component {
                 countDepreciation[idx] += this.calculateDepreciation(asset.depreciationType, asset.cost, asset.usefulLife, asset.estimatedTotalProduction, asset.unitsProducedDuringTheYears, asset.startDepreciation) / 1000000;
             })
             for (let i in assetType) {
-                let longName = assetType[i].title.slice(0, 20) + "...";
-                let name = assetType[i].title.length > 20 ? longName : assetType[i].title;
+                let longName = assetType[i].typeName.slice(0, 20) + "...";
+                let name = assetType[i].typeName.length > 20 ? longName : assetType[i].typeName;
                 shortName.push(name);
-                typeName.push(assetType[i].title);
+                typeName.push(assetType[i].typeName);
             }
         }
 
@@ -189,40 +187,21 @@ class DepreciationBarChart extends Component {
 
         });
     }
-    handleChangeViewChart = async (value) => {
-        this.setState(state => {
-            return {
-                ...state,
-                barChart: value
-            }
-        })
-    }
+
     render() {
-        const { assetType, listAssets } = this.props;
-        const { barChart } = this.state;
-        if (barChart) this.pieChart();
+        this.pieChart();
         return (
             <React.Fragment>
-                <div className="box-tools pull-right">
-                    <div className="btn-group pull-right">
-                        <button type="button" className={`btn btn-xs ${!barChart ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(true)}>Bar chart</button>
-                        <button type="button" className={`btn btn-xs ${!barChart ? "btn-danger" : "active"}`} onClick={() => this.handleChangeViewChart(false)}>Tree</button>
-                    </div>
-                </div>
-                {barChart ? <div ref="b"></div> : <DepreciationTree
-                    assetType={assetType}
-                    listAssets={listAssets} />}
-
-                {/* </div> */}
+                <div ref="b"></div>
             </React.Fragment>
         )
     }
 }
 
-function mapState(state) { }
+// function mapState(state) { }
 
-const actions = {}
+// const actions = {}
 
-const DepreciationBarChartConnected = connect(mapState, actions)(withTranslate(DepreciationBarChart));
+// const DepreciationBarChartConnected = connect(mapState, actions)(withTranslate(DepreciationBarChart));
 
-export { DepreciationBarChartConnected as DepreciationBarChart }
+export default DepreciationBarChart;

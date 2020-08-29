@@ -18,25 +18,25 @@ class CostChart extends Component {
         let dataPieChart, lessThanOneHundred = 0, oneHundred = 0, twoHundred = 0, fiveHundred = 0, oneBillion = 0, twoBillion = 0, fiveBillion = 0, tenBillion = 0;
 
         if (listAssets) {
-            for(let i in listAssets){
+            for (let i in listAssets) {
                 let cost = listAssets[i].cost;
-                 
-                if (cost < 100000000){
-                    lessThanOneHundred ++;
+
+                if (cost < 100000000) {
+                    lessThanOneHundred++;
                 } else if (cost >= 100000000 && cost < 200000000) {
-                    oneHundred ++;
+                    oneHundred++;
                 } else if (cost >= 200000000 && cost < 500000000) {
-                    twoHundred ++;
+                    twoHundred++;
                 } else if (cost >= 500000000 && cost < 1000000000) {
-                    fiveHundred ++;
+                    fiveHundred++;
                 } else if (cost >= 100000000 && cost < 2000000000) {
-                    oneBillion ++;
+                    oneBillion++;
                 } else if (cost >= 200000000 && cost < 5000000000) {
-                    twoBillion ++;
+                    twoBillion++;
                 } else if (cost >= 500000000 && cost < 10000000000) {
-                    fiveBillion ++;
+                    fiveBillion++;
                 } else if (cost >= 10000000000) {
-                    tenBillion ++;
+                    tenBillion++;
                 }
             }
         }
@@ -69,7 +69,7 @@ class CostChart extends Component {
     // Khởi tạo PieChart bằng C3
     pieChart = () => {
         let dataPieChart = this.setDataPieChart();
-        
+
         this.chart = c3.generate({
             bindto: '#assetCost',
 
@@ -92,8 +92,8 @@ class CostChart extends Component {
             },
             tooltip: {
                 format: {
-                    title: function (d) { 
-                        return d; 
+                    title: function (d) {
+                        return d;
                     },
                     value: function (value, ratio, id) {
                         return value;

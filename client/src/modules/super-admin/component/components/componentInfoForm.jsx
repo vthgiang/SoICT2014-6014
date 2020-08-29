@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ComponentActions } from '../redux/actions';
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
-import { COMPONENT_VALIDATOR } from './componentValidator';
+import ValidationHelper from '../../../../helpers/validationHelper';
 class ComponentInfoForm extends Component {
     constructor(props) {
         super(props);
@@ -79,22 +79,8 @@ class ComponentInfoForm extends Component {
         this.setState({ componentDescription: value });
 
         let {translate} = this.props;
-        let {msg} = COMPONENT_VALIDATOR.checkDescription(value, 6, 1204);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            case 'general.validate.minimum_length_error':
-                error = translate(msg, {min: 6});
-                break;
-            case 'general.validate.maximum_length_error':
-                error = translate(msg, {max: 1024})
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        let {msg} = ValidationHelper.validateDescription(value);
+        let error = msg ? translate(msg) : undefined;
         this.setState({ componentDescriptionError: error})
     }
 
@@ -124,7 +110,7 @@ class ComponentInfoForm extends Component {
 
     isFormValidated = () => {
         let {componentDescription} = this.state;
-        if(!COMPONENT_VALIDATOR.checkDescription(componentDescription).status) return false;
+        if(!ValidationHelper.validateDescription(componentDescription).status) return false;
         return true;
     }
 

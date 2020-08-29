@@ -21,6 +21,8 @@ const {
     RecommendProcure,
     RecommendDistribute,
 
+    Document,
+    DocumentArchive,
     DocumentDomain,
     DocumentCategory,
     Material,
@@ -1145,7 +1147,86 @@ const sampleCompanyData = async () => {
             parent: domains[1]._id
         },
     ]);
+    const archives = await DocumentArchive.insertMany([{
+        name: "Văn phòng B1",
+        company: vnist,
+        description: "Văn phòng B1",
+        path: "Văn phòng B1",
+    }, {
+        name: "Văn phòng B2",
+        company: vnist,
+        description: "Văn phòng B2",
+        path: "Văn phòng B2",
+    }, {
+        name: "Văn phòng B3",
+        company: vnist,
+        description: "Văn phòng B3",
+        path: "Văn phòng B3",
+    },
+    ]);
+    const archives2 = await DocumentArchive.insertMany([{
+        name: "Phòng 201",
+        company: vnist,
+        description: "Phòng  lưu trữ tầng 2",
+        path: "Văn phòng B1 - Phòng 201",
+        parent: archives[0],
+    }, {
+        name: "Phòng 202",
+        company: vnist,
+        description: "Phòng giám đốc",
+        path: "Văn phòng B1 - Phòng 202",
+        parent: archives[0],
+    }, {
+        name: "Phòng 301",
+        company: vnist,
+        path: "Văn phòng B2 - Phòng 301",
+        parent: archives[1],
+    }, {
+        name: "Phòng 302",
+        company: vnist,
+        path: "Văn phòng B2 - Phòng 302",
+        parent: archives[1],
+    }, {
+        name: "Phòng 403",
+        company: vnist,
+        path: "Văn phòng B3 - Phòng 403",
+        parent: archives[2],
+    }, {
+        name: "Phòng 404",
+        company: vnist,
+        path: "Văn phòng B3 - Phòng 404",
+        parent: archives[2],
+    },
 
+    ]);
+    const archives3 = await DocumentArchive.insertMany([{
+        name: "Tủ 1",
+        company: vnist,
+        path: "Văn phòng B1 - Phòng 201 - Tủ 1",
+        parent: archives2[0],
+    }, {
+        name: "Tủ 2",
+        company: vnist,
+        path: "Văn phòng B1 - Phòng 201 - Tủ 2",
+        parent: archives2[0],
+    }, {
+        name: "Tủ 1",
+        company: vnist,
+        path: "Văn phòng B1 - Phòng 202 - Tủ 1",
+        parent: archives2[1],
+    }, {
+        name: "Tủ A",
+        company: vnist,
+        path: "Văn phòng B1 - Phòng 202 - Tủ A",
+        parent: archives2[2],
+    }, {
+        name: "Tủ B",
+        company: vnist,
+        path: "Văn phòng B1 - Phòng 202 - Tủ B",
+        parent: archives2[2],
+    },
+
+    ])
     const categories = await DocumentCategory.insertMany([{
         company: vnist._id,
         name: "Văn bản",

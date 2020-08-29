@@ -3,14 +3,12 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DepartmentActions } from '../redux/actions';
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../common-components';
-import { ORGANIZATIONAL_UNIT_VALIDATOR } from './organizationalUnitValidator';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class DepartmentCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            departmentName: '',
-            departmentDescription: '',
             deans: [],
             viceDeans: [],
             employees: []
@@ -239,7 +237,7 @@ class DepartmentCreateForm extends Component {
      */
     isFormValidated = () => {
         let {departmentName, departmentDescription} = this.state;
-        if(!ORGANIZATIONAL_UNIT_VALIDATOR.checkName(departmentName).status || !ORGANIZATIONAL_UNIT_VALIDATOR.checkDescription(departmentDescription).status) return false;
+        if(!ValidationHelper.validateName(departmentName).status || !ValidationHelper.validateDescription(departmentDescription).status) return false;
         return true;
     }
 
@@ -273,22 +271,8 @@ class DepartmentCreateForm extends Component {
         this.setState({ departmentName: value });
 
         let {translate} = this.props;
-        let {msg} = ORGANIZATIONAL_UNIT_VALIDATOR.checkName(value, 4, 255);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            case 'general.validate.minimum_length_error':
-                error = translate(msg, {min: 4});
-                break;
-            case 'general.validate.maximum_length_error':
-                error = translate(msg, {max: 255})
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        let {msg} = ValidationHelper.validateName(value, 4, 255);
+        let error = msg ? translate(msg, {min: 4, max: 255}) : undefined;
         this.setState({ departmentNameError: error})
     }
 
@@ -297,22 +281,8 @@ class DepartmentCreateForm extends Component {
         this.setState({ departmentDescription: value });
 
         let {translate} = this.props;
-        let {msg} = ORGANIZATIONAL_UNIT_VALIDATOR.checkDescription(value, 6, 1204);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            case 'general.validate.minimum_length_error':
-                error = translate(msg, {min: 6});
-                break;
-            case 'general.validate.maximum_length_error':
-                error = translate(msg, {max: 1024})
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        let {msg} = ValidationHelper.validateDescription(value);
+        let error = msg ? translate(msg) : undefined;
         this.setState({ departmentDescriptionError: error})
     }
 

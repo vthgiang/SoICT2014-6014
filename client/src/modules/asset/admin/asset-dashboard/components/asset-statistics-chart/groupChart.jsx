@@ -3,20 +3,13 @@ import { connect } from 'react-redux';
 
 import c3 from 'c3';
 import 'c3/c3.css';
-import * as d3 from 'd3-format';
-
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { Tree } from '../../../../../../../common-components';
 
-
-class AmountPieChart extends Component {
+class GroupChart extends Component {
     constructor(props) {
         super(props);
+    }
 
-    }
-    componentDidMount() {
-        if (this.refs.amountPieChart) this.pieChart();
-    }
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
         const { listAssets } = this.props;
@@ -25,8 +18,8 @@ class AmountPieChart extends Component {
         let dataPieChart, numberOfBuilding = 0, numberOfVehicle = 0, numberOfMachine = 0, numberOfOrther = 0;
 
         if (listAssets) {
-            listAssets.map(asset => {
-                switch (asset.group) {
+            for (let i in listAssets) {
+                switch (listAssets[i].group) {
                     case "Building":
                         numberOfBuilding++;
                         break;
@@ -40,7 +33,7 @@ class AmountPieChart extends Component {
                         numberOfOrther++;
                         break;
                 }
-            });
+            }
         }
 
         dataPieChart = [
@@ -52,9 +45,11 @@ class AmountPieChart extends Component {
 
         return dataPieChart;
     }
-    // Xóa các chart đã render khi chưa đủ dữ liệu
+
+    // Hàm xóa biểu đồ trước
     removePreviousChart() {
-        const chart = this.refs.amountPieChart;
+        const chart = this.refs.chart;
+
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
@@ -64,11 +59,10 @@ class AmountPieChart extends Component {
 
     // Khởi tạo PieChart bằng C3
     pieChart = () => {
-
         let dataPieChart = this.setDataPieChart();
-        this.removePreviousChart();
-        let chart = c3.generate({
-            bindto: this.refs.amountPieChart,
+
+        this.chart = c3.generate({
+            bindto: '#assetGroup',
 
             data: {
                 columns: dataPieChart,
@@ -89,12 +83,12 @@ class AmountPieChart extends Component {
             },
             tooltip: {
                 format: {
-                    title: function (d) { return d; },
+                    title: function (d) {
+                        return d;
+                    },
                     value: function (value, ratio, id) {
-
                         return value;
                     }
-                    //            value: d3.format(',') // apply this format to both y and y2
                 }
             },
             legend: {
@@ -102,22 +96,29 @@ class AmountPieChart extends Component {
             }
         });
     }
-
     render() {
+        const { translate } = this.props;
+        const { listAssets } = this.props;
+
+        console.log('call pie chart');
         this.pieChart();
-        // console.log('render ');
+
         return (
             <React.Fragment>
-                <section ref="amountPieChart"></section>
+                <div className="box-body qlcv" id="assetGroupChart">
+                    <section id="assetGroup"></section>
+                </div>
             </React.Fragment>
         )
     }
 }
 
-function mapState(state) { }
+function mapState(state) {
+}
 
-const actions = {}
+const actions = {
+}
 
-const AmountPieChartConnected = connect(mapState, actions)(withTranslate(AmountPieChart));
+const GroupChartConnected = connect(mapState, actions)(withTranslate(GroupChart));
 
-export { AmountPieChartConnected as AmountPieChart }
+export { GroupChartConnected as GroupChart }

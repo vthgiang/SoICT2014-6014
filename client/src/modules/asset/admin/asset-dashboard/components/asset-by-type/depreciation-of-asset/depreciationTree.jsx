@@ -11,10 +11,14 @@ import * as d3 from 'd3-format';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { Tree } from '../../../../../../../common-components';
+import DepreciationBarChart from './depreciationBarChart';
 
 class DepreciationTree extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            tree: false
+        }
     }
 
     /**
@@ -86,13 +90,21 @@ class DepreciationTree extends Component {
         // console.log('cost', parseInt(cost - remainingValue));
         return parseInt(cost - remainingValue);
     }
+    handleChangeViewChart = async (value) => {
+        await this.setState(state => {
+            return {
+                ...state,
+                tree: value
+            }
+        })
+    }
     render() {
         let { assetType, listAssets } = this.props;
-
+        let { tree } = this.state;
         let typeName = [], countAssetDepreciation = [], idAssetType = [];
         for (let i in assetType) {
             countAssetDepreciation[i] = 0;
-            idAssetType.push(assetType[i].id)
+            idAssetType.push(assetType[i]._id)
         }
 
         let chart = [];
@@ -104,14 +116,14 @@ class DepreciationTree extends Component {
             for (let i in assetType) {
 
                 let val = d3.format(",")(countAssetDepreciation[i])
-                let title = `${assetType[i].title} - ${val} `
+                let title = `${assetType[i].typeName} - ${val} `
 
-                typeName.push(assetType[i].title);
+                typeName.push(assetType[i].typeName);
 
                 chart.push({
-                    id: assetType[i].id,
+                    id: assetType[i]._id,
                     typeName: title,
-                    parentId: assetType[i].parent_id,
+                    parentId: assetType[i].parent,
                 })
             }
         }
@@ -123,24 +135,34 @@ class DepreciationTree extends Component {
                 parent: node.parentId ? node.parentId.toString() : "#"
             }
         })
-        console.log('treee', dataTree);
         return (
             <div className="depreciation-asset" id="depreciation-asset">
                 <br />
-                <Tree
-                    id="tree-qlcv-depreciation-asset"
-                    data={dataTree}
-                    plugins={false}
-                />
+                <div className="box-tools pull-right">
+                    <div className="btn-group pull-right">
+                        <button type="button" className={`btn btn-xs ${tree ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Bar chart</button>
+                        <button type="button" className={`btn btn-xs ${tree ? "btn-danger" : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Tree</button>
+                    </div>
+                </div>
+                {
+                    tree ?
+                        <div>
+                            <br />
+                            <Tree
+                                id="tree-qlcv-depreciation-asset"
+                                data={dataTree}
+                                plugins={false}
+                            />
+                        </div> :
+                        <DepreciationBarChart
+                            listAssets={listAssets}
+                            assetType={assetType}
+                        />
+                }
             </div>
         )
     }
 }
 
-function mapState(state) { }
 
-const actions = {}
-
-const DepreciationTreeConnected = connect(mapState, actions)(withTranslate(DepreciationTree));
-
-export { DepreciationTreeConnected as DepreciationTree }
+export default DepreciationTree;
