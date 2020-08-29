@@ -1809,7 +1809,6 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
         let check_data = listResult.find(r => (String(r.employee) === cloneResult[item].employee && r.role === cloneResult[item].role))
         // TH nguoi nay da danh gia ket qua --> thi chi can cap nhat lai ket qua thoi
-
         if (check_data !== undefined) {
             // cap nhat diem
             await Task.updateOne(
@@ -1869,10 +1868,9 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     // cập nhật điểm cá nhân cho ng phe duyet
     let check_approve = listResult2.find(r => (String(r.employee) === user && String(r.role) === "Accountable"));
-
     if (cloneResult.length > 0) {
         for (let i in cloneResult) {
-            if (String(cloneResult[i].role) === "Accountable") {
+            if (String(cloneResult[i].role) === "Accountable" && String(cloneResult[i].employee) === String(user)) {
                 await Task.updateOne(
                     {
                         _id: taskId,
@@ -1897,7 +1895,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
             }
         }
     }
-    else {
+    else if (check_approve === undefined) {
         await Task.updateOne(
             {
                 _id: taskId,
@@ -1915,6 +1913,27 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
             },
             { $new: true }
         );
+    }
+    else if (check_approve !== undefined) {
+        await Task.updateOne(
+            {
+                _id: taskId,
+                "evaluations._id": evaluateId
+            },
+            {
+                $set: {
+                    "evaluations.$.results.$[elem].organizationalUnit": unit,
+                    "evaluations.$.results.$[elem].kpis": kpi,
+                }
+            },
+            {
+                arrayFilters: [
+                    {
+                        "elem.employee": user,
+                        "elem.role": "Accountable"
+                    }
+                ]
+            })
     }
 
 
@@ -2356,6 +2375,31 @@ exports.editTaskStatus = async (taskID, body) => {
     return task
 }
 
+/** Chỉnh sửa taskInformation của task */
+exports.editTaskInformation = async (taskId, taskInformations) => {
+    let information;
+
+    if (taskInformations && taskInformations.length !== 0) {
+        for (let i = 0; i < taskInformations.length; i++) {
+            information = await Task.updateOne(
+                { "_id": taskId, "taskInformations._id": taskInformations[i]._id },
+                {
+                    $set:
+                    {
+                        "taskInformations.$.description": taskInformations[i].description,
+                        "taskInformations.$.name": taskInformations[i].name,
+                        "taskInformations.$.type": taskInformations[i].type,
+                        "taskInformations.$.isOutput": taskInformations[i].isOutput
+                    }
+                }
+            )
+        }
+    }
+
+    let task = await Task.findById({ _id: taskId })
+    return task;
+}
+
 /**
  * Chinh sua trang thai luu kho cua cong viec
  * @param taskID id công việc
@@ -2430,39 +2474,50 @@ exports.deleteDocument = async (params) => {
 /**
  * Sua document
  */
-exports.editDocument = async (params, body, files) => {
-    
-    let document = await Task.updateOne(
-        { "_id": params.taskId, "documents._id": params.documentId },
-        {
-            $set:
-            {
-                "documents.$.description": body.description
-            }
-        }
-    )
-    let action1 = await Task.updateOne(
-        { "_id": params.taskId, "documents._id": params.documentId },
-        {
-            $push:
-            {
-                "documents.$.files": files
-            }
-        }
-    )
-    let isOutput = await Task.updateOne(
-        { "_id": params.taskId, "documents._id": params.documentId },
-        {
-            $set:
-            {
-                "documents.$.isOutput": body.isOutput
-            }
-        }
-    )
+exports.editDocument = async (taskId, documentId, body, files) => {
+    let document;
 
-    let task1 = await Task.findById({ _id: params.taskId }).populate([
+    if (documentId) {
+        document = await Task.updateOne(
+            { "_id": taskId, "documents._id": documentId },
+            {
+                $set:
+                {
+                    "documents.$.description": body.description,
+                    "documents.$.isOutput": body.isOutput
+                },
+
+                $push:
+                {
+                    "documents.$.files": files
+                }
+            }
+        )
+    } else {
+        if (body && body.length !== 0) {
+            for (let i = 0; i < body.length; i++) {
+                document = await Task.updateOne(
+                    { "_id": taskId, "documents._id": body[i]._id },
+                    {
+                        $set:
+                        {
+                            "documents.$.description": body[i].description,
+                            "documents.$.isOutput": body[i].isOutput
+                        },
+
+                        $push:
+                        {
+                            "documents.$.files": files
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+    let task = await Task.findById({ _id: taskId }).populate([
         { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);
 
-    return task1.documents
+    return task.documents
 }

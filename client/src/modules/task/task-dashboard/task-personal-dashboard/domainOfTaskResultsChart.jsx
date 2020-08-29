@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { taskManagementActions } from '../../redux/actions';
+import { taskManagementActions } from '../../task-management/redux/actions';
+import { UserActions } from '../../../super-admin/user/redux/actions';
 
-import { SelectBox } from '../../../../../common-components/index';
+import { SelectBox } from '../../../../common-components/index';
 
 import { withTranslate } from 'react-redux-multilingual';
 
 import c3 from 'c3';
 import 'c3/c3.css';
-import { TaskOrganizationUnitDashboard } from '../task-organization-dashboard/taskOrganizationUnitDashboard';
+// import { TaskOrganizationUnitDashboard } from '../task-organization-dashboard/taskOrganizationUnitDashboard';
+// import { TaskInformationForm } from '../../../task-perform/component/taskInformationForm';
 
-class TaskStatusChart extends Component {
+class DomainOfTaskResultsChart extends Component {
 
     constructor(props) {
         super(props);
@@ -43,16 +45,6 @@ class TaskStatusChart extends Component {
             }
         ]
 
-        // Sao lưu dữ liệu để sử dụng khi dữ liêu thay đổi
-        this.TASK_PROPS = {
-            responsibleTasks: null,
-            accountableTasks: null,
-            consultedTasks: null,
-            informedTasks: null,
-            creatorTasks: null,
-            organizationUnitTasks: null,
-        }
-
         this.state = {
             aPeriodOfTime: true,
             userId: localStorage.getItem("userId"),
@@ -62,45 +54,41 @@ class TaskStatusChart extends Component {
             role: this.ROLE.RESPONSIBLE,
 
             willUpdate: false,       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-            callAction: false
+            callAction: false,
         };
-
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        if (
-            nextProps.callAction !== this.state.callAction
-            || nextProps.startMonth !== this.props.startMonth
-            || nextProps.endMonth !== this.props.endMonth
-        ) {
 
-            if (this.props.TaskOrganizationUnitDashboard && this.props.units && this.props.startMonth && this.props.endMonth) {
+        if (nextProps.units !== this.props.units || nextProps.callAction !== this.state.callAction || nextProps.startMonth !== this.state.startMonth || nextProps.endMonth !== this.state.endMonth) {
+            if (this.props.TaskOrganizationUnitDashboard) {
                 await this.setState(state => {
                     return {
                         ...state,
-                        startMonth: this.props.startMonth,
-                        endMonth: this.props.endMonth,
+                        startMonth: nextProps.startMonth,
+                        endMonth: nextProps.endMonth,
 
                     }
                 })
-
-
                 if (this.props.units) {
                     if (this.props.units.length)
                         await this.props.getTaskInOrganizationUnitByMonth(this.props.units, nextProps.startMonth, nextProps.endMonth);
                 }
-            } else {
+            }
+            else {
+                // await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
+                // await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
+                // await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
+                // await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
+                // await this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
                 await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
                 await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
                 await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
                 await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
                 await this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
-                // await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
-                // await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
-                // await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
-                // await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTimeh);
-                // await this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
             }
+            // this.domainChart();
+
             await this.setState(state => {
                 return {
                     ...state,
@@ -120,13 +108,13 @@ class TaskStatusChart extends Component {
                 }
             })
 
-            this.pieChart();
+            this.domainChart();
         }
 
         if (nextState.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
-            if (this.props.TaskOrganizationUnitDashboard) { // neu componet duoc goi tu dashboard organization unit
+            if (this.props.TaskOrganizationUnitDashboard) { // neu component duoc goi tu task organization unit
                 if (this.props.units) {
-                    await this.props.getTaskInOrganizationUnitByMonth(this.props.units, nextProps.startMonth, nextProps.endMonth);
+                    await this.props.getTaskInOrganizationUnitByMonth(this.props.units, this.state.startMonth, this.state.endMonth);
                 }
             }
             else {
@@ -134,31 +122,25 @@ class TaskStatusChart extends Component {
                 await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
                 await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
                 await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
-                // console.log('inform in task status', );
                 await this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
-                // await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, null, null, this.state.aPeriodOfTime);
-                // await this.props.getAccountableTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
-                // await this.props.getConsultedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
-                // await this.props.getInformedTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTimeh);
-                // await this.props.getCreatorTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, nextProps.startMonth, nextProps.endMonth, this.state.aPeriodOfTime);
             }
             await this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.QUERYING,
-                    willUpdate: true        // Khi true sẽ cập nhật dữ liệu vào props từ redux
-                }
+                    willUpdate: true       // Khi true sẽ cập nhật dữ liệu vào props từ redux
+                };
             });
 
             return false;
         } else if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
+            // Kiểm tra tasks đã được bind vào props hay chưa
             if (this.props.TaskOrganizationUnitDashboard) {
                 if (!nextProps.tasks.organizationUnitTasks) {
                     return false;
                 }
 
             }
-            // Kiểm tra tasks đã được bind vào props hay chưa
             else if (!nextProps.tasks.responsibleTasks
                 || !nextProps.tasks.accountableTasks
                 || !nextProps.tasks.consultedTasks
@@ -167,21 +149,6 @@ class TaskStatusChart extends Component {
             ) {
                 return false;           // Đang lấy dữ liệu, ko cần render lại
             };
-
-            /** Sao lưu để sử dụng khi dữ liệu bị thay đổi
-             *  (Lý do: khi đổi role task, muốn sử dụng dữ liệu cũ nhưng trước đó dữ liệu trong kho redux đã bị thay đổi vì service được gọi ở 1 nơi khác)
-             */
-            if (nextState.willUpdate) {
-                this.TASK_PROPS = {
-                    responsibleTasks: nextProps.tasks.responsibleTasks,
-                    accountableTasks: nextProps.tasks.accountableTasks,
-                    consultedTasks: nextProps.tasks.consultedTasks,
-                    informedTasks: nextProps.tasks.informedTasks,
-                    creatorTasks: nextProps.tasks.creatorTasks,
-                    organizationUnitTasks: nextProps.tasks.organizationUnitTasks,
-
-                }
-            }
 
             this.setState(state => {
                 return {
@@ -192,14 +159,14 @@ class TaskStatusChart extends Component {
 
             return false;
         } else if (nextState.dataStatus === this.DATA_STATUS.AVAILABLE && nextState.willUpdate) {
-            this.pieChart();
+            this.domainChart();
 
             this.setState(state => {
                 return {
                     ...state,
                     dataStatus: this.DATA_STATUS.FINISHED,
                     willUpdate: false       // Khi true sẽ cập nhật dữ liệu vào props từ redux
-                }
+                };
             });
         }
 
@@ -229,64 +196,105 @@ class TaskStatusChart extends Component {
         })
     }
 
-    // Thiết lập dữ liệu biểu đồ
-    setDataPieChart = () => {
-        const { translate } = this.props;
+    // Hàm lọc các công việc theo từng tháng
+    filterTasksByMonth = (currentMonth, nextMonth) => {
+        const { tasks } = this.props;
 
-        let dataPieChart, numberOfInprocess = 0, numberOfWaitForApproval = 0, numberOfFinished = 0, numberOfDelayed = 0, numberOfCanceled = 0;
+        let maxResults = [], minResults = [], maxResult, minResult;
         let listTask;
         if (this.props.TaskOrganizationUnitDashboard) {
-            listTask = this.TASK_PROPS.organizationUnitTasks;
+            listTask = tasks.organizationUnitTasks;
         }
-        else if (this.TASK_PROPS.responsibleTasks && this.TASK_PROPS.accountableTasks && this.TASK_PROPS.consultedTasks && this.TASK_PROPS.informedTasks && this.TASK_PROPS.creatorTasks) {
+
+        else if (tasks.responsibleTasks && tasks.accountableTasks && tasks.consultedTasks && tasks.informedTasks && tasks.creatorTasks) {
             if (this.state.role === this.ROLE.RESPONSIBLE) {
-                listTask = this.TASK_PROPS.responsibleTasks;
+                listTask = tasks.responsibleTasks;
             } else if (this.state.role === this.ROLE.ACCOUNTABLE) {
-                listTask = this.TASK_PROPS.accountableTasks;
+                listTask = tasks.accountableTasks;
             } else if (this.state.role === this.ROLE.CONSULTED) {
-                listTask = this.TASK_PROPS.consultedTasks;
+                listTask = tasks.consultedTasks;
             } else if (this.state.role === this.ROLE.INFORMED) {
-                listTask = this.TASK_PROPS.informedTasks;
+                listTask = tasks.informedTasks;
             } else if (this.state.role === this.ROLE.CREATOR) {
-                listTask = this.TASK_PROPS.creatorTasks;
+                listTask = tasks.creatorTasks;
             }
         };
 
-        listTask = this.props.TaskOrganizationUnitDashboard ? listTask.tasks : listTask;
         if (listTask) {
-
+            listTask = this.props.TaskOrganizationUnitDashboard ? listTask.tasks : listTask; // neu la listTask cua organizationUnit
             listTask.map(task => {
-                switch (task.status) {
-                    case "Inprocess":
-                        numberOfInprocess++;
-                        break;
-                    case "WaitForApproval":
-                        numberOfWaitForApproval++;
-                        break;
-                    case "Finished":
-                        numberOfFinished++;
-                        break;
-                    case "Delayed":
-                        numberOfDelayed++;
-                        break;
-                    case "Canceled":
-                        numberOfCanceled++;
-                        break;
-                }
+                task.evaluations.filter(evaluation => {
+                    if (new Date(evaluation.date) < new Date(nextMonth) && new Date(evaluation.date) >= new Date(currentMonth)) {
+                        return 1;
+                    }
+
+                    return 0;
+                }).map(evaluation => {
+                    evaluation.results.filter(result => {
+                        if (this.props.units || (result.employee === this.state.userId)) {
+                            return 1;
+                        }
+                        return 0;
+                    }).map(result => {
+                        maxResults.push(Math.max(result.automaticPoint, result.employeePoint, result.approvedPoint))
+                        minResults.push(Math.min(result.automaticPoint, result.employeePoint, result.approvedPoint))
+                    });
+                })
             });
         }
 
-        dataPieChart = [
-            [translate('task.task_management.inprocess'), numberOfInprocess],
-            [translate('task.task_management.wait_for_approval'), numberOfWaitForApproval],
-            [translate('task.task_management.finished'), numberOfFinished],
-            [translate('task.task_management.delayed'), numberOfDelayed],
-            [translate('task.task_management.canceled'), numberOfCanceled]
-        ];
-        return dataPieChart;
+        if (maxResults.length === 0) {
+            maxResult = null;
+        } else {
+            maxResult = Math.max.apply(Math, maxResults);
+        }
+
+        if (minResults.length === 0) {
+            minResult = null;
+        } else {
+            minResult = Math.min.apply(Math, minResults);
+        }
+
+        return {
+            'month': new Date(currentMonth),
+            'max': maxResult,
+            'min': minResult
+        }
     }
 
-    // Xóa các chart đã render khi chưa đủ dữ liệu
+    setDataDomainChart = () => {
+        const { translate } = this.props;
+        const { startMonth, endMonth } = this.state;
+
+        let month = ['x'], maxResults = [translate('task.task_management.dashboard_max')], minResults = [translate('task.task_management.dashboard_min')];
+        let monthIndex = startMonth;
+
+        while (new Date(monthIndex) <= new Date(endMonth)) {
+            let nextMonthIndex, data;
+
+            if (new Number(monthIndex.slice(5, 7)) < 12) {
+                nextMonthIndex = monthIndex.slice(0, 4) + '-' + (new Number(monthIndex.slice(5, 7)) + 1);
+            } else {
+                nextMonthIndex = (new Number(monthIndex.slice(0, 4)) + 1) + '-' + '1';
+            }
+
+            data = this.filterTasksByMonth(monthIndex, nextMonthIndex);
+            if (data.max) {
+                month.push(data.month);
+                maxResults.push(data.max);
+                minResults.push(data.min)
+            }
+
+            monthIndex = nextMonthIndex;
+        }
+
+        return [
+            month,
+            maxResults,
+            minResults
+        ]
+    }
+
     removePreviosChart = () => {
         const chart = this.refs.chart;
         while (chart.hasChildNodes()) {
@@ -294,33 +302,46 @@ class TaskStatusChart extends Component {
         }
     }
 
-    // Khởi tạo PieChart bằng C3
-    pieChart = () => {
-
+    domainChart = () => {
         this.removePreviosChart();
-
-        let dataPieChart = this.setDataPieChart();
-
+        let dataChart = this.setDataDomainChart();
         this.chart = c3.generate({
             bindto: this.refs.chart,             // Đẩy chart vào thẻ div có id="chart"
 
-            data: {                                 // Dữ liệu biểu đồ
-                columns: dataPieChart,
-                type: 'pie',
+            data: {
+                x: 'x',
+                columns: dataChart,
+                type: 'area-spline'
             },
 
             // Căn lề biểu đồ
             padding: {
                 top: 20,
-                bottom: 20,
                 right: 20,
-                left: 20
+                bottom: 20
             },
 
-            legend: {                             // Ẩn chú thích biểu đồ
-                show: true
-            }
-        });
+            axis: {                                // Config trục tọa độ
+                x: {
+                    type: 'timeseries',
+                    tick: {
+                        format: function (x) { return (x.getMonth() + 1) + "-" + x.getFullYear(); }
+                    }
+                },
+                y: {
+                    max: 100,
+                    min: 0,
+                    label: {
+                        text: 'Điểm',
+                        position: 'outer-right'
+                    },
+                    padding: {
+                        top: 10,
+                        bottom: 10
+                    }
+                }
+            },
+        })
     }
 
     render() {
@@ -328,26 +349,24 @@ class TaskStatusChart extends Component {
 
         return (
             <React.Fragment>
-                <div className="box-body qlcv">
-                    {!TaskOrganizationUnitDashboard &&
-                        <section className="form-inline" style={{ textAlign: "right" }}>
-                            <div className="form-group">
-                                <label>{translate('task.task_management.role')}</label>
-                                <SelectBox
-                                    id={`roleOfStatusTaskSelectBox`}
-                                    className="form-control select2"
-                                    style={{ width: "100%" }}
-                                    items={this.ROLE_SELECTBOX}
-                                    multiple={false}
-                                    onChange={this.handleSelectRole}
-                                    value={this.ROLE_SELECTBOX[0].value}
-                                />
-                            </div>
-                        </section>
-                    }
+                {!TaskOrganizationUnitDashboard &&
+                    <section className="form-inline" style={{ textAlign: "right" }}>
+                        <div className="form-group">
+                            <label>{translate('task.task_management.role')}</label>
+                            <SelectBox
+                                id={`roleOfResultsTaskSelectBox`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={this.ROLE_SELECTBOX}
+                                multiple={false}
+                                onChange={this.handleSelectRole}
+                                value={this.ROLE_SELECTBOX[0].value}
+                            />
+                        </div>
+                    </section>
+                }
 
-                    <section ref="chart"></section>
-                </div>
+                <div ref="chart"></div>
             </React.Fragment>
         )
     }
@@ -357,6 +376,7 @@ function mapState(state) {
     const { tasks } = state;
     return { tasks }
 }
+
 const actions = {
     getResponsibleTaskByUser: taskManagementActions.getResponsibleTaskByUser,
     getAccountableTaskByUser: taskManagementActions.getAccountableTaskByUser,
@@ -364,7 +384,9 @@ const actions = {
     getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
     getCreatorTaskByUser: taskManagementActions.getCreatorTaskByUser,
     getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
+    getAllEmployeeOfUnitByIds: UserActions.getAllEmployeeOfUnitByIds,
+
 }
 
-const connectedTaskStatusChart = connect(mapState, actions)(withTranslate(TaskStatusChart));
-export { connectedTaskStatusChart as TaskStatusChart };
+const connectedDomainOfTaskResultsChart = connect(mapState, actions)(withTranslate(DomainOfTaskResultsChart));
+export { connectedDomainOfTaskResultsChart as DomainOfTaskResultsChart }

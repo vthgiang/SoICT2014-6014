@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { RoleActions } from '../redux/actions';
 import { DialogModal, SelectBox, ErrorLabel } from '../../../../common-components';
-import { VALIDATOR } from '../../../../helpers/validator';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class RoleInfoForm extends Component {
     constructor(props) {
@@ -18,12 +18,10 @@ class RoleInfoForm extends Component {
         return (
             <React.Fragment>
                 <DialogModal
-                    size='50' func={this.save} isLoading={role.isLoading}
+                    func={this.save} isLoading={role.isLoading}
                     modalID="modal-edit-role"
                     formID="form-edit-role"
                     title={translate('manage_role.edit')}
-                    msg_success={translate('manage_role.edit_success')}
-                    msg_faile={translate('manage_role.edit_faile')}
                     disableSubmit={!this.isFormValidated()}
                 >
                     {/* Form chỉnh sửa thông tin phân quyền */}
@@ -96,13 +94,13 @@ class RoleInfoForm extends Component {
     }
 
     handleRoleName = (e) => {
+        let {value} = e.target;
+        this.setState({ roleName: value });
+
         let {translate} = this.props;
-        let { value } = e.target;
-        let {msg} = VALIDATOR.checkName(value);
-        this.setState({
-            roleName: value,
-            roleNameError: msg ? `${translate('manage_role.name')} ${translate(msg)}` : undefined
-        });
+        let {msg} = ValidationHelper.validateName(value, 4, 255);
+        let err = msg ? translate(msg, {min: 4, max: 255}) : undefined;
+        this.setState({ roleNameError: err})
     }
 
     handleParents = (value) => {
@@ -135,7 +133,7 @@ class RoleInfoForm extends Component {
 
     isFormValidated = () => {
         let {roleName} = this.state;
-        if(!VALIDATOR.checkName(roleName).status) return false;
+        if(!ValidationHelper.validateName(roleName).status) return false;
         return true;
     }
 

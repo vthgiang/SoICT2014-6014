@@ -396,15 +396,16 @@ class DetailTaskTab extends Component {
                 <div>
 
                     <div id="info" className="collapse in">
-                        {/* Các trường thông tin cơ bản */}
+                        {/* Thông tin chung */}
                         {task &&
                             <div className="description-box">
+                                <h4>{translate('task.task_management.detail_general_info')}</h4>
+
                                 <div><strong>{translate('task.task_management.detail_link')}: &nbsp;&nbsp;</strong> <a href={`/task?taskId=${task._id}`} target="_blank">{task.name}</a></div>
+                                <div><strong>{translate('task.task_management.detail_time')}: &nbsp;&nbsp;</strong> {this.formatDate(task && task.startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(task && task.endDate)}</div>
                                 <div><strong>{translate('task.task_management.unit_manage_task')}: &nbsp;&nbsp;</strong> {task && task.organizationalUnit ? task.organizationalUnit.name : translate('task.task_management.err_organizational_unit')}</div>
                                 <div><strong>{translate('task.task_management.detail_priority')}: &nbsp;&nbsp;</strong> {task && this.formatPriority(task.priority)}</div>
                                 <div><strong>{translate('task.task_management.detail_status')}: &nbsp;&nbsp;</strong> {task && this.formatStatus(task.status)}</div>
-                                <div><strong>{translate('task.task_management.detail_time')}: &nbsp;&nbsp;</strong> {this.formatDate(task && task.startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(task && task.endDate)}</div>
-
                                 <div><strong>{translate('task.task_management.detail_progress')}: &nbsp;&nbsp;</strong> {task && task.progress}%</div>
                                 {
                                     (task && task.taskInformations && task.taskInformations.length !== 0) &&
@@ -415,107 +416,109 @@ class DetailTaskTab extends Component {
                                         return <div key={key}><strong>{info.name}: &nbsp;&nbsp;</strong> {info.value ? info.value : translate('task.task_management.detail_not_hasinfo')}</div>
                                     })
                                 }
-                            </div>
-                        }
-
-                        <div>
-                            {/* Thông tin chung */}
-                            <div className="description-box">
-                                <h4>{translate('task.task_management.detail_general_info')}</h4>
-
-                                {/* Description */}
+                                
+                                {/* Mô tả công việc */}
                                 <div>
                                     <strong>{translate('task.task_management.detail_description')}:</strong>
-                                        &nbsp;&nbsp;
-                                        <span>
+                                            &nbsp;&nbsp;
+                                            <span>
                                         {task && task.description}
                                     </span>
                                     <br />
                                 </div>
-
-                                <div>
-                                    {/* Người thực hiện */}
-                                    <strong>{translate('task.task_management.responsible')}: </strong>
-                                        &nbsp;&nbsp;
-                                        <span>
-                                        {
-                                            (task && task.responsibleEmployees && task.responsibleEmployees.length !== 0) &&
-                                            task.responsibleEmployees.map((item, index) => {
-                                                let seperator = index !== 0 ? ", " : "";
-                                                if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                    return <span key={index}><strike>{seperator}{item.name}</strike></span>
-                                                } else {
-                                                    return <span key={index}>{seperator}{item.name}</span>
-                                                }
-                                            })
-                                        }
-                                    </span>
-                                    <br />
-
-                                    {/* Người phê duyệt */}
-                                    <strong>{translate('task.task_management.accountable')}: </strong>
-                                        &nbsp;&nbsp;
-                                        <span>
-                                        {
-                                            (task && task.accountableEmployees && task.accountableEmployees.length !== 0) &&
-                                            task.accountableEmployees.map((item, index) => {
-                                                let seperator = index !== 0 ? ", " : "";
-                                                if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                    return <span key={index}><strike>{seperator}{item.name}</strike></span>
-                                                } else {
-                                                    return <span key={index}>{seperator}{item.name}</span>
-                                                }
-                                            })
-                                        }
-                                    </span>
-                                    <br />
-
-                                    {
-                                        (task && task.consultedEmployees && task.consultedEmployees.length !== 0) &&
-                                        <React-Fragment>
-                                            {/* Người tư vấn */}
-                                            <strong>{translate('task.task_management.consulted')}: </strong>
-                                                &nbsp;&nbsp;
-                                                <span>
-                                                {
-                                                    (task && task.consultedEmployees.length !== 0) &&
-                                                    task.consultedEmployees.map((item, index) => {
-                                                        let seperator = index !== 0 ? ", " : "";
-                                                        if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                            return <span key={index}><strike>{seperator}{item.name}</strike></span>
-                                                        } else {
-                                                            return <span key={index}>{seperator}{item.name}</span>
-                                                        }
-                                                    })
-                                                }
-                                            </span>
-                                            <br />
-                                        </React-Fragment>
-                                    }
-                                    {
-                                        (task && task.informedEmployees && task.informedEmployees.length !== 0) &&
-                                        <React-Fragment>
-                                            {/* Người hỗ trợ */}
-                                            <strong>{translate('task.task_management.informed')}: </strong>
-                                                &nbsp;&nbsp;
-                                                <span>
-                                                {
-                                                    (task && task.informedEmployees.length !== 0) &&
-                                                    task.informedEmployees.map((item, index) => {
-                                                        let seperator = index !== 0 ? ", " : "";
-                                                        if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
-                                                            return <span key={index}><strike>{seperator}{item.name}</strike></span>
-                                                        } else {
-                                                            return <span key={index}>{seperator}{item.name}</span>
-                                                        }
-                                                    })
-                                                }
-                                            </span>
-                                            <br />
-                                        </React-Fragment>
-                                    }
-                                </div>
                             </div>
+                        }
+
+                        <div>
+                            {/* Vai trò */}
+                            {task &&
+                                <div className="description-box">
+                                    <h4>{translate('task.task_management.role')}</h4>
+
+                                    <div>
+                                        {/* Người thực hiện */}
+                                        <strong>{translate('task.task_management.responsible')}: </strong>
+                                        &nbsp;&nbsp;
+                                        <span>
+                                            {
+                                                (task && task.responsibleEmployees && task.responsibleEmployees.length !== 0) &&
+                                                task.responsibleEmployees.map((item, index) => {
+                                                    let seperator = index !== 0 ? ", " : "";
+                                                    if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
+                                                        return <span key={index}><strike>{seperator}{item.name}</strike></span>
+                                                    } else {
+                                                        return <span key={index}>{seperator}{item.name}</span>
+                                                    }
+                                                })
+                                            }
+                                        </span>
+                                        <br />
+
+                                        {/* Người phê duyệt */}
+                                        <strong>{translate('task.task_management.accountable')}: </strong>
+                                        &nbsp;&nbsp;
+                                        <span>
+                                            {
+                                                (task && task.accountableEmployees && task.accountableEmployees.length !== 0) &&
+                                                task.accountableEmployees.map((item, index) => {
+                                                    let seperator = index !== 0 ? ", " : "";
+                                                    if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
+                                                        return <span key={index}><strike>{seperator}{item.name}</strike></span>
+                                                    } else {
+                                                        return <span key={index}>{seperator}{item.name}</span>
+                                                    }
+                                                })
+                                            }
+                                        </span>
+                                        <br />
+
+                                        {
+                                            (task && task.consultedEmployees && task.consultedEmployees.length !== 0) &&
+                                            <React-Fragment>
+                                                {/* Người tư vấn */}
+                                                <strong>{translate('task.task_management.consulted')}: </strong>
+                                                &nbsp;&nbsp;
+                                                <span>
+                                                    {
+                                                        (task && task.consultedEmployees.length !== 0) &&
+                                                        task.consultedEmployees.map((item, index) => {
+                                                            let seperator = index !== 0 ? ", " : "";
+                                                            if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
+                                                                return <span key={index}><strike>{seperator}{item.name}</strike></span>
+                                                            } else {
+                                                                return <span key={index}>{seperator}{item.name}</span>
+                                                            }
+                                                        })
+                                                    }
+                                                </span>
+                                                <br />
+                                            </React-Fragment>
+                                        }
+                                        {
+                                            (task && task.informedEmployees && task.informedEmployees.length !== 0) &&
+                                            <React-Fragment>
+                                                {/* Người hỗ trợ */}
+                                                <strong>{translate('task.task_management.informed')}: </strong>
+                                                &nbsp;&nbsp;
+                                                <span>
+                                                    {
+                                                        (task && task.informedEmployees.length !== 0) &&
+                                                        task.informedEmployees.map((item, index) => {
+                                                            let seperator = index !== 0 ? ", " : "";
+                                                            if (task.inactiveEmployees.indexOf(item._id) !== -1) { // tìm thấy item._id
+                                                                return <span key={index}><strike>{seperator}{item.name}</strike></span>
+                                                            } else {
+                                                                return <span key={index}>{seperator}{item.name}</span>
+                                                            }
+                                                        })
+                                                    }
+                                                </span>
+                                                <br />
+                                            </React-Fragment>
+                                        }
+                                    </div>
+                                </div>
+                            }
                             <div>
                                 {/* Đánh giá công việc */}
                                 <div>

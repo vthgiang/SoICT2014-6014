@@ -3,14 +3,12 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DepartmentActions } from '../redux/actions';
 import { DialogModal, ButtonModal, ErrorLabel, SelectBox } from '../../../../common-components';
-import { VALIDATOR } from '../../../../helpers/validator';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class DepartmentCreateForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            departmentName: '',
-            departmentDescription: '',
             deans: [],
             viceDeans: [],
             employees: []
@@ -68,7 +66,7 @@ class DepartmentCreateForm extends Component {
     render() {
         const { translate, department } = this.props;
         const { departmentNameError, departmentDescriptionError } = this.state;
-        console.log("state department", this.state)
+        
         return (
             <React.Fragment>
                 <DialogModal
@@ -239,7 +237,7 @@ class DepartmentCreateForm extends Component {
      */
     isFormValidated = () => {
         let {departmentName, departmentDescription} = this.state;
-        if(!VALIDATOR.checkName(departmentName).status || !VALIDATOR.checkDescription(departmentDescription).status) return false;
+        if(!ValidationHelper.validateName(departmentName).status || !ValidationHelper.validateDescription(departmentDescription).status) return false;
         return true;
     }
 
@@ -269,23 +267,23 @@ class DepartmentCreateForm extends Component {
     }
 
     handleName = (e) => {
+        let {value} = e.target;
+        this.setState({ departmentName: value });
+
         let {translate} = this.props;
-        let { value } = e.target;
-        let {msg} = VALIDATOR.checkName(value);
-        this.setState({
-            departmentName: value,
-            departmentNameError: msg ? `${translate('manage_department.name')} ${translate(msg)}` : undefined
-        });
+        let {msg} = ValidationHelper.validateName(value, 4, 255);
+        let error = msg ? translate(msg, {min: 4, max: 255}) : undefined;
+        this.setState({ departmentNameError: error})
     }
 
     handleDescription = (e) => {
+        let {value} = e.target;
+        this.setState({ departmentDescription: value });
+
         let {translate} = this.props;
-        let { value } = e.target;
-        let {msg} = VALIDATOR.checkDescription(value);
-        this.setState({
-            departmentDescription: value,
-            departmentDescriptionError: msg ? `${translate('manage_department.description')} ${translate(msg)}` : undefined
-        });
+        let {msg} = ValidationHelper.validateDescription(value);
+        let error = msg ? translate(msg) : undefined;
+        this.setState({ departmentDescriptionError: error})
     }
 
 }

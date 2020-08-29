@@ -15,7 +15,7 @@ class IncomingDataTab extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.taskId !== prevState.taskId) {
+        if (nextProps.isIncomingData && nextProps.taskId !== prevState.taskId) {
             let infoTaskProcess = {};
             for (let i in nextProps.infoTaskProcess) {
                 infoTaskProcess[`${nextProps.infoTaskProcess[i]._id}`] = nextProps.infoTaskProcess[i];
@@ -27,27 +27,29 @@ class IncomingDataTab extends Component {
                 task: nextProps.task,
                 infoTaskProcess: infoTaskProcess
             }
+        } else {
+            return null
         }
     }
 
     render() {
         const { task, infoTaskProcess } = this.state;
         let listTask = [];
-
-        if (task && task.preceedingTasks && task.preceedingTasks.length !== 0 && infoTaskProcess) {
+        
+        if (task && task.length !== 0 && task.preceedingTasks && task.preceedingTasks.length !== 0 && infoTaskProcess) {
             task.preceedingTasks.map((item, index) => {
-                if (infoTaskProcess[`${item.task}`]) {
+                if (infoTaskProcess[`${item.task && item.task._id}`]) {
                     listTask[index] = {};
-                    listTask[index].name = infoTaskProcess[`${item.task}`].name;
+                    listTask[index].name = infoTaskProcess[`${item.task && item.task._id}`].name;
 
-                    if (infoTaskProcess[`${item.task}`].taskInformations && infoTaskProcess[`${item.task}`].taskInformations.length !== 0) {
-                        listTask[index].informations = infoTaskProcess[`${item.task}`].taskInformations.filter(info => info.isOutput);
+                    if (infoTaskProcess[`${item.task && item.task._id}`].taskInformations && infoTaskProcess[`${item.task && item.task._id}`].taskInformations.length !== 0) {
+                        listTask[index].informations = infoTaskProcess[`${item.task && item.task._id}`].taskInformations.filter(info => info.isOutput);
                     } else {
                         listTask[index].informations = []
                     }
 
-                    if (infoTaskProcess[`${item.task}`].documents && infoTaskProcess[`${item.task}`].documents.length !== 0) {
-                        listTask[index].documents = infoTaskProcess[`${item.task}`].documents.filter(document => document.isOutput);
+                    if (infoTaskProcess[`${item.task && item.task._id}`].documents && infoTaskProcess[`${item.task && item.task._id}`].documents.length !== 0) {
+                        listTask[index].documents = infoTaskProcess[`${item.task && item.task._id}`].documents.filter(document => document.isOutput);
                     } else {
                         listTask[index].documents = []
                     }
@@ -66,52 +68,47 @@ class IncomingDataTab extends Component {
                                 <h4 className="col-md-12" style={{ fontWeight: "600" }}>Tên công việc: {task.name}</h4>
                                 
                                 {/** Danh sách thông tin */}
-                                <div className="form-inline">
-                                    {
-                                        task.informations.length !== 0
-                                        ? task.informations.map(info => 
-                                            info.isOutput &&
-                                            <div className="form-group col-md-6">
+                                <div className="col-md-12"><strong>Thông tin</strong></div>
+                                {
+                                    task.informations.length !== 0
+                                    ? task.informations.map(info => 
+                                        info.isOutput &&
+                                        <div className="col-md-12">
+                                            <ul>
                                                 <strong>{info.name}</strong>
-                                                <ul>
-                                                    <li>Mô tả: <span>{info.description}</span></li>
-                                                    <li>Kiểu dữ liệu: <span>{info.type}</span></li>
-                                                </ul>
-                                            </div>
-                                        )   
-                                        : <div className="col-md-12">Không xuất thông tin</div>
-                                    }
-                                </div>
+                                                <span> - {info.description}</span>
+                                                <span> - {info.type}</span>
+                                            </ul>
+                                        </div>
+                                    )   
+                                    : <div className="col-md-12">Không xuất thông tin</div>
+                                }
 
                                 {/** Danh sách tài liệu */}
-                                <div className="form-inline">
-                                    {
-                                        task.documents.length !== 0
-                                        ? task.documents.map(document => 
-                                            document.isOutput &&
-                                            <div className="form-group col-md-6">
-                                                <strong>Tài liệu</strong>
+                                <div className="col-md-12"><strong>Tài liệu</strong></div>
+                                {
+                                    task.documents.length !== 0
+                                    ? task.documents.map(document => 
+                                        document.isOutput &&
+                                        <div className="col-md-12">
+                                            <ul>
+                                                <li style={{ listStyle: "none" }}><strong>{document.description}</strong></li>
                                                 <ul>
-                                                    <li>Mô tả: <span>{document.description}</span></li>
-                                                    {
-                                                        document.files
-                                                        && document.files.length !== 0
-                                                        && document.files.map(file => 
-                                                            <li><span>Files</span>
-                                                                <ul>
-                                                                    <li>Tên: {file.name}</li>
-                                                                    <li>Url: {file.url}</li>
-                                                                </ul>
-                                                            </li>
-                                                        )
-                                                    }
-                                                    
+                                                {
+                                                    document.files
+                                                    && document.files.length !== 0
+                                                    && document.files.map(file => 
+                                                        <li className="col-md-6" style={{ listStyle: "none" }}>
+                                                            <strong>{file.name}</strong><span> - {file.url}</span>
+                                                        </li>
+                                                    )
+                                                }
                                                 </ul>
-                                            </div>
-                                        )
-                                        : <div className="col-md-12">Không xuất tài liệu</div>
-                                    }
-                                </div>
+                                            </ul>
+                                        </div>
+                                    )
+                                    : <div className="col-md-12">Không xuất tài liệu</div>
+                                }
                             </div>
                         )
                     }

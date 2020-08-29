@@ -148,6 +148,14 @@ class ModalViewTaskProcess extends Component {
         if (role && role.list.length !== 0) listRole = role.list;
         let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
             .map(item => { return { text: item.name, value: item._id } });
+        let listViewer = [];
+        if (viewer) {
+            listViewer = listItem.filter(e => viewer.indexOf(e.value) !== -1)
+        }
+        let listManager = [];
+        if (manager) {
+            listManager = listItem.filter(e => manager.indexOf(e.value) !== -1)
+        }
         return (
             <React.Fragment>
                 <DialogModal
@@ -166,57 +174,55 @@ class ModalViewTaskProcess extends Component {
                             </ul>
                             <div className="tab-content">
                                 <div className={selectedView === "info" ? "active tab-pane" : "tab-pane"} id="info-view">
+                                    <div className="row">
+                                        {/* Thông tin chung */}
+                                        <div className="col-md-6">
+                                            <div className="box">
+                                                <div className="box-header with-border">
+                                                    Thông tin chung
+                                                </div>
+                                                <div className="box-body">
+                                                    <dt>Tên quy trình</dt>
+                                                    <dd>{processName}</dd>
 
-                                    <div className='row'>
-                                        <div className='col-md-6'>
-                                            <div className="form-group">
-                                                <label>Tên quy trình</label>
-                                                <input type="text"
-                                                    value={processName}
-                                                    className="form-control" placeholder="Mô tả công việc"
-                                                    disabled={true}
-                                                />
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="" >Người được phép xem</label>
-                                                {
-                                                    <SelectBox
-                                                        id={`select-viewer-employee-view-${idProcess}`}
-                                                        className="form-control select2"
-                                                        style={{ width: "100%" }}
-                                                        items={listItem}
-                                                        multiple={true}
-                                                        value={viewer}
-                                                        disabled={true}
-                                                    />
-                                                }
-                                            </div>
-                                            <div className="form-group">
-                                                <label htmlFor="" >Người quản lý quy trình</label>
-                                                {
-                                                    <SelectBox
-                                                        id={`select-manager-employee-view-${idProcess}`}
-                                                        className="form-control select2"
-                                                        style={{ width: "100%" }}
-                                                        items={listItem}
-                                                        multiple={true}
-                                                        value={manager}
-                                                        disabled={true}
-                                                    />
-                                                }
+                                                    <dt>Mô tả quy trình</dt>
+                                                    <dd>{processDescription}</dd>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div className='col-md-6'>
-                                            <div className="form-group">
-                                                <label>Mô tả quy trình</label>
-                                                <textarea type="text" rows={8}
-                                                    value={processDescription}
-                                                    className="form-control" placeholder="Mô tả công việc"
-                                                    disabled={true}
-                                                />
+                                        {/* Người xem, quản lý */}
+                                        <div className="col-md-6">
+                                            <div className="box">
+                                                <div className="box-header with-border">
+                                                    Các vai trò
+                                                </div>
+                                                <div className="box-body">
+                                                    <dt>Người được phép xem</dt>
+                                                    <dd>
+                                                        <ul>
+                                                            {
+                                                                listViewer.map((x, key) => {
+                                                                    return <li key={key}>{x.text}</li>
+                                                                })
+                                                            }
+                                                        </ul>
+                                                    </dd>
+
+                                                    <dt>Người quản lý quy trình</dt>
+                                                    <dd>
+                                                        <ul>
+                                                            {
+                                                                listManager.map((x, key) => {
+                                                                    return <li key={key}>{x.text}</li>
+                                                                })
+                                                            }
+                                                        </ul>
+                                                    </dd>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+
 
                                 </div>
                             </div>
@@ -262,7 +268,7 @@ class ModalViewTaskProcess extends Component {
                                                 <div>
                                                     <div>
                                                         <h1>Option {name}</h1>
-                                                    </div> 
+                                                    </div>
                                                     <ViewTaskTemplate
                                                         isProcess={true}
                                                         taskTemplate={info?.[`${id}`]}

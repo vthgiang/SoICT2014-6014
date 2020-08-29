@@ -310,6 +310,10 @@ const sampleCompanyData = async () => {
     { // Nhân viên phòng kinh doanh Phạm Đình Phúc
         userId: users[7]._id,
         roleId: nvPhongHC._id
+    },
+    { // Thành viên ban giám đốc Phạm Đình Phúc
+        userId: users[7]._id,
+        roleId: thanhVienBGĐ._id
     }
     ]);
 

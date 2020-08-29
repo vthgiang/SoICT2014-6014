@@ -1601,7 +1601,8 @@ class ActionTab extends Component {
                         <div className={selected === "incoming-data" ? "active tab-pane" : "tab-pane"} id="incoming-data">
                             {
                                 (task && task.process) &&
-                                    <IncomingDataTab
+                                <IncomingDataTab
+                                        isIncomingData={task && task.preceedingTasks && task.preceedingTasks.length !== 0}
                                         taskId={task._id}
                                         task={task}
                                         infoTaskProcess={task.process.tasks}
@@ -1613,7 +1614,8 @@ class ActionTab extends Component {
                         <div className={selected === "outgoing-data" ? "active tab-pane" : "tab-pane"} id="outgoing-data">
                             {
                                 (task && task.process) &&
-                                    <OutgoingDataTab
+                                <OutgoingDataTab
+                                        isOutgoingData={task && task.followingTasks && task.followingTasks.length !== 0}
                                         taskId={task._id}
                                         task={task}
                                     />

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
 import { DepartmentActions } from '../redux/actions';
-import { VALIDATOR } from '../../../../helpers/validator';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class DepartmentEditForm extends Component {
     constructor(props) {
@@ -100,14 +100,14 @@ class DepartmentEditForm extends Component {
                             {/* Tên đơn vị */}
                             <div className={`form-group ${!departmentNameError ? "" : "has-error"}`}>
                                 <label>{translate('manage_department.name')}<span className="attention"> * </span></label>
-                                <input type="text" className="form-control" onChange={this.handleName} value={departmentName} /><br />
+                                <input type="text" className="form-control" onChange={this.handleName} value={departmentName} />
                                 <ErrorLabel content={departmentNameError} />
                             </div>
 
                             {/* Mô tả về đơn vị */}
                             <div className={`form-group ${!departmentDescriptionError ? "" : "has-error"}`}>
                                 <label>{translate('manage_department.description')}<span className="attention"> * </span></label>
-                                <textarea type="text" className="form-control" onChange={this.handleDescription} value={departmentDescription} /><br />
+                                <textarea type="text" className="form-control" onChange={this.handleDescription} value={departmentDescription} />   
                                 <ErrorLabel content={departmentDescriptionError} />
                             </div>
 
@@ -269,8 +269,8 @@ class DepartmentEditForm extends Component {
     }
 
     isFormValidated = () => {
-        let {departmentNameError, departmentDescriptionError} = this.state;
-        if(departmentNameError !== undefined || departmentDescriptionError !== undefined) return false;
+        let {departmentName, departmentDescription} = this.state;
+        if(!ValidationHelper.validateName(departmentName).status || !ValidationHelper.validateDescription(departmentDescription).status) return false;
         return true;
     }
 
@@ -300,23 +300,23 @@ class DepartmentEditForm extends Component {
     }
 
     handleName = (e) => {
+        let {value} = e.target;
+        this.setState({ departmentName: value });
+
         let {translate} = this.props;
-        let { value } = e.target;
-        let {msg} = VALIDATOR.checkName(value);
-        this.setState({
-            departmentName: value,
-            departmentNameError: msg ? `${translate('manage_department.name')} ${translate(msg)}` : undefined
-        });
+        let {msg} = ValidationHelper.validateName(value, 4, 255);
+        let error = msg ? translate(msg, {min: 4, max: 255}) : undefined;
+        this.setState({ departmentNameError: error})
     }
 
     handleDescription = (e) => {
+        let {value} = e.target;
+        this.setState({ departmentDescription: value });
+
         let {translate} = this.props;
-        let { value } = e.target;
-        let {msg} = VALIDATOR.checkDescription(value);
-        this.setState({
-            departmentDescription: value,
-            departmentDescriptionError: msg ? `${translate('manage_department.description')} ${translate(msg)}` : undefined
-        });
+        let {msg} = ValidationHelper.validateDescription(value);
+        let error = msg ? translate(msg) : undefined;
+        this.setState({ departmentDescriptionError: error})
     }
 }
 

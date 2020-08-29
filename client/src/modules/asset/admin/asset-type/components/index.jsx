@@ -11,7 +11,6 @@ import { AssetTypeActions } from '../redux/actions';
 import CreateForm from './createForm';
 import EditForm from './editForm';
 
-
 class AdministrationAssetTypes extends Component {
     constructor(props) {
         super(props);
@@ -26,6 +25,7 @@ class AdministrationAssetTypes extends Component {
     }
 
     onChanged = async (e, data) => {
+        console.log("##1##", data.node);
         await this.setState({ currentDomain: data.node })
 
         window.$(`#edit-asset-type`).slideDown();
@@ -123,6 +123,7 @@ class AdministrationAssetTypes extends Component {
                                     domainName={currentDomain.text}
                                     domainDescription={currentDomain.original.description ? currentDomain.original.description : ""}
                                     domainParent={currentDomain.parent}
+                                    defaultInformation={currentDomain.original.defaultInformation}
                                 />
                             }
                         </div>

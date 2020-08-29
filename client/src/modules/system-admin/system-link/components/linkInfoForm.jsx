@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-
+import { withTranslate } from 'react-redux-multilingual';
 import { RootRoleActions } from '../../root-role/redux/actions';
 import { SystemLinkActions } from '../redux/actions';
-
-import {LinkDefaultValidator} from './systemLinkValidator';
-
+import SystemLinkValidator from './systemLinkValidator';
 import {DialogModal, ErrorLabel, SelectBox} from '../../../../common-components';
 
-import { withTranslate } from 'react-redux-multilingual';
 class LinkInfoForm extends Component {
 
     constructor(props) {
@@ -39,44 +36,25 @@ class LinkInfoForm extends Component {
         }
     }
 
-    // Xy ly va validate role name
     handleUrl = (e) => {
-        const {value} = e.target;
-        this.validateUrl(value, true);
-    }
-    validateUrl = (value, willUpdateState=true) => {
-        let msg = LinkDefaultValidator.validateUrl(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    linkUrlError: msg,
-                    linkUrl: value,
-                }
-            });
-        }
+        let {value} = e.target;
+        this.setState({ linkUrl: value });
 
-        return !msg;
+        let {translate} = this.props;
+        let {msg} = SystemLinkValidator.validateUrl(value);
+        
+        let error = msg ? translate(msg) : undefined;
+        this.setState({ linkUrlError: error})
     }
 
-    // Xy ly va validate role name
     handleDescription = (e) => {
-        const {value} = e.target;
-        this.validateDescription(value, true);
-    }
-    validateDescription = (value, willUpdateState=true) => {
-        let msg = LinkDefaultValidator.validateDescription(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    linkDescriptionError: msg,
-                    linkDescription: value,
-                }
-            });
-        }
+        let {value} = e.target;
+        this.setState({ linkDescription: value });
 
-        return !msg;
+        let {translate} = this.props;
+        let {msg} = SystemLinkValidator.validateDescription(value);
+        let error = msg ? translate(msg) : undefined;
+        this.setState({ linkDescriptionError: error})
     }
 
     handleCategory = (value) => {
@@ -98,11 +76,9 @@ class LinkInfoForm extends Component {
     }
 
     isFormValidated = () => {
-        let result = 
-            this.validateUrl(this.state.linkUrl, false) &&
-            this.validateDescription(this.state.linkDescription, false);
-
-        return result;
+        let {linkUrl, linkDescription} = this.state;
+        if(!SystemLinkValidator.validateUrl(linkUrl).status  || !SystemLinkValidator.validateDescription(linkDescription).status) return false;
+        return true;
     }
 
     save = () => {

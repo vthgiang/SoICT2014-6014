@@ -11,6 +11,7 @@ import { UserActions } from '../../../super-admin/user/redux/actions';
 import { taskTemplateActions } from '../../../task/task-template/redux/actions';
 import { taskManagementActions } from '../../../task/task-management/redux/actions'
 import getEmployeeSelectBoxItems from '../../../task/organizationalUnitHelper';
+import './transferList.css';
 
 class TaskReportCreateForm extends Component {
     constructor(props) {
@@ -27,8 +28,15 @@ class TaskReportCreateForm extends Component {
                 startDate: '',
                 endDate: '',
                 frequency: 'month',
-
+                itemListBoxLeft: [
+                    { id: 1, name: 'Thời gian', checked: false },
+                    { id: 2, name: 'Người thực hiện', checked: false },
+                    { id: 3, name: 'Người phê duyệt', checked: false },
+                ],
+                itemListBoxRight: [],
+                itemListTemp: [],
             },
+
             currentRole: getStorage('currentRole'),
         }
     }
@@ -432,6 +440,150 @@ class TaskReportCreateForm extends Component {
         })
     }
 
+
+    handleLeftListChange = (e) => {
+        let { value, name, checked } = e.target;
+        let { itemListTemp, itemListBoxLeft } = this.state.newReport;
+
+        // Kiểm tra xem item nào được click 
+        let listBoxLeftLength = itemListBoxLeft.length;
+
+        for (let i = 0; i < listBoxLeftLength; i++) {
+            if (itemListBoxLeft[i].name === value) {
+                itemListBoxLeft[i].checked = checked;
+                break;
+            }
+        }
+
+
+        console.log(name, value, checked);
+        // set lại giá trị cho State 
+        this.setState({
+            newReport: {
+                ...this.state.newReport,
+                itemListBoxLeft,
+            }
+        });
+
+        // kiểm tra xem trong mảng itemListTemp đã tồn tại item được click hay chưa: false = -1
+        const findIndexItem = itemListTemp.findIndex(x => x.id === parseInt(name)); // name là id get từ input 
+
+        // Nếu trong mảng có tồn tại item được click thì xóa nó đi, dùng slice cắt lấy các item khác item dc click
+        if (findIndexItem > -1) {
+            itemListTemp = [...itemListTemp.slice(0, findIndexItem), ...itemListTemp.slice(findIndexItem + 1)]
+        } else {
+            // Nếu chưa có trong mảng thì thêm nó vào itemListTemp
+            itemListTemp.push({ id: parseInt(name), name: value, checked: false });
+        }
+
+        this.setState({
+            newReport: {
+                ...this.state.newReport,
+                itemListTemp: itemListTemp,
+            }
+        })
+    }
+
+    handleRightListChange = (e) => {
+        let { value, name, checked } = e.target;
+        let { itemListTemp, itemListBoxRight } = this.state.newReport;
+        let listBoxRightLength = itemListBoxRight.length;
+
+        for (let i = 0; i < listBoxRightLength; i++) {
+            if (itemListBoxRight[i].name === value) {
+                itemListBoxRight[i].checked = checked;
+                break;
+            }
+        }
+
+        // set lại giá trị cho State 
+        this.setState({
+            newReport: {
+                ...this.state.newReport,
+                itemListBoxRight,
+            }
+        });
+
+        // kiểm tra xem trong mảng itemListTemp đã tồn tại item được click hay chưa: false = -1
+        const findIndexItem = itemListTemp.findIndex(x => x.id === parseInt(name)); // name là id get từ input 
+
+        // Nếu trong mảng có tồn tại item được click thì xóa nó đi, dùng slice cắt lấy các item khác item dc click
+        if (findIndexItem > -1) {
+            itemListTemp = [...itemListTemp.slice(0, findIndexItem), ...itemListTemp.slice(findIndexItem + 1)]
+        } else {
+            // Nếu chưa có trong mảng thì thêm nó vào itemListTemp
+            itemListTemp.push({ id: parseInt(name), name: value, checked: false });
+        }
+
+        this.setState({
+            newReport: {
+                ...this.state.newReport,
+                itemListTemp: itemListTemp,
+            }
+        })
+    }
+
+    handleClickTransferLeftList = () => {
+        let { itemListTemp, itemListBoxLeft, itemListBoxRight } = this.state.newReport;
+
+        let idInListBoxRight = itemListBoxRight.map(x => x.id); // array id in itemListBoxRight
+        let idInListTemp = itemListTemp.map(x => parseInt(x.id)); // array id khi mình chọn vào checkbox của listBoxRight
+
+        // const checkId = idInListBoxRight.includes(parseInt(idInListTemp)); // true or false
+        const checkId = idInListTemp.some(item => idInListBoxRight.indexOf(item) >= 0); // true or false
+
+        // Lọc item khác với item đã chọn
+        idInListTemp.forEach(x => {
+            itemListBoxRight = itemListBoxRight.filter(y => y.id !== x)
+        })
+
+
+
+        this.setState({
+            newReport: {
+                ...this.state.newReport,
+                itemListBoxRight: checkId ? itemListBoxRight
+                    : itemListBoxRight,
+
+                itemListBoxLeft: checkId ? [...itemListBoxLeft, itemListTemp].flat(1) : itemListBoxLeft,
+                itemListTemp: [],
+            }
+        })
+    }
+
+    handleClickTransferRightList = () => {
+        let { itemListTemp, itemListBoxLeft, itemListBoxRight } = this.state.newReport;
+
+        let idInListBoxLeft = itemListBoxLeft.map(x => x.id); // array id in itemListBoxLeft
+        let idInListTemp = itemListTemp.map(x => parseInt(x.id)); // array id khi mình chọn vào checkbox của listBoxLeft
+
+        /**
+         * Check xem id khi mình chọn checkbox thì item đó có trong list item box left hay ko
+         * mục đích: phần setState
+         * nếu trùng thì xóa đi item đó trong listBoxleft 
+         * nếu không trùng thì add thêm vào 
+         */
+        // const checkId = idInListBoxLeft.includes(parseInt(idInListTemp));
+        const checkId = idInListTemp.some(item => idInListBoxLeft.indexOf(item) >= 0);
+
+        // Lọc Lấy item khác với item đã chọn--> mục đích remove item đó bên listLeft 
+        idInListTemp.forEach(x => {
+            itemListBoxLeft = itemListBoxLeft.filter(y => y.id !== x)
+        })
+
+        // 
+        this.setState({
+            newReport: {
+                ...this.state.newReport,
+                itemListBoxLeft: checkId ? itemListBoxLeft
+                    : itemListBoxLeft,
+
+                itemListBoxRight: checkId ? [...itemListBoxRight, itemListTemp].flat(1) : itemListBoxRight,
+                itemListTemp: [],
+            }
+        })
+    }
+
     /**
      * Xử lý hiện form view
      */
@@ -478,7 +630,9 @@ class TaskReportCreateForm extends Component {
     render() {
         const { translate, reports, tasktemplates, user, tasks } = this.props;
         const { newReport, errorOnNameTaskReport, errorOnDescriptiontTaskReport, errorOnStartDate } = this.state;
+        let { itemListBoxLeft, itemListBoxRight } = this.state.newReport;
         let listTaskTemplate, units, taskInformations = newReport.taskInformations, listRole, listRoles = [];
+        console.log(this.state.newReport)
 
         // Lấy ra list task template theo đơn vị
         if (tasktemplates.items && newReport.organizationalUnit) {
@@ -486,6 +640,7 @@ class TaskReportCreateForm extends Component {
                 return taskTemplate.organizationalUnit._id === newReport.organizationalUnit
             })
         }
+
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
         }
@@ -505,6 +660,7 @@ class TaskReportCreateForm extends Component {
             for (let x in listRole.employees)
                 listRoles = [...listRoles, listRole.employees[x]];
         }
+
         // Lấy thông tin nhân viên của đơn vị
         let unitMembers = [];
         if (usersOfChildrenOrganizationalUnit) {
@@ -724,119 +880,194 @@ class TaskReportCreateForm extends Component {
                     {/* Form show thông tin mẫu công việc */}
                     {
                         (newReport.taskTemplate !== '') &&
-                        <div className="row" id="showTable" style={{ marginTop: '15px' }}>
-                            <div className="col-md-12">
-                                <table className="table table-hover table-striped table-bordered" id="report_manager">
-                                    <thead>
-                                        <tr>
-                                            <th>Mã thông tin</th>
-                                            <th>Trường thông tin</th>
-                                            <th>Kiểu dữ liệu</th>
-                                            <th>Điều kiện lọc</th>
-                                            <th>Hiển thị trong báo cáo</th>
-                                            <th>Tên mới</th>
-                                            <th>Hệ số</th>
-                                            <th>Cách tính</th>
-                                            <th>Dạng biểu đồ</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            taskInformations && taskInformations.map((item2, index) => (
-                                                <tr key={index}>
-                                                    <td>{item2.code}</td>
-                                                    <td>{item2.name}</td>
-                                                    <td>{(item2.type === 'SetOfValues' ? 'Tập dữ liệu' : (item2.type))}</td>
-                                                    <td><input className="form-control" style={{ width: '100%' }} type="text" onChange={(e) => this.handleChangeFilter(index, e)} placeholder={(item2.type === 'Number' ? `p${index + 1} > 3000` : (item2.type === 'SetOfValues' ? `p${index + 1} = 3000` : ''))} /></td>
-                                                    <td>
-                                                        {(item2.type === 'Number') ?
-                                                            <div className="checkbox" style={{ paddingLeft: "20%" }}>
-                                                                <label>
-                                                                    <input name="showInReport" type="checkbox" value={item2.name} onChange={(e) => this.handleChangeChecked(index, e)} />
-                                                                </label>
-                                                            </div>
-                                                            : ''
-                                                        }
-                                                    </td>
-                                                    <td>
-                                                        {(item2.type === 'Number') ?
-                                                            <input className="form-control" style={{ width: '100%' }} type="text" onChange={(e) => this.handleChangeNewName(index, e)} /> : ''
-                                                        }
 
-                                                    </td>
-                                                    <td>
-                                                        {(item2.type === 'Number') ?
-                                                            <input type="text" className="form-control" style={{ width: '100%' }} onChange={(e) => this.handleChangeCoefficient(index, e)} /> : ''
-                                                        }
-                                                    </td>
-                                                    <td>
-                                                        {(item2.type === 'Number') ?
-                                                            <SelectBox
-                                                                id={`select-box-calulator-${item2.code}`}
-                                                                className="form-control select2"
-                                                                style={{ width: "100%" }}
-                                                                onChange={(e) => this.handleChangeAggregationType(index, e)}
-                                                                items={
-                                                                    [
-                                                                        { value: '0', text: 'Trung bình cộng' },
-                                                                        { value: '1', text: 'Tổng' },
-                                                                    ]
-                                                                }
-                                                                multiple={false}
-                                                            />
-                                                            : ''
-                                                        }
-                                                    </td>
-                                                    <td data-select2-id="1111">
-                                                        {
-                                                            (item2.type === 'Number') ?
+                        <React.Fragment>
+                            <div className="row" id="showTable" style={{ marginTop: '15px' }}>
+                                <div className="col-md-12">
+                                    <table className="table table-hover table-striped table-bordered" id="report_manager">
+                                        <thead>
+                                            <tr>
+                                                <th>Mã thông tin</th>
+                                                <th>Trường thông tin</th>
+                                                <th>Kiểu dữ liệu</th>
+                                                <th>Điều kiện lọc</th>
+                                                <th>Hiển thị trong báo cáo</th>
+                                                <th>Tên mới</th>
+                                                <th>Hệ số</th>
+                                                <th>Cách tính</th>
+                                                <th>Dạng biểu đồ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                taskInformations ? taskInformations.map((item2, index) => (
+                                                    <tr key={index}>
+                                                        <td>{item2.code}</td>
+                                                        <td>{item2.name}</td>
+                                                        <td>{(item2.type === 'SetOfValues' ? 'Tập dữ liệu' : (item2.type))}</td>
+                                                        <td><input className="form-control" style={{ width: '100%' }} type="text" onChange={(e) => this.handleChangeFilter(index, e)} placeholder={(item2.type === 'Number' ? `p${index + 1} > 3000` : (item2.type === 'SetOfValues' ? `p${index + 1} = 3000` : ''))} /></td>
+                                                        <td>
+                                                            {(item2.type === 'Number') ?
+                                                                <div className="checkbox" style={{ paddingLeft: "20%" }}>
+                                                                    <label>
+                                                                        <input name="showInReport" type="checkbox" value={item2.name} onChange={(e) => this.handleChangeChecked(index, e)} />
+                                                                    </label>
+                                                                </div>
+                                                                : ''
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            {(item2.type === 'Number') ?
+                                                                <input className="form-control" style={{ width: '100%' }} type="text" onChange={(e) => this.handleChangeNewName(index, e)} /> : ''
+                                                            }
+
+                                                        </td>
+                                                        <td>
+                                                            {(item2.type === 'Number') ?
+                                                                <input type="text" className="form-control" style={{ width: '100%' }} onChange={(e) => this.handleChangeCoefficient(index, e)} /> : ''
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            {(item2.type === 'Number') ?
                                                                 <SelectBox
-                                                                    id={`select-box-chart-${item2.code}`}
+                                                                    id={`select-box-calulator-${item2.code}`}
                                                                     className="form-control select2"
                                                                     style={{ width: "100%" }}
-                                                                    onChange={(e) => this.handleChangeChart(index, e)}
+                                                                    onChange={(e) => this.handleChangeAggregationType(index, e)}
                                                                     items={
                                                                         [
-                                                                            { value: '0', text: 'Cột' },
-                                                                            { value: '1', text: 'Đường' },
-                                                                            { value: '2', text: 'Tròn' },
+                                                                            { value: '0', text: 'Trung bình cộng' },
+                                                                            { value: '1', text: 'Tổng' },
                                                                         ]
                                                                     }
                                                                     multiple={false}
                                                                 />
                                                                 : ''
-                                                        }
-                                                    </td>
-                                                </tr>
+                                                            }
+                                                        </td>
+                                                        <td data-select2-id="1111">
+                                                            {
+                                                                (item2.type === 'Number') ?
+                                                                    <SelectBox
+                                                                        id={`select-box-chart-${item2.code}`}
+                                                                        className="form-control select2"
+                                                                        style={{ width: "100%" }}
+                                                                        onChange={(e) => this.handleChangeChart(index, e)}
+                                                                        items={
+                                                                            [
+                                                                                { value: '0', text: 'Cột' },
+                                                                                { value: '1', text: 'Đường' },
+                                                                                { value: '2', text: 'Tròn' },
+                                                                            ]
+                                                                        }
+                                                                        multiple={false}
+                                                                    />
+                                                                    : ''
+                                                            }
+                                                        </td>
+                                                    </tr>
 
-                                            ))
-
-                                            // : <tr><td colSpan={8}><center>{translate('report_manager.no_data')}</center></td></tr>
-
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    }
-
-                    {/* {
-                        <div className="row">
-                            <div className="col-md-6">
-                                <div class="box box-default">
-                                    <div class="box-header with-border">
-                                        <h3 class="box-title">Collapsable</h3>
-                                        <div class="box-tools pull-right">
-                                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                                        </div>
-                                    </div>
-                                    <div class="box-body">
-                                        The body of the box
-                                        </div>
+                                                ))
+                                                    : <tr><td colSpan={8}><center>{translate('report_manager.no_data')}</center></td></tr>
+                                            }
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                        </div>
-                    } */}
+                            <div className="row" style={{ marginTop: '15px' }}>
+                                <div className="col-md-6 col-sm-12">
+                                    <div className="row">
+                                        <div className="col-md-5 ">
+                                            <div className="border">
+                                                <div className="">
+                                                    <span><b>Chọn chiều chữ liệu trong biểu đồ</b></span>
+                                                </div>
+                                                <div className="box-body box-size">
+                                                    <div className="listItem-left">
+                                                        {
+                                                            itemListBoxLeft && itemListBoxLeft.map((x, index) => (
+                                                                <div className="item" key={index}>
+                                                                    <input className="checkbox-input" type="checkbox" id={`myCheckBoxId${index}-left`} name={x.id} value={x.name} checked={!!x.checked} onChange={this.handleLeftListChange} />
+                                                                    <div className=" checkbox-text">
+                                                                        <label htmlFor={`myCheckBoxId${index}-left`}>{x.name}</label>
+                                                                    </div>
+                                                                </div>
+                                                            ))
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="col-md-2 align-items-center " align="center" >
+                                            {/* Button khi hiển thị trên giao diện medium */}
+                                            <div className="only-pc">
+                                                <div className="listButton ">
+                                                    <div className="item-button">
+                                                        <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferRightList}>
+                                                            <span className="material-icons">
+                                                                keyboard_arrow_right
+                                                    </span>
+                                                        </button>
+                                                    </div>
+                                                    <div className="item-button">
+                                                        <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferLeftList}>
+                                                            <span className="material-icons">
+                                                                keyboard_arrow_left
+                                                </span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {/* end */}
+
+                                            {/* Giao diện trên mobile  */}
+                                            <div className="only-mobile">
+                                                <div className="listButton ">
+                                                    <div className="item-button">
+                                                        <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferRightList}>
+                                                            <span className="material-icons">
+                                                                keyboard_arrow_down
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                    <div className="item-button">
+                                                        <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferLeftList}>
+                                                            <span className="material-icons">
+                                                                keyboard_arrow_up
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-5 ">
+                                            <div className="border">
+                                                <div className="">
+                                                    <span><b>Dữ liệu được đưa vào biểu đồ</b></span>
+                                                </div>
+                                                <div className="box-body box-size">
+                                                    <div className="listItem-left">
+                                                        {
+                                                            itemListBoxRight && itemListBoxRight.map((x, index) => (
+                                                                <div className="item" key={index} >
+                                                                    <input className="checkbox-input" type="checkbox" id={`myCheckBoxId${index}-right`} name={x.id} value={x.name} checked={!!x.checked} onChange={this.handleRightListChange} />
+                                                                    <div className=" checkbox-text">
+                                                                        <label htmlFor={`myCheckBoxId${index}-right`}>{`${index + 1}. ${x.name}`}</label>
+                                                                    </div>
+                                                                </div>
+                                                            ))
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </React.Fragment>
+                    }
+
                 </DialogModal>
             </React.Fragment>
         );

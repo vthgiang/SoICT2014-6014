@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
-
+import { withTranslate } from 'react-redux-multilingual';
 import { SystemComponentActions } from '../redux/actions';
-
-import { ComponentDefaultValidator } from './systemComponentValidator';
-
+import ValidationHelper from '../../../../helpers/validationHelper';
 import { DialogModal, ErrorLabel, SelectBox} from '../../../../common-components';
 
-import { withTranslate } from 'react-redux-multilingual';
 class ComponentInfoForm extends Component {
 
     constructor(props) {
@@ -34,46 +31,24 @@ class ComponentInfoForm extends Component {
         }
     }
 
-    // Xy ly va validate name
     handleName = (e) => {
-        const {value} = e.target;
-        this.validateName(value, true);
+        let {value} = e.target;
+        this.setState({ componentName: value });
+
+        let {translate} = this.props;
+        let {msg} = ValidationHelper.validateName(value, 6, 255);
+        let error = msg ? translate(msg, {min: 6, max: 255}) : undefined;
+        this.setState({ componentNameError: error})
     }
 
-    validateName = (value, willUpdateState=true) => {
-        let msg = ComponentDefaultValidator.validateName(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    componentNameError: msg,
-                    componentName: value,
-                }
-            });
-        }
-
-        return !msg;
-    }
-
-    // Xy ly va validate description
     handleDescription = (e) => {
-        const { value } = e.target;
-        this.validateDescription(value, true);
-    }
+        let {value} = e.target;
+        this.setState({ componentDescription: value });
 
-    validateDescription = (value, willUpdateState=true) => {
-        let msg = ComponentDefaultValidator.validateDescription(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    componentDescriptionError: msg,
-                    componentDescription: value,
-                }
-            });
-        }
-
-        return !msg;
+        let {translate} = this.props;
+        let {msg} = ValidationHelper.validateDescription(value);
+        let error = msg ? translate(msg) : undefined;
+        this.setState({ componentDescriptionError: error})
     }
 
     handleLink = (value) => {
@@ -95,11 +70,9 @@ class ComponentInfoForm extends Component {
     }
 
     isFormValidated = () => {
-        let result = 
-            this.validateName(this.state.componentName, false) &&
-            this.validateDescription(this.state.componentDescription, false);
-
-        return result;
+        let {componentName, componentDescription} = this.state;
+        if(!ValidationHelper.validateName(componentName).status  || !ValidationHelper.validateDescription(componentDescription).status) return false;
+        return true;
     }
 
     save = () => {
@@ -120,12 +93,10 @@ class ComponentInfoForm extends Component {
         return ( 
             <React.Fragment>
                 <DialogModal
-                    size='50' func={this.save}
+                    func={this.save}
                     modalID="modal-edit-component-default"
                     formID="form-edit-component-default"
                     title={translate('manage_component.edit')}
-                    msg_success={translate('manage_component.edit_success')}
-                    msg_faile={translate('manage_component.edit_faile')}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-edit-component-default">
@@ -135,7 +106,7 @@ class ComponentInfoForm extends Component {
                             <ErrorLabel content={componentNameError}/>
                         </div>
                         <div className={`form-group ${componentDescriptionError===undefined?"":"has-error"}`}>
-                            <label>{ translate('manage_component.description') }</label>
+                            <label>{ translate('manage_component.description') }<span className="text-red"> * </span></label>
                             <input type="text" className="form-control" value={componentDescription} onChange={this.handleDescription} />
                             <ErrorLabel content={componentDescriptionError}/>
                         </div>
