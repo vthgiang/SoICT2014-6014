@@ -844,7 +844,7 @@ class Routes extends Component {
                         exact={true}
                         link={'/employee-manage-info-asset'}
                         path={'/employee-manage-info-asset'}
-                        pageName={'manage_info_asset'}
+                        pageName={'employee_manage_asset_info'}
                         layout={Layout}
                         component={EmployeeAssetManagement}
                     />                    

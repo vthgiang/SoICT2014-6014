@@ -348,36 +348,6 @@ class SideBar extends Component {
                                             </li>
                                         }
 
-                                        {/** đề nghị cấp phát thiết bị */}
-                                        {this.checkURL(url1.path11, links) === true &&
-                                            <li className={window.location.pathname === url1.path11 ? "active" : ""}>
-                                                <Link to={url1.path11}>
-                                                    <i className="fa fa-calendar" />
-                                                    {translate(`menu.recommend_distribute_asset`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/** quản lý tài sản được bàn giao */}
-                                        {this.checkURL(url1.path12, links) === true &&
-                                            <li className={window.location.pathname === url1.path12 ? "active" : ""}>
-                                                <Link to={url1.path12}>
-                                                    <i className="fa fa-calendar" />
-                                                    {translate(`menu.manage_assigned_asset`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/** đề nghị mua sắm thiết bị */}
-                                        {this.checkURL(url1.path10, links) === true &&
-                                            <li className={window.location.pathname === url1.path10 ? "active" : ""}>
-                                                <Link to={url1.path10}>
-                                                    <i className="fa fa-calendar" />
-                                                    {translate(`menu.recommend_equipment_procurement`)}
-                                                </Link>
-                                            </li>
-                                        }
-
                                         {/**Quản lý loại tài sản */}
                                         {this.checkURL(url1.path2, links) === true &&
                                             <li className={window.location.pathname === url1.path2 ? "active" : ""}>
@@ -398,7 +368,17 @@ class SideBar extends Component {
                                             </li>
                                         }
 
-                                        {/** Nhân viên quản lí tài san */}
+                                        {/* Nhân viên - Tài sản sử dụng */}
+                                        {this.checkURL(url1.path12, links) === true &&
+                                            <li className={window.location.pathname === url1.path12 ? "active" : ""}>
+                                                <Link to={url1.path12}>
+                                                    <i className="fa fa-calendar" />
+                                                    {translate(`menu.manage_assigned_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+
+                                        {/* Nhân viên - Tài sản quản lí */}
                                         {this.checkURL(url1.path16, links) === true &&
                                             <li className={window.location.pathname === url1.path16 ? "active" : ""}>
                                                 <Link to={url1.path16}>
@@ -408,6 +388,25 @@ class SideBar extends Component {
                                             </li>
                                         }
 
+                                        {/* Nhân viên - Đăng ký sử dụng thiết bị */}
+                                        {this.checkURL(url1.path11, links) === true &&
+                                            <li className={window.location.pathname === url1.path11 ? "active" : ""}>
+                                                <Link to={url1.path11}>
+                                                    <i className="fa fa-calendar" />
+                                                    {translate(`menu.recommend_distribute_asset`)}
+                                                </Link>
+                                            </li>
+                                        }
+
+                                        {/* Nhân viên - Đề nghị mua sắm thiết bị */}
+                                        {this.checkURL(url1.path10, links) === true &&
+                                            <li className={window.location.pathname === url1.path10 ? "active" : ""}>
+                                                <Link to={url1.path10}>
+                                                    <i className="fa fa-calendar" />
+                                                    {translate(`menu.recommend_equipment_procurement`)}
+                                                </Link>
+                                            </li>
+                                        }
                                     </ul>
                                 </li>
                             }

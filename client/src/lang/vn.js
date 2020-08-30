@@ -683,14 +683,14 @@ export default {
             manage_incident_asset: 'Quản lý sự cố tài sản',
             manage_recommend_procure: 'Quản lý đề nghị mua sắm',
             manage_recommend_distribute_asset: 'Quản lý đăng ký sử dụng',
-            employee_manage_asset_info: 'Quản lý tài sản được phân quyền',
+            employee_manage_asset_info: 'Tài sản quản lý',
 
             view_building_list: 'Xem danh sách mặt bằng',
 
             // NHÂN VIÊN
             recommend_equipment_procurement: 'Đăng ký mua sắm thiết bị',
             recommend_distribute_asset: 'Đăng ký sử dụng thiết bị',
-            manage_assigned_asset: 'Quản lý thiết bị bàn giao',
+            manage_assigned_asset: 'Tài sản sử dụng',
             //******END */
 
             // QUẢN LÝ BÁO CÁO
