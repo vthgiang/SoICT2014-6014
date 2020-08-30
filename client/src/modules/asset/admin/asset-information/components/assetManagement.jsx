@@ -7,7 +7,7 @@ import { DataTableSetting, DatePicker, DeleteNotification, PaginateBar, SelectMu
 import { AssetManagerActions } from '../redux/actions';
 import { AssetTypeActions } from "../../asset-type/redux/actions";
 import { UserActions } from '../../../../super-admin/user/redux/actions';
-
+import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { AssetCreateForm, AssetDetailForm, AssetEditForm } from './combinedContent';
 import { configTaskTempalte } from '../../../../task/task-template/component/fileConfigurationImportTaskTemplate';
 
@@ -31,7 +31,7 @@ class AssetManagement extends Component {
         this.props.getListBuildingAsTree();
         this.props.getAllAsset(this.state);
         this.props.getUser();
-        this.props.getDepartment();
+        this.props.getAllRoles();
     }
 
     // Function format ngày hiện tại thành dạnh mm-yyyy
@@ -478,7 +478,7 @@ class AssetManagement extends Component {
                         canRegisterForUse={currentRowView.canRegisterForUse}
                         detailInfo={currentRowView.detailInfo}
                         cost={currentRowView.cost}
-
+                        readByRoles={currentRow.readByRoles}
                         residualValue={currentRowView.residualValue}
                         startDepreciation={currentRowView.startDepreciation}
                         usefulLife={currentRowView.usefulLife}
@@ -496,7 +496,7 @@ class AssetManagement extends Component {
                         disposalDesc={currentRowView.disposalDesc}
 
                         archivedRecordNumber={currentRowView.archivedRecordNumber}
-                        files={currentRowView.files}
+                        files={currentRowView.documents}
                     />
                 }
 
@@ -523,7 +523,7 @@ class AssetManagement extends Component {
                         status={currentRow.status}
                         canRegisterForUse={currentRow.canRegisterForUse}
                         detailInfo={currentRow.detailInfo}
-
+                        readByRoles={currentRow.readByRoles}
                         cost={currentRow.cost}
                         residualValue={currentRow.residualValue}
                         startDepreciation={currentRow.startDepreciation}
@@ -545,7 +545,7 @@ class AssetManagement extends Component {
                         usageLogs={currentRow.usageLogs}
                         incidentLogs={currentRow.incidentLogs}
                         archivedRecordNumber={currentRow.archivedRecordNumber}
-                        files={currentRow.files}
+                        files={currentRow.documents}
                     />
                 }
             </div>
@@ -554,8 +554,8 @@ class AssetManagement extends Component {
 };
 
 function mapState(state) {
-    const { assetsManager, assetType, user } = state;
-    return { assetsManager, assetType, user };
+    const { assetsManager, assetType, user, role } = state;
+    return { assetsManager, assetType, user, role };
 };
 
 const actionCreators = {
@@ -565,7 +565,7 @@ const actionCreators = {
     deleteAsset: AssetManagerActions.deleteAsset,
     getUser: UserActions.get,
     getDepartment: UserActions.getDepartmentOfUser,
-
+    getAllRoles:  RoleActions.get,
 };
 
 const assetManagement = connect(mapState, actionCreators)(withTranslate(AssetManagement));

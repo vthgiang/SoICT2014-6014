@@ -34,7 +34,7 @@ class EmployeePurchaseRequestManager extends Component {
             assetType: null,
             status: null,
             page: 0,
-            limit: 100,
+            limit: 5,
             managedBy:managedBy
         });
     }
@@ -223,7 +223,7 @@ class EmployeePurchaseRequestManager extends Component {
     }
 
     render() {
-        const { translate, recommendDistribute, assetsManager, assetType, user, auth } = this.props;
+        const { translate, recommendDistribute, assetsManager, assetType, user, auth,id } = this.props;
         const { page, limit, currentRow, currentRowAdd } = this.state;
 
         var listRecommendDistributes = "", exportData;
@@ -231,14 +231,14 @@ class EmployeePurchaseRequestManager extends Component {
             listRecommendDistributes = recommendDistribute.listRecommendDistributes;
             exportData =this.convertDataToExportData(listRecommendDistributes);
         }
-
         var pageTotal = ((recommendDistribute.totalList % limit) === 0) ?
             parseInt(recommendDistribute.totalList / limit) :
             parseInt((recommendDistribute.totalList / limit) + 1);
         var currentPage = parseInt((page / limit) + 1);
 
         return (
-            <div className="box" >
+            <div id ={id} className ="tab-pane">
+                <div className="box" >
                 <div className="box-body qlcv">
                     {/* Thanh tìm kiếm */}
                     <div className="form-inline">
@@ -387,6 +387,7 @@ class EmployeePurchaseRequestManager extends Component {
                     />
                 }
             </div >
+            </div>
         );
     }
 };

@@ -2,10 +2,17 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
+import { AuthActions } from '../../../../auth/redux/actions';
+
 class AttachmentTab extends Component {
     constructor(props) {
         super(props);
         this.state = {};
+    }
+
+    requestDownloadFile = (e, path, fileName) => {
+        e.preventDefault();
+        this.props.downloadFile(path, fileName);
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -47,26 +54,31 @@ class AttachmentTab extends Component {
                                 <tr>
                                     <th>{translate('asset.general_information.file_name')}</th>
                                     <th>{translate('asset.general_information.description')}</th>
-                                    <th>{translate('asset.general_information.number')}</th>
                                     <th>{translate('asset.general_information.attached_file')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {(files && files.length !== 0) &&
-                                    files.map((x, index) => (
-                                        <tr key={index}>
+                                    files.map((x, index) => {
+                                        return <tr key={index}>
                                             <td>{x.name}</td>
                                             <td>{x.description}</td>
-                                            <td>{x.number}</td>
-                                            <td>{!x.urlFile ? translate('manage_employee.no_files') :
-                                                <a className='intable'
-                                                    href={process.env.REACT_APP_SERVER + x.urlFile} target="_blank"
-                                                    download={x.name}>
-                                                    <i className="fa fa-download"> &nbsp;Download!</i>
-                                                </a>
+                                            <td>{!(x.files && x.files.length) ? translate('manage_employee.no_files') :
+                                                <ul style={{ listStyle: 'none' }}>
+                                                    {x.files.map((child, index) => {
+                                                        return (
+                                                            <React.Fragment>
+                                                                <li>
+                                                                    <a style={{ cursor: "pointer" }} onClick={(e) => this.requestDownloadFile(e, child.url, child.fileName)} >{child.fileName}</a>
+                                                                </li>
+                                                            </React.Fragment>
+                                                        )
+                                                    })}
+                                                </ul>
                                             }</td>
                                         </tr>
-                                    ))}
+                                    })
+                                }
                             </tbody>
                         </table>
                         {
@@ -80,6 +92,10 @@ class AttachmentTab extends Component {
     }
 };
 
-const tabAttachments = connect(null, null)(withTranslate(AttachmentTab));
+const actionCreators = {
+    downloadFile: AuthActions.downloadFile,
+};
+
+const tabAttachments = connect(null, actionCreators)(withTranslate(AttachmentTab));
 
 export { tabAttachments as AttachmentTab };

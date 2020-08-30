@@ -27,7 +27,7 @@ class EmployeeKpiEvaluationDashboard extends Component {
         this.INFO_SEARCH = {
             userId: null,
             startMonth: currentYear + '-' + 1,
-            endMonth: currentYear + '-' + (currentMonth + 2)
+            endMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2))
         }
         this.IDS = null;
 
@@ -494,6 +494,8 @@ class EmployeeKpiEvaluationDashboard extends Component {
                         </div>
                     </div>
                 </div>
+
+
                 {/* Thống kê kết quả KPI của nhân viên */}
                 <div className="row">
                     <div className="col-md-12">
@@ -566,6 +568,8 @@ class EmployeeKpiEvaluationDashboard extends Component {
                         </div>
                     </div>
                 </div>
+
+                
                 {/* Kết quả Kpi tất cả nhân viên */}
                 <div className="row">
                     <div className="col-md-12">

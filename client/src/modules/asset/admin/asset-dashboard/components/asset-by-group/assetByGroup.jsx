@@ -46,6 +46,7 @@ class AssetByGroup extends Component {
     }
 
     render() {
+        const { translate } = this.props;
         const { listAssets, assetType } = this.state;
 
         return (
@@ -57,7 +58,7 @@ class AssetByGroup extends Component {
                         <div className="col-xs-6">
                             <div className="box box-solid">
                                 <div className="box-header">
-                                    <div className="box-title">Biểu đồ khấu hao tài sản</div>
+                                    <div className="box-title">{translate('asset.dashboard.amount_of_asset')}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     <AmountPieChart
@@ -71,7 +72,7 @@ class AssetByGroup extends Component {
                         <div className="col-xs-6">
                             <div className="box box-solid">
                                 <div className="box-header">
-                                    <div className="box-title">Biểu đồ khấu hao tài sản</div>
+                                    <div className="box-title">{translate('asset.dashboard.value_of_asset')}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     <ValuePieChart
@@ -88,7 +89,7 @@ class AssetByGroup extends Component {
                         <div className="col-xs-6">
                             <div className="box box-solid">
                                 <div className="box-header">
-                                    <div className="box-title">Biểu đồ khấu hao tài sản</div>
+                                    <div className="box-title">{translate('asset.dashboard.depreciation_of_asset')}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     <DepreciationPieChart

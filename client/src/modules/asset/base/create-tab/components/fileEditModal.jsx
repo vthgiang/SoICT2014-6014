@@ -14,7 +14,6 @@ class FileEditModal extends Component {
 
     // Bắt sự kiện thay đổi file đính kèm
     handleChangeFile = (e) => {
-        const { name } = e.target;
         var file = e.target.files[0];
 
         if (file) {
@@ -22,19 +21,45 @@ class FileEditModal extends Component {
             var fileLoad = new FileReader();
             fileLoad.readAsDataURL(file);
             fileLoad.onload = () => {
-                this.setState({
-                    [name]: file.name,
-                    urlFile: url,
+                let item = {
+                    fileName: file.name,
+                    url: url,
                     fileUpload: file,
+                }
+                this.setState(state => {
+                    return {
+                        ...state,
+                        files: [...state.files, item],
+                    }
                 })
             };
         } else {
-            this.setState({
-                file: "",
-                urlFile: "",
+            let item = {
+                fileName: "",
+                url: "",
                 fileUpload: ""
+            }
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    files: [...state.files, item],
+                }
             })
         }
+    }
+
+    // Bắt sự kiện xóa file đính kèm
+    handleDeleteFile = (name) => {
+        const { files } = this.state;
+        let newfiles = files.filter((item) => item.fileName !== name);
+
+        this.setState(state => {
+            return {
+                ...state,
+                files: newfiles,
+            }
+        })
     }
 
     // Bắt sự kiên thay đổi tên tài liệu
@@ -75,37 +100,17 @@ class FileEditModal extends Component {
         return msg === undefined;
     }
 
-    // Bắt sự kiên thay đổi số lượng
-    handleNumberChange = (e) => {
-        let { value } = e.target;
-        this.validateNumberFile(value, true);
-    }
-    validateNumberFile = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateNumberFile(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnNumberFile: msg,
-                    number: value,
-                }
-            });
-        }
-        return msg === undefined;
-    }
-
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateNameFile(this.state.name, false) && this.validateDiscFile(this.state.description, false) &&
-            this.validateNumberFile(this.state.number, false);
-        
+        let result = this.validateNameFile(this.state.name, false) && this.validateDiscFile(this.state.description, false);
+
         return result;
     }
     
     // Bắt sự kiện submit form
     save = () => {
         if (this.isFormValidated()) {
-            return this.props.handleChange(this.state);
+            return this.props.handleEditFile(this.state);
         }
     }
 
@@ -118,7 +123,7 @@ class FileEditModal extends Component {
                 index: nextProps.index,
                 name: nextProps.name,
                 description: nextProps.description,
-                number: nextProps.number,
+                files: nextProps.files,
 
                 errorOnNameFile: undefined,
                 errorOnDiscFile: undefined,
@@ -132,8 +137,8 @@ class FileEditModal extends Component {
     render() {
         const { id } = this.props;
         const { translate } = this.props;
-        const { name, description, number, status, errorOnNameFile, errorOnDiscFile, errorOnNumberFile } = this.state;
-        
+        const { name, description, files, errorOnNameFile, errorOnDiscFile, errorOnNumberFile } = this.state;
+
         return (
             <React.Fragment>
                 <DialogModal
@@ -159,18 +164,22 @@ class FileEditModal extends Component {
                             <ErrorLabel content={errorOnDiscFile} />
                         </div>
 
-                        {/* Số lượng */}
-                        <div className={`form-group ${!errorOnNumberFile ? "" : "has-error"}`}>
-                            <label>{translate('asset.general_information.number')}<span className="text-red">*</span></label>
-                            <input type="number" className="form-control" name="number" value={number} onChange={this.handleNumberChange} autoComplete="off" />
-                            <ErrorLabel content={errorOnNumberFile} />
-                        </div>
-
                         {/* File đính kèm */}
                         <div className="form-group">
                             <label htmlFor="file">{translate('asset.general_information.attached_file')}</label>
                             <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} />
                         </div>
+                        <ul style={{ listStyle: 'none' }}>
+                            {files.map((child, index) => {
+                                return (
+                                    <React.Fragment>
+                                        <li>
+                                            <a style={{ cursor: "pointer" }} onClick={(e) => this.handleDeleteFile(child.fileName)} >{child.fileName}</a>
+                                        </li>
+                                    </React.Fragment>
+                                )
+                            })}
+                        </ul>
                     </form>
                 </DialogModal>
             </React.Fragment>

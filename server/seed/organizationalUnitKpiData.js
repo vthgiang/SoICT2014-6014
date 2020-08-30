@@ -593,6 +593,7 @@ var organizationalUnitKpiData = async () => {
             accountableEmployees: [employee_2], // Người phê duyệt
             consultedEmployees: [employee_2], // Người hỗ trợ
             informedEmployees: [viceDean], // Người quan sát
+            confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
                 results: [
@@ -653,6 +654,7 @@ var organizationalUnitKpiData = async () => {
             accountableEmployees: [employee_2], // Người phê duyệt
             consultedEmployees: [employee_2], // Người hỗ trợ
             informedEmployees: [viceDean], // Người quan sát
+            confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
                 results: [
@@ -711,6 +713,7 @@ var organizationalUnitKpiData = async () => {
             accountableEmployees: [employee_2], // Người phê duyệt
             consultedEmployees: [employee_2], // Người hỗ trợ
             informedEmployees: [dean], // Người quan sát
+            confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(dean) ? dean : [],
             evaluations: [
                 { // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                     date: new Date(currentYear, currentMonth - 1, 30),
@@ -809,6 +812,7 @@ var organizationalUnitKpiData = async () => {
             accountableEmployees: [employee_2], // Người phê duyệt
             consultedEmployees: [employee_2], // Người hỗ trợ
             informedEmployees: [viceDean], // Người quan sát
+            confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
                 results: [
@@ -867,6 +871,7 @@ var organizationalUnitKpiData = async () => {
             accountableEmployees: [employee_2], // Người phê duyệt
             consultedEmployees: [employee_2], // Người hỗ trợ
             informedEmployees: [dean], // Người quan sát
+            confirmedByEmployees: [employee_1].concat([employee_2]).concat([employee_2]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
                 results: [
@@ -931,6 +936,7 @@ var organizationalUnitKpiData = async () => {
             accountableEmployees: [employee_1], // Người phê duyệt
             consultedEmployees: [employee_1], // Người hỗ trợ
             informedEmployees: [dean], // Người quan sát
+            confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
                 results: [
@@ -989,6 +995,7 @@ var organizationalUnitKpiData = async () => {
             accountableEmployees: [employee_1], // Người phê duyệt
             consultedEmployees: [employee_1], // Người hỗ trợ
             informedEmployees: [viceDean], // Người quan sát
+            confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
                 results: [
@@ -1047,6 +1054,7 @@ var organizationalUnitKpiData = async () => {
             accountableEmployees: [employee_1], // Người phê duyệt
             consultedEmployees: [employee_1], // Người hỗ trợ
             informedEmployees: [dean], // Người quan sát
+            confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(dean) ? dean : [],
             evaluations: [
                 { // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                     date: new Date(currentYear, currentMonth - 1, 30),
@@ -1145,6 +1153,7 @@ var organizationalUnitKpiData = async () => {
             accountableEmployees: [employee_1], // Người phê duyệt
             consultedEmployees: [employee_1], // Người hỗ trợ
             informedEmployees: [viceDean], // Người quan sát
+            confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
                 results: [
@@ -1203,6 +1212,7 @@ var organizationalUnitKpiData = async () => {
             accountableEmployees: [employee_1], // Người phê duyệt
             consultedEmployees: [employee_1], // Người hỗ trợ
             informedEmployees: [dean], // Người quan sát
+            confirmedByEmployees: [employee_2].concat([employee_1]).concat([employee_1]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
                 results: [
@@ -1564,6 +1574,7 @@ var organizationalUnitKpiData = async () => {
             accountableEmployees: [employee], // Người phê duyệt
             consultedEmployees: [employee], // Người hỗ trợ
             informedEmployees: [viceDean], // Người quan sát
+            confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
                 results: [
@@ -1622,6 +1633,7 @@ var organizationalUnitKpiData = async () => {
             accountableEmployees: [employee], // Người phê duyệt
             consultedEmployees: [employee], // Người hỗ trợ
             informedEmployees: [viceDean], // Người quan sát
+            confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth - 1, 30),
                 results: [
@@ -1679,6 +1691,7 @@ var organizationalUnitKpiData = async () => {
             accountableEmployees: [employee], // Người phê duyệt
             consultedEmployees: [employee], // Người hỗ trợ
             informedEmployees: [dean], // Người quan sát
+            confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(dean) ? dean : [],
             evaluations: [
                 { // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                     date: new Date(currentYear, currentMonth - 1, 30),
@@ -1778,6 +1791,7 @@ var organizationalUnitKpiData = async () => {
             accountableEmployees: [employee], // Người phê duyệt
             consultedEmployees: [employee], // Người hỗ trợ
             informedEmployees: [viceDean], // Người quan sát
+            confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
                 results: [
@@ -1836,6 +1850,7 @@ var organizationalUnitKpiData = async () => {
             accountableEmployees: [employee], // Người phê duyệt
             consultedEmployees: [employee], // Người hỗ trợ
             informedEmployees: [dean], // Người quan sát
+            confirmedByEmployees: [employee].concat([employee]).concat([employee]).includes(dean) ? dean : [],
             evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
                 date: new Date(currentYear, currentMonth, 30),
                 results: [

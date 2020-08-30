@@ -28,15 +28,15 @@ class TaskReportCreateForm extends Component {
                 startDate: '',
                 endDate: '',
                 frequency: 'month',
-
+                itemListBoxLeft: [
+                    { id: 1, name: 'Thời gian', checked: false },
+                    { id: 2, name: 'Người thực hiện', checked: false },
+                    { id: 3, name: 'Người phê duyệt', checked: false },
+                ],
+                itemListBoxRight: [],
+                itemListTemp: [],
             },
-            itemListBoxLeft: [
-                { id: 1, name: 'Thời gian', checked: false },
-                { id: 2, name: 'Người thực hiện', checked: false },
-                { id: 3, name: 'Người phê duyệt', checked: false },
-            ],
-            itemListBoxRight: [],
-            itemListTemp: [],
+
             currentRole: getStorage('currentRole'),
         }
     }
@@ -443,47 +443,94 @@ class TaskReportCreateForm extends Component {
 
     handleLeftListChange = (e) => {
         let { value, name, checked } = e.target;
-        let { itemListTemp, itemListBoxLeft } = this.state;
+        let { itemListTemp, itemListBoxLeft } = this.state.newReport;
 
         // Kiểm tra xem item nào được click 
-        for (let i = 0; i < itemListBoxLeft.length; i++) {
+        let listBoxLeftLength = itemListBoxLeft.length;
+
+        for (let i = 0; i < listBoxLeftLength; i++) {
             if (itemListBoxLeft[i].name === value) {
                 itemListBoxLeft[i].checked = checked;
                 break;
             }
         }
 
+
+        console.log(name, value, checked);
         // set lại giá trị cho State 
         this.setState({
-            itemListBoxLeft
+            newReport: {
+                ...this.state.newReport,
+                itemListBoxLeft,
+            }
         });
 
-
         // kiểm tra xem trong mảng itemListTemp đã tồn tại item được click hay chưa: false = -1
-        const findIndexItem = itemListTemp.findIndex(x => x.id === name); // name là id get từ input 
+        const findIndexItem = itemListTemp.findIndex(x => x.id === parseInt(name)); // name là id get từ input 
 
         // Nếu trong mảng có tồn tại item được click thì xóa nó đi, dùng slice cắt lấy các item khác item dc click
         if (findIndexItem > -1) {
             itemListTemp = [...itemListTemp.slice(0, findIndexItem), ...itemListTemp.slice(findIndexItem + 1)]
         } else {
             // Nếu chưa có trong mảng thì thêm nó vào itemListTemp
-            itemListTemp.push({ id: parseInt(name), name: value });
+            itemListTemp.push({ id: parseInt(name), name: value, checked: false });
         }
 
         this.setState({
-            ...this.state,
-            itemListTemp: itemListTemp,
+            newReport: {
+                ...this.state.newReport,
+                itemListTemp: itemListTemp,
+            }
         })
     }
 
+    handleRightListChange = (e) => {
+        let { value, name, checked } = e.target;
+        let { itemListTemp, itemListBoxRight } = this.state.newReport;
+        let listBoxRightLength = itemListBoxRight.length;
+
+        for (let i = 0; i < listBoxRightLength; i++) {
+            if (itemListBoxRight[i].name === value) {
+                itemListBoxRight[i].checked = checked;
+                break;
+            }
+        }
+
+        // set lại giá trị cho State 
+        this.setState({
+            newReport: {
+                ...this.state.newReport,
+                itemListBoxRight,
+            }
+        });
+
+        // kiểm tra xem trong mảng itemListTemp đã tồn tại item được click hay chưa: false = -1
+        const findIndexItem = itemListTemp.findIndex(x => x.id === parseInt(name)); // name là id get từ input 
+
+        // Nếu trong mảng có tồn tại item được click thì xóa nó đi, dùng slice cắt lấy các item khác item dc click
+        if (findIndexItem > -1) {
+            itemListTemp = [...itemListTemp.slice(0, findIndexItem), ...itemListTemp.slice(findIndexItem + 1)]
+        } else {
+            // Nếu chưa có trong mảng thì thêm nó vào itemListTemp
+            itemListTemp.push({ id: parseInt(name), name: value, checked: false });
+        }
+
+        this.setState({
+            newReport: {
+                ...this.state.newReport,
+                itemListTemp: itemListTemp,
+            }
+        })
+    }
 
     handleClickTransferLeftList = () => {
-        let { itemListTemp, itemListBoxLeft, itemListBoxRight } = this.state;
+        let { itemListTemp, itemListBoxLeft, itemListBoxRight } = this.state.newReport;
 
         let idInListBoxRight = itemListBoxRight.map(x => x.id); // array id in itemListBoxRight
         let idInListTemp = itemListTemp.map(x => parseInt(x.id)); // array id khi mình chọn vào checkbox của listBoxRight
 
-        const checkId = idInListBoxRight.includes(parseInt(idInListTemp)); // true or false
+        // const checkId = idInListBoxRight.includes(parseInt(idInListTemp)); // true or false
+        const checkId = idInListTemp.some(item => idInListBoxRight.indexOf(item) >= 0); // true or false
 
         // Lọc item khác với item đã chọn
         idInListTemp.forEach(x => {
@@ -491,22 +538,21 @@ class TaskReportCreateForm extends Component {
         })
 
 
-        idInListTemp.forEach(x => {
-            itemListBoxLeft = itemListBoxLeft.filter(y => y.id !== x)
-        })
-
 
         this.setState({
-            itemListBoxRight: checkId ? itemListBoxRight
-                : [...itemListBoxRight, itemListTemp].flat(1),
+            newReport: {
+                ...this.state.newReport,
+                itemListBoxRight: checkId ? itemListBoxRight
+                    : itemListBoxRight,
 
-            itemListBoxLeft: checkId ? [...itemListBoxLeft, itemListTemp].flat(1) : itemListBoxLeft,
-            itemListTemp: [],
+                itemListBoxLeft: checkId ? [...itemListBoxLeft, itemListTemp].flat(1) : itemListBoxLeft,
+                itemListTemp: [],
+            }
         })
     }
 
     handleClickTransferRightList = () => {
-        let { itemListTemp, itemListBoxLeft, itemListBoxRight } = this.state;
+        let { itemListTemp, itemListBoxLeft, itemListBoxRight } = this.state.newReport;
 
         let idInListBoxLeft = itemListBoxLeft.map(x => x.id); // array id in itemListBoxLeft
         let idInListTemp = itemListTemp.map(x => parseInt(x.id)); // array id khi mình chọn vào checkbox của listBoxLeft
@@ -517,25 +563,24 @@ class TaskReportCreateForm extends Component {
          * nếu trùng thì xóa đi item đó trong listBoxleft 
          * nếu không trùng thì add thêm vào 
          */
-        const checkId = idInListBoxLeft.includes(parseInt(idInListTemp));
+        // const checkId = idInListBoxLeft.includes(parseInt(idInListTemp));
+        const checkId = idInListTemp.some(item => idInListBoxLeft.indexOf(item) >= 0);
 
-        // Lọc item khác với item đã chọn
+        // Lọc Lấy item khác với item đã chọn--> mục đích remove item đó bên listLeft 
         idInListTemp.forEach(x => {
             itemListBoxLeft = itemListBoxLeft.filter(y => y.id !== x)
         })
 
-
-        idInListTemp.forEach(x => {
-            itemListBoxRight = itemListBoxRight.filter(y => y.id !== x)
-        })
-
-
+        // 
         this.setState({
-            itemListBoxLeft: checkId ? itemListBoxLeft
-                : [...itemListBoxLeft, itemListTemp].flat(1),
+            newReport: {
+                ...this.state.newReport,
+                itemListBoxLeft: checkId ? itemListBoxLeft
+                    : itemListBoxLeft,
 
-            itemListBoxRight: checkId ? [...itemListBoxRight, itemListTemp].flat(1) : itemListBoxRight,
-            itemListTemp: [],
+                itemListBoxRight: checkId ? [...itemListBoxRight, itemListTemp].flat(1) : itemListBoxRight,
+                itemListTemp: [],
+            }
         })
     }
 
@@ -584,15 +629,18 @@ class TaskReportCreateForm extends Component {
 
     render() {
         const { translate, reports, tasktemplates, user, tasks } = this.props;
-        const { newReport, errorOnNameTaskReport, errorOnDescriptiontTaskReport, errorOnStartDate, itemListBoxLeft, itemListBoxRight } = this.state;
+        const { newReport, errorOnNameTaskReport, errorOnDescriptiontTaskReport, errorOnStartDate } = this.state;
+        let { itemListBoxLeft, itemListBoxRight } = this.state.newReport;
         let listTaskTemplate, units, taskInformations = newReport.taskInformations, listRole, listRoles = [];
-        console.log('state', this.state)
+        console.log(this.state.newReport)
+
         // Lấy ra list task template theo đơn vị
         if (tasktemplates.items && newReport.organizationalUnit) {
             listTaskTemplate = tasktemplates.items.filter(function (taskTemplate) {
                 return taskTemplate.organizationalUnit._id === newReport.organizationalUnit
             })
         }
+
         if (user.organizationalUnitsOfUser) {
             units = user.organizationalUnitsOfUser;
         }
@@ -612,6 +660,7 @@ class TaskReportCreateForm extends Component {
             for (let x in listRole.employees)
                 listRoles = [...listRoles, listRole.employees[x]];
         }
+
         // Lấy thông tin nhân viên của đơn vị
         let unitMembers = [];
         if (usersOfChildrenOrganizationalUnit) {
@@ -936,9 +985,9 @@ class TaskReportCreateForm extends Component {
                                                 <div className="box-body box-size">
                                                     <div className="listItem-left">
                                                         {
-                                                            itemListBoxLeft.map((x, index) => (
+                                                            itemListBoxLeft && itemListBoxLeft.map((x, index) => (
                                                                 <div className="item" key={index}>
-                                                                    <input className="checkbox-input" type="checkbox" id={`myCheckBoxId${index}-left`} name={x.id} value={x.name} checked={x.checked} onChange={this.handleLeftListChange} />
+                                                                    <input className="checkbox-input" type="checkbox" id={`myCheckBoxId${index}-left`} name={x.id} value={x.name} checked={!!x.checked} onChange={this.handleLeftListChange} />
                                                                     <div className=" checkbox-text">
                                                                         <label htmlFor={`myCheckBoxId${index}-left`}>{x.name}</label>
                                                                     </div>
@@ -951,20 +1000,44 @@ class TaskReportCreateForm extends Component {
                                         </div>
 
                                         <div className="col-md-2 align-items-center " align="center" >
-                                            <div className="listButton">
-                                                <div className="item-button">
-                                                    <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferRightList}>
-                                                        <span class="material-icons">
-                                                            keyboard_arrow_right
+                                            {/* Button khi hiển thị trên giao diện medium */}
+                                            <div className="only-pc">
+                                                <div className="listButton ">
+                                                    <div className="item-button">
+                                                        <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferRightList}>
+                                                            <span className="material-icons">
+                                                                keyboard_arrow_right
                                                     </span>
-                                                    </button>
-                                                </div>
-                                                <div className="item-button">
-                                                    <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferLeftList}>
-                                                        <span class="material-icons">
-                                                            keyboard_arrow_left
+                                                        </button>
+                                                    </div>
+                                                    <div className="item-button">
+                                                        <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferLeftList}>
+                                                            <span className="material-icons">
+                                                                keyboard_arrow_left
                                                 </span>
-                                                    </button>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {/* end */}
+
+                                            {/* Giao diện trên mobile  */}
+                                            <div className="only-mobile">
+                                                <div className="listButton ">
+                                                    <div className="item-button">
+                                                        <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferRightList}>
+                                                            <span className="material-icons">
+                                                                keyboard_arrow_down
+                                                            </span>
+                                                        </button>
+                                                    </div>
+                                                    <div className="item-button">
+                                                        <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferLeftList}>
+                                                            <span className="material-icons">
+                                                                keyboard_arrow_up
+                                                            </span>
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -976,9 +1049,9 @@ class TaskReportCreateForm extends Component {
                                                 <div className="box-body box-size">
                                                     <div className="listItem-left">
                                                         {
-                                                            itemListBoxRight.map((x, index) => (
+                                                            itemListBoxRight && itemListBoxRight.map((x, index) => (
                                                                 <div className="item" key={index} >
-                                                                    <input className="checkbox-input" type="checkbox" id={`myCheckBoxId${index}-right`} name={x.id} value={x.name} checked={x.checked} onChange={this.handleLeftListChange} />
+                                                                    <input className="checkbox-input" type="checkbox" id={`myCheckBoxId${index}-right`} name={x.id} value={x.name} checked={!!x.checked} onChange={this.handleRightListChange} />
                                                                     <div className=" checkbox-text">
                                                                         <label htmlFor={`myCheckBoxId${index}-right`}>{`${index + 1}. ${x.name}`}</label>
                                                                     </div>

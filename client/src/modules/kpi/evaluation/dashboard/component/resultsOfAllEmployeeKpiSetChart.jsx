@@ -21,7 +21,7 @@ class ResultsOfAllEmployeeKpiSetChart extends Component {
 
         this.INFO_SEARCH = {
             startMonth: currentYear + '-' + 1,
-            endMonth: currentYear + '-' + (currentMonth + 2)
+            endMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2))
         }
 
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };

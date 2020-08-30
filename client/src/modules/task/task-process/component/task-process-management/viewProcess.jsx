@@ -101,6 +101,12 @@ class ViewProcess extends Component {
         }
     }
 
+    // checkOutgoingTarget = (items) => {
+    //     for(let i in items) {
+
+    //     }
+    // }
+
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.idProcess !== this.state.idProcess) {
             this.props.getDepartment();
@@ -121,10 +127,13 @@ class ViewProcess extends Component {
         if (nextProps.data) {
             let modeler = this.modeler;
             let modeling = this.modeling;
+            let state = this.state;
             this.modeler.importXML(nextProps.data.xmlDiagram, function (err) {
 
                 let infoTask = nextProps.data.tasks
-                // console.log(infoTask)
+                let info = state.info;
+                // console.log("tasks",infoTask, state.info)
+
                 if (infoTask) {
                     for (let i in infoTask) {
                         if (infoTask[i].status === "Finished") {
@@ -135,7 +144,6 @@ class ViewProcess extends Component {
                                 stroke: '#c4c4c7'
                             });
 
-                            let target = [];
                             // element1.outgoing.forEach(x => {
                             //     target.push(x.target.id)
                             // })
@@ -146,24 +154,27 @@ class ViewProcess extends Component {
                             //     });
                             // })
 
-                            // var outgoing = element1.outgoing;
-                            // outgoing.forEach(x => {
-                            //     var outgoingEdge = modeler.get('elementRegistry').get(x.id);
+                            var outgoing = element1.outgoing;
+                            outgoing.forEach(x => {
+                                console.log('x', x);
+                                if (info[x.businessObject.targetRef.id].status === "Inprocess") {
+                                    var outgoingEdge = modeler.get('elementRegistry').get(x.id);
 
-                            //     modeling.setColor(outgoingEdge, {
-                            //         stroke: '#7236ff',
+                                    modeling.setColor(outgoingEdge, {
+                                        stroke: '#c4c4c7',
+                                        width: '5px'
+                                    })
+                                }
+                            })
+                            // var incoming = element1.incoming;
+                            // incoming.forEach(x => {
+                            //     var incomingEdge = modeler.get('elementRegistry').get(x.id);
+
+                            //     modeling.setColor(incomingEdge, {
+                            //         stroke: '#c4c4c7',
                             //         width: '5px'
                             //     })
                             // })
-                            var incoming = element1.incoming;
-                            incoming.forEach(x => {
-                                var incomingEdge = modeler.get('elementRegistry').get(x.id);
-
-                                modeling.setColor(incomingEdge, {
-                                    stroke: '#c4c4c7',
-                                    width: '5px'
-                                })
-                            })
                         }
 
                         if (infoTask[i].status === "Inprocess") {
@@ -175,15 +186,26 @@ class ViewProcess extends Component {
                                 width: '5px'
                             });
 
-                            var incoming = element1.incoming;
-                            incoming.forEach(x => {
-                                var incomingEdge = modeler.get('elementRegistry').get(x.id);
+                            // var incoming = element1.incoming;
+                            // incoming.forEach(x => {
+                            //     var incomingEdge = modeler.get('elementRegistry').get(x.id);
 
-                                modeling.setColor(incomingEdge, {
-                                    stroke: '#14984c',
-                                    width: '5px'
-                                })
-                            })
+                            //     modeling.setColor(incomingEdge, {
+                            //         stroke: '#14984c',
+                            //         width: '5px'
+                            //     })
+                            // })
+
+
+                            // var outgoing = element1.outgoing;
+                            // outgoing.forEach(x => {
+                            //     var outgoingEdge = modeler.get('elementRegistry').get(x.id);
+
+                            //     modeling.setColor(outgoingEdge, {
+                            //         stroke: '#14984c',
+                            //         width: '5px'
+                            //     })
+                            // })
                         }
 
                     }
@@ -435,9 +457,9 @@ class ViewProcess extends Component {
                             </div>
                         </div>
 
-                        <div className={`${isTabPane ? 'row' : 'right-content col-md-4'}`}>  
+                        <div className={`${isTabPane ? 'row' : 'right-content col-md-4'}`}>
 
-                            <div className={`${isTabPane ? "col-lg-6 col-md-6 col-sm-6 col-xs-6" : "box box-solid" }`}>
+                            <div className={`${isTabPane ? "col-lg-6 col-md-6 col-sm-6 col-xs-6" : "box box-solid"}`}>
                                 { // !isTabPane && style={isTabPane ? {display: "flex", flexDirection: "row"} : {}}
                                     <div className="box-header with-border">
                                         {translate('task_template.general_information')}
@@ -456,7 +478,7 @@ class ViewProcess extends Component {
                                     <dd>{this.formatDate(startDate)} <i className="fa fa-fw fa-caret-right"></i> {this.formatDate(endDate)}</dd>
                                 </div>
                             </div>
-                            <div className={` ${isTabPane ? "col-lg-6 col-md-6 col-sm-6 col-xs-6" : "box box-solid" }`}>
+                            <div className={` ${isTabPane ? "col-lg-6 col-md-6 col-sm-6 col-xs-6" : "box box-solid"}`}>
                                 { // !isTabPane &&
                                     <div className="box-header with-border">
                                         Chú thích
@@ -465,9 +487,9 @@ class ViewProcess extends Component {
                                 <div className="box-body">
 
                                     {/**Các thông tin của mẫu công việc */}
-                                    <dd><i className="fa fa-square" style={{color: "#fff", border: "1px solid #000", borderRadius: "3px", marginRight: "5px"}}></i>Chờ phê duyệt</dd>
-                                    <dd><i className="fa fa-square" style={{color: "#E8F0F4", border: "1px solid #1692E0", borderRadius: "3px", marginRight: "5px"}}></i>Đang thực hiện</dd>
-                                    <dd><i className="fa fa-square" style={{color: "#ddd", border: "1px solid #5C7391", borderRadius: "3px", marginRight: "5px"}}></i>Đã hoàn thành</dd>
+                                    <dd><i className="fa fa-square" style={{ color: "#fff", border: "1px solid #000", borderRadius: "3px", marginRight: "5px" }}></i>Chờ phê duyệt</dd>
+                                    <dd><i className="fa fa-square" style={{ color: "#84ffb8", border: "1px solid #14984c", borderRadius: "3px", marginRight: "5px" }}></i>Đang thực hiện</dd>
+                                    <dd><i className="fa fa-square" style={{ color: "#f9f9f9", border: "1px solid #c4c4c7", borderRadius: "3px", marginRight: "5px" }}></i>Đã hoàn thành</dd>
                                 </div>
                             </div>
                         </div>

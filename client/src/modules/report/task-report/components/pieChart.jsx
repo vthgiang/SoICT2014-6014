@@ -51,7 +51,6 @@ class PieChart extends Component {
 
     renderPieChart = (data) => {
         this.removePrceviousPieChart();
-        console.log('data', data)
         this.chart = c3.generate({
             bindto: this.refs.pieChart,
             // Căn lề biểu đồ
@@ -72,21 +71,17 @@ class PieChart extends Component {
         const { data, namePieChart } = this.state;
         return (
             <React.Fragment>
-                <div className="row">
-                    {
-                        <div className="col-xs-12">
-                            <div className="box box-primary">
-                                <div className="box-header with-border">
-                                    <h3 className="box-title">{namePieChart}</h3>
-                                </div>
-                                <div className="box-body dashboard_box_body">
-                                    <div ref="pieChart"></div>
-                                </div>
-                            </div>
+                {
+                    <div className="box box-primary">
+                        <div className="box-header with-border">
+                            <h3 className="box-title">{namePieChart}</h3>
                         </div>
-                    }
+                        <div className="box-body dashboard_box_body">
+                            <div ref="pieChart"></div>
+                        </div>
+                    </div>
+                }
 
-                </div>
             </React.Fragment>
         );
     }

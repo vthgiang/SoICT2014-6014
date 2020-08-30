@@ -9,6 +9,8 @@ const User = require('../../../models/auth/user.model');
 const fs = require('fs');
 const moment = require("moment");
 
+const TaskManagementService = require('../task-management/task.service');
+
 /**
  * Bấm giờ công việc
  * Lấy tất cả lịch sử bấm giờ theo công việc
@@ -84,8 +86,8 @@ exports.stopTimesheetLog = async (params, body) => {
     timer.timesheetLogs.length > 0 && timer.timesheetLogs.forEach(x => {
         time += x.duration;
     })
-    let timer1 = await Task.findOneAndUpdate(
-        { "_id": params.taskId, "timesheetLogs._id": body.timesheetLog },
+    await Task.findOneAndUpdate(
+        { "_id": params.taskId},
         {
             $set:
             {
@@ -205,6 +207,7 @@ exports.deleteCommentOfTaskAction = async (params) => {
  */
 
 exports.createTaskAction = async (params, body, files) => {
+    console.log("555", body)
     let actionInformation = {
         creator: body.creator,
         description: body.description,
@@ -1047,7 +1050,7 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
@@ -1065,7 +1068,7 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
@@ -1253,7 +1256,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
@@ -1271,7 +1274,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
@@ -1367,7 +1370,7 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
@@ -1385,7 +1388,7 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
@@ -1655,7 +1658,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
@@ -1673,7 +1676,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
@@ -1809,7 +1812,6 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
         let check_data = listResult.find(r => (String(r.employee) === cloneResult[item].employee && r.role === cloneResult[item].role))
         // TH nguoi nay da danh gia ket qua --> thi chi can cap nhat lai ket qua thoi
-
         if (check_data !== undefined) {
             // cap nhat diem
             await Task.updateOne(
@@ -1869,10 +1871,9 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     // cập nhật điểm cá nhân cho ng phe duyet
     let check_approve = listResult2.find(r => (String(r.employee) === user && String(r.role) === "Accountable"));
-
     if (cloneResult.length > 0) {
         for (let i in cloneResult) {
-            if (String(cloneResult[i].role) === "Accountable") {
+            if (String(cloneResult[i].role) === "Accountable" && String(cloneResult[i].employee) === String(user)) {
                 await Task.updateOne(
                     {
                         _id: taskId,
@@ -1897,7 +1898,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
             }
         }
     }
-    else {
+    else if (check_approve === undefined) {
         await Task.updateOne(
             {
                 _id: taskId,
@@ -1915,6 +1916,27 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
             },
             { $new: true }
         );
+    }
+    else if (check_approve !== undefined) {
+        await Task.updateOne(
+            {
+                _id: taskId,
+                "evaluations._id": evaluateId
+            },
+            {
+                $set: {
+                    "evaluations.$.results.$[elem].organizationalUnit": unit,
+                    "evaluations.$.results.$[elem].kpis": kpi,
+                }
+            },
+            {
+                arrayFilters: [
+                    {
+                        "elem.employee": user,
+                        "elem.role": "Accountable"
+                    }
+                ]
+            })
     }
 
 
@@ -2036,7 +2058,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
@@ -2054,7 +2076,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
@@ -2090,7 +2112,7 @@ exports.deleteEvaluation = async (params) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
@@ -2108,7 +2130,7 @@ exports.deleteEvaluation = async (params) => {
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
@@ -2319,7 +2341,7 @@ exports.editTaskStatus = async (taskID, body) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
@@ -2337,7 +2359,7 @@ exports.editTaskStatus = async (taskID, body) => {
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
@@ -2357,7 +2379,7 @@ exports.editTaskStatus = async (taskID, body) => {
 }
 
 /** Chỉnh sửa taskInformation của task */
-exports.editTaskInformation = async (taskId, taskInformations) => {
+exports.editTaskInformation = async (taskId, userId, taskInformations) => {
     let information;
 
     if (taskInformations && taskInformations.length !== 0) {
@@ -2377,7 +2399,7 @@ exports.editTaskInformation = async (taskId, taskInformations) => {
         }
     }
     
-    let task = await Task.findById({ _id: taskId })
+    let task = await TaskManagementService.getTaskById(taskId, userId);
     return task;
 }
 
@@ -2485,7 +2507,7 @@ exports.editDocument = async (taskId, documentId, body, files) => {
                             "documents.$.description": body[i].description,
                             "documents.$.isOutput": body[i].isOutput
                         },
-        
+
                         $push:
                         {
                             "documents.$.files": files
@@ -2495,7 +2517,7 @@ exports.editDocument = async (taskId, documentId, body, files) => {
             }
         }
     }
-   
+
     let task = await Task.findById({ _id: taskId }).populate([
         { path: "documents.creator", model: User, select: 'name email avatar' },
     ]);

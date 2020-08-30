@@ -12,7 +12,7 @@ import { AssetDetailForm, AssetEditForm } from './combinedContent';
 
 import Swal from 'sweetalert2';
 
-class EmployeeAssetManagement extends Component {
+class AssetGeneralInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -110,19 +110,6 @@ class EmployeeAssetManagement extends Component {
             }).then((res) => {
                 if (res.value) {
                     this.props.deleteAsset(id,managedBy);
-                    
-
-                    // var test = window.$("#multiSelectUnit").val();
-                    // this.props.getAllAsset({
-                    //     code: "",
-                    //     assetName: "",
-                    //     assetType: null,
-                    //     month: null,
-                    //     status: "",
-                    //     page: 0,
-                    //     limit: 5,
-                    //     managedBy:managedBy
-                    // });
                 }
             });
     }
@@ -327,7 +314,7 @@ class EmployeeAssetManagement extends Component {
     }
 
     render() {
-        var { assetsManager, assetType, translate, user } = this.props;
+        var { assetsManager, assetType, translate, user,id } = this.props;
         var { page, limit, currentRowView, currentRow, purchaseDate } = this.state;
 
         var lists = "", exportData;
@@ -348,7 +335,8 @@ class EmployeeAssetManagement extends Component {
         }
 
         return (
-            <div className="box">
+            <div id="general" class ="tab-pane active">
+                <div className="box">
                 <div className="box-body qlcv">
 
                     {/* Thanh tìm kiếm */}
@@ -572,6 +560,7 @@ class EmployeeAssetManagement extends Component {
                     />
                 }
             </div>
+            </div>
         );
     }
 };
@@ -590,5 +579,5 @@ const actionCreators = {
 
 };
 
-const assetManagement = connect(mapState, actionCreators)(withTranslate(EmployeeAssetManagement));
-export { assetManagement as EmployeeAssetManagement };
+const assetManagement = connect(mapState, actionCreators)(withTranslate(AssetGeneralInfo));
+export { assetManagement as AssetGeneralInfo };
