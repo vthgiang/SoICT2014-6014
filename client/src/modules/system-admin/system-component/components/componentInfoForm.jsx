@@ -36,9 +36,8 @@ class ComponentInfoForm extends Component {
         this.setState({ componentName: value });
 
         let {translate} = this.props;
-        let {msg} = ValidationHelper.validateName(value, 6, 255);
-        let error = msg ? translate(msg, {min: 6, max: 255}) : undefined;
-        this.setState({ componentNameError: error})
+        let {message} = ValidationHelper.validateName(translate, value, 6, 255);
+        this.setState({ componentNameError: message})
     }
 
     handleDescription = (e) => {
@@ -46,9 +45,8 @@ class ComponentInfoForm extends Component {
         this.setState({ componentDescription: value });
 
         let {translate} = this.props;
-        let {msg} = ValidationHelper.validateDescription(value);
-        let error = msg ? translate(msg) : undefined;
-        this.setState({ componentDescriptionError: error})
+        let {message} = ValidationHelper.validateDescription(translate, value);
+        this.setState({ componentDescriptionError: message})
     }
 
     handleLink = (value) => {
@@ -71,7 +69,8 @@ class ComponentInfoForm extends Component {
 
     isFormValidated = () => {
         let {componentName, componentDescription} = this.state;
-        if(!ValidationHelper.validateName(componentName).status  || !ValidationHelper.validateDescription(componentDescription).status) return false;
+        let {translate} = this.props;
+        if(!ValidationHelper.validateName(translate, componentName).status  || !ValidationHelper.validateDescription(translate, componentDescription).status) return false;
         return true;
     }
 

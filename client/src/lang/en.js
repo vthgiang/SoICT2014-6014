@@ -683,7 +683,7 @@ export default {
             manage_incident_asset: 'Manage incident assets',
             manage_recommend_procure: 'Manage purchase request',
             manage_recommend_distribute_asset: 'Manage use request',
-            employee_manage_asset_info: 'Manage information assets by employee',
+            employee_manage_asset_info: 'Manage managed assets',
 
             view_building_list: 'View building list',
             // NHÂN VIÊN

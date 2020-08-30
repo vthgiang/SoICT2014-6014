@@ -34,9 +34,9 @@ class EmployeeAssetManagement extends Component {
 
                             <ul className="nav nav-tabs">
                             
-                            <li className ="active"><a data-toggle="tab" href={`#general`}>{translate('menu.manage_info_asset')}</a></li>
-                            <li><a data-toggle="tab" href={`#use-request`}>{translate('menu.manage_incident_asset')}</a></li>
-                            <li><a data-toggle="tab" href={`#incident`}>{translate('menu.manage_recommend_distribute_asset')}</a></li>
+                            <li className ="active"><a data-toggle="tab" href={`#general`}></a></li>
+                            <li><a data-toggle="tab" href={`#use-request`}>{translate('menu.manage_recommend_distribute_asset')}</a></li>
+                            <li><a data-toggle="tab" href={`#incident`}>{translate('menu.manage_info_asset')}</a></li>
 
                         </ul>
                         <div className ="tab-content">
