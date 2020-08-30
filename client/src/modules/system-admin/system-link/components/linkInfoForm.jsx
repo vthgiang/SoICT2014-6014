@@ -41,10 +41,8 @@ class LinkInfoForm extends Component {
         this.setState({ linkUrl: value });
 
         let {translate} = this.props;
-        let {msg} = SystemLinkValidator.validateUrl(value);
-        
-        let error = msg ? translate(msg) : undefined;
-        this.setState({ linkUrlError: error})
+        let {message} = SystemLinkValidator.validateUrl(translate, value);
+        this.setState({ linkUrlError: message})
     }
 
     handleDescription = (e) => {
@@ -52,9 +50,8 @@ class LinkInfoForm extends Component {
         this.setState({ linkDescription: value });
 
         let {translate} = this.props;
-        let {msg} = SystemLinkValidator.validateDescription(value);
-        let error = msg ? translate(msg) : undefined;
-        this.setState({ linkDescriptionError: error})
+        let {message} = SystemLinkValidator.validateDescription(translate, value);
+        this.setState({ linkDescriptionError: message})
     }
 
     handleCategory = (value) => {
@@ -77,7 +74,8 @@ class LinkInfoForm extends Component {
 
     isFormValidated = () => {
         let {linkUrl, linkDescription} = this.state;
-        if(!SystemLinkValidator.validateUrl(linkUrl).status  || !SystemLinkValidator.validateDescription(linkDescription).status) return false;
+        let {translate} = this.props;
+        if(!SystemLinkValidator.validateUrl(translate, linkUrl).status  || !SystemLinkValidator.validateDescription(translate, linkDescription).status) return false;
         return true;
     }
 

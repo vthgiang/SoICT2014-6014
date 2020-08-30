@@ -5,14 +5,14 @@ export default class SystemLinkValidator extends ValidationHelper {
 
     }
 
-    static validateUrl = (url) => {
+    static validateUrl = (translate, url) => {
         let URL_REGEX = /^[^~`!@#$%^&*()+= *';\\<>?:",]*$/;
-        let msg;
-        if(!this.validateEmpty(url))
-            msg = 'general.validate.empty_error';
+        let result = this.validateEmpty(translate, url);
+        if(!result.status)
+            return result;
         else if(url[0] !== '/' || !URL_REGEX.test(url))
-            msg = 'general.validate.invalid_error';
+            return { status: false, message: translate('general.validate.value')+translate('general.validate.invalid_error') };
         
-        return msg ? { status: false, msg } : { status: true };
+        return { status: true };
     }
 }

@@ -161,7 +161,7 @@ class FileAddModal extends Component {
                                 return (
                                     <React.Fragment>
                                         <li>
-                                            <a style={{ cursor: "pointer" }} onClick={(e) => this.handleDeleteFile(child.name)} >{child.name}</a>
+                                            <a style={{ cursor: "pointer" }} onClick={(e) => this.handleDeleteFile(child.fileName)} >{child.fileName}</a>
                                         </li>
                                     </React.Fragment>
                                 )
