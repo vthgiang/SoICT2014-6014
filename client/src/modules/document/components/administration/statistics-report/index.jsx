@@ -262,7 +262,6 @@ class AdministrationStatisticsReport extends Component {
         return exportData;
     }
     onChanged = async (e, data) => {
-        console.log('data', data);
         await this.setState({
             currentDomain: data.node,
             dataStatus: this.DATA_STATUS.AVAILABLE,
@@ -357,7 +356,6 @@ class AdministrationStatisticsReport extends Component {
     barChartDocumentInDomain = () => {
         this.removePreviousDomainChart();
         let dataChart = this.setDataDomainBarchart();
-        // console.log('helllo', this.setDataDomainBarchart());
         let count = dataChart.count;
         let heightCalc
         if (dataChart.type) {
@@ -480,7 +478,6 @@ class AdministrationStatisticsReport extends Component {
     setDataDomainBarchart = () => {
         const domains = this.props.documents.administration.domains.list;
         const docs = this.props.documents.administration.data.list;
-        console.log('iiiiii', docs, domains);
         let typeName = [], shortName = [], countDomain = [], idDomain = [];
         for (let i in domains) {
             countDomain[i] = 0;
@@ -550,7 +547,6 @@ class AdministrationStatisticsReport extends Component {
         const { list } = this.props.documents.administration.domains;
         const listArchives = this.props.documents.administration.archives.list;
         const docs = this.props.documents.administration.data.list;
-        console.log('output', docs);
         let dataExport = [];
         let data2 = [];
         if (documents.isLoading === false) {

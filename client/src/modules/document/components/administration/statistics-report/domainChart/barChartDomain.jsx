@@ -14,7 +14,6 @@ class BarChartDomain extends Component {
     }
     componentDidMount() {
         this.barChartDocumentInDomain();
-        //console.log('Goi did mount');
     }
     removePreviousDomainChart() {
         const chart = this.refs.a;
@@ -27,7 +26,6 @@ class BarChartDomain extends Component {
     barChartDocumentInDomain = () => {
         this.removePreviousDomainChart();
         let dataChart = this.setDataDomainBarchart();
-        //  console.log('helllo', this.setDataDomainBarchart());
         let count = dataChart.count;
         let heightCalc
         if (dataChart.type) {
@@ -121,7 +119,6 @@ class BarChartDomain extends Component {
     render() {
         const domains = this.props.domains;
         const docs = this.props.documents;
-        // console.log('uuuuuuuuuuuu', domains, docs)
         this.barChartDocumentInDomain();
         return (
             <React.Fragment>
