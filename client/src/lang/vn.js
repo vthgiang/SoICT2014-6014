@@ -683,7 +683,7 @@ export default {
             manage_incident_asset: 'Quản lý sự cố tài sản',
             manage_recommend_procure: 'Quản lý đề nghị mua sắm',
             manage_recommend_distribute_asset: 'Quản lý đăng ký sử dụng',
-            employee_manage_asset_info: 'Quản lý thông tin tài sản được phân quyền',
+            employee_manage_asset_info: 'Quản lý tài sản được phân quyền',
 
             view_building_list: 'Xem danh sách mặt bằng',
 
