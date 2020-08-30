@@ -71,6 +71,7 @@ export default {
                 ],
             },
             validate: {
+                value: 'Giá trị ',
                 invalid_character_error: 'không được chứa ký tự đặc biệt',
                 length_error: 'phải có số ký tự từ {min} đến {max}',
                 minimum_length_error: 'phải có độ dài tối thiểu là {min} ký tự',

@@ -71,6 +71,7 @@ export default {
                 ],
             },
             validate: {
+                value: 'Value ',
                 invalid_character_error: 'invalid character error',
                 length_error: 'should have length between {min} to {max}',
                 minimum_length_error: 'should have minimum length of {min}',
