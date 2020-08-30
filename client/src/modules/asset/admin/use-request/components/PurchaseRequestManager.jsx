@@ -228,7 +228,7 @@ class PurchaseRequestManager extends Component {
             listRecommendDistributes = recommendDistribute.listRecommendDistributes;
             exportData =this.convertDataToExportData(listRecommendDistributes);
         }
-
+        
         var pageTotal = ((recommendDistribute.totalList % limit) === 0) ?
             parseInt(recommendDistribute.totalList / limit) :
             parseInt((recommendDistribute.totalList / limit) + 1);
@@ -377,6 +377,7 @@ class PurchaseRequestManager extends Component {
                     currentRowAdd &&
                     <UsageCreateForm
                         _id={currentRowAdd._id}
+                        assetUseRequest = {currentRowAdd}
                         asset={currentRowAdd.asset}
                         startDate={currentRowAdd.dateStartUse}
                         endDate={currentRowAdd.dateEndUse}
