@@ -236,7 +236,9 @@ class AssetEditForm extends Component {
 
         let formData = convertJsonObjectToFormData(this.state);
         files.forEach(x => {
-            formData.append("file", x.fileUpload);
+            x.files.forEach(item => {
+                formData.append("file", item.fileUpload);
+            })
         })
         formData.append("fileAvatar", this.state.avatar);
 

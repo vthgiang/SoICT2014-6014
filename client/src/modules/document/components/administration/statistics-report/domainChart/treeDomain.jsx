@@ -1,19 +1,14 @@
 
-
-
-
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import c3 from 'c3';
-import 'c3/c3.css';
 import * as d3 from 'd3-format';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { Tree } from '../../../../../../../common-components';
-import AmountBarChart from './amountBarChart';
+import { Tree } from '../../../../../../common-components';
+import BarChartDomain from './barChartDomain';
 
-class AmountTree extends Component {
+class TreeDomain extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,45 +16,46 @@ class AmountTree extends Component {
         }
     }
 
-    handleChangeViewChart = async (value) => {
-        await this.setState(state => {
+    handleChangeViewChart = (value) => {
+        this.setState(state => {
             return {
                 ...state,
                 tree: value
             }
         })
     }
+
+
     render() {
-        let { assetType, listAssets } = this.props;
-        console.log('asset type', assetType);
+        const { documents, domains } = this.props;
         let { tree } = this.state;
-        let typeName = [], countAssetType = [], idAssetType = [];
-        for (let i in assetType) {
-            countAssetType[i] = 0;
-            idAssetType.push(assetType[i]._id)
-        }
-
+        let typeName = [], countDomain = [], idDomain = [];
         let chart = [];
-        if (listAssets) {
-            listAssets.map(asset => {
-                let idx = idAssetType.indexOf(asset.assetType);
-                countAssetType[idx]++;
+        for (let i in domains) {
+            countDomain[i] = 0;
+            idDomain.push(domains[i]._id)
+        }
+        if (documents) {
+            documents.map(doc => {
+                doc.domains.map(domain => {
+                    let idx = idDomain.indexOf(domain.id);
+                    countDomain[idx]++;
+                })
             })
-            for (let i in assetType) {
+            for (let i in domains) {
 
-                let val = d3.format(",")(countAssetType[i])
-                let title = `${assetType[i].typeName} - ${val} `
+                let val = d3.format(",")(countDomain[i])
+                let title = `${domains[i].name} - ${val} `
 
-                typeName.push(assetType[i].typeName);
+                typeName.push(domains[i].name);
 
                 chart.push({
-                    id: assetType[i]._id,
+                    id: domains[i]._id,
                     typeName: title,
-                    parentId: assetType[i].parent,
+                    parentId: domains[i].parent,
                 })
             }
         }
-        console.log('chart', chart, listAssets);
         let dataTree = chart && chart.map(node => {
             return {
                 ...node,
@@ -69,7 +65,7 @@ class AmountTree extends Component {
             }
         })
         return (
-            <div className="amout-asset" id="amout-asset">
+            <div className="amout-docs" id="amout-docs">
                 <br />
                 <div className="box-tools pull-right">
                     <div className="btn-group pull-right">
@@ -82,19 +78,21 @@ class AmountTree extends Component {
                         <div>
                             <br />
                             <Tree
-                                id="tree-qlcv-amount-asset"
+                                id="tree-qlcv-amount-docs"
                                 data={dataTree}
                                 plugins={false}
                             />
                         </div> :
-                        <AmountBarChart
-                            listAssets={listAssets}
-                            assetType={assetType}
+                        <BarChartDomain
+                            domains={domains}
+                            docs={documents}
                         />
                 }
             </div>
         )
-    }
-}
 
-export default AmountTree;
+    }
+
+
+}
+export default TreeDomain;

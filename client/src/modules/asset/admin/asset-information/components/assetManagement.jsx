@@ -496,7 +496,7 @@ class AssetManagement extends Component {
                         disposalDesc={currentRowView.disposalDesc}
 
                         archivedRecordNumber={currentRowView.archivedRecordNumber}
-                        files={currentRowView.files}
+                        files={currentRowView.documents}
                     />
                 }
 
@@ -545,7 +545,7 @@ class AssetManagement extends Component {
                         usageLogs={currentRow.usageLogs}
                         incidentLogs={currentRow.incidentLogs}
                         archivedRecordNumber={currentRow.archivedRecordNumber}
-                        files={currentRow.files}
+                        files={currentRow.documents}
                     />
                 }
             </div>

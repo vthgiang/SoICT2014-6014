@@ -185,7 +185,7 @@ class TaskReportViewForm extends Component {
         let listTaskEvaluation = tasks.listTaskEvaluations;
         console.log('taskEvaluation', listTaskEvaluation)
 
-        let taskInfoName, headTable = [], frequency, newlistTaskEvaluation, dataForAxisXInChart;
+        let taskInfoName, headTable = [], frequency, newlistTaskEvaluation, dataForAxisXInChart = [];
 
         // hiển thị trường thông tin hiện trong bảng báo cáo form preview view
         if (listTaskEvaluation && listTaskEvaluation.length !== 0) {
@@ -201,9 +201,14 @@ class TaskReportViewForm extends Component {
         if (listTaskEvaluation) {
             // Lấy tần suất và chiều dữ liệu vẽ biểu đồ từ server gửi
             let taskEvaluation = listTaskEvaluation[0];
-
             frequency = taskEvaluation.frequency;
-            dataForAxisXInChart = taskEvaluation.dataForAxisXInChart.map(x => x.id).toString();
+
+            dataForAxisXInChart = taskEvaluation.dataForAxisXInChart;
+            if (dataForAxisXInChart.length > 0) {
+                dataForAxisXInChart = dataForAxisXInChart.map(x => x.id).toString();
+            } else {
+                dataForAxisXInChart = dataForAxisXInChart;
+            }
 
             // Lọc lấy các trường cần thiết.
             newlistTaskEvaluation = listTaskEvaluation.map(item => {
@@ -221,7 +226,7 @@ class TaskReportViewForm extends Component {
 
         }
 
-
+        console.log('dataForAxisXInChart', dataForAxisXInChart)
         let output, pieChartData = [], barLineChartData = [], pieDataConvert;
 
         /**
@@ -229,7 +234,7 @@ class TaskReportViewForm extends Component {
        *  Nếu chọn trục hoành là thời gian
        */
 
-        if (dataForAxisXInChart === "1") {
+        if (dataForAxisXInChart === "1" || dataForAxisXInChart.length === 0) {
             let groupDataByDate;
             if (newlistTaskEvaluation) {
                 groupDataByDate = this.groupByDate(newlistTaskEvaluation);
@@ -361,7 +366,7 @@ class TaskReportViewForm extends Component {
                     <div className="row">
                         {
                             barLineChartData.length > 0 &&
-                            <div className=" col-lg-6 col-md-6 col-md-sm-6 col-xs-12">
+                            <div className=" col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <LineBarChart barLineChartData={barLineChartData} />
                             </div>
                         }
@@ -369,7 +374,7 @@ class TaskReportViewForm extends Component {
                         {
                             pieDataConvert && pieDataConvert.map((item, index) => (
                                 Object.entries(item).map(([code, data]) => (
-                                    <div key={index} className=" col-lg-6 col-md-6 col-md-sm-6 col-xs-12">
+                                    <div key={index} className=" col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                         <PieChart pieChartData={data} namePieChart={code} />
                                     </div>
                                 ))
