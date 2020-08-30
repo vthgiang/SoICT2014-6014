@@ -114,6 +114,10 @@ const TaskSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: User
     }],
+    confirmedByEmployees: [{
+        type: Schema.Types.ObjectId,
+        ref: User
+    }],
     evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
         date: { // Lưu ngày đánh giá. Khi muốn match công việc trong 1 KPI thì chỉ lấy tháng
             type: Date
