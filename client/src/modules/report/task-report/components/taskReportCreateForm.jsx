@@ -36,7 +36,6 @@ class TaskReportCreateForm extends Component {
                 itemListBoxRight: [],
                 itemListTemp: [],
             },
-
             currentRole: getStorage('currentRole'),
         }
     }
@@ -456,7 +455,6 @@ class TaskReportCreateForm extends Component {
         }
 
 
-        console.log(name, value, checked);
         // set lại giá trị cho State 
         this.setState({
             newReport: {
@@ -632,7 +630,6 @@ class TaskReportCreateForm extends Component {
         const { newReport, errorOnNameTaskReport, errorOnDescriptiontTaskReport, errorOnStartDate } = this.state;
         let { itemListBoxLeft, itemListBoxRight } = this.state.newReport;
         let listTaskTemplate, units, taskInformations = newReport.taskInformations, listRole, listRoles = [];
-        console.log(this.state.newReport)
 
         // Lấy ra list task template theo đơn vị
         if (tasktemplates.items && newReport.organizationalUnit) {
@@ -977,87 +974,89 @@ class TaskReportCreateForm extends Component {
                             <div className="row" style={{ marginTop: '15px' }}>
                                 <div className="col-md-6 col-sm-12">
                                     <div className="row">
-                                        <div className="col-md-5 ">
-                                            <div className="border">
-                                                <div className="">
-                                                    <span><b>Chọn chiều chữ liệu trong biểu đồ</b></span>
-                                                </div>
-                                                <div className="box-body box-size">
-                                                    <div className="listItem-left">
-                                                        {
-                                                            itemListBoxLeft && itemListBoxLeft.map((x, index) => (
-                                                                <div className="item" key={index}>
-                                                                    <input className="checkbox-input" type="checkbox" id={`myCheckBoxId${index}-left`} name={x.id} value={x.name} checked={!!x.checked} onChange={this.handleLeftListChange} />
-                                                                    <div className=" checkbox-text">
-                                                                        <label htmlFor={`myCheckBoxId${index}-left`}>{x.name}</label>
+                                        <div className="box-display" >
+                                            <div className="col-md-5 ">
+                                                <div className="border">
+                                                    <div className="">
+                                                        <span><b className="box-title">Chọn chiều dữ liệu trong biểu đồ</b></span>
+                                                    </div>
+                                                    <div className="box-body box-size">
+                                                        <div className="listItem-left">
+                                                            {
+                                                                itemListBoxLeft && itemListBoxLeft.map((x, index) => (
+                                                                    <div className="item" key={index}>
+                                                                        <input className="checkbox-input" type="checkbox" id={`myCheckBoxId${index}-left`} name={x.id} value={x.name} checked={!!x.checked} onChange={this.handleLeftListChange} />
+                                                                        <div className=" checkbox-text">
+                                                                            <label htmlFor={`myCheckBoxId${index}-left`}>{x.name}</label>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            ))
-                                                        }
+                                                                ))
+                                                            }
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <div className="col-md-2 align-items-center " align="center" >
-                                            {/* Button khi hiển thị trên giao diện medium */}
-                                            <div className="only-pc">
-                                                <div className="listButton ">
-                                                    <div className="item-button">
-                                                        <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferRightList}>
-                                                            <span className="material-icons">
-                                                                keyboard_arrow_right
+                                            <div className="col-md-2 " align="center" style={{ margin: 'auto' }} >
+                                                {/* Button khi hiển thị trên giao diện tren pc */}
+                                                <div className="only-pc">
+                                                    <div className="listButton ">
+                                                        <div className="item-button">
+                                                            <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferRightList}>
+                                                                <span className="material-icons">
+                                                                    keyboard_arrow_right
                                                     </span>
-                                                        </button>
-                                                    </div>
-                                                    <div className="item-button">
-                                                        <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferLeftList}>
-                                                            <span className="material-icons">
-                                                                keyboard_arrow_left
+                                                            </button>
+                                                        </div>
+                                                        <div className="item-button">
+                                                            <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferLeftList}>
+                                                                <span className="material-icons">
+                                                                    keyboard_arrow_left
                                                 </span>
-                                                        </button>
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            {/* end */}
+                                                {/* end */}
 
-                                            {/* Giao diện trên mobile  */}
-                                            <div className="only-mobile">
-                                                <div className="listButton ">
-                                                    <div className="item-button">
-                                                        <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferRightList}>
-                                                            <span className="material-icons">
-                                                                keyboard_arrow_down
+                                                {/* Giao diện trên mobile  */}
+                                                <div className="only-mobile">
+                                                    <div className="listButton ">
+                                                        <div className="item-button">
+                                                            <button type="button" ref="btn-down" className="btn btn-sm btn-default" onClick={this.handleClickTransferRightList}>
+                                                                <span className="material-icons">
+                                                                    keyboard_arrow_down
                                                             </span>
-                                                        </button>
-                                                    </div>
-                                                    <div className="item-button">
-                                                        <button type="button" className="btn btn-sm btn-default" onClick={this.handleClickTransferLeftList}>
-                                                            <span className="material-icons">
-                                                                keyboard_arrow_up
+                                                            </button>
+                                                        </div>
+                                                        <div className="item-button">
+                                                            <button type="button" ref="btn-up" className="btn btn-sm btn-default" onClick={this.handleClickTransferLeftList}>
+                                                                <span className="material-icons">
+                                                                    keyboard_arrow_up
                                                             </span>
-                                                        </button>
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div className="col-md-5 ">
-                                            <div className="border">
-                                                <div className="">
-                                                    <span><b>Dữ liệu được đưa vào biểu đồ</b></span>
-                                                </div>
-                                                <div className="box-body box-size">
-                                                    <div className="listItem-left">
-                                                        {
-                                                            itemListBoxRight && itemListBoxRight.map((x, index) => (
-                                                                <div className="item" key={index} >
-                                                                    <input className="checkbox-input" type="checkbox" id={`myCheckBoxId${index}-right`} name={x.id} value={x.name} checked={!!x.checked} onChange={this.handleRightListChange} />
-                                                                    <div className=" checkbox-text">
-                                                                        <label htmlFor={`myCheckBoxId${index}-right`}>{`${index + 1}. ${x.name}`}</label>
+                                            <div className="col-md-5 ">
+                                                <div className="border">
+                                                    <div className="">
+                                                        <span><b className="box-title">Dữ liệu được đưa vào biểu đồ</b></span>
+                                                    </div>
+                                                    <div className="box-body box-size">
+                                                        <div className="listItem-left">
+                                                            {
+                                                                itemListBoxRight && itemListBoxRight.map((x, index) => (
+                                                                    <div className="item" key={index} >
+                                                                        <input className="checkbox-input" type="checkbox" id={`myCheckBoxId${index}-right`} name={x.id} value={x.name} checked={!!x.checked} onChange={this.handleRightListChange} />
+                                                                        <div className=" checkbox-text">
+                                                                            <label htmlFor={`myCheckBoxId${index}-right`}>{`${index + 1}. ${x.name}`}</label>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            ))
-                                                        }
+                                                                ))
+                                                            }
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

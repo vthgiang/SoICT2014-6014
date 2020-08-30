@@ -115,10 +115,12 @@ class TaskReportViewForm extends Component {
     aggregate = (tasks) => {
         let map = new Map;
         for (let { aggregationType, coefficient, code, value, chartType, showInReport } of tasks) {
-            let entry = map.get(code);
-            if (!entry) map.set(code, entry = { aggregationType, chartType, showInReport, coefficient, sum: 0, count: 0 });
-            entry.sum += value;
-            entry.count++;
+            if (showInReport === true) {
+                let entry = map.get(code);
+                if (!entry) map.set(code, entry = { aggregationType, chartType, showInReport, coefficient, sum: 0, count: 0 });
+                entry.sum += value;
+                entry.count++;
+            }
         }
         return Array.from(map, ([code, { aggregationType, chartType, showInReport, coefficient, sum, count }]) =>
             [code, (+aggregationType ? sum : sum / count) * coefficient, this.formatChartType(chartType), showInReport]
@@ -133,7 +135,6 @@ class TaskReportViewForm extends Component {
      */
     dataAfterAggregate = (input) => {
         return Object.entries(input).map(([time, datapoints]) => {
-            console.log('datapoints', datapoints)
             let allTasks = datapoints.flatMap(point => point.task.map(x => ({ ...x, responsibleEmployees: point.responsibleEmployees, accountableEmployees: point.accountableEmployees })))
             // Tên mới cho trường thông tin
             allTasks.map(item => {
@@ -183,7 +184,6 @@ class TaskReportViewForm extends Component {
         const { tasks, reports, translate } = this.props;
         let formater = new Intl.NumberFormat();
         let listTaskEvaluation = tasks.listTaskEvaluations;
-        console.log('taskEvaluation', listTaskEvaluation)
 
         let taskInfoName, headTable = [], frequency, newlistTaskEvaluation, dataForAxisXInChart = [];
 
@@ -226,7 +226,6 @@ class TaskReportViewForm extends Component {
 
         }
 
-        console.log('dataForAxisXInChart', dataForAxisXInChart)
         let output, pieChartData = [], barLineChartData = [], pieDataConvert;
 
         /**
