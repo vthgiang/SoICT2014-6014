@@ -5,13 +5,12 @@ const User = require('../auth/user.model');
 const EmployeeKpi = require('../kpi/employeeKpi.model');
 const OrganizationalUnit = require('../super-admin/organizationalUnit.model');
 const TaskTemplate = require('./taskTemplate.model');
-const TaskProcess = require('./taskProcess.model');
 
 // Model quản lý thông tin của một công việc và liên kết với tài liệu, kết quả thực hiện công việc
 const TaskSchema = new Schema({
     process: {
         type: Schema.Types.ObjectId,
-        ref: TaskProcess,
+        ref: 'task_processes',
     },
     codeInProcess: {
         type: String,
