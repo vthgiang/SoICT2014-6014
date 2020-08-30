@@ -221,6 +221,20 @@ const TaskSchema = new Schema({
             required: true
         }
     }],
+    hoursSpentOnTask: {
+        totalHoursSpent: {
+            type: Number
+        },
+        contributions: [{
+            employee: {
+                type: Schema.Types.ObjectId,
+                ref: User,
+            },
+            hoursSpent: {
+                type: Number
+            }
+        }]
+    },
     timesheetLogs: [{
         creator: { // Người thực hiện nào tiến hành bấm giờ
             type: Schema.Types.ObjectId,

@@ -84,8 +84,8 @@ exports.stopTimesheetLog = async (params, body) => {
     timer.timesheetLogs.length > 0 && timer.timesheetLogs.forEach(x => {
         time += x.duration;
     })
-    let timer1 = await Task.findOneAndUpdate(
-        { "_id": params.taskId, "timesheetLogs._id": body.timesheetLog },
+    await Task.findOneAndUpdate(
+        { "_id": params.taskId},
         {
             $set:
             {
