@@ -15,7 +15,7 @@ import ResetPassword from '../modules/auth/components/resetPassword';
 import ManageDocument from '../modules/document/components/administration';
 import Document from '../modules/document/components/user';
 
-import Home from '../modules/home/components';
+import { Home } from '../modules/home/components/home';
 
 import { Notifications } from "../modules/combine-modules";
 
