@@ -4,29 +4,26 @@ import { connect } from 'react-redux';
 import { AssetService } from '../../../asset-information/redux/services';
 import { AssetTypeService } from '../../../asset-type/redux/services';
 
-import AmountBarChart from './amount-of-asset/amountBarChart';
-import ValueBarChart from './value-of-asset/valueBarChart';
-import DepreciationBarChart from './depreciation-of-asset/depreciationBarChart';
-
-import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import AmountTree from './amount-of-asset/amountTree';
 import DepreciationTree from './depreciation-of-asset/depreciationTree';
 import ValueTree from './value-of-asset/valueTree';
 
+import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+
+
 class AssetByType extends Component {
     constructor(props) {
         super(props);
-
         this.INFO_SEARCH = {
             typeOfChart: ["Bar"]
         }
-
         this.state = {
             listAssets: [],
             displayBy: this.INFO_SEARCH.displayBy,
             typeOfChart: this.INFO_SEARCH.typeOfChart
         }
     }
+
     componentDidMount() {
         AssetService.getAll({
             assetName: "",
@@ -66,7 +63,8 @@ class AssetByType extends Component {
     }
 
     render() {
-        const { listAssets, recommendProcure, recommendDistribute, displayBy, assetType } = this.state;
+        let { translate } = this.props;
+        const { listAssets, assetType } = this.state;
 
         return (
             <React.Fragment>
@@ -75,7 +73,7 @@ class AssetByType extends Component {
                         <div className="col-xs-6">
                             <div className="box box-solid">
                                 <div className="box-header">
-                                    <div className="box-title">Biểu đồ khấu hao tài sản</div>
+                                    <div className="box-title">{translate('asset.dashboard.amount_of_asset')}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     <AmountTree
@@ -89,7 +87,7 @@ class AssetByType extends Component {
                         <div className="col-xs-6">
                             <div className="box box-solid">
                                 <div className="box-header">
-                                    <div className="box-title">Biểu đồ khấu hao tài sản</div>
+                                    <div className="box-title">{translate('asset.dashboard.value_of_asset')}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     <ValueTree
@@ -104,7 +102,7 @@ class AssetByType extends Component {
                         <div className="col-xs-6">
                             <div className="box box-solid">
                                 <div className="box-header">
-                                    <div className="box-title">Biểu đồ khấu hao tài sản</div>
+                                    <div className="box-title">{translate('asset.dashboard.depreciation_of_asset')}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     <DepreciationTree

@@ -12,6 +12,7 @@ import { TasksSchedule } from '../task-personal-dashboard/tasksSchedule';
 
 import { withTranslate } from 'react-redux-multilingual';
 import { SelectMulti, DatePicker } from '../../../../common-components/index';
+import Swal from 'sweetalert2';
 
 class TaskOrganizationUnitDashboard extends Component {
     constructor(props) {
@@ -23,9 +24,9 @@ class TaskOrganizationUnitDashboard extends Component {
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
-
         if (month.length < 2)
             month = '0' + month;
+
         if (day.length < 2)
             day = '0' + day;
 
@@ -33,8 +34,11 @@ class TaskOrganizationUnitDashboard extends Component {
             idsUnit: [],
             checkUnit: 0,
             startMonth: [year, month - 3].join('-'),
-            endMonth: [year, month].join('-')
+            endMonth: [year, month].join('-'),
+            startMonthTitle: `0${month - 3}-${year}`,
+            endMonthTitle: [month, year].join('-')
         }
+
         this.state = {
             userID: "",
             idsUnit: this.INFO_SEARCH.idsUnit,
@@ -52,18 +56,9 @@ class TaskOrganizationUnitDashboard extends Component {
     }
 
     componentDidMount = async () => {
-        // await this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
-        // await this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
-        // await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
-        // await this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
-        // await this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null);
-
-
         await this.props.getDepartment();
         await this.props.getChildrenOfOrganizationalUnitsAsTree(localStorage.getItem("currentRole"));
         await this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
-        // await this.props.getTaskInOrganizationUnitByMonth("[]", null, null);
-
 
         await this.setState(state => {
             return {
@@ -135,59 +130,56 @@ class TaskOrganizationUnitDashboard extends Component {
         let checkUnit = this.state.checkUnit + 1;
         this.INFO_SEARCH.checkUnit = checkUnit;
         this.INFO_SEARCH.idsUnit = value;
-        // await this.setState(state => {
-        //     return {
-        //         ...state,
-        //         checkUnit: checkUnit,
-        //         idsUnit: value
-        //     }
-        // })
     }
 
     handleSelectMonthStart = async (value) => {
         let month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
+        let startMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
         this.INFO_SEARCH.startMonth = month;
-        // await this.setState(state => {
-        //     return {
-        //         ...state,
-        //         startMonth: month
-        //     }
-        // })
+        this.INFO_SEARCH.startMonthTitle = startMonthTitle;
     }
 
     handleSelectMonthEnd = async (value) => {
         let month;
-
+        let endMonthTitle;
         if (value.slice(0, 2) < 12) {
             month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
+            endMonthTitle = value.slice(0, 2) + '-' + value.slice(3, 7);
         } else {
             month = (new Number(value.slice(3, 7))) + '-' + '1';
         }
         this.INFO_SEARCH.endMonth = month;
+        this.INFO_SEARCH.endMonthTitle = endMonthTitle;
 
-        // await this.setState(state => {
-        //     return {
-        //         ...state,
-        //         endMonth: month
-        //     }
-        // })
     }
     handleSearchData = async () => {
-        console.log('clickkkkkkkk');
-        await this.setState(state => {
-            return {
-                ...state,
-                startMonth: this.INFO_SEARCH.startMonth,
-                endMonth: this.INFO_SEARCH.endMonth,
-                idsUnit: this.INFO_SEARCH.idsUnit,
-                checkUnit: this.INFO_SEARCH.checkUnit,
+        let startMonth = new Date(this.INFO_SEARCH.startMonth);
+        let endMonth = new Date(this.INFO_SEARCH.endMonth);
 
-            }
-        })
+        if (startMonth.getTime() > endMonth.getTime()) {
+            const { translate } = this.props;
+            Swal.fire({
+                title: translate('kpi.evaluation.employee_evaluation.wrong_time'),
+                type: 'warning',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
+            })
+        } else {
+            await this.setState(state => {
+                return {
+                    ...state,
+                    startMonth: this.INFO_SEARCH.startMonth,
+                    endMonth: this.INFO_SEARCH.endMonth,
+                    idsUnit: this.INFO_SEARCH.idsUnit,
+                    checkUnit: this.INFO_SEARCH.checkUnit,
+                }
+            })
+        }
     }
     render() {
         const { tasks, translate, user } = this.props;
         let { idsUnit, startMonth, endMonth } = this.state;
+        let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
         let numTask, units, queue = [];
         let totalTasks = 0;
         let childrenOrganizationalUnit = [];
@@ -269,7 +261,7 @@ class TaskOrganizationUnitDashboard extends Component {
                     <div className="col-xs-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.tasks_calendar')}</div>
+                                <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
                             <TasksSchedule
                                 callAction={!this.state.willUpdate}
@@ -330,7 +322,6 @@ class TaskOrganizationUnitDashboard extends Component {
                                         TaskOrganizationUnitDashboard={true}
                                         startMonth={startMonth}
                                         endMonth={endMonth}
-                                        // tasksInUnit={tasks.organizationUnitTasks && tasks.organizationUnitTasks}
                                         units={idsUnit}
                                     />
                                 }
@@ -405,7 +396,6 @@ class TaskOrganizationUnitDashboard extends Component {
     }
 }
 
-// export { TaskOrganizationUnitDashboard };
 function mapState(state) {
     const { tasks, user, dashboardEvaluationEmployeeKpiSet } = state;
     return { tasks, user, dashboardEvaluationEmployeeKpiSet };

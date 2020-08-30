@@ -737,7 +737,7 @@ editTaskByAccountableEmployees = async (req, res) => {
 /** Chỉnh sửa taskInformation của task */
 exports.editTaskInformation = async (req, res) => {
     try {
-        let task = await PerformTaskService.editTaskInformation(req.params.taskId, req.body);
+        let task = await PerformTaskService.editTaskInformation(req.params.taskId, req.user._id, req.body);
 
         await LogInfo(req.user.email, ` edit task information `, req.user.company);
         res.status(200).json({

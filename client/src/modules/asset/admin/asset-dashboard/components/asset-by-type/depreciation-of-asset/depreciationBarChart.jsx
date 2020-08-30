@@ -1,26 +1,21 @@
 
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
 import c3 from 'c3';
 import 'c3/c3.css';
-import * as d3 from 'd3-format';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import DepreciationTree from './depreciationTree';
+import { translate } from 'react-redux-multilingual/lib/utils';
 
 class DepreciationBarChart extends Component {
     constructor(props) {
         super(props);
-
     }
 
     componentDidMount() {
-        if (this.refs.b) this.pieChart();
+        this.barChart();
     }
-    /**
-         * Hàm để tính các giá trị khấu hao cho tài sản
-         */
+
     calculateDepreciation = (depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation) => {
         let annualDepreciation = 0, monthlyDepreciation = 0, remainingValue = cost;
 
@@ -87,11 +82,9 @@ class DepreciationBarChart extends Component {
         // console.log('cost', parseInt(cost - remainingValue));
         return parseInt(cost - remainingValue);
     }
-    // Thiết lập dữ liệu biểu đồ
+
     setDataBarChart = () => {
         const { listAssets, assetType } = this.props;
-
-        // let typeName = [], countAssetType = [], idAssetType = [];
         let countDepreciation = [], typeName = [], shortName = [], idAssetType = [];
 
         for (let i in assetType) {
@@ -123,22 +116,23 @@ class DepreciationBarChart extends Component {
 
     // Xóa các chart đã render khi chưa đủ dữ liệu
     removePreviousChart() {
-        const chart = this.refs.b;
+        const chart = this.refs.depreciationBarChart;
         if (chart) {
             while (chart.hasChildNodes()) {
                 chart.removeChild(chart.lastChild);
             }
         }
     }
-    //  // Khởi tạo BarChart bằng C3
-    pieChart = () => {
+
+    // Khởi tạo BarChart bằng C3
+    barChart = () => {
+        let { translate } = this.props;
         let dataPieChart = this.setDataBarChart();
-        // this.removePreviousChart();
         let count = dataPieChart.count;
         let heightCalc = dataPieChart.type.length * 24.8;
         let height = heightCalc < 320 ? 320 : heightCalc;
         let chart = c3.generate({
-            bindto: this.refs.b,
+            bindto: this.refs.depreciationBarChart,
 
             data: {
                 columns: [count],
@@ -161,7 +155,7 @@ class DepreciationBarChart extends Component {
 
                 y: {
                     label: {
-                        text: 'Giá trị mất (Triệu)',
+                        text: translate('asset.dashboard.lost_value'),
                         position: 'outer-right'
                     }
                 },
@@ -189,19 +183,13 @@ class DepreciationBarChart extends Component {
     }
 
     render() {
-        this.pieChart();
+        this.barChart();
         return (
             <React.Fragment>
-                <div ref="b"></div>
+                <div ref="depreciationBarChart"></div>
             </React.Fragment>
         )
     }
 }
 
-// function mapState(state) { }
-
-// const actions = {}
-
-// const DepreciationBarChartConnected = connect(mapState, actions)(withTranslate(DepreciationBarChart));
-
-export default DepreciationBarChart;
+export default withTranslate(DepreciationBarChart);

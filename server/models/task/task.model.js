@@ -114,6 +114,10 @@ const TaskSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: User
     }],
+    confirmedByEmployees: [{
+        type: Schema.Types.ObjectId,
+        ref: User
+    }],
     evaluations: [{ // Một công việc có thể trải dài nhiều tháng, mỗi tháng phải đánh giá một lần
         date: { // Lưu ngày đánh giá. Khi muốn match công việc trong 1 KPI thì chỉ lấy tháng
             type: Date
@@ -155,6 +159,9 @@ const TaskSchema = new Schema({
                 default: 0
             },
             contribution: { // % Đóng góp: 0->100
+                type: Number
+            },
+            hoursSpent: {
                 type: Number
             },
             taskImportanceLevel: { // Mức độ quan trọng của công việc với người được đánh giá, từ 0-10, dùng trong công thức tính điểm KPI
@@ -221,6 +228,21 @@ const TaskSchema = new Schema({
             required: true
         }
     }],
+    hoursSpentOnTask: {
+        totalHoursSpent: {
+            type: Number,
+            default: 0
+        },
+        contributions: [{
+            employee: {
+                type: Schema.Types.ObjectId,
+                ref: User,
+            },
+            hoursSpent: {
+                type: Number
+            }
+        }]
+    },
     timesheetLogs: [{
         creator: { // Người thực hiện nào tiến hành bấm giờ
             type: Schema.Types.ObjectId,

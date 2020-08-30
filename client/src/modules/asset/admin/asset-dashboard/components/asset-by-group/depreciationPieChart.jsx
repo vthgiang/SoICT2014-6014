@@ -120,10 +120,10 @@ class DepreciationPieChart extends Component {
         }
 
         dataPieChart = [
-            ["Mặt bằng", depreciationExpenseOfBuilding > 0 ? depreciationExpenseOfBuilding : 0],
-            ["Phương tiện", depreciationExpenseOfVehicle],
-            ["Máy móc", depreciationExpenseOfMachine],
-            ["Khác", depreciationExpenseOfOrther],
+            [translate('asset.dashboard.building'), depreciationExpenseOfBuilding > 0 ? depreciationExpenseOfBuilding : 0],
+            [translate('asset.dashboard.vehicle'), depreciationExpenseOfVehicle],
+            [translate('asset.dashboard.machine'), depreciationExpenseOfMachine],
+            [translate('asset.dashboard.orther'), depreciationExpenseOfOrther],
         ];
         return dataPieChart;
     }
