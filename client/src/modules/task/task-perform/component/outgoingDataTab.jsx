@@ -189,7 +189,7 @@ class OutgoingDataTab extends Component {
                                                 <div className="col-md-6">
                                                     <ul>
                                                         <strong>{file.name}</strong>
-                                                        <span> - {file.url}</span>
+                                                        <span> - <a>{file.url}</a></span>
                                                     </ul>
                                                 </div>
                                             )

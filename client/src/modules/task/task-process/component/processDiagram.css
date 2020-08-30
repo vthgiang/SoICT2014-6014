@@ -135,3 +135,75 @@
     /* border: 1px solid black; */
     height: calc(100vh - 500px);
 }
+
+.task-process-title {
+    font-size: 12px; 
+    line-height: 1em; 
+    font-weight: bold; 
+    width: 150px; 
+    height: 45px; 
+    background-color: white;
+    display: block; 
+    display: -webkit-box; 
+    -webkit-line-clamp: 3; /* số dòng */ 
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis; 
+    overflow: hidden;
+}
+
+.list-task-process-responsible {
+    font-size: 10px; 
+    line-height: 1em; 
+    font-weight: bold; 
+    width: 150px; 
+    height: 45px; 
+    /* background-color: white; */
+    display: block; 
+    display: -webkit-box; 
+    -webkit-line-clamp: 2; /* số dòng */ 
+    -webkit-box-orient: vertical;
+    /* word-break: break-all; */
+    overflow: hidden;
+}
+
+.list-task-process-accountable {
+    font-size: 10px; 
+    line-height: 1em; 
+    width: 150px; 
+    height: 40px; 
+    /* background-color: white; */
+    display: block; 
+    display: -webkit-box; 
+    -webkit-line-clamp: 2; /* số dòng */ 
+    -webkit-box-orient: vertical;
+    /* word-break: break-all; */
+    overflow: hidden;
+}
+
+.djs-label {
+    background-color: white;
+}
+
+#createprocess > div > div > svg > g > g.layer-base > g:nth-child(7) > g > g {
+    background-color: white;
+}
+
+#createprocess > div > div > svg > g > g.layer-base > g:nth-child(2) > g > g {
+    display: none;
+}
+
+.list-task-process-gate-way-responsible {
+    font-size: 10px; 
+    line-height: 1em; 
+    font-weight: bold; 
+    width: 150px; 
+    height: 40px; 
+    /* background-color: white; */
+    display: block; 
+    display: -webkit-box; 
+    -webkit-line-clamp: 2; /* số dòng */ 
+    -webkit-box-orient: vertical;
+    /* word-break: break-all; */
+    overflow: hidden;
+    text-align: center;
+}

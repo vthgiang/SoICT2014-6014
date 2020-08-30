@@ -4,6 +4,8 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DocumentActions } from '../../../redux/actions';
 import { ExportExcel, Tree } from '../../../../../common-components';
 import ListDocument from './ListDocument';
+import TreeDomain from './domainChart/treeDomain';
+import TreeArchive from './archiveChart/treeArchive';
 import c3 from 'c3';
 import 'c3/c3.css';
 
@@ -116,7 +118,7 @@ class AdministrationStatisticsReport extends Component {
     barChart = () => {
         this.removePreviousBarChart();
         let dataChart = this.getDataViewDownloadBarChart();
-        let x = ["Xem", "Download"];
+        let x = ["View", "Download"];
         this.chart = c3.generate({
             bindto: this.refs.barchart,
 
@@ -127,7 +129,22 @@ class AdministrationStatisticsReport extends Component {
                 right: 20,
                 left: 20
             },
-
+            axis: {
+                x: {
+                    type: 'category',
+                    categories: x,
+                    // tick: {
+                    //     multiline: false
+                    // }
+                },
+                // y: {
+                //     label: {
+                //         text: 'Số lượng',
+                //         position: 'outer-right'
+                //     }
+                // },
+                // rotated: true
+            },
             data: {                                 // Dữ liệu biểu đồ
                 columns: dataChart,
                 type: 'bar',
@@ -245,7 +262,6 @@ class AdministrationStatisticsReport extends Component {
         return exportData;
     }
     onChanged = async (e, data) => {
-        console.log('data', data);
         await this.setState({
             currentDomain: data.node,
             dataStatus: this.DATA_STATUS.AVAILABLE,
@@ -340,7 +356,6 @@ class AdministrationStatisticsReport extends Component {
     barChartDocumentInDomain = () => {
         this.removePreviousDomainChart();
         let dataChart = this.setDataDomainBarchart();
-        console.log('helllo', this.setDataDomainBarchart());
         let count = dataChart.count;
         let heightCalc
         if (dataChart.type) {
@@ -494,7 +509,7 @@ class AdministrationStatisticsReport extends Component {
     setDataArchiveBarchart = () => {
         const archives = this.props.documents.administration.archives.list;
         const docs = this.props.documents.administration.data.list;
-        console.log('iiiiii', docs, archives);
+        //console.log('iiiiii', docs, archives);
         let typeName = [], shortName = [], countArchive = [], idArchive = [];
         for (let i in archives) {
             countArchive[i] = 0;
@@ -522,7 +537,7 @@ class AdministrationStatisticsReport extends Component {
             type: typeName,
             shortName: shortName
         }
-        console.log('output', data);
+
         return data;
     }
     render() {
@@ -608,29 +623,35 @@ class AdministrationStatisticsReport extends Component {
                 </div>
             </div>
             <div className="row">
-                <div className="col-xs-12" >
+                <div className="col-xs-6" >
                     <div className="box box-primary">
                         <div className="box-header with-border">
                             <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_view_down')}</b>
                         </div>
                         <div className="box-body qlcv" style={{ minHeight: "400px" }}>
-                            <div ref="a"></div>
+                            <TreeDomain
+                                domains={list}
+                                documents={docs}
+                            />
+
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="row">
-                <div className="col-xs-12" >
+                <div className="col-xs-6" >
                     <div className="box box-primary">
                         <div className="box-header with-border">
                             <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_view_down')}</b>
                         </div>
                         <div className="box-body qlcv" style={{ minHeight: "400px" }}>
-                            <div ref="archives"></div>
+                            <TreeArchive
+                                archives={listArchives}
+                                documents={docs}
+                            />
                         </div>
                     </div>
                 </div>
             </div>
+
 
         </React.Fragment>;
 

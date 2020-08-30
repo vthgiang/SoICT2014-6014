@@ -81,9 +81,8 @@ class RoleCreateForm extends Component {
         this.setState({ roleName: value });
 
         let {translate} = this.props;
-        let {msg} = ValidationHelper.validateName(value, 4, 255);
-        let err = msg ? translate(msg, {min: 4, max: 255}) : undefined;
-        this.setState({ roleNameError: err})
+        let {message} = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({ roleNameError: message})
     }
 
     handleParents = (value) => {
@@ -116,7 +115,8 @@ class RoleCreateForm extends Component {
 
     isFormValidated = () => {
         let {roleName} = this.state;
-        if(!ValidationHelper.validateName(roleName).status) return false;
+        let {translate} = this.props;
+        if(!ValidationHelper.validateName(translate, roleName).status) return false;
         return true;
     }
 

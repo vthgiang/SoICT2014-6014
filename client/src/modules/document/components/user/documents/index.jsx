@@ -195,7 +195,7 @@ class UserDocumentsData extends Component {
                             documentVersions={currentRow.versions}
 
                             documentRelationshipDescription={currentRow.relationshipDescription}
-                            documentRelationshipDocuments={currentRow.relationshipDocuments}
+                            documentRelationshipDocuments={currentRow.relationshipDocuments ? currentRow.relationshipDocuments.map(document => document.name) : []}
 
                             documentRoles={currentRow.roles}
 

@@ -314,6 +314,7 @@ class AssetEditForm extends Component {
                 status: nextProps.status,
                 canRegisterForUse: nextProps.canRegisterForUse,
                 detailInfo: nextProps.detailInfo,
+                readByRoles: nextProps.readByRoles,
                 // Khấu hao
                 cost: nextProps.cost,
                 residualValue: nextProps.residualValue,
@@ -369,7 +370,7 @@ class AssetEditForm extends Component {
         const { _id, img, avatar, code, assetName, serial, assetType, group, purchaseDate, warrantyExpirationDate, managedBy, assignedToUser, assignedToOrganizationalUnit, handoverFromDate,
             handoverToDate, location, description, status, canRegisterForUse, detailInfo, usageLogs, maintainanceLogs, cost, residualValue, startDepreciation,
             usefulLife, depreciationType, incidentLogs, disposalDate, disposalType, unitsProducedDuringTheYears, disposalCost, disposalDesc, archivedRecordNumber,
-            files, estimatedTotalProduction } = this.state;
+            files, estimatedTotalProduction, readByRoles } = this.state;
 
 
         return (
@@ -419,6 +420,7 @@ class AssetEditForm extends Component {
                                 canRegisterForUse={canRegisterForUse}
                                 detailInfo={detailInfo}
                                 usageLogs={usageLogs}
+                                readByRoles={readByRoles}
                             />
 
                             {/* Thông tin sử dụng */}

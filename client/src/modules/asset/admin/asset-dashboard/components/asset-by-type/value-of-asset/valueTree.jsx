@@ -18,6 +18,7 @@ class ValueTree extends Component {
             tree: false
         }
     }
+
     handleChangeViewChart = async (value) => {
         await this.setState(state => {
             return {
@@ -28,7 +29,7 @@ class ValueTree extends Component {
     }
 
     render() {
-        let { assetType, listAssets } = this.props;
+        let { assetType, listAssets, translate } = this.props;
         let { tree } = this.state;
         let typeName = [], countAssetValue = [], idAssetType = [];
 
@@ -57,6 +58,7 @@ class ValueTree extends Component {
                 })
             }
         }
+
         let dataTree = chart && chart.map(node => {
             return {
                 ...node,
@@ -71,14 +73,15 @@ class ValueTree extends Component {
                 {/* Chọn loại biểu đồ */}
                 <div className="box-tools pull-right">
                     <div className="btn-group pull-right">
-                        <button type="button" className={`btn btn-xs ${tree ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Bar chart</button>
-                        <button type="button" className={`btn btn-xs ${tree ? "btn-danger" : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Tree</button>
+                        <button type="button" className={`btn btn-xs ${tree ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>{translate('asset.dashboard.bar_chart')}</button>
+                        <button type="button" className={`btn btn-xs ${tree ? "btn-danger" : "active"}`} onClick={() => this.handleChangeViewChart(true)}>{translate('asset.dashboard.tree')}</button>
                     </div>
                 </div>
                 {
                     tree ?
                         <div>
                             <br />
+                            {/* Cây giá trị tài sản */}
                             <Tree
                                 id="tree-qlcv-value-asset"
                                 data={dataTree}
@@ -94,4 +97,4 @@ class ValueTree extends Component {
     }
 }
 
-export default ValueTree;
+export default withTranslate(ValueTree);
