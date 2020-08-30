@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { ComponentActions } from '../redux/actions';
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
-import { VALIDATOR } from '../../../../helpers/validator';
+import ValidationHelper from '../../../../helpers/validationHelper';
 class ComponentInfoForm extends Component {
     constructor(props) {
         super(props);
@@ -75,13 +75,13 @@ class ComponentInfoForm extends Component {
     }
 
     handleComponentDescription = (e) => {
+        let {value} = e.target;
+        this.setState({ componentDescription: value });
+
         let {translate} = this.props;
-        let { value } = e.target;
-        let {msg} = VALIDATOR.checkDescription(value);
-        this.setState({
-            componentDescription: value,
-            componentDescriptionError: msg ? `${translate('manage_component.description')} ${translate(msg)}` : undefined
-        });
+        let {msg} = ValidationHelper.validateDescription(value);
+        let error = msg ? translate(msg) : undefined;
+        this.setState({ componentDescriptionError: error})
     }
 
     handleComponentLink = (value) => {
@@ -110,7 +110,7 @@ class ComponentInfoForm extends Component {
 
     isFormValidated = () => {
         let {componentDescription} = this.state;
-        if(!VALIDATOR.checkDescription(componentDescription).status) return false;
+        if(!ValidationHelper.validateDescription(componentDescription).status) return false;
         return true;
     }
 

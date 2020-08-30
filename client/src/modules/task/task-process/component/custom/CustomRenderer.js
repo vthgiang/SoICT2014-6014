@@ -52,7 +52,7 @@ export default class CustomRenderer extends BaseRenderer {
       element.width = 160;
       // let a = element.businessObject.name.split("")
       let b = element.businessObject.name
-      console.log(b)
+
       const line = drawLine(parentNode, 0, 40, 160, 40, 'black');
 
       var text = svgCreate('text');

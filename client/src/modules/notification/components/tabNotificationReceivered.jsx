@@ -19,8 +19,28 @@ class TabNotificationReceivered extends Component {
         let content = [];
         if (notifications.isLoading === false) {
             content = notifications.receivered.paginate.map( x => x.content);
-            content = content.map(x => x.trim());
             console.log(content);
+            content = content.map(x => {
+                let y = x.split('');
+                let i = 0;
+                while ( i < y.length ) {
+                    if (y[i] === '&'){
+                        y.splice(i,6);
+                        i=i-2;
+                    }
+                    i++;
+                }
+                i = 1;
+                while ( i < y.length ) {
+                    if (y[i] === ' ' && y[i-1] === ' '){
+                        y.splice(i,1);
+                        i=i-1;
+                    }
+                    i++;
+                }
+                y = y.join('');
+                return innerText(parse(y));
+            });
         }
         return ( 
             <React.Fragment>
@@ -40,22 +60,22 @@ class TabNotificationReceivered extends Component {
                     <ul className="todo-list">
                     {
                         notifications.receivered.paginate.length > 0 ? 
-                        notifications.receivered.paginate.map(notification => 
+                        notifications.receivered.paginate.map((notification, index) => 
                             <li key={notification._id} style={{border: "none", backgroundColor: "white", cursor: "pointer", overflow: "hidden"}}>
                                 <div className="row" >
                                     <div style={{ marginBottom: 5 }} className="col-sm-11" onClick={() => this.handleEdit(notification)}>
-                                        {
+                                        <div>{
                                             notification.level === 'info' ? <i className="fa fa-fw fa-info-circle text-blue" /> :
-                                                notification.level === 'general' ? <i className="fa fa-fw fa-bell text-green" /> :
-                                                    notification.level === 'important' ? <i className="fa fa-fw fa-warning text-yellow" /> :
-                                                        <i className="fa fa-fw fa-bomb text-red" />
+                                            notification.level === 'general' ? <i className="fa fa-fw fa-bell text-green" /> :
+                                            notification.level === 'important' ? <i className="fa fa-fw fa-warning text-yellow" /> :
+                                            <i className="fa fa-fw fa-bomb text-red" />
                                         }
-                                        <div><DateTimeConverter dateTime={notification.createdAt} type={1} />
+                                        <DateTimeConverter dateTime={notification.createdAt} type={1} />
                                             {notification.readed ?
                                                 <div className="label" style={{ width: 30, display: "inline-block", margin: "0 0 0 5px" }}></div> :
                                                 <div className="label label-danger" style={{ width: 30, display: "inline-block", margin: "0 0 0 5px" }}>{translate('notification.new')}</div>
                                             }</div>
-                                        <span className="threedots" style={{ maxWidth: "100%", display: "inline-block" }}><b>{notification.title}</b> {innerText(parse(notification.content))}</span>
+                                        <span className="threedots" style={{ maxWidth: "100%", display: "inline-block" }}><b>{notification.title}</b> {content[index]}</span>
                                     </div>
                                     <div className="col-sm-1">
                                         <DeleteNotification

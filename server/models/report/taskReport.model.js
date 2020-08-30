@@ -82,6 +82,14 @@ const TaskReportSchema = new Schema({
         charType: { // 0: Barchart, 1: Line Chart, 2: Pie chart,....
             type: Number
         }
+    }],
+    dataForAxisXInChart: [{
+        id: {
+            type: Number
+        },
+        name: {
+            type: String
+        }
     }]
 }, {
     timestamps: true

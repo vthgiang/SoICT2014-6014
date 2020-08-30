@@ -29,7 +29,24 @@ class NotificationReiceiverdInfo extends Component {
     render() { 
         const { notifications, translate } = this.props;
         const { notificationTitle, notificationSender, notificationCreatedAt, notificationLevel, notificationContent } = this.state;
-        
+        let content = notificationContent;
+        let cssTable = " style=\"border: 1px solid black; padding-left: 3px; padding-right: 3px\"";
+        while (content.indexOf("<table>") !== -1) {
+            let vt = content.indexOf("<table>");
+            let str = content.slice(0,vt+6);
+            let strEnd = content.slice(vt+6);
+            str = str.concat(cssTable);
+            str = str.concat(strEnd);
+            content = str;
+        }
+        while (content.indexOf("<td>") !== -1) {
+            let vt = content.indexOf("<td>");
+            let str = content.slice(0,vt+3);
+            let strEnd = content.slice(vt+3);
+            str = str.concat(cssTable);
+            str = str.concat(strEnd);
+            content = str;
+        }
         return ( 
             <DialogModal
                 func={this.save} isLoading={notifications.isLoading}
@@ -50,7 +67,7 @@ class NotificationReiceiverdInfo extends Component {
                             <div className="inline"><b> {notificationSender}, <DateTimeConverter dateTime={notificationCreatedAt}/></b></div>
                         </div>
                     </div>
-                    <div style={{ margin: '20px 0px 20px 0px'}}>{parse(notificationContent)}</div>
+                    <div style={{ margin: '20px 0px 20px 0px'}}>{parse(content)}</div>
                 </div>
             </DialogModal>
          );

@@ -142,6 +142,10 @@ class LineBarChart extends Component {
                     tick: {
                         format: '%m - %Y',
                         outer: false,
+                        // culling: false,
+                        // format: function (d) {
+                        //     console.log('d', d)
+                        // }
                     },
                 },
                 y: {
@@ -153,22 +157,16 @@ class LineBarChart extends Component {
 
 
     render() {
-        const { barAndLineChart } = this.state;
         return (
             <React.Fragment>
-                <div className="row">
-                    <div className="col-xs-12">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">Báo cáo công việc</h3>
-                            </div>
-                            <div className="box-body dashboard_box_body">
-                                <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
-                                <div ref="barChart"></div>
-                            </div>
-                        </div>
+                <div className="box box-primary">
+                    <div className="box-header with-border">
+                        <h3 className="box-title">Báo cáo công việc</h3>
                     </div>
-
+                    <div className="box-body dashboard_box_body">
+                        <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
+                        <div ref="barChart"></div>
+                    </div>
                 </div>
             </React.Fragment>
         )

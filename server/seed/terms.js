@@ -557,22 +557,22 @@ const LINKS = [
         components: getComponentsInLink('/manage-incident-asset')
     },
     {
-        url: '/manage-recommend-procure',
+        url: '/manage-asset-purchase-request',
         description: 'Quản lý đề nghị mua sắm tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
             ROOT_ROLES.ADMIN.name,
         ],
-        components: getComponentsInLink('/manage-recommend-procure')
+        components: getComponentsInLink('/manage-asset-purchase-request')
     },
     {
-        url: '/manage-recommend-distribute-asset',
+        url: '/manage-asset-use-request',
         description: 'Quản lý đăng ký sử dụng tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
             ROOT_ROLES.ADMIN.name,
         ],
-        components: getComponentsInLink('/manage-recommend-distribute-asset')
+        components: getComponentsInLink('/manage-asset-use-request')
     },
 
     {
@@ -598,7 +598,7 @@ const LINKS = [
         components: getComponentsInLink('/employee-manage-incident-asset')
     },
     {
-        url: '/employee-manage-recommend-distribute-asset',
+        url: '/employee-manage-asset-use-request',
         description: 'Quản lý đăng kí sử dụng tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
@@ -606,12 +606,12 @@ const LINKS = [
             ROOT_ROLES.VICE_DEAN.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-        components: getComponentsInLink('/employee-manage-recommend-distribute-asset')
+        components: getComponentsInLink('/employee-manage-asset-use-request')
     },
     
 
     {
-        url: '/recommend-equipment-procurement',
+        url: '/asset-purchase-request',
         description: 'Đăng ký mua sắm tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
@@ -619,10 +619,10 @@ const LINKS = [
             ROOT_ROLES.VICE_DEAN.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-        components: getComponentsInLink('/recommend-equipment-procurement')
+        components: getComponentsInLink('/asset-purchase-request')
     },
     {
-        url: '/recommmend-distribute-asset',
+        url: '/asset-use-request',
         description: 'Đăng ký sử dụng tài sản',
         category: LINK_CATEGORY.ASSET.name,
         roles: [
@@ -630,7 +630,7 @@ const LINKS = [
             ROOT_ROLES.VICE_DEAN.name,
             ROOT_ROLES.EMPLOYEE.name,
         ],
-        components: getComponentsInLink('/recommmend-distribute-asset')
+        components: getComponentsInLink('/asset-use-request')
     },
     {
         url: '/manage-assigned-asset',

@@ -5,6 +5,15 @@ const employeeNumberRegex = /^[^~`!@#$%^&*()+=/*';\\<>?:",]*$/;
 const urlRegex = /^[^~`!@#$%^&*()+= *';\\<>?:",]*$/;
 const stringNotSpaceRegex = /^[^~`!@#$%^&*()+=/ *';\\<>?:",]*$/;
 
+export const REGEX = {
+    NAME: nameRegex,
+    EMAIL: emailRegex,
+    PASSWORD: passwordRegex,
+    EMPLOYEE_NUMBER: employeeNumberRegex,
+    URL: urlRegex,
+    STRING_NOT_SPACE: stringNotSpaceRegex,
+}
+
 /**
  * Validate dữ liệu nhập vào từ người dùng trươc khi gửi đến cho server xử lý
  */

@@ -20,7 +20,6 @@ exports.getAllTasks = async () => {
  * @param {*} data 
  */
 exports.getTaskEvaluations = async (data) => {
-    console.log('data', data)
     // Lấy keySearch tu client gui trong body
     let organizationalUnit = data.organizationalUnit;
     let idTemplate = data.taskTemplate;
@@ -77,18 +76,35 @@ exports.getTaskEvaluations = async (data) => {
     let condition = [
         { $match: { organizationalUnit: mongoose.Types.ObjectId(organizationalUnit) } },
         { $match: { taskTemplate: mongoose.Types.ObjectId(idTemplate) } },
-        { $unwind: "$responsibleEmployees" },
-        { $unwind: "$accountableEmployees" },
+        // { $unwind: "$responsibleEmployees" },
+        // { $unwind: "$accountableEmployees" },
         { $unwind: "$evaluations" },
+        {
+            $lookup: {
+                from: "users",
+                localField: "responsibleEmployees",
+                foreignField: "_id",
+                as: "responsibleEmployeesInfo"
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "accountableEmployees",
+                foreignField: "_id",
+                as: "accountableEmployeesInfo"
+            }
+        },
         {
             $replaceRoot: {
                 newRoot: {
-                    $mergeObjects: [{ name: "$name" }, { taskId: "$_id" }, { status: "$status" }, { responsibleEmployees: "$responsibleEmployees" },
-                    { accountableEmployees: "$accountableEmployees" },
+                    $mergeObjects: [{ name: "$name" }, { taskId: "$_id" }, { status: "$status" }, { responsibleEmployees: "$responsibleEmployeesInfo" },
+                    { accountableEmployees: "$accountableEmployeesInfo" },
                     { startDate: "$startDate" }, { endDate: "$endDate" }, { priority: "$priority" }, "$evaluations"]
                 }
             }
         },
+
     ];
 
     if (!startDate && !endDate) {
@@ -116,8 +132,8 @@ exports.getTaskEvaluations = async (data) => {
             } else {
                 condition = [
                     { $match: { status: taskStatus } },
-                    { $match: { responsibleEmployees: { $in: [...responsible.map(x => mongoose.Types.ObjectId(x.toString()))] } } },
-                    { $match: { accountableEmployees: { $in: [...accountable.map(y => mongoose.Types.ObjectId(y.toString()))] } } },
+                    { $match: { responsibleEmployees: { $elemMatch: { _id: { $in: [...responsible.map(x => mongoose.Types.ObjectId(x.toString()))] } } } } },
+                    { $match: { accountableEmployees: { $elemMatch: { _id: { $in: [...accountable.map(y => mongoose.Types.ObjectId(y.toString()))] } } } } },
                     ...condition,
                     filterDate,
 
@@ -125,16 +141,22 @@ exports.getTaskEvaluations = async (data) => {
             }
     }
 
-
     let result = await Task.aggregate(condition); // kết quả sau khi truy vấn mongodb
 
     // lấy danh sachs điều kiện lọc của trường thông tin của công việc
     let taskInfo = data.taskInformations;
+    let listDataChart = [];
+    if (data.itemListBoxRight) {
+        listDataChart = data.itemListBoxRight;
+        listDataChart = listDataChart.map(item => JSON.parse(item));
+    }
+    // let listDataChart = data.itemListBoxRight;
+
     taskInfo = taskInfo.map(item => JSON.parse(item));
 
     let configurations = [];
     // Lấy các điều kiện lọc của các trường thông tin từ client gửi về.
-    for (let [index, value] of taskInfo.entries()) { // tương tự for in
+    for (let [index, value] of taskInfo.entries()) { // tương tự for in. (for of sử dụng Array entries function get index)
         configurations[index] = {
             filter: value.filter,
             newName: value.newName,
@@ -153,6 +175,7 @@ exports.getTaskEvaluations = async (data) => {
          * Gộp trường taskInfomation của task vào array configurations
          * Mục đích để đính kèm các điều kiện lọc của các trường thông tin vào taskInfomation để tính toán
          */
+
         let taskMerge = taskInformations.map((item, index) => Object.assign({}, item, configurations[index]))
         return { // Lấy các trường cần thiết
             _id: item._id,
@@ -167,11 +190,10 @@ exports.getTaskEvaluations = async (data) => {
             frequency: frequency,
             taskInformations: taskMerge,
             results: item.results,
+            dataForAxisXInChart: listDataChart,
         };
     })
     return newResult;
-
-
 }
 
 /**
@@ -1221,7 +1243,7 @@ exports.createTask = async (task) => {
     user = await User.find({
         _id: { $in: userIds }
     })
-
+    console.log(con);
     email = user.map(item => item.email); // Lấy ra tất cả email của người dùng
     email.push("trinhhong102@gmail.com");
     var html = `<p>Bạn được giao nhiệm vụ trong công việc:  <a href="${process.env.WEBSITE}/task?taskId=${task._id}" target="_blank">${process.env.WEBSITE}/task?taskId=${task._id} </a></p> ` +
@@ -1237,17 +1259,17 @@ exports.createTask = async (task) => {
         `<ul>${acc.map((item) => {
             return `<li>${item.name}</li>`
         })}
-                    </ul>`+
-        `<p>Người hỗ trợ</p> ` +
+                    </ul>` +
+        `${con.length > 0 ? `<p>Người hỗ trợ</p> ` +
         `<ul>${con.map((item) => {
             return `<li>${item.name}</li>`
         })}
-                    </ul>`+
-        `<p>Người quan sát</p> ` +
+                    </ul>` : "" }` +
+        `${inf.length > 0 ? `<p>Người quan sát</p> ` +
         `<ul>${inf.map((item) => {
             return `<li>${item.name}</li>`
         })}
-                    </ul>`
+                    </ul>` : "" }`
         ;
 
     return { task: task, user: userIds, email: email, html: html };

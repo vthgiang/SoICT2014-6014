@@ -10,28 +10,32 @@ export const performTaskService = {
     getTimerStatusTask,
     startTimerTask,
     stopTimerTask,
+
     createActionComment,
     deleteActionComment,
     editActionComment,
     createTaskAction,
     editTaskAction,
     deleteTaskAction,
+    confirmAction,
+
     createTaskComment,
     editTaskComment,
     deleteTaskComment,
     createCommentOfTaskComment,
     editCommentOfTaskComment,
     deleteCommentOfTaskComment,
-    evaluationAction,
-    confirmAction,
+
     uploadFile,
-    addTaskLog,
     deleteFileAction,
     deleteFileCommentOfAction,
     deleteFileTaskComment,
     deleteFileChildTaskComment,
-    getTaskLog,
     deleteFileTask,
+
+    addTaskLog,
+    getTaskLog,
+   
     editTaskByAccountableEmployees,
     editTaskByResponsibleEmployees,
     editStatusOfTask,
@@ -39,11 +43,14 @@ export const performTaskService = {
     editDocument,
     deleteDocument,
 
+    evaluationAction,
     evaluateTaskByAccountableEmployees,
     evaluateTaskByConsultedEmployees,
     evaluateTaskByResponsibleEmployees,
 
     deleteEvaluation,
+
+    editInformationTask
 };
 
 
@@ -172,6 +179,15 @@ function deleteTaskAction(actionId, taskId) {
     return sendRequest({
         url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-actions/${actionId}`,
         method: 'DELETE'
+    }, false, true, 'task.task_perform');
+}
+
+/** Chỉnh sửa task information */
+function editInformationTask(taskId, taskInformations) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/task-informations`,
+        method: 'PATCH',
+        data: taskInformations
     }, false, true, 'task.task_perform');
 }
 
@@ -523,7 +539,8 @@ function deleteDocument(documentId, taskId) {
  */
 function editDocument(documentId, taskId, data) {
     return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/documents/${documentId}`,
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}/documents`,
+        params: { documentId: documentId },
         data: data,
         method: 'PATCH',
     }, true, true, 'task.task_perform');

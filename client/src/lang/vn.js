@@ -71,11 +71,14 @@ export default {
                 ],
             },
             validate: {
-                nameTypeErr: 'không được chứa ký tự đặc biệt',
-                nameLengthErr: 'không được để trống hoặc không quá 255 ký tự',
-                emailErr: 'không hợp lệ',
-                passwordLengthErr: 'phải có độ dài từ 6 đến 30 ký tự',
-                descriptionLengthErr: 'không được để trống',
+                invalid_character_error: 'không được chứa ký tự đặc biệt',
+                length_error: 'phải có số ký tự từ {min} đến {max}',
+                minimum_length_error: 'phải có độ dài tối thiểu là {min} ký tự',
+                maximum_length_error: 'có độ dài không quá {max} ký tự',
+                invalid_error: 'không hợp lệ',
+                empty_error: 'không được để trống',
+                not_existing_error: 'không tồn tại',
+                existing_error: 'đã tồn tại',
             }
         },
 
@@ -184,8 +187,38 @@ export default {
                 component_exist: 'Component này đã tồn tại',
             },
 
-            log: {
-
+            system_setting: {
+                backup: {
+                    config: 'Cấu hình sao lưu dữ liệu',
+                    backup_button: 'Sao lưu dữ liệu',
+                    automatic: 'Tự động', on: 'Bật sao lưu', off: "Tắt sao lưu",
+                    week_day: {
+                        mon: 'Thứ hai', tue: 'Thứ ba', wed: 'Thứ tư', thur: 'Thứ năm', fri: 'Thứ sáu', sat: 'Thứ bảy', sun: 'Chủ nhật',
+                    },
+                    month_list: {
+                        jan: 'Tháng 1',
+                        feb: 'Tháng 2',
+                        mar: 'Tháng 3',
+                        apr: 'Tháng 4',
+                        may: 'Tháng 5',
+                        june: 'Tháng 6',
+                        july: 'Tháng 7',
+                        aug: 'Tháng 8',
+                        sep: 'Tháng 9',
+                        oct: 'Tháng 10',
+                        nov: 'Tháng 11',
+                        dec: 'Tháng 12'
+                    },
+                    limit: 'Giới hạn',
+                    period: 'Định kỳ', weekly: 'Hàng tuần', monthly: 'Hàng tháng', yearly: 'Hằng năm',
+                    date: 'Ngày', hour: 'Giờ', minute: 'Phút', second: 'Giây', day: 'Thứ', month: 'Tháng',
+                    save: 'Lưu cấu hình',
+                    
+                    version: 'Phiên bản',
+                    description: 'Mô tả về phiên bản',
+                    backup_time: 'Thời gian đã sao lưu',
+                    action: 'Hành động',
+                },
             },
 
             root_role: {
@@ -1993,6 +2026,8 @@ export default {
                 finished: 'Đã hoàn thành',
                 delayed: 'Tạm hoãn',
                 canceled: 'Bị hủy',
+                task_status: 'Trạng thái công việc',
+                filter: 'Lọc',
 
                 priority: 'Độ ưu tiên',
                 select_priority: 'Chọn mức độ ưu tiên',
@@ -2061,7 +2096,7 @@ export default {
                 detail_show_info: 'Hiện thông tin',
                 detail_choose_role: 'Chọn vai trò',
 
-                detail_link: 'Liên kết công việc',
+                detail_link: 'Link công việc',
                 detail_priority: 'Độ ưu tiên công việc',
                 detail_status: 'Trạng thái công việc',
                 detail_time: 'Thời gian thực hiện công việc',

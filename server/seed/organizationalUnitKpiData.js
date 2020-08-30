@@ -54,6 +54,7 @@ var organizationalUnitKpiData = async () => {
     var viceDean = await User.findOne({ name: "Trần Văn Bình" });
     var employee_1 = await User.findOne({ name: "Vũ Thị Cúc" });
     var employee_2 = await User.findOne({ name: "Nguyễn Văn Danh" });
+    var employee_3 = await User.findOne({ name: "Phạm Đình Phúc" });
     var organizationalUnit_1 = await OrganizationalUnit.findOne({ name: "Ban giám đốc" });
     var now = new Date();
     var currentYear = now.getFullYear();
@@ -245,6 +246,30 @@ var organizationalUnitKpiData = async () => {
         }, 
     ]);
 
+    var employeeKpiSet_3 = await EmployeeKpiSet.insertMany([
+        {
+            organizationalUnit: organizationalUnit_1,
+            creator: employee_3,
+            approver: dean,
+            date: new Date(currentYear, currentMonth - 1 + 1, 0),
+            kpis: [],
+            automaticPoint: 75,
+            employeePoint: 90,
+            approvedPoint: 80,
+            status: 2,
+        }, {
+            organizationalUnit: organizationalUnit_1,
+            creator: employee_3,
+            approver: dean,
+            date: new Date(currentYear, currentMonth + 1, 0),
+            kpis: [],
+            automaticPoint: 82,
+            employeePoint: 75,
+            approvedPoint: 77,
+            status: 2,
+        }, 
+    ]);
+
     
     console.log("Khởi tạo Employee Kpi");
 
@@ -428,6 +453,96 @@ var organizationalUnitKpiData = async () => {
         }, 
     ]);
 
+    var employee_3KpiArray = [];
+
+    employee_3KpiArray[0] = await EmployeeKpi.insertMany([
+        {
+            name: "Phê duyệt công việc",
+            parent: organizationalUnitKpiArray_1[0][0]._id,
+            weight: 5,
+            criteria: "Phê duyệt công việc",
+            status: 1,
+            type: 1,
+            automaticPoint: 80,
+            employeePoint: 90,
+            approvedPoint: 83
+        }, {
+            name: "Hỗ trợ thực hiện công việc",
+            parent: organizationalUnitKpiArray_1[0][1]._id,
+            weight: 5,
+            criteria: "Hỗ trợ thực hiện công việc",
+            status: 1,
+            type: 2,
+            automaticPoint: 93,
+            employeePoint: 93,
+            approvedPoint: 95
+        }, {
+            name: "Tiến hành các cuộc khảo sát nguồn nhân lực ở HCM",
+            parent: organizationalUnitKpiArray_1[0][2]._id,
+            weight: 40,
+            criteria: "Các cuộc khảo sát thực hiện được",
+            status: 1,
+            type: 0,
+            automaticPoint: 70,
+            employeePoint: 95,
+            approvedPoint: 70
+        }, {
+            name: "Tìm kiếm, củng cố nguồn nhân lực ở Đà Nẵng",
+            parent: organizationalUnitKpiArray_1[0][3]._id,
+            weight: 50,
+            criteria: "Nguồn nhân lực củng cố được",
+            status: 1,
+            type: 0,
+            automaticPoint: 90,
+            employeePoint: 90,
+            approvedPoint: 80
+        }, 
+    ]);
+
+    employee_3KpiArray[1] = await EmployeeKpi.insertMany([
+        {
+            name: "Phê duyệt công việc",
+            parent: organizationalUnitKpiArray_1[1][0]._id,
+            weight: 5,
+            criteria: "Phê duyệt công việc",
+            status: 1,
+            type: 1,
+            automaticPoint: 80,
+            employeePoint: 90,
+            approvedPoint: 83
+        }, {
+            name: "Hỗ trợ thực hiện công việc",
+            parent: organizationalUnitKpiArray_1[1][1]._id,
+            weight: 5,
+            criteria: "Hỗ trợ thực hiện công việc",
+            status: 1,
+            type: 2,
+            automaticPoint: 93,
+            employeePoint: 93,
+            approvedPoint: 95
+        }, {
+            name: "Tiến hành các cuộc khảo sát nguồn nhân lực ở Cần Thơ",
+            parent: organizationalUnitKpiArray_1[1][2]._id,
+            weight: 40,
+            criteria: "Các cuộc khảo sát thực hiện được",
+            status: 1,
+            type: 0,
+            automaticPoint: 70,
+            employeePoint: 95,
+            approvedPoint: 70
+        }, {
+            name: "Tìm kiếm, củng cố nguồn nhân lực ở Bình Thuận",
+            parent: organizationalUnitKpiArray_1[1][3]._id,
+            weight: 50,
+            criteria: "Nguồn nhân lực củng cố được",
+            status: 1,
+            type: 0,
+            automaticPoint: 90,
+            employeePoint: 90,
+            approvedPoint: 80
+        }, 
+    ]);
+
     /**
      * Gắn các KPI vào tập KPI cá nhân
      */
@@ -441,6 +556,12 @@ var organizationalUnitKpiData = async () => {
         employeeKpiSet_2[i] = await EmployeeKpiSet.findByIdAndUpdate(
             employeeKpiSet_2[i], { $push: { kpis: employee_2KpiArray[i].map(x => {return x._id}) } }, { new: true }
         );
+
+        // Gắn các kpi vào tập kpi của Phạm Đình Phúc
+        employeeKpiSet_3[i] = await EmployeeKpiSet.findByIdAndUpdate(
+            employeeKpiSet_3[i], { $push: { kpis: employee_3KpiArray[i].map(x => {return x._id}) } }, { new: true }
+        );
+        console.log(employeeKpiSet_3)
     }
 
 
