@@ -244,7 +244,7 @@ class EmployeeIncidentManagement extends Component {
     }
 
     render() {
-        const { translate, assetsManager, assetType, user, auth } = this.props;
+        const { translate, assetsManager, assetType, user, id } = this.props;
         const { page, limit, currentRow, currentRowAdd } = this.state;
 
         var lists = "",exportData;
@@ -265,137 +265,139 @@ class EmployeeIncidentManagement extends Component {
         }
 
         return (
-            <div className="box">
-                <div className="box-body qlcv">
-                    {/* <UsageCreateForm/> */}
-                   
-                    {/* Thanh tìm kiếm */}
-                    <div className="form-inline">
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('asset.general_information.asset_code')}</label>
-                            <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder={translate('asset.general_information.asset_code')} autoComplete="off" />
+            <div id={id} className="tab-pane">
+                <div className="box">
+                    <div className="box-body qlcv">
+                        {/* <UsageCreateForm/> */}
+                    
+                        {/* Thanh tìm kiếm */}
+                        <div className="form-inline">
+                            <div className="form-group">
+                                <label className="form-control-static">{translate('asset.general_information.asset_code')}</label>
+                                <input type="text" className="form-control" name="code" onChange={this.handleCodeChange} placeholder={translate('asset.general_information.asset_code')} autoComplete="off" />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-control-static">{translate('asset.general_information.asset_name')}</label>
+                                <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
+                            </div>
                         </div>
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('asset.general_information.asset_name')}</label>
-                            <input type="text" className="form-control" name="assetName" onChange={this.handleAssetNameChange} placeholder={translate('asset.general_information.asset_name')} autoComplete="off" />
+
+                        <div className="form-inline" style={{ marginBottom: 10 }}>
+                            <div className="form-group">
+                                <label className="form-control-static">{translate('page.month')}</label>
+                                <DatePicker
+                                    id="month"
+                                    dateFormat="month-year"
+                                    value={this.formatDate(Date.now())}
+                                    onChange={this.handleMonthChange}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label></label>
+                                <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={() => this.handleSubmitSearch()}>{translate('asset.general_information.search')}</button>
+                            </div>
+                            {exportData&&<ExportExcel id="export-asset-incident-management" exportData={exportData} style={{ marginRight:10 }} />}
                         </div>
+
+                        {/* Bảng danh sách sự cố tài sản */}
+                        <table id="incident-table" className="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.asset_code')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.incident_code')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.incident_type')}</th>
+                                    <th style={{ width: "8%" }}>{translate('asset.general_information.reported_by')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.date_incident')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
+                                    <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
+                                    <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}
+                                    <DataTableSetting
+                                            tableId="incident-table"
+                                            columnArr={[
+                                                translate('asset.general_information.asset_code'),
+                                                translate('asset.general_information.asset_name'),
+                                                translate('asset.general_information.incident_code'),
+                                                translate('asset.general_information.incident_type'),
+                                                translate('asset.general_information.reported_by'),
+                                                translate('asset.general_information.date_incident'),
+                                                translate('asset.general_information.content'),
+                                                translate('asset.general_information.status'),
+                                            ]}
+                                            limit={limit}
+                                            setLimit={this.setLimit}
+                                            hideColumnOption={true}
+                                        />
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {(lists && lists.length) &&
+                                    lists.map(asset => {
+                                        return asset.incidentLogs.map((x, index) => (
+                                            <tr key={index}>
+                                                <td>{asset.code}</td>
+                                                <td>{asset.assetName}</td>
+                                                <td>{x.incidentCode}</td>
+                                                <td>{x.type}</td>
+                                                <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted'}</td>
+                                                <td>{x.dateOfIncident ? this.formatDate2(x.dateOfIncident) : ''}</td>
+                                                <td>{x.description}</td>
+                                                <td>{x.statusIncident}</td>
+                                                <td style={{ textAlign: "center" }}>
+                                                    <a onClick={() => this.handleAddMaintaince(x, asset)} className="settings text-green" style={{ width: '5px' }} title={translate('asset.asset_info.add_maintenance_card')}><i
+                                                        className="material-icons">settings</i></a>
+                                                    <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_incident_info')}><i
+                                                        className="material-icons">edit</i></a>
+                                                    <DeleteNotification
+                                                        content={translate('asset.asset_info.delete_incident_info')}
+                                                        data={{
+                                                            id: x._id,
+                                                            info: asset.code + " - " + x.incidentCode
+                                                        }}
+                                                        func={() => this.deleteIncident(asset._id, x._id)}
+                                                    />
+                                                </td>
+                                            </tr>
+                                        ))
+                                    })
+
+                                }
+                            </tbody>
+                        </table>
+                        {assetsManager.isLoading ?
+                            <div className="table-info-panel">{translate('confirm.loading')}</div> :
+                            (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        }
+
+                        {/* PaginateBar */}
+                        <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                     </div>
 
-                    <div className="form-inline" style={{ marginBottom: 10 }}>
-                        <div className="form-group">
-                            <label className="form-control-static">{translate('page.month')}</label>
-                            <DatePicker
-                                id="month"
-                                dateFormat="month-year"
-                                value={this.formatDate(Date.now())}
-                                onChange={this.handleMonthChange}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <label></label>
-                            <button type="button" className="btn btn-success" title={translate('asset.general_information.search')} onClick={() => this.handleSubmitSearch()}>{translate('asset.general_information.search')}</button>
-                        </div>
-                        {exportData&&<ExportExcel id="export-asset-incident-management" exportData={exportData} style={{ marginRight:10 }} />}
-                    </div>
-
-                    {/* Bảng danh sách sự cố tài sản */}
-                    <table id="incident-table" className="table table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_code')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.asset_name')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.incident_code')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.incident_type')}</th>
-                                <th style={{ width: "8%" }}>{translate('asset.general_information.reported_by')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.date_incident')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.content')}</th>
-                                <th style={{ width: "10%" }}>{translate('asset.general_information.status')}</th>
-                                <th style={{ width: '100px', textAlign: 'center' }}>{translate('table.action')}
-                                <DataTableSetting
-                                        tableId="incident-table"
-                                        columnArr={[
-                                            translate('asset.general_information.asset_code'),
-                                            translate('asset.general_information.asset_name'),
-                                            translate('asset.general_information.incident_code'),
-                                            translate('asset.general_information.incident_type'),
-                                            translate('asset.general_information.reported_by'),
-                                            translate('asset.general_information.date_incident'),
-                                            translate('asset.general_information.content'),
-                                            translate('asset.general_information.status'),
-                                        ]}
-                                        limit={limit}
-                                        setLimit={this.setLimit}
-                                        hideColumnOption={true}
-                                    />
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {(lists && lists.length) &&
-                                lists.map(asset => {
-                                    return asset.incidentLogs.map((x, index) => (
-                                        <tr key={index}>
-                                            <td>{asset.code}</td>
-                                            <td>{asset.assetName}</td>
-                                            <td>{x.incidentCode}</td>
-                                            <td>{x.type}</td>
-                                            <td>{x.reportedBy && userlist.length && userlist.filter(item => item._id === x.reportedBy).pop() ? userlist.filter(item => item._id === x.reportedBy).pop().name : 'User is deleted'}</td>
-                                            <td>{x.dateOfIncident ? this.formatDate2(x.dateOfIncident) : ''}</td>
-                                            <td>{x.description}</td>
-                                            <td>{x.statusIncident}</td>
-                                            <td style={{ textAlign: "center" }}>
-                                                <a onClick={() => this.handleAddMaintaince(x, asset)} className="settings text-green" style={{ width: '5px' }} title={translate('asset.asset_info.add_maintenance_card')}><i
-                                                    className="material-icons">settings</i></a>
-                                                <a onClick={() => this.handleEdit(x, asset)} className="edit text-yellow" style={{ width: '5px' }} title={translate('asset.asset_info.edit_incident_info')}><i
-                                                    className="material-icons">edit</i></a>
-                                                <DeleteNotification
-                                                    content={translate('asset.asset_info.delete_incident_info')}
-                                                    data={{
-                                                        id: x._id,
-                                                        info: asset.code + " - " + x.incidentCode
-                                                    }}
-                                                    func={() => this.deleteIncident(asset._id, x._id)}
-                                                />
-                                            </td>
-                                        </tr>
-                                    ))
-                                })
-
-                            }
-                        </tbody>
-                    </table>
-                    {assetsManager.isLoading ?
-                        <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                    {/* Form chỉnh sửa thông tin sự cố */}
+                    {
+                        currentRow &&
+                        <IncidentEditForm
+                            _id={currentRow._id}
+                            asset={currentRow.asset}
+                            incidentCode={currentRow.incidentCode}
+                            type={currentRow.type}
+                            reportedBy={currentRow.reportedBy}
+                            dateOfIncident={this.formatDate2(currentRow.dateOfIncident)}
+                            description={currentRow.description}
+                        />
                     }
 
-                    {/* PaginateBar */}
-                    <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
+                    {/* Form thêm thông tin bảo trì */}
+                    {
+                        currentRowAdd &&
+                        <MaintainanceCreateForm
+                            _id={currentRowAdd._id}
+                            asset={currentRowAdd.asset}
+                            statusIncident={currentRowAdd.statusIncident}
+                        />
+                    }
                 </div>
-
-                {/* Form chỉnh sửa thông tin sự cố */}
-                {
-                    currentRow &&
-                    <IncidentEditForm
-                        _id={currentRow._id}
-                        asset={currentRow.asset}
-                        incidentCode={currentRow.incidentCode}
-                        type={currentRow.type}
-                        reportedBy={currentRow.reportedBy}
-                        dateOfIncident={this.formatDate2(currentRow.dateOfIncident)}
-                        description={currentRow.description}
-                    />
-                }
-
-                {/* Form thêm thông tin bảo trì */}
-                {
-                    currentRowAdd &&
-                    <MaintainanceCreateForm
-                        _id={currentRowAdd._id}
-                        asset={currentRowAdd.asset}
-                        statusIncident={currentRowAdd.statusIncident}
-                    />
-                }
             </div>
         );
     }

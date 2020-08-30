@@ -26,11 +26,11 @@ class TasksSchedule extends Component {
       .startOf("month")
       .add(1, "month")
       .toDate();
-    // let dateNow = new Date();
-    // this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
+
     this.infoSearch = {
       taskStatus: ["Inprocess"],
     }
+
     this.state = {
       defaultTimeStart,
       defaultTimeEnd,
@@ -40,26 +40,18 @@ class TasksSchedule extends Component {
       add: true,
       taskStatus: this.infoSearch.taskStatus
     };
+
   }
 
-  formatDate(d) {
-    let month = '' + (d.getMonth());
-    let day = '' + d.getDate();
-    let year = d.getFullYear();
-
-    if (month.length < 2)
-      month = '0' + month;
-
-    return [month, year].join('-');
-  }
 
   handleSelectStatus = async (taskStatus) => {
     if (taskStatus.length === 0) {
       taskStatus = ["Inprocess"];
     }
-    this.infoSearch.taskStatus = taskStatus;
 
+    this.infoSearch.taskStatus = taskStatus;
   }
+
   handleSearchData = async () => {
     let status = this.infoSearch.taskStatus;
     await this.setState(state => {
@@ -72,10 +64,10 @@ class TasksSchedule extends Component {
     await this.getTaskDurations();
     await this.getTaskGroups();
   }
+
   // Lọc công việc theo trạng thái
   filterByStatus(task) {
     let stt = this.state.taskStatus;
-    console.log('stt', stt);
 
     for (let i in stt) {
       if (task.status === stt[i] && task.isArchived === false) return true;
@@ -84,9 +76,7 @@ class TasksSchedule extends Component {
 
   // Lấy thời gian các công việc
   getTaskDurations() {
-    console.log('call get ták');
     const { tasks } = this.props;
-    // const { taskStatus } = this.state;
     var taskList, tasksByStatus;
     let taskDurations = [];
 
@@ -94,7 +84,6 @@ class TasksSchedule extends Component {
       // Phân chia công việc vào nhóm theo người thực hiện
       if (this.props.TaskOrganizationUnitDashboard) {
         taskList = tasks.organizationUnitTasks && tasks.organizationUnitTasks.tasks;
-        // tasksByStatus = taskList && taskList.filter(task => (task.status === taskStatus && task.isArchived === false));
         tasksByStatus = taskList && taskList.filter(task => this.filterByStatus(task));
 
         if (tasksByStatus) {
@@ -193,9 +182,7 @@ class TasksSchedule extends Component {
         inf = tasks.informedTasks && tasks.informedTasks.filter(task => this.filterByStatus(task));
 
         if (res) {
-          console.log('res', res);
           for (let i = 0; i < res.length; i++) {
-            // if (res[i].status === taskStatus && res[i].isArchived === false) {
             tasksByStatus2.push({
               id: res[i]._id,
               gr: 'responsible-tasks',
@@ -204,14 +191,11 @@ class TasksSchedule extends Component {
               endDate: res[i].endDate,
               progress: res[i].progress
             })
-            // }
           }
         }
 
         if (acc) {
-          console.log('acc', acc);
           for (let i = 0; i < acc.length; i++) {
-            // if (acc[i].status === taskStatus && acc[i].isArchived === false) {
             tasksByStatus2.push({
               id: acc[i]._id,
               gr: 'accountable-tasks',
@@ -220,14 +204,11 @@ class TasksSchedule extends Component {
               endDate: acc[i].endDate,
               progress: acc[i].progress
             })
-            // }
           }
         }
 
         if (con) {
-          console.log('con', con);
           for (let i = 0; i < con.length; i++) {
-            // if (con[i].status === taskStatus && con[i].isArchived === false) {
             tasksByStatus2.push({
               id: con[i]._id,
               gr: 'consulted-tasks',
@@ -236,14 +217,11 @@ class TasksSchedule extends Component {
               endDate: con[i].endDate,
               progress: con[i].progress
             })
-            // }
           }
         }
 
         if (inf) {
-          console.log('inf', inf);
           for (let i = 0; i < inf.length; i++) {
-            // if (inf[i].status === taskStatus && inf[i].isArchived === false) {
             tasksByStatus2.push({
               id: inf[i]._id,
               gr: 'informed-tasks',
@@ -252,7 +230,6 @@ class TasksSchedule extends Component {
               endDate: inf[i].endDate,
               progress: inf[i].progress
             })
-            // }
           }
         }
 
@@ -458,41 +435,33 @@ class TasksSchedule extends Component {
 
         if (res) {
           await res.map(item => {
-            // if (item.status === taskStatus && item.isArchived === false) {
             tasksByStatus2.push({
               _id: item._id
             })
-            // }
           })
         }
 
         if (acc) {
           await acc.map(item => {
-            // if (item.status === taskStatus && item.isArchived === false) {
             tasksByStatus2.push({
               _id: item._id
             })
-            // }
           })
         }
 
         if (con) {
           await con.map(item => {
-            // if (item.status === taskStatus && item.isArchived === false) {
             tasksByStatus2.push({
               _id: item._id
             })
-            // }
           })
         }
 
         if (inf) {
           await inf.map(item => {
-            // if (item.status === taskStatus && item.isArchived === false) {
             tasksByStatus2.push({
               _id: item._id
             })
-            // }
           })
         }
         tasksByStatus = tasksByStatus2;

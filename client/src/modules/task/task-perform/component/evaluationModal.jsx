@@ -50,7 +50,7 @@ class EvaluationModal extends Component {
             task = performtasks.task;
         }
         
-        let evaluations = task.evaluations;
+        let evaluations = task && task.evaluations;
         let evaluationOfMonth;
 
         let splitter = dateParam.split("-");

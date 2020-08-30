@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
 import { DatePicker, DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
-
+import { RecommendDistributeActions } from '../../../user/use-request/redux/actions';
 import { UsageFormValidator } from '../../usage/components/usageFormValidator';
 
 import { UsageActions } from '../../usage/redux/actions';
@@ -134,7 +134,7 @@ class UsageCreateForm extends Component {
         var startDate = [partStart[2], partStart[1], partStart[0]].join('-');
         var partEnd = this.state.endDate.split('-');
         var endDate = [partEnd[2], partEnd[1], partEnd[0]].join('-');
-
+        const { assetUseRequest } = this.props;
         if (this.isFormValidated()) {
             let dataToSubit = {
                 usageLogs: {
@@ -148,7 +148,18 @@ class UsageCreateForm extends Component {
             }
 
             let assetId = this.state.asset._id;
-            
+            this.props.updateRecommendDistribute(assetUseRequest._id,{
+                recommendNumber: assetUseRequest.recommendNumber,
+                dateCreate: assetUseRequest.dateCreate,
+                proponent: assetUseRequest.proponent, // Người đề nghị
+                reqContent: assetUseRequest.reqContent, // Người đề nghị
+                asset: assetUseRequest.asset,
+                dateStartUse: assetUseRequest.dateStartUse,
+                dateEndUse: assetUseRequest.dateEndUse,
+                approver: assetUseRequest.approver, // Người phê duyệt
+                note: assetUseRequest.note,
+                status: "Đã chấp nhận",
+            })
             return this.props.createUsage(assetId, dataToSubit);
         }
     }
@@ -170,12 +181,12 @@ class UsageCreateForm extends Component {
     }
 
     render() {
-        const { _id } = this.props;
+        const { _id, currentRowAdd } = this.props;
         const { translate, user, assetsManager } = this.props;
         const {
             asset, usedByUser, startDate, endDate, description, errorOnStartDate, errorOnDescription
         } = this.state;
-
+        console.log("Đang sửa trang này", currentRowAdd);
         var userlist = user.list;
         var assetlist = assetsManager.listAssets;
 
@@ -278,6 +289,7 @@ const actionCreators = {
     getUser: UserActions.get,
     getAllAsset: AssetManagerActions.getAllAsset,
     createUsage: UsageActions.createUsage,
+    updateRecommendDistribute: RecommendDistributeActions.updateRecommendDistribute,
 };
 
 const addModal = connect(mapState, actionCreators)(withTranslate(UsageCreateForm));

@@ -1,21 +1,18 @@
 
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
 import c3 from 'c3';
 import 'c3/c3.css';
-import * as d3 from 'd3-format';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { AmountTree } from './amountTree';
+
 class AmountBarChart extends Component {
     constructor(props) {
         super(props);
-
     }
+
     componentDidMount() {
-        this.pieChart();
-        console.log('Goi did mount');
+        this.barChart();
     }
 
     // Thiết lập dữ liệu biểu đồ
@@ -28,7 +25,6 @@ class AmountBarChart extends Component {
             idAssetType.push(assetType[i]._id)
         }
 
-        let chart = [];
         if (listAssets) {
             listAssets.map(asset => {
                 let idx = idAssetType.indexOf(asset.assetType);
@@ -42,6 +38,7 @@ class AmountBarChart extends Component {
 
             }
         }
+
         let data = {
             count: countAssetType,
             type: typeName,
@@ -51,24 +48,15 @@ class AmountBarChart extends Component {
         return data;
     }
 
-    // Xóa các chart đã render khi chưa đủ dữ liệu
-    removePreviousChart() {
-        const chart = this.refs.a;
-        if (chart) {
-            while (chart.hasChildNodes()) {
-                chart.removeChild(chart.lastChild);
-            }
-        }
-    }
-    //  // Khởi tạo BarChart bằng C3
-    pieChart = () => {
+    // Khởi tạo BarChart bằng C3
+    barChart = () => {
+        let { translate } = this.props;
         let dataPieChart = this.setDataBarChart();
-        // this.removePreviousChart();
         let count = dataPieChart.count;
         let heightCalc = dataPieChart.type.length * 24.8;
         let height = heightCalc < 320 ? 320 : heightCalc;
         let chart = c3.generate({
-            bindto: this.refs.a,
+            bindto: this.refs.amountBarChart,
 
             data: {
                 columns: [count],
@@ -90,7 +78,7 @@ class AmountBarChart extends Component {
                 },
                 y: {
                     label: {
-                        text: 'Số lượng',
+                        text: translate('asset.dashboard.amount'),
                         position: 'outer-right'
                     }
                 },
@@ -119,13 +107,13 @@ class AmountBarChart extends Component {
     }
 
     render() {
-        this.pieChart();
+        this.barChart();
         return (
             <React.Fragment>
-                <div ref="a"></div>
+                <div ref="amountBarChart"></div>
             </React.Fragment>
         )
     }
 }
 
-export default AmountBarChart;
+export default (withTranslate(AmountBarChart));

@@ -59,9 +59,7 @@ class SideBar extends Component {
             path14: "/manage-usage-asset", // Quản lý  sử dụng tài sản
             path15: "/manage-incident-asset", // Quản lý lịch sự cố tài sản
 
-            path16: "/employee-manage-info-asset", // Nhân viên quản lý thông tin tài sản 
-            path17: "/employee-manage-incident-asset", // Nhân viên quản lý thông su co tin tài sản 
-            path18: "/employee-manage-asset-use-request", // Nhân viên quản lý thông tin dang ky tài sản 
+            path16: "/employee-manage-info-asset", //Nhân viên quản lý thông tin tài sản 
         };
         const url2 = {
             path1: "/dashboad-material",
@@ -410,25 +408,6 @@ class SideBar extends Component {
                                             </li>
                                         }
 
-                                        {/** quản lý sự cố tài sản */}
-                                        {this.checkURL(url1.path17, links) === true &&
-                                            <li className={window.location.pathname === url1.path17 ? "active" : ""}>
-                                                <Link to={url1.path17}>
-                                                    <i className="fa fa-calendar" />
-                                                    {translate(`menu.manage_incident_asset`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/** Quản lý sử dụng tài sản */}
-                                        {this.checkURL(url1.path18, links) === true &&
-                                            <li className={window.location.pathname === url1.path18 ? "active" : ""}>
-                                                <Link to={url1.path18}>
-                                                    <i className="fa fa-sitemap" />
-                                                    {translate(`menu.manage_recommend_distribute_asset`)}
-                                                </Link>
-                                            </li>
-                                        }
                                     </ul>
                                 </li>
                             }

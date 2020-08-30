@@ -31,14 +31,12 @@ class TreeDomain extends Component {
         let { tree } = this.state;
         let typeName = [], countDomain = [], idDomain = [];
         let chart = [];
-        //console.log('uuuuuuuuuuuu', domains, documents)
         for (let i in domains) {
             countDomain[i] = 0;
             idDomain.push(domains[i]._id)
         }
         if (documents) {
             documents.map(doc => {
-                console.log('uuuuuuuuuuuu', doc)
                 doc.domains.map(domain => {
                     let idx = idDomain.indexOf(domain.id);
                     countDomain[idx]++;
@@ -66,7 +64,6 @@ class TreeDomain extends Component {
                 parent: node.parentId ? node.parentId.toString() : "#"
             }
         })
-        console.log('===============', dataTree);
         return (
             <div className="amout-docs" id="amout-docs">
                 <br />

@@ -138,7 +138,7 @@ class UsageLogAddModal extends Component {
         const { usedByUser, startDate, endDate, description, errorOnDescription } = this.state;
 
         var userlist = user.list;
-        console.log(this.state, 'this.state')
+        // console.log('Dòng 141', id);
 
         return (
             <React.Fragment>
@@ -173,7 +173,7 @@ class UsageLogAddModal extends Component {
                             </div>
 
                             {/* Thời gian bắt đầu sử dụng */}
-                            <div className="form-group">
+                            <div className={`form-group`}>
                                 <label>{translate('asset.general_information.handover_from_date')}</label>
                                 <DatePicker
                                     id={`add-start-date-${id}`}
@@ -183,7 +183,7 @@ class UsageLogAddModal extends Component {
                             </div>
 
                             {/* Thời gian kết thúc sử dụng */}
-                            <div className="form-group">
+                            <div className={`form-group`}>
                                 <label>{translate('asset.general_information.handover_to_date')}</label>
                                 <DatePicker
                                     id={`add-end-date-${id}`}

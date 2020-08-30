@@ -139,6 +139,7 @@ exports.createAsset = async (data, company, fileInfo) => {
         serial: data.serial,
         group: data.group,
         assetType: data.assetType,
+        readByRoles: data.readByRoles,
         purchaseDate: data.purchaseDate,
         warrantyExpirationDate: data.warrantyExpirationDate,
         managedBy: data.managedBy,
@@ -245,7 +246,7 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
     oldAsset.managedBy = data.managedBy;
     oldAsset.assignedToUser = data.assignedToUser !== '' ? data.assignedToUser : null;
     oldAsset.assignedToOrganizationalUnit = data.assignedToOrganizationalUnit !== '' ? data.assignedToOrganizationalUnit : null;
-
+    oldAsset.readByRoles = data.readByRoles
     oldAsset.location = data.location;
     oldAsset.status = data.status;
     oldAsset.canRegisterForUse = data.canRegisterForUse;
@@ -446,6 +447,9 @@ exports.updateUsage = async (assetId, data) => {
     })
 }
 
+/** 
+ * Thu hồi tài sản
+ */
 exports.recallAsset = async ( assetId , data) => {
     let nowDate= new Date();
     let asset = await Asset.findById(assetId);

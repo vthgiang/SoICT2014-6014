@@ -40,10 +40,10 @@ class AmountPieChart extends Component {
         }
 
         dataPieChart = [
-            ["Mặt bằng", numberOfBuilding],
-            ["Phương tiện", numberOfVehicle],
-            ["Máy móc", numberOfMachine],
-            ["Khác", numberOfOrther],
+            [translate('asset.dashboard.building'), numberOfBuilding],
+            [translate('asset.dashboard.vehicle'), numberOfVehicle],
+            [translate('asset.dashboard.machine'), numberOfMachine],
+            [translate('asset.dashboard.orther'), numberOfOrther],
         ];
 
         return dataPieChart;

@@ -14,7 +14,6 @@ class BarChartArchive extends Component {
     }
     componentDidMount() {
         this.barChartDocumentInArchive();
-        //console.log('Goi did mount');
     }
     removePreviousArchiveChart() {
         const chart = this.refs.a;
@@ -27,7 +26,6 @@ class BarChartArchive extends Component {
     barChartDocumentInArchive = () => {
         this.removePreviousArchiveChart();
         let dataChart = this.setDataArchiveBarchart();
-        //  console.log('helllo', this.setDataArchiveBarchart());
         let count = dataChart.count;
         let heightCalc
         if (dataChart.type) {
@@ -103,9 +101,8 @@ class BarChartArchive extends Component {
                 })
             })
             for (let i in archives) {
-                console.log('ooooooooooooooo', archives[i])
                 let length = archives[i].path.length;
-                let longName = "..." + archives[i].path.slice(length - 18 > 0 ? length - 18 : 0 , length);
+                let longName = "..." + archives[i].path.slice(length - 18 > 0 ? length - 18 : 0, length);
                 let name = archives[i].path.length > 15 ? longName : archives[i].path;
                 shortName.push(name);
                 typeName.push(archives[i].path);
@@ -123,7 +120,6 @@ class BarChartArchive extends Component {
     render() {
         const archives = this.props.archives;
         const docs = this.props.documents;
-        // console.log('uuuuuuuuuuuu', archives, docs)
         this.barChartDocumentInArchive();
         return (
             <React.Fragment>

@@ -525,7 +525,7 @@ class EditForm extends Component {
                 newArray.push(relationship[0].text);
 
             }
-            description += newArray.join(" - ");
+            description += newArray.join(" - ") + ".";
         }
         if (documentRoles !== this.props.documentRoles) {
             if (!title.includes("Chỉnh sửa phân quyền")) {
@@ -539,13 +539,14 @@ class EditForm extends Component {
             }
         }
 
-        if (documentArchivedRecordPlaceOrganizationalUnit !== this.props.documentArchivedRecordPlaceOrganizationalUnit.id) {
+        if (documentArchivedRecordPlaceOrganizationalUnit !== this.props.documentArchivedRecordPlaceOrganizationalUnit) {
             if (!title.includes("Chỉnh sửa đơn vị quản lí")) {
                 title += "Chỉnh sửa đơn vị quản lí"
             }
-            let newDepartment = department.list.filter(d => d.id === documentArchivedRecordPlaceOrganizationalUnit)
-            console.log(department.list, documentArchivedRecordPlaceOrganizationalUnit);
-            description += "Đơn vị quản lí mới" + newDepartment[0] + ". "
+            console.log(documentArchivedRecordPlaceOrganizationalUnit, this.props.documentArchivedRecordPlaceOrganizationalUnit, documentArchivedRecordPlaceOrganizationalUnit !== this.props.documentArchivedRecordPlaceOrganizationalUnit)
+            let newDepartment;
+            department.list.filter(d => d._id === documentArchivedRecordPlaceOrganizationalUnit)
+            description += "Đơn vị quản lí mới " + newDepartment[0].name + ". "
             formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
         }
         if (documentArchivedRecordPlaceManager !== this.props.documentArchivedRecordPlaceManager) {
@@ -693,7 +694,7 @@ class EditForm extends Component {
         const archives = documents.administration.archives.list;
         let path = documentArchives ? this.findPath(archives, documentArchives[0]) : "";
 
-        console.log('rrrrrrrr', documentArchivedRecordPlaceOrganizationalUnit, this.props.documentArchivedRecordPlaceOrganizationalUnit);
+        console.log('rrrrrrrr', !this.isValidateForm());
         return (
             <React.Fragment>
                 <DialogModal
@@ -898,7 +899,7 @@ class EditForm extends Component {
                                                     style={{ width: "100%" }}
                                                     items={department.list.map(organ => { return { value: organ._id, text: organ.name } })}
                                                     onChange={this.handleArchivedRecordPlaceOrganizationalUnit}
-                                                    value={documentArchivedRecordPlaceOrganizationalUnit.id}
+                                                    value={documentArchivedRecordPlaceOrganizationalUnit}
                                                     multiple={false}
                                                 />
                                             </div>

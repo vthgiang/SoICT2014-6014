@@ -45,7 +45,8 @@ class UserEditForm extends Component {
 
     isFormValidated = () => {
         let {userName, userEmail} = this.state;
-        if(!ValidationHelper.validateName(userName).status || !ValidationHelper.validateEmail(userEmail).status) return false;
+        let {translate} = this.props;
+        if(!ValidationHelper.validateName(translate, userName).status || !ValidationHelper.validateEmail(translate, userEmail).status) return false;
         return true;
     }
 
@@ -54,9 +55,8 @@ class UserEditForm extends Component {
         this.setState({ userName: value });
 
         let {translate} = this.props;
-        let {msg} = ValidationHelper.validateName(value, 6, 255);
-        let error = msg ? translate(msg, {min: 6, max: 255}) : undefined;
-        this.setState({ userNameError: error})
+        let {message} = ValidationHelper.validateName(translate, value, 6, 255);
+        this.setState({ userNameError: message})
     }
 
     handleUserEmail = (e) => {
@@ -64,9 +64,8 @@ class UserEditForm extends Component {
         this.setState({ userEmail: value });
 
         let {translate} = this.props;
-        let {msg} = ValidationHelper.validateEmail(value);
-        let error = msg ? translate(msg) : undefined;
-        this.setState({ userEmailError: error})
+        let {message} = ValidationHelper.validateEmail(translate, value);
+        this.setState({ userEmailError: message})
     }
 
     handleRolesChange = (value) => {

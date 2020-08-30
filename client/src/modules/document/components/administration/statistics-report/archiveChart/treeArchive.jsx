@@ -31,14 +31,12 @@ class TreeArchive extends Component {
         let { tree } = this.state;
         let typeName = [], countArchive = [], idArchive = [];
         let chart = [];
-        //console.log('uuuuuuuuuuuu', archives, documents)
         for (let i in archives) {
             countArchive[i] = 0;
             idArchive.push(archives[i]._id)
         }
         if (documents) {
             documents.map(doc => {
-                console.log('uuuuuuuuuuuu', doc)
                 doc.archives.map(archive => {
                     let idx = idArchive.indexOf(archive.id);
                     countArchive[idx]++;
@@ -66,7 +64,6 @@ class TreeArchive extends Component {
                 parent: node.parentId ? node.parentId.toString() : "#"
             }
         })
-        console.log('===============', dataTree);
         return (
             <div className="amout-docs" id="amout-docs">
                 <br />

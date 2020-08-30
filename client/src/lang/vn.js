@@ -71,6 +71,7 @@ export default {
                 ],
             },
             validate: {
+                value: 'Giá trị ',
                 invalid_character_error: 'không được chứa ký tự đặc biệt',
                 length_error: 'phải có số ký tự từ {min} đến {max}',
                 minimum_length_error: 'phải có độ dài tối thiểu là {min} ký tự',
@@ -682,7 +683,7 @@ export default {
             manage_incident_asset: 'Quản lý sự cố tài sản',
             manage_recommend_procure: 'Quản lý đề nghị mua sắm',
             manage_recommend_distribute_asset: 'Quản lý đăng ký sử dụng',
-            employee_manage_asset_info: 'Quản lý thông tin tài sản được phân quyền',
+            employee_manage_asset_info: 'Quản lý tài sản được phân quyền',
 
             view_building_list: 'Xem danh sách mặt bằng',
 
@@ -1683,6 +1684,20 @@ export default {
                 status_chart: 'Biểu đồ thống kê tài sản theo trạng thái',
                 group_chart: 'Biểu đồ thống kê tài sản theo nhóm',
                 cost_chart: 'Biểu đồ thống kê tài sản theo giá trị',
+                amount_of_asset: 'Thống kê số lượng tài sản',
+                value_of_asset: 'Thống kê giá trị tài sản',
+                depreciation_of_asset: 'Thống kê giá trị khấu hao',
+                bar_chart: 'Biểu đồ cột',
+                tree: 'Cây',
+                amount: 'Số lượng',
+                lost_value: 'Giá trị mất (Triệu)',
+                sum_value: 'Tổng giá trị (Triệu)',
+                building: 'Mặt bằng',
+                vehicle: 'Phương tiện',
+                machine: 'Máy móc',
+                orther: 'Khác',
+                asset_by_group: 'Tài sản theo nhóm',
+                asset_by_type: 'Tài sản theo loại',
             },
 
             //  Quản lý loại tài sản
@@ -2068,10 +2083,12 @@ export default {
 
                 from: 'Từ tháng',
                 to: 'Đến tháng',
+                lower_from: 'từ',
+                lower_to: 'đến',
                 month: 'Tháng',
                 prev: 'Trước',
                 next: 'Sau',
-                tasks_calendar: 'Lịch công việc chi tiết',
+                tasks_calendar: 'Lịch công việc',
                 model_detail_task_title: 'Thông tin chi tiết công việc',
                 collaborative_tasks: 'Nhiều người thực hiện',
                 in_time: 'Đúng tiến độ',
