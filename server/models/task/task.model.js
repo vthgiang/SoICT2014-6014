@@ -223,7 +223,8 @@ const TaskSchema = new Schema({
     }],
     hoursSpentOnTask: {
         totalHoursSpent: {
-            type: Number
+            type: Number,
+            default: 0
         },
         contributions: [{
             employee: {
