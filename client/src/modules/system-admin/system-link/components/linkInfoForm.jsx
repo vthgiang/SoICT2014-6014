@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { RootRoleActions } from '../../root-role/redux/actions';
 import { SystemLinkActions } from '../redux/actions';
-import { SYSTEM_LINK_VALIDATOR } from './systemLinkValidator';
+import SystemLinkValidator from './systemLinkValidator';
 import {DialogModal, ErrorLabel, SelectBox} from '../../../../common-components';
 
 class LinkInfoForm extends Component {
@@ -41,16 +41,9 @@ class LinkInfoForm extends Component {
         this.setState({ linkUrl: value });
 
         let {translate} = this.props;
-        let {msg} = SYSTEM_LINK_VALIDATOR.checkUrl(value);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        let {msg} = SystemLinkValidator.validateUrl(value);
+        
+        let error = msg ? translate(msg) : undefined;
         this.setState({ linkUrlError: error})
     }
 
@@ -59,22 +52,8 @@ class LinkInfoForm extends Component {
         this.setState({ linkDescription: value });
 
         let {translate} = this.props;
-        let {msg} = SYSTEM_LINK_VALIDATOR.checkDescription(value, 6, 1204);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            case 'general.validate.minimum_length_error':
-                error = translate(msg, {min: 6});
-                break;
-            case 'general.validate.maximum_length_error':
-                error = translate(msg, {max: 1024})
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        let {msg} = SystemLinkValidator.validateDescription(value);
+        let error = msg ? translate(msg) : undefined;
         this.setState({ linkDescriptionError: error})
     }
 
@@ -98,7 +77,7 @@ class LinkInfoForm extends Component {
 
     isFormValidated = () => {
         let {linkUrl, linkDescription} = this.state;
-        if(!SYSTEM_LINK_VALIDATOR.checkUrl(linkUrl).status  || !SYSTEM_LINK_VALIDATOR.checkDescription(linkDescription)) return false;
+        if(!SystemLinkValidator.validateUrl(linkUrl).status  || !SystemLinkValidator.validateDescription(linkDescription).status) return false;
         return true;
     }
 

@@ -110,7 +110,6 @@ class LineBarChart extends Component {
         data = this.setDataMultiChart(data);
 
         let newData = data.dataConvert;
-        console.log('new', newData);
         let chartType = data.chartType;
         let barLinechartType = {};
         let pieChartType = {};
@@ -160,19 +159,14 @@ class LineBarChart extends Component {
     render() {
         return (
             <React.Fragment>
-                <div className="row">
-                    <div className="col-xs-12">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <h3 className="box-title">Báo cáo công việc</h3>
-                            </div>
-                            <div className="box-body dashboard_box_body">
-                                <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
-                                <div ref="barChart"></div>
-                            </div>
-                        </div>
+                <div className="box box-primary">
+                    <div className="box-header with-border">
+                        <h3 className="box-title">Báo cáo công việc</h3>
                     </div>
-
+                    <div className="box-body dashboard_box_body">
+                        <p className="pull-left" style={{ marginBottom: 0 }}><b>Thành tiền: Vnđ</b></p>
+                        <div ref="barChart"></div>
+                    </div>
                 </div>
             </React.Fragment>
         )

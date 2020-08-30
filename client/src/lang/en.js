@@ -76,7 +76,7 @@ export default {
                 minimum_length_error: 'should have minimum length of {min}',
                 maximum_length_error: 'should have maximum length of {max}',
                 invalid_error: 'invalid',
-                empty_error: 'not null',
+                empty_error: 'cannot be empty',
                 not_existing_error: 'not existing',
                 existing_error: 'existing',
             }
@@ -187,8 +187,38 @@ export default {
                 component_exist: 'Component exist',
             },
 
-            log: {
-
+            system_setting: {
+                backup: {
+                    config: 'Backup data configuration',
+                    backup_button: 'Backup data',
+                    automatic: 'Automactic', on: 'Backup on', off: "Backup off",
+                    week_day: {
+                        mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday', thur: 'Thurday', fri: 'Friday', sat: 'Saturday', sun: 'Sunday',
+                    },
+                    month_list: {
+                        jan: 'January',
+                        feb: 'February',
+                        mar: 'March',
+                        apr: 'April',
+                        may: 'May',
+                        june: 'June',
+                        july: 'July',
+                        aug: 'August',
+                        sep: 'September',
+                        oct: 'October',
+                        nov: 'November',
+                        dec: 'December'
+                    },
+                    limit: 'Limit',
+                    period: 'Period', weekly: 'Weekly', monthly: 'Monthly', yearly: 'Yearly',
+                    date: 'Date', hour: 'Hour', minute: 'Minute', second: 'Second', day: 'Day', month: 'Month',
+                    save: 'Save configuration',
+                    
+                    version: 'Version',
+                    description: 'Backup description',
+                    backup_time: 'Backup time',
+                    action: 'Action',
+                },
             },
 
             root_role: {

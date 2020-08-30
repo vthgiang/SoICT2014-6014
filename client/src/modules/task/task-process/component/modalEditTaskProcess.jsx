@@ -1,20 +1,20 @@
 import React, { Component } from "react";
 import { withTranslate } from "react-redux-multilingual";
 import { connect } from 'react-redux';
-import { FormInfoProcess } from "./formInfoProcess";
-import { DialogModal, SelectBox } from "../../../../common-components";
-import { UserActions } from "../../../super-admin/user/redux/actions";
 import { getStorage } from '../../../../config';
+import { DialogModal, SelectBox, ErrorLabel } from "../../../../common-components";
+import { UserActions } from "../../../super-admin/user/redux/actions";
+import { TaskProcessActions } from "../redux/actions";
+import customModule from './custom'
 import BpmnModeler from 'bpmn-js/lib/Modeler';
 import PaletteProvider from 'bpmn-js/lib/features/palette/PaletteProvider';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './processDiagram.css'
-import { TaskProcessActions } from "../redux/actions";
-import customModule from './custom'
 
 import { isAny } from 'bpmn-js/lib/features/modeling/util/ModelingUtil'
 import { EditTaskTemplate } from "../../task-template/component/editTaskTemplate";
+import { TaskProcessValidator } from './taskProcessValidator';
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -120,6 +120,10 @@ class ModalEditTaskProcess extends Component {
                 viewer: nextProps.data.viewer ? nextProps.data.viewer : [],
                 manager: nextProps.data.manager ? nextProps.data.manager : [],
                 xmlDiagram: nextProps.data.xmlDiagram,
+                errorOnProcessName: undefined,
+                errorOnProcessDescription: undefined,
+                errorOnManager: undefined,
+                errorOnViewer: undefined,
             }
         } else {
             return null;
@@ -145,6 +149,55 @@ class ModalEditTaskProcess extends Component {
         }
         return true;
     }
+
+    // hàm thay đổi thông tin của quy trình
+    handleChangeBpmnName = async (e) => {
+        let { value } = e.target;
+        await this.setState(state => {
+            return {
+                ...state,
+                processName: value,
+                errorOnProcessName: TaskProcessValidator.validateProcessName(value),
+            }
+        });
+    }
+
+    handleChangeBpmnDescription = async (e) => {
+        let { value } = e.target;
+        await this.setState(state => {
+            return {
+                ...state,
+                processDescription: value,
+                errorOnProcessDescription: TaskProcessValidator.validateProcessDescription(value),
+            }
+        });
+    }
+
+    handleChangeViewer = async (value) => {
+        await this.setState(state => {
+
+            return {
+                ...state,
+                viewer: value,
+                errorOnViewer: TaskProcessValidator.validateViewer(value),
+            }
+        })
+
+    }
+
+    handleChangeManager = async (value) => {
+        await this.setState(state => {
+
+            return {
+                ...state,
+                manager: value,
+                errorOnManager: TaskProcessValidator.validateManager(value),
+            }
+        })
+    }
+
+
+    // cập nhật thông tin của task element
     handleUpdateElement = (abc) => {
         const modeling = this.modeler.get('modeling');
         let element1 = this.modeler.get('elementRegistry').get(this.state.id);
@@ -160,26 +213,6 @@ class ModalEditTaskProcess extends Component {
                 selectedEdit: content
             }
         })
-    }
-
-    handleChangeBpmnName = async (e) => {
-        let { value } = e.target;
-        await this.setState(state => {
-            return {
-                ...state,
-                processName: value,
-            }
-        });
-    }
-
-    handleChangeBpmnDescription = async (e) => {
-        let { value } = e.target;
-        await this.setState(state => {
-            return {
-                ...state,
-                processDescription: value,
-            }
-        });
     }
 
     handleChangeName = async (value) => {
@@ -285,28 +318,6 @@ class ModalEditTaskProcess extends Component {
         this.handleUpdateElement();
     }
 
-    handleChangeViewer = async (value) => {
-        await this.setState(state => {
-
-            return {
-                ...state,
-                viewer: value,
-            }
-        })
-
-    }
-
-    handleChangeManager = async (value) => {
-        await this.setState(state => {
-
-            return {
-                ...state,
-                manager: value,
-            }
-        })
-    }
-
-
     // Các hàm  xử lý sự kiện của bpmn
 
     interactPopup = (event) => {
@@ -357,6 +368,42 @@ class ModalEditTaskProcess extends Component {
 
     changeNameElement = (event) => {
         var element = event.element;
+    }
+
+    isFormValidate = () => {
+        let elementList = this.modeler.get('elementRegistry')._elements;
+        let check = true; // valid
+        let hasStart = false, hasEnd = false;
+        for (let i in elementList) {
+            let e = elementList[i].element;
+            if (e.type === "bpmn:StartEvent") {
+                hasStart = true;
+            }
+            else if (e.type === "bpmn:EndEvent") {
+                hasEnd = true;
+            }
+            else if (e.type === "bpmn:Task" || e.type === "bpmn:ExclusiveGateway") {
+                if (!e.businessObject.incoming) {
+                    check = false;
+                }
+                else if (e.businessObject.incoming.length === 0) {
+                    check = false;
+                }
+
+                if (!e.businessObject.outgoing) {
+                    check = false;
+                }
+                else if (e.businessObject.outgoing.length === 0) {
+                    check = false;
+                }
+            }
+        }
+        if (!hasStart || !hasEnd) {
+            check = false;
+        }
+        return check
+            && this.state.errorOnManager === undefined && this.state.errorOnProcessDescription === undefined
+            && this.state.errorOnProcessName === undefined && this.state.errorOnViewer === undefined;
     }
 
     save = async () => {
@@ -623,7 +670,7 @@ class ModalEditTaskProcess extends Component {
                 <DialogModal
                     size='100' modalID={`modal-edit-process`} isLoading={false}
                     formID="form-task-process"
-                    // disableSubmit={!this.isTaskFormValidated()}
+                    disableSubmit={!this.isFormValidate()}
                     title={this.props.title}
                     func={this.save}
                     bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}
@@ -639,16 +686,17 @@ class ModalEditTaskProcess extends Component {
                                 <div className={selectedEdit === "info" ? "active tab-pane" : "tab-pane"} id="info-edit">
                                     <div className='row'>
                                         <div className='col-md-6'>
-                                            <div className="form-group">
-                                                <label>Tên quy trình</label>
+                                            <div className={`form-group ${this.state.errorOnProcessName === undefined ? "" : "has-error"}`}>
+                                                <label className={`control-label`}>Tên quy trình</label>
                                                 <input type="text"
                                                     value={processName}
                                                     className="form-control" placeholder="Mô tả công việc"
                                                     onChange={this.handleChangeBpmnName}
                                                 />
+                                                <ErrorLabel content={this.state.errorOnProcessName} />
                                             </div>
-                                            <div className="form-group">
-                                                <label htmlFor="" >Người được phép xem</label>
+                                            <div className={`form-group ${this.state.errorOnViewer === undefined ? "" : "has-error"}`}>
+                                                <label className="control-label">Người được phép xem</label>
                                                 {
                                                     <SelectBox
                                                         id={`select-viewer-employee-edit-${idProcess}`}
@@ -660,9 +708,10 @@ class ModalEditTaskProcess extends Component {
                                                         value={viewer}
                                                     />
                                                 }
+                                                <ErrorLabel content={this.state.errorOnViewer} />
                                             </div>
-                                            <div className="form-group">
-                                                <label htmlFor="" >Người quản lý quy trình</label>
+                                            <div className={`form-group ${this.state.errorOnManager === undefined ? "" : "has-error"}`}>
+                                                <label className="control-label" >Người quản lý quy trình</label>
                                                 {
                                                     <SelectBox
                                                         id={`select-manager-employee-edit-${idProcess}`}
@@ -674,16 +723,18 @@ class ModalEditTaskProcess extends Component {
                                                         value={manager}
                                                     />
                                                 }
+                                                <ErrorLabel content={this.state.errorOnManager} />
                                             </div>
                                         </div>
                                         <div className='col-md-6'>
-                                            <div className="form-group">
-                                                <label>Mô tả quy trình</label>
+                                            <div className={`form-group ${this.state.errorOnProcessDescription === undefined ? "" : "has-error"}`}>
+                                                <label className="control-label">Mô tả quy trình</label>
                                                 <textarea type="text" rows={8}
                                                     value={processDescription}
                                                     className="form-control" placeholder="Mô tả công việc"
                                                     onChange={this.handleChangeBpmnDescription}
                                                 />
+                                                <ErrorLabel content={this.state.errorOnProcessDescription} />
                                             </div>
                                         </div>
                                     </div>

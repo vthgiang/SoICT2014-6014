@@ -1,40 +1,18 @@
-import { REGEX } from '../../../../helpers/validator';
+import ValidationHelper from "../../../../helpers/validationHelper"
 
-export const SYSTEM_LINK_VALIDATOR = {
-    checkUrl,
-    checkDescription
-}
+export default class SystemLinkValidator extends ValidationHelper {
+    constructor(){
 
-function checkUrl(value) {
-    if(!value || !REGEX.URL.test(value))
-        return {
-            status: false,
-            msg: 'general.validate.invalid_error',
-        }
-    else 
-        return {
-            status: true
-        }
-}
+    }
 
-function checkDescription(value, min=6, max=255) {
-    if(!value)
-        return {
-            status: false,
-            msg: 'general.validate.invalid_error',
-        }
-    else if (value.length < min)
-        return {
-            status: false,
-            msg: 'general.validate.minimum_length_error'
-        }
-    else if (value.length > max)
-        return {
-            status: false,
-            msg: 'general.validate.maximum_length_error'
-        }
-    else 
-        return {
-            status: true
-        }
+    static validateUrl = (url) => {
+        let URL_REGEX = /^[^~`!@#$%^&*()+= *';\\<>?:",]*$/;
+        let msg;
+        if(!this.validateEmpty(url))
+            msg = 'general.validate.empty_error';
+        else if(url[0] !== '/' || !URL_REGEX.test(url))
+            msg = 'general.validate.invalid_error';
+        
+        return msg ? { status: false, msg } : { status: true };
+    }
 }

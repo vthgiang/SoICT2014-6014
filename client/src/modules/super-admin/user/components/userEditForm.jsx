@@ -3,7 +3,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { connect } from 'react-redux';
 import { DialogModal, ErrorLabel, SelectBox } from '../../../../common-components';
 import { UserActions } from '../redux/actions';
-import { USER_VALIDATOR } from './userValidator';
+import ValidationHelper from '../../../../helpers/validationHelper';
 
 class UserEditForm extends Component {
     constructor(props) {
@@ -45,7 +45,7 @@ class UserEditForm extends Component {
 
     isFormValidated = () => {
         let {userName, userEmail} = this.state;
-        if(!USER_VALIDATOR.checkName(userName).status || !USER_VALIDATOR.checkEmail(userEmail)) return false;
+        if(!ValidationHelper.validateName(userName).status || !ValidationHelper.validateEmail(userEmail).status) return false;
         return true;
     }
 
@@ -54,22 +54,8 @@ class UserEditForm extends Component {
         this.setState({ userName: value });
 
         let {translate} = this.props;
-        let {msg} = USER_VALIDATOR.checkName(value, 6, 255);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            case 'general.validate.minimum_length_error':
-                error = translate(msg, {min: 6});
-                break;
-            case 'general.validate.maximum_length_error':
-                error = translate(msg, {max: 255})
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        let {msg} = ValidationHelper.validateName(value, 6, 255);
+        let error = msg ? translate(msg, {min: 6, max: 255}) : undefined;
         this.setState({ userNameError: error})
     }
 
@@ -78,16 +64,8 @@ class UserEditForm extends Component {
         this.setState({ userEmail: value });
 
         let {translate} = this.props;
-        let {msg} = USER_VALIDATOR.checkEmail(value);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        let {msg} = ValidationHelper.validateEmail(value);
+        let error = msg ? translate(msg) : undefined;
         this.setState({ userEmailError: error})
     }
 

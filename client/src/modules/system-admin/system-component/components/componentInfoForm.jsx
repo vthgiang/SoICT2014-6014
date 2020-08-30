@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { SystemComponentActions } from '../redux/actions';
-import { SYSTEM_COMPONENT_VALIDATOR } from './systemComponentValidator';
+import ValidationHelper from '../../../../helpers/validationHelper';
 import { DialogModal, ErrorLabel, SelectBox} from '../../../../common-components';
 
 class ComponentInfoForm extends Component {
@@ -36,22 +36,8 @@ class ComponentInfoForm extends Component {
         this.setState({ componentName: value });
 
         let {translate} = this.props;
-        let {msg} = SYSTEM_COMPONENT_VALIDATOR.checkDescription(value, 6, 255);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            case 'general.validate.minimum_length_error':
-                error = translate(msg, {min: 6});
-                break;
-            case 'general.validate.maximum_length_error':
-                error = translate(msg, {max: 255})
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        let {msg} = ValidationHelper.validateName(value, 6, 255);
+        let error = msg ? translate(msg, {min: 6, max: 255}) : undefined;
         this.setState({ componentNameError: error})
     }
 
@@ -60,22 +46,8 @@ class ComponentInfoForm extends Component {
         this.setState({ componentDescription: value });
 
         let {translate} = this.props;
-        let {msg} = SYSTEM_COMPONENT_VALIDATOR.checkDescription(value, 6, 1204);
-        let error;
-        switch(msg){
-            case 'general.validate.invalid_error':
-                error = translate(msg);
-                break;
-            case 'general.validate.minimum_length_error':
-                error = translate(msg, {min: 6});
-                break;
-            case 'general.validate.maximum_length_error':
-                error = translate(msg, {max: 1024})
-                break;
-            default: 
-                error = undefined;
-                break;
-        }
+        let {msg} = ValidationHelper.validateDescription(value);
+        let error = msg ? translate(msg) : undefined;
         this.setState({ componentDescriptionError: error})
     }
 
@@ -99,7 +71,7 @@ class ComponentInfoForm extends Component {
 
     isFormValidated = () => {
         let {componentName, componentDescription} = this.state;
-        if(!SYSTEM_COMPONENT_VALIDATOR.checkName(componentName).status  || !SYSTEM_COMPONENT_VALIDATOR.checkDescription(componentDescription)) return false;
+        if(!ValidationHelper.validateName(componentName).status  || !ValidationHelper.validateDescription(componentDescription).status) return false;
         return true;
     }
 
@@ -121,12 +93,10 @@ class ComponentInfoForm extends Component {
         return ( 
             <React.Fragment>
                 <DialogModal
-                    size='50' func={this.save}
+                    func={this.save}
                     modalID="modal-edit-component-default"
                     formID="form-edit-component-default"
                     title={translate('manage_component.edit')}
-                    msg_success={translate('manage_component.edit_success')}
-                    msg_faile={translate('manage_component.edit_faile')}
                     disableSubmit={!this.isFormValidated()}
                 >
                     <form id="form-edit-component-default">
@@ -136,7 +106,7 @@ class ComponentInfoForm extends Component {
                             <ErrorLabel content={componentNameError}/>
                         </div>
                         <div className={`form-group ${componentDescriptionError===undefined?"":"has-error"}`}>
-                            <label>{ translate('manage_component.description') }</label>
+                            <label>{ translate('manage_component.description') }<span className="text-red"> * </span></label>
                             <input type="text" className="form-control" value={componentDescription} onChange={this.handleDescription} />
                             <ErrorLabel content={componentDescriptionError}/>
                         </div>

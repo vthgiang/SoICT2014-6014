@@ -15,9 +15,9 @@ exports.getDocuments = async (company, query) => {
     if (!(page || limit)) {
 
         return await Document.find({ company }).populate([
-            { path: 'category', model: DocumentCategory },
-            { path: 'domains', model: DocumentDomain },
-            { path: 'archives', model: DocumentArchive },
+            { path: 'category', model: DocumentCategory, select: 'name id' },
+            { path: 'domains', model: DocumentDomain, select: 'name id' },
+            { path: 'archives', model: DocumentArchive, select: 'name id path' },
             { path: 'views.viewer', model: User, select: 'name id' },
             { path: "downloads.downloader", model: User, select: 'name id' },
             { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
@@ -48,9 +48,9 @@ exports.getDocuments = async (company, query) => {
             page,
             limit,
             populate: [
-                { path: 'category', model: DocumentCategory },
-                { path: 'domains', model: DocumentDomain },
-                { path: 'archives', model: DocumentArchive },
+                { path: 'category', model: DocumentCategory, select: 'name id' },
+                { path: 'domains', model: DocumentDomain, select: 'name id' },
+                { path: 'archives', model: DocumentArchive, select: 'name id path' },
                 { path: 'views.viewer', model: User, select: 'name id' },
                 { path: "downloads.downloader", model: User, select: 'name id' },
                 { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
@@ -67,8 +67,8 @@ exports.getDocuments = async (company, query) => {
  */
 exports.showDocument = async (id, viewer) => {
     const doc = await Document.findById(id).populate([
-        { path: 'category', model: DocumentCategory },
-        { path: 'archives', model: DocumentArchive },
+        { path: 'category', model: DocumentCategory, select: 'name id' },
+        { path: 'archives', model: DocumentArchive, select: 'name id path' },
 
     ]);
     doc.numberOfView += 1;
@@ -148,9 +148,9 @@ exports.createDocument = async (company, data) => {
     const doc = await Document.create(newDoc);
 
     return await Document.findById(doc._id).populate([
-        { path: 'category', model: DocumentCategory },
-        { path: 'domains', model: DocumentDomain },
-        { path: 'archives', model: DocumentArchive },
+        { path: 'category', model: DocumentCategory, select: 'name id' },
+        { path: 'domains', model: DocumentDomain, select: 'name id' },
+        { path: 'archives', model: DocumentArchive, select: 'name id path' },
     ]);
 }
 
@@ -236,7 +236,7 @@ exports.editDocument = async (id, data, query = undefined) => {
 
         // if (data.archivedRecordPlaceInfo !== 'undefined' && data.archivedRecordPlaceInfo !== undefined)
         //     doc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo
-        if (data.archivedRecordPlaceOrganizationalUnit) {
+        if (data.archivedRecordPlaceOrganizationalUnit && data.archivedRecordPlaceOrganizationalUnit !== "[object Object]") {
             //  console.log(data.archivedRecordPlaceOrganizationalUnit)
             doc.archivedRecordPlaceOrganizationalUnit = data.archivedRecordPlaceOrganizationalUnit
         }
@@ -420,9 +420,9 @@ exports.getDocumentsThatRoleCanView = async (company, query) => {
             company,
             roles: { $in: roleArr }
         }).populate([
-            { path: 'category', model: DocumentCategory },
-            { path: 'domains', model: DocumentDomain },
-            { path: 'archives', model: DocumentArchive },
+            { path: 'category', model: DocumentCategory, select: 'name id' },
+            { path: 'domains', model: DocumentDomain, select: 'name id' },
+            { path: 'archives', model: DocumentArchive, select: 'name id path' },
             { path: 'relationshipDocuments', model: Document },
             { path: 'views.viewer', model: User, select: 'name id' },
             { path: "downloads.downloader", model: User, select: 'name id' },
@@ -457,9 +457,9 @@ exports.getDocumentsThatRoleCanView = async (company, query) => {
             page,
             limit,
             populate: [
-                { path: 'category', model: DocumentCategory },
-                { path: 'domains', model: DocumentDomain },
-                { path: 'archives', model: DocumentArchive },
+                { path: 'category', model: DocumentCategory, select: 'name id' },
+                { path: 'domains', model: DocumentDomain, select: 'name id' },
+                { path: 'archives', model: DocumentArchive, select: 'name id path' },
                 { path: 'relationshipDocuments', model: Document },
                 { path: 'views.viewer', model: User, select: 'name id' },
                 { path: "downloads.downloader", model: User, select: 'name id' },
@@ -479,26 +479,26 @@ exports.getDocumentsUserStatistical = async (userId, query) => {
     switch (option) {
         case 'downloaded': //những tài liệu văn bản mà người dùng đã tải xuống
             return await Document.find({ "downloads.downloader": userId }).populate([
-                { path: 'category', model: DocumentCategory },
-                { path: 'domains', model: DocumentDomain },
-                { path: 'archives', model: DocumentArchive },
+                { path: 'category', model: DocumentCategory, select: 'name id' },
+                { path: 'domains', model: DocumentDomain, select: 'name id' },
+                { path: 'archives', model: DocumentArchive, select: 'name id path' },
             ]).limit(10);
         case 'common': //những tài liệu phổ biến - được xem và tải nhiều nhất gần đây
             return await Document.find({
                 roles: { $in: user.roles.map(res => res.roleId) }
             }).populate([
-                { path: 'category', model: DocumentCategory },
-                { path: 'domains', model: DocumentDomain },
-                { path: 'archives', model: DocumentArchive },
+                { path: 'category', model: DocumentCategory, select: 'name id' },
+                { path: 'domains', model: DocumentDomain, select: 'name id' },
+                { path: 'archives', model: DocumentArchive, select: 'name id path' },
             ]).sort({ numberOfView: -1 }).limit(10);
         case 'latest': //những tài liệu văn bản mà người dùng chưa xem qua lần nào
             return await Document.find({
                 roles: { $in: user.roles.map(res => res.roleId) },
                 "views.viewer": { "$ne": userId }
             }).populate([
-                { path: 'category', model: DocumentCategory },
-                { path: 'domains', model: DocumentDomain },
-                { path: 'archives', model: DocumentArchive },
+                { path: 'category', model: DocumentCategory, select: 'name id' },
+                { path: 'domains', model: DocumentDomain, select: 'name id' },
+                { path: 'archives', model: DocumentArchive, select: 'name id path' },
             ]);
         default:
             return null;

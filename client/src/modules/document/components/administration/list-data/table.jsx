@@ -325,7 +325,7 @@ class Table extends Component {
                         documentRoles={currentRow.roles}
 
                         documentArchivedRecordPlaceInfo={currentRow.archivedRecordPlaceInfo}
-                        documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit}
+                        documentArchivedRecordPlaceOrganizationalUnit={currentRow.archivedRecordPlaceOrganizationalUnit ? currentRow.archivedRecordPlaceOrganizationalUnit.id : ""}
                         documentArchivedRecordPlaceManager={currentRow.archivedRecordPlaceManager}
 
                     />

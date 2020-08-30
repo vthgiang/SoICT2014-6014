@@ -27,9 +27,7 @@ class TaskDashboard extends Component {
 
         this.INFO_SEARCH = {
             startMonth: currentYear + '-' + 1,
-            endMonth: currentYear + '-' + (currentMonth + 2),
-            startMonthTitle: '01' + '-' + currentYear,
-            endMonthTitle: (currentMonth + 1) > 9 ? (currentMonth + 1) + '-' + currentYear : '0' + (currentMonth + 1) + '-' + currentYear
+            endMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2))
         }
 
         this.state = {
