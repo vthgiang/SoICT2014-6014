@@ -213,7 +213,7 @@ export default {
                     period: 'Period', weekly: 'Weekly', monthly: 'Monthly', yearly: 'Yearly',
                     date: 'Date', hour: 'Hour', minute: 'Minute', second: 'Second', day: 'Day', month: 'Month',
                     save: 'Save configuration',
-                    
+
                     version: 'Version',
                     description: 'Backup description',
                     backup_time: 'Backup time',
@@ -1697,6 +1697,8 @@ export default {
                 orther: 'Other',
                 asset_by_group: ' Asset by group',
                 asset_by_type: ' Asset by type',
+                purchase_asset: 'Statistics purchase asset chart',
+                disposal_asset: 'Statistics disposal asset chart',
             },
 
             //  Quản lý loại tài sản

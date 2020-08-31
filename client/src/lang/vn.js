@@ -213,7 +213,7 @@ export default {
                     period: 'Định kỳ', weekly: 'Hàng tuần', monthly: 'Hàng tháng', yearly: 'Hằng năm',
                     date: 'Ngày', hour: 'Giờ', minute: 'Phút', second: 'Giây', day: 'Thứ', month: 'Tháng',
                     save: 'Lưu cấu hình',
-                    
+
                     version: 'Phiên bản',
                     description: 'Mô tả về phiên bản',
                     backup_time: 'Thời gian đã sao lưu',
@@ -1697,6 +1697,8 @@ export default {
                 orther: 'Khác',
                 asset_by_group: 'Tài sản theo nhóm',
                 asset_by_type: 'Tài sản theo loại',
+                purchase_asset: 'Thống kê mua sắm tài sản',
+                disposal_asset: 'Thống kê thanh lý tài sản',
             },
 
             //  Quản lý loại tài sản
