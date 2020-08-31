@@ -260,7 +260,7 @@ class StatisticsOfOrganizationalUnitKpi extends Component {
     /** 
      * Duyệt các kpi con của cùng 1 kpi, mỗi phần tử trả về object gồm tên, đơn vị, số lượng kpi con,... (config dùng trong Tree)
      * @listChildTargetSameParent mảng nhiều chiều
-     * @listChildTarget  mảng gồm các dữ liệu phụ(null có vẫn chạy ok)
+     * @listChildTarget  mảng gồm các dữ liệu phụ(null vẫn chạy ok)
      * @organizationalUnit xác định gốc trong tree
     */
     traversesListChildTargetSameParent = (listChildTargetSameParent, listChildTarget, listTaskSameParent, organizationalUnit) => {
