@@ -114,7 +114,7 @@ class SideBar extends Component {
 
                             {/* Quản trị của system admin */}
                             <GroupItem groupItem={{
-                                name: 'system',
+                                name: 'menu.system',
                                 icon: 'fa fa-gears',
                                 list: [
                                     { name: 'menu.manage_system', icon: 'fa fa-gear', path: '/system/settings' },
@@ -127,7 +127,7 @@ class SideBar extends Component {
 
                             {/* Phân quyền IAM-RBAC */}
                             <GroupItem groupItem={{
-                                name: 'iam_rbac',
+                                name: 'menu.iam_rbac',
                                 icon: 'fa fa-key',
                                 list: [
                                     { name: 'menu.manage_department', icon: 'fa fa-sitemap', path: '/departments-management' },
