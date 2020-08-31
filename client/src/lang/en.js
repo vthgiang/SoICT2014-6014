@@ -1,32 +1,6 @@
 export default {
     locale: 'en',
     messages: {
-        error: {
-            /** 
-             * Start 
-             * Chức năng quản lý nhân sự
-             */
-            employee_number_required: 'Staff code required',
-            staff_code_not_special: 'Staff code does not contain special characters',
-            staff_code_not_find: 'Staff code does not exist',
-            number_decisions_required: 'Decis number required',
-            number_decisions_have_exist: 'Decis number have exist',
-            unit_decisions_required: 'Decis unit required',
-            // Quản lý thông tin cá nhân
-            // TODO: Xoá sau
-            get_infor_personal_success: 'Get information personal success',
-            get_infor_personal_false: 'Get information personal false',
-            edit_infor_personal_success: 'Update information personal success',
-            edit_infor_personal_false: 'Update infor personal false',
-            guaranteed_infor_to_update: 'You have not guaranteed information to update',
-            no_change_data: 'No information changed'
-
-            /** 
-             * End
-             * Chức năng quản lý nhân sự
-             */
-        },
-
         /*******************************************************
          * CHUẨN HÓA FILE NGÔN NGỮ PHÂN CHIA THEO TỪNG MODULE
          * @general những phần ngôn ngữ dùng chung cho mọi module
@@ -191,9 +165,17 @@ export default {
                 backup: {
                     config: 'Backup data configuration',
                     backup_button: 'Backup data',
-                    automatic: 'Automactic', on: 'Backup on', off: "Backup off",
+                    automatic: 'Automactic',
+                    on: 'Backup on',
+                    off: "Backup off",
                     week_day: {
-                        mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday', thur: 'Thurday', fri: 'Friday', sat: 'Saturday', sun: 'Sunday',
+                        mon: 'Monday',
+                        tue: 'Tuesday',
+                        wed: 'Wednesday',
+                        thur: 'Thurday',
+                        fri: 'Friday',
+                        sat: 'Saturday',
+                        sun: 'Sunday',
                     },
                     month_list: {
                         jan: 'January',
@@ -210,10 +192,18 @@ export default {
                         dec: 'December'
                     },
                     limit: 'Limit',
-                    period: 'Period', weekly: 'Weekly', monthly: 'Monthly', yearly: 'Yearly',
-                    date: 'Date', hour: 'Hour', minute: 'Minute', second: 'Second', day: 'Day', month: 'Month',
+                    period: 'Period',
+                    weekly: 'Weekly',
+                    monthly: 'Monthly',
+                    yearly: 'Yearly',
+                    date: 'Date',
+                    hour: 'Hour',
+                    minute: 'Minute',
+                    second: 'Second',
+                    day: 'Day',
+                    month: 'Month',
                     save: 'Save configuration',
-                    
+
                     version: 'Version',
                     description: 'Backup description',
                     backup_time: 'Backup time',
@@ -825,178 +815,6 @@ export default {
             edit_faile: 'Edit failed!',
         },
 
-        // Quản lý thông tin nhân viên
-        manage_employee: {
-            note_page_personal: 'I hereby certify that all of the above statements are true and I am responsible for them.',
-            contact_other: '(Other information please contact the relevant parties to be processed)',
-            update_infor_personal: 'Update staff information',
-            no_data_personal: 'No personal information yet',
-
-            menu_basic_infor: 'Basic information',
-            menu_general_infor: 'General information',
-            menu_contact_infor: 'Contact information',
-            menu_education_experience: 'Education - Experience',
-            menu_diploma_certificate: 'Diploma - Certificate',
-            menu_account_tax: 'Account - Tax',
-            menu_insurrance_infor: 'Insurrance information',
-            menu_contract_training: 'Contract - Training',
-            menu_reward_discipline: 'Reward - Discipline',
-            menu_salary_sabbatical: 'Salary - Sabbatical',
-            menu_attachments: 'Attachments',
-
-            menu_general_infor_title: 'General information',
-            menu_contact_infor_title: 'Contact information',
-            menu_education_experience_title: 'Education - Experience',
-            menu_diploma_certificate_title: 'Diploma - Certificate',
-            menu_account_tax_title: 'Account - Tax',
-            menu_insurrance_infor_title: 'Insurrance information',
-            menu_contract_training_title: 'Contract - Training',
-            menu_reward_discipline_title: 'Reward - Discipline',
-            menu_salary_sabbatical_title: 'Salary - Sabbatical',
-            menu_attachments_title: 'Attachments',
-
-            add_staff: 'Add new staffs',
-            staff_number: 'Staff code',
-            full_name: 'Full name',
-            attendance_code: 'Attendance code',
-            gender: 'Gender',
-            male: 'Male',
-            female: 'Female',
-            date_birth: 'Date of birth',
-            place_birth: 'Place of birth',
-            email: 'Email',
-            email_company: 'Email company',
-            relationship: 'Relationship',
-            single: 'Single',
-            married: 'Married',
-            upload: 'Upload',
-            id_card: 'ID card/Passport',
-            date_issued: 'Date issued',
-            issued_by: 'Issued by',
-            ethnic: 'Ethnic group',
-            nationality: 'Nationality',
-            religion: 'Religion',
-            mobile_phone: 'Mobile phone',
-            mobile_phone_1: 'Mobile phone 1',
-            mobile_phone_2: 'Mobile phone 2',
-            personal_email_1: 'Personal email 1',
-            personal_email_2: 'Personal email 2',
-            home_phone: 'Home phone',
-            emergency_contact: 'Emergency contact',
-            nexus: 'Nexus',
-            address: 'Address',
-            permanent_address: 'Permanent address',
-            current_residence: 'Current residence',
-            wards: 'Wards/Commune',
-            district: 'County/District',
-            province: 'Province/City',
-            nation: 'Nation',
-
-            academic_level: 'Academic level',
-            educational_level: 'Educational level',
-            language_level: 'Language level',
-            qualification: 'Qualification',
-            intermediate_degree: 'Intermediate degree',
-            colleges: 'Colleges',
-            university: 'University',
-            master_degree: "Maste degree",
-            phd: 'Ph.D',
-            unavailable: 'Unavailable',
-            work_experience: 'Work experience',
-            unit: 'Unit',
-            from_month_year: 'From month/year',
-            to_month_year: 'To month/year',
-            edit_experience: 'Edit work experience',
-            add_experience: 'Add work experience',
-
-            diploma: 'Diploma',
-            certificate: 'Certificate',
-            name_diploma: 'Name of diploma',
-            name_certificate: 'Name of certificate',
-            diploma_issued_by: 'Issued_by',
-            graduation_year: 'Graduation year',
-            ranking_learning: 'Ranking of learning',
-            attached_files: 'Attached files',
-            end_date_certificate: 'Expiration date',
-            edit_certificate: 'Edit certificate',
-            edit_diploma: 'Edit diploma',
-            add_certificate: 'Add certificate',
-            add_diploma: 'Add diploma',
-            excellent: 'Excellent',
-            very_good: 'Very good',
-            good: 'Good',
-            average_good: 'Average good',
-            ordinary: 'Ordinary',
-
-            bank_account: 'Bank account',
-            personal_income_tax: 'Personal income tax',
-            account_number: 'Account number',
-            bank_name: 'Bank name',
-            bank_branch: 'Bank branch',
-            tax_number: 'Tax number',
-            representative: 'Representative',
-            day_active: 'Day active',
-            managed_by: 'Managed by',
-
-            bhyt: 'Health Insurance',
-            number_BHYT: 'Health insurance code',
-            bhxh: 'Social insurance',
-            number_BHXH: 'Social insurance code',
-            bhxh_process: 'Process of social insurance payment',
-            edit_bhxh: 'Edit social insurance',
-            add_bhxh: 'Add social insurance',
-
-            labor_contract: 'Labor contract',
-            training_process: 'Training process',
-            name_contract: 'Contract name',
-            type_contract: 'Type of contract',
-            start_date: 'Effective date',
-            course_name: 'Course name',
-            start_day: 'Start day',
-            end_date: 'End day',
-            type_education: 'Type of education',
-            cost: 'Cost',
-            edit_contract: 'Edit labor contract',
-            add_contract: 'Add labor contract',
-
-            list_attachments: 'List of attached documents',
-            attachments_code: 'Attachments code',
-            file_name: 'File name',
-            number: 'Number',
-            add_default: 'Add default',
-            add_default_title: 'Add the default document',
-            edit_file: 'Edit attached documents',
-            add_file: 'Add attached documents',
-            no_submitted: 'Not submitted',
-            submitted: 'Submitted',
-            returned: 'Returned',
-            no_files: 'No files yet',
-            disc_diploma: 'Highest degree diploma',
-            curriculum_vitae: 'Curriculum vitae',
-            disc_curriculum_vitae: 'Notarized resume',
-            img: 'Image',
-            disc_img: 'Image 4x6 ',
-            copy_id_card: 'Copy of ID card / Passport',
-            disc_copy_id_card: 'Certified copy of identity card or passport',
-            health_certificate: 'Health certificate',
-            disc_health_certificate: 'Notarized health certificate',
-            birth_certificate: 'Birth certificate',
-            disc_birth_certificate: 'Notarized birth certificate',
-            job_application: 'Job application',
-            disc_job_application: 'Handwritten application letter',
-            commitment: 'Commitment',
-            disc_commitment: 'Commitment to work',
-            temporary_residence_card: 'Temporary residence card',
-            disc_temporary_residence_card: 'Certificate of temporary absence',
-
-
-
-            Reward: 'Reward',
-            discipline: 'Discipline',
-            historySalary: 'History of salary',
-            sabbatical: 'Sabbatical information'
-        },
-
         // Module Quản lý nhân sự
         human_resource: {
             // Nhóm dùng chung cho module quản lý nhân sự
@@ -1229,7 +1047,7 @@ export default {
                     menu_insurrance_infor: 'Insurrance information',
                     menu_contract_training: 'Contract - Training',
                     menu_reward_discipline: 'Reward - Discipline',
-                    menu_salary_sabbatical: 'Salary - Sabbatical',
+                    menu_salary_sabbatical: 'Salary - Annual leave',
                     menu_attachments: 'Attachments',
 
                     menu_general_infor_title: 'General information',
@@ -1240,7 +1058,7 @@ export default {
                     menu_insurrance_infor_title: 'Insurrance information',
                     menu_contract_training_title: 'Contract - Training',
                     menu_reward_discipline_title: 'Reward - Discipline',
-                    menu_salary_sabbatical_title: 'Salary - Sabbatical',
+                    menu_salary_sabbatical_title: 'Salary - Annual leave',
                     menu_attachments_title: 'Attachments',
                 },
 
@@ -1388,7 +1206,7 @@ export default {
                 reward: 'Reward',
                 discipline: 'Discipline',
                 historySalary: 'History of salary',
-                sabbatical: 'Sabbatical information',
+                sabbatical: 'Annual leave information',
 
                 // Validator dữ liệu nhập bên client
                 start_date_before_end_date: 'The issue date must be before the expiration date',
@@ -1423,6 +1241,23 @@ export default {
                 },
 
                 employee_management: {
+                    file_name_export: 'Thông tin nhân viên',
+                    no_gender: 'Select gender',
+                    all_gender: 'Select all gender',
+                    brithday_lable: 'Month of Birth',
+                    brithday_lable_title: 'Month of Birth',
+                    contract_lable: 'Contract expiration',
+                    contract_lable_title: 'Contract expiration',
+                    contract_type_title: 'Type of contract',
+
+                    // Nhóm dành cho action
+                    view_employee: 'View employee',
+                    edit_employee: 'Edit employee',
+                    delete_employee: 'Delete staff',
+                    add_employee: 'Add staff',
+                    add_employee_title: 'Add new staff',
+                    add_by_hand: 'Add a s',
+                    add_import: 'Import file excel',
                     // Thông điệp trả về từ server
                     get_list_employee_success: 'Get list employee success',
                     get_list_employee_false: 'Get list employee false',

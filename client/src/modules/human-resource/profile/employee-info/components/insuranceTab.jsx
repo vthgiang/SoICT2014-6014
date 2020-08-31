@@ -8,7 +8,12 @@ class InsurranceTab extends Component {
         this.state = {
         };
     }
-    // Function format dữ liệu Date thành string
+
+    /**
+     * Function format dữ liệu Date thành string
+     * @param {*} date : Ngày muốn format
+     * @param {*} monthYear : true trả về tháng năm , false trả về ngày tháng năm
+     */
     formatDate(date, monthYear = false) {
         if (date) {
             let d = new Date(date),
@@ -28,6 +33,7 @@ class InsurranceTab extends Component {
         return date;
 
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -46,41 +52,48 @@ class InsurranceTab extends Component {
 
 
     render() {
-        const { id, translate } = this.props;
-        const { healthInsuranceNumber, healthInsuranceStartDate, healthInsuranceEndDate, socialInsuranceNumber, socialInsuranceDetails } = this.state;
+        const { translate } = this.props;
+
+        const { id, healthInsuranceNumber, healthInsuranceStartDate, healthInsuranceEndDate, socialInsuranceNumber, socialInsuranceDetails } = this.state;
+
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
+                    {/* Thông tin bảo hiểm y tê */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.bhyt')}</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.bhyt')}</h4></legend>
                         <div className="row">
+                            {/* Mã bảo hiểm y tế */}
                             <div className="form-group col-md-4" >
-                                <strong>{translate('manage_employee.number_BHYT')}&emsp; </strong>
+                                <strong>{translate('human_resource.profile.number_BHYT')}&emsp; </strong>
                                 {healthInsuranceNumber}
                             </div>
+                            {/* Ngày có hiệu lực */}
                             <div className="form-group col-md-4" >
-                                <strong>{translate('manage_employee.start_date')}&emsp; </strong>
+                                <strong>{translate('human_resource.profile.start_date')}&emsp; </strong>
                                 {this.formatDate(healthInsuranceStartDate)}
                             </div>
+                            {/* Ngày hết hiệu lực */}
                             <div className="form-group col-md-4" >
-                                <strong>{translate('manage_employee.end_date_certificate')}&emsp; </strong>
+                                <strong>{translate('human_resource.profile.end_date_certificate')}&emsp; </strong>
                                 {this.formatDate(healthInsuranceEndDate)}
                             </div>
                         </div>
                     </fieldset>
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.bhxh')}</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.bhxh')}</h4></legend>
+                        {/* Mã bảo hiểm xã hội */}
                         <div className="form-group">
-                            <strong>{translate('manage_employee.number_BHXH')}&emsp; </strong>
+                            <strong>{translate('human_resource.profile.number_BHXH')}&emsp; </strong>
                             {socialInsuranceNumber}
                         </div>
-                        <h4 className="col-md-6" style={{ paddingLeft: 0, fontSize: 16 }}>{translate('manage_employee.bhxh_process')}:</h4>
+                        <h4 className="col-md-6" style={{ paddingLeft: 0, fontSize: 16 }}>{translate('human_resource.profile.bhxh_process')}:</h4>
                         <table className="table table-striped table-bordered table-hover " style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
-                                    <th>{translate('manage_employee.from_month_year')}</th>
-                                    <th>{translate('manage_employee.to_month_year')}</th>
-                                    <th>{translate('manage_employee.unit')}</th>
+                                    <th>{translate('human_resource.profile.from_month_year')}</th>
+                                    <th>{translate('human_resource.profile.to_month_year')}</th>
+                                    <th>{translate('human_resource.profile.unit')}</th>
                                     <th>{translate('table.position')}</th>
                                 </tr>
                             </thead>

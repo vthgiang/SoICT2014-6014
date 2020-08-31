@@ -11,25 +11,35 @@ class ContractTab extends Component {
         this.state = {
         };
     }
-    // Function format dữ liệu Date thành string
+
+    /**
+     * Function format dữ liệu Date thành string
+     * @param {*} date : Ngày muốn format
+     * @param {*} monthYear : true trả về tháng năm , false trả về ngày tháng năm
+     */
     formatDate(date, monthYear = false) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
 
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else return [day, month, year].join('-');
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        }
+        return date;
     }
+
     componentDidMount() {
         this.props.getListCourse({ organizationalUnits: this.state.organizationalUnits, positions: this.state.roles });
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -56,32 +66,34 @@ class ContractTab extends Component {
     }
 
     render() {
-        const { id, translate, course } = this.props;
-        const { contracts, courses } = this.state;
+        const { translate, course } = this.props;
+
+        const { id, contracts, courses } = this.state;
+
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.labor_contract')}</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.labor_contract')}</h4></legend>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}  >
                             <thead>
                                 <tr>
-                                    <th >{translate('manage_employee.name_contract')}</th>
-                                    <th >{translate('manage_employee.type_contract')}</th>
-                                    <th >{translate('manage_employee.start_date')}</th>
-                                    <th >{translate('manage_employee.end_date_certificate')}</th>
-                                    <th >{translate('manage_employee.attached_files')}</th>
+                                    <th >{translate('human_resource.profile.name_contract')}</th>
+                                    <th >{translate('human_resource.profile.type_contract')}</th>
+                                    <th >{translate('human_resource.profile.start_date')}</th>
+                                    <th >{translate('human_resource.profile.end_date_certificate')}</th>
+                                    <th >{translate('human_resource.profile.attached_files')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof contracts !== 'undefined' && contracts.length !== 0) &&
+                                {contracts && contracts.length !== 0 &&
                                     contracts.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.name}</td>
                                             <td>{x.contractType}</td>
                                             <td>{this.formatDate(x.startDate)}</td>
                                             <td>{this.formatDate(x.endDate)}</td>
-                                            <td>{!x.urlFile ? translate('manage_employee.no_files') :
+                                            <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
                                                 <a className='intable'
                                                     style={{ cursor: "pointer" }}
                                                     onClick={(e) => this.requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
@@ -94,24 +106,24 @@ class ContractTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof contracts === 'undefined' || contracts.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!contracts || contracts.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.training_process')}</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.training_process')}</h4></legend>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
                                     <th>Mã khoá đào tạo</th>
-                                    <th>{translate('manage_employee.course_name')}</th>
-                                    <th>{translate('manage_employee.start_day')}</th>
-                                    <th>{translate('manage_employee.end_date')}</th>
+                                    <th>{translate('human_resource.profile.course_name')}</th>
+                                    <th>{translate('human_resource.profile.start_day')}</th>
+                                    <th>{translate('human_resource.profile.end_date')}</th>
                                     <th>Địa điểm đào tạo</th>
                                     <th>Kết quả</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {(courses !== 'undefined' && courses.length !== 0) &&
+                                {courses && courses.length !== 0 &&
                                     courses.map((x, index) => {
                                         let courseInfo;
                                         course.listCourses.forEach(list => {
@@ -139,7 +151,7 @@ class ContractTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof courses === 'undefined' || courses.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!courses || courses.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
                 </div>
