@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, SelectBox, ErrorLabel } from '../../../../common-components';
 
-class CustomerCreate extends Component {
+class CustomerGroupCreate extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -15,7 +15,7 @@ class CustomerCreate extends Component {
 
     render() {
         const { translate } = this.props;
-        const {customers, group} = this.props.customer;
+        const {customer, customerGroup} = this.props;
         const {nameError} = this.state;
 
         return (
@@ -24,7 +24,7 @@ class CustomerCreate extends Component {
                 <ButtonModal modalID="modal-create-customer-group" button_name="Thêm mới" title="Thêm nhóm khách hàng mới" />
 
                 <DialogModal
-                    modalID="modal-create-customer-group" isLoading={group.isLoading}
+                    modalID="modal-create-customer-group" isLoading={customerGroup.isLoading}
                     formID="form-create-customer-group"
                     title="Thêm mới nhóm khách hàng"
                     func={this.save}
@@ -128,11 +128,11 @@ class CustomerCreate extends Component {
 }
 
 function mapStateToProps(state) {
-    const { customer } = state;
-    return { customer };
+    const { customer, customerGroup } = state;
+    return { customer, customerGroup };
 }
 
 const mapDispatchToProps = {
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CustomerCreate));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CustomerGroupCreate));

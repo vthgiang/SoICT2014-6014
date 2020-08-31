@@ -599,6 +599,8 @@ export default {
 
         menu: {
             home: 'Home page',
+            system: 'System',
+            iam_rbac:'IAM-RBAC',
             manage_system: 'Manage System',
             manage_company: 'Manage Company',
             manage_department: 'Manage Departments',

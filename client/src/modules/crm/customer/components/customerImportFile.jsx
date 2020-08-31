@@ -15,13 +15,13 @@ class CustomerImportFile extends Component {
 
     render() {
         const { translate } = this.props;
-        const {customers} = this.props.customer;
+        const {customer} = this.props;
         const {nameError} = this.state;
 
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-customer-import" isLoading={customers.isLoading}
+                    modalID="modal-customer-import" isLoading={customer.isLoading}
                     formID="form-customer-import"
                     title="Nhập dữ liệu khách hàng"
                     func={this.save}
@@ -107,8 +107,8 @@ class CustomerImportFile extends Component {
 }
 
 function mapStateToProps(state) {
-    const { customer } = state;
-    return { customer };
+    const { customer, customerGroup } = state;
+    return { customer, customerGroup };
 }
 
 const mapDispatchToProps = {

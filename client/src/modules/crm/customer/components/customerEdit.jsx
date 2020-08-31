@@ -2,26 +2,26 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, SelectBox, DatePicker } from '../../../../common-components';
-import { CustomerActions } from '../../redux/actions';
+import { CustomerActions } from '../redux/actions';
 
 class CustomerEdit extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            customerBirth: '',
-            customerSale: 'group'
+            birth: '',
+            sale: 'group'
         }
     }
 
     render() {
         const { translate } = this.props;
-        const {customers, group} = this.props.customer;
-        const {customerId, customerName, customerCode, customerPhone, customerEmail, customerGroup, customerSale} = this.state;
+        const { customer, customerGroup } = this.props;
+        const { id, name, code, phone, email, group, sale} = this.state;
 
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-edit-customer" isLoading={customers.isLoading}
+                    modalID="modal-edit-customer" isLoading={customer.isLoading}
                     formID="form-edit-customer"
                     title="Chỉnh sửa thông tin khách hàng"
                     func={this.save}
@@ -34,26 +34,26 @@ class CustomerEdit extends Component {
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">
                                         <label>Tên khách hàng<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" value={customerName} onChange={this.handleName} />
+                                        <input type="text" className="form-control" value={name} onChange={this.handleName} />
                                     </div>
                                     <div className="form-group">
                                         <label>Mã khách hàng<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" value={customerCode} onChange={this.handleCode} />
+                                        <input type="text" className="form-control" value={code} onChange={this.handleCode} />
                                     </div>
                                     <div className="form-group">
                                         <label>Số điện thoại<span className="attention"> * </span></label>
-                                        <input type="text" className="form-control" value={customerPhone} onChange={this.handlePhone} />
+                                        <input type="text" className="form-control" value={phone} onChange={this.handlePhone} />
                                     </div>
                                     <div className="form-group">
                                         <label>Nhóm khách hàng</label>
                                         <SelectBox
-                                            id={`select-customer-group-${customerId}`}
+                                            id={`select-customer-group-${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={
-                                                group.list.map(g => { return { value: g._id, text: g.name} })
+                                                customerGroup.list.map(g => { return { value: g._id, text: g.name} })
                                             }
-                                            value={[customerGroup]}
+                                            value={[group]}
                                             onChange={this.handleParents}
                                             multiple={false}
                                         />
@@ -62,20 +62,20 @@ class CustomerEdit extends Component {
                                 <div className="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                                     <div className="form-group">
                                         <label>Email</label>
-                                        <input type="text" className="form-control" value={customerEmail} onChange={this.handleName} />
+                                        <input type="text" className="form-control" value={email} onChange={this.handleName} />
                                     </div>
                                     <div className="form-group">
                                         <label>Ngày sinh</label>
                                         <DatePicker
                                             id="create-customer-birth"
-                                            value={this.state.customerBirth}
+                                            value={this.state.birth}
                                             onChange={this.handleBirth}
                                         />
                                     </div>
                                     <div className="form-group">
                                         <label>Giới tính</label>
                                         <SelectBox
-                                            id={`select-customer-gender-${customerId}`}
+                                            id={`select-customer-gender-${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={[
@@ -107,7 +107,7 @@ class CustomerEdit extends Component {
                                     <div className="form-group">
                                         <label>Khu vực</label>
                                         <SelectBox
-                                            id={`select-customer-location-${customerId}`}
+                                            id={`select-customer-location-${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={[]}
@@ -133,13 +133,13 @@ class CustomerEdit extends Component {
                                 <div style={{padding: '10px', backgroundColor: '#F1F1F1', marginBottom: '5px'}}>
                                     <div className="radio-inline">
                                         <span>
-                                            <input type="radio" name={`sale-${customerId}`} value="group" onChange={this.hanldeSaleGroup}
-                                                checked={customerSale === "group" ? true : false} />Theo nhóm khách hàng</span>
+                                            <input type="radio" name={`sale-${id}`} value="group" onChange={this.hanldeSaleGroup}
+                                                checked={sale === "group" ? true : false} />Theo nhóm khách hàng</span>
                                     </div>
                                     <div className="radio-inline">
                                         <span>
-                                            <input type="radio" name={`sale-${customerId}`} value="customer" onChange={this.hanldeSaleCustomer}
-                                                checked={customerSale !== "group" ? true : false} />Theo khách hàng</span>
+                                            <input type="radio" name={`sale-${id}`} value="customer" onChange={this.hanldeSaleCustomer}
+                                                checked={sale !== "group" ? true : false} />Theo khách hàng</span>
                                     </div>
                                 </div>
                                 <div id="sale-customer-option" style={{display: 'none'}}>
@@ -150,7 +150,7 @@ class CustomerEdit extends Component {
                                     <div className="form-group">
                                         <label>Hình thức thanh toán</label>
                                         <SelectBox
-                                            id={`select-customer-sale-${customerId}`}
+                                            id={`select-customer-sale-${id}`}
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={[
@@ -176,35 +176,35 @@ class CustomerEdit extends Component {
     handleBirth = (value) => {
         this.setState({
             ...this.state,
-            customerBirth: value
+            birth: value
         });
     }
 
     handleName = (e) => {
         const { value } = e.target;
         this.setState({
-            customerName: value
+            name: value
         });
     }
 
     handleCode = (e) => {
         const { value } = e.target;
         this.setState({
-            customerCode: value
+            code: value
         });
     }
 
     handlePhone = (e) => {
         const { value } = e.target;
         this.setState({
-            customerPhone: value
+            phone: value
         });
     }
 
     hanldeSaleGroup = (e) => {
         const {value} = e.target;
         this.setState({
-            customerSale: value
+            sale: value
         })
         window.$('#sale-customer-option').hide();
     }
@@ -212,29 +212,29 @@ class CustomerEdit extends Component {
     hanldeSaleCustomer = (e) => {
         const {value} = e.target;
         this.setState({
-            customerSale: value
+            sale: value
         })
         window.$('#sale-customer-option').show();
     }
 
     save = () => {
         return this.props.create({
-            name: this.state.customerName,
-            code: this.state.customerCode,
-            phone: this.state.customerPhone
+            name: this.state.name,
+            code: this.state.code,
+            phone: this.state.phone
         });
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.customerId !== prevState.customerId) {
+        if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
-                customerId: nextProps.customerId,
-                customerName: nextProps.customerName,
-                customerCode: nextProps.customerCode,
-                customerEmail: nextProps.customerEmail,
-                customerPhone: nextProps.customerPhone,
-                customerGroup: nextProps.customerGroup
+                id: nextProps.id,
+                name: nextProps.name,
+                code: nextProps.code,
+                email: nextProps.email,
+                phone: nextProps.phone,
+                group: nextProps.group
             }
         } else {
             return null;
@@ -243,8 +243,8 @@ class CustomerEdit extends Component {
 }
 
 function mapStateToProps(state) {
-    const { customer } = state;
-    return { customer };
+    const { customer, customerGroup } = state;
+    return { customer, customerGroup };
 }
 
 const mapDispatchToProps = {

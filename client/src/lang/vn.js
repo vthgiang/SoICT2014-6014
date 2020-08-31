@@ -599,6 +599,8 @@ export default {
 
         menu: {
             home: 'Trang chủ',
+            system: 'Hệ thống',
+            iam_rbac:'IAM-RBAC',
             manage_system: 'Quản lý hệ thống',
             manage_company: 'Quản lý doanh nghiệp/công ty',
             manage_department: 'Quản lý cơ cấu tổ chức',
@@ -608,8 +610,9 @@ export default {
             manage_component: 'Quản lý các componentUI',
             manage_document: 'Quản lý tài liệu',
             documents: 'Tài liệu văn bản',
-
+            crm: 'CRM',
             customer: 'Khách hàng',
+            customer_group: 'Nhóm khách hàng',
 
             task_template: 'Mẫu Công Việc',
             taskmanagement: 'Quản Lý Công Việc',

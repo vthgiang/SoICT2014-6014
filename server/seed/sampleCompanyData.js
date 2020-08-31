@@ -82,9 +82,7 @@ const sampleCompanyData = async () => {
     });
     console.log(`Xong! Công ty [${vnist.name}] đã được tạo.`);
 
-
-
-
+    let vnist_info = await Company.findById(vnist._id);
 
 
 
@@ -187,7 +185,8 @@ const sampleCompanyData = async () => {
     ]);
     console.log("Xong! Đã thêm tài khoản:", users);
 
-
+    vnist_info.superAdmin = users[0]._id;
+    await vnist_info.save();
 
 
 

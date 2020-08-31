@@ -2,28 +2,27 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal, ButtonModal, SelectBox, DatePicker } from '../../../../common-components';
-import { CustomerActions } from '../../redux/actions';
+import { CustomerActions } from '../redux/actions';
 import moment from 'moment';
 
 class CustomerCreate extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            customerBirth: '',
-            customerSale: 'group',
+            birth: '',
+            sale: 'group',
         }
     }
 
     render() {
         const { translate } = this.props;
-        const {customers, group, location} = this.props.customer;
-        const {customerSale} = this.state;
-        console.log("State: ", this.state)
+        const {customer, customerGroup} = this.props;
+        const {sale} = this.state;
 
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-create-customer" isLoading={customers.isLoading}
+                    modalID="modal-create-customer" isLoading={customer.isLoading}
                     formID="form-create-customer"
                     title="Thêm mới khách hàng"
                     func={this.save}
@@ -53,7 +52,7 @@ class CustomerCreate extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={
-                                                group.list.map(g => { return { value: g._id, text: g.name} })
+                                                customerGroup.list.map(g => { return { value: g._id, text: g.name} })
                                             }
                                             onChange={this.handleGroup}
                                             multiple={false}
@@ -111,12 +110,13 @@ class CustomerCreate extends Component {
                                             id="select-customer-location"
                                             className="form-control select2"
                                             style={{ width: "100%" }}
-                                            items={location.list.map(location=>{
-                                                return {
-                                                    value: location.SolrID,
-                                                    text: location.Title
-                                                }
-                                            })}
+                                            // items={location.list.map(location=>{
+                                            //     return {
+                                            //         value: location.SolrID,
+                                            //         text: location.Title
+                                            //     }
+                                            // })}
+                                            items={[]}
                                             onChange={this.handleLocation}
                                             multiple={false}
                                         />
@@ -140,12 +140,12 @@ class CustomerCreate extends Component {
                                     <div className="radio-inline">
                                         <span>
                                             <input type="radio" name={`sale-group`} value="group" onChange={this.hanldeSaleGroup}
-                                                checked={customerSale === "group" ? true : false} />Theo nhóm khách hàng</span>
+                                                checked={sale === "group" ? true : false} />Theo nhóm khách hàng</span>
                                     </div>
                                     <div className="radio-inline">
                                         <span>
                                             <input type="radio" name={`sale-customer`} value="customer" onChange={this.hanldeSaleCustomer}
-                                                checked={customerSale !== "group" ? true : false} />Theo khách hàng</span>
+                                                checked={sale !== "group" ? true : false} />Theo khách hàng</span>
                                     </div>
                                 </div>
                                 <div id="create-sale-customer-option" style={{display: 'none'}}>
@@ -182,54 +182,54 @@ class CustomerCreate extends Component {
     handleName = (e) => {
         const { value } = e.target;
         this.setState({
-            customerName: value
+            name: value
         });
     }
 
     handleCode = (e) => {
         const { value } = e.target;
         this.setState({
-            customerCode: value
+            code: value
         });
     }
 
     handlePhone = (e) => {
         const { value } = e.target;
         this.setState({
-            customerPhone: value
+            phone: value
         });
     }
 
     handleGroup = (value) => {
         this.setState({
-            customerGroup: value[0]
+            group: value[0]
         })
     }
 
     handleEmail = (e) => {
         const {value} = e.target;
         this.setState({
-            customerEmail: value
+            email: value
         })
     }
 
     handleBirth = (value) => {
         this.setState({
             ...this.state,
-            customerBirth: moment(value, "DD-MM-YYYY").format("MM-DD-YYYY")
+            birth: moment(value, "DD-MM-YYYY").format("MM-DD-YYYY")
         });
     }
 
     handleGender = (value) => {
         this.setState({
-            customerGender: value[0]
+            gender: value[0]
         })
     }
 
     hanldeSaleGroup = (e) => {
         const {value} = e.target;
         this.setState({
-            customerSale: value
+            sale: value
         })
         window.$('#create-sale-customer-option').hide();
     }
@@ -237,7 +237,7 @@ class CustomerCreate extends Component {
     hanldeSaleCustomer = (e) => {
         const {value} = e.target;
         this.setState({
-            customerSale: value
+            sale: value
         })
         window.$('#create-sale-customer-option').show();
     }
@@ -245,33 +245,33 @@ class CustomerCreate extends Component {
     handleAddress = (e) => {
         const {value} = e.target;
         this.setState({
-            customerAddress: value
+            address: value
         })
     }
 
     handleLocation = (value) => {
         this.setState({
-            customerLocation: value[0]
+            location: value[0]
         })
     }
 
     save = () => {
         return this.props.create({
-            name: this.state.customerName,
-            code: this.state.customerCode,
-            phone: this.state.customerPhone,
-            address: this.state.customerAddress,
-            location: this.state.customerLocation,
-            email: this.state.customerEmail,
-            group: this.state.customerGroup,
-            birth: this.state.customerBirth
+            name: this.state.name,
+            code: this.state.code,
+            phone: this.state.phone,
+            address: this.state.address,
+            location: this.state.location,
+            email: this.state.email,
+            group: this.state.group,
+            birth: this.state.birth
         });
     }
 }
 
 function mapStateToProps(state) {
-    const { customer } = state;
-    return { customer };
+    const { customer, customerGroup } = state;
+    return { customer, customerGroup };
 }
 
 const mapDispatchToProps = {

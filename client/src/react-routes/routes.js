@@ -92,7 +92,8 @@ import TaskReportManager from '../modules/report/task-report/components/taskRepo
 //warehouse
 import MaterialManager from '../modules/warehouse-manager/material-manager/component';
 // Customer Management
-import Customer from '../modules/customer/components';
+import Customer from '../modules/crm/customer/components';
+import CustomerGroup from '../modules/crm/customer-group/components';
 
 //orders
 import OrderManagement from "../modules/order/components";
@@ -1049,7 +1050,7 @@ class Routes extends Component {
                         isLoading={false}
                         key={'customer'}
                         arrPage={[
-                            { link: '/customer', name: 'customer', icon: 'fa fa-user' }
+                            { link: '/customer', name: 'customer', icon: 'fa fa-users' }
                         ]}
                         auth={auth}
                         exact={true}
@@ -1058,6 +1059,21 @@ class Routes extends Component {
                         pageName={'customer'}
                         layout={Layout}
                         component={Customer}
+                    />
+
+                    <PrivateRoute
+                        isLoading={false}
+                        key={'customer-group'}
+                        arrPage={[
+                            { link: '/customer-group', name: 'customer_group', icon: 'fa fa-group' }
+                        ]}
+                        auth={auth}
+                        exact={true}
+                        link={'/customer-group'}
+                        path={'/customer-group'}
+                        pageName={'customer_group'}
+                        layout={Layout}
+                        component={CustomerGroup}
                     />
 
                     {/* Orders Management */}
