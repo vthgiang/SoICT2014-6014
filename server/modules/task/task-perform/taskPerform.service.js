@@ -2550,6 +2550,17 @@ exports.editTaskStatus = async (taskID, body) => {
     return task
 }
 
+/** Xác nhận công việc */
+exports.confirmTask = async (taskId, userId) => {
+
+    let confirmedByEmployee = await Task.findByIdAndUpdate(taskId,
+        { $push: { confirmedByEmployees: userId } }
+    )
+
+    let task = await TaskManagementService.getTaskById(taskId, userId);
+    return task;
+}
+
 /** Chỉnh sửa taskInformation của task */
 exports.editTaskInformation = async (taskId, userId, taskInformations) => {
     let information;

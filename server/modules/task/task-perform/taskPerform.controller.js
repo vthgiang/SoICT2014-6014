@@ -683,6 +683,9 @@ exports.editTask = async (req, res) => {
     }
     else if (req.body.type === 'edit_status') {
         editTaskStatus(req, res);
+    } 
+    else if (req.query.type === 'confirm_task') {
+        confirmTask(req, res);
     }
 }
 
@@ -906,6 +909,27 @@ editTaskStatus = async (req, res) => {
     //         content: error
     //     });
     // }
+}
+
+/** Xác nhận công việc */
+confirmTask = async (req, res) => {
+    try {
+        let task = await PerformTaskService.confirmTask(req.params.taskId, req.user._id);
+
+        await LogInfo(req.user.email, ` confirm task `, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['confirm_task_success'],
+            content: task
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` confirm task `, req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['confirm_task_failure'],
+            content: error
+        })
+    }
 }
 
 /**

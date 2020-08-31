@@ -29,6 +29,7 @@ const LINK_CATEGORY = {
     REPORT: { name: 'report-management', description: 'Quản lý báo cáo' },
     MATERIAL: { name: 'material-manager', description: 'Quản lý vật tư' },
     ORDER: { name: "orders-management", description: "Quản lý đơn hàng" },
+    CRM: { name: 'crm', description: 'CRM'}
 };
 exports.LINK_CATEGORY = LINK_CATEGORY;
 
@@ -696,12 +697,22 @@ const LINKS = [
     {
         url: '/customer',
         description: `Quản lý khách hàng`,
-        category: LINK_CATEGORY.COMMON.name,
+        category: LINK_CATEGORY.CRM.name,
         roles: [
             ROOT_ROLES.SUPER_ADMIN.name,
             ROOT_ROLES.ADMIN.name
         ],
         components: getComponentsInLink('/customer')
+    },
+    {
+        url: '/customer-group',
+        description: `Quản lý nhóm khách hàng`,
+        category: LINK_CATEGORY.CRM.name,
+        roles: [
+            ROOT_ROLES.SUPER_ADMIN.name,
+            ROOT_ROLES.ADMIN.name
+        ],
+        components: getComponentsInLink('/customer-group')
     }
 ];
 

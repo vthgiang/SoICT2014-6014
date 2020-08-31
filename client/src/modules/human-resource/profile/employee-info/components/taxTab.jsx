@@ -7,7 +7,12 @@ class TaxTab extends Component {
         super(props);
         this.state = {};
     }
-    // Function format dữ liệu Date thành string
+
+    /**
+     * Function format dữ liệu Date thành string
+     * @param {*} date 
+     * @param {*} monthYear 
+     */
     formatDate(date, monthYear = false) {
         if (date) {
             let d = new Date(date),
@@ -26,6 +31,7 @@ class TaxTab extends Component {
         } return date
 
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -43,45 +49,56 @@ class TaxTab extends Component {
             return null;
         }
     }
+
     render() {
-        const { id, translate } = this.props;
-        const { atmNumber, bankName, bankAddress, taxNumber, taxRepresentative, taxDateOfIssue, taxAuthority } = this.state;
+        const { translate } = this.props;
+
+        const { id, atmNumber, bankName, bankAddress, taxNumber, taxRepresentative, taxDateOfIssue, taxAuthority } = this.state;
+
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.bank_account')}</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.bank_account')}</h4></legend>
                         <div className="row">
+                            {/* Số tài khoản ngân hàng */}
                             <div className="form-group col-md-4">
-                                <strong>{translate('manage_employee.account_number')}&emsp; </strong>
+                                <strong>{translate('human_resource.profile.account_number')}&emsp; </strong>
                                 {atmNumber}
                             </div>
+                            {/* Tên ngân hàng */}
                             <div className="form-group col-md-4">
-                                <strong>{translate('manage_employee.bank_name')}&emsp; </strong>
+                                <strong>{translate('human_resource.profile.bank_name')}&emsp; </strong>
                                 {bankName}
                             </div>
+                            {/* Chi nhánh */}
                             <div className="form-group col-md-4">
-                                <strong>{translate('manage_employee.bank_branch')}&emsp; </strong>
+                                <strong>{translate('human_resource.profile.bank_branch')}&emsp; </strong>
                                 {bankAddress}
                             </div>
                         </div>
                     </fieldset>
+                    {/* Thông tin thuế */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.personal_income_tax')}</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.personal_income_tax')}</h4></legend>
+                        {/* Thuế thu nhập cá nhân */}
                         <div className="form-group">
-                            <strong>{translate('manage_employee.tax_number')}&emsp; </strong>
+                            <strong>{translate('human_resource.profile.tax_number')}&emsp; </strong>
                             {taxNumber}
                         </div>
+                        {/* Người đại diện */}
                         <div className="form-group">
-                            <strong>{translate('manage_employee.representative')}&emsp; </strong>
+                            <strong>{translate('human_resource.profile.representative')}&emsp; </strong>
                             {taxRepresentative}
                         </div>
+                        {/* Ngày hoạt động */}
                         <div className="form-group">
-                            <strong>{translate('manage_employee.day_active')}&emsp; </strong>
+                            <strong>{translate('human_resource.profile.day_active')}&emsp; </strong>
                             {this.formatDate(taxDateOfIssue)}
                         </div>
+                        {/* Nơi quản lý */}
                         <div className="form-group">
-                            <strong>{translate('manage_employee.managed_by')}&emsp; </strong>
+                            <strong>{translate('human_resource.profile.managed_by')}&emsp; </strong>
                             {taxAuthority}
                         </div>
                     </fieldset>

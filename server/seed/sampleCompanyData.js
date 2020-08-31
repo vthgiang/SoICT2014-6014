@@ -82,9 +82,7 @@ const sampleCompanyData = async () => {
     });
     console.log(`Xong! Công ty [${vnist.name}] đã được tạo.`);
 
-
-
-
+    let vnist_info = await Company.findById(vnist._id);
 
 
 
@@ -187,7 +185,8 @@ const sampleCompanyData = async () => {
     ]);
     console.log("Xong! Đã thêm tài khoản:", users);
 
-
+    vnist_info.superAdmin = users[0]._id;
+    await vnist_info.save();
 
 
 
@@ -1217,13 +1216,36 @@ const sampleCompanyData = async () => {
     }, {
         name: "Tủ A",
         company: vnist,
-        path: "Văn phòng B1 - Phòng 202 - Tủ A",
+        path: "Văn phòng B2 - Phòng 301 - Tủ A",
         parent: archives2[2],
     }, {
         name: "Tủ B",
         company: vnist,
-        path: "Văn phòng B1 - Phòng 202 - Tủ B",
+        path: "Văn phòng B2 - Phòng 301 - Tủ B",
         parent: archives2[2],
+    }, {
+        name: "Tủ to",
+        company: vnist,
+        path: "Văn phòng B3 - Phòng 403 - Tủ to",
+        parent: archives2[4],
+    }, {
+        name: "Tủ nhỏ",
+        company: vnist,
+        path: "Văn phòng B3 - Phòng 403 - Tủ nhỏ",
+        parent: archives2[4],
+    }, {
+        name: "Tủ trung bình",
+        company: vnist,
+        path: "Văn phòng B3 - Phòng 403 - Tủ trung bình",
+        parent: archives2[4],
+    },
+
+    ]);
+    const archives4 = await DocumentArchive.insertMany([{
+        name: "Ngăn đầu",
+        company: vnist,
+        path: "Văn phòng B1 - Phòng 201 - Tủ 1 - Ngăn đầu",
+        parent: archives3[0],
     },
 
     ])
@@ -1241,17 +1263,92 @@ const sampleCompanyData = async () => {
         description: 'Công văn'
     }, {
         company: vnist._id,
-        name: "Tài liệu khác",
-        description: 'Tài liệu khác'
-    }, {
-        company: vnist._id,
         name: "Hồ sơ",
         description: 'Hồ sơ'
     }, {
         company: vnist._id,
         name: "Biên bản",
         description: 'Biên bản'
+    }, {
+        company: vnist._id,
+        name: "Tài liệu khác",
+        description: 'Tài liệu khác'
     },]);
+
+    const documents = await Document.insertMany([{
+        name: 'Đi chơi',
+        category: categories[0],
+        domains: [domanins2[1]],
+        archives: [archives4[0]],
+        company: vnist._id,
+        versions: [{
+            versionName: "Đi chơi",
+            issuingDate: "2020-08-16",
+            effectiveDate: "2020-08-16",
+            expiredDate: "2020-08-16",
+        }]
+    }, {
+        name: 'Điều lệ công ty',
+        category: categories[2],
+        domains: [domanins2[0]],
+        archives: [archives3[3]],
+        company: vnist._id,
+        versions: [{
+            versionName: 'Điều lệ công ty',
+            issuingDate: "2020-08-16",
+            effectiveDate: "2020-08-16",
+            expiredDate: "2020-08-16",
+        }]
+    }, {
+        name: 'Giấy chứng nhận đăng ký chất lượng sản phẩm',
+        category: categories[3],
+        domains: [domanins2[4]],
+        archives: [archives3[3]],
+        company: vnist._id,
+        versions: [{
+            versionName: 'Giấy chứng nhận đăng ký chất lượng sản phẩm',
+            issuingDate: "2020-08-16",
+            effectiveDate: "2020-08-16",
+            expiredDate: "2020-08-16",
+        }]
+    }, {
+        name: 'Giấy chứng nhận đăng ký chất lượng hàng nhập',
+        category: categories[4],
+        domains: [domanins2[12]],
+        archives: [archives3[4]],
+        company: vnist._id,
+        versions: [{
+            versionName: 'Giấy chứng nhận đăng ký chất lượng hàng nhập',
+            issuingDate: "2020-08-16",
+            effectiveDate: "2020-08-16",
+            expiredDate: "2020-08-16",
+        }]
+    }, {
+        name: 'Kết quả khảo sát định kỳ',
+        category: categories[5],
+        domains: [domanins2[1]],
+        archives: [archives4[0]],
+        company: vnist._id,
+        versions: [{
+            versionName: 'Kết quả khảo sát định kỳ',
+            issuingDate: "2020-08-16",
+            effectiveDate: "2020-08-16",
+            expiredDate: "2020-08-16",
+        }]
+    }, {
+        name: 'Giấy chứng nhận đăng ký chất lượng thực phẩm',
+        category: categories[3],
+        domains: [domanins2[4]],
+        archives: [archives3[3]],
+        company: vnist._id,
+        versions: [{
+            versionName: 'Giấy chứng nhận đăng ký chất lượng thực phẩm',
+            issuingDate: "2020-08-16",
+            effectiveDate: "2020-08-16",
+            expiredDate: "2020-08-16",
+        }]
+    },
+    ])
 
     /*---------------------------------------------------------------------------------------------
     -----------------------------------------------------------------------------------------------

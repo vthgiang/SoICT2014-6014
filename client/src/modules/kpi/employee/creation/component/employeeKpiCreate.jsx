@@ -1,22 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
 
+import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
-import { getStorage } from '../../../../../config'
-import { SlimScroll } from '../../../../../common-components';
-import { DatePicker, SelectBox } from '../../../../../../src/common-components';
+import { Comment } from './comment';
 
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { createKpiSetActions } from '../redux/actions';
 import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions';
-import { performTaskAction } from '../../../../task/task-perform/redux/actions'
 
 import { ModalCreateEmployeeKpi } from './employeeKpiAddTargetModal';
 import { ModalCreateEmployeeKpiSet } from './employeeKpiCreateModal';
 import { ModalEditEmployeeKpi } from './employeeKpiEditTargetModal';
-import { Comment } from './comment'
 
+import { getStorage } from '../../../../../config'
+import { DatePicker, SelectBox, SlimScroll } from '../../../../../../src/common-components';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 
 

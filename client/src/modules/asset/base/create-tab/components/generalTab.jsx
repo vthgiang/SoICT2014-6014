@@ -6,7 +6,7 @@ import { DatePicker, ErrorLabel, SelectBox, TreeSelect } from '../../../../../co
 
 import "./addAsset.css";
 import { AssetCreateValidator } from './combinedContent';
-import { RoleActions } from '../../../../super-admin/role/redux/actions'; 
+import { RoleActions } from '../../../../super-admin/role/redux/actions';
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { AssetTypeActions } from '../../../admin/asset-type/redux/actions';
 import { string2literal } from '../../../../../helpers/handleResponse';
@@ -168,7 +168,7 @@ class GeneralTab extends Component {
                 arr.push(defaultInformation[i]);
             }
         }
-        
+
         await this.setState(state => {
             return {
                 ...state,
@@ -389,9 +389,9 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện chỉnh sửa tên trường dữ liệu thông tin chi tiết
      */
-    handleChangeNameField = (e) => {
-        var { value, className } = e.target;
-        this.validateNameField(value, className);
+    handleChangeNameField = (e, index) => {
+        var { value } = e.target;
+        this.validateNameField(value, index);
     }
     validateNameField = (value, className, willUpdateState = true) => {
         let msg = AssetCreateValidator.validateNameField(value, this.props.translate);
@@ -413,9 +413,9 @@ class GeneralTab extends Component {
     /**
      * Bắt sự kiện chỉnh sửa giá trị trường dữ liệu thông tin chi tiết
      */
-    handleChangeValue = (e) => {
-        var { value, className } = e.target;
-        this.validateValue(value, className);
+    handleChangeValue = (e, index) => {
+        var { value } = e.target;
+        this.validateValue(value, index);
     }
     validateValue = (value, className, willUpdateState = true) => {
         let msg = AssetCreateValidator.validateValue(value, this.props.translate);
@@ -513,7 +513,7 @@ class GeneralTab extends Component {
         } = this.state;
 
         var userlist = user.list;
-        console.log("==Dòng 520==",readByRoles)
+        console.log("==Dòng 520==", readByRoles)
         console.log("Dòng 521", role.list)
         var assettypelist = assetType.listAssetTypes;
         let dataList = assettypelist.map(node => {
@@ -647,19 +647,19 @@ class GeneralTab extends Component {
                                 </div>
                                 {/* Quyền xem tài sản theo role */}
                                 <div className="form-group">
-                                    <label>{ translate('system_admin.system_link.table.roles') }</label>
+                                    <label>{translate('system_admin.system_link.table.roles')}</label>
                                     <div>
                                         <SelectBox
                                             id={`select-link-default-roles-${id}`}
                                             className="form-control select2"
-                                            style={{width: "100%"}}
-                                            items = { role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } })}
-                                            value = {readByRoles}
+                                            style={{ width: "100%" }}
+                                            items={role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } })}
+                                            value={readByRoles}
                                             onChange={this.handleRoles}
                                             multiple={true}
                                         />
                                     </div>
-                                </div> 
+                                </div>
                             </div>
 
                             {/* Người sử dụng */}
@@ -698,11 +698,11 @@ class GeneralTab extends Component {
                                 {/* Thời gian bắt đầu sử dụng */}
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.handover_from_date')}&emsp; </label>
-                                   < DatePicker
-                                    id={`start-date${id}`}
-                                    value={status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : ''}
-                                    onChange={this.handleEndDateChange}
-                                    disabled
+                                    < DatePicker
+                                        id={`start-date${id}`}
+                                        value={status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : ''}
+                                        onChange={this.handleEndDateChange}
+                                        disabled
                                     />
                                 </div>
 
@@ -710,10 +710,10 @@ class GeneralTab extends Component {
                                 <div className="form-group">
                                     <label>{translate('asset.general_information.handover_to_date')}&emsp; </label>
                                     < DatePicker
-                                    id={`end-date${id}`}
-                                    value={status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : ''}
-                                    onChange={this.handleEndDateChange}
-                                    disabled
+                                        id={`end-date${id}`}
+                                        value={status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : ''}
+                                        onChange={this.handleEndDateChange}
+                                        disabled
                                     />
                                 </div>
 
@@ -768,22 +768,22 @@ class GeneralTab extends Component {
                                         onChange={this.handleCanRegisterForUseChange}
                                     />
                                 </div>
-                                      
+
                             </div>
                         </div>
 
                         {/* Thông tin chi tiết */}
                         <div className="col-md-12">
-                            <label>{translate('asset.general_information.detail_information')}:<a title={translate('asset.general_information.detail_information')}><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }}
+                            <label>{translate('asset.general_information.detail_information')}:<a style={{ cursor: "pointer" }} title={translate('asset.general_information.detail_information')}><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
                                 onClick={this.handleAddDetailInfo} /></a></label>
                             <div className={`form-group ${(!errorOnNameField && !errorOnValue) ? "" : "has-error"}`}>
 
                                 {/* Bảng thông tin chi tiết */}
-                                <table className="table table-bordered">
+                                <table className="table">
                                     <thead>
                                         <tr>
-                                            <th>{translate('asset.asset_info.field_name')}</th>
-                                            <th>{translate('asset.asset_info.value')}</th>
+                                            <th style={{ paddingLeft: '0px' }}>{translate('asset.asset_info.field_name')}</th>
+                                            <th style={{ paddingLeft: '0px' }}>{translate('asset.asset_info.value')}</th>
                                             <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
                                         </tr>
                                     </thead>
@@ -795,8 +795,8 @@ class GeneralTab extends Component {
                                         </tr> :
                                             detailInfo.map((x, index) => {
                                                 return <tr key={index}>
-                                                    <td><input className={index} type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={this.handleChangeNameField} /></td>
-                                                    <td><input className={index} type="text" value={x.value} name="value" style={{ width: "100%" }} onChange={this.handleChangeValue} /></td>
+                                                    <td style={{ paddingLeft: '0px' }}><input className="form-control" type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={(e) => this.handleChangeNameField(e, index)} /></td>
+                                                    <td style={{ paddingLeft: '0px' }}><input className="form-control" type="text" value={x.value} name="value" style={{ width: "100%" }} onChange={(e) => this.handleChangeValue(e, index)} /></td>
                                                     <td style={{ textAlign: "center" }}>
                                                         <a className="delete" title="Delete" data-toggle="tooltip" onClick={() => this.delete(index)}><i className="material-icons"></i></a>
                                                     </td>

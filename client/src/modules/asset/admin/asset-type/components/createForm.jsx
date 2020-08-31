@@ -117,7 +117,8 @@ class CreateForm extends Component {
         this.validateValue(value, index);
     }
     validateValue = (value, className, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateValue(value, this.props.translate);
+        // let msg = AssetCreateValidator.validateValue(value, this.props.translate);
+        let msg = undefined;
         if (willUpdateState) {
             var { defaultInfo } = this.state;
             defaultInfo[className] = { ...defaultInfo[className], value: value }
@@ -215,16 +216,16 @@ class CreateForm extends Component {
 
                         {/* Thông tin mặc định */}
                         <div className="form-group">
-                            <label>Thông tin mặc định:<a title='Thêm thông tin mặc định'><i className="fa fa-plus" style={{ color: "#00a65a", marginLeft: 5 }}
+                            <label>Thông tin mặc định:<a style={{ cursor: "pointer" }} title='Thêm thông tin mặc định'><i className="fa fa-plus-square" style={{ color: "#00a65a", marginLeft: 5 }}
                                 onClick={this.handleAddDefaultInfo} /></a></label>
                             <div className={`form-group ${(!errorOnNameField && !errorOnValue) ? "" : "has-error"}`}>
 
                                 {/* Bảng thông tin chi tiết */}
-                                <table className="table table-bordered">
+                                <table className="table">
                                     <thead>
                                         <tr>
-                                            <th>{translate('asset.asset_info.field_name')}</th>
-                                            <th>{translate('asset.asset_info.value')}</th>
+                                            <th style={{ paddingLeft: '0px' }}>{translate('asset.asset_info.field_name')}</th>
+                                            <th style={{ paddingLeft: '0px' }}>{translate('asset.asset_info.value')}</th>
                                             <th style={{ width: '120px', textAlign: 'center' }}>{translate('table.action')}</th>
                                         </tr>
                                     </thead>
@@ -237,10 +238,10 @@ class CreateForm extends Component {
                                             defaultInfo.map((x, index) => {
                                                 return <tr key={index}>
                                                     {/* Tên trường dữ liệu */}
-                                                    <td><input className="form-group" type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={ (e) => this.handleChangeNameField(e, index)} /></td>
+                                                    <td style={{ paddingLeft: '0px' }}><input className="form-control" type="text" value={x.nameField} name="nameField" style={{ width: "100%" }} onChange={ (e) => this.handleChangeNameField(e, index)} /></td>
                                                     
                                                     {/* Giá trị */}
-                                                    <td><input className="form-group" type="text" value={x.value} name="value" style={{ width: "100%" }} onChange={(e) => this.handleChangeValue(e, index)} /></td>
+                                                    <td style={{ paddingLeft: '0px' }}><input className="form-control" type="text" value={x.value} name="value" style={{ width: "100%" }} onChange={(e) => this.handleChangeValue(e, index)} /></td>
                                                     
                                                     {/* Hành động */}
                                                     <td style={{ textAlign: "center" }}>

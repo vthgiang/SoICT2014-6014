@@ -58,11 +58,11 @@ class EvaluationModal extends Component {
         let monthOfEval = today.getMonth();
         let yearOfEval = today.getFullYear();
 
-        let endDate = new Date(task.endDate);
+        let endDate = new Date(task && task.endDate);
 
         let expire = endDate.getTime() - today.getTime();
 
-        evaluationOfMonth = task.evaluations.find(e => (monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()));
+        evaluationOfMonth = task && task.evaluations.find(e => (monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()));
 
         if (evaluations.length > 0) {
             if (!evaluationOfMonth) { // có đánh giá các tháng nhưng chưa có đánh giá tháng này
