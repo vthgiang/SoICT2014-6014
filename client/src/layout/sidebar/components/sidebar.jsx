@@ -5,64 +5,6 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { withTranslate } from 'react-redux-multilingual';
 
-const url = {
-    path1: "/hr-dashboard-employee",
-    path2: "/hr-add-employee",
-    path3: "/hr-list-employee",
-    path4: "/hr-salary-employee",
-    path5: "/hr-time-keeping",
-    path6: "/hr-discipline",
-    path7: "/hr-annual-leave",
-    path8: "/hr-detail-employee",
-    path9: "/hr-update-employee",
-    path10: "/hr-list-education",
-    path11: "/hr-training-plan",
-    path12: "/hr-manage-department",
-    path13: "/hr-manage-holiday",
-};
-
-const url1 = {
-    path1: "/dashboard-asset", // Dashboard Quản lý tài sản
-    path2: "/manage-type-asset", // Quản lý loại tài sản
-    path3: "/manage-info-asset", // Quản lý thông tin tài sản
-    path4: "/view-building-list", // Xem danh sách mặt bằng
-    path6: "/manage-depreciation-asset", // Quản lý khấu hao tài sản
-    path7: "/manage-asset-purchase-request", // Quản lý đề nghị mua sắm thiết bị
-    path8: "/manage-asset-use-request", // Quản lý đề nghị cấp phát sử dụng thiết bị
-
-    path10: "/asset-purchase-request", // Đăng ký mua sắm thiết bị
-    path11: "/asset-use-request", // Đăng ký cấp phát thiết bị
-    path12: "/manage-assigned-asset", // Quản lý thiết bị bàn giao
-
-    path13: "/manage-maintainance-asset", // Quản lý bảo trì
-    path14: "/manage-usage-asset", // Quản lý  sử dụng tài sản
-    path15: "/manage-incident-asset", // Quản lý lịch sự cố tài sản
-
-    path16: "/employee-manage-info-asset", //Nhân viên quản lý thông tin tài sản 
-};
-const url2 = {
-    path1: "/dashboad-material",
-    path2: "/material-manager",
-};
-
-const url3 = {
-    path1: "/manage-orders", // quản lý đơn hàng
-    path2: "/manage-list-orders", //Quản lý danh sách đơn hàng
-};
-
-const customer_url = {
-    path1: '/customer',
-    path2: '/customer-group'
-}
-
-const rbac = {
-    path1: '/departments-management',
-    path2: '/users-management',
-    path3: '/roles-management',
-    path4: '/links-management',
-    path5: '/components-management'
-}
-
 class SideBar extends Component {
 
     constructor(props) {
@@ -118,12 +60,14 @@ class SideBar extends Component {
                                 icon: 'fa fa-gears',
                                 list: [
                                     { name: 'menu.manage_system', icon: 'fa fa-gear', path: '/system/settings' },
-                                    { name: 'menu.manage_company', icon: 'fa fa-building', path: '/system/companies-management' },
                                     { name: 'menu.manage_role', icon: 'fa fa-lock', path: '/system/roles-default-management' },
                                     { name: 'menu.manage_link', icon: 'fa fa-link', path: '/system/links-default-management' },
                                     { name: 'menu.manage_component', icon: 'fa fa-object-group', path: '/system/components-default-management' },
                                 ]
                             }}/>
+                            
+                            {/* Quản lý doanh nghiệp */}
+                            <Item item={{ name: 'menu.manage_company', icon: 'fa fa-building', path: '/system/companies-management' }}/>
 
                             {/* Phân quyền IAM-RBAC */}
                             <GroupItem groupItem={{
