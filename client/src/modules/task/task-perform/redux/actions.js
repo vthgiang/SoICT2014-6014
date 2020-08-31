@@ -52,8 +52,39 @@ export const performTaskAction = {
 
     deleteEvaluation,
 
-    editInformationTask
+    editInformationTask,
+    getTaskById,
 };
+
+
+/**
+ * lấy công việc theo id
+ * @param {*} id id công việc
+ */
+
+function getTaskById(id) {
+    return dispatch => {
+        dispatch({
+            type: performTaskConstants.GETTASK_BYID_REQUEST,
+            id
+        });
+
+        performTaskService.getById(id)
+            .then(res => {
+                dispatch({
+                    type: performTaskConstants.GETTASK_BYID_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: performTaskConstants.GETTASK_BYID_FAILURE,
+                    error
+                })
+            })
+    }
+}
+
 // Create result task
 function createResultTask(result) {
     return dispatch => {

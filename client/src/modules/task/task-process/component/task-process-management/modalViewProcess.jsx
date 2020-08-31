@@ -5,6 +5,7 @@ import { DialogModal, SelectBox, DatePicker } from "../../../../../common-compon
 import { ViewProcess } from "./viewProcess";
 import { UserActions } from "../../../../super-admin/user/redux/actions";
 import { taskManagementActions } from "../../../task-management/redux/actions";
+import { performTaskAction } from "../../../task-perform/redux/actions";
 
 class ModalViewProcess extends Component {
 
@@ -51,7 +52,7 @@ function mapState(state) {
 
 const actionCreators = {
     getDepartment: UserActions.getDepartmentOfUser,
-    getTaskById: taskManagementActions.getTaskById,
+    getTaskById: performTaskAction.getTaskById,
     getAllUsersWithRole: UserActions.getAllUsersWithRole,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
 };

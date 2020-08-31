@@ -2009,6 +2009,7 @@ export default {
                 consulted: 'Người hỗ trợ',
                 creator: 'Người thiết lập',
                 informed: 'Người quan sát',
+                all_role: 'Tất cả vai trò',
 
                 responsible_role: 'Thực hiện',
                 accountable_role: 'Phê duyệt',

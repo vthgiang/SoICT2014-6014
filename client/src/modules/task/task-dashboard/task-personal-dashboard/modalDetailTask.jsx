@@ -4,6 +4,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { DialogModal } from '../../../../common-components/index';
 import { taskManagementActions } from '../../task-management/redux/actions'
 import { DetailTaskTab } from '../../task-perform/component/detailTaskTab';
+import { performTaskAction } from '../../task-perform/redux/actions';
 
 class ModalDetailTask extends Component {
     constructor(props) {
@@ -73,7 +74,7 @@ function mapState(state) {
     return { tasks }
 }
 const Actions = {
-    getTaskById: taskManagementActions.getTaskById
+    getTaskById: performTaskAction.getTaskById
 }
 const connectedModalDetailTask = connect(mapState, Actions)(withTranslate(ModalDetailTask));
 export { connectedModalDetailTask as ModalDetailTask };

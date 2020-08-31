@@ -5,6 +5,27 @@ const { sendEmail } = require('../../../helpers/emailHelper');
 
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module thực hiện công việc
 
+/**
+ *  Lấy công việc theo id
+ */
+exports.getTaskById = async (req, res) => {
+    // try {
+    var task = await PerformTaskService.getTaskById(req.params.taskId, req.user._id);
+    await LogInfo(req.user.email, ` get task by id `, req.user.company);
+    res.status(200).json({
+        success: true,
+        messages: ['get_task_by_id_success'],
+        content: task
+    });
+    // } catch (error) {
+    //     await LogError(req.user.email, ` get task by id `, req.user.company);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['get_task_by_id_fail'],
+    //         content: error
+    //     });
+    // };
+};
 
 /**
  * Lấy lịch sử bấm giờ 

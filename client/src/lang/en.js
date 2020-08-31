@@ -2008,6 +2008,7 @@ export default {
                 consulted: 'Consulted',
                 creator: 'Creator',
                 informed: 'Informed',
+                all_role: 'All of roles',
 
                 responsible_role: 'Responsible',
                 accountable_role: 'Acountable',

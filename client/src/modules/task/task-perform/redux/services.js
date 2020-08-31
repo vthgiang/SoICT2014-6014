@@ -50,9 +50,20 @@ export const performTaskService = {
 
     deleteEvaluation,
 
-    editInformationTask
+    editInformationTask,
+    getById,
 };
 
+/**
+ * lấy công việc theo id
+ * @param {*} taskId id công việc
+ */
+function getById(taskId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
+        method: 'GET',
+    }, false, true, 'task.task_management');
+}
 
 /**
  * lấy lịch sử bấm giờ

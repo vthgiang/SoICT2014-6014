@@ -337,6 +337,7 @@ exports.createTaskByProcess = async (processId, body) => {
             description: data[i].description,
             startDate: startDate,
             endDate: endDate,
+            formula: data[i].formula,
             priority: data[i].priority,
             taskTemplate: null,
             taskInformations: taskInformations,
