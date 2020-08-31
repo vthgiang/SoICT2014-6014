@@ -71,15 +71,14 @@ export default {
                 ],
             },
             validate: {
-                value: 'Giá trị ',
-                invalid_character_error: 'không được chứa ký tự đặc biệt',
-                length_error: 'phải có số ký tự từ {min} đến {max}',
-                minimum_length_error: 'phải có độ dài tối thiểu là {min} ký tự',
-                maximum_length_error: 'có độ dài không quá {max} ký tự',
-                invalid_error: 'không hợp lệ',
-                empty_error: 'không được để trống',
-                not_existing_error: 'không tồn tại',
-                existing_error: 'đã tồn tại',
+                invalid_character_error: 'Giá trị không được chứa ký tự đặc biệt',
+                length_error: 'Giá trị phải có số ký tự từ {min} đến {max}',
+                minimum_length_error: 'Giá trị phải có độ dài tối thiểu là {min} ký tự',
+                maximum_length_error: 'Giá trị có độ dài không quá {max} ký tự',
+                invalid_error: 'Giá trị không hợp lệ',
+                empty_error: 'Giá trị không được để trống',
+                not_existing_error: 'Giá trị không tồn tại',
+                existing_error: 'Giá trị đã tồn tại',
             }
         },
 

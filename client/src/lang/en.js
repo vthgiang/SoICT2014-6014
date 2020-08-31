@@ -71,15 +71,14 @@ export default {
                 ],
             },
             validate: {
-                value: 'Value ',
-                invalid_character_error: 'invalid character error',
-                length_error: 'should have length between {min} to {max}',
-                minimum_length_error: 'should have minimum length of {min}',
-                maximum_length_error: 'should have maximum length of {max}',
-                invalid_error: 'invalid',
-                empty_error: 'cannot be empty',
-                not_existing_error: 'not existing',
-                existing_error: 'existing',
+                invalid_character_error: 'Value invalid character error',
+                length_error: 'Value should have length between {min} to {max}',
+                minimum_length_error: 'Value should have minimum length of {min}',
+                maximum_length_error: 'Value should have maximum length of {max}',
+                invalid_error: 'Value invalid',
+                empty_error: 'Value cannot be empty',
+                not_existing_error: 'Value not existing',
+                existing_error: 'Value existing',
             }
         },
 
