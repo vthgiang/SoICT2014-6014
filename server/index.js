@@ -6,7 +6,7 @@ const cookieParser = require("cookie-parser");
 
 require("dotenv").config();
 require('./connectDatabase');
-require('./globalVariables');
+require('./global');
 
 // Application Modules
 const schedulerController = require("./modules/scheduler/scheduler.controller");
