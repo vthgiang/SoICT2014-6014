@@ -14,28 +14,17 @@ export default class ValidationHelper {
       */
     static validateEmpty = (translate, value) => {
         if(!value)
-            return { status: false, message: translate('general.validate.value')+translate('general.validate.empty_error') };
+            return { status: false, message: translate('general.validate.empty_error') };
         return { status: true };
     }
 
     /**
-     * Xác thực giá trị có khả dụng hay không?
+     * Xác thực giá trị có chứa ký tự đặc biệt hay không?
      * @param {*} value giá trị cần xác thực
-     * @param {*} type loại xác thực
      */
-    static validateInvalid = (translate, value, type) => {
-        switch(type){
-            case 'email':
-                if(!REGEX.EMAIL.test(value))
-                    return { status: false, message: translate('general.validate.value')+translate('general.validate.invalid_error') };
-                break;
-
-            default:
-                if(!REGEX.SPECIAL_CHARACTER.test(value))
-                    return { status: false, message: translate('general.validate.value')+translate('general.validate.invalid_character_error') };
-                break;
-        }
-        
+    static validateInvalidCharacter = (translate, value) => {
+        if(!REGEX.SPECIAL_CHARACTER.test(value))
+            return { status: false, message: translate('general.validate.invalid_character_error') };
         return { status: true };
     }
 
@@ -47,7 +36,7 @@ export default class ValidationHelper {
      */
     static validateLength = (translate, value, min=4, max=1024) => {
         if(value.length < min || value.length > max )
-            return { status: false, message: translate('general.validate.value')+translate('general.validate.length_error', {min, max}) };
+            return { status: false, message: translate('general.validate.length_error', {min, max}) };
         return { status: true };
     }
 
@@ -58,7 +47,7 @@ export default class ValidationHelper {
      */
     static validateMinimumLength = (translate, value, min=4) => {
         if(value.length < min)
-            return { status: false, message: translate('general.validate.value')+translate('general.validate.minimum_length_error', {min}) };
+            return { status: false, message: translate('general.validate.minimum_length_error', {min}) };
         return { status: true };
     }
     
@@ -69,7 +58,7 @@ export default class ValidationHelper {
      */
     static validateMaximumLength = (translate, value, max=1024) => {
         if(value.length > max)
-            return { status: false, message: translate('general.validate.value')+translate('general.validate.maximum_length_error', {max}) };
+            return { status: false, message: translate('general.validate.maximum_length_error', {max}) };
         return { status: true };
     }
 
@@ -93,7 +82,7 @@ export default class ValidationHelper {
         if(!result.status)
             return result;
 
-        result = this.validateInvalid(translate, name)
+        result = this.validateInvalidCharacter(translate, name)
         if(!result.status)
             return result;
         
@@ -120,10 +109,9 @@ export default class ValidationHelper {
         let result = this.validateEmpty(translate, email);
         if(!result.status)
             return result;
-        
-        result = this.validateInvalid(translate, email, "email");
-        if(!result.status)
-            return result;
+
+        if(!REGEX.EMAIL.test(email))
+            return { status: false, message: translate('general.validate.invalid_error') };
 
         return { status: true };
     }
@@ -135,7 +123,7 @@ export default class ValidationHelper {
      * @param {*} max số ký tự tối đa
      */
     static validatePassword = (translate, password, min=6, max=30) => {
-        let result = this.validateEmpty(password);
+        let result = this.validateEmpty(translate, password);
         if(!result.status)
             return result;
         

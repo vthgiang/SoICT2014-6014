@@ -45,15 +45,14 @@ export default {
                 ],
             },
             validate: {
-                value: 'Value ',
-                invalid_character_error: 'invalid character error',
-                length_error: 'should have length between {min} to {max}',
-                minimum_length_error: 'should have minimum length of {min}',
-                maximum_length_error: 'should have maximum length of {max}',
-                invalid_error: 'invalid',
-                empty_error: 'cannot be empty',
-                not_existing_error: 'not existing',
-                existing_error: 'existing',
+                invalid_character_error: 'Value invalid character error',
+                length_error: 'Value should have length between {min} to {max}',
+                minimum_length_error: 'Value should have minimum length of {min}',
+                maximum_length_error: 'Value should have maximum length of {max}',
+                invalid_error: 'Value invalid',
+                empty_error: 'Value cannot be empty',
+                not_existing_error: 'Value not existing',
+                existing_error: 'Value existing',
             }
         },
 
@@ -2096,7 +2095,11 @@ export default {
                 unit_evaluate: "Unit receiving work evaluation results",
                 unit_manage_task: "Unit managing task",
                 delete_eval: "Delete evaluation",
-                delete_eval_title: 'Are you sure to delete this evaluation?'
+                delete_eval_title: 'Are you sure to delete this evaluation?',
+
+                // confirm task
+                confirm_task_success: "Confirm task successfully",
+                confirm_task_failure: "Confirm task unsuccessfully"
 
             },
             task_perform: {

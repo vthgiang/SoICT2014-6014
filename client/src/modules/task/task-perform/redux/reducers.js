@@ -170,6 +170,21 @@ export function performtasks(state = {}, action) {
                 ...state,
                 error: action.payload
             };
+        case performTaskConstants.CONFIRM_TASK_REQUEST:
+            return {
+                ...state,
+                editing: true
+            }
+        case performTaskConstants.CONFIRM_TASK_SUCCESS:
+            return {
+                ...state,
+                task: action.payload
+            }
+        case performTaskConstants.CONFIRM_TASK_FAILURE:
+            return {
+                ...state,
+                error: action.payload
+            }
         case performTaskConstants.DELETE_ACTION_COMMENT_REQUEST:
             return {
                 ...state,

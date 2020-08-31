@@ -1,25 +1,27 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { withTranslate } from 'react-redux-multilingual';
 
-import { DatePicker, DialogModal, SelectBox } from '../../../../../../src/common-components';
-
 import { UserActions } from "../../../../super-admin/user/redux/actions"
-import { createKpiSetActions  } from '../redux/actions';
+import { createKpiSetActions } from '../redux/actions';
 
+import { DatePicker, DialogModal, SelectBox } from '../../../../../../src/common-components';
 import getEmployeeSelectBoxItems from '../../../../task/organizationalUnitHelper';
 
 
 var translate='';
 class ModalCreateEmployeeKpiSet extends Component {
+
     constructor(props) {
         super(props);
+
         translate = this.props.translate;
+
         this.state = {
             _id: null,
             employeeKpiSet: {
                 organizationalUnit: "",
-                // creater: this.getCreater(), //localStorage.getItem("id"),
                 approver: null,
                 date: "",
             },
@@ -83,7 +85,9 @@ class ModalCreateEmployeeKpiSet extends Component {
 
     /**Gửi request khởi tạo tập KPI cá nhân mới */
     handleCreateEmployeeKpiSet = async () => {
-        var d = new Date(),
+        const { employeeKpiSet } = this.state;
+
+        let d = new Date(),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -91,7 +95,8 @@ class ModalCreateEmployeeKpiSet extends Component {
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
-        var defaultTime =  [month, year].join('-');
+        let defaultTime = [month, year].join('-');
+        
         if(this.state.employeeKpiSet.date === ""){
             await this.setState(state => {
                 return {
@@ -113,7 +118,7 @@ class ModalCreateEmployeeKpiSet extends Component {
                 }
             }
         })
-        var { employeeKpiSet } = this.state;
+        
         if(employeeKpiSet.organizationalUnit  && employeeKpiSet.date && employeeKpiSet.approver){//&& employeeKpiSet.creater
             this.props.createEmployeeKpiSet(employeeKpiSet);
             window.$("#createEmployeeKpiSet").modal("hide");
@@ -129,7 +134,7 @@ class ModalCreateEmployeeKpiSet extends Component {
             deans = getEmployeeSelectBoxItems([user.userdepartments], true, false, false);
         }
 
-        var d = new Date(),
+        let d = new Date(),
             month = '' + (d.getMonth() + 1),
             day = '' + d.getDate(),
             year = d.getFullYear();
@@ -138,7 +143,7 @@ class ModalCreateEmployeeKpiSet extends Component {
             month = '0' + month;
         if (day.length < 2)
             day = '0' + day;
-        var defaultTime =  [month, year].join('-');
+        let defaultTime =  [month, year].join('-');
 
         return (
             <React.Fragment>
