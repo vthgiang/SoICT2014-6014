@@ -54,7 +54,7 @@ function createRecommendDistribute(data) {
                 month: "",
                 type: null,
                 page: 0,
-                limit: 9,
+                limit: 5,
             }));
             dispatch({
                 type: RecommendDistributeConstants.CREATE_RECOMMEND_DISTRIBUTE_SUCCESS,

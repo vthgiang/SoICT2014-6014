@@ -15,7 +15,7 @@ import ResetPassword from '../modules/auth/components/resetPassword';
 import ManageDocument from '../modules/document/components/administration';
 import Document from '../modules/document/components/user';
 
-import Home from '../modules/home/components';
+import { Home } from '../modules/home/components/home';
 
 import { Notifications } from "../modules/combine-modules";
 
@@ -83,9 +83,8 @@ import AssetManager from "../modules/asset/admin/asset-information/components";
 import { ManagerAssetAssignedCrash } from '../modules/asset/user/asset-assigned/components';
 import { DashBoardAssets } from '../modules/asset/admin/asset-dashboard/components/assetDashBoard';
 import { BuildingAsset } from '../modules/asset/admin/building/components';
-import { EmployeeAssetManagement } from '../modules/asset/employee/asset-information/components/employeeAssetManagement';
-import { EmployeeIncidentManagement } from '../modules/asset/employee/incident/components/incidentManagement';
-import { EmployeePurchaseRequestManagement } from '../modules/asset/employee/use-request/components/PurchaseRequestManager';
+import  EmployeeAssetManagement  from '../modules/asset/employee/asset-information/components';
+
 
 //report
 import TaskReportManager from '../modules/report/task-report/components/taskReportManager';
@@ -839,47 +838,16 @@ class Routes extends Component {
                         key={'employee-manage-info-asset'}
                         arrPage={[
                             { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/employee-manage-info-asset', name: 'employee_manage_info_asset', icon: '' }
+                            { link: '/employee-manage-info-asset', name: 'manage_info_asset', icon: '' }
                         ]}
                         auth={auth}
                         exact={true}
                         link={'/employee-manage-info-asset'}
                         path={'/employee-manage-info-asset'}
-                        pageName={'employee_manage_info_asset'}
+                        pageName={'employee_manage_asset_info'}
                         layout={Layout}
                         component={EmployeeAssetManagement}
-                    />
-                    <PrivateRoute
-                        isLoading={this.props.recommendDistribute.isLoading}
-                        key={'employee-manage-asset-use-request'}
-                        arrPage={[
-                            { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/employee-manage-asset-use-request', name: 'employee-manage-recommend-distribute-asset', icon: '' }
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={'/employee-manage-asset-use-request'}
-                        path={'/employee-manage-asset-use-request'}
-                        pageName={'manage_recommend_distribute_asset'}
-                        layout={Layout}
-                        component={EmployeePurchaseRequestManagement}
-                    />
-
-                    <PrivateRoute
-                        isLoading={false}
-                        key={'employee-manage-incident-asset'}
-                        arrPage={[
-                            { link: '/', name: 'home', icon: 'fa fa-home' },
-                            { link: '/employee-manage-incident-asset', name: 'employee_manage_incident_asset', icon: '' }
-                        ]}
-                        auth={auth}
-                        exact={true}
-                        link={'/employee-manage-incident-asset'}
-                        path={'/employee-manage-incident-asset'}
-                        pageName={'emloyee_manage_incident_asset'}
-                        layout={Layout}
-                        component={EmployeeIncidentManagement}
-                    />
+                    />                    
 
                     {/** Quản lý */}
                     <PrivateRoute

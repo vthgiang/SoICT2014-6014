@@ -6,7 +6,7 @@ import { DatePicker, ErrorLabel, SelectBox, TreeSelect } from '../../../../../co
 
 import "./addAsset.css";
 import { AssetCreateValidator } from './combinedContent';
-
+import { RoleActions } from '../../../../super-admin/role/redux/actions'; 
 import { UserActions } from '../../../../super-admin/user/redux/actions';
 import { AssetTypeActions } from '../../../admin/asset-type/redux/actions';
 import { string2literal } from '../../../../../helpers/handleResponse';
@@ -322,7 +322,6 @@ class GeneralTab extends Component {
                 ...state,
                 description: value
             }
-
         });
         this.props.handleChange("description", value);
     }
@@ -337,6 +336,15 @@ class GeneralTab extends Component {
         this.props.handleChange('status', value[0]);
     }
 
+    handleRoles = (value) => {
+        this.setState(state => {
+            return {
+                ...state,
+                readByRoles: value
+            }
+        });
+        this.props.handleChange("readByRoles", value);
+    }
     /**
      * Bắt sự kiện thay đổi quyền đăng ký sử dụng
      */
@@ -473,6 +481,7 @@ class GeneralTab extends Component {
                 canRegisterForUse: nextProps.canRegisterForUse,
                 detailInfo: nextProps.detailInfo,
                 usageLogs: nextProps.usageLogs,
+                readByRoles: nextProps.readByRoles,
 
                 errorOnCode: undefined,
                 errorOnAssetName: undefined,
@@ -494,17 +503,18 @@ class GeneralTab extends Component {
 
     render() {
         const { id } = this.props;
-        const { translate, user, assetType, assetsManager } = this.props;
+        const { translate, user, assetType, assetsManager, role } = this.props;
 
         const {
             img, code, assetName, assetTypes, group, serial, purchaseDate, warrantyExpirationDate, managedBy,
             assignedToUser, assignedToOrganizationalUnit, handoverFromDate, handoverToDate, location, description, status, canRegisterForUse, detailInfo,
             errorOnCode, errorOnAssetName, errorOnSerial, errorOnAssetType, errorOnLocation, errorOnPurchaseDate,
-            errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue, usageLogs
+            errorOnWarrantyExpirationDate, errorOnManagedBy, errorOnNameField, errorOnValue, usageLogs, readByRoles
         } = this.state;
 
         var userlist = user.list;
-
+        console.log("==Dòng 520==",readByRoles)
+        console.log("Dòng 521", role.list)
         var assettypelist = assetType.listAssetTypes;
         let dataList = assettypelist.map(node => {
             return {
@@ -635,30 +645,76 @@ class GeneralTab extends Component {
                                     </div>
                                     <ErrorLabel content={errorOnManagedBy} />
                                 </div>
+                                {/* Quyền xem tài sản theo role */}
+                                <div className="form-group">
+                                    <label>{ translate('system_admin.system_link.table.roles') }</label>
+                                    <div>
+                                        <SelectBox
+                                            id={`select-link-default-roles-${id}`}
+                                            className="form-control select2"
+                                            style={{width: "100%"}}
+                                            items = { role.list.map(role => { return { value: role ? role._id : null, text: role ? role.name : "Role is deleted" } })}
+                                            value = {readByRoles}
+                                            onChange={this.handleRoles}
+                                            multiple={true}
+                                        />
+                                    </div>
+                                </div> 
                             </div>
 
                             {/* Người sử dụng */}
                             <div className="col-md-6">
                                 <div className={`form-group`}>
-                                    <strong>{translate('asset.general_information.user')}&emsp; </strong>
-                                    {assignedToUser ? (userlist.length && userlist.filter(item => item._id === assignedToUser).pop() ? userlist.filter(item => item._id === assignedToUser).pop().name : 'User is deleted') : ''}
+                                    <label>{translate('asset.general_information.user')}&emsp; </label>
+                                    <div id="assignedToUserBox">
+                                        <SelectBox
+                                            id={`assignedToUserBox${id}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={[{ value: 'null', text: 'Chưa có người được giao sử dụng' }, ...userlist.map(x => { return { value: x.id, text: x.name + " - " + x.email } })]}
+                                            value={assignedToUser}
+                                            multiple={false}
+                                            disabled
+                                        />
+                                    </div>
                                 </div>
 
                                 {/* Đơn vị sử dụng */}
                                 <div className="form-group">
-                                    <strong>{translate('asset.general_information.organization_unit')}&emsp; </strong>
-                                    {assignedToOrganizationalUnit ? assignedToOrganizationalUnit : ''}
+                                    <label>{translate('asset.general_information.organization_unit')}&emsp; </label>
+                                    <div id="assignedToOrganizationalUnitBox">
+                                        <SelectBox
+                                            id={`assignedToOrganizationalUnitBox${id}`}
+                                            className="form-control select2"
+                                            style={{ width: "100%" }}
+                                            items={[{ value: 'null', text: 'Chưa có đơn vị được giao sử dụng' },]}
+                                            value={assignedToOrganizationalUnit}
+                                            multiple={false}
+                                            disabled
+                                        />
+                                    </div>
                                 </div>
+
                                 {/* Thời gian bắt đầu sử dụng */}
                                 <div className="form-group">
-                                    <strong>{translate('asset.general_information.handover_from_date')}&emsp; </strong>
-                                    {status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : ''}
+                                    <label>{translate('asset.general_information.handover_from_date')}&emsp; </label>
+                                   < DatePicker
+                                    id={`start-date${id}`}
+                                    value={status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].startDate) : ''}
+                                    onChange={this.handleEndDateChange}
+                                    disabled
+                                    />
                                 </div>
 
                                 {/* Thời gian kết thúc sử dụng */}
                                 <div className="form-group">
-                                    <strong>{translate('asset.general_information.handover_to_date')}&emsp; </strong>
-                                    {status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : ''}
+                                    <label>{translate('asset.general_information.handover_to_date')}&emsp; </label>
+                                    < DatePicker
+                                    id={`end-date${id}`}
+                                    value={status == "Đang sử dụng" && usageLogs ? this.formatDate(usageLogs[usageLogs.length - 1].endDate) : ''}
+                                    onChange={this.handleEndDateChange}
+                                    disabled
+                                    />
                                 </div>
 
 
@@ -712,6 +768,7 @@ class GeneralTab extends Component {
                                         onChange={this.handleCanRegisterForUseChange}
                                     />
                                 </div>
+                                      
                             </div>
                         </div>
 
@@ -759,13 +816,14 @@ class GeneralTab extends Component {
 };
 
 function mapState(state) {
-    const { assetType, user, assetsManager } = state;
-    return { assetType, user, assetsManager };
+    const { assetType, user, assetsManager, role } = state;
+    return { assetType, user, assetsManager, role };
 };
 
 const actionCreators = {
     getUser: UserActions.get,
-    getAssetType: AssetTypeActions.searchAssetTypes
+    getAssetType: AssetTypeActions.searchAssetTypes,
+    // getAllRoles:  RoleActions.get,
 };
 const generalTab = connect(mapState, actionCreators)(withTranslate(GeneralTab));
 export { generalTab as GeneralTab };

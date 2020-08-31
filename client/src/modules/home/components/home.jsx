@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { taskManagementActions } from '../../task-management/redux/actions';
+import { taskManagementActions } from '../../task/task-management/redux/actions';
 
-import { TaskStatusChart } from './taskStatusChart';
-import { DomainOfTaskResultsChart } from './domainOfTaskResultsChart';
-import { TasksSchedule } from './tasksSchedule';
+import { TasksSchedule } from '../../task/task-dashboard/task-personal-dashboard/tasksSchedule';
+import { TasksIsNotLinked } from '../../task/task-dashboard/task-personal-dashboard/tasksIsNotLinked';
+import { TaskHasActionNotEvaluated } from '../../task/task-dashboard/task-personal-dashboard/taskHasActionNotEvaluated';
 
 import { withTranslate } from 'react-redux-multilingual';
-
-import { DatePicker } from '../../../../common-components';
+import { DatePicker } from '../../../common-components';
 import Swal from 'sweetalert2';
-import { TasksIsNotLinked } from './tasksIsNotLinked';
-import { TaskHasActionNotEvaluated } from './taskHasActionNotEvaluated';
 
-class TaskDashboard extends Component {
+
+class Home extends Component {
+
 
     constructor(props) {
         super(props);
@@ -27,7 +26,9 @@ class TaskDashboard extends Component {
 
         this.INFO_SEARCH = {
             startMonth: currentYear + '-' + 1,
-            endMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2))
+            endMonth: currentYear + '-' + (currentMonth + 2),
+            startMonthTitle: '01' + '-' + currentYear,
+            endMonthTitle: (currentMonth + 1) > 9 ? (currentMonth + 1) + '-' + currentYear : '0' + (currentMonth + 1) + '-' + currentYear
         }
 
         this.state = {
@@ -44,7 +45,7 @@ class TaskDashboard extends Component {
     }
 
     componentDidMount = async () => {
-        console.log('did db');
+        console.log('did home');
         await this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
         await this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
         await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
@@ -66,7 +67,7 @@ class TaskDashboard extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
-        console.log('should db');
+        console.log('should home', nextState, nextProps);
         if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks || !nextProps.tasks.tasksbyuser) {
                 return false;
@@ -141,6 +142,8 @@ class TaskDashboard extends Component {
                 confirmButtonText: translate('kpi.evaluation.employee_evaluation.confirm'),
             })
         } else {
+            console.log('hello', this.INFO_SEARCH.startMonth, this.INFO_SEARCH.endMonth);
+
             await this.setState(state => {
                 return {
                     ...state,
@@ -152,7 +155,7 @@ class TaskDashboard extends Component {
     }
 
     render() {
-        console.log('render db');
+        console.log('render home');
         const { tasks, translate } = this.props;
         const { startMonth, endMonth, willUpdate, callAction } = this.state;
 
@@ -243,7 +246,7 @@ class TaskDashboard extends Component {
                         <div className="form-group">
                             <label style={{ width: "auto" }}>{translate('task.task_management.from')}</label>
                             <DatePicker
-                                id="monthStartInTaskDashBoard"
+                                id="monthStartInHome"
                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
                                 value={defaultStartMonth}                 // giá trị mặc định cho datePicker    
                                 onChange={this.handleSelectMonthStart}
@@ -255,7 +258,7 @@ class TaskDashboard extends Component {
                         <div className="form-group">
                             <label style={{ width: "auto" }}>{translate('task.task_management.to')}</label>
                             <DatePicker
-                                id="monthEndInTaskDashBoard"
+                                id="monthEndInHome"
                                 dateFormat="month-year"             // sử dụng khi muốn hiện thị tháng - năm, mặc định là ngày-tháng-năm 
                                 value={defaultEndMonth}                 // giá trị mặc định cho datePicker    
                                 onChange={this.handleSelectMonthEnd}
@@ -319,40 +322,6 @@ class TaskDashboard extends Component {
                             <TasksSchedule />
                         </div>
 
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-xs-6">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.dashboard_area_result')}</div>
-                            </div>
-                            <div className="box-body qlcv">
-                                {callAction &&
-                                    <DomainOfTaskResultsChart
-                                        callAction={!willUpdate}
-                                        startMonth={startMonth}
-                                        endMonth={endMonth}
-                                    />
-                                }
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-xs-6">
-                        <div className="box box-primary">
-                            <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.detail_status')}</div>
-                            </div>
-                            <div className="box-body qlcv">
-                                {callAction &&
-                                    <TaskStatusChart
-                                        callAction={!willUpdate}
-                                        startMonth={startMonth}
-                                        endMonth={endMonth}
-                                    />
-                                }
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -437,6 +406,5 @@ const actionCreators = {
     getTaskByUser: taskManagementActions.getTasksByUser,
 
 };
-
-const connectedTaskDashboard = connect(mapState, actionCreators)(withTranslate(TaskDashboard));
-export { connectedTaskDashboard as TaskDashboard };
+const connectedHome = connect(mapState, actionCreators)(withTranslate(Home));
+export { connectedHome as Home };

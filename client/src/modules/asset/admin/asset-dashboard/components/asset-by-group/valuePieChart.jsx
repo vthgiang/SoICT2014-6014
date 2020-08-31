@@ -42,10 +42,10 @@ class ValuePieChart extends Component {
         }
 
         dataPieChart = [
-            ["Mặt bằng", valueOfBuilding],
-            ["Phương tiện", valueOfVehicle],
-            ["Máy móc", valueOfMachine],
-            ["Khác", valueOfOrther],
+            [translate('asset.dashboard.building'), valueOfBuilding],
+            [translate('asset.dashboard.vehicle'), valueOfVehicle],
+            [translate('asset.dashboard.machine'), valueOfMachine],
+            [translate('asset.dashboard.orther'), valueOfOrther],
         ];
         return dataPieChart;
     }

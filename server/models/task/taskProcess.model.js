@@ -40,4 +40,4 @@ const TaskProcessSchema = new Schema({
     
 });
 
-module.exports = TaskProcess = mongoose.model("task_process", TaskProcessSchema);
+module.exports = TaskProcess = mongoose.model("task_processes", TaskProcessSchema);

@@ -96,7 +96,11 @@ const AssetSchema = new Schema({
         nameField: String, // tên trường dữ liệu
         value: String, //giá trị
     }],
-
+    
+    readByRoles: [{ // quyền xem theo Role
+        type: Schema.Types.ObjectId,
+        ref: 'root_roles'
+    }],
     /***********************************************************************************************
      * Tab Khấu hao
      */
