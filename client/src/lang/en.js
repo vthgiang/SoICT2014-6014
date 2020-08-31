@@ -2261,7 +2261,11 @@ export default {
                 unit_evaluate: "Unit receiving work evaluation results",
                 unit_manage_task: "Unit managing task",
                 delete_eval: "Delete evaluation",
-                delete_eval_title: 'Are you sure to delete this evaluation?'
+                delete_eval_title: 'Are you sure to delete this evaluation?',
+
+                // confirm task
+                confirm_task_success: "Confirm task successfully",
+                confirm_task_failure: "Confirm task unsuccessfully"
 
             },
             task_perform: {

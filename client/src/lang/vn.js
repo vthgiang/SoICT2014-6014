@@ -2265,6 +2265,9 @@ export default {
                 delete_evaluation_success: "Xóa đánh giá thành công",
                 delete_evaluation_fail: "Xóa đánh giá thất bại",
 
+                // confirm task
+                confirm_task_success: "Xác nhận tham gia công việc thành công",
+                confirm_task_failure: "Xác nhận tham gia công việc thất bại"
             },
             task_perform: {
 
