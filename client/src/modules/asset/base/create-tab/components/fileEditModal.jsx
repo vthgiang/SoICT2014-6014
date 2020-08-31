@@ -173,8 +173,10 @@ class FileEditModal extends Component {
                             {files.map((child, index) => {
                                 return (
                                     <React.Fragment>
-                                        <li>
-                                            <a style={{ cursor: "pointer" }} onClick={(e) => this.handleDeleteFile(child.fileName)} >{child.fileName}</a>
+                                        <li key={index}>
+                                            <label><a style={{ cursor: "pointer" }} title='Xóa file này'><i className="fa fa-times" style={{ color: "black", marginRight: 5 }}
+                                                onClick={(e) => this.handleDeleteFile(child.fileName)} /></a></label>
+                                            <a>{child.fileName}</a>
                                         </li>
                                     </React.Fragment>
                                 )
