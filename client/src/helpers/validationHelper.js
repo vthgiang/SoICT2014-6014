@@ -4,83 +4,133 @@ export const REGEX = {
 }
 
 export default class ValidationHelper {
-    constructor(){ 
-        
+    /**----------------------
+     * CÁC PHƯƠNG THỨC CẤP 1
+     */
+
+     /**
+      * Xác thực xem giá trị nhập vào có rỗng không?
+      * @param {*} value giá trị cần xác thực
+      */
+    static validateEmpty = (translate, value) => {
+        if(!value)
+            return { status: false, message: translate('general.validate.empty_error') };
+        return { status: true };
     }
 
     /**
-     * Các phương thức validate cấp 1
+     * Xác thực giá trị có chứa ký tự đặc biệt hay không?
+     * @param {*} value giá trị cần xác thực
      */
-    static validateEmpty = (value) => {
-        if(!value)
-            return false;
-        return true;
-    }
-
-    static validateInvalidCharacter = (value) => {
+    static validateInvalidCharacter = (translate, value) => {
         if(!REGEX.SPECIAL_CHARACTER.test(value))
-            return false;
-        return true;
+            return { status: false, message: translate('general.validate.invalid_character_error') };
+        return { status: true };
     }
 
-    static validateLength = (value, min=4, max=1024) => {
+    /**
+     * Kiểm tra độ dài của giá trị có hợp lệ
+     * @param {*} value giá trị cần xác thực
+     * @param {*} min số ký tự tối thiểu
+     * @param {*} max số ký tụ tối đa
+     */
+    static validateLength = (translate, value, min=4, max=1024) => {
         if(value.length < min || value.length > max )
-            return false;
-        return true;
+            return { status: false, message: translate('general.validate.length_error', {min, max}) };
+        return { status: true };
     }
 
-    static validateMinimumLength = (value, min=4) => {
+    /**
+     * Kiểm tra giá trị phải có số ký tự tối thiểu
+     * @param {*} value giá trị nhập vào
+     * @param {*} min số ký tự tối thiểu
+     */
+    static validateMinimumLength = (translate, value, min=4) => {
         if(value.length < min)
-            return false;
-        return true;
+            return { status: false, message: translate('general.validate.minimum_length_error', {min}) };
+        return { status: true };
     }
     
-    static validateMaximumLength = (value, max=1024) => {
+    /**
+     * Kiểm tra giá trị phải có số ký tự tối đa
+     * @param {*} value giá trị nhập vào
+     * @param {*} max số ký tự tối đa
+     */
+    static validateMaximumLength = (translate, value, max=1024) => {
         if(value.length > max)
-            return false;
-        return true;
+            return { status: false, message: translate('general.validate.maximum_length_error', {max}) };
+        return { status: true };
+    }
+
+
+    /**-------------------------------
+     * CÁC PHƯƠNG THỨC CẤP 2
+     */
+
+    /**
+     * Kiểm tra tên hợp lệ
+     * @param {*} name Tên cần xác thực
+     * @param {*} min số ký tự tối thiểu
+     * @param {*} max số ký tự tối đa
+     */
+    static validateName = (translate, name, min=4, max=255) => {
+        let result = this.validateEmpty(translate, name);
+        if(!result.status)
+            return result;
+
+        result = this.validateLength(translate, name, min, max);
+        if(!result.status)
+            return result;
+
+        result = this.validateInvalidCharacter(translate, name)
+        if(!result.status)
+            return result;
+        
+        return { status: true };
     }
 
     /**
-     * Các phương thức validate cấp 2
+     * Kiểm tra mô tả hợp lệ
+     * @param {*} description mô tả 
      */
-    static validateName = (name, min=4, max=255) => {
-        let msg;
-        if(!this.validateEmpty(name))
-            msg = 'general.validate.empty_error';
-        else if(!this.validateLength(name, min, max))
-            msg = 'general.validate.length_error';
-        else if(!this.validateInvalidCharacter(name))
-            msg = 'general.validate.invalid_character_error';
+    static validateDescription = (translate, description) => {
+        let result = this.validateEmpty(translate, description);
+        if(!result.status)
+            return result;
         
-        return msg ? { status: false, msg } : { status: true };
+        return { status: true };
     }
 
-    static validateDescription = (description) => {
-        let msg;
-        if(!this.validateEmpty(description))
-            msg = 'general.validate.empty_error';
+    /**
+     * Kiểm tra email hợp lệ
+     * @param {*} email email
+     */
+    static validateEmail = (translate, email) => {
+        let result = this.validateEmpty(translate, email);
+        if(!result.status)
+            return result;
+
+        if(!REGEX.EMAIL.test(email))
+            return { status: false, message: translate('general.validate.invalid_error') };
+
+        return { status: true };
+    }
+
+    /**
+     * Kiểm tra mật khẩu hợp lệ
+     * @param {*} password mật khẩu nhập vào
+     * @param {*} min số ký tự tối thiểu
+     * @param {*} max số ký tự tối đa
+     */
+    static validatePassword = (translate, password, min=6, max=30) => {
+        let result = this.validateEmpty(translate, password);
+        if(!result.status)
+            return result;
         
-        return msg ? { status: false, msg } : { status: true };
-    }
+        result = this.validateLength(translate, password, min, max)
+        if(!result.status)
+            return result;
 
-    static validateEmail = (email) => {
-        let msg;
-        if(!this.validateEmpty(email))
-            msg = 'general.validate.empty_error';
-        else if(!REGEX.EMAIL.test(email))
-            msg = 'general.validate.invalid_error';
-
-        return msg ? { status: false, msg } : { status: true };
-    }
-
-    static validatePassword = (password, min=6, max=30) => {
-        let msg;
-        if(!this.validateEmpty(password))
-            msg = 'general.validate.empty_error';
-        else if(!this.validateLength(password, min, max))
-            msg = 'general.validate.length_error';
-
-        return msg ? { status: false, msg } : { status: true };
+        return { status: true };
     }
 }

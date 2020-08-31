@@ -5,7 +5,6 @@ import { sendRequest } from '../../../../helpers/requestHelper';
 
 export const taskManagementService = {
     getAll,
-    getById,
     getAllTaskByRole,
     getResponsibleTaskByUser,
     getAccountableTaskByUser,
@@ -19,18 +18,8 @@ export const taskManagementService = {
     getTasksByUser,
     getTaskEvaluations,
     getTaskInOrganizationUnitByMonth,
+    getPaginateTasksByUser,
 };
-
-/**
- * lấy công việc theo id
- * @param {*} taskId id công việc
- */
-function getById(taskId) {
-    return sendRequest({
-        url: `${process.env.REACT_APP_SERVER}/task/tasks/${taskId}`,
-        method: 'GET',
-    }, false, true, 'task.task_management');
-}
 
 /**
  * lấy tất cả công việc
@@ -238,6 +227,43 @@ function getCreatorTaskByUser(unit, number, perPage, status, priority, special, 
         method: 'GET',
         params: {
             type: 'creator',
+            unit: unit,
+            user: user,
+            number: number,
+            perPage: perPage,
+            status: status,
+            priority: priority,
+            special: special,
+            name: name,
+            startDate: startDate,
+            endDate: endDate,
+            startDateAfter: startDateAfter,
+            endDateBefore: endDateBefore,
+            aPeriodOfTime: aPeriodOfTime
+        }
+    }, false, true, 'task.task_management');
+}
+
+/**
+ * lấy công việc theo người tạo
+ * @param {*} unit đơn vị
+ * @param {*} number số trang hiện tại
+ * @param {*} perPage số bản ghi trên 1 trang
+ * @param {*} status trạng thái
+ * @param {*} priority độ ưu tiên
+ * @param {*} special lưu kho???
+ * @param {*} name tên công việc
+ * @param {*} startDate ngày bắt đầu
+ * @param {*} endDate kết thúc công việc
+ */
+
+function getPaginateTasksByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime) {
+    var user = getStorage("userId");
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/task/tasks`,
+        method: 'GET',
+        params: {
+            type: 'all_role',
             unit: unit,
             user: user,
             number: number,

@@ -77,9 +77,8 @@ class CompanyEditForm extends Component {
         this.setState({ companyName: value });
 
         let {translate} = this.props;
-        let {msg} = ValidationHelper.validateName(value, 4, 255);
-        let error = msg ? translate(msg, {min: 4, max: 255}) : undefined;
-        this.setState({ nameError: error})
+        let {message} = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({ nameError: message})
     }
 
     handleChangeShortName = (e) => {
@@ -87,9 +86,8 @@ class CompanyEditForm extends Component {
         this.setState({ companyShortName: value });
 
         let {translate} = this.props;
-        let {msg} = ValidationHelper.validateName(value, 4, 255);
-        let error = msg ? translate(msg, {min: 4, max: 255}) : undefined;
-        this.setState({ shortNameError: error})
+        let {message} = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({ shortNameError: message})
     }
 
     handleChangeDescription = (e) => {
@@ -97,9 +95,8 @@ class CompanyEditForm extends Component {
         this.setState({ companyDescription: value });
 
         let {translate} = this.props;
-        let {msg} = ValidationHelper.validateDescription(value);
-        let error = msg ? translate(msg) : undefined;
-        this.setState({ descriptionError: error})
+        let {message} = ValidationHelper.validateDescription(translate, value);
+        this.setState({ descriptionError: message})
     }
 
     handleChangeEmail = (e) => {
@@ -107,18 +104,18 @@ class CompanyEditForm extends Component {
         this.setState({ companyEmail: value });
 
         let {translate} = this.props;
-        let {msg} = ValidationHelper.validateEmail(value);
-        let error = msg ? translate(msg) : undefined;
-        this.setState({ emailError: error})
+        let {message} = ValidationHelper.validateEmail(translate, value);
+        this.setState({ emailError: message })
     }
 
     isFormValidated = () => {
         let {companyName, companyShortName, companyDescription, companyEmail} = this.state;
+        let {translate} = this.props;
         if(
-            !ValidationHelper.validateName(companyName).status  || 
-            !ValidationHelper.validateName(companyShortName).status ||
-            !ValidationHelper.validateEmail(companyEmail).status  || 
-            !ValidationHelper.validateDescription(companyDescription).status
+            !ValidationHelper.validateName(translate, companyName).status  || 
+            !ValidationHelper.validateName(translate, companyShortName).status ||
+            !ValidationHelper.validateEmail(translate, companyEmail).status  || 
+            !ValidationHelper.validateDescription(translate, companyDescription).status
         ) return false;
         return true;
     }

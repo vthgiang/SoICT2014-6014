@@ -336,7 +336,6 @@ class AssetGeneralInfo extends Component {
 
         return (
             <div id="general" class ="tab-pane active">
-                <div className="box">
                 <div className="box-body qlcv">
 
                     {/* Thanh tìm kiếm */}
@@ -559,7 +558,6 @@ class AssetGeneralInfo extends Component {
                         files={currentRow.files}
                     />
                 }
-            </div>
             </div>
         );
     }

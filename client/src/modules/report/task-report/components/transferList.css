@@ -21,6 +21,9 @@
     margin:  15px 20px;
 }
 
+.box-display{
+    display: block !important;
+}
 }
 
 
@@ -31,10 +34,17 @@
     margin: auto;
     height: auto;
 }
+.box-display{
+    display: flex;
+}
+
 .border{
     border: 1px solid #ccc;
     padding: 10px;
     border-radius: 5px;
+}
+.border .box-title{
+    text-align: center;
 }
 
 .border .box-size{

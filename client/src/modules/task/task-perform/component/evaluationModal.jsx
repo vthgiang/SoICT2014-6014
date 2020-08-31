@@ -58,11 +58,11 @@ class EvaluationModal extends Component {
         let monthOfEval = today.getMonth();
         let yearOfEval = today.getFullYear();
 
-        let endDate = new Date(task.endDate);
+        let endDate = new Date(task && task.endDate);
 
         let expire = endDate.getTime() - today.getTime();
 
-        evaluationOfMonth = task.evaluations.find(e => (monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()));
+        evaluationOfMonth = task && task.evaluations.find(e => (monthOfEval === new Date(e.date).getMonth() && yearOfEval === new Date(e.date).getFullYear()));
 
         if (evaluations.length > 0) {
             if (!evaluationOfMonth) { // có đánh giá các tháng nhưng chưa có đánh giá tháng này
@@ -148,7 +148,7 @@ class EvaluationModal extends Component {
     render() {
         const { translate, performtasks } = this.props;
         const { evaluationsList, checkMonth, showEval, content, evaluation, expire } = this.state;
-        const { role, id } = this.props;
+        const { role, id, hasAccountable } = this.props;
 
         let task;
         if (performtasks.task) {
@@ -222,8 +222,20 @@ class EvaluationModal extends Component {
                     </div>
                 </div>
                 <div className="col-xs-12 col-sm-8 qlcv">
-                    {(content !== undefined && role === "responsible") &&
+                    {(content !== undefined && role === "responsible") && hasAccountable === true &&
                         <EvaluateByResponsibleEmployee
+                            id={content}
+                            task={task}
+                            role={role}
+                            title={title}
+                            perform='evaluate'
+                            evaluation={evaluation}
+                            date={evaluation ? this.formatDate(evaluation.date) : dateParam}
+                        />
+                    }
+                    {(content !== undefined && role === "responsible") && hasAccountable === false && 
+                        <EvaluateByAccountableEmployee
+                            hasAccountable={false}
                             id={content}
                             task={task}
                             role={role}
@@ -236,6 +248,7 @@ class EvaluationModal extends Component {
                     {
                         (content !== undefined && role === "accountable") &&
                         <EvaluateByAccountableEmployee
+                            hasAccountable={true}
                             id={content}
                             handleChangeDataStatus={this.handleChangeDataStatus}
                             task={task}

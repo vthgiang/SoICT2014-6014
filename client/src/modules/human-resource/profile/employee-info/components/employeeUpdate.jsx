@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import { EmployeeInfoActions } from '../redux/actions';
 import { convertJsonObjectToFormData } from '../../../../../helpers/jsonObjectToFormDataObjectConverter';
 import { toast } from 'react-toastify';
 
+import { EmployeeInfoActions } from '../redux/actions';
 import { AuthActions } from '../../../../auth/redux/actions';
 
 class UpdateEmployee extends Component {
@@ -24,12 +24,13 @@ class UpdateEmployee extends Component {
     componentDidMount() {
         this.props.getEmployeeProfile();
     }
-    // Bắt sự kiện thay đổi avatar
+
+    /** Bắt sự kiện thay đổi avatar */
     handleUpload = (e) => {
         const { employees } = this.props.employeesInfo;
-        var file = e.target.files[0];
+        let file = e.target.files[0];
         if (file !== undefined) {
-            var fileLoad = new FileReader();
+            let fileLoad = new FileReader();
             fileLoad.readAsDataURL(file);
             fileLoad.onload = () => {
                 if (this.state.informationEmployee === null) {
@@ -47,10 +48,11 @@ class UpdateEmployee extends Component {
         }
     }
 
-    // Bắt sự kiện thay đổi các trường thông tin nhân viên
+    /** Bắt sự kiện thay đổi các trường thông tin nhân viên */
     handleChange = (e) => {
         const { employees } = this.props.employeesInfo;
-        var { name, value } = e.target;
+        let { name, value } = e.target;
+
         // Truyền thông tin nhân viên đã tồn tại vào state
         if (this.state.informationEmployee === null) {
             this.setState({
@@ -70,22 +72,26 @@ class UpdateEmployee extends Component {
         }
 
     }
-    // Bắt sự kiện cam kêt thông tin yêu cầu cập nhật
+
+    /** Bắt sự kiện cam kêt thông tin yêu cầu cập nhật */
     handleChecked = () => {
         this.setState({
             check: !this.state.check
         })
     }
-    // Bắt sự kiện gửi yêu cầu cập nhật thông tin nhân viên
+
+    /** Bắt sự kiện gửi yêu cầu cập nhật thông tin nhân viên */
     handleSubmit = async (e) => {
-        e.preventDefault();
         const { translate } = this.props;
-        var { informationEmployee, check } = this.state;
+
+        e.preventDefault();
+        let { informationEmployee, check } = this.state;
+
         if (informationEmployee === null && this.state.avatar === "") {
-            toast.warning(translate('error.no_change_data'), { containerId: 'toast-notification' });
+            toast.warning(translate('human_resource.profile.employee_info.no_change_data'), { containerId: 'toast-notification' });
         } else {
             if (check === false) {
-                toast.warning(translate('error.guaranteed_infor_to_update'), { containerId: 'toast-notification' });
+                toast.warning(translate('human_resource.profile.employee_info.guaranteed_infor_to_update'), { containerId: 'toast-notification' });
             } else {
                 let formData = convertJsonObjectToFormData(informationEmployee) !== null ? convertJsonObjectToFormData(informationEmployee) : new FormData();
                 formData.append('fileAvatar', this.state.avatar);
@@ -97,7 +103,7 @@ class UpdateEmployee extends Component {
     shouldComponentUpdate = async (nextProps, nextState) => {
         if (nextProps.employeesInfo.employees) {
             let employee = nextProps.employeesInfo.employees[0];
-            if (employee.avatar && !nextProps.auth.isLoading &&
+            if (employee && employee.avatar && !nextProps.auth.isLoading &&
                 this.state.dataStatus === this.DATA_STATUS.NOT_AVAILABLE) {
                 this.props.downloadFile(`.${employee.avatar}`, 'avatarEmployeeUpdate', 'show');
                 this.setState({
@@ -126,200 +132,236 @@ class UpdateEmployee extends Component {
 
     render() {
         const { employeesInfo, translate } = this.props;
-        var employees;
+
+        let employees;
         if (employeesInfo.employees !== "") employees = employeesInfo.employees;
+
         return (
             <React.Fragment>
                 {
-                    typeof employees !== 'undefined' && employees.length === 0 && employeesInfo.isLoading === false && < span className="text-red">{translate('manage_employee.no_data_personal')}</span>
+                    employees && employees.length === 0 && employeesInfo.isLoading === false && < span className="text-red">{translate('human_resource.profile.employee_info.no_data_personal')}</span>
                 }
                 {
-                    (typeof employees !== 'undefined' && employees.length !== 0) &&
+                    (employees && employees.length !== 0) &&
                     employees.map((x, index) => (
                         <div className="box qlcv" key={index} >
                             <div className="box-body">
                                 <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.menu_basic_infor')}</h4></legend>
+                                    <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.tab_name.menu_basic_infor')}</h4></legend>
+                                    {/* Ảnh đại diện */}
                                     <div className="col-lg-4 col-md-4 col-ms-12 col-xs-12" style={{ textAlign: 'center' }}>
                                         <div>
                                             <img className="attachment-img avarta" src={this.state.img} alt="Attachment" />
                                         </div>
                                         <div className="upload btn btn-default ">
-                                            {translate('manage_employee.upload')}
+                                            {translate('human_resource.profile.upload')}
                                             <input className="upload" type="file" name="file" onChange={this.handleUpload} />
                                         </div>
                                     </div>
                                     <div className=" pull-right col-lg-8 col-md-8 col-ms-12 col-xs-12 ">
                                         <div className="row">
+                                            {/* Mã sô nhân viên */}
                                             <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
-                                                <label htmlFor="MSNV">{translate('manage_employee.staff_number')}</label>
+                                                <label htmlFor="MSNV">{translate('human_resource.profile.staff_number')}</label>
                                                 <input type="text" className="form-control " id="MSNV" defaultValue={x.employeeNumber} disabled />
                                             </div>
+                                            {/* Mã số chấm công */}
                                             <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
-                                                <label htmlFor="MSCC">{translate('manage_employee.attendance_code')}</label>
+                                                <label htmlFor="MSCC">{translate('human_resource.profile.attendance_code')}</label>
                                                 <input type="text" className="form-control " id="MSCC" defaultValue={x.employeeTimesheetId} disabled />
                                             </div>
                                         </div>
                                         <div className="row">
+                                            {/* Họ và tên */}
                                             <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
-                                                <label htmlFor="fullname">{translate('manage_employee.full_name')}</label>
+                                                <label htmlFor="fullname">{translate('human_resource.profile.full_name')}</label>
                                                 <input type="text" className="form-control " id="fullname" defaultValue={x.fullName} disabled />
                                             </div>
+                                            {/* Giới tính */}
                                             <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
-                                                <label >{translate('manage_employee.gender')}</label>
+                                                <label >{translate('human_resource.profile.gender')}</label>
                                                 <div>
                                                     <div className="radio-inline">
                                                         <label>
-                                                            <input type="radio" name="gender" defaultValue="male" onChange={this.handleChange} defaultChecked={x.gender === "male" ? true : false} />{translate('manage_employee.male')}</label>
+                                                            <input type="radio" name="gender" defaultValue="male" onChange={this.handleChange} defaultChecked={x.gender === "male" ? true : false} />{translate('human_resource.profile.male')}</label>
                                                     </div>
                                                     <div className="radio-inline">
                                                         <label>
-                                                            <input type="radio" name="gender" defaultValue="female" onChange={this.handleChange} defaultChecked={x.gender === "female" ? true : false} />{translate('manage_employee.female')}</label>
+                                                            <input type="radio" name="gender" defaultValue="female" onChange={this.handleChange} defaultChecked={x.gender === "female" ? true : false} />{translate('human_resource.profile.female')}</label>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="row">
+                                            {/* Dân tộc */}
                                             <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
-                                                <label htmlFor="ethnic">{translate('manage_employee.ethnic')}</label>
+                                                <label htmlFor="ethnic">{translate('human_resource.profile.ethnic')}</label>
                                                 <input type="text" className="form-control " id="ethnic" name="ethnic" defaultValue={x.ethnic} onChange={this.handleChange} />
                                             </div>
+                                            {/* Tình trạng hôn nhân */}
                                             <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
-                                                <label>{translate('manage_employee.relationship')}</label>
+                                                <label>{translate('human_resource.profile.relationship')}</label>
                                                 <div>
                                                     <div className="radio-inline">
                                                         <label>
-                                                            <input type="radio" name="maritalStatus" value="single" onChange={this.handleChange} defaultChecked={x.maritalStatus === "single" ? true : false} />{translate('manage_employee.single')}</label>
+                                                            <input type="radio" name="maritalStatus" value="single" onChange={this.handleChange} defaultChecked={x.maritalStatus === "single" ? true : false} />{translate('human_resource.profile.single')}</label>
                                                     </div>
                                                     <div className="radio-inline">
                                                         <label>
-                                                            <input type="radio" name="maritalStatus" value="married" onChange={this.handleChange} defaultChecked={x.maritalStatus === "married" ? true : false} />{translate('manage_employee.married')}</label>
+                                                            <input type="radio" name="maritalStatus" value="married" onChange={this.handleChange} defaultChecked={x.maritalStatus === "married" ? true : false} />{translate('human_resource.profile.married')}</label>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="row">
+                                            {/* Tôn giáo */}
                                             <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
-                                                <label htmlFor="religion">{translate('manage_employee.religion')}</label>
+                                                <label htmlFor="religion">{translate('human_resource.profile.religion')}</label>
                                                 <input type="text" className="form-control " name="religion" id="religion" defaultValue={x.religion} onChange={this.handleChange} />
                                             </div>
+                                            {/* Quốc tịch */}
                                             <div className="form-group col-lg-6 col-md-6 col-ms-12 col-xs-12">
-                                                <label htmlFor="nationality">{translate('manage_employee.nationality')}</label>
+                                                <label htmlFor="nationality">{translate('human_resource.profile.nationality')}</label>
                                                 <input type="text" className="form-control " id="nationality" name="nationality" defaultValue={x.nationality} onChange={this.handleChange} />
                                             </div>
                                         </div>
                                     </div>
                                 </fieldset>
+                                {/* Thông tin liên hệ */}
                                 <fieldset className="scheduler-border">
-                                    <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.menu_contact_infor')}</h4></legend>
+                                    <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.tab_name.menu_contact_infor')}</h4></legend>
                                     <div className="col-md-12">
                                         <div className="row">
+                                            {/* Di động 1 */}
                                             <div className="form-group col-md-4">
-                                                <label >{translate('manage_employee.mobile_phone_1')}</label>
+                                                <label >{translate('human_resource.profile.mobile_phone_1')}</label>
                                                 <input type="text" className="form-control " name="phoneNumber" defaultValue={x.phoneNumber ? "0" + x.phoneNumber : ""} onChange={this.handleChange} />
                                             </div>
+                                            {/* Di động 2 */}
                                             <div className="form-group col-md-4">
-                                                <label>{translate('manage_employee.mobile_phone_2')}</label>
+                                                <label>{translate('human_resource.profile.mobile_phone_2')}</label>
                                                 <input type="text" className="form-control " name="phoneNumber2" defaultValue={x.phoneNumber2 ? "0" + x.phoneNumber2 : ""} onChange={this.handleChange} />
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-md-12">
                                         <div className="row">
+                                            {/*  Email cá nhân 1*/}
                                             <div className="form-group col-md-4">
-                                                <label >{translate('manage_employee.personal_email_1')}</label>
+                                                <label >{translate('human_resource.profile.personal_email_1')}</label>
                                                 <input type="text" className="form-control " name="personalEmail" defaultValue={x.personalEmail} onChange={this.handleChange} />
                                             </div>
+                                            {/* Email cá nhân 2 */}
                                             <div className="form-group col-md-4">
-                                                <label>{translate('manage_employee.personal_email_2')}</label>
+                                                <label>{translate('human_resource.profile.personal_email_2')}</label>
                                                 <input type="text" className="form-control " name="personalEmail2" defaultValue={x.personalEmail2} onChange={this.handleChange} />
                                             </div>
+                                            {/* Điện thoại cố định */}
                                             <div className="form-group col-md-4">
-                                                <label>{translate('manage_employee.home_phone')}</label>
+                                                <label>{translate('human_resource.profile.home_phone')}</label>
                                                 <input type="text" className="form-control " name="homePhone" defaultValue={x.homePhone ? "0" + x.homePhone : ""} onChange={this.handleChange} />
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-md-12">
+                                        {/* Thông tin người liên hệ khẩn cấp*/}
                                         <fieldset className="scheduler-border">
-                                            <legend className="scheduler-border">{translate('manage_employee.emergency_contact')}</legend>
+                                            <legend className="scheduler-border">{translate('human_resource.profile.emergency_contact')}</legend>
                                             <div className="col-md-6">
+                                                {/* Họ và tên */}
                                                 <div className="form-group" >
-                                                    <label >{translate('manage_employee.full_name')}</label>
+                                                    <label >{translate('human_resource.profile.full_name')}</label>
                                                     <input type="text" className="form-control " name="emergencyContactPerson" id="emergencyContactPerson" defaultValue={x.emergencyContactPerson} onChange={this.handleChange} />
                                                 </div>
+                                                {/* Di động */}
                                                 <div className="form-group" >
-                                                    <label htmlFor="emergencyContactPersonPhoneNumber">{translate('manage_employee.mobile_phone')}</label>
+                                                    <label htmlFor="emergencyContactPersonPhoneNumber">{translate('human_resource.profile.mobile_phone')}</label>
                                                     <input type="text" className="form-control " name="emergencyContactPersonPhoneNumber" id="emergencyContactPersonPhoneNumber" defaultValue={x.emergencyContactPersonPhoneNumber ? "0" + x.emergencyContactPersonPhoneNumber : ""} onChange={this.handleChange} />
                                                 </div>
+                                                {/* Emai cá nhân */}
                                                 <div className="form-group" >
-                                                    <label htmlFor="emergencyContactPersonEmail">{translate('manage_employee.email')}</label>
+                                                    <label htmlFor="emergencyContactPersonEmail">{translate('human_resource.profile.email')}</label>
                                                     <input type="text" className="form-control " name="emergencyContactPersonEmail" id="emergencyContactPersonEmail" defaultValue={x.emergencyContactPersonEmail} onChange={this.handleChange} />
                                                 </div>
                                             </div>
                                             <div className="col-md-6">
+                                                {/* Quan hệ */}
                                                 <div className="form-group" >
-                                                    <label htmlFor="relationWithEmergencyContactPerson">{translate('manage_employee.nexus')}</label>
+                                                    <label htmlFor="relationWithEmergencyContactPerson">{translate('human_resource.profile.nexus')}</label>
                                                     <input type="text" className="form-control " name="relationWithEmergencyContactPerson" id="relationWithEmergencyContactPerson" defaultValue={x.relationWithEmergencyContactPerson} onChange={this.handleChange} />
                                                 </div>
+                                                {/* Diện thoại có định */}
                                                 <div className="form-group" >
-                                                    <label htmlFor="emergencyContactPersonHomePhone">{translate('manage_employee.home_phone')}</label>
+                                                    <label htmlFor="emergencyContactPersonHomePhone">{translate('human_resource.profile.home_phone')}</label>
                                                     <input type="text" className="form-control " name="emergencyContactPersonHomePhone" id="emergencyContactPersonHomePhone" defaultValue={x.emergencyContactPersonHomePhone ? "0" + x.emergencyContactPersonHomePhone : ""} onChange={this.handleChange} />
                                                 </div>
+                                                {/* Địa chỉ */}
                                                 <div className="form-group" >
-                                                    <label htmlFor="emergencyContactPersonAddress">{translate('manage_employee.address')}</label>
+                                                    <label htmlFor="emergencyContactPersonAddress">{translate('human_resource.profile.address')}</label>
                                                     <input type="text" className="form-control " name="emergencyContactPersonAddress" id="emergencyContactPersonAddress" defaultValue={x.emergencyContactPersonAddress} onChange={this.handleChange} />
                                                 </div>
                                             </div>
                                         </fieldset>
                                     </div>
                                     <div className="col-md-6">
+                                        {/* Hộ khẩu thường trú */}
                                         <fieldset className="scheduler-border">
-                                            <legend className="scheduler-border">{translate('manage_employee.permanent_address')}</legend>
+                                            <legend className="scheduler-border">{translate('human_resource.profile.permanent_address')}</legend>
+                                            {/* Địa chỉ */}
                                             <div className="form-group" >
-                                                <label htmlFor="permanentResidence">{translate('manage_employee.address')}</label>
+                                                <label htmlFor="permanentResidence">{translate('human_resource.profile.address')}</label>
                                                 <input type="text" className="form-control " name="permanentResidence" id="permanentResidence" defaultValue={x.permanentResidence} onChange={this.handleChange} />
                                             </div>
+                                            {/* Quốc gia */}
                                             <div className="form-group" >
-                                                <label htmlFor="permanentResidenceCountry">{translate('manage_employee.nation')}</label>
+                                                <label htmlFor="permanentResidenceCountry">{translate('human_resource.profile.nation')}</label>
                                                 <input type="text" className="form-control " name="permanentResidenceCountry" id="permanentResidenceCountry" defaultValue={x.permanentResidenceCountry} onChange={this.handleChange} />
                                             </div>
+                                            {/* Tỉnh/ Thành phố */}
                                             <div className="form-group" >
-                                                <label htmlFor="permanentResidenceCity">{translate('manage_employee.province')}</label>
+                                                <label htmlFor="permanentResidenceCity">{translate('human_resource.profile.province')}</label>
                                                 <input type="text" className="form-control " name="permanentResidenceCity" id="permanentResidenceCity" defaultValue={x.permanentResidenceCity} onChange={this.handleChange} />
                                             </div>
+                                            {/* Quận/ huyện */}
                                             <div className="form-group" >
-                                                <label htmlFor="permanentResidenceDistrict">{translate('manage_employee.district')}</label>
+                                                <label htmlFor="permanentResidenceDistrict">{translate('human_resource.profile.district')}</label>
                                                 <input type="text" className="form-control " name="permanentResidenceDistrict" id="permanentResidenceDistrict" defaultValue={x.permanentResidenceDistrict} onChange={this.handleChange} />
                                             </div>
+                                            {/* Xã/ phường */}
                                             <div className="form-group" >
-                                                <label htmlFor="permanentResidenceWard">{translate('manage_employee.wards')}</label>
+                                                <label htmlFor="permanentResidenceWard">{translate('human_resource.profile.wards')}</label>
                                                 <input type="text" className="form-control " name="permanentResidenceWard" id="permanentResidenceWard" defaultValue={x.permanentResidenceWard} onChange={this.handleChange} />
                                             </div>
                                         </fieldset>
                                     </div>
 
                                     <div className="col-md-6">
+                                        {/* Chỗ ở hiện tại*/}
                                         <fieldset className="scheduler-border">
-                                            <legend className="scheduler-border">{translate('manage_employee.current_residence')}</legend>
+                                            <legend className="scheduler-border">{translate('human_resource.profile.current_residence')}</legend>
+                                            {/* Địa chỉ */}
                                             <div className="form-group" >
-                                                <label htmlFor="temporaryResidence">{translate('manage_employee.address')}</label>
+                                                <label htmlFor="temporaryResidence">{translate('human_resource.profile.address')}</label>
                                                 <input type="text" className="form-control " name="temporaryResidence" id="temporaryResidence" defaultValue={x.temporaryResidence} onChange={this.handleChange} />
                                             </div>
+                                            {/* Quốc gia*/}
                                             <div className="form-group" >
-                                                <label htmlFor="temporaryResidenceCountry">{translate('manage_employee.nation')}</label>
+                                                <label htmlFor="temporaryResidenceCountry">{translate('human_resource.profile.nation')}</label>
                                                 <input type="text" className="form-control " name="temporaryResidenceCountry" id="temporaryResidenceCountry" defaultValue={x.temporaryResidenceCountry} onChange={this.handleChange} />
                                             </div>
+                                            {/* Tỉnh/ Thành phố */}
                                             <div className="form-group" >
-                                                <label htmlFor="temporaryResidenceCity">{translate('manage_employee.province')}</label>
+                                                <label htmlFor="temporaryResidenceCity">{translate('human_resource.profile.province')}</label>
                                                 <input type="text" className="form-control " name="temporaryResidenceCity" id="temporaryResidenceCity" defaultValue={x.temporaryResidenceCity} onChange={this.handleChange} />
                                             </div>
+                                            {/* Quận / huyện */}
                                             <div className="form-group" >
-                                                <label htmlFor="temporaryResidenceDistrict">{translate('manage_employee.district')}</label>
+                                                <label htmlFor="temporaryResidenceDistrict">{translate('human_resource.profile.district')}</label>
                                                 <input type="text" className="form-control " name="temporaryResidenceDistrict" id="temporaryResidenceDistrict" defaultValue={x.temporaryResidenceDistrict} onChange={this.handleChange} />
                                             </div>
+                                            {/* Xã/ Phường */}
                                             <div className="form-group" >
-                                                <label htmlFor="temporaryResidenceWard">{translate('manage_employee.wards')}</label>
+                                                <label htmlFor="temporaryResidenceWard">{translate('human_resource.profile.wards')}</label>
                                                 <input type="text" className="form-control " name="temporaryResidenceWard" id="temporaryResidenceWard" defaultValue={x.temporaryResidenceWard} onChange={this.handleChange} />
                                             </div>
                                         </fieldset>
@@ -332,14 +374,14 @@ class UpdateEmployee extends Component {
                                     <div className="checkbox" style={{ paddingLeft: "20%" }}>
                                         <label>
                                             <input type="checkbox" onChange={() => this.handleChecked()} />
-                                            {translate('manage_employee.note_page_personal')}
+                                            {` ${translate('human_resource.profile.employee_info.note_page_personal')}`}
                                         </label>
                                         <label style={{ color: "red" }}>
-                                            {translate('manage_employee.contact_other')}
+                                            {translate('human_resource.profile.employee_info.contact_other')}
                                         </label>
                                     </div>
                                 </div>
-                                <button type="submit" title={translate('manage_employee.update_infor_personal')} className="btn btn-primary pull-right" onClick={this.handleSubmit} htmlFor="form" >{translate('modal.update')}</button>
+                                <button type="submit" title={translate('human_resource.profile.employee_info.update_infor_personal')} className="btn btn-primary pull-right" onClick={this.handleSubmit} htmlFor="form" >{translate('modal.update')}</button>
 
                             </div>
 

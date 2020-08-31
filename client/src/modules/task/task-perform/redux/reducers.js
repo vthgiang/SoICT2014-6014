@@ -2,20 +2,20 @@ import { performTaskConstants } from "./constants";
 import { taskManagementConstants } from "../../task-management/redux/constants"
 export function performtasks(state = {}, action) {
     switch (action.type) {
-        case taskManagementConstants.GETTASK_BYID_REQUEST:
+        case performTaskConstants.GETTASK_BYID_REQUEST:
             return {
                 ...state,
                 task: null,
                 loading: true,
                 isLoading: true
             };
-        case taskManagementConstants.GETTASK_BYID_SUCCESS:
+        case performTaskConstants.GETTASK_BYID_SUCCESS:
             return {
                 ...state,
                 task: action.payload,
                 isLoading: false
             };
-        case taskManagementConstants.GETTASK_BYID_FAILURE:
+        case performTaskConstants.GETTASK_BYID_FAILURE:
             return {
                 error: action.error,
                 isLoading: false
@@ -170,6 +170,21 @@ export function performtasks(state = {}, action) {
                 ...state,
                 error: action.payload
             };
+        case performTaskConstants.CONFIRM_TASK_REQUEST:
+            return {
+                ...state,
+                editing: true
+            }
+        case performTaskConstants.CONFIRM_TASK_SUCCESS:
+            return {
+                ...state,
+                task: action.payload
+            }
+        case performTaskConstants.CONFIRM_TASK_FAILURE:
+            return {
+                ...state,
+                error: action.payload
+            }
         case performTaskConstants.DELETE_ACTION_COMMENT_REQUEST:
             return {
                 ...state,

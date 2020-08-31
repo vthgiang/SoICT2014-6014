@@ -25,6 +25,7 @@ class EmployeeManagement extends Component {
                 break;
             }
         }
+
         this.state = {
             position: null,
             gender: null,
@@ -35,11 +36,17 @@ class EmployeeManagement extends Component {
             limit: 5,
         }
     }
+
     componentDidMount() {
         this.props.getAllEmployee(this.state);
         this.props.getDepartment();
     }
-    // Function format dữ liệu Date thành string
+
+    /**
+     * Function format dữ liệu Date thành string
+     * @param {*} date : Ngày muốn format
+     * @param {*} monthYear : true trả về tháng năm, false trả về ngày tháng năm
+     */
     formatDate(date, monthYear = false) {
         if (date) {
             let d = new Date(date),
@@ -60,6 +67,7 @@ class EmployeeManagement extends Component {
         }
 
     }
+
     // Function bắt sự kiện thêm lương nhân viên bằng tay
     createEmployee = () => {
         window.$('#modal-create-employee').modal('show');
@@ -73,7 +81,11 @@ class EmployeeManagement extends Component {
         window.$('#modal_import_file').modal('show');
     }
 
-    // Bắt sự kiện click chỉnh sửa thông tin nghỉ phép
+    //
+    /**
+     *  Bắt sự kiện click xem thông tin nhân viên
+     * @param {*} value : Thông tin nhân viên muốn xem
+     */
     handleView = async (value) => {
         await this.setState(state => {
             return {
@@ -82,7 +94,11 @@ class EmployeeManagement extends Component {
         });
         window.$('#modal-view-employee').modal('show');
     }
-    // Bắt sự kiện click chỉnh sửa thông tin nghỉ phép
+
+    /**
+     * Bắt sự kiện click chỉnh sửa thông tin nhân viên
+     * @param {*} value : Thông tin nhân viên muốn chỉnh sửa
+     */
     handleEdit = async (value) => {
         await this.setState(state => {
             return {
@@ -93,7 +109,10 @@ class EmployeeManagement extends Component {
         window.$('#modal-edit-employee').modal('show');
     }
 
-    // Function lưu giá trị unit vào state khi thay đổi
+    /**
+     * Function lưu giá trị unit vào state khi thay đổi
+     * @param {*} value : Array id đơn vị
+     */
     handleUnitChange = (value) => {
         if (value.length === 0) {
             value = null
@@ -104,7 +123,11 @@ class EmployeeManagement extends Component {
         })
     }
 
-    // Function lưu giá trị chức vụ vào state khi thay đổi
+    /**
+     * Function lưu giá trị chức vụ vào state khi thay đổi
+     * @param {*} value : Array id chức vụ
+     */
+    // 
     handlePositionChange = (value) => {
         if (value.length === 0) {
             value = null
@@ -114,7 +137,11 @@ class EmployeeManagement extends Component {
             position: value
         })
     }
-    // Function lưu giá trị giới tính vào state khi thay đổi
+
+    /**
+     * Function lưu giá trị giới tính vào state khi thay đổi
+     * @param {*} value : Giá trị giới tính
+     */
     handleGenderChange = (value) => {
         if (value.length === 0) {
             value = null
@@ -125,7 +152,10 @@ class EmployeeManagement extends Component {
         })
     }
 
-    // Function lưu giá trị trạng thái vào state khi thay đổi
+    /**
+     * Function lưu giá trị trạng thái vào state khi thay đổi
+     * @param {*} value : Giá trị trạng thái
+     */
     handleStatusChange = (value) => {
         if (value.length === 0) {
             value = null
@@ -136,7 +166,11 @@ class EmployeeManagement extends Component {
         })
     }
 
-    // Function lưu giá trị tháng sinh vào state khi thay đổi
+    /**
+     * Function lưu giá trị tháng sinh vào state khi thay đổi
+     * @param {*} value : Giá trị tháng sinh
+     */
+    // 
     handleBirthdateChange = (value) => {
         if (value) {
             let partMonth = value.split('-');
@@ -148,7 +182,10 @@ class EmployeeManagement extends Component {
         });
     }
 
-    // Function lưu giá trị ngày hết hạn hợp đồng vào state khi thay đổi
+    /**
+     * Function lưu giá trị ngày hết hạn hợp đồng vào state khi thay đổi
+     * @param {*} value : Tháng hết hạn hợp đồng
+     */
     handleEndDateOfContractChange = (value) => {
         if (value) {
             let partMonth = value.split('-');
@@ -167,12 +204,15 @@ class EmployeeManagement extends Component {
         });
     }
 
-    // Function bắt sự kiện tìm kiếm 
+    /** Function bắt sự kiện tìm kiếm */
     handleSunmitSearch = async () => {
         this.props.getAllEmployee(this.state);
     }
 
-    // Bắt sự kiện setting số dòng hiện thị trên một trang
+    /**
+     * Bắt sự kiện setting số dòng hiện thị trên một trang
+     * @param {*} number : Số dòng trên 1 trang
+     */
     setLimit = async (number) => {
         await this.setState({
             limit: parseInt(number),
@@ -180,16 +220,22 @@ class EmployeeManagement extends Component {
         this.props.getAllEmployee(this.state);
     }
 
-    // Bắt sự kiện chuyển trang
+    /**
+     * Bắt sự kiện chuyển trang
+     * @param {*} pageNumber : Số trang muốn xem
+     */
     setPage = async (pageNumber) => {
-        var page = (pageNumber - 1) * (this.state.limit);
+        let page = (pageNumber - 1) * (this.state.limit);
         await this.setState({
             page: parseInt(page),
         });
         this.props.getAllEmployee(this.state);
     }
 
-    // Function chyển đổi dữ liệu thông tin nhân viên thành dạng dữ liệu dùng export
+    /**
+     * Function chyển đổi dữ liệu thông tin nhân viên thành dạng dữ liệu dùng export
+     * @param {*} data : Thông tin nhân viên
+     */
     convertDataToExportData = (data) => {
         const { list } = this.props.department;
         let employeeInforSheet = data.map((x, index) => {
@@ -679,10 +725,11 @@ class EmployeeManagement extends Component {
 
 
     render() {
-        const { importEmployee, limit, page, organizationalUnits } = this.state;
         const { employeesManager, translate, department } = this.props;
 
-        let lists, listPosition = [{ value: "", text: "Bạn chưa chọn đơn vị", disabled: true }], list = department.list;
+        const { importEmployee, limit, page, organizationalUnits, currentRow, currentRowView } = this.state;
+
+        let lists, listPosition = [{ value: "", text: translate('human_resource.not_unit'), disabled: true }], list = department.list;
         if (organizationalUnits !== null) {
             listPosition = [];
             organizationalUnits.forEach(u => {
@@ -696,29 +743,34 @@ class EmployeeManagement extends Component {
                 })
             })
         }
+
         let exportData;
         if (employeesManager.listEmployees) {
             lists = employeesManager.listEmployees;
             exportData = this.convertDataToExportData(lists);
         }
+
         let pageTotal = ((employeesManager.totalList % limit) === 0) ?
             parseInt(employeesManager.totalList / limit) :
             parseInt((employeesManager.totalList / limit) + 1);
         let currentPage = parseInt((page / limit) + 1);
+
         return (
             <div className="box">
                 <div className="box-body qlcv">
                     <div className="form-inline">
+                        {/* nuuton thêm mới nhân viên */}
                         <div className="dropdown pull-right">
-                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={'Thêm mới thông tin nhân viên'} >Thêm mới nhân viên</button>
+                            <button type="button" className="btn btn-success dropdown-toggle pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('human_resource.profile.employee_management.add_employee_title')} >{translate('human_resource.profile.employee_management.add_employee')}</button>
                             <ul className="dropdown-menu pull-right" style={{ marginTop: 0 }}>
-                                <li><a style={{ cursor: 'pointer' }} title={'Thêm nhiều thông tin nhân viên'} onClick={this.importEmployee}>{'Import file excel'}</a></li>
-                                <li><a style={{ cursor: 'pointer' }} title={'Thêm một thông tin nhân viên'} onClick={this.createEmployee}>{'Thêm bằng tay'}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} onClick={this.importEmployee}>{translate('human_resource.profile.employee_management.add_import')}</a></li>
+                                <li><a style={{ cursor: 'pointer' }} onClick={this.createEmployee}>{translate('human_resource.profile.employee_management.add_by_hand')}</a></li>
                             </ul>
                         </div>
                         <ExportExcel id="export-employee" buttonName={translate('human_resource.name_button_export')} exportData={exportData} style={{ marginRight: 15, marginTop: 0 }} />
                     </div>
                     <div className="form-inline">
+                        {/* Đơn vị */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.unit')}</label>
                             <SelectMulti id={`multiSelectUnit`} multiple="multiple"
@@ -727,6 +779,7 @@ class EmployeeManagement extends Component {
                                 items={list.map((u, i) => { return { value: u._id, text: u.name } })} onChange={this.handleUnitChange}>
                             </SelectMulti>
                         </div>
+                        {/* Chức vụ */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.position')}</label>
                             <SelectMulti id={`multiSelectPosition`} multiple="multiple"
@@ -736,14 +789,16 @@ class EmployeeManagement extends Component {
                         </div>
                     </div>
                     <div className="form-inline">
+                        {/*Mã nhân viên  */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.staff_number')}</label>
                             <input type="text" className="form-control" name="employeeNumber" onChange={this.handleChange} placeholder={translate('page.staff_number')} autoComplete="off" />
                         </div>
+                        {/* Giới tính */}
                         <div className="form-group">
-                            <label className="form-control-static">Giới tính</label>
+                            <label className="form-control-static">{translate('human_resource.profile.gender')}</label>
                             <SelectMulti id={`multiSelectGender`} multiple="multiple"
-                                options={{ nonSelectedText: "Chọn giới tính", allSelectedText: "Chọn tất cả giới tính" }}
+                                options={{ nonSelectedText: translate('human_resource.profile.employee_management.no_gender'), allSelectedText: translate('human_resource.profile.employee_management.all_gender') }}
                                 items={[{ value: "male", text: "Nam" }, { value: "female", text: "Nữ" }]} onChange={this.handleGenderChange}>
                             </SelectMulti>
                         </div>
@@ -752,12 +807,12 @@ class EmployeeManagement extends Component {
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
                             <SelectMulti id={`multiSelectStatus`} multiple="multiple"
-                                options={{ nonSelectedText: "Chọn trạng thái", allSelectedText: "Chọn tất cả trạng thái" }}
-                                items={[{ value: "active", text: "Đang làm việc" }, { value: "leave", text: "Đã nghỉ làm" }]} onChange={this.handleStatusChange}>
+                                options={{ nonSelectedText: translate('human_resource.non_status'), allSelectedText: translate('human_resource.all_status') }}
+                                items={[{ value: "active", text: translate('human_resource.profile.active') }, { value: "leave", text: translate('human_resource.profile.leave') }]} onChange={this.handleStatusChange}>
                             </SelectMulti>
                         </div>
                         <div className="form-group">
-                            <label title="Tháng sinh nhật" className="form-control-static">Sinh nhật</label>
+                            <label title={translate('human_resource.profile.employee_management.brithday_lable_title')} className="form-control-static">{translate('human_resource.profile.employee_management.brithday_lable')}</label>
                             <DatePicker
                                 id="month-birthdate"
                                 dateFormat="month-year"
@@ -769,7 +824,7 @@ class EmployeeManagement extends Component {
                     </div>
                     <div className="form-inline" style={{ marginBottom: 15 }}>
                         <div className="form-group">
-                            <label title="Tháng hết hạn hợp đồng" className="form-control-static">Hết hạn hợp đồng</label>
+                            <label title={translate('human_resource.profile.employee_management.contract_lable_title')} className="form-control-static">{translate('human_resource.profile.employee_management.contract_lable')}</label>
                             <DatePicker
                                 id="month-endDate-contract"
                                 dateFormat="month-year"
@@ -778,11 +833,11 @@ class EmployeeManagement extends Component {
                             />
                         </div>
                         <div className="form-group">
-                            <label className="form-control-static">Loại hợp đồng</label>
-                            <input type="text" className="form-control" name="typeOfContract" onChange={this.handleChange} placeholder="Loại hợp đồng lao động" />
+                            <label className="form-control-static">{translate('human_resource.profile.type_contract')}</label>
+                            <input type="text" className="form-control" name="typeOfContract" onChange={this.handleChange} placeholder={translate('human_resource.profile.employee_management.contract_type_title')} />
                         </div>
                         <div className="form-group">
-                            <button type="button" className="btn btn-success" title="Tìm kiếm" onClick={this.handleSunmitSearch} >Tìm kiếm</button>
+                            <button type="button" className="btn btn-success" title={translate('general.search')} onClick={this.handleSunmitSearch} >{translate('general.search')}</button>
                         </div>
                     </div>
                     <div className="form-group col-md-12 row" >
@@ -812,24 +867,24 @@ class EmployeeManagement extends Component {
                     <table id="employee-table" className="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>Mã nhân viên</th>
-                                <th>Họ và tên</th>
-                                <th>Giới tính</th>
-                                <th>Ngày sinh</th>
-                                <th>Đơn vị</th>
-                                <th>Chức vụ</th>
-                                <th>Trạng thái</th>
+                                <th>{translate('human_resource.staff_number')}</th>
+                                <th>{translate('human_resource.staff_name')}</th>
+                                <th>{translate('human_resource.profile.gender')}</th>
+                                <th>{translate('human_resource.profile.date_birth')}</th>
+                                <th>{translate('human_resource.unit')}</th>
+                                <th>{translate('human_resource.position')}</th>
+                                <th>{translate('human_resource.status')}</th>
                                 <th style={{ width: '120px', textAlign: 'center' }}>{translate('general.action')}
                                     <DataTableSetting
                                         tableId="employee-table"
                                         columnArr={[
-                                            "Mã nhân viên",
-                                            "Họ và tên",
-                                            "Giới tính",
-                                            "Ngày sinh",
-                                            "Đơn vị",
-                                            "Chức vụ",
-                                            "Trạng thái"
+                                            translate('human_resource.staff_number'),
+                                            translate('human_resource.staff_name'),
+                                            translate('human_resource.profile.gender'),
+                                            translate('human_resource.profile.date_birth'),
+                                            translate('human_resource.unit'),
+                                            translate('human_resource.position'),
+                                            translate('human_resource.status'),
                                         ]}
                                         limit={this.state.limit}
                                         setLimit={this.setLimit}
@@ -839,7 +894,7 @@ class EmployeeManagement extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {(typeof lists !== 'undefined' && lists.length !== 0) &&
+                            {lists && lists.length !== 0 &&
                                 lists.map((x, index) => (
                                     <tr key={index}>
                                         <td>{x.employees.map(y => y.employeeNumber)}</td>
@@ -858,10 +913,10 @@ class EmployeeManagement extends Component {
                                         )) : null}</td>
                                         <td>{x.employees.map(y => y.status)}</td>
                                         < td >
-                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title="xem thông tin nhân viên"><i className="material-icons">view_list</i></a>
-                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title="Chỉnh sửa thông tin nhân viên"><i className="material-icons">edit</i></a>
+                                            <a onClick={() => this.handleView(x)} style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.view_employee')}><i className="material-icons">view_list</i></a>
+                                            <a onClick={() => this.handleEdit(x)} className="edit text-yellow" style={{ width: '5px' }} title={translate('human_resource.profile.employee_management.edit_employee')}><i className="material-icons">edit</i></a>
                                             <DeleteNotification
-                                                content="Xoá thông tin nhân viên"
+                                                content={translate('human_resource.profile.employee_management.delete_employee')}
                                                 data={{
                                                     id: x.employees.map(y => y._id),
                                                     info: x.employees.map(y => y.fullName) + " - " + x.employees.map(y => y.employeeNumber)
@@ -877,16 +932,20 @@ class EmployeeManagement extends Component {
                     </table>
                     {employeesManager.isLoading ?
                         <div className="table-info-panel">{translate('confirm.loading')}</div> :
-                        (typeof lists === 'undefined' || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                        (!lists || lists.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                     }
 
                     <PaginateBar pageTotal={pageTotal ? pageTotal : 0} currentPage={currentPage} func={this.setPage} />
                 </div>
+                {/** From thêm mới thông tin nhân viên */}
                 <EmployeeCreateForm />
-                {importEmployee && <EmployeeImportForm />}
 
-                {
-                    this.state.currentRowView !== undefined &&
+                {   /** From import thông tin nhân viên*/
+                    importEmployee && <EmployeeImportForm />
+                }
+
+                {   /** From xem thông tin nhân viên */
+                    currentRowView &&
                     <EmployeeDetailForm
                         _id={this.state.currentRowView.employees[0]._id}
                         employees={this.state.currentRowView.employees}
@@ -898,8 +957,8 @@ class EmployeeManagement extends Component {
                         roles={this.state.currentRowView.roles}
                     />
                 }
-                {
-                    this.state.currentRow !== undefined &&
+                {   /** From chinh sửa thông tin nhân viên */
+                    currentRow &&
                     <EmployeeEditFrom
                         _id={this.state.currentRow.employees[0]._id}
                         employees={this.state.currentRow.employees}
@@ -927,6 +986,6 @@ const actionCreators = {
     getAllEmployee: EmployeeManagerActions.getAllEmployee,
     deleteEmployee: EmployeeManagerActions.deleteEmployee,
 };
-const employeeManagement = connect(mapState, actionCreators)(withTranslate(EmployeeManagement));
 
+const employeeManagement = connect(mapState, actionCreators)(withTranslate(EmployeeManagement));
 export { employeeManagement as EmployeeManagement };

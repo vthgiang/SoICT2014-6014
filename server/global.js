@@ -9,9 +9,9 @@ global.SERVER_SEED_DIR = SERVER_DIR + "/seed";
 global.SERVER_LOGS_DIR = SERVER_DIR + "/logs";
 
 // Init backup automatic
-global.SERVER_BAKUP_TIME = '0 0 2 1 * *';
+global.SERVER_BACKUP_TIME = '0 0 2 1 * *';
 global.SERVER_BACKUP_LIMIT = -1;
-global.AUTO_BACKUP_DATABASE = require("./helpers/backupHelper").backupAutomatic;
+global.AUTO_BACKUP_DATABASE = require(SERVER_MODULES_DIR+'/scheduler/scheduler.service').backupAutomatic;
 AUTO_BACKUP_DATABASE.start();
 
 // Set time backup automatic from MongoDB
@@ -27,9 +27,9 @@ Configuration.findOne({database: process.env.DB_NAME}).then(res => {
         const configDay = res.backup.time.day;
         const serverBackupTime = `${configSecond} ${configMinute} ${configHour} ${configDate} ${configMonth} ${configDay}`
 
-        SERVER_BAKUP_TIME = serverBackupTime;
+        SERVER_BACKUP_TIME = serverBackupTime;
         SERVER_BACKUP_LIMIT = res.backup.limit;
-        AUTO_BACKUP_DATABASE.setTime(time(SERVER_BAKUP_TIME));
+        AUTO_BACKUP_DATABASE.setTime(time(SERVER_BACKUP_TIME));
         AUTO_BACKUP_DATABASE.start();
     }
 }).catch(err => console.log("message: ", err));
