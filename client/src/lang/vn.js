@@ -629,6 +629,7 @@ export default {
             manage_holiday: 'Quản lý kế hoạch làm việc',
             manage_training: 'Quản lý đào tạo',
             account: 'Tài khoản',
+            work_plan: 'Kế hoạch làm việc',
             manage_unit: 'Quản lý nhân sự các đơn vị',
             add_employee: 'Thêm nhân viên',
             list_employee: 'Quản lý thông tin nhân viên',
@@ -1309,6 +1310,7 @@ export default {
                 number_date_leave_of_year: 'Số ngày nghỉ phép',
                 date_year: 'ngày/năm',
                 year: 'Năm',
+                number_date: 'Số ngày',
                 list_holiday: 'Kế hoạch nghỉ lễ, nghỉ tết',
                 list_no_leave: 'Thời gian không được nghỉ',
                 list_auto_leave: 'Thời gian được nghỉ phép',
@@ -1405,6 +1407,21 @@ export default {
                 email_employee: 'Email nhân viên',
                 add_employee_unit: 'Thêm nhân viên',
             },
+
+            // Kế hoạch làm việc
+            work_plan: {
+                list_work_plane: 'Danh sách lịch làm việc',
+                inform_annual_leave: 'Thông tin nghỉ phép cá nhân',
+                note: 'Chú thích',
+                day: 'ngày',
+                total_number_leave_of_year: 'Tổng số ngày nghỉ phép cả năm',
+                leaved: 'Bạn đã nghỉ',
+                view_detail: 'Chi tiết xem ở trang',
+
+                // Nhóm action
+                create_annual_leave: 'Xin nghỉ phép',
+
+            }
 
         },
 

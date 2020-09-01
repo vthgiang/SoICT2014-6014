@@ -2,7 +2,9 @@
     z-index: 1000;
     position: absolute;
     width: 195px;
-    /* text-align: left; */
+    right: 0px;
+    margin-right: 15px;
+    text-align: left;
 
     border-radius: 5px;
     padding: 10px;

@@ -627,6 +627,7 @@ export default {
             manage_employee: 'Manage Staffs',
             manage_training: 'Manage Training',
             account: 'Account',
+            work_plan: 'Work plan',
             manage_unit: 'Manage units',
             manage_holiday: 'Manage work plan',
             add_employee: 'Add New Staffs',
@@ -1309,6 +1310,7 @@ export default {
                 number_date_leave_of_year: 'Number of days off',
                 date_year: 'date/year',
                 year: 'year',
+                number_date: 'Number date',
                 list_holiday: 'Holiday plans, Tet holidays',
                 list_no_leave: 'No leave is allowed',
                 list_auto_leave: 'Leave is allowed',
@@ -1405,6 +1407,21 @@ export default {
                 email_employee: 'Email',
                 add_employee_unit: 'Add staff',
             },
+
+            // Kế hoạch làm việc
+            work_plan: {
+                list_work_plane: 'Work schedule list',
+                inform_annual_leave: 'Information on personal leave',
+                note: 'Note',
+                day: 'days',
+                total_number_leave_of_year: 'Total number of days off',
+                leaved: 'You have rested',
+                view_detail: 'Details see page',
+
+                // Nhóm action
+                create_annual_leave: 'Ask leave',
+
+            }
         },
 
         // Modules quản lý đào tạo
