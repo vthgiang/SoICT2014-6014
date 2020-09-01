@@ -2293,24 +2293,25 @@ export default {
                 manager: 'Người quản lý',
                 viewer: 'Người được xem',
                 time_of_process: 'Thời gian thực hiện quy trình',
+                process_information: 'Thông tin quy trình',
                 start_date: 'Ngày bắt đầu',
                 end_date: 'Ngày kết thúc',
-
+                create : 'Thêm mới',
                 inprocess: 'Đang thực hiện',
                 wait_for_approval: 'Chờ phê duyệt',
                 finished: 'Đã kết thúc',
                 delayed: 'Tạm hoãn',
                 canceled: 'Bị hủy',
-
+                general_infomation: "Thông tin chung",
                 notice: 'Chú thích',
                 information: 'Thông tin',
                 document: 'Tài liệu',
-
+                roles: 'Các vai trò',
                 list_of_data_and_info: 'Danh sách thông tin và tài liệu',
                 not_have_doc: 'Không có tài liệu',
                 not_have_info: 'Không có thông tin',
                 not_export_info: 'Không xuất thông tin',
-
+                task_process: 'Quy trình công việc',
                 save: 'Lưu',
 
             },
@@ -2323,8 +2324,8 @@ export default {
                 delete_task_template_success: 'Xóa mẫu công việc thành công !',
                 delete_task_template_fail: 'Xóa mẫu công việc thất bại !',
                 error_task_template_creator_null: 'Nguời tạo mẫu công việc này không tồn tại hoặc đã bị xóa !',
-                error_task_template_organizational_unit: 'Phòng ban của mẫu công việc này không tồn tại hoặc đã bị xóa !'
-
+                error_task_template_organizational_unit: 'Phòng ban của mẫu công việc này không tồn tại hoặc đã bị xóa !',
+                view_task_process_template: 'Xem mẫu quy trình công việc',
             }
         },
 

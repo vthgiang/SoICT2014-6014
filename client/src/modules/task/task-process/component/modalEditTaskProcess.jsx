@@ -679,24 +679,24 @@ class ModalEditTaskProcess extends Component {
 
                         <div className="nav-tabs-custom" style={{ boxShadow: "none", MozBoxShadow: "none", WebkitBoxShadow: "none", marginBottom: 0 }}>
                             <ul className="nav nav-tabs">
-                                <li className="active"><a href="#info-edit" onClick={() => this.handleChangeContent("info")} data-toggle="tab">Thông tin quy trình</a></li>
-                                <li><a href="#process-edit" onClick={() => this.handleChangeContent("process")} data-toggle="tab">Quy trình công việc</a></li>
+                                <li className="active"><a href="#info-edit" onClick={() => this.handleChangeContent("info")} data-toggle="tab">{translate("task.task_process.process_information")}</a></li>
+                                <li><a href="#process-edit" onClick={() => this.handleChangeContent("process")} data-toggle="tab">{translate("task.task_process.task_process")}</a></li>
                             </ul>
                             <div className="tab-content">
                                 <div className={selectedEdit === "info" ? "active tab-pane" : "tab-pane"} id="info-edit">
                                     <div className='row'>
                                         <div className='col-md-6'>
                                             <div className={`form-group ${this.state.errorOnProcessName === undefined ? "" : "has-error"}`}>
-                                                <label className={`control-label`}>Tên quy trình</label>
+                                                <label className={`control-label`}>{translate("task.task_process.process_name")}</label>
                                                 <input type="text"
                                                     value={processName}
-                                                    className="form-control" placeholder="Mô tả công việc"
+                                                    className="form-control" placeholder={translate("task.task_process.process_name")}
                                                     onChange={this.handleChangeBpmnName}
                                                 />
                                                 <ErrorLabel content={this.state.errorOnProcessName} />
                                             </div>
                                             <div className={`form-group ${this.state.errorOnViewer === undefined ? "" : "has-error"}`}>
-                                                <label className="control-label">Người được phép xem</label>
+                                                <label className="control-label">{translate("task.task_process.viewer")}</label>
                                                 {
                                                     <SelectBox
                                                         id={`select-viewer-employee-edit-${idProcess}`}
@@ -711,7 +711,7 @@ class ModalEditTaskProcess extends Component {
                                                 <ErrorLabel content={this.state.errorOnViewer} />
                                             </div>
                                             <div className={`form-group ${this.state.errorOnManager === undefined ? "" : "has-error"}`}>
-                                                <label className="control-label" >Người quản lý quy trình</label>
+                                                <label className="control-label" >{translate("task.task_process.manager")}</label>
                                                 {
                                                     <SelectBox
                                                         id={`select-manager-employee-edit-${idProcess}`}
@@ -728,7 +728,7 @@ class ModalEditTaskProcess extends Component {
                                         </div>
                                         <div className='col-md-6'>
                                             <div className={`form-group ${this.state.errorOnProcessDescription === undefined ? "" : "has-error"}`}>
-                                                <label className="control-label">Mô tả quy trình</label>
+                                                <label className="control-label">{translate("task.task_process.process_description")}</label>
                                                 <textarea type="text" rows={8}
                                                     value={processDescription}
                                                     className="form-control" placeholder="Mô tả công việc"

@@ -176,7 +176,7 @@ class ProcessTemplate extends Component {
                         <React.Fragment>
                             <div className="pull-right">
                                 <button className="btn btn-success" onClick={() => { this.showModalCreateProcess() }}>
-                                    Thêm mới
+                                    {translate("task.task_process.create")}
                                 </button>
                             </div>
                             {
@@ -196,12 +196,6 @@ class ProcessTemplate extends Component {
                         </div>
                     </div>
 
-                    {/* <div className="form-inline">
-                        <div className="form-group">
-                            <label className="form-control-static"></label>
-                            <button type="button" className="btn btn-success" title="Tìm tiếm mẫu công việc" onClick={this.handleUpdateData}>{translate('task_template.search')}</button>
-                        </div>
-                    </div> */}
                     <DataTableSetting
                         tableId="table-task-template"
                         columnArr={[
@@ -230,7 +224,7 @@ class ProcessTemplate extends Component {
                                         <td>{item.processDescription}</td>
                                         <td>{item.creator?.name}</td>
                                         <td>
-                                            <a onClick={() => { this.viewProcess(item) }} title={translate('task.task_template.view_detail_of_this_task_template')}>
+                                            <a onClick={() => { this.viewProcess(item) }} title={translate('task.task_template.view_task_process_template')}>
                                                 <i className="material-icons">view_list</i>
                                             </a>
                                             <a className="edit" onClick={() => { this.showEditProcess(item) }} title={translate('task_template.edit_this_task_template')}>

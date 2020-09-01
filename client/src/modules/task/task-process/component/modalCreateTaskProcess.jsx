@@ -171,7 +171,6 @@ class ModalCreateTaskProcess extends Component {
 		modeling.updateProperties(element1, {
 			name: stringName,
 		});
-		window.$(`.task-process-gate-way-title`).css("background-color", "white")
 	}
 
 	handleChangeDescription = async (value) => {
@@ -649,9 +648,6 @@ class ModalCreateTaskProcess extends Component {
 		const { translate, department, role } = this.props;
 		const { id, name, info, showInfo, processDescription, processName, viewer, manager, selectedCreate, indexRenderer, type } = this.state;
 		const { listOrganizationalUnit } = this.props;
-		if (type === "bpmn:ExclusiveGateway"  && info && id && info[id].name) {
-			window.$(`.task-process-gate-way-title`).css("background-color", "white")
-		}
 		let listRole = [];
 		if (role && role.list.length !== 0) listRole = role.list;
 		let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)
@@ -683,7 +679,7 @@ class ModalCreateTaskProcess extends Component {
 										<div className='row'>
 											<div className='col-md-6'>
 												<div className={`form-group ${this.state.errorOnProcessName === undefined ? "" : "has-error"}`}>
-													<label className={`control-label`}>Tên quy trình</label>
+													<label className={`control-label`}>{translate("task.task_process.process_name")}</label>
 													<input type="text"
 														value={processName}
 														className="form-control" placeholder="Mô tả công việc"
@@ -692,7 +688,7 @@ class ModalCreateTaskProcess extends Component {
 													<ErrorLabel content={this.state.errorOnProcessName} />
 												</div>
 												<div className={`form-group ${this.state.errorOnViewer === undefined ? "" : "has-error"}`}>
-													<label className="control-label">Người được phép xem</label>
+													<label className="control-label">{translate("task.task_process.viewer")}</label>
 													{
 														<SelectBox
 															id={`select-viewer-employee-create-${indexRenderer}`}
@@ -707,7 +703,7 @@ class ModalCreateTaskProcess extends Component {
 													<ErrorLabel content={this.state.errorOnViewer} />
 												</div>
 												<div className={`form-group ${this.state.errorOnManager === undefined ? "" : "has-error"}`}>
-													<label className="control-label" >Người quản lý quy trình</label>
+													<label className="control-label" >{translate("task.task_process.manager")}</label>
 													{
 														<SelectBox
 															id={`select-manager-employee-create-${indexRenderer}`}
@@ -724,10 +720,10 @@ class ModalCreateTaskProcess extends Component {
 											</div>
 											<div className='col-md-6'>
 												<div className={`form-group ${this.state.errorOnProcessDescription === undefined ? "" : "has-error"}`}>
-													<label className="control-label">Mô tả quy trình</label>
+													<label className="control-label">{translate("task.task_process.process_description")}</label>
 													<textarea type="text" rows={8}
 														value={processDescription}
-														className="form-control" placeholder="Mô tả công việc"
+														className="form-control" placeholder={translate("task.task_process.process_description")}
 														onChange={this.handleChangeBpmnDescription}
 													/>
 													<ErrorLabel content={this.state.errorOnProcessDescription} />
