@@ -19,11 +19,12 @@ class ValuePieChart extends Component {
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
         const { translate } = this.props;
-        let dataPieChart, valueOfBuilding = 0, valueOfVehicle = 0, valueOfMachine = 0, valueOfOrther = 0;
-        let listAsset = this.props.listAssets;
+        const { listAssets, setValueOfAsset } = this.props;
 
-        if (listAsset) {
-            listAsset.map(asset => {
+        let dataPieChart, valueOfBuilding = 0, valueOfVehicle = 0, valueOfMachine = 0, valueOfOrther = 0;
+        
+        if (listAssets) {
+            listAssets.map(asset => {
                 switch (asset.group) {
                     case "Building":
                         valueOfBuilding += asset.cost;
@@ -42,11 +43,15 @@ class ValuePieChart extends Component {
         }
 
         dataPieChart = [
-            ["Mặt bằng", valueOfBuilding],
-            ["Phương tiện", valueOfVehicle],
-            ["Máy móc", valueOfMachine],
-            ["Khác", valueOfOrther],
+            [translate('asset.dashboard.building'), valueOfBuilding],
+            [translate('asset.dashboard.vehicle'), valueOfVehicle],
+            [translate('asset.dashboard.machine'), valueOfMachine],
+            [translate('asset.dashboard.orther'), valueOfOrther],
         ];
+        
+        if (setValueOfAsset) {
+            setValueOfAsset(dataPieChart);
+        }
         return dataPieChart;
     }
 

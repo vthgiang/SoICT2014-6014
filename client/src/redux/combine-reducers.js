@@ -56,13 +56,15 @@ import {reports} from "../modules/report/task-report/redux/reducers";
 
 //material
 import { materials } from "../modules/warehouse-manager/material-manager/redux/reducers";
-//customer
-import {customer} from "../modules/customer/redux/reducers";
+
+//crm
+import {customer} from "../modules/crm/customer/redux/reducers";
+import {customerGroup} from "../modules/crm/customer-group/redux/reducers";
 
 //order
 import { order } from "../modules/order/redux/reducers";
 
-const appReducer = combineReducers(Object.assign({
+const appReducer = combineReducers({
     //system
     systemSetting,
     company,
@@ -132,11 +134,13 @@ const appReducer = combineReducers(Object.assign({
 
     // customer management
     customer,
+    customerGroup,
 
     //order
     order,
+    Intl
     
-}, { Intl }));
+});
 
 const rootReducer = (state, action) => {
     if (action.type === 'RESET') {

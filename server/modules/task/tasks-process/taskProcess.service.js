@@ -337,6 +337,7 @@ exports.createTaskByProcess = async (processId, body) => {
             description: data[i].description,
             startDate: startDate,
             endDate: endDate,
+            formula: data[i].formula,
             priority: data[i].priority,
             taskTemplate: null,
             taskInformations: taskInformations,
@@ -348,6 +349,7 @@ exports.createTaskByProcess = async (processId, body) => {
             accountableEmployees: data[i].accountableEmployees,
             consultedEmployees: data[i].consultedEmployees,
             informedEmployees: data[i].informedEmployees,
+            confirmedByEmployees: data[i].responsibleEmployees.concat(data[i].accountableEmployees).concat(data[i].consultedEmployees).includes(data[i].creator) ? data[i].creator : []
         });
 
         listTask.push(newTaskItem._id);
@@ -413,7 +415,7 @@ exports.getAllTaskProcess = async (query) => {
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
@@ -453,7 +455,7 @@ exports.updateDiagram = async (params, body) => {
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },

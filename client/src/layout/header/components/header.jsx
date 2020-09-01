@@ -10,6 +10,7 @@ import './header.css';
 import { getStorage } from '../../../config';
 import ModalChangeUserInformation from './modalChangeUserInformation';
 import { toast } from 'react-toastify';
+import ValidationHelper from '../../../helpers/validationHelper';
 
 class Header extends Component {
     constructor(props) {
@@ -59,17 +60,17 @@ class Header extends Component {
                         <div className={`form-group ${!oldPasswordError ? "" : "has-error"}`}>
                             <label>{ translate('auth.security.old_password') }<span className="text-red">*</span></label>
                             <input className="form-control" type="password" onChange={this.handleOldPassword} />
-                            <ErrorLabel content={oldPasswordError ? translate(oldPasswordError) : undefined} />
+                            <ErrorLabel content={oldPasswordError} />
                         </div>
                         <div className={`form-group ${!newPasswordError ? "" : "has-error"}`}>
                             <label>{ translate('auth.security.new_password') }<span className="text-red">*</span></label>
                             <input className="form-control" type="password" onChange={this.handleNewPassword} />
-                            <ErrorLabel content={newPasswordError ? translate(newPasswordError) : undefined} />
+                            <ErrorLabel content={newPasswordError} />
                         </div>
                         <div className={`form-group ${!confirmPasswordError ? "" : "has-error"}`}>
                             <label>{ translate('auth.security.confirm_password') }<span className="text-red">*</span></label>
                             <input className="form-control" type="password" onChange={this.handleConfirmPassword} />
-                            <ErrorLabel content={confirmPasswordError ? translate(confirmPasswordError) : undefined} />
+                            <ErrorLabel content={confirmPasswordError} />
                         </div>
                     </form>
                 </DialogModal>
@@ -79,72 +80,44 @@ class Header extends Component {
     }
 
     handleOldPassword = (e) => {
-        const { value } = e.target;
-        this.validateOldPassword(value, true);
-    }
-    validateOldPassword = (value, willUpdateState = true) => {
-        let msg = Validator.validatePassword(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    oldPasswordError: msg,
-                    oldPassword: value,
-                }
-            });
-        }
-        return msg === undefined;
+        let {value} = e.target;
+        let {translate} = this.props;
+        let {message} = ValidationHelper.validatePassword(translate, value);
+        this.setState({
+            oldPassword: value,
+            oldPasswordError: message
+        })
     }
 
     handleNewPassword = (e) => {
-        const { value } = e.target;
-        this.validateNewPassword(value, true);
-    }
-    validateNewPassword = (value, willUpdateState = true) => {
-        let msg = Validator.validatePassword(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    newPasswordError: msg,
-                    newPassword: value,
-                }
-            });
-        }
-        return msg === undefined;
+        let {value} = e.target;
+        let {translate} = this.props;
+        let {message} = ValidationHelper.validatePassword(translate, value);
+        this.setState({
+            newPassword: value,
+            newPasswordError: message
+        })
     }
 
     handleConfirmPassword = (e) => {
-        const { value } = e.target;
-        this.validateConfirmPassword(value, true);
-    }
-    validateConfirmPassword = (value, willUpdateState = true) => {
-        const {newPassword} = this.state;
-        
-        let msg = Validator.validatePassword(value);
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    confirmPasswordError: msg,
-                    confirmPassword: value,
-                }
-            });
-        }
-        return msg === undefined;
+        let {value} = e.target;
+        let {translate} = this.props;
+        let {message} = ValidationHelper.validatePassword(translate, value);
+        this.setState({
+            confirmPassword: value,
+            confirmPasswordError: message
+        })
     }
 
     isFormValidated = () => {
         const { oldPassword, newPassword, confirmPassword } = this.state;
-        if(oldPassword !== undefined && newPassword !== undefined && confirmPassword !== undefined){
-            let result =  this.validateOldPassword(oldPassword, false) &&
-            this.validateNewPassword(newPassword, false) &&
-            this.validateConfirmPassword(confirmPassword, false); 
-
-            return result;
-        }
-            
-        return false; 
+        let {translate} = this.props;
+        if(
+            !ValidationHelper.validatePassword(translate, oldPassword).status ||
+            !ValidationHelper.validatePassword(translate, newPassword).status ||
+            !ValidationHelper.validatePassword(translate, confirmPassword).status
+        ) return false;
+        return true;
     }
 
     saveNewPassword = () => {

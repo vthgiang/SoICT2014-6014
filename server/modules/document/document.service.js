@@ -15,9 +15,9 @@ exports.getDocuments = async (company, query) => {
     if (!(page || limit)) {
 
         return await Document.find({ company }).populate([
-            { path: 'category', model: DocumentCategory },
-            { path: 'domains', model: DocumentDomain },
-            { path: 'archives', model: DocumentArchive },
+            { path: 'category', model: DocumentCategory, select: 'name id' },
+            { path: 'domains', model: DocumentDomain, select: 'name id' },
+            { path: 'archives', model: DocumentArchive, select: 'name id path' },
             { path: 'views.viewer', model: User, select: 'name id' },
             { path: "downloads.downloader", model: User, select: 'name id' },
             { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
@@ -48,9 +48,9 @@ exports.getDocuments = async (company, query) => {
             page,
             limit,
             populate: [
-                { path: 'category', model: DocumentCategory },
-                { path: 'domains', model: DocumentDomain },
-                { path: 'archives', model: DocumentArchive },
+                { path: 'category', model: DocumentCategory, select: 'name id' },
+                { path: 'domains', model: DocumentDomain, select: 'name id' },
+                { path: 'archives', model: DocumentArchive, select: 'name id path' },
                 { path: 'views.viewer', model: User, select: 'name id' },
                 { path: "downloads.downloader", model: User, select: 'name id' },
                 { path: "archivedRecordPlaceOrganizationalUnit", model: OrganizationalUnit, select: "name id" },
@@ -67,8 +67,8 @@ exports.getDocuments = async (company, query) => {
  */
 exports.showDocument = async (id, viewer) => {
     const doc = await Document.findById(id).populate([
-        { path: 'category', model: DocumentCategory },
-        { path: 'archives', model: DocumentArchive },
+        { path: 'category', model: DocumentCategory, select: 'name id' },
+        { path: 'archives', model: DocumentArchive, select: 'name id path' },
 
     ]);
     doc.numberOfView += 1;
@@ -148,9 +148,9 @@ exports.createDocument = async (company, data) => {
     const doc = await Document.create(newDoc);
 
     return await Document.findById(doc._id).populate([
-        { path: 'category', model: DocumentCategory },
-        { path: 'domains', model: DocumentDomain },
-        { path: 'archives', model: DocumentArchive },
+        { path: 'category', model: DocumentCategory, select: 'name id' },
+        { path: 'domains', model: DocumentDomain, select: 'name id' },
+        { path: 'archives', model: DocumentArchive, select: 'name id path' },
     ]);
 }
 
@@ -236,7 +236,7 @@ exports.editDocument = async (id, data, query = undefined) => {
 
         // if (data.archivedRecordPlaceInfo !== 'undefined' && data.archivedRecordPlaceInfo !== undefined)
         //     doc.archivedRecordPlaceInfo = data.archivedRecordPlaceInfo
-        if (data.archivedRecordPlaceOrganizationalUnit) {
+        if (data.archivedRecordPlaceOrganizationalUnit && data.archivedRecordPlaceOrganizationalUnit !== "[object Object]") {
             //  console.log(data.archivedRecordPlaceOrganizationalUnit)
             doc.archivedRecordPlaceOrganizationalUnit = data.archivedRecordPlaceOrganizationalUnit
         }
@@ -398,9 +398,6 @@ exports.createDocumentDomain = async (company, data) => {
         name: data.name,
         description: data.description,
     }
-    if (data.parent.length) {
-        query.parent = data.parent
-    }
     await DocumentDomain.create(query);
 
     return await this.getDocumentDomains(company);
@@ -420,9 +417,9 @@ exports.getDocumentsThatRoleCanView = async (company, query) => {
             company,
             roles: { $in: roleArr }
         }).populate([
-            { path: 'category', model: DocumentCategory },
-            { path: 'domains', model: DocumentDomain },
-            { path: 'archives', model: DocumentArchive },
+            { path: 'category', model: DocumentCategory, select: 'name id' },
+            { path: 'domains', model: DocumentDomain, select: 'name id' },
+            { path: 'archives', model: DocumentArchive, select: 'name id path' },
             { path: 'relationshipDocuments', model: Document },
             { path: 'views.viewer', model: User, select: 'name id' },
             { path: "downloads.downloader", model: User, select: 'name id' },
@@ -457,9 +454,9 @@ exports.getDocumentsThatRoleCanView = async (company, query) => {
             page,
             limit,
             populate: [
-                { path: 'category', model: DocumentCategory },
-                { path: 'domains', model: DocumentDomain },
-                { path: 'archives', model: DocumentArchive },
+                { path: 'category', model: DocumentCategory, select: 'name id' },
+                { path: 'domains', model: DocumentDomain, select: 'name id' },
+                { path: 'archives', model: DocumentArchive, select: 'name id path' },
                 { path: 'relationshipDocuments', model: Document },
                 { path: 'views.viewer', model: User, select: 'name id' },
                 { path: "downloads.downloader", model: User, select: 'name id' },
@@ -479,26 +476,26 @@ exports.getDocumentsUserStatistical = async (userId, query) => {
     switch (option) {
         case 'downloaded': //những tài liệu văn bản mà người dùng đã tải xuống
             return await Document.find({ "downloads.downloader": userId }).populate([
-                { path: 'category', model: DocumentCategory },
-                { path: 'domains', model: DocumentDomain },
-                { path: 'archives', model: DocumentArchive },
+                { path: 'category', model: DocumentCategory, select: 'name id' },
+                { path: 'domains', model: DocumentDomain, select: 'name id' },
+                { path: 'archives', model: DocumentArchive, select: 'name id path' },
             ]).limit(10);
         case 'common': //những tài liệu phổ biến - được xem và tải nhiều nhất gần đây
             return await Document.find({
                 roles: { $in: user.roles.map(res => res.roleId) }
             }).populate([
-                { path: 'category', model: DocumentCategory },
-                { path: 'domains', model: DocumentDomain },
-                { path: 'archives', model: DocumentArchive },
+                { path: 'category', model: DocumentCategory, select: 'name id' },
+                { path: 'domains', model: DocumentDomain, select: 'name id' },
+                { path: 'archives', model: DocumentArchive, select: 'name id path' },
             ]).sort({ numberOfView: -1 }).limit(10);
         case 'latest': //những tài liệu văn bản mà người dùng chưa xem qua lần nào
             return await Document.find({
                 roles: { $in: user.roles.map(res => res.roleId) },
                 "views.viewer": { "$ne": userId }
             }).populate([
-                { path: 'category', model: DocumentCategory },
-                { path: 'domains', model: DocumentDomain },
-                { path: 'archives', model: DocumentArchive },
+                { path: 'category', model: DocumentCategory, select: 'name id' },
+                { path: 'domains', model: DocumentDomain, select: 'name id' },
+                { path: 'archives', model: DocumentArchive, select: 'name id path' },
             ]);
         default:
             return null;
@@ -530,6 +527,32 @@ exports.deleteManyDocumentDomain = async (array, company) => {
 
     return await this.getDocumentDomains(company);
 }
+/**
+ * import các danh mục từ file excel
+ * company: mã cty lấy từ auth
+ * data: mảng dữ liệu được import từ file excel
+ */
+
+exports.importDocumentDomain = async (company, data) => {
+    let results = [];
+    for (let i in data) {
+        description = data[i].description;
+        let domain = {
+            name: data[i].name,
+            description: data[i].description,
+        }
+        if (data[i].parent) {
+            const parentDomain = await DocumentDomain.findOne({ name: data[i].parent });
+            if (parentDomain) {
+                domain.parent = parentDomain.id;
+            }
+        }
+        console.log(domain);
+        let res = await this.createDocumentDomain(company, domain);
+
+    }
+    return await this.getDocumentDomains(company);
+}
 
 /**
  * Kho lưu trữ vật lí 
@@ -553,6 +576,7 @@ exports.getDocumentArchives = async (company) => {
 }
 
 exports.createDocumentArchive = async (company, data) => {
+    console.log('dataaa', data);
     let query = {
         company,
         name: data.name,
@@ -631,4 +655,35 @@ async function deleteNode(id) {
         }
     }
     await DocumentArchive.deleteOne({ _id: id });
+}
+
+
+/**
+ * import các danh mục từ file excel
+ * company: mã cty lấy từ auth
+ * data: mảng dữ liệu được import từ file excel
+ */
+
+exports.importDocumentArchive = async (company, data) => {
+
+    for (let i in data) {
+        console.log('inputtt', data[i])
+        description = data[i].description;
+        let archive = {
+            name: data[i].name,
+            description: data[i].description,
+        }
+        if (data[i].pathParent) {
+            let path = data[i].pathParent.split('-').map(x => { return x.trim() }).join(" - ");
+            console.log('pathhh', path);
+            const parentArchive = await DocumentArchive.findOne({ path: path });
+            if (parentArchive) {
+                archive.parent = parentArchive.id;
+            }
+        }
+        console.log(archive);
+        let res = await this.createDocumentArchive(company, archive);
+
+    }
+    return await this.getDocumentArchives(company);
 }

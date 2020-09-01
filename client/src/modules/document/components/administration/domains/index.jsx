@@ -6,7 +6,7 @@ import { Tree, SlimScroll, ExportExcel } from '../../../../../common-components'
 
 import CreateForm from './createForm';
 import EditForm from './editForm';
-
+import { DomainImportForm } from './domainImportForm';
 import { withTranslate } from 'react-redux-multilingual';
 import Swal from 'sweetalert2';
 import './domains.css'
@@ -63,15 +63,24 @@ class AdministrationDocumentDomains extends Component {
             }
         })
     }
+    /**Mở modal import file excel */
+    handImportFile = (event) => {
+        event.preventDefault();
+        window.$('#modal_import_file').modal('show');
+    }
+    handleAddDomain = (event) => {
+        event.preventDefault();
+        window.$('#modal-create-document-domain').modal('show');
+    }
     convertDataToExportData = (data) => {
         console.log(data);
-        data = data.map((x, index) => {
+        data = data ? data.map((x, index) => {
             return {
                 STT: index + 1,
                 name: x.name,
                 description: x.description,
             }
-        })
+        }) : "";
         let exportData = {
             fileName: "Bảng thống kê danh mục",
             dataSheets: [
@@ -100,14 +109,14 @@ class AdministrationDocumentDomains extends Component {
         const { list } = this.props.documents.administration.domains;
         const { documents } = this.props;
 
-        const dataTree = list.map(node => {
+        const dataTree = list ? list.map(node => {
             return {
                 ...node,
                 text: node.name,
                 state: { "opened": true },
                 parent: node.parent ? node.parent.toString() : "#"
             }
-        })
+        }) : null
         let dataExport = [];
         if (documents.isLoading === false) {
             dataExport = list;
@@ -116,14 +125,25 @@ class AdministrationDocumentDomains extends Component {
         let exportData = this.convertDataToExportData(dataExport);
         return (
             <React.Fragment>
-                <button className="btn btn-success" onClick={() => {
+                <div className="form-inline">
+                    <div className="dropdown pull-right" style={{ marginBottom: 15 }}>
+                        <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title={translate('document.administration.domains.add')}
+                            disabled={domainParent.length > 1 ? true : false}>{translate('general.add')}</button>
+                        <ul className="dropdown-menu pull-right">
+                            <li><a href="#modal-add-task-template" title="ImportForm" onClick={(event) => { this.handleAddDomain(event) }}>{translate('task_template.add')}</a></li>
+                            <li><a href="#modal_import_file" title="ImportForm" onClick={(event) => { this.handImportFile(event) }}>ImportFile</a></li>
+                        </ul>
+                    </div>
+                </div>
+                {/* <button className="btn btn-success" onClick={() => {
                     window.$('#modal-create-document-domain').modal('show');
-                }} title={translate('document.administration.domains.add')} disabled={domainParent.length > 1 ? true : false}>{translate('general.add')}</button>
+                }} title={translate('document.administration.domains.add')} disabled={domainParent.length > 1 ? true : false}>{translate('general.add')}</button> */}
                 {
                     deleteNode.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteDomains}>{translate('general.delete')}</button>
                 }
                 {<ExportExcel id="export-document-domain" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
                 <CreateForm domainParent={this.state.domainParent[0]} />
+                <DomainImportForm />
                 <div className="row">
                     <div className="col-xs-12 col-sm-12 col-md-7 col-lg-7">
                         <div className="domain-tree" id="domain-tree">

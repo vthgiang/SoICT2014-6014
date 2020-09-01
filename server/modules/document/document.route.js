@@ -16,7 +16,7 @@ router.post("/document-domains", auth, DocumentController.createDocumentDomain);
 router.post("/document-domains/delete-many", auth, DocumentController.deleteManyDocumentDomain);
 router.patch("/document-domains/:id", auth, DocumentController.editDocumentDomain);
 router.delete("/document-domains/:id", auth, DocumentController.deleteDocumentDomain);
-
+router.post("/document-domains/import-file", auth, DocumentController.importDocumentDomain)
 // Loại văn bản - category
 router.get("/document-categories", auth, DocumentController.getDocumentCategories);
 router.get("/document-categories/:id", auth, DocumentController.showDocumentCategory);
@@ -37,5 +37,6 @@ router.post('/document-archives', auth, DocumentController.createDocumentArchive
 router.post('/document-archives/delete-many', auth, DocumentController.deleteManyDocumentArchive);
 router.patch('/document-archives/:id', auth, DocumentController.editDocumentArchive);
 router.delete('/document-archives/:id', auth, DocumentController.deleteDocumentArchive);
+router.post("/document-archives/import-file", auth, DocumentController.importDocumentArchive)
 
 module.exports = router;

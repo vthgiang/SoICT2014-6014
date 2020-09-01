@@ -7,23 +7,34 @@ class CertificateTab extends Component {
     constructor(props) {
         super(props);
         this.state = {};
+
     }
-    // Function format dữ liệu Date thành string
+
+    /**
+     * Function format dữ liệu Date thành string
+     * @param {*} date : Ngày muốn format
+     * @param {*} monthYear : true trả về tháng năm , false trả về ngày tháng năm
+     */
     formatDate(date, monthYear = false) {
-        var d = new Date(date),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (date) {
+            let d = new Date(date),
+                month = '' + (d.getMonth() + 1),
+                day = '' + d.getDate(),
+                year = d.getFullYear();
 
-        if (month.length < 2)
-            month = '0' + month;
-        if (day.length < 2)
-            day = '0' + day;
+            if (month.length < 2)
+                month = '0' + month;
+            if (day.length < 2)
+                day = '0' + day;
 
-        if (monthYear === true) {
-            return [month, year].join('-');
-        } else return [day, month, year].join('-');
+            if (monthYear === true) {
+                return [month, year].join('-');
+            } else return [day, month, year].join('-');
+        }
+        return date;
+
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -43,33 +54,36 @@ class CertificateTab extends Component {
     }
 
     render() {
-        const { id, translate } = this.props;
-        const { degrees, certificates } = this.state;
+        const { translate } = this.props;
+
+        const { id, degrees, certificates } = this.state;
+
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
+                    {/* Danh sách bằng cấp */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.diploma')}</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.diploma')}</h4></legend>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>
                             <thead>
                                 <tr>
-                                    <th>{translate('manage_employee.name_diploma')}</th>
-                                    <th>{translate('manage_employee.diploma_issued_by')}</th>
-                                    <th>{translate('manage_employee.graduation_year')}</th>
-                                    <th>{translate('manage_employee.ranking_learning')}</th>
-                                    <th>{translate('manage_employee.attached_files')}</th>
+                                    <th>{translate('human_resource.profile.name_diploma')}</th>
+                                    <th>{translate('human_resource.profile.diploma_issued_by')}</th>
+                                    <th>{translate('human_resource.profile.graduation_year')}</th>
+                                    <th>{translate('human_resource.profile.ranking_learning')}</th>
+                                    <th>{translate('human_resource.profile.attached_files')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
-                                    (typeof degrees !== 'undefined' && degrees.length !== 0) &&
+                                    (degrees && degrees.length !== 0) &&
                                     degrees.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.name}</td>
                                             <td>{x.issuedBy}</td>
                                             <td>{x.year}</td>
-                                            <td>{translate(`manage_employee.${x.degreeType}`)}</td>
-                                            <td>{!x.urlFile ? translate('manage_employee.no_files') :
+                                            <td>{translate(`human_resource.profile.${x.degreeType}`)}</td>
+                                            <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
                                                 <a className='intable'
                                                     style={{ cursor: "pointer" }}
                                                     onClick={(e) => this.requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
@@ -82,19 +96,20 @@ class CertificateTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof degrees === 'undefined' || degrees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!degrees || degrees.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </fieldset>
+                    {/* Danh sách chứng chỉ */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.certificate')}</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.certificate')}</h4></legend>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
-                                    <th>{translate('manage_employee.name_certificate')}</th>
-                                    <th>{translate('manage_employee.issued_by')}</th>
-                                    <th>{translate('manage_employee.date_issued')}</th>
-                                    <th>{translate('manage_employee.end_date_certificate')}</th>
-                                    <th>{translate('manage_employee.attached_files')}</th>
+                                    <th>{translate('human_resource.profile.name_certificate')}</th>
+                                    <th>{translate('human_resource.profile.issued_by')}</th>
+                                    <th>{translate('human_resource.profile.date_issued')}</th>
+                                    <th>{translate('human_resource.profile.end_date_certificate')}</th>
+                                    <th>{translate('human_resource.profile.attached_files')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -106,7 +121,7 @@ class CertificateTab extends Component {
                                             <td>{x.issuedBy}</td>
                                             <td>{this.formatDate(x.startDate)}</td>
                                             <td>{this.formatDate(x.endDate)}</td>
-                                            <td>{!x.urlFile ? translate('manage_employee.no_files') :
+                                            <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
                                                 <a className='intable'
                                                     style={{ cursor: "pointer" }}
                                                     onClick={(e) => this.requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
@@ -118,7 +133,7 @@ class CertificateTab extends Component {
                                 }
                             </tbody>
                         </table>
-                        {(certificates === 'undefined' || certificates.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
+                        {(!certificates || certificates.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>}
                     </fieldset>
                 </div>
             </div>

@@ -124,20 +124,20 @@ class EditForm extends Component {
         return (
             <div id="edit-document-archive">
                 <div className={`form-group ${errorName === undefined ? "" : "has-error"}`}>
-                    <label>Tên mục lưu trữ<span className="text-red">*</span></label>
+                    <label>{translate('document.administration.archives.name')}<span className="text-red">*</span></label>
                     <input type="text" className="form-control" onChange={this.handleValidateName} value={archiveName} />
                     <ErrorLabel content={errorName} />
                 </div>
                 <div className="form-group">
-                    <label>Nút cha</label>
+                    <label>{translate('document.administration.archives.parent')}</label>
                     <TreeSelect data={list} value={[archiveParent]} handleChange={this.handleParent} mode="radioSelect" />
                 </div>
                 <div className="form-group">
-                    <label>Đường dẫn</label>
+                    <label>{translate('document.administration.domains.path')}</label>
                     <textarea style={{ minHeight: '30px' }} type="text" className="form-control" value={archivePath} disable />
                 </div>
                 <div className="form-group">
-                    <label>Mô tả</label>
+                    <label>{translate('document.administration.domains.description')}</label>
                     <textarea style={{ minHeight: '120px' }} type="text" className="form-control" onChange={this.handleDescription} value={archiveDescription} />
                 </div>
                 <div className="form-group">

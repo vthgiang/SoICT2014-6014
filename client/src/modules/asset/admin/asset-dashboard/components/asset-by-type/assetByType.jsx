@@ -4,21 +4,25 @@ import { connect } from 'react-redux';
 import { AssetService } from '../../../asset-information/redux/services';
 import { AssetTypeService } from '../../../asset-type/redux/services';
 
-import AmountBarChart from './amount-of-asset/amountBarChart';
-import ValueBarChart from './value-of-asset/valueBarChart';
-import DepreciationBarChart from './depreciation-of-asset/depreciationBarChart';
-
-import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import AmountTree from './amount-of-asset/amountTree';
 import DepreciationTree from './depreciation-of-asset/depreciationTree';
 import ValueTree from './value-of-asset/valueTree';
 
+import withTranslate from 'react-redux-multilingual/lib/withTranslate';
+
+
 class AssetByType extends Component {
+
     constructor(props) {
         super(props);
 
         this.INFO_SEARCH = {
             typeOfChart: ["Bar"]
+        }
+        this.EXPORT_DATA = {
+            amountOfAsset: null,
+            depreciationOfAsset: null,
+            valueOfAsset: null
         }
 
         this.state = {
@@ -27,6 +31,7 @@ class AssetByType extends Component {
             typeOfChart: this.INFO_SEARCH.typeOfChart
         }
     }
+
     componentDidMount() {
         AssetService.getAll({
             assetName: "",
@@ -65,9 +70,25 @@ class AssetByType extends Component {
         })
     }
 
-    render() {
-        const { listAssets, recommendProcure, recommendDistribute, displayBy, assetType } = this.state;
+    setAmountOfAsset = (amountOfAsset) => {
+        this.EXPORT_DATA.amountOfAsset = amountOfAsset;
+        this.props.setAssetByTypeExportData(this.EXPORT_DATA.amountOfAsset, this.EXPORT_DATA.depreciationOfAsset, this.EXPORT_DATA.valueOfAsset)
+    }
 
+    setDepreciationOfAsset = (depreciationOfAsset) => {
+        this.EXPORT_DATA.depreciationOfAsset = depreciationOfAsset;
+        this.props.setAssetByTypeExportData(this.EXPORT_DATA.amountOfAsset, this.EXPORT_DATA.depreciationOfAsset, this.EXPORT_DATA.valueOfAsset)
+    }
+
+    setValueOfAsset = (valueOfAsset) => {
+        this.EXPORT_DATA.valueOfAsset = valueOfAsset;
+        this.props.setAssetByTypeExportData(this.EXPORT_DATA.amountOfAsset, this.EXPORT_DATA.depreciationOfAsset, this.EXPORT_DATA.valueOfAsset)
+    }
+
+    render() {
+        const { translate } = this.props;
+        const { listAssets, assetType } = this.state;
+        
         return (
             <React.Fragment>
                 <div className="qlcv">
@@ -75,12 +96,13 @@ class AssetByType extends Component {
                         <div className="col-xs-6">
                             <div className="box box-solid">
                                 <div className="box-header">
-                                    <div className="box-title">Biểu đồ khấu hao tài sản</div>
+                                    <div className="box-title">{translate('asset.dashboard.amount_of_asset')}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     <AmountTree
                                         listAssets={listAssets}
                                         assetType={assetType}
+                                        setAmountOfAsset={this.setAmountOfAsset}
                                     />
                                 </div>
                             </div>
@@ -89,12 +111,13 @@ class AssetByType extends Component {
                         <div className="col-xs-6">
                             <div className="box box-solid">
                                 <div className="box-header">
-                                    <div className="box-title">Biểu đồ khấu hao tài sản</div>
+                                    <div className="box-title">{translate('asset.dashboard.value_of_asset')}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     <ValueTree
                                         listAssets={listAssets}
                                         assetType={assetType}
+                                        setValueOfAsset={this.setValueOfAsset}
                                     />
                                 </div>
                             </div>
@@ -104,13 +127,13 @@ class AssetByType extends Component {
                         <div className="col-xs-6">
                             <div className="box box-solid">
                                 <div className="box-header">
-                                    <div className="box-title">Biểu đồ khấu hao tài sản</div>
+                                    <div className="box-title">{translate('asset.dashboard.depreciation_of_asset')}</div>
                                 </div>
                                 <div className="box-body qlcv">
                                     <DepreciationTree
                                         listAssets={listAssets}
                                         assetType={assetType}
-
+                                        setDepreciationOfAsset={this.setDepreciationOfAsset}
                                     />
                                 </div>
                             </div>

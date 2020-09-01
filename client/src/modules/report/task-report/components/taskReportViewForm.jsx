@@ -115,10 +115,12 @@ class TaskReportViewForm extends Component {
     aggregate = (tasks) => {
         let map = new Map;
         for (let { aggregationType, coefficient, code, value, chartType, showInReport } of tasks) {
-            let entry = map.get(code);
-            if (!entry) map.set(code, entry = { aggregationType, chartType, showInReport, coefficient, sum: 0, count: 0 });
-            entry.sum += value;
-            entry.count++;
+            if (showInReport === true) {
+                let entry = map.get(code);
+                if (!entry) map.set(code, entry = { aggregationType, chartType, showInReport, coefficient, sum: 0, count: 0 });
+                entry.sum += value;
+                entry.count++;
+            }
         }
         return Array.from(map, ([code, { aggregationType, chartType, showInReport, coefficient, sum, count }]) =>
             [code, (+aggregationType ? sum : sum / count) * coefficient, this.formatChartType(chartType), showInReport]
@@ -133,7 +135,6 @@ class TaskReportViewForm extends Component {
      */
     dataAfterAggregate = (input) => {
         return Object.entries(input).map(([time, datapoints]) => {
-            console.log('datapoints', datapoints)
             let allTasks = datapoints.flatMap(point => point.task.map(x => ({ ...x, responsibleEmployees: point.responsibleEmployees, accountableEmployees: point.accountableEmployees })))
             // Tên mới cho trường thông tin
             allTasks.map(item => {
@@ -183,9 +184,8 @@ class TaskReportViewForm extends Component {
         const { tasks, reports, translate } = this.props;
         let formater = new Intl.NumberFormat();
         let listTaskEvaluation = tasks.listTaskEvaluations;
-        console.log('taskEvaluation', listTaskEvaluation)
 
-        let taskInfoName, headTable = [], frequency, newlistTaskEvaluation, dataForAxisXInChart;
+        let taskInfoName, headTable = [], frequency, newlistTaskEvaluation, dataForAxisXInChart = [];
 
         // hiển thị trường thông tin hiện trong bảng báo cáo form preview view
         if (listTaskEvaluation && listTaskEvaluation.length !== 0) {
@@ -201,9 +201,14 @@ class TaskReportViewForm extends Component {
         if (listTaskEvaluation) {
             // Lấy tần suất và chiều dữ liệu vẽ biểu đồ từ server gửi
             let taskEvaluation = listTaskEvaluation[0];
-
             frequency = taskEvaluation.frequency;
-            dataForAxisXInChart = taskEvaluation.dataForAxisXInChart.map(x => x.id).toString();
+
+            dataForAxisXInChart = taskEvaluation.dataForAxisXInChart;
+            if (dataForAxisXInChart.length > 0) {
+                dataForAxisXInChart = dataForAxisXInChart.map(x => x.id).toString();
+            } else {
+                dataForAxisXInChart = dataForAxisXInChart;
+            }
 
             // Lọc lấy các trường cần thiết.
             newlistTaskEvaluation = listTaskEvaluation.map(item => {
@@ -221,7 +226,6 @@ class TaskReportViewForm extends Component {
 
         }
 
-
         let output, pieChartData = [], barLineChartData = [], pieDataConvert;
 
         /**
@@ -229,7 +233,7 @@ class TaskReportViewForm extends Component {
        *  Nếu chọn trục hoành là thời gian
        */
 
-        if (dataForAxisXInChart === "1") {
+        if (dataForAxisXInChart === "1" || dataForAxisXInChart.length === 0) {
             let groupDataByDate;
             if (newlistTaskEvaluation) {
                 groupDataByDate = this.groupByDate(newlistTaskEvaluation);
@@ -361,7 +365,7 @@ class TaskReportViewForm extends Component {
                     <div className="row">
                         {
                             barLineChartData.length > 0 &&
-                            <div className=" col-lg-6 col-md-6 col-md-sm-6 col-xs-12">
+                            <div className=" col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                 <LineBarChart barLineChartData={barLineChartData} />
                             </div>
                         }
@@ -369,7 +373,7 @@ class TaskReportViewForm extends Component {
                         {
                             pieDataConvert && pieDataConvert.map((item, index) => (
                                 Object.entries(item).map(([code, data]) => (
-                                    <div key={index} className=" col-lg-6 col-md-6 col-md-sm-6 col-xs-12">
+                                    <div key={index} className=" col-lg-6 col-md-6 col-sm-12 col-xs-12">
                                         <PieChart pieChartData={data} namePieChart={code} />
                                     </div>
                                 ))

@@ -3,15 +3,12 @@
 
 
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
-import c3 from 'c3';
-import 'c3/c3.css';
+import AmountBarChart from './amountBarChart';
+
 import * as d3 from 'd3-format';
-
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 import { Tree } from '../../../../../../../common-components';
-import AmountBarChart from './amountBarChart';
 
 class AmountTree extends Component {
     constructor(props) {
@@ -29,11 +26,12 @@ class AmountTree extends Component {
             }
         })
     }
+
     render() {
-        let { assetType, listAssets } = this.props;
-        console.log('asset type', assetType);
-        let { tree } = this.state;
+        const { assetType, listAssets, translate, setAmountOfAsset } = this.props;
+        const { tree } = this.state;
         let typeName = [], countAssetType = [], idAssetType = [];
+
         for (let i in assetType) {
             countAssetType[i] = 0;
             idAssetType.push(assetType[i]._id)
@@ -59,7 +57,6 @@ class AmountTree extends Component {
                 })
             }
         }
-        // console.log('chart', chart);
         let dataTree = chart && chart.map(node => {
             return {
                 ...node,
@@ -68,19 +65,20 @@ class AmountTree extends Component {
                 parent: node.parentId ? node.parentId.toString() : "#"
             }
         })
+
         return (
             <div className="amout-asset" id="amout-asset">
-                <br />
                 <div className="box-tools pull-right">
                     <div className="btn-group pull-right">
-                        <button type="button" className={`btn btn-xs ${tree ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Bar chart</button>
-                        <button type="button" className={`btn btn-xs ${tree ? "btn-danger" : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Tree</button>
+                        <button type="button" className={`btn btn-xs ${tree ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>{translate('asset.dashboard.bar_chart')}</button>
+                        <button type="button" className={`btn btn-xs ${tree ? "btn-danger" : "active"}`} onClick={() => this.handleChangeViewChart(true)}>{translate('asset.dashboard.tree')}</button>
                     </div>
                 </div>
                 {
                     tree ?
                         <div>
                             <br />
+                            {/* Cây số lượng tài sản */}
                             <Tree
                                 id="tree-qlcv-amount-asset"
                                 data={dataTree}
@@ -90,6 +88,7 @@ class AmountTree extends Component {
                         <AmountBarChart
                             listAssets={listAssets}
                             assetType={assetType}
+                            setAmountOfAsset={setAmountOfAsset}
                         />
                 }
             </div>
@@ -97,4 +96,4 @@ class AmountTree extends Component {
     }
 }
 
-export default AmountTree;
+export default (withTranslate(AmountTree));

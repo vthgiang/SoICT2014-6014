@@ -98,15 +98,16 @@ class EditForm extends Component {
     //     });
     // }
 
-    handleArchivedRecordPlaceOrganizationalUnit = (e) => {
-        const { value } = e.target;
+    handleArchivedRecordPlaceOrganizationalUnit = (value) => {
+        // const { value } = e.target;
         this.setState(state => {
             return {
                 ...state,
-                documentArchivedRecordPlace: {
-                    ...state.documentArchivedRecordPlace,
-                    organizationalUnit: value
-                }
+                // documentArchivedRecordPlace: {
+                //     ...state.documentArchivedRecordPlace,
+                //     organizationalUnit: value
+                // }
+                documentArchivedRecordPlaceOrganizationalUnit: value[0]
             }
         });
     }
@@ -427,6 +428,7 @@ class EditForm extends Component {
         const roleList = role.list.map(role => { return { value: role._id, text: role.name } });
         const relationshipDocs = documents.administration.data.list.filter(doc => doc._id !== documentId).map(doc => { return { value: doc._id, text: doc.name } })
         const archives = documents.administration.archives.list;
+        console.log("fffffffffffff", documentDescription !== this.props.documentDescription)
         let title = "";
         let description = "";
         const formData = new FormData();
@@ -475,7 +477,7 @@ class EditForm extends Component {
             }
             description += newArchives.join(" ") + ". ";
         }
-        if (documentDescription !== this.documentDescription) {
+        if (documentDescription !== this.props.documentDescription) {
             if (!title.includes("Chỉnh sửa thông tin văn bản.")) {
                 title = (title + "Chỉnh sửa thông tin văn bản.");
             }
@@ -523,7 +525,7 @@ class EditForm extends Component {
                 newArray.push(relationship[0].text);
 
             }
-            description += newArray.join(" - ");
+            description += newArray.join(" - ") + ".";
         }
         if (documentRoles !== this.props.documentRoles) {
             if (!title.includes("Chỉnh sửa phân quyền")) {
@@ -537,11 +539,15 @@ class EditForm extends Component {
             }
         }
 
-        if (documentArchivedRecordPlaceOrganizationalUnit !== this.documentArchivedRecordPlaceOrganizationalUnit) {
-            if (!title.includes("Chỉnh sửa khác")) {
-                title += "Chỉnh sửa khác"
+        if (documentArchivedRecordPlaceOrganizationalUnit !== this.props.documentArchivedRecordPlaceOrganizationalUnit) {
+            if (!title.includes("Chỉnh sửa đơn vị quản lí")) {
+                title += "Chỉnh sửa đơn vị quản lí"
             }
-            description += "aaabba" + documentArchivedRecordPlaceOrganizationalUnit + ". "
+            console.log('iiiiiiiiiiiiiiiiiii', documentArchivedRecordPlaceOrganizationalUnit, this.props.documentArchivedRecordPlaceOrganizationalUnit, documentArchivedRecordPlaceOrganizationalUnit !== this.props.documentArchivedRecordPlaceOrganizationalUnit)
+            let newDepartment;
+            newDepartment = department.list.filter(d => d._id === documentArchivedRecordPlaceOrganizationalUnit)
+            console.log('newDepartment', newDepartment)
+            description += "Đơn vị quản lí mới " + newDepartment[0].name + ". "
             formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
         }
         if (documentArchivedRecordPlaceManager !== this.props.documentArchivedRecordPlaceManager) {
@@ -689,7 +695,7 @@ class EditForm extends Component {
         const archives = documents.administration.archives.list;
         let path = documentArchives ? this.findPath(archives, documentArchives[0]) : "";
 
-
+        console.log('rrrrrrrr', !this.isValidateForm());
         return (
             <React.Fragment>
                 <DialogModal
@@ -883,7 +889,7 @@ class EditForm extends Component {
                                                 />
                                             </div>
                                             <div className="form-group">
-                                                <label>Đường dẫn chi tiết</label>
+                                                <label>{translate('document.administration.domains.path_detail')}</label>
                                                 <textarea style={{ height: '30px' }} type="text" className="form-control" value={path} disable />
                                             </div>
                                             <div className="form-group">

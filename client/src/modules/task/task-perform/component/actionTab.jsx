@@ -831,16 +831,17 @@ class ActionTab extends Component {
                         <li><a href="#logTimer" onClick={() => this.handleChangeContent("logTimer")} data-toggle="tab">{translate("task.task_perform.timesheetlogs")} ({logTimer && logTimer.length})</a></li>
                         <li><a href="#subTask" onClick={() => this.handleChangeContent("subTask")} data-toggle="tab">{translate("task.task_perform.subtasks")} ({subtasks && subtasks.length})</a></li>
                         <li><a href="#historyLog" onClick={() => this.handleChangeContent("historyLog")} data-toggle="tab">{translate("task.task_perform.change_history")} ({logs && logs.length})</a></li>
+                        {/* Tab quy trình cho công việc theo quy trình */}
                         {(task && task.process) && <li><a href="#process" onClick={() => this.handleChangeContent("process")} data-toggle="tab">{translate("task.task_perform.change_process")} </a></li>}
-                        
+
                         {/** Điều kiện hiển thị tab dữ liệu vào */
                             task && task.preceedingTasks && task.preceedingTasks.length !== 0 &&
-                                <li><a href="#incoming-data" onClick={() => this.handleChangeContent("incoming-data")} data-toggle="tab">Dữ liệu vào</a></li>
+                            <li><a href="#incoming-data" onClick={() => this.handleChangeContent("incoming-data")} data-toggle="tab">{translate("task.task_perform.change_incoming")}</a></li>
                         }
-                        
+
                         {/** Điều kiện hiển thị tab dữ liệu ra */
                             task && task.followingTasks && task.followingTasks.length !== 0 &&
-                                <li><a href="#outgoing-data" onClick={() => this.handleChangeContent("outgoing-data")} data-toggle="tab">Dữ liệu ra</a></li>
+                            <li><a href="#outgoing-data" onClick={() => this.handleChangeContent("outgoing-data")} data-toggle="tab">{translate("task.task_perform.change_outgoing")}</a></li>
                         }
                     </ul>
                     <div className="tab-content">
@@ -1577,7 +1578,7 @@ class ActionTab extends Component {
                         {/* Chuyển qua tab quy trình */}
 
                         <div className={selected === "process" ? "active tab-pane" : "tab-pane"} id="process">
-                            {(task && task.process) ?
+                            {(task && task.process) &&
                                 <div>
                                     {task &&
                                         <ViewProcess
@@ -1592,21 +1593,21 @@ class ActionTab extends Component {
                                         />
                                     }
 
-                                </div> : <dt>Công việc không làm theo quy trình</dt>
+                                </div>
                             }
                         </div>
 
-                        
+
                         {/** Dữ liệu vào */}
                         <div className={selected === "incoming-data" ? "active tab-pane" : "tab-pane"} id="incoming-data">
                             {
                                 (task && task.process) &&
                                 <IncomingDataTab
-                                        isIncomingData={task && task.preceedingTasks && task.preceedingTasks.length !== 0}
-                                        taskId={task._id}
-                                        task={task}
-                                        infoTaskProcess={task.process.tasks}
-                                    />
+                                    isIncomingData={task && task.preceedingTasks && task.preceedingTasks.length !== 0}
+                                    taskId={task._id}
+                                    task={task}
+                                    infoTaskProcess={task.process.tasks}
+                                />
                             }
                         </div>
 
@@ -1615,10 +1616,10 @@ class ActionTab extends Component {
                             {
                                 (task && task.process) &&
                                 <OutgoingDataTab
-                                        isOutgoingData={task && task.followingTasks && task.followingTasks.length !== 0}
-                                        taskId={task._id}
-                                        task={task}
-                                    />
+                                    isOutgoingData={task && task.followingTasks && task.followingTasks.length !== 0}
+                                    taskId={task._id}
+                                    task={task}
+                                />
                             }
                         </div>
                     </div>
@@ -1634,7 +1635,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getTaskById: taskManagementActions.getTaskById,
+    getTaskById: performTaskAction.getTaskById,
     createActionComment: performTaskAction.createActionComment,
     editActionComment: performTaskAction.editActionComment,
     deleteActionComment: performTaskAction.deleteActionComment,

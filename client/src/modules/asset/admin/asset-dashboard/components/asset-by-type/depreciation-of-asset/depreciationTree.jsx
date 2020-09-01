@@ -3,10 +3,7 @@
 
 
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
-import c3 from 'c3';
-import 'c3/c3.css';
 import * as d3 from 'd3-format';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
@@ -21,9 +18,6 @@ class DepreciationTree extends Component {
         }
     }
 
-    /**
-             * Hàm để tính các giá trị khấu hao cho tài sản
-             */
     calculateDepreciation = (depreciationType, cost, usefulLife, estimatedTotalProduction, unitsProducedDuringTheYears, startDepreciation) => {
         let annualDepreciation = 0, monthlyDepreciation = 0, remainingValue = cost;
 
@@ -87,9 +81,10 @@ class DepreciationTree extends Component {
             remainingValue = cost - accumulatedDepreciation;
             annualDepreciation = monthTotal ? accumulatedDepreciation * 12 / monthTotal : 0;
         }
-        // console.log('cost', parseInt(cost - remainingValue));
+
         return parseInt(cost - remainingValue);
     }
+
     handleChangeViewChart = async (value) => {
         await this.setState(state => {
             return {
@@ -98,10 +93,12 @@ class DepreciationTree extends Component {
             }
         })
     }
+
     render() {
-        let { assetType, listAssets } = this.props;
-        let { tree } = this.state;
+        const { assetType, listAssets, translate, setDepreciationOfAsset } = this.props;
+        const { tree } = this.state;
         let typeName = [], countAssetDepreciation = [], idAssetType = [];
+
         for (let i in assetType) {
             countAssetDepreciation[i] = 0;
             idAssetType.push(assetType[i]._id)
@@ -127,6 +124,7 @@ class DepreciationTree extends Component {
                 })
             }
         }
+
         let dataTree = chart && chart.map(node => {
             return {
                 ...node,
@@ -135,19 +133,21 @@ class DepreciationTree extends Component {
                 parent: node.parentId ? node.parentId.toString() : "#"
             }
         })
+
         return (
             <div className="depreciation-asset" id="depreciation-asset">
                 <br />
                 <div className="box-tools pull-right">
                     <div className="btn-group pull-right">
-                        <button type="button" className={`btn btn-xs ${tree ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>Bar chart</button>
-                        <button type="button" className={`btn btn-xs ${tree ? "btn-danger" : "active"}`} onClick={() => this.handleChangeViewChart(true)}>Tree</button>
+                        <button type="button" className={`btn btn-xs ${tree ? "active" : "btn-danger"}`} onClick={() => this.handleChangeViewChart(false)}>{translate('asset.dashboard.bar_chart')}</button>
+                        <button type="button" className={`btn btn-xs ${tree ? "btn-danger" : "active"}`} onClick={() => this.handleChangeViewChart(true)}>{translate('asset.dashboard.tree')}</button>
                     </div>
                 </div>
                 {
                     tree ?
                         <div>
                             <br />
+                            {/* Cây khấu hao tài sản */}
                             <Tree
                                 id="tree-qlcv-depreciation-asset"
                                 data={dataTree}
@@ -157,6 +157,7 @@ class DepreciationTree extends Component {
                         <DepreciationBarChart
                             listAssets={listAssets}
                             assetType={assetType}
+                            setDepreciationOfAsset={setDepreciationOfAsset}
                         />
                 }
             </div>
@@ -164,5 +165,4 @@ class DepreciationTree extends Component {
     }
 }
 
-
-export default DepreciationTree;
+export default withTranslate(DepreciationTree);

@@ -426,7 +426,7 @@ const mapState = (state) => {
     return { tasks, performtasks }; // tasks,
 }
 const getState = {
-    getTaskById: taskManagementActions.getTaskById,
+    getTaskById: performTaskAction.getTaskById,
     createResult: performTaskAction.createResultTask,
     editResultTask: performTaskAction.editResultTask,
     editStatusOfTask: taskManagementActions.editStatusOfTask

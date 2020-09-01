@@ -6,7 +6,7 @@ class IncomingDataTab extends Component {
 
     constructor(props) {
         super(props);
-        
+
         this.state = {
             taskId: undefined,
             task: undefined,
@@ -33,9 +33,10 @@ class IncomingDataTab extends Component {
     }
 
     render() {
+        const { translate } = this.props;
         const { task, infoTaskProcess } = this.state;
         let listTask = [];
-        
+
         if (task && task.length !== 0 && task.preceedingTasks && task.preceedingTasks.length !== 0 && infoTaskProcess) {
             task.preceedingTasks.map((item, index) => {
                 if (infoTaskProcess[`${item.task && item.task._id}`]) {
@@ -53,67 +54,64 @@ class IncomingDataTab extends Component {
                     } else {
                         listTask[index].documents = []
                     }
-                    
+
                 }
             })
         }
-        
+
         return (
             <React.Fragment>
-                <div className="description-box">
-                    {
-                        listTask.length !== 0
-                        && listTask.map(task => 
-                            <div className="row">
-                                <h4 className="col-md-12" style={{ fontWeight: "600" }}>Tên công việc: {task.name}</h4>
-                                
-                                {/** Danh sách thông tin */}
-                                <div className="col-md-12"><strong>Thông tin</strong></div>
-                                {
-                                    task.informations.length !== 0
-                                    ? task.informations.map(info => 
+                {
+                    listTask.length !== 0
+                    && listTask.map(task =>
+                        <div className="description-box">
+                            <h4>{task.name}</h4>
+
+                            {/** Danh sách thông tin */}
+                    <div><strong>{translate('task.task_process.information')}</strong></div>
+                            {
+                                task.informations.length !== 0
+                                    ? task.informations.map(info =>
                                         info.isOutput &&
-                                        <div className="col-md-12">
+                                        <div>
                                             <ul>
                                                 <strong>{info.name}</strong>
                                                 <span> - {info.description}</span>
                                                 <span> - {info.type}</span>
                                             </ul>
                                         </div>
-                                    )   
-                                    : <div className="col-md-12">Không xuất thông tin</div>
-                                }
+                                    )
+                                    : <div>{task.name} {translate('task.task_process.not_export_info')}</div>
+                            }
 
-                                {/** Danh sách tài liệu */}
-                                <div className="col-md-12"><strong>Tài liệu</strong></div>
-                                {
-                                    task.documents.length !== 0
-                                    ? task.documents.map(document => 
+                            {/** Danh sách tài liệu */}
+                            <div><strong>{translate('task.task_process.document')}</strong></div>
+                            {
+                                task.documents.length !== 0
+                                    ? task.documents.map(document =>
                                         document.isOutput &&
-                                        <div className="col-md-12">
+                                        <div>
                                             <ul>
                                                 <li style={{ listStyle: "none" }}><strong>{document.description}</strong></li>
                                                 <ul>
-                                                {
-                                                    document.files
-                                                    && document.files.length !== 0
-                                                    && document.files.map(file => 
-                                                        <li className="col-md-6" style={{ listStyle: "none" }}>
-                                                            <strong>{file.name}</strong><span> - {file.url}</span>
-                                                        </li>
-                                                    )
-                                                }
+                                                    {
+                                                        document.files
+                                                        && document.files.length !== 0
+                                                        && document.files.map(file =>
+                                                            <li style={{ listStyle: "none" }}>
+                                                                <strong>{file.name}</strong><span> - <a>{file.url}</a></span>
+                                                            </li>
+                                                        )
+                                                    }
                                                 </ul>
                                             </ul>
                                         </div>
                                     )
-                                    : <div className="col-md-12">Không xuất tài liệu</div>
-                                }
-                            </div>
-                        )
-                    }
-                </div>
-                
+                                    : <div>{task.name} {translate('task.task_process.not_have_doc')}</div>
+                            }
+                        </div>
+                    )
+                }
             </React.Fragment>
         )
     }

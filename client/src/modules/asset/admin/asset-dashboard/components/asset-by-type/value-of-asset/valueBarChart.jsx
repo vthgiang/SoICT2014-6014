@@ -1,13 +1,10 @@
 
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 
 import c3 from 'c3';
 import 'c3/c3.css';
-import * as d3 from 'd3-format';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
-import { ValueTree } from './valueTree';
 
 class ValueBarChart extends Component {
     constructor(props) {
@@ -18,12 +15,12 @@ class ValueBarChart extends Component {
     }
 
     componentDidMount() {
-        if (this.refs.c) this.pieChart();
+        this.barChart();
     }
 
     // Thiết lập dữ liệu biểu đồ
     setDataBarChart = () => {
-        const { listAssets, assetType } = this.props;
+        const { listAssets, assetType, setValueOfAsset } = this.props;
 
         let typeName = [], shortName = [], countAssetValue = [], idAssetType = [];
         for (let i in assetType) {
@@ -52,39 +49,30 @@ class ValueBarChart extends Component {
             shortName: shortName
         }
 
+        if (listAssets && assetType && setValueOfAsset) {
+            setValueOfAsset(data);
+        }
+        
         return data;
     }
 
-    // Xóa các chart đã render khi chưa đủ dữ liệu
-    removePreviousChart() {
-        const chart = this.refs.c;
-        if (chart) {
-            console.log('c');
-            while (chart.hasChildNodes()) {
-                chart.removeChild(chart.lastChild);
-            }
-        }
-    }
-    //  // Khởi tạo BarChart bằng C3
-    pieChart = () => {
+    // Khởi tạo BarChart bằng C3
+    barChart = () => {
+        let { translate } = this.props;
         let dataPieChart = this.setDataBarChart();
-        // this.removePreviousChart();
         let count = dataPieChart.count;
         let heightCalc = dataPieChart.type.length * 24.8;
         let height = heightCalc < 320 ? 320 : heightCalc;
         let chart = c3.generate({
-            bindto: this.refs.c,
-
+            bindto: this.refs.valueBarChart,
             data: {
                 columns: [count],
                 type: 'bar',
             },
-
             padding: {
                 bottom: 20,
                 right: 20
             },
-
             axis: {
                 x: {
                     fit: true,
@@ -97,21 +85,18 @@ class ValueBarChart extends Component {
                 },
                 y: {
                     label: {
-                        text: 'Tổng giá trị (Triệu)',
+                        text: translate('asset.dashboard.sum_value'),
                         position: 'outer-right',
                     }
                 },
                 rotated: true
             },
-
             size: {
                 height: height
             },
-
             color: {
                 pattern: ['#1f77b4']
             },
-
             legend: {
                 show: false
             },
@@ -125,20 +110,14 @@ class ValueBarChart extends Component {
     }
 
     render() {
-        this.pieChart();
+        this.barChart();
         return (
             <React.Fragment>
 
-                <div ref="c"></div>
+                <div ref="valueBarChart"></div>
             </React.Fragment>
         )
     }
 }
 
-// function mapState(state) { }
-
-// const actions = {}
-
-// const ValueBarChartConnected = connect(mapState, actions)(withTranslate(ValueBarChart));
-
-export default ValueBarChart;
+export default withTranslate(ValueBarChart);

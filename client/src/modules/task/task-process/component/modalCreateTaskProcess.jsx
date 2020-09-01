@@ -28,7 +28,7 @@ import { TaskProcessValidator } from './taskProcessValidator';
 ElementFactory.prototype._getDefaultSize = function (semantic) {
 
 	if (is(semantic, 'bpmn:Task')) {
-		return { width: 160, height: 110 };
+		return { width: 160, height: 130 };
 	}
 
 	if (is(semantic, 'bpmn:Gateway')) {
@@ -166,15 +166,12 @@ class ModalCreateTaskProcess extends Component {
 
 	handleChangeName = async (value) => {
 		let stringName = value
-		if (value.length > 13) {
-			stringName = value.slice(0, 13)
-			stringName += "..."
-		}
 		const modeling = this.modeler.get('modeling');
 		let element1 = this.modeler.get('elementRegistry').get(this.state.id);
 		modeling.updateProperties(element1, {
 			name: stringName,
 		});
+		window.$(`.task-process-gate-way-title`).css("background-color", "white")
 	}
 
 	handleChangeDescription = async (value) => {
@@ -230,20 +227,10 @@ class ModalCreateTaskProcess extends Component {
 				responsible.push(x.name)
 			}
 		})
-		if (responsible.length > 2) {
+		modeling.updateProperties(element1, {
+			responsibleName: responsible
+		});
 
-			responsibleName = responsible[0] + ", " + responsible[1] + "..."
-			modeling.updateProperties(element1, {
-				responsibleName: responsibleName
-			});
-
-		} else {
-
-			modeling.updateProperties(element1, {
-				responsibleName: responsible
-			});
-
-		}
 	}
 
 	handleChangeAccountable = async (value) => {
@@ -258,19 +245,11 @@ class ModalCreateTaskProcess extends Component {
 				accountable.push(x.name)
 			}
 		})
+		modeling.updateProperties(element1, {
+			accountableName: accountable
+		});
 
-		if (accountable.length > 2) {
-			accountableName = accountable[0] + ", " + accountable[1] + "..."
-			modeling.updateProperties(element1, {
-				accountableName: accountableName
-			});
 
-		} else {
-			modeling.updateProperties(element1, {
-				accountableName: accountable
-			});
-
-		}
 	}
 	shouldComponentUpdate(nextProps, nextState) {
 		if (nextState.save === true) {
@@ -289,7 +268,6 @@ class ModalCreateTaskProcess extends Component {
 		this.modeler.attachTo('#' + this.generateId);
 		this.modeler.importXML(this.initialDiagram);
 		var eventBus = this.modeler.get('eventBus');
-
 		//Vo hieu hoa double click edit label
 		eventBus.on('element.dblclick', 10000, function (event) {
 			var element = event.element;
@@ -410,8 +388,7 @@ class ModalCreateTaskProcess extends Component {
 		// let elementList = await this.modeler.get('elementRegistry')._elements;
 		let elementList = this.modeler.get('elementRegistry')._elements;
 		let check = true; // valid
-		let hasStart = false, hasEnd = false;
-		console.log('element', elementList);
+		let hasStart = false, hasEnd = false
 
 		for (let i in elementList) {
 
@@ -441,7 +418,6 @@ class ModalCreateTaskProcess extends Component {
 		if (!hasStart || !hasEnd) {
 			check = false;
 		}
-		console.log('check', check, hasEnd, hasStart);
 		return check
 			&& this.state.errorOnManager === undefined && this.state.errorOnProcessDescription === undefined
 			&& this.state.errorOnProcessName === undefined && this.state.errorOnViewer === undefined;
@@ -451,8 +427,6 @@ class ModalCreateTaskProcess extends Component {
 		let elementList = this.modeler.get('elementRegistry')._elements
 		let { info } = this.state;
 		let { department } = this.props;
-
-		console.log('elem', elementList);
 		let xmlStr;
 		this.modeler.saveXML({ format: true }, function (err, xml) {
 			xmlStr = xml;
@@ -671,10 +645,13 @@ class ModalCreateTaskProcess extends Component {
 	}
 
 	render() {
-		const { translate, department, role } = this.props;
-		const { id, name, info, showInfo, processDescription, processName, viewer, manager, selectedCreate, indexRenderer } = this.state;
-		const { listOrganizationalUnit } = this.props;
 
+		const { translate, department, role } = this.props;
+		const { id, name, info, showInfo, processDescription, processName, viewer, manager, selectedCreate, indexRenderer, type } = this.state;
+		const { listOrganizationalUnit } = this.props;
+		if (type === "bpmn:ExclusiveGateway"  && info && id && info[id].name) {
+			window.$(`.task-process-gate-way-title`).css("background-color", "white")
+		}
 		let listRole = [];
 		if (role && role.list.length !== 0) listRole = role.list;
 		let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)

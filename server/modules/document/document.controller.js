@@ -400,6 +400,26 @@ exports.deleteManyDocumentDomain = async (req, res) => {
     }
 };
 
+exports.importDocumentDomain = async (req, res) => {
+    try {
+        const domain = await DocumentServices.importDocumentDomain(req.user.company._id, req.body);
+
+        await LogInfo(req.user.email, 'IMPORT_DOCUMENT_DOMAIN', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['import_document_domain_success'],
+            content: domain
+        });
+    } catch (error) {
+
+        await LogError(req.user.email, 'IMPORT_DOCUMENT_DOMAIN', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['import_document_domain_faile'],
+            content: error
+        });
+    }
+}
 exports.getDocumentsThatRoleCanView = async (req, res) => {
     try {
         const docs = await DocumentServices.getDocumentsThatRoleCanView(req.user.company._id, req.query);
@@ -543,5 +563,27 @@ exports.deleteManyDocumentArchive = async (req, res) => {
             message: Array.isArray(error) ? error : ['delete_many_document_archive_faile'],
             content: error,
         })
+    }
+}
+
+
+exports.importDocumentArchive = async (req, res) => {
+    try {
+        const archive = await DocumentServices.importDocumentArchive(req.user.company._id, req.body);
+
+        await LogInfo(req.user.email, 'IMPORT_DOCUMENT_ARCHIVE', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['import_document_archive_success'],
+            content: archive
+        });
+    } catch (error) {
+
+        await LogError(req.user.email, 'IMPORT_DOCUMENT_ARCHIVE', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['import_document_archive_faile'],
+            content: error
+        });
     }
 }

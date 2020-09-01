@@ -5,6 +5,27 @@ const { sendEmail } = require('../../../helpers/emailHelper');
 
 // Điều hướng đến dịch vụ cơ sở dữ liệu của module thực hiện công việc
 
+/**
+ *  Lấy công việc theo id
+ */
+exports.getTaskById = async (req, res) => {
+    // try {
+    var task = await PerformTaskService.getTaskById(req.params.taskId, req.user._id);
+    await LogInfo(req.user.email, ` get task by id `, req.user.company);
+    res.status(200).json({
+        success: true,
+        messages: ['get_task_by_id_success'],
+        content: task
+    });
+    // } catch (error) {
+    //     await LogError(req.user.email, ` get task by id `, req.user.company);
+    //     res.status(400).json({
+    //         success: false,
+    //         messages: ['get_task_by_id_fail'],
+    //         content: error
+    //     });
+    // };
+};
 
 /**
  * Lấy lịch sử bấm giờ 
@@ -662,6 +683,9 @@ exports.editTask = async (req, res) => {
     }
     else if (req.body.type === 'edit_status') {
         editTaskStatus(req, res);
+    } 
+    else if (req.query.type === 'confirm_task') {
+        confirmTask(req, res);
     }
 }
 
@@ -737,7 +761,7 @@ editTaskByAccountableEmployees = async (req, res) => {
 /** Chỉnh sửa taskInformation của task */
 exports.editTaskInformation = async (req, res) => {
     try {
-        let task = await PerformTaskService.editTaskInformation(req.params.taskId, req.body);
+        let task = await PerformTaskService.editTaskInformation(req.params.taskId, req.user._id, req.body);
 
         await LogInfo(req.user.email, ` edit task information `, req.user.company);
         res.status(200).json({
@@ -885,6 +909,27 @@ editTaskStatus = async (req, res) => {
     //         content: error
     //     });
     // }
+}
+
+/** Xác nhận công việc */
+confirmTask = async (req, res) => {
+    try {
+        let task = await PerformTaskService.confirmTask(req.params.taskId, req.user._id);
+
+        await LogInfo(req.user.email, ` confirm task `, req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['confirm_task_success'],
+            content: task
+        })
+    } catch (error) {
+        await LogError(req.user.email, ` confirm task `, req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: ['confirm_task_failure'],
+            content: error
+        })
+    }
 }
 
 /**

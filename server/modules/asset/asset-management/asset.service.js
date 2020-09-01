@@ -99,16 +99,24 @@ exports.getListBuildingAsTree = async (company) => {
  * @arrayObject :mảng chứa các object
  */
 exports.mergeUrlFileToObject = (arrayFile, arrayObject) => {
+    console.log(arrayObject, arrayFile);
     if (arrayFile) {
         arrayObject.forEach(x => {
             arrayFile.forEach(y => {
-                if (x.file === y.originalname) {
-                    x.urlFile = `/${y.path}`;
-                }
+                x.files.forEach(item => {
+                    if (item.fileName === y.originalname) {
+                        console.log(y);
+                        let path = y.destination + '/' + y.filename
+                        item.fileName = y.originalname;
+                        item.url = path;
+                    }
+                })
             })
         });
         return arrayObject;
-    } else return arrayObject;
+    } else {
+        return arrayObject;
+    }
 }
 
 /**
@@ -131,6 +139,7 @@ exports.createAsset = async (data, company, fileInfo) => {
         serial: data.serial,
         group: data.group,
         assetType: data.assetType,
+        readByRoles: data.readByRoles,
         purchaseDate: data.purchaseDate,
         warrantyExpirationDate: data.warrantyExpirationDate,
         managedBy: data.managedBy,
@@ -190,6 +199,7 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
         createIncidentLogs, editIncidentLogs, deleteIncidentLogs,
         createFiles, editFiles, deleteFiles
     } = data;
+
     let avatar = fileInfo.avatar === "" ? data.avatar : fileInfo.avatar,
         file = fileInfo.file;
     let oldAsset = await Asset.findById(id);
@@ -223,7 +233,7 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
     oldAsset.usageLogs = deleteEditCreateObjectInArrayObject(oldAsset.usageLogs, deleteUsageLogs, editUsageLogs, createUsageLogs);
     oldAsset.maintainanceLogs = deleteEditCreateObjectInArrayObject(oldAsset.maintainanceLogs, deleteMaintainanceLogs, editMaintainanceLogs, createMaintainanceLogs);
     oldAsset.incidentLogs = deleteEditCreateObjectInArrayObject(oldAsset.incidentLogs, deleteIncidentLogs, editIncidentLogs, createIncidentLogs);
-    oldAsset.files = deleteEditCreateObjectInArrayObject(oldAsset.files, deleteFiles, editFiles, createFiles, file);
+    oldAsset.documents = deleteEditCreateObjectInArrayObject(oldAsset.documents, deleteFiles, editFiles, createFiles, file);
 
     oldAsset.avatar = avatar;
     oldAsset.assetName = data.assetName;
@@ -236,7 +246,7 @@ exports.updateAssetInformation = async (id, data, fileInfo, company) => {
     oldAsset.managedBy = data.managedBy;
     oldAsset.assignedToUser = data.assignedToUser !== '' ? data.assignedToUser : null;
     oldAsset.assignedToOrganizationalUnit = data.assignedToOrganizationalUnit !== '' ? data.assignedToOrganizationalUnit : null;
-
+    oldAsset.readByRoles = data.readByRoles
     oldAsset.location = data.location;
     oldAsset.status = data.status;
     oldAsset.canRegisterForUse = data.canRegisterForUse;
@@ -437,6 +447,9 @@ exports.updateUsage = async (assetId, data) => {
     })
 }
 
+/** 
+ * Thu hồi tài sản
+ */
 exports.recallAsset = async ( assetId , data) => {
     let nowDate= new Date();
     let asset = await Asset.findById(assetId);

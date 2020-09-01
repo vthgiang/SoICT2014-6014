@@ -9,6 +9,172 @@ const User = require('../../../models/auth/user.model');
 const fs = require('fs');
 const moment = require("moment");
 
+const TaskManagementService = require('../task-management/task.service');
+
+/**
+ * Lấy mẫu công việc theo Id
+ */
+exports.getTaskById = async (id, userId) => {
+    //req.params.id
+    var superTask = await Task.findById(id)
+        .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator parent" })
+        .populate("evaluations.results.employee")
+        .populate("evaluations.results.organizationalUnit")
+        .populate("evaluations.results.kpis.kpis")
+
+    var task = await Task.findById(id).populate([
+        { path: "parent", select: "name" },
+        { path: "taskTemplate", select: "formula" },
+        { path: "organizationalUnit", model: OrganizationalUnit },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
+        { path: "evaluations.results.employee", select: "name email _id" },
+        { path: "evaluations.results.organizationalUnit", select: "name _id" },
+        { path: "evaluations.results.kpis" },
+        { path: "taskActions.creator", model: User, select: 'name email avatar' },
+        { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+        { path: "taskComments.creator", model: User, select: 'name email avatar' },
+        { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+        { path: "documents.creator", model: User, select: 'name email avatar' },
+        { path: "followingTasks.task", model: Task, select: 'name' },
+        { path: "preceedingTasks.task", model: Task, select: 'name' },
+        {
+            path: "process", model: TaskProcess, populate: {
+                path: "tasks", model: Task, populate: [
+                    { path: "parent", select: "name" },
+                    { path: "taskTemplate", select: "formula" },
+                    { path: "organizationalUnit", model: OrganizationalUnit },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
+                    { path: "evaluations.results.employee", select: "name email _id" },
+                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
+                    { path: "evaluations.results.kpis" },
+                    { path: "taskActions.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
+                    { path: "taskComments.creator", model: User, select: 'name email avatar' },
+                    { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
+                    { path: "documents.creator", model: User, select: 'name email avatar' },
+                    { path: "process", model: TaskProcess },
+                ]
+            }
+        },
+    ])
+    if (!task) {
+        return {
+            "info": true
+        }
+    }
+    var responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
+    responsibleEmployees = task.responsibleEmployees;
+    accountableEmployees = task.accountableEmployees;
+    consultedEmployees = task.consultedEmployees;
+    informedEmployees = task.informedEmployees;
+    let flag = 0;
+    for (let n in responsibleEmployees) {
+        if (responsibleEmployees[n]._id.equals(userId)) {
+            flag = 1;
+            break;
+        }
+    }
+    if (!flag) {
+        for (let n in accountableEmployees) {
+            if (accountableEmployees[n]._id.equals(userId)) {
+                flag = 1;
+                break;
+            }
+        }
+    }
+    if (!flag) {
+        for (let n in consultedEmployees) {
+            if (consultedEmployees[n]._id.equals(userId)) {
+                flag = 1;
+                break;
+            }
+        }
+    }
+    if (!flag) {
+        for (let n in informedEmployees) {
+            if (informedEmployees[n]._id.equals(userId)) {
+                flag = 1;
+                break;
+            }
+        }
+    }
+    if (task.creator._id.equals(userId)) {
+        flag = 1;
+    }
+
+    if (!flag) {// Trưởng đơn vị được phép xem thông tin công việc
+
+        // Tìm danh sách các role mà user kế thừa phân quyền
+        let role = await UserRole.find({ userId: userId });
+        let listRole = role.map(item => item.roleId);
+
+        let company = [];
+
+        // Tìm ra các đơn vị có role là dean
+        for (let i in listRole) {
+            let roles = await Role.findById(listRole[i]);
+            company[i] = roles.company;
+        }
+
+        // Tìm cây đơn vị mà đơn vị gốc có userId có role deans
+        let tree = [];
+        let k = 0;
+        for (let i = 0; i < listRole.length; i++) {
+            let com = company[i];
+            let r = listRole[i];
+            let tr = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(com, r);
+            if (tr) {
+                tree[k] = tr;
+                k++;
+            }
+        }
+
+        // Duyệt cây đơn vị, kiểm tra xem mỗi đơn vị có id trùng với id của phòng ban công việc
+        for (let i = 0; i < listRole.length; i++) {
+            let rol = listRole[i];
+            if (!flag) {
+                for (let j = 0; j < tree.length; j++) {
+                    if (tree[j].deans.indexOf(rol) !== -1) {
+                        let v = tree[j];
+                        let f = await _checkDeans(v, task.organizationalUnit._id);
+                        if (f === 1) {
+                            flag = 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (flag === 0) {
+        return {
+            "info": true
+        }
+    }
+    task.evaluations.reverse();
+    return task;
+
+}
+
+/**
+ * Hàm duyệt cây đơn vị - kiểm tra trong cây có đơn vị của công việc được lấy ra hay không (đệ quy)
+ */
+_checkDeans = async (v, id) => {
+    if (v) {
+        if (JSON.stringify(v.id) === JSON.stringify(id)) {
+            return 1;
+        }
+        if (v.children) {
+            for (let k = 0; k < v.children.length; k++) {
+                return _checkDeans(v.children[k], id);
+            }
+        }
+    }
+}
+
+
 /**
  * Bấm giờ công việc
  * Lấy tất cả lịch sử bấm giờ theo công việc
@@ -84,8 +250,8 @@ exports.stopTimesheetLog = async (params, body) => {
     timer.timesheetLogs.length > 0 && timer.timesheetLogs.forEach(x => {
         time += x.duration;
     })
-    let timer1 = await Task.findOneAndUpdate(
-        { "_id": params.taskId, "timesheetLogs._id": body.timesheetLog },
+    await Task.findOneAndUpdate(
+        { "_id": params.taskId },
         {
             $set:
             {
@@ -205,6 +371,7 @@ exports.deleteCommentOfTaskAction = async (params) => {
  */
 
 exports.createTaskAction = async (params, body, files) => {
+    console.log("555", body)
     let actionInformation = {
         creator: body.creator,
         description: body.description,
@@ -629,7 +796,7 @@ exports.deleteCommentOfTaskComment = async (params) => {
  * Đánh giá hoạt động
  */
 exports.evaluationAction = async (params, body) => {
-    // đánh giá
+    // đánh giá lần đầu
     if (body.firstTime === 1) {
         //cập nhật điểm người đánh giá
         let evaluationAction = await Task.updateOne(
@@ -676,7 +843,10 @@ exports.evaluationAction = async (params, body) => {
 
 
         //tính điểm trung bình
-        let accountableRating = rating.reduce((accumulator, currentValue) => { return accumulator + currentValue }, 0) / rating.length
+        if(rating.length > 0) {
+            let accountableRating = rating.reduce((accumulator, currentValue) => { return accumulator + currentValue }, 0) / rating.length
+        }
+       
 
 
         //check xem th đấnh giá có là người phê duyệt không
@@ -695,7 +865,7 @@ exports.evaluationAction = async (params, body) => {
         }
 
 
-        // đánh giá lại
+    // đánh giá lại
     } else if (body.firstTime === 0) {
         let taskAction = await Task.update(
             { $and: [{ "_id": params.taskId, "taskActions._id": params.actionId }, { "taskActions.evaluations.creator": body.creator }] },
@@ -1047,7 +1217,7 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
@@ -1065,7 +1235,7 @@ exports.editTaskByResponsibleEmployees = async (data, taskId) => {
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
@@ -1100,6 +1270,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
     let name = data.name;
     let priority = data.priority;
     let status = data.status;
+    let formula = data.formula;
 
     let startDate = data.startDate;
     let endDate = data.endDate;
@@ -1147,6 +1318,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
                 progress: progress,
                 priority: parseInt(priority[0]),
                 status: status[0],
+                formula: formula,
 
                 startDate: startOfTask,
                 endDate: endOfTask,
@@ -1253,7 +1425,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
@@ -1271,7 +1443,7 @@ exports.editTaskByAccountableEmployees = async (data, taskId) => {
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
@@ -1367,7 +1539,7 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
@@ -1385,7 +1557,7 @@ exports.evaluateTaskByConsultedEmployees = async (data, taskId) => {
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
@@ -1655,7 +1827,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
@@ -1673,7 +1845,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
@@ -1698,6 +1870,7 @@ exports.evaluateTaskByResponsibleEmployees = async (data, taskId) => {
  */
 exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
     let user = data.user;
+    let hasAccountable = data.hasAccountable;
     let checkSave = data.checkSave;
     let progress = data.progress;
 
@@ -1804,7 +1977,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     let listResult = task.evaluations.find(e => String(e._id) === String(evaluateId)).results;
 
-
+    // TH có điền thông tin result
     for (let item in cloneResult) {
 
         let check_data = listResult.find(r => (String(r.employee) === cloneResult[item].employee && r.role === cloneResult[item].role))
@@ -1866,11 +2039,16 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
 
     let listResult2 = task2.evaluations.find(e => String(e._id) === String(evaluateId)).results;
 
+    let curentRole = "Accountable"
+    if (!hasAccountable) {
+        curentRole = "Responsible"
+    }
+
     // cập nhật điểm cá nhân cho ng phe duyet
-    let check_approve = listResult2.find(r => (String(r.employee) === user && String(r.role) === "Accountable"));
+    let check_approve = listResult2.find(r => (String(r.employee) === user && String(r.role) === curentRole));
     if (cloneResult.length > 0) {
         for (let i in cloneResult) {
-            if (String(cloneResult[i].role) === "Accountable" && String(cloneResult[i].employee) === String(user)) {
+            if (String(cloneResult[i].role) === curentRole && String(cloneResult[i].employee) === String(user)) {
                 await Task.updateOne(
                     {
                         _id: taskId,
@@ -1907,7 +2085,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
                         organizationalUnit: unit,
                         kpis: kpi,
                         employee: user,
-                        role: "Accountable",
+                        role: curentRole,
                     }
                 }
             },
@@ -1930,7 +2108,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
                 arrayFilters: [
                     {
                         "elem.employee": user,
-                        "elem.role": "Accountable"
+                        "elem.role": curentRole,
                     }
                 ]
             })
@@ -2055,7 +2233,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
@@ -2073,7 +2251,7 @@ exports.evaluateTaskByAccountableEmployees = async (data, taskId) => {
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
@@ -2109,7 +2287,7 @@ exports.deleteEvaluation = async (params) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
@@ -2127,7 +2305,7 @@ exports.deleteEvaluation = async (params) => {
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
@@ -2274,9 +2452,14 @@ exports.deleteFileChildTaskComment = async (params) => {
  * @param status trang thai công việc
  */
 exports.editTaskStatus = async (taskID, body) => {
-
+    let today = new Date();
     let task1 = await Task.findByIdAndUpdate(taskID,
-        { $set: { status: body.status } }
+        { // khi thực hiện công việc quay vòng trong TH nếu là gateway thì trạng thái của gateway sẽ đc cập nhật thành -> DELAYED -> để tránh bị cạp nhật ngày tháng sai khi task trc nó kết thúc lần 2,...
+            $set: {
+                status: body.status,
+                // endDate: today,
+            }
+        }
     )
 
     let startDate = task1.startDate;
@@ -2292,19 +2475,28 @@ exports.editTaskStatus = async (taskID, body) => {
 
             let followEndDate = new Date(timer).toISOString();
 
-            console.log('enddate', followEndDate);
-            console.log('startdate', followStartDate);
-
-
-            await Task.findByIdAndUpdate(body.listSelected[i],
-                {
-                    $set: {
-                        status: "Inprocess",
-                        startDate: followStartDate,
-                        endDate: followEndDate,
+            if (body.status === "Finished") {
+                await Task.findByIdAndUpdate(body.listSelected[i],
+                    {
+                        $set: {
+                            status: "Inprocess",
+                            startDate: followStartDate,
+                            endDate: followEndDate,
+                        }
                     }
-                }
-            )
+                )
+            }
+            else {
+                await Task.findByIdAndUpdate(body.listSelected[i],
+                    {
+                        $set: {
+                            status: "Inprocess",
+                            endDate: followEndDate,
+                        }
+                    }
+                )
+            }
+
         }
     } else {
         if (!body.listSelected.length) {
@@ -2319,16 +2511,27 @@ exports.editTaskStatus = async (taskID, body) => {
 
                     let followEndDate = new Date(timer).toISOString();
 
-                    console.log('follow', followEndDate, followStartDate);
-                    await Task.findByIdAndUpdate(task1.followingTasks[i].task,
-                        {
-                            $set: {
-                                status: "Inprocess",
-                                startDate: followStartDate,
-                                endDate: followEndDate,
+                    if (followItem.status === "WaitForApproval") {
+                        await Task.findByIdAndUpdate(task1.followingTasks[i].task,
+                            {
+                                $set: {
+                                    status: "Inprocess",
+                                    startDate: followStartDate,
+                                    endDate: followEndDate,
+                                }
                             }
-                        }
-                    )
+                        )
+                    } else {
+                        await Task.findByIdAndUpdate(task1.followingTasks[i].task,
+                            {
+                                $set: {
+                                    status: "Inprocess",
+                                    endDate: followEndDate,
+                                }
+                            }
+                        )
+                    }
+
                 }
             }
         }
@@ -2338,7 +2541,7 @@ exports.editTaskStatus = async (taskID, body) => {
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
         { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
         { path: "evaluations.results.employee", select: "name email _id" },
         { path: "evaluations.results.organizationalUnit", select: "name _id" },
         { path: "evaluations.results.kpis" },
@@ -2356,7 +2559,7 @@ exports.editTaskStatus = async (taskID, body) => {
                     { path: "parent", select: "name" },
                     { path: "taskTemplate", select: "formula" },
                     { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees creator", model: User, select: "name email _id" },
+                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
                     { path: "evaluations.results.employee", select: "name email _id" },
                     { path: "evaluations.results.organizationalUnit", select: "name _id" },
                     { path: "evaluations.results.kpis" },
@@ -2375,8 +2578,19 @@ exports.editTaskStatus = async (taskID, body) => {
     return task
 }
 
+/** Xác nhận công việc */
+exports.confirmTask = async (taskId, userId) => {
+
+    let confirmedByEmployee = await Task.findByIdAndUpdate(taskId,
+        { $push: { confirmedByEmployees: userId } }
+    )
+
+    let task = await TaskManagementService.getTaskById(taskId, userId);
+    return task;
+}
+
 /** Chỉnh sửa taskInformation của task */
-exports.editTaskInformation = async (taskId, taskInformations) => {
+exports.editTaskInformation = async (taskId, userId, taskInformations) => {
     let information;
 
     if (taskInformations && taskInformations.length !== 0) {
@@ -2396,7 +2610,7 @@ exports.editTaskInformation = async (taskId, taskInformations) => {
         }
     }
 
-    let task = await Task.findById({ _id: taskId })
+    let task = await TaskManagementService.getTaskById(taskId, userId);
     return task;
 }
 

@@ -8,24 +8,41 @@ class Item extends Component {
         super(props);
         this.state = {}
     }
+
+    checkURL = (urlName, linkArr) => {
+        var result = false;
+        if (linkArr !== undefined) {
+            linkArr.forEach(link => {
+                if (link.url === urlName) {
+                    result = true;
+                }
+            });
+        }
+
+        return result;
+    }
+
     render() {
-        const { name, path, icon, translate, pending = false } = this.props;
-        return (
-            <li className={window.location.pathname === path ? "active" : ""}>
-                <Link to={path}>
-                    <i className={icon} /> <span>{translate(`menu.${name}`)}</span>
-                    {
-                        pending && <span className="label label-warning" title="trial - chưa đưa vào hoạt động">trial</span>
-                    }
-                </Link>
-            </li>
-        );
+        const { item, translate} = this.props;
+        const { links } = this.props.auth;
+
+        return <React.Fragment>
+            {
+                this.checkURL(item.path, links) &&
+                <li className={window.location.pathname === item.path ? "active" : ""}>
+                    <Link to={item.path}>
+                        <i className={item.icon} /> <span>{translate(item.name)}</span>
+                    </Link>
+                </li>
+            }
+        </React.Fragment>;
     }
 }
 
 
 const mapStateToProps = state => {
-    return state;
+    const { auth } = state;
+    return { auth };
 }
 
 export default connect(mapStateToProps, null)(withTranslate(Item));

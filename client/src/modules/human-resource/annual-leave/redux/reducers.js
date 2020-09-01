@@ -3,6 +3,8 @@ import {
 } from './constants';
 const initState = {
     isLoading: false,
+    numberAnnulLeave: 0,
+
     listAnnualLeaves: [],
     totalList: 0,
 
@@ -22,20 +24,27 @@ export function annualLeave(state = initState, action) {
                 isLoading: true,
             };
         case AnnualLeaveConstants.GET_ANNUAL_LEAVE_SUCCESS:
-            if (action.payload.arrMonth) {
+            if (action.payload.numberAnnulLeave) {
+                return {
+                    ...state,
+                    numberAnnulLeave: action.payload.numberAnnulLeave
+                }
+            } else if (action.payload.arrMonth) {
                 return {
                     ...state,
                     arrMonth: action.payload.arrMonth,
                     listAnnualLeaveOfNumberMonth: action.payload.listAnnualLeaveOfNumberMonth,
                 }
-            }
-            return {
-                ...state,
-                isLoading: false,
+            } else {
+                return {
+                    ...state,
+                    isLoading: false,
                     listAnnualLeaves: action.payload.listAnnualLeaves !== undefined ? action.payload.listAnnualLeaves : [],
                     totalList: action.payload.totalList,
                     totalListAnnualLeavesOfYear: action.payload.totalListOfYear ? action.payload.totalListOfYear : 0
+                };
             };
+
         case AnnualLeaveConstants.CREATE_ANNUAL_LEAVE_SUCCESS:
             return {
                 ...state,

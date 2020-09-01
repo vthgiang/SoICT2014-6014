@@ -237,7 +237,8 @@ class DepartmentCreateForm extends Component {
      */
     isFormValidated = () => {
         let {departmentName, departmentDescription} = this.state;
-        if(!ValidationHelper.validateName(departmentName).status || !ValidationHelper.validateDescription(departmentDescription).status) return false;
+        let {translate} = this.props;
+        if(!ValidationHelper.validateName(translate, departmentName).status || !ValidationHelper.validateDescription(translate, departmentDescription).status) return false;
         return true;
     }
 
@@ -271,9 +272,8 @@ class DepartmentCreateForm extends Component {
         this.setState({ departmentName: value });
 
         let {translate} = this.props;
-        let {msg} = ValidationHelper.validateName(value, 4, 255);
-        let error = msg ? translate(msg, {min: 4, max: 255}) : undefined;
-        this.setState({ departmentNameError: error})
+        let {message} = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({ departmentNameError: message})
     }
 
     handleDescription = (e) => {
@@ -281,9 +281,8 @@ class DepartmentCreateForm extends Component {
         this.setState({ departmentDescription: value });
 
         let {translate} = this.props;
-        let {msg} = ValidationHelper.validateDescription(value);
-        let error = msg ? translate(msg) : undefined;
-        this.setState({ departmentDescriptionError: error})
+        let {message} = ValidationHelper.validateDescription(translate, value);
+        this.setState({ departmentDescriptionError: message})
     }
 
 }

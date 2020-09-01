@@ -96,10 +96,8 @@ class UsageLogTab extends Component {
 
     // Function thêm thông tin phiếu
     handleAddUsage = async (data) => {
-        const { assignedToUser, usageLogs, assignedToOrganizaitonalUnit } = this.state;
-        console.log("Dòng 97")
+        const { assignedToUser, usageLogs, assignedToOrganizaitonalUnit } = this.state
         usageLogs.push(data);
-        console.log("Dòng 99")
         await this.setState({
             ...this.state,
             usageLogs: usageLogs,
@@ -116,6 +114,7 @@ class UsageLogTab extends Component {
         }
         
         await this.props.createUsage(this.props.assetId, createUsage)
+        await this.props.handleAddUsage(createUsage);
     }
 
     // Function chỉnh sửa thông tin phiếu
@@ -147,6 +146,11 @@ class UsageLogTab extends Component {
             assignedToOrganizaitonalUnit: assignedToOrganizaitonalUnit,
         }
         await this.props.updateUsage(this.props.assetId, updateUsage)
+        await this.props.handleEditUsage({
+            usageLogs: usageLogs, 
+            assignedToUser: assignedToUser,
+            assignedToOrganizaitonalUnit: assignedToOrganizaitonalUnit,
+        });
     }
 
     // Function bắt sự kiện xoá thông tin phiếu
@@ -159,7 +163,7 @@ class UsageLogTab extends Component {
             usageLogs: [...usageLogs]
         })
 
-        this.props.deleteUsage(this.props.assetId, data._id)
+        await this.props.deleteUsage(this.props.assetId, data._id)
     }
 
     hanhdleRecallAsset = async () => {
@@ -176,7 +180,11 @@ class UsageLogTab extends Component {
             usageId: assignedToUser,
         }
 
-        await this.props.recallAsset(assetId, data);        
+        await this.props.recallAsset(assetId, data); 
+        await this.props.hanhdleRecallAsset({
+            assignedToUser: null,
+            assignedToOrganizaitonalUnit: null,
+        })       
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
@@ -207,6 +215,11 @@ class UsageLogTab extends Component {
                    
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.usage_logs')}</h4></legend>
+
+
+                        {/* Form thêm thông tin sử dụng */}
+                        <UsageLogAddModal handleChange={this.handleAddUsage} id={`addUsage${id}`} />
+                        
                         <div className="form-inline">
                             <div className="form-group">
                                 <label style={{ width: "auto" }} className="form-control-static"> Đối tượng đang sử dụng:</label>
@@ -218,9 +231,9 @@ class UsageLogTab extends Component {
                                     <button type="button" className="btn btn-success" onClick={this.hanhdleRecallAsset} >Thu hồi</button>
                                 </div>
                             }
-                            {/* Form thêm thông tin sử dụng */}
-                            <UsageLogAddModal handleChange={this.handleAddUsage} id={`addUsage${id}`} />
                         </div>
+                        
+                       
                         
                         
 

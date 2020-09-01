@@ -19,6 +19,7 @@ export const DocumentServices = {
     editDocumentDomain,
     deleteDocumentDomain,
     deleteManyDocumentDomain,
+    importDocumentDomain,
 
     getDocumentsUserCanView,
     getUserDocumentStatistics,
@@ -28,6 +29,8 @@ export const DocumentServices = {
     editDocumentArchives,
     deleteDocumentArchives,
     deleteManyDocumentArchives,
+    importDocumentArchive,
+
 };
 
 function getDocuments(params) {
@@ -162,6 +165,14 @@ function deleteManyDocumentDomain(array) {
     }, true, true, 'document');
 }
 
+function importDocumentDomain(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/documents/document-domains/import-file`,
+        method: 'POST',
+        data,
+    }, true, true, 'document');
+}
+
 function getDocumentsUserCanView(roleId, params) {
     console.log('ttt', params)
     return sendRequest({
@@ -222,5 +233,13 @@ function deleteManyDocumentArchives(array) {
         url: `${process.env.REACT_APP_SERVER}/documents/document-archives/delete-many`,
         method: 'POST',
         data: { array }
+    }, true, true, 'document');
+}
+
+function importDocumentArchive(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/documents/document-archives/import-file`,
+        method: 'POST',
+        data,
     }, true, true, 'document');
 }

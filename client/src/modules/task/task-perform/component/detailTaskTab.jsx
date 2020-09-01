@@ -1,15 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
+
 import { performTaskAction } from './../redux/actions';
 import { taskManagementActions } from './../../task-management/redux/actions';
 import { UserActions } from '../../../super-admin/user/redux/actions';
+
 import { ModalEditTaskByResponsibleEmployee } from './modalEditTaskByResponsibleEmployee';
 import { ModalEditTaskByAccountableEmployee } from './modalEditTaskByAccountableEmployee';
+
 import { EvaluationModal } from './evaluationModal';
 import { getStorage } from '../../../../config';
 import { SelectFollowingTaskModal } from './selectFollowingTaskModal';
 
+import { withTranslate } from 'react-redux-multilingual';
 import './detailTaskTab.css';
 import Swal from 'sweetalert2';
 
@@ -20,6 +23,11 @@ class DetailTaskTab extends Component {
 
         let { translate } = this.props;
         var idUser = getStorage("userId");
+
+        let currentDate = new Date();
+        let currentYear = currentDate.getFullYear();
+        let currentMonth = currentDate.getMonth();
+
         this.DATA_STATUS = { NOT_AVAILABLE: 0, QUERYING: 1, AVAILABLE: 2, FINISHED: 3 };
 
         this.ROLE = {
@@ -37,7 +45,11 @@ class DetailTaskTab extends Component {
             pauseTimer: false,
             highestIndex: 0,
             currentUser: idUser,
-            dataStatus: this.DATA_STATUS.NOT_AVAILABLE
+            dataStatus: this.DATA_STATUS.NOT_AVAILABLE,
+
+            currentMonth: currentYear + '-' + (currentMonth + 1),
+            nextMonth: (currentMonth > 10) ? ((currentYear + 1) + '-' + (currentMonth - 10)) : (currentYear + '-' + (currentMonth + 2)),
+            dueForEvaluationOfTask: currentYear + '-' + currentMonth + '-' + 7
         }
 
     }
@@ -162,14 +174,19 @@ class DetailTaskTab extends Component {
         return [day, month, year].join('-');
     }
 
-    handleShowEdit = async (id, role) => {
+    handleShowEdit = async (id, role, checkHasAccountable) => {
         await this.setState(state => {
             return {
                 ...state,
                 showEdit: id
             }
         });
-        window.$(`#modal-edit-task-by-${role}-${id}`).modal('show');
+
+        let modalId = `#modal-edit-task-by-${role}-${id}`;
+        if (checkHasAccountable === false && role === "responsible") {
+            modalId = `#modal-edit-task-by-${role}-${id}-has-not-accountable`
+        }
+        window.$(modalId).modal('show');
 
     }
 
@@ -254,21 +271,213 @@ class DetailTaskTab extends Component {
         this.props.onChangeTaskRole(role);
     }
 
+    confirmTask = (task) => {
+        if (task) {
+            this.props.confirmTask(task._id);
+        }
+    }
+
+    checkConfirmTask = (task) => {
+        const { currentUser } = this.state;
+
+        let checkConfirmOtherUser = false, checkConfirmCurrentUser = false, listEmployee, listEmployeeNotConfirm = [];
+        let confirmedByEmployeesId, listEmployeeId;
+
+        if (task && task.responsibleEmployees && task.accountableEmployees && task.consultedEmployees && task.confirmedByEmployees) {
+            listEmployee = task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees);
+            confirmedByEmployeesId = task.confirmedByEmployees.map(item => item._id);
+            listEmployeeId = listEmployee.map(item => item._id);
+
+            listEmployeeNotConfirm = listEmployee.filter(item => {
+                if (!confirmedByEmployeesId.includes(item._id)) {
+                    return true;
+                }
+            })
+
+            // Lọc các phần tử trùng lặp
+            let idArray = listEmployeeNotConfirm.map(item => item._id);
+            idArray = idArray.map((item, index, array) => {
+                if (array.indexOf(item) === index) {
+                    return index;
+                } else {
+                    return false
+                }
+            })
+            idArray = idArray.filter(item => listEmployeeNotConfirm[item]);
+            listEmployeeNotConfirm = idArray.map(item => {
+                return listEmployeeNotConfirm[item]
+            })
+
+            if (listEmployeeId.includes(currentUser) && !confirmedByEmployeesId.includes(currentUser)) {
+                checkConfirmCurrentUser = true
+            };
+        }
+
+        if (listEmployeeNotConfirm.length !== 0) {
+            checkConfirmOtherUser = true;
+        }
+
+        return {
+            listEmployeeNotConfirm: listEmployeeNotConfirm,
+            checkConfirmCurrentUser: checkConfirmCurrentUser,
+            checkConfirmOtherUser: checkConfirmOtherUser,
+            checkConfirm: checkConfirmOtherUser || checkConfirmCurrentUser
+        }
+    }
+
+    checkEvaluationTaskAction = (task) => {
+        const { currentMonth, nextMonth } = this.state;
+
+        let taskActionNotEvaluate = [];
+
+        if (task) {
+            if (task.taskActions && task.taskActions.length !== 0) {
+                taskActionNotEvaluate = task.taskActions
+                    .filter(item => new Date(item.updatedAt) >= new Date(currentMonth) && new Date(item.updatedAt) < new Date(nextMonth))
+                    .map(item => {
+                        if (item.rating === -1) {
+                            return item;
+                        }
+                    })
+            }
+        }
+
+        return {
+            checkEvaluationTaskAction: taskActionNotEvaluate.length !== 0,
+            numberOfTaskActionNotEvaluate: taskActionNotEvaluate.length
+        }
+    }
+
+    checkEvaluationTaskAndKpiLink = (task) => {
+        const { dueForEvaluationOfTask, currentMonth, nextMonth } = this.state;
+
+        let evaluations = [], checkEvaluationTask = false;
+        let listEmployeeNotKpiLink = [], responsibleEmployeesNotKpiLink = [], accountableEmployeesNotKpiLink = [], consultedEmployeesNotKpiLink = [];
+
+        if (task && task.evaluations) {
+            evaluations = task.evaluations.filter(item => new Date(item.date) >= new Date(currentMonth) && new Date(item.date) < new Date(nextMonth));
+
+            if (evaluations.length === 0) {
+                // Check đánh giá trong tháng
+                checkEvaluationTask = true;
+
+                // Nhân viên chưa liên kết KPI
+                listEmployeeNotKpiLink = task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees);
+            } else {
+                // Nhân viên chưa liên kết KPI
+                if (evaluations[0].results && evaluations[0].results.length !== 0) {
+                    if (task.responsibleEmployees) {
+                        responsibleEmployeesNotKpiLink = task.responsibleEmployees.filter(item => {
+                            for (let i = 0; i < evaluations[0].results.length; i++) {
+                                if (evaluations[0].results[i].employee && item._id === evaluations[0].results[i].employee._id && evaluations[0].results[i].role === 'Responsible') {
+                                    if (evaluations[0].results[i].kpis && evaluations[0].results[i].kpis.length !== 0) {
+                                        return false;
+                                    }
+                                }
+                            }
+                            return true;
+                        })
+                    }
+                    if (task.accountableEmployees) {
+                        accountableEmployeesNotKpiLink = task.accountableEmployees.filter(item => {
+                            for (let i = 0; i < evaluations[0].results.length; i++) {
+                                if (evaluations[0].results[i].employee && item._id === evaluations[0].results[i].employee._id && evaluations[0].results[i].role === 'Accountable') {
+                                    if (evaluations[0].results[i].kpis && evaluations[0].results[i].kpis.length !== 0) {
+                                        return false;
+                                    }
+                                }
+                            }
+                            return true;
+                        })
+                    }
+                    if (task.consultedEmployees) {
+                        consultedEmployeesNotKpiLink = task.consultedEmployees.filter(item => {
+                            for (let i = 0; i < evaluations[0].results.length; i++) {
+                                if (evaluations[0].results[i].employee && item._id === evaluations[0].results[i].employee._id && evaluations[0].results[i].role === 'Consulted') {
+                                    if (evaluations[0].results[i].kpis && evaluations[0].results[i].kpis.length !== 0) {
+                                        return false;
+                                    }
+                                }
+                            }
+                            return true;
+                        })
+                    }
+
+                    listEmployeeNotKpiLink = responsibleEmployeesNotKpiLink.concat(accountableEmployeesNotKpiLink).concat(consultedEmployeesNotKpiLink);
+                } else {
+                    // Nhân viên chưa liên kết KPI
+                    listEmployeeNotKpiLink = task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees);
+                }
+            }
+        }
+
+        // Loc phần tử lặp
+        let idArray = listEmployeeNotKpiLink.map(item => item._id);
+        idArray = idArray.map((item, index, array) => {
+            if (array.indexOf(item) === index) {
+                return index;
+            } else {
+                return false
+            }
+        })
+        idArray = idArray.filter(item => listEmployeeNotKpiLink[item]);
+        listEmployeeNotKpiLink = idArray.map(item => {
+            return listEmployeeNotKpiLink[item]
+        })
+
+        return {
+            checkEvaluationTask: checkEvaluationTask,
+            checkKpiLink: listEmployeeNotKpiLink.length !== 0,
+            listEmployeeNotKpiLink: listEmployeeNotKpiLink
+        }
+    }
+
+    checkDeadlineForEvaluation = () => {
+        const { dueForEvaluationOfTask } = this.state;
+
+        let checkDeadlineForEvaluation = false, deadlineForEvaluation;
+        let currentDate = new Date();
+
+        // Check số ngày đến hạn đánh giá
+        deadlineForEvaluation = ((new Date(dueForEvaluationOfTask)).getTime() - currentDate.getTime()) / (3600 * 24 * 1000);
+        if (deadlineForEvaluation > 0) {
+            checkDeadlineForEvaluation = true;
+
+            if (deadlineForEvaluation < 1) {
+                if (deadlineForEvaluation * 24 < 1) {
+                    deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24 * 60) + ' phút';
+                } else {
+                    deadlineForEvaluation = Math.floor(deadlineForEvaluation * 24) + ' giờ';
+                }
+            } else {
+                deadlineForEvaluation = Math.floor(deadlineForEvaluation) + ' ngày';
+            }
+        }
+
+        return {
+            checkDeadlineForEvaluation: checkDeadlineForEvaluation,
+            deadlineForEvaluation: deadlineForEvaluation
+        }
+    }
+
     render() {
         const { tasks, performtasks, translate } = this.props;
         const { currentUser, roles, currentRole, collapseInfo, showEdit, showEndTask, showEvaluate } = this.state
         const { showToolbar, id, isProcess } = this.props; // props form parent component ( task, id, showToolbar, onChangeTaskRole() )
 
         let task;
+        let codeInProcess, typeOfTask, statusTask, checkInactive = true, evaluations, evalList = [];
+
+        // Các biến dùng trong phần Nhắc Nhở
+        let warning = false, checkConfirmTask, checkEvaluationTaskAction, checkEvaluationTaskAndKpiLink, checkDeadlineForEvaluation;
+
         if (isProcess) {
             task = this.props.task
         }
-
-        else if (performtasks.task) {
+        else if (performtasks) {
             task = performtasks.task;
         }
 
-        let codeInProcess, typeOfTask;
         if (task) {
             codeInProcess = task.codeInProcess;
             if (codeInProcess) {
@@ -277,22 +486,21 @@ class DetailTaskTab extends Component {
             }
         }
 
-        let statusTask
+        // kiểm tra công việc chỉ có người thực hiện
+        let checkHasAccountable = true;
+        if (task && task.accountableEmployees.length === 0) {
+            checkHasAccountable = false;
+        }
+
         if (task) {
             statusTask = task.status;
         }
-
-        let checkInactive = true;
         if (task) {
             checkInactive = task.inactiveEmployees.indexOf(currentUser) === -1
         }; // return true if user is active user
-
-        let evaluations;
         if (task && task.evaluations && task.evaluations.length !== 0) {
             evaluations = task.evaluations; //.reverse()
         }
-
-        let evalList = [];
         if (evaluations && evaluations.length > 0) {
             for (let i = 0; i < evaluations.length; i++) {
                 let prevEval;
@@ -321,6 +529,19 @@ class DetailTaskTab extends Component {
             }
         }
 
+
+        // Xử lý dữ liệu phần Nhắc nhở
+        checkConfirmTask = this.checkConfirmTask(task);
+        checkEvaluationTaskAction = this.checkEvaluationTaskAction(task);
+        checkEvaluationTaskAndKpiLink = this.checkEvaluationTaskAndKpiLink(task);
+        checkDeadlineForEvaluation = this.checkDeadlineForEvaluation()
+        warning = (checkConfirmTask && checkConfirmTask.checkConfirm)
+            || (checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction)
+            || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask)
+            || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink)
+            || (checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation);
+
+
         return (
             <React.Fragment>
                 {(showToolbar) &&
@@ -330,7 +551,7 @@ class DetailTaskTab extends Component {
                         </a>
 
                         {((currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
-                            <a className="btn btn-app" onClick={() => this.handleShowEdit(id, currentRole)} title="Chỉnh sửa thông tin chung">
+                            <a className="btn btn-app" onClick={() => this.handleShowEdit(id, currentRole, checkHasAccountable)} title="Chỉnh sửa thông tin chung">
                                 <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_edit')}
                             </a>
                         }
@@ -345,15 +566,16 @@ class DetailTaskTab extends Component {
                             </React.Fragment>
                         }
 
-
-                        {currentRole === "accountable" && checkInactive && codeInProcess &&
+                        {checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
                             (statusTask !== "Finished" &&
-                                // <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)} title="Công việc đã kết thúc">
-                                //     <i className="fa fa-times" style={{ fontSize: "16px" }}></i>{"Hủy kết thúc"}
-                                // </a> :
-                                <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Finished", codeInProcess, typeOfTask)} title="Kết thúc công việc">
-                                    <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
-                                </a>
+                                (typeOfTask === "Gateway" ?
+                                    <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)} title={translate('task.task_management.detail_route_task')}>
+                                        <i className="fa fa-location-arrow" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_route')}
+                                    </a> :
+                                    <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Finished", codeInProcess, typeOfTask)} title={translate('task.task_management.detail_end')}>
+                                        <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
+                                    </a>
+                                )
                             )
                         }
 
@@ -363,7 +585,7 @@ class DetailTaskTab extends Component {
                                     <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
                                 </a> */}
 
-                                <a className="btn btn-app" onClick={() => this.handleShowEvaluate(id, currentRole)} title="Đánh giá công việc">
+                                <a className="btn btn-app" onClick={() => this.handleShowEvaluate(id, currentRole)} title={translate('task.task_management.detail_evaluate')}>
                                     <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_evaluate')}
                                 </a>
                             </React.Fragment>
@@ -394,9 +616,74 @@ class DetailTaskTab extends Component {
                 }
 
                 <div>
-
                     <div id="info" className="collapse in">
                         {/* Thông tin chung */}
+                        {/** Nhắc nhở */}
+                        {
+                            task && warning
+                            && <div className="description-box" style={{ border: "3px double #f38961" }}>
+                                <h4>Cảnh báo</h4>
+                                {/** Xác nhận công việc */}
+                                {
+                                    checkConfirmTask && checkConfirmTask.checkConfirmCurrentUser
+                                    && <div><strong>Bạn cần <a style={{ cursor: "pointer" }} onClick={() => this.confirmTask(task)}>xác nhận tham gia công việc này</a></strong></div>
+                                }
+                                {
+                                    checkConfirmTask && checkConfirmTask.checkConfirmOtherUser
+                                    && <div>
+                                        <strong>Chưa xác nhận công việc: </strong>
+                                        &nbsp;&nbsp;
+                                        {
+                                            checkConfirmTask.listEmployeeNotConfirm.length !== 0
+                                            && checkConfirmTask.listEmployeeNotConfirm.map((item, index) => {
+                                                let seperator = index !== 0 ? ", " : "";
+                                                return <span key={index}>{seperator}{item.name}</span>
+                                            })
+                                        }
+                                    </div>
+                                }
+
+                                {/** Chưa có đánh giá */}
+                                {
+                                    checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask
+                                    && <div><strong>Công việc chưa có đánh giá cho tháng này</strong></div>
+                                }
+
+                                {/** Chưa đánh giá hoạt động */}
+                                {
+                                    checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction
+                                    && <div>
+                                        <strong>Còn <span style={{ color: "red" }}>{checkEvaluationTaskAction.numberOfTaskActionNotEvaluate}</span> hoạt động chưa được đánh giá tháng này</strong>
+                                    </div>
+                                }
+
+                                {/** Chưa liên kết KPI */}
+                                {
+                                    checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink
+                                    && <div>
+                                        <strong>Chưa liên kết KPI tháng này</strong>
+                                        &nbsp;&nbsp;
+                                        {
+                                            checkEvaluationTaskAndKpiLink.listEmployeeNotKpiLink.length !== 0
+                                            && checkEvaluationTaskAndKpiLink.listEmployeeNotKpiLink.map((item, index) => {
+                                                let seperator = index !== 0 ? ", " : "";
+                                                return <span key={index}>{seperator}{item.name}</span>
+                                            })
+                                        }
+                                    </div>
+                                }
+
+                                {/** Thời hạn chỉnh sửa thông tin */}
+                                {
+                                    checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation
+                                    && <div>
+                                        <strong> Còn <span style={{ color: "red" }}>{checkDeadlineForEvaluation.deadlineForEvaluation}</span> là hết hạn chỉnh sửa đánh giá công việc tháng trước</strong>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        {/* Các trường thông tin cơ bản */}
                         {task &&
                             <div className="description-box">
                                 <h4>{translate('task.task_management.detail_general_info')}</h4>
@@ -416,7 +703,7 @@ class DetailTaskTab extends Component {
                                         return <div key={key}><strong>{info.name}: &nbsp;&nbsp;</strong> {info.value ? info.value : translate('task.task_management.detail_not_hasinfo')}</div>
                                     })
                                 }
-                                
+
                                 {/* Mô tả công việc */}
                                 <div>
                                     <strong>{translate('task.task_management.detail_description')}:</strong>
@@ -595,7 +882,7 @@ class DetailTaskTab extends Component {
                     </div>
                 </div>
                 {
-                    (id && showEdit === id) && currentRole === "responsible" &&
+                    (id && showEdit === id) && currentRole === "responsible" && checkHasAccountable === true &&
                     <ModalEditTaskByResponsibleEmployee
                         id={id}
                         task={task && task}
@@ -606,10 +893,23 @@ class DetailTaskTab extends Component {
                 }
 
                 {
+                    (id && showEdit === id) && currentRole === "responsible" && checkHasAccountable === false &&
+                    <ModalEditTaskByAccountableEmployee
+                        id={id}
+                        task={task && task}
+                        role={currentRole}
+                        hasAccountable={false}
+                        title={translate('task.task_management.detail_resp_edit')}
+                        perform={`edit-${currentRole}-hasnot-accountable`}
+                    />
+                }
+
+                {
                     (id && showEdit === id) && currentRole === "accountable" &&
                     <ModalEditTaskByAccountableEmployee
                         id={id}
                         task={task && task}
+                        hasAccountable={true}
                         role={currentRole}
                         title={translate('task.task_management.detail_acc_edit')}
                         perform={`edit-${currentRole}`}
@@ -621,6 +921,7 @@ class DetailTaskTab extends Component {
                     <EvaluationModal
                         id={id}
                         task={task && task}
+                        hasAccountable={checkHasAccountable}
                         role={currentRole}
                         title={translate('task.task_management.detail_cons_eval')}
                         perform='evaluate'
@@ -653,7 +954,7 @@ function mapStateToProps(state) {
 }
 
 const actionGetState = { //dispatchActionToProps
-    getTaskById: taskManagementActions.getTaskById,
+    getTaskById: performTaskAction.getTaskById,
     getSubTask: taskManagementActions.getSubTask,
     startTimer: performTaskAction.startTimerTask,
     stopTimer: performTaskAction.stopTimerTask,
@@ -661,6 +962,7 @@ const actionGetState = { //dispatchActionToProps
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
     getTaskLog: performTaskAction.getTaskLog,
     editStatusTask: performTaskAction.editStatusOfTask,
+    confirmTask: performTaskAction.confirmTask
 }
 
 const detailTask = connect(mapStateToProps, actionGetState)(withTranslate(DetailTaskTab));

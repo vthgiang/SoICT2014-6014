@@ -33,9 +33,8 @@ class LinkInfoForm extends Component {
         this.setState({ linkDescription: value });
 
         let {translate} = this.props;
-        let {msg} = ValidationHelper.validateDescription(value);
-        let error = msg ? translate(msg) : undefined;
-        this.setState({ linkDescriptionError: error})
+        let {message} = ValidationHelper.validateDescription(translate, value);
+        this.setState({ linkDescriptionError: message})
     }
     
 
@@ -64,7 +63,8 @@ class LinkInfoForm extends Component {
 
     isFormValidated = () => {
         let {linkDescription} = this.state;
-        if(!ValidationHelper.validateDescription(linkDescription).status) return false;
+        let {translate} = this.props;
+        if(!ValidationHelper.validateDescription(translate, linkDescription).status) return false;
         return true;
     }
 
@@ -80,12 +80,10 @@ class LinkInfoForm extends Component {
             <React.Fragment>
                 <DialogModal
                     isLoading={link.isLoading}
-                    size='50' func={this.save}
+                    func={this.save}
                     modalID="modal-edit-link"
                     formID="form-edit-link"
                     title={translate('manage_link.edit')}
-                    msg_success={translate('manage_link.edit_success')}
-                    msg_faile={translate('manage_link.edit_faile')}
                     disableSubmit={!this.isFormValidated()}
                 >
 

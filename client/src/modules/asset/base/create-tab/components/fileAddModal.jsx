@@ -13,15 +13,12 @@ class FileAddModal extends Component {
             name: "",
             description: "",
             number: "",
-            file: "",
-            urlFile: "",
-            fileUpload: ""
+            files: [],
         }
     }
 
     // Bắt sự kiện thay đổi file đính kèm
     handleChangeFile = (e) => {
-        const { name } = e.target;
         var file = e.target.files[0];
 
         if (file) {
@@ -29,22 +26,48 @@ class FileAddModal extends Component {
             var fileLoad = new FileReader();
             fileLoad.readAsDataURL(file);
             fileLoad.onload = () => {
-                this.setState({
-                    [name]: file.name,
-                    urlFile: url,
+                let item = {
+                    fileName: file.name,
+                    url: url,
                     fileUpload: file,
+                }
+                this.setState(state => {
+                    return {
+                        ...state,
+                        files: [...state.files, item],
+                    }
                 })
             };
         } else {
-            this.setState({
-                file: "",
-                urlFile: "",
+            let item = {
+                fileName: "",
+                url: "",
                 fileUpload: ""
+            }
+
+            this.setState(state => {
+                return {
+                    ...state,
+                    files: [...state.files, item],
+                }
             })
         }
     }
 
-    // Bắt sự kiên thay đổi mô tả
+    // Bắt sự kiện xóa file đính kèm
+    handleDeleteFile = (name) => {
+        const { files } = this.state;
+        let newfiles = files.filter((item) => item.fileName !== name);
+
+        this.setState(state => {
+            return {
+                ...state,
+                files: newfiles,
+            }
+        })
+    }
+
+    // Bắt sự kiên thay đổi tên tài liệu
     handleNameFileChange = (e) => {
         let { value } = e.target;
         this.validateNameFile(value, true);
@@ -82,29 +105,9 @@ class FileAddModal extends Component {
         return msg === undefined;
     }
 
-    // Bắt sự kiên thay đổi mô tả
-    handleNumberChange = (e) => {
-        let { value } = e.target;
-        this.validateNumberFile(value, true);
-    }
-    validateNumberFile = (value, willUpdateState = true) => {
-        let msg = AssetCreateValidator.validateNumberFile(value, this.props.translate)
-        if (willUpdateState) {
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnNumberFile: msg,
-                    number: value,
-                }
-            });
-        }
-        return msg === undefined;
-    }
-
     // Function kiểm tra lỗi validator của các dữ liệu nhập vào để undisable submit form
     isFormValidated = () => {
-        let result = this.validateNameFile(this.state.name, false) && this.validateDiscFile(this.state.description, false) &&
-            this.validateNumberFile(this.state.number, false);
+        let result = this.validateNameFile(this.state.name, false) && this.validateDiscFile(this.state.description, false) ;
 
         return result;
     }
@@ -119,16 +122,16 @@ class FileAddModal extends Component {
     render() {
         const { id } = this.props;
         const { translate } = this.props;
-        const { name, description, number, status, errorOnNameFile, errorOnDiscFile, errorOnNumberFile } = this.state;
+        const { name, description, number, status, errorOnNameFile, errorOnDiscFile, errorOnNumberFile, files } = this.state;
 
         return (
             <React.Fragment>
                 {/* Button thêm tài liệu đính kèm */}
-                <ButtonModal modalID={`modal-create-file-${id}`} button_name={translate('modal.create')} title={translate('manage_employee.add_file')} />
+                <ButtonModal modalID={`modal-create-file-${id}`} button_name={translate('manage_asset.add_file')} title={translate('manage_asset.add_file')}   />
                 <DialogModal
                     size='50' modalID={`modal-create-file-${id}`} isLoading={false}
                     formID={`form-create-file-${id}`}
-                    title={translate('manage_employee.add_file')}
+                    title={translate('manage_asset.add_file')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -148,18 +151,24 @@ class FileAddModal extends Component {
                             <ErrorLabel content={errorOnDiscFile} />
                         </div>
 
-                        {/* Số lượng */}
-                        <div className={`form-group ${!errorOnNumberFile ? "" : "has-error"}`}>
-                            <label>{translate('asset.general_information.number')}<span className="text-red">*</span></label>
-                            <input type="number" className="form-control" name="number" value={number} onChange={this.handleNumberChange} autoComplete="off" />
-                            <ErrorLabel content={errorOnNumberFile} />
-                        </div>
-
                         {/* File đính kèm */}
                         <div className="form-group">
                             <label htmlFor="file">{translate('asset.general_information.attached_file')}</label>
                             <input type="file" style={{ height: 34, paddingTop: 2 }} className="form-control" name="file" onChange={this.handleChangeFile} />
                         </div>
+                        <ul style={{ listStyle: 'none' }}>
+                            {files.map((child, index) => {
+                                return (
+                                    <React.Fragment>
+                                        <li key={index}>
+                                            <label><a style={{ cursor: "pointer" }} title='Xóa file này'><i className="fa fa-times" style={{ color: "black", marginRight: 5 }}
+                                                onClick={(e) => this.handleDeleteFile(child.fileName)} /></a></label>
+                                            <a>{child.fileName}</a>
+                                        </li>
+                                    </React.Fragment>
+                                )
+                            })}
+                        </ul>
                     </form>
                 </DialogModal>
             </React.Fragment>

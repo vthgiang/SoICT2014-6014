@@ -96,7 +96,11 @@ const AssetSchema = new Schema({
         nameField: String, // tên trường dữ liệu
         value: String, //giá trị
     }],
-
+    
+    readByRoles: [{ // quyền xem theo Role
+        type: Schema.Types.ObjectId,
+        ref: 'root_roles'
+    }],
     /***********************************************************************************************
      * Tab Khấu hao
      */
@@ -304,16 +308,28 @@ const AssetSchema = new Schema({
     /***************************************************************************************************
      * tab Tài liệu đính kèm
      */
-    archivedRecordNumber: { //18.mã hồ sơ lưu trữ
+    archivedRecordNumber: { // 18.mã hồ sơ lưu trữ
         type: String
     },
 
-    files: [{ // Các file scan đính kèm
-        name: String,
-        description: String,
-        number: String,
-        urlFile: String
+    documents: [{ // Các tài liệu đính kèm với tài sản
+        name: {
+            type: String,
+        },
+        description: {
+            type: String,
+        },
+        files: [{
+            fileName: {
+                type: String,
+            },
+            url: {
+                type: String,
+                required: true
+            },
+        }],
     }],
+
     createdAt: {
         type: Date,
         default: Date.now

@@ -4,6 +4,42 @@ const {
     AnnualLeave
 } = require('../../../models').schema;
 
+/**
+ * Lấy số lượng ngày nghỉ phép của nhân viên trong năm hiện tại
+ * @param {*} email : email công ty nhân viên
+ * @param {*} company : Id công ty
+ */
+exports.getNumberAnnaulLeave = async (email, company) => {
+    let employee = await Employee.findOne({
+        company: company,
+        emailInCompany: email
+    }, {
+        _id: 1
+    });
+    if (employee) {
+        let year = new Date().getFullYear();
+        let firstDay = new Date(year, 0, 1);
+        let lastDay = new Date(Number(year) + 1, 0, 1);
+        let annulLeaves = await AnnualLeave.find({
+            company: company,
+            employee: employee._id,
+            startDate: {
+                "$gt": firstDay,
+                "$lte": lastDay
+            }
+        });
+        let total = 0;
+        annulLeaves.forEach(x => {
+            total = total + (new Date(x.endDate).getTime() - new Date(x.startDate).getTime()) / (21 * 60 * 60 * 1000) + 1;
+        })
+        return {
+            numberAnnulLeave: total
+        }
+    }
+    return {
+        numberAnnulLeave: 0
+    }
+}
 
 /**
  * Lấy tổng số thông tin nghỉ phép theo đơn vị (phòng ban) và tháng 

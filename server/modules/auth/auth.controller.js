@@ -219,7 +219,6 @@ exports.downloadFile = async (req, res) => {
             res.download(path, "file");
         }
     } catch (error) {
-
         //await LogError(req.user.email, 'DOWNLOAD_FILE', req.user.company);
         res.status(400).json({
             success: false,

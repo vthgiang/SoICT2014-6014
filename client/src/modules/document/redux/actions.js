@@ -21,6 +21,7 @@ export const DocumentActions = {
     createDocumentDomain,
     editDocumentDomain,
     deleteDocumentDomain,
+    importDocumentDomain,
 
     getDocumentsUserCanView,
     getUserDocumentStatistics,
@@ -29,6 +30,8 @@ export const DocumentActions = {
     createDocumentArchive,
     editDocumentArchive,
     deleteDocumentArchive,
+    importDocumentArchive,
+    
 };
 
 function getDocuments(data = undefined) {
@@ -334,6 +337,22 @@ function deleteDocumentDomain(data, type = "single") {
     }
 }
 
+function importDocumentDomain(data) {
+    return dispatch => {
+        dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_DOMAIN_REQUEST });
+        DocumentServices.importDocumentDomain(data)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.IMPORT_DOCUMENT_DOMAIN_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_DOMAIN_FAILE });
+            })
+    }
+}
+
 function getDocumentsUserCanView(roleId, data = undefined) {
     if (data !== undefined) {
         return dispatch => {
@@ -503,3 +522,20 @@ function deleteDocumentArchive(data, type = "single") {
         }
     }
 }
+
+function importDocumentArchive(data) {
+    return dispatch => {
+        dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_DOMAIN_REQUEST });
+        DocumentServices.importDocumentArchive(data)
+            .then(res => {
+                dispatch({
+                    type: DocumentConstants.IMPORT_DOCUMENT_DOMAIN_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(err => {
+                dispatch({ type: DocumentConstants.IMPORT_DOCUMENT_DOMAIN_FAILE });
+            })
+    }
+}
+

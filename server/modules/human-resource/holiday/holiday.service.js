@@ -7,11 +7,38 @@ const {
  * @company : Id công ty
  */
 exports.getAllHolidays = async (company) => {
-    return await Holiday.find({
+    let data = await Holiday.findOne({
         company: company
     }).sort({
-        'startDate': 'ASC'
-    })
+        'holidays.startDate': 'ASC'
+    });
+    return {
+        numberDateLeaveOfYear: data ? data.numberDateLeaveOfYear : 0,
+        holidays: data ? data.holidays : []
+    };
+}
+
+/**
+ * Lấy danh sách kế hoạch làm việc theo năm
+ * @param {*} year : Năm
+ * @param {*} company : Id công ty
+ */
+exports.getHolidaysOfYear = async (company, year) => {
+    let firstDay = new Date(year, 0, 1);
+    let lastDay = new Date(Number(year) + 1, 0, 1);
+    let data = await Holiday.findOne({
+        company: company,
+        'holidays.startDate': {
+            "$gt": firstDay,
+            "$lte": lastDay
+        }
+    }).sort({
+        'holidays.startDate': 'ASC'
+    });
+    return {
+        numberDateLeaveOfYear: data ? data.numberDateLeaveOfYear : 0,
+        holidays: data ? data.holidays : []
+    };
 }
 
 /**
@@ -20,22 +47,39 @@ exports.getAllHolidays = async (company) => {
  * @company : id công ty cần thêm
  */
 exports.createHoliday = async (data, company) => {
-    return await Holiday.create({
-        company: company,
+    let newHoliday = {
+        type: data.type,
         startDate: data.startDate,
         endDate: data.endDate,
         description: data.description,
+    }
+    let holiday = await Holiday.findOne({
+        company: company,
     });
+    if (holiday === null) {
+        holiday = await Holiday.create({
+            company: company,
+            numberDateLeaveOfYear: 0,
+            holidays: [],
+        });
+    };
+    holiday.holidays.push(newHoliday);
+    holiday.save();
+    return holiday.holidays[holiday.holidays.length - 1];
 }
 
 /**
  * Xoá thông tin lịch làm việc
  * @id : id thông tin lịch làm việc cần xoá
  */
-exports.deleteHoliday = async (id) => {
-    return await Holiday.findOneAndDelete({
-        _id: id
+exports.deleteHoliday = async (id, company) => {
+    let holiday = await Holiday.findOne({
+        company: company,
     });
+    let deleteholiday = holiday.holidays.find(x => x._id.toString() === id);
+    holiday.holidays = holiday.holidays.filter(x => x._id.toString() !== id);
+    holiday.save();
+    return deleteholiday;
 }
 
 /**
@@ -43,20 +87,45 @@ exports.deleteHoliday = async (id) => {
  * @id : id thông tin lịch làm việc cần chỉnh sửa
  * @data : dữ liệu chỉnh sửa thông tin lịch làm việc
  */
-exports.updateHoliday = async (id, data) => {
-    let holidayChange = {
-        startDate: data.startDate,
-        endDate: data.endDate,
-        description: data.description,
-    };
-    await Holiday.findOneAndUpdate({
-        _id: id
-    }, {
-        $set: holidayChange
+exports.updateHoliday = async (id, data, company) => {
+    let holiday = await Holiday.findOne({
+        company: company
     });
-    return await Holiday.findOne({
-        _id: id
+    holiday.holidays = holiday.holidays.map(x => {
+        if (x._id.toString() === id) {
+            x.type = data.type;
+            x.startDate = data.startDate;
+            x.endDate = data.endDate;
+            x.description = data.description;
+        }
+        return x;
     })
+    holiday.save();
+    return {
+        holiday: holiday.holidays.find(x => x._id.toString() === id)
+    };
+}
+
+/**
+ * Cập nhật tổng số ngày nghỉ phép trong năm
+ * @param {*} numberDateLeaveOfYear : Tổng số ngày nghỉ phép trong năm 
+ */
+exports.updateNumberDateLeaveOfYear = async (numberDateLeaveOfYear, company) => {
+    let holiday = await Holiday.findOne({
+        company: company
+    });
+    if (holiday === null) {
+        holiday = await Holiday.create({
+            company: company,
+            numberDateLeaveOfYear: 0,
+            holidays: [],
+        });
+    };
+    holiday.numberDateLeaveOfYear = numberDateLeaveOfYear;
+    holiday.save();
+    return {
+        numberDateLeaveOfYear: holiday.numberDateLeaveOfYear
+    };
 }
 
 /**
@@ -82,9 +151,17 @@ exports.formatDate = (date) => {
  * @param {*} company : Id công ty
  */
 exports.importHolidays = async (data, company) => {
-    let holidayExisted = await Holiday.find({
-        company: company
+    let holiday = await Holiday.findOne({
+        company: company,
     });
+    if (holiday === null) {
+        holiday = await Holiday.create({
+            company: company,
+            numberDateLeaveOfYear: 0,
+            holidays: [],
+        });
+    };
+    let holidayExisted = holiday.holidays;
     let rowError = [];
     data = data.map((x, index) => {
         if (holidayExisted.length !== 0) {
@@ -120,6 +197,8 @@ exports.importHolidays = async (data, company) => {
             rowError
         }
     } else {
-        return await Holiday.insertMany(data);
+        holiday.holidays = holiday.holidays.concat(data);
+        holiday.save();
+        return holiday.holidays;
     }
 }
