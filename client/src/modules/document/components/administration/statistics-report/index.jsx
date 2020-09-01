@@ -601,9 +601,7 @@ class AdministrationStatisticsReport extends Component {
             <div className="row">
                 <div className="col-xs-12" >
                     <div className="box box-primary">
-                        <div className="box-header with-border">
-                            <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_document')}</b>
-                        </div>
+                        <h4>{translate('document.statistical_document')}</h4>
                         <div className="box-body qlcv" style={{ minHeight: "400px" }}>
                             <div ref="piechart"></div>
                         </div>
@@ -613,9 +611,7 @@ class AdministrationStatisticsReport extends Component {
             <div className="row">
                 <div className="col-xs-12" >
                     <div className="box box-primary">
-                        <div className="box-header with-border">
-                            <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_view_down')}</b>
-                        </div>
+                        <h4>{translate('document.statistical_view_down')}</h4>
                         <div className="box-body qlcv" style={{ minHeight: "400px" }}>
                             <div ref="barchart"></div>
                         </div>
@@ -625,9 +621,7 @@ class AdministrationStatisticsReport extends Component {
             <div className="row">
                 <div className="col-xs-6" >
                     <div className="box box-primary">
-                        <div className="box-header with-border">
-                            <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_view_down')}</b>
-                        </div>
+                        <h4>{translate('document.statistical_document_by_domain')}</h4>
                         <div className="box-body qlcv" style={{ minHeight: "400px" }}>
                             <TreeDomain
                                 domains={list}
@@ -639,9 +633,7 @@ class AdministrationStatisticsReport extends Component {
                 </div>
                 <div className="col-xs-6" >
                     <div className="box box-primary">
-                        <div className="box-header with-border">
-                            <b className="text-left" style={{ fontSize: '20px' }}>{translate('document.statistical_view_down')}</b>
-                        </div>
+                        <h4>{translate('document.statistical_document_by_archive')}</h4>
                         <div className="box-body qlcv" style={{ minHeight: "400px" }}>
                             <TreeArchive
                                 archives={listArchives}

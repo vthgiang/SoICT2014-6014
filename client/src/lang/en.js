@@ -214,7 +214,7 @@ export default {
                     period: 'Period', weekly: 'Weekly', monthly: 'Monthly', yearly: 'Yearly',
                     date: 'Date', hour: 'Hour', minute: 'Minute', second: 'Second', day: 'Day', month: 'Month',
                     save: 'Save configuration',
-                    
+
                     version: 'Version',
                     description: 'Backup description',
                     backup_time: 'Backup time',
@@ -417,6 +417,8 @@ export default {
             relationship_role_store: "Relationship, role and store",
             statistical_document: "Statistical type of document",
             statistical_view_down: "Statistical of view and download type of document",
+            statistical_document_by_domain: "Statistical of document by domain",
+            statistical_document_by_archive: "Statistical of document by archive",
             doc_version: {
                 title: 'Version',
                 name: 'Version name',
@@ -487,6 +489,19 @@ export default {
                     select_parent: 'Select domain parent',
                     select: 'Select domain',
                     not_select: 'Not select domain',
+                },
+                archives: {
+                    add: 'Add document archive',
+                    edit: 'Edit document archive',
+                    delete: 'Delete document archive',
+                    name: 'Archive name',
+                    description: 'Archive description',
+                    parent: 'Archive parent',
+                    select_parent: 'Select archive parent',
+                    select: 'Select archive',
+                    not_select: 'Not select archive',
+                    path: 'Path',
+                    path_detail: "Detail path",
                 }
             },
             user: {
