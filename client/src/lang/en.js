@@ -406,6 +406,8 @@ export default {
             relationship_role_store: "Relationship, role and store",
             statistical_document: "Statistical type of document",
             statistical_view_down: "Statistical of view and download type of document",
+            statistical_document_by_domain: "Statistical of document by domain",
+            statistical_document_by_archive: "Statistical of document by archive",
             doc_version: {
                 title: 'Version',
                 name: 'Version name',
@@ -476,6 +478,19 @@ export default {
                     select_parent: 'Select domain parent',
                     select: 'Select domain',
                     not_select: 'Not select domain',
+                },
+                archives: {
+                    add: 'Add document archive',
+                    edit: 'Edit document archive',
+                    delete: 'Delete document archive',
+                    name: 'Archive name',
+                    description: 'Archive description',
+                    parent: 'Archive parent',
+                    select_parent: 'Select archive parent',
+                    select: 'Select archive',
+                    not_select: 'Not select archive',
+                    path: 'Path',
+                    path_detail: "Detail path",
                 }
             },
             user: {
@@ -1534,6 +1549,8 @@ export default {
                 orther: 'Other',
                 asset_by_group: ' Asset by group',
                 asset_by_type: ' Asset by type',
+                purchase_asset: 'Statistics purchase asset chart',
+                disposal_asset: 'Statistics disposal asset chart',
             },
 
             //  Quản lý loại tài sản
@@ -2935,6 +2952,14 @@ export default {
             copyright: 'Copyright ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
             version: 'Version '
+        },
+
+        manage_asset: {
+            add_default: 'Add default',
+            add_default_title: 'Add the default document',
+            edit_file: 'Edit attached documents',
+            add_file: 'Add attached documents',
+            upload: 'Upload',
         }
     }
 }

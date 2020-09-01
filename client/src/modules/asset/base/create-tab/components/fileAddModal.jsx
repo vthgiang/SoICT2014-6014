@@ -127,11 +127,11 @@ class FileAddModal extends Component {
         return (
             <React.Fragment>
                 {/* Button thêm tài liệu đính kèm */}
-                <ButtonModal modalID={`modal-create-file-${id}`} button_name={translate('modal.create')} title={translate('manage_employee.add_file')} />
+                <ButtonModal modalID={`modal-create-file-${id}`} button_name={translate('manage_asset.add_file')} title={translate('manage_asset.add_file')}   />
                 <DialogModal
                     size='50' modalID={`modal-create-file-${id}`} isLoading={false}
                     formID={`form-create-file-${id}`}
-                    title={translate('manage_employee.add_file')}
+                    title={translate('manage_asset.add_file')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >

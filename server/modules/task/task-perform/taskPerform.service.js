@@ -796,7 +796,7 @@ exports.deleteCommentOfTaskComment = async (params) => {
  * Đánh giá hoạt động
  */
 exports.evaluationAction = async (params, body) => {
-    // đánh giá
+    // đánh giá lần đầu
     if (body.firstTime === 1) {
         //cập nhật điểm người đánh giá
         let evaluationAction = await Task.updateOne(
@@ -843,7 +843,10 @@ exports.evaluationAction = async (params, body) => {
 
 
         //tính điểm trung bình
-        let accountableRating = rating.reduce((accumulator, currentValue) => { return accumulator + currentValue }, 0) / rating.length
+        if(rating.length > 0) {
+            let accountableRating = rating.reduce((accumulator, currentValue) => { return accumulator + currentValue }, 0) / rating.length
+        }
+       
 
 
         //check xem th đấnh giá có là người phê duyệt không
@@ -862,7 +865,7 @@ exports.evaluationAction = async (params, body) => {
         }
 
 
-        // đánh giá lại
+    // đánh giá lại
     } else if (body.firstTime === 0) {
         let taskAction = await Task.update(
             { $and: [{ "_id": params.taskId, "taskActions._id": params.actionId }, { "taskActions.evaluations.creator": body.creator }] },

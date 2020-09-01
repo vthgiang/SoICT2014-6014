@@ -382,6 +382,7 @@ export default {
             description: 'Mô tả',
             category: "Loại tài liệu",
             domain: 'Danh mục',
+            archive: 'Lưu trữ',
             roles: 'Những vị trí có quyền xem mẫu này',
             issuing_date: 'Ngày ban hành',
             effective_date: 'Ngày áp dụng',
@@ -406,6 +407,8 @@ export default {
             relationship_role_store: "Liên kết, phân quyền và lưu trữ",
             statistical_document: "Thống kê các loại tài liệu",
             statistical_view_down: "Thống kê số lượng xem và download các loại tài liệu",
+            statistical_document_by_domain: "Thống kê số lượng tài liệu theo danh mục",
+            statistical_document_by_archive: "Thống kê số lượng tài liệu theo vị trí lưu trữ",
             doc_version: {
                 title: 'Phiên bản',
                 name: 'Tên phiên bản',
@@ -476,6 +479,19 @@ export default {
                     select_parent: 'Chọn danh mục cha',
                     select: 'Chọn danh mục',
                     not_select: 'Không thuộc về danh mục nào',
+                },
+                archives: {
+                    add: 'Thêm vị trí lưu trữ tài liệu',
+                    edit: 'Sửa thông tin vị trí lưu trữ tài liệu',
+                    delete: 'Xóa các vị trí lưu trữ đã chọn',
+                    name: 'Tên',
+                    description: 'Mô tả',
+                    parent: 'Vị trí lưu trữ cha',
+                    select_parent: 'Chọn vị trí lưu trữ cha',
+                    select: 'Chọn ',
+                    not_select: 'Không thuộc về vị trí nào',
+                    path: 'Đường dẫn',
+                    path_detail: "Đường đẫn chi tiết",
                 }
             },
             user: {
@@ -1538,6 +1554,8 @@ export default {
                 orther: 'Khác',
                 asset_by_group: 'Tài sản theo nhóm',
                 asset_by_type: 'Tài sản theo loại',
+                purchase_asset: 'Thống kê mua sắm tài sản',
+                disposal_asset: 'Thống kê thanh lý tài sản',
             },
 
             //  Quản lý loại tài sản
@@ -2958,6 +2976,11 @@ export default {
             menu_maintain: 'Bảo hành - Bào trì',
             menu_depreciation_infor: 'Thông tin khấu hao',
             menu_attachments: 'Tài liệu đính kèm',
+            add_default: 'Mặc định',
+            add_default_title: 'Thêm các tài liệu mặc định',
+            edit_file: 'Chỉnh sửa tài liệu đính kèm',
+            add_file: 'Thêm tài liệu đính kèm',
+            upload: 'Chọn ảnh'
         },
     }
 }
