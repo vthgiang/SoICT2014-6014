@@ -406,6 +406,8 @@ export default {
             relationship_role_store: "Relationship, role and store",
             statistical_document: "Statistical type of document",
             statistical_view_down: "Statistical of view and download type of document",
+            statistical_document_by_domain: "Statistical of document by domain",
+            statistical_document_by_archive: "Statistical of document by archive",
             doc_version: {
                 title: 'Version',
                 name: 'Version name',
@@ -476,6 +478,19 @@ export default {
                     select_parent: 'Select domain parent',
                     select: 'Select domain',
                     not_select: 'Not select domain',
+                },
+                archives: {
+                    add: 'Add document archive',
+                    edit: 'Edit document archive',
+                    delete: 'Delete document archive',
+                    name: 'Archive name',
+                    description: 'Archive description',
+                    parent: 'Archive parent',
+                    select_parent: 'Select archive parent',
+                    select: 'Select archive',
+                    not_select: 'Not select archive',
+                    path: 'Path',
+                    path_detail: "Detail path",
                 }
             },
             user: {
@@ -1967,6 +1982,8 @@ export default {
                 detail_hide_info: 'Hide information',
                 detail_show_info: 'Show information',
                 detail_choose_role: 'Change role',
+                detail_route: 'Navigate',
+                detail_route_task: 'Navigate tasks',
 
                 detail_link: 'Task link',
                 detail_priority: 'Priority',
@@ -2130,6 +2147,8 @@ export default {
                 subtasks: "Subtasks",
                 change_history: "Change logs",
                 change_process: "Process",
+                change_incoming: "Incoming data",
+                change_outgoing: "Outgoing data",
                 edit_action: "Edit action",
                 delete_action: "Delete action",
                 mandatory_action: "Mandatory action",
@@ -2272,6 +2291,33 @@ export default {
                     err_contribute: 'Sum of contribution should be 100',
                     err_empty: "Value must be required"
                 }
+            },
+            task_process: {
+                process_name: 'Process name',
+                process_description: 'Process description',
+                manager: 'Manager',
+                viewer: 'Viewer',
+                time_of_process: 'Time of process',
+                start_date: 'Start date',
+                end_date: 'End date',
+
+                inprocess: 'Iprocess',
+                wait_for_approval: 'Wait for approval',
+                finished: 'Finished',
+                delayed: 'Delayed',
+                canceled: 'Canceled',
+
+                notice: 'Notice',
+                information: 'Information',
+                document: 'Document',
+
+                list_of_data_and_info: 'List of data and informations',
+                not_have_doc: 'Not have documents',
+                not_have_info: 'Not have information',
+                not_export_info: 'Not export information',
+
+                save: 'Save',
+
             },
             task_template: {
                 create_task_template_success: 'Create task template success !',
@@ -2921,6 +2967,14 @@ export default {
             copyright: 'Copyright ',
             vnist: 'Công ty Cổ phần Công nghệ An toàn thông tin và Truyền thông Việt Nam',
             version: 'Version '
+        },
+
+        manage_asset: {
+            add_default: 'Add default',
+            add_default_title: 'Add the default document',
+            edit_file: 'Edit attached documents',
+            add_file: 'Add attached documents',
+            upload: 'Upload',
         }
     }
 }

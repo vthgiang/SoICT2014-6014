@@ -229,6 +229,7 @@ exports.data = [
     { path: '/documents/document-domains/:id', method: 'DELETE', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/documents/document-domains/:id', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/documents/document-domains/delete-many', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/documents/document-domains/import-file', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
     { path: '/documents/document-archives', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     { path: '/documents/document-archives', method: 'POST', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
@@ -326,7 +327,7 @@ exports.data = [
 
     // task information
     { path: '/performtask/tasks/:taskId/task-informations', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    
+
 
     //task comment
     { path: '/performtask/tasks/:taskId/task-comments', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },

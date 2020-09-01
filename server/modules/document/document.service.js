@@ -398,7 +398,7 @@ exports.createDocumentDomain = async (company, data) => {
         name: data.name,
         description: data.description,
     }
-    if (data.parent.length) {
+    if (data.parent) {
         query.parent = data.parent
     }
     await DocumentDomain.create(query);
@@ -528,6 +528,32 @@ exports.deleteDocumentDomain = async (id) => {
 exports.deleteManyDocumentDomain = async (array, company) => {
     await DocumentDomain.deleteMany({ _id: { $in: array } });
 
+    return await this.getDocumentDomains(company);
+}
+/**
+ * import các danh mục từ file excel
+ * company: mã cty lấy từ auth
+ * data: mảng dữ liệu được import từ file excel
+ */
+
+exports.importDocumentDomain = async (company, data) => {
+    let results = [];
+    for (let i in data) {
+        description = data[i].description;
+        let domain = {
+            name: data[i].name,
+            description: data[i].description,
+        }
+        if (data[i].parent) {
+            const parentDomain = await DocumentDomain.findOne({ name: data[i].parent });
+            if (parentDomain) {
+                domain.parent = parentDomain.id;
+            }
+        }
+        console.log(domain);
+        let res = await this.createDocumentDomain(company, domain);
+
+    }
     return await this.getDocumentDomains(company);
 }
 

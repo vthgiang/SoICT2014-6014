@@ -148,7 +148,6 @@ class TaskTimesheetLog extends Component {
             const { performtasks } = this.props;
             var startedAt = performtasks.currentTimer?.timesheetLogs[0]?.startedAt
             var stoppedAt = this.state.dateStop + " " + this.state.timeStop
-            console.log(stoppedAt)
             var isoDate = new Date(stoppedAt).toISOString();
             var milisec = new Date(isoDate).getTime();
             if (milisec < startedAt) {

@@ -382,6 +382,7 @@ export default {
             description: 'Mô tả',
             category: "Loại tài liệu",
             domain: 'Danh mục',
+            archive: 'Lưu trữ',
             roles: 'Những vị trí có quyền xem mẫu này',
             issuing_date: 'Ngày ban hành',
             effective_date: 'Ngày áp dụng',
@@ -406,6 +407,8 @@ export default {
             relationship_role_store: "Liên kết, phân quyền và lưu trữ",
             statistical_document: "Thống kê các loại tài liệu",
             statistical_view_down: "Thống kê số lượng xem và download các loại tài liệu",
+            statistical_document_by_domain: "Thống kê số lượng tài liệu theo danh mục",
+            statistical_document_by_archive: "Thống kê số lượng tài liệu theo vị trí lưu trữ",
             doc_version: {
                 title: 'Phiên bản',
                 name: 'Tên phiên bản',
@@ -476,6 +479,19 @@ export default {
                     select_parent: 'Chọn danh mục cha',
                     select: 'Chọn danh mục',
                     not_select: 'Không thuộc về danh mục nào',
+                },
+                archives: {
+                    add: 'Thêm vị trí lưu trữ tài liệu',
+                    edit: 'Sửa thông tin vị trí lưu trữ tài liệu',
+                    delete: 'Xóa các vị trí lưu trữ đã chọn',
+                    name: 'Tên',
+                    description: 'Mô tả',
+                    parent: 'Vị trí lưu trữ cha',
+                    select_parent: 'Chọn vị trí lưu trữ cha',
+                    select: 'Chọn ',
+                    not_select: 'Không thuộc về vị trí nào',
+                    path: 'Đường dẫn',
+                    path_detail: "Đường đẫn chi tiết",
                 }
             },
             user: {
@@ -1969,6 +1985,8 @@ export default {
                 detail_hide_info: 'Ẩn thông tin',
                 detail_show_info: 'Hiện thông tin',
                 detail_choose_role: 'Chọn vai trò',
+                detail_route: 'Điều hướng',
+                detail_route_task: 'Điều hướng công việc',
 
                 detail_link: 'Link công việc',
                 detail_priority: 'Độ ưu tiên công việc',
@@ -2281,6 +2299,33 @@ export default {
                     err_contribute: 'Tổng phần trăm đóng góp phải là 100',
                     err_empty: 'Giá trị không được để trống'
                 }
+
+            },
+            task_process: {
+                process_name: 'Tên quy trình',
+                process_description: 'Mô tả quy trình',
+                manager: 'Người quản lý',
+                viewer: 'Người được xem',
+                time_of_process: 'Thời gian thực hiện quy trình',
+                start_date: 'Ngày bắt đầu',
+                end_date: 'Ngày kết thúc',
+
+                inprocess: 'Đang thực hiện',
+                wait_for_approval: 'Chờ phê duyệt',
+                finished: 'Đã kết thúc',
+                delayed: 'Tạm hoãn',
+                canceled: 'Bị hủy',
+
+                notice: 'Chú thích',
+                information: 'Thông tin',
+                document: 'Tài liệu',
+
+                list_of_data_and_info: 'Danh sách thông tin và tài liệu',
+                not_have_doc: 'Không có tài liệu',
+                not_have_info: 'Không có thông tin',
+                not_export_info: 'Không xuất thông tin',
+
+                save: 'Lưu',
 
             },
             task_template: {
@@ -2945,6 +2990,11 @@ export default {
             menu_maintain: 'Bảo hành - Bào trì',
             menu_depreciation_infor: 'Thông tin khấu hao',
             menu_attachments: 'Tài liệu đính kèm',
+            add_default: 'Mặc định',
+            add_default_title: 'Thêm các tài liệu mặc định',
+            edit_file: 'Chỉnh sửa tài liệu đính kèm',
+            add_file: 'Thêm tài liệu đính kèm',
+            upload: 'Chọn ảnh'
         },
     }
 }
