@@ -100,6 +100,7 @@ export function documents(state = initState, action) {
         case DocumentConstants.GET_DOCUMENT_ARCHIVE_REQUEST:
         case DocumentConstants.CREATE_DOCUMENT_ARCHIVE_REQUEST:
         case DocumentConstants.IMPORT_DOCUMENT_DOMAIN_REQUEST:
+        case DocumentConstants.IMPORT_DOCUMENT_ARCHIVE_REQUEST:
             return {
                 ...state,
                 isLoading: true,
@@ -130,6 +131,7 @@ export function documents(state = initState, action) {
         case DocumentConstants.GET_DOCUMENT_ARCHIVE_FAILE:
         case DocumentConstants.CREATE_DOCUMENT_ARCHIVE_FAILE:
         case DocumentConstants.IMPORT_DOCUMENT_DOMAIN_FAILE:
+        case DocumentConstants.IMPORT_DOCUMENT_ARCHIVE_FAILE:
             return {
                 ...state,
                 isLoading: false,
@@ -379,6 +381,7 @@ export function documents(state = initState, action) {
         case DocumentConstants.GET_DOCUMENT_DOMAINS_SUCCESS:
         case DocumentConstants.CREATE_DOCUMENT_DOMAIN_SUCCESS:
         case DocumentConstants.IMPORT_DOCUMENT_DOMAIN_SUCCESS:
+        case DocumentConstants.IMPORT_DOCUMENT_ARCHIVE_SUCCESS:
             return {
                 ...state,
                 isLoading: false,

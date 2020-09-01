@@ -1973,6 +1973,8 @@ export default {
                 detail_hide_info: 'Ẩn thông tin',
                 detail_show_info: 'Hiện thông tin',
                 detail_choose_role: 'Chọn vai trò',
+                detail_route: 'Điều hướng',
+                detail_route_task: 'Điều hướng công việc',
 
                 detail_link: 'Link công việc',
                 detail_priority: 'Độ ưu tiên công việc',
@@ -2285,6 +2287,33 @@ export default {
                     err_contribute: 'Tổng phần trăm đóng góp phải là 100',
                     err_empty: 'Giá trị không được để trống'
                 }
+
+            },
+            task_process: {
+                process_name: 'Tên quy trình',
+                process_description: 'Mô tả quy trình',
+                manager: 'Người quản lý',
+                viewer: 'Người được xem',
+                time_of_process: 'Thời gian thực hiện quy trình',
+                start_date: 'Ngày bắt đầu',
+                end_date: 'Ngày kết thúc',
+
+                inprocess: 'Đang thực hiện',
+                wait_for_approval: 'Chờ phê duyệt',
+                finished: 'Đã kết thúc',
+                delayed: 'Tạm hoãn',
+                canceled: 'Bị hủy',
+
+                notice: 'Chú thích',
+                information: 'Thông tin',
+                document: 'Tài liệu',
+
+                list_of_data_and_info: 'Danh sách thông tin và tài liệu',
+                not_have_doc: 'Không có tài liệu',
+                not_have_info: 'Không có thông tin',
+                not_export_info: 'Không xuất thông tin',
+
+                save: 'Lưu',
 
             },
             task_template: {

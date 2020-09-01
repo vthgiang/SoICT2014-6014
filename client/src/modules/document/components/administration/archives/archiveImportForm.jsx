@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { configDomain } from './fileConfigurationImportDomain.js'
+import { configArchive } from './fileConfigImportDocumentArchive'
 import { DialogModal, ImportFileExcel, ShowImportData, ConFigImportFile, ExportExcel } from '../../../../../common-components';
 //import { taskTemplateActions } from '../redux/actions';
 import { connect } from 'react-redux';
@@ -7,11 +7,11 @@ import { withTranslate } from 'react-redux-multilingual';
 import { AuthActions } from '../../../../auth/redux/actions';
 import { DocumentActions } from '../../../redux/actions'
 
-class DomainImportForm extends Component {
-    constructor(props) { 
+class ArchiveImportForm extends Component {
+    constructor(props) {
         super(props);
         this.state = {
-            configData: configDomain,
+            configData: configArchive,
             checkFileImport: true,
             rowError: [],
             importData: [],
@@ -28,8 +28,8 @@ class DomainImportForm extends Component {
             importData: [],
         })
     }
-
     handleImportExcel = (value, checkFileImport) => {
+        console.log('vlueee', value, checkFileImport)
         let values = [];
         let showValues = [];
         let k = -1;
@@ -40,14 +40,14 @@ class DomainImportForm extends Component {
                     "STT": k + 1,
                     "name": x.name,
                     "description": x.description,
-                    "parent": x.parent,
+                    "pathParent": x.pathParent,
 
                 }];
                 showValues = [...showValues, {
                     "STT": k + 1,
                     "name": x.name,
                     "description": x.description,
-                    "parent": x.parent,
+                    "pathParent": x.pathParent,
 
                 }]
             }
@@ -85,13 +85,14 @@ class DomainImportForm extends Component {
     save = () => {
         let { importShowData } = this.state;
         console.log(importShowData);
-        this.props.importDomain(importShowData);
+        this.props.importArchive(importShowData);
     }
+
     render() {
         const { translate } = this.props;
         console.log('state', this.state);
         let { limit, page, importData, rowError, configData, checkFileImport } = this.state;
-
+        console.log('config', configData)
         return (
             <React.Fragment>
                 <DialogModal
@@ -106,7 +107,7 @@ class DomainImportForm extends Component {
                         <ConFigImportFile
                             id="import_taskTemplate_config"
                             configData={configData}
-                            // textareaRow={8}
+                            //textareaRow={8}
                             scrollTable={false}
                             handleChangeConfig={this.handleChangeConfig}
                         />
@@ -141,22 +142,16 @@ class DomainImportForm extends Component {
         )
     }
 
+
 }
 
 function mapState(state) {
-    const { importDomain } = state;
-    return { importDomain };
+    const { importArchive } = state;
+    return { importArchive };
 };
 const actionCreators = {
-    importDomain: DocumentActions.importDocumentDomain,
+    importArchive: DocumentActions.importDocumentArchive,
     downloadFile: AuthActions.downloadFile,
 };
-const importFileExcel = connect(mapState, actionCreators)(withTranslate(DomainImportForm));
-export { importFileExcel as DomainImportForm };
-
-
-
-
-
-
-
+const importFileExcel = connect(mapState, actionCreators)(withTranslate(ArchiveImportForm));
+export { importFileExcel as ArchiveImportForm };
