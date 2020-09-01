@@ -41,6 +41,7 @@ class EvaluateByAccountableEmployee extends Component {
             prevDate: data.prevDate,
             dentaDate: data.dentaDate,
             indexReRender: 0,
+            hasAccountable: data.hasAccountable,
 
             kpi: data.kpi,
             unit: data.unit,
@@ -139,7 +140,7 @@ class EvaluateByAccountableEmployee extends Component {
     // hàm lấy dữ liệu khởi tạo
     getData = (dateParam) => {
         const { user, KPIPersonalManager } = this.props;
-        let { task } = this.props;
+        let { task, hasAccountable } = this.props;
         let idUser = getStorage("userId");
         let checkSave = false;
         let date = dateParam;
@@ -175,7 +176,7 @@ class EvaluateByAccountableEmployee extends Component {
             unit = user.organizationalUnitsOfUser[0]._id;
         }
         let cloneKpi = []
-        if (KPIPersonalManager && KPIPersonalManager.kpiSets){
+        if ( hasAccountable === true && KPIPersonalManager && KPIPersonalManager.kpiSets) {
             cloneKpi = (KPIPersonalManager.kpiSets.kpis.filter(e => (e.type === 1)).map(x => { return x._id }));
         }
         // let date = this.formatDate(new Date());
@@ -255,8 +256,12 @@ class EvaluateByAccountableEmployee extends Component {
 
         if (evaluations) {
             if (evaluations.results.length !== 0) {
+                let role = "Accountable";
+                if( !hasAccountable ) {
+                    role = "Responsible";
+                }
 
-                let tmp = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === "Accountable"));
+                let tmp = evaluations.results.find(e => (String(e.employee._id) === String(idUser) && String(e.role) === role));
                 if (tmp) {
                     if (tmp.organizationalUnit) {
                         unit = tmp.organizationalUnit._id;
@@ -420,6 +425,7 @@ class EvaluateByAccountableEmployee extends Component {
             dentaDate: dentaDate,
             unit: unit,
             kpi: cloneKpi,
+            hasAccountable: hasAccountable
         }
     }
 
@@ -654,7 +660,7 @@ class EvaluateByAccountableEmployee extends Component {
                 role: "Accountable",
                 target: "Point"
             }
-            if(id === state.userId) state.empPoint[`accountable${id}`] = value;
+            if (id === state.userId) state.empPoint[`accountable${id}`] = value;
             state.errorApprovedPoint[`accountable${id}`] = this.validateEvaluateResult(value);
             return {
                 ...state,
@@ -690,6 +696,7 @@ class EvaluateByAccountableEmployee extends Component {
                 role: "Responsible",
                 target: "Point"
             }
+            if (this.props.hasAccountable === false && id === state.userId) state.empPoint[`responsible${id}`] = value;
             state.errorApprovedPoint[`responsible${id}`] = this.validateEvaluateResult(value);
             return {
                 ...state,
@@ -1235,6 +1242,7 @@ class EvaluateByAccountableEmployee extends Component {
             automaticPoint: this.state.autoPoint,
             role: "Accountable",
             status: this.state.status,
+            hasAccountable: this.state.hasAccountable,
 
             date: this.state.date,
 
@@ -1283,7 +1291,7 @@ class EvaluateByAccountableEmployee extends Component {
         const { translate, user, KPIPersonalManager } = this.props;
         const { task, date, status, oldAutoPoint, autoPoint, errorOnDate, showAutoPointInfo, dentaDate, prevDate, info, results, empPoint, progress,
             errorInfo, errorApprovedPoint, errorContribute, errSumContribution, indexReRender, unit, kpi } = this.state;
-        const { id, perform, role } = this.props;
+        const { id, perform, role, hasAccountable } = this.props;
 
         let listKpi = [];
         if (KPIPersonalManager && KPIPersonalManager.kpiSets) {
@@ -1334,7 +1342,7 @@ class EvaluateByAccountableEmployee extends Component {
                         {!(checkNoteMonth && (dentaDate > 7)) &&
                             <div className='pull-right'>
                                 {/* disabled={disabled || disableSubmit} */}
-                                {(id !== 'new') && <button style={{ marginRight: '5px' }} className="btn btn-danger" onClick={this.deleteEval}>{translate('task.task_management.delete_eval')}</button>}
+                                {(id !== 'new' &&  role === "accountable") && <button style={{ marginRight: '5px' }} className="btn btn-danger" onClick={this.deleteEval}>{translate('task.task_management.delete_eval')}</button>}
                                 <button disabled={disabled || disableSubmit} className="btn btn-success" onClick={this.save}>{translate('task.task_management.btn_save_eval')}</button>
                             </div>
                         }
@@ -1415,9 +1423,12 @@ class EvaluateByAccountableEmployee extends Component {
                                             className="form-control select2"
                                             style={{ width: "100%" }}
                                             items={
-                                                (KPIPersonalManager && KPIPersonalManager.kpiSets) ?
+                                                hasAccountable ? ((KPIPersonalManager && KPIPersonalManager.kpiSets) ?
                                                     (KPIPersonalManager.kpiSets.kpis.filter(e => (e.type === 1)).map(x => { return { value: x._id, text: x.name } }))
-                                                    : []
+                                                    : []) :
+                                                    ((KPIPersonalManager && KPIPersonalManager.kpiSets) ?
+                                                    (KPIPersonalManager.kpiSets.kpis.filter(e => (e.type === 0)).map(x => { return { value: x._id, text: x.name } }))
+                                                    : [])
                                             }
                                             onChange={this.handleKpiChange}
                                             multiple={true}
@@ -1503,13 +1514,13 @@ class EvaluateByAccountableEmployee extends Component {
 
                                     {
                                         <table className="table table-striped table-hover">
-                                            <tr style={{verticalAlign: "top"}}>
+                                            <tr style={{ verticalAlign: "top" }}>
                                                 <th><div className="form-group"><label>{translate('task.task_management.name_employee')}</label></div></th>
                                                 <th><div className="form-group"><label>{translate('task.task_management.role_employee')}</label></div></th>
                                                 <th><div className="form-group"><label>{translate('task.task_management.detail_emp_point')}</label></div></th>
                                                 <th>
                                                     <label>% {translate('task.task_management.contribution')}</label>
-                                                    <div style={{fontWeight: "normal"}} className={`form-group ${errSumContribution === undefined ? "" : "has-error"}`}>
+                                                    <div style={{ fontWeight: "normal" }} className={`form-group ${errSumContribution === undefined ? "" : "has-error"}`}>
                                                         <ErrorLabel content={errSumContribution ? errSumContribution : ''} />
                                                     </div>
                                                 </th>
@@ -1591,7 +1602,7 @@ class EvaluateByAccountableEmployee extends Component {
                                                 task && task.accountableEmployees.map((item, index) =>
                                                     (task.inactiveEmployees.indexOf(item._id) === -1 &&
                                                         <tr key={index} style={{ verticalAlign: "top" }}>
-                                                            <td><div style={{marginTop: 10}}>{item.name}</div></td>
+                                                            <td><div style={{ marginTop: 10 }}>{item.name}</div></td>
                                                             <td><div style={{ marginTop: 10 }}>{this.formatRole('Accountable')}</div></td>
                                                             <td><div style={{ marginTop: 10 }}><p id={`accountablePoint${item._id}`}>{this.checkNullUndefined(empPoint[`accountable${item._id}`]) ? empPoint[`accountable${item._id}`] : translate('task.task_management.not_eval')}</p></div></td>
                                                             <td style={{ padding: 5 }}>

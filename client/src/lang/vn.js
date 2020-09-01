@@ -1,32 +1,6 @@
 export default {
     locale: 'vn',
     messages: {
-        error: {
-            /** 
-             * Start 
-             * Chức năng quản lý nhân sự, xoá sau
-             */
-            employee_number_required: 'Mã nhân viên không được để trống',
-            staff_code_not_special: 'Mã nhân viên không được chứ ký tự đặc biệt',
-            staff_code_not_find: 'Mã nhân viên không tồn tại',
-            number_decisions_required: 'Số ra quyết định không được để trống',
-            number_decisions_have_exist: 'Số ra quyết định đã tồn tại',
-            unit_decisions_required: 'Cấp ra quyết định không được để trống',
-            // Quản lý thông tin cá nhân
-            // TODO: Xoá sau
-            get_infor_personal_success: 'Lấy thông tin cá nhân thành công',
-            get_infor_personal_false: 'Lấy thông tin cá nhân thất bại',
-            edit_infor_personal_success: 'Cập nhật thông tin cá nhân thành công',
-            edit_infor_personal_false: 'Cập nhật thông tin cá nhân thất bại',
-            guaranteed_infor_to_update: 'Bạn chưa cam đoan thông tin cần cập nhật',
-            no_change_data: 'Không có thông tin nào được thay đổi',
-
-            /** 
-             * End
-             * Chức năng quản lý nhân sự
-             */
-        },
-
         /*******************************************************
          * CHUẨN HÓA FILE NGÔN NGỮ PHÂN CHIA THEO TỪNG MODULE
          * @general những phần ngôn ngữ dùng chung cho mọi module
@@ -71,14 +45,14 @@ export default {
                 ],
             },
             validate: {
-                invalid_character_error: 'không được chứa ký tự đặc biệt',
-                length_error: 'phải có số ký tự từ {min} đến {max}',
-                minimum_length_error: 'phải có độ dài tối thiểu là {min} ký tự',
-                maximum_length_error: 'có độ dài không quá {max} ký tự',
-                invalid_error: 'không hợp lệ',
-                empty_error: 'không được để trống',
-                not_existing_error: 'không tồn tại',
-                existing_error: 'đã tồn tại',
+                invalid_character_error: 'Giá trị không được chứa ký tự đặc biệt',
+                length_error: 'Giá trị phải có số ký tự từ {min} đến {max}',
+                minimum_length_error: 'Giá trị phải có độ dài tối thiểu là {min} ký tự',
+                maximum_length_error: 'Giá trị có độ dài không quá {max} ký tự',
+                invalid_error: 'Giá trị không hợp lệ',
+                empty_error: 'Giá trị không được để trống',
+                not_existing_error: 'Giá trị không tồn tại',
+                existing_error: 'Giá trị đã tồn tại',
             }
         },
 
@@ -191,9 +165,17 @@ export default {
                 backup: {
                     config: 'Cấu hình sao lưu dữ liệu',
                     backup_button: 'Sao lưu dữ liệu',
-                    automatic: 'Tự động', on: 'Bật sao lưu', off: "Tắt sao lưu",
+                    automatic: 'Tự động',
+                    on: 'Bật sao lưu',
+                    off: "Tắt sao lưu",
                     week_day: {
-                        mon: 'Thứ hai', tue: 'Thứ ba', wed: 'Thứ tư', thur: 'Thứ năm', fri: 'Thứ sáu', sat: 'Thứ bảy', sun: 'Chủ nhật',
+                        mon: 'Thứ hai',
+                        tue: 'Thứ ba',
+                        wed: 'Thứ tư',
+                        thur: 'Thứ năm',
+                        fri: 'Thứ sáu',
+                        sat: 'Thứ bảy',
+                        sun: 'Chủ nhật',
                     },
                     month_list: {
                         jan: 'Tháng 1',
@@ -210,10 +192,18 @@ export default {
                         dec: 'Tháng 12'
                     },
                     limit: 'Giới hạn',
-                    period: 'Định kỳ', weekly: 'Hàng tuần', monthly: 'Hàng tháng', yearly: 'Hằng năm',
-                    date: 'Ngày', hour: 'Giờ', minute: 'Phút', second: 'Giây', day: 'Thứ', month: 'Tháng',
+                    period: 'Định kỳ',
+                    weekly: 'Hàng tuần',
+                    monthly: 'Hàng tháng',
+                    yearly: 'Hằng năm',
+                    date: 'Ngày',
+                    hour: 'Giờ',
+                    minute: 'Phút',
+                    second: 'Giây',
+                    day: 'Thứ',
+                    month: 'Tháng',
                     save: 'Lưu cấu hình',
-                    
+
                     version: 'Phiên bản',
                     description: 'Mô tả về phiên bản',
                     backup_time: 'Thời gian đã sao lưu',
@@ -392,6 +382,7 @@ export default {
             description: 'Mô tả',
             category: "Loại tài liệu",
             domain: 'Danh mục',
+            archive: 'Lưu trữ',
             roles: 'Những vị trí có quyền xem mẫu này',
             issuing_date: 'Ngày ban hành',
             effective_date: 'Ngày áp dụng',
@@ -416,6 +407,8 @@ export default {
             relationship_role_store: "Liên kết, phân quyền và lưu trữ",
             statistical_document: "Thống kê các loại tài liệu",
             statistical_view_down: "Thống kê số lượng xem và download các loại tài liệu",
+            statistical_document_by_domain: "Thống kê số lượng tài liệu theo danh mục",
+            statistical_document_by_archive: "Thống kê số lượng tài liệu theo vị trí lưu trữ",
             doc_version: {
                 title: 'Phiên bản',
                 name: 'Tên phiên bản',
@@ -486,6 +479,19 @@ export default {
                     select_parent: 'Chọn danh mục cha',
                     select: 'Chọn danh mục',
                     not_select: 'Không thuộc về danh mục nào',
+                },
+                archives: {
+                    add: 'Thêm vị trí lưu trữ tài liệu',
+                    edit: 'Sửa thông tin vị trí lưu trữ tài liệu',
+                    delete: 'Xóa các vị trí lưu trữ đã chọn',
+                    name: 'Tên',
+                    description: 'Mô tả',
+                    parent: 'Vị trí lưu trữ cha',
+                    select_parent: 'Chọn vị trí lưu trữ cha',
+                    select: 'Chọn ',
+                    not_select: 'Không thuộc về vị trí nào',
+                    path: 'Đường dẫn',
+                    path_detail: "Đường đẫn chi tiết",
                 }
             },
             user: {
@@ -599,6 +605,8 @@ export default {
 
         menu: {
             home: 'Trang chủ',
+            system: 'Hệ thống',
+            iam_rbac:'IAM-RBAC',
             manage_system: 'Quản lý hệ thống',
             manage_company: 'Quản lý doanh nghiệp/công ty',
             manage_department: 'Quản lý cơ cấu tổ chức',
@@ -608,8 +616,9 @@ export default {
             manage_component: 'Quản lý các componentUI',
             manage_document: 'Quản lý tài liệu',
             documents: 'Tài liệu văn bản',
-
+            crm: 'CRM',
             customer: 'Khách hàng',
+            customer_group: 'Nhóm khách hàng',
 
             task_template: 'Mẫu Công Việc',
             taskmanagement: 'Quản Lý Công Việc',
@@ -682,14 +691,14 @@ export default {
             manage_incident_asset: 'Quản lý sự cố tài sản',
             manage_recommend_procure: 'Quản lý đề nghị mua sắm',
             manage_recommend_distribute_asset: 'Quản lý đăng ký sử dụng',
-            employee_manage_asset_info: 'Quản lý thông tin tài sản được phân quyền',
+            employee_manage_asset_info: 'Tài sản quản lý',
 
             view_building_list: 'Xem danh sách mặt bằng',
 
             // NHÂN VIÊN
             recommend_equipment_procurement: 'Đăng ký mua sắm thiết bị',
             recommend_distribute_asset: 'Đăng ký sử dụng thiết bị',
-            manage_assigned_asset: 'Quản lý thiết bị bàn giao',
+            manage_assigned_asset: 'Tài sản sử dụng',
             //******END */
 
             // QUẢN LÝ BÁO CÁO
@@ -822,177 +831,6 @@ export default {
             add_faile: 'Thêm mới thất bại',
             edit_success: 'Chỉnh sửa thành công',
             edit_faile: 'Chỉnh sửa thất bại',
-        },
-
-        // Quản lý thông tin nhân viên
-        manage_employee: {
-            note_page_personal: 'Tôi xin cam đoan những lời khai trên đây là đúng sự thật và chịu trách nhiệm cho những lời khai này.',
-            contact_other: '(Những thông tin khác vui lòng liên hệ các bên liên quan để được xử lý)',
-            update_infor_personal: 'Cập nhật thông tin nhân viên',
-            no_data_personal: 'Chưa có thông tin cá nhân',
-
-            menu_basic_infor: 'Thông tin cơ bản',
-            menu_general_infor: 'Thông tin chung',
-            menu_contact_infor: 'Thông tin liên hệ',
-            menu_education_experience: 'Học vấn - Kinh nghiệm',
-            menu_diploma_certificate: 'Bằng cấp - Chứng chỉ',
-            menu_account_tax: 'Tài khoản - Thuế',
-            menu_insurrance_infor: 'Thông tin bảo hiểm',
-            menu_contract_training: 'Hợp đồng - Đào tạo',
-            menu_reward_discipline: 'Khen thưởng - Kỷ luật',
-            menu_salary_sabbatical: 'Lịch sử lương - Nghỉ phép',
-            menu_attachments: 'Tài liệu đính kèm',
-
-            menu_general_infor_title: 'Thông tin chung của nhân viên',
-            menu_contact_infor_title: 'Thông tin liên hệ của nhân viên',
-            menu_education_experience_title: 'Trình độ học vấn - kinh nghiệm làm việc',
-            menu_diploma_certificate_title: 'Bằng cấp - Chứng chỉ',
-            menu_account_tax_title: 'Tài khoản ngân hàng - Thuế thu nhập cá nhân',
-            menu_insurrance_infor_title: 'Thông tin bảo hiểm',
-            menu_contract_training_title: 'Hợp đồng lao động - Quá trình đào tạo',
-            menu_reward_discipline_title: 'Khen thưởng - Kỷ luật',
-            menu_salary_sabbatical_title: 'Lịch sử tăng giảm lương - Thông tin nghỉ phép',
-            menu_attachments_title: 'Tài liệu đính kèm',
-
-            add_staff: 'Thêm nhân viên',
-            staff_number: 'Mã số nhân viên',
-            full_name: 'Họ và tên',
-            attendance_code: 'Mã số chấm công',
-            gender: 'Giới tính',
-            male: 'Nam',
-            female: 'Nữ',
-            date_birth: 'Ngày sinh',
-            place_birth: 'Nơi sinh',
-            email: 'Email',
-            email_company: 'Email công ty',
-            relationship: 'Tình trạng hôn nhân',
-            single: 'Độc thân',
-            married: 'Đã kết hôn',
-            upload: 'Chọn ảnh',
-            id_card: 'Số CMND/Hộ chiếu',
-            date_issued: 'Ngày cấp',
-            issued_by: 'Nơi cấp',
-            ethnic: 'Dân tộc',
-            nationality: 'Quốc tịch',
-            religion: 'Tôn giáo',
-            mobile_phone: 'Điện thoại di động',
-            mobile_phone_1: 'Điện thoại di động 1',
-            mobile_phone_2: 'Điện thoại di động 2',
-            personal_email_1: 'Email cá nhân 1',
-            personal_email_2: 'Email cá nhân 2',
-            home_phone: 'Điện thoại nhà riêng',
-            emergency_contact: 'Liên hệ khẩn cấp với ai',
-            nexus: 'Quan hệ',
-            address: 'Địa chỉ',
-            permanent_address: 'Hộ khẩu thường trú',
-            current_residence: 'Chỗ ở hiện tại',
-            wards: 'Xã/Phường',
-            district: 'Quận/Huyện',
-            province: 'Tỉnh/Thành phố',
-            nation: 'Quốc gia',
-
-            academic_level: 'Trình độ học vấn',
-            educational_level: 'Trình độ văn hoá',
-            language_level: 'Trình độ ngoại ngữ',
-            qualification: 'Trình độ chuyên môn',
-            intermediate_degree: 'Trung cấp',
-            colleges: 'Cao đẳng',
-            university: 'Đại học',
-            master_degree: 'Thạc sỹ',
-            phd: 'Tiến sỹ',
-            unavailable: 'Không có',
-            work_experience: 'Kinh nghiệm làm việc',
-            unit: 'Đơn vị công tác',
-            from_month_year: 'Từ tháng/năm',
-            to_month_year: 'Đến tháng/năm',
-            edit_experience: 'Chỉnh sửa kinh nghiệm làm việc',
-            add_experience: 'Thêm mới kinh nghiệm làm việc',
-
-            diploma: 'Bằng cấp',
-            certificate: 'Chứng chỉ',
-            name_diploma: 'Tên bằng cấp',
-            name_certificate: 'Tên chứng chỉ',
-            diploma_issued_by: 'Nơi đào tạo',
-            graduation_year: 'Năm tốt nghiệp',
-            ranking_learning: 'Xếp loại',
-            attached_files: 'File đính kèm',
-            end_date_certificate: 'Ngày hết hạn',
-            edit_certificate: 'Chỉnh sửa chứng chỉ',
-            edit_diploma: 'Chỉnh sửa bằng cấp',
-            add_certificate: 'Thêm mới chứng chỉ',
-            add_diploma: 'Thêm mới bằng cấp',
-            excellent: 'Xuất sắc',
-            very_good: 'Giỏi',
-            good: 'Khá',
-            average_good: 'Trung bình khá',
-            ordinary: 'Trung bình',
-
-
-            bank_account: 'Tài khoản ngân hàng',
-            personal_income_tax: 'Thuế thu nhập cá nhân',
-            account_number: 'Số tài khoản',
-            bank_name: 'Tên ngân hàng',
-            bank_branch: 'Chi nhánh',
-            tax_number: 'Mã số thuế',
-            representative: 'Người đại diện',
-            day_active: 'Ngày hoạt động',
-            managed_by: 'Quản lý bởi',
-
-            bhyt: 'Bảo hiểm y tế',
-            number_BHYT: 'Mã số BHYT',
-            bhxh: 'Bảo hiểm xã hội',
-            number_BHXH: 'Mã số BHXH',
-            bhxh_process: 'Quá trình đóng bảo hiểm xã hội',
-            edit_bhxh: 'Chỉnh sửa bảo hiểm xã hội',
-            add_bhxh: 'Thêm mới bảo hiểm xã hội',
-
-            labor_contract: 'Hợp đồng lao động',
-            training_process: 'Quá trình đào tạo',
-            name_contract: 'Tên hợp đồng',
-            type_contract: 'Loại hợp đồng',
-            start_date: 'Ngày có hiệu lực',
-            course_name: 'Tên khoá học',
-            start_day: 'Ngày bắt đầu',
-            end_date: 'Ngày kết thúc',
-            type_education: 'Loại đào tạo',
-            cost: 'Chi phí',
-            edit_contract: 'Chỉnh sửa hợp đồng lao động',
-            add_contract: 'Thêm mới hợp đồng lao động',
-
-            list_attachments: 'Danh sách tài liệu đính kèm',
-            attachments_code: 'Nơi lưu trữ bản cứng',
-            file_name: 'Tên tài liệu',
-            number: 'Số lượng',
-            add_default: 'Mặc định',
-            add_default_title: 'Thêm các tài liệu mặc định',
-            edit_file: 'Chỉnh sửa tài liệu đính kèm',
-            add_file: 'Thêm tài liệu đính kèm',
-            no_submitted: 'Chưa nộp',
-            submitted: 'Đã nộp',
-            returned: 'Đã trả lại',
-            no_files: 'Chưa có file',
-            disc_diploma: 'Bằng tốt nghiệp trình độ học vấn cao nhất',
-            curriculum_vitae: 'Sơ yếu lý lịch',
-            disc_curriculum_vitae: 'Sơ yếu lý lịch có công chứng',
-            img: 'Ảnh',
-            disc_img: 'Ảnh 4x6 ',
-            copy_id_card: 'Bản sao CMND/Hộ chiếu',
-            disc_copy_id_card: 'Bản sao chứng minh thư nhân dân hoặc hộ chiếu có công chứng',
-            health_certificate: 'Giấy khám sức khoẻ',
-            disc_health_certificate: 'Giấy khám sức khoẻ có dấu đỏ',
-            birth_certificate: 'Giấy khai sinh',
-            disc_birth_certificate: 'Giấy khái sinh có công chứng',
-            job_application: 'Đơn xin việc',
-            disc_job_application: 'Đơn xin việc viết tay',
-            commitment: 'Cam kết',
-            disc_commitment: 'Giấy cam kết làm việc',
-            temporary_residence_card: 'Tạm trú tạm vắng',
-            disc_temporary_residence_card: 'Giấy xác nhận tạm trú tạm vắng',
-
-            Reward: 'Khen thưởng',
-            discipline: 'Kỷ luật',
-            historySalary: 'Lịch sử tăng giảm lương',
-            sabbatical: 'Thông tin nghỉ phép',
         },
 
         // Modules Quản lý nhân sự
@@ -1417,6 +1255,25 @@ export default {
                 },
 
                 employee_management: {
+                    file_name_export: 'Thông tin nhân viên',
+                    no_gender: 'Chọn giới tính',
+                    all_gender: 'Chọn tất cả giới tính',
+                    brithday_lable: 'Sinh nhật',
+                    brithday_lable_title: 'Tháng sinh nhật',
+                    contract_lable: 'Hết hạn hợn đồng',
+                    contract_lable_title: 'Tháng hết hạn hợp đồng',
+                    contract_type_title: 'Loại hợp đồng lao động',
+
+
+                    // Nhóm dành cho action
+                    view_employee: 'Xem thông tin nhân viên',
+                    edit_employee: 'Chỉnh sửa thông tin nhân viên',
+                    delete_employee: 'Xoá thông tin nhân viên',
+                    add_employee: 'Thêm nhân viên',
+                    add_employee_title: 'Thêm mới nhân viên',
+                    add_by_hand: 'Thêm một nhân viên',
+                    add_import: 'Import file excel',
+
                     // Thông điệp trả về từ server
                     get_list_employee_success: 'Lấy danh sách nhân viên thành công',
                     get_list_employee_false: 'Lấy danh sách nhân viên thất bại',
@@ -1683,6 +1540,22 @@ export default {
                 status_chart: 'Biểu đồ thống kê tài sản theo trạng thái',
                 group_chart: 'Biểu đồ thống kê tài sản theo nhóm',
                 cost_chart: 'Biểu đồ thống kê tài sản theo giá trị',
+                amount_of_asset: 'Thống kê số lượng tài sản',
+                value_of_asset: 'Thống kê giá trị tài sản',
+                depreciation_of_asset: 'Thống kê giá trị khấu hao',
+                bar_chart: 'Biểu đồ cột',
+                tree: 'Cây',
+                amount: 'Số lượng',
+                lost_value: 'Giá trị mất (Triệu)',
+                sum_value: 'Tổng giá trị (Triệu)',
+                building: 'Mặt bằng',
+                vehicle: 'Phương tiện',
+                machine: 'Máy móc',
+                orther: 'Khác',
+                asset_by_group: 'Tài sản theo nhóm',
+                asset_by_type: 'Tài sản theo loại',
+                purchase_asset: 'Thống kê mua sắm tài sản',
+                disposal_asset: 'Thống kê thanh lý tài sản',
             },
 
             //  Quản lý loại tài sản
@@ -1994,6 +1867,7 @@ export default {
                 consulted: 'Người hỗ trợ',
                 creator: 'Người thiết lập',
                 informed: 'Người quan sát',
+                all_role: 'Tất cả vai trò',
 
                 responsible_role: 'Thực hiện',
                 accountable_role: 'Phê duyệt',
@@ -2068,10 +1942,12 @@ export default {
 
                 from: 'Từ tháng',
                 to: 'Đến tháng',
+                lower_from: 'từ',
+                lower_to: 'đến',
                 month: 'Tháng',
                 prev: 'Trước',
                 next: 'Sau',
-                tasks_calendar: 'Lịch công việc chi tiết',
+                tasks_calendar: 'Lịch công việc',
                 model_detail_task_title: 'Thông tin chi tiết công việc',
                 collaborative_tasks: 'Nhiều người thực hiện',
                 in_time: 'Đúng tiến độ',
@@ -2248,6 +2124,9 @@ export default {
                 delete_evaluation_success: "Xóa đánh giá thành công",
                 delete_evaluation_fail: "Xóa đánh giá thất bại",
 
+                // confirm task
+                confirm_task_success: "Xác nhận tham gia công việc thành công",
+                confirm_task_failure: "Xác nhận tham gia công việc thất bại"
             },
             task_perform: {
 
@@ -3068,6 +2947,11 @@ export default {
             menu_maintain: 'Bảo hành - Bào trì',
             menu_depreciation_infor: 'Thông tin khấu hao',
             menu_attachments: 'Tài liệu đính kèm',
+            add_default: 'Mặc định',
+            add_default_title: 'Thêm các tài liệu mặc định',
+            edit_file: 'Chỉnh sửa tài liệu đính kèm',
+            add_file: 'Thêm tài liệu đính kèm',
+            upload: 'Chọn ảnh'
         },
     }
 }

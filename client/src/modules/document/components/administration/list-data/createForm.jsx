@@ -642,7 +642,7 @@ class CreateForm extends Component {
                                                 <TreeSelect data={archives} handleChange={this.handleArchives} value={documentArchives} mode="hierarchical" />
                                             </div>
                                             <div className="form-group">
-                                                <label>Đường dẫn chi tiết</label>
+                                                <label>{translate('document.administration.domains.path_detail')}</label>
                                                 <textarea style={{ height: '30px' }} type="text" className="form-control" value={path ? path : ""} disable />
                                             </div>
                                             <div className="form-group">

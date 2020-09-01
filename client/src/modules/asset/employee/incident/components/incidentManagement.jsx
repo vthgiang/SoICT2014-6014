@@ -266,7 +266,6 @@ class EmployeeIncidentManagement extends Component {
 
         return (
             <div id={id} className="tab-pane">
-                <div className="box">
                     <div className="box-body qlcv">
                         {/* <UsageCreateForm/> */}
                     
@@ -398,7 +397,6 @@ class EmployeeIncidentManagement extends Component {
                         />
                     }
                 </div>
-            </div>
         );
     }
 };

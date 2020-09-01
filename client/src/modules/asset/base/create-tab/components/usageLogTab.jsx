@@ -215,6 +215,11 @@ class UsageLogTab extends Component {
                    
                     <fieldset className="scheduler-border">
                         <legend className="scheduler-border"><h4 className="box-title">{translate('asset.asset_info.usage_logs')}</h4></legend>
+
+
+                        {/* Form thêm thông tin sử dụng */}
+                        <UsageLogAddModal handleChange={this.handleAddUsage} id={`addUsage${id}`} />
+                        
                         <div className="form-inline">
                             <div className="form-group">
                                 <label style={{ width: "auto" }} className="form-control-static"> Đối tượng đang sử dụng:</label>
@@ -226,9 +231,9 @@ class UsageLogTab extends Component {
                                     <button type="button" className="btn btn-success" onClick={this.hanhdleRecallAsset} >Thu hồi</button>
                                 </div>
                             }
-                            {/* Form thêm thông tin sử dụng */}
-                            <UsageLogAddModal handleChange={this.handleAddUsage} id={`addUsage${id}`} />
                         </div>
+                        
+                       
                         
                         
 

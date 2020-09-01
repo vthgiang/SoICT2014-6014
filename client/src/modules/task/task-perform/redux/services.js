@@ -50,9 +50,21 @@ export const performTaskService = {
 
     deleteEvaluation,
 
-    editInformationTask
+    editInformationTask,
+    getById,
+    confirmTask,
 };
 
+/**
+ * lấy công việc theo id
+ * @param {*} taskId id công việc
+ */
+function getById(taskId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
+        method: 'GET',
+    }, false, true, 'task.task_management');
+}
 
 /**
  * lấy lịch sử bấm giờ
@@ -189,6 +201,15 @@ function editInformationTask(taskId, taskInformations) {
         method: 'PATCH',
         data: taskInformations
     }, false, true, 'task.task_perform');
+}
+
+/** Xác nhận công việc */
+function confirmTask(taskId) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/performtask/tasks/${taskId}`,
+        method: 'POST',
+        params: { type: 'confirm_task' }
+    }, true, true, 'task.task_management');
 }
 
 /**

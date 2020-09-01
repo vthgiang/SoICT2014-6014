@@ -44,17 +44,13 @@ class TaskDashboard extends Component {
     }
 
     componentDidMount = async () => {
-        // unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false
-        await this.props.getResponsibleTaskByUser("[]", 1, 100, "[]", "[]", "[]", null, null, null, null, null, false);
+        console.log('did db');
+        await this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
         await this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
         await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
         await this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
         await this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null, false);
-        // await this.props.getResponsibleTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
-        // await this.props.getAccountableTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
-        // await this.props.getConsultedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
-        // await this.props.getInformedTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
-        // await this.props.getCreatorTaskByUser("[]", 1, 1000, "[]", "[]", "[]", null, null, null, null, null);
+
         let data = {
             type: "user"
         }
@@ -70,6 +66,7 @@ class TaskDashboard extends Component {
     }
 
     shouldComponentUpdate = async (nextProps, nextState) => {
+        console.log('should db');
         if (nextState.dataStatus === this.DATA_STATUS.QUERYING) {
             if (!nextProps.tasks.responsibleTasks || !nextProps.tasks.accountableTasks || !nextProps.tasks.consultedTasks || !nextProps.tasks.informedTasks || !nextProps.tasks.creatorTasks || !nextProps.tasks.tasksbyuser) {
                 return false;
@@ -110,20 +107,25 @@ class TaskDashboard extends Component {
 
     handleSelectMonthStart = (value) => {
         let month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)));
+        let monthtitle = value.slice(0, 2) + '-' + (new Number(value.slice(3, 7)));
 
         this.INFO_SEARCH.startMonth = month;
+        this.INFO_SEARCH.startMonthTitle = monthtitle;
     }
 
     handleSelectMonthEnd = (value) => {
         let month;
+        let monthtitle;
 
         if (value.slice(0, 2) < 12) {
             month = value.slice(3, 7) + '-' + (new Number(value.slice(0, 2)) + 1);
+            monthtitle = value.slice(0, 2) + '-' + value.slice(3, 7);
         } else {
             month = (new Number(value.slice(3, 7)) + 1) + '-' + '1';
         }
 
         this.INFO_SEARCH.endMonth = month;
+        this.INFO_SEARCH.endMonthTitle = monthtitle;
     }
 
     handleSearchData = async () => {
@@ -150,6 +152,7 @@ class TaskDashboard extends Component {
     }
 
     render() {
+        console.log('render db');
         const { tasks, translate } = this.props;
         const { startMonth, endMonth, willUpdate, callAction } = this.state;
 
@@ -231,6 +234,7 @@ class TaskDashboard extends Component {
             day = '0' + day;
         let defaultEndMonth = [month, year].join('-');
         let defaultStartMonth = ['01', year].join('-');
+        let { startMonthTitle, endMonthTitle } = this.INFO_SEARCH;
         return (
             <React.Fragment>
                 <div className="qlcv" style={{ textAlign: "right", marginBottom: 15 }}>
@@ -310,7 +314,7 @@ class TaskDashboard extends Component {
                     <div className="col-xs-12">
                         <div className="box box-primary">
                             <div className="box-header with-border">
-                                <div className="box-title">{translate('task.task_management.tasks_calendar')}</div>
+                                <div className="box-title">{translate('task.task_management.tasks_calendar')} {translate('task.task_management.lower_from')} {startMonthTitle} {translate('task.task_management.lower_to')} {endMonthTitle}</div>
                             </div>
                             <TasksSchedule />
                         </div>

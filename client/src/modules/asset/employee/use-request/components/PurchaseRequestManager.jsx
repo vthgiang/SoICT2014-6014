@@ -238,7 +238,7 @@ class EmployeePurchaseRequestManager extends Component {
 
         return (
             <div id ={id} className ="tab-pane">
-                <div className="box" >
+
                 <div className="box-body qlcv">
                     {/* Thanh tìm kiếm */}
                     <div className="form-inline">
@@ -387,7 +387,6 @@ class EmployeePurchaseRequestManager extends Component {
                     />
                 }
             </div >
-            </div>
         );
     }
 };

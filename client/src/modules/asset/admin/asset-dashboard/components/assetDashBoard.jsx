@@ -14,6 +14,8 @@ import { AssetByGroup } from './asset-by-group/assetByGroup';
 import { AssetStatistics } from './asset-statistics-chart/index';
 import { AssetIsExpired } from './asset-is-expired/assetIsExpired';
 import { AssetByType } from './asset-by-type/assetByType';
+import { translate } from 'react-redux-multilingual/lib/utils';
+import { PurchaseAndDisposal } from './asset-purchase-disposal/purchaseAndDisposal';
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -99,6 +101,7 @@ class DashBoardAssets extends Component {
 
 
     render() {
+        const { translate } = this.props;
         const { listAssets, recommendProcure, recommendDistribute } = this.state;
         const options = {
             animationEnabled: true,
@@ -210,8 +213,9 @@ class DashBoardAssets extends Component {
 
                 <div className="nav-tabs-custom">
                     <ul className="nav nav-tabs">
-                        <li className="active"><a href="#administration-asset-by-group" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Tài sản theo nhóm</a></li>
-                        <li><a href="#administration-asset-by-type" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Tài sản theo loại</a></li>
+                        <li className="active"><a href="#administration-asset-by-group" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('asset.dashboard.asset_by_group')}</a></li>
+                        <li><a href="#administration-asset-by-type" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('asset.dashboard.asset_by_type')}</a></li>
+                        <li><a href="#administration-purchase-disposal" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê mua bán tài sản</a></li>
                         <li><a href="#administration-asset-statistics" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê tài sản</a></li>
                         <li><a href="#administration-asset-is-expired" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Hạn sử dụng tài sản</a> </li>
                     </ul>
@@ -235,6 +239,15 @@ class DashBoardAssets extends Component {
                             </LazyLoadComponent>
                         </div>
 
+                        {/* Thống kê mua bán tài sản*/}
+                        <div className="tab-pane" id="administration-purchase-disposal">
+                            <LazyLoadComponent
+                                key="AdministrationPurchaseAndDisposal"
+                            >
+                                < PurchaseAndDisposal />
+                            </LazyLoadComponent>
+                        </div>
+
                         {/** Biểu đồ thống kê tài sản */}
                         <div className="tab-pane" id="administration-asset-statistics">
                             <LazyLoadComponent
@@ -252,6 +265,8 @@ class DashBoardAssets extends Component {
                                 <AssetIsExpired />
                             </LazyLoadComponent>
                         </div>
+
+
 
                     </div>
                 </div>

@@ -79,9 +79,8 @@ class ComponentInfoForm extends Component {
         this.setState({ componentDescription: value });
 
         let {translate} = this.props;
-        let {msg} = ValidationHelper.validateDescription(value);
-        let error = msg ? translate(msg) : undefined;
-        this.setState({ componentDescriptionError: error})
+        let {message} = ValidationHelper.validateDescription(translate, value);
+        this.setState({ componentDescriptionError: message})
     }
 
     handleComponentLink = (value) => {
@@ -110,7 +109,8 @@ class ComponentInfoForm extends Component {
 
     isFormValidated = () => {
         let {componentDescription} = this.state;
-        if(!ValidationHelper.validateDescription(componentDescription).status) return false;
+        let {translate} = this.props;
+        if(!ValidationHelper.validateDescription(translate, componentDescription).status) return false;
         return true;
     }
 

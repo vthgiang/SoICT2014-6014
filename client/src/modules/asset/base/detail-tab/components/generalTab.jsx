@@ -216,11 +216,11 @@ class GeneralTab extends Component {
                             <div className="col-md-12">
                                 <label>{translate('asset.general_information.detail_information')}:<a title={translate('asset.general_information.detail_information')}></a></label>
                                 <div className="form-group">
-                                    <table className="table table-bordered">
+                                    <table className="table">
                                         <thead>
                                             <tr>
-                                                <th>{translate('asset.asset_info.field_name')}</th>
-                                                <th>{translate('asset.asset_info.value')}</th>
+                                                <th style={{ paddingLeft: '0px' }}>{translate('asset.asset_info.field_name')}</th>
+                                                <th style={{ paddingLeft: '0px' }}>{translate('asset.asset_info.value')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -231,8 +231,8 @@ class GeneralTab extends Component {
                                             </tr> :
                                                 detailInfo.map((x, index) => {
                                                     return <tr key={index}>
-                                                        <td>{x.nameField}</td>
-                                                        <td>{x.value}</td>
+                                                        <td style={{ paddingLeft: '0px' }}>{x.nameField}</td>
+                                                        <td style={{ paddingLeft: '0px' }}>{x.value}</td>
                                                     </tr>
                                                 })}
                                         </tbody>

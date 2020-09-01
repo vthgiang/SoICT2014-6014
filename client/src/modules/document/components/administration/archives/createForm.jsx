@@ -92,16 +92,16 @@ class CreateForm extends Component {
                 >
                     <form id="form-create-document-archive">
                         <div className={`form-group ${!errorName ? "" : "has-error"}`}>
-                            <label>Tên mục lưu trữ<span className="text-red">*</span></label>
+                            <label>{translate('document.administration.archives.name')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleValidateName} />
                             <ErrorLabel content={errorName} />
                         </div>
                         <div className="form-group">
-                            <label>Tên nút cha</label>
+                            <label>{translate('document.administration.archives.parent')}</label>
                             <TreeSelect data={list} value={!archiveParent ? "" : archiveParent} handleChange={this.handleParent} mode="radioSelect" />
                         </div>
                         <div className="form-group">
-                            <label>Mô tả</label>
+                            <label>{translate('document.administration.archives.description')}</label>
                             <textarea style={{ minHeight: '100px' }} type="text" className="form-control" onChange={this.handleDescription} />
                         </div>
                     </form>

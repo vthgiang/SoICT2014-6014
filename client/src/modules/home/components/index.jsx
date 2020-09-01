@@ -1,25 +1,28 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withTranslate } from 'react-redux-multilingual';
+import { SystemHome } from './systemHome';
+import { SuperHome } from './superHome';
 
 class Home extends Component {
     constructor(props) {
         super(props);
-        this.state = {  }
+    }
+
+    render() {
+        const {auth} = this.props;
+        if(!auth.user.company)
+            return <SystemHome/>
+        else    
+            return <SuperHome/>
         
     }
-    render() { 
-        return ( 
-            <div className="box" style={{ minHeight: '450px' }}>
-                <div className="box-body">
-                    
-                </div>
-            </div>
-         );
-    }
-}
- 
-const mapStateToProps = state => {
-    return state;
 }
 
-export default connect( mapStateToProps )( Home );
+function mapState(state) {
+    const { auth } = state;
+    return { auth };
+}
+
+const connectedHome = connect(mapState, null)(withTranslate(Home));
+export { connectedHome as Home };

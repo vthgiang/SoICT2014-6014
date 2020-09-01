@@ -201,77 +201,67 @@ class UsageCreateForm extends Component {
                 >
                     {/* Form thêm mới thông tin sử dụng tài sản */}
                     <form className="form-group" id={`form-create-usage`}>
-                        <div className="col-md-12">
-                            {/* Tài sản */}
-                            <div className={`form-group`}>
-                                <label>{translate('asset.general_information.asset')}</label>
-                                <div>
-                                    <div id="assetUBox">
-                                        <SelectBox
-                                            id={`add-usage-asset${_id}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={assetlist.map(x => {
-                                                return { value: x._id, text: x.code + " - " + x.assetName }
-                                            })}
-                                            onChange={this.handleAssetChange}
-                                            value={asset ? asset._id : null}
-                                            multiple={false}
-                                            disabled
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+                        {/* Tài sản */}
+                        <div className={`form-group`}>
+                            <label>{translate('asset.general_information.asset')}</label>
+                            <SelectBox
+                                id={`add-usage-asset${_id}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={assetlist.map(x => {
+                                    return { value: x._id, text: x.code + " - " + x.assetName }
+                                })}
+                                onChange={this.handleAssetChange}
+                                value={asset ? asset._id : null}
+                                multiple={false}
+                                disabled
+                            />
+                        </div>
 
-                            {/* Người sử dụng */}
-                            <div className={`form-group`}>
-                                <label>{translate('asset.general_information.user')}</label>
-                                <div>
-                                    <div id="usedByUserBox">
-                                        <SelectBox
-                                            id={`add-usedByUser${_id}`}
-                                            className="form-control select2"
-                                            style={{ width: "100%" }}
-                                            items={userlist.map(x => {
-                                                return { value: x._id, text: x.name + " - " + x.email }
-                                            })}
-                                            onChange={this.handleUsedByUserChange}
-                                            value={usedByUser ? usedByUser._id : null}
-                                            multiple={false}
-                                            disabled
-                                        />
-                                    </div>
-                                </div>
-                            </div>
+                        {/* Người sử dụng */}
+                        <div className={`form-group`}>
+                            <label>{translate('asset.general_information.user')}</label>
+                            <SelectBox
+                                id={`add-usedByUser${_id}`}
+                                className="form-control select2"
+                                style={{ width: "100%" }}
+                                items={userlist.map(x => {
+                                    return { value: x._id, text: x.name + " - " + x.email }
+                                })}
+                                onChange={this.handleUsedByUserChange}
+                                value={usedByUser ? usedByUser._id : null}
+                                multiple={false}
+                                disabled
+                            />
+                        </div>
 
-                            {/* Thời gian bắt đầu sử dụng */}
-                            <div className={`form-group ${!errorOnStartDate ? "" : "has-error"}`}>
-                                <label>{translate('asset.general_information.handover_from_date')}<span className="text-red">*</span></label>
-                                <DatePicker
-                                    id={`add-start-date${_id}`}
-                                    value={startDate}
-                                    onChange={this.handleStartDateChange}
-                                />
-                                <ErrorLabel content={errorOnStartDate} />
-                            </div>
+                        {/* Thời gian bắt đầu sử dụng */}
+                        <div className={`form-group ${!errorOnStartDate ? "" : "has-error"}`}>
+                            <label>{translate('asset.general_information.handover_from_date')}<span className="text-red">*</span></label>
+                            <DatePicker
+                                id={`add-start-date${_id}`}
+                                value={startDate}
+                                onChange={this.handleStartDateChange}
+                            />
+                            <ErrorLabel content={errorOnStartDate} />
+                        </div>
 
-                            {/* Thời gian kết thúc sử dụng */}
-                            <div className="form-group">
-                                <label>T{translate('asset.general_information.handover_to_date')}</label>
-                                <DatePicker
-                                    id={`add-end-date${_id}`}
-                                    value={endDate}
-                                    onChange={this.handleEndDateChange}
-                                />
-                            </div>
+                        {/* Thời gian kết thúc sử dụng */}
+                        <div className="form-group">
+                            <label>T{translate('asset.general_information.handover_to_date')}</label>
+                            <DatePicker
+                                id={`add-end-date${_id}`}
+                                value={endDate}
+                                onChange={this.handleEndDateChange}
+                            />
+                        </div>
 
-                            {/* Nội dung */}
-                            <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
-                                <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
-                                <textarea className="form-control" rows="3" style={{ height: 34 }} name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
-                                    placeholder={translate('asset.general_information.content')}></textarea>
-                                <ErrorLabel content={errorOnDescription} />
-                            </div>
+                        {/* Nội dung */}
+                        <div className={`form-group ${!errorOnDescription ? "" : "has-error"}`}>
+                            <label>{translate('asset.general_information.content')}<span className="text-red">*</span></label>
+                            <textarea className="form-control" rows="3" name="description" value={description} onChange={this.handleDescriptionChange} autoComplete="off"
+                                placeholder={translate('asset.general_information.content')}></textarea>
+                            <ErrorLabel content={errorOnDescription} />
                         </div>
                     </form>
                 </DialogModal>

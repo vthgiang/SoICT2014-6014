@@ -5,13 +5,12 @@ const User = require('../auth/user.model');
 const EmployeeKpi = require('../kpi/employeeKpi.model');
 const OrganizationalUnit = require('../super-admin/organizationalUnit.model');
 const TaskTemplate = require('./taskTemplate.model');
-const TaskProcess = require('./taskProcess.model');
 
 // Model quản lý thông tin của một công việc và liên kết với tài liệu, kết quả thực hiện công việc
 const TaskSchema = new Schema({
     process: {
         type: Schema.Types.ObjectId,
-        ref: TaskProcess,
+        ref: 'task_processes',
     },
     codeInProcess: {
         type: String,
@@ -161,6 +160,9 @@ const TaskSchema = new Schema({
             contribution: { // % Đóng góp: 0->100
                 type: Number
             },
+            hoursSpent: {
+                type: Number
+            },
             taskImportanceLevel: { // Mức độ quan trọng của công việc với người được đánh giá, từ 0-10, dùng trong công thức tính điểm KPI
                 type: Number, // Suggest tự động dựa theo lần đánh giá trước đó (nếu có), theo thời gian thực hiện, độ quan trọng của công việc, % đóng góp
                 default: -1
@@ -192,6 +194,11 @@ const TaskSchema = new Schema({
             }
         }]
     }],
+    formula: {
+        type: String,
+        //require: true,
+        default: "progress / (dayUsed / totalDay)",
+    },
     progress: { // % Hoàn thành thành công việc
         type: Number,
         default: 0,

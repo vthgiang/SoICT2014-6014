@@ -52,48 +52,140 @@ export default class CustomRenderer extends BaseRenderer {
       element.width = 160;
       // let a = element.businessObject.name.split("")
       let b = element.businessObject.name
+      const line = drawLine(parentNode, 0, 50, 160, 50, 'black');
 
-      const line = drawLine(parentNode, 0, 40, 160, 40, 'black');
+      let foreignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
 
-      var text = svgCreate('text');
-      svgAttr(text, {
-        fill: 'black',
-        transform: 'translate(7, 26)',
-        fontSize: "13px",
-        fontWeight: "bold",
-        fontFamily: "Open Sans"
-      });
-      svgClasses(text).add('djs-label');
-      svgAppend(text, document.createTextNode(b !== undefined ? b : ""));
-      svgAppend(parentNode, text);
+      //Vẽ tên của công việc lên shape
+      foreignObject.setAttribute('x', 5);
+      foreignObject.setAttribute('y', 5);
+      foreignObject.setAttribute('height', 35);
+      foreignObject.setAttribute('width', 150);
 
-      text = svgCreate('text');
-      svgAttr(text, {
-        fill: 'black',
-        transform: 'translate(5, 50)',
-        fontSize: "10px",
-        fontWeight: "bold"
-      });
-      svgClasses(text).add('djs-label');
+      let div = document.createElement('div');
+      let att = document.createAttribute("class");        // Create a "href" attribute
+      att.value = "task-process-title";            // Set the value of the href attribute
+      div.setAttributeNode(att);
 
-      let info = element.businessObject.$attrs.info;
-      let accountableName = element.businessObject.$attrs.accountableName
+      att = document.createAttribute("style");        // Create a "href" attribute
+      div.setAttributeNode(att);
+
+      div.innerHTML = b ? b : "";
+      foreignObject.appendChild(div);
+      svgAppend(parentNode, foreignObject);
+
+      
+      //Vẽ người thực hiện công việc
+      let foreignObject1 = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+      foreignObject1.setAttribute('x', 5);
+      foreignObject1.setAttribute('y', 60);
+      foreignObject1.setAttribute('height', 40);
+      foreignObject1.setAttribute('width', 150);
+
+      let div1 = document.createElement('div');
+      let att1 = document.createAttribute("class");        // Create a "href" attribute
+      att1.value = "list-task-process-responsible";            // Set the value of the href attribute
+      div1.setAttributeNode(att1);
+
+      att1 = document.createAttribute("style");        // Create a "href" attribute
+      div1.setAttributeNode(att1);
       let responsibleName = element.businessObject.$attrs.responsibleName
-      svgAppend(text, document.createTextNode(`${responsibleName ? responsibleName : ""}`));
-      svgAppend(parentNode, text);
+      div1.innerHTML = responsibleName ? responsibleName : "";
+      foreignObject1.appendChild(div1);
+      svgAppend(parentNode, foreignObject1);
 
-      text = svgCreate('text');
-      svgAttr(text, {
-        fill: 'black',
-        transform: 'translate(5, 70)',
-        fontSize: "10px"
-      });
-      svgClasses(text).add('djs-label');
-      svgAppend(text, document.createTextNode(`${accountableName ? accountableName : ""}`));
-      svgAppend(parentNode, text);
 
-      // const line = drawLine(parentNode, 0, 40, 200, 40, 'black');
+      //Vẽ người phê duyệt công việc
+      let foreignObject2 = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+      foreignObject2.setAttribute('x', 5);
+      foreignObject2.setAttribute('y', 90);
+      foreignObject2.setAttribute('height', 40);
+      foreignObject2.setAttribute('width', 150);
+
+      let div2 = document.createElement('div');
+      let att2 = document.createAttribute("class");        // Create a "href" attribute
+      att2.value = "list-task-process-accountable";            // Set the value of the href attribute
+      div2.setAttributeNode(att2);
+
+      att2 = document.createAttribute("style");        // Create a "href" attribute
+      div2.setAttributeNode(att2);
+      let accountableName = element.businessObject.$attrs.accountableName
+      div2.innerHTML = accountableName ? accountableName : "";
+      foreignObject2.appendChild(div2);
+      svgAppend(parentNode, foreignObject2);
     }
+
+
+
+
+
+
+    // if (element.type == 'bpmn:ExclusiveGateway') {
+    //   // let a = element.businessObject.name.split("")
+    //   let b = element.businessObject.name
+  
+    //   //Vẽ tên của công việc lên shape
+    //   let foreignObject = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+    //   foreignObject.setAttribute('x', 5);
+    //   foreignObject.setAttribute('y', 5);
+    //   foreignObject.setAttribute('height', 35);
+    //   foreignObject.setAttribute('width', 150);
+    //   let div = document.createElement('div');
+    //   let att = document.createAttribute("class");        // Create a "href" attribute
+    //   att.value = "task-process-title";            // Set the value of the href attribute
+    //   div.setAttributeNode(att);
+
+    //   att = document.createAttribute("style");        // Create a "href" attribute
+    //   div.setAttributeNode(att);
+
+    //   div.innerHTML = b ? b : "";
+    //   foreignObject.appendChild(div);
+    //   svgAppend(parentNode, foreignObject);
+
+      
+
+    //   //Vẽ người thực hiện công việc
+    //   let foreignObject1 = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+    //   foreignObject1.setAttribute('x', -50);
+    //   foreignObject1.setAttribute('y', 60);
+    //   foreignObject1.setAttribute('height', 40);
+    //   foreignObject1.setAttribute('width', 150);
+
+    //   let div1 = document.createElement('div');
+    //   let att1 = document.createAttribute("class");        // Create a "href" attribute
+    //   att1.value = "list-task-process-gate-way-responsible";            // Set the value of the href attribute
+    //   div1.setAttributeNode(att1);
+
+    //   att1 = document.createAttribute("style");        // Create a "href" attribute
+    //   div1.setAttributeNode(att1);
+    //   let responsibleName = element.businessObject.$attrs.responsibleName
+    //   div1.innerHTML = responsibleName ? responsibleName : "";
+    //   foreignObject1.appendChild(div1);
+    //   svgAppend(parentNode, foreignObject1);
+
+
+
+
+
+    //   //Vẽ người phê duyệt công việc
+    //   let foreignObject2 = document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject');
+    //   foreignObject2.setAttribute('x', 5);
+    //   foreignObject2.setAttribute('y', 90);
+    //   foreignObject2.setAttribute('height', 40);
+    //   foreignObject2.setAttribute('width', 150);
+
+    //   let div2 = document.createElement('div');
+    //   let att2 = document.createAttribute("class");        // Create a "href" attribute
+    //   att2.value = "list-task-process-gate-way-accountable";            // Set the value of the href attribute
+    //   div2.setAttributeNode(att2);
+
+    //   att2 = document.createAttribute("style");        // Create a "href" attribute
+    //   div2.setAttributeNode(att2);
+    //   let accountableName = element.businessObject.$attrs.accountableName
+    //   div2.innerHTML = accountableName ? accountableName : "";
+    //   foreignObject2.appendChild(div2);
+    //   svgAppend(parentNode, foreignObject2);
+    // }
     return shape;
   }
 

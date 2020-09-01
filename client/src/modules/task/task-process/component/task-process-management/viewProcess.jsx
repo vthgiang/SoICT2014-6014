@@ -13,6 +13,7 @@ import customModule from './../custom'
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/diagram-js.css';
 import './../processDiagram.css'
+import { performTaskAction } from "../../../task-perform/redux/actions";
 
 //Xóa element khỏi pallette theo data-action
 var _getPaletteEntries = PaletteProvider.prototype.getPaletteEntries;
@@ -511,7 +512,7 @@ function mapState(state) {
 
 const actionCreators = {
     getDepartment: UserActions.getDepartmentOfUser,
-    getTaskById: taskManagementActions.getTaskById,
+    getTaskById: performTaskAction.getTaskById,
     getAllUsersWithRole: UserActions.getAllUsersWithRole,
     getChildrenOfOrganizationalUnits: UserActions.getChildrenOfOrganizationalUnitsAsTree,
 };

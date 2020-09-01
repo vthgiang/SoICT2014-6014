@@ -8,6 +8,7 @@ class AttachmentTab extends Component {
         super(props);
         this.state = {};
     }
+
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.id !== prevState.id) {
             return {
@@ -27,38 +28,42 @@ class AttachmentTab extends Component {
     }
 
     render() {
-        const { id, translate } = this.props;
-        const { files, archivedRecordNumber } = this.state;
+        const { translate } = this.props;
+
+        const { id, files, archivedRecordNumber } = this.state;
+
         return (
             <div id={id} className="tab-pane">
                 <div className="row box-body">
+                    {/* Nơi lưu trữ bản cứng */}
                     <div className="col-md-4">
                         <div className="form-group">
-                            <strong>{translate('manage_employee.attachments_code')}&emsp;</strong>
+                            <strong>{translate('human_resource.profile.attachments_code')}&emsp;</strong>
                             {archivedRecordNumber}
                         </div>
                     </div>
+                    {/* Danh sách tài liệu đính kèm */}
                     <div className="col-md-12">
-                        <h4 className="row col-md-6">{translate('manage_employee.list_attachments')}:</h4>
+                        <h4 className="row col-md-6">{translate('human_resource.profile.list_attachments')}:</h4>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
-                                    <th>{translate('manage_employee.file_name')}</th>
-                                    <th>{translate('table.description')}</th>
-                                    <th>{translate('manage_employee.number')}</th>
-                                    <th>{translate('table.status')}</th>
-                                    <th>{translate('manage_employee.attached_files')}</th>
+                                    <th>{translate('human_resource.profile.file_name')}</th>
+                                    <th>{translate('general.description')}</th>
+                                    <th>{translate('human_resource.profile.number')}</th>
+                                    <th>{translate('general.status')}</th>
+                                    <th>{translate('human_resource.profile.attached_files')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {(typeof files !== 'undefined' && files.length !== 0) &&
+                                {files && files.length !== 0 &&
                                     files.map((x, index) => (
                                         <tr key={index}>
                                             <td>{x.name}</td>
                                             <td>{x.description}</td>
                                             <td>{x.number}</td>
-                                            <td>{translate(`manage_employee.${x.status}`)}</td>
-                                            <td>{!x.urlFile ? translate('manage_employee.no_files') :
+                                            <td>{translate(`human_resource.profile.${x.status}`)}</td>
+                                            <td>{!x.urlFile ? translate('human_resource.profile.no_files') :
                                                 <a className='intable'
                                                     style={{ cursor: "pointer" }}
                                                     onClick={(e) => this.requestDownloadFile(e, `.${x.urlFile}`, x.name)}>
@@ -70,7 +75,7 @@ class AttachmentTab extends Component {
                             </tbody>
                         </table>
                         {
-                            (typeof files === 'undefined' || files.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
+                            (!files || files.length === 0) && <div className="table-info-panel">{translate('confirm.no_data')}</div>
                         }
                     </div>
                 </div>

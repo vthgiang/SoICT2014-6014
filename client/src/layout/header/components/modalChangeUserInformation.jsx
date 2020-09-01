@@ -5,7 +5,8 @@ import { AuthActions } from '../../../modules/auth/redux/actions';
 import { DialogModal, ErrorLabel } from '../../../common-components';
 import { Validator } from './validator';
 import CropImage from './cropImage';
-import './cropImage.css'
+import './cropImage.css';
+import ValidationHelper from '../../../helpers/validationHelper';
 
 class ModalChangeUserInformation extends Component {
     constructor(props) {
@@ -41,8 +42,6 @@ class ModalChangeUserInformation extends Component {
                     modalID="modal-profile"
                     formID="form-profile"
                     title={translate('auth.profile.title')}
-                    msg_success={translate('auth.profile.edit_success')}
-                    msg_faile={translate('auth.profile.edit_faile')}
                     func={this.changeInformation}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -107,50 +106,34 @@ class ModalChangeUserInformation extends Component {
     }
 
     handleChangeName = (e) => {
-        const {value} = e.target;
-        this.validateUserName(value, true);
+        let {value} = e.target;
+        let {translate} = this.props;
+        let {message} = ValidationHelper.validateName(translate, value, 4, 255);
+        this.setState({
+            userName: value,
+            userNameError: message
+        })
     }
-    
-    validateUserName = (value, willUpdateState=true) => {
-        let msg = Validator.validateName(value)
-        if (willUpdateState){
-            this.setState(state => {
-                return {
-                    ...state,
-                    userNameError: msg,
-                    userName: value,
-                }
-            });
-        }
-        return msg == undefined;
-    }
-
     
     handleEmail = (e) => {
-        const {value} = e.target;
-        this.validateEmail(value);
-    }
-    validateEmail = (value, willUpdateState=true) => {
-        let msg = Validator.validateEmail(value)
-        if (willUpdateState){
-            this.setState(state => {
-                return {
-                    ...state,
-                    userEmailError: msg,
-                    userEmail: value,
-                }
-            });
-        }
-        return msg == undefined;
+        let {value} = e.target;
+        let {translate} = this.props;
+        let {message} = ValidationHelper.validateEmail(translate, value);
+        this.setState({
+            userEmail: value,
+            userEmailError: message
+        })
     }
 
     
     isFormValidated = () => {
-        let result = 
-            this.validateUserName(this.state.userName, false) &&
-            this.validateEmail(this.state.userEmail, false);
-        
-        return result;
+        let {userName, userEmail} = this.state;
+        let {translate} = this.props;
+        if(
+            !ValidationHelper.validateName(translate, userName, 6, 255).status ||
+            !ValidationHelper.validateEmail(translate, userEmail).status
+        ) return false;
+        return true;
     }
 }
  

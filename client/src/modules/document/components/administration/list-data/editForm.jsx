@@ -543,9 +543,10 @@ class EditForm extends Component {
             if (!title.includes("Chỉnh sửa đơn vị quản lí")) {
                 title += "Chỉnh sửa đơn vị quản lí"
             }
-            console.log(documentArchivedRecordPlaceOrganizationalUnit, this.props.documentArchivedRecordPlaceOrganizationalUnit, documentArchivedRecordPlaceOrganizationalUnit !== this.props.documentArchivedRecordPlaceOrganizationalUnit)
+            console.log('iiiiiiiiiiiiiiiiiii', documentArchivedRecordPlaceOrganizationalUnit, this.props.documentArchivedRecordPlaceOrganizationalUnit, documentArchivedRecordPlaceOrganizationalUnit !== this.props.documentArchivedRecordPlaceOrganizationalUnit)
             let newDepartment;
-            department.list.filter(d => d._id === documentArchivedRecordPlaceOrganizationalUnit)
+            newDepartment = department.list.filter(d => d._id === documentArchivedRecordPlaceOrganizationalUnit)
+            console.log('newDepartment', newDepartment)
             description += "Đơn vị quản lí mới " + newDepartment[0].name + ". "
             formData.append('archivedRecordPlaceOrganizationalUnit', documentArchivedRecordPlaceOrganizationalUnit);
         }
@@ -888,7 +889,7 @@ class EditForm extends Component {
                                                 />
                                             </div>
                                             <div className="form-group">
-                                                <label>Đường dẫn chi tiết</label>
+                                                <label>{translate('document.administration.domains.path_detail')}</label>
                                                 <textarea style={{ height: '30px' }} type="text" className="form-control" value={path} disable />
                                             </div>
                                             <div className="form-group">

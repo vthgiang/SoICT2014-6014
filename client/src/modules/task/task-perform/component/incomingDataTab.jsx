@@ -60,60 +60,57 @@ class IncomingDataTab extends Component {
         
         return (
             <React.Fragment>
-                <div className="description-box">
-                    {
-                        listTask.length !== 0
-                        && listTask.map(task => 
-                            <div className="row">
-                                <h4 className="col-md-12" style={{ fontWeight: "600" }}>Tên công việc: {task.name}</h4>
-                                
-                                {/** Danh sách thông tin */}
-                                <div className="col-md-12"><strong>Thông tin</strong></div>
-                                {
-                                    task.informations.length !== 0
-                                    ? task.informations.map(info => 
-                                        info.isOutput &&
-                                        <div className="col-md-12">
-                                            <ul>
-                                                <strong>{info.name}</strong>
-                                                <span> - {info.description}</span>
-                                                <span> - {info.type}</span>
-                                            </ul>
-                                        </div>
-                                    )   
-                                    : <div className="col-md-12">Không xuất thông tin</div>
-                                }
+                {
+                    listTask.length !== 0
+                    && listTask.map(task => 
+                        <div className="description-box">
+                            <h4>{task.name}</h4>
+                            
+                            {/** Danh sách thông tin */}
+                            <div><strong>Thông tin</strong></div>
+                            {
+                                task.informations.length !== 0
+                                ? task.informations.map(info => 
+                                    info.isOutput &&
+                                    <div>
+                                        <ul>
+                                            <strong>{info.name}</strong>
+                                            <span> - {info.description}</span>
+                                            <span> - {info.type}</span>
+                                        </ul>
+                                    </div>
+                                )   
+                                : <div>{task.name} không xuất thông tin</div>
+                            }
 
-                                {/** Danh sách tài liệu */}
-                                <div className="col-md-12"><strong>Tài liệu</strong></div>
-                                {
-                                    task.documents.length !== 0
-                                    ? task.documents.map(document => 
-                                        document.isOutput &&
-                                        <div className="col-md-12">
+                            {/** Danh sách tài liệu */}
+                            <div><strong>Tài liệu</strong></div>
+                            {
+                                task.documents.length !== 0
+                                ? task.documents.map(document => 
+                                    document.isOutput &&
+                                    <div>
+                                        <ul>
+                                            <li style={{ listStyle: "none" }}><strong>{document.description}</strong></li>
                                             <ul>
-                                                <li style={{ listStyle: "none" }}><strong>{document.description}</strong></li>
-                                                <ul>
-                                                {
-                                                    document.files
-                                                    && document.files.length !== 0
-                                                    && document.files.map(file => 
-                                                        <li style={{ listStyle: "none" }}>
-                                                            <strong>{file.name}</strong><span> - <a>{file.url}</a></span>
-                                                        </li>
-                                                    )
-                                                }
-                                                </ul>
+                                            {
+                                                document.files
+                                                && document.files.length !== 0
+                                                && document.files.map(file => 
+                                                    <li style={{ listStyle: "none" }}>
+                                                        <strong>{file.name}</strong><span> - <a>{file.url}</a></span>
+                                                    </li>
+                                                )
+                                            }
                                             </ul>
-                                        </div>
-                                    )
-                                    : <div className="col-md-12">Không xuất tài liệu</div>
-                                }
-                            </div>
-                        )
-                    }
-                </div>
-                
+                                        </ul>
+                                    </div>
+                                )
+                                : <div>{task.name} không xuất tài liệu</div>
+                            }
+                        </div>
+                    )
+                }
             </React.Fragment>
         )
     }

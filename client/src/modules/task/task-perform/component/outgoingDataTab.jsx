@@ -138,73 +138,69 @@ class OutgoingDataTab extends Component {
 
         return (
             <React.Fragment>
-                <div className="description-box">
-                    {
-                        task &&
-                        <div className="row">
-                            <h4 className="col-md-12">Danh sách thông tin và tài liệu</h4>
+                {
+                    task &&
+                    <div className="description-box">
+                        <h4>Danh sách thông tin và tài liệu</h4>
 
-                            { /** Danh sách thông tin */
-                                task.taskInformations
-                                && task.taskInformations.length !== 0
-                                ? task.taskInformations.map((info) =>
-                                    <div className="col-md-12">
+                        { /** Danh sách thông tin */
+                            task.taskInformations
+                            && task.taskInformations.length !== 0
+                            ? task.taskInformations.map((info) =>
+                                <div>
+                                    <input
+                                        type="checkbox"
+                                        title="Xuất thông tin"
+                                        style={{ margin: "0.5em 0.5em", padding: "0.6em" }}
+                                        name={info.description}
+                                        onClick={() => this.handleCheckBoxOutputInformation(info)}
+                                        checked={isOutputInformation[info._id]}
+                                    />
+                                    <strong>{info.name}</strong>
+                                    <span> - {info.description}</span>
+                                    <span> - {info.type}</span>
+                                </div>
+                            )
+                            : <div>Không có thông tin</div>
+                        }
+
+                        
+                        { /** Danh sách tài liệu */
+                            task.documents
+                            && task.documents.length !== 0
+                            ? task.documents.map(document =>
+                                <div>
+                                    <div>
                                         <input
                                             type="checkbox"
-                                            title="Xuất thông tin"
+                                            title="Xuất tài liệu"
                                             style={{ margin: "0.5em 0.5em", padding: "0.6em" }}
-                                            name={info.description}
-                                            onClick={() => this.handleCheckBoxOutputInformation(info)}
-                                            checked={isOutputInformation[info._id]}
+                                            name={document.description}
+                                            onClick={() => this.handleCheckBoxOutputDocument(document)}
+                                            checked={isOutputDocument[document._id]}
                                         />
-                                        <strong>{info.name}</strong>
-                                        <span> - {info.description}</span>
-                                        <span> - {info.type}</span>
+                                        <strong>{document.description}</strong>
                                     </div>
-                                )
-                                : <div className="col-md-12">Không có thông tin</div>
-                            }
 
-                            
-                            { /** Danh sách tài liệu */
-                                task.documents
-                                && task.documents.length !== 0
-                                ? task.documents.map(document =>
-                                    <div>
-                                        <div className="col-md-12">
-                                            <input
-                                                type="checkbox"
-                                                title="Xuất tài liệu"
-                                                style={{ margin: "0.5em 0.5em", padding: "0.6em" }}
-                                                name={document.description}
-                                                onClick={() => this.handleCheckBoxOutputDocument(document)}
-                                                checked={isOutputDocument[document._id]}
-                                            />
-                                            <strong>{document.description}</strong>
-                                        </div>
+                                    {
+                                        document.files && document.files.length !== 0
+                                        && document.files.map(file =>
+                                            <div>
+                                                <ul style={{ wordWrap: "break-word" }}>
+                                                    <strong>{file.name} </strong>
+                                                    <span><a>{file.url}</a></span>
+                                                </ul>
+                                            </div>
+                                        )
+                                    }
+                                </div>
+                            )
+                            : <div>Không có tài liệu</div>
+                        }
 
-                                        {
-                                            document.files && document.files.length !== 0
-                                            && document.files.map(file =>
-                                                <div className="col-md-6">
-                                                    <ul>
-                                                        <strong>{file.name}</strong>
-                                                        <span> - <a>{file.url}</a></span>
-                                                    </ul>
-                                                </div>
-                                            )
-                                        }
-                                    </div>
-                                )
-                                : <div className="col-md-12">Không có tài liệu</div>
-                            }
-
-                            <div className="col-md-12">
-                                <button type="button" className="btn btn-success pull-right" style={{ marginRight: "2em" }} onClick={() => this.handleSaveEdit()} disabled={this.DOCUMENT.length === 0 && this.INFORMATION.length === 0}>Lưu</button>
-                            </div>
-                        </div>
-                    }
-                </div>
+                        <button type="button" className="btn btn-success pull-right" style={{ margin: "2em 2em" }} onClick={() => this.handleSaveEdit()} disabled={this.DOCUMENT.length === 0 && this.INFORMATION.length === 0}>Lưu</button>
+                    </div>
+                }
             </React.Fragment>
         )
     }
@@ -217,7 +213,7 @@ function mapState(state) {
 const actions = {
     editDocument: performTaskAction.editDocument,
     editInformationTask: performTaskAction.editInformationTask,
-    getTaskById: taskManagementActions.getTaskById
+    getTaskById: performTaskAction.getTaskById
 }
 
 const connectOutgoingDataTab = connect(mapState, actions)(withTranslate(OutgoingDataTab));

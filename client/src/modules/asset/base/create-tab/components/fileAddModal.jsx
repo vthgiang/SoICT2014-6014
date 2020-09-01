@@ -127,11 +127,11 @@ class FileAddModal extends Component {
         return (
             <React.Fragment>
                 {/* Button thêm tài liệu đính kèm */}
-                <ButtonModal modalID={`modal-create-file-${id}`} button_name={translate('modal.create')} title={translate('manage_employee.add_file')} />
+                <ButtonModal modalID={`modal-create-file-${id}`} button_name={translate('manage_asset.add_file')} title={translate('manage_asset.add_file')}   />
                 <DialogModal
                     size='50' modalID={`modal-create-file-${id}`} isLoading={false}
                     formID={`form-create-file-${id}`}
-                    title={translate('manage_employee.add_file')}
+                    title={translate('manage_asset.add_file')}
                     func={this.save}
                     disableSubmit={!this.isFormValidated()}
                 >
@@ -160,8 +160,10 @@ class FileAddModal extends Component {
                             {files.map((child, index) => {
                                 return (
                                     <React.Fragment>
-                                        <li>
-                                            <a style={{ cursor: "pointer" }} onClick={(e) => this.handleDeleteFile(child.name)} >{child.name}</a>
+                                        <li key={index}>
+                                            <label><a style={{ cursor: "pointer" }} title='Xóa file này'><i className="fa fa-times" style={{ color: "black", marginRight: 5 }}
+                                                onClick={(e) => this.handleDeleteFile(child.fileName)} /></a></label>
+                                            <a>{child.fileName}</a>
                                         </li>
                                     </React.Fragment>
                                 )
