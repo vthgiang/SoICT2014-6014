@@ -95,6 +95,7 @@ class ManageHoliday extends Component {
         data = data.map((x, index) => {
             return {
                 STT: index + 1,
+                type: translate(`human_resource.holiday.${x.type}`),
                 startDate: new Date(x.startDate),
                 endDate: new Date(x.endDate),
                 description: x.description,
@@ -109,6 +110,7 @@ class ManageHoliday extends Component {
                         {
                             columns: [
                                 { key: "STT", value: translate('human_resource.stt') },
+                                { key: 'type', value: translate('human_resource.holiday.table.type') },
                                 { key: "startDate", value: translate('human_resource.holiday.table.start_date') },
                                 { key: "endDate", value: translate('human_resource.holiday.table.end_date') },
                                 { key: "description", value: translate('human_resource.holiday.table.describe_timeline'), },
@@ -129,7 +131,7 @@ class ManageHoliday extends Component {
         let { importHoliday, createHoliday, currentRow } = this.state;
 
         let listHoliday = [];
-        if (holiday.listHoliday.length !== 0) {
+        if (holiday.listHoliday && holiday.listHoliday.length !== 0) {
             listHoliday = holiday.listHoliday;
         }
         let exportData = this.convertDataToExportData(listHoliday);
@@ -196,6 +198,7 @@ class ManageHoliday extends Component {
                     currentRow !== undefined &&
                     <HolidayEditForm
                         _id={currentRow._id}
+                        type={currentRow.type}
                         startDate={this.formatDate2(currentRow.startDate)}
                         endDate={this.formatDate2(currentRow.endDate)}
                         description={currentRow.description}

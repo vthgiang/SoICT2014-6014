@@ -611,7 +611,7 @@ export default {
             manage_training: 'Manage Training',
             account: 'Account',
             manage_unit: 'Manage units',
-            manage_holiday: 'Work plan',
+            manage_holiday: 'Manage work plan',
             add_employee: 'Add New Staffs',
             list_employee: 'Manage Staffs Information',
             detail_employee: 'Personal Information',
@@ -1289,13 +1289,21 @@ export default {
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             holiday: {
                 file_name_export: 'Work plan',
+                number_date_leave_of_year: 'Number of days off in the year',
+
                 // Nhóm dành cho table
                 table: {
+                    type: 'Type',
                     timeline: 'Timelines',
                     start_date: 'Start date',
                     end_date: 'End date',
                     describe_timeline: 'Description',
                 },
+
+                // Nhóm thể loại kế hoạch làm Việc
+                holiday: 'Holiday',
+                auto_leave: 'Auto leave',
+                no_leave: 'No leave',
 
                 // Nhóm dành cho action
                 edit_holiday: 'Edit work schedule',
@@ -1306,10 +1314,12 @@ export default {
                 add_import: 'Import file excel',
 
                 // Thông điệp trả về từ server
+                type_required: 'Type required',
                 start_date_required: 'Start date required',
                 end_date_required: 'End date required',
                 reason_required: 'Description required',
                 holiday_duplicate_required: 'Time is overlapping',
+                edit_number_date_leave_of_year_success: 'Change the number of days off in the year success',
 
                 get_holiday_success: 'Get work schedule success',
                 get_holiday_faile: 'Get work schedule faile',

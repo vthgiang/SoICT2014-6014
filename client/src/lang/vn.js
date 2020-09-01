@@ -607,7 +607,7 @@ export default {
             manageDocumentType: 'Quản lý loại văn bản',
 
             manage_employee: 'Quản lý nhân sự',
-            manage_holiday: 'Kế hoạch làm việc',
+            manage_holiday: 'Quản lý kế hoạch làm việc',
             manage_training: 'Quản lý đào tạo',
             account: 'Tài khoản',
             manage_unit: 'Quản lý nhân sự các đơn vị',
@@ -1287,39 +1287,48 @@ export default {
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             holiday: {
                 file_name_export: 'Kế hoạch làm việc',
+                number_date_leave_of_year: 'Số ngày nghỉ trong năm',
 
                 // Nhóm dành cho table
                 table: {
+                    type: 'Thể loại',
                     timeline: 'Các mốc thời gian',
                     start_date: 'Ngày bắt đầu',
                     end_date: 'Ngày kết thúc',
                     describe_timeline: 'Mô tả',
                 },
 
+                // Nhóm thể loại kế hoạch làm Việc
+                holiday: 'Nghỉ lễ',
+                auto_leave: 'Được nghỉ',
+                no_leave: 'Không được phép nghỉ',
+
                 // Nhóm dành cho action
-                edit_holiday: 'Chỉnh sửa lịch làm việc',
-                delete_holiday: 'Xoá lịch làm việc',
+                edit_holiday: 'Chỉnh sửa kế hoạch làm việc',
+                delete_holiday: 'Xoá kế hoạch làm việc',
                 add_holiday: 'Thêm mới',
-                add_holiday_title: 'Thêm mới lịch làm việc',
-                add_by_hand: 'Thêm một lịch làm việc',
+                add_holiday_title: 'Thêm mới kế hoạch làm việc',
+                add_by_hand: 'Thêm một kế hoạch làm việc',
                 add_import: 'Import file excel',
 
                 // Thông điệp trả về từ server
+                type_required: 'Thể loại không được để trống',
                 start_date_required: 'Thời gian bắt đầu không được để trống',
                 end_date_required: 'Thời gian kết thúc không được để trống',
-                reason_required: 'Mô tả lịch nghỉ không được để trống',
+                reason_required: 'Mô tả kế hoạch làm việc không được để trống',
                 holiday_duplicate_required: 'Thời gian bị trùng lặp',
+                edit_number_date_leave_of_year_success: 'Thay đổi số ngày nghỉ trong một năm thành công',
 
-                get_holiday_success: 'Lấy danh sách lịch làm việc thành công',
-                get_holiday_faile: 'Lấy danh sách lịch làm việc thất bại',
-                create_holiday_success: 'Thêm mới lịch làm việc thành công',
-                create_holiday_faile: 'Thêm mới lịch làm việc thất bại',
-                delete_holiday_success: 'Xoá lịch làm việc thành công',
-                delete_holiday_faile: 'Xoá lịch làm việc thất bại',
-                edit_holiday_success: 'Chỉnh sửa lịch làm việc thành công',
-                edit_holiday_faile: 'Chỉnh sửa lịch làm việc thất bại',
+                get_holiday_success: 'Lấy danh sách kế hoạch làm việc thành công',
+                get_holiday_faile: 'Lấy danh sách kế hoạch làm việc thất bại',
+                create_holiday_success: 'Thêm mới kế hoạch làm việc thành công',
+                create_holiday_faile: 'Thêm mới kế hoạch làm việc thất bại',
+                delete_holiday_success: 'Xoá kế hoạch làm việc thành công',
+                delete_holiday_faile: 'Xoá kế hoạch làm việc thất bại',
+                edit_holiday_success: 'Chỉnh sửa kế hoạch làm việc thành công',
+                edit_holiday_faile: 'Chỉnh sửa kế hoạch làm việc thất bại',
                 import_holiday_success: 'Import thông tin nghỉ lễ tết thành công',
-                import_holiday_faile: 'IMport thông tin nghỉ lễ tết thất bại',
+                import_holiday_faile: 'Import thông tin nghỉ lễ tết thất bại',
             },
 
             // Quản lý chấm công nhân viên
