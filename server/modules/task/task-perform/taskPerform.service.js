@@ -21,7 +21,7 @@ exports.getTaskById = async (id, userId) => {
         .populate("evaluations.results.employee")
         .populate("evaluations.results.organizationalUnit")
         .populate("evaluations.results.kpis.kpis")
-    
+
     var task = await Task.findById(id).populate([
         { path: "parent", select: "name" },
         { path: "taskTemplate", select: "formula" },
@@ -796,7 +796,7 @@ exports.deleteCommentOfTaskComment = async (params) => {
  * Đánh giá hoạt động
  */
 exports.evaluationAction = async (params, body) => {
-    // đánh giá
+    // đánh giá lần đầu
     if (body.firstTime === 1) {
         //cập nhật điểm người đánh giá
         let evaluationAction = await Task.updateOne(
@@ -843,7 +843,10 @@ exports.evaluationAction = async (params, body) => {
 
 
         //tính điểm trung bình
-        let accountableRating = rating.reduce((accumulator, currentValue) => { return accumulator + currentValue }, 0) / rating.length
+        if(rating.length > 0) {
+            let accountableRating = rating.reduce((accumulator, currentValue) => { return accumulator + currentValue }, 0) / rating.length
+        }
+       
 
 
         //check xem th đấnh giá có là người phê duyệt không
@@ -862,7 +865,7 @@ exports.evaluationAction = async (params, body) => {
         }
 
 
-        // đánh giá lại
+    // đánh giá lại
     } else if (body.firstTime === 0) {
         let taskAction = await Task.update(
             { $and: [{ "_id": params.taskId, "taskActions._id": params.actionId }, { "taskActions.evaluations.creator": body.creator }] },
@@ -2449,9 +2452,14 @@ exports.deleteFileChildTaskComment = async (params) => {
  * @param status trang thai công việc
  */
 exports.editTaskStatus = async (taskID, body) => {
-
+    let today = new Date();
     let task1 = await Task.findByIdAndUpdate(taskID,
-        { $set: { status: body.status } }
+        { // khi thực hiện công việc quay vòng trong TH nếu là gateway thì trạng thái của gateway sẽ đc cập nhật thành -> DELAYED -> để tránh bị cạp nhật ngày tháng sai khi task trc nó kết thúc lần 2,...
+            $set: {
+                status: body.status,
+                // endDate: today,
+            }
+        }
     )
 
     let startDate = task1.startDate;
@@ -2467,19 +2475,28 @@ exports.editTaskStatus = async (taskID, body) => {
 
             let followEndDate = new Date(timer).toISOString();
 
-            console.log('enddate', followEndDate);
-            console.log('startdate', followStartDate);
-
-
-            await Task.findByIdAndUpdate(body.listSelected[i],
-                {
-                    $set: {
-                        status: "Inprocess",
-                        startDate: followStartDate,
-                        endDate: followEndDate,
+            if (body.status === "Finished") {
+                await Task.findByIdAndUpdate(body.listSelected[i],
+                    {
+                        $set: {
+                            status: "Inprocess",
+                            startDate: followStartDate,
+                            endDate: followEndDate,
+                        }
                     }
-                }
-            )
+                )
+            }
+            else {
+                await Task.findByIdAndUpdate(body.listSelected[i],
+                    {
+                        $set: {
+                            status: "Inprocess",
+                            endDate: followEndDate,
+                        }
+                    }
+                )
+            }
+
         }
     } else {
         if (!body.listSelected.length) {
@@ -2494,16 +2511,27 @@ exports.editTaskStatus = async (taskID, body) => {
 
                     let followEndDate = new Date(timer).toISOString();
 
-                    console.log('follow', followEndDate, followStartDate);
-                    await Task.findByIdAndUpdate(task1.followingTasks[i].task,
-                        {
-                            $set: {
-                                status: "Inprocess",
-                                startDate: followStartDate,
-                                endDate: followEndDate,
+                    if (followItem.status === "WaitForApproval") {
+                        await Task.findByIdAndUpdate(task1.followingTasks[i].task,
+                            {
+                                $set: {
+                                    status: "Inprocess",
+                                    startDate: followStartDate,
+                                    endDate: followEndDate,
+                                }
                             }
-                        }
-                    )
+                        )
+                    } else {
+                        await Task.findByIdAndUpdate(task1.followingTasks[i].task,
+                            {
+                                $set: {
+                                    status: "Inprocess",
+                                    endDate: followEndDate,
+                                }
+                            }
+                        )
+                    }
+
                 }
             }
         }

@@ -166,15 +166,12 @@ class ModalCreateTaskProcess extends Component {
 
 	handleChangeName = async (value) => {
 		let stringName = value
-		// if (value.length > 13) {
-		// 	stringName = value.slice(0, 13)
-		// 	stringName += "..."
-		// }
 		const modeling = this.modeler.get('modeling');
 		let element1 = this.modeler.get('elementRegistry').get(this.state.id);
 		modeling.updateProperties(element1, {
 			name: stringName,
 		});
+		window.$(`.task-process-gate-way-title`).css("background-color", "white")
 	}
 
 	handleChangeDescription = async (value) => {
@@ -271,7 +268,6 @@ class ModalCreateTaskProcess extends Component {
 		this.modeler.attachTo('#' + this.generateId);
 		this.modeler.importXML(this.initialDiagram);
 		var eventBus = this.modeler.get('eventBus');
-
 		//Vo hieu hoa double click edit label
 		eventBus.on('element.dblclick', 10000, function (event) {
 			var element = event.element;
@@ -649,10 +645,13 @@ class ModalCreateTaskProcess extends Component {
 	}
 
 	render() {
-		const { translate, department, role } = this.props;
-		const { id, name, info, showInfo, processDescription, processName, viewer, manager, selectedCreate, indexRenderer } = this.state;
-		const { listOrganizationalUnit } = this.props;
 
+		const { translate, department, role } = this.props;
+		const { id, name, info, showInfo, processDescription, processName, viewer, manager, selectedCreate, indexRenderer, type } = this.state;
+		const { listOrganizationalUnit } = this.props;
+		if (type === "bpmn:ExclusiveGateway"  && info && id && info[id].name) {
+			window.$(`.task-process-gate-way-title`).css("background-color", "white")
+		}
 		let listRole = [];
 		if (role && role.list.length !== 0) listRole = role.list;
 		let listItem = listRole.filter(e => ['Admin', 'Super Admin', 'Dean', 'Vice Dean', 'Employee'].indexOf(e.name) === -1)

@@ -58,7 +58,7 @@ class SelectFollowingTaskModal extends Component {
             }
         }
         Swal.fire({
-            title: "Bạn có chắc chắn muốn kết thúc công việc",
+            title: "Bạn có chắc chắn muốn thay đổi trạng thái công việc này",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
