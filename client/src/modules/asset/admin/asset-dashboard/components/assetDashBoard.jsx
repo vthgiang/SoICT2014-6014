@@ -2,13 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
-import CanvasJSReact from './assets/canvasjs.react';
-
 import { AssetService } from "../../asset-information/redux/services";
 import { RecommendProcureService } from "../../../user/purchase-request/redux/services";
 import { RecommendDistributeService } from "../../use-request/redux/services";
 
-import { LazyLoadComponent, forceCheckOrVisible } from '../../../../../common-components';
+import { LazyLoadComponent, forceCheckOrVisible, ExportExcel } from '../../../../../common-components';
 
 import { AssetByGroup } from './asset-by-group/assetByGroup';
 import { AssetStatistics } from './asset-statistics-chart/index';
@@ -17,15 +15,17 @@ import { AssetByType } from './asset-by-type/assetByType';
 import { translate } from 'react-redux-multilingual/lib/utils';
 import { PurchaseAndDisposal } from './asset-purchase-disposal/purchaseAndDisposal';
 
-var CanvasJSChart = CanvasJSReact.CanvasJSChart;
-
 class DashBoardAssets extends Component {
+
     constructor(props) {
         super(props);
+
         this.state = {
             listAssets: [],
             recommendProcure: [],
             recommendDistribute: [],
+
+            currentTab: "assetByGroup"
         }
     }
 
@@ -98,66 +98,123 @@ class DashBoardAssets extends Component {
 
     returnCountNumber = (array, status) => array.filter(item => item.status === status).length;
 
+    handleNavTabs = (tab) => {
+        this.setState(state => {
+            return {
+                ...state,
+                currentTab: tab
+            }
+        })
 
+        forceCheckOrVisible(true, false);
+    }
+
+    setAssetByGroupExportData = (amountOfAsset, depreciationOfAsset, valueOfAsset) => {
+        let data, assetByGroup;
+
+        if (valueOfAsset && valueOfAsset.length !== 0 && depreciationOfAsset && amountOfAsset) {
+            data = valueOfAsset.map((item, index) => {
+                return {
+                    STT: index + 1,
+                    name: valueOfAsset[index][0],
+                    valueOfAsset: valueOfAsset[index][1],
+                    depreciationOfAsset: depreciationOfAsset[index][1],
+                    amountOfAsset: amountOfAsset[index][1]
+                }
+            })
+        }
+        
+        assetByGroup = {
+            fileName: "Thống kê các nhóm tài sản",
+            dataSheets: [
+                {
+                    sheetName: "Sheet1",
+                    tables: [
+                        {
+                            tableName: "Thống kê các nhóm tài sản",
+                            rowHeader: 1,
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "name", value: "Tên nhóm" },
+                                { key: "valueOfAsset", value: "Giá trị tài sản" },
+                                { key: "depreciationOfAsset", value: "Giá trị khấu hao" },
+                                { key: "amountOfAsset", value: "Số lượng" }
+                            ],
+                            data: data
+                        },
+                    ]
+                },
+            ]
+        }
+
+        this.setState(state => {
+            return {
+                ...state,
+                exportData: {
+                    ...state.exportData,
+                    assetByGroup: assetByGroup
+                }
+            }
+        })
+    }
+
+    setAssetByTypeExportData = (amountOfAsset, depreciationOfAsset, valueOfAsset) => {
+        let data, assetByType;
+
+        if (valueOfAsset && valueOfAsset.type && valueOfAsset.count && valueOfAsset.type.length !== 0
+            && depreciationOfAsset && depreciationOfAsset.count
+            && amountOfAsset && amountOfAsset.count
+        ) {
+            data = valueOfAsset.type.map((item, index) => {
+                return {
+                    STT: index + 1,
+                    name: valueOfAsset.type[index],
+                    valueOfAsset: valueOfAsset.count[index],
+                    depreciationOfAsset: depreciationOfAsset.count[index],
+                    amountOfAsset: amountOfAsset.count[index]
+                }
+            })
+        }
+        
+        assetByType = {
+            fileName: "Thống kê các loại tài sản",
+            dataSheets: [
+                {
+                    sheetName: "Sheet1",
+                    tables: [
+                        {
+                            tableName: "Thống kê các loại tài sản",
+                            rowHeader: 1,
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "name", value: "Tên loại" },
+                                { key: "valueOfAsset", value: "Giá trị tài sản" },
+                                { key: "depreciationOfAsset", value: "Giá trị hao mòn" },
+                                { key: "amountOfAsset", value: "Số lượng" }
+                            ],
+                            data: data
+                        },
+                    ]
+                },
+            ]
+        }
+
+        this.setState(state => {
+            return {
+                ...state,
+                exportData: {
+                    ...state.exportData,
+                    assetByType: assetByType
+                }
+            }
+        })
+    }
 
     render() {
         const { translate } = this.props;
-        const { listAssets, recommendProcure, recommendDistribute } = this.state;
-        const options = {
-            animationEnabled: true,
-            title: {
-                text: "Yêu cầu mua sắm tài sản",
-                fontFamily: "'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif"
-            },
-            subtitles: [{
-                text: recommendProcure.length ? `${recommendProcure.length} yêu cầu` : "0 yêu cầu",
-                verticalAlign: "center",
-                fontSize: 24,
-                dockInsidePlotArea: true
-            }],
-            data: [{
-                type: "doughnut",
-                showInLegend: true,
-                indexLabel: "{name}: {y}",
-                indexLabelFormatter: function (e) {
-                    return `${e.dataPoint.name}: ${e.dataPoint.y}`
-                },
-                yValueFormatString: "#,###''",
-                dataPoints: [
-                    { name: "Chờ phê duyệt", y: recommendProcure.length ? this.returnCountNumber(recommendProcure, 'Chờ phê duyệt') : 'test' },
-                    { name: "Đã phê duyệt", y: recommendProcure.length ? this.returnCountNumber(recommendProcure, 'Đã phê duyệt') : 0 },
-                    { name: "Không phê duyệt", y: recommendProcure.length ? this.returnCountNumber(recommendProcure, 'Không phê duyệt') : 0 },
-                ]
-            }]
-        };
-
-        const options2 = {
-            animationEnabled: true,
-            title: {
-                text: "Yêu cầu sử dụng tài sản",
-                fontFamily: "'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif"
-            },
-            subtitles: [{
-                text: recommendDistribute.length ? `${recommendDistribute.length} yêu cầu` : "0 yêu cầu",
-                verticalAlign: "center",
-                fontSize: 24,
-                dockInsidePlotArea: true
-            }],
-            data: [{
-                type: "doughnut",
-                showInLegend: true,
-                indexLabel: "{name}: {y}",
-                indexLabelFormatter: function (e) {
-                    return `${e.dataPoint.name}: ${e.dataPoint.y}`
-                },
-                yValueFormatString: "#,###''",
-                dataPoints: [
-                    { name: "Chờ phê duyệt", y: recommendDistribute.length ? this.returnCountNumber(recommendDistribute, 'Chờ phê duyệt') : 0 },
-                    { name: "Đã phê duyệt", y: recommendDistribute.length ? this.returnCountNumber(recommendDistribute, 'Đã phê duyệt') : 0 },
-                    { name: "Không phê duyệt", y: recommendDistribute.length ? this.returnCountNumber(recommendDistribute, 'Không phê duyệt') : 0 }
-                ]
-            }]
-        };
+        const { listAssets, recommendProcure, recommendDistribute, exportData, currentTab } = this.state;
+       
+        console.log("6666", exportData)
         return (
             <div className="qlcv">
                 <div className="row" style={{ marginTop: 10 }}>
@@ -225,11 +282,12 @@ class DashBoardAssets extends Component {
 
                 <div className="nav-tabs-custom">
                     <ul className="nav nav-tabs">
-                        <li className="active"><a href="#administration-asset-by-group" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('asset.dashboard.asset_by_group')}</a></li>
-                        <li><a href="#administration-asset-by-type" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('asset.dashboard.asset_by_type')}</a></li>
-                        <li><a href="#administration-asset-statistics" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê tài sản</a></li>
-                        <li><a href="#administration-purchase-disposal" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('asset.dashboard.asset_purchase_and_dispose')}</a></li>
-                        <li><a href="#administration-asset-is-expired" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Hạn sử dụng tài sản</a> </li>
+                        <li className="active"><a href="#administration-asset-by-group" data-toggle="tab" onClick={() => this.handleNavTabs("assetByGroup")}>{translate('asset.dashboard.asset_by_group')}</a></li>
+                        <li><a href="#administration-asset-by-type" data-toggle="tab" onClick={() => this.handleNavTabs("assetByType")}>{translate('asset.dashboard.asset_by_type')}</a></li>
+                        <li><a href="#administration-asset-statistics" data-toggle="tab" onClick={() => this.handleNavTabs("assetStatistics")}>Thống kê tài sản</a></li>
+                        <li><a href="#administration-purchase-disposal" data-toggle="tab" onClick={() => this.handleNavTabs("purchaseDisposal")}>{translate('asset.dashboard.asset_purchase_and_dispose')}</a></li>
+                        <li><a href="#administration-asset-is-expired" data-toggle="tab" onClick={() => this.handleNavTabs("assetIsExpired")}>Hạn sử dụng tài sản</a> </li>
+                        {exportData && currentTab && exportData[currentTab] && <ExportExcel type="link" style={{ padding: "15px" }} id="export-asset-dashboard" exportData={exportData[currentTab]} />}
                     </ul>
                     <div className="tab-content">
 
@@ -238,7 +296,9 @@ class DashBoardAssets extends Component {
                             <LazyLoadComponent
                                 key="AdministrationAssetByGroup"
                             >
-                                <AssetByGroup />
+                                <AssetByGroup
+                                    setAssetByGroupExportData={this.setAssetByGroupExportData}
+                                />
                             </LazyLoadComponent>
                         </div>
 
@@ -247,7 +307,9 @@ class DashBoardAssets extends Component {
                             <LazyLoadComponent
                                 key="AdministrationAssetByType"
                             >
-                                <AssetByType />
+                                <AssetByType
+                                    setAssetByTypeExportData={this.setAssetByTypeExportData}
+                                />
                             </LazyLoadComponent>
                         </div>
 

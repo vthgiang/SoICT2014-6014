@@ -29,8 +29,8 @@ class ValueTree extends Component {
     }
 
     render() {
-        let { assetType, listAssets, translate } = this.props;
-        let { tree } = this.state;
+        const { assetType, listAssets, translate, setValueOfAsset } = this.props;
+        const { tree } = this.state;
         let typeName = [], countAssetValue = [], idAssetType = [];
 
         for (let i in assetType) {
@@ -90,6 +90,7 @@ class ValueTree extends Component {
                         </div> : <ValueBarChart
                             listAssets={listAssets}
                             assetType={assetType}
+                            setValueOfAsset={setValueOfAsset}
                         />
                 }
             </div>

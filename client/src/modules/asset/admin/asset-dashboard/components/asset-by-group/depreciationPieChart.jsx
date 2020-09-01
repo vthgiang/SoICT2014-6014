@@ -86,7 +86,7 @@ class DepreciationPieChart extends Component {
 
     // Thiết lập dữ liệu biểu đồ
     setDataPieChart = () => {
-        const { listAssets, translate } = this.props;
+        const { listAssets, translate, setDepreciationOfAsset } = this.props;
         let dataPieChart, depreciationExpenseOfBuilding = 0, depreciationExpenseOfVehicle = 0, depreciationExpenseOfMachine = 0, depreciationExpenseOfOrther = 0;
         let depreciationOfAsset = [];
 
@@ -125,6 +125,11 @@ class DepreciationPieChart extends Component {
             [translate('asset.dashboard.machine'), depreciationExpenseOfMachine],
             [translate('asset.dashboard.orther'), depreciationExpenseOfOrther],
         ];
+
+        if (setDepreciationOfAsset) {
+            setDepreciationOfAsset(dataPieChart);
+        }
+
         return dataPieChart;
     }
 

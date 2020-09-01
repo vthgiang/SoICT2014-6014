@@ -17,7 +17,7 @@ class AmountBarChart extends Component {
 
     // Thiết lập dữ liệu biểu đồ
     setDataBarChart = () => {
-        const { listAssets, assetType } = this.props;
+        const { listAssets, assetType, setAmountOfAsset } = this.props;
 
         let typeName = [], shortName = [], countAssetType = [], idAssetType = [];
         for (let i in assetType) {
@@ -45,6 +45,9 @@ class AmountBarChart extends Component {
             shortName: shortName
         }
 
+        if (setAmountOfAsset && assetType && listAssets) {
+            setAmountOfAsset(data);
+        }
         return data;
     }
 
