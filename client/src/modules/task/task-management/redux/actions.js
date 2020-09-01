@@ -8,7 +8,8 @@ export const taskManagementActions = {
     getConsultedTaskByUser,
     getInformedTaskByUser,
     getCreatorTaskByUser,
-    getTaskById,
+    getPaginateTasksByUser,
+
     addTask,
     editTask,
     _delete,
@@ -262,27 +263,34 @@ function getCreatorTaskByUser(unit, number, perPage, status, priority, special, 
 }
 
 /**
- * lấy công việc theo id
- * @param {*} id id công việc
+ * lấy công việc theo người tạo
+ * @param {*} unit đơn vị
+ * @param {*} number số trang hiện tại
+ * @param {*} perPage số bản ghi trên 1 trang
+ * @param {*} status trạng thái
+ * @param {*} priority độ ưu tiên
+ * @param {*} special lưu kho???
+ * @param {*} name tên công việc
+ * @param {*} startDate ngày bắt đầu
+ * @param {*} endDate kết thúc công việc
  */
 
-function getTaskById(id) {
+function getPaginateTasksByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime = false) {
     return dispatch => {
         dispatch({
-            type: taskManagementConstants.GETTASK_BYID_REQUEST,
-            id
+            type: taskManagementConstants.GET_PAGINATE_TASK_BYUSER_REQUEST
         });
 
-        taskManagementService.getById(id)
+        taskManagementService.getPaginateTasksByUser(unit, number, perPage, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime)
             .then(res => {
                 dispatch({
-                    type: taskManagementConstants.GETTASK_BYID_SUCCESS,
+                    type: taskManagementConstants.GET_PAGINATE_TASK_BYUSER_SUCCESS,
                     payload: res.data.content
                 })
             })
             .catch(error => {
                 dispatch({
-                    type: taskManagementConstants.GETTASK_BYID_FAILURE,
+                    type: taskManagementConstants.GET_PAGINATE_TASK_BYUSER_FAILURE,
                     error
                 })
             })

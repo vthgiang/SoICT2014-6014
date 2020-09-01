@@ -51,16 +51,14 @@ class DisciplineTab extends Component {
     render() {
         const { translate, department } = this.props;
 
-        const { id } = this.props;
-
-        const { commendations, disciplines } = this.state;
+        const { id, commendations, disciplines } = this.state;
 
         return (
             <div id={id} className="tab-pane">
                 <div className="box-body">
                     {/* Danh sách khen thưởng */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.reward')}</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.reward')}</h4></legend>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>
@@ -99,7 +97,7 @@ class DisciplineTab extends Component {
                     </fieldset>
                     {/* Danh sách kỷ luật */}
                     <fieldset className="scheduler-border">
-                        <legend className="scheduler-border"><h4 className="box-title">{translate('manage_employee.discipline')}</h4></legend>
+                        <legend className="scheduler-border"><h4 className="box-title">{translate('human_resource.profile.discipline')}</h4></legend>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }} >
                             <thead>
                                 <tr>

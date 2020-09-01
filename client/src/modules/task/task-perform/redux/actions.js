@@ -52,8 +52,40 @@ export const performTaskAction = {
 
     deleteEvaluation,
 
-    editInformationTask
+    editInformationTask,
+    getTaskById,
+    confirmTask,
 };
+
+
+/**
+ * lấy công việc theo id
+ * @param {*} id id công việc
+ */
+
+function getTaskById(id) {
+    return dispatch => {
+        dispatch({
+            type: performTaskConstants.GETTASK_BYID_REQUEST,
+            id
+        });
+
+        performTaskService.getById(id)
+            .then(res => {
+                dispatch({
+                    type: performTaskConstants.GETTASK_BYID_SUCCESS,
+                    payload: res.data.content
+                })
+            })
+            .catch(error => {
+                dispatch({
+                    type: performTaskConstants.GETTASK_BYID_FAILURE,
+                    error
+                })
+            })
+    }
+}
+
 // Create result task
 function createResultTask(result) {
     return dispatch => {
@@ -640,6 +672,27 @@ function editInformationTask(taskId, informations) {
             .catch(error => {
                 dispatch({
                     type: performTaskConstants.EDIT_TASK_INFORMATION_FAILURE,
+                    payload: error
+                });
+            });
+    }
+}
+
+// Xác nhận công việc 
+function confirmTask(taskId) {
+    return dispatch => {
+        dispatch({ type: performTaskConstants.CONFIRM_TASK_REQUEST });
+
+        performTaskService.confirmTask(taskId)
+            .then(res => {
+                dispatch({
+                    type: performTaskConstants.CONFIRM_TASK_SUCCESS,
+                    payload: res.data.content
+                });
+            })
+            .catch(error => {
+                dispatch({
+                    type: performTaskConstants.CONFIRM_TASK_FAILURE,
                     payload: error
                 });
             });

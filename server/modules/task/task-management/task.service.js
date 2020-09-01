@@ -196,168 +196,6 @@ exports.getTaskEvaluations = async (data) => {
     return newResult;
 }
 
-/**
- * Lấy mẫu công việc theo Id
- */
-exports.getTaskById = async (id, userId) => {
-    //req.params.id
-    var superTask = await Task.findById(id)
-        .populate({ path: "organizationalUnit responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator parent" })
-        .populate("evaluations.results.employee")
-        .populate("evaluations.results.organizationalUnit")
-        .populate("evaluations.results.kpis.kpis")
-    
-    var task = await Task.findById(id).populate([
-        { path: "parent", select: "name" },
-        { path: "taskTemplate", select: "formula" },
-        { path: "organizationalUnit", model: OrganizationalUnit },
-        { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-        { path: "evaluations.results.employee", select: "name email _id" },
-        { path: "evaluations.results.organizationalUnit", select: "name _id" },
-        { path: "evaluations.results.kpis" },
-        { path: "taskActions.creator", model: User, select: 'name email avatar' },
-        { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
-        { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
-        { path: "taskComments.creator", model: User, select: 'name email avatar' },
-        { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-        { path: "documents.creator", model: User, select: 'name email avatar' },
-        { path: "followingTasks.task", model: Task, select: 'name' },
-        { path: "preceedingTasks.task", model: Task, select: 'name' },
-        {
-            path: "process", model: TaskProcess, populate: {
-                path: "tasks", model: Task, populate: [
-                    { path: "parent", select: "name" },
-                    { path: "taskTemplate", select: "formula" },
-                    { path: "organizationalUnit", model: OrganizationalUnit },
-                    { path: "responsibleEmployees accountableEmployees consultedEmployees informedEmployees confirmedByEmployees creator", model: User, select: "name email _id" },
-                    { path: "evaluations.results.employee", select: "name email _id" },
-                    { path: "evaluations.results.organizationalUnit", select: "name _id" },
-                    { path: "evaluations.results.kpis" },
-                    { path: "taskActions.creator", model: User, select: 'name email avatar' },
-                    { path: "taskActions.comments.creator", model: User, select: 'name email avatar' },
-                    { path: "taskActions.evaluations.creator", model: User, select: 'name email avatar ' },
-                    { path: "taskComments.creator", model: User, select: 'name email avatar' },
-                    { path: "taskComments.comments.creator", model: User, select: 'name email avatar' },
-                    { path: "documents.creator", model: User, select: 'name email avatar' },
-                    { path: "process", model: TaskProcess },
-                ]
-            }
-        },
-    ])
-    if (!task) {
-        return {
-            "info": true
-        }
-    }
-    var responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees;
-    responsibleEmployees = task.responsibleEmployees;
-    accountableEmployees = task.accountableEmployees;
-    consultedEmployees = task.consultedEmployees;
-    informedEmployees = task.informedEmployees;
-    let flag = 0;
-    for (let n in responsibleEmployees) {
-        if (responsibleEmployees[n]._id.equals(userId)) {
-            flag = 1;
-            break;
-        }
-    }
-    if (!flag) {
-        for (let n in accountableEmployees) {
-            if (accountableEmployees[n]._id.equals(userId)) {
-                flag = 1;
-                break;
-            }
-        }
-    }
-    if (!flag) {
-        for (let n in consultedEmployees) {
-            if (consultedEmployees[n]._id.equals(userId)) {
-                flag = 1;
-                break;
-            }
-        }
-    }
-    if (!flag) {
-        for (let n in informedEmployees) {
-            if (informedEmployees[n]._id.equals(userId)) {
-                flag = 1;
-                break;
-            }
-        }
-    }
-    if (task.creator._id.equals(userId)) {
-        flag = 1;
-    }
-
-    if (!flag) {// Trưởng đơn vị được phép xem thông tin công việc
-
-        // Tìm danh sách các role mà user kế thừa phân quyền
-        let role = await UserRole.find({ userId: userId });
-        let listRole = role.map(item => item.roleId);
-
-        let company = [];
-
-        // Tìm ra các đơn vị có role là dean
-        for (let i in listRole) {
-            let roles = await Role.findById(listRole[i]);
-            company[i] = roles.company;
-        }
-
-        // Tìm cây đơn vị mà đơn vị gốc có userId có role deans
-        let tree = [];
-        let k = 0;
-        for (let i = 0; i < listRole.length; i++) {
-            let com = company[i];
-            let r = listRole[i];
-            let tr = await OrganizationalUnitService.getChildrenOfOrganizationalUnitsAsTree(com, r);
-            if (tr) {
-                tree[k] = tr;
-                k++;
-            }
-        }
-
-        // Duyệt cây đơn vị, kiểm tra xem mỗi đơn vị có id trùng với id của phòng ban công việc
-        for (let i = 0; i < listRole.length; i++) {
-            let rol = listRole[i];
-            if (!flag) {
-                for (let j = 0; j < tree.length; j++) {
-                    if (tree[j].deans.indexOf(rol) !== -1) {
-                        let v = tree[j];
-                        let f = await _checkDeans(v, task.organizationalUnit._id);
-                        if (f === 1) {
-                            flag = 1;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    if (flag === 0) {
-        return {
-            "info": true
-        }
-    }
-    task.evaluations.reverse();
-    return task;
-
-}
-
-/**
- * Hàm duyệt cây đơn vị - kiểm tra trong cây có đơn vị của công việc được lấy ra hay không (đệ quy)
- */
-_checkDeans = async (v, id) => {
-    if (v) {
-        if (JSON.stringify(v.id) === JSON.stringify(id)) {
-            return 1;
-        }
-        if (v.children) {
-            for (let k = 0; k < v.children.length; k++) {
-                return _checkDeans(v.children[k], id);
-            }
-        }
-    }
-}
 
 /**
  * Lấy mẫu công việc theo chức danh và người dùng
@@ -1098,6 +936,161 @@ exports.getPaginatedTasksThatUserHasInformedRole = async (task) => {
 }
 
 /**
+ * Lấy công việc quan sát theo id người dùng
+ */
+exports.getPaginatedTasksByUser = async (task) => {
+    var { perPage, number, user, organizationalUnit, status, priority, special, name, startDate, endDate, startDateAfter, endDateBefore, aPeriodOfTime } = task;
+
+    var tasks;
+    var perPage = Number(perPage);
+    var page = Number(number);
+
+    var keySearch = {
+        $or: [
+           { informedEmployees: { $in: [user] } },
+           { creator: { $in: [user] } },
+           { responsibleEmployees: { $in: [user] } },
+           { consultedEmployees: { $in: [user] } },
+           { accountableEmployees: { $in: [user] } },
+        ],
+        isArchived: false
+    };
+
+    if (organizationalUnit !== '[]') {
+        keySearch = {
+            ...keySearch,
+            organizationalUnit: {
+                $in: organizationalUnit,
+            }
+        };
+    }
+
+    if (status !== '[]') {
+        keySearch = {
+            ...keySearch,
+            status: {
+                $in: status,
+            }
+        };
+    }
+
+    if (priority !== '[]') {
+        keySearch = {
+            ...keySearch,
+            priority: {
+                $in: priority,
+            }
+        };
+    }
+
+    if (special !== '[]') {
+        for (var i = 0; i < special.length; i++) {
+            if (special[i] === "Lưu trong kho") {
+                keySearch = {
+                    ...keySearch,
+                    isArchived: true
+                };
+            }
+            else {
+                keySearch = {
+                    ...keySearch,
+                    endDate: { $gte: new Date() }
+                };
+            }
+        }
+    }
+
+    if (name) {
+        keySearch = {
+            ...keySearch,
+            name: {
+                $regex: name,
+                $options: "i"
+            }
+        }
+    };
+
+    if (JSON.parse(aPeriodOfTime)) {
+
+        keySearch = {
+            ...keySearch,
+            $or: [
+                { 'endDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
+                { 'startDate': { $lte: new Date(endDate), $gt: new Date(startDate) } },
+                { $and: [{ 'endDate': { $gte: new Date(endDate) } }, { 'startDate': { $lte: new Date(startDate) } }] }
+            ]
+        }
+    } else {
+        if (startDate) {
+            let startTime = startDate.split("-");
+            let start = new Date(startTime[1], startTime[0] - 1, 1);
+            let end = new Date(startTime[1], startTime[0], 1);
+
+            keySearch = {
+                ...keySearch,
+                startDate: {
+                    $gt: start,
+                    $lte: end
+                }
+            }
+        }
+
+        if (endDate) {
+            let endTime = endDate.split("-");
+            let start = new Date(endTime[1], endTime[0] - 1, 1);
+            let end = new Date(endTime[1], endTime[0], 1);
+
+            keySearch = {
+                ...keySearch,
+                endDate: {
+                    $gt: start,
+                    $lte: end
+                }
+            }
+        }
+    }
+    if (startDateAfter) {
+        let startTimeAfter = startDateAfter.split("-");
+        let start;
+
+
+        if (startTimeAfter[0] > 12) start = new Date(startTimeAfter[0], startTimeAfter[1] - 1, 1);
+        else start = new Date(startTimeAfter[1], startTimeAfter[0] - 1, 1);
+
+        keySearch = {
+            ...keySearch,
+            endDate: {
+                $gte: start
+            }
+        }
+    }
+
+    if (endDateBefore) {
+        let endTimeBefore = endDateBefore.split("-");
+        let end;
+        if (endTimeBefore[0] > 12) end = new Date(endTimeBefore[0], endTimeBefore[1], 1);
+        else end = new Date(endTimeBefore[1], endTimeBefore[0], 1);
+
+        keySearch = {
+            ...keySearch,
+            startDate: {
+                $lt: end
+            }
+        }
+    }
+    tasks = await Task.find(keySearch).sort({ 'createdAt': 'asc' })
+        .skip(perPage * (page - 1)).limit(perPage)
+        .populate({ path: "organizationalUnit creator parent" });
+
+    var totalCount = await Task.countDocuments(keySearch);
+    var totalPages = Math.ceil(totalCount / perPage);
+    return {
+        "tasks": tasks,
+        "totalPage": totalPages
+    };
+}
+
+/**
  * Lấy công việc theo id đơn vị
  * @task dữ liệu từ params
  */
@@ -1182,6 +1175,17 @@ exports.createTask = async (task) => {
         }
     }
 
+    let formula;
+    if( taskTemplate ) {
+        formula = taskTemplate.formula;
+    } else if( task.formula ){
+        formula = "progress / (dayUsed / totalDay)"; // default
+        // "progress / (dayUsed / totalDay) - 0.5 * (10 - (averageActionRating)) * 10"
+    } 
+    // else {
+    //     formula = task.formula;
+    // }
+
     var task = await Task.create({ //Tạo dữ liệu mẫu công việc
         organizationalUnit: task.organizationalUnit,
         creator: task.creator, //id của người tạo
@@ -1190,6 +1194,7 @@ exports.createTask = async (task) => {
         startDate: startDate,
         endDate: endDate,
         priority: task.priority,
+        formula: formula,
         taskTemplate: taskTemplate ? taskTemplate : null,
         taskInformations: taskTemplate ? taskTemplate.taskInformations : [],
         taskActions: taskTemplate ? cloneActions : [],

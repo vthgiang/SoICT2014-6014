@@ -19,6 +19,7 @@ export const DocumentServices = {
     editDocumentDomain,
     deleteDocumentDomain,
     deleteManyDocumentDomain,
+    importDocumentDomain,
 
     getDocumentsUserCanView,
     getUserDocumentStatistics,
@@ -159,6 +160,14 @@ function deleteManyDocumentDomain(array) {
         url: `${process.env.REACT_APP_SERVER}/documents/document-domains/delete-many`,
         method: 'POST',
         data: { array }
+    }, true, true, 'document');
+}
+
+function importDocumentDomain(data) {
+    return sendRequest({
+        url: `${process.env.REACT_APP_SERVER}/documents/document-domains/import-file`,
+        method: 'POST',
+        data,
     }, true, true, 'document');
 }
 

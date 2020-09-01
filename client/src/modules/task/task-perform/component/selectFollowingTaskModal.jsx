@@ -29,7 +29,7 @@ class SelectFollowingTaskModal extends Component {
         this.setState(state => {
             return {
                 ...state,
-                statusOptions: value
+                statusOptions: value[0]
             }
         })
     }

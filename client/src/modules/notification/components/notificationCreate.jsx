@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+
 import { DialogModal, SelectBox } from '../../../common-components';
+
 import { DepartmentActions } from '../../super-admin/organizational-unit/redux/actions';
 import { UserActions } from '../../super-admin/user/redux/actions';
 import { NotificationActions } from '../redux/actions';
 import { NotificationValidator } from './notificationValidator';
+
 import CKEditor from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+// import Base64UploadAdapter from '@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter';
 
 class NotificationCreate extends Component {
     constructor(props) {
@@ -131,7 +135,7 @@ class NotificationCreate extends Component {
 
     render() { 
         const { translate, department, user } = this.props;
-        
+
         return ( 
             <React.Fragment>
                 <a style={{width: '100%', marginBottom: '15px'}} className="btn btn-success" title={translate('notification.add_title')} data-toggle="modal" href='#modal-create-notification' data-backdrop="static">{translate('notification.add')}</a>
@@ -168,6 +172,8 @@ class NotificationCreate extends Component {
                             <label>{translate('notification.sender')}<span className="text-red">*</span></label>
                             <input type="text" className="form-control" onChange={this.handleSender}/>
                         </div>
+
+                        {/* Nội dung */}
                         <div className="form-group">
                             <label>{translate('notification.content')}<span className="text-red">*</span></label>
                             <CKEditor
@@ -178,6 +184,7 @@ class NotificationCreate extends Component {
                                 } }
                             />
                         </div>
+
                         <div className="form-group">
                             <label>{ translate('notification.departments') }</label>
                             <SelectBox // id cố định nên chỉ render SelectBox khi items đã có dữ liệu

@@ -89,10 +89,10 @@ class AdministrationDocumentArchives extends Component {
                             tableName: "Bảng thống kê lưu trữ",
                             rowHeader: 1,
                             columns: [
-                                { key: "STT", value: "STT"},
-                                { key: "name", value: "Tên danh mục"},
-                                { key: "description", value: "Mô tả danh mục"},
-                                { key: "path", value: "Đường dẫn danh mục"},
+                                { key: "STT", value: "STT" },
+                                { key: "name", value: "Tên danh mục" },
+                                { key: "description", value: "Mô tả danh mục" },
+                                { key: "path", value: "Đường dẫn danh mục" },
                             ],
                             data: data
                         },
@@ -126,9 +126,9 @@ class AdministrationDocumentArchives extends Component {
             <React.Fragment>
                 <button className="btn btn-success" onClick={() => {
                     window.$('#modal-create-document-archive').modal('show');
-                }} title={`Thêm`} disable={archiveParent.length > 1 ? true : false}>Thêm</button>
+                }} title={`Thêm`} disable={archiveParent.length > 1 ? true : false}>{translate('general.add')}</button>
                 {
-                    archiveParent.length > 0 && <button class="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteArchive}>Xóa</button>
+                    archiveParent.length > 0 && <button class="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteArchive}>{translate('general.delete')}</button>
                 }
                 {<ExportExcel id="export-document-archive" exportData={exportData} style={{ marginRight: 5, marginTop: 2 }} />}
                 <CreateForm domainParent={this.state.archiveParent[0]} />

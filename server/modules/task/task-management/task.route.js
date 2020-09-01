@@ -4,7 +4,6 @@ const TaskManagementController = require("./task.controller");
 const { auth } = require('../../../middleware/index');
 
 router.get('/tasks', auth, TaskManagementController.getTasks);
-router.get('/tasks/:taskId', auth, TaskManagementController.getTaskById);
 router.get('/tasks/:taskId/sub-tasks', auth, TaskManagementController.getSubTask);
 
 router.get('/task-evaluations', auth, TaskManagementController.getTaskEvaluations);

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Item from './item';
+import GroupItem from './groupItem';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { withTranslate } from 'react-redux-multilingual';
@@ -9,7 +10,6 @@ class SideBar extends Component {
     constructor(props) {
         super(props);
         this.state = {}
-        this.checkURL = this.checkURL.bind(this);
     }
 
     checkURL = (urlName, linkArr) => {
@@ -26,53 +26,9 @@ class SideBar extends Component {
     }
 
     render() {
-        const url = {
-            path1: "/hr-dashboard-employee",
-            path2: "/hr-add-employee",
-            path3: "/hr-list-employee",
-            path4: "/hr-salary-employee",
-            path5: "/hr-time-keeping",
-            path6: "/hr-discipline",
-            path7: "/hr-annual-leave",
-            path8: "/hr-detail-employee",
-            path9: "/hr-update-employee",
-            path10: "/hr-list-education",
-            path11: "/hr-training-plan",
-            path12: "/hr-manage-department",
-            path13: "/hr-manage-holiday",
-        };
-
-        const url1 = {
-            path1: "/dashboard-asset", // Dashboard Quản lý tài sản
-            path2: "/manage-type-asset", // Quản lý loại tài sản
-            path3: "/manage-info-asset", // Quản lý thông tin tài sản
-            path4: "/view-building-list", // Xem danh sách mặt bằng
-            path6: "/manage-depreciation-asset", // Quản lý khấu hao tài sản
-            path7: "/manage-asset-purchase-request", // Quản lý đề nghị mua sắm thiết bị
-            path8: "/manage-asset-use-request", // Quản lý đề nghị cấp phát sử dụng thiết bị
-
-            path10: "/asset-purchase-request", // Đăng ký mua sắm thiết bị
-            path11: "/asset-use-request", // Đăng ký cấp phát thiết bị
-            path12: "/manage-assigned-asset", // Quản lý thiết bị bàn giao
-
-            path13: "/manage-maintainance-asset", // Quản lý bảo trì
-            path14: "/manage-usage-asset", // Quản lý  sử dụng tài sản
-            path15: "/manage-incident-asset", // Quản lý lịch sự cố tài sản
-
-            path16: "/employee-manage-info-asset", //Nhân viên quản lý thông tin tài sản 
-        };
-        const url2 = {
-            path1: "/dashboad-material",
-            path2: "/material-manager",
-        };
-
-        const url3 = {
-            path1: "/manage-orders", // quản lý đơn hàng
-            path2: "/manage-list-orders", //Quản lý danh sách đơn hàng
-        };
-
         const { translate, auth } = this.props;
         const { user, links } = this.props.auth;
+
         return (
             <React.Fragment>
                 <aside className="main-sidebar">
@@ -94,681 +50,172 @@ class SideBar extends Component {
                             </div>
                         </div>
                         <ul className="sidebar-menu" data-widget="tree" ref="sideBarMenu">
-                            {
-                                this.checkURL('/', links) === true &&
-                                <Item
-                                    key='home'
-                                    name='home'
-                                    path='/'
-                                    icon='fa fa-home'
-                                />
-                            }
-                            {
-                                this.checkURL('/system/settings', links) === true &&
-                                <Item
-                                    key='manage_system'
-                                    name='manage_system'
-                                    path='/system/settings'
-                                    icon='fa fa-gears'
-                                />
-                            }
-                            {
-                                this.checkURL('/system/companies-management', links) === true &&
-                                <Item
-                                    key='manage_company'
-                                    name='manage_company'
-                                    path='/system/companies-management'
-                                    icon='fa fa-building'
-                                />
-                            }
-                            {
-                                this.checkURL('/system/roles-default-management', links) === true &&
-                                <Item
-                                    key='manage_role'
-                                    name='manage_role'
-                                    path='/system/roles-default-management'
-                                    icon='fa fa-lock'
-                                />
-                            }
-                            {
-                                this.checkURL('/system/links-default-management', links) === true &&
-                                <Item
-                                    key='manage_link'
-                                    name='manage_link'
-                                    path='/system/links-default-management'
-                                    icon='fa fa-link'
-                                />
-                            }
-                            {
-                                this.checkURL('/system/components-default-management', links) === true &&
-                                <Item
-                                    key='manage_component'
-                                    name='manage_component'
-                                    path='/system/components-default-management'
-                                    icon='fa fa-object-group'
-                                />
-                            }
-                            {
-                                this.checkURL('/departments-management', links) === true &&
-                                <Item
-                                    key='manage_department'
-                                    name='manage_department'
-                                    path='/departments-management'
-                                    icon='fa fa-sitemap'
-                                />
-                            }
-                            {
-                                this.checkURL('/users-management', links) === true &&
-                                <Item
-                                    key='manage_user'
-                                    name='manage_user'
-                                    path='/users-management'
-                                    icon='fa fa-user'
-                                />
-                            }
-                            {
-                                this.checkURL('/roles-management', links) === true &&
-                                <Item
-                                    key='manage_role'
-                                    name='manage_role'
-                                    path='/roles-management'
-                                    icon='fa fa-lock'
-                                />
-                            }
-                            {
-                                this.checkURL('/links-management', links) === true &&
-                                <Item
-                                    key='manage_link'
-                                    name='manage_link'
-                                    path='/links-management'
-                                    icon='fa fa-link'
-                                />
-                            }
-                            {
-                                this.checkURL('/components-management', links) === true &&
-                                <Item
-                                    key='manage_component'
-                                    name='manage_component'
-                                    path='/components-management'
-                                    icon='fa fa-object-group'
-                                />
-                            }
-                            {
-                                this.checkURL('/documents-management', links) === true &&
-                                <Item
-                                    key='manage_document'
-                                    name='manage_document'
-                                    path='/documents-management'
-                                    icon='fa fa-folder-open'
-                                />
-                            }
-                            {
-                                this.checkURL('/documents', links) === true &&
-                                <Item
-                                    key='documents'
-                                    name='documents'
-                                    path='/documents'
-                                    icon='fa fa-file-text'
-                                />
-                            }
-                            {
-                                (this.checkURL(url2.path1, links) === true || this.checkURL(url2.path2, links) === true) &&
-                                <li className="treeview" >
-                                    <a href="">
-                                        <i className="fa fa-bank" /> <span>{translate(`menu.manage_warehouse`)}</span>
-                                        <span className="pull-right-container">
-                                            <i className="fa fa-angle-left pull-right" />
-                                        </span>
-                                    </a>
-                                    <ul className="treeview-menu">
-                                        {this.checkURL(url2.path1, links) === true &&
-                                            <li className={window.location.pathname === url2.path1 ? "active" : ""}>
-                                                <Link to={url2.path1}>
-                                                    <i className="fa fa-dashboard" />
-                                                    {translate(`menu.dashboard_material`)}
-                                                </Link>
-                                            </li>
-                                        }
-                                        {this.checkURL(url2.path2, links) === true &&
-                                            <li className={window.location.pathname === url2.path2 ? "active" : ""}>
-                                                <Link to={url2.path2}>
-                                                    <i className="fa fa-address-card" />
-                                                    {translate(`menu.material_manager`)}
-                                                </Link>
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
-                            }
+                            
+                            {/* Trang chủ */}
+                            <Item item={{ name: 'menu.home', path: '/', icon: 'fa fa-home' }}/>
 
-                            {
-                                this.checkURL('/customer', links) === true &&
-                                <Item
-                                    key='customer'
-                                    name='customer'
-                                    path='/customer'
-                                    icon='fa fa-users'
-                                />
-                            }
+                            {/* Quản trị của system admin */}
+                            <GroupItem groupItem={{
+                                name: 'menu.system',
+                                icon: 'fa fa-gears',
+                                list: [
+                                    { name: 'menu.manage_system', icon: 'fa fa-gear', path: '/system/settings' },
+                                    { name: 'menu.manage_role', icon: 'fa fa-lock', path: '/system/roles-default-management' },
+                                    { name: 'menu.manage_link', icon: 'fa fa-link', path: '/system/links-default-management' },
+                                    { name: 'menu.manage_component', icon: 'fa fa-object-group', path: '/system/components-default-management' },
+                                ]
+                            }}/>
+                            
+                            {/* Quản lý doanh nghiệp */}
+                            <Item item={{ name: 'menu.manage_company', icon: 'fa fa-building', path: '/system/companies-management' }}/>
+
+                            {/* Phân quyền IAM-RBAC */}
+                            <GroupItem groupItem={{
+                                name: 'menu.iam_rbac',
+                                icon: 'fa fa-key',
+                                list: [
+                                    { name: 'menu.manage_department', icon: 'fa fa-sitemap', path: '/departments-management' },
+                                    { name: 'menu.manage_user', icon: 'fa fa-users', path: '/users-management' },
+                                    { name: 'menu.manage_role', icon: 'fa fa-lock', path: '/roles-management' },
+                                    { name: 'menu.manage_link', icon: 'fa fa-link', path: '/links-management' },
+                                    { name: 'menu.manage_component', icon: 'fa fa-object-group', path: '/components-management' },
+                                ]
+                            }}/>
+
+                            {/* Quản lý tài liệu */}
+                            <Item item={{ name: 'menu.manage_document', icon: 'fa fa-folder-open', path: '/documents-management' }}/>
+                            <Item item={{ name: 'menu.manage_document', icon: 'fa fa-file-text', path: '/documents' }}/>
+                            
+                            {/* Quản lý kho */}
+                            <GroupItem groupItem={{
+                                name: 'menu.manage_warehouse',
+                                icon: 'fa fa-bank',
+                                list: [
+                                    { name: 'menu.dashboard_material', icon: 'fa fa-dashboard', path: '/dashboad-material' },
+                                    { name: 'menu.material_manager', icon: 'fa fa-address-card', path: '/material-manager' },
+                                ]
+                            }}/>
+
+                            {/* CRM */}
+                            <GroupItem groupItem={{
+                                name: 'menu.crm',
+                                icon: 'fa fa-users',
+                                list: [
+                                    { name: 'menu.customer', icon: 'fa fa-circle-o', path: '/customer' },
+                                    { name: 'menu.customer_group', icon: 'fa fa-circle-o', path: '/customer-group' },
+                                ]
+                            }}/>
+
                             {/* Quan ly tai san */}
-                            {
-                                (this.checkURL(url1.path1, links) === true || this.checkURL(url1.path2, links) === true ||
-                                    this.checkURL(url1.path3, links) === true || this.checkURL(url1.path4, links) === true || this.checkURL(url1.path6, links) === true ||
-                                    this.checkURL(url1.path7, links) === true || this.checkURL(url1.path8, links) === true ||
-                                    this.checkURL(url1.path10, links) === true || this.checkURL(url1.path11, links) === true ||
-                                    this.checkURL(url1.path12, links) === true || this.checkURL(url1.path13, links) === true ||
-                                    this.checkURL(url1.path14, links) === true || this.checkURL(url1.path15, links) === true ||
-                                    this.checkURL(url1.path16, links) === true || this.checkURL(url1.path17, links) === true ||
-                                    this.checkURL(url1.path18, links) === true) &&
-                                <li className="treeview" >
-                                    <a href="">
-                                        <i className="fa fa-address-book" /> <span>{translate(`menu.manage_asset`)}</span>
-                                        <span className="pull-right-container">
-                                            <i className="fa fa-angle-left pull-right" />
-                                        </span>
-                                    </a>
-                                    <ul className="treeview-menu">
-                                        {/** Quản lý dashboard tài sản */}
-                                        {this.checkURL(url1.path1, links) === true &&
-                                            <li className={window.location.pathname === url1.path1 ? "active" : ""}>
-                                                <Link to={url1.path1}>
-                                                    <i className="fa fa-dashboard" />
-                                                    {translate(`menu.dashboard_asset`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/** Quản lý thông tin tài sản */}
-                                        {this.checkURL(url1.path3, links) === true &&
-                                            <li className={window.location.pathname === url1.path3 ? "active" : ""}>
-                                                <Link to={url1.path3}>
-                                                    <i className="fa fa-sitemap" />
-                                                    {translate(`menu.manage_info_asset`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/** quản lý khấu hao tài sản */}
-                                        {this.checkURL(url1.path6, links) === true &&
-                                            <li className={window.location.pathname === url1.path6 ? "active" : ""}>
-                                                <Link to={url1.path6}>
-                                                    <i className="fa fa-balance-scale" />
-                                                    {translate(`menu.manage_depreciation_asset`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/** Quản lý bảo trì tài sản */}
-                                        {this.checkURL(url1.path13, links) === true &&
-                                            <li className={window.location.pathname === url1.path13 ? "active" : ""}>
-                                                <Link to={url1.path13}>
-                                                    <i className="fa fa-sitemap" />
-                                                    {translate(`menu.manage_maintainance_asset`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/** quản lý sự cố tài sản */}
-                                        {this.checkURL(url1.path15, links) === true &&
-                                            <li className={window.location.pathname === url1.path15 ? "active" : ""}>
-                                                <Link to={url1.path15}>
-                                                    <i className="fa fa-calendar" />
-                                                    {translate(`menu.manage_incident_asset`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/** quản lý đăng ký sử dụng thiết bị */}
-                                        {this.checkURL(url1.path8, links) === true &&
-                                            <li className={window.location.pathname === url1.path8 ? "active" : ""}>
-                                                <Link to={url1.path8}>
-                                                    <i className="fa fa-calendar" />
-                                                    {translate(`menu.manage_recommend_distribute_asset`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/** Quản lý sử dụng tài sản */}
-                                        {this.checkURL(url1.path14, links) === true &&
-                                            <li className={window.location.pathname === url1.path14 ? "active" : ""}>
-                                                <Link to={url1.path14}>
-                                                    <i className="fa fa-sitemap" />
-                                                    {translate(`menu.manage_usage_asset`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/** quản lý đề nghị mua sắm thiết bị */}
-                                        {this.checkURL(url1.path7, links) === true &&
-                                            <li className={window.location.pathname === url1.path7 ? "active" : ""}>
-                                                <Link to={url1.path7}>
-                                                    <i className="fa fa-calendar" />
-                                                    {translate(`menu.manage_recommend_procure`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/** đề nghị cấp phát thiết bị */}
-                                        {this.checkURL(url1.path11, links) === true &&
-                                            <li className={window.location.pathname === url1.path11 ? "active" : ""}>
-                                                <Link to={url1.path11}>
-                                                    <i className="fa fa-calendar" />
-                                                    {translate(`menu.recommend_distribute_asset`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/** quản lý tài sản được bàn giao */}
-                                        {this.checkURL(url1.path12, links) === true &&
-                                            <li className={window.location.pathname === url1.path12 ? "active" : ""}>
-                                                <Link to={url1.path12}>
-                                                    <i className="fa fa-calendar" />
-                                                    {translate(`menu.manage_assigned_asset`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/** đề nghị mua sắm thiết bị */}
-                                        {this.checkURL(url1.path10, links) === true &&
-                                            <li className={window.location.pathname === url1.path10 ? "active" : ""}>
-                                                <Link to={url1.path10}>
-                                                    <i className="fa fa-calendar" />
-                                                    {translate(`menu.recommend_equipment_procurement`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/**Quản lý loại tài sản */}
-                                        {this.checkURL(url1.path2, links) === true &&
-                                            <li className={window.location.pathname === url1.path2 ? "active" : ""}>
-                                                <Link to={url1.path2}>
-                                                    <i className="fa fa-dashboard" />
-                                                    {translate(`menu.manage_type_asset`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/** Xem danh sách mặt bằng*/}
-                                        {this.checkURL(url1.path4, links) === true &&
-                                            <li className={window.location.pathname === url1.path4 ? "active" : ""}>
-                                                <Link to={url1.path4}>
-                                                    <i className="fa fa-building" />
-                                                    {translate(`menu.view_building_list`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                        {/** Nhân viên quản lí tài san */}
-                                        {this.checkURL(url1.path16, links) === true &&
-                                            <li className={window.location.pathname === url1.path16 ? "active" : ""}>
-                                                <Link to={url1.path16}>
-                                                    <i className="fa fa-sitemap" />
-                                                    {translate(`menu.employee_manage_asset_info`)}
-                                                </Link>
-                                            </li>
-                                        }
-
-                                    </ul>
-                                </li>
-                            }
+                            <GroupItem groupItem={{
+                                name: 'menu.manage_asset',
+                                icon: 'fa fa-address-book',
+                                list: [
+                                    { name: 'menu.dashboard_asset', icon: 'fa fa-dashboard', path: '/dashboard-asset' },
+                                    { name: 'menu.manage_info_asset', icon: 'fa fa-sitemap', path: '/manage-info-asset' },
+                                    { name: 'menu.manage_depreciation_asset', icon: 'fa fa-balance-scale', path: '/manage-depreciation-asset' },
+                                    { name: 'menu.manage_maintainance_asset', icon: 'fa fa-sitemap', path: '/manage-maintainance-asset' },
+                                    { name: 'menu.manage_incident_asset', icon: 'fa fa-calendar', path: '/manage-incident-asset' },
+                                    { name: 'menu.manage_recommend_distribute_asset', icon: 'fa fa-calendar', path: '/manage-recommend-distribute-asset' },
+                                    { name: 'menu.manage_usage_asset', icon: 'fa fa-sitemap', path: '/manage-usage-asset' },
+                                    { name: 'menu.manage_recommend_procure', icon: 'fa fa-sitemap', path: '/manage-recommend-procure' },
+                                    { name: 'menu.manage_type_asset', icon: 'fa fa-dashboard', path: '/manage-type-asset' },
+                                    { name: 'menu.view_building_list', icon: 'fa fa-building', path: '/view-building-list' },
+                                    { name: 'menu.manage_assigned_asset', icon: 'fa fa-calendar', path: '/manage-assigned-asset' },
+                                    { name: 'menu.employee_manage_asset_info', icon: 'fa fa-sitemap', path: '/employee-manage-asset-info' },
+                                    { name: 'menu.recommend_distribute_asset', icon: 'fa fa-calendar', path: '/recommend-distribute-asset' },
+                                    { name: 'menu.recommend_equipment_procurement', icon: 'fa fa-calendar', path: '/recommend-equipment-procurement' },
+                                ]
+                            }}/>
 
                             {/* Quan ly nhan su */}
-                            {
-                                (this.checkURL(url.path1, links) === true || this.checkURL(url.path2, links) === true || this.checkURL(url.path3, links) === true ||
-                                    this.checkURL(url.path4, links) === true || this.checkURL(url.path5, links) === true || this.checkURL(url.path12, links) === true ||
-                                    this.checkURL(url.path6, links) === true || this.checkURL(url.path7, links) === true) &&
-                                <li className="treeview" >
-                                    <a href="">
-                                        <i className="fa fa-address-book" /> <span>{translate(`menu.manage_employee`)}</span>
-                                        <span className="pull-right-container">
-                                            <i className="fa fa-angle-left pull-right" />
-                                        </span>
-                                    </a>
-                                    <ul className="treeview-menu">
-                                        {this.checkURL(url.path1, links) === true &&
-                                            <li className={window.location.pathname === url.path1 ? "active" : ""}>
-                                                <Link to={url.path1}>
-                                                    <i className="fa fa-dashboard" />
-                                                    {translate(`menu.dashboard_employee`)}
-                                                </Link>
-                                            </li>
-                                        }
-                                        {this.checkURL(url.path12, links) === true &&
-                                            <li className={window.location.pathname === url.path12 ? "active" : ""}>
-                                                <Link to={url.path12}>
-                                                    <i className="fa fa-sitemap" />
-                                                    {translate(`menu.manage_unit`)}
-                                                </Link>
-                                            </li>
-                                        }
-                                        {this.checkURL(url.path2, links) === true &&
-                                            <li className={window.location.pathname === url.path2 ? "active" : ""}>
-                                                <Link to={url.path2}>
-                                                    <i className="fa fa-user-plus" />
-                                                    {translate(`menu.add_employee`)}
-                                                </Link>
-                                            </li>
-                                        }
-                                        {this.checkURL(url.path3, links) === true &&
-                                            <li className={window.location.pathname === url.path3 ? "active" : ""}>
-                                                <Link to={url.path3}>
-                                                    <i className="fa fa-address-card" />
-                                                    {translate(`menu.list_employee`)}
-                                                </Link>
-                                            </li>
-                                        }
-                                        {this.checkURL(url.path4, links) === true &&
-                                            <li className={window.location.pathname === url.path4 ? "active" : ""}>
-                                                <Link to={url.path4}>
-                                                    <i className="fa fa-line-chart" />
-                                                    {translate(`menu.salary_employee`)}
-                                                </Link>
-                                            </li>
-                                        }
-                                        {this.checkURL(url.path5, links) === true &&
-                                            <li className={window.location.pathname === url.path5 ? "active" : ""}>
-                                                <Link to={url.path5}>
-                                                    <i className="fa fa-calculator" />
-                                                    {translate(`menu.time_keeping`)}
-                                                </Link>
-                                            </li>
-                                        }
-                                        {this.checkURL(url.path6, links) === true &&
-                                            <li className={window.location.pathname === url.path6 ? "active" : ""}>
-                                                <Link to={url.path6}>
-                                                    <i className="fa fa-balance-scale" />
-                                                    {translate(`menu.discipline`)}
-                                                </Link>
-                                            </li>
-                                        }
-                                        {this.checkURL(url.path7, links) === true &&
-                                            <li className={window.location.pathname === url.path7 ? "active" : ""}>
-                                                <Link to={url.path7}>
-                                                    <i className="fa fa-calendar-times-o" />
-                                                    {translate(`menu.annual_leave`)}
-                                                </Link>
-                                            </li>
-                                        }
-                                        {this.checkURL(url.path13, links) === true &&
-                                            <li className={window.location.pathname === url.path13 ? "active" : ""}>
-                                                <Link to={url.path13}>
-                                                    <i className="fa fa-calendar" />
-                                                    {translate(`menu.manage_holiday`)}
-                                                </Link>
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
-                            }
-                            {
-                                (this.checkURL(url.path8, links) === true || this.checkURL(url.path9, links) === true) &&
-                                <li className="treeview">
-                                    <a href="">
-                                        <i className="fa fa-user-circle" /> <span>{translate(`menu.account`)}</span>
-                                        <span className="pull-right-container">
-                                            <i className="fa fa-angle-left pull-right" />
-                                        </span>
-                                    </a>
-                                    <ul className="treeview-menu">
-                                        {this.checkURL(url.path8, links) === true &&
-                                            <li className={window.location.pathname === url.path8 ? "active" : ""}>
-                                                <Link to={url.path8}>
-                                                    <i className="fa fa-user-o" />
-                                                    {translate(`menu.detail_employee`)}
-                                                </Link>
-                                            </li>
-                                        }
-                                        {this.checkURL(url.path9, links) === true &&
-                                            <li className={window.location.pathname === url.path9 ? "active" : ""}>
-                                                <Link to={url.path9}>
-                                                    <i className="fa fa-pencil-square-o" />
-                                                    {translate(`menu.update_employee`)}
-                                                </Link>
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
-                            }
-                            {
-                                (this.checkURL(url.path10, links) === true || this.checkURL(url.path11, links) === true) &&
-                                <li className="treeview">
-                                    <a href="">
-                                        <i className="fa fa-graduation-cap" /> <span>{translate(`menu.manage_training`)}</span>
-                                        <span className="pull-right-container">
-                                            <i className="fa fa-angle-left pull-right" />
-                                        </span>
-                                    </a>
-                                    <ul className="treeview-menu">
-                                        {this.checkURL(url.path10, links) === true &&
-                                            <li className={window.location.pathname === url.path10 ? "active" : ""}>
-                                                <Link to={url.path10}>
-                                                    <i className="fa fa-university" />
-                                                    {translate(`menu.list_education`)}
-                                                </Link>
-                                            </li>
-                                        }
-                                        {this.checkURL(url.path11, links) === true &&
-                                            <li className={window.location.pathname === url.path11 ? "active" : ""}>
-                                                <Link to={url.path11}>
-                                                    <i className="fa fa-list-alt" />
-                                                    {translate(`menu.training_plan`)}
-                                                </Link>
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
-                            }
+                            <GroupItem groupItem={{
+                                name: 'menu.manage_employee',
+                                icon: 'fa fa-address-book',
+                                list: [
+                                    { name: 'menu.dashboard_employee', icon: 'fa fa-dashboard', path: '/hr-dashboard-employee' },
+                                    { name: 'menu.manage_unit', icon: 'fa fa-sitemap', path: '/hr-manage-department' }, 
+                                    { name: 'menu.add_employee', icon: 'fa fa-user-plus', path: '/hr-add-employee' },
+                                    { name: 'menu.list_employee', icon: 'fa fa-address-card', path: '/hr-list-employee' },
+                                    { name: 'menu.salary_employee', icon: 'fa fa-line-chart', path: '/hr-salary-employee' }, 
+                                    { name: 'menu.time_keeping', icon: 'fa fa-calculator', path: '/hr-time-keeping' },
+                                    { name: 'menu.discipline', icon: 'fa fa-balance-scale', path: '/hr-discipline' },
+                                    { name: 'menu.annual_leave', icon: 'fa fa-calendar-times-o', path: '/hr-annual-leave' }, 
+                                    { name: 'menu.manage_holiday', icon: 'fa fa-calendar', path: '/hr-manage-holiday' },
+                                ]
+                            }}/>
 
-                            {/* quản lý kho */}
+                            <GroupItem groupItem={{
+                                name: 'menu.account',
+                                icon: 'fa fa-user-circle',
+                                list: [
+                                    { name: 'menu.detail_employee', icon: 'fa fa-user-o', path: '/hr-detail-employee' },
+                                    { name: 'menu.update_employee', icon: 'fa fa-pencil-square-o', path: '/hr-update-employee' }, 
+                                ]
+                            }}/>
+
+                            <GroupItem groupItem={{
+                                name: 'menu.manage_training',
+                                icon: 'fa fa-graduation-cap',
+                                list: [
+                                    { name: 'menu.list_education', icon: 'fa fa-university', path: '/hr-list-education' },
+                                    { name: 'menu.training_plan', icon: 'fa fa-list-alt', path: '/hr-training-plan' }, 
+                                ]
+                            }}/>
 
                             {/* kpi-management */}
-                            {
-                                (this.checkURL('/kpi-units/create', links) === true || this.checkURL('/kpi-personals/create', links) === true || this.checkURL('/kpi-personals/overview', links) === true) &&
-                                <li className="treeview">
-                                    <a href="">
-                                        <i className="fa fa-dashboard" /> <span>{translate(`menu.manage_kpi`)}</span>
-                                        <span className="pull-right-container">
-                                            <i className="fa fa-angle-left pull-right" />
-                                        </span>
-                                    </a>
-                                    <ul className="treeview-menu">
-                                        {/* {
-                                            (this.checkURL('/kpi-units/overview', links) === true) &&
-                                            <li className={window.location.pathname === "/kpi-units/overview" ? "active" : ""}>
-                                                <Link to="/kpi-units/overview">{translate(`menu.kpi_unit_overview`)}</Link>
-                                            </li>
-                                        } */}
-
-                                        {
-                                            (this.checkURL('/kpi-units/dashboard', links) === true) &&
-                                            <li className={window.location.pathname === "/kpi-units/dashboard" ? "active" : ""}>
-                                                <Link to="/kpi-units/dashboard">{translate(`menu.kpi_unit_dashboard`)}</Link>
-                                            </li>
-                                        }
-                                        {
-                                            (this.checkURL('/kpi-units/create', links) === true) &&
-                                            <li className={window.location.pathname === "/kpi-units/create" ? "active" : ""}>
-                                                <Link to="/kpi-units/create">{translate(`menu.kpi_unit_create`)}</Link>
-                                            </li>
-                                        }
-                                        {
-                                            (this.checkURL('/kpi-units/manager', links) === true) &&
-                                            <li className={window.location.pathname === "/kpi-units/manager" ? "active" : ""}>
-                                                <Link to="/kpi-units/manager">{translate(`menu.kpi_unit_manager`)}</Link>
-                                            </li>
-                                        }
-                                        {
-                                            (this.checkURL('/kpi-units/statistic', links) === true) &&
-                                            <li className={window.location.pathname === "/kpi-units/statistic" ? "active" : ""}>
-                                                <Link to="/kpi-units/statistic">{translate(`menu.kpi_unit_statistic`)}</Link>
-                                            </li>
-                                        }
-
-                                        {
-                                            (this.checkURL('/kpi-member/dashboard', links) === true) &&
-                                            <li className={window.location.pathname === "/kpi-member/dashboard" ? "active" : ""}>
-                                                <Link to="/kpi-member/dashboard">{translate(`menu.kpi_member_dashboard`)}</Link>
-                                            </li>
-                                        }
-
-                                        {
-                                            (this.checkURL('/kpi-member/manager', links) === true) &&
-                                            <li className={window.location.pathname === "/kpi-member/manager" ? "active" : ""}>
-                                                <Link to="/kpi-member/manager">{translate(`menu.kpi_member_manager`)}</Link>
-                                            </li>
-                                        }
-
-                                        {/* {
-                                            (this.checkURL('/kpi-personals/overview', links) === true) &&
-                                            <li className={window.location.pathname === "/kpi-personals/overview" ? "active" : ""}>
-                                                <Link to="/kpi-personals/overview">{translate(`menu.kpi_personal_overview`)}</Link>
-                                            </li>
-                                        } */}
-
-                                        {
-                                            (this.checkURL('/kpi-personals/dashboard', links) === true) &&
-                                            <li className={window.location.pathname === "/kpi-personals/dashboard" ? "active" : ""}>
-                                                <Link to="/kpi-personals/dashboard">{translate(`menu.kpi_personal_dashboard`)}</Link>
-                                            </li>
-                                        }
-                                        {
-                                            (this.checkURL('/kpi-personals/create', links) === true) &&
-                                            <li className={window.location.pathname === "/kpi-personals/create" ? "active" : ""}>
-                                                <Link to="/kpi-personals/create">{translate(`menu.kpi_personal_create`)}</Link>
-                                            </li>
-                                        }
-                                        {
-                                            (this.checkURL('/kpi-personals/manager', links) === true) &&
-                                            <li className={window.location.pathname === "/kpi-personals/manager" ? "active" : ""}>
-                                                <Link to="/kpi-personals/manager">{translate(`menu.kpi_personal_manager`)}</Link>
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
-                            }
+                            <GroupItem groupItem={{
+                                name: 'menu.manage_kpi',
+                                icon: 'fa fa-dashboard',
+                                list: [
+                                    { name: 'menu.kpi_unit_dashboard', icon: 'fa fa-circle-o', path: '/kpi-units/dashboard' },
+                                    { name: 'menu.kpi_unit_create', icon: 'fa fa-circle-o', path: '/kpi-units/create' },
+                                    { name: 'menu.kpi_unit_manager', icon: 'fa fa-circle-o', path: '/kpi-units/manager' },
+                                    { name: 'menu.kpi_unit_statistic', icon: 'fa fa-circle-o', path: '/kpi-units/statisti' },
+                                    { name: 'menu.kpi_member_dashboard', icon: 'fa fa-circle-o', path: '/kpi-member/dashboard' },
+                                    { name: 'menu.kpi_member_manager', icon: 'fa fa-circle-o', path: '/kpi-member/manager' },
+                                    { name: 'menu.kpi_personal_dashboard', icon: 'fa fa-circle-o', path: '/kpi-personals/dashboard' },
+                                    { name: 'menu.kpi_personal_create', icon: 'fa fa-circle-o', path: '/kpi-personals/create' },
+                                    { name: 'menu.kpi_personal_manager', icon: 'fa fa-circle-o', path: '/kpi-personals/manager' },
+        
+                                    // { name: 'menu.kpi_unit_overview', icon: 'fa fa-circle-o', path: '/kpi-units/overview' },
+                                    // { name: 'menu.kpi_personal_overview', icon: 'fa fa-circle-o', path: '/kpi-personals/overview' },
+                                ]
+                            }}/>
 
                             {/* Quản lý đơn hàng */}
-                            {(this.checkURL(url3.path1, links) === true ||
-                                this.checkURL(url3.path2, links) === true) && (
-                                    <li className="treeview">
-                                        <a href="">
-                                            <i className="fa  fa-reorder " />{" "}
-                                            <span>{translate(`menu.manage_orders`)}</span>
-                                            <span className="pull-right-container">
-                                                <i className="fa fa-angle-left pull-right" />
-                                            </span>
-                                        </a>
-                                        <ul className="treeview-menu">
-                                            {/**Quản lý danh sách đơn hàng */}
-                                            {this.checkURL(url3.path1, links) === true && (
-                                                <li
-                                                    className={
-                                                        window.location.pathname === url3.path1
-                                                            ? "active"
-                                                            : ""
-                                                    }
-                                                >
-                                                    <Link to={url3.path1}>
-                                                        <i className="fa  fa-reorder" />
-                                                        {translate(`menu.manage_list_orders`)}
-                                                    </Link>
-                                                </li>
-                                            )}
-
-                                            {this.checkURL(url3.path2, links) === true && (
-                                                <li
-                                                    className={
-                                                        window.location.pathname === url3.path2
-                                                            ? "active"
-                                                            : ""
-                                                    }
-                                                >
-                                                    <Link to={url3.path2}>
-                                                        <i className="fa  fa-reorder" />
-                                                        {translate(`menu.manage_list_orders`)}
-                                                    </Link>
-                                                </li>
-                                            )}
-                                        </ul>
-                                    </li>
-                                )}
-
-
-                            {
-                                this.checkURL('/task-template', links) === true &&
-                                <Item
-                                    key='task_template'
-                                    name='task_template'
-                                    path='/task-template'
-                                    icon='fa fa-flash'
-                                />
-                            }
+                            <GroupItem groupItem={{
+                                name: 'menu.manage_orders',
+                                icon: 'fa fa-reorder',
+                                list: [
+                                    { name: 'menu.manage_list_orders', icon: 'fa fa-reorder', path: '/manage-orders' },
+                                    { name: 'menu.manage_list_orders', icon: 'fa fa-reorder', path: '/manage-list-orders' },
+                                ]
+                            }}/>
+                            
+                            <Item item={{ name: 'menu.task_template', icon:'fa fa-flash', path: '/task-template'}}/>
 
                             {/* Task management */}
-                            {
-                                (this.checkURL('/task-management-dashboard', links) === true || this.checkURL('/task-management', links) === true) &&
-                                <li className="treeview">
-                                    <a href="">
-                                        <i className="fa fa-tasks"></i> <span>{translate(`menu.tasks`)}</span>
-                                        <span className="pull-right-container">
-                                            <i className="fa fa-angle-left pull-right" />
-                                        </span>
-                                    </a>
-                                    <ul className="treeview-menu">
-                                        {
-                                            this.checkURL('/task-organization-management-dashboard', links) === true &&
-                                            <li className={window.location.pathname === "/task-organization-management-dashboard" ? "active" : ""}>
-                                                <Link to="/task-organization-management-dashboard">{translate(`menu.task_organization_management_dashboard`)}</Link>
-                                            </li>
-                                        }
-                                        {
-                                            this.checkURL('/task-management-dashboard', links) === true &&
-                                            <li className={window.location.pathname === "/task-management-dashboard" ? "active" : ""}>
-                                                <Link to="/task-management-dashboard">{translate(`menu.task_management_dashboard`)}</Link>
-                                            </li>
-                                        }
-                                        {
-                                            this.checkURL('/task-management', links) === true &&
-                                            <li className={window.location.pathname === "/task-management" ? "active" : ""}>
-                                                <Link to="/task-management">{translate(`menu.task_management`)}</Link>
-                                            </li>
-                                        }
-                                        {
-                                            this.checkURL('/task-process-template', links) === true &&
-                                            <li className={window.location.pathname === "/task-process-template" ? "active" : ""}>
-                                                <Link to="/task-process-template">{translate(`menu.task_process_template`)}</Link>
-                                            </li>
-                                        }
-                                        {
-                                            this.checkURL('/task-process-management', links) === true &&
-                                            <li className={window.location.pathname === "/task-process-management" ? "active" : ""}>
-                                                <Link to="/task-process-management">{translate(`menu.task_management_process`)}</Link>
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
-                            }
+                            <GroupItem groupItem={{
+                                name: 'menu.tasks',
+                                icon: 'fa fa-tasks',
+                                list: [
+                                    { name: 'menu.task_organization_management_dashboard', icon: 'fa fa-circle-o', path: '/task-organization-management-dashboard' },
+                                    { name: 'menu.task_management_dashboard', icon: 'fa fa-circle-o', path: '/task-management-dashboard' },
+                                    { name: 'menu.task_management', icon: 'fa fa-circle-o', path: '/task-management' },
+                                    { name: 'menu.task_process_template', icon: 'fa fa-circle-o', path: '/task-process-template' },
+                                    { name: 'menu.task_management_process', icon: 'fa fa-circle-o', path: '/task-process-management' },
+                                ]
+                            }}/>
 
                             {/* Report management */}
-                            {
-                                (this.checkURL('/task-report', links) === true) &&
-                                <li className="treeview">
-                                    <a href="">
-                                        <i className="fa fa-calendar"></i> <span>{translate(`menu.report_management`)}</span>
-                                        <span className="pull-right-container">
-                                            <i className="fa fa-angle-left pull-right" />
-                                        </span>
-                                    </a>
-                                    <ul className="treeview-menu">
-                                        {
-                                            this.checkURL('/task-report', links) === true &&
-                                            <li className={window.location.pathname === "/task-report" ? "active" : ""}>
-                                                <Link to="/task-report">{translate(`menu.task_report`)}</Link>
-                                            </li>
-                                        }
-                                    </ul>
-                                </li>
-                            }
+                            <GroupItem groupItem={{
+                                name: 'menu.report_management',
+                                icon: 'fa fa-calendar',
+                                list: [
+                                    { name: 'menu.task_report', icon: 'fa fa-circle-o', path: '/task-report' },
+                                ]
+                            }}/>
                         </ul>
                     </section>
                 </aside>
