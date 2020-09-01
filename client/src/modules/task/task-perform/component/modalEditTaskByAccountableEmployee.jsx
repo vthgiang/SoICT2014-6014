@@ -9,6 +9,7 @@ import { performTaskAction } from '../redux/actions';
 import { TaskFormValidator } from '../../task-management/component/taskFormValidator';
 import getEmployeeSelectBoxItems from '../../organizationalUnitHelper';
 import Swal from 'sweetalert2'
+import { TaskTemplateFormValidator } from '../../task-template/component/taskTemplateFormValidator';
 
 class ModalEditTaskByAccountableEmployee extends Component {
 
@@ -24,6 +25,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         let taskName = task && task.name;
         let taskDescription = task && task.description;
         let progress = task && task.progress;
+        let formula = task && task.formula;
 
         let info = {}, taskInfo = task && task.taskInformations;
         for (let i in taskInfo) {
@@ -113,6 +115,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             statusOptions: statusOptions,
             priorityOptions: priorityOptions,
             progress: progress,
+            formula: formula,
             startDate: startDate,
             endDate: endDate,
             responsibleEmployees: responsibleEmployees,
@@ -124,7 +127,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         }
     }
 
-    
+
     componentDidMount() {
         this.props.getAllUserSameDepartment(localStorage.getItem("currentRole"));
     }
@@ -141,6 +144,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                 errorOnProgress: undefined,
                 errorTaskName: undefined,
                 errorTaskDescription: undefined,
+                errorOnFormula: undefined,
                 errorInfo: {},
 
             }
@@ -627,6 +631,25 @@ class ModalEditTaskByAccountableEmployee extends Component {
         return msg === undefined;
     }
 
+    handleChangeTaskFormula = (event) => {
+        let value = event.target.value;
+        this.validateFormula(value, true);
+    }
+
+    validateFormula = (value, willUpdateState = true) => {
+        let msg = TaskTemplateFormValidator.validateTaskTemplateFormula(value);
+
+        if (willUpdateState) {
+            this.state.formula = value;
+            this.state.errorOnFormula = msg;
+            this.setState(state => {
+                return {
+                    ...state,
+                };
+            });
+        }
+        return msg === undefined;
+    }
 
     handleTaskProgressChange = event => {
         let value = event.target.value;
@@ -660,8 +683,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
     isFormValidated = () => {
         let { info, errorInfo } = this.state;
         let check = true;
-        if(Object.keys(errorInfo).length !== 0) {
-            for(let i in errorInfo ) {
+        if (Object.keys(errorInfo).length !== 0) {
+            for (let i in errorInfo) {
                 if (errorInfo[i]) {
                     check = false;
                     return;
@@ -819,7 +842,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
         if (title !== '' || description !== '') {
             this.props.addTaskLog({
                 createdAt: Date.now(),
-               
+
                 creator: getStorage("userId"),
                 title: title,
                 description: description,
@@ -840,6 +863,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
             description: this.state.taskDescription,
             status: this.state.statusOptions,
             priority: this.state.priorityOptions,
+            formula: this.state.formula,
             user: this.state.userId,
             progress: this.state.progress,
             date: this.formatDate(Date.now()),
@@ -887,12 +911,12 @@ class ModalEditTaskByAccountableEmployee extends Component {
     render() {
 
         const { user, tasktemplates, translate } = this.props;
-        const { task, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorTaskProgress, taskName, taskDescription, statusOptions, priorityOptions,
-            startDate, endDate, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees
+        const { task, errorOnEndDate, errorOnStartDate, errorTaskName, errorTaskDescription, errorOnFormula, taskName, taskDescription, statusOptions, priorityOptions,
+            startDate, endDate, formula, responsibleEmployees, accountableEmployees, consultedEmployees, informedEmployees, inactiveEmployees
         } = this.state;
 
-        const { perform, id, role, title } = this.props;
-        
+        const { perform, id, role, title, hasAccountable } = this.props;
+
         let departmentUsers, usercompanys;
         if (user.userdepartments) departmentUsers = user.userdepartments;
         if (user.usercompanys) usercompanys = user.usercompanys;
@@ -922,7 +946,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                     <DialogModal
                         size={75}
                         maxWidth={750}
-                        modalID={`modal-edit-task-by-${role}-${id}`}
+                        modalID={hasAccountable ? `modal-edit-task-by-${role}-${id}` : `modal-edit-task-by-${role}-${id}-has-not-accountable`}
                         formID={`form-edit-task-${role}-${id}`}
                         title={title}
                         isLoading={false}
@@ -944,7 +968,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                     <div
                                         className={`form-group ${errorTaskDescription === undefined ? "" : "has-error"}`}>
                                         <label>{translate('task.task_management.detail_description')}<span className="text-red">*</span></label>
-                                        <textarea 
+                                        <textarea
                                             rows="4"
                                             value={taskDescription}
                                             className="form-control" onChange={this.handleTaskDescriptionChange} />
@@ -1008,6 +1032,26 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         />
                                         <ErrorLabel content={errorOnEndDate} />
                                     </div>
+                                </div>
+                                {/**Công thức tính của mẫu công việc */}
+                                <div className={` form-group ${errorOnFormula === undefined ? "" : "has-error"}`} >
+                                    <label className="control-label" htmlFor="inputFormula">{translate('task_template.formula')}*</label>
+                                    <input type="text" className="form-control" id="inputFormula" placeholder="progress/(dayUsed/totalDay) - (10-averageActionRating)*10 - 100*(1-p1/p2)"
+                                        value={formula} onChange={this.handleChangeTaskFormula}
+                                    />
+                                    <ErrorLabel content={errorOnFormula} />
+
+                                    <br />
+                                    <div><span style={{ fontWeight: 800 }}>Ví dụ: </span>progress/(dayUsed/totalDay) - (10-averageActionRating)*10</div>
+                                    <br />
+                                    <div><span style={{ fontWeight: 800 }}>{translate('task_template.parameters')}:</span></div>
+                                    <div><span style={{ fontWeight: 600 }}>overdueDate</span> - Thời gian quá hạn (ngày)</div>
+                                    <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
+                                    <div><span style={{ fontWeight: 600 }}>totalDay</span> - Thời gian từ ngày bắt đầu đến ngày kết thúc công việc (ngày)</div>
+                                    <div><span style={{ fontWeight: 600 }}>averageActionRating</span> -  Trung bình cộng điểm đánh giá hoạt động (1-10)</div>
+                                    <div><span style={{ fontWeight: 600 }}>progress</span> - % Tiến độ công việc (0-100)</div>
+                                    <div><span style={{ fontWeight: 600 }}>dayUsed</span> - Thời gian làm việc tính đến ngày đánh giá (ngày)</div>
+                                    <div><span style={{ fontWeight: 600 }}>p1, p2,...</span> - Thông tin công việc kiểu số (Chỉ có với các công việc theo mẫu)</div>
                                 </div>
                             </fieldset>
 
@@ -1101,7 +1145,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                 </div>
                             </fieldset>
 
-                            
+
                             {/* Thành viên rời khỏi công việc */}
                             <fieldset className="scheduler-border">
                                 <legend className="scheduler-border">{translate('task.task_management.edit_inactive_emp')}</legend>
@@ -1112,8 +1156,8 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         <div style={{ marginBottom: 15 }}>
                                             <div style={{ marginBottom: 5 }}><strong>{translate('task.task_management.accountable')}</strong></div>
                                             {
-                                                task.accountableEmployees.map((elem,index) => {
-                                                    return <div key={index} style={{paddingLeft: 20}}>
+                                                task.accountableEmployees.map((elem, index) => {
+                                                    return <div key={index} style={{ paddingLeft: 20 }}>
                                                         <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
                                                             <input
                                                                 type="checkbox"
@@ -1131,7 +1175,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                             <div style={{ marginBottom: 5 }}><strong>{translate('task.task_management.responsible')}</strong></div>
                                             {
                                                 task.responsibleEmployees.map((elem, index) => {
-                                                    return <div key={index} style={{ paddingLeft: 20}}>
+                                                    return <div key={index} style={{ paddingLeft: 20 }}>
                                                         <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
                                                             <input
                                                                 type="checkbox"
@@ -1147,11 +1191,11 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                         </div>
 
                                         {task.consultedEmployees.length !== 0 &&
-                                        <div>
-                                            <div style={{ marginBottom: 5 }}><strong>{translate('task.task_management.consulted')}</strong></div>
+                                            <div>
+                                                <div style={{ marginBottom: 5 }}><strong>{translate('task.task_management.consulted')}</strong></div>
                                                 {
                                                     task.consultedEmployees.map((elem, key) => {
-                                                        return <div key={key} style={{ paddingLeft: 20}}>
+                                                        return <div key={key} style={{ paddingLeft: 20 }}>
                                                             <label style={{ fontWeight: "normal", margin: "7px 0px" }}>
                                                                 <input
                                                                     type="checkbox"
@@ -1164,7 +1208,7 @@ class ModalEditTaskByAccountableEmployee extends Component {
                                                         </div>
                                                     })
                                                 }
-                                        </div>
+                                            </div>
                                         }
                                     </div>
                                 </div>

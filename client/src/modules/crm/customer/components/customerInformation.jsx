@@ -15,13 +15,13 @@ class CustomerInformation extends Component {
 
     render() {
         const { translate } = this.props;
-        const {customers} = this.props.customer;
-        const {customerId, customerName, customerLiabilities} = this.state;
+        const {customer} = this.props;
+        const {id, name, liabilities} = this.state;
 
         return (
             <React.Fragment>
                 <DialogModal
-                    modalID="modal-customer-information" isLoading={customers.isLoading}
+                    modalID="modal-customer-information" isLoading={customer.isLoading}
                     formID="form-customer-information"
                     title="Thông tin chi tiết khách hàng"
                     func={this.save} size="100"
@@ -33,7 +33,7 @@ class CustomerInformation extends Component {
                             
                             <div className="row">
                                 <div className="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                    <b>Khách hàng: </b> {customerName}<br/>
+                                    <b>Khách hàng: </b> {name}<br/>
                                     <b>Nhóm: </b> VIP<br/>
                                     <b>SĐT: </b> 0396629955<br/>
                                     <b>Email: </b> tmhanh@gmail.com<br/>
@@ -64,7 +64,7 @@ class CustomerInformation extends Component {
                                 </div>
                                 <div className="tab-pane" id="sale">
                                     Công nợ
-                                    <table className="table table-hover table-striped table-bordered" id={`table-customer-liabilities-${customerId}`}>
+                                    <table className="table table-hover table-striped table-bordered" id={`table-customer-liabilities-${id}`}>
                                         <thead>
                                             <tr>
                                                 <th>Mã phiếu</th>
@@ -75,7 +75,7 @@ class CustomerInformation extends Component {
                                         </thead>
                                         <tbody>
                                             {
-                                                customerLiabilities.map(lia=>
+                                                liabilities.map(lia=>
                                                 <tr>
                                                     <td>{lia.code}</td>
                                                     <td>{lia.creator.name}</td>
@@ -157,12 +157,12 @@ class CustomerInformation extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
-        if (nextProps.customerId !== prevState.customerId) {
+        if (nextProps.id !== prevState.id) {
             return {
                 ...prevState,
-                customerId: nextProps.customerId,
-                customerName: nextProps.customerName,
-                customerLiabilities: nextProps.customerLiabilities,
+                id: nextProps.id,
+                name: nextProps.name,
+                liabilities: nextProps.liabilities,
             }
         } else {
             return null;

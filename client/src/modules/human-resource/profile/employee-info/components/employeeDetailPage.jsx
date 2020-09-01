@@ -12,13 +12,17 @@ class EmployeeDetail extends Component {
         super(props);
         this.state = {}
     }
+
     componentDidMount = async () => {
         this.props.getEmployeeProfile();
         this.props.getDepartment();
     }
+
     render() {
-        let employees, salaries, annualLeaves, commendations, disciplines, courses, roles = [];
         const { employeesInfo, translate } = this.props;
+
+        let employees, salaries, annualLeaves, commendations, disciplines, courses, roles = [];
+
         if (employeesInfo.employees) employees = employeesInfo.employees;
         if (employeesInfo.salarys) salaries = employeesInfo.salarys;
         if (employeesInfo.annualLeaves) annualLeaves = employeesInfo.annualLeaves;
@@ -26,72 +30,82 @@ class EmployeeDetail extends Component {
         if (employeesInfo.disciplines) disciplines = employeesInfo.disciplines;
         if (employeesInfo.courses) courses = employeesInfo.courses
         if (employeesInfo.roles) roles = employeesInfo.roles
+
         return (
             <React.Fragment>
                 {
-                    typeof employees !== 'undefined' && employees.length === 0 && employeesInfo.isLoading === false && < span className="text-red">{translate('manage_employee.no_data_personal')}</span>
+                    employees && employees.length === 0 && employeesInfo.isLoading === false && < span className="text-red">{translate('human_resource.profile.employee_info.no_data_personal')}</span>
                 }
                 {(typeof employees !== 'undefined' && employees.length !== 0) &&
                     employees.map((x, index) => (
                         <div className="row" key={index}>
-                            {/* left column */}
                             <div className="col-sm-12">
                                 <div className="nav-tabs-custom">
                                     <ul className="nav nav-tabs">
-                                        <li className="active"><a title={translate('manage_employee.menu_general_infor_title')} data-toggle="tab" href="#view_general">{translate('manage_employee.menu_general_infor')}</a></li>
-                                        <li><a title={translate('manage_employee.menu_contact_infor_title')} data-toggle="tab" href="#view_contact">{translate('manage_employee.menu_contact_infor')}</a></li>
-                                        <li><a title={translate('manage_employee.menu_education_experience_title')} data-toggle="tab" href="#view_experience">{translate('manage_employee.menu_education_experience')}</a></li>
-                                        <li><a title={translate('manage_employee.menu_diploma_certificate_title')} data-toggle="tab" href="#view_diploma">{translate('manage_employee.menu_diploma_certificate')}</a></li>
-                                        <li><a title={translate('manage_employee.menu_account_tax_title')} data-toggle="tab" href="#view_account">{translate('manage_employee.menu_account_tax')}</a></li>
-                                        <li><a title={translate('manage_employee.menu_insurrance_infor_title')} data-toggle="tab" href="#view_insurrance">{translate('manage_employee.menu_insurrance_infor')}</a></li>
-                                        <li><a title={translate('manage_employee.menu_contract_training_title')} data-toggle="tab" href="#view_contract">{translate('manage_employee.menu_contract_training')}</a></li>
-                                        <li><a title={translate('manage_employee.menu_reward_discipline_title')} data-toggle="tab" href="#view_reward">{translate('manage_employee.menu_reward_discipline')}</a></li>
-                                        <li><a title={translate('manage_employee.menu_salary_sabbatical_title')} data-toggle="tab" href="#view_salary">{translate('manage_employee.menu_salary_sabbatical')}</a></li>
-                                        <li><a title={translate('manage_employee.menu_attachments_title')} data-toggle="tab" href="#view_attachments">{translate('manage_employee.menu_attachments')}</a></li>
+                                        <li className="active"><a title={translate('human_resource.profile.tab_name.menu_general_infor_title')} data-toggle="tab" href="#view_general">{translate('human_resource.profile.tab_name.menu_general_infor')}</a></li>
+                                        <li><a title={translate('human_resource.profile.tab_name.menu_contact_infor_title')} data-toggle="tab" href="#view_contact">{translate('human_resource.profile.tab_name.menu_contact_infor')}</a></li>
+                                        <li><a title={translate('human_resource.profile.tab_name.menu_education_experience_title')} data-toggle="tab" href="#view_experience">{translate('human_resource.profile.tab_name.menu_education_experience')}</a></li>
+                                        <li><a title={translate('human_resource.profile.tab_name.menu_diploma_certificate_title')} data-toggle="tab" href="#view_diploma">{translate('human_resource.profile.tab_name.menu_diploma_certificate')}</a></li>
+                                        <li><a title={translate('human_resource.profile.tab_name.menu_account_tax_title')} data-toggle="tab" href="#view_account">{translate('human_resource.profile.tab_name.menu_account_tax')}</a></li>
+                                        <li><a title={translate('human_resource.profile.tab_name.menu_insurrance_infor_title')} data-toggle="tab" href="#view_insurrance">{translate('human_resource.profile.tab_name.menu_insurrance_infor')}</a></li>
+                                        <li><a title={translate('human_resource.profile.tab_name.menu_contract_training_title')} data-toggle="tab" href="#view_contract">{translate('human_resource.profile.tab_name.menu_contract_training')}</a></li>
+                                        <li><a title={translate('human_resource.profile.tab_name.menu_reward_discipline_title')} data-toggle="tab" href="#view_reward">{translate('human_resource.profile.tab_name.menu_reward_discipline')}</a></li>
+                                        <li><a title={translate('human_resource.profile.tab_name.menu_salary_sabbatical_title')} data-toggle="tab" href="#view_salary">{translate('human_resource.profile.tab_name.menu_salary_sabbatical')}</a></li>
+                                        <li><a title={translate('human_resource.profile.tab_name.menu_attachments_title')} data-toggle="tab" href="#view_attachments">{translate('human_resource.profile.tab_name.menu_attachments')}</a></li>
                                     </ul>
                                     <div className="tab-content">
+                                        {/* Thông tin chung */}
                                         <GeneralTab
                                             id="view_general"
                                             employee={x}
                                             roles={roles}
                                         />
+                                        {/* Thông tin liên hệ */}
                                         <ContactTab
                                             id="view_contact"
                                             employee={x}
                                         />
+                                        {/* Kinh nghiệm */}
                                         <ExperiencTab
                                             id="view_experience"
                                             employee={x}
                                         />
+                                        {/* Thuế */}
                                         <TaxTab
                                             id="view_account"
                                             employee={x}
                                         />
+                                        {/* Bằng cấp- chứng chỉ */}
                                         <CertificateTab
                                             id="view_diploma"
                                             degrees={x.degrees}
                                             certificates={x.certificates}
                                         />
+                                        {/* Thông tin bảo hiểm */}
                                         <InsurranceTab
                                             id="view_insurrance"
                                             employee={x}
                                             socialInsuranceDetails={x.socialInsuranceDetails}
                                         />
+                                        {/* Hợp đồng lao động */}
                                         <ContractTab
                                             id="view_contract"
                                             courses={courses}
                                             contracts={x.contracts}
                                         />
+                                        {/* Khen thưởng - kỷ luật */}
                                         <DisciplineTab
                                             id="view_reward"
                                             commendations={commendations}
                                             disciplines={disciplines}
                                         />
+                                        {/* Lương thương - nghỉ phép */}
                                         <SalaryTab
                                             id="view_salary"
                                             annualLeaves={annualLeaves}
                                             salaries={salaries}
                                         />
+                                        {/* Tài liệu đính kèm */}
                                         <AttachmentTab
                                             id="view_attachments"
                                             employee={x}
@@ -112,9 +126,11 @@ function mapState(state) {
     const { employeesInfo } = state;
     return { employeesInfo };
 }
+
 const actionCreators = {
     getEmployeeProfile: EmployeeInfoActions.getEmployeeProfile,
     getDepartment: DepartmentActions.get,
 }
+
 const connectDetaiEmployee = connect(mapState, actionCreators)(withTranslate(EmployeeDetail));
 export { connectDetaiEmployee as EmployeeDetail };

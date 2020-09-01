@@ -1,20 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { withTranslate } from 'react-redux-multilingual';
 
-import { DialogModal, ModalButton, ErrorLabel, SelectBox } from '../../../../../common-components';
+import { withTranslate } from 'react-redux-multilingual';
 
 import { createUnitKpiActions } from '../../../organizational-unit/creation/redux/actions';
 import { createKpiSetActions } from "../redux/actions";
 
-import { VALIDATOR } from '../../../../../helpers/validator';
+import { DialogModal, ErrorLabel, SelectBox } from '../../../../../common-components';
+import ValidationHelper from '../../../../../helpers/validationHelper';
 
 
 var translate='';
 class ModalEditEmployeeKpi extends Component {
+
     constructor(props) {
         super(props);
+
         translate = this.props.translate;
+
         this.state = {
             _id: null,
             name: "",
@@ -60,7 +63,7 @@ class ModalEditEmployeeKpi extends Component {
     handleEditTargetEmployeeKpi = async () => {
         let id = this.state._id;
 
-        var newTarget = {
+        let newTarget = {
             name: this.state.name,
             parent: this.state.parent,
             weight: this.state.weight,
@@ -81,31 +84,15 @@ class ModalEditEmployeeKpi extends Component {
 
     handleNameChange = (e) => {
         let value = e.target.value;
-        this.validateName(value, true);
-    }
-
-    validateName = (value, willUpdateState=true) => {
-        let msg = undefined;
-        if (value.trim() === ""){
-            msg = translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_name.empty');
-        } else if(value.trim().length < 4 ){
-                msg = translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_name.less_than_4');
-        } else if(value.trim().length > 50){
-            msg = translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_name.more_than_50');
-        } else if (!VALIDATOR.isValidName(value)){
-            msg = translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_name.special_character');
-        }
-
-        if (willUpdateState){
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnName: msg,
-                    name: value,
-                }
-            });
-        }
-        return msg === undefined;
+        let validation = ValidationHelper.validateName(translate, value);
+        
+        this.setState(state => {
+            return {
+                ...state,
+                errorOnName: validation.message,
+                name: value,
+            }
+        });
     }
 
     handleParentChange = (value) => {
@@ -119,59 +106,64 @@ class ModalEditEmployeeKpi extends Component {
 
     handleCriteriaChange = (e) => {
         let value = e.target.value;
-        this.validateCriteria(value, true);
-    }
+        let validation = ValidationHelper.validateDescription(translate, value);
 
-    validateCriteria = (value, willUpdateState=true) => {
-        let msg = undefined;
-        if (value.trim() === ""){
-            msg = translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_criteria');
-        }
-
-        if (willUpdateState){
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnCriteria: msg,
-                    criteria: value,
-                }
-            });
-        }
-        return msg === undefined;
+        this.setState(state => {
+            return {
+                ...state,
+                errorOnCriteria: validation.message,
+                criteria: value,
+            }
+        });
     }
 
     handleWeightChange = (e) => {
         let value = e.target.value;
-        this.validateWeight(value, true);
+        let validation = this.validateWeight(translate, value);
+
+        this.setState(state => {
+            return {
+                ...state,
+                errorOnWeight: validation.message,
+                weight: value,
+            }
+        });
     }
 
-    validateWeight = (value, willUpdateState=true) => {
-        let msg = undefined;
-        if (value === ""){
-            msg = translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.empty');
-        } else if(value < 0){
-            msg = translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.less_than_0');
-        } else if(value > 100){
-            msg = translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.greater_than_100');
-        } 
-        
-        if (willUpdateState){
-            this.setState(state => {
-                return {
-                    ...state,
-                    errorOnWeight: msg,
-                    weight: value,
-                }
-            });
+    validateWeight = (translate, value) => {
+        let validation = ValidationHelper.validateEmpty(translate, value);
+
+        if (!validation.status) {
+            return validation;
         }
-        return msg === undefined;
+        
+        if (value < 0) {
+            return {
+                status: false,
+                message: translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.less_than_0')
+            };
+        } else if(value > 100){
+            return {
+                status: false,
+                message: translate('kpi.employee.employee_kpi_set.create_employee_kpi_modal.validate_weight.greater_than_100')
+            };
+        } else {
+            return {
+                status: true
+            };
+        }
     }
-    
+
     isFormValidated = () => {
-        let result = 
-            this.validateName(this.state.name, false) &&
-            this.validateCriteria(this.state.criteria, false) &&
-            this.validateWeight(this.state.weight, false);
+        const { name, criteria, weight } = this.state;
+        
+        let validatateName, validateCriteria, validateWeight, result;
+
+        validatateName = ValidationHelper.validateName(translate, name);
+        validateCriteria = ValidationHelper.validateDescription(translate, criteria);
+        validateWeight = this.validateWeight(translate, weight)
+
+        result = validatateName.status && validateCriteria.status && validateWeight.status;
         return result;
     }
 

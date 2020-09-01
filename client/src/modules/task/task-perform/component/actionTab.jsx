@@ -1634,7 +1634,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getTaskById: taskManagementActions.getTaskById,
+    getTaskById: performTaskAction.getTaskById,
     createActionComment: performTaskAction.createActionComment,
     editActionComment: performTaskAction.editActionComment,
     deleteActionComment: performTaskAction.deleteActionComment,

@@ -12,6 +12,7 @@ import { SelectMulti } from '../../../../common-components/index';
 import moment from 'moment'
 import 'react-calendar-timeline/lib/Timeline.css'
 import './calendar.css'
+import { performTaskAction } from '../../task-perform/redux/actions'
 
 
 class TasksSchedule extends Component {
@@ -617,7 +618,7 @@ const actions = {
   getAccountableTaskByUser: taskManagementActions.getAccountableTaskByUser,
   getConsultedTaskByUser: taskManagementActions.getConsultedTaskByUser,
   getInformedTaskByUser: taskManagementActions.getInformedTaskByUser,
-  getTaskById: taskManagementActions.getTaskById,
+  getTaskById: performTaskAction.getTaskById,
   getTaskInOrganizationUnitByMonth: taskManagementActions.getTaskInOrganizationUnitByMonth,
 }
 const connectedSchedule = connect(mapState, actions)(withTranslate(TasksSchedule))

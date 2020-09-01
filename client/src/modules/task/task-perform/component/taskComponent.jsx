@@ -7,6 +7,7 @@ import { taskManagementActions } from "../../task-management/redux/actions";
 import { UserActions } from "../../../super-admin/user/redux/actions";
 
 import qs from 'qs';
+import { performTaskAction } from '../redux/actions';
 
 class TaskComponent extends Component {
     constructor(props) {
@@ -114,7 +115,7 @@ function mapState(state) {
 }
 
 const actionCreators = {
-    getTaskById: taskManagementActions.getTaskById,
+    getTaskById: performTaskAction.getTaskById,
     getDepartment: UserActions.getDepartmentOfUser,
     getAllUserOfCompany: UserActions.getAllUserOfCompany,
 };
