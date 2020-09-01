@@ -9,7 +9,7 @@ class OutgoingDataTab extends Component {
 
     constructor(props) {
         super(props);
-        
+
         this.DOCUMENT = [];
         this.INFORMATION = [];
 
@@ -22,7 +22,7 @@ class OutgoingDataTab extends Component {
     static getDerivedStateFromProps(nextProps, prevState) {
         if (nextProps.isOutgoingData && nextProps.taskId !== prevState.taskId) {
             let isOutputInformation = {}, isOutputDocument = {};
-            
+
             if (nextProps.task && nextProps.task.taskInformations && nextProps.task.taskInformations.length !== 0) {
                 nextProps.task.taskInformations.map(item => {
                     let element = {};
@@ -69,7 +69,7 @@ class OutgoingDataTab extends Component {
                 return true
             } else {
                 return false
-            } 
+            }
         });
 
         if (check.length !== 0) {
@@ -103,7 +103,7 @@ class OutgoingDataTab extends Component {
                 return true
             } else {
                 return false
-            } 
+            }
         });
 
         if (check.length !== 0) {
@@ -134,6 +134,7 @@ class OutgoingDataTab extends Component {
     }
 
     render() {
+        const { translate } = this.props;
         const { task, isOutputInformation, isOutputDocument } = this.state;
 
         return (
@@ -141,61 +142,61 @@ class OutgoingDataTab extends Component {
                 {
                     task &&
                     <div className="description-box">
-                        <h4>Danh sách thông tin và tài liệu</h4>
+                        <h4>{ translate('task.task_process.list_of_data_and_info') }</h4>
 
                         { /** Danh sách thông tin */
                             task.taskInformations
-                            && task.taskInformations.length !== 0
-                            ? task.taskInformations.map((info) =>
-                                <div>
-                                    <input
-                                        type="checkbox"
-                                        title="Xuất thông tin"
-                                        style={{ margin: "0.5em 0.5em", padding: "0.6em" }}
-                                        name={info.description}
-                                        onClick={() => this.handleCheckBoxOutputInformation(info)}
-                                        checked={isOutputInformation[info._id]}
-                                    />
-                                    <strong>{info.name}</strong>
-                                    <span> - {info.description}</span>
-                                    <span> - {info.type}</span>
-                                </div>
-                            )
-                            : <div>Không có thông tin</div>
-                        }
-
-                        
-                        { /** Danh sách tài liệu */
-                            task.documents
-                            && task.documents.length !== 0
-                            ? task.documents.map(document =>
-                                <div>
+                                && task.taskInformations.length !== 0
+                                ? task.taskInformations.map((info) =>
                                     <div>
                                         <input
                                             type="checkbox"
-                                            title="Xuất tài liệu"
+                                            title="Xuất thông tin"
                                             style={{ margin: "0.5em 0.5em", padding: "0.6em" }}
-                                            name={document.description}
-                                            onClick={() => this.handleCheckBoxOutputDocument(document)}
-                                            checked={isOutputDocument[document._id]}
+                                            name={info.description}
+                                            onClick={() => this.handleCheckBoxOutputInformation(info)}
+                                            checked={isOutputInformation[info._id]}
                                         />
-                                        <strong>{document.description}</strong>
+                                        <strong>{info.name}</strong>
+                                        <span> - {info.description}</span>
+                                        <span> - {info.type}</span>
                                     </div>
+                                )
+                                : <div>{ translate('task.task_process.not_have_info') }</div>
+                        }
 
-                                    {
-                                        document.files && document.files.length !== 0
-                                        && document.files.map(file =>
-                                            <div>
-                                                <ul style={{ wordWrap: "break-word" }}>
-                                                    <strong>{file.name} </strong>
-                                                    <span><a>{file.url}</a></span>
-                                                </ul>
-                                            </div>
-                                        )
-                                    }
-                                </div>
-                            )
-                            : <div>Không có tài liệu</div>
+
+                        { /** Danh sách tài liệu */
+                            task.documents
+                                && task.documents.length !== 0
+                                ? task.documents.map(document =>
+                                    <div>
+                                        <div>
+                                            <input
+                                                type="checkbox"
+                                                title="Xuất tài liệu"
+                                                style={{ margin: "0.5em 0.5em", padding: "0.6em" }}
+                                                name={document.description}
+                                                onClick={() => this.handleCheckBoxOutputDocument(document)}
+                                                checked={isOutputDocument[document._id]}
+                                            />
+                                            <strong>{document.description}</strong>
+                                        </div>
+
+                                        {
+                                            document.files && document.files.length !== 0
+                                            && document.files.map(file =>
+                                                <div>
+                                                    <ul style={{ wordWrap: "break-word" }}>
+                                                        <strong>{file.name} </strong>
+                                                        <span><a>{file.url}</a></span>
+                                                    </ul>
+                                                </div>
+                                            )
+                                        }
+                                    </div>
+                                )
+                                : <div>{ translate('task.task_process.not_have_doc') }</div>
                         }
 
                         <button type="button" className="btn btn-success pull-right" style={{ margin: "2em 2em" }} onClick={() => this.handleSaveEdit()} disabled={this.DOCUMENT.length === 0 && this.INFORMATION.length === 0}>Lưu</button>

@@ -183,7 +183,7 @@ class DetailTaskTab extends Component {
         });
 
         let modalId = `#modal-edit-task-by-${role}-${id}`;
-        if(checkHasAccountable === false && role === "responsible") {
+        if (checkHasAccountable === false && role === "responsible") {
             modalId = `#modal-edit-task-by-${role}-${id}-has-not-accountable`
         }
         window.$(modalId).modal('show');
@@ -282,7 +282,7 @@ class DetailTaskTab extends Component {
 
         let checkConfirmOtherUser = false, checkConfirmCurrentUser = false, listEmployee, listEmployeeNotConfirm = [];
         let confirmedByEmployeesId, listEmployeeId;
-        
+
         if (task && task.responsibleEmployees && task.accountableEmployees && task.consultedEmployees && task.confirmedByEmployees) {
             listEmployee = task.responsibleEmployees.concat(task.accountableEmployees).concat(task.consultedEmployees);
             confirmedByEmployeesId = task.confirmedByEmployees.map(item => item._id);
@@ -356,7 +356,7 @@ class DetailTaskTab extends Component {
 
         if (task && task.evaluations) {
             evaluations = task.evaluations.filter(item => new Date(item.date) >= new Date(currentMonth) && new Date(item.date) < new Date(nextMonth));
-            
+
             if (evaluations.length === 0) {
                 // Check đánh giá trong tháng
                 checkEvaluationTask = true;
@@ -393,7 +393,7 @@ class DetailTaskTab extends Component {
                     if (task.consultedEmployees) {
                         consultedEmployeesNotKpiLink = task.consultedEmployees.filter(item => {
                             for (let i = 0; i < evaluations[0].results.length; i++) {
-                                if (evaluations[0].results[i].employee && item._id === evaluations[0].results[i].employee._id  && evaluations[0].results[i].role === 'Consulted') {
+                                if (evaluations[0].results[i].employee && item._id === evaluations[0].results[i].employee._id && evaluations[0].results[i].role === 'Consulted') {
                                     if (evaluations[0].results[i].kpis && evaluations[0].results[i].kpis.length !== 0) {
                                         return false;
                                     }
@@ -485,10 +485,10 @@ class DetailTaskTab extends Component {
                 typeOfTask = splitter[0];
             }
         }
-        
+
         // kiểm tra công việc chỉ có người thực hiện
         let checkHasAccountable = true;
-        if ( task && task.accountableEmployees.length === 0 ) {
+        if (task && task.accountableEmployees.length === 0) {
             checkHasAccountable = false;
         }
 
@@ -540,7 +540,7 @@ class DetailTaskTab extends Component {
             || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask)
             || (checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkKpiLink)
             || (checkDeadlineForEvaluation && checkDeadlineForEvaluation.checkDeadlineForEvaluation);
-        
+
 
         return (
             <React.Fragment>
@@ -566,15 +566,16 @@ class DetailTaskTab extends Component {
                             </React.Fragment>
                         }
 
-
-                        {currentRole === "accountable" && checkInactive && codeInProcess &&
+                        {checkInactive && codeInProcess && (currentRole === "accountable" || (currentRole === "responsible" && checkHasAccountable === false)) &&
                             (statusTask !== "Finished" &&
-                                // <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)} title="Công việc đã kết thúc">
-                                //     <i className="fa fa-times" style={{ fontSize: "16px" }}></i>{"Hủy kết thúc"}
-                                // </a> :
-                                <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Finished", codeInProcess, typeOfTask)} title="Kết thúc công việc">
-                                    <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
-                                </a>
+                                (typeOfTask === "Gateway" ?
+                                    <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Inprocess", codeInProcess, typeOfTask)} title={translate('task.task_management.detail_route_task')}>
+                                        <i className="fa fa-location-arrow" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_route')}
+                                    </a> :
+                                    <a className="btn btn-app" onClick={() => this.handleEndTask(id, "Finished", codeInProcess, typeOfTask)} title={translate('task.task_management.detail_end')}>
+                                        <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
+                                    </a>
+                                )
                             )
                         }
 
@@ -584,7 +585,7 @@ class DetailTaskTab extends Component {
                                     <i className="fa fa-power-off" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_end')}
                                 </a> */}
 
-                                <a className="btn btn-app" onClick={() => this.handleShowEvaluate(id, currentRole)} title="Đánh giá công việc">
+                                <a className="btn btn-app" onClick={() => this.handleShowEvaluate(id, currentRole)} title={translate('task.task_management.detail_evaluate')}>
                                     <i className="fa fa-calendar-check-o" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_evaluate')}
                                 </a>
                             </React.Fragment>
@@ -616,11 +617,11 @@ class DetailTaskTab extends Component {
 
                 <div>
                     <div id="info" className="collapse in">
-                    {/* Thông tin chung */}
+                        {/* Thông tin chung */}
                         {/** Nhắc nhở */}
                         {
                             task && warning
-                            && <div className="description-box" style={{ border: "3px double #f38961"}}>
+                            && <div className="description-box" style={{ border: "3px double #f38961" }}>
                                 <h4>Cảnh báo</h4>
                                 {/** Xác nhận công việc */}
                                 {
@@ -647,7 +648,7 @@ class DetailTaskTab extends Component {
                                     checkEvaluationTaskAndKpiLink && checkEvaluationTaskAndKpiLink.checkEvaluationTask
                                     && <div><strong>Công việc chưa có đánh giá cho tháng này</strong></div>
                                 }
-                                
+
                                 {/** Chưa đánh giá hoạt động */}
                                 {
                                     checkEvaluationTaskAction && checkEvaluationTaskAction.checkEvaluationTaskAction
@@ -681,7 +682,7 @@ class DetailTaskTab extends Component {
                                 }
                             </div>
                         }
-                        
+
                         {/* Các trường thông tin cơ bản */}
                         {task &&
                             <div className="description-box">
@@ -702,7 +703,7 @@ class DetailTaskTab extends Component {
                                         return <div key={key}><strong>{info.name}: &nbsp;&nbsp;</strong> {info.value ? info.value : translate('task.task_management.detail_not_hasinfo')}</div>
                                     })
                                 }
-                                
+
                                 {/* Mô tả công việc */}
                                 <div>
                                     <strong>{translate('task.task_management.detail_description')}:</strong>
