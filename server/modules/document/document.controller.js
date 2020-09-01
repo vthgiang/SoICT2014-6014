@@ -565,3 +565,25 @@ exports.deleteManyDocumentArchive = async (req, res) => {
         })
     }
 }
+
+
+exports.importDocumentArchive = async (req, res) => {
+    try {
+        const archive = await DocumentServices.importDocumentArchive(req.user.company._id, req.body);
+
+        await LogInfo(req.user.email, 'IMPORT_DOCUMENT_ARCHIVE', req.user.company);
+        res.status(200).json({
+            success: true,
+            messages: ['import_document_archive_success'],
+            content: archive
+        });
+    } catch (error) {
+
+        await LogError(req.user.email, 'IMPORT_DOCUMENT_ARCHIVE', req.user.company);
+        res.status(400).json({
+            success: false,
+            messages: Array.isArray(error) ? error : ['import_document_archive_faile'],
+            content: error
+        });
+    }
+}

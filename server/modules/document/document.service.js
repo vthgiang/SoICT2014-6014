@@ -398,9 +398,6 @@ exports.createDocumentDomain = async (company, data) => {
         name: data.name,
         description: data.description,
     }
-    if (data.parent) {
-        query.parent = data.parent
-    }
     await DocumentDomain.create(query);
 
     return await this.getDocumentDomains(company);
@@ -579,6 +576,7 @@ exports.getDocumentArchives = async (company) => {
 }
 
 exports.createDocumentArchive = async (company, data) => {
+    console.log('dataaa', data);
     let query = {
         company,
         name: data.name,
@@ -657,4 +655,35 @@ async function deleteNode(id) {
         }
     }
     await DocumentArchive.deleteOne({ _id: id });
+}
+
+
+/**
+ * import các danh mục từ file excel
+ * company: mã cty lấy từ auth
+ * data: mảng dữ liệu được import từ file excel
+ */
+
+exports.importDocumentArchive = async (company, data) => {
+
+    for (let i in data) {
+        console.log('inputtt', data[i])
+        description = data[i].description;
+        let archive = {
+            name: data[i].name,
+            description: data[i].description,
+        }
+        if (data[i].pathParent) {
+            let path = data[i].pathParent.split('-').map(x => { return x.trim() }).join(" - ");
+            console.log('pathhh', path);
+            const parentArchive = await DocumentArchive.findOne({ path: path });
+            if (parentArchive) {
+                archive.parent = parentArchive.id;
+            }
+        }
+        console.log(archive);
+        let res = await this.createDocumentArchive(company, archive);
+
+    }
+    return await this.getDocumentArchives(company);
 }
