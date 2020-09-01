@@ -590,7 +590,7 @@ export default {
         menu: {
             home: 'Home page',
             system: 'System',
-            iam_rbac:'IAM-RBAC',
+            iam_rbac: 'IAM-RBAC',
             manage_system: 'Manage System',
             manage_company: 'Manage Company',
             manage_department: 'Manage Departments',
@@ -1291,7 +1291,12 @@ export default {
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             holiday: {
                 file_name_export: 'Work plan',
-                number_date_leave_of_year: 'Number of days off in the year',
+                number_date_leave_of_year: 'Number of days off',
+                date_year: 'date/year',
+                year: 'year',
+                list_holiday: 'Holiday plans, Tet holidays',
+                list_no_leave: 'No leave is allowed',
+                list_auto_leave: 'Leave is allowed',
 
                 // Nhóm dành cho table
                 table: {

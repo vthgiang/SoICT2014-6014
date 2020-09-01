@@ -590,7 +590,7 @@ export default {
         menu: {
             home: 'Trang chủ',
             system: 'Hệ thống',
-            iam_rbac:'IAM-RBAC',
+            iam_rbac: 'IAM-RBAC',
             manage_system: 'Quản lý hệ thống',
             manage_company: 'Quản lý doanh nghiệp/công ty',
             manage_department: 'Quản lý cơ cấu tổ chức',
@@ -1290,7 +1290,12 @@ export default {
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             holiday: {
                 file_name_export: 'Kế hoạch làm việc',
-                number_date_leave_of_year: 'Số ngày nghỉ trong năm',
+                number_date_leave_of_year: 'Số ngày nghỉ phép',
+                date_year: 'ngày/năm',
+                year: 'Năm',
+                list_holiday: 'Kế hoạch nghỉ lễ, nghỉ tết',
+                list_no_leave: 'Thời gian không được nghỉ',
+                list_auto_leave: 'Thời gian được nghỉ phép',
 
                 // Nhóm dành cho table
                 table: {

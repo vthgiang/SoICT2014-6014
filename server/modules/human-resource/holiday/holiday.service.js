@@ -12,7 +12,29 @@ exports.getAllHolidays = async (company) => {
     }).sort({
         'holidays.startDate': 'ASC'
     });
-    console.log(data);
+    return {
+        numberDateLeaveOfYear: data ? data.numberDateLeaveOfYear : 0,
+        holidays: data ? data.holidays : []
+    };
+}
+
+/**
+ * Lấy danh sách kế hoạch làm việc theo năm
+ * @param {*} year : Năm
+ * @param {*} company : Id công ty
+ */
+exports.getHolidaysOfYear = async (company, year) => {
+    let firstDay = new Date(year, 0, 1);
+    let lastDay = new Date(Number(year) + 1, 0, 1);
+    let data = await Holiday.findOne({
+        company: company,
+        'holidays.startDate': {
+            "$gt": firstDay,
+            "$lte": lastDay
+        }
+    }).sort({
+        'holidays.startDate': 'ASC'
+    });
     return {
         numberDateLeaveOfYear: data ? data.numberDateLeaveOfYear : 0,
         holidays: data ? data.holidays : []
@@ -92,6 +114,13 @@ exports.updateNumberDateLeaveOfYear = async (numberDateLeaveOfYear, company) => 
     let holiday = await Holiday.findOne({
         company: company
     });
+    if (holiday === null) {
+        holiday = await Holiday.create({
+            company: company,
+            numberDateLeaveOfYear: 0,
+            holidays: [],
+        });
+    };
     holiday.numberDateLeaveOfYear = numberDateLeaveOfYear;
     holiday.save();
     return {

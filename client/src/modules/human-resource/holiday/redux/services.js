@@ -13,10 +13,13 @@ export const HolidayService = {
 /**
  * Lấy danh sách thông tin lịch làm việc
  */
-function getListHoliday() {
+function getListHoliday(data) {
     return sendRequest({
         url: `${ process.env.REACT_APP_SERVER }/holiday/holidays`,
         method: 'GET',
+        params: {
+            year: data ? data.year : undefined,
+        }
     }, false, true, 'human_resource.holiday');
 }
 

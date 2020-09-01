@@ -438,7 +438,7 @@ class CourseCreateForm extends Component {
                                         multiple={true}
                                     />
                                 </div>
-                                <button type="button" className="btn btn-success pull-right" style={{ marginBottom: 5 }} onClick={this.handleAdd} title={translate('manage_unit.add_employee_unit')}>{translate('manage_employee.add_staff')}</button>
+                                <button type="button" className="btn btn-success pull-right" style={{ marginBottom: 5 }} onClick={this.handleAdd}>{translate('human_resource.profile.add_staff')}</button>
                             </div>
                         </div>
                         <table className="table table-striped table-bordered table-hover" style={{ marginBottom: 0 }}>

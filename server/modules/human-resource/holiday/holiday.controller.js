@@ -29,7 +29,12 @@ exports.checkForFuplicate = (data, array) => {
 /** Lấy danh sách lịch làm việc */
 exports.getAllHolidays = async (req, res) => {
     try {
-        let data = await HolidayService.getAllHolidays(req.user.company._id);
+        let data;
+        if (req.query.year) {
+            data = await HolidayService.getHolidaysOfYear(req.user.company._id, req.query.year);
+        } else {
+            data = await HolidayService.getAllHolidays(req.user.company._id);
+        }
         await LogInfo(req.user.email, 'GET_HOLIDAY', req.user.company);
         res.status(200).json({
             success: true,

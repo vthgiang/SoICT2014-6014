@@ -25,9 +25,8 @@ class GroupItem extends Component {
     checkGroupItem = (groupItem, links) => {
         let result = false;
         for (let i = 0; i < groupItem.length; i++) {
-            if(this.checkURL(groupItem[i].path,links)){
+            if (this.checkURL(groupItem[i].path, links)) {
                 result = true;
-                console.log("true,", groupItem[i].path)
                 break;
             }
         }
@@ -40,7 +39,7 @@ class GroupItem extends Component {
 
         return (
             <React.Fragment>
-                { 
+                {
                     this.checkGroupItem(groupItem.list, links) &&
                     <li className="treeview" >
                         <a href="">
@@ -51,12 +50,12 @@ class GroupItem extends Component {
                         </a>
                         <ul className="treeview-menu">
                             {
-                                groupItem.list.map(item => {
-                                    if(this.checkURL(item.path, links))
+                                groupItem.list.map((item, key) => {
+                                    if (this.checkURL(item.path, links))
                                         return (
-                                            <li className={window.location.pathname === item.path ? "active" : ""}>
+                                            <li key={key} className={window.location.pathname === item.path ? "active" : ""}>
                                                 <Link to={item.path}>
-                                                    <i className={item.icon}/>
+                                                    <i className={item.icon} />
                                                     {translate(`${item.name}`)}
                                                 </Link>
                                             </li>
