@@ -84,7 +84,7 @@ class DepreciationBarChart extends Component {
     }
 
     setDataBarChart = () => {
-        const { listAssets, assetType } = this.props;
+        const { listAssets, assetType, setDepreciationOfAsset } = this.props;
         let countDepreciation = [], typeName = [], shortName = [], idAssetType = [];
 
         for (let i in assetType) {
@@ -111,6 +111,10 @@ class DepreciationBarChart extends Component {
             shortName: shortName
         }
 
+        if (listAssets && assetType && setDepreciationOfAsset) {
+            setDepreciationOfAsset(data);
+        }
+        
         return data;
     }
 
@@ -126,11 +130,12 @@ class DepreciationBarChart extends Component {
 
     // Khởi tạo BarChart bằng C3
     barChart = () => {
-        let { translate } = this.props;
+        let { translate, setDepreciationOfAsset } = this.props;
         let dataPieChart = this.setDataBarChart();
         let count = dataPieChart.count;
         let heightCalc = dataPieChart.type.length * 24.8;
         let height = heightCalc < 320 ? 320 : heightCalc;
+
         let chart = c3.generate({
             bindto: this.refs.depreciationBarChart,
 

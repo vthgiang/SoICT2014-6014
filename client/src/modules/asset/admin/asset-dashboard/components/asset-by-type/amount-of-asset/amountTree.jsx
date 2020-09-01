@@ -28,8 +28,8 @@ class AmountTree extends Component {
     }
 
     render() {
-        let { assetType, listAssets, translate } = this.props;
-        let { tree } = this.state;
+        const { assetType, listAssets, translate, setAmountOfAsset } = this.props;
+        const { tree } = this.state;
         let typeName = [], countAssetType = [], idAssetType = [];
 
         for (let i in assetType) {
@@ -88,6 +88,7 @@ class AmountTree extends Component {
                         <AmountBarChart
                             listAssets={listAssets}
                             assetType={assetType}
+                            setAmountOfAsset={setAmountOfAsset}
                         />
                 }
             </div>
