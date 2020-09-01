@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 
 import './domains.css'
 
-import { Tree, SlimScroll } from '../../../../../common-components';
+import { Tree, SlimScroll, ExportExcel } from '../../../../../common-components';
 
 import { AssetTypeActions } from '../redux/actions';
 import CreateForm from './createForm';
@@ -66,6 +66,47 @@ class AdministrationAssetTypes extends Component {
         })
     }
 
+    convertDataToExportData = (dataTree) => {
+        let data = dataTree.map((item, index) => {
+            let information = "";
+            item.defaultInformation.map(info => {
+                information = information + info.nameField + ' - ' + info.value + '\n';
+            })
+
+            return {
+                STT: index + 1,
+                code: item.typeNumber,
+                name: item.typeName,
+                description: item.description,
+                information: item.defaultInformation.length !== 0 ? information : "",
+            }
+        })
+        let exportData = {
+            fileName: "Danh sách loại tài sản",
+            dataSheets: [
+                {
+                    sheetName: "Sheet1",
+                    tables: [
+                        {
+                            tableName: "Danh sách loại tài sản",
+                            rowHeader: 2,
+                            columns: [
+                                { key: "STT", value: "STT" },
+                                { key: "code", value: "Mã loại tài sản" },
+                                { key: "name", value: "Tên loại tài sản" },
+                                { key: "description", value: "Mô tả" },
+                                { key: "information", value: "Thông tin mặc định" }
+                            ],
+                            data: data
+                        },
+                    ]
+                },
+            ]
+        }
+
+        return exportData;
+    }
+
     render() {
         const { translate } = this.props;
         const { list } = this.props.assetType.administration.types;
@@ -81,6 +122,8 @@ class AdministrationAssetTypes extends Component {
             }
         })
 
+        let exportData;
+        exportData = this.convertDataToExportData(dataTree);
 
         return (
             <div className="box">
@@ -90,10 +133,18 @@ class AdministrationAssetTypes extends Component {
                         deleteNode.length > 0 && <button className="btn btn-danger" style={{ marginLeft: '5px' }} onClick={this.deleteDomains}>{translate('asset.general_information.delete')}</button>
                     }
 
+                    {/* Xuất báo cáo */}
+                    <ExportExcel id="export-asset-type" exportData={exportData} style={{ marginLeft: '5px' }}/>
+                   
                     {/* Thêm */}
                     <button className="btn btn-success pull-right" onClick={() => { window.$('#modal-create-asset-type').modal('show'); }} title={translate('document.administration.domains.add')}
                         disabled={domainParent.length > 1 ? true : false}>{translate('general.add')}</button>
-
+                    
+                    <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
+                    <ul className="dropdown-menu pull-right">
+                        <li><a href="#modal-add-task-template" title="ImportForm" onClick={() => { window.$('#modal-create-asset-type').modal('show') }}>{translate('task_template.add')}</a></li>
+                        <li><a href="#modal_import_file" title="ImportForm" onClick={() => { window.$('#modal-create-asset-type').modal('show') }}>ImportFile</a></li>
+                    </ul>
                     <CreateForm domainParent={domainParent} />
                 </div>
 
