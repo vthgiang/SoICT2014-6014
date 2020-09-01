@@ -589,6 +589,8 @@ export default {
 
         menu: {
             home: 'Trang chủ',
+            system: 'Hệ thống',
+            iam_rbac:'IAM-RBAC',
             manage_system: 'Quản lý hệ thống',
             manage_company: 'Quản lý doanh nghiệp/công ty',
             manage_department: 'Quản lý cơ cấu tổ chức',
@@ -598,8 +600,9 @@ export default {
             manage_component: 'Quản lý các componentUI',
             manage_document: 'Quản lý tài liệu',
             documents: 'Tài liệu văn bản',
-
+            crm: 'CRM',
             customer: 'Khách hàng',
+            customer_group: 'Nhóm khách hàng',
 
             task_template: 'Mẫu Công Việc',
             taskmanagement: 'Quản Lý Công Việc',
@@ -1544,6 +1547,8 @@ export default {
                 orther: 'Khác',
                 asset_by_group: 'Tài sản theo nhóm',
                 asset_by_type: 'Tài sản theo loại',
+                purchase_asset: 'Thống kê mua sắm tài sản',
+                disposal_asset: 'Thống kê thanh lý tài sản',
             },
 
             //  Quản lý loại tài sản
@@ -1855,6 +1860,7 @@ export default {
                 consulted: 'Người hỗ trợ',
                 creator: 'Người thiết lập',
                 informed: 'Người quan sát',
+                all_role: 'Tất cả vai trò',
 
                 responsible_role: 'Thực hiện',
                 accountable_role: 'Phê duyệt',

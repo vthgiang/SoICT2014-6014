@@ -589,6 +589,8 @@ export default {
 
         menu: {
             home: 'Home page',
+            system: 'System',
+            iam_rbac:'IAM-RBAC',
             manage_system: 'Manage System',
             manage_company: 'Manage Company',
             manage_department: 'Manage Departments',
@@ -1542,6 +1544,8 @@ export default {
                 orther: 'Other',
                 asset_by_group: ' Asset by group',
                 asset_by_type: ' Asset by type',
+                purchase_asset: 'Statistics purchase asset chart',
+                disposal_asset: 'Statistics disposal asset chart',
             },
 
             //  Quản lý loại tài sản
@@ -1852,6 +1856,7 @@ export default {
                 consulted: 'Consulted',
                 creator: 'Creator',
                 informed: 'Informed',
+                all_role: 'All of roles',
 
                 responsible_role: 'Responsible',
                 accountable_role: 'Acountable',

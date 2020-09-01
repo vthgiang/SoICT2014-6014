@@ -213,7 +213,7 @@ function mapState(state) {
 const actions = {
     editDocument: performTaskAction.editDocument,
     editInformationTask: performTaskAction.editInformationTask,
-    getTaskById: taskManagementActions.getTaskById
+    getTaskById: performTaskAction.getTaskById
 }
 
 const connectOutgoingDataTab = connect(mapState, actions)(withTranslate(OutgoingDataTab));

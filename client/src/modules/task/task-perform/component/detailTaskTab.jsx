@@ -174,14 +174,19 @@ class DetailTaskTab extends Component {
         return [day, month, year].join('-');
     }
 
-    handleShowEdit = async (id, role) => {
+    handleShowEdit = async (id, role, checkHasAccountable) => {
         await this.setState(state => {
             return {
                 ...state,
                 showEdit: id
             }
         });
-        window.$(`#modal-edit-task-by-${role}-${id}`).modal('show');
+
+        let modalId = `#modal-edit-task-by-${role}-${id}`;
+        if(checkHasAccountable === false && role === "responsible") {
+            modalId = `#modal-edit-task-by-${role}-${id}-has-not-accountable`
+        }
+        window.$(modalId).modal('show');
 
     }
 
@@ -480,6 +485,13 @@ class DetailTaskTab extends Component {
                 typeOfTask = splitter[0];
             }
         }
+        
+        // kiểm tra công việc chỉ có người thực hiện
+        let checkHasAccountable = true;
+        if ( task && task.accountableEmployees.length === 0 ) {
+            checkHasAccountable = false;
+        }
+
         if (task) {
             statusTask = task.status;
         }
@@ -539,7 +551,7 @@ class DetailTaskTab extends Component {
                         </a>
 
                         {((currentRole === "responsible" || currentRole === "accountable") && checkInactive) &&
-                            <a className="btn btn-app" onClick={() => this.handleShowEdit(id, currentRole)} title="Chỉnh sửa thông tin chung">
+                            <a className="btn btn-app" onClick={() => this.handleShowEdit(id, currentRole, checkHasAccountable)} title="Chỉnh sửa thông tin chung">
                                 <i className="fa fa-edit" style={{ fontSize: "16px" }}></i>{translate('task.task_management.detail_edit')}
                             </a>
                         }
@@ -869,7 +881,7 @@ class DetailTaskTab extends Component {
                     </div>
                 </div>
                 {
-                    (id && showEdit === id) && currentRole === "responsible" &&
+                    (id && showEdit === id) && currentRole === "responsible" && checkHasAccountable === true &&
                     <ModalEditTaskByResponsibleEmployee
                         id={id}
                         task={task && task}
@@ -880,10 +892,23 @@ class DetailTaskTab extends Component {
                 }
 
                 {
+                    (id && showEdit === id) && currentRole === "responsible" && checkHasAccountable === false &&
+                    <ModalEditTaskByAccountableEmployee
+                        id={id}
+                        task={task && task}
+                        role={currentRole}
+                        hasAccountable={false}
+                        title={translate('task.task_management.detail_resp_edit')}
+                        perform={`edit-${currentRole}-hasnot-accountable`}
+                    />
+                }
+
+                {
                     (id && showEdit === id) && currentRole === "accountable" &&
                     <ModalEditTaskByAccountableEmployee
                         id={id}
                         task={task && task}
+                        hasAccountable={true}
                         role={currentRole}
                         title={translate('task.task_management.detail_acc_edit')}
                         perform={`edit-${currentRole}`}
@@ -895,6 +920,7 @@ class DetailTaskTab extends Component {
                     <EvaluationModal
                         id={id}
                         task={task && task}
+                        hasAccountable={checkHasAccountable}
                         role={currentRole}
                         title={translate('task.task_management.detail_cons_eval')}
                         perform='evaluate'
@@ -927,7 +953,7 @@ function mapStateToProps(state) {
 }
 
 const actionGetState = { //dispatchActionToProps
-    getTaskById: taskManagementActions.getTaskById,
+    getTaskById: performTaskAction.getTaskById,
     getSubTask: taskManagementActions.getSubTask,
     startTimer: performTaskAction.startTimerTask,
     stopTimer: performTaskAction.stopTimerTask,

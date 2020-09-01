@@ -154,6 +154,34 @@ export function tasks(state = {}, action) {
                 adding: true,
                 isLoading: false
             };
+        case taskManagementConstants.GET_PAGINATE_TASK_BYUSER_REQUEST:
+            return {
+                ...state,
+                creatorTasks: null,
+                tasks: null,
+                pages: null,
+                loadingCreator: true,
+                isLoading: true
+            };
+        case taskManagementConstants.GET_PAGINATE_TASK_BYUSER_SUCCESS:
+            return {
+                ...state,
+                creatorTasks: action.payload.tasks,
+                tasks: action.payload.tasks,
+                pages: action.payload.totalPage,
+                isLoading: false
+            };
+        case taskManagementConstants.GET_PAGINATE_TASK_BYUSER_FAILURE:
+            return {
+                error: action.error,
+                isLoading: false
+            };
+        case taskManagementConstants.ADDNEW_TASK_REQUEST:
+            return {
+                ...state,
+                adding: true,
+                isLoading: false
+            };
         case taskManagementConstants.ADDNEW_TASK_SUCCESS:
             return {
                 ...state,

@@ -5,6 +5,7 @@ import { withTranslate } from 'react-redux-multilingual';
 import { taskManagementActions } from "../../task-management/redux/actions";
 import './actionTab.css';
 import qs from 'qs';
+import { performTaskAction } from '../redux/actions';
 class SubTaskTab extends Component {
     constructor(props) {
         super(props);
@@ -69,7 +70,7 @@ function mapState(state) {
 
 const subTaskCreators = {
     getSubTask: taskManagementActions.getSubTask,
-    getTaskById: taskManagementActions.getTaskById
+    getTaskById: performTaskAction.getTaskById
 };
 
 const subTaskTab = connect(mapState, subTaskCreators)(withTranslate(SubTaskTab));
