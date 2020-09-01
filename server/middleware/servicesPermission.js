@@ -288,12 +288,12 @@ exports.data = [
     { path: '/kpi/evaluation/dashboard/employee-kpis', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
 
     // Task-management
-    { path: '/task/tasks', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/task/tasks', method: 'POST', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/task/tasks/:taskId', method: 'DELETE', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/tasks', method: 'GET', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/tasks', method: 'POST', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/tasks/:taskId', method: 'DELETE', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     // { path: '/task/tasks/:taskId/archived', method: 'PATCH', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/task/tasks/:taskId/sub-tasks', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
-    { path: '/task/task-evaluations', method: 'GET', roles: ['Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/tasks/:taskId/sub-tasks', method: 'GET', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
+    { path: '/task/task-evaluations', method: 'GET', roles: ['Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
     // { path: '/task/tasks/organizational-unit/tasks-by-month', method: 'GET', roles: ['System Admin', 'Super Admin', 'Admin', 'Dean', 'Vice Dean', 'Employee'] },
 
 

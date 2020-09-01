@@ -163,7 +163,7 @@ class DashBoardAssets extends Component {
                 <div className="row" style={{ marginTop: 10 }}>
 
                     {/* Tổng số tài sản */}
-                    <div className="col-md-3 col-sm-6 col-xs-6">
+                    {/* <div className="col-md-3 col-sm-6 col-xs-6">
                         <div className="info-box with-border">
                             <span className="info-box-icon bg-aqua"><i className="fa fa-users"></i></span>
                             <div className="info-box-content">
@@ -172,12 +172,12 @@ class DashBoardAssets extends Component {
                                 <a href="/manage-info-asset">Xem thêm <i className="fa fa-arrow-circle-right"></i></a>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
 
                     {/* Sẵn sàng sử dụng */}
                     <div className="col-md-3 col-sm-6 col-xs-6">
                         <div className="info-box">
-                            <span className="info-box-icon bg-green"><i className="fa fa-gift"></i></span>
+                            <span className="info-box-icon bg-green"><i className="fa fa-check"></i></span>
                             <div className="info-box-content">
                                 <span className="info-box-text">Sẵn sàng sử dụng</span>
                                 <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'Sẵn sàng sử dụng') : 0}</span>
@@ -189,7 +189,7 @@ class DashBoardAssets extends Component {
                     {/* Đang sử dụng */}
                     <div className="col-md-3 col-sm-6 col-xs-6">
                         <div className="info-box">
-                            <span className="info-box-icon bg-red"><i className="fa fa-balance-scale"></i></span>
+                            <span className="info-box-icon bg-aqua"><i className="fa fa-play"></i></span>
                             <div className="info-box-content" style={{ paddingBottom: 0 }}>
                                 <span className="info-box-text">Đang sử dụng</span>
                                 <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'Đang sử dụng') : 0}</span>
@@ -201,10 +201,22 @@ class DashBoardAssets extends Component {
                     {/* Hỏng hóc */}
                     <div className="col-md-3 col-sm-6 col-xs-6">
                         <div className="info-box">
-                            <span className="info-box-icon bg-yellow"><i className="fa fa-calendar-times-o"></i></span>
+                            <span className="info-box-icon bg-yellow"><i className="fa fa-warning"></i></span>
                             <div className="info-box-content" style={{ paddingBottom: 0 }}>
                                 <span className="info-box-text">Hỏng hóc</span>
                                 <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'Hỏng hóc') : 0}</span>
+                                <a href="/manage-info-asset">Xem thêm <i className="fa  fa-arrow-circle-o-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Thanh lý */}
+                    <div className="col-md-3 col-sm-6 col-xs-6">
+                        <div className="info-box">
+                            <span className="info-box-icon bg-red"><i className="fa fa-calendar-times-o"></i></span>
+                            <div className="info-box-content" style={{ paddingBottom: 0 }}>
+                                <span className="info-box-text">Thanh lý</span>
+                                <span className="info-box-number">{listAssets.length ? this.returnCountNumber(listAssets, 'Thanh lý') : 0}</span>
                                 <a href="/manage-info-asset">Xem thêm <i className="fa  fa-arrow-circle-o-right"></i></a>
                             </div>
                         </div>
@@ -215,8 +227,8 @@ class DashBoardAssets extends Component {
                     <ul className="nav nav-tabs">
                         <li className="active"><a href="#administration-asset-by-group" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('asset.dashboard.asset_by_group')}</a></li>
                         <li><a href="#administration-asset-by-type" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('asset.dashboard.asset_by_type')}</a></li>
-                        <li><a href="#administration-purchase-disposal" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê mua bán tài sản</a></li>
                         <li><a href="#administration-asset-statistics" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Thống kê tài sản</a></li>
+                        <li><a href="#administration-purchase-disposal" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>{translate('asset.dashboard.asset_purchase_and_dispose')}</a></li>
                         <li><a href="#administration-asset-is-expired" data-toggle="tab" onClick={() => forceCheckOrVisible(true, false)}>Hạn sử dụng tài sản</a> </li>
                     </ul>
                     <div className="tab-content">
