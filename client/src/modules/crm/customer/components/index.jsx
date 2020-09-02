@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
+import { CrmCustomerActions } from '../redux/actions';
+import { getStorage } from '../../../../config';
 
 class CrmCustomer extends Component {
     constructor(props) {
@@ -11,6 +13,13 @@ class CrmCustomer extends Component {
             option: 'name',
             value: ''
          }
+    }
+
+    componentDidMount(){
+        let company = getStorage('companyId');
+        let {limit, page} = this.state;
+        this.props.getCustomers({company});
+        this.props.getCustomers({company, limit, page});
     }
 
     render() { 
@@ -26,11 +35,12 @@ class CrmCustomer extends Component {
 }
  
 
-function mapState(state) {
+function mapStateToProps(state) {
     return state;
 }
 
-const getState = {
+const mapDispatchToProps = {
+    getCustomers: CrmCustomerActions.getCustomers
 }
 
-export default connect(mapState, getState)(withTranslate(CrmCustomer));
+export default connect(mapStateToProps, mapDispatchToProps)(withTranslate(CrmCustomer));

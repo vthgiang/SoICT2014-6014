@@ -1,40 +1,37 @@
-const { CrmCustomer, CrmLocation, CrmGroup, User, CrmLiability } = require(SERVER_MODELS_DIR).schema;
-// Customer
-exports.getCustomers = async (company, query) => {
-    var page = query.page;
-    var limit = query.limit;
-    
+const { CrmCustomer, CrmGroup } = require(SERVER_MODELS_DIR).schema;
+
+exports.getCustomers = async (query) => {
+    var { company, page, limit } = query;
+    if(!company) throw['company_invalid'];
     if (!page && !limit) {
-        return await Customer
+
+        return await CrmCustomer
             .find({ company })
             .populate([
-                { path: 'group', model: CustomerGroup },
-                { path: 'liabilities', model: CustomerLiability, populate: [
-                    { path: 'creator', model: User },
-                ]}
+                { path: 'group', model: CrmGroup }
             ]);
     } else {
         const option = (query.key && query.value) ?
             Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")}) :
             {company};
 
-        return await Customer
+        return await CrmCustomer
             .paginate( option , { 
                 page, 
                 limit,
                 populate: [
-                    { path: 'group', model: CustomerGroup },
-                    { path: 'liabilities', model: CustomerLiability, populate: [
-                        { path: 'creator', model: User },
-                    ]}
+                    { path: 'group', model: CrmGroup }
                 ]
             });
     }
 }
 
-exports.createCustomer = async (company, data) => {
-    return await Customer.create({
-        company,
+exports.createCustomer = async (data) => {
+    const company = await Company.findById(data.company);
+    if(company === null) throw ['company_not_found'];
+
+    return await CrmCustomer.create({
+        company: data.company,
         name: data.name,
         code: data.code,
         phone: data.phone,
@@ -46,49 +43,34 @@ exports.createCustomer = async (company, data) => {
     });
 }
 
-// Customer group
-exports.getCustomerGroups = async (company, query) => {
-    var page = query.page;
-    var limit = query.limit;
-    
-    if (!page && !limit) {
-        return await CustomerGroup.find({ company });
-    } else {
-        const option = (query.key && query.value) ?
-            Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")}) :
-            {company};
+exports.getCustomer = async (id) => {
 
-        return await CustomerGroup
-            .paginate( option , { 
-                page, 
-                limit
-            });
-    }
+    return await CrmCustomer.findById(id)
+        .populate([
+            { path: 'group', model: CrmGroup }
+        ])
 }
 
-// Customer liability
-exports.getCustomerLiabilities = async (company, query) => {
-    var page = query.page;
-    var limit = query.limit;
-    
-    if (!page && !limit) {
-        return await CustomerLiability.find({ company }).populate([
-            { path: 'customer', model: Customer }, 
-            { path: 'creator', model: User }
-        ]);
-    } else {
-        const option = (query.key && query.value) ?
-            Object.assign({company}, {[`${query.key}`]: new RegExp(query.value, "i")}) :
-            {company};
+exports.editCustomer = async (id, data) => {
+    const customer = await CrmCustomer.findById(id);
+    customer.name = data.name;
+    customer.code = data.code;
+    customer.phone = data.phone;
+    customer.address = data.address;
+    customer.location = data.location;
+    customer.email = data.email;
+    customer.group = data.group;
+    customer.birth = data.birth;
+    await customer.save();
 
-        return await CustomerLiability
-            .paginate( option , { 
-                page, 
-                limit,
-                populate: [
-                    { path: 'customer', model: Customer }, 
-                    { path: 'creator', model: User },
-                ]
-            });
-    }
+    return await CrmCustomer.findById(id)
+        .populate([
+            { path: 'group', model: CrmGroup }
+        ]);
+}
+
+exports.deleteCustomer = async (id) => {
+    await CrmCustomer.deleteOne({_id: id});
+
+    return id;
 }

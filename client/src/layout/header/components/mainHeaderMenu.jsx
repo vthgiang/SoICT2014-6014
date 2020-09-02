@@ -4,6 +4,7 @@ import '../css/mainHeaderMenu.css';
 import { withTranslate } from 'react-redux-multilingual';
 import Notifications from './notification';
 import Profile from './profile';
+import Roles from './roles';
 import Language from './language';
 //import { getStorage } from '../../../config';
 
@@ -33,6 +34,7 @@ class MainHeaderMenu extends Component {
             <React.Fragment>
                 <div className="navbar-custom-menu">
                     <ul className="nav navbar-nav">
+                        <Roles />
                         {
                             this.checkURL('/notifications', auth.links) && 
                             <Notifications/>
