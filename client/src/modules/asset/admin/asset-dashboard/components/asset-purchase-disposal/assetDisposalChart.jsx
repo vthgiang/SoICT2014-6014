@@ -36,7 +36,7 @@ class DisposalColumnChart extends Component {
     }
 
     setDataColumnChart = () => {
-        const { listAssets, translate } = this.props;
+        const { getDisposalData, listAssets, translate } = this.props;
         let { disposalDateAfter, disposalDateBefore } = this.state;
 
         let startDate = new Date(disposalDateAfter);
@@ -96,7 +96,11 @@ class DisposalColumnChart extends Component {
             value: value,
             yValues: arr
         };
-
+        
+        if (getDisposalData && listAssets) {
+            getDisposalData(dataColumnChart);
+        }
+        
         return dataColumnChart;
     }
 

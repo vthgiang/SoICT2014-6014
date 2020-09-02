@@ -60,9 +60,10 @@ class AssetIsExpired extends Component {
 
     render() {
         const { translate } = this.props;
-        const { user, assetType } = this.props;
+        const { user, assetType, setAssetIsExpiredExportData } = this.props;
         const { listAssets } = this.state;
-        var userlist = user.list;
+
+        var userlist = user && user.list;
         let lists;
         var ExpiryDateAssets = [], willExpiryDateAssets = [];
         let nowDate = new Date();
@@ -99,6 +100,17 @@ class AssetIsExpired extends Component {
             var assettypelist = assetType.listAssetTypes;
         if (listAssets)
             lists = listAssets;
+        
+        // Lấy dữ liệu để export
+        if (ExpiryDateAssets && ExpiryDateAssets.length !== 0 || willExpiryDateAssets && willExpiryDateAssets.length !== 0) {
+            if (ExpiryDateAssets && ExpiryDateAssets.length !== 0) {
+                setAssetIsExpiredExportData(ExpiryDateAssets, assettypelist, userlist, false);
+            } else if (willExpiryDateAssets && willExpiryDateAssets.length !== 0) {
+                setAssetIsExpiredExportData(willExpiryDateAssets, assettypelist, userlist, true);
+
+            }
+        }
+
         return (
             <React.Fragment>
                 <div className="box">
