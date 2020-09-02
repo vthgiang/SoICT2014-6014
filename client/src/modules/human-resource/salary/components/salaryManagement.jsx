@@ -245,6 +245,7 @@ class SalaryManagement extends Component {
                     sheetTitle: translate('human_resource.salary.file_name_export'),
                     tables: [
                         {
+                            // note: "Chú ý: nội dung chú ý",
                             // tableName: "Bảng lương 1",
                             // merges: [{
                             //     key: "other",
