@@ -137,9 +137,6 @@ class AdministrationAssetTypes extends Component {
                     <ExportExcel id="export-asset-type" exportData={exportData} style={{ marginLeft: '5px' }}/>
                    
                     {/* Thêm */}
-                    <button className="btn btn-success pull-right" onClick={() => { window.$('#modal-create-asset-type').modal('show'); }} title={translate('document.administration.domains.add')}
-                        disabled={domainParent.length > 1 ? true : false}>{translate('general.add')}</button>
-                    
                     <button type="button" className="btn btn-success dropdown-toggler pull-right" data-toggle="dropdown" aria-expanded="true" title='Thêm'>{translate('task_template.add')}</button>
                     <ul className="dropdown-menu pull-right">
                         <li><a href="#modal-add-task-template" title="ImportForm" onClick={() => { window.$('#modal-create-asset-type').modal('show') }}>{translate('task_template.add')}</a></li>

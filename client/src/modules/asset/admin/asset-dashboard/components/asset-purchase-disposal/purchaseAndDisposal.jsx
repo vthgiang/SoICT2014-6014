@@ -9,17 +9,21 @@ import DisposalColumnChart from './assetDisposalChart';
 
 import withTranslate from 'react-redux-multilingual/lib/withTranslate';
 
-
-
-
 class PurchaseAndDisposal extends Component {
+
     constructor(props) {
         super(props);
+
+        this.EXPORT_DATA = {
+            purchaseData: null,
+            disposalData: null
+        }
 
         this.state = {
             listAssets: [],
         }
     }
+
     componentDidMount() {
         AssetService.getAll({
             assetName: "",
@@ -45,6 +49,18 @@ class PurchaseAndDisposal extends Component {
         // });
     }
 
+    getPurchaseData = (purchaseData) => {
+        this.EXPORT_DATA.purchaseData = purchaseData;
+
+        this.props.setPurchaseAndDisposalExportData(this.EXPORT_DATA.purchaseData, this.EXPORT_DATA.disposalData)
+    }
+
+    getDisposalData = (disposalData) => {
+        this.EXPORT_DATA.disposalData = disposalData;
+
+        this.props.setPurchaseAndDisposalExportData(this.EXPORT_DATA.purchaseData, this.EXPORT_DATA.disposalData)
+    }
+
     render() {
         const { translate } = this.props;
         const { listAssets, assetType } = this.state;
@@ -63,6 +79,7 @@ class PurchaseAndDisposal extends Component {
                                 <div className="box-body qlcv">
                                     < PurchaseColumnChart
                                         listAssets={listAssets}
+                                        getPurchaseData={this.getPurchaseData}
                                     />
                                 </div>
                             </div>
@@ -77,6 +94,7 @@ class PurchaseAndDisposal extends Component {
                                 <div className="box-body qlcv">
                                     <DisposalColumnChart
                                         listAssets={listAssets}
+                                        getDisposalData={this.getDisposalData}
                                     />
                                 </div>
                             </div>

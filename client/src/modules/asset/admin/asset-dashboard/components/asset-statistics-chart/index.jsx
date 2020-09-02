@@ -8,8 +8,14 @@ import { StautsChart } from './stautsChart';
 import { CostChart } from './costChart';
 
 class AssetStatistics extends Component {
+
     constructor(props) {
         super(props);
+
+        this.EXPORT_DATA = {
+            assetStatusData: null,
+            assetCostData: null
+        }
         this.state = {
             listAssets: null,
         }
@@ -32,6 +38,17 @@ class AssetStatistics extends Component {
         });
     }
 
+    getAssetStatusData = (assetStatusData) => {
+        this.EXPORT_DATA.assetStatusData = assetStatusData;
+
+        this.props.setAssetStatisticsExportData(this.EXPORT_DATA.assetStatusData, this.EXPORT_DATA.assetCostData)
+    }
+
+    getAssetCostData = (assetCostData) => {
+        this.EXPORT_DATA.assetCostData = assetCostData;
+
+        this.props.setAssetStatisticsExportData(this.EXPORT_DATA.assetStatusData, this.EXPORT_DATA.assetCostData)
+    }
 
     render() {
         const { translate } = this.props;
@@ -50,6 +67,7 @@ class AssetStatistics extends Component {
                                 <div className="box-body qlcv">
                                     <StautsChart
                                         listAssets={listAssets}
+                                        getAssetStatusData={this.getAssetStatusData}
                                     />
                                 </div>
                             </div>
@@ -64,6 +82,7 @@ class AssetStatistics extends Component {
                                 <div className="box-body qlcv">
                                     <CostChart
                                         listAssets={listAssets}
+                                        getAssetCostData={this.getAssetCostData}
                                     />
                                 </div>
                             </div>
