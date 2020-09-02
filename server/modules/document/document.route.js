@@ -23,6 +23,7 @@ router.get("/document-categories/:id", auth, DocumentController.showDocumentCate
 router.post("/document-categories", auth, DocumentController.createDocumentCategory);
 router.patch("/document-categories/:id", auth, DocumentController.editDocumentCategory);
 router.delete("/document-categories/:id", auth, DocumentController.deleteDocumentCategory);
+router.post("/document-categories/import-file", auth, DocumentController.importDocumentCategory);
 
 // Văn bản tài liệu
 router.get("/documents", auth, DocumentController.getDocuments);

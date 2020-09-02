@@ -372,6 +372,27 @@ exports.deleteDocumentCategory = async (id) => {
 }
 
 /**
+ * import các loại tài liệu từ file excel
+ * company: mã cty lấy từ auth
+ * data: mảng dữ liệu được import từ file excel
+ */
+
+exports.importDocumentCategory = async (company, data) => {
+    for (let i in data) {
+        description = data[i].description;
+        let category = {
+            name: data[i].name,
+            description: data[i].description,
+        }
+
+        console.log(category);
+        let res = await this.createDocumentCategory(company, category);
+
+    }
+    return await this.getDocumentDomains(company);
+}
+
+/**
  * Danh mục văn bản
  */
 exports.getDocumentDomains = async (company) => {

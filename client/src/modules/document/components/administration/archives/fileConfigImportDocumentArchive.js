@@ -24,6 +24,37 @@ export const configArchive = {
     },
 }
 
+export const exportArchive = {
+    fileName: "Mẫu import vị trí lưu trữ",
+    dataSheets: [{
+        sheetName: "Sheet1",
+        sheetTitle: "Danh sách vị trí lưu trữ",
+        table: [{
+            rowHeader: 2,
+            columns: [
+                { key:"name", value:"Tên vị trí lưu trữ" },
+                { key:"description", value: "Mô tả vị trí lưu trữ" },
+                { key:"pathParent", value: "Đường dẫn vị trí lưu trữ cha"},
+            ],
+            data:[
+                {
+                    name: "B4",
+                    description: "B4",
+                },
+                {
+                    name: "Phòng 201",
+                    pathParent: "B4",
+                },
+                {
+                    name: "Ngăn 1",
+                    "pathParent": "B4 - Phòng 201",
+                },
+            ]
+        }]
+
+    }] 
+}
+
 
 
 
