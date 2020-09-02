@@ -1,4 +1,5 @@
 const EmployeeService = require('../human-resource/profile/profile.service');
+const TaskManagementService = require('../task/task-management/task.service');
 
 /**
  * Hàm tiện ích cấu hình thời gian gọi Api
@@ -37,4 +38,7 @@ exports.chedulesCallApi = () => {
     
     // Function thông báo sắp hết hợp đồng lao động
     setTimeCallApi(false, false, 23*60*60*1000, EmployeeService.createNotificationEndOfContract);
+
+    // Function gửi email nhắc nhở công việc
+    // setTimeCallApi(false, false, 30*1000, TaskManagementService.sendEmailCheckTaskLastMonth);
 }

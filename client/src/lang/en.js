@@ -603,16 +603,17 @@ export default {
         },
 
         menu: {
-            home: 'Home page',
-            system: 'System',
-            iam_rbac: 'IAM-RBAC',
-            manage_system: 'Manage System',
+            home: 'Home Page',
+            system_administration: 'System Administration',
+            manage_system: 'Backup and Restore',
             manage_company: 'Manage Company',
-            manage_department: 'Manage Departments',
-            manage_user: 'Manage Users',
             manage_role: 'Manage Roles',
             manage_link: 'Manage Pages',
-            manage_component: 'Manage ComponentUI',
+            manage_component: 'Manage UI-Component',
+
+            manage_department: 'Manage Departments',
+            manage_user: 'Manage Users',
+
             manage_document: 'Manage Documents',
             documents: 'Documents',
 
