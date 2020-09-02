@@ -36,10 +36,20 @@ class ExportExcel extends Component {
                         worksheet.getCell(`A${currentRow}`).value = y.tableName;
                         worksheet.getCell(`A${currentRow}`).alignment = { vertical: 'middle' };
                         worksheet.getCell(`A${currentRow}`).font = { name: 'Arial', size: 12, bold: true, color: { argb: 'FF2D1075' } };
+
                         let endMergeTablename = worksheet.getRow(currentRow).getCell(columns.length).address;
                         worksheet.mergeCells(`A${currentRow}:${endMergeTablename}`);
                         currentRow = currentRow + 1;
                     };
+                    if (y.note) {
+                        worksheet.getCell(`A${currentRow}`).value = y.note;
+                        worksheet.getCell(`A${currentRow}`).font = { name: 'Arial', size: 10, color: { argb: "FFFF0000" } };
+                        worksheet.getCell(`A${currentRow}`).alignment = { vertical: 'middle', wrapText: true };
+
+                        let endMergeTablename = worksheet.getRow(currentRow).getCell(columns.length).address;
+                        worksheet.mergeCells(`A${currentRow}:${endMergeTablename}`);
+                        currentRow = currentRow + 1;
+                    }
 
                     let arrHeader = [];
                     if (rowHeader && merges && Number(rowHeader) > 1) {
