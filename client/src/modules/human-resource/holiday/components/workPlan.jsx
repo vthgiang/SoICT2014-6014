@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withTranslate } from 'react-redux-multilingual';
 
+import { AnnualLeaveApplicationForm } from '../../annual-leave/components/combinedContent';
+
 import { HolidayActions } from '../redux/actions';
 import { AnnualLeaveActions } from '../../annual-leave/redux/actions';
 
@@ -115,7 +117,7 @@ class WorkPlan extends Component {
                                 <p><span>{`${translate('human_resource.work_plan.total_number_leave_of_year')}: ${numberDateLeaveOfYear} ngày`}</span></p>
                                 <p><span>{`${translate('human_resource.work_plan.leaved')}: ${annualLeave.numberAnnulLeave} ngày`}</span></p>
                                 <p><span className="text-danger">{`( ${translate('human_resource.work_plan.view_detail')} "${translate('menu.detail_employee')}")`}</span></p>
-                                <button type="button" class="btn btn-success pull-right">{translate('human_resource.work_plan.create_annual_leave')}</button>
+                                <AnnualLeaveApplicationForm />
                             </div>
                         </div>
 

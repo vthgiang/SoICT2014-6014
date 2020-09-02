@@ -960,6 +960,7 @@ export default {
                 delete_annual_leave_faile: 'Xoá đơn xin nghỉ phép thất bại',
                 edit_annual_leave_success: 'Chỉnh sửa đơn xin nghỉ phép thành công',
                 edit_annual_leave_faile: 'Chỉnh sửa đơn xin nghỉ phép thất bại',
+                aplication_annual_leave_success: 'Thêm đơn xin nghỉ thành công',
             },
 
             // Quản lý khen thưởng kỷ luật
@@ -1417,6 +1418,7 @@ export default {
                 total_number_leave_of_year: 'Tổng số ngày nghỉ phép cả năm',
                 leaved: 'Bạn đã nghỉ',
                 view_detail: 'Chi tiết xem ở trang',
+                receiver: 'Người nhận',
 
                 // Nhóm action
                 create_annual_leave: 'Xin nghỉ phép',

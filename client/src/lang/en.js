@@ -959,6 +959,7 @@ export default {
                 delete_annual_leave_faile: 'Delete annual leave faile',
                 edit_annual_leave_success: 'Edit annual leave success',
                 edit_annual_leave_faile: 'Edit annual leave faile',
+                aplication_annual_leave_success: 'Send application annual leave success',
 
             },
 
@@ -1417,10 +1418,10 @@ export default {
                 total_number_leave_of_year: 'Total number of days off',
                 leaved: 'You have rested',
                 view_detail: 'Details see page',
+                receiver: 'Receiver',
 
                 // Nhóm action
-                create_annual_leave: 'Ask leave',
-
+                create_annual_leave: 'Application annual leave',
             }
         },
 
