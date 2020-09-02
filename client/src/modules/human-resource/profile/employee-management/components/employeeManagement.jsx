@@ -804,6 +804,7 @@ class EmployeeManagement extends Component {
                         </div>
                     </div>
                     <div className="form-inline">
+                        {/* Trạng thái */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('page.status')}</label>
                             <SelectMulti id={`multiSelectStatus`} multiple="multiple"
@@ -811,6 +812,7 @@ class EmployeeManagement extends Component {
                                 items={[{ value: "active", text: translate('human_resource.profile.active') }, { value: "leave", text: translate('human_resource.profile.leave') }]} onChange={this.handleStatusChange}>
                             </SelectMulti>
                         </div>
+                        {/* Tháng sinh */}
                         <div className="form-group">
                             <label title={translate('human_resource.profile.employee_management.brithday_lable_title')} className="form-control-static">{translate('human_resource.profile.employee_management.brithday_lable')}</label>
                             <DatePicker
@@ -823,6 +825,7 @@ class EmployeeManagement extends Component {
 
                     </div>
                     <div className="form-inline" style={{ marginBottom: 15 }}>
+                        {/* Tháng hết hợp đồng lao động */}
                         <div className="form-group">
                             <label title={translate('human_resource.profile.employee_management.contract_lable_title')} className="form-control-static">{translate('human_resource.profile.employee_management.contract_lable')}</label>
                             <DatePicker
@@ -832,10 +835,12 @@ class EmployeeManagement extends Component {
                                 onChange={this.handleEndDateOfContractChange}
                             />
                         </div>
+                        {/* Loại hợp đồng lao động */}
                         <div className="form-group">
                             <label className="form-control-static">{translate('human_resource.profile.type_contract')}</label>
                             <input type="text" className="form-control" name="typeOfContract" onChange={this.handleChange} placeholder={translate('human_resource.profile.employee_management.contract_type_title')} />
                         </div>
+                        {/* Button tìm kiếm */}
                         <div className="form-group">
                             <button type="button" className="btn btn-success" title={translate('general.search')} onClick={this.handleSunmitSearch} >{translate('general.search')}</button>
                         </div>

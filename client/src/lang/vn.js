@@ -632,12 +632,12 @@ export default {
             manageDocument: 'Quản lý văn bản',
             manageDocumentType: 'Quản lý loại văn bản',
 
-            leave_application:'Quản lý đơn xin nghỉ',
+            leave_application: 'Quản lý đơn xin nghỉ',
             manage_employee: 'Quản lý nhân sự',
             manage_holiday: 'Quản lý kế hoạch làm việc',
             manage_training: 'Quản lý đào tạo',
             account: 'Tài khoản',
-            work_plan: 'Kế hoạch làm việc',
+            annual_leave_personal: 'Nghỉ phép',
             manage_unit: 'Quản lý nhân sự các đơn vị',
             add_employee: 'Thêm nhân viên',
             list_employee: 'Quản lý thông tin nhân viên',
@@ -1417,9 +1417,9 @@ export default {
                 add_employee_unit: 'Thêm nhân viên',
             },
 
-            // Kế hoạch làm việc
-            work_plan: {
-                list_work_plane: 'Danh sách lịch làm việc',
+            // Nghỉ phép
+            annual_leave_personal: {
+                list_annual_leave: 'Quy định về nghỉ phép của công ty',
                 inform_annual_leave: 'Thông tin nghỉ phép cá nhân',
                 note: 'Chú thích',
                 day: 'ngày',
