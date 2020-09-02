@@ -605,17 +605,19 @@ export default {
 
         menu: {
             home: 'Trang chủ',
-            system: 'Hệ thống',
-            iam_rbac:'IAM-RBAC',
-            manage_system: 'Quản lý hệ thống',
+            system_administration: 'Quản trị hệ thống',
+            manage_system: 'Sao lưu phục hồi',
             manage_company: 'Quản lý doanh nghiệp/công ty',
-            manage_department: 'Quản lý cơ cấu tổ chức',
-            manage_user: 'Quản lý người dùng',
             manage_role: 'Quản lý phân quyền',
             manage_link: 'Quản lý trang',
-            manage_component: 'Quản lý các componentUI',
+            manage_component: 'Quản lý UI-Component',
+
+            manage_department: 'Quản lý cơ cấu tổ chức',
+            manage_user: 'Quản lý người dùng',
+
             manage_document: 'Quản lý tài liệu',
             documents: 'Tài liệu văn bản',
+
             crm: 'CRM',
             customer: 'Khách hàng',
             customer_group: 'Nhóm khách hàng',
@@ -626,9 +628,10 @@ export default {
             manageDocumentType: 'Quản lý loại văn bản',
 
             manage_employee: 'Quản lý nhân sự',
-            manage_holiday: 'Kế hoạch làm việc',
+            manage_holiday: 'Quản lý kế hoạch làm việc',
             manage_training: 'Quản lý đào tạo',
             account: 'Tài khoản',
+            work_plan: 'Kế hoạch làm việc',
             manage_unit: 'Quản lý nhân sự các đơn vị',
             add_employee: 'Thêm nhân viên',
             list_employee: 'Quản lý thông tin nhân viên',
@@ -1306,39 +1309,54 @@ export default {
             // Quản lý kế hoạch làm việc (lịch nghỉ lễ tết)
             holiday: {
                 file_name_export: 'Kế hoạch làm việc',
+                number_date_leave_of_year: 'Số ngày nghỉ phép',
+                date_year: 'ngày/năm',
+                year: 'Năm',
+                number_date: 'Số ngày',
+                list_holiday: 'Kế hoạch nghỉ lễ, nghỉ tết',
+                list_no_leave: 'Thời gian không được nghỉ',
+                list_auto_leave: 'Thời gian được nghỉ phép',
 
                 // Nhóm dành cho table
                 table: {
+                    type: 'Thể loại',
                     timeline: 'Các mốc thời gian',
                     start_date: 'Ngày bắt đầu',
                     end_date: 'Ngày kết thúc',
                     describe_timeline: 'Mô tả',
                 },
 
+                // Nhóm thể loại kế hoạch làm Việc
+                holiday: 'Nghỉ lễ',
+                auto_leave: 'Được nghỉ',
+                no_leave: 'Không được phép nghỉ',
+
                 // Nhóm dành cho action
-                edit_holiday: 'Chỉnh sửa lịch làm việc',
-                delete_holiday: 'Xoá lịch làm việc',
+                edit_holiday: 'Chỉnh sửa kế hoạch làm việc',
+                delete_holiday: 'Xoá kế hoạch làm việc',
                 add_holiday: 'Thêm mới',
-                add_holiday_title: 'Thêm mới lịch làm việc',
-                add_by_hand: 'Thêm một lịch làm việc',
+                add_holiday_title: 'Thêm mới kế hoạch làm việc',
+                add_by_hand: 'Thêm một kế hoạch làm việc',
                 add_import: 'Import file excel',
 
                 // Thông điệp trả về từ server
+                type_required: 'Thể loại không được để trống',
                 start_date_required: 'Thời gian bắt đầu không được để trống',
                 end_date_required: 'Thời gian kết thúc không được để trống',
-                reason_required: 'Mô tả lịch nghỉ không được để trống',
+                reason_required: 'Mô tả kế hoạch làm việc không được để trống',
                 holiday_duplicate_required: 'Thời gian bị trùng lặp',
+                edit_number_date_leave_of_year_success: 'Thay đổi số ngày nghỉ trong một năm thành công',
 
-                get_holiday_success: 'Lấy danh sách lịch làm việc thành công',
-                get_holiday_faile: 'Lấy danh sách lịch làm việc thất bại',
-                create_holiday_success: 'Thêm mới lịch làm việc thành công',
-                create_holiday_faile: 'Thêm mới lịch làm việc thất bại',
-                delete_holiday_success: 'Xoá lịch làm việc thành công',
-                delete_holiday_faile: 'Xoá lịch làm việc thất bại',
-                edit_holiday_success: 'Chỉnh sửa lịch làm việc thành công',
-                edit_holiday_faile: 'Chỉnh sửa lịch làm việc thất bại',
+                get_holiday_success: 'Lấy danh sách kế hoạch làm việc thành công',
+                get_holiday_faile: 'Lấy danh sách kế hoạch làm việc thất bại',
+                create_holiday_success: 'Thêm mới kế hoạch làm việc thành công',
+                create_holiday_faile: 'Thêm mới kế hoạch làm việc thất bại',
+                delete_holiday_success: 'Xoá kế hoạch làm việc thành công',
+                delete_holiday_faile: 'Xoá kế hoạch làm việc thất bại',
+                edit_holiday_success: 'Chỉnh sửa kế hoạch làm việc thành công',
+                edit_holiday_faile: 'Chỉnh sửa kế hoạch làm việc thất bại',
                 import_holiday_success: 'Import thông tin nghỉ lễ tết thành công',
-                import_holiday_faile: 'IMport thông tin nghỉ lễ tết thất bại',
+                import_holiday_faile: 'Import thông tin nghỉ lễ tết thất bại',
             },
 
             // Quản lý chấm công nhân viên
@@ -1391,6 +1409,21 @@ export default {
                 email_employee: 'Email nhân viên',
                 add_employee_unit: 'Thêm nhân viên',
             },
+
+            // Kế hoạch làm việc
+            work_plan: {
+                list_work_plane: 'Danh sách lịch làm việc',
+                inform_annual_leave: 'Thông tin nghỉ phép cá nhân',
+                note: 'Chú thích',
+                day: 'ngày',
+                total_number_leave_of_year: 'Tổng số ngày nghỉ phép cả năm',
+                leaved: 'Bạn đã nghỉ',
+                view_detail: 'Chi tiết xem ở trang',
+
+                // Nhóm action
+                create_annual_leave: 'Xin nghỉ phép',
+
+            }
 
         },
 
@@ -1542,18 +1575,20 @@ export default {
                 cost_chart: 'Biểu đồ thống kê tài sản theo giá trị',
                 amount_of_asset: 'Thống kê số lượng tài sản',
                 value_of_asset: 'Thống kê giá trị tài sản',
-                depreciation_of_asset: 'Thống kê giá trị khấu hao',
+                depreciation_of_asset: 'Thống kê hao mòn tài sản',
                 bar_chart: 'Biểu đồ cột',
                 tree: 'Cây',
                 amount: 'Số lượng',
-                lost_value: 'Giá trị mất (Triệu)',
+                value: 'Giá trị',
+                lost_value: 'Giá trị hao mòn (Triệu)',
                 sum_value: 'Tổng giá trị (Triệu)',
                 building: 'Mặt bằng',
                 vehicle: 'Phương tiện',
                 machine: 'Máy móc',
                 orther: 'Khác',
-                asset_by_group: 'Tài sản theo nhóm',
-                asset_by_type: 'Tài sản theo loại',
+                asset_by_group: 'Thống kê theo nhóm',
+                asset_by_type: 'Thống kê theo loại',
+                asset_purchase_and_dispose: 'Mua - bán tài sản',
                 purchase_asset: 'Thống kê mua sắm tài sản',
                 disposal_asset: 'Thống kê thanh lý tài sản',
             },

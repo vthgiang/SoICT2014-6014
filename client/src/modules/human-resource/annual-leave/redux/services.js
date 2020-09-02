@@ -17,6 +17,7 @@ function searchAnnualLeaves(data) {
         url: `${ process.env.REACT_APP_SERVER }/annualLeave/annualLeaves`,
         method: 'GET',
         params: {
+            numberAnnulLeave: data.numberAnnulLeave,
             numberMonth: data.numberMonth,
             organizationalUnits: data.organizationalUnits,
             position: data.position,
